@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelSpec.java,v 1.10 2003-08-21 17:28:37 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.11 2003-08-22 14:34:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -196,6 +196,7 @@ public class TestModelSpec extends ModelTestBase
         assertTrue( mm.getGraphMaker() instanceof FileGraphMaker );
         assertEquals( Reifier.Minimal , mm.getGraphMaker().getReificationStyle() );
         }
+        
     }
 
 /*

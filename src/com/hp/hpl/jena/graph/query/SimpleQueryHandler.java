@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.11 2003-08-08 13:02:46 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.12 2003-08-22 14:34:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -65,12 +65,6 @@ public class SimpleQueryHandler implements QueryHandler
             || graph.contains( Node.ANY, Node.ANY, n )
             ;
         }
-        
-    /**
-        Answer true iff the subject graph is empty.
-    */
-    public boolean isEmpty()
-        { return graph.size() == 0; }
     }
 
 /*

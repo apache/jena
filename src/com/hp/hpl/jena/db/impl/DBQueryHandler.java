@@ -1,24 +1,19 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.3 2003-08-19 02:28:03 wkw Exp $
+  $Id: DBQueryHandler.java,v 1.4 2003-08-22 14:34:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
 /**
-    A SimpleQueryHandler is a more-or-less straightforward implementation of QueryHandler
-    suitable for use on graphs with no special query engines.
-	@author kers
+    An extension of SimpleQueryHandler for database-graphs.
+	@author wkw et al
 */
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.Mapping;
-import com.hp.hpl.jena.graph.query.Pipe;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
-import com.hp.hpl.jena.graph.query.Stage;
-import com.hp.hpl.jena.db.GraphRDB;
-import com.hp.hpl.jena.db.RDFRDBException;
+import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.shared.JenaException;
 
 import java.util.*;

@@ -12,7 +12,7 @@ import junit.framework.* ;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.19 $
+ * @version 	$Revision: 1.20 $
  */
 public class TestPackage extends TestSuite
 {
@@ -67,11 +67,11 @@ public class TestPackage extends TestSuite
 		addTest( "TestNsPrefix", TestNsPrefix.suite());
 		addTest( "TestPrefixMapping", TestPrefixMapping.suite());
 		addTest( "TestTransactions", TestTransactions.suite() );
+        addTest( "TestDBSpec", TestDBSpec.suite() );
 		addTest( "TestReifier", TestReifier.suite() );
 		addTest( "TestReifierCompareToMem", TestReifierCompareToMem.suite());
 		addTest( "TestQueryRDB", TestQueryRDB.suite());
 		addTest( "TestQuery1", TestQuery1.suite());
-
         }
 
     private void addTest(String name, TestSuite tc) {

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.6 2003-08-21 17:28:37 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.7 2003-08-22 14:34:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
@@ -158,6 +159,8 @@ public abstract class ModelSpecImpl implements ModelSpec
         Reifier.Style style = Reifier.Standard;
         Statement st = description.getProperty( root, JMS.reificationMode );
         if (st != null) style = JMS.findStyle( st.getObject() );
+        if (description.listStatements( null, RDF.type, JMS.RDBMakerSpec ).hasNext())
+            return ModelFactory.createModelRDBMaker( createConnection( description ) );
         if (description.listStatements( null, RDF.type, JMS.FileMakerSpec ).hasNext())
             {
             Statement fb = description.getProperty( root, JMS.fileBase );
@@ -169,6 +172,39 @@ public abstract class ModelSpecImpl implements ModelSpec
         throw new RuntimeException( "no maker type" );    
         }
     
+    public static IDBConnection createConnection( Model description )
+        {
+        Resource root = findRootByType( description, JMS.RDBMakerSpec );
+        String url = getString( description, root, JMS.dbURL );
+        String user = getString( description, root, JMS.dbUser );
+        String password = getString( description, root , JMS.dbPassword );
+        String className = getClassName( description, root );
+        String dbType = getString( description, root, JMS.dbType );
+        loadDrivers( dbType, className );
+        return ModelFactory.createSimpleRDBConnection( url, user, password, dbType );    
+        }
+    
+    public static void loadDrivers( String dbType, String className )
+        {
+        try
+            {   
+            Class.forName( "com.hp.hpl.jena.db.impl.Driver_" + dbType );
+            if (className != null) Class.forName( className );
+            }
+        catch (ClassNotFoundException c)
+            { throw new JenaException( c ); }
+        }   
+                 
+    public static String getClassName( Model description, Resource root )
+        {
+        Statement cnStatement = description.getProperty( root, JMS.dbClass );
+        return cnStatement == null ? null : cnStatement.getString();
+        }                            
+        
+    public static String getString( Model description, Resource root, Property p )
+        {
+        return description.getRequiredProperty( root, p ).getString();  
+        }
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelCom.java,v 1.72 2003-08-19 09:33:09 der Exp $
+  $Id: ModelCom.java,v 1.73 2003-08-22 14:34:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.72 $' Date='$Date: 2003-08-19 09:33:09 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.73 $' Date='$Date: 2003-08-22 14:34:01 $'
  */
 
 public class ModelCom 
@@ -822,7 +822,7 @@ implements Model, PrefixMapping, ModelLock
     }
 
     public boolean isEmpty()
-        { return graph.queryHandler().isEmpty(); }
+        { return graph.isEmpty(); }
         
     private void updateNamespace( HashSet set, Iterator it )
         {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.7 2003-07-29 12:05:24 chris-dollin Exp $
+  $Id: TestPrefixMapping.java,v 1.8 2003-08-22 14:34:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -36,6 +36,7 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping
         assertEquals( OWL.NAMESPACE, st.getNsPrefixURI( "owl" ) );
         assertEquals( RSS.getURI(), st.getNsPrefixURI( "rss" ) );
         assertEquals( VCARD.getURI(), st.getNsPrefixURI( "vcard" ) );
+        assertEquals( JMS.getURI(), st.getNsPrefixURI( "jms" ) );
         assertEquals( DAMLVocabulary.NAMESPACE_DAML_2001_03_URI, st.getNsPrefixURI( "daml" ) );
         }
         

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.18 2003-07-24 15:29:31 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.19 2003-08-22 14:34:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -86,11 +86,18 @@ public class GraphMem extends GraphBase implements Graph {
             }
         }
 
-    public int size()  {
+    public int size()  
+        {
         checkOpen();
         return triples.size();
-    }
+        }
 
+    public boolean isEmpty()
+        {
+        checkOpen();
+        return triples.isEmpty();
+        }
+        
     private QueryHandler q;
     
     public QueryHandler queryHandler()
@@ -103,9 +110,6 @@ public class GraphMem extends GraphBase implements Graph {
         {
         GraphMemQueryHandler( GraphMem graph ) 
             { super( graph ); }
-            
-        public boolean isEmpty()
-            { return ((GraphMem) graph).triples.isEmpty(); }
         }
         
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.13 2003-08-21 17:28:37 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.14 2003-08-22 14:34:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -32,12 +32,13 @@ public class TestModelFactory extends ModelTestBase
     public TestModelFactory(String name)
         { super(name); }
 
+    /**
+        Test that ModelFactory.createDefaultModel() exists. [Should check that the Model
+        is truly a "default" model.]
+     */
     public void testCreateDefaultModel()
-        {
-        Model m = ModelFactory.createDefaultModel();
-        m.close();
-        }    
-        
+        { ModelFactory.createDefaultModel().close(); }    
+
     public void testCreateSpecFails()
         {
         try
@@ -50,12 +51,7 @@ public class TestModelFactory extends ModelTestBase
         
     public void testCreatePlainSpec()
         {
-        Resource root = ResourceFactory.createResource();
-        Resource maker = ResourceFactory.createResource();
-        Model desc = ModelFactory.createDefaultModel()
-            .add( root, JMS.maker, maker )
-            .add( maker, RDF.type, JMS.MemMakerSpec )
-            .add( maker, JMS.reificationMode, JMS.rsMinimal );
+        Model desc = createPlainModelDesc();
         ModelSpec spec = ModelFactory.createSpec( desc ); 
         assertIsoModels( desc, spec.getDescription() );
         assertTrue( spec instanceof PlainModelSpec );
@@ -101,6 +97,28 @@ public class TestModelFactory extends ModelTestBase
         assertTrue( spec.createModel() instanceof InfModel );
         }
         
+    /**
+        Test that ModelFactory.createModel exists and returns models.
+    */
+    public void testMFCreate()
+        {
+        Model desc = createPlainModelDesc();
+        ModelSpec spec = ModelFactory.createSpec( desc );
+        Model m = ModelFactory.createModel( spec );    
+        }
+        
+    /**
+        Answer a description of a plain memory Model with Minimal reification.
+     */
+    public Model createPlainModelDesc()
+        {
+        Resource root = ResourceFactory.createResource();
+        Resource maker = ResourceFactory.createResource();
+        return ModelFactory.createDefaultModel()
+            .add( root, JMS.maker, maker )
+            .add( maker, RDF.type, JMS.MemMakerSpec )
+            .add( maker, JMS.reificationMode, JMS.rsMinimal );
+        }
         
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.23 2003-08-20 15:12:57 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.24 2003-08-22 14:34:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -49,23 +49,33 @@ public class ModelFactory extends ModelFactoryBase
     */
     public static final Reifier.Style Minimal = Reifier.Minimal;
     
+    /**
+        Answer a ModelSpec which can create models to the specifcations in the RDF
+        description.
+    */
     public static ModelSpec createSpec( Model desc )
         { return ModelSpecImpl.create( desc ); }
+        
+    /**
+        Answer a fresh Model created according to the ModelSpec argument.
+    */
+    public static Model createModel( ModelSpec desc )
+        { return desc.createModel(); }
     
     /** 
-        construct a new memory-based model with the standard reification style
-        (reification triples contribute to ReifiedStatements, and are visible to
-        listStatements etc).
+        Answer a fresh Model with the default specification and Standard reification style
+        [reification triples contribute to ReifiedStatements, and are visible to listStatements,
+        etc]. 
     */
     public static Model createDefaultModel()
         { return createDefaultModel( Standard ); }
-        
+               
     /** 
-        construct a new memory-based model with the given reification style
+        Answer a new memory-based model with the given reification style
     */
     public static Model createDefaultModel( Reifier.Style style )
-        { return new ModelCom( new GraphMem( style ) ); }
-                
+        { return new ModelCom( new GraphMem( style ) ); }   
+
     /**
         Answer a read-only Model with all the statements of this Model and any
         statements "hidden" by reification. That model is dynamic, ie

@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -72,6 +72,9 @@ public class DBReifierGraph implements Graph {
 		return result;
 	}
 
+    public boolean isEmpty()
+        { return size() == 0; }
+        
     private void checkUnclosed()
         {
         if (m_specializedGraphs == null)

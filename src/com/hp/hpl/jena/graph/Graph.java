@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.17 2003-07-25 11:41:39 chris-dollin Exp $
+  $Id: Graph.java,v 1.18 2003-08-22 14:34:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -112,6 +112,12 @@ public interface Graph  extends GraphAdd
 	/** Free all resources, any further use of this Graph is an error.
 	 */
 	void close();
+    
+    /**
+        Answer true iff this graph is empty. [Used to be in QueryHandler, but moved in
+        here because it's a more primitive operation.]
+    */
+    boolean isEmpty();
     
 	 int size() throws UnsupportedOperationException;
 	 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.18 2003-08-13 14:16:26 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.19 2003-08-22 14:34:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -198,6 +198,12 @@ public abstract class GraphBase implements Graph {
         return result;    
         }
 
+    /** 
+     	@see com.hp.hpl.jena.graph.Graph#isEmpty()
+    */
+    public boolean isEmpty()
+        { return size() == 0; }
+        
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#capabilities()
 	 */
