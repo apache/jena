@@ -1,3 +1,4 @@
+<!-- tested using ant 1.5 -->
 <project name="jena" default="main" basedir=".">
 
     <property name="Name"            value="Jena"/>
