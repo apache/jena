@@ -675,7 +675,26 @@ public class SpecializedGraphReifier_RDB
 		return m_dbPropLSet;
 	}
 	
-	public char subsumes ( Triple pattern, int reifBehavior ) {
+	/*
+	 *  (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#subsumes(com.hp.hpl.jena.graph.Triple, int)
+	 *
+	 * determine if the reifier graph has any triples of the given pattern.
+	 * the table below indicates the return value for each reif style for
+	 * the various types of patterns. 
+	 * note: "conc" means the node in the pattern is not a concrete node.
+	 * 
+	 * Pattern                Minimal   Conv     Standard
+	 * ANY rdf:subj ANY       none      none     all
+	 * ANY rdf:pred ANY       none      none     all
+	 * ANY rdf:obj  ANY       none      none     all
+	 * ANY rdf:type rdf:stmt  none      none     all
+	 * ANY rdf:type conc      none      none     none
+	 * ANY rdf:type !conc     none      none     some
+	 * ANY !conc    ANY       none      none     some
+	 * else                   none      none     none
+	 */
+	 public char subsumes ( Triple pattern, int reifBehavior ) {
 		char res = noTriplesForPattern;
 		if ( reifBehavior != GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING )
 			return res;
@@ -689,7 +708,7 @@ public class SpecializedGraphReifier_RDB
 				Node obj = pattern.getObject();
 				if ( obj.equals(RDF.Nodes.Statement) )
 					res = allTriplesForPattern;
-				else
+				else if ( !obj.isConcrete() )
 					res = someTriplesForPattern;
 			}
 		} else if ( (pred.isVariable()) || pred.equals(Node.ANY) ) {
