@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.15 2003-08-27 12:56:20 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.16 2003-12-13 01:59:14 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -45,26 +45,6 @@ public class TestConnection extends TestCase {
     protected void tearDown() throws java.lang.Exception {
     }
     
-	public void testNoClass() throws java.lang.Exception {
-		/*
-		IDBConnection conn = new DBConnection(TestPackage.M_DB_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD);
-		conn.cleanDB();
-		ModelRDB m = ModelRDB.createModel(conn);
-		m.remove();
-		conn.close();
-		*/
-	}
-        
-	public void testNoConnection() throws java.lang.Exception {
-		/*
-		Class.forName(TestPackage.M_DBDRIVER_CLASS);
-		IDBConnection conn = new DBConnection("Bad_URI", TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD);
-		ModelRDB m = ModelRDB.open(conn);
-		m.remove();
-		conn.close();
-		*/
-	}
-    
     private static void loadClass()
         {
         try { Class.forName(TestPackage.M_DBDRIVER_CLASS); }
@@ -91,11 +71,47 @@ public class TestConnection extends TestCase {
         return result;
         }
         
-    
+/*	public void testNoClass() throws java.lang.Exception {
+		try {
+			IDBConnection conn = new DBConnection(
+			TestPackage.M_DB_URL, 
+			TestPackage.M_DB_USER, 
+			TestPackage.M_DB_PASSWD, 
+			TestPackage.M_DB);
+			conn.cleanDB();
+			assertTrue(false); // should not get here
+		} catch (Exception e) {
+		}
+	} */
+           
     public void testDBConnect() throws java.lang.Exception {
 		IDBConnection conn = makeTestConnection();
     	conn.close();
     }
+    
+	public void testBadConnection() throws java.lang.Exception {
+		try {
+			IDBConnection conn = new DBConnection(
+			"Bad URL", 
+			TestPackage.M_DB_USER, 
+			TestPackage.M_DB_PASSWD, 
+			TestPackage.M_DB);
+			conn.cleanDB();
+			assertTrue(false); // should not get here
+		} catch (Exception e) {
+		}
+		try {
+			IDBConnection conn = new DBConnection(
+			TestPackage.M_DB_URL, 
+			TestPackage.M_DB_USER, 
+			TestPackage.M_DB_PASSWD, 
+			"Bad DB");
+			conn.cleanDB();
+			assertTrue(false); // should not get here
+		} catch (Exception e) {
+		}
+	}
+    
     
     public void testConstructDefaultModel() throws java.lang.Exception {
 		IDBConnection conn = makeAndCleanTestConnection();
