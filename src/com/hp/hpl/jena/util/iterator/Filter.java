@@ -1,5 +1,35 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 1999-2001 
+  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: Filter.java,v 1.2 2003-03-14 13:11:17 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.util.iterator;
+
+/** A boolean function for filtering.
+ * @author jjc
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-03-14 13:11:17 $'
+ */
+public interface Filter
+{
+/** The object is wanted.
+ * @param o The object to accept or reject.
+ * @return true if the object is wanted.
+ */    
+	public boolean accept(Object o);
+    
+    /** 
+        a filter that accepts anything.
+        (useful when a general method wants a Filter, but we'll
+        take anything).
+    */
+    public static final Filter any = new Filter()
+        { public final boolean accept( Object o ) { return true; } };
+        
+}
+
+/*
+ *  (c) Copyright Hewlett-Packard Company 1999-2003 
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,21 +54,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Filter.java,v 1.1.1.1 2002-12-19 19:21:13 bwm Exp $
+ * $Id: Filter.java,v 1.2 2003-03-14 13:11:17 chris-dollin Exp $
  *
  */
-
-package com.hp.hpl.jena.util.iterator;
-
-/** A boolean function for filtering.
- * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:13 $'
- */
-public interface Filter
-{
-/** The object is wanted.
- * @param o The object to accept or reject.
- * @return true if the object is wanted.
- */    
-	public boolean accept(Object o);
-}
