@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTransitiveGraphCache.java,v 1.7 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: TestTransitiveGraphCache.java,v 1.8 2004-03-14 17:07:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -20,7 +20,7 @@ import junit.framework.TestSuite;
 /**
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.8 $ on $Date: 2004-03-14 17:07:34 $
  */
 public class TestTransitiveGraphCache extends TestCase {
     
@@ -259,6 +259,26 @@ public class TestTransitiveGraphCache extends TestCase {
         listFind(cache, g, directP, null);
         listFind(cache, g, closedP, null);        
         */
+    }
+    
+    /**
+     * Test a a case where an earlier version had a bug due to removing
+     * a link which was required rather than redundant.
+     */
+    public void testBug1() {
+        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
+        cache.addRelation(a, b);        
+        cache.addRelation(c, a);        
+        cache.addRelation(c, b);        
+        cache.addRelation(a, c);     
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(a, directP, null)),
+            new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(a, closedP, b),
+                new Triple(a, closedP, c),
+            });
+           
     }
     
     /**
