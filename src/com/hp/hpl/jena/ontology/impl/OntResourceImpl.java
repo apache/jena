@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 09:17:45 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-17 13:47:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.23 2003-06-17 09:17:45 chris-dollin Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.24 2003-06-17 13:47:44 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -986,15 +986,6 @@ public class OntResourceImpl
      */
     public AnnotationProperty asAnnotationProperty() {
         return (AnnotationProperty) as( AnnotationProperty.class );
-    }
-    
-    /** 
-     * <p>Answer a view of this resource as a list </p>
-     * @return This resource, but viewed as an RDFList
-     * @exception ConversionException if the resource cannot be converted to a list
-     */
-    public RDFList asList() {
-        return (RDFList) as( RDFList.class );
     }
     
     /** 

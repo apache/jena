@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFListImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 09:41:34 $
+ * Last modified on   $Date: 2003-06-17 13:47:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.4 2003-06-17 09:41:34 ian_dickinson Exp $
+ * @version CVS $Id: RDFListImpl.java,v 1.5 2003-06-17 13:47:43 ian_dickinson Exp $
  */
 public class RDFListImpl
     extends ResourceImpl
@@ -70,8 +70,8 @@ public class RDFListImpl
             
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an RDFList facet if it has rdf:type rdf:List or equivalent
-            return node.equals( listNil().asNode() ) || 
-                   eg.asGraph().find( node, RDF.type.asNode(), listType().asNode() ).hasNext();
+            return node.equals( RDF.nil.asNode() ) || 
+                   eg.asGraph().find( node, RDF.type.asNode(), RDF.List.asNode() ).hasNext();
         }
     };
 
@@ -112,10 +112,11 @@ public class RDFListImpl
     //////////////////////////////////
 
     // vocabulary terms
-    public static Resource listType()  { return RDF.List; }
-    public static Resource listNil()   { return RDF.nil; }
-    public static Property listFirst() { return RDF.first; }
-    public static Property listRest()  { return RDF.rest; }
+    public Resource listType()          { return RDF.List; }
+    public Resource listNil()           { return RDF.nil; }
+    public Property listFirst()         { return RDF.first; }
+    public Property listRest()          { return RDF.rest; }
+    public Class listAbstractionClass() { return RDFList.class; }
     
     
     /**
@@ -202,7 +203,7 @@ public class RDFListImpl
         checkNotNil( "Tried to get the tail of an empty list" );
         
         Resource tail = getProperty( listRest() ).getResource();
-        return (RDFList) tail.as( RDFList.class );
+        return (RDFList) tail.as( listAbstractionClass() );
     }
     
     
@@ -222,7 +223,7 @@ public class RDFListImpl
         
         checkNotNil( "Tried to set the tail of an empty list" );
 
-        return (RDFList) (setTailAux( this, tail, listRest() )).as( RDFList.class );
+        return (RDFList) (setTailAux( this, tail, listRest() )).as( listAbstractionClass() );
     }
     
     
@@ -256,7 +257,7 @@ public class RDFListImpl
         
         // create a new, anonymous typed resource to be the list cell
         // map to a list facet
-        return (RDFList) (newListCell( value, this )).as( RDFList.class );
+        return (RDFList) (newListCell( value, this )).as( listAbstractionClass() );
     }
     
     
@@ -952,7 +953,7 @@ public class RDFListImpl
             }
         }
         else {
-            return (RDFList) l.as( RDFList.class );
+            return (RDFList) l.as( listAbstractionClass() );
         }
     }
     
@@ -993,7 +994,7 @@ public class RDFListImpl
         // finally close the list
         list.addProperty( tail, listNil() );
             
-        return (RDFList) start.as( RDFList.class );
+        return (RDFList) start.as( listAbstractionClass() );
     }
     
     

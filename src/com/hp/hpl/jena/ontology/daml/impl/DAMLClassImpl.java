@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 20:45:58 $
+ * Last modified on   $Date: 2003-06-17 13:47:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.5 2003-06-13 20:45:58 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.6 2003-06-17 13:47:44 ian_dickinson Exp $
  */
 public class DAMLClassImpl
     extends OntClassImpl
@@ -144,6 +144,43 @@ public class DAMLClassImpl
     public PropertyAccessor prop_equivalentTo()                  { return m_common.prop_equivalentTo(); }
     public PropertyAccessor prop_type()                          { return m_common.prop_type(); }
     
+    /**
+     * <p>Answer an iterator over all of the DAML objects that are equivalent to this
+     * class, which will be the union of <code>daml:equivalentTo</code> and
+     * <code>daml:sameClassAs</code>.</p>
+     *
+     * @return an iterator ranging over every equivalent DAML class
+     */
+    public Iterator getEquivalentValues() {
+        ConcatenatedIterator i = new ConcatenatedIterator(
+                       // first the iterator over the equivalentTo values
+                       m_common.getEquivalentValues(),
+                       // followed by the sameClassAs values
+                       getSameClasses() );
+
+        return new UniqueExtendedIterator( i ).mapWith( new AsMapper( DAMLClass.class ) );
+    }
+
+
+    /**
+     * Answer the set of equivalent values to this value, but not including the
+     * value itself.  The iterator will range over a set: each element occurs only
+     * once.
+     *
+     * @return An iteration ranging over the set of values that are equivalent to this
+     *         value, but not itself.
+     */
+    public Iterator getEquivalenceSet() {
+        Set s = new HashSet();
+
+        s.add( this );
+        for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
+        s.remove( this );
+        
+        return s.iterator();
+    }
+
+
 
     /**
      * <p>Property accessor for the <code>daml:subClassOf</code> property of a class. This
@@ -419,43 +456,6 @@ public class DAMLClassImpl
         return WrappedIterator.create( super.listEquivalentClasses() ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
-
-
-    /**
-     * <p>Answer an iterator over all of the DAML objects that are equivalent to this
-     * class, which will be the union of <code>daml:equivalentTo</code> and
-     * <code>daml:sameClassAs</code>.</p>
-     *
-     * @return an iterator ranging over every equivalent DAML class
-     */
-    public Iterator getEquivalentValues() {
-        ConcatenatedIterator i = new ConcatenatedIterator(
-                       // first the iterator over the equivalentTo values
-                       m_common.getEquivalentValues(),
-                       // followed by the sameClassAs values
-                       getSameClasses() );
-
-        return new UniqueExtendedIterator( i ).mapWith( new AsMapper( DAMLClass.class ) );
-    }
-
-
-    /**
-     * Answer the set of equivalent values to this value, but not including the
-     * value itself.  The iterator will range over a set: each element occurs only
-     * once.
-     *
-     * @return An iteration ranging over the set of values that are equivalent to this
-     *         value, but not itself.
-     */
-    public Iterator getEquivalenceSet() {
-        Set s = new HashSet();
-
-        s.add( this );
-        for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
-        s.remove( this );
-        
-        return s.iterator();
-    }
 
 
     /**

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 12:51:29 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-17 13:47:37 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -54,7 +54,6 @@ import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 
@@ -65,7 +64,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.2 2003-06-17 12:51:29 chris-dollin Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.3 2003-06-17 13:47:37 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -704,14 +703,14 @@ public class DAMLTest
         assertEquals( "union should have two values", 2, union.getCount() );
 
         // man should be the first element in the list
-        DAMLCommon val1 = union.getFirst();
+        RDFNode val1 = union.getFirst();
         assertEquals( "Man should be the first element in the list", man, val1 );
 
         // woman should be the other element in the list
         DAMLList tail = union.getRest();
         assertNotNull( "Tail of list should not be null", tail );
 
-        DAMLCommon val2 = tail.getFirst();
+        RDFNode val2 = tail.getFirst();
         assertNotNull( "head of tail should not be null", val2 );
         assertEquals( "Woman should be the first element in the tail of the list", woman, val2 );
 
@@ -1137,25 +1136,6 @@ public class DAMLTest
 
         return count;
     }
-
-    private int countIteration( ResIterator i, boolean doLog, String message ) {
-        int count = 0;
-        try {
-            for (;  i.hasNext();  count++) {
-                Object x = i.nextResource();
-
-                if (doLog) {
-                    Log.finest( "counting iteration, " + message + x );
-                }
-            }
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception: " + e, e );
-        }
-
-        return count;
-    }
-
 
     private int countClasses( DAMLModel m ) {
         return countIteration( m.listDAMLClasses(), false, null );

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-17 13:47:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import java.util.*;
  * information from all loaded ontologies.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.3 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.4 2003-06-17 13:47:43 ian_dickinson Exp $
  */
 public interface DAMLModel
     extends OntModel
@@ -137,13 +137,29 @@ public interface DAMLModel
     public DAMLDatatype createDAMLDatatype( String uri );
     
     /**
-     * <p>Create an (optionally anonymous) DAML list.</p>
+     * <p>Create an empty DAML list.</p>
      *
-     * @param uri The URI for the new list, or null to create
-     *            an anonymous list.
-     * @return A new DAMLList object.
+     * @return A new empty DAMLList.
      */
-    public DAMLList createDAMLList( String uri );
+    public DAMLList createDAMLList();
+
+
+    /**
+     * <p>Create a new DAML list containing the given elements.</p>
+     *
+     * @param elements An iterator over the elements to be added to the list
+     * @return A new empty DAMLList.
+     */
+    public DAMLList createDAMLList( Iterator elements );
+
+
+    /**
+     * <p>Create a new DAML list containing the given elements.</p>
+     *
+     * @param elements An array of RDFNodes that will be the elements of the list
+     * @return A new empty DAMLList.
+     */
+    public DAMLList createDAMLList( RDFNode[] elements );
 
 
     /**

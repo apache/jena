@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-17 13:47:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.5 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.6 2003-06-17 13:47:44 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -213,15 +213,48 @@ public class DAMLModelImpl
         return (DAMLDatatype) createOntResource( DAMLDatatype.class, VocabularyManager.getDefaultVocabulary().Datatype(), uri );
     }
 
+
     /**
-     * <p>Create an (optionally anonymous) DAML list.</p>
+     * <p>Create an empty DAML list.</p>
      *
-     * @param uri The URI for the new list, or null to create
-     *            an anonymous list.
-     * @return A new DAMLList object.
+     * @return A new empty DAMLList.
      */
-    public DAMLList createDAMLList( String uri ) {
-        return (DAMLList) createOntResource( DAMLList.class, getProfile().LIST(), uri );
+    public DAMLList createDAMLList() {
+        return (DAMLList) getResource( DAML_OIL.nil.getURI() ).as( DAMLList.class );
+    }
+
+
+    /**
+     * <p>Create a new DAML list containing the given elements.</p>
+     *
+     * @param elements An iterator over the elements to be added to the list
+     * @return A new empty DAMLList.
+     */
+    public DAMLList createDAMLList( Iterator elements ) {
+        DAMLList l = createDAMLList();
+        if (elements.hasNext()) {
+            // put the first element on the list
+            RDFNode n = (RDFNode) elements.next();
+            l = (DAMLList) l.cons( n );
+            
+            // now add the remaining elements to the end of the list
+            while (elements.hasNext()) {
+                l.add( (RDFNode) elements.next() );
+            }
+        }
+        
+        return l;
+    }
+
+
+    /**
+     * <p>Create a new DAML list containing the given elements.</p>
+     *
+     * @param elements An array of RDFNodes that will be the elements of the list
+     * @return A new empty DAMLList.
+     */
+    public DAMLList createDAMLList( RDFNode[] elements ) {
+        return createDAMLList( Arrays.asList( elements ).iterator() );
     }
 
 

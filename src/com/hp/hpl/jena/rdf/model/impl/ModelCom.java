@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date: 2003-06-16 13:40:13 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.49 $' Date='$Date: 2003-06-17 13:47:43 $'
  */
 
 public class ModelCom 
@@ -737,8 +737,8 @@ implements Model, ModelI, PrefixMapping, ModelLock
      * @return An RDF-encoded list of no elements
      */
     public RDFList createList() {
-        Resource list = getResource( RDFListImpl.listNil().getURI() );
-        list.addProperty( RDF.type, RDFListImpl.listType() );
+        Resource list = getResource( RDF.nil.getURI() );
+        list.addProperty( RDF.type, RDF.List );
         
         return (RDFList) list.as( RDFList.class );
     }
