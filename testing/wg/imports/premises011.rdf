@@ -8,7 +8,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: premises011.rdf,v 1.1 2003-09-11 09:46:58 jeremy_carroll Exp $
+  $Id: premises011.rdf,v 1.2 2003-09-24 09:36:30 jeremy_carroll Exp $
 -->
 <!--
 A Lite version of test <a href="#imports-001">imports-001</a>.
@@ -23,7 +23,7 @@ A Lite version of test <a href="#imports-001">imports-001</a>.
 
     <owl:Ontology rdf:about=''>
         <owl:imports 
-     rdf:resource="http://www.w3.org/2002/03owlt/imports/support001-A"/>
+     rdf:resource="http://www.w3.org/2002/03owlt/imports/support011-A"/>
     </owl:Ontology>
 
     <ont:Man rdf:about='http://example.org/data#Socrates'/>

@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: Manifest003.rdf,v 1.1 2003-09-11 09:47:00 jeremy_carroll Exp $
+  $Id: Manifest003.rdf,v 1.2 2003-09-24 09:36:27 jeremy_carroll Exp $
 -->
 <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
       xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
@@ -23,7 +23,7 @@
 >
 <otest:ConsistencyTest rdf:ID='test'>
    <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
-   <rtest:status>PROPOSED</rtest:status> <otest:size rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Large'/>
+   <rtest:status>APPROVED</rtest:status> <rtest:approval rdf:resource="http://www.w3.org/2003/09/11-webont-irc"/> <otest:size rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Large'/>
    <dc:creator>Ian Horrocks</dc:creator>
    <rtest:issue rdf:resource='http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.2-Language-Compliance-Levels' />
    <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Lite' />

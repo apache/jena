@@ -1,30 +1,107 @@
 <rdf:RDF
     xmlns:j.0="http://purl.org/dc/elements/1.0/"
     xmlns="http://www.w3.org/2002/07/owl#"
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rtest="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:otest="http://www.w3.org/2002/03owlt/testOntology#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <Ontology rdf:about="http://www.w3.org/2002/07/owl"
-     dc:publisher="W3C"
-     dc:date="2003-02-10"
-     dc:format="text/xml"
-     dc:language="en"
-     dc:identifier="http://www.w3.org/2002/07/owl">
-    <versionInfo>March 18. 2003, GS</versionInfo>
+  <Ontology rdf:about="http://www.w3.org/2002/07/owl">
     <imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
-    <dc:title>Classes and properties for the Web Ontology Language OWL</dc:title>
-    <dc:creator>W3C Web Ontology (WebOnt) Working Group</dc:creator>
-    <dc:subject>OWL; Web Ontology Language; Semantic Web</dc:subject>
-    <dc:description>This file specifies in RDF Schema format the
+    <rdfs:seeAlso rdf:resource="http://www.w3.org/2001/sw/WebOnt/"/>
+    <rdfs:seeAlso rdf:resource="http://www.w3.org/TR/owl-features/"/>
+    <rdfs:seeAlso rdf:resource="http://www.w3.org/TR/2003/CR-owl-test-20030818/"/>
+    <rdfs:seeAlso rdf:resource="http://www.w3.org/TR/2003/CR-owl-semantics-20030818/"/>
+    <rdfs:comment>This file specifies in RDF Schema format the
     built-in classes and properties that together form the basis of
-    the RDF/XML syntax of OWL Full, OWL DL and OWL Lite with the help  
-    of RDF Schema. We do not expect people to import this file
-    explcitly into their ontology. People that do import this file
+    the RDF/XML syntax of OWL Full, OWL DL and OWL Lite.
+    We do not expect people to import this file
+    explicitly into their ontology. People that do import this file
     should expect their ontology to be an OWL Full ontology. 
-  </dc:description>
+  </rdfs:comment>
+    <rdfs:comment>$Id: OWLManifest.rdf,v 1.2 2003-09-24 09:36:22 jeremy_carroll Exp $</rdfs:comment>
+    <versionInfo>$Id: OWLManifest.rdf,v 1.2 2003-09-24 09:36:22 jeremy_carroll Exp $</versionInfo>
   </Ontology>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#Ontology"
+     rdfs:label="Ontology">
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#Issue">
+    <rdfs:comment>
+A member of this class is an issue in some issue list.
+  </rdfs:comment>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#OntologyProperty">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#ImportLevelTest">
+    <rdfs:comment>
+These tests use two documents.
+One is named importsNNN.rdf, 
+the other is named mainNNN.rdf.
+These tests indicate the 
+interaction between owl:imports
+and the sublanguage levels of the main document.
+   </rdfs:comment>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#ConsistencyTest">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#NegativeEntailmentTest"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <Restriction>
+        <onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#conclusionDocument"/>
+        <hasValue rdf:resource="http://www.w3.org/2002/03owlt/false"
+           rdf:type="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#RDF-XML-Document"/>
+      </Restriction>
+    </rdfs:subClassOf>
+    <rdfs:comment>
+A consistent OWL document. (One that does not entail falsehood).
+   </rdfs:comment>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#FunctionalProperty"
+     rdfs:label="FunctionalProperty">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#InconsistencyTest">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#PositiveEntailmentTest"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <Restriction>
+        <onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#conclusionDocument"/>
+        <hasValue rdf:resource="http://www.w3.org/2002/03owlt/false"/>
+      </Restriction>
+    </rdfs:subClassOf>
+    <rdfs:comment>
+An inconsistent OWL document. (One that entails falsehood).
+   </rdfs:comment>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#PositiveEntailmentTest">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#PositiveEntailmentTest"/>
+    <rdfs:comment>
+This is a positive entailment test according to the OWL entailment rules.
+   </rdfs:comment>
+    <rdfs:subClassOf>
+      <Restriction>
+        <onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#entailmentRules"/>
+        <hasValue rdf:resource="http://www.w3.org/2002/07/owl#"/>
+      </Restriction>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#Restriction"
+     rdfs:label="Restriction">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#Class"/>
+    </rdfs:subClassOf>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#ObjectProperty"
+     rdfs:label="ObjectProperty">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#NegativeEntailmentTest">
     <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#NegativeEntailmentTest"/>
     <rdfs:comment>
@@ -39,24 +116,13 @@ This is a negative entailment test according to the OWL entailment rules.
   </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"
      rdfs:label="InverseFunctionalProperty">
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#Ontology"
-     rdfs:label="Ontology">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#DeprecatedClass"
      rdfs:label="DeprecatedClass">
-    <rdfs:subClassOf>
-      <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#Class"/>
-    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#Issue">
-    <rdfs:comment>
-A member of this class is an issue in some issue list.
-  </rdfs:comment>
   </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#NotOwlFeatureTest">
     <rdfs:comment>
@@ -77,10 +143,6 @@ DAML+OIL features that are not being carried forward into OWL.
     <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#AnnotationProperty">
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#OWLforOWLTest">
     <rdfs:subClassOf>
       <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#TrueTest"/>
@@ -89,20 +151,12 @@ DAML+OIL features that are not being carried forward into OWL.
 Illustrative of the use of OWL to describe OWL Full.
    </rdfs:comment>
   </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#ImportLevelTest">
-    <rdfs:comment>
-These tests use two documents.
-One is named importsNNN.rdf, 
-the other is named mainNNN.rdf.
-These tests indicate the 
-interaction between owl:imports
-and the sublanguage levels of the main document.
-   </rdfs:comment>
+  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#AnnotationProperty">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#ImportEntailmentTest">
-    <rdfs:subClassOf>
-      <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#PositiveEntailmentTest"/>
-    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/03owlt/testOntology#PositiveEntailmentTest"/>
     <rdfs:comment>
 The premise document, and its imports closure, entails the 
 conclusion document.
@@ -113,28 +167,13 @@ conclusion document.
     <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#ConsistencyTest">
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/03owlt/testOntology#NegativeEntailmentTest"/>
-    <rdfs:subClassOf>
-      <Restriction>
-        <onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#conclusionDocument"/>
-        <hasValue rdf:resource="http://www.w3.org/2002/03owlt/false"
-           rdf:type="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#RDF-XML-Document"/>
-      </Restriction>
-    </rdfs:subClassOf>
-    <rdfs:comment>
-A consistent OWL document. (One that does not entail falsehood).
-   </rdfs:comment>
-  </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#DataRange"
      rdfs:label="DataRange">
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#TransitiveProperty"
      rdfs:label="TransitiveProperty">
-    <rdfs:subClassOf>
-      <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#ObjectProperty"/>
-    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#DatatypeProperty"
@@ -145,37 +184,6 @@ A consistent OWL document. (One that does not entail falsehood).
   <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#AllDifferent"
      rdfs:label="AllDifferent">
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#InconsistencyTest">
-    <rdfs:subClassOf>
-      <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#PositiveEntailmentTest"/>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf>
-      <Restriction>
-        <onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#conclusionDocument"/>
-        <hasValue rdf:resource="http://www.w3.org/2002/03owlt/false"/>
-      </Restriction>
-    </rdfs:subClassOf>
-    <rdfs:comment>
-An inconsistent OWL document. (One that entails falsehood).
-   </rdfs:comment>
-  </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#FunctionalProperty"
-     rdfs:label="FunctionalProperty">
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#PositiveEntailmentTest">
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#PositiveEntailmentTest"/>
-    <rdfs:comment>
-This is a positive entailment test according to the OWL entailment rules.
-   </rdfs:comment>
-    <rdfs:subClassOf>
-      <Restriction>
-        <onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#entailmentRules"/>
-        <hasValue rdf:resource="http://www.w3.org/2002/07/owl#"/>
-      </Restriction>
-    </rdfs:subClassOf>
   </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/03owlt/testOntology#TrueTest">
     <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/03owlt/testOntology#PositiveEntailmentTest"/>
@@ -189,16 +197,6 @@ The conclusions follow from the empty premises.
            rdf:type="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#RDF-XML-Document"/>
       </Restriction>
     </rdfs:subClassOf>
-  </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#ObjectProperty"
-     rdfs:label="ObjectProperty">
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdfs:Class>
-  <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#Restriction"
-     rdfs:label="Restriction">
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdfs:Class>
   <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#SymmetricProperty"
      rdfs:label="SymmetricProperty">
@@ -233,13 +231,22 @@ test files in the subject test.</rdfs:comment>
     <rdfs:comment>The subject test is valid only when
 the object datatype is included in the datatype theory.</rdfs:comment>
   </ObjectProperty>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#sameIndividualAs"
-     rdfs:label="sameIndividualAs">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-    <rdfs:subPropertyOf>
-      <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#sameAs"/>
-    </rdfs:subPropertyOf>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#inverseOf"
+     rdfs:label="inverseOf">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#versionInfo"
+     rdfs:label="versionInfo"
+     rdf:type="http://www.w3.org/2002/07/owl#AnnotationProperty">
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#priorVersion"
+     rdfs:label="priorVersion"
+     rdf:type="http://www.w3.org/2002/07/owl#OntologyProperty">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
   <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#unionOf"
@@ -248,16 +255,16 @@ the object datatype is included in the datatype theory.</rdfs:comment>
     <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#priorVersion"
-     rdfs:label="priorVersion">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
   <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#differentFrom"
      rdfs:label="differentFrom">
     <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
     <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#maxCardinality"
+     rdfs:label="maxCardinality">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
   <rdf:Property rdf:about="http://www.w3.org/2002/03owlt/testOntology#feature">
@@ -272,21 +279,47 @@ The language feature is usually indicated by a class or property.
     <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#oneOf"
+     rdfs:label="oneOf">
+    <rdfs:domain rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
   <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#disjointWith"
      rdfs:label="disjointWith">
     <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
     <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#incompatibleWith"
-     rdfs:label="incompatibleWith">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#someValuesFrom"
+     rdfs:label="someValuesFrom">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#intersectionOf"
+     rdfs:label="intersectionOf">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
   <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#equivalentProperty"
      rdfs:label="equivalentProperty">
     <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#subPropertyOf"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#incompatibleWith"
+     rdfs:label="incompatibleWith"
+     rdf:type="http://www.w3.org/2002/07/owl#OntologyProperty">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#backwardCompatibleWith"
+     rdfs:label="backwardCompatibleWitesh"
+     rdf:type="http://www.w3.org/2002/07/owl#OntologyProperty">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
   <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#complementOf"
@@ -301,17 +334,35 @@ The language feature is usually indicated by a class or property.
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#sameAs"
+     rdfs:label="sameAs">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#hasValue"
+     rdfs:label="hasValue">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#cardinality"
+     rdfs:label="cardinality">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#imports"
+     rdfs:label="imports"
+     rdf:type="http://www.w3.org/2002/07/owl#OntologyProperty">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
+  </rdf:Property>
   <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#equivalentClass"
      rdfs:label="equivalentClass">
     <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
     <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
     <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#imports"
-     rdfs:label="imports">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
   <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#allValuesFrom"
@@ -324,63 +375,6 @@ The language feature is usually indicated by a class or property.
      rdfs:label="onProperty">
     <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
     <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#inverseOf"
-     rdfs:label="inverseOf">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#versionInfo"
-     rdfs:label="versionInfo"
-     rdf:type="http://www.w3.org/2002/07/owl#AnnotationProperty">
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#maxCardinality"
-     rdfs:label="maxCardinality">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#oneOf"
-     rdfs:label="oneOf">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#intersectionOf"
-     rdfs:label="intersectionOf">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#someValuesFrom"
-     rdfs:label="someValuesFrom">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#backwardCompatibleWith"
-     rdfs:label="backwardCompatibleWith">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#sameAs"
-     rdfs:label="sameAs">
-    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#sameIndividualAs"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#hasValue"
-     rdfs:label="hasValue">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
-    <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
-  </rdf:Property>
-  <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#cardinality"
-     rdfs:label="cardinality">
-    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2002/07/owl"/>
   </rdf:Property>
   <DatatypeProperty rdf:about="http://www.w3.org/2002/03owlt/testOntology#issueNumber">
@@ -404,6 +398,9 @@ associated with an issue.
 Indicates the conformance level of a document or test in the OWL test suite.
     </rdfs:comment>
   </FunctionalProperty>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Ontology/conclusions004">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent105">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
@@ -541,6 +538,9 @@ then an OWL individual has at most one value for prop.</rtest:description>
       </rtest:RDF-XML-Document>
     </rtest:conclusionDocument>
   </otest:PositiveEntailmentTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.24/premises002">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/oneOf/Manifest003#test"
      rtest:status="APPROVED">
     <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
@@ -561,9 +561,6 @@ construct is unimportant.</rtest:description>
       </rtest:RDF-XML-Document>
     </rtest:conclusionDocument>
   </otest:PositiveEntailmentTest>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.24/premises002">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
-  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/miscellaneous/consistent205">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -615,6 +612,9 @@ The concept should be coherent but has no finite model
       </rtest:RDF-XML-Document>
     </rtest:inputDocument>
   </otest:ConsistencyTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/backwardCompatibleWith/consistent002">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/cardinality/premises002">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -644,6 +644,26 @@ The concept should be coherent but has no finite model
       </rtest:RDF-XML-Document>
     </rtest:conclusionDocument>
   </otest:PositiveEntailmentTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.8/consistent016">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
+  <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/I5.8/Manifest014#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.8-Datatypes"
+       rdf:type="http://www.w3.org/2002/03owlt/testOntology#Issue"
+       otest:issueNumber="5.8"
+       rdfs:label="Datatypes"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <otest:usedDatatype rdf:resource="http://example.org/user/data#type"/>
+    <rtest:description rdf:parseType="Literal">
+This test illustrates the use of an undeclared user defined datatype. The document is hence in Full.</rtest:description>
+    <rtest:inputDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.8/consistent014">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+      </rtest:RDF-XML-Document>
+    </rtest:inputDocument>
+  </otest:ConsistencyTest>
   <otest:Issue rdf:about="http://www.w3.org/2001/sw/WebOnt/webont-issues#I2.3-Adding-Properties-to-Other-Classes"
      otest:issueNumber="2.3">
     <rdfs:label>Adding Properties to Other Classes</rdfs:label>
@@ -653,6 +673,9 @@ The concept should be coherent but has no finite model
   </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/consistent503">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.2/consistent011">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/differentFrom/Manifest001#test"
      rtest:status="APPROVED">
@@ -674,9 +697,6 @@ The concept should be coherent but has no finite model
       </rtest:RDF-XML-Document>
     </rtest:conclusionDocument>
   </otest:PositiveEntailmentTest>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.2/consistent011">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
-  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.8/premises009">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -738,6 +758,9 @@ this property may or may not be imported into the test.</rdfs:comment>
   </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent033">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/conclusions001">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
   <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest024#test"
      rtest:status="APPROVED">
@@ -909,6 +932,20 @@ The inverse entailment also holds.</rtest:description>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent011">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
+  <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/imports/Manifest012#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#imports"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+A simple test for infinite loops in imports processing code.</rtest:description>
+    <rtest:inputDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/imports/consistent012">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:inputDocument>
+  </otest:ConsistencyTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/premises207">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
@@ -937,8 +974,8 @@ stateCode example using an inverseFunctionalProperty and literals</rtest:descrip
     </rtest:conclusionDocument>
   </otest:PositiveEntailmentTest>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/cardinality/Manifest005#test"
-     rtest:status="OBSOLETED">
-    <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
+     rtest:status="PROPOSED">
+    <rdfs:seeAlso rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
     <rdfs:seeAlso rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003May/0017"/>
     <j.0:creator>Jeremy J. Carroll</j.0:creator>
     <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#cardinality"/>
@@ -1021,10 +1058,7 @@ DL Test: t2.1
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
     <rtest:approval rdf:resource="http://www.w3.org/2003/09/11-webont-irc"/>
     <j.0:creator>Jeremy J. Carroll</j.0:creator>
-    <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.8-Datatypes"
-       rdf:type="http://www.w3.org/2002/03owlt/testOntology#Issue"
-       otest:issueNumber="5.8"
-       rdfs:label="Datatypes"/>
+    <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.8-Datatypes"/>
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
     <otest:supportedDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#byte"/>
     <otest:supportedDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#short"/>
@@ -1143,6 +1177,24 @@ and OWL Full.</rtest:description>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/sameClassAs/conclusions003">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Class/Manifest002#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+In OWL Full, the triple in the premises is synonymous with the triple in the conclusions.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/premises002">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/conclusions002">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:conclusionDocument>
+  </otest:PositiveEntailmentTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/InverseFunctionalProperty/premises004">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
@@ -1307,6 +1359,9 @@ DatatypeProperty's may be used to related typed literals to typed literals, in O
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.3/consistent005">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.24/premises004">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+  </rtest:RDF-XML-Document>
   <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest908#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -1327,9 +1382,6 @@ N times M times infinity is 5 times infinity.</rtest:description>
   </otest:ConsistencyTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/inverseOf/conclusions001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
-  </rtest:RDF-XML-Document>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.24/premises004">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/cardinality/conclusions001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
@@ -1398,11 +1450,11 @@ Tests role restrictions</rtest:description>
       </rtest:RDF-XML-Document>
     </rtest:inputDocument>
   </otest:InconsistencyTest>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.26/consistent001">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
-  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/premises208">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.26/consistent001">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
   <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/Restriction/Manifest004#test"
      rtest:status="APPROVED">
@@ -1524,6 +1576,16 @@ has a single value) and so it is an <code xmlns="http://www.w3.org/1999/xhtml">o
       </rtest:RDF-XML-Document>
     </rtest:conclusionDocument>
   </otest:PositiveEntailmentTest>
+  <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/backwardCompatibleWith/Manifest002#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#backwardCompatibleWith"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+In OWL Lite and DL the subject and object of a triple with predicate <code xmlns="http://www.w3.org/1999/xhtml">owl:backwardCompatibleWith</code>
+must both be explicitly typed as <code xmlns="http://www.w3.org/1999/xhtml">owl:Ontology</code>.</rtest:description>
+    <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/backwardCompatibleWith/consistent002"/>
+  </otest:ConsistencyTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/equivalentClass/conclusions001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -1595,6 +1657,22 @@ Dynamic blocking example
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/sameClassAs/conclusions004">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
+  <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/I5.8/Manifest013#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.8-Datatypes"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <otest:usedDatatype rdf:resource="http://example.org/user/data#type"/>
+    <rtest:description rdf:parseType="Literal">
+This test illustrates the use of a user defined datatype.
+The informal description has no formal semantics.</rtest:description>
+    <rtest:inputDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.8/consistent013">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:inputDocument>
+  </otest:ConsistencyTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/someValuesFrom/premises001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -1607,6 +1685,9 @@ Dynamic blocking example
   </otest:Issue>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent035">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/conclusions003">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
   <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/miscellaneous/Manifest303#test"
      rtest:status="APPROVED">
@@ -2030,6 +2111,16 @@ Two classes with the same complete description are equivalent.</rtest:descriptio
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.24/conclusions003">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
+  <otest:OWLforOWLTest rdf:about="http://www.w3.org/2002/03owlt/Class/Manifest001#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+In OWL Full every rdfs:Class is an owl:Class, in particular
+rdfs:Class is an owl:Class.</rtest:description>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/Class/conclusions001"/>
+  </otest:OWLforOWLTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/consistent006">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
@@ -2299,12 +2390,42 @@ same individual.</rtest:description>
   <otest:Issue rdf:about="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.25-Justifications"
      otest:issueNumber="5.25"
      rdfs:label="Justifications"/>
+  <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/backwardCompatibleWith/Manifest001#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#backwardCompatibleWith"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+An example of use.</rtest:description>
+    <rtest:inputDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/backwardCompatibleWith/consistent001">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:inputDocument>
+  </otest:ConsistencyTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/consistent018">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/miscellaneous/consistent103">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Ontology/Manifest004#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+This is a variation of <a xmlns="http://www.w3.org/1999/xhtml" href="#equivalentClass-001">equivalentClass-001</a>,
+showing the use of two <code xmlns="http://www.w3.org/1999/xhtml">owl:Ontology</code> triples in the premises.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Ontology/premises004">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/Ontology/conclusions004"/>
+  </otest:PositiveEntailmentTest>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/I4.6/Manifest001#test"
      rtest:status="OBSOLETED">
     <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
@@ -2455,6 +2576,9 @@ DL Test: t7.2
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.26/consistent004">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Restriction/inconsistent002">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest022#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -2469,9 +2593,6 @@ There are 42,525 possible partitions in the satisfiable case
   </rtest:description>
     <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/description-logic/inconsistent022"/>
   </otest:InconsistencyTest>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Restriction/inconsistent002">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
-  </rtest:RDF-XML-Document>
   <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/miscellaneous/Manifest002#test"
      rtest:status="APPROVED">
     <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
@@ -2965,10 +3086,10 @@ using <code xmlns="http://www.w3.org/1999/xhtml">distinctMembers</code> to deriv
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/extra-credit/premises004">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Thing/inconsistent002">
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent641">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent641">
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Thing/inconsistent002">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
   <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/I5.2/Manifest011#test"
@@ -2985,6 +3106,9 @@ The informal semantics indicated by comments concerning user defined classes
   </otest:ConsistencyTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/miscellaneous/premises301">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Ontology/nonconclusions003">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
   <otest:Issue rdf:about="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.23-hasValue-in-owl"
      otest:issueNumber="5.23"
@@ -3148,6 +3272,21 @@ The blank nodes in a class description in OWL DL may not form a directed cycle.<
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/FunctionalProperty/conclusions001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
+  <otest:NegativeEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Ontology/Manifest003#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+This is a variation of <a xmlns="http://www.w3.org/1999/xhtml" href="#equivalentClass-001">equivalentClass-001</a>,
+showing the use of <code xmlns="http://www.w3.org/1999/xhtml">owl:Ontology</code> triple only in the conclusions.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Ontology/premises003">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/Ontology/nonconclusions003"/>
+  </otest:NegativeEntailmentTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/equivalentClass/premises001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -3179,6 +3318,9 @@ An OWL Lite version of <a xmlns="http://www.w3.org/1999/xhtml" href="#I5.3-007">
   </otest:ConsistencyTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/cardinality/conclusions006">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/SymmetricProperty/conclusions002">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/consistent634">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
@@ -3254,19 +3396,19 @@ DL Test: t7.1
 <code xmlns="http://www.w3.org/1999/xhtml">owl:sameClassAs</code> is not an OWL property.</rtest:description>
     <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/I4.6/bad007"/>
   </otest:NotOwlFeatureTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/equivalentClass/conclusions006">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/conclusions665">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/equivalentClass/conclusions006">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent642">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
   <otest:Issue rdf:about="http://www.w3.org/2001/sw/WebOnt/webont-issues#I2.6-Ordered-Property-Values"
      otest:issueNumber="2.6">
     <rdfs:label>Ordered Property Values</rdfs:label>
   </otest:Issue>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent642">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
-  </rtest:RDF-XML-Document>
   <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest021#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -3501,6 +3643,9 @@ DL Test: t10.5
       </rtest:RDF-XML-Document>
     </rtest:inputDocument>
   </otest:InconsistencyTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/equivalentClass/premises002">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+  </rtest:RDF-XML-Document>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest108#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -3516,9 +3661,6 @@ Tbox tests from <a xmlns="http://www.w3.org/1999/xhtml" href="#ref-Heinsohn_et_a
 Tests incoherency caused by number restrictions and role hierarchy</rtest:description>
     <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/description-logic/inconsistent108"/>
   </otest:InconsistencyTest>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/equivalentClass/premises002">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
-  </rtest:RDF-XML-Document>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/I5.8/Manifest003#test"
      rtest:status="PROPOSED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -3536,6 +3678,9 @@ that are also <code xmlns="http://www.w3.org/1999/xhtml">xsd:unsignedInt</code>.
       </rtest:RDF-XML-Document>
     </rtest:inputDocument>
   </otest:InconsistencyTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/SymmetricProperty/conclusions003">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+  </rtest:RDF-XML-Document>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/equivalentProperty/Manifest004#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -3749,6 +3894,25 @@ which is connected but without a Hamiltonian path.</rtest:description>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/imports/premises001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/TransitiveProperty/Manifest002#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+Test illustrating extensional semantics of <code xmlns="http://www.w3.org/1999/xhtml">owl:TransitiveProperty</code>.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/TransitiveProperty/premises002">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/TransitiveProperty/conclusions002">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:conclusionDocument>
+  </otest:PositiveEntailmentTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent632">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -3831,6 +3995,9 @@ Disjoint classes have different members.</rtest:description>
 This test shows the syntax for using the same restriction twice in OWL Lite. </rtest:description>
     <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/Restriction/inconsistent001"/>
   </otest:InconsistencyTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/nonconclusions004">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest035#test"
      rtest:status="APPROVED">
     <rtest:approval rdf:resource="http://www.w3.org/2003/09/11-webont-irc"/>
@@ -3953,6 +4120,25 @@ then this may be within OWL DL.</rtest:description>
       </rtest:RDF-XML-Document>
     </rtest:inputDocument>
   </otest:ConsistencyTest>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Ontology/Manifest002#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <rtest:description rdf:parseType="Literal">
+This is a variation of <a xmlns="http://www.w3.org/1999/xhtml" href="#equivalentClass-001">equivalentClass-001</a>,
+showing the use of <code xmlns="http://www.w3.org/1999/xhtml">owl:Ontology</code> triple only in the conclusions.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Ontology/premises002">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Ontology/conclusions002">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:conclusionDocument>
+  </otest:PositiveEntailmentTest>
   <otest:ImportLevelTest rdf:about="http://www.w3.org/2002/03owlt/imports/Manifest008#test"
      rtest:status="APPROVED">
     <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
@@ -4262,6 +4448,9 @@ ABox test from DL98 systems comparison.
     </rtest:premiseDocument>
     <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/description-logic/conclusions664"/>
   </otest:PositiveEntailmentTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Ontology/premises001">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+  </rtest:RDF-XML-Document>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest612#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -4566,6 +4755,21 @@ The triple asserts something of type <code xmlns="http://www.w3.org/1999/xhtml">
 that is the empty class.</rtest:description>
     <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/Nothing/inconsistent001"/>
   </otest:InconsistencyTest>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/SymmetricProperty/Manifest003#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jos De Roo</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+A Lite version of test <a xmlns="http://www.w3.org/1999/xhtml" href="#SymmetricProperty-001">001</a>.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/SymmetricProperty/premises003">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/SymmetricProperty/conclusions003"/>
+  </otest:PositiveEntailmentTest>
   <otest:Issue rdf:about="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.21-drop-disjointUnionOf"
      otest:issueNumber="5.21"
      rdfs:label="drop-disjointUnionOf"/>
@@ -4714,6 +4918,9 @@ Disjoint classes have different members.</rtest:description>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/miscellaneous/inconsistent204">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/premises003">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.8/nonconclusions007">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -4806,6 +5013,22 @@ for DisjointClasses.</rtest:description>
       </rtest:RDF-XML-Document>
     </rtest:inputDocument>
   </otest:ConsistencyTest>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Ontology/Manifest001#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+This is a variation of <a xmlns="http://www.w3.org/1999/xhtml" href="#equivalentClass-001">equivalentClass-001</a>,
+showing the use of <code xmlns="http://www.w3.org/1999/xhtml">owl:Ontology</code> triples in the premises and conclusions.</rtest:description>
+    <rtest:premiseDocument rdf:resource="http://www.w3.org/2002/03owlt/Ontology/premises001"/>
+    <rtest:conclusionDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Ontology/conclusions001">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:conclusionDocument>
+  </otest:PositiveEntailmentTest>
   <otest:ImportLevelTest rdf:about="http://www.w3.org/2002/03owlt/imports/Manifest007#test"
      rtest:status="APPROVED">
     <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
@@ -4903,6 +5126,16 @@ The concept should be incoherent but needs double blocking
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/conclusions208">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
+  <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/I5.8/Manifest016#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.8-Datatypes"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <otest:usedDatatype rdf:resource="http://example.org/user/data#type"/>
+    <rtest:description rdf:parseType="Literal">
+This test illustrates the use of an undeclared user defined datatype. The document is hence in Full.</rtest:description>
+    <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/I5.8/consistent016"/>
+  </otest:ConsistencyTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/equivalentProperty/premises002">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -4936,6 +5169,9 @@ Tests incoherency caused by disjoint concept
 A class like <code xmlns="http://www.w3.org/1999/xhtml">owl:Nothing</code> can be defined using OWL Lite restrictions.</rtest:description>
     <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/I5.2/consistent001"/>
   </otest:ConsistencyTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/premises004">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest026#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -5281,6 +5517,22 @@ DL Test: t10.3
   </rtest:description>
     <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/description-logic/inconsistent011"/>
   </otest:InconsistencyTest>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/SymmetricProperty/Manifest002#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <j.0:creator>Jos De Roo</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+Test illustrating extensional semantics of <code xmlns="http://www.w3.org/1999/xhtml">owl:SymmetricProperty</code>.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/SymmetricProperty/premises002">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/SymmetricProperty/conclusions002"/>
+  </otest:PositiveEntailmentTest>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/Thing/Manifest002#test"
      rtest:status="PROPOSED">
     <j.0:creator>Jeremy J. Carroll</j.0:creator>
@@ -5354,6 +5606,16 @@ Prime factorization can be expressed in OWL Full.</rtest:description>
     <rtest:premiseDocument rdf:resource="http://www.w3.org/2002/03owlt/extra-credit/premises003"/>
     <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/extra-credit/conclusions003"/>
   </otest:PositiveEntailmentTest>
+  <otest:NegativeEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Class/Manifest004#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+Annotations about owl:Class are not related to those about rdfs:Class.</rtest:description>
+    <rtest:premiseDocument rdf:resource="http://www.w3.org/2002/03owlt/Class/premises004"/>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/Class/nonconclusions004"/>
+  </otest:NegativeEntailmentTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/miscellaneous/consistent202">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -5410,13 +5672,13 @@ This entailment can be replicated for any three natural numbers
     </rtest:premiseDocument>
     <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/description-logic/conclusions903"/>
   </otest:PositiveEntailmentTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent603">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+  </rtest:RDF-XML-Document>
   <otest:Issue rdf:about="http://www.w3.org/2001/sw/WebOnt/webont-issues#I6.2-CompoundKeys"
      otest:issueNumber="6.2">
     <rdfs:label>Compound Keys</rdfs:label>
   </otest:Issue>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent603">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
-  </rtest:RDF-XML-Document>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest033#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -5595,6 +5857,22 @@ The concept should be coherent but has no finite model
     <rtest:premiseDocument rdf:resource="http://www.w3.org/2002/03owlt/I4.6/premises004"/>
     <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/I4.6/nonconclusions004"/>
   </otest:NegativeEntailmentTest>
+  <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/I5.8/Manifest015#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.8-Datatypes"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <otest:usedDatatype rdf:resource="http://example.org/user/data#type"/>
+    <rtest:description rdf:parseType="Literal">
+This test illustrates the use of a user defined datatype.
+The informal description has no formal semantics.</rtest:description>
+    <rtest:inputDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.8/consistent015">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:inputDocument>
+  </otest:ConsistencyTest>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/differentFrom/Manifest002#test"
      rtest:status="APPROVED">
     <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
@@ -5812,6 +6090,10 @@ De Morgan's law.</rtest:description>
     </rtest:premiseDocument>
     <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/sameClassAs/conclusions007"/>
   </otest:PositiveEntailmentTest>
+  <otest:Issue rdf:about="http://www.w3.org/2001/sw/WebOnt/webont-issues#I4.7-Built-in-model-checking-functionality"
+     otest:issueNumber="4.7">
+    <rdfs:label>Does OWL provide built in 'model checking' functionality</rdfs:label>
+  </otest:Issue>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest010#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -5825,10 +6107,6 @@ DL Test: t10.2
   </rtest:description>
     <rtest:inputDocument rdf:resource="http://www.w3.org/2002/03owlt/description-logic/inconsistent010"/>
   </otest:InconsistencyTest>
-  <otest:Issue rdf:about="http://www.w3.org/2001/sw/WebOnt/webont-issues#I4.7-Built-in-model-checking-functionality"
-     otest:issueNumber="4.7">
-    <rdfs:label>Does OWL provide built in 'model checking' functionality</rdfs:label>
-  </otest:Issue>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/SymmetricProperty/Manifest001#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -5894,6 +6172,16 @@ and OWL Full.</rtest:description>
         <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
       </rtest:RDF-XML-Document>
     </rtest:conclusionDocument>
+  </otest:PositiveEntailmentTest>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Class/Manifest003#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+In OWL Full, the triple in the premises is synonymous with the triple in the conclusions.</rtest:description>
+    <rtest:premiseDocument rdf:resource="http://www.w3.org/2002/03owlt/Class/premises003"/>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/Class/conclusions003"/>
   </otest:PositiveEntailmentTest>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest017#test"
      rtest:status="APPROVED">
