@@ -3,7 +3,7 @@
 <HTML>
   <HEAD>
     <TITLE>Jena I/O Mini HowTo</TITLE>
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../javadoc/stylesheet.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../javadoc/stylesheet.css" TITLE="Style">
   </HEAD>
   <BODY>
   <h1>Jena I/O Mini HowTo</h1>
@@ -14,7 +14,6 @@ from Jena1 to Jena2. The bulk of the document is aimed
 at users wishing to use advanced features within the I/O
 subsystem.
 </p>
-<p>The N3 subsystem is not explored in detail.</p>
 <h2>Contents</h2>
 <ul>
 <li><a href="#rush">1. Rush Guide - Jena1 Migration (Must Read)</a>
@@ -23,7 +22,7 @@ subsystem.
 </li>
 <li><a href="#n3">1.2 N3</a>
 </li>
-<li><a href="#ntriple">1.2 N-TRIPLE</a>
+<li><a href="#ntriple">1.3 N-TRIPLE</a>
 </li>
 </ul>
 <li><a href="#encoding">2. Character Encoding in Java and XML</a></li>
@@ -43,14 +42,14 @@ Jena1 used Reader's and Writer's.</p>
 <p>
 The main I/O methods to use in Jena
  are found on the
-<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A>
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A>
 interface. These are:
 </p>
 <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.InputStream, java.lang.String)">read</A></B>(java.io.InputStream&nbsp;in,
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.InputStream, java.lang.String)">read</A></B>(java.io.InputStream&nbsp;in,
      java.lang.String&nbsp;base)</CODE>
 
 <BR>
@@ -58,8 +57,8 @@ interface. These are:
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.InputStream, java.lang.String, java.lang.String)">read</A></B>(java.io.InputStream&nbsp;in,
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.InputStream, java.lang.String, java.lang.String)">read</A></B>(java.io.InputStream&nbsp;in,
      java.lang.String&nbsp;base,
      java.lang.String&nbsp;lang)</CODE>
 
@@ -68,16 +67,16 @@ interface. These are:
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.lang.String)">read</A></B>(java.lang.String&nbsp;url)</CODE>
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.lang.String)">read</A></B>(java.lang.String&nbsp;url)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add the RDF statements from an XML document.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.OutputStream)">write</A></B>(java.io.OutputStream&nbsp;out)</CODE>
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.OutputStream)">write</A></B>(java.io.OutputStream&nbsp;out)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Write the model as an XML document.</TD>
@@ -85,8 +84,8 @@ interface. These are:
 
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.OutputStream, java.lang.String)">write</A></B>(java.io.OutputStream&nbsp;out,
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.OutputStream, java.lang.String)">write</A></B>(java.io.OutputStream&nbsp;out,
       java.lang.String&nbsp;lang)</CODE>
 
 <BR>
@@ -94,8 +93,8 @@ interface. These are:
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.OutputStream, java.lang.String, java.lang.String)">write</A></B>(java.io.OutputStream&nbsp;out,
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.OutputStream, java.lang.String, java.lang.String)">write</A></B>(java.io.OutputStream&nbsp;out,
       java.lang.String&nbsp;lang,
       java.lang.String&nbsp;base)</CODE>
 
@@ -141,10 +140,10 @@ if the
 calls are being abused,
 and issues
 <CODE><B>
-<A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#ERR_ENCODING_MISMATCH">ERR_ENCODING_MISMATCH</A></B></CODE>
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#ERR_ENCODING_MISMATCH">ERR_ENCODING_MISMATCH</A></B></CODE>
 and
 <CODE><B>
-<A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#WARN_ENCODING_MISMATCH">WARN_ENCODING_MISMATCH</A></B></CODE>
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#WARN_ENCODING_MISMATCH">WARN_ENCODING_MISMATCH</A></B></CODE>
 errors. A naive Jena1 to Jena2 port will almost certainly
 result in such errors.
 This reflects code that had bugs in Jena1, which would
@@ -333,8 +332,8 @@ correctly control the encoding.
 <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.Reader, java.lang.String)">read</A></B>(java.io.Reader&nbsp;reader,
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.Reader, java.lang.String)">read</A></B>(java.io.Reader&nbsp;reader,
      java.lang.String&nbsp;base)</CODE>
 
 <BR>
@@ -342,8 +341,8 @@ correctly control the encoding.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.Reader, java.lang.String, java.lang.String)">read</A></B>(java.io.Reader&nbsp;reader,
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.Reader, java.lang.String, java.lang.String)">read</A></B>(java.io.Reader&nbsp;reader,
      java.lang.String&nbsp;base,
      java.lang.String&nbsp;lang)</CODE>
 
@@ -353,16 +352,16 @@ correctly control the encoding.
 
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.Writer)">write</A></B>(java.io.Writer&nbsp;writer)</CODE>
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.Writer)">write</A></B>(java.io.Writer&nbsp;writer)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Caution! Write the model as an XML document.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.Writer, java.lang.String)">write</A></B>(java.io.Writer&nbsp;writer,
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.Writer, java.lang.String)">write</A></B>(java.io.Writer&nbsp;writer,
       java.lang.String&nbsp;lang)</CODE>
 
 <BR>
@@ -370,8 +369,8 @@ correctly control the encoding.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.Writer, java.lang.String, java.lang.String)">write</A></B>(java.io.Writer&nbsp;writer,
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.Writer, java.lang.String, java.lang.String)">write</A></B>(java.io.Writer&nbsp;writer,
       java.lang.String&nbsp;lang,
       java.lang.String&nbsp;base)</CODE>
 
@@ -421,32 +420,32 @@ simpler interface above.
 </p><TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html">RDFReader</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReaderF.html#getReader()">getReader</A></B>()</CODE>
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html">RDFReader</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReaderF.html#getReader()">getReader</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return an RDFReader instance for the default serialization language.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html">RDFReader</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReaderF.html#getReader(java.lang.String)">getReader</A></B>(java.lang.String&nbsp;lang)</CODE>
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html">RDFReader</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReaderF.html#getReader(java.lang.String)">getReader</A></B>(java.lang.String&nbsp;lang)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return an RDFReader instance for the specified serialization language.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriter.html">RDFWriter</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter()">getWriter</A></B>()</CODE>
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFWriter.html">RDFWriter</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter()">getWriter</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return an RDFWriter instance for the default serialization language.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriter.html">RDFWriter</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter(java.lang.String)">getWriter</A></B>(java.lang.String&nbsp;lang)</CODE>
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFWriter.html">RDFWriter</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter(java.lang.String)">getWriter</A></B>(java.lang.String&nbsp;lang)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;an RDFWriter instance for the specified serialization language.</TD>
@@ -457,16 +456,16 @@ Each of these calls returns an RDFReader or RDFWriter that can
 be used to read or write any Model (not just the one
 which created it).
 As well as the necessary
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#read(com.hp.hpl.jena.rdf.model.Model, java.io.InputStream, java.lang.String)">read</A></B></CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#read(com.hp.hpl.jena.rdf.model.Model, java.io.InputStream, java.lang.String)">read</A></B></CODE>
 and
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriter.html#write(com.hp.hpl.jena.rdf.model.Model, java.io.OutputStream, java.lang.String)">write</A></B></CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFWriter.html#write(com.hp.hpl.jena.rdf.model.Model, java.io.OutputStream, java.lang.String)">write</A></B></CODE>
 methods, these interfaces provide:
 
 <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFErrorHandler.html">RDFErrorHandler</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#setErrorHandler(com.hp.hpl.jena.rdf.model.RDFErrorHandler)">setErrorHandler</A></B>(<A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFErrorHandler.html">RDFErrorHandler</A>&nbsp;errHandler)</CODE>
+<CODE>&nbsp;<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFErrorHandler.html">RDFErrorHandler</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#setErrorHandler(com.hp.hpl.jena.rdf.model.RDFErrorHandler)">setErrorHandler</A></B>(<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFErrorHandler.html">RDFErrorHandler</A>&nbsp;errHandler)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set an error handler for the reader</TD>
@@ -474,7 +473,7 @@ methods, these interfaces provide:
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;java.lang.Object</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(java.lang.String&nbsp;propName,
+<TD><CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(java.lang.String&nbsp;propName,
             java.lang.Object&nbsp;propValue)</CODE>
 
 <BR>
@@ -527,9 +526,9 @@ For RDF/XML and RDF/XML-ABBREV there are many options
 in both the RDFReader and the RDFWriter.
 These options are detailed in the javadoc for
 
-<CODE><B>JenaReader.<A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/JenaReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
+<CODE><B>JenaReader.<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/JenaReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
 and
-<CODE><B>RDFXMLWriterI.<A HREF="../../javadoc/com/hp/hpl/jena/xmloutput/RDFXMLWriterI.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
+<CODE><B>RDFXMLWriterI.<A HREF="../javadoc/com/hp/hpl/jena/xmloutput/RDFXMLWriterI.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
 , and they are also given below.
 </p>
 <h2><a name="input">5. Advanced RDF/XML Input</a></h2>
@@ -537,10 +536,10 @@ and
 For access to these advanced features, first
 get an RDFReader object that is an instance of
 an ARP parser, by using the
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReaderF.html#getReader()">getReader</A></B>()</CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReaderF.html#getReader()">getReader</A></B>()</CODE>
 method on any Model.
 It is then configured using the
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/JenaReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/JenaReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
 method.
 This
 changes the properties for parsing RDF/XML.
@@ -556,7 +555,7 @@ However, changing the features and properties of the XML parser
 <p>
  This method is not tested in the standard Jena test suite.
 </p>
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/JenaReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/JenaReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
  can be used to set and get:
  <dl>
  <dt>
@@ -616,10 +615,10 @@ An ARP property is
  <tr BGCOLOR="white" CLASS="TableRowColor">
  <td><CODE>error-mode</CODE></td>
  <td>
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setDefaultErrorMode()"><CODE>ARP.setDefaultErrorMode()</CODE></A><br>
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setLaxErrorMode()"><CODE>ARP.setLaxErrorMode()</CODE></A><br>
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setStrictErrorMode()"><CODE>ARP.setStrictErrorMode()</CODE></A><br>
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setStrictErrorMode(int)"><CODE>ARP.setStrictErrorMode(int)</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setDefaultErrorMode()"><CODE>ARP.setDefaultErrorMode()</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setLaxErrorMode()"><CODE>ARP.setLaxErrorMode()</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setStrictErrorMode()"><CODE>ARP.setStrictErrorMode()</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setStrictErrorMode(int)"><CODE>ARP.setStrictErrorMode(int)</CODE></A><br>
 This allows a coarse-grained approach to control of error handling.
 Setting this property is equivalent to setting many of the fine-grained error handling
 properties.
@@ -636,7 +635,7 @@ properties.
  <tr BGCOLOR="white" CLASS="TableRowColor">
  <td><CODE>embedding</CODE></td>
  <td>
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setEmbedding(boolean)"><CODE>ARP.setEmbedding(boolean)</CODE></A><br/>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setEmbedding(boolean)"><CODE>ARP.setEmbedding(boolean)</CODE></A><br/>
 This sets ARP to look for RDF embedded within an enclosing XML document.
  </td>
  <td>String or Boolean</td>
@@ -649,19 +648,19 @@ This sets ARP to look for RDF embedded within an enclosing XML document.
  <code>IGN_&lt;XXX&gt;</code></td>
  <td>
 See
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html"><CODE>ARPErrorNumbers</CODE></A>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html"><CODE>ARPErrorNumbers</CODE></A>
 for a complete list
 of the error conditions detected.<br>
 Setting one of these properties is equivalent to the method
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setErrorMode(int, int)"><CODE>ARP.setErrorMode(int, int)</CODE></A>.
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setErrorMode(int, int)"><CODE>ARP.setErrorMode(int, int)</CODE></A>.
 Thus fine-grained control over the behaviour in response to specific error conditions
 is possible.
  </td>
  <td>String or Integer</td>
- <td><A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#EM_IGNORE"><CODE>EM_IGNORE</CODE></A><br>
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#EM_WARNING"><CODE>EM_WARNING</CODE></A><br>
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#EM_ERROR"><CODE>EM_ERROR</CODE></A><br>
- <A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#EM_FATAL"><CODE>EM_FATAL</CODE></A><br>
+ <td><A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#EM_IGNORE"><CODE>EM_IGNORE</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#EM_WARNING"><CODE>EM_WARNING</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#EM_ERROR"><CODE>EM_ERROR</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#EM_FATAL"><CODE>EM_FATAL</CODE></A><br>
  </td>
  </tr>
  </table>
@@ -700,7 +699,7 @@ but allow <code>"daml:collection"</code>, the following works:
      &hellip;
 </pre>
 <p>This is because in strict mode
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#IGN_DAML_COLLECTION">IGN_DAML_COLLECTION</A></B></CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#IGN_DAML_COLLECTION">IGN_DAML_COLLECTION</A></B></CODE>
 is treated as an error, and so the second call to setProperty overwrites the effect of
 the first.
 </p>
@@ -716,12 +715,12 @@ is slower, but should produce more readable XML.
 <p>
 For access to advanced features, first
 get an RDFWriter object, of the appropriate language, by using
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter(java.lang.String)">getWriter</A></B>("RDF/XML")</CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter(java.lang.String)">getWriter</A></B>("RDF/XML")</CODE>
 or
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter(java.lang.String)">getWriter</A></B>("RDF/XML-ABBREV")</CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter(java.lang.String)">getWriter</A></B>("RDF/XML-ABBREV")</CODE>
 on any Model.
 It is then configured using the
-<CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/JenaReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
+<CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/JenaReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty</A></B>(String,&nbsp;Object)</CODE>
 method.
 This
 changes the properties for writing RDF/XML.
@@ -830,21 +829,21 @@ changes the properties for writing RDF/XML.
   Rules that can be avoided are:
   <ul>
   <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#section-Reification"
-  >section-Reification</a>  (<A HREF="../../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#sectionReification"><CODE>RDFSyntax.sectionReification</CODE></A>)</li>
+  >section-Reification</a>  (<A HREF="../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#sectionReification"><CODE>RDFSyntax.sectionReification</CODE></A>)</li>
   <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#section-List-Expand"
-  >section-List-Expand</a> (<A HREF="../../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#sectionListExpand"><CODE>RDFSyntax.sectionListExpand</CODE></A>)</li>
+  >section-List-Expand</a> (<A HREF="../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#sectionListExpand"><CODE>RDFSyntax.sectionListExpand</CODE></A>)</li>
   <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeLiteralPropertyElt">parseTypeLiteralPropertyElt</a>
-  (<A HREF="../../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#parseTypeLiteralPropertyElt"><CODE>RDFSyntax.parseTypeLiteralPropertyElt</CODE></A>)</li>
+  (<A HREF="../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#parseTypeLiteralPropertyElt"><CODE>RDFSyntax.parseTypeLiteralPropertyElt</CODE></A>)</li>
   <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeResourcePropertyElt">parseTypeResourcePropertyElt</a>
-  (<A HREF="../../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#parseTypeLiteralPropertyElt"><CODE>RDFSyntax.parseTypeLiteralPropertyElt</CODE></A>)</li>
+  (<A HREF="../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#parseTypeLiteralPropertyElt"><CODE>RDFSyntax.parseTypeLiteralPropertyElt</CODE></A>)</li>
   <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeCollectionPropertyElt">parseTypeCollectionPropertyElt</a>
-  (<A HREF="../../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#parseTypeCollectionPropertyElt"><CODE>RDFSyntax.parseTypeCollectionPropertyElt</CODE></A>)</li>
+  (<A HREF="../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#parseTypeCollectionPropertyElt"><CODE>RDFSyntax.parseTypeCollectionPropertyElt</CODE></A>)</li>
   <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#idAttr">idAttr</a>
-  (<A HREF="../../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#idAttr"><CODE>RDFSyntax.idAttr</CODE></A>)</li>
+  (<A HREF="../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#idAttr"><CODE>RDFSyntax.idAttr</CODE></A>)</li>
   <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#propertyAttr">propertyAttr</a>
-  (<A HREF="../../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#propertyAttr"><CODE>RDFSyntax.propertyAttr</CODE></A>)</li>
+  (<A HREF="../javadoc/com/hp/hpl/jena/vocabulary/RDFSyntax.html#propertyAttr"><CODE>RDFSyntax.propertyAttr</CODE></A>)</li>
   </ul>
-  In addition "daml:collection" (<A HREF="../../javadoc/com/hp/hpl/jena/vocabulary/DAML_OIL.html#collection"><CODE>DAML_OIL.collection</CODE></A>)
+  In addition "daml:collection" (<A HREF="../javadoc/com/hp/hpl/jena/vocabulary/DAML_OIL.html#collection"><CODE>DAML_OIL.collection</CODE></A>)
   can be blocked. Blocking <a href=
   "http://www.w3.org/TR/rdf-syntax-grammar#idAttr">idAttr</a>  also blocks
   <a href="http://www.w3.org/TR/rdf-syntax-grammar#section-Reification"
