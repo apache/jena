@@ -1,52 +1,43 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.3 2003-11-17 07:24:50 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.4 2003-11-17 14:22:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import java.util.*;
 
-import junit.framework.TestCase;
-
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 
 /**
-	NodeToTriplesMap: a map from nodes to sets of triples, where the set is implemented
-    as a linked list [the context allows this].
-
+	NodeToTriplesMap: a map from nodes to sets of triples.
 	@author kers
 */
-public class NodeToTriplesMap {
+public class NodeToTriplesMap 
+    {
     HashMap map = new HashMap();
-
-    static class Bunch extends LinkedList {}
     
     public void add( Node o, Triple t ) {
-        Bunch l = (Bunch) map.get( o );
-        if (l==null) map.put( o, l = new Bunch() );
-        l.add( t ); // l.add( t );
+        HashSet s = (HashSet) map.get( o );
+        if (s == null) map.put( o, s = new HashSet() );
+        s.add( t ); 
     }
 
     public void remove(Node o, Triple t ) {
-        Bunch l = (Bunch) map.get( o );
-        if (l != null) {
-            l.remove( t );
-            if (l.size() == 0) map.put( o, null );
+        HashSet s = (HashSet) map.get( o );
+        if (s != null) {
+            s.remove( t );
+            if (s.isEmpty()) map.put( o, null );
         }
     }
 
     public Iterator iterator(Node o) {
-        Bunch l = (Bunch) map.get( o );
-        if (l==null) {
-            return NullIterator.instance;
-        } else {
-            return l.iterator();
+        HashSet s = (HashSet) map.get( o );
+        return s == null ? NullIterator.instance :  s.iterator();
         }
     }
-}
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     All rights reserved.
