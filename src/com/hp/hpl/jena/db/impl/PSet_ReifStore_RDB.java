@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.14 $ on $Date: 2003-07-23 07:19:48 $
+* @version $Revision: 1.15 $ on $Date: 2003-08-11 02:45:13 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -83,7 +83,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		Node stmtURI,
 		boolean hasType,
 		IDBID graphID, boolean getTriples) {
-		String astName = getASTname();
+		String astName = getTblName();
 		String gid = graphID.getID().toString();
 		ResultSetReifIterator result = new ResultSetReifIterator(this, getTriples, graphID);
 
@@ -100,7 +100,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		else
 			stmtStr = hasType ? "selectReifiedNT" : "selectReifiedN";
 		try {
-			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
 
 			if (!findAll) {
 				String stmt_uri = m_driver.nodeToRDBString(stmtURI, false);
@@ -132,7 +132,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	public ResultSetReifIterator findReifTripleMatch(
 		TripleMatch t,
 		IDBID graphID) {
-		String astName = getASTname();
+		String astName = getTblName();
 		String gid = graphID.getID().toString();
 		ResultSetReifIterator result = new ResultSetReifIterator(this, true, graphID);
 
@@ -176,7 +176,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		}
 
 		if ( done == false ) try {
-			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
 			ps.setString(argc++, gid);
 			if ( gotStmt ) {
 				String stmtNode = m_driver.nodeToRDBString(stmtURI, false);
@@ -232,7 +232,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		stmtStr += (t == null) ? "T" : "SPOT";
 
 		try {
-			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
 			ps.clearParameters();
 
 			if (t != null) {
@@ -289,7 +289,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		*/
 
 	public ExtendedIterator findReifNodes(Node stmtURI, IDBID graphID) {
-		String astName = getASTname();
+		String astName = getTblName();
 		String gid = graphID.getID().toString();
 		ResultSetIterator result = new ResultSetIterator();
 		int argc = 1;
@@ -299,7 +299,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		String stmtStr =
 			stmtURI == null ? "selectReifNode" : "selectReifNodeN";
 		try {
-			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
 
 			if (stmtURI != null) {
 				String stmt_uri = m_driver.nodeToRDBString(stmtURI,false);
@@ -329,9 +329,9 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		Triple frag,
 		StmtMask fragMask,
 		IDBID my_GID) {
-		Node subj = fragMask.hasSubj() ? frag.getObject() : Node.ANY;
-		Node prop = fragMask.hasPred() ? frag.getObject() : Node.ANY;
-		Node obj = fragMask.hasObj() ? frag.getObject() : Node.ANY;
+		Node subj = fragMask.hasSubj() ? frag.getObject() : Node.NULL;
+		Node prop = fragMask.hasPred() ? frag.getObject() : Node.NULL;
+		Node obj = fragMask.hasObj() ? frag.getObject() : Node.NULL;
 		Triple t = new Triple(subj, prop, obj);
 		storeTripleAR(t, my_GID, stmtURI, fragMask.hasType(), false, null);
 	}
@@ -366,7 +366,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			} 
 				
 			try {
-				ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+				ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
 				ps.clearParameters();
 				if ( fragMask.hasSubj() || fragMask.hasPred() || fragMask.hasObj() ) {
 					if (nullify)
@@ -449,7 +449,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			}
 				
 			try {
-				ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+				ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
 				ps.clearParameters();
 				argStr = m_driver.nodeToRDBString(stmtURI,false);
 				if ( argStr == null ) notFound = true;

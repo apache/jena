@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.35 2003-07-15 03:30:28 hkuno Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.36 2003-08-11 02:45:36 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.35 $ on $Date: 2003-07-15 03:30:28 $
+* @version $Revision: 1.36 $ on $Date: 2003-08-11 02:45:36 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -56,7 +56,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	* Holds name of AssertedStatement table (defaults to JENA_SYS_AssStatements).
 	* Every triple store has at least one tables for AssertedStatements.
 	*/
-   public String m_ASTName = null;
+   public String m_tblName = null;
    
     /** The maximum size of literals that can be added to Statement table */
     protected int MAX_LITERAL = 0;
@@ -120,24 +120,24 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	public void setSQLType(String value) { ID_SQL_TYPE = value; }
 	public void setSkipDuplicateCheck(boolean value) { SKIP_DUPLICATE_CHECK = value;}
 	public void setSQLCache(SQLCache cache ) { m_sql = cache; }
+	public SQLCache getSQLCache() { return m_sql; }
 	public void setCachePreparedStatements(boolean value) { CACHE_PREPARED_STATEMENTS = value; }
 	
 	
 	/**
-	 * Sets m_ASTName variable.
-	 * 
+	 * Sets m_tblName variable.
 	 * @param tblName the name of the Statement Table
 	 */
-	public void setASTname(String tblName){
-		m_ASTName = tblName;
+	public void setTblName(String tblName){
+		m_tblName = tblName;
 	}
 	
 	/**
-	 * Accessor for m_ASTName.
+	 * Accessor for m_tblName.
 	 * @return name of the Statement table.
 	 */
-	protected String getASTname() {
-		return m_ASTName;
+	public String getTblName() {
+		return m_tblName;
 	}
 	
 
@@ -158,29 +158,15 @@ public  class PSet_TripleStore_RDB implements IPSet {
 
     
     /**
-     * Create a table for storing asserted statements.
-     * 
-     * @param astName name of table.
-     */
-    public void createASTable(String astName) {
-    	
-		try {m_sql.runSQLGroup("createStatementTable", getASTname(), String.valueOf(MAX_LITERAL));
-		} catch (SQLException e) {
-			logger.warn("Problem formatting database", e);
-			throw new RDFRDBException("Failed to format database", e);
-		}
-    }
-
-    /**
      * Remove all RDF information about this pset from a database.
      */
     public void cleanDB() {
     	
     	// drop my own table(s)
     	try {
-    		m_sql.runSQLGroup("dropStatementTable",getASTname());
+    		m_sql.runSQLGroup("dropStatementTable",getTblName());
     	} catch (SQLException e) {
-			logger.warn( "Problem dropping table " + getASTname(), e );
+			logger.warn( "Problem dropping table " + getTblName(), e );
 			throw new RDFRDBException("Failed to drop table ", e);
 		}
     		        
@@ -377,9 +363,9 @@ public void deleteTripleAR(
 	boolean isReif = reifNode != null;
 
 	String subj =
-		t.getSubject() == Node.ANY ? null : m_driver.nodeToRDBString(t.getSubject(),false);
+		t.getSubject().equals(Node.NULL) ? null : m_driver.nodeToRDBString(t.getSubject(),false);
 	String pred =
-		t.getPredicate() == Node.ANY ? null : m_driver.nodeToRDBString(t.getPredicate(),false);
+		t.getPredicate().equals(Node.NULL) ? null : m_driver.nodeToRDBString(t.getPredicate(),false);
 	String obj =
 		t.getObject() == Node.ANY ? null : m_driver.nodeToRDBString(t.getObject(),false);
 //	String gid = graphID.getID().toString();
@@ -400,7 +386,7 @@ public void deleteTripleAR(
 		ps =
 			getPreparedStatement(
 				stmtStr,
-				getASTname(),
+				getTblName(),
 				isBatch,
 				batchedPreparedStatements);
 		//ps.clearParameters();
@@ -537,13 +523,13 @@ public void deleteTripleAR(
 		}
 		
 		String obj_res, obj_lex, obj_lit;
-		// TODO: Node.ANY is only valid for reif triple stores. should check this.
+		// TODO: Node.NULL is only valid for reif triple stores. should check this.
 		String subj =
-			t.getSubject() == Node.ANY ? null : m_driver.nodeToRDBString(t.getSubject(),true);
+			t.getSubject().equals(Node.NULL) ? null : m_driver.nodeToRDBString(t.getSubject(),true);
 		String pred =
-			t.getPredicate() == Node.ANY ? null : m_driver.nodeToRDBString(t.getPredicate(),true);
+			t.getPredicate().equals(Node.NULL) ? null : m_driver.nodeToRDBString(t.getPredicate(),true);
 		String obj =
-			t.getObject() == Node.ANY ? null : m_driver.nodeToRDBString(t.getObject(),true);
+			t.getObject().equals(Node.NULL) ? null : m_driver.nodeToRDBString(t.getObject(),true);
 //		String gid = graphID.getID().toString();
 		int gid = ((DBIDInt) graphID).getIntID();
 
@@ -562,7 +548,7 @@ public void deleteTripleAR(
 			ps =
 				getPreparedStatement(
 					stmtStr,
-					getASTname(),
+					getTblName(),
 					isBatch,
 					batchedPreparedStatements);
 			//ps.clearParameters();
@@ -769,7 +755,7 @@ public void deleteTripleAR(
 	 * @return int count.
 	 */
 	public int tripleCount() {
-		return(rowCount(getASTname()));
+		return(rowCount(getTblName()));
 	}
     
 
@@ -788,7 +774,7 @@ public void deleteTripleAR(
 	 * @see com.hp.hpl.jena.db.impl.IPSet#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.IDBID)
 	 */
 	public ExtendedIterator find(TripleMatch t, IDBID graphID) {
-		String astName = getASTname();
+		String astName = getTblName();
 		Node subj_node = t.getMatchSubject();
 		Node pred_node = t.getMatchPredicate();
 		Node obj_node = t.getMatchObject();
@@ -831,7 +817,7 @@ public void deleteTripleAR(
 		}
 		if (notFound == false)
 			try {
-				ps = m_sql.getPreparedSQLStatement(op, getASTname());
+				ps = m_sql.getPreparedSQLStatement(op, getTblName());
 				if (obj != null)
 					ps.setString(args++, obj);
 				if (subj != null)
@@ -858,7 +844,7 @@ public void deleteTripleAR(
 			String gid = graphID.getID().toString();
 			
 			try {
-				  PreparedStatement ps = m_sql.getPreparedSQLStatement("removeRowsFromTable",getASTname());
+				  PreparedStatement ps = m_sql.getPreparedSQLStatement("removeRowsFromTable",getTblName());
 				  ps.clearParameters();	
 	
 				  ps.setString(1,gid);
