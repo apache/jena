@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCaseBasic.java,v 1.1 2003-03-04 17:51:42 ian_dickinson Exp $
+  $Id: TestCaseBasic.java,v 1.2 2003-04-08 14:14:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.mem.*;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2003-03-04 17:51:42 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-04-08 14:14:48 $
  */
 public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic 
 	{
@@ -43,10 +43,10 @@ public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic
     		{
     		Constructor constructor = graphClass.getConstructor(new Class[]{
     		   Graph.class, Graph.class });
-        	m1 = new ModelMem( newGraph( constructor ) );
-        	m2 = new ModelMem( newGraph( constructor ) );
-        	m3 = new ModelMem( newGraph( constructor ) );
-        	m4 = new ModelMem( newGraph( constructor ) );
+        	m1 = GraphTestBase.modelFor( newGraph( constructor ) );
+        	m2 = GraphTestBase.modelFor( newGraph( constructor ) );
+        	m3 = GraphTestBase.modelFor( newGraph( constructor ) );
+        	m4 = GraphTestBase.modelFor( newGraph( constructor ) );
     		}
     	catch (Exception e)
 			{}

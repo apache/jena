@@ -1,6 +1,33 @@
+/*
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: ModelMem.java,v 1.2 2003-04-08 14:14:58 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.mem;
+
+import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+
+
+/** 
+    OBSOLETE. Use the code in ModelFactory.
+    @author bwm (original), jjc + kers (for Jena 2)
+*/
+
+public class ModelMem extends ModelCom implements Model, ModelI 
+    {    
+    /** 
+        make a memory-based model
+    */
+    public ModelMem() 
+        { super( new GraphMem(), BuiltinPersonalities.model ); }
+    }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001 
+ *  (c) Copyright Hewlett-Packard Company 2000, 2001, 2002, 2003 
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,51 +56,3 @@
  *
  * Created on 03 August 2000, 15:02
  */
-
-package com.hp.hpl.jena.mem;
-
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.*;
-/*
-import java.io.*;
-import java.util.*;
-import com.hp.hpl.jena.vocabulary.RDF;
-*/
-
-/** A main memory implemention of the RDF API.
- *
- * <p>This implementation of the RDF API stores its all its data in main memory.
- *   It supports all methods except the transaction calls.</p>
- * <p>This is a prototype implementation, and should be considered to be alpha
- *   quality code.  It has not yet been performance optimised and is known to be
- *   wasteful of memory.  It has been tested by loading the wordnet database
- *   (see Sample3) which results in a model containing over 600,000 statements.
- *   </p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:14:16 $'
- */
-public class ModelMem extends ModelCom implements Model, ModelI {    
-    
-    // next free error code = 3
-
-    /** Create an empty model.
-     */
-    public ModelMem() {
-    	this(BuiltinPersonalities.model);
-    }
-    public ModelMem(GraphPersonality p) {
-    	this( p, new GraphMem() ) ;
-    }
-
-	public ModelMem( Graph g ) {
-		this(BuiltinPersonalities.model, g );
-	}
-	
-    public ModelMem( GraphPersonality p, Graph g ) {
-    	super( g, p );
-    }
-    
-
-}

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.5 2003-04-08 09:31:25 der Exp $
+ * $Id: WGReasonerTester.java,v 1.6 2003-04-08 14:15:00 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -40,7 +40,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-04-08 09:31:25 $
+ * @version $Revision: 1.6 $ on $Date: 2003-04-08 14:15:00 $
  */
 public class WGReasonerTester {
 
@@ -218,7 +218,7 @@ public class WGReasonerTester {
         // Construct the inferred graph
         Reasoner reasoner = reasonerF.create(configuration);
         InfGraph graph = reasoner.bind(premises.getGraph());
-        Model result = new ModelMem(graph);
+        Model result = ModelFactory.createModelForGraph(graph);
         
         // Check the results against the official conclusions
         boolean correct = true;

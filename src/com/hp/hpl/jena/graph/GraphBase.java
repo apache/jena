@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.3 2003-01-28 13:03:17 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.4 2003-04-08 14:13:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -12,12 +12,12 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
     GraphBase is an implementation of Graph that provides some convenient
     base functionality for Graph implementations.
-<br>
+<p>
     Subtypes of GraphBase must provide add(Triple), delete(Triple), 
     find(TripleMatch,TripleAction), and size(). GraphBase provides
     default implementations of the other methods, including the other
     finds (on top of that one), a simple-minded prepare, and contains.
-<br>    
+<p>    
 	@author kers
 */
 
@@ -88,12 +88,21 @@ public abstract class GraphBase implements Graph {
 	public void close() {
 	}
 	
-	private Reifier reifier = null;
+	protected Reifier reifier = null;
 	
 	public Reifier getReifier() {
-		if (reifier == null) reifier = new SimpleReifier( this );
+		if (reifier == null) reifier = new NullReifier( this );
 		return reifier;
 	}
+    
+    static class NullReifier extends SimpleReifier
+        {
+        NullReifier( Graph parent )
+            {
+            super( parent );
+            passing = true;
+            }
+        }
     
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#size()
@@ -108,21 +117,10 @@ public abstract class GraphBase implements Graph {
 	public int capabilities() {
 		return 0;
 	}
-/*
-	public boolean equals(Object o) {
-		return o != null
-			&& o instanceof Graph
-			&& GraphMatcher.equals(this, (Graph) o);
-	}
-*/
+
 	public boolean isIsomorphicWith(Graph g) {
 		return g != null && GraphMatcher.equals(this, g);
 	}
-/*
-	public int hashCode() {
-		return GraphMatcher.hashCode(this);
-	}
-*/
 
 	/** for little graphs only ... */
 
@@ -138,6 +136,46 @@ public abstract class GraphBase implements Graph {
 		b.append("}");
 		return b.toString();
 	}
+    
+    /**
+        return a dynamic copy of G with full reification
+    */
+    public static Graph withReification( Graph g )
+        {
+        return new SPOO( g );
+        }
+        
+    public static class SPOO extends GraphBase
+        {
+        Graph under;
+        
+        SPOO( Graph under )
+            { this.under = under; }
+            
+        public Reifier getReifier() 
+            {
+            if (reifier == null) reifier = new SimpleReifier( this );
+            return reifier;
+            }
+            
+        public ExtendedIterator find( TripleMatch m ) 
+            { return under.find( m ); }
+            
+        public boolean contains( Node s, Node p, Node o )
+            { return under.contains( s, p, o ); }
+            
+        public void add( Triple t )
+            { if (getReifier().handledAdd( t ) == false) under.add( t ); }
+            
+        public void delete( Triple t )
+            { if (getReifier().handledRemove( t ) == false) under.delete( t ); }
+            
+        public int size()
+            { return under.size(); }
+            
+        public String toString()
+            { return "SPOO " + super.toString(); }
+        }
 }
 
 /*

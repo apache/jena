@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-04-07 15:05:51 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-04-08 14:14:59 $'
  */
 
 public class ModelCom extends EnhGraph
@@ -1225,6 +1225,9 @@ public class ModelCom extends EnhGraph
         }
     }
     
+    public String toString()
+        { return "<ModelCom  " + getGraph() + ">"; }
+        
 	/**
 		a read-only Model with all the statements of this Model and any
 		statements "hidden" by reification. That model is dynamic, ie

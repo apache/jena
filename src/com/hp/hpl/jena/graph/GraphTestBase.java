@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.6 2003-04-04 11:30:40 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.7 2003-04-08 14:13:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -52,6 +52,9 @@ public class GraphTestBase extends TestCase
             return Node.createURI( RDFprefix + x.substring( colon + 1 ) );
         return Node.createURI( x );
         }
+        
+    public static Model modelFor( Graph g )
+        { return ModelFactory.createModelForGraph( g ); }
         
     public Set iteratorToSet( ClosableIterator L )
         {
@@ -120,7 +123,7 @@ public class GraphTestBase extends TestCase
         
     public void assertEquals( String name, Graph wanted, Graph obtained )
         {
-        Model mWanted = new ModelMem( wanted ), mObtained = new ModelMem( obtained );
+        Model mWanted = modelFor( wanted ), mObtained = modelFor( obtained );
         assertTrue( name + ": wanted " + wanted + " got " + obtained, mWanted.isIsomorphicWith( mObtained ) );
         }
     

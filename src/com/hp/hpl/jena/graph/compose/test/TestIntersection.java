@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestIntersection.java,v 1.2 2003-04-04 11:31:08 chris-dollin Exp $
+  $Id: TestIntersection.java,v 1.3 2003-04-08 14:14:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -38,17 +38,17 @@ public class TestIntersection extends GraphTestBase
     	Graph L = graphWith( "a pings b; b pings c; c pings a" );
     	Graph R = graphWith( "c pings a; b pings c; x captures y" );
     	Graph join = new Intersection( L, R );
-    	Model mJoin = new ModelMem( join );
-    	Model mL = new ModelMem( L );
+    	Model mJoin = modelFor( join );
+    	Model mL = modelFor( L );
     	mL.remove( mJoin );
     	// mustHaveNone( L, "L after removal", "c pings a; b pings c; x captures y" );
     	// mustHave( L, "L after removal", "a pings b" );
-    	if (!new ModelMem( R ).isIsomorphicWith( (Model)new ModelMem( graphWith( "c pings a; b pings c; x captures y" ) ) ))
+    	if (!modelFor( R ).isIsomorphicWith( modelFor( graphWith( "c pings a; b pings c; x captures y" ) ) ))
     		{
     		show( "oops: R has changed", R );
     		fail( "" );
     		}
-    	if (!mL.isIsomorphicWith( (Model)new ModelMem( graphWith( "a pings b" ) ) ))
+    	if (!mL.isIsomorphicWith( modelFor( graphWith( "a pings b" ) ) ))
     		{
     		show( "oops: L is", L );
     		fail( "oops: mL should be `a pings b`" );

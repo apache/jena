@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraph.java,v 1.2 2003-01-28 16:20:47 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.3 2003-04-08 14:14:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -62,17 +62,21 @@ public class TestGraph extends GraphTestBase
 //        assertContainsAll( "modified simple graph", g, "p S q; spindizzies lift cities; Diracs communicate instantaneously" );
 //        assertOmitsAll( "modified simple graph", g, "x R y; a T b" );
         }
-                    
-                    
-	public static void testModelEquals()
-		{
-		Graph g1 = graphWith( "x R y; p R q" );
-        assertEquals( "model must equal a copy of itself", new ModelMem( g1 ), new ModelMem( g1 ) );
-		}
+                                      
+    public void testReificationControl()
+        {
+        Graph g1 = graphWith( "x rdf:subject S" );
+        Graph g2 = GraphBase.withReification( g1 );
+        assertEquals( "should not hide reification triple", 1, g1.size() );
+        assertEquals( "should not hide reification triple", 1, g2.size() );
+        g2.add( triple( "x rdf:object O" ) );
+        assertEquals( "", 1, g1.size() );
+        assertEquals( "", 1, g2.size() );
+        }
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

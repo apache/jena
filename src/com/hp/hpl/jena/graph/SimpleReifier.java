@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.9 2003-04-04 15:10:13 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.10 2003-04-08 14:13:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -22,7 +22,7 @@ import java.util.*;
 public class SimpleReifier implements Reifier
     {
     private Graph parent;
-    private boolean passing = false;
+    public boolean passing = false;
     private FragmentMap nodeMap;
     
     /** construct a simple reifier that is bound to the parent graph */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.7 2003-04-07 15:29:11 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.8 2003-04-08 14:14:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -45,7 +45,7 @@ public class TestReifier extends GraphTestBase
         
     public void testIntercept()
         {
-        Graph g = graphWith( "" );
+        Graph g = GraphBase.withReification( graphWith( "" ) );
         Reifier r = g.getReifier();
         Node S = node( "sub" ), O = node( "obj" );
         Node RS = node( "http://example.org/type" );
@@ -60,7 +60,7 @@ public class TestReifier extends GraphTestBase
         
     public void testHiddenTriples()
         {
-        Graph g = graphWith( "" );
+        Graph g = GraphBase.withReification( graphWith( "" ) );
         Reifier r = g.getReifier();
         Node S = node( "SSS" ), P = node( "PPP" ), O = node( "OOO " );
         g.add( new Triple( S, Reifier.predicate, P ) );
