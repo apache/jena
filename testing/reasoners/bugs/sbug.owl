@@ -20,17 +20,11 @@
 <owl:Class rdf:ID="Topic">
   <rdfs:subClassOf rdf:resource="&owl;Class"/>
   <rdfs:subClassOf>
-    <owl:Restriction>
-       <owl:onProperty rdf:resource="#hasCreationDate"/>
-      <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
-    </owl:Restriction>
-   </rdfs:subClassOf>
-<rdfs:subClassOf>
    <owl:Restriction>
       <owl:onProperty rdf:resource="#CreatedBy"/>
       <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
     </owl:Restriction>
-</rdfs:subClassOf>
+  </rdfs:subClassOf>
 </owl:Class>
 
 <owl:ObjectProperty rdf:ID="CreatedBy">
