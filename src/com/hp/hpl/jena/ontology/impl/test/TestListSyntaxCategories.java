@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-11-06 17:30:02 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.13 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.14 2003-11-06 17:30:02 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -357,7 +357,7 @@ public class TestListSyntaxCategories
             }
         },
         // Properties
-        new DoListTest( "OWL+import list properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  41,  
+        new DoListTest( "OWL+import list properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  40,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
