@@ -87,6 +87,8 @@
             <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/graph/**"/>
             <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/db/**"/>
+            <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/datatypes/**"/>
             <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/mem/**"/>
@@ -194,6 +196,7 @@
                 <package name="com.hp.hpl.jena.xmloutput"/>
                 <package name="com.hp.hpl.jena.ontology"/>
                 <package name="com.hp.hpl.jena.enhanced"/>
+                <package name="com.hp.hpl.jena.db"/>
                 <package name="com.hp.hpl.jena.graph"/>
                 <package name="com.hp.hpl.jena.graph.compose"/>
                 <package name="com.hp.hpl.jena.graph.query"/>
