@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-16 20:38:39 $
+ * Last modified on   $Date: 2004-02-22 13:23:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -248,6 +248,38 @@ public class TestBugReports extends TestCase {
             ontModel.isInBaseModel(ontModel.createStatement(B, RDF.type, OWL.Class)));
     }
 
+    /** Bug report by Holger Knublach - duplicate classes in domain and range */
+    public void test_hk_07() {
+        boolean useInf = false;
+        
+        OntModel a = ModelFactory.createOntologyModel( useInf ? OntModelSpec.OWL_MEM_RULE_INF : OntModelSpec.OWL_MEM, null );
+        a.read( "file:testing/ontology/bugs/test_hk_07A.owl" );
+
+        String NSA = "file:testing/ontology/bugs/test_hk_07A.owl#";
+        String NSB = "file:testing/ontology/bugs/test_hk_07B.owl#";
+        
+        ObjectProperty pA = a.getObjectProperty( NSA + "PropA" );
+        ObjectProperty pB = a.getObjectProperty( NSB + "PropB" );
+
+        int count = 0;
+        for (Iterator i = pA.listDomain();  i.hasNext(); ) {
+            //System.out.println( i.next() );
+            i.next();
+            count++;
+        }
+        
+        // if inferencing, we expect REsource and Thing as domains as well as the union
+        assertEquals( "Too many domain classes listed", (useInf ? 3 : 1), count );
+
+        for (Iterator i = pB.listDomain();  i.hasNext(); ) {
+            i.next();
+            count++;
+        }
+        
+        assertEquals( "Too many domain classes listed", (useInf ? 6 : 2), count );
+    }
+    
+    
     /**
      * Bug report by federico.carbone@bt.com, 30-July-2003. A literal can be
      * turned into an individual.
@@ -745,6 +777,28 @@ public class TestBugReports extends TestCase {
             i.next();
         }
     }
+    
+    /* Bug reprort by E. Johnson ejohnson@carolina.rr.com - ill formed list in writer */
+    public void test_ej_01() {
+        String BASE  = "http://jena.hpl.hp.com/testing/ontology";
+        String NS = BASE + "#";
+
+        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLClass A = m.createDAMLClass(NS + "A");
+        DAMLClass B = m.createDAMLClass(NS + "B");
+        DAMLClass C = m.createDAMLClass(NS + "C");
+        DAMLList l = m.createDAMLList(new RDFNode[] {A, B, C});
+
+        assertTrue( l.isValid() );
+        
+        Model baseModel = m.getBaseModel();
+        RDFWriter writer = baseModel.getWriter("RDF/XML-ABBREV");
+        
+        // will generate warnings, so suppress until Jeremy has fixed
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        //writer.write(baseModel, out, BASE );
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="file:testing/ontology/bugs/test_hk_07B.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:ontA="file:testing/ontology/bugs/test_hk_07A.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xml:base="file:testing/ontology/bugs/test_hk_07B.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="file:testing/ontology/bugs/test_hk_07A.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="ClassBB"/>
+  <owl:Class rdf:ID="ClassBC"/>
+  <owl:Class rdf:ID="ClassBA"/>
+  <owl:ObjectProperty rdf:ID="PropB">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#ClassBC"/>
+          <owl:Class rdf:about="#ClassBA"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#ClassBB"/>
+          <owl:Class rdf:about="#ClassBC"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+  </owl:ObjectProperty>
+</rdf:RDF>
