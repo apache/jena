@@ -18,13 +18,15 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.2 2004-09-28 10:55:29 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.3 2004-11-20 21:35:43 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
 {
     static Log log = LogFactory.getLog(LocatorFile.class) ;
     private String altDir = null ;
+    private String altDirLogStr = "" ;
+    
     LocatorFile(String dir)
     {
         if ( false )
@@ -50,6 +52,7 @@ public class LocatorFile implements Locator
         {
             if ( dir.endsWith("/") || dir.endsWith(java.io.File.separator) )
                 dir = dir.substring(0,dir.length()-1) ;
+            altDirLogStr = " ["+dir+"]" ;
         }
         altDir = dir ;
     }
@@ -88,8 +91,8 @@ public class LocatorFile implements Locator
 
         if ( f == null || !f.exists() )
         {
-            if ( FileManager.logLookupFailures && log.isTraceEnabled())
-                log.trace("File not found: "+filenameOrURI) ; 
+            if ( FileManager.logAllLookups && log.isTraceEnabled())
+                log.trace("Not found: "+filenameOrURI+altDirLogStr) ;
             return null ;
         }
         
@@ -98,10 +101,14 @@ public class LocatorFile implements Locator
             if ( in == null )
             {
                 // Should not happen 
-                if ( FileManager.logLookupFailures )
-                    log.trace("LocatorFile: Failed to open: "+filenameOrURI) ;
+                if ( FileManager.logAllLookups && log.isTraceEnabled() )
+                    log.trace("LocatorFile: Failed to open: "+filenameOrURI+altDirLogStr) ;
                 return null ;
             }
+            
+            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+                log.trace("Found: "+filenameOrURI+altDirLogStr) ;
+                
             
             // Create base -- Java 1.4-isms
             //base = f.toURI().toURL().toExternalForm() ;

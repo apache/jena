@@ -314,7 +314,7 @@ public class FileUtils
     /** Read a whole file as UTF-8
      * 
      * @param r
-     * @return
+     * @return String The whole file
      * @throws IOException
      */
     

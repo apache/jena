@@ -30,17 +30,20 @@ public class LocatorClassLoader  implements Locator
         String fn = FileUtils.toFilename(filenameOrURI) ;
         if ( fn == null )
         {
-            if ( FileManager.logLookupFailures && log.isTraceEnabled() )
-                log.trace("Not a resource: "+filenameOrURI) ; 
+            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+                log.trace("Not found: "+filenameOrURI) ; 
             return null ;
         }
         InputStream in = classLoader.getResourceAsStream(fn) ;
         if ( in == null )
         {
-            if ( FileManager.logLookupFailures && log.isTraceEnabled() )
+            if ( FileManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("Failed to open: "+filenameOrURI) ;
             return in ;
         }
+        
+        if ( FileManager.logAllLookups  && log.isTraceEnabled() )
+            log.trace("Found: "+filenameOrURI) ;
         
         // base = classLoader.getResource(fn).toExternalForm ;       
         return in ;

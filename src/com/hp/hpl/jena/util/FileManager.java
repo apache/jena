@@ -39,7 +39,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.6 2004-11-15 16:33:01 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.7 2004-11-20 21:35:43 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -51,7 +51,7 @@ public class FileManager
 
     static FileManager instance = null ;
 
-    static boolean logLookupFailures = true ; 
+    static boolean logAllLookups = true ; 
     List handlers = new ArrayList() ;
     LocationMapper mapper = null ;
     boolean cacheModelLoads = false ;
@@ -258,37 +258,42 @@ public class FileManager
         if ( baseURI == null )
             baseURI = chooseBaseURI(filenameOrURI) ;
 
+        String mappedURI = remap(filenameOrURI) ;
+
         if ( syntax == null )
         {
-            syntax = FileUtils.guessLang(filenameOrURI) ;
+            syntax = FileUtils.guessLang(mappedURI) ;
             if ( syntax == null || syntax.equals("") )
                 syntax = FileUtils.langXML ;
+            if ( log.isDebugEnabled() ) 
+                log.debug("Syntax guess: "+syntax);
         }
 
-        InputStream in = open(filenameOrURI) ;
+        InputStream in = openNoMap(mappedURI) ;
         if ( in == null )
         {
-            log.trace("Failed to locate '"+filenameOrURI+"'") ;
-            throw new JenaException("No such file: "+filenameOrURI) ;
+            if ( log.isTraceEnabled() )
+                log.trace("Failed to locate '"+mappedURI+"'") ;
+            throw new JenaException("Can't open: "+filenameOrURI) ;
         }
         model.read(in, baseURI, syntax) ;
         return model ;
     }
 
-    /** Find file on a path - does NOT apply location mapping */
-    
-    public InputStream find(String path)
-    {
-        StringTokenizer pathElems = new StringTokenizer( path, PATH_DELIMITER );
-        while (pathElems.hasMoreTokens()) {
-            String uri = pathElems.nextToken();
-            InputStream in = openNoMap(uri) ;
-            if ( in != null )
-                return in ;
-        }
-        return null ;
-    }
-     
+//    /** Find file on a path - does NOT apply location mapping */
+//    
+//    public InputStream find(String path)
+//    {
+//        StringTokenizer pathElems = new StringTokenizer( path, PATH_DELIMITER );
+//        while (pathElems.hasMoreTokens()) {
+//            String uri = pathElems.nextToken();
+//            InputStream in = openNoMap(uri) ;
+//            if ( in != null )
+//                return in ;
+//        }
+//        return null ;
+//    }
+//     
     private String chooseBaseURI(String baseURI)
     {
         String scheme = FileUtils.getScheme(baseURI) ;
@@ -304,20 +309,35 @@ public class FileManager
     {
         if ( log.isDebugEnabled())
             log.debug("open("+filenameOrURI+")") ;
-        String uri = null ;
-        if ( mapper != null )
-            uri = mapper.altMapping(filenameOrURI, null) ;
+        
+        String uri = remap(filenameOrURI) ;
+        
+        return openNoMap(uri) ;
+    }
+
+    /** Apply the mapping of a filename or URI */
+    
+    public String remap(String filenameOrURI)
+    {
+        if ( mapper == null )
+            return filenameOrURI ; 
+            
+        String uri = mapper.altMapping(filenameOrURI, null) ;
+
         if ( uri == null )
+        {
+            if ( FileManager.logAllLookups && log.isDebugEnabled() )
+                log.debug("Not mapped: "+filenameOrURI) ;
             uri = filenameOrURI ;
+        }
         else
         {
             if ( log.isDebugEnabled() )
                 log.debug("Mapped: "+filenameOrURI+" => "+uri) ;
         }
-        
-        return openNoMap(uri) ;
+        return uri ;
     }
-
+    
     /** Slurp up a whole file: map filename as necessary */
     public String readWholeFileAsUTF8(InputStream in)
     {

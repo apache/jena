@@ -14,7 +14,7 @@ import org.apache.commons.logging.*;
 /** Location files in a zip file
  *  
  * @author Andy Seaborne
- * @version $Id: LocatorZip.java,v 1.1 2004-08-31 09:49:50 andy_seaborne Exp $
+ * @version $Id: LocatorZip.java,v 1.2 2004-11-20 21:35:43 andy_seaborne Exp $
  */
  
 
@@ -40,14 +40,24 @@ class LocatorZip implements Locator
         ZipEntry entry = zipFile.getEntry(filenameOrURI) ;
         if ( entry == null )
         {
-            if ( FileManager.logLookupFailures && log.isDebugEnabled() )
-                log.debug("Not found in : "+zipFileName+" : "+filenameOrURI) ; 
+            if ( FileManager.logAllLookups && log.isDebugEnabled() )
+                log.debug("Not found: "+zipFileName+" : "+filenameOrURI) ; 
             return null ;
             
         }
         try
         {
             InputStream in = zipFile.getInputStream(entry) ;
+            
+            if ( in == null )
+            {
+                if ( FileManager.logAllLookups && log.isTraceEnabled() )
+                    log.trace("Not found: "+filenameOrURI) ; 
+                return null ;
+            }
+            
+            if ( FileManager.logAllLookups  && log.isTraceEnabled() )
+                log.trace("Found: "+filenameOrURI) ;
             return in;
         }
         catch (IOException ex)
