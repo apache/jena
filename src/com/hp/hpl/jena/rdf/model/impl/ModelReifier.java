@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.8 2003-08-27 13:05:53 andy_seaborne Exp $
+	$Id: ModelReifier.java,v 1.9 2003-09-08 10:54:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -38,6 +38,9 @@ public class ModelReifier
         this.model = model; 
         this.reifier = model.asGraph().getReifier();
         }
+        
+    public Reifier.Style getReificationStyle()
+        { return reifier.getStyle(); }
         
     /**
         Answer a version of the model, but with all its reifiying statements

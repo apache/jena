@@ -3,9 +3,10 @@ package com.hp.hpl.jena.rdf.model.test;
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.9 2003-09-08 10:25:10 chris-dollin Exp $
+  $Id: TestReifiedStatements.java,v 1.10 2003-09-08 10:54:45 chris-dollin Exp $
 */
 
+import com.hp.hpl.jena.graph.Reifier;
 import com.hp.hpl.jena.rdf.model.*;
 import junit.framework.*;
 
@@ -22,7 +23,7 @@ public class TestReifiedStatements extends ModelTestBase
         { TestSuite result = new TestSuite();
         result.addTest( new TestSuite( TestStandard.class ) );
         result.addTest( new TestSuite( TestConvenient.class ) );
-        // result.addTest( new TestSuite( TestMinimal.class ) );
+        result.addTest( new TestSuite( TestMinimal.class ) );
         return result; }   
         
     public Model getModel()
@@ -31,19 +32,25 @@ public class TestReifiedStatements extends ModelTestBase
     public static class TestStandard extends AbstractTestReifiedStatements
         {
         public TestStandard( String name ) { super( name ); }
-        public Model getModel() { return ModelFactory.createDefaultModel( ModelFactory.Standard ); } 
+        public static final Reifier.Style style = ModelFactory.Standard;
+        public Model getModel() { return ModelFactory.createDefaultModel( style ); } 
+        public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }
         
     public static class TestConvenient extends AbstractTestReifiedStatements
         {
         public TestConvenient( String name ) { super( name ); }
-        public Model getModel() { return ModelFactory.createDefaultModel( ModelFactory.Convenient ); } 
+        public static final Reifier.Style style = ModelFactory.Convenient;
+        public Model getModel() { return ModelFactory.createDefaultModel( style ); } 
+        public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }
         
     public static class TestMinimal extends AbstractTestReifiedStatements
         {
         public TestMinimal( String name ) { super( name ); }
-        public Model getModel() { return ModelFactory.createDefaultModel( ModelFactory.Minimal ); } 
+        public static final Reifier.Style style = ModelFactory.Minimal;
+        public Model getModel() { return ModelFactory.createDefaultModel( style); } 
+        public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }
     }
     

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.7 2003-09-08 10:25:11 chris-dollin Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.8 2003-09-08 10:54:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -52,14 +52,14 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     */ 
     public void testBasicReification()
         {
-        Model m = model;
-        Resource R = m.createResource( aURI );
-        m.add( R, RDF.type, RDF.Statement );
-        m.add( R, RDF.subject, S );
-        m.add( R, RDF.predicate, P );
-        m.add( R, RDF.object, O );
-        RDFNode rs = R.as( ReifiedStatement.class );
-        assertEquals( "can recover statement", SPO, ((ReifiedStatement) rs).getStatement() );
+        if (model.getReificationStyle() != ModelFactory.Minimal) 
+            { Resource R = model.createResource( aURI );
+            model.add( R, RDF.type, RDF.Statement );
+            model.add( R, RDF.subject, S );
+            model.add( R, RDF.predicate, P );
+            model.add( R, RDF.object, O );
+            RDFNode rs = R.as( ReifiedStatement.class );
+            assertEquals( "can recover statement", SPO, ((ReifiedStatement) rs).getStatement() ); }
         }    
         
     /**
@@ -69,23 +69,23 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     */
     public void testReificationCombinations()
         {
-        Model m = model;
-        Resource RR = m.createResource( aURI ), SS = m.createResource( anotherURI );
+        Resource RR = model.createResource( aURI ), SS = model.createResource( anotherURI );
         Property PP = (Property) RR.as( Property.class );
         Object [][] statements =
             {
-                { m.createStatement( RR, RDF.type, RDF.Statement ), new Integer(1) },
-                { m.createStatement( RR, RDF.subject, SS ), new Integer(2) },
-                { m.createStatement( RR, RDF.predicate, PP ), new Integer(4) },
-                { m.createStatement( RR, RDF.object, O ), new Integer(8) },
-                { m.createStatement( SS, PP, O ), new Integer(16) },
-                { m.createStatement( RR, PP, O ), new Integer(32) },
-                { m.createStatement( SS, RDF.subject, SS ), new Integer(64) },
-                { m.createStatement( SS, RDF.predicate, PP ), new Integer(128) },
-                { m.createStatement( SS, RDF.object, O ), new Integer(256) },
-                { m.createStatement( SS, RDF.type, RDF.Statement ), new Integer(512) }
+                { model.createStatement( RR, RDF.type, RDF.Statement ), new Integer(1) },
+                { model.createStatement( RR, RDF.subject, SS ), new Integer(2) },
+                { model.createStatement( RR, RDF.predicate, PP ), new Integer(4) },
+                { model.createStatement( RR, RDF.object, O ), new Integer(8) },
+                { model.createStatement( SS, PP, O ), new Integer(16) },
+                { model.createStatement( RR, PP, O ), new Integer(32) },
+                { model.createStatement( SS, RDF.subject, SS ), new Integer(64) },
+                { model.createStatement( SS, RDF.predicate, PP ), new Integer(128) },
+                { model.createStatement( SS, RDF.object, O ), new Integer(256) },
+                { model.createStatement( SS, RDF.type, RDF.Statement ), new Integer(512) }
             };
-        testCombinations( m, RR, 0, statements, statements.length );
+        if (model.getReificationStyle() != ModelFactory.Minimal)
+            testCombinations( model, RR, 0, statements, statements.length );
         }
 
     /**

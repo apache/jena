@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.15 2003-09-08 10:25:37 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.16 2003-09-08 10:54:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class SimpleReifier implements Reifier
     {
-    private Graph parent;
+    private GraphBase parent;
     private boolean intercepting = false;
     private boolean concealing = false;
     private Style style = null;
@@ -34,7 +34,7 @@ public class SimpleReifier implements Reifier
         @param parent the Graph which we're reifiying for
         @param style the reification style to use
     */
-    public SimpleReifier( Graph parent, Style style )
+    public SimpleReifier( GraphBase parent, Style style )
         {
         this.parent = parent;
         this.nodeMap = new FragmentMap();
@@ -122,13 +122,15 @@ public class SimpleReifier implements Reifier
     	}
         
     /**
-        If n is bound to the triple t, remove that triple. 
+        If n is bound to the triple t, remove that triple. If we're not concealing reification 
+        quadlets, we need to remove them from the parent graph too.
     */    	
     public void remove( Node n, Triple t )
         {
         Object x = nodeMap.get( n );
         if (t.equals( nodeMap.get( n ) )) 
-            { nodeMap.remove( n ); parentRemoveQuad( n, t ); }
+            { nodeMap.remove( n ); 
+            if (!concealing) parentRemoveQuad( n, t ); }
         }
         
     public boolean hasTriple( Triple t )
