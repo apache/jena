@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+Jena 2.1-dev1:
+  For changes, see directly below.
+  Documentation may not be up to date.
+  Do not use this version unless:
+  - you need a conformant OWL Syntax Checker
+  - you need one or more of the bug fixes not in
+    Jena 2.0
+
+
 Post jena 2.0 changes:
 
 RDF API:
@@ -12,7 +21,13 @@ Reasoner subsystem:
 o various bug fixes in OWL rules (maxCardinality bug, hasValue in intersection 
   lists fixed, bug in someValuesFrom fixed, misssing property subclass axioms).
 
-
+OWL Syntax Checker
+o Now conforms with OWL Candidate Rec of August 2003
+  - There are minor differences with other conformant
+    syntax checkers. These are being addressed during the 
+    OWL CR period.
+  - Performance has not yet been addressed. There is 
+    a two or three second delay on start-up.
   
 Jena 2.0 (August 2003)
 
