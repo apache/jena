@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:20:44 $
+ * Last modified on   $Date: 2003-06-26 19:26:08 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.10 2003-06-22 19:20:44 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.11 2003-06-26 19:26:08 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -58,7 +58,7 @@ public class TestListSyntaxCategories
 
     protected static DoListTest[] testCases = {
         // Ontology
-        new DoListTest( "OWL list ontologies",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list ontologies",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {"http://jena.hpl.hp.com/testing/ontology"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -68,7 +68,7 @@ public class TestListSyntaxCategories
                 return r instanceof Ontology;
             }
         },
-        new DoListTest( "DAML list ontologies",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
+        new DoListTest( "DAML list ontologies",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {"http://jena.hpl.hp.com/testing/ontology"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -79,7 +79,7 @@ public class TestListSyntaxCategories
             }
         },
         // Properties
-        new DoListTest( "OWL list properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"p"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -90,7 +90,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "OWL list object properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  2,  
+        new DoListTest( "OWL list object properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,  
                         new String[] {NS+"op", NS+"op1"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -101,7 +101,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "OWL list datatype properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list datatype properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"dp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -112,7 +112,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  21,  
+        new DoListTest( "DAML list properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  21,  
                         null )//new String[] {NS+"rdf-p" /* - will not be recognised without alias processing -, NS+"rdf-p" */} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -123,7 +123,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list object properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  2,  
+        new DoListTest( "DAML list object properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  2,  
                         new String[] {NS+"op", NS+"op1"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -134,7 +134,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list datatype properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
+        new DoListTest( "DAML list datatype properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {NS+"dp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -147,7 +147,7 @@ public class TestListSyntaxCategories
         },
         
         // individuals
-        new DoListTest( "OWL list individuals",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  3,  
+        new DoListTest( "OWL list individuals",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  3,  
                         new String[] {NS+"A0", NS+"A1", NS+"C0"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -157,7 +157,7 @@ public class TestListSyntaxCategories
                 return r instanceof Individual;
             }
         },
-        new DoListTest( "DAML list individuals",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  3,  
+        new DoListTest( "DAML list individuals",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  3,  
                         new String[] {NS+"A0", NS+"A1", NS+"C0"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -168,7 +168,7 @@ public class TestListSyntaxCategories
             }
         },
         
-        new DoListTest( "OWL list all different",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list all different",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -178,7 +178,7 @@ public class TestListSyntaxCategories
                 return r instanceof AllDifferent;
             }
         },
-        new DoListTest( "DAML list all different",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  0,  null,
+        new DoListTest( "DAML list all different",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  0,  null,
                         true /* exception expected */ ) 
         {
             public Iterator doList( OntModel m ) {
@@ -190,7 +190,7 @@ public class TestListSyntaxCategories
         },
         
         // classes
-        new DoListTest( "OWL list classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  11,  
+        new DoListTest( "OWL list classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  11,  
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", } ) 
         {
             public Iterator doList( OntModel m ) {
@@ -200,7 +200,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL list named classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  10,  
+        new DoListTest( "OWL list named classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  10,  
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", } ) 
         {
             public Iterator doList( OntModel m ) {
@@ -210,7 +210,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL list intersection classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list intersection classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"A" } ) 
         {
             public Iterator doList( OntModel m ) {
@@ -220,7 +220,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL list union classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list union classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"B"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -230,7 +230,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL list complement classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list complement classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"C"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -240,7 +240,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL list enumerated classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list enumerated classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"D"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -250,7 +250,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL list restrictions",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list restrictions",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -260,7 +260,7 @@ public class TestListSyntaxCategories
                 return r instanceof Restriction;
             }
         },
-        new DoListTest( "DAML list classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  11,  
+        new DoListTest( "DAML list classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  11,  
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", } ) 
         {
             public Iterator doList( OntModel m ) {
@@ -270,7 +270,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list named classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  10,  
+        new DoListTest( "DAML list named classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  10,  
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", } ) 
         {
             public Iterator doList( OntModel m ) {
@@ -280,7 +280,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list intersection classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
+        new DoListTest( "DAML list intersection classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {NS+"A" } ) 
         {
             public Iterator doList( OntModel m ) {
@@ -290,7 +290,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list union classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
+        new DoListTest( "DAML list union classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {NS+"B"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -300,7 +300,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list complement classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
+        new DoListTest( "DAML list complement classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {NS+"C"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -310,7 +310,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list enumerated classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
+        new DoListTest( "DAML list enumerated classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {NS+"D"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -320,7 +320,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list restrictions",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
+        new DoListTest( "DAML list restrictions",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -332,7 +332,7 @@ public class TestListSyntaxCategories
         },
 
         // Annotation property
-        new DoListTest( "OWL list annotation properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  6,  
+        new DoListTest( "OWL list annotation properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  6,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -346,7 +346,7 @@ public class TestListSyntaxCategories
         // !!!!!!! Following tests use ontology that imports owl.owl !!!!!!!!!!!
         
         // ontologies
-        new DoListTest( "OWL+import list ontologies",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  2,  
+        new DoListTest( "OWL+import list ontologies",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,  
                         new String[] {"http://jena.hpl.hp.com/testing/ontology", "http://www.w3.org/2002/07/owl"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -357,7 +357,7 @@ public class TestListSyntaxCategories
             }
         },
         // Properties
-        new DoListTest( "OWL+import list properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  41,  
+        new DoListTest( "OWL+import list properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  41,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -368,7 +368,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "OWL+import list object properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  2,  
+        new DoListTest( "OWL+import list object properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,  
                         new String[] {NS+"op", NS+"op1"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -379,7 +379,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "OWL+import list datatype properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL+import list datatype properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"dp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -392,7 +392,7 @@ public class TestListSyntaxCategories
         },
         
         // individuals
-        new DoListTest( "OWL+import list individuals",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  8,  
+        new DoListTest( "OWL+import list individuals",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  8,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -403,7 +403,7 @@ public class TestListSyntaxCategories
             }
         },
         
-        new DoListTest( "OWL+import list all different",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL+import list all different",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -415,7 +415,7 @@ public class TestListSyntaxCategories
         },
 
         // classes
-        new DoListTest( "OWL+import list classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  14,  
+        new DoListTest( "OWL+import list classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  14,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -425,7 +425,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL+import list named classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  12,  
+        new DoListTest( "OWL+import list named classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  12,  
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z",
                                       OWL.Thing.getURI(), OWL.Nothing.getURI()} ) 
         {
@@ -436,7 +436,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL+import list intersection classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL+import list intersection classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"A" } ) 
         {
             public Iterator doList( OntModel m ) {
@@ -446,7 +446,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL+import list union classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  2,  
+        new DoListTest( "OWL+import list union classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,  
                         new String[] {NS+"B", OWL.Thing.getURI()} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -456,7 +456,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL+import list complement classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  3,  
+        new DoListTest( "OWL+import list complement classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  3,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -466,7 +466,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL+import list enumerated classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL+import list enumerated classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         new String[] {NS+"D"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -476,7 +476,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "OWL+import list restrictions",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL+import list restrictions",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -526,19 +526,19 @@ public class TestListSyntaxCategories
         extends TestCase
     {
         protected String m_fileName;
-        protected String m_lang;
+        protected OntModelSpec m_spec;
         protected int m_count;
         protected String[] m_expected;
         protected boolean m_exExpected;     // exception expected during list operation
         
-        protected DoListTest( String name, String fileName, String lang, int count, String[] expected ) {
-            this( name, fileName, lang, count, expected, false );
+        protected DoListTest( String name, String fileName, OntModelSpec spec, int count, String[] expected ) {
+            this( name, fileName, spec, count, expected, false );
         }
         
-        protected DoListTest( String name, String fileName, String lang, int count, String[] expected, boolean exExpected ) {
+        protected DoListTest( String name, String fileName, OntModelSpec spec, int count, String[] expected, boolean exExpected ) {
             super( name );
             m_fileName = fileName;
-            m_lang = lang;
+            m_spec = spec;
             m_count = count;
             m_expected = expected;
             m_exExpected = exExpected;
@@ -550,7 +550,7 @@ public class TestListSyntaxCategories
         }
         
         public void runTest() {
-            OntModel m = ModelFactory.createOntologyModel( m_lang );
+            OntModel m = ModelFactory.createOntologyModel( m_spec, null );
             
             m.read( m_fileName );
             
