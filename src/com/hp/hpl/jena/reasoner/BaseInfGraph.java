@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.2 2003-02-10 10:13:24 der Exp $
+ * $Id: BaseInfGraph.java,v 1.3 2003-04-11 09:57:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:13:24 $
+ * @version $Revision: 1.3 $ on $Date: 2003-04-11 09:57:55 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -122,9 +122,8 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * Returns an iterator over Triples.
      */
     public ExtendedIterator find(Node subject, Node property, Node object) {
-        return findWithContinuation(
-                            new TriplePattern(subject, property, object), fdata);
-    }
+        return findWithContinuation(new TriplePattern(subject, property, object), fdata);
+     }
 
     /**
      * Basic pattern lookup interface.
@@ -133,7 +132,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      *  that match the pattern
      */
     public ExtendedIterator find(TriplePattern pattern) {
-        return findWithContinuation(pattern, null);
+        return findWithContinuation(pattern, fdata);
     }
     
     /**
