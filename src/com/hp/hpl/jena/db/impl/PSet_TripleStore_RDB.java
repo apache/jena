@@ -56,7 +56,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.16 $ on $Date: 2003-05-14 03:15:52 $
+* @version $Revision: 1.17 $ on $Date: 2003-05-21 01:00:20 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -285,7 +285,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			boolean isHuge = false; // true if literal larger than MAX_LITERAL
 /*            // Check if the literal can be translated to an int
             try {
-                val = Integer.parseInt(l.toString());
+                val = Integer.parseInt(l.toString());  note: toString doesn't work here. KW
                 isInt = true;
             } catch (NumberFormatException e) {
                 isInt = false;
@@ -293,8 +293,9 @@ public  class PSet_TripleStore_RDB implements IPSet {
 */
             String opname = "insertLiteral";
             			
-			String lit = l.toString();
 			LiteralLabel ll = l.getLiteral();
+			String lit = ll.getLexicalForm();
+
 
 			int len = lit.length();
 			if (len > MAX_LITERAL) 

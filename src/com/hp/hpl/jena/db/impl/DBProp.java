@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public abstract class DBProp {
 
@@ -66,7 +66,7 @@ public abstract class DBProp {
 		}
 		Node result = ((Triple)it.next()).getObject();
 		it.close();
-		return result.toString();
+		return result.getLiteral().getLexicalForm();
 	}			
 	
 	protected void remove() {
