@@ -1,21 +1,34 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.db.test;
 
-import com.hp.hpl.jena.rdf.model.*;
 import junit.framework.* ;
 
 /**
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.21 $
+ * @version 	$Revision: 1.22 $
  */
 public class TestPackage extends TestSuite
 {
+	
+	/*
+	 * this testPackage requires the parameters for a
+	 * database connection to be defined. one method
+	 * is to explicitly define the parameters for
+	 * mysql, oracle, postgresql as shown here below.
+	 * 
+	 * an alternative is to use the "guess" methods
+	 * in ModelFactoryBase to get the parameters from
+	 * a configuration file (see test-db.sh, test.bat,
+	 * test.sh). if the guess methods do not work for
+	 * you, comment them out and use/modify the manual
+	 * settings for your database engine, below.
+	 */
  
 	/*/ oracle settings
 	static String M_DB_URL = "jdbc:oracle:oci8:@";
