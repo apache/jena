@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-15 08:45:04 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-05-16 13:13:01 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.14 2003-05-15 08:45:04 chris-dollin Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.15 2003-05-16 13:13:01 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -583,10 +583,6 @@ public class OntDocumentManager
             if (s != null) {
                 // this will be the key in the mappings
                 String publicURI = s.getResource().getURI();
-
-                Resource cacheURL = null;
-                String prefix = null;
-                Resource language = null;
 
                 // there may be a cached copy for this ontology
                 try {

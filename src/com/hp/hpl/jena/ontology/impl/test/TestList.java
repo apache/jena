@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-09 16:03:15 $
+ * Last modified on   $Date: 2003-05-16 13:13:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.9 2003-05-09 16:03:15 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.10 2003-05-16 13:13:00 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase
@@ -422,7 +422,7 @@ public class TestList
             // now test we get an exception for going beyong the end of the list
             boolean gotEx = false;
             try {
-                RDFNode n = l1.get( toGet.length + 1 );
+                l1.get( toGet.length + 1 );
             }
             catch (ListIndexException e) {
                 gotEx = true;
@@ -463,7 +463,7 @@ public class TestList
             // now test we get an exception for going beyong the end of the list
             boolean gotEx = false;
             try {
-                RDFNode n = l1.replace( toSet.length + 1, toSet[0] );
+                l1.replace( toSet.length + 1, toSet[0] );
             }
             catch (ListIndexException e) {
                 gotEx = true;

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: schemagen_orig.java,v 1.1 2003-05-02 11:49:22 ian_dickinson Exp $
+ * $Id: schemagen_orig.java,v 1.2 2003-05-16 13:11:44 ian_dickinson Exp $
  */
 
 package jena;
@@ -70,7 +70,7 @@ import java.util.HashSet;
  *     are used, or this fixup leads to name clashes.</p>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2003-05-02 11:49:22 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-05-16 13:11:44 $
  */
 public class schemagen_orig extends java.lang.Object {
 
@@ -133,7 +133,7 @@ public class schemagen_orig extends java.lang.Object {
     protected static void read(Model model, String in, String lang)
         throws RDFException, java.io.FileNotFoundException {
         try {
-            URL url = new URL(in);
+            new URL(in);
             model.read(in, lang);
         } catch (java.net.MalformedURLException e) {
             model.read(new FileReader(in), "", lang);

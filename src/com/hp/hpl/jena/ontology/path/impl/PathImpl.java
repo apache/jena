@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: PathImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:45 $
+ * Last modified on   $Date: 2003-05-16 13:13:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PathImpl.java,v 1.2 2003-03-27 16:28:45 ian_dickinson Exp $
+ * @version CVS $Id: PathImpl.java,v 1.3 2003-05-16 13:13:01 ian_dickinson Exp $
  */
 public class PathImpl
     implements Path 
@@ -266,7 +266,6 @@ public class PathImpl
     {
         private int i = 0;
         private StmtIterator si;
-        private Statement s;
         
         protected PathStmtIterator() {
             if (m_prePath != null) {

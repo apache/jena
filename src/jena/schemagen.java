@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-14 14:58:30 $
+ * Last modified on   $Date: 2003-05-16 13:11:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.15 2003-05-14 14:58:30 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.16 2003-05-16 13:11:43 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -1135,7 +1135,7 @@ public class schemagen {
         
         // is it a URI already?  to check, we make a URL and see what happens!
         try {
-            URL u = new URL( url );
+            new URL( url );
         }
         catch (MalformedURLException ignore) {
             legal = false;
@@ -1148,7 +1148,7 @@ public class schemagen {
             url = "file:" + (uriOrFile.startsWith( slash ) ? (slash + slash) : "") + uriOrFile;
             
             try {
-                URL u = new URL( url );
+                new URL( url );
             }
             catch (MalformedURLException ignore) {
                 legal = false;
