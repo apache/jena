@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:44 $
+ * Last modified on   $Date: 2003-06-10 23:11:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,6 +28,7 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.ResourceUtils;
@@ -43,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.16 2003-06-08 21:29:44 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.17 2003-06-10 23:11:11 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -78,9 +79,15 @@ public class OntClassImpl
     };
 
 
-
     // Instance variables
     //////////////////////////////////
+
+    /** Query for properties with this class as domain */
+    protected BindingQueryPlan m_domainQuery;
+    
+    /** Query for properties restricted by this class */
+    protected BindingQueryPlan m_restrictionPropQuery = null;
+    
 
     // Constructors
     //////////////////////////////////
@@ -95,6 +102,22 @@ public class OntClassImpl
      */
     public OntClassImpl( Node n, EnhGraph g ) {
         super( n, g );
+        
+        // pre-built queries
+        // ?x a rdf:Property ; rdfs:domain this.
+        Query q = new Query();
+        q.addMatch( Query.X, getProfile().DOMAIN().asNode(), asNode() );
+        
+        m_domainQuery = getModel().queryHandler().prepareBindings( q, new Node[] {Query.X} );
+        
+        // this rdfs:subClassOf ?x. ?x owl:onProperty ?y.
+        if (getProfile().ON_PROPERTY() != null) {
+            q = new Query();
+            q.addMatch( asNode(), getProfile().SUB_CLASS_OF().asNode(), Query.X );
+            q.addMatch( Query.X, getProfile().ON_PROPERTY().asNode(), Query.Y );
+            
+            m_restrictionPropQuery = getModel().queryHandler().prepareBindings( q, new Node[] {Query.Y} );
+        }
     }
 
 
@@ -450,6 +473,54 @@ public class OntClassImpl
     }
     
 
+    // other utility methods
+    
+    /**
+     * <p>Answer an iteration of the properties that may be used for
+     * instances of this class: i&#046;e&#046; the properties that have this class,
+     * or one of its super-classes, as domain.<p>
+     *
+     * @return An iteration of the properties that have this class in the domain
+     */
+    public Iterator listDeclaredProperties() {
+        return listDeclaredProperties( true );
+    }
+
+
+    /**
+     * <p>Answer an iteration of the properties that may be used for
+     * instances of this class: i&#046;e&#046; the properties that have this class,
+     * or optionally one of its super-classes, as domain.</p>
+     *
+     * @param all If true, use all available information from the class hierarchy;
+     * if false, only use properties defined for this class alone.
+     * @return An iteration of the properties that have this class as domain
+     */
+    public Iterator listDeclaredProperties( boolean all ) {
+        // TODO: how to use all?
+        List altQuery = null;
+        if (m_restrictionPropQuery != null) {
+            altQuery = new ArrayList();
+            altQuery.add( m_restrictionPropQuery );
+        }
+        
+        return ((OntModel) getModel()).queryFor( m_domainQuery, altQuery, OntProperty.class );
+    }
+
+
+    /**
+     * <p>Answer an iterator over the individuals in the model that have this
+     * class among their types.<p>
+     *
+     * @return An iterator over those instances that have this class as one of
+     *         the classes to which they belong
+     */
+    public Iterator listInstances() {
+        return getModel().listStatements( null, RDF.type, this ).mapWith( new SubjectAsMapper( null ) );
+    }
+
+
+    // access to facets
     /** 
      * <p>Answer a view of this class as an enumerated class</p>
      * @return This class, but viewed as an EnumeratedClass node

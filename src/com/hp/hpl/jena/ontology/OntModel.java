@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-10 23:10:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -24,7 +24,9 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.graph.query.BindingQueryPlan;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import java.util.*;
 
@@ -57,7 +59,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.20 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.21 2003-06-10 23:10:33 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -901,6 +903,24 @@ public interface OntModel
      * @return An ont model spec instance.
      */
     public OntModelSpec getSpecification();
+    
+    
+    /**
+     * <p>
+     * Answer the iterator over the resources from the graph that satisfy the given
+     * query, followed by the answers to the alternative queries (if specified). A
+     * typical scenario is that the main query gets resources of a given class (say,
+     * <code>rdfs:Class</code>), while the altQueries query for aliases for that
+     * type (such as <code>daml:Class</code>).
+     * </p>
+     * 
+     * @param query A query to run against the model
+     * @param altQueries An optional list of subsidiary queries to chain on to the first 
+     * @return ExtendedIterator An iterator over the (assumed single) results of 
+     * executing the queries.
+     */
+    public ExtendedIterator queryFor( BindingQueryPlan query, List altQueries, Class asKey );
+
 }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:15 $
+ * Last modified on   $Date: 2003-06-10 23:11:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.17 2003-06-08 18:53:15 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.18 2003-06-10 23:11:12 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -914,6 +914,42 @@ public class TestClassExpression
                     assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
                     assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
                     assertTrue( "max cardinality test not correct",   a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.listInstances", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass A = m.createClass( NS + "A" );
+                    OntClass B = m.createClass( NS + "B" );
+                    
+                    Individual a0 = m.createIndividual( A );
+                    Individual a1 = m.createIndividual( NS + "a1", A );
+                    Individual b0 = m.createIndividual( B );
+                    /*Individual b1 =*/ m.createIndividual( NS + "b1", B );
+                    b0.addRDFType( A );
+                    
+                    iteratorTest( A.listInstances(), new Object[] {a0, a1, b0} );
+                }
+            },
+            new OntTestCase( "OntClass.listDefinedProperties", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass A = m.createClass( NS + "A" );
+                    //OntClass B = m.createClass( NS + "B" );
+                    OntClass C = m.createClass( NS + "C" );
+                    
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    ObjectProperty q = m.createObjectProperty( NS + "q" );
+                    ObjectProperty r = m.createObjectProperty( NS + "r" );
+                    ObjectProperty s = m.createObjectProperty( NS + "s" );
+                    
+                    p.setDomain( A );
+                    q.setDomain( A );
+                    s.setDomain( C );
+                    
+                    Restriction r0 = m.createRestriction( r );
+                    C.addSuperClass( r0 );
+                    
+                    iteratorTest( A.listDeclaredProperties(), new Object[] {p, q} );
+                    iteratorTest( C.listDeclaredProperties(), new Object[] {s, r} );
                 }
             },
             

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-10 23:10:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -38,7 +38,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.10 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.11 2003-06-10 23:10:33 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -326,6 +326,40 @@ public interface OntClass
      */
     public void removeDisjointWith( Resource cls );
     
+
+    // other utility methods
+    
+    /**
+     * <p>Answer an iteration of the properties that may be used for
+     * instances of this class: i&#046;e&#046; the properties that have this class,
+     * or one of its super-classes, as domain.<p>
+     *
+     * @return An iteration of the properties that have this class in the domain
+     */
+    public Iterator listDeclaredProperties();
+
+
+    /**
+     * <p>Answer an iteration of the properties that may be used for
+     * instances of this class: i&#046;e&#046; the properties that have this class,
+     * or optionally one of its super-classes, as domain.</p>
+     *
+     * @param all If true, use all available information from the class hierarchy;
+     * if false, only use properties defined for this class alone.
+     * @return An iteration of the properties that have this class as domain
+     */
+    public Iterator listDeclaredProperties( boolean all );
+
+
+    /**
+     * <p>Answer an iterator over the individuals in the model that have this
+     * class among their types.<p>
+     *
+     * @return An iterator over those instances that have this class as one of
+     *         the classes to which they belong
+     */
+    public Iterator listInstances();
+
 
     // access to facets
 
