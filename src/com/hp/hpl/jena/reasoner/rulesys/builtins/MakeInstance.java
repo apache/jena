@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: MakeInstance.java,v 1.7 2003-08-27 13:11:14 andy_seaborne Exp $
+ * $Id: MakeInstance.java,v 1.8 2003-09-29 20:52:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.BBRuleContext;
+//import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.graph.*;
 
 /**
@@ -23,7 +24,7 @@ import com.hp.hpl.jena.graph.*;
  * an optional type cor the T value.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-27 13:11:14 $
+ * @version $Revision: 1.8 $ on $Date: 2003-09-29 20:52:27 $
  */
 public class MakeInstance extends BaseBuiltin {
 
