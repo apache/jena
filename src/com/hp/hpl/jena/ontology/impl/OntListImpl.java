@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-19 10:54:24 $
+ * Last modified on   $Date: 2003-02-20 10:57:13 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.4 2003-02-19 10:54:24 chris-dollin Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.5 2003-02-20 10:57:13 chris-dollin Exp $
  */
 public class OntListImpl
     extends ResourceImpl
@@ -197,7 +197,7 @@ public class OntListImpl
         
         // @todo fix this once we know what the official mechanism is for mapping Resource -> Polymorphic
         Resource tail = getProperty( getVocabulary().getTail() ).getResource();
-        return (OntList) ((EnhNode) tail).as( OntList.type );
+        return (OntList) tail.as( OntList.type );
     }
     
     
@@ -218,7 +218,7 @@ public class OntListImpl
         checkNotNil( "Tried to set the tail of an empty list" );
 
         // @todo fix this once we know what the official mechanism is for mapping Resource -> Polymorphic
-        return (OntList) ((EnhNode) setTailAux( this, tail, getVocabulary().getTail() )).as( OntList.type );
+        return (OntList) (setTailAux( this, tail, getVocabulary().getTail() )).as( OntList.type );
     }
     
     
@@ -266,7 +266,7 @@ public class OntListImpl
         
         // create a new, anonymous typed resource to be the list cell
         // map to a list facet @todo fixme Resource -> polymorphic
-        return (OntList) ((EnhNode) newListCell( value, this )).as( OntList.type );
+        return (OntList) (newListCell( value, this )).as( OntList.type );
     }
     
     
@@ -868,7 +868,7 @@ public class OntListImpl
             }
         }
         else {
-            return (OntList) ((EnhNode) l).as( OntList.type );
+            return (OntList) l.as( OntList.type );
         }
     }
     
@@ -910,7 +910,7 @@ public class OntListImpl
         list.addProperty( tail, getVocabulary().getNil() );
             
         // @todo fixme resource -> polymorphic
-        return (OntList) ((EnhNode) start).as( OntList.type );
+        return (OntList) start.as( OntList.type );
     }
     
     

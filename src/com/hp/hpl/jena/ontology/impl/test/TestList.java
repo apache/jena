@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-13 22:45:44 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-02-20 10:57:13 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.2 2003-02-13 22:45:44 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.3 2003-02-20 10:57:13 chris-dollin Exp $
  */
 public class TestList
     extends TestCase
@@ -129,7 +129,7 @@ public class TestList
             Resource listHead = root.getProperty( m.getProperty( NS + "p" ) ).getResource();
         
             // @todo make this cast go away once the proper connection from model layer -> enhanced layer is defined
-            OntList l = (OntList) ((EnhNode) listHead).as( OntList.type );
+            OntList l = (OntList) listHead.as( OntList.type );
             assertNotNull( "as(OntList) should not return null for root", l );
         
             return l;
@@ -293,7 +293,7 @@ public class TestList
             m.add( list1, RDF.first, "george" );
             m.add( list1, RDF.rest, nil );
             
-            OntList l2 = (OntList) ((EnhNode) list1).as( OntList.type );
+            OntList l2 = (OntList) list1.as( OntList.type );
             assertNotNull( "as(OntList) should not return null for root", l2 );
             checkValid( "settail2", l2, true );
             
@@ -323,7 +323,7 @@ public class TestList
             Property p = m.createProperty( NS, "p");
             
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
-            OntList list = (OntList) ((EnhNode) nil).as( OntList.type );
+            OntList list = (OntList) nil.as( OntList.type );
             
             Resource[] toAdd = new Resource[] {
                                     m.createResource( NS + "e" ),
@@ -365,7 +365,7 @@ public class TestList
             Property p = m.createProperty( NS, "p");
             
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
-            OntList list = (OntList) ((EnhNode) nil).as( OntList.type );
+            OntList list = (OntList) nil.as( OntList.type );
             
             Resource[] toAdd = new Resource[] {
                                     m.createResource( NS + "a" ),
@@ -507,7 +507,7 @@ public class TestList
             Model m = ModelFactory.createDefaultModel();
             
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
-            OntList list = (OntList) ((EnhNode) nil).as( OntList.type );
+            OntList list = (OntList) nil.as( OntList.type );
             
             Resource r = m.createResource( NS + "a" );
             
@@ -532,7 +532,7 @@ public class TestList
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
-            OntList list = (OntList) ((EnhNode) nil).as( OntList.type );
+            OntList list = (OntList) nil.as( OntList.type );
             
             Resource r = m.createResource( NS + "foo" );
             
@@ -570,7 +570,7 @@ public class TestList
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
-            OntList list = (OntList) ((EnhNode) nil).as( OntList.type );
+            OntList list = (OntList) nil.as( OntList.type );
             
             Resource r = m.createResource( NS + "foo" );
             
@@ -612,7 +612,7 @@ public class TestList
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
-            OntList nilList = (OntList) ((EnhNode) nil).as( OntList.type );
+            OntList nilList = (OntList) nil.as( OntList.type );
             
             // create a list of foos
             Resource[] rs = new Resource[] {
@@ -684,8 +684,8 @@ public class TestList
             Model m = ModelFactory.createDefaultModel();
             
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
-            OntList list0 = (OntList) ((EnhNode) nil).as( OntList.type );
-            OntList list1 = (OntList) ((EnhNode) nil).as( OntList.type );
+            OntList list0 = (OntList) nil.as( OntList.type );
+            OntList list1 = (OntList) nil.as( OntList.type );
             
             Resource r0 = m.createResource( NS + "x" );
             Resource r1 = m.createResource( NS + "y" );
@@ -717,7 +717,7 @@ public class TestList
             Model m = ModelFactory.createDefaultModel();
            
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
-            OntList nilList = (OntList) ((EnhNode) nil).as( OntList.type );
+            OntList nilList = (OntList) nil.as( OntList.type );
             
             // create a list of foos
             Resource[] r0 = new Resource[] {

@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-02-19 10:53:39 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-02-20 10:57:13 $'
  */
 
 import com.hp.hpl.jena.mem.*;
@@ -145,11 +145,21 @@ abstract public class ModelCom extends EnhGraph
         return add( s, p, o, l, false );
     }
     
-    public Model add(Resource s, Property p, Object o) throws RDFException {
-        return o instanceof RDFNode
-            ? add( s, p, (RDFNode) o )
-            : add( s, p, o.toString() )
+    /**
+        ensure that an object is an RDFNode. If it isn't, fabricate a literal
+        from its string representation. NOTE: probably proper data-typing
+        makes this suspect - Chris introduced it to abstract from some existing code.
+    */
+    private RDFNode ensureRDFNode( Object o )
+        {
+        return o instanceof RDFNode 
+            ? (RDFNode) o 
+            : literal( o.toString(), null, false )
             ;
+        }
+        
+    public Model add(Resource s, Property p, Object o) throws RDFException {
+        return add( s, p, ensureRDFNode( o ) );
     }
     
     public Model add(StmtIterator iter) throws RDFException {
@@ -352,10 +362,7 @@ abstract public class ModelCom extends EnhGraph
     
     public boolean contains(Resource s, Property p, Object o)
       throws RDFException {
-        return o instanceof RDFNode
-            ? contains( s, p, (RDFNode) o )
-            : contains( s, p, o.toString() )
-            ;
+          return contains( s, p, ensureRDFNode( o ) );
     }
     
     public boolean containsAny(StmtIterator iter) throws RDFException {
@@ -427,10 +434,7 @@ abstract public class ModelCom extends EnhGraph
     
     public ResIterator listSubjectsWithProperty(Property p, Object o)
     throws RDFException {
-        return o instanceof RDFNode
-            ?  listSubjectsWithProperty( p, (RDFNode) o )
-            :  listSubjectsWithProperty( p, o.toString() )
-            ;
+        return listSubjectsWithProperty( p, ensureRDFNode( o ) );
     }
     
     public Resource createResource(Resource type) throws RDFException {
@@ -673,11 +677,7 @@ abstract public class ModelCom extends EnhGraph
     
     public Statement createStatement(Resource r, Property p, Object o)
     throws RDFException {
-        if (o instanceof RDFNode) {
-            return createStatement(r, p, (RDFNode) o);
-        } else {
-            return createStatement(r, p, createLiteral(o));
-        }
+        return createStatement( r, p, ensureRDFNode( o ) );
     }
     
     public Statement createStatement(Resource r, Property p, String o,
@@ -727,10 +727,7 @@ abstract public class ModelCom extends EnhGraph
     }
     
     public Seq getSeq(Resource r) throws RDFException {
-    	if ( r instanceof EnhNode )
-    	   return (Seq)((EnhNode)r).as( Seq.class );
-        else
-           return getSeq(r.getURI());
+        return (Seq) r.as( Seq.class );
     }
     
     public Bag getBag(String uri) throws RDFException {
@@ -738,10 +735,7 @@ abstract public class ModelCom extends EnhGraph
     }
     
     public Bag getBag(Resource r) throws RDFException {
-    	if ( r instanceof EnhNode )
-    	   return (Bag)((EnhNode)r).as( Bag.class );
-        else
-           return getBag(r.getURI());
+        return (Bag) r.as( Bag.class );
     }
     
     static private Node makeURI(String uri) {
@@ -756,12 +750,7 @@ abstract public class ModelCom extends EnhGraph
     }
     
     public Alt getAlt(Resource r) throws RDFException {
-    	if ( r instanceof EnhNode )
-            {
-    	   return (Alt)((EnhNode)r).as( Alt.class );
-            }
-       else
-           return getAlt(r.getURI());
+        return (Alt) r.as( Alt.class );
     }
     
     public long size() throws RDFException {

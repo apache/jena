@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhNode.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.3 2003-02-20 10:56:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
 import com.hp.hpl.jena.graph.*;
 import org.apache.log4j.*;
-
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * <p>
@@ -21,7 +21,7 @@ import org.apache.log4j.*;
  *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (refactoring and commentage)
 */
 public class EnhNode 
-    extends Polymorphic 
+    extends Polymorphic
 {
     // Static variables
     /** For writing to the log file in the context of this class */
@@ -65,9 +65,13 @@ public class EnhNode
      * @return An enhanced nodet that corresponds to t; this may be <i>this</i>
      *         Java object, or a different object.
      */ 
-    public EnhNode as( Class t ) {
+    public EnhNode viewAs( Class t ) {
         return (EnhNode) asInternal( t ); 
     }
+    
+    /** allow subclasses to implement RDFNode & its subinterface */
+    public RDFNode as( Class t )
+        { return (RDFNode) viewAs( t ); }
       
     /**
      * The hash code of an enhanced node is defined to be the same as the underlying node.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.3 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.4 2003-02-20 10:57:13 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -102,8 +102,8 @@ public class TestPackage extends GraphTestBase implements SPO {
         assertTrue(title +":sanity",n instanceof Polymorphic);
         
         // It is always possible to view any node with any interface.
-        TestNode as1 = (TestNode)((EnhNode)n).as(intf);
-        TestNode as2 = (TestNode)((EnhNode)n).as(intf);
+        TestNode as1 = (TestNode)((EnhNode)n).viewAs(intf);
+        TestNode as2 = (TestNode)((EnhNode)n).viewAs(intf);
         
         // caching should ensure we get the same result both times.
         assertTrue( title + ":idempotency", as1==as2 );

@@ -37,11 +37,10 @@ import com.hp.hpl.jena.enhanced.*;
 
 import com.hp.hpl.jena.graph.*;
 
-
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-02-19 10:53:39 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-02-20 10:57:13 $
  */
 public class StatementImpl //extends ResourceImpl 
           implements Statement {
@@ -105,14 +104,6 @@ public class StatementImpl //extends ResourceImpl
         return object;
     }    
     
-    public Statement getProperty(Property p) throws RDFException {
-        if (object instanceof Resource) {
-            return ((Resource) object).getProperty(p);
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTRESOURCE);
-        }
-    }    
-    
     public Statement getStatementProperty(Property p) throws RDFException {
         return asResource().getProperty(p);
     }
@@ -124,7 +115,15 @@ public class StatementImpl //extends ResourceImpl
             throw new RDFException(RDFException.OBJECTNOTRESOURCE);
         }
     }
-    
+
+    public Statement getProperty(Property p) throws RDFException {
+        return getResource().getProperty( p );
+    }    
+        
+    /**
+        get the object field of this statement, insisting that it be a Literal.
+        If it isn't, throw RDFException.OBJECTNOTLITERAL.
+    */
     public Literal getLiteral() throws RDFException {        
         if (object instanceof Literal) {
             return (Literal) object;
@@ -134,76 +133,39 @@ public class StatementImpl //extends ResourceImpl
     }
     
     public boolean getBoolean() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getBoolean();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().getBoolean();
     }
     
     public byte getByte() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getByte();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().getByte();
     }
     
     public short getShort() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getShort();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().getShort();
     }
     
     public int getInt() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getInt();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().getInt();
     }
     
     public long getLong() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getLong();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().getLong();
     }
     
     public char getChar() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getChar();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().getChar();
     }
     
     public float getFloat() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getFloat();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().getFloat();
     }
     
     public double getDouble() throws RDFException {
-        
-        if (object instanceof Literal) {
-            return ((Literal) object).getDouble();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().getDouble();
     }
     
     public String getString() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).toString();
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTLITERAL);
-        }
+        return getLiteral().toString();
     }
     
     public Resource getResource(ResourceF f) throws RDFException {
@@ -227,8 +189,9 @@ public class StatementImpl //extends ResourceImpl
         }
     }
     
-   private EnhNode get(Class interf) {
-        EnhNode rslt = ((EnhNode)object).as(interf);
+   /** I suspect that this is now not pulling its weight. */
+   private EnhNode get( Class interf ) {
+        EnhNode rslt = (EnhNode) object.as( interf );
         if ( ! rslt.supports( interf ))
             throw new RDFException(RDFException.OBJECTWRONGTYPE);
         return rslt;
@@ -247,19 +210,11 @@ public class StatementImpl //extends ResourceImpl
     }    
     
     public String getLanguage() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getLanguage();
-        } else {
-            throw new RDFException(RDFException.OBJECTWRONGTYPE);
-        }
+        return getLiteral().getLanguage();
     }      
     
     public boolean getWellFormed() throws RDFException {
-        if (object instanceof Literal) {
-            return ((Literal) object).getWellFormed();
-        } else {
-            throw new RDFException(RDFException.OBJECTWRONGTYPE);
-        }
+        return getLiteral().getWellFormed();
     }      
     
     public Statement set(boolean o) throws RDFException {
@@ -319,7 +274,7 @@ public class StatementImpl //extends ResourceImpl
     /**
         "replace" the Object of this statement with the literal string value _s_. NOTE: this is
         a convenience function to eliminate the use of a deprecated constructor; when 
-        date-types are put properly into Jena, it will likely disappear. 
+        data-types are put properly into Jena, it will likely disappear. 
     */
     protected StatementImpl stringReplace( String s )
         { return stringReplace( s, "", false ); };

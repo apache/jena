@@ -36,8 +36,10 @@ import com.hp.hpl.jena.graph.Node;
  *
  * <p><CODE>RDFNode</CODE> represents the methods which RDF Resources and RDF
  * Literals have in common.</p>
+ * <p>Chris added the _as_ method to allow RDFNodes to participate in polymorphic
+ * conversions.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:17:52 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-20 10:57:13 $'
  */
 public interface RDFNode {
     /** Return a String representation of the node.  The form of the string depends
@@ -45,5 +47,22 @@ public interface RDFNode {
      * @return a String representation of this object.
      */
     public String toString();
+    
+    /**
+        a presentation-layer RDFNode is build on top of an SPI-layer Node; get it.
+    */
     public Node asNode();
+    
+    /**
+    <p>
+        RDFNodes can be converted to different implementation types. Convert
+        this RDFNode to a type supporting the _view_ interface. The resulting
+        RDFNode should be an instance of _view_ and should have any
+        internal invariants specified.
+    <p>
+        It is not clear what should happen if this RDFNode cannot be viewed as
+        a _view_. Should it deliver null or should it throw an exception? Or
+        deliver a half-baked instance?
+    */
+    public RDFNode as( Class view );
 }
