@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMapping.java,v 1.2 2003-04-29 12:30:09 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.3 2003-04-29 15:37:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -25,10 +25,26 @@ public interface PrefixMapping
         
         @param prefix the string to be used for the prefix.
         @param uri the URI prefix to be named
-        @exception perhaps later
+        @exception IllegalPrefixException if the prefix is not an XML NCName
     */
     void setNsPrefix( String prefix, String uri );
     
+    /**
+        Copies the prefixes from other into this. Any existing binding of the
+        same prefix is lost.
+        
+        @param other the PrefixMapping to add
+    */
+    void setNsPrefixes( PrefixMapping other );
+    
+    /**
+        Copies the prefix mapping from other into this. Illegal prefix mappings
+        are detected. Existing binds of the same prefix are lost.
+        
+        @param map the Map whose maplets are to be added
+    */
+    void setNsPrefixes( Map map );
+       
     /**
         Get the URI bound to a specific prefix, null if there isn't one.
         

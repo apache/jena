@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.1 2003-04-29 12:31:31 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.2 2003-04-29 15:37:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -30,7 +30,8 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         
     static final String crispURI = "http://crisp.nosuch.net/";
     static final String ropeURI = "scheme:rope/string#";
-    
+    static final String butterURI = "ftp://ftp.nowhere.at.all/cream#";
+        
     static final String [] badNames =
         {
         "<hello>",
@@ -168,13 +169,52 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     
     public static void testUseEasyPrefix( String title, PrefixMapping ns )
         {
-        String butterURI = "ftp://ftp.nowhere.at.all/cream#";
         ns.setNsPrefix( "crisp", crispURI );
         ns.setNsPrefix( "butter", butterURI );
         assertEquals( title, "", ns.usePrefix( "" ) );
         assertEquals( title, ropeURI, ns.usePrefix( ropeURI ) );
         assertEquals( title, "crisp:tail", ns.usePrefix( crispURI + "tail" ) );
         assertEquals( title, "butter:here:we:are", ns.usePrefix( butterURI + "here:we:are" ) );
+        }
+        
+    /**
+        test that we can add the maplets from another PrefixMapping without
+        losing our own.
+    */
+    public void testAddOtherPrefixMapping()
+        {
+        PrefixMapping a = getMapping();
+        PrefixMapping b = getMapping();
+        assertFalse( "must have two diffferent maps", a == b );
+        a.setNsPrefix( "crisp", crispURI );
+        a.setNsPrefix( "rope", ropeURI );
+        b.setNsPrefix( "butter", butterURI );
+        assertEquals( null, b.getNsPrefixURI( "crisp") );
+        assertEquals( null, b.getNsPrefixURI( "rope") );
+        b.setNsPrefixes( a );
+        checkContainsMapping( b );
+        }
+        
+    private void checkContainsMapping( PrefixMapping b )
+        {
+        assertEquals( crispURI, b.getNsPrefixURI( "crisp") );
+        assertEquals( ropeURI, b.getNsPrefixURI( "rope") );
+        assertEquals( butterURI, b.getNsPrefixURI( "butter") );
+        }
+        
+    /**
+        as for testAddOtherPrefixMapping, except that it's a plain Map
+        we're adding.
+    */
+    public void testAddMap()
+        {
+        PrefixMapping b = getMapping();
+        Map map = new HashMap();
+        map.put( "crisp", crispURI );
+        map.put( "rope", ropeURI );
+        b.setNsPrefix( "butter", butterURI );
+        b.setNsPrefixes( map );
+        checkContainsMapping( b );
         }
     }
 
