@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   *$Id: ARPFilter.java,v 1.3 2003-03-28 19:18:14 jeremy_carroll Exp $
+   *$Id: ARPFilter.java,v 1.4 2003-03-29 09:42:00 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -340,9 +340,10 @@ class ARPFilter
         setErrorMode(WARN_UNKNOWN_RDF_ELEMENT, warning);
         setErrorMode(WARN_UNKNOWN_RDF_ATTRIBUTE, warning);
         setErrorMode(WARN_UNKNOWN_XML_ATTRIBUTE, nonErrorMode);
-        setErrorMode(WARN_QNAME_AS_ID, warning);
+        setErrorMode(WARN_QNAME_AS_ID, error);
         //      setErrorMode(WARN_BAD_XML, error);
         setErrorMode(WARN_SAX_WARNING, warning);
+        setErrorMode(IGN_DAML_COLLECTION, error);
     }
     int setErrorMode(int errno, int mode) {
         int old = errorMode[errno];
@@ -435,6 +436,10 @@ class ARPFilter
                 val.equals("daml:collection")
                     && errorMode[WARN_IN_STRICT_MODE] != EM_ERROR) {
                 pipe.putNextToken(new StrToken(AV_DAMLCOLLECTION, where, val));
+                        putWarning(
+                            IGN_DAML_COLLECTION,
+                            where,
+                            "Illegal parseType: " + val);
             } else {
                 pipe.putNextToken(new StrToken(AV_LITERAL, where, val));
                 if (!val.equals("Literal")) {

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.2 2003-01-13 18:22:48 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.3 2003-03-29 09:42:00 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -92,6 +92,14 @@ public interface ARPErrorNumbers {
      @see #IGN_XMLBASE_USED
      */
     public int IGN_XMLBASE_SIGNIFICANT = 3;
+    /**
+     The use of rdf:parseType="daml:collection" does
+     not conform with RDF2003. (W004)
+     This is ignored in default mode and an error in strict mode.
+     Note: strictly speaking the conformant behaviour is to silently
+     treat this as rdf:parseType="Literal".
+   */
+    public int IGN_DAML_COLLECTION = 4;
     /**
      Indicates that no name is known for the current file being parsed.
     The ARP interface prevents the user from not (at least implicitly)

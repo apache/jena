@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.3 2003-03-28 13:11:53 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.4 2003-03-29 09:42:24 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
@@ -12,12 +12,15 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
 import org.apache.xerces.util.XMLChar;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.util.Log;
+//import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.RSS;
 import com.hp.hpl.jena.vocabulary.VCARD;
+
+import com.hp.hpl.jena.rdf.arp.URI;
+import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
@@ -27,6 +30,8 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import java.io.*;
 import java.util.*;
 import org.apache.xerces.util.EncodingMap;
+import org.apache.log4j.Logger;
+
 
 /** 
  * This is not part of the public API.
@@ -48,9 +53,12 @@ import org.apache.xerces.util.EncodingMap;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-03-28 13:11:53 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-03-29 09:42:24 $'
  */
 abstract public class BaseXMLWriter implements RDFWriter {
+    /** log4j logger */
+    protected static Logger logger = Logger.getLogger(BaseXMLWriter.class);
+
 	private Relation nameSpaces = new Relation();
 	private Map ns;
 	static private Set badRDF = new HashSet();
@@ -153,7 +161,7 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		if ( ns != null )
 		  return;
 		ns = new HashMap();
-		Set used = new HashSet();
+		Set used = new HashSet(); // prefixes used.
 		Iterator it = namespacesNeeded.iterator();
 
 		// Each uri may be set as a system property,
@@ -281,10 +289,9 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		}
 		boolean cookUp = false;
 		if (prefix == null) {
-			Log.warning(
+			logger.warn(
 				"Internal error using j.cook.up code: <" + uri+">",
-				"BaseXMLWriter",
-				"tag", new RuntimeException());
+				 new RuntimeException());
 			cookUp = true;
 		} else if (prefix.length() == 0) {
 			if (type == ATTR || type == FASTATTR)
@@ -317,10 +324,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 				case END :
 					break;
 				case FAST :
-					Log.severe(
-						"Unreachable code - reached.",
-						"BasexXMLWriter",
-						"tag");
+					logger.fatal(
+						"Unreachable code - reached.");
 					throw new RuntimeException("Shouldn't happen.");
 			}
 		}
@@ -398,23 +403,32 @@ abstract public class BaseXMLWriter implements RDFWriter {
 				pw.println(decl);
 			}
 		}
+        try {
 		if (xmlBase == null) {
+            
+            baseURI = (base == null || base.length()==0) ? null : new URI(base);
 			writeBody(model, pw, base, false);
 		} else {
+            baseURI =  xmlBase.length()==0 ? null : new URI(xmlBase);
 			writeBody(model, pw, xmlBase, true);
 		}
+        }
+        catch (MalformedURIException e) {
+            throw new RDFException(e);
+        }
 		pw.flush();
 	}
+    private URI baseURI;
 	private boolean checkPrefix(String prefix) {
 		if (prefix.equals(""))
 			return true;
 		if (prefix.toLowerCase().startsWith("xml"))
-			Log.warning(
+			logger.warn(
 				"Namespace prefix '" + prefix + "' is reserved by XML.");
 		else if (!XMLChar.isValidNCName(prefix))
-			Log.warning("'" + prefix + "' is not a legal namespace prefix.");
+			logger.warn("'" + prefix + "' is not a legal namespace prefix.");
 		else if (matcher.matches(prefix, jenaNamespace))
-			Log.warning(
+			logger.warn(
 				"Namespace prefix '" + prefix + "' is reserved by Jena.");
 		else
 			return true;
@@ -426,6 +440,12 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			nameSpaces.set11(ns, prefix);
 		}
 	}
+    
+    String relativize(String uri) {
+        if ( relativeFlags != 0 && baseURI != null)
+           return baseURI.relativize(uri,relativeFlags);
+        return uri;
+    }
 
 	abstract void writeBody(
 		Model mdl,
@@ -492,45 +512,6 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		return new String(result + ESCAPE);
 	}
 
-	/**
-	 * Set properties for this writer
-	 *
-	 * The following properties are supported:
-	 *
-	 *  PropName  propValue Description
-	 *  
-	 *  xmlbase   String    the value of an xml:base attribute to set on
-	 *                      the output.
-	 *
-	 *  longId    Boolean   Whether to use long or short id's for anon
-	 *                      resources.  Short id's are easier to read and
-	*                         are
-	* the default, but can run out of memory on very                      large
-	* models.
-	 *
-	 * @param propName the name of the property being set
-	 * @param propValue the value of the property
-	 * @return the old value for this property, or <code>null</code>
-	 * if no value was set.
-	
-	public Object setProperty(String propName, Object propValue)
-		throws RDFException {
-		if (propName.equalsIgnoreCase("xmlbase")) {
-			String result = xmlBase;
-			xmlBase = (String) propValue;
-			return result;
-		} else if (propName.equalsIgnoreCase("longid")) {
-			Boolean result = new Boolean(longId);
-			longId = ((Boolean) propValue).booleanValue();
-			return result;
-		} else {
-			Log.warning(
-				"Unsupported property: " + propName,
-				"BaseXMLWriter",
-				"setProperty");
-			return null;
-		}
-	} */
 
 	/** Sets properties on this writer.
 	 *  Current properties are:
@@ -542,6 +523,25 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	 * <dd> (true or false) Whether to use long or short id's for anon
 	 * resources. Short id's are easier to read and are the default, but can run
 	 * out of memory on very large models.
+     * <dt>relativeURIs
+     * <dd>A comma separate list of options:
+     *    <dl>
+     *    <dt>same-document
+     *    <dd>same-document references (e.g. "" or "#foo")
+     *    <dt>network
+     *    <dd>network paths e.g. "//example.org/foo" omitting the URI scheme
+     *    <dt>absolute
+     *    <dd>absolute paths e.g. "/foo" omitting the scheme and authority
+     *    <dt>relative
+     *    <dd>relative path not begining in "../"
+     *    <dt>parent
+     *    <dd>relative path begining in "../"
+     *    <dt>grandparent
+     *    <dd>relative path begining in "../../"
+     *    </dl>
+     *    The default value is "same-document, absolute, relative, parent".
+     *    Relative    URIs of any of these types are output where possible if
+     * and only if the option has been specified.
 	 * <dt>showXmlDeclaration
 	 * <dd>can be true, false or "default" (null)
 	 *  If true, an XML Declaration is included in the output, if false
@@ -626,23 +626,32 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			return result;
 		} else if (propName.equalsIgnoreCase("prettyTypes")) {
 			return setTypes((Resource[]) propValue);
-		} else {
-			Log.warning(
-				"Unsupported property: " + propName,
-				"BaseXMLWriter",
-				"setProperty");
+		} else if (propName.equalsIgnoreCase("relativeURIs")) {
+            int old = relativeFlags;
+            relativeFlags = URI.str2flags((String)propValue);
+            return URI.flags2str(old);
+        } else {
+			logger.warn(
+				"Unsupported property: " + propName
+				);
 			return null;
 		}
 	}
 
 	Resource[] setTypes(Resource x[]) {
-		Log.warning(
-			"prettyTypes is not a property on the Basic RDF/XML writer.",
-			"BaseXMLWriter",
-			"setTypes");
+		logger.warn(
+			"prettyTypes is not a property on the Basic RDF/XML writer.");
 		return null;
 	}
-
+    /*
+    private boolean sameDocument = true;
+    private boolean network = false;
+    private boolean absolute = true;
+    private boolean relative = true;
+    private boolean parent = true;
+    private boolean grandparent = false;
+*/
+   private int relativeFlags = URI.SAMEDOCUMENT|URI.ABSOLUTE|URI.RELATIVE|URI.PARENT;
 }
 
 /*
