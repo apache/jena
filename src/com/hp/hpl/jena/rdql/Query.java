@@ -26,12 +26,12 @@ import com.hp.hpl.jena.rdf.model.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.7 2003-06-13 17:06:56 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.8 2003-07-15 12:43:04 andy_seaborne Exp $
  */
 
 public class Query
 {
-    static Logger logger = Logger.getLogger("com.hp.hpl.jena.rdql") ;
+    static Logger logger = Logger.getLogger(Query.class) ;
     
     // The names of variables wanted by the caller.
     protected List resultVars = new ArrayList() ;         // Type in list: String name
