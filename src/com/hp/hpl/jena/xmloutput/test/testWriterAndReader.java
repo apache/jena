@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterAndReader.java,v 1.1.1.1 2002-12-19 19:22:06 bwm Exp $
+  $Id: testWriterAndReader.java,v 1.2 2003-01-31 12:10:27 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:22:06 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-31 12:10:27 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     static private boolean showProgress = false;
@@ -241,7 +241,8 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
                 Model s1 = m1;
                 Model s2 = m2;
                 assertTrue(
-                    "Comparison of file written out, and file read in.",
+                    "Comparison of file written out, and file read in. See "
+                    + tmpFile1.getAbsolutePath(),
                     s1.isIsomorphicWith(s2));
 
                 if (!keepFiles) {
@@ -387,5 +388,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.1.1.1 2002-12-19 19:22:06 bwm Exp $
+ * $Id: testWriterAndReader.java,v 1.2 2003-01-31 12:10:27 jeremy_carroll Exp $
  */
