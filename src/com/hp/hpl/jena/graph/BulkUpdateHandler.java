@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BulkUpdateHandler.java,v 1.2 2003-04-22 15:30:55 chris-dollin Exp $
+  $Id: BulkUpdateHandler.java,v 1.3 2003-04-23 09:43:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -10,19 +10,67 @@ import java.util.*;
 
 /**
     Defines how bulk update may be done on Graphs.
+<p>
+    Bulk updates are not necessarily transactions; that is, a bulk update may
+    fail part-way through, leaving some but not all triples added or deleted.
+    However, if a bulk update does not fail (ie throw an exception) then the
+    addition or removal of triples must have been successfully completed
+    in accordance with the operation of the owning graph.    
     
  	@author kers
 */
 public interface BulkUpdateHandler
     {
+    /**
+        Add all the triples into the graph this is handler for.
+        @param triples an array of triples to add
+    */
     void add( Triple [] triples );
+    
+    /**
+        Add all the triples in the list into the graph this is handler for.
+        Each element of the List must be a Triple.
+        @param triples a list of Triple objects to add
+    */
     void add( List triples );
+    
+    /**
+        Add all the elements from the iterator into the graph this is handler for.
+        Each element of the iterator must be a Triple. 
+        @param it an Iterator delivering Triples
+    */
     void add( Iterator it );
+    
+    /**
+        Add all the triples of the given graph into the graph this is handler for.
+        @param g a Graph whose triples are to be added
+    */
     void add( Graph g );
     
+    /**
+        Remove all the triples from the graph this is handler for.
+        @param triples an array of triples to remove
+    */
     void delete( Triple [] triples );
+    
+    /**
+        Remove all the triples in the list from the graph this is handler for.
+        Each element of the List must be a Triple.
+        @param triples a list of triples to remove
+    */
     void delete( List triples );
+    
+    /**
+        Remove all the triples in the iterator from the graph this is handler for.
+        Each element from the iterator must be a Triple.
+        @param it an iterator over Triple
+    */
     void delete( Iterator it );
+    
+    /**
+        Remove all the triples of the given graph from the graph this is handler for.
+        @param g a graph whose triples are to be removed
+    */
     void delete( Graph g );
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.8 2003-04-15 09:55:28 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.9 2003-04-23 09:43:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -92,6 +92,14 @@ public class GraphTestBase extends JenaTestBase
         return new Triple( sub, pred, obj );
         }
         
+    public static Triple [] tripleArray( String facts )
+        {
+        ArrayList al = new ArrayList();
+        StringTokenizer semis = new StringTokenizer( facts, ";" );
+        while (semis.hasMoreTokens()) al.add( triple( semis.nextToken() ) );   
+        return (Triple []) al.toArray( new Triple [al.size()] );
+        }
+        
     public static Graph graphAdd( Graph g, String s )
         {
         StringTokenizer semis = new StringTokenizer( s, ";" );
@@ -148,7 +156,37 @@ public class GraphTestBase extends JenaTestBase
         {
         return g.contains( triple( fact ) ); 
         }
+      
+    public void testContains( Graph g, Triple [] triples )
+        { for (int i = 0; i < triples.length; i += 1) assertTrue( g.contains( triples[i] ) ); }
 
+    public void testContains( Graph g, List triples )
+        {
+        for (int i = 0; i < triples.size(); i += 1)
+             assertTrue( g.contains( (Triple) triples.get(i) ) );
+        }
+
+    public void testContains( Graph g, Iterator it )
+        { while (it.hasNext()) assertTrue( g.contains( (Triple) it.next() ) ); }
+
+    public void testContains( Graph g, Graph other )
+        { testContains( g, other.find( null, null, null ) ); }
+    
+    public void testOmits( Graph g, Triple [] triples )
+        { for (int i = 0; i < triples.length; i += 1) assertFalse( "", g.contains( triples[i] ) ); }
+
+    public void testOmits( Graph g, List triples )
+        {
+        for (int i = 0; i < triples.size(); i += 1)
+             assertFalse( "", g.contains( (Triple) triples.get(i) ) );
+        }
+
+    public void testOmits( Graph g, Iterator it )
+        { while (it.hasNext()) assertFalse( "", g.contains( (Triple) it.next() ) ); }
+
+    public void testOmits( Graph g, Graph other )
+        { testOmits( g, other.find( null, null, null ) ); }
+    
     public static void show( String title, Graph g )
         {
         ClosableIterator it = g.find( null, null, null );
