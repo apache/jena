@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.1 2003-02-02 13:13:45 bwm Exp $
+  $Id: ModelFactory.java,v 1.2 2003-02-03 19:11:16 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 
 /**
     Factory provides methods for creating standard kinds of Model. This
@@ -14,11 +16,53 @@ import com.hp.hpl.jena.mem.*;
 */
 
 public class ModelFactory
-    {
+{
     /** deliver a new Model (implemented as a ModelMem, but that's secret) */
     public static Model createDefaultModel()
         { return new ModelMem(); }
+        
+    /**
+     * Return a Model through which all the RDFS entailments 
+     * derivable from the given model are accessible. Some work is done
+     * when the inferenced model is created but each query will also trigger some
+     * additional inference work.
+     * <p> The current implementation is <em>very</em> preliminary
+     * and will not scale to large models. In particular, it will make redundant 
+     * passes over the data when asked a very ungrounded query (such as list all 
+     * statements!). </p>
+     * 
+     * @param model the Model containing both instance data and schema assertions to be inferenced over
+     */
+    public static Model createRDFSModel(Model model) {
+         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
+         Reasoner reasoner  = rf.create(null);
+         InfGraph graph     = reasoner.bind(model.getGraph());
+         return new ModelMem(graph);
     }
+        
+    /**
+     * Return a Model through which all the RDFS entailments 
+     * derivable from the given data and schema models are accessible. 
+     * There is no strict requirement to separate schema and instance data between the two
+     * arguments.
+     * <p>Some work is donewhen the inferenced model is created. This work can be reused if the
+     * same schema is to be applied to multiple datasets though use of the direct SPI.</p>
+     * <p> The current implementation is <em>very</em> preliminary
+     * and will not scale to large models. In particular, it will make redundant 
+     * passes over the data when asked a very ungrounded query (such as list all 
+     * statements!). </p>
+     * 
+     * @param model a Model containing instance data assertions 
+     * @param schema a Model containing RDFS schema data
+     */
+    public static Model createRDFSModel(Model schema, Model model) {
+         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
+         Reasoner reasoner  = rf.create(null);
+         InfGraph graph     = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
+         return new ModelMem(graph);
+    }
+    
+}
     
 /*
     (c) Copyright Hewlett-Packard Company 2002

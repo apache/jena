@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.2 2003-02-01 13:35:01 der Exp $
+ * $Id: TestReasoners.java,v 1.3 2003-02-03 19:10:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -14,6 +14,8 @@ import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.rdf.model.impl.StatementImpl;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -23,7 +25,7 @@ import java.io.IOException;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-01 13:35:01 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-03 19:10:25 $
  */
 public class TestReasoners extends TestCase {
     
@@ -85,6 +87,25 @@ public class TestReasoners extends TestCase {
     }
     */
 
+    /**
+     * Test the ModelFactory interface
+     */
+    public void testModelFactoryRDFS() {
+        Model data = ModelFactory.createDefaultModel();
+        Property p = data.createProperty("urn:x-hp:ex/p");
+        Resource a = data.createResource("urn:x-hp:ex/a");
+        Resource b = data.createResource("urn:x-hp:ex/b");
+        Resource C = data.createResource("urn:x-hp:ex/c");
+        data.add(p, RDFS.range, C)
+            .add(a, p, b);
+        Model result = ModelFactory.createRDFSModel(data);
+        StmtIterator i = result.listStatements(new SimpleSelector(b, RDF.type, (RDFNode)null));
+        TestUtil.assertIteratorValues(this, i, new Object[] {
+            new StatementImpl(b, RDF.type, RDFS.Resource),
+            new StatementImpl(b, RDF.type, C)
+        });
+    }
+        
 }
 
 /*
