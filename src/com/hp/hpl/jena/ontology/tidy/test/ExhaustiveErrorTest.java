@@ -18,7 +18,11 @@ import junit.framework.TestSuite;
 public class ExhaustiveErrorTest extends TestCase implements Constants {
 
 
+    static private long startTime = 0;
     static private LookupTable look = (LookupTable) LookupTable.get();
+    
+    private int predTestCount = 0;
+    static private int allTestCount=0;
 
     static private final int SZ = CategorySet.unsorted.size();
     final private int p;
@@ -46,6 +50,9 @@ public class ExhaustiveErrorTest extends TestCase implements Constants {
    }
     protected void runTest() {
 
+        if (startTime==0) {
+            startTime = System.currentTimeMillis();
+        }
         int startp[] = start(p);
         for (int i = 1; i < SZ; i++) {
             if (Grammar.isPseudoCategory(i))
@@ -62,7 +69,9 @@ public class ExhaustiveErrorTest extends TestCase implements Constants {
                 }
             }
         }
-
+        long time = System.currentTimeMillis() - startTime;
+        System.out.println(predTestCount +"/" + allTestCount+ "  errors checked. (" + (time/1000) +"." + (time%1000) + "s) " + this.getName());
+        
     }    
 
     private void allCases(int s, int p, int o, int starts[], int startp[], int starto[]) {
@@ -70,7 +79,8 @@ public class ExhaustiveErrorTest extends TestCase implements Constants {
         for (int i = 0; i < starts.length; i++)
             for (int j = 0; j < startp.length; j++)
                 for (int k = 0; k < starto.length; k++) {
-                   // TODO bad++;
+                    predTestCount++;
+                    allTestCount++;
                     MonotonicErrorAnalyzer.getErrorCode(s, p, o, starts[i], startp[j],
                             starto[k]);
                 }

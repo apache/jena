@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.11 2005-01-05 23:48:18 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.12 2005-01-06 09:00:15 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -85,66 +85,7 @@ public class MonotonicErrorAnalyzer implements Constants {
 
     static private final int SZ = CategorySet.unsorted.size();
 
-    // TODO delete all these arrays and the static initializer.
-    //static private final boolean isClassOnly[] = new boolean[SZ];
-
-    //static private final boolean isPropertyOnly[] = new boolean[SZ];
-
-    //static private final boolean isUserID[] = new boolean[SZ];
-
-    //static private final boolean isBlank[] = new boolean[SZ];
-
-    //static private final boolean isBuiltin[] = new boolean[SZ];
-/*
-    static private final int start[][] = new int[SZ][];
-
-    static {
-        int ix = 0;
-        int s[] = new int[4];
-        for (int i = 1; i < SZ; i++) {
-            if (Grammar.isPseudoCategory(i))
-                continue;
-            ix = 0;
-            if (look.meet(i, Grammar.classOnly) == i) {
-                isClassOnly[i] = true;
-                s[ix++] = Grammar.classOnly;
-            }
-            if (look.meet(i, Grammar.propertyOnly) == i) {
-                isPropertyOnly[i] = true;
-                s[ix++] = Grammar.propertyOnly;
-            }
-            if (look.meet(i, Grammar.userID) == i) {
-                isUserID[i] = true;
-                s[ix++] = Grammar.userID;
-            }
-            if (look.meet(i, Grammar.blank) == i) {
-                isBlank[i] = true;
-                s[ix++] = Grammar.blank;
-            }
-            if (ix == 0) {
-                s[ix++] = i;
-                switch (i) {
-                case Grammar.badID:
-                case Grammar.dlInteger:
-                case Grammar.liteInteger:
-                case Grammar.literal:
-                case Grammar.userTypedLiteral:
-                    break;
-                default:
-                    //		System.err.println("Builtin: " + Grammar.catNames[i]);
-                    isBuiltin[i] = true;
-                }
-            }
-            if (maybeBuiltinID(i)) {
-                s[ix++] = i;
-            }
-
-            start[i] = new int[ix];
-            System.arraycopy(s, 0, start[i], 0, ix);
-        }
-    }
-    */
-
+ 
     public static int getErrorCode(int s, int p, int o, int sx, int px, int ox) {
         //  Throws array access error if not 0 <= s,p,o,sx,px,ox < SZ.
         if (look.qrefine(s, p, o) != Failure)
@@ -436,7 +377,8 @@ public class MonotonicErrorAnalyzer implements Constants {
         return DIFFERENT_CATS;
 
     }
-
+}
+/*
     static private int bad = 0;
 
     // The number of errors of each type.
@@ -464,7 +406,7 @@ public class MonotonicErrorAnalyzer implements Constants {
                 }
     }
     */
-
+/*
     public static void main(String args[]) {
 
        for (int j = 1; j < SZ; j++) {
@@ -500,8 +442,11 @@ public class MonotonicErrorAnalyzer implements Constants {
                         + diffPreds[i]);
         DebugCategorySetNames.anyUsedNames();
     }
-
-    static private String fieldName[] = { "subj", "pred", "obj ", "S1  ",
+*/
+/*
+ * 
+ * 
+     static private String fieldName[] = { "subj", "pred", "obj ", "S1  ",
             "P1  ", "01  " };
 
     static private void dump(String s, int a[]) {
@@ -553,7 +498,7 @@ public class MonotonicErrorAnalyzer implements Constants {
     }
 
 }
-
+*/
 /*
  * (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP All rights
  * reserved.
