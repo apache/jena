@@ -753,9 +753,9 @@ while (iter.hasNext()) {
 <p>This code can be found in <a href="code/Tutorial06.java"> tutorial 6</a>.
 The statement iterator <code>iter</code> produces each and every statement
 with subject <code>vcard</code> and predicate <code>VCARD.NICKNAME</code>,
-so looping over it allows us to fetch each statement by using 
+so looping over it allows us to fetch each statement by using
 <code>nextStatement()</code>, get the object field, and convert it to
-a string. 
+a string.
 The code produces the following output when run:</p>
 
 <blockquote>
@@ -786,8 +786,8 @@ statement.</p>
 
 <p><code>Model.listSubjectsWithProperty(Property p, RDFNode
 o)</code><code></code> will return an iterator over all the resources which
-have property <code>p</code> with value <code>o</code>. If we assume that 
-only vcard resources 
+have property <code>p</code> with value <code>o</code>. If we assume that
+only vcard resources
 will have <code>vcard:FN</code> property, and that in our data, all such
 resources have such a property, then we can find all the vcards like this:</p>
 
@@ -1006,10 +1006,10 @@ model.write(system.out, "RDF/XML-ABBREV");</code></pre>
 should be reasonably clear that the Models have merged as expected.  The
 intersection and difference of the Models can be computed in a similar
 manner, using the methods <code>.intersection(Model)</code> and
-<code>.difference(Model)</code>; see the 
-<a href="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#difference(com.hp.hpl.jena.rdf.model.Model)">difference</a> 
+<code>.difference(Model)</code>; see the
+<a href="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#difference(com.hp.hpl.jena.rdf.model.Model)">difference</a>
 and
-<a href="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#intersection(com.hp.hpl.jena.rdf.model.Model)">intersection</a> 
+<a href="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#intersection(com.hp.hpl.jena.rdf.model.Model)">intersection</a>
 Javadocs for more details.
 </p>
 <hr>
@@ -1193,8 +1193,8 @@ true and the strings are also equal.  The other notion is that they can be
 equal if the cannonicalization of their strings is equal.</p>
 
 <p>Jena's interfaces also support typed literals. The old-fashioned way
-(shown below) treats typed literals as shorthand for strings: type typed
-values are connverted in the usual Java way to strings and these strings
+(shown below) treats typed literals as shorthand for strings: typed
+values are converted in the usual Java way to strings and these strings
 are stored in the Model. For example, try (noting that for
 simple literals, we can omit the <code>model.createLiteral</code>(...)
 call):</p>
@@ -1285,4 +1285,4 @@ Another term for a statement.
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
 <br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>
-<br> $Id: index.html,v 1.15 2004-07-09 15:03:39 chris-dollin Exp $</small></i></body></html>
+<br> $Id: index.html,v 1.16 2004-11-12 16:10:13 chris-dollin Exp $</small></i></body></html>
