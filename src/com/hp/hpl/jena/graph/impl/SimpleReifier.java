@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.24 2004-09-06 13:49:31 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.25 2004-09-06 14:30:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -25,15 +25,15 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class SimpleReifier implements Reifier
     {
-    private GraphBase parent;
-    private boolean intercepting = false;
-    private boolean concealing = false;
-    private ReificationStyle style;
+    protected final GraphBase parent;
+    protected final boolean intercepting;
+    protected final boolean concealing;
+    protected final ReificationStyle style;
     
-    private SimpleReifierFragmentsMap nodeMap;
-    private SimpleReifierTripleMap tripleMap;
+    protected SimpleReifierFragmentsMap nodeMap;
+    protected ReifierTripleMap tripleMap;
     
-    private Graph reificationTriples;
+    protected Graph reificationTriples;
     
     /** 
         construct a simple reifier that is bound to the parent graph .
@@ -61,7 +61,7 @@ public class SimpleReifier implements Reifier
     /** return the triple bound to _n_ */
     public Triple getTriple( Node n )        
         { 
-        return (Triple) tripleMap.get( n );
+        return tripleMap.getTriple( n );
         }
         
     /** true iff there is a triple bound to _n_ */
@@ -70,18 +70,10 @@ public class SimpleReifier implements Reifier
         
     /** */
     public ExtendedIterator allNodes()
-        {
-        return WrappedIterator.create( tripleMap.tagIterator() );
-        }
+        { return tripleMap.tagIterator(); }
         
     public ExtendedIterator allNodes( Triple t )
-        { 
-        Set s = (Set) tripleMap.inverseMap.get( t );
-        if (s == null)
-            return NullIterator.instance;
-        else
-            return WrappedIterator.create( s.iterator() );
-        }
+        { return tripleMap.tagIterator( t ); }
         
     /**
         Answer a filter that only accepts nodes that are bound to the given triple.
@@ -101,7 +93,7 @@ public class SimpleReifier implements Reifier
         
     protected boolean isComplete( Node n )
         {
-        return tripleMap.get( n ) != null;
+        return tripleMap.getTriple( n ) != null;
         }
         
     /** 
@@ -110,7 +102,7 @@ public class SimpleReifier implements Reifier
     */
     public Node reifyAs( Node tag, Triple t )
     	{
-        Triple existing = (Triple) tripleMap.get( tag );
+        Triple existing = (Triple) tripleMap.getTriple( tag );
         Object partial = nodeMap.get( tag );
         if (existing != null)
             { if (!t.equals( existing )) throw new AlreadyReifiedException( tag ); }
@@ -132,7 +124,7 @@ public class SimpleReifier implements Reifier
     */    	
     public void remove( Node n, Triple t )
         {
-        Triple x = (Triple) tripleMap.get( n );
+        Triple x = (Triple) tripleMap.getTriple( n );
         if (t.equals( x )) 
             { tripleMap.removeTriple( n, t ); 
             if (!concealing) parentRemoveQuad( n, t ); }
@@ -195,7 +187,7 @@ public class SimpleReifier implements Reifier
     private Fragments getFragment( Triple t )
         {
         Node s = t.getSubject();
-        Triple already = (Triple) tripleMap.get( s );
+        Triple already = (Triple) tripleMap.getTriple( s );
         Object partial = nodeMap.get( s );
         return
             already != null ? explode( s, already )

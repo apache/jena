@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.1 2004-09-06 13:49:31 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.2 2004-09-06 14:30:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -16,84 +16,91 @@ import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-
-class SimpleReifierFragmentsMap 
-{
-protected Map forwardMap = HashUtils.createMap();
-
-public Object get( Node tag )
-    { return forwardMap.get( tag ); }
-
-public void removeFragments( Node key )
-    {
-    forwardMap.remove( key );
-    }
 /**
-update the map with (node -> fragment); return the fragment.
+    SimpleReifierFragmentsMap - a map from nodes to the incompleteb(or 
+    overcomplete) reification quadlets.
+    
+    @author kers
 */
-public Fragments putFragments( Node key, Fragments value )
+public class SimpleReifierFragmentsMap 
     {
-    forwardMap.put( key, value );
-    return value;
-    }                    
-
-public ExtendedIterator allTriples( TripleMatch tm )
-    {
-    Triple t = tm.asTriple();
-    Node subject = t.getSubject();
-    if (subject.isConcrete())
+    protected Map forwardMap = HashUtils.createMap();
+    
+    public Object get( Node tag )
+        { return forwardMap.get( tag ); }
+    
+    public void removeFragments( Node key )
         {
-        Object x = forwardMap.get( subject );  
-        return x == null
-            ? new NiceIterator()
-            : FragmentTripleIterator.toIterator( t, subject, x )
-            ; 
+        forwardMap.remove( key );
         }
-    else
+    
+    /**
+    update the map with (node -> fragment); return the fragment.
+    */
+    public Fragments putFragments( Node key, Fragments value )
         {
-        final Iterator it = forwardMap.entrySet().iterator();   
-        return new FragmentTripleIterator( t, it );
+        forwardMap.put( key, value );
+        return value;
+        }                    
+    
+    public ExtendedIterator allTriples( TripleMatch tm )
+        {
+        Triple t = tm.asTriple();
+        Node subject = t.getSubject();
+        if (subject.isConcrete())
+            {
+            Object x = forwardMap.get( subject );  
+            return x == null
+                ? new NiceIterator()
+                : FragmentTripleIterator.toIterator( t, subject, x )
+                ; 
+            }
+        else
+            {
+            final Iterator it = forwardMap.entrySet().iterator();   
+            return new FragmentTripleIterator( t, it );
+            }
         }
+    
+    /**
+        Return the fragment map as a read-only Graph of triples. We rely on the
+        default code in GraphBase which allows us to only implement find(TripleMatch)
+        to present a Graph. All the hard work is done by allTriples.
+    */
+    public Graph asGraph()
+        {
+        return new GraphBase()
+            { public ExtendedIterator find( TripleMatch tm ) { return allTriples( tm ); } };
+        }
+    
     }
-/**
-Return the fragment map as a read-only Graph of triples. We rely on the
-default code in GraphBase which allows us to only implement find(TripleMatch)
-to present a Graph. All the hard work is done by allTriples.
-*/
-public Graph asGraph()
-    {
-    return new GraphBase()
-        { public ExtendedIterator find( TripleMatch tm ) { return allTriples( tm ); } };
-    }
-
-}
 
 /*
-(c) Copyright 2004, Hewlett-Packard Development Company, LP
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+    
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+    
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+    
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+    
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
