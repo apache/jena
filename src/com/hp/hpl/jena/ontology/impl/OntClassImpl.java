@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.40 $
+ * Revision           $Revision: 1.41 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 13:17:06 $
+ * Last modified on   $Date: 2004-12-07 18:12:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.40 2004-12-07 13:17:06 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.41 2004-12-07 18:12:55 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -651,6 +651,25 @@ public class OntClassImpl
     }
 
 
+    /**
+     * <p>Answer a new individual that has this class as its <code>rdf:type</code></p>
+     * @return A new anonymous individual that is an instance of this class
+     */
+    public Individual createIndividual() {
+        return ((OntModel) getModel()).createIndividual( this );
+    }
+    
+    
+    /**
+     * <p>Answer a new individual that has this class as its <code>rdf:type</code></p>
+     * @param uri The URI of the new individual
+     * @return A new named individual that is an instance of this class
+     */
+    public Individual createIndividual( String uri ) {
+        return ((OntModel) getModel()).createIndividual( uri, this );
+    }
+    
+    
     // access to facets
     /** 
      * <p>Answer a view of this class as an enumerated class</p>

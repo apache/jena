@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 13:15:02 $
+ * Last modified on   $Date: 2004-12-07 18:10:19 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.20 2004-12-07 13:15:02 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.21 2004-12-07 18:10:19 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -394,6 +394,21 @@ public interface OntClass
     public ExtendedIterator listInstances();
 
 
+    /**
+     * <p>Answer a new individual that has this class as its <code>rdf:type</code></p>
+     * @return A new anonymous individual that is an instance of this class
+     */
+    public Individual createIndividual();
+    
+    
+    /**
+     * <p>Answer a new individual that has this class as its <code>rdf:type</code></p>
+     * @param uri The URI of the new individual
+     * @return A new named individual that is an instance of this class
+     */
+    public Individual createIndividual( String uri );
+    
+    
     // access to facets
 
     /** 

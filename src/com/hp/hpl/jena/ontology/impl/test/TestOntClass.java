@@ -7,10 +7,10 @@
  * Web site           http://jena.sourceforge.net
  * Created            07-Dec-2004
  * Filename           $RCSfile: TestOntClass.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 13:17:04 $
+ * Last modified on   $Date: 2004-12-07 18:12:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: TestOntClass.java,v 1.1 2004-12-07 13:17:04 ian_dickinson Exp $
+ * @version CVS $Id: TestOntClass.java,v 1.2 2004-12-07 18:12:50 ian_dickinson Exp $
  */
 public class TestOntClass 
     extends ModelTestBase
@@ -77,6 +77,17 @@ public class TestOntClass
         assertNull( a.getSubClass() );
         assertFalse( a.hasSubClass() );
     }
+    
+    public void testCreateIndividual() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        OntClass a = m.createClass( NS + "A" );
+        Individual i = a.createIndividual( NS + "i" );
+        assertTrue( i.hasRDFType(a) );
+    
+        Individual j = a.createIndividual();
+        assertTrue( j.hasRDFType(a) );
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////
