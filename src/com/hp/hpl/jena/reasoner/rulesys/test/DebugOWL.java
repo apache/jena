@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.9 2003-06-30 16:11:12 der Exp $
+ * $Id: DebugOWL.java,v 1.10 2003-06-30 16:50:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-30 16:11:12 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-30 16:50:12 $
  */
 public class DebugOWL {
 
@@ -59,8 +59,8 @@ public class DebugOWL {
     /** log4j logger*/
     static Logger logger = Logger.getLogger(DebugOWL.class);
     
-    /** reasoner config: experimental RDFS using backchainer for closure finding */
-    public static final int EXPT_RDFS = 1;
+    /** reasoner config: experimental ruleset and config */
+    public static final int EXPT = 1;
     
     /** reasoner config: normal OWL-FB */
     public static final int OWLFB = 2;
@@ -84,7 +84,7 @@ public class DebugOWL {
         
         switch(config) {
             
-        case EXPT_RDFS:
+        case EXPT:
             reasoner = GenericRuleReasonerFactory.theInstance().create(null);
             GenericRuleReasoner grr = (GenericRuleReasoner)reasoner;
             grr.setMode(GenericRuleReasoner.HYBRID);
@@ -94,7 +94,9 @@ public class DebugOWL {
                 System.out.println("Failed to open rules file: " + e);
                 System.exit(1);
             }
-            ((GenericRuleReasoner)reasoner).setTraceOn(true);
+            grr.setTransitiveClosureCaching(true);
+            grr.setOWLTranslation(true);
+//            grr.setTraceOn(true);
             break;
             
             case OWLFB:
@@ -316,7 +318,7 @@ public class DebugOWL {
 //            long t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
 //            System.out.println("Took " + t + "ms");
 
-            DebugOWL tester = new DebugOWL(RDFSExpt);
+            DebugOWL tester = new DebugOWL(EXPT);
             tester.runListClassesTest(1,4,10,false);
             tester.runListClassesTest(1,4,10,false);
             tester.runListClassesTest(2,4,10,false);
