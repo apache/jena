@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.10 2003-10-07 06:27:01 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.11 2003-10-08 15:14:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -78,60 +78,53 @@ public class ConstraintStage extends Stage
 //            ;
 //        }
 //                
-    /**
-        the map which relates predicate nodes to the corresponding predicate
-        factories.
-    */
-    private static HashMap factories = new HashMap();
+//    /**
+//        the map which relates predicate nodes to the corresponding predicate
+//        factories.
+//    */
+//    private static HashMap factories = new HashMap();
+//
+//    /**
+//        associate the predicate factory _f_ with _uri_, which must be a legal
+//        URI string. You can't change an existing binding.
+//    */
+//    static public void addFactory( String uri, PredicateFactory f )
+//        {
+//        Node n = Node.createURI( uri );
+//        if (factories.containsKey( n ))
+//            throw new UnsupportedOperationException( "cannot redefine: " + f );
+//        else
+//            factories.put( n, f );
+//        }
+//               
+//    static final PredicateFactory makeEQ = new PredicateFactory()
+//        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_EQ( L, R ); }};
+//
+//    static final PredicateFactory makeNE = new PredicateFactory()
+//        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_NE( L, R ); }};
 
-    /**
-        associate the predicate factory _f_ with _uri_, which must be a legal
-        URI string. You can't change an existing binding.
-    */
-    static public void addFactory( String uri, PredicateFactory f )
-        {
-        Node n = Node.createURI( uri );
-        if (factories.containsKey( n ))
-            throw new UnsupportedOperationException( "cannot redefine: " + f );
-        else
-            factories.put( n, f );
-        }
-               
-    static final PredicateFactory makeEQ = new PredicateFactory()
-        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_EQ( L, R ); }};
+//    static final PredicateFactory makeMATCHES = new PredicateFactory()
+//        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_MATCHES( L, R ); }};
 
-    static final PredicateFactory makeNE = new PredicateFactory()
-        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_NE( L, R ); }};
-
-    static final PredicateFactory makeMATCHES = new PredicateFactory()
-        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_MATCHES( L, R ); }};
-
-    static class Relation_MATCHES extends Relation
-        {
-        Relation_MATCHES( Valuator L, Valuator R ) { super( L, R ); }   
+//    static class Relation_MATCHES extends Relation
+//        {
+//        Relation_MATCHES( Valuator L, Valuator R ) { super( L, R ); }   
+//        
+//        private String asString( Node n )
+//            {
+//            if (n.isLiteral()) return n.getLiteral().getLexicalForm();
+//            else return n.toString();    
+//            }
+//            
+//        public boolean matches( Node L, Node R )
+//            { 
+//                String x = asString( L ), y = asString( R );
+//                return x.indexOf( y ) > -1; }
+//            
+//        public boolean evaluateBool( Domain d )
+//            { return matches( valueL( d ), valueR( d ) ); }
+//        }
         
-        private String asString( Node n )
-            {
-            if (n.isLiteral()) return n.getLiteral().getLexicalForm();
-            else return n.toString();    
-            }
-            
-        public boolean matches( Node L, Node R )
-            { 
-                String x = asString( L ), y = asString( R );
-                return x.indexOf( y ) > -1; }
-            
-        public boolean evaluateBool( Domain d )
-            { return matches( valueL( d ), valueR( d ) ); }
-        }
-        
-    static
-        {
-        addFactory( "q:eq" , makeEQ );
-        addFactory( "q:ne", makeNE );        
-        addFactory( "q:matches", makeMATCHES );
-        }
-                
    private boolean evalConstraint( Domain d, ExpressionSet e )
         {
         return e.evalBool( map, d );

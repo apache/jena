@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.24 2003-09-30 15:34:28 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.25 2003-10-08 15:15:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2003-09-30 15:34:28 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2003-10-08 15:15:29 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -47,7 +47,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     private ResourceImpl( Node n, int split, Model m )
         {
         super( n, (ModelCom)m );
-        this.splitHere = split;
+        this.splitHere = split; // whereToSplit( n.toString() );
         }
 
     /** Creates new ResourceImpl */

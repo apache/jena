@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.2 2003-10-03 14:04:18 chris-dollin Exp $
+  $Id: Expression.java,v 1.3 2003-10-08 15:14:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Node_Literal;
+import com.hp.hpl.jena.graph.*;
 
 /**
 	Expression - the interface for expressions that is expected by Query for constraints.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.17 2003-10-07 06:27:26 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.18 2003-10-08 15:15:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -16,7 +16,7 @@ import java.util.*;
 import junit.framework.*;
 
 /**
-    Abstract tests for garph query, parameterised on getGraph().
+    Abstract tests for graph query, parameterised on getGraph().
  	@author kers
 */
 public abstract class AbstractTestQuery extends GraphTestBase
