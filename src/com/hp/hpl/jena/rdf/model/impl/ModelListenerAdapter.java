@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelListenerAdapter.java,v 1.1 2003-07-09 13:10:57 chris-dollin Exp $
+  $Id: ModelListenerAdapter.java,v 1.2 2003-07-09 14:06:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -9,6 +9,13 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 
+/**
+    Adapter class that converts a ModelChangedListener into a GraphListener.
+    The only tricky bit is that we have to implement equality as equality of the
+    underlying ModelChangedListeners/ModelCom pairs.
+    
+    @author hedgehog
+*/
 public class ModelListenerAdapter implements GraphListener
     {
     protected ModelCom m;
@@ -25,10 +32,14 @@ public class ModelListenerAdapter implements GraphListener
 
     public boolean equals( Object other )
         { 
-        return other instanceof ModelListenerAdapter 
-            && L.equals( ((ModelListenerAdapter) other).L )
+        return 
+            other instanceof ModelListenerAdapter 
+            && ((ModelListenerAdapter) other).sameAs( this )
             ; 
         }
+        
+    public boolean sameAs( ModelListenerAdapter other )
+        { return this.L.equals( other.L ) && this.m.equals( other.m ); }
     }
 
 /*

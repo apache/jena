@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.4 2003-07-09 10:43:09 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.5 2003-07-09 14:06:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -44,6 +44,12 @@ public class TestModelEvents extends ModelTestBase
             
         boolean has( Object [] things ) 
             { return history.equals( Arrays.asList( things ) ); }
+            
+        void assertHas( Object [] things )
+            {
+            if (has( things ) == false)
+                fail( "expected " + Arrays.asList( things ) + " but got " + history );
+            }
         }
         
     public void testRegistrationCompiles()
@@ -63,11 +69,11 @@ public class TestModelEvents extends ModelTestBase
         assertFalse( SL.has( new Object [] { "add", S1 } ) );
         model.register( SL );
         model.add( S1 );
-        assertTrue( SL.has( new Object[] { "add", S1 } ) );
+        SL.assertHas( new Object[] { "add", S1 } );
         model.add( S2 );
-        assertTrue( SL.has( new Object[] { "add", S1, "add", S2 } ) );
+        SL.assertHas( new Object[] { "add", S1, "add", S2 } );
         model.add( S1 );
-        assertTrue( SL.has( new Object[] { "add", S1, "add", S2, "add", S1 } ) );
+        SL.assertHas( new Object[] { "add", S1, "add", S2, "add", S1 } );
         }
         
     public void testTwoListeners()
@@ -77,8 +83,8 @@ public class TestModelEvents extends ModelTestBase
         SimpleListener SL2 = new SimpleListener();
         model.register( SL1 ).register( SL2 );
         model.add( S );
-        assertTrue( SL2.has( new Object[] { "add", S } ) );
-        assertTrue( SL1.has( new Object[] { "add", S } ) );
+        SL2.assertHas( new Object[] { "add", S } );
+        SL1.assertHas( new Object[] { "add", S } );
         }
         
     public void testUnregisterWorks()
@@ -86,7 +92,7 @@ public class TestModelEvents extends ModelTestBase
         model.register( SL );
         model.unregister( SL );
         model.add( statement( model, "X R Y" ) );
-        assertTrue( "SL should not have been poked", SL.has( new Object[] {} ) );
+        SL.assertHas( new Object[] {} );
         }
         
     public void testRemoveSingleStatements()
@@ -95,15 +101,16 @@ public class TestModelEvents extends ModelTestBase
         model.register( SL );
         model.add( S );
         model.remove( S );
-        assertTrue( SL.has( new Object[] { "add", S, "remove", S } ) );
+        SL.assertHas( new Object[] { "add", S, "remove", S } );
         }
         
     public void testAddInPieces()
         {
         model.register( SL );
         model.add( resource( model, "S" ), property( model, "P" ), resource( model, "O" ) );
-        assertTrue( SL.has( new Object[] { "add", statement( model, "S P O ") } ) );
+        SL.assertHas( new Object[] { "add", statement( model, "S P O") } );
         }
+
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.12 2003-07-09 13:10:56 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.13 2003-07-09 14:06:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -211,7 +211,10 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertTrue( q.isEmpty() );
         }
         
-    
+    /**
+        This listener simply records the event names and data, and provides
+        a method for comparing the actual with the expected history.
+    */    
     static class HistoryListener implements GraphListener
         {
         List history = new ArrayList();
@@ -236,42 +239,44 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertSame( gem, gem.register( new HistoryListener() ) );
         }
         
+    /**
+        Test that we can safely unregister a listener that isn't registered.
+    */
     public void testEventUnregister()
         {
+        getGraph().getEventManager().unregister( L );
+        }
+        
+    /**
+        Handy triple for test purposes.
+    */
+    protected Triple SPO = Triple.create( "S P O" );
+    protected HistoryListener L = new HistoryListener();
+    
+    /**
+        Utility: get a graph, register L with its manager, return the graph.
+    */
+    protected Graph getAndRegister( GraphListener L )
+        {
         Graph g = getGraph();
-        GraphEventManager gem = g.getEventManager();
-        GraphListener L = new HistoryListener();
-        gem.register( L );
-        gem.unregister( L );
+        g.getEventManager().register( L );
+        return g;
         }
         
     public void testAddTriple()
         {
-        Graph g = getGraph();
-        GraphEventManager gem = g.getEventManager();
-        HistoryListener L = new HistoryListener();
-        Triple SPO = Triple.create( "S P O" );
-        gem.register( L );
-        g.add( SPO );
+        getAndRegister( L ).add( SPO );
         assertTrue( L.has( new Object[] {"add", SPO} ) );
         }
         
     public void testDeleteTriple()
         {        
-        Graph g = getGraph();
-        GraphEventManager gem = g.getEventManager();
-        HistoryListener L = new HistoryListener();
-        Triple SPO = Triple.create( "S P O" );
-        gem.register( L );
-        g.add( SPO );
-        L.clear();
-        g.delete( SPO );
+        getAndRegister( L ).delete( SPO );
         assertTrue( L.has( new Object[] { "delete", SPO} ) );
         }
         
     public void testTwoListeners()
         {
-        Triple SPO = Triple.create( "S P O" );
         HistoryListener L1 = new HistoryListener();
         HistoryListener L2 = new HistoryListener();
         Graph g = getGraph();
@@ -284,13 +289,27 @@ public abstract class AbstractTestGraph extends GraphTestBase
         
     public void testUnregisterWorks()
         {
-        Triple SPO = Triple.create( "S P O" );
-        HistoryListener L = new HistoryListener();
         Graph g = getGraph();
         GraphEventManager gem = g.getEventManager();
         gem.register( L ).unregister( L );
         g.add( SPO );
         assertTrue( L.has( new Object[] {} ) );
+        }
+        
+    public void testRegisterTwice()
+        {
+        Graph g = getAndRegister( L );
+        g.getEventManager().register( L );
+        g.add( SPO );
+        assertTrue( L.has( new Object[] {"add", SPO, "add", SPO} ) );
+        }
+        
+    public void testUnregisterOnce()
+        {
+        Graph g = getAndRegister( L );
+        g.getEventManager().register( L ).unregister( L );
+        g.delete( SPO );
+        assertTrue( L.has( new Object[] {"delete", SPO} ) );
         }
     }
 
