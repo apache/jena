@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.46 2004-12-07 09:56:28 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.47 2004-12-17 11:29:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.46 $ on $Date: 2004-12-07 09:56:28 $
+ * @version $Revision: 1.47 $ on $Date: 2004-12-17 11:29:26 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -407,6 +407,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 dataSource = FinderUtil.cascade(dataSource, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
             }
             
+            // Make sure there are no Brules left over from pior runs
+            bEngine.deleteAllRules();
+
             // Call any optional preprocessing hook
             if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
                 Graph inserts = new GraphMem();
