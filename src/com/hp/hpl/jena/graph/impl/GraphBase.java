@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.5 2003-07-09 07:54:11 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.6 2003-07-09 09:34:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -46,15 +46,31 @@ public abstract class GraphBase implements Graph {
 	public QueryHandler queryHandler() 
         { return new SimpleQueryHandler(this); }
     
+    protected GraphEventManager gem;
+    
     public GraphEventManager getEventManager()
-        { return new SimpleManager( this ); }
+        { 
+        if (gem == null) gem = new SimpleManager( this ); 
+        return gem;
+        }
         
     static class SimpleManager implements GraphEventManager
         {
         protected Graph graph;
+        protected GraphListener listener;
         SimpleManager( Graph graph ) { this.graph = graph; }
-        public Graph register( GraphListener listener ) { return graph; }
+        public Graph register( GraphListener listener ) 
+            { this.listener = listener; return graph; }
+        public void unregister( GraphListener listener ) { listener = null; }
+        public void notifyAdd( Triple t ) { if (listener != null) listener.notifyAdd( t ); }
+        public void notifyDelete( Triple t ) { if (listener != null) listener.notifyDelete( t ); }
         }
+        
+    public void notifyAdd( Triple t )
+        { getEventManager().notifyAdd( t ); }
+        
+    public void notifyDelete( Triple t )
+        { getEventManager().notifyDelete( t ); }
         
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
@@ -73,14 +89,26 @@ public abstract class GraphBase implements Graph {
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#add(Triple)
 	 */
-	public void add( Triple t ) {
-		throw new JenaAddDeniedException( "GraphBase::add" );
-	}
+	public void add( Triple t ) 
+        {
+        performAdd( t );
+        notifyAdd( t );
+        }
+    
+    public void performAdd( Triple t )
+        { throw new JenaAddDeniedException( "GraphBase::performAdd" ); }
 
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#delete(Triple)
 	 */
-	public void delete( Triple t ) {
+    
+    public void delete( Triple t )
+        {
+        performDelete( t );
+        notifyDelete( t );
+        }
+        
+	public void performDelete( Triple t ) {
 		throw new JenaDeleteDeniedException( "GraphBase::delete" );
 	}
 

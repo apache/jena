@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphListener.java,v 1.2 2003-07-09 07:54:11 chris-dollin Exp $
+  $Id: GraphListener.java,v 1.3 2003-07-09 09:34:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -11,7 +11,8 @@ package com.hp.hpl.jena.graph;
 */
 public interface GraphListener 
     {
-
+    void notifyAdd( Triple t );
+    void notifyDelete( Triple t );
     }
 
 /*

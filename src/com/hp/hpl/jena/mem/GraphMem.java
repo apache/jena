@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.16 2003-07-08 09:34:22 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.17 2003-07-09 09:34:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -34,7 +34,7 @@ public class GraphMem extends GraphBase implements Graph {
     public GraphMem( Reifier.Style style )
         { super( style ); }
 
-    public void add( Triple t )
+    public void performAdd( Triple t )
         {
         if (getReifier().handledAdd( t ) || triples.contains( t ))
             return;
@@ -47,7 +47,7 @@ public class GraphMem extends GraphBase implements Graph {
             }
         }
 
-    public void delete( Triple t )
+    public void performDelete( Triple t )
         {
         if (getReifier().handledRemove( t ))
             return;
