@@ -1162,7 +1162,8 @@ public class SAX2RDFTest extends TestCase {
 		if (is1_4_1){
 
             logger.warn("Java version 1.4.1: DOM tests suppressed, believed not to work." );
-            
+            logger.warn("See file:doc/ARP/sax.html#dom for more details." );
+            logger.warn("This only affects RDF parsing of DOM trees, new in Jena 2.2." );
 		}
 		//for (int j=0; j<20; j++)
 		for (int i = 0; i < all.length; i += 25) {
