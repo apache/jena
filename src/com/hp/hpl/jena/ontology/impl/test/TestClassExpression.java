@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:16:45 $
+ * Last modified on   $Date: 2003-05-30 18:48:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.13 2003-05-30 14:16:45 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.14 2003-05-30 18:48:39 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -421,6 +421,178 @@ public class TestClassExpression
                     assertTrue( "A should be disjoint with D", A.isDisjointWith( D ) );
                 }
             },
+            
+            // type testing
+            new OntTestCase( "OntClass.isEnumeratedClass", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass b = m.createClass( NS + "B" );
+                    Individual x = m.createIndividual( NS + "x", b );
+                    Individual y = m.createIndividual( NS + "y", b );
+                    OntClass a = m.createEnumeratedClass( NS + "A", m.createList( new RDFNode[] {x, y} ) );
+                    
+                    assertTrue( "enumerated class test not correct",    a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.isIntersectionClass", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass b = m.createClass( NS + "B" );
+                    OntClass c = m.createClass( NS + "C" );
+                    OntClass a = m.createIntersectionClass( NS + "A", m.createList( new RDFNode[] {b,c} ) );
+                    
+                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.isUnionClass", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass b = m.createClass( NS + "B" );
+                    OntClass c = m.createClass( NS + "C" );
+                    OntClass a = m.createUnionClass( NS + "A", m.createList( new RDFNode[] {b,c} ) );
+                    
+                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.isComplementClass", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass b = m.createClass( NS + "B" );
+                    OntClass a = m.createComplementClass( NS + "A", b );
+                    
+                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.isRestriction", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass a = m.createRestriction();
+                    
+                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         a.isRestriction() );
+                }
+            },
+            
+            // conversion
+            new OntTestCase( "OntClass.toEnumeratedClass", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass a = m.createClass( NS + "A" );
+                    
+                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    
+                    OntClass b = m.createClass( NS + "B" );
+                    Individual x = m.createIndividual( NS + "x", b );
+                    Individual y = m.createIndividual( NS + "y", b );
+                    a = a.convertToEnumeratedClass( m.createList( new RDFNode[] {x, y} ) );
+                    
+                    assertTrue( "enumerated class test not correct",    a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.toIntersectionClass", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass a = m.createClass( NS + "A" );
+                    
+                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    
+                    OntClass b = m.createClass( NS + "B" );
+                    OntClass c = m.createClass( NS + "C" );
+                    a = a.convertToIntersectionClass( m.createList( new RDFNode[] {b,c} ) );
+                    
+                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.toUnionClass", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass a = m.createClass( NS + "A" );
+                    
+                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    
+                    OntClass b = m.createClass( NS + "B" );
+                    OntClass c = m.createClass( NS + "C" );
+                    a = a.convertToUnionClass( m.createList( new RDFNode[] {b,c} ) );
+                    
+                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         m_owlLiteLang || a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.toComplementClass", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass a = m.createClass( NS + "A" );
+                    
+                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    
+                    OntClass b = m.createClass( NS + "B" );
+                    a = a.convertToComplementClass( b );
+                    
+                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    m_owlLiteLang || a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                }
+            },
+            new OntTestCase( "OntClass.toRestriction", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass a = m.createClass( NS + "A" );
+                    
+                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    a = a.convertToRestriction( p );
+                    
+                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
+                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
+                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
+                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
+                    assertTrue( "restriction test not correct",         a.isRestriction() );
+                }
+            },
+            
         };
     }
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 22:26:39 $
+ * Last modified on   $Date: 2003-05-30 18:48:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -57,7 +57,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.17 2003-05-27 22:26:39 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.18 2003-05-30 18:48:39 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -374,7 +374,7 @@ public interface OntModel
      * @param uri The uri for the individual, or null for an anonymous individual.
      * @return An Individual resource.
      */
-    public Individual createIndividual( Resource cls, String uri );
+    public Individual createIndividual( String uri, Resource cls );
     
    
     /**

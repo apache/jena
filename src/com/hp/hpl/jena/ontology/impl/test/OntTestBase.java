@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 20:19:59 $
+ * Last modified on   $Date: 2003-05-30 18:48:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.2 2003-05-23 20:19:59 ian_dickinson Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.3 2003-05-30 18:48:40 ian_dickinson Exp $
  */
 public abstract class OntTestBase 
     extends TestSuite
@@ -95,6 +95,7 @@ public abstract class OntTestBase
         protected boolean m_inDAML;
         protected String m_langElement;
         protected boolean m_owlLang = true;
+        protected boolean m_owlLiteLang = false;
 
         public OntTestCase( String langElement, boolean inOWL, boolean inOWLLite, boolean inDAML ) {
             super( "Ontology API test " + langElement );
@@ -112,12 +113,15 @@ public abstract class OntTestBase
             spec.setReasoner( null );
             runTest( ModelFactory.createOntologyModel( spec, null ), m_inOWL );
             
+            m_owlLiteLang = true;
+            
             spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
             spec.setReasoner( null );
             runTest( ModelFactory.createOntologyModel( spec, null ), m_inOWLLite );
             
             // now DAML
             m_owlLang = false;
+            m_owlLiteLang = false;
             
             spec = new OntModelSpec( OntModelSpec.DAML_MEM );
             spec.setReasoner( null );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 20:46:50 $
+ * Last modified on   $Date: 2003-05-30 18:48:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -26,7 +26,7 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.*;
 
 import java.util.Iterator;
 
@@ -38,7 +38,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.6 2003-05-27 20:46:50 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.7 2003-05-30 18:48:39 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -248,9 +248,11 @@ public interface OntClass
     public Iterator getSuperClasses( boolean closed );
 
 
+    // access to facets
+
     /** 
      * <p>Answer a view of this class as an enumerated class</p>
-     * @return This class, but viewed as an EnumeratedClass node
+     * @return This class, but viewed as an EnumeratedClass facet
      * @exception ConversionException if the class cannot be converted to an enumerated class
      * given the lanuage profile and the current state of the underlying model.
      */
@@ -258,7 +260,7 @@ public interface OntClass
          
     /** 
      * <p>Answer a view of this class as a union class</p>
-     * @return This class, but viewed as a UnionClass node
+     * @return This class, but viewed as a UnionClass facet
      * @exception ConversionException if the class cannot be converted to a union class
      * given the lanuage profile and the current state of the underlying model.
      */
@@ -266,7 +268,7 @@ public interface OntClass
          
     /** 
      * <p>Answer a view of this class as an intersection class</p>
-     * @return This class, but viewed as an IntersectionClass node
+     * @return This class, but viewed as an IntersectionClass facet
      * @exception ConversionException if the class cannot be converted to an intersection class
      * given the lanuage profile and the current state of the underlying model.
      */
@@ -274,7 +276,7 @@ public interface OntClass
          
     /** 
      * <p>Answer a view of this class as a complement class</p>
-     * @return This class, but viewed as a ComplementClass node
+     * @return This class, but viewed as a ComplementClass facet
      * @exception ConversionException if the class cannot be converted to a complement class
      * given the lanuage profile and the current state of the underlying model.
      */
@@ -282,12 +284,84 @@ public interface OntClass
          
     /** 
      * <p>Answer a view of this class as a restriction class expression</p>
-     * @return This class, but viewed as a Restriction node
+     * @return This class, but viewed as a Restriction facet
      * @exception ConversionException if the class cannot be converted to a restriction
      * given the lanuage profile and the current state of the underlying model.
      */
     public Restriction asRestriction();
          
+    // sub-type testing
+
+    /** 
+     * <p>Answer true if this class is an enumerated class expression</p>
+     * @return True if this is an enumerated class expression
+     */
+    public boolean isEnumeratedClass();
+         
+    /** 
+     * <p>Answer true if this class is a union class expression</p>
+     * @return True if this is a union class expression
+     */
+    public boolean isUnionClass();
+         
+    /** 
+     * <p>Answer true if this class is an intersection class expression</p>
+     * @return True if this is an intersection class expression
+     */
+    public boolean isIntersectionClass();
+         
+    /** 
+     * <p>Answer true if this class is a complement class expression</p>
+     * @return True if this is a complement class expression
+     */
+    public boolean isComplementClass();
+         
+    /** 
+     * <p>Answer true if this class is a property restriction</p>
+     * @return True if this is a restriction
+     */
+    public boolean isRestriction();
+         
+    
+    // conversion operations
+    
+    /** 
+     * <p>Answer a view of this class as an enumeration of the given individuals.</p>
+     * @param individuals A list of the individuals that will comprise the permitted values of this
+     * class converted to an enumeration
+     * @return This ontology class, converted to an enumeration of the given individuals 
+     */
+    public EnumeratedClass convertToEnumeratedClass( OntList individuals );
+
+    /** 
+     * <p>Answer a view of this class as an intersection of the given classes.</p>
+     * @param classes A list of the classes that will comprise the operands of the intersection
+     * @return This ontology class, converted to an intersection of the given classes 
+     */
+    public IntersectionClass convertToIntersectionClass( OntList classes );
+
+    /** 
+     * <p>Answer a view of this class as a union of the given classes.</p>
+     * @param classes A list of the classes that will comprise the operands of the union
+     * @return This ontology class, converted to an union of the given classes 
+     */
+    public UnionClass convertToUnionClass( OntList classes );
+
+    /** 
+     * <p>Answer a view of this class as an complement of the given class.</p>
+     * @param cls An ontology classs that will be operand of the complement
+     * @return This ontology class, converted to an complement of the given class 
+     */
+    public ComplementClass convertToComplementClass( Resource cls );
+
+    /** 
+     * <p>Answer a view of this class as an resriction on the given property.</p>
+     * @param prop A property this is the subject of a property restriction class expression
+     * @return This ontology class, converted to a restriction on the given property 
+     */
+    public Restriction convertToRestriction( Property prop );
+
+
 }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:35:33 $
+ * Last modified on   $Date: 2003-05-30 18:47:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.23 2003-05-30 14:35:33 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.24 2003-05-30 18:47:51 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -518,7 +518,7 @@ public class OntModelImpl
      * @param uri The uri for the individual, or null for an anonymous individual.
      * @return An Individual resource.
      */
-    public Individual createIndividual( Resource cls, String uri ) {
+    public Individual createIndividual( String uri, Resource cls ) {
         return (Individual) createOntResource( Individual.class, cls, uri );
     }
     
