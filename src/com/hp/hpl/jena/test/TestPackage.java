@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.24 2004-10-20 14:11:16 jeremy_carroll Exp $
+  $Id: TestPackage.java,v 1.25 2004-12-01 07:22:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
-
-import com.hp.hpl.jena.mem.test.TestMemPackage;
 
 import junit.framework.TestSuite;
 import junit.framework.Test;

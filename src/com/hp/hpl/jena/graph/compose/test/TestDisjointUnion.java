@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestDisjointUnion.java,v 1.2 2004-09-06 17:33:15 chris-dollin Exp $
+  $Id: TestDisjointUnion.java,v 1.3 2004-12-01 07:22:22 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.compose.test;
 
@@ -9,7 +9,6 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.DisjointUnion;
-import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 
 /**

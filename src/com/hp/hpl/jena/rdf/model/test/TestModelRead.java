@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.1 2004-11-22 12:24:26 chris-dollin Exp $
+  $Id: TestModelRead.java,v 1.2 2004-12-01 07:22:22 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -35,6 +35,15 @@ public class TestModelRead extends ModelTestBase
         expected.read( "file:testing/modelReading/simple.n3", "N3" );
         assertSame( m, m.read( "file:testing/modelReading/simple.n3", "base", "N3" ) );
         assertIsoModels( expected, m );
+        }    
+    
+    public void testLoadsSimpleModelWithoutProtocol()
+        {
+//        Model expected = ModelFactory.createDefaultModel();
+//        Model m = ModelFactory.createDefaultModel();
+//        expected.read( "testing/modelReading/simple.n3", "RDF/XML" );
+//        assertSame( m, m.read( "testing/modelReading/simple.n3", "base", "N3" ) );
+//        assertIsoModels( expected, m );
         }    
     
     public void testSimpleLoadImplictBase()

@@ -1,13 +1,12 @@
 /*
 	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.17 2004-11-04 15:05:38 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.18 2004-12-01 07:22:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
