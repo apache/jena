@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.9 2003-05-19 17:13:12 der Exp $
+ * $Id: RuleState.java,v 1.10 2003-05-19 21:26:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-19 17:13:12 $
+ * @version $Revision: 1.10 $ on $Date: 2003-05-19 21:26:38 $
  */
 public class RuleState {
 
@@ -182,7 +182,7 @@ public class RuleState {
         if (goalState != null) goalState.close();
         ruleInstance.generator.decRefCount();
     }
-    
+        
     /**
      * Create the first RuleState for using a given rule to satisfy a goal.
      * @param rule the rule being instantiated
@@ -225,6 +225,10 @@ public class RuleState {
                 }
                 // ... end of clause reorder
                 TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
+                if (subgoal.getSubject().isLiteral() || subgoal.getPredicate().isLiteral()) {
+                    // Illegal goal, could never be satisfied
+                    return null;
+                }
                 GoalState gs = generator.getEngine().findGoal(subgoal);
                 RuleState rs = new RuleState(ri, env, gs, clauseIndex);
                 rs.initMapping(subgoal);

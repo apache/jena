@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.4 2003-05-19 17:15:55 der Exp $
+ * $Id: TestOWLRules.java,v 1.5 2003-05-19 21:25:29 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -19,7 +19,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-19 17:15:55 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-19 21:25:29 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -40,43 +40,43 @@ public class TestOWLRules extends TestCase {
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(new TestOWLRules("SymmetricProperty/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("allValuesFrom/Manifest001.rdf"));   // bx - gone slow
-//        suite.addTest(new TestOWLRules("allValuesFrom/Manifest002.rdf"));   // bx - timeout
-//        suite.addTest(new TestOWLRules("someValuesFrom/Manifest002.rdf"));
+//        suite.addTest(new TestOWLRules("SymmetricProperty/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("allValuesFrom/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("allValuesFrom/Manifest002.rdf"));   // bx - timeout
+//        suite.addTest(new TestOWLRules("someValuesFrom/Manifest002.rdf"));   // bx - timeout
 //        suite.addTest(new TestOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
-        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest002.rdf"));
-        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest003.rdf"));
-        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest005-mod.rdf"));
-        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest002.rdf"));
-        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest003.rdf"));
-        suite.addTest(new TestOWLRules("rdf-charmod-uris/Manifest.rdf"));
-        suite.addTest(new TestOWLRules("I3.2/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("I3.2/Manifest002.rdf"));
-        suite.addTest(new TestOWLRules("I3.2/Manifest003.rdf"));
-        suite.addTest(new TestOWLRules("I3.4/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("I4.1/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("I5.3/Manifest005.rdf"));
-        suite.addTest(new TestOWLRules("I5.3/Manifest006.rdf"));
-        suite.addTest(new TestOWLRules("I5.3/Manifest007.rdf"));
-        suite.addTest(new TestOWLRules("I5.3/Manifest008.rdf"));
-        suite.addTest(new TestOWLRules("I5.3/Manifest009.rdf"));
-        suite.addTest(new TestOWLRules("I5.5/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("I5.5/Manifest002.rdf"));
-        suite.addTest(new TestOWLRules("I5.5/Manifest003.rdf"));
-        suite.addTest(new TestOWLRules("I5.5/Manifest004.rdf"));
-        suite.addTest(new TestOWLRules("Nothing/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("maxCardinality/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("maxCardinality/Manifest002.rdf"));
-        suite.addTest(new TestOWLRules("miscellaneous/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("miscellaneous/Manifest002.rdf"));
-        suite.addTest(new TestOWLRules("inverseOf/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("TransitiveProperty/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("equivalentClass/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("equivalentClass/Manifest002.rdf"));
-        suite.addTest(new TestOWLRules("equivalentClass/Manifest003.rdf"));
+//        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest002.rdf"));
+//        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest003.rdf"));
+//        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest005-mod.rdf"));
+//        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest002.rdf"));
+//        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest003.rdf"));
+//        suite.addTest(new TestOWLRules("rdf-charmod-uris/Manifest.rdf"));
+//        suite.addTest(new TestOWLRules("I3.2/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("I3.2/Manifest002.rdf"));
+//        suite.addTest(new TestOWLRules("I3.2/Manifest003.rdf"));
+//        suite.addTest(new TestOWLRules("I3.4/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("I4.1/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("I5.3/Manifest005.rdf"));
+//        suite.addTest(new TestOWLRules("I5.3/Manifest006.rdf"));
+//        suite.addTest(new TestOWLRules("I5.3/Manifest007.rdf"));
+//        suite.addTest(new TestOWLRules("I5.3/Manifest008.rdf"));
+//        suite.addTest(new TestOWLRules("I5.3/Manifest009.rdf"));
+//        suite.addTest(new TestOWLRules("I5.5/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("I5.5/Manifest002.rdf"));
+//        suite.addTest(new TestOWLRules("I5.5/Manifest003.rdf"));
+//        suite.addTest(new TestOWLRules("I5.5/Manifest004.rdf"));
+//        suite.addTest(new TestOWLRules("Nothing/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("maxCardinality/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("maxCardinality/Manifest002.rdf"));
+//        suite.addTest(new TestOWLRules("miscellaneous/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("miscellaneous/Manifest002.rdf"));
+//        suite.addTest(new TestOWLRules("inverseOf/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("TransitiveProperty/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("equivalentClass/Manifest001.rdf"));
+//        suite.addTest(new TestOWLRules("equivalentClass/Manifest002.rdf"));
+//        suite.addTest(new TestOWLRules("equivalentClass/Manifest003.rdf"));
 //        suite.addTest(new TestOWLRules("equivalentClass/Manifest004.rdf"));  // bx - timeout
 //        suite.addTest(new TestOWLRules("equivalentClass/Manifest005.rdf"));  // bx - timeout
 //        suite.addTest(new TestOWLRules("equivalentProperty/Manifest001.rdf"));
@@ -145,8 +145,8 @@ public class TestOWLRules extends TestCase {
     protected void runTest() throws IOException {
 //        OWLWGTester tester = new OWLWGTester(OWLRuleReasonerFactory.theInstance(), this, null);
         OWLWGTester tester = new OWLWGTester(OWLBRuleReasonerFactory.theInstance(), this, null);
-//        tester.runTests(manifest, true);
-        tester.runTests(manifest, false);    // No tracing/derivation logging
+        tester.runTests(manifest, true);
+//        tester.runTests(manifest, false);    // No tracing/derivation logging
 //        OWLRuleReasoner.printStats();
     }
 

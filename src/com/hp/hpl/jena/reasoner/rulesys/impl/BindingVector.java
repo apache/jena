@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.10 2003-05-19 17:13:11 der Exp $
+ * $Id: BindingVector.java,v 1.11 2003-05-19 21:26:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-05-19 17:13:11 $
+ * @version $Revision: 1.11 $ on $Date: 2003-05-19 21:26:38 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -229,8 +229,8 @@ public class BindingVector implements BindingEnvironment {
         Node gObj = goal.getObject();
         Node hObj = head.getObject();
         if (Functor.isFunctor(gObj)) {
+            Functor gFunctor = (Functor)gObj.getLiteral().getValue();
             if (Functor.isFunctor(hObj)) {
-                Functor gFunctor = (Functor)gObj.getLiteral().getValue();
                 Functor hFunctor = (Functor)hObj.getLiteral().getValue();
                 if ( ! gFunctor.getName().equals(hFunctor.getName()) ) {
                     return null;
@@ -244,17 +244,17 @@ public class BindingVector implements BindingEnvironment {
                     }
                 }
             } else if (hObj instanceof Node_RuleVariable) {
-                // No extra biding to do, success
-                // Temp debug
-                // TODO remove
-                if (!unify(gObj, hObj, gEnv, hEnv)) return null;
-                // end temp
+                // temp debug ...
+                // Check the goal functor is fully ground
+                if (gFunctor.isGround(new BindingVector(gEnv))) {
+                    if (!unify(gObj, hObj, gEnv, hEnv)) return null;
+                }
+                // ... end debug
             } else {
                 // unifying simple ground object with functor, failure
                 return null;
             }
         } else {
-//            if (Functor.isFunctor(hObj)) return null;
             if (!unify(gObj, hObj, gEnv, hEnv)) return null;
         } 
         // Successful bind if we get here

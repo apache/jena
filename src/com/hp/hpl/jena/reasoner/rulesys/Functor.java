@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.2 2003-04-28 20:17:56 der Exp $
+ * $Id: Functor.java,v 1.3 2003-05-19 21:24:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:17:56 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-19 21:24:33 $
  */
 public class Functor {
     /** Functor's name */
@@ -98,6 +98,17 @@ public class Functor {
             if (n instanceof Node_RuleVariable || n instanceof Node_ANY) {
                 return false;
             }
+        }
+        return true;
+    }
+    
+    /**
+     * Returns true if the functor is fully ground in the given environment
+     */
+    public boolean isGround(BindingEnvironment env) {
+        for (int i = 0; i < args.length; i++) {
+            Node n = args[i];
+            if (env.getGroundVersion(args[i]).isVariable()) return false;
         }
         return true;
     }

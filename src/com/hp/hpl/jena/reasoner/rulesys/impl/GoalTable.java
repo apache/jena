@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalTable.java,v 1.5 2003-05-19 08:25:47 der Exp $
+ * $Id: GoalTable.java,v 1.6 2003-05-19 21:26:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  *  is a table of partially evaluated goals.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-19 08:25:47 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-19 21:26:38 $
  */
 public class GoalTable {
 
@@ -50,9 +50,9 @@ public class GoalTable {
      * @return a GoalState which can iterate over all of the goal solutions
      */
     public GoalState findGoal(TriplePattern goal) {
-        if (ruleEngine.getInfGraph().isTraceOn()) {
-            //logger.debug("findGoal on " + goal.toString());
-        }
+//        if (ruleEngine.getInfGraph().isTraceOn()) {
+//            logger.debug("findGoal on " + goal.toString());
+//        }
         GoalResults results = (GoalResults) table.get(goal);
         if (results == null) {
             results = new GoalResults(goal, ruleEngine);

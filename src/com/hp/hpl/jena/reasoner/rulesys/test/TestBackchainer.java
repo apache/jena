@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.13 2003-05-19 17:15:55 der Exp $
+ * $Id: TestBackchainer.java,v 1.14 2003-05-19 21:25:29 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  *  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-05-19 17:15:55 $
+ * @version $Revision: 1.14 $ on $Date: 2003-05-19 21:25:29 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -462,6 +462,28 @@ public class TestBackchainer extends TestCase {
             new Object[] {
                 new Triple(a, s, b),
                 new Triple(a, s, d)
+            } );
+    }
+    
+    /**
+     * Test basic functor usage.
+     */
+    public void testFunctors3() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, s, b));
+        data.add(new Triple(a, t, c));
+        List rules = Rule.parseRules(
+            "[r1: (a q f(?x,?y)) <- (a s ?x), (a t ?y)]" +
+            "[r2: (a p ?x) <- (a q ?x)]" +
+            "[r3: (a r ?y) <- (a p f(?x, ?y))]"
+        );
+        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(a, r, null), 
+            new Object[] {
+                new Triple(a, r, c)
             } );
     }
 
