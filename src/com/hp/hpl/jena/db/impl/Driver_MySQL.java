@@ -41,6 +41,7 @@ public class Driver_MySQL extends DriverRDB {
 		INSERT_BY_PROCEDURE = false;
 		INDEX_KEY_LENGTH = 250;
 		LONG_OBJECT_LENGTH = 250;
+		// LONG_OBJECT_LENGTH = 100;
 		HAS_XACTS = true;
 		PRE_ALLOCATE_ID = false;
 		SKIP_DUPLICATE_CHECK = false;
@@ -124,21 +125,26 @@ public class Driver_MySQL extends DriverRDB {
 	 * Return the parameters for table creation.
 	 * 1) column type for subj, prop, obj.
 	 * 2) table implementation type.
-	 * 3) index key length.
+	 * 3) index key length for subj, pred, obj.
+	 * 4) column type for head.
+	 * 5) index key length for head.
 	 * @param param array to hold table creation parameters. 
 	 */
 	protected void getTblParams ( String [] param ) {
 		String objColType;
 		String tblImpl;
-		String ixKeyLen;
+		String spoKeyLen;
+		String headKeyLen;
+		String headColType;
 		
-		ixKeyLen = Integer.toString(INDEX_KEY_LENGTH);
+		spoKeyLen = Integer.toString(LONG_OBJECT_LENGTH);
+		headKeyLen = Integer.toString(INDEX_KEY_LENGTH);
+
 		if ( INDEX_KEY_LENGTH > 250 )
 			throw new RDFRDBException("Key length specified (" + INDEX_KEY_LENGTH +
 					") exceeds MySQL maximum key length of 250.");
 		tblImpl = HAS_XACTS ? "INNODB" : "MyISAM";
 		if ( HAS_XACTS ) {
-			tblImpl = "INNODB";
 			if ( LONG_OBJECT_LENGTH > 250 )
 				throw new RDFRDBException("Long object length specified (" + LONG_OBJECT_LENGTH +
 						") exceeds MySQL maximum VARCHAR length of 250.");
@@ -147,15 +153,27 @@ public class Driver_MySQL extends DriverRDB {
 			STRINGS_TRIMMED = true;
 			EOS = ":";
 		} else {
-			tblImpl = "MyISAM";
 			objColType = LONG_OBJECT_LENGTH <= 250 ?
 				"TINYBLOB" : "MEDIUMBLOB";
 			STRINGS_TRIMMED = false;
 			EOS = "";
 		}
+		if ( HAS_XACTS ) {
+			if ( INDEX_KEY_LENGTH > 250 )
+				throw new RDFRDBException("Index key length specified (" + INDEX_KEY_LENGTH +
+						") exceeds MySQL maximum VARCHAR length of 250.");
+
+			headColType = "VARCHAR(" + INDEX_KEY_LENGTH + ") BINARY";
+		} else {
+			headColType = INDEX_KEY_LENGTH <= 250 ?
+				"TINYBLOB" : "MEDIUMBLOB";
+		}
+
 		param[0] = objColType;
 		param[1] = tblImpl;
-		param[2] = ixKeyLen;	
+		param[2] = spoKeyLen;
+		param[3] = headColType;
+		param[4] = headKeyLen;
 	}
 
 	
@@ -165,7 +183,7 @@ public class Driver_MySQL extends DriverRDB {
 	 * Return the parameters for database initialization.
 	 */
 	protected String[] getDbInitTablesParams() {
-		String [] res = new String[3];
+		String [] res = new String[5];
 		
 		getTblParams (res);
 		if ( HAS_XACTS ) {
@@ -190,7 +208,7 @@ public class Driver_MySQL extends DriverRDB {
 	*/	
 
 	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
-		String [] parms = new String[3];
+		String [] parms = new String[5];
 		String [] res = new String[4];
 				
 		getTblParams (parms);
@@ -207,6 +225,10 @@ public class Driver_MySQL extends DriverRDB {
 		return res;
 	}
 	
+	// for debugging
+	public void setMaxLiteral ( int n ) { LONG_OBJECT_LENGTH = n; }
+	public int getMaxLiteral ( ) { return LONG_OBJECT_LENGTH; }
+
 }
 
 /*

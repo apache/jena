@@ -127,15 +127,22 @@ public class Driver_PostgreSQL extends DriverRDB {
 	 * @param param array to hold table creation parameters. 
 	 */
 	protected void getTblParams ( String [] param ) {
-		String objColType;
+		String spoColType;
+		String headColType;
 		
 		if ( LONG_OBJECT_LENGTH > 4000 )
 			throw new RDFRDBException("Long object length specified (" + LONG_OBJECT_LENGTH +
 					") exceeds maximum sane length of 4000.");
+		if ( INDEX_KEY_LENGTH > 4000 )
+			throw new RDFRDBException("Index key length specified (" + INDEX_KEY_LENGTH +
+					") exceeds maximum sane length of 4000.");
 
-		objColType = "VARCHAR(" + LONG_OBJECT_LENGTH + ")";
+		spoColType = "VARCHAR(" + LONG_OBJECT_LENGTH + ")";
 		STRINGS_TRIMMED = false;
-		param[0] = objColType;
+		param[0] = spoColType;
+		headColType = "VARCHAR(" + INDEX_KEY_LENGTH + ")";
+		STRINGS_TRIMMED = false;
+		param[1] = headColType;
 	}
 
 	
@@ -145,7 +152,7 @@ public class Driver_PostgreSQL extends DriverRDB {
 	 * Return the parameters for database initialization.
 	 */
 	protected String[] getDbInitTablesParams() {
-		String [] res = new String[1];
+		String [] res = new String[2];
 		
 		getTblParams (res);
 		EOS_LEN = EOS.length();
