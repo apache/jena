@@ -23,6 +23,9 @@ Post Jena 2.1 bug fix list
    Ontology API
    	  o Added a new method getOWLLanguageLevel() to OntModel, which returns the
    	    OWL sublanguage - lite, DL or full - and error messages
+   	  o Fixed ont language profiles to allow .as() on e.g. owl:SymmetricProperty as
+   	    OntProperty.class.  Previously this relied on the reasoner; the change was
+   	    needed to support the DIG interface.
    	     
       
 Jena 2.1 - Main changes from Jena 2.0

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-30 20:53:34 $
+ * Last modified on   $Date: 2004-05-13 13:10:08 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.9 2004-01-30 20:53:34 ian_dickinson Exp $
+ * @version CVS $Id: OWLLiteProfile.java,v 1.10 2004-05-13 13:10:08 ian_dickinson Exp $
  */
 public class OWLLiteProfile
     extends OWLProfile
@@ -133,7 +133,10 @@ public class OWLLiteProfile
             },
             {  ObjectProperty.class,        new SupportsCheck() {
                 public boolean doCheck( Node n, EnhGraph g ) {
-                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() );
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) || 
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) || 
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() );
                 }
             }
             },
@@ -150,12 +153,6 @@ public class OWLLiteProfile
                 }
             }
             },
-            {  ObjectProperty.class,        new SupportsCheck() {
-                public boolean doCheck( Node n, EnhGraph g ) {
-                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() );
-                }
-            }
-            },
             {  RDFList.class,               new SupportsCheck() {
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return n.equals( RDF.nil.asNode() )  ||
@@ -168,7 +165,11 @@ public class OWLLiteProfile
                     return g.asGraph().contains( n, RDF.type.asNode(), RDF.Property.asNode() ) ||
                     g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
                     g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() ) ||
-                    g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() );
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) || 
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) || 
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.FunctionalProperty.asNode() ) || 
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() ); 
                 }
             }
             },

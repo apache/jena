@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-06 17:21:55 $
+ * Last modified on   $Date: 2004-05-13 13:10:09 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.21 2003-11-06 17:21:55 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.22 2004-05-13 13:10:09 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -334,7 +334,9 @@ public class DAML_OILProfile
         },
         {  ObjectProperty.class,        new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
-                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.ObjectProperty.asNode() );
+                                               return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.ObjectProperty.asNode() ) ||
+                                                      g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.TransitiveProperty.asNode() ) ||
+                                                      g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.UnambiguousProperty.asNode() );
                                             }
                                         }
         },
@@ -349,12 +351,6 @@ public class DAML_OILProfile
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 // DAML's alias for functional property is unambiguousProperty
                                                 return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.UnambiguousProperty.asNode() );
-                                            }
-                                        }
-        },
-        {  ObjectProperty.class,        new SupportsCheck() {
-                                            public boolean doCheck( Node n, EnhGraph g ) {
-                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.ObjectProperty.asNode() );
                                             }
                                         }
         },
@@ -377,7 +373,11 @@ public class DAML_OILProfile
                                                 return g.asGraph().contains( n, RDF.type.asNode(), RDF.Property.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Property.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.ObjectProperty.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.DatatypeProperty.asNode() );
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.DatatypeProperty.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.TransitiveProperty.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.UnambiguousProperty.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.UniqueProperty.asNode() )
+                                                       ;
                                             }
                                         }
         },
