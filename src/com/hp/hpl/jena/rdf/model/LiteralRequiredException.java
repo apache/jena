@@ -1,19 +1,25 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralRequiredException.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: LiteralRequiredException.java,v 1.3 2003-09-08 14:33:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.graph.*;
+
 /**
-    Exception to throw when an RDFNode required to be a Literal isn't.
+    Exception to throw when an RDFNode required to be a Literal isn't, or when a
+    literal Node is required but a non-literal Node supplied.
  	@author kers
 */
 public class LiteralRequiredException extends RDFException
     {
     public LiteralRequiredException( RDFNode n )
-        { super( OBJECTNOTLITERAL, n.toString() );}
+        { super( OBJECTNOTLITERAL, n.toString() ); }
+        
+    public LiteralRequiredException( Node n )
+        { super( OBJECTNOTLITERAL, n.toString() ); }      
     }
 
 
