@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.17 $
+* @version $Revision: 1.18 $
 */
 
 public interface IRDBDriver {
@@ -304,6 +304,38 @@ public interface IRDBDriver {
 	 */	
 
 	public String genSQLQualGraphId( int alias, int graphId );
+	
+	public String genSQLStringMatch( int alias, char col,
+		String fun, String stringToMatch );
+	
+	public String genSQLStringMatchLHS( boolean ignCase, String var );
+	public String genSQLStringMatchLHS_IC( String var );
+	
+	public String genSQLStringMatchOp( boolean ignCase, String fun );
+
+	public String stringMatchAllChar();
+	public String stringMatchEscapeChar();
+
+	public String genSQLStringMatchRHS( boolean ignCase, boolean pfxMatch,
+									String strToMatch );
+	public String genSQLStringMatchRHS_IC( String strToMatch );
+
+	public String genSQLStringMatchOp( String fun );
+
+	public String genSQLStringMatchOp_IC( String fun );
+	
+	public boolean stringMatchNeedsEscape ( String strToMatch );
+
+	public String addEscape ( String strToMatch );
+	
+	public String genSQLStringMatchEscape();
+	
+	public String genSQLLikeKW();
+
+	public String genSQLEscapeKW();
+
+	
+	
 	
 	/**
 	 * Generate an SQL string to joing two table columns.

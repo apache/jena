@@ -8,13 +8,11 @@ package com.hp.hpl.jena.db.impl;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.Element;
-import com.hp.hpl.jena.graph.query.ExpressionSet;
-import com.hp.hpl.jena.graph.query.Fixed;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
+
+import java.util.*;
 
 /**
 	@author kers
@@ -141,53 +139,19 @@ public final class DBQueryStageCompiler
 			compile the constraints.
 		*/
 		private static void compileConstraints( DBQueryStageCompiler compiler, DBQuery query,
-			ExpressionSet constraints )
-			{
-				// for each variable bound by this query, compile any equal
-				// or not equal constraints
-			/* disable for now
-				int varCnt = query.binding.length;
-				for(int i = 0; (i<varCnt) && (constraints.size() > 0); i++) {
-					VarIndex vx = query.binding[i];
-					if ( vx.isArgVar() )
-						continue;
-					// look for variable on both left and right side of operator
-					compConstraints(query, vx.var, constraints);
-					compConstraints(query, vx.var, constraints);
-				}
-			*/	
-			}
-			
-		private static void compConstraints( DBQuery query, Node_Variable var, ExpressionSet constraints ) {
-//			Triple[] done = new Triple[constraints.size()];
-//			int doneCnt = 0;
-//			// check for var on left side of operator
-//			ExtendedIterator it = constraints.find(var, Node.ANY, Node.ANY);
-//			while ( it.hasNext() ) {
-//				Triple t = (Triple) it.next();
-//				if ( genConstraints(query,(Node_Variable)t.getSubject(),t.getPredicate(),t.getObject()) )
-//					done[doneCnt++] = t;
-//			}
-//			for(doneCnt--;doneCnt>0;doneCnt--) constraints.delete(done[doneCnt]);
-//			
-//			// check for var on right side of operator
-//			it = constraints.find( Node.ANY, Node.ANY, var);
-//			while ( it.hasNext() ) {
-//				Triple t = (Triple) it.next();
-//				if ( genConstraints(query,(Node_Variable)t.getObject(),t.getPredicate(),t.getSubject()) )
-//					done[doneCnt++] = t;
-//			}
-//			for(doneCnt--;doneCnt>0;doneCnt--) constraints.delete(done[doneCnt]);
+			ExpressionSet constraints ) {
+			Iterator it = constraints.iterator();
+			Expression e;
+			while (it.hasNext()) {
+				e = (Expression) it.next();
+				VarDesc bind = query.findBinding(e.getArg(0).getName());
+				if ( bind == null )
+					throw new JenaException("Unbound variable in constraint");
+				String strMat = ((Expression.Fixed)e.getArg(1)).toString();
+				query.stmt += query.sqlAnd.gen(query.driver.genSQLStringMatch(bind.alias,
+					bind.column, e.getFun(), strMat));
+			}		
 		}
-//		
-//		private static boolean genConstraints( DBQuery query, Node_Variable var, Node pred, Node obj ) {
-//			boolean res = false;
-//			// not sure what to check for here
-//			return res;
-//		}
-		
-
-	
 			
 
 	/**

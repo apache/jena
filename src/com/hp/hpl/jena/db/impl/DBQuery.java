@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQuery.java,v 1.6 2004-07-27 00:29:12 wkw Exp $
+  $Id: DBQuery.java,v 1.7 2004-09-17 21:44:07 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -77,6 +77,15 @@ public class DBQuery
 	
 	public VarDesc getBinding ( int i ) {
 		return vars[i];
+	}
+
+	public VarDesc findBinding ( String v ) {
+		int i;
+		for ( i=0; i<vars.length; i++ ) {
+			if ( vars[i].var.getName().equals(v) )
+				return vars[i];
+		}
+		return null;
 	}
 		
 	public void newAlias() {

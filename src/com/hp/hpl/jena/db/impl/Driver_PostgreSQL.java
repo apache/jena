@@ -186,6 +186,11 @@ public class Driver_PostgreSQL extends DriverRDB {
 		res[1] = parms[0];
 		return res;
 	}
+	
+	public String genSQLStringMatchOp_IC( String fun ) {
+		return "I" + genSQLLikeKW();
+	}
+
 }
 
 /*

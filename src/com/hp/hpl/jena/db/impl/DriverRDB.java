@@ -20,13 +20,13 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.db.impl.DBIDInt;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.graph.query.ExpressionFunctionURIs; 
 
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
@@ -51,7 +51,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.43 $ on $Date: 2004-07-25 16:19:10 $
+* @version $Revision: 1.44 $ on $Date: 2004-09-17 21:44:07 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1792,6 +1792,99 @@ public abstract class DriverRDB implements IRDBDriver {
 			return colAliasToString(lhsAlias,lhsCol) + "=" +
 			colAliasToString(rhsAlias,rhsCol);
 	}
+
+	public String genSQLStringMatch( int alias, char col,
+		String fun, String stringToMatch ) {
+		boolean ignCase = 
+		   fun.equals(ExpressionFunctionURIs.J_startsWithInsensitive) ||
+		   fun.equals(ExpressionFunctionURIs.J_endsWithInsensitive);
+		boolean pfxMatch = 
+		   fun.equals(ExpressionFunctionURIs.J_startsWith) ||
+		   fun.equals(ExpressionFunctionURIs.J_startsWithInsensitive);
+		String var = colAliasToString(alias,col);
+		// generate string match operation for short literal or URI
+		String qual = " ( " + genSQLStringMatchLHS(ignCase,var);
+		qual += " " + genSQLStringMatchOp(ignCase,fun);
+		qual += " " + genSQLStringMatchRHS(ignCase,pfxMatch,stringToMatch);
+		// now match long URI or Bnode or, if object col, long literal
+		qual += " " + genSQLOrKW() + genSQLStringMatchLHS(false,var);
+		qual += " " + genSQLStringMatchOp(false,fun);
+		qual += " " + genSQLStringMatchLong() + " )";
+	
+		return qual;
+	}
+	
+	public String genSQLStringMatchLHS( boolean ignCase, String var ) {
+		return ignCase ? genSQLStringMatchLHS_IC(var): var;
+	}
+
+	public String genSQLStringMatchLong( ) {
+		return QUOTE_CHAR + stringMatchAnyChar() + stringMatchLongObj() + 
+				stringMatchAllChar() + QUOTE_CHAR;
+	}
+
+	public String genSQLStringMatchOp( boolean ignCase, String fun ) {
+		return ignCase ? genSQLStringMatchOp_IC(fun): 
+		                 genSQLStringMatchOp(fun);
+	}
+
+	public String stringMatchAllChar() { return "%"; }
+	public String stringMatchAnyChar() { return "_"; }
+	public String stringMatchEscapeChar() { return "\\\\"; }
+	public String stringMatchLongObj() { return "r"; }
+	public String stringMatchShortObj() { return "v"; }
+
+	public String genSQLStringMatchRHS( boolean ignCase, boolean pfxMatch,
+									String strToMatch ) {
+		boolean isEscaped = stringMatchNeedsEscape(strToMatch);
+		if ( isEscaped ) strToMatch = addEscape(strToMatch);
+		// for now, don't optimize for prefix match
+		/*
+		strToMatch = pfxMatch ? strToMatch + stringMatchAllChar() : 
+						stringMatchAllChar() + strToMatch;
+		strToMatch = stringMatchAllChar() + strToMatch;
+		strToMatch = nodeToRDBString(Node.createLiteral(strToMatch),false);
+		if ( pfxMatch && STRINGS_TRIMMED ) 
+			strToMatch = strToMatch.substring(0,strToMatch.length()-1);
+		*/
+		strToMatch = stringMatchAnyChar() + stringMatchShortObj() + 
+				stringMatchAllChar() + strToMatch + stringMatchAllChar();
+		strToMatch = QUOTE_CHAR + strToMatch + QUOTE_CHAR;
+		String qual = ignCase ? genSQLStringMatchRHS_IC(strToMatch): strToMatch;
+		if ( isEscaped ) qual += genSQLStringMatchEscape();
+
+		return qual;
+	}
+	
+	public String genSQLStringMatchLHS_IC(String var) {
+		return var;
+	}
+
+	public String genSQLStringMatchRHS_IC(String strToMatch) {
+		return strToMatch;
+	}
+
+	public String genSQLStringMatchOp( String fun ) {
+		return genSQLLikeKW();
+	}
+
+	public String genSQLStringMatchOp_IC( String fun ) {
+		return genSQLLikeKW();
+	}
+	
+	public boolean stringMatchNeedsEscape ( String strToMatch ) {
+		return strToMatch.indexOf('_') >= 0;
+	}
+
+	public String addEscape ( String strToMatch ) {
+		int i = strToMatch.indexOf('_');
+		return strToMatch.substring(0,i) + stringMatchEscapeChar() + 
+					strToMatch.substring(i);
+	}
+	
+	public String genSQLStringMatchEscape() {
+		return "";
+	}
 	
 	public String genSQLResList( int resIndex[], VarDesc[] binding ) {
 		String resList = "";
@@ -1819,6 +1912,14 @@ public abstract class DriverRDB implements IRDBDriver {
 
 	}
 	
+	public String genSQLLikeKW() {
+		return "Like ";
+	}
+
+	public String genSQLEscapeKW() {
+		return "Escape ";
+	}
+
 	public String genSQLSelectKW() {
 		return "Select ";
 	}
@@ -1829,6 +1930,10 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	public String genSQLWhereKW() {
 		return "Where ";
+	}
+	
+	public String genSQLOrKW() {
+		return "Or ";
 	}
 	
 

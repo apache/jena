@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.graph.Node;
 
 
 /**
@@ -224,6 +225,11 @@ public class Driver_MySQL extends DriverRDB {
 		res[3] = parms[2];
 		return res;
 	}
+	
+	public String genSQLStringMatchLHS_IC(String var) {
+		return "cast(" + var + " as char)";
+	}
+	
 }
 
 /*

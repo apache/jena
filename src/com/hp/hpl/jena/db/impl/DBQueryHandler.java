@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.11 2004-07-27 00:29:12 wkw Exp $
+  $Id: DBQueryHandler.java,v 1.12 2004-09-17 21:44:08 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -59,7 +59,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
 		DBPattern src;
 		int reifBehavior = graph.reificationBehavior();
 		
-		if ((patternsToDo.size() == 1) || (doFastpath == false)) {
+		if ( ((patternsToDo.size() == 1) && !constraints.isComplex()) || 
+		     (doFastpath == false) ) {
 			// fastpath fastpath; assumes it's faster to do a find for single pattern queries		
 			for(i=0;i<patternsToDo.size();i++)
 				stages[stageCnt++] =
@@ -125,17 +126,19 @@ public class DBQueryHandler extends SimpleQueryHandler {
 				patternsToDo.remove(minIx);
 
 				// now we have a pattern for the next stage.
-				List varList = new ArrayList(); // list of VarIndex
+				List varList = new ArrayList(); // list of VarDesc
+				ExpressionSet evalCons = new ExpressionSet(); // constraints to eval
 				List qryPat = new ArrayList(); // list of DBPattern
 				qryPat.add(src);
 				boolean doQuery = false;
+				boolean didJoin = false;
+				boolean foundJoin;
 				// fastpath is only supported for patterns over one table.
 				if (src.isSingleSource()) {
 					// see if other patterns can join with it.
 					src.addFreeVars(varList);
-					boolean didJoin = false;
 					do {
-						didJoin = false;
+						foundJoin = false;
 						for (i = 0; i < patternsToDo.size(); i++) {
 							unstaged = source[((Integer)patternsToDo.get(i)).intValue()];
 							if (unstaged.joinsWith(src,varList,queryOnlyStmt,queryOnlyReif)) {
@@ -143,25 +146,43 @@ public class DBQueryHandler extends SimpleQueryHandler {
 								patternsToDo.remove(i);
 								unstaged.addFreeVars(varList);
 								unstaged.isStaged = true;
-								didJoin = true;
+								foundJoin = didJoin = true;
 							}
 						}
-					} while ( didJoin && (patternsToDo.size() > 0));
-					if (qryPat.size() > 1) {
-						// add result vars of query to varmap
+					} while ( foundJoin && (patternsToDo.size() > 0));
+					// push down query if (1) there is a join OR if
+					// (2) there is no join but there is a constraint to 
+					// eval on a single pattern.
+					// see if any constraints can be pushed down
+					if ( didJoin )
+						doQuery = true;
+					else {
+						for(i=0;i<varList.size();i++) {
+							VarDesc vx = (VarDesc) varList.get(i);
+							// see if any constraints on a result var.
+							// if so, push down constraint.
+/*/ UNCOMMENT THE LINES BELOW TO ENABLE CONSTRAINT EVALUATION WITHIN THE DB.
+							if ( (vx.isArgVar == false) &&
+								findConstraints(constraints,evalCons,vx) )
+								doQuery = true;
+/* UNCOMMENT THE LINES ABOVE TO ENABLE CONSTRAINT EVALUATION WITHIN THE DB. */
+						}
+					}
+					if ( doQuery ) {
+						// add result vars to reslist for query
 						for(i=0;i<varList.size();i++) {
 							VarDesc vx = (VarDesc) varList.get(i);
 							if ( vx.isArgVar == false )
-								vx.bindToVarMap(varMap);						
+								vx.bindToVarMap(varMap);
 						}
-						doQuery = true;
 					}
+
 				} else if ( !src.hasSource() )
 					doQuery = true;
 					// hack to handle the case when no graphs match the pattern
 				if ( doQuery ) {
 						stages[stageCnt] =
-							new DBQueryStage(graph,src.hasSource() ? src.singleSource() : null ,varList,qryPat, constraints);
+							new DBQueryStage(graph,src.hasSource() ? src.singleSource() : null ,varList,qryPat, evalCons);
 				} else {
 					stages[stageCnt] =
 							super.patternStage(varMap,constraints, new Triple[]{src.pattern});
@@ -220,6 +241,35 @@ public class DBQueryHandler extends SimpleQueryHandler {
 		return queryFullReif;
 	}
 
+
+	private boolean findConstraints ( ExpressionSet constraints, ExpressionSet evalCons, VarDesc vx ) {
+		boolean res = false;
+		Iterator it = constraints.iterator();
+		Expression e;
+		while (it.hasNext()) {
+			e = (Expression) it.next();
+			if (e.isApply() && e.argCount() == 2) {
+				Expression l = e.getArg(0);
+				if ( l.isVariable() && vx.var.getName().equals(l.getName()) ) {
+					String f = e.getFun();
+					if ( f.equals(ExpressionFunctionURIs.J_startsWith) ||
+					     f.equals(ExpressionFunctionURIs.J_startsWithInsensitive) ||
+					     f.equals(ExpressionFunctionURIs.J_contains) ||
+					     f.equals(ExpressionFunctionURIs.J_containsInsensitive) ||
+					     f.equals(ExpressionFunctionURIs.J_EndsWith) ||
+					     f.equals(ExpressionFunctionURIs.J_endsWithInsensitive) ) {
+						evalCons.add(e);
+						// for now, constraints must be reevaluated outside the
+						// db engine since the db engine may not fully evaluate
+						// the constraint.
+						// it.remove();
+						res = true;
+					}
+				}
+			}
+		}
+		return res;			
+	}
 }
 
 /*
