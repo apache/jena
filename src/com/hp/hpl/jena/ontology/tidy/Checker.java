@@ -211,7 +211,7 @@ public class Checker extends AbsChecker {
 
 		// m.getDocumentManager();
 		GraphFactory gf = dm.getDefaultGraphFactory();
-		Checker chk = new Checker(false, gf);
+		Checker chk = new Checker(argv.length==2 && argv[1].equalsIgnoreCase("Lite"), gf);
 		chk.add(m.getGraph());
 
 		String subLang = chk.getSubLanguage();

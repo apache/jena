@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: CategorySet.java,v 1.5 2003-04-15 19:48:17 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.6 2003-04-17 12:22:07 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -139,8 +139,8 @@ class CategorySet implements Comparable {
 	public int compareTo(Object o) {
 		CategorySet c = (CategorySet) o;
 		int diff = cats.length - c.cats.length;
-		for (int j = 0; diff != 0 && j < cats.length; j++)
-			diff = cats[j] = c.cats[j];
+		for (int j = 0; diff == 0 && j < cats.length; j++)
+			diff = cats[j] - c.cats[j];
 		return diff;
 	}
 	public boolean equals(Object o) {
@@ -164,9 +164,14 @@ class CategorySet implements Comparable {
 		if (!isSorted)
 			Arrays.sort(s);
 		CategorySet cs = new CategorySet(s);
-		CategorySet close = (CategorySet) sorted.tailSet(cs).first();
-		if (close.equals(cs))
-			return close.id;
+		SortedSet tail = sorted.tailSet(cs);
+		if ( !tail.isEmpty() ) {
+			CategorySet close = (CategorySet) tail.first();
+			if (close.equals(cs)) {
+				System.err.println("Close enough.");
+				return close.id;
+			}
+		}
 		cs.id = unsorted.size();
 		unsorted.add(cs);
 		sorted.add(cs);
