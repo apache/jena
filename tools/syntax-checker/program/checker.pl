@@ -6,6 +6,7 @@ namespace(owl,'http://www.w3.org/2002/07/owl#').
 namespace(xsd,'http://www.w3.org/2001/XMLSchema#').
 
 grouping([annotationPropID, classID, dataPropID, datatypeID, individualID,
+  ontologyPropertyID,
   objectPropID, ontologyID, transitivePropID, notype],userID).
 
 grouping( [annotationPropID, dataPropID, objectPropID, 
@@ -103,12 +104,14 @@ pp(_/property(3),'|FirstOfTwo') :- !.
 pp(_,'').
 
 
-category(orphan).
-category(notype).
-category(cyclic).
-category(cyclicRest).
-category(cyclicFirst).
-category(badRestriction).
+pcategory(orphan).
+pcategory(notype).
+pcategory(cyclic).
+pcategory(cyclicRest).
+pcategory(cyclicFirst).
+pcategory(badRestriction).
+category(X) :-
+  pcategory(X).
 category(X) :-
    setof(Z,isTTnode(Z),S),
    member(Z,S),
@@ -161,7 +164,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.20 2003-12-02 06:21:11 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.21 2003-12-03 10:54:21 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -171,7 +174,18 @@ wDate :-
 wDate :-
    date(date(D,_,_)),
    wlist([2003,'-',D]).
-   
+wPseudoCat :-
+   wlist([' static boolean isPseudoCategory(int x) {',nl,
+          '     switch ( x ) {',nl]),
+   pcategory(P),
+   wlist(['      case ',P,':',nl]),
+   fail.
+wPseudoCat :-
+   wlist(['        return true;',nl,
+          '      default:',nl,
+          '        return false;',nl,
+          '     }',nl,
+          '  }',nl]).
 copyrightTail :- wlist([
 ' /*',nl,
 '	(c) Copyright Hewlett-Packard Company ']),
@@ -210,14 +224,14 @@ gogo :-
   buildChecker,
   gogo('Grammar','com.hp.hpl.jena.ontology.tidy.impl',
          '../../src/com/hp/hpl/jena/ontology/tidy/impl/Grammar.java'),
-  gogo('Triples','owlcompiler','java/owlcompiler/Triples.java').
+  gogo('Grammar','owlcompiler','java/owlcompiler/Grammar.java').
 gogo(G,P,JF) :-
   % tt/4 is now good.
   % jfile(G,JF),
   tell(JF),
   copyrightHead,
   wlist(['package ', P,';',nl]),
-  (G=='Triples'->
+  (P=='owlcompiler'->
   wlist(['import com.hp.hpl.jena.ontology.tidy.impl.*;',nl,
          'import java.util.Arrays;',nl]); true),
   wlist([ 'class ',G,' implements Constants {',nl]),
@@ -226,8 +240,9 @@ gogo(G,P,JF) :-
   wGetBuiltinID,
   wGroups1,
   wInitSingletons,
-  (G=='Triples'->wTripleTable;true),
+  (P=='owlcompiler'->wTripleTable;true),
   wGroups2,
+  wPseudoCat,
   wlist(['}',nl]),
   copyrightTail,
   told.

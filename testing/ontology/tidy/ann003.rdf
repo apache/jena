@@ -3,9 +3,14 @@
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:owl="http://www.w3.org/2002/07/owl#"
       xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
-      xmlns='http://www.w3.org/2002/03owlt/Restriction/premises005#'
-    xml:base="http://www.w3.org/2002/03owlt/Restriction/premises005" >
- 
+      xmlns='http://www.example.org/test003#'
+    xml:base="http://www.example.org/test003" >
+    <owl:OntologyProperty rdf:ID="x">
+        <r rdf:resource=
+        "http://www.example.org/test003#x"
+           />
+       
+    </owl:OntologyProperty>
       <owl:AnnotationProperty rdf:ID="r">
         <r rdf:resource=
         "http://www.w3.org/2002/07/owl#AnnotationProperty"
@@ -17,10 +22,13 @@
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
            />
         <r rdf:resource=
-        "http://www.w3.org/2000/01/rdf-schema#comment"
+        "http://www.w3.org/2000/01/rdf-schema#subPropertyOf"
            />
         <r rdf:resource=
-        "http://www.w3.org/2000/01/rdf-schema#subPropertyOf"
+        "http://www.w3.org/2002/07/owl#imports"
+           />
+        <r rdf:resource=
+        "http://www.w3.org/2002/07/owl#backwardCompatibleWith"
            />
       </owl:AnnotationProperty>
       

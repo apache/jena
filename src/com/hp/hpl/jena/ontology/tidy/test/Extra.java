@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.OWLTest;
 import com.hp.hpl.jena.ontology.tidy.*;
+import java.util.*;
 //import com.hp.hpl.jena.ontology.tidy.impl.*;
 
 /**
@@ -35,9 +36,33 @@ public class Extra extends TestCase {
    public void testann002() {
 	 runTest("ann002", OWLTest.Lite);
    }
+   public void testann003() {
+	 runTest("ann003", OWLTest.Lite);
+   }
+   public void testann004() {
+	 runTest("ann004", OWLTest.Lite);
+   }
+   public void testann005() {
+	 runTest("ann005", OWLTest.Full);
+   }
    
    public void testsubClassOf001() {
    	 runTest("subClassOf001", OWLTest.Full);
+   }
+   public void testsubClassOf001a() {
+	 runTest("subClassOf001", OWLTest.Full);
+   }
+   public void testsubClassOf001b() {
+	 runTest("subClassOf001", OWLTest.Full);
+   }
+   public void testsubClassOf001c() {
+	 runTest("subClassOf001", OWLTest.Full);
+   }
+   public void testsubClassOf001d() {
+	 runTest("subClassOf001", OWLTest.Full);
+   }
+   public void testsubClassOf001e() {
+	 runTest("subClassOf001", OWLTest.Full);
    }
    public void testsubClassOf002() {
    	runTest("subClassOf002", OWLTest.Full);
@@ -56,8 +81,14 @@ public class Extra extends TestCase {
 	runTest("list001", OWLTest.DL);
    }
 
-   public void testdisjointWith001() {
-	runTest("disjointWith001", OWLTest.Full);
+   public void testimports001() {
+	runTest("imports001", OWLTest.Full);
+   }
+   public void testimports002() {
+	runTest("imports002", OWLTest.Full);
+   }
+   public void testontologyProp001() {
+	runTest("ontologyProp001", OWLTest.Lite);
    }
 /*
    static long t;
@@ -78,7 +109,15 @@ public class Extra extends TestCase {
    	chk.addRaw(m.getGraph());
    	
    	String rslt = chk.getSubLanguage();
-   	assertTrue(lvl.getURI().endsWith(rslt));
+   	boolean rsltx = lvl.getURI().endsWith(rslt);
+   	if (!rsltx){
+   		Iterator it = chk.getProblems();
+   		while (it.hasNext()) {
+   			SyntaxProblem sp = (SyntaxProblem)it.next();
+   			System.err.println(sp.longDescription());
+   		}
+   	}
+   	assertTrue(rsltx);
    }
 
 }

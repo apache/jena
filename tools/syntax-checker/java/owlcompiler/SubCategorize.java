@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.3 2003-11-30 23:39:36 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.4 2003-12-03 10:53:38 jeremy_carroll Exp $
 */
 package owlcompiler;
 
@@ -58,8 +58,15 @@ public class SubCategorize implements Constants,Lookup {
 			case 0 :
 				return false;
 			case 1 :
-				if (subj == Grammar.orphan)
+				if (subj == Grammar.orphan) {
+					if (COMPARATIVE(prop))
+					  return false;
+					if (prop==Grammar.rdftype
+					    && (obj == Grammar.owlOntology
+					    || obj == Grammar.owlAllDifferent))
+					    return false;
 					return true;
+				}
 				if (subj == Grammar.notype) {
 					if (prop == Grammar.rdfrest)
 						return false;
@@ -386,8 +393,13 @@ public class SubCategorize implements Constants,Lookup {
 	public int meet(int c0, int c1) {
 		int cc0[] = CategorySet.getSet(c0);
 		int cc1[] = CategorySet.getSet(c1);
-		
-		return CategorySet.find(intersection(cc0,cc1),true);
+		int xx[] = intersection(cc0,cc1);
+		boolean allPseudo = true;
+		for (int i=0;i<xx.length;i++)
+		  allPseudo = allPseudo&&Grammar.isPseudoCategory(xx[i]);
+		if ( allPseudo )
+		  return Failure;
+		return CategorySet.find(xx,true);
 	}
 
 }

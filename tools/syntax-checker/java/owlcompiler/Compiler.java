@@ -173,6 +173,51 @@ public class Compiler implements Constants {
 			throw new BrokenException(e);
 		}
 	}
+	class Info {
+		final String name;
+		Info(String n) {
+			name = n;
+		}
+		Map before = new HashMap();
+		Set after = new HashSet();
+		void add(Integer from, Integer to ) {
+			after.add(to);
+			Set bb = (Set)before.get(from);
+			if ( bb == null ) {
+				bb = new HashSet();
+				before.put(from,bb);
+			}
+			bb.add(to);
+		}
+		void dump() {
+			System.out.println("** "+name+" **" );
+			System.out.println(before.size() + " in total.");
+			System.out.println(after.size()+ " after.");
+			int sz[] = new int[after.size()+1];
+			Iterator i = before.values().iterator();
+			while ( i.hasNext())
+			  sz[((Set)i.next()).size()]++;
+			for (int j=0; j<sz.length;j++)
+			  if (sz[j]!=0)
+			     System.out.println(j+"\t"+sz[j]);
+			Set s = new HashSet(possible);
+			s.removeAll(before.keySet());
+			if ( s.size() > before.keySet().size()) {
+				System.out.println("Including:");
+				s = before.keySet();
+			} else {
+				System.out.println("Excluding:");
+			}
+			Iterator it = s.iterator();
+			while (it.hasNext()) {
+				System.out.println(CategorySet.catString(((Integer)it.next()).intValue()));
+			}
+		}
+	}
+	Info dummyInfo = new Info("dummy");
+	Info subjInfo = new Info("subject");
+	Info propInfo = new Info("property");
+	Info objInfo = new Info("object");
 	SortedSet possible = new TreeSet();
 	SortedMap huge = new TreeMap();
 	SortedMap moreThan = new TreeMap();
@@ -180,13 +225,15 @@ public class Compiler implements Constants {
 	SortedMap comparablePairs = new TreeMap();
 	Map morePossible = new HashMap();
 	Map oldMorePossible = null;
-	void add(int i, int was) {
+	void add(Info info, int i, int was) {
 		Integer ii = new Integer(i);
+		Integer ww =  new Integer(was);
 		if ((!possible.contains(ii)) && !morePossible.containsKey(ii))
-			morePossible.put(ii, new Integer(was));
+			morePossible.put(ii,ww);
+	  info.add(ww,ii);
 	}
 	void add(int i) {
-		add(i, -1);
+		add(dummyInfo, i, -1);
 	}
 	Long toLong(int s2, int p2, int o2) {
 		return new Long(
@@ -263,9 +310,9 @@ public class Compiler implements Constants {
 		if (r1 != Failure //	 && !SubCategorize.dl(r)
 		) {
 			huge.put(toLong(s, p, o), new Long(r1));
-			add(subject(r1), s);
-			add(prop(r1), p);
-			add(object(r1), o);
+			add(subjInfo, subject(r1), s);
+			add(propInfo, prop(r1), p);
+			add(objInfo, object(r1), o);
 		}
 
 	}
@@ -335,6 +382,9 @@ public class Compiler implements Constants {
 		System.err.println("Saving");
 		save();
 		log("GX", 0);
+		subjInfo.dump();
+		propInfo.dump();
+		objInfo.dump();
 	}
 	/*
 	private void go2() {

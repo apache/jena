@@ -55,6 +55,7 @@ static {
 		throw new BrokenException(e);
 	}
 	CategorySet.closed = true;
+	System.err.println(CategorySet.unsorted.size()+" cats");
 }
 
 public int qrefine(int s, int p, int o) {
@@ -152,7 +153,8 @@ public boolean dl(int k) {
 	 int cc0[] = CategorySet.getSet(c0);
 	 int cc1[] = CategorySet.getSet(c1);
 		
-	 return CategorySet.find(intersection(cc0,cc1),true);
+	 int rslt = CategorySet.find(intersection(cc0,cc1),true);
+	 return Grammar.isPseudoCategory(rslt)?Failure:rslt;
  }
 
 }

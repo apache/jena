@@ -42,12 +42,19 @@ abstract class AbsChecker implements Constants {
 		return rslt;
 	}
 	abstract boolean extraInfo();
+	
+	String eMessage;
+	int eLevel;
+	private void saveProblem(int l, String m) {
+		eLevel = l;
+		eMessage = m;
+	}
 	/**0 on failure, 1 on trivial, 2 on refinement.
 		 * @param topLevelCall True if t has not already been checked, false if t is being rechecked, as a result of some other changes
 		 * @param t A triple from a graph being checked.
 		 * @return 0 on failure, 1 on trivial, 2 on refinement
 		 */
-	final int addX(Triple t, boolean topLevelCall) {
+	synchronized final int addX(Triple t, boolean topLevelCall) {
 		//		System.err.println("+ " + t.toString() + (topLevelCall?" !":""));
 		CNodeI s = getCNode(t.getSubject());
 		CNodeI p = getCNode(t.getPredicate());
@@ -94,13 +101,13 @@ abstract class AbsChecker implements Constants {
       }
 			key = look.qrefine(s0,p0,o0);
 			if (key == Failure) {
-				addProblem(Levels.DL, t, "Grammar Mismatch");
+				saveProblem(Levels.DL, "Grammar Mismatch");
 				success = false;
 			} else {
 				if (look.dl(key)) {
 					if (wantLite) {
 						success = false;
-						addProblem(Levels.Lite, t, "Only in DL");
+						saveProblem(Levels.Lite,  "Only in DL");
 					} else {
 						setMonotoneLevel(Levels.DL);
 					}
@@ -159,6 +166,9 @@ abstract class AbsChecker implements Constants {
 		} else {
 			if (!topLevelCall)
 				hasBeenChecked.add(t);
+		  else {
+		  	addProblem(eLevel,t,eMessage);
+		  }
 			s.setCategories(sOrig, false);
 			p.setCategories(pOrig, false);
 			o.setCategories(oOrig, false);

@@ -1,12 +1,10 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.1 2003-11-28 07:47:00 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.2 2003-12-03 10:53:38 jeremy_carroll Exp $
 */
 package owlcompiler;
+import com.hp.hpl.jena.ontology.tidy.impl.*;
 import java.util.Arrays;
-
-import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
-import com.hp.hpl.jena.ontology.tidy.impl.Constants;
 class Grammar implements Constants {
     static final int orphan = 1;
     static final int notype = 2;
@@ -99,6 +97,99 @@ class Grammar implements Constants {
     static final int rdfsrange = 89;
     static final int rdfssubClassOf = 90;
     static final int rdfssubPropertyOf = 91;
+ static String catNames[] = { "--not used--",
+      "orphan",
+      "notype",
+      "cyclic",
+      "cyclicRest",
+      "cyclicFirst",
+      "badRestriction",
+      "annotationPropID",
+      "classID",
+      "dataAnnotationPropID",
+      "dataPropID",
+      "dataRangeID",
+      "datatypeID",
+      "dlInteger",
+      "individualID",
+      "liteInteger",
+      "literal",
+      "objectPropID",
+      "ontologyID",
+      "ontologyPropertyID",
+      "transitivePropID",
+      "unnamedIndividual",
+      "unnamedOntology",
+      "userTypedLiteral",
+      "allDifferent",
+      "description5disjointWith",
+      "description5equivalentClass",
+      "description5object",
+      "description5subClassOf",
+      "listOfDataLiteral",
+      "listOfDescription",
+      "listOfIndividualID",
+      "restriction6disjointWith",
+      "restriction6equivalentClass",
+      "restriction6object",
+      "restriction6subClassOf",
+      "restriction7disjointWith",
+      "restriction7equivalentClass",
+      "restriction7object",
+      "restriction7subClassOf",
+      "restriction8disjointWith",
+      "restriction8equivalentClass",
+      "restriction8object",
+      "restriction8subClassOf",
+      "unnamedDataRange",
+      "owlAllDifferent",
+      "owlAnnotationProperty",
+      "owlClass",
+      "owlDataRange",
+      "owlDatatypeProperty",
+      "owlDeprecatedClass",
+      "owlDeprecatedProperty",
+      "owlFunctionalProperty",
+      "owlInverseFunctionalProperty",
+      "owlObjectProperty",
+      "owlOntology",
+      "owlOntologyProperty",
+      "owlRestriction",
+      "owlSymmetricProperty",
+      "owlTransitiveProperty",
+      "owlcomplementOf",
+      "owldifferentFrom",
+      "owldisjointWith",
+      "owldistinctMembers",
+      "owlequivalentClass",
+      "owlequivalentProperty",
+      "owlhasValue",
+      "owlintersectionOf",
+      "owlinverseOf",
+      "owlmaxCardinality",
+      "owlonProperty",
+      "owloneOf",
+      "owlsameAs",
+      "owlsomeValuesFrom",
+      "owlunionOf",
+      "rdfList",
+      "rdfProperty",
+      "rdfXMLLiteral",
+      "rdffirst",
+      "rdfnil",
+      "rdfrest",
+      "rdftype",
+      "rdfsClass",
+      "rdfsContainer",
+      "rdfsContainerMembershipProperty",
+      "rdfsDatatype",
+      "rdfsResource",
+      "rdfsdomain",
+      "rdfsmember",
+      "rdfsrange",
+      "rdfssubClassOf",
+      "rdfssubPropertyOf",
+       };
 static int getBuiltinID(String uri) {
   if ( uri.startsWith("http://www.w3.org/") ) {
       uri = uri.substring(18);
@@ -107,89 +198,131 @@ static int getBuiltinID(String uri) {
        uri = uri.substring(12);
        if (false) {
        } else if ( uri.equals("Thing") ) {
-          return classID;
+          return classID
+;
        } else if ( uri.equals("Nothing") ) {
-          return classID;
+          return classID
+;
        } else if ( uri.equals("versionInfo") ) {
-          return annotationPropID;
+          return annotationPropID
+;
        } else if ( uri.equals("imports") ) {
-          return ontologyPropertyID;
+          return ontologyPropertyID
+;
        } else if ( uri.equals("priorVersion") ) {
-          return ontologyPropertyID;
+          return ontologyPropertyID
+;
        } else if ( uri.equals("backwardCompatibleWith") ) {
-          return ontologyPropertyID;
+          return ontologyPropertyID
+;
        } else if ( uri.equals("incompatibleWith") ) {
-          return ontologyPropertyID;
+          return ontologyPropertyID
+;
        } else if ( uri.equals("Ontology") ) {
-          return owlOntology;
+          return owlOntology
+;
        } else if ( uri.equals("ObjectProperty") ) {
-          return owlObjectProperty;
+          return owlObjectProperty
+;
        } else if ( uri.equals("DataRange") ) {
-          return owlDataRange;
+          return owlDataRange
+;
        } else if ( uri.equals("DatatypeProperty") ) {
-          return owlDatatypeProperty;
+          return owlDatatypeProperty
+;
        } else if ( uri.equals("equivalentClass") ) {
-          return owlequivalentClass;
+          return owlequivalentClass
+;
        } else if ( uri.equals("sameAs") ) {
-          return owlsameAs;
+          return owlsameAs
+;
        } else if ( uri.equals("equivalentProperty") ) {
-          return owlequivalentProperty;
+          return owlequivalentProperty
+;
        } else if ( uri.equals("Class") ) {
-          return owlClass;
+          return owlClass
+;
        } else if ( uri.equals("intersectionOf") ) {
-          return owlintersectionOf;
+          return owlintersectionOf
+;
        } else if ( uri.equals("unionOf") ) {
-          return owlunionOf;
+          return owlunionOf
+;
        } else if ( uri.equals("complementOf") ) {
-          return owlcomplementOf;
+          return owlcomplementOf
+;
        } else if ( uri.equals("Restriction") ) {
-          return owlRestriction;
+          return owlRestriction
+;
        } else if ( uri.equals("onProperty") ) {
-          return owlonProperty;
+          return owlonProperty
+;
        } else if ( uri.equals("allValuesFrom") ) {
-          return owlsomeValuesFrom;
+          return owlsomeValuesFrom
+;
        } else if ( uri.equals("someValuesFrom") ) {
-          return owlsomeValuesFrom;
+          return owlsomeValuesFrom
+;
        } else if ( uri.equals("cardinality") ) {
-          return owlmaxCardinality;
+          return owlmaxCardinality
+;
        } else if ( uri.equals("minCardinality") ) {
-          return owlmaxCardinality;
+          return owlmaxCardinality
+;
        } else if ( uri.equals("maxCardinality") ) {
-          return owlmaxCardinality;
+          return owlmaxCardinality
+;
        } else if ( uri.equals("hasValue") ) {
-          return owlhasValue;
+          return owlhasValue
+;
        } else if ( uri.equals("OntologyProperty") ) {
-          return owlOntologyProperty;
+          return owlOntologyProperty
+;
        } else if ( uri.equals("AllDifferent") ) {
-          return owlAllDifferent;
+          return owlAllDifferent
+;
        } else if ( uri.equals("distinctMembers") ) {
-          return owldistinctMembers;
+          return owldistinctMembers
+;
        } else if ( uri.equals("AnnotationProperty") ) {
-          return owlAnnotationProperty;
+          return owlAnnotationProperty
+;
        } else if ( uri.equals("FunctionalProperty") ) {
-          return owlFunctionalProperty;
+          return owlFunctionalProperty
+;
        } else if ( uri.equals("InverseFunctionalProperty") ) {
-          return owlInverseFunctionalProperty;
+          return owlInverseFunctionalProperty
+;
        } else if ( uri.equals("SymmetricProperty") ) {
-          return owlSymmetricProperty;
+          return owlSymmetricProperty
+;
        } else if ( uri.equals("TransitiveProperty") ) {
-          return owlTransitiveProperty;
+          return owlTransitiveProperty
+;
        } else if ( uri.equals("DeprecatedProperty") ) {
-          return owlDeprecatedProperty;
+          return owlDeprecatedProperty
+;
        } else if ( uri.equals("DeprecatedClass") ) {
-          return owlDeprecatedClass;
+          return owlDeprecatedClass
+;
        } else if ( uri.equals("inverseOf") ) {
-          return owlinverseOf;
+          return owlinverseOf
+;
        } else if ( uri.equals("oneOf") ) {
-          return owloneOf;
+          return owloneOf
+;
        } else if ( uri.equals("differentFrom") ) {
-          return owldifferentFrom;
+          return owldifferentFrom
+;
        } else if ( uri.equals("disjointWith") ) {
-          return owldisjointWith;
+          return owldisjointWith
+;
        } else if ( uri.equals("AllDifferent") ) {
-          return owlAllDifferent;
+          return owlAllDifferent
+;
        } else if ( uri.equals("distinctMembers") ) {
-          return owldistinctMembers;
+          return owldistinctMembers
+;
        } else { return BadOWL; 
      }
    }
@@ -197,33 +330,47 @@ static int getBuiltinID(String uri) {
        uri = uri.substring(25);
        if (false) {
        } else if ( uri.equals("XMLLiteral") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("Bag") ) {
-          return classOnly;
+          return classOnly
+;
        } else if ( uri.equals("Seq") ) {
-          return classOnly;
+          return classOnly
+;
        } else if ( uri.equals("Alt") ) {
-          return classOnly;
+          return classOnly
+;
        } else if ( uri.equals("Statement") ) {
-          return classOnly;
+          return classOnly
+;
        } else if ( uri.equals("subject") ) {
-          return propertyOnly;
+          return propertyOnly
+;
        } else if ( uri.equals("predicate") ) {
-          return propertyOnly;
+          return propertyOnly
+;
        } else if ( uri.equals("object") ) {
-          return propertyOnly;
+          return propertyOnly
+;
        } else if ( uri.equals("type") ) {
-          return rdftype;
+          return rdftype
+;
        } else if ( uri.equals("Property") ) {
-          return rdfProperty;
+          return rdfProperty
+;
        } else if ( uri.equals("nil") ) {
-          return rdfnil;
+          return rdfnil
+;
        } else if ( uri.equals("first") ) {
-          return rdffirst;
+          return rdffirst
+;
        } else if ( uri.equals("rest") ) {
-          return rdfrest;
+          return rdfrest
+;
        } else if ( uri.equals("List") ) {
-          return rdfList;
+          return rdfList
+;
        } else { return BadRDF; 
      }
    }
@@ -231,120 +378,166 @@ static int getBuiltinID(String uri) {
        uri = uri.substring(15);
        if (false) {
        } else if ( uri.equals("string") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("boolean") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("decimal") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("float") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("double") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("dateTime") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("time") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("date") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gYearMonth") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gYear") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gMonthDay") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gDay") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gMonth") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("hexBinary") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("base64Binary") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("anyURI") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("normalizedString") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("token") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("language") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("NMTOKEN") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("Name") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("NCName") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("integer") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("nonPositiveInteger") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("negativeInteger") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("long") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("int") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("short") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("byte") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("nonNegativeInteger") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("unsignedLong") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("unsignedInt") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("unsignedShort") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("unsignedByte") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("positiveInteger") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("duration") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("QName") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("ENTITY") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("ID") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("IDREF") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("ENTITIES") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("IDREFS") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("NOTATION") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("NMTOKENS") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
      }
    }
    else if ( uri.startsWith("2000/01/rdf-schema#") ) {
        uri = uri.substring(19);
        if (false) {
        } else if ( uri.equals("Literal") ) {
-          return dataRangeID;
+          return dataRangeID
+;
        } else if ( uri.equals("comment") ) {
-          return dataAnnotationPropID;
+          return dataAnnotationPropID
+;
        } else if ( uri.equals("label") ) {
-          return dataAnnotationPropID;
+          return dataAnnotationPropID
+;
        } else if ( uri.equals("isDefinedBy") ) {
-          return annotationPropID;
+          return annotationPropID
+;
        } else if ( uri.equals("seeAlso") ) {
-          return annotationPropID;
+          return annotationPropID
+;
        } else if ( uri.equals("Datatype") ) {
-          return rdfsDatatype;
+          return rdfsDatatype
+;
        } else if ( uri.equals("subClassOf") ) {
-          return rdfssubClassOf;
+          return rdfssubClassOf
+;
        } else if ( uri.equals("subPropertyOf") ) {
-          return rdfssubPropertyOf;
+          return rdfssubPropertyOf
+;
        } else if ( uri.equals("domain") ) {
-          return rdfsdomain;
+          return rdfsdomain
+;
        } else if ( uri.equals("range") ) {
-          return rdfsrange;
+          return rdfsrange
+;
        } else if ( uri.equals("Class") ) {
-          return rdfsClass;
+          return rdfsClass
+;
        } else if ( uri.equals("Resource") ) {
            return DisallowedVocab;
        } else if ( uri.equals("member") ) {
@@ -368,6 +561,7 @@ individualID,
 notype,
 objectPropID,
 ontologyID,
+ontologyPropertyID,
 transitivePropID,
 };
 static final int propertyOnlyX[] = new int[]{
@@ -467,6 +661,7 @@ SPOA( unnamedOntology, rdftype, owlOntology, 0 ),
 SPOA( individualID, rdftype, classID, 0 ),
 SPOA( unnamedIndividual, rdftype, classID, 0 ),
 SPOA( annotationPropID, rdftype, rdfProperty, 0 ),
+SPOA( dataAnnotationPropID, rdftype, rdfProperty, 0 ),
 SPOA( ontologyPropertyID, rdftype, rdfProperty, 0 ),
 SPOA( classID, rdftype, rdfsClass, 0 ),
 SPOA( classID, rdftype, owlDeprecatedClass, 0 ),
@@ -528,6 +723,10 @@ SPOA( annotationPropID, annotationPropID, dlInteger, 0 ),
 SPOA( annotationPropID, annotationPropID, liteInteger, 0 ),
 SPOA( annotationPropID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( annotationPropID, annotationPropID, literal, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, dlInteger, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, liteInteger, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, userTypedLiteral, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, literal, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, dlInteger, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, liteInteger, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, userTypedLiteral, 0 ),
@@ -572,6 +771,10 @@ SPOA( annotationPropID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( annotationPropID, dataAnnotationPropID, liteInteger, 0 ),
 SPOA( annotationPropID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( annotationPropID, dataAnnotationPropID, literal, 0 ),
+SPOA( dataAnnotationPropID, dataAnnotationPropID, dlInteger, 0 ),
+SPOA( dataAnnotationPropID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( dataAnnotationPropID, dataAnnotationPropID, userTypedLiteral, 0 ),
+SPOA( dataAnnotationPropID, dataAnnotationPropID, literal, 0 ),
 SPOA( ontologyPropertyID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( ontologyPropertyID, dataAnnotationPropID, liteInteger, 0 ),
 SPOA( ontologyPropertyID, dataAnnotationPropID, userTypedLiteral, 0 ),
@@ -606,6 +809,8 @@ SPOA( unnamedIndividual, annotationPropID, individualID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, unnamedIndividual, ObjectAction ),
 SPOA( annotationPropID, annotationPropID, individualID, 0 ),
 SPOA( annotationPropID, annotationPropID, unnamedIndividual, ObjectAction ),
+SPOA( dataAnnotationPropID, annotationPropID, individualID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, unnamedIndividual, ObjectAction ),
 SPOA( ontologyPropertyID, annotationPropID, individualID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, unnamedIndividual, ObjectAction ),
 SPOA( classID, annotationPropID, individualID, 0 ),
@@ -623,17 +828,31 @@ SPOA( unnamedOntology, annotationPropID, annotationPropID, 0 ),
 SPOA( individualID, annotationPropID, annotationPropID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, annotationPropID, 0 ),
 SPOA( annotationPropID, annotationPropID, annotationPropID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, annotationPropID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, annotationPropID, 0 ),
 SPOA( classID, annotationPropID, annotationPropID, 0 ),
 SPOA( dataPropID, annotationPropID, annotationPropID, 0 ),
 SPOA( objectPropID, annotationPropID, annotationPropID, 0 ),
 SPOA( transitivePropID, annotationPropID, annotationPropID, 0 ),
 SPOA( datatypeID, annotationPropID, annotationPropID, 0 ),
+SPOA( ontologyID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( unnamedOntology, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( individualID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( unnamedIndividual, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( annotationPropID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( ontologyPropertyID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( classID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( dataPropID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( objectPropID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( transitivePropID, annotationPropID, dataAnnotationPropID, 0 ),
+SPOA( datatypeID, annotationPropID, dataAnnotationPropID, 0 ),
 SPOA( ontologyID, annotationPropID, ontologyPropertyID, 0 ),
 SPOA( unnamedOntology, annotationPropID, ontologyPropertyID, 0 ),
 SPOA( individualID, annotationPropID, ontologyPropertyID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, ontologyPropertyID, 0 ),
 SPOA( annotationPropID, annotationPropID, ontologyPropertyID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, ontologyPropertyID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, ontologyPropertyID, 0 ),
 SPOA( classID, annotationPropID, ontologyPropertyID, 0 ),
 SPOA( dataPropID, annotationPropID, ontologyPropertyID, 0 ),
@@ -645,6 +864,7 @@ SPOA( unnamedOntology, annotationPropID, ontologyID, 0 ),
 SPOA( individualID, annotationPropID, ontologyID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, ontologyID, 0 ),
 SPOA( annotationPropID, annotationPropID, ontologyID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, ontologyID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, ontologyID, 0 ),
 SPOA( classID, annotationPropID, ontologyID, 0 ),
 SPOA( dataPropID, annotationPropID, ontologyID, 0 ),
@@ -656,6 +876,7 @@ SPOA( unnamedOntology, annotationPropID, classID, 0 ),
 SPOA( individualID, annotationPropID, classID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, classID, 0 ),
 SPOA( annotationPropID, annotationPropID, classID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, classID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, classID, 0 ),
 SPOA( classID, annotationPropID, classID, 0 ),
 SPOA( dataPropID, annotationPropID, classID, 0 ),
@@ -667,6 +888,7 @@ SPOA( unnamedOntology, annotationPropID, dataPropID, 0 ),
 SPOA( individualID, annotationPropID, dataPropID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, dataPropID, 0 ),
 SPOA( annotationPropID, annotationPropID, dataPropID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, dataPropID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, dataPropID, 0 ),
 SPOA( classID, annotationPropID, dataPropID, 0 ),
 SPOA( dataPropID, annotationPropID, dataPropID, 0 ),
@@ -678,6 +900,7 @@ SPOA( unnamedOntology, annotationPropID, transitivePropID, 0 ),
 SPOA( individualID, annotationPropID, transitivePropID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, transitivePropID, 0 ),
 SPOA( annotationPropID, annotationPropID, transitivePropID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, transitivePropID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, transitivePropID, 0 ),
 SPOA( classID, annotationPropID, transitivePropID, 0 ),
 SPOA( dataPropID, annotationPropID, transitivePropID, 0 ),
@@ -689,6 +912,7 @@ SPOA( unnamedOntology, annotationPropID, objectPropID, 0 ),
 SPOA( individualID, annotationPropID, objectPropID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, objectPropID, 0 ),
 SPOA( annotationPropID, annotationPropID, objectPropID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, objectPropID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, objectPropID, 0 ),
 SPOA( classID, annotationPropID, objectPropID, 0 ),
 SPOA( dataPropID, annotationPropID, objectPropID, 0 ),
@@ -700,6 +924,7 @@ SPOA( unnamedOntology, annotationPropID, datatypeID, 0 ),
 SPOA( individualID, annotationPropID, datatypeID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, datatypeID, 0 ),
 SPOA( annotationPropID, annotationPropID, datatypeID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, datatypeID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, datatypeID, 0 ),
 SPOA( classID, annotationPropID, datatypeID, 0 ),
 SPOA( dataPropID, annotationPropID, datatypeID, 0 ),
@@ -711,6 +936,7 @@ SPOA( unnamedOntology, annotationPropID, dataRangeID, 0 ),
 SPOA( individualID, annotationPropID, dataRangeID, 0 ),
 SPOA( unnamedIndividual, annotationPropID, dataRangeID, 0 ),
 SPOA( annotationPropID, annotationPropID, dataRangeID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, dataRangeID, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, dataRangeID, 0 ),
 SPOA( classID, annotationPropID, dataRangeID, 0 ),
 SPOA( dataPropID, annotationPropID, dataRangeID, 0 ),
@@ -740,6 +966,7 @@ SPOA( unnamedOntology, annotationPropID, owlAllDifferent, 0 ),
 SPOA( individualID, annotationPropID, owlAllDifferent, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlAllDifferent, 0 ),
 SPOA( annotationPropID, annotationPropID, owlAllDifferent, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlAllDifferent, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlAllDifferent, 0 ),
 SPOA( classID, annotationPropID, owlAllDifferent, 0 ),
 SPOA( dataPropID, annotationPropID, owlAllDifferent, 0 ),
@@ -751,6 +978,7 @@ SPOA( unnamedOntology, annotationPropID, owlAnnotationProperty, 0 ),
 SPOA( individualID, annotationPropID, owlAnnotationProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlAnnotationProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlAnnotationProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlAnnotationProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlAnnotationProperty, 0 ),
 SPOA( classID, annotationPropID, owlAnnotationProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlAnnotationProperty, 0 ),
@@ -762,6 +990,7 @@ SPOA( unnamedOntology, annotationPropID, owlClass, 0 ),
 SPOA( individualID, annotationPropID, owlClass, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlClass, 0 ),
 SPOA( annotationPropID, annotationPropID, owlClass, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlClass, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlClass, 0 ),
 SPOA( classID, annotationPropID, owlClass, 0 ),
 SPOA( dataPropID, annotationPropID, owlClass, 0 ),
@@ -773,6 +1002,7 @@ SPOA( unnamedOntology, annotationPropID, owlDataRange, 0 ),
 SPOA( individualID, annotationPropID, owlDataRange, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlDataRange, 0 ),
 SPOA( annotationPropID, annotationPropID, owlDataRange, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlDataRange, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlDataRange, 0 ),
 SPOA( classID, annotationPropID, owlDataRange, 0 ),
 SPOA( dataPropID, annotationPropID, owlDataRange, 0 ),
@@ -784,6 +1014,7 @@ SPOA( unnamedOntology, annotationPropID, owlDatatypeProperty, 0 ),
 SPOA( individualID, annotationPropID, owlDatatypeProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlDatatypeProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlDatatypeProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlDatatypeProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlDatatypeProperty, 0 ),
 SPOA( classID, annotationPropID, owlDatatypeProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlDatatypeProperty, 0 ),
@@ -795,6 +1026,7 @@ SPOA( unnamedOntology, annotationPropID, owlDeprecatedClass, 0 ),
 SPOA( individualID, annotationPropID, owlDeprecatedClass, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlDeprecatedClass, 0 ),
 SPOA( annotationPropID, annotationPropID, owlDeprecatedClass, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlDeprecatedClass, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlDeprecatedClass, 0 ),
 SPOA( classID, annotationPropID, owlDeprecatedClass, 0 ),
 SPOA( dataPropID, annotationPropID, owlDeprecatedClass, 0 ),
@@ -806,6 +1038,7 @@ SPOA( unnamedOntology, annotationPropID, owlDeprecatedProperty, 0 ),
 SPOA( individualID, annotationPropID, owlDeprecatedProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlDeprecatedProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlDeprecatedProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlDeprecatedProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlDeprecatedProperty, 0 ),
 SPOA( classID, annotationPropID, owlDeprecatedProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlDeprecatedProperty, 0 ),
@@ -817,6 +1050,7 @@ SPOA( unnamedOntology, annotationPropID, owlFunctionalProperty, 0 ),
 SPOA( individualID, annotationPropID, owlFunctionalProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlFunctionalProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlFunctionalProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlFunctionalProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlFunctionalProperty, 0 ),
 SPOA( classID, annotationPropID, owlFunctionalProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlFunctionalProperty, 0 ),
@@ -828,6 +1062,7 @@ SPOA( unnamedOntology, annotationPropID, owlInverseFunctionalProperty, 0 ),
 SPOA( individualID, annotationPropID, owlInverseFunctionalProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlInverseFunctionalProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlInverseFunctionalProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlInverseFunctionalProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlInverseFunctionalProperty, 0 ),
 SPOA( classID, annotationPropID, owlInverseFunctionalProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlInverseFunctionalProperty, 0 ),
@@ -839,6 +1074,7 @@ SPOA( unnamedOntology, annotationPropID, owlObjectProperty, 0 ),
 SPOA( individualID, annotationPropID, owlObjectProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlObjectProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlObjectProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlObjectProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlObjectProperty, 0 ),
 SPOA( classID, annotationPropID, owlObjectProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlObjectProperty, 0 ),
@@ -850,6 +1086,7 @@ SPOA( unnamedOntology, annotationPropID, owlOntology, 0 ),
 SPOA( individualID, annotationPropID, owlOntology, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlOntology, 0 ),
 SPOA( annotationPropID, annotationPropID, owlOntology, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlOntology, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlOntology, 0 ),
 SPOA( classID, annotationPropID, owlOntology, 0 ),
 SPOA( dataPropID, annotationPropID, owlOntology, 0 ),
@@ -861,6 +1098,7 @@ SPOA( unnamedOntology, annotationPropID, owlOntologyProperty, 0 ),
 SPOA( individualID, annotationPropID, owlOntologyProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlOntologyProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlOntologyProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlOntologyProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlOntologyProperty, 0 ),
 SPOA( classID, annotationPropID, owlOntologyProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlOntologyProperty, 0 ),
@@ -872,6 +1110,7 @@ SPOA( unnamedOntology, annotationPropID, owlRestriction, 0 ),
 SPOA( individualID, annotationPropID, owlRestriction, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlRestriction, 0 ),
 SPOA( annotationPropID, annotationPropID, owlRestriction, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlRestriction, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlRestriction, 0 ),
 SPOA( classID, annotationPropID, owlRestriction, 0 ),
 SPOA( dataPropID, annotationPropID, owlRestriction, 0 ),
@@ -883,6 +1122,7 @@ SPOA( unnamedOntology, annotationPropID, owlSymmetricProperty, 0 ),
 SPOA( individualID, annotationPropID, owlSymmetricProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlSymmetricProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlSymmetricProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlSymmetricProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlSymmetricProperty, 0 ),
 SPOA( classID, annotationPropID, owlSymmetricProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlSymmetricProperty, 0 ),
@@ -894,6 +1134,7 @@ SPOA( unnamedOntology, annotationPropID, owlTransitiveProperty, 0 ),
 SPOA( individualID, annotationPropID, owlTransitiveProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlTransitiveProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlTransitiveProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlTransitiveProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlTransitiveProperty, 0 ),
 SPOA( classID, annotationPropID, owlTransitiveProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlTransitiveProperty, 0 ),
@@ -905,6 +1146,7 @@ SPOA( unnamedOntology, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( individualID, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( annotationPropID, annotationPropID, owlsomeValuesFrom, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( classID, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( dataPropID, annotationPropID, owlsomeValuesFrom, 0 ),
@@ -916,6 +1158,7 @@ SPOA( unnamedOntology, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( individualID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( annotationPropID, annotationPropID, owlmaxCardinality, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( classID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( dataPropID, annotationPropID, owlmaxCardinality, 0 ),
@@ -927,6 +1170,7 @@ SPOA( unnamedOntology, annotationPropID, owlcomplementOf, 0 ),
 SPOA( individualID, annotationPropID, owlcomplementOf, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlcomplementOf, 0 ),
 SPOA( annotationPropID, annotationPropID, owlcomplementOf, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlcomplementOf, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlcomplementOf, 0 ),
 SPOA( classID, annotationPropID, owlcomplementOf, 0 ),
 SPOA( dataPropID, annotationPropID, owlcomplementOf, 0 ),
@@ -938,6 +1182,7 @@ SPOA( unnamedOntology, annotationPropID, owldifferentFrom, 0 ),
 SPOA( individualID, annotationPropID, owldifferentFrom, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owldifferentFrom, 0 ),
 SPOA( annotationPropID, annotationPropID, owldifferentFrom, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owldifferentFrom, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owldifferentFrom, 0 ),
 SPOA( classID, annotationPropID, owldifferentFrom, 0 ),
 SPOA( dataPropID, annotationPropID, owldifferentFrom, 0 ),
@@ -949,6 +1194,7 @@ SPOA( unnamedOntology, annotationPropID, owldisjointWith, 0 ),
 SPOA( individualID, annotationPropID, owldisjointWith, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owldisjointWith, 0 ),
 SPOA( annotationPropID, annotationPropID, owldisjointWith, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owldisjointWith, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owldisjointWith, 0 ),
 SPOA( classID, annotationPropID, owldisjointWith, 0 ),
 SPOA( dataPropID, annotationPropID, owldisjointWith, 0 ),
@@ -960,6 +1206,7 @@ SPOA( unnamedOntology, annotationPropID, owldistinctMembers, 0 ),
 SPOA( individualID, annotationPropID, owldistinctMembers, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owldistinctMembers, 0 ),
 SPOA( annotationPropID, annotationPropID, owldistinctMembers, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owldistinctMembers, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owldistinctMembers, 0 ),
 SPOA( classID, annotationPropID, owldistinctMembers, 0 ),
 SPOA( dataPropID, annotationPropID, owldistinctMembers, 0 ),
@@ -971,6 +1218,7 @@ SPOA( unnamedOntology, annotationPropID, owlequivalentClass, 0 ),
 SPOA( individualID, annotationPropID, owlequivalentClass, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlequivalentClass, 0 ),
 SPOA( annotationPropID, annotationPropID, owlequivalentClass, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlequivalentClass, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlequivalentClass, 0 ),
 SPOA( classID, annotationPropID, owlequivalentClass, 0 ),
 SPOA( dataPropID, annotationPropID, owlequivalentClass, 0 ),
@@ -982,6 +1230,7 @@ SPOA( unnamedOntology, annotationPropID, owlequivalentProperty, 0 ),
 SPOA( individualID, annotationPropID, owlequivalentProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlequivalentProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlequivalentProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlequivalentProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlequivalentProperty, 0 ),
 SPOA( classID, annotationPropID, owlequivalentProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlequivalentProperty, 0 ),
@@ -993,6 +1242,7 @@ SPOA( unnamedOntology, annotationPropID, owlhasValue, 0 ),
 SPOA( individualID, annotationPropID, owlhasValue, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlhasValue, 0 ),
 SPOA( annotationPropID, annotationPropID, owlhasValue, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlhasValue, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlhasValue, 0 ),
 SPOA( classID, annotationPropID, owlhasValue, 0 ),
 SPOA( dataPropID, annotationPropID, owlhasValue, 0 ),
@@ -1004,6 +1254,7 @@ SPOA( unnamedOntology, annotationPropID, owlintersectionOf, 0 ),
 SPOA( individualID, annotationPropID, owlintersectionOf, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlintersectionOf, 0 ),
 SPOA( annotationPropID, annotationPropID, owlintersectionOf, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlintersectionOf, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlintersectionOf, 0 ),
 SPOA( classID, annotationPropID, owlintersectionOf, 0 ),
 SPOA( dataPropID, annotationPropID, owlintersectionOf, 0 ),
@@ -1015,6 +1266,7 @@ SPOA( unnamedOntology, annotationPropID, owlinverseOf, 0 ),
 SPOA( individualID, annotationPropID, owlinverseOf, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlinverseOf, 0 ),
 SPOA( annotationPropID, annotationPropID, owlinverseOf, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlinverseOf, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlinverseOf, 0 ),
 SPOA( classID, annotationPropID, owlinverseOf, 0 ),
 SPOA( dataPropID, annotationPropID, owlinverseOf, 0 ),
@@ -1026,6 +1278,7 @@ SPOA( unnamedOntology, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( individualID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( annotationPropID, annotationPropID, owlmaxCardinality, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( classID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( dataPropID, annotationPropID, owlmaxCardinality, 0 ),
@@ -1037,6 +1290,7 @@ SPOA( unnamedOntology, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( individualID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( annotationPropID, annotationPropID, owlmaxCardinality, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( classID, annotationPropID, owlmaxCardinality, 0 ),
 SPOA( dataPropID, annotationPropID, owlmaxCardinality, 0 ),
@@ -1048,6 +1302,7 @@ SPOA( unnamedOntology, annotationPropID, owlonProperty, 0 ),
 SPOA( individualID, annotationPropID, owlonProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlonProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, owlonProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlonProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlonProperty, 0 ),
 SPOA( classID, annotationPropID, owlonProperty, 0 ),
 SPOA( dataPropID, annotationPropID, owlonProperty, 0 ),
@@ -1059,6 +1314,7 @@ SPOA( unnamedOntology, annotationPropID, owloneOf, 0 ),
 SPOA( individualID, annotationPropID, owloneOf, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owloneOf, 0 ),
 SPOA( annotationPropID, annotationPropID, owloneOf, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owloneOf, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owloneOf, 0 ),
 SPOA( classID, annotationPropID, owloneOf, 0 ),
 SPOA( dataPropID, annotationPropID, owloneOf, 0 ),
@@ -1070,6 +1326,7 @@ SPOA( unnamedOntology, annotationPropID, owlsameAs, 0 ),
 SPOA( individualID, annotationPropID, owlsameAs, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlsameAs, 0 ),
 SPOA( annotationPropID, annotationPropID, owlsameAs, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlsameAs, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlsameAs, 0 ),
 SPOA( classID, annotationPropID, owlsameAs, 0 ),
 SPOA( dataPropID, annotationPropID, owlsameAs, 0 ),
@@ -1081,6 +1338,7 @@ SPOA( unnamedOntology, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( individualID, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( annotationPropID, annotationPropID, owlsomeValuesFrom, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( classID, annotationPropID, owlsomeValuesFrom, 0 ),
 SPOA( dataPropID, annotationPropID, owlsomeValuesFrom, 0 ),
@@ -1092,6 +1350,7 @@ SPOA( unnamedOntology, annotationPropID, owlunionOf, 0 ),
 SPOA( individualID, annotationPropID, owlunionOf, 0 ),
 SPOA( unnamedIndividual, annotationPropID, owlunionOf, 0 ),
 SPOA( annotationPropID, annotationPropID, owlunionOf, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, owlunionOf, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, owlunionOf, 0 ),
 SPOA( classID, annotationPropID, owlunionOf, 0 ),
 SPOA( dataPropID, annotationPropID, owlunionOf, 0 ),
@@ -1103,6 +1362,7 @@ SPOA( unnamedOntology, annotationPropID, rdfList, 0 ),
 SPOA( individualID, annotationPropID, rdfList, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfList, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfList, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfList, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfList, 0 ),
 SPOA( classID, annotationPropID, rdfList, 0 ),
 SPOA( dataPropID, annotationPropID, rdfList, 0 ),
@@ -1114,6 +1374,7 @@ SPOA( unnamedOntology, annotationPropID, rdfProperty, 0 ),
 SPOA( individualID, annotationPropID, rdfProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfProperty, 0 ),
 SPOA( classID, annotationPropID, rdfProperty, 0 ),
 SPOA( dataPropID, annotationPropID, rdfProperty, 0 ),
@@ -1125,6 +1386,7 @@ SPOA( unnamedOntology, annotationPropID, rdfXMLLiteral, 0 ),
 SPOA( individualID, annotationPropID, rdfXMLLiteral, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfXMLLiteral, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfXMLLiteral, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfXMLLiteral, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfXMLLiteral, 0 ),
 SPOA( classID, annotationPropID, rdfXMLLiteral, 0 ),
 SPOA( dataPropID, annotationPropID, rdfXMLLiteral, 0 ),
@@ -1136,6 +1398,7 @@ SPOA( unnamedOntology, annotationPropID, rdffirst, 0 ),
 SPOA( individualID, annotationPropID, rdffirst, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdffirst, 0 ),
 SPOA( annotationPropID, annotationPropID, rdffirst, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdffirst, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdffirst, 0 ),
 SPOA( classID, annotationPropID, rdffirst, 0 ),
 SPOA( dataPropID, annotationPropID, rdffirst, 0 ),
@@ -1147,6 +1410,7 @@ SPOA( unnamedOntology, annotationPropID, rdfnil, 0 ),
 SPOA( individualID, annotationPropID, rdfnil, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfnil, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfnil, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfnil, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfnil, 0 ),
 SPOA( classID, annotationPropID, rdfnil, 0 ),
 SPOA( dataPropID, annotationPropID, rdfnil, 0 ),
@@ -1158,6 +1422,7 @@ SPOA( unnamedOntology, annotationPropID, rdfrest, 0 ),
 SPOA( individualID, annotationPropID, rdfrest, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfrest, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfrest, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfrest, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfrest, 0 ),
 SPOA( classID, annotationPropID, rdfrest, 0 ),
 SPOA( dataPropID, annotationPropID, rdfrest, 0 ),
@@ -1169,6 +1434,7 @@ SPOA( unnamedOntology, annotationPropID, rdftype, 0 ),
 SPOA( individualID, annotationPropID, rdftype, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdftype, 0 ),
 SPOA( annotationPropID, annotationPropID, rdftype, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdftype, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdftype, 0 ),
 SPOA( classID, annotationPropID, rdftype, 0 ),
 SPOA( dataPropID, annotationPropID, rdftype, 0 ),
@@ -1180,6 +1446,7 @@ SPOA( unnamedOntology, annotationPropID, rdfsClass, 0 ),
 SPOA( individualID, annotationPropID, rdfsClass, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfsClass, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfsClass, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfsClass, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfsClass, 0 ),
 SPOA( classID, annotationPropID, rdfsClass, 0 ),
 SPOA( dataPropID, annotationPropID, rdfsClass, 0 ),
@@ -1191,6 +1458,7 @@ SPOA( unnamedOntology, annotationPropID, rdfsContainer, 0 ),
 SPOA( individualID, annotationPropID, rdfsContainer, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfsContainer, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfsContainer, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfsContainer, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfsContainer, 0 ),
 SPOA( classID, annotationPropID, rdfsContainer, 0 ),
 SPOA( dataPropID, annotationPropID, rdfsContainer, 0 ),
@@ -1202,6 +1470,7 @@ SPOA( unnamedOntology, annotationPropID, rdfsContainerMembershipProperty, 0 ),
 SPOA( individualID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfsContainerMembershipProperty, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
 SPOA( classID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
 SPOA( dataPropID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
@@ -1213,6 +1482,7 @@ SPOA( unnamedOntology, annotationPropID, rdfsDatatype, 0 ),
 SPOA( individualID, annotationPropID, rdfsDatatype, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfsDatatype, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfsDatatype, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfsDatatype, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfsDatatype, 0 ),
 SPOA( classID, annotationPropID, rdfsDatatype, 0 ),
 SPOA( dataPropID, annotationPropID, rdfsDatatype, 0 ),
@@ -1224,6 +1494,7 @@ SPOA( unnamedOntology, annotationPropID, rdfsResource, 0 ),
 SPOA( individualID, annotationPropID, rdfsResource, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfsResource, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfsResource, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfsResource, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfsResource, 0 ),
 SPOA( classID, annotationPropID, rdfsResource, 0 ),
 SPOA( dataPropID, annotationPropID, rdfsResource, 0 ),
@@ -1235,6 +1506,7 @@ SPOA( unnamedOntology, annotationPropID, rdfsdomain, 0 ),
 SPOA( individualID, annotationPropID, rdfsdomain, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfsdomain, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfsdomain, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfsdomain, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfsdomain, 0 ),
 SPOA( classID, annotationPropID, rdfsdomain, 0 ),
 SPOA( dataPropID, annotationPropID, rdfsdomain, 0 ),
@@ -1246,6 +1518,7 @@ SPOA( unnamedOntology, annotationPropID, rdfsmember, 0 ),
 SPOA( individualID, annotationPropID, rdfsmember, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfsmember, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfsmember, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfsmember, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfsmember, 0 ),
 SPOA( classID, annotationPropID, rdfsmember, 0 ),
 SPOA( dataPropID, annotationPropID, rdfsmember, 0 ),
@@ -1257,6 +1530,7 @@ SPOA( unnamedOntology, annotationPropID, rdfsrange, 0 ),
 SPOA( individualID, annotationPropID, rdfsrange, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfsrange, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfsrange, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfsrange, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfsrange, 0 ),
 SPOA( classID, annotationPropID, rdfsrange, 0 ),
 SPOA( dataPropID, annotationPropID, rdfsrange, 0 ),
@@ -1268,6 +1542,7 @@ SPOA( unnamedOntology, annotationPropID, rdfssubClassOf, 0 ),
 SPOA( individualID, annotationPropID, rdfssubClassOf, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfssubClassOf, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfssubClassOf, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfssubClassOf, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfssubClassOf, 0 ),
 SPOA( classID, annotationPropID, rdfssubClassOf, 0 ),
 SPOA( dataPropID, annotationPropID, rdfssubClassOf, 0 ),
@@ -1279,6 +1554,7 @@ SPOA( unnamedOntology, annotationPropID, rdfssubPropertyOf, 0 ),
 SPOA( individualID, annotationPropID, rdfssubPropertyOf, 0 ),
 SPOA( unnamedIndividual, annotationPropID, rdfssubPropertyOf, 0 ),
 SPOA( annotationPropID, annotationPropID, rdfssubPropertyOf, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, rdfssubPropertyOf, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, rdfssubPropertyOf, 0 ),
 SPOA( classID, annotationPropID, rdfssubPropertyOf, 0 ),
 SPOA( dataPropID, annotationPropID, rdfssubPropertyOf, 0 ),
@@ -3373,6 +3649,19 @@ static final int restrictions = CategorySet.find( restrictionsX,false);
 static final int descriptions = CategorySet.find( descriptionsX,false);
 static final int lists = CategorySet.find( listsX,false);
 static final int disjointWith = CategorySet.find( disjointWithX,false);
+ static boolean isPseudoCategory(int x) {
+     switch ( x ) {
+      case orphan:
+      case notype:
+      case cyclic:
+      case cyclicRest:
+      case cyclicFirst:
+      case badRestriction:
+        return true;
+      default:
+        return false;
+     }
+  }
 }
  /*
 	(c) Copyright Hewlett-Packard Company 2003

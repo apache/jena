@@ -1,0 +1,13 @@
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+      xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+      xmlns='http://www.example.org/ontologyProp001#'
+    xml:base="http://www.example.org/ontologyProp001" >
+ 
+      <owl:OntologyProperty rdf:ID="r">
+        <rdfs:comment>An ontology property</rdfs:comment>
+      </owl:OntologyProperty>
+      
+</rdf:RDF>

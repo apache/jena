@@ -109,6 +109,8 @@ D + annotation( a, individual ) ->
 D + annotation( a, a ) ->
           t(D,x(a),x(a) ).
 
+D + annotation( a, da ) ->
+          t(D,x(a),x(da) ).
 D + annotation( a, m ) ->
           t(D,x(a),x(m) ).
 D + annotation( a, o ) ->
@@ -158,6 +160,10 @@ annotationProperty( a, { annotation } ) ->
     t(x(a),rdf:type,owl:annotationProperty),
     +[t(x(a),rdf:type,rdf:property)],
     {x(x(a),annotation)}.
+annotationProperty( da, { annotation } ) ->
+    t(x(da),rdf:type,owl:annotationProperty),
+    +[t(x(da),rdf:type,rdf:property)],
+    {x(x(da),annotation)}.
 ontologyProperty( m, { annotation } ) ->
     t(x(m),rdf:type,owl:ontologyProperty),
     +[t(x(m),rdf:type,rdf:property)],
