@@ -1,0 +1,7 @@
+# DAML lists
+@prefix : <> .
+
+:a :p1 ().
+:a :p2 (<http://h/a>).
+:a :p3 (:b "2").
+

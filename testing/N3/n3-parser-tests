@@ -1,0 +1,19 @@
+## From the W3C SWAP test suite and other places
+## Parse - no production of RDF
+## Some of the W3C tests are about the logic after parsing
+## so these test are not always actually testing anything new in jena.n3
+
+<a1.n3>			<> .
+<contexts.n3>		<> .
+<lists-simple.n3>	<> .
+<lstring.n3>		<> .
+<path1.n3>		<> .
+<path2.n3>		<> .
+<quantifiers.n3>	<> .
+<qvars1.n3>		<> .
+<qvars2.n3>		<> .
+<resolves-rdf.n3>	<> .
+<sep-term.n3>		<> .
+<sib.n3>		<> .
+<strquot.n3>		<> .
+<t10.n3>		<> .

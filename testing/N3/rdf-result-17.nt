@@ -1,0 +1,46 @@
+# cwm: Tests/rdf-test-17.n3 => Tests/rdf-result-17.nt
+    
+    _:a_g8     <file:///base/rdf-test-17.n3#e3> <file:///base/rdf-test-17.n3#d3> .
+    
+    _:a_g8     <file:///base/rdf-test-17.n3#f3> _:a_g9 .
+    
+    _:a_g4     <file:///base/rdf-test-17.n3#f1> _:a_g5 .
+    
+    _:a_g7     <file:///base/rdf-test-17.n3#f2> _:a_g6 .
+    
+    _:a_g6     <file:///base/rdf-test-17.n3#e2> <file:///base/rdf-test-17.n3#d2> .
+    
+    _:a_g3     <file:///base/rdf-test-17.n3#q3> "3" .
+    
+    _:a_g3     <file:///base/rdf-test-17.n3#q4> "41" .
+    
+    _:a_g3     <file:///base/rdf-test-17.n3#q4> "42" .
+    
+    <file:///base/rdf-test-17.n3#d1>     <file:///base/rdf-test-17.n3#e1> _:a_g4 .
+    
+    <file:///base/rdf-test-17.n3#a>     <file:///base/rdf-test-17.n3#b> _:a_g0 .
+    
+    _:a_g11     <file:///base/rdf-test-17.n3#f4> _:a_g10 .
+    
+    _:a_g1     <file:///base/rdf-test-17.n3#c> _:a_g0 .
+    
+    _:a_g1     <file:///base/rdf-test-17.n3#q1> "1" .
+    
+    _:a_g1     <file:///base/rdf-test-17.n3#q2> "21" .
+    
+    _:a_g1     <file:///base/rdf-test-17.n3#q2> "22" .
+    
+    _:a_g2     <file:///base/rdf-test-17.n3#y> <file:///base/rdf-test-17.n3#x> .
+    
+    _:a_g2     <file:///base/rdf-test-17.n3#z> _:a_g3 .
+    
+    <file:///base/rdf-test-17.n3#d4>     <file:///base/rdf-test-17.n3#e4> _:a_g10 .
+    
+    <http://here/subj1>     <http://here/pred/p1> _:a_g5 .
+    
+    <http://here/subj4>     <http://here/pred/p4> _:a_g11 .
+    
+    <http://here/subj2>     <http://here/pred/p2> _:a_g7 .
+    
+    <http://here/subj3>     <http://here/pred/p3> _:a_g9 .
+    

@@ -1,0 +1,14 @@
+# cwm: rdf-test-19.n3 => rdf-result-19.nt
+# Then fixed up so _:a_ga points to list head.
+
+   <file:///base/rdf-test-19.n3#a>     <file:///base/rdf-test-19.n3#p> _:a_ga .
+    
+   <file:///base/rdf-test-19.n3#b>     <file:///base/rdf-test-19.n3#p> _:a_ga .
+    
+    _:a_g1     <http://www.daml.org/2001/03/daml+oil#first> "2" .
+    
+    _:a_g1     <http://www.daml.org/2001/03/daml+oil#rest> <http://www.daml.org/2001/03/daml+oil#nil> .
+    
+    _:a_ga     <http://www.daml.org/2001/03/daml+oil#first> "1" .
+    
+    _:a_ga     <http://www.daml.org/2001/03/daml+oil#rest> _:a_g1 .

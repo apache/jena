@@ -15,14 +15,14 @@ import com.hp.hpl.jena.util.tuple.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.3 2003-01-28 18:24:51 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.4 2003-01-29 10:24:20 andy_seaborne Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
 	// List of places
 	static protected final String dirbases[] = {".", "testN3",
                                                 // Jena2: correct location
-                                                "testing/testN3",
+                                                "testing/N3",
                                                 // Jena1: correct location
                                                 "modules/rdf/regression/testN3"} ;
 	

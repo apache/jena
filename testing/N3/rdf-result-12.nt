@@ -1,0 +1,5 @@
+    
+    _:a_ga     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///base/rdf-test-12.n3#p> .
+    
+    <http://underscore/a>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://underscore/p> .
+    
