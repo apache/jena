@@ -1,15 +1,13 @@
   /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.27 2004-08-02 15:09:04 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.28 2004-08-13 13:51:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.rdql.parser.Q_PatternLiteral;
-import com.hp.hpl.jena.rdql.test.TestExpressions;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.impl.*;
@@ -413,7 +411,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     */
     public void testExtractConstraint()
         {
-            
+            // Surely there should be something here?
         }
         
     public void testStringResults()
@@ -602,18 +600,36 @@ public abstract class AbstractTestQuery extends QueryTestBase
         q.addConstraint( provided );
         Expression e2 = (Expression) q.getConstraints().iterator().next();
         assertEquals( desired, e2 );
+        }    
+    
+    public void testRewriteContainsInsensitiveExpression()
+        {
+        Query q = new Query();
+        Expression L = constant( "x" );
+        Expression R = createModifiedPattern( "coNtaIns", "i" );
+        String F = "Q_StringMatch";
+        Expression provided = dyadic( L, "Q_StringMatch", R );
+        Expression desired = dyadic( L, "J_containsInsensitive", constant( "contains" ) );
+        q.addConstraint( provided );
+        Expression e2 = (Expression) q.getConstraints().iterator().next();
+        assertEquals( desired, e2 );
         }
     
     protected static class PL extends Expression.Fixed implements PatternLiteral
         {
-        public PL( String s ) { super( s ); }
+        protected String modifiers = "";
+        public PL( String content ) { super( content ); }
+        public PL( String content, String modifiers ) { super( content ); this.modifiers = modifiers; }
         public String getPatternString() { return (String) value; }
-        public String getPatternModifiers() { return ""; }
-        public String getPatternLanguage() { return "rdql"; }
+        public String getPatternModifiers() { return modifiers; }
+        public String getPatternLanguage() { return rdql; }
         }
     
     public Expression createSimplePattern( final String p )
         { return new PL( p ); }
+    
+    public Expression createModifiedPattern( String content, String modifiers )
+        { return new PL( content, modifiers ); }
     
     private Expression constant( final Object it )
         { return new Expression.Fixed( it ); }

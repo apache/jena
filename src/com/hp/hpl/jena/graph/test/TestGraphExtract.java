@@ -1,7 +1,7 @@
 /*
       (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: TestGraphExtract.java,v 1.4 2004-08-09 15:09:12 chris-dollin Exp $
+      $Id: TestGraphExtract.java,v 1.5 2004-08-13 13:51:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -75,6 +75,12 @@ public class TestGraphExtract extends GraphTestBase
         testExtract( "a R b; b S _c", "a", "a R b; b S _c; _c T d", TripleBoundary.stopAtAnonObject );
         }
     
+    /**
+         This test exposed that the update-existing-graph functionality was broken
+         if the target graph already contained any statements with a subject S
+         appearing as subject in the source graph - no further Spo statements were
+         added.
+    */
     public void testPartialUpdate()
         {
         Graph source = graphWith( "a R b; b S e" );

@@ -1,11 +1,9 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.5 2004-08-03 08:30:32 chris-dollin Exp $
+  $Id: Rewrite.java,v 1.6 2004-08-13 13:51:05 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
-
-import com.hp.hpl.jena.shared.JenaException;
 
 /**
      Rewrite - class which does expression rewrites for Query
@@ -16,38 +14,32 @@ public class Rewrite
     public static Expression rewriteStringMatch( Expression e )
         {
         Expression L = e.getArg(0), R = e.getArg(1);
-        String pattern = Rewrite.getPattern( R );
+        PatternLiteral pattern = Rewrite.getPattern( R );
         if (pattern == null)
             return e;
         else if (isStartsWith( pattern ))
-            return startsWith( L, pattern.substring( 1 ));
+            return startsWith( L, pattern.getPatternString().substring( 1 ));
         else if (isContains( pattern ))
             return contains( L, pattern );
         else if (isEndsWith( pattern ))
-            return endsWith( L, pattern.substring( 0, pattern.length() - 1 ) );
+            return endsWith( L, pattern.getPatternString().substring( 0, pattern.getPatternString().length() - 1 ) );
         return e;
         }
 
-    public static String getPattern( Expression E )
+    public static PatternLiteral getPattern( Expression E )
         {
         if (E instanceof PatternLiteral) 
             {
             PatternLiteral L = (PatternLiteral) E;
-            if (L.getPatternLanguage().equals( "rdql" ))
-                {
-                String S = L.getPatternString();
-                String M = L.getPatternModifiers();
-                if (M == null || M.equals( "" )) return S;
-                }
+            if (L.getPatternLanguage().equals( PatternLiteral.rdql )) return L;
             } 
-        if (true) throw new JenaException( "bother: " + E.getClass() + " " + E );
         return null;
         }
 
     public static Expression endsWith( final Expression L, final String S )
         {
         final Expression R = new Expression.Fixed( S );
-        return new Dyadic( L, ExpressionFunctionURIs.prefix + "J_endsWith", R )
+        return new Dyadic( L, ExpressionFunctionURIs.J_EndsWith, R )
             {            
             public boolean evalBool( Object l, Object r )
                 { return l.toString().endsWith( r.toString() ); }
@@ -57,39 +49,49 @@ public class Rewrite
     public static Expression startsWith( final Expression L, final String S )
         {
         final Expression R = new Expression.Fixed( S );
-        return new Dyadic( L, ExpressionFunctionURIs.prefix + "J_startsWith", R )
+        return new Dyadic( L, ExpressionFunctionURIs.J_startsWith, R )
             { 
             public boolean evalBool( Object l, Object r )
                 { return l.toString().startsWith( r.toString() ); }
             };            
         }
 
-    public static Expression contains( final Expression L, final String S )
+    public static Expression contains( final Expression L, final PatternLiteral PL )
         {
-        final Expression R = new Expression.Fixed( S );
-        return new Dyadic( L, ExpressionFunctionURIs.prefix + "J_contains", R )
-            { 
-            public boolean evalBool( Object l, Object r )
-                { return l.toString().indexOf( r.toString() ) > -1; }
-            };            
+        final Expression R = new Expression.Fixed( PL.getPatternString().toLowerCase() );
+        if (PL.getPatternModifiers().equals( "i" ))
+            return new Dyadic( L, ExpressionFunctionURIs.J_containsInsensitive, R )
+                { 
+                public boolean evalBool( Object l, Object r )
+                    { return l.toString().toLowerCase().indexOf( r.toString() ) > -1; }
+                };      
+        else
+            return new Dyadic( L, ExpressionFunctionURIs.J_contains, R )
+                { 
+                public boolean evalBool( Object l, Object r )
+                    { return l.toString().indexOf( r.toString() ) > -1; }
+                };            
         }
     
     public static boolean notSpecial( String pattern )
-        {
-        return pattern.matches( "[A-Za-z0-9-_:/ ]*" );
-        }
+        { return pattern.matches( "[A-Za-z0-9-_:/ ]*" ); }
 
-    public static boolean isContains( String pattern )
-        { return notSpecial( pattern ); }
+    public static boolean isContains( PatternLiteral pattern )
+        { return notSpecial( pattern.getPatternString() ) && iOnly( pattern.getPatternModifiers() ); }
     
-    public static boolean isStartsWith( String pattern )
+    protected static boolean iOnly( String modifiers )
+        { return modifiers.equals( "" ) || modifiers.equals( "i" ); }
+    
+    public static boolean isStartsWith( PatternLiteral pattern )
         {
-        return pattern.startsWith( "^" ) && notSpecial( pattern.substring( 1 ) );
+        String s = pattern.getPatternString();
+        return s.startsWith( "^" ) && notSpecial( s.substring( 1 ) );
         }
 
-    public static boolean isEndsWith( String pattern )
+    public static boolean isEndsWith( PatternLiteral pattern )
         {
-        return pattern.endsWith( "$" ) && notSpecial( pattern.substring( 0, pattern.length() - 1 ) );
+        String s = pattern.getPatternString();
+        return s.endsWith( "$" ) && notSpecial( s.substring( 0, s.length() - 1 ) );
         }
 
     }

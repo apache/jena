@@ -1,16 +1,20 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PatternLiteral.java,v 1.1 2004-08-02 15:09:03 chris-dollin Exp $
+  $Id: PatternLiteral.java,v 1.2 2004-08-13 13:51:05 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
 /**
      PatternLiteral - an interface for pattern literals recognised by Rewrite.
+     Also contains the definitions for the pattern language names.
+     
      @author kers
 */
 public interface PatternLiteral
     {
+    public static final String rdql = "http://jena.hpl.hp.com/2003/07/query/RDQL";
+    
     /**
          Answer the pattern string, in whatever the pattern language is.
     */

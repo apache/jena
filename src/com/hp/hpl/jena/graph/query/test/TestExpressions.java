@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.7 2004-08-03 08:32:01 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.8 2004-08-13 13:51:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -21,6 +21,11 @@ public class TestExpressions extends QueryTestBase
     public static TestSuite suite()
         { return new TestSuite( TestExpressions.class ); }
    
+    public void testExpressionPatternLanguages()
+        {
+        assertEquals( "http://jena.hpl.hp.com/2003/07/query/RDQL", PatternLiteral.rdql );
+        }
+    
     public void testBooleanEquality()
         {
         assertEquals( Expression.TRUE, Expression.TRUE );
@@ -33,15 +38,21 @@ public class TestExpressions extends QueryTestBase
         {
         Expression A = lit( "Aaa" ), B = lit( "Bee" );
         assertDiffer( A, B );
-        assertEquals( Rewrite.contains( A, "groo" ), Rewrite.contains( A, "groo" ) );
-        assertEquals( Rewrite.contains( B, "oops" ), Rewrite.contains( B, "oops" ) );
-        assertDiffer( Rewrite.contains( A, "groo" ), Rewrite.contains( A, "glue" ) );
-        assertDiffer( Rewrite.contains( A, "groo" ), Rewrite.contains( B, "groo" ) );
-        assertDiffer( Rewrite.contains( A, "blue" ), Rewrite.startsWith( A, "blue" ) );
-        assertDiffer( Rewrite.contains( A, "blue" ), Rewrite.endsWith( A, "blue" ) );
+        assertEquals( contains( A, "groo" ), contains( A, "groo" ) );
+        assertEquals( contains( B, "oops" ), contains( B, "oops" ) );
+        assertDiffer( contains( A, "groo" ), contains( A, "glue" ) );
+        assertDiffer( contains( A, "groo" ), contains( B, "groo" ) );
+        assertDiffer( contains( A, "blue" ), Rewrite.startsWith( A, "blue" ) );
+        assertDiffer( contains( A, "blue" ), Rewrite.endsWith( A, "blue" ) );
         assertDiffer( Rewrite.endsWith( A, "blue" ), Rewrite.startsWith( A, "blue" ) );
         }
 
+    public Expression contains( Expression L, PatternLiteral R )
+        { return Rewrite.contains( L, R ); }
+    
+    public Expression contains( Expression L, String R )
+        { return Rewrite.contains( L, pl( R ) ); }
+    
     public void testLiterals()
         {
         assertTrue( Expression.TRUE.isConstant() );
@@ -105,15 +116,33 @@ public class TestExpressions extends QueryTestBase
         assertEquals( false, evalBool( Rewrite.startsWith( lit( "hello" ), "xhe" ) ) );
         }
 
-    public void testContains()
+    public void testIsContains()
         {
-        assertEquals( true, evalBool( Rewrite.contains( lit( "hello" ), "h" ) ) );
-        assertEquals( true, evalBool( Rewrite.contains( lit( "hello" ), "e" ) ) );
-        assertEquals( true, evalBool( Rewrite.contains( lit( "hello" ), "ll" ) ) );
-        assertEquals( false, evalBool( Rewrite.contains( lit( "hello" ), "x" ) ) );
-        assertEquals( false, evalBool( Rewrite.contains( lit( "hello" ), "the" ) ) );
-        assertEquals( false, evalBool( Rewrite.contains( lit( "hello" ), "lot" ) ) );
+        assertEquals( true, Rewrite.isContains( pl( "ambulance" ) ) );
+        assertEquals( true, Rewrite.isContains( pl( "tendonitis", "i" ) ) );
+        assertEquals( false, Rewrite.isContains( pl( "finishing", "z" ) ) );
         }
+    
+    public void testSensitiveContains()
+        {
+        assertEquals( true, evalBool( contains( lit( "hello" ), "h" ) ) );
+        assertEquals( true, evalBool( contains( lit( "hello" ), "e" ) ) );
+        assertEquals( true, evalBool( contains( lit( "hello" ), "ll" ) ) );
+        assertEquals( false, evalBool( contains( lit( "hello" ), "x" ) ) );
+        assertEquals( false, evalBool( contains( lit( "hello" ), "the" ) ) );
+        assertEquals( false, evalBool( contains( lit( "hello" ), "lot" ) ) );
+        }        
+
+    public void testInsensitiveContains()
+        {
+        assertEquals( true, evalBool( contains( lit( "Hello" ), pli( "h" ) ) ) );
+        assertEquals( true, evalBool( contains( lit( "hello" ), pli( "E" ) ) ) );
+        assertEquals( true, evalBool( contains( lit( "heLlo" ), pli( "lL" ) ) ) );
+        assertEquals( false, evalBool( contains( lit( "hello" ), pli( "X" ) ) ) );
+        assertEquals( false, evalBool( contains( lit( "hello" ), pli( "the" ) ) ) );
+        assertEquals( false, evalBool( contains( lit( "hello" ), pli( "lot" ) ) ) );
+        }
+
 
     public void testEndsWith()
         {
@@ -134,6 +163,26 @@ public class TestExpressions extends QueryTestBase
     protected Expression lit( Object x )
         { return new Expression.Fixed( x ); }
     
+    protected PatternLiteral pl( final String c )
+        { return pl( c, "" ); }
+        
+    protected PatternLiteral pli( String c )
+        { return pl( c, "i" ); }
+    
+    protected PatternLiteral pl( final String c, final String m )
+        {
+        return new PatternLiteral()
+            {
+            public String getPatternString()
+                { return c; }
+
+            public String getPatternModifiers()
+                { return m; }
+
+            public String getPatternLanguage()
+                { return rdql; }
+            };
+        }
     }
 
 /*

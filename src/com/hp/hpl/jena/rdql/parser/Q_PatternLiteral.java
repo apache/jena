@@ -129,7 +129,7 @@ public class Q_PatternLiteral extends ExprNode implements Expr, PatternLiteral
     */
     public String getPatternLanguage()
     { 
-        return "rdql"; 
+        return PatternLiteral.rdql; 
     }
     
 }
