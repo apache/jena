@@ -1,67 +1,84 @@
 /*
-	(c) Copyright 2003, Hewlett-Packard Development Company, LP
-	[See end of file]
-	$Id: StatementBase.java,v 1.1 2004-08-03 19:00:48 chris-dollin Exp $
-*/
+	 (c) Copyright 2004, Hewlett-Packard Development Company, LP
+	 [See end of file]
+	 $Id: StatementBase.java,v 1.2 2004-08-04 06:33:05 chris-dollin Exp $
+ */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.HasNoModelException;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Statement;
-
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
- @author hedgehog
- */
+ 	Abstract base class for StaementImpl - pulls up the stuff that doesn't depend
+ 	on how statements are represented (as S/P/O or as Triples).
+ 	
+ 	@author hedgehog
+*/
 public abstract class StatementBase
-    {
-    protected final ModelCom model;
-    
-    protected StatementBase( ModelCom model ) 
-        { this.model = model;
-    }
+	{
+	protected final ModelCom model;
 
-    /** 
-     	answer the Model for this StatementImpl, and die if it doesn't have one 
-    */
-    protected Model mustHaveModel()
-        {
-        if (model == null) throw new HasNoModelException( this );
-        return model; 
-        }
+	protected StatementBase(ModelCom model)
+		{
+		this.model = model;
+		}
 
-    public Model getModel()
-        { return model; }
-    
-    /**
-     	replace this StaementImpl [ie the one of which this is the base]
-     	with (S, P, n). Answer the new StaementImpl. Abstract here to
-     	allow methods to be pulled up.
-    */
-    protected abstract StatementImpl replace( RDFNode n );
-    
-    /**
-     	Answer the object of this statement as a Literal, or throw a
-     	LiteralRequiredException.
-    */
-    public abstract Literal getLiteral();
+	/**
+	 * answer the Model for this StatementImpl, and die if it doesn't have one
+	 */
+	protected Model mustHaveModel()
+		{
+		if (model == null)
+			throw new HasNoModelException(this);
+		return model;
+		}
 
-    protected StatementImpl stringReplace(String s, String lang, boolean wellFormed)
-        { return replace( new LiteralImpl( Node.createLiteral( s, lang, wellFormed ), model ) ); }
+	public Model getModel()
+		{
+		return model;
+		}
 
-    /**
-        "replace" the Object of this statement with the literal string value _s_. NOTE: this is
-        a convenience function to eliminate the use of a deprecated constructor; when 
-        data-types are put properly into Jena, it will likely disappear. 
-    */
-    protected StatementImpl stringReplace(String s)
-        { return stringReplace( s, "", false ); }
+	/**
+	 * replace this StaementImpl [ie the one of which this is the base] with (S,
+	 * P, n). Answer the new StaementImpl. Abstract here to allow methods to be
+	 * pulled up.
+	 */
+	protected abstract StatementImpl replace(RDFNode n);
 
-    public Statement changeObject(boolean o)
+	/**
+	 * Answer the object of this statement as a Literal, or throw a
+	 * LiteralRequiredException.
+	 */
+	public abstract Literal getLiteral();
+	
+	public abstract Resource getResource();
+	
+	public abstract Resource getSubject();
+	
+	public abstract Property getPredicate();
+	
+	public abstract RDFNode getObject();
+
+	protected StatementImpl stringReplace(String s, String lang,
+			boolean wellFormed)
+		{
+		return replace(new LiteralImpl(Node.createLiteral(s, lang, wellFormed),
+				model));
+		}
+
+	/**
+	 * "replace" the Object of this statement with the literal string value _s_.
+	 * NOTE: this is a convenience function to eliminate the use of a deprecated
+	 * constructor; when data-types are put properly into Jena, it will likely
+	 * disappear.
+	 */
+	protected StatementImpl stringReplace(String s)
+		{
+		return stringReplace(s, "", false);
+		}
+
+	public Statement changeObject(boolean o)
 		{
 		return stringReplace(String.valueOf(o));
 		}
@@ -113,17 +130,16 @@ public abstract class StatementBase
 
 	public Statement changeObject(Object o)
 		{
-		return o instanceof RDFNode
-				? replace((RDFNode) o)
-				: stringReplace(o.toString());
+		return o instanceof RDFNode ? replace((RDFNode) o) : stringReplace(o
+				.toString());
 		}
-	
-    public boolean getBoolean()
+
+	public boolean getBoolean()
 		{
 		return getLiteral().getBoolean();
 		}
 
-    public byte getByte()
+	public byte getByte()
 		{
 		return getLiteral().getByte();
 		}
@@ -162,30 +178,50 @@ public abstract class StatementBase
 		{
 		return getLiteral().getLexicalForm();
 		}
-    
-    }
 
+	/**
+	 * utility: check that node is a Resource, throw otherwise
+	 */
+	protected Resource mustBeResource(RDFNode n)
+		{
+		if (n instanceof Resource)
+			return (Resource) n;
+		else
+			throw new ResourceRequiredException(n);
+		}
+
+	public String getLanguage()
+		{
+		return getLiteral().getLanguage();
+		}
+
+	public boolean getWellFormed()
+		{
+		return getLiteral().getWellFormed();
+		}
+
+	}
 
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP All rights
- * reserved. Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 2. Redistributions in
- * binary form must reproduce the above copyright notice, this list of
- * conditions and the following disclaimer in the documentation and/or other
- * materials provided with the distribution. 3. The name of the author may not
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+	 (c) Copyright 2004 Hewlett-Packard Development Company, LP All rights
+	 reserved. Redistribution and use in source and binary forms, with or without
+	 modification, are permitted provided that the following conditions are met:
+	 1. Redistributions of source code must retain the above copyright notice,
+	 this list of conditions and the following disclaimer. 2. Redistributions in
+	 binary form must reproduce the above copyright notice, this list of
+	 conditions and the following disclaimer in the documentation and/or other
+	 materials provided with the distribution. 3. The name of the author may not
+	 be used to endorse or promote products derived from this software without
+	 specific prior written permission.
+	  
+	 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+	 WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+	 MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+	 EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	 SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+	 PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+	 OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+	 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+	 OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+	 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/

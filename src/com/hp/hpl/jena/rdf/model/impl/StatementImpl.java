@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.25 $ $Date: 2004-08-03 19:00:48 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.26 $ $Date: 2004-08-04 06:33:05 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     
@@ -66,17 +66,6 @@ public class StatementImpl  extends StatementBase implements Statement {
         return asResource().getRequiredProperty(p);
     }
     
-    /**
-        utility: check that node is a Resource, throw otherwise
-    */
-    private Resource mustBeResource( RDFNode n )
-        {
-        if (n instanceof Resource)
-            return (Resource) n;
-        else
-            throw new ResourceRequiredException( n );
-         }
-        
     public Resource getResource()
         { return mustBeResource( object ); }
     
@@ -102,7 +91,7 @@ public class StatementImpl  extends StatementBase implements Statement {
 
     public Object getObject(ObjectF f)  {
         try {
-            return f.createObject(((Literal) object).toString());
+            return f.createObject( getLiteral().toString());
         } catch (Exception e) {
             throw new JenaException(e);
         }
@@ -124,14 +113,6 @@ public class StatementImpl  extends StatementBase implements Statement {
     public Seq getSeq()  {
         return (Seq)get(Seq.class);
     }    
-    
-    public String getLanguage()  {
-        return getLiteral().getLanguage();
-    }      
-    
-    public boolean getWellFormed()  {
-        return getLiteral().getWellFormed();
-    }      
     
     /** it turns out to be handy to return the new StatementImpl as the result */ 
     protected StatementImpl replace(RDFNode n)  {
