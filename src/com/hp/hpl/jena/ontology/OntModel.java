@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-16 13:14:06 $
+ * Last modified on   $Date: 2003-05-27 22:26:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -57,7 +57,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.16 2003-05-16 13:14:06 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.17 2003-05-27 22:26:39 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -545,7 +545,7 @@ public interface OntModel
     /**
      * <p>Answer a resource representing the class that is the enumeration of the given list of individuals</p>
      * @param uri The URI of the new enumeration class, or null for an anonymous class description.
-     * @param members A list of resources denoting the individuals in the enumeration
+     * @param members An optional list of resources denoting the individuals in the enumeration, or null.
      * @return An enumeration class
      */
     public EnumeratedClass createEnumeratedClass( String uri, OntList members );

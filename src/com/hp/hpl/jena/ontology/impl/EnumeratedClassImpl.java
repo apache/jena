@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClassImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:12:51 $
+ * Last modified on   $Date: 2003-05-27 22:26:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,10 +24,12 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import java.util.Iterator;
+
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.PathSet;
+import com.hp.hpl.jena.rdf.model.*;
 
 
 /**
@@ -37,7 +39,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClassImpl.java,v 1.5 2003-05-23 11:12:51 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClassImpl.java,v 1.6 2003-05-27 22:26:38 ian_dickinson Exp $
  */
 public class EnumeratedClassImpl 
     extends OntClassImpl
@@ -96,20 +98,70 @@ public class EnumeratedClassImpl
     // External signature methods
     //////////////////////////////////
 
+    // oneOf
+    
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>oneOf</code>
-     * property of an enumerated class. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
+     * <p>Assert that this class is exactly the enumeration of the given individuals. Any existing 
+     * statements for <code>oneOf</code> will be removed.</p>
+     * @param A list of individuals that defines the class extension for this class
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     */ 
+    public void setOneOf( OntList enum ) {
+        setPropertyValue( getProfile().ONE_OF(), "ONE_OF", enum );
+    }
+
+    /**
+     * <p>Add an individual to the enumeration that defines the class extension of this class.</p>
+     * @param res An individual to add to the enumeration
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     */ 
+    public void addOneOf( Resource res ) {
+        addListPropertyValue( getProfile().ONE_OF(), "ONE_OF", res );
+    }
+
+    /**
+     * <p>Add each individual from the given iteratation to the 
+     * enumeration that defines the class extension of this class.</p>
+     * @param individuals An iterator over individuals
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     */ 
+    public void addOneOf( Iterator individuals ) {
+        while( individuals.hasNext() ) {
+            addOneOf( (Resource) individuals.next() );
+        }
+    }
+
+    /**
+     * <p>Answer a list of individuals that defines the extension of this class.</p>
+     * @return A list of individuals that is the class extension
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     */ 
+    public OntList getOneOf() {
+        return (OntList) objectAs( getProfile().ONE_OF(), "ONE_OF", OntList.class );
+    }
+
+    /**
+     * <p>Answer an iterator over all of the individuals that are declared to be the class extension for
+     * this class. Each element of the iterator will be an {@link #OntResource}.</p>
+     * @return An iterator over the individuals in the class extension
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listOneOf() {
+        return getOneOf().iterator();
+    }
+
+    /**
+     * <p>Answer true if the given individual is one of the enumerated individuals in the class extension
+     * of this class.</p>
+     * @param res An individual to test
+     * @return True if the given individual is in the class extension for this class.
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */
-    public PathSet p_oneOf() {
-        return asPathSet( getProfile().ONE_OF(), "ONE_OF" );
+    public boolean hasOneOf( Resource res ) {
+        return getOneOf().contains( res );
     }
     
+
 
     // Internal implementation methods
     //////////////////////////////////

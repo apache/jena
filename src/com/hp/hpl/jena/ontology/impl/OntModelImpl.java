@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 17:34:53 $
+ * Last modified on   $Date: 2003-05-27 22:26:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.20 2003-05-27 17:34:53 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.21 2003-05-27 22:26:38 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -785,7 +785,7 @@ public class OntModelImpl
     /**
      * <p>Answer a resource representing the class that is the enumeration of the given list of individuals</p>
      * @param uri The URI of the new enumeration class, or null for an anonymous class description.
-     * @param members A list of resources denoting the individuals in the enumeration
+     * @param members An optional list of resources denoting the individuals in the enumeration
      * @return An enumeration class
      */
     public EnumeratedClass createEnumeratedClass( String uri, OntList members ) {
@@ -793,7 +793,7 @@ public class OntModelImpl
         OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
         
         checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
-        c.addProperty( getProfile().ONE_OF(), members );
+        c.addProperty( getProfile().ONE_OF(), (members == null) ? createList() : members );
         
         return (EnumeratedClass) c.as( EnumeratedClass.class );
     }

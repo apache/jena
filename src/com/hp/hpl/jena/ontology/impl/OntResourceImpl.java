@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 20:46:54 $
+ * Last modified on   $Date: 2003-05-27 22:26:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.9 2003-05-27 20:46:54 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.10 2003-05-27 22:26:38 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -934,7 +934,13 @@ public class OntResourceImpl
         
             // now add our value to the list
             if (!values.contains( value )){
-                values.add( value );
+                OntList newValues = values.add( value );
+                
+                // if the previous values was nil, the return value will be a new list
+                if (newValues != values) {
+                    removeAll( p );
+                    addProperty( p, newValues );
+                }
             }
         }
         else {

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 20:45:59 $
+ * Last modified on   $Date: 2003-05-27 22:26:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.ontology.impl.test;
 // Imports
 ///////////////
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 import junit.framework.*;
 
@@ -37,7 +38,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.10 2003-05-27 20:45:59 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.11 2003-05-27 22:26:11 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -152,6 +153,32 @@ public class TestClassExpression
                     assertTrue( "A should not be disjoint with B", !A.isDisjointWith( B ) );
                 }
             },
+            new OntTestCase( "EnumeratedClass.oneOf", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    EnumeratedClass A = m.createEnumeratedClass( NS + "A", null );
+                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
+                    
+                    A.addOneOf( a );
+                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
+                    assertEquals( "Size should be 1", 1, A.getOneOf().size() );
+                    assertTrue( "A should have a as enumerated member", A.getOneOf().contains( a ) );
+                    
+                    A.addOneOf( b );
+                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
+                    assertEquals( "Size should be 2", 2, A.getOneOf().size() );
+                    iteratorTest( A.listOneOf(), new Object[] {a,b} );
+                    
+                    A.setOneOf( m.createList( new RDFNode[] {b} ) );
+                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
+                    assertEquals( "Size should be 1", 1, A.getOneOf().size() );
+                    assertTrue( "A should have b in the enum", A.hasOneOf( b ) );
+                    assertTrue( "A should not have a in the enum", !A.hasOneOf( a ) );
+                }
+            },
+            
+            // from file
             new OntTestCase( "OntClass.subclass.fromFile", true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     String fileName = m_owlLang ? "file:testing/ontology/owl/ClassExpression/test.rdf" : "file:testing/ontology/daml/ClassExpression/test.rdf";
