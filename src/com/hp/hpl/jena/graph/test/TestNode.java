@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.12 2003-05-19 20:20:53 chris-dollin Exp $
+  $Id: TestNode.java,v 1.13 2003-05-20 05:30:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -269,6 +269,11 @@ public class TestNode extends GraphTestBase
         assertEquals( "name must be correct", V, v.getName() );
         }
         
+    public void testCreateANY()
+        {
+        assertEquals( "?? must denote ANY", Node.ANY, Node.create( "??" ) );
+        }
+        
     public void testCreateURI()
         {
         String uri = "http://www.electric-hedgehog.net/";
@@ -298,7 +303,6 @@ public class TestNode extends GraphTestBase
         assertTrue( "node() making variables", node( "?x" ).isVariable() );
         }
         
-    // TODO fill in this incomplete test
     public void testVisitorPatternNode()
         {
         NodeVisitor returnNode = new NodeVisitor() 
@@ -313,12 +317,35 @@ public class TestNode extends GraphTestBase
         testVisitorPatternNode( "?variable", returnNode );
         testVisitorPatternNode( "_anon", returnNode );
         testVisitorPatternNode( "11", returnNode );
+        testVisitorPatternNode( "??", returnNode );
         }
         
     private void testVisitorPatternNode( String ns, NodeVisitor v )
         {
         Node n = node( ns ); 
         assertEquals( n, n.visitWith( v ) ); 
+        }
+        
+    public void testVisitorPatternValue()
+        {
+        NodeVisitor checkValue = new NodeVisitor() 
+            {
+            public Object visitAny( Node_ANY it ) 
+                { return null; }
+            public Object visitBlank( Node_Blank it, AnonId id ) 
+                { assertTrue( it.getBlankNodeId() == id ); return null; }
+            public Object visitLiteral( Node_Literal it, LiteralLabel lit ) 
+                { assertTrue( it.getLiteral() == lit ); return null; }
+            public Object visitURI( Node_URI it, String uri ) 
+                { assertTrue( it.getURI() == uri ); return null; }
+            public Object visitVariable( Node_Variable it, String name ) 
+                { assertEquals( it.getName(), name ); return null; }
+            };
+        node( "sortOfURI" ).visitWith( checkValue );        
+        node( "?variableI" ).visitWith( checkValue );        
+        node( "_anon" ).visitWith( checkValue );        
+        node( "11" ).visitWith( checkValue );        
+        node( "??" ).visitWith( checkValue );
         }
     }
 

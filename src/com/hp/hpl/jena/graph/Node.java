@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.9 2003-05-19 19:37:35 chris-dollin Exp $
+  $Id: Node.java,v 1.10 2003-05-20 05:29:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -66,6 +66,8 @@ public abstract class Node {
             return Node.createLiteral( new LiteralLabel( x, "nn-NN", false ) );
         if (first == '_')
             return Node.createAnon( new AnonId( x ) );
+        if (x.equals( "??" ))
+            return Node.ANY;
         if (first == '?')
             return Node.createVariable( x.substring( 1 ) );
         if (first == '&')
