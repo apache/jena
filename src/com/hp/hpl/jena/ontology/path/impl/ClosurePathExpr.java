@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            20-Mar-2003
  * Filename           $RCSfile: ClosurePathExpr.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:30:25 $
+ * Last modified on   $Date: 2003-07-24 16:17:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import java.util.*;
  * given property, optionally with an occurs check.
  * </p>
  * <p>
- * TODO: This needs to be extended to consider whether the underlying
+ * TO DO: This needs to be extended to consider whether the underlying
  * graph is an inferencing graph that is already able to do closure
  * on the given predicate, and if so, there's no need for the bookkeeping
  * here.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClosurePathExpr.java,v 1.2 2003-03-28 22:30:25 ian_dickinson Exp $
+ * @version CVS $Id: ClosurePathExpr.java,v 1.3 2003-07-24 16:17:59 ian_dickinson Exp $
  */
 public class ClosurePathExpr
     extends AbstractPathExpr 
