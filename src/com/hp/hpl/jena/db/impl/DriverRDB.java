@@ -48,7 +48,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.31 $ on $Date: 2003-08-26 03:01:48 $
+* @version $Revision: 1.32 $ on $Date: 2003-08-27 03:17:35 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1013,13 +1013,15 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * 		other notation same as for literal encoding
 	 * 
 	 * Blank Node Encoding in Statement Tables
-	 * 	Blank Node:	Bv:[pfx_dbid]:bnid
+	 * 	Short URI:	Bv:[pfx_dbid]:bnid[:]
+	 * 	Long URI:	Br:[pfx_dbid]:dbid
+	 * Blank Encoding in Long URI Table
+	 * 	URI:		Bv:head[:] hash tail
 	 * 
 	 * Comments:
 	 * 		B indicates a blank node
 	 * 		bnid is the blank node identifier
 	 * 		other notation same as above
-	 * 		blank node encoding should always fit within a statement table
 	 * 		Note: currently, blank nodes are always stored uncompressed (pfix_dbid is null). 
 	 *
 	 * Variable Node Encoding in Statement Tables
@@ -1092,6 +1094,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				pfx = RDBCodeDelim + RDBCodeDelim;
 				qname = uri;
 			} else {
+				// see if it's cached
 				DBIDInt pfxid = URItoPrefix(uri, pos, addIfLong);
 				if ( pfxid == null ) return res;
 				pfx = RDBCodeDelim + ((DBIDInt)pfxid).getIntID() + RDBCodeDelim;
@@ -1130,9 +1133,21 @@ public abstract class DriverRDB implements IRDBDriver {
 				res = new String(RDBCodeLiteral + RDBCodeValue + RDBCodeDelim + ld + lval + EOS);
 			}    		
 		} else if ( node.isBlank() ) {
-			// TODO: prefix compression for blank nodes.
-			res = new String(RDBCodeBlank + RDBCodeValue + RDBCodeDelim + RDBCodeDelim
-							+ node.getBlankNodeId().toString()+ EOS);
+			String bnid = node.getBlankNodeId().toString();
+			String delims = "::";
+			int encodeLen = RDBCodeBlank.length() + 1 + delims.length() + EOS_LEN;
+			boolean BisLong = objectIsLong(encodeLen,bnid);
+			if ( BisLong ) {
+				int	dbid;
+				// belongs in URI table
+				DBIDInt URIid = getBlankID(bnid,addIfLong);
+				if ( URIid == null ) return res;
+				dbid = URIid.getIntID();
+				res = new String(RDBCodeBlank + RDBCodeRef + delims + dbid);
+			} else {
+				res = new String(RDBCodeBlank + RDBCodeValue + delims + bnid + EOS);
+			}
+			
 		} else if ( node.isVariable() ){
 			String name = ((Node_Variable)node).getName();
 			int len = name.length();
@@ -1232,10 +1247,16 @@ public abstract class DriverRDB implements IRDBDriver {
 			res = Node.createLiteral(llabel);
 			
 		} else if ( nodeType.equals(RDBCodeBlank) ) {
-			// TODO: implement prefix compression for blank nodes
-			String bstr = RDBString.substring(4,len-EOS_LEN);
+			String bstr = null;
+			if ( valType.equals(RDBCodeValue) ) {
+				bstr = RDBString.substring(4,len-EOS_LEN);
+			} else {
+				bstr = IDtoBlank(RDBString.substring(4));
+				if ( bstr == null )
+					throw new RDFRDBException("Bad URI: " + RDBString);			
+			}
 			res = Node.createAnon( new AnonId (bstr) );
-			
+						
 		} else if ( nodeType.equals(RDBCodeVariable) ) {
 			String vname = RDBString.substring(3,len-EOS_LEN);
 			res = Node.createVariable(vname);
@@ -1317,10 +1338,15 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 
 	DBIDInt URItoPrefix ( String uri, int pos, boolean add ) {
-		RDBLongObject	lobj = PrefixToLongObject(uri,pos);
-		DBIDInt res = getLongObjectID(lobj, PREFIX_TABLE, add);
-		if ( res != null )
-			prefixCache.put(res,uri.substring(0,pos));
+		DBIDInt res;
+		Object key = prefixCache.getByValue(uri.substring(0,pos));
+		if ( key == null ) {
+			RDBLongObject	lobj = PrefixToLongObject(uri,pos);
+			res = getLongObjectID(lobj, PREFIX_TABLE, add);
+			if ( res != null )
+				prefixCache.put(res,uri.substring(0,pos));
+		} else
+			res = (DBIDInt) key;
 		return res;
 	}
 	
@@ -1407,17 +1433,25 @@ public abstract class DriverRDB implements IRDBDriver {
 	/**
 	 * Return the database ID for the URI, if it exists
 	 */
+	public DBIDInt getBlankID(String bstr, boolean add) throws RDFRDBException {
+		RDBLongObject	lobj = URIToLongObject (bstr,RDBCodeBlank);
+		return getLongObjectID(lobj, LONG_URI_TABLE, add);
+	}
+	
+	/**
+	 * Return the database ID for the URI, if it exists
+	 */
 	public DBIDInt getURIID(String qname, boolean add) throws RDFRDBException {
-		RDBLongObject	lobj = URIToLongObject (qname);
+		RDBLongObject	lobj = URIToLongObject (qname,RDBCodeURI);
 		return getLongObjectID(lobj, LONG_URI_TABLE, add);
 	}
 
-	protected RDBLongObject URIToLongObject ( String qname ) {
+	protected RDBLongObject URIToLongObject ( String qname, String code ) {
 		RDBLongObject	res = new RDBLongObject();
 		int				headLen;
 		int				avail;
 
-		res.head = RDBCodeURI + RDBCodeValue + RDBCodeDelim;
+		res.head = code + RDBCodeValue + RDBCodeDelim;
 		headLen = res.head.length();
 		avail = INDEX_KEY_LENGTH - (headLen + EOS_LEN);
 		if ( qname.length() > avail ) {
@@ -1540,12 +1574,20 @@ public abstract class DriverRDB implements IRDBDriver {
 	}
 	
 	/**
- 	* Return the URI string that has the given database id.
- 	* @param uriID - the dbid of the uri, as a string.
- 	* @return the uri string or null if it does not exist.
- 	*/
-	protected String IDtoURI ( String uriID ) {
-		return IDtoString ( uriID, LONG_URI_TABLE, RDBCodeURI);
+	* Return the Blank node string that has the given database id.
+	* @param bnID - the dbid of the blank node, as a string.
+	* @return the Blank node string or null if it does not exist.
+	*/
+	protected String IDtoBlank(String bnID) {
+		return IDtoString(bnID, LONG_URI_TABLE, RDBCodeBlank);
+	}
+	/**
+		* Return the URI string that has the given database id.
+		* @param uriID - the dbid of the uri, as a string.
+		* @return the uri string or null if it does not exist.
+		*/
+	protected String IDtoURI(String uriID) {
+		return IDtoString(uriID, LONG_URI_TABLE, RDBCodeURI);
 	}
 
 	/**
