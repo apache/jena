@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.13 2003-09-22 14:56:51 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.14 2003-09-23 08:56:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-09-22 14:56:51 $
+ * @version $Revision: 1.14 $ on $Date: 2003-09-23 08:56:54 $
  */
 public class WebOntTestHarness {
 
@@ -273,9 +273,11 @@ public class WebOntTestHarness {
      */
     public void runTest(Resource test) {
         boolean success = false;
+        boolean fail = false;
         try {
             success = doRunTest(test);
         } catch (Exception e) {
+            fail = true;
             System.out.print("\nException: " + e);
             e.printStackTrace();
         }
@@ -288,11 +290,15 @@ public class WebOntTestHarness {
             System.out.println("\nFAIL: " + test);
         }
         Resource resultType = null;
-        if (test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest) 
-        ||  test.hasProperty(RDF.type, OWLTest.ConsistencyTest)) {
-            resultType = success ? OWLResults.PassingRun : OWLResults.FailingRun;
+        if (fail) {
+            resultType = OWLResults.FailingRun;
         } else {
-            resultType = success ? OWLResults.PassingRun : OWLResults.IncompleteRun;
+            if (test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest) 
+            ||  test.hasProperty(RDF.type, OWLTest.ConsistencyTest)) {
+                resultType = success ? OWLResults.PassingRun : OWLResults.FailingRun;
+            } else {
+                resultType = success ? OWLResults.PassingRun : OWLResults.IncompleteRun;
+            }
         }
         // log to the rdf result format
         Resource result = testResults.createResource()
