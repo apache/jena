@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.6 $ on $Date: 2003-07-11 19:17:04 $
+* @version $Revision: 1.7 $ on $Date: 2003-08-11 02:50:16 $
 */
 
 public class SQLCache {
@@ -253,7 +253,22 @@ public class SQLCache {
 			return (PreparedStatement) psl.remove(0);
 		}
 	}
+	
+	/**
+	 * Return a prepared SQL statement for the given statement string.
+	 * The statement should either be closed after use.
+	 *  
+	 * <p>Only works for single statements, not compound statements.
+	 * @param stmt the sql statement to prepare.
+	 * @return a prepared SQL statement appropriate for the JDBC connection
+	 * used when this SQLCache was constructed or null if there is no such
+	 * connection.
+	 */
 
+	public synchronized PreparedStatement prepareSQLStatement(String sql) throws SQLException {
+		if (m_connection == null) return null;
+		return getConnection().prepareStatement(sql);
+	}
 
     public synchronized PreparedStatement getPreparedSQLStatement(String opname) throws SQLException {
     	return getPreparedSQLStatement(opname, (String[]) null);
@@ -671,6 +686,7 @@ public class SQLCache {
             return null;
         }
     }
+    
     
     /**
      * Return dynamically generated SQL for the specified operation.
