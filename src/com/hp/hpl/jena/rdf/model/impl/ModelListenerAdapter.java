@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelListenerAdapter.java,v 1.2 2003-07-09 14:06:45 chris-dollin Exp $
+  $Id: ModelListenerAdapter.java,v 1.3 2003-07-09 15:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -24,6 +24,12 @@ public class ModelListenerAdapter implements GraphListener
     ModelListenerAdapter( ModelCom m, ModelChangedListener L )
         { this.m = m; this.L = L; }
 
+    public void notifyAdd( Triple [] triples )
+        {}
+        
+    public void notifyDelete( Triple [] triples )
+        {}
+        
     public void notifyAdd( Triple t )
         { L.addedStatement( m.asStatement( t ) ); }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphEventManager.java,v 1.4 2003-07-09 13:10:27 chris-dollin Exp $
+  $Id: GraphEventManager.java,v 1.5 2003-07-09 15:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -39,10 +39,22 @@ public interface GraphEventManager
     void notifyAdd( Triple t );
     
     /**
+        Notify all attached listeners that the triple array <code>triples</code> has
+        been added, by calling their <code>notifyAdd(Triple [])</code> methods.
+    */
+    void notifyAdd( Triple [] ts );
+    
+    /**
         Notify all attached listeners that the triple <code>t</code> has been removed,
         by calling their <code>notifyDelete(Triple)</code> methods.
     */
     void notifyDelete( Triple t );
+    
+    /**
+        Notify all attached listeners that the triple array <code>triples</code> has
+        been removed, by calling their <code>notifyDelete(Triple [])</code> methods,
+    */
+    void notifyDelete( Triple [] triples );
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.2 2003-06-06 09:15:48 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.3 2003-07-09 15:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -11,20 +11,29 @@ import java.util.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
-    A simple-minded implementation of the bulk update interface.
+    A simple-minded implementation of the bulk update interface. This only
+    operates on (subclasses of) GraphBase, since it needs access to the
+    performAdd/performDelete operations.
     
  	@author kers
 */
 
 public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     {
-    private Graph graph;
+    private GraphBase graph;
+    private GraphEventManager manager;
     
-    public SimpleBulkUpdateHandler( Graph graph )
-        { this.graph = graph; }
+    public SimpleBulkUpdateHandler( GraphBase graph )
+        { 
+        this.graph = graph; 
+        this.manager = graph.getEventManager();
+        }
 
     public void add( Triple [] triples )
-        { for (int i = 0; i < triples.length; i += 1) graph.add( triples[i] ); }
+        { 
+        for (int i = 0; i < triples.length; i += 1) graph.performAdd( triples[i] ); 
+        manager.notifyAdd( triples );
+        }
         
     public void add( List triples )
         { for (int i = 0; i < triples.size(); i += 1) graph.add( (Triple) triples.get(i) ); }
@@ -36,7 +45,10 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         { add( GraphUtil.findAll( g ) );  }
 
     public void delete( Triple [] triples )
-        { for (int i = 0; i < triples.length; i += 1) graph.delete( triples[i] ); }
+        { 
+        for (int i = 0; i < triples.length; i += 1) graph.performDelete( triples[i] ); 
+        manager.notifyDelete( triples );
+        }
     
     public void delete( List triples )
         { for (int i = 0; i < triples.size(); i += 1) graph.delete( (Triple) triples.get(i) );}

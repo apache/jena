@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.13 2003-07-09 14:06:24 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.14 2003-07-09 15:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -211,32 +211,11 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertTrue( q.isEmpty() );
         }
         
-    /**
-        This listener simply records the event names and data, and provides
-        a method for comparing the actual with the expected history.
-    */    
-    static class HistoryListener implements GraphListener
-        {
-        List history = new ArrayList();
-        
-        public void notifyAdd( Triple t )
-            { history.add( "add" ); history.add( t ); }
-            
-        public void notifyDelete( Triple t )
-            { history.add( "delete" ); history.add( t ); }
-            
-        public void clear()
-            { history.clear(); }
-            
-        public boolean has( Object [] things )
-            { return history.equals( Arrays.asList( things ) ); }           
-        }
-        
     public void testEventRegister()
         {
         Graph g = getGraph();
         GraphEventManager gem = g.getEventManager();
-        assertSame( gem, gem.register( new HistoryListener() ) );
+        assertSame( gem, gem.register( new RecordingListener() ) );
         }
         
     /**
@@ -251,7 +230,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Handy triple for test purposes.
     */
     protected Triple SPO = Triple.create( "S P O" );
-    protected HistoryListener L = new HistoryListener();
+    protected RecordingListener L = new RecordingListener();
     
     /**
         Utility: get a graph, register L with its manager, return the graph.
@@ -277,8 +256,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
         
     public void testTwoListeners()
         {
-        HistoryListener L1 = new HistoryListener();
-        HistoryListener L2 = new HistoryListener();
+        RecordingListener L1 = new RecordingListener();
+        RecordingListener L2 = new RecordingListener();
         Graph g = getGraph();
         GraphEventManager gem = g.getEventManager();
         gem.register( L1 ).register( L2 );
@@ -310,6 +289,22 @@ public abstract class AbstractTestGraph extends GraphTestBase
         g.getEventManager().register( L ).unregister( L );
         g.delete( SPO );
         assertTrue( L.has( new Object[] {"delete", SPO} ) );
+        }
+        
+    public void testBulkAddArray()
+        {
+        Graph g = getAndRegister( L );
+        Triple [] triples = tripleArray( "x R y; a P b" );
+        g.getBulkUpdateHandler().add( triples );
+        L.assertHas( new Object[] {"add[]", triples} );
+        }
+    
+    public void testBulkDeleteArray()
+        {
+        Graph g = getAndRegister( L );
+        Triple [] triples = tripleArray( "x R y; a P b" );
+        g.getBulkUpdateHandler().delete( triples );
+        L.assertHas( new Object[] {"delete[]", triples} );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.8 2003-07-09 13:10:56 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.9 2003-07-09 15:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -12,8 +12,6 @@ import com.hp.hpl.jena.util.iterator.*;
 
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
-import java.util.*;
 
 /**
     GraphBase is an implementation of Graph that provides some convenient
@@ -81,8 +79,13 @@ public abstract class GraphBase implements Graph {
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
         
+    private BulkUpdateHandler bud;
+    
     public BulkUpdateHandler getBulkUpdateHandler()
-        { return new SimpleBulkUpdateHandler( this ); }
+        { 
+        if (bud == null) bud = new SimpleBulkUpdateHandler( this ); 
+        return bud;
+        }
         
     public Capabilities getCapabilities()
         { return null; }

@@ -1,40 +1,54 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphListener.java,v 1.5 2003-07-09 15:27:02 chris-dollin Exp $
+  $Id: RecordingListener.java,v 1.1 2003-07-09 15:27:02 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.test;
+
+import com.hp.hpl.jena.graph.*;
+
+import junit.framework.*;
+import java.util.*;
 
 /**
-    Interface for listening to graph-level update events.
-    @author Jeremy Carroll, extensions by kers
-*/
-public interface GraphListener 
+    This testing listener records the event names and data, and provides
+    a method for comparing the actual with the expected history. 
+*/    
+class RecordingListener implements GraphListener
     {
-    /**
-        Method called when a single triple has been added to the graph.
-    */
-    void notifyAdd( Triple t );
+    List history = new ArrayList();
     
-    /**
-        Method called when an array of triples has been added to the graph.
-    */
-    void notifyAdd( Triple [] triples );
-    
-    /**
-        Method called when a single triple has been deleted from the graph.
-    */
-    void notifyDelete( Triple t );
-    
-    /**
-        Method called when an array of triples has been deleted from the graph.
-    */
-    void notifyDelete( Triple [] triples );
+    public void notifyAdd( Triple t )
+        { record( "add", t ); }
+        
+    public void notifyAdd( Triple [] ts )
+        { record( "add[]", ts ); }
+        
+    public void notifyDelete( Triple t )
+        { record( "delete", t ); }
+        
+    public void notifyDelete( Triple [] triples )
+        { record( "delete[]", triples ); }
+        
+    protected void record( String tag, Object info )
+        { history.add( tag ); history.add( info ); }
+        
+    public void clear()
+        { history.clear(); }
+        
+    public boolean has( Object [] things )
+        { return history.equals( Arrays.asList( things ) ); } 
+        
+    void assertHas( Object [] things )
+        {
+        if (has( things ) == false)
+            Assert.fail( "expected " + Arrays.asList( things ) + " but got " + history );
+        }   
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002, 2003
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

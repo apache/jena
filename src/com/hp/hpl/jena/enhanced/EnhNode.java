@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhNode.java,v 1.5 2003-05-19 12:21:01 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.6 2003-07-09 15:26:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
 import com.hp.hpl.jena.graph.*;
-import org.apache.log4j.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
@@ -23,9 +22,6 @@ import com.hp.hpl.jena.rdf.model.*;
 public class EnhNode 
     extends Polymorphic
 {
-    // Static variables
-    /** For writing to the log file in the context of this class */
-    private static Logger logger = Logger.getLogger( EnhNode.class );
     
     /** The graph node that this enhanced node is wrapping */
     final protected Node node;
