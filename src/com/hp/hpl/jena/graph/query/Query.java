@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.3 2003-02-11 15:16:59 chris-dollin Exp $
+  $Id: Query.java,v 1.4 2003-03-14 13:37:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -91,10 +91,16 @@ public class Query
     private int [] findIndexes( Mapping map, Node [] nodes )
         {
         int [] result = new int [nodes.length];
-        for (int i = 0; i < nodes.length; i += 1) result[i] = map.indexOf( nodes[i] ); 
+        for (int i = 0; i < nodes.length; i += 1) result[i] = findIndex( map, nodes[i] ); 
         return result;
         }
          
+    private int findIndex( Mapping map, Node node )
+        {
+        if (map.maps( node ) == false) map.newIndex( node );
+        return map.indexOf( node );
+        }
+        
     private ExtendedIterator filter( final int [] indexes, final Pipe complete )
         {
         return new NiceIterator()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Mapping.java,v 1.1.1.1 2002-12-19 19:13:54 bwm Exp $
+  $Id: Mapping.java,v 1.2 2003-03-14 13:37:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -11,6 +11,8 @@ import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
 /**
+    this class is used to record the mapping from [variable] Node's to
+    the indexes they are bound to in a Query.
 */
 
 public class Mapping 
@@ -19,16 +21,29 @@ public class Mapping
 	
 	private int index = 0;
 	
+    /**
+        create a new, empty mapping.
+    */
 	public Mapping()
-		{
-		this.map = new HashMap();
-		}
+		{ this.map = new HashMap(); }
 		
+    /**
+        get the index of a node in the mapping; undefined if the
+        node is not mapped.
+        
+        @param the node _v_ to look up
+        @return the index of _v_ in the mapping
+    */
 	public int indexOf( Node v )
-		{
-		return ((Integer) map.get( v )).intValue();
-		}
+		{ return ((Integer) map.get( v )).intValue(); }
 		
+    /**
+        allocate an index to the node _v_. _v_ must not already
+        be mapped.
+        
+        @param the node _v_ to be given an index
+        @return the value of the allocated index
+    */
 	public int newIndex( Node v )
 		{
 		int result = index++;
@@ -36,17 +51,16 @@ public class Mapping
 		return result;
 		}
 		
-	private Mapping( HashMap map, int index )
-		{
-		this.map = (HashMap) map.clone();
-		this.index = index;
-		}
-		
+    /**
+        @param the node _v_ to look up
+        @return true iff this mapping maps _v_ to an index
+    */
 	public boolean maps( Node v )
-		{
-		return map.containsKey( v );
-		}
+		{ return map.containsKey( v ); }
         
+    /**
+        @return a string representing this mapping
+    */
     public String toString()
         { return map.toString(); }
 	}

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.2 2003-03-05 10:12:44 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.3 2003-03-14 13:37:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -64,7 +64,7 @@ public class SimpleQueryHandler implements QueryHandler
         HashSet objects = new HashSet();
         ClosableIterator it = graph.find( s, p, null );
         while (it.hasNext()) objects.add( ((Triple) it.next()).getObject() );
-		return new ClosableIteratorImpl( objects.iterator() );
+		return WrappedIterator.create( objects.iterator() );
 		}
 		
 	public ExtendedIterator subjectsFor( Node p, Node o )
@@ -72,7 +72,7 @@ public class SimpleQueryHandler implements QueryHandler
         HashSet objects = new HashSet();
         ClosableIterator it = graph.find( null, p, o );
         while (it.hasNext()) objects.add( ((Triple) it.next()).getSubject() );
-		return new ClosableIteratorImpl( objects.iterator() );
+		return WrappedIterator.create( objects.iterator() );
 		}
     }
 

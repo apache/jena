@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.1 2003-03-13 13:38:06 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.2 2003-03-14 13:38:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -403,6 +403,22 @@ public class QueryTest extends GraphTestBase
         List bindings = iteratorToList( q.executeBindings( g, new Node [] {X, Y} ) );
         assertEquals( "one result back by name", bindings.size(), 1 );
         assertEquals( "x = ding", ((Domain) bindings.get(0)).get(0), node("ding") );
+        }
+        
+    /**
+        this possible failure mode discovered by Andy when building a fast-path
+        RDQL engine over the graph.query SPI.
+    <br>
+        test that we get a sensible result when unbound variables are used in the
+        query result selector.
+    */
+    public void testMissingVariable()
+        {
+        Graph g = graphWith( "x y z" );
+        Query q = new Query();
+        List bindings = iteratorToList( q.executeBindings( g, new Node [] {X, Y} ) );
+        List L = (List) q.executeBindings( g, new Node [] {X, Y} ).next();
+        assertEquals( "undefined variables get null", null, L.get( 0 ) );
         }
     }
 
