@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.7 2003-06-22 16:10:31 der Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.8 2003-06-23 08:09:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,15 +25,21 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * data scanning hook. Implements datatype range validation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-22 16:10:31 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-23 08:09:50 $
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
     
-    /** The location of the OWL rule definitions on the class path */
-    public static final String RULE_FILE = "etc/rdfs-fb-tgc.rules";
+    /** The location of the default RDFS rule definitions on the class path */
+    public static final String RULE_FILE = "etc/rdfs-fb-tgc-noresource.rules";
     
     /** The parsed rules */
     protected static List ruleSet;
+    
+    /** The location of the full RDFS rule definitions on the class path */
+    public static final String FULL_RULE_FILE = "etc/rdfs-fb-tgc.rules";
+    
+    /** The parsed rules */
+    protected static List fullRuleSet;
     
     /** The (stateless) preprocessor for container membership properties */
     protected static RulePreprocessHook cmpProcessor = new RDFSCMPPreprocessHook();
@@ -70,12 +76,18 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      * @return false if the parameter was not recognized
      */
     protected boolean doSetParameter(String parameterUri, Object value) {
-        if (parameterUri.equals(ReasonerVocabulary.PROPenableCMPScan.getURI())) {
+        String fullRDFSURI = ReasonerVocabulary.PROPenableFullRDFS.getURI();
+        if (parameterUri.equals(ReasonerVocabulary.PROPenableCMPScan.getURI())
+            || parameterUri.equals(fullRDFSURI)) {
             boolean scanProperties = Util.convertBooleanPredicateArg(parameterUri, value);
             if (scanProperties) {
                 addPreprocessingHook(cmpProcessor);
             } else {
                 removePreprocessingHook(cmpProcessor);
+            }
+            if (parameterUri.equals(fullRDFSURI)) {
+                // Also switch rule sets
+                setRules(loadFullRules());
             }
             return true;
         } else {
@@ -124,6 +136,20 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
             }
         }
         return ruleSet;
+    }
+    
+    /**
+     * Return the full RDFS rule set, loading it in if necessary
+     */
+    public static List loadFullRules() {
+        if (fullRuleSet == null) {
+            try {
+                fullRuleSet = Rule.parseRules(Util.loadResourceFile(FULL_RULE_FILE));
+            } catch (IOException e) {
+                throw new ReasonerException("Can't load rules file: " + FULL_RULE_FILE, e);
+            }
+        }
+        return fullRuleSet;
     }
         
 }

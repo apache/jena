@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.3 2003-06-22 16:10:50 der Exp $
+ * $Id: TestRDFSReasoners.java,v 1.4 2003-06-23 08:09:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-23 08:09:50 $
  */
 public class TestRDFSReasoners extends TestCase {
     
@@ -58,7 +58,7 @@ public class TestRDFSReasoners extends TestCase {
             constructQuerytests(suite, "rdfs/manifest.rdf", RDFSReasonerFactory.theInstance(), null);
 
             // FB reasoner doesn't support validation so the full set of wg tests are
-            // comment out            
+            // commented out            
 //            constructRDFWGtests(suite, RDFSFBRuleReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest-nodirect-noresource.rdf", RDFSFBRuleReasonerFactory.theInstance(), null);
             
@@ -68,6 +68,16 @@ public class TestRDFSReasoners extends TestCase {
             constructQuerytests(suite, "rdfs/manifest-standard.rdf", RDFSRuleReasonerFactory.theInstance(), config);
             
             suite.addTest(new TestRDFSMisc(RDFSRuleReasonerFactory.theInstance(), null));
+
+            Resource configFull = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPenableFullRDFS, true);
+            constructQuerytests(suite, "rdfs/manifest.rdf", RDFSRuleReasonerFactory.theInstance(), configFull);
+            
+            // Single test case used in debugging, subsumed by above
+//            constructSingleQuerytests(suite, 
+//                                      "rdfs/manifest.rdf", 
+//                                      "http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/test13", 
+//                                      RDFSRuleReasonerFactory.theInstance(), 
+//                                      configFull);
             
         } catch (IOException e) {
             // failed to even built the test harness
