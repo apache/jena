@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.25 2003-09-25 13:26:55 chris-dollin Exp $
+  $Id: Query.java,v 1.26 2003-09-26 11:53:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -148,6 +148,14 @@ public class Query
         while (it.hasNext()) constraintGraph.add( (Triple) it.next() );
         return this;
         }
+        
+    private Expression constraint = Expression.TRUE;
+    
+    public Query addConstraint( Expression e )
+        { // TODO implement this
+        constraint = constraint.and( e );
+        return this;    
+        }
                 
     /**
         Add all the (S, P, O) triples of <code>p</code> to this Query as matches.
@@ -175,8 +183,8 @@ public class Query
         Mapping map = new Mapping( nodes );
         ArrayList stages = new ArrayList();        
         addStages( stages, args, map );
-        if (constraintGraph.size() > 0) 
-            stages.add( new ConstraintStage( map, constraintGraph ) );
+        if (constraintGraph.size() > 0 || constraint != Expression.TRUE) 
+            stages.add( new ConstraintStage( map, constraint, constraintGraph ) );
         outStages.addAll( stages );
         variableCount = map.size();
         return filter( connectStages( stages, variableCount ) );

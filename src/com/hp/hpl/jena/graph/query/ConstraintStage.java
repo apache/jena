@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.7 2003-09-25 13:26:55 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.8 2003-09-26 11:53:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -25,13 +25,17 @@ public class ConstraintStage extends Stage
     {
     /** the compiled predicate */
     protected Predicate predicate;
+    protected Expression constraint;
+    protected Mapping map;
         
     /**
         constructor: compile the graph _g_ into a Predicate using the
         supplied _map_ for bindings of variables.
     */
-    public ConstraintStage( Mapping map, Graph g )
-        { this.predicate = translate( map, g ); }
+    public ConstraintStage( Mapping map, Expression constraint, Graph g )
+        { this.predicate = translate( map, g ); 
+        this.constraint = constraint; 
+        this.map = map; }
         
     /**
         the translated graph is the AND-composition of the translated
@@ -125,6 +129,11 @@ public class ConstraintStage extends Stage
         addFactory( "q:matches", makeMATCHES );
         }
                 
+   private boolean evalConstraint( Domain d, Expression e )
+        {
+        return constraint.evalBool( map, d );
+        }
+    
     /**
         the delivery component: read the domain elements out of the
         input pipe, and only pass on those that satisfy the predicate.
@@ -139,7 +148,7 @@ public class ConstraintStage extends Stage
 		        while (mine.hasNext())
 		            {
 		            Domain d = mine.get();
-		            if (predicate.evaluateBool( d )) L.put( d );
+		            if (predicate.evaluateBool( d ) && evalConstraint( d, constraint )) L.put( d );
 		            }
 		        L.close();
         		}
