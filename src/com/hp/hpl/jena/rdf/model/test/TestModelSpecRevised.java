@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.12 2004-08-04 10:43:09 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.13 2004-08-04 11:31:06 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -12,18 +12,15 @@ import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.HashUtils;
 
 import junit.framework.TestSuite;
 
 /**
- TestModelSpecRevised
- @author kers
- */
+     TestModelSpecRevised
+     @author kers
+*/
 public class TestModelSpecRevised extends ModelTestBase
     {
-
-    
     public TestModelSpecRevised( String name )
         { super( name ); }
     
@@ -79,18 +76,18 @@ public class TestModelSpecRevised extends ModelTestBase
     
     public void testEmptyRulesetURLWorks()
         {
-        testRuleSetURL( GenericRuleReasonerFactory.URI, "file:testing/modelspecs/empty.rules" );
+        testRuleSetURL( GenericRuleReasonerFactory.URI, file( "empty.rules" ) );
         }
 
     public void testNonEmptyRulesetURLWorks()
         {
-        testRuleSetURL( GenericRuleReasonerFactory.URI, "file:testing/modelspecs/example.rules" );
+        testRuleSetURL( GenericRuleReasonerFactory.URI, file( "example.rules" ) );
         }
     
     public void testMultipleRulesetURLsWork()
         {
         String factoryURI = GenericRuleReasonerFactory.URI;
-        String rulesA = "file:testing/modelspecs/example.rules", rulesB = "file:testing/modelspecs/extra.rules";
+        String rulesA = file( "example.rules" ), rulesB = file( "extra.rules" );
         List rules = append( Rule.rulesFromURL( rulesA ), Rule.rulesFromURL( rulesB ) );
         Model rs = modelWithStatements( "_a jms:reasoner " + factoryURI + "; _a jms:ruleSetURL " + rulesA + "; _a jms:ruleSetURL " + rulesB );
         Resource A = resource( "_a" );
@@ -122,6 +119,9 @@ public class TestModelSpecRevised extends ModelTestBase
         assertEquals( wantClass, r.getClass() );
         }
 
+    protected static String file( String name )
+        { return "file:testing/modelspecs/" + name; }
+    
     protected void assertContains( String x, String y )
         {
         if (y == null) fail( "<null> does not contain anything, especially '" + x + "'" );

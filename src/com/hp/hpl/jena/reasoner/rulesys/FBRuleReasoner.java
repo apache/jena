@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.13 2004-08-03 11:20:59 chris-dollin Exp $
+ * $Id: FBRuleReasoner.java,v 1.14 2004-08-04 11:31:06 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,9 +22,9 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2004-08-03 11:20:59 $
+ * @version $Revision: 1.14 $ on $Date: 2004-08-04 11:31:06 $
  */
-public class FBRuleReasoner implements Reasoner {
+public class FBRuleReasoner implements RuleReasoner {
     
     /** The parent reasoner factory which is consulted to answer capability questions */
     protected ReasonerFactory factory;

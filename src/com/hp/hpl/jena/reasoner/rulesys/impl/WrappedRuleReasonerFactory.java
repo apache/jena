@@ -1,33 +1,40 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BaseRuleReasonerFactory.java,v 1.3 2004-08-04 11:31:07 chris-dollin Exp $
+  $Id: WrappedRuleReasonerFactory.java,v 1.1 2004-08-04 11:31:07 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.Reasoner;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 
 /**
-     BaseRuleReasonerFactory - a base for RuleReasonerFactories that handles
-     the list of rules.
-     
-     @author kers
-*/
-public class BaseRuleReasonerFactory 
+    WrappedRuleReasonerFactory - a wrapper round RuleReasonerFactories that
+    allowed rules to be accumulated that will be applied to any Reasoner it
+    generates.
+    
+    @author kers
+ */
+public final class WrappedRuleReasonerFactory extends BaseRuleReasonerFactory 
+    implements RuleReasonerFactory
     {
-    /**
-         The list of rules to be added to newly-created reasoners; defaults to the
-         empty list.
-    */
-    protected List rules = new ArrayList();
-
-    /**
-         Add <code>rules</code>, which must be a List of <code>Rule</code> objects.
-         to the rule list.
-    */
-    public void addRules(List rules)
-        { this.rules.addAll( rules ); }
+    private final RuleReasonerFactory factory;
+    
+    public WrappedRuleReasonerFactory( RuleReasonerFactory rrf )
+        { super();
+        this.factory = rrf; }
+    
+    public Reasoner create(Resource configuration)
+        { FBRuleReasoner result = (FBRuleReasoner) factory.create( configuration );
+        result.setRules( rules );
+        return result; }
+    
+    public Model getCapabilities()
+        { return factory.getCapabilities(); }
+    
+    public String getURI()
+        { return factory.getURI(); }
     }
 
 /*
