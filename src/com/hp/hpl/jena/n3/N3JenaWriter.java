@@ -8,17 +8,19 @@
 //   Printing only in use prefixes.
 //   Options
 //   Deciding on one line or several for:
-//     DAML lists
+//     RDF lists
 //     Object lists
 //     Property lists
+// Better deciding when to use current line
+//   need to look at next items before deciding on a newline of not.
 
 package com.hp.hpl.jena.n3;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.util.Log;
-import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 import java.util.* ;
 import java.io.* ;
@@ -27,7 +29,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.5 2003-02-20 16:48:29 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.6 2003-03-06 09:44:13 andy_seaborne Exp $
  */
 
 
@@ -36,8 +38,9 @@ public class N3JenaWriter implements RDFWriter
 {
 	// This N3 writer proceeds in 2 stages.  First, it analysises the model to be
 	// written to extract information that is going to be specially formatted 
-	// (DAML lists, small anon nodes) and to calculate the prefixes that will be used.
+	// (RDF lists, small anon nodes) and to calculate the prefixes that will be used.
 	
+    static final private boolean doObjectListsAsLists = false ; 
 	static public boolean DEBUG = false ;
 	
 	RDFErrorHandler errorHandler = null;
@@ -46,18 +49,17 @@ public class N3JenaWriter implements RDFWriter
 	
 	int bNodeCounter = 0 ;
 	
-	static final DAMLVocabulary damlVocabulary = DAML_OIL.getInstance() ;
-	//static final DAMLVocabulary damlVocabulary = DAML_OIL_2000_12.getInstance() ;
-	
+    //static DAMLVocabulary damlVocabulary = DAML_OIL.getInstance() ;
+    
 	static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
-	
+    
 	// Data structures used in controlling the formatting
 	
-	Set damlLists      	= null ; 		// Heads of daml lists
-	Set damlListsAll   	= null ;		// Any resources in a daml lists
-	Set damlListsDone  	= null ;		// DAML lists written
+	Set rdfLists      	= null ; 		// Heads of daml lists
+	Set rdfListsAll   	= null ;		// Any resources in a daml lists
+	Set rdfListsDone  	= null ;		// DAML lists written
 	Set roots          	= null ;		// Things to put at the top level
-	Set oneRefObjects 	= null ;		// Bnodes refered to one as an object - can inline
+	Set oneRefObjects 	= null ;		// Bnodes referred to once as an object - can inline
 	Set oneRefDone   	= null ;		// Things done - so we can check for missed items
 	Set prefixesUsed   	= null ;		// Prefixes seen
 	Map prefixMap 	   	= new HashMap() ;	// Prefixes to actually use
@@ -65,15 +67,15 @@ public class N3JenaWriter implements RDFWriter
 	
 	static Map wellKnownPropsMap = new HashMap() ;
 	static {
-		wellKnownPropsMap.put(NS_W3_log+"implies",				     	"=>" ) ;
-		wellKnownPropsMap.put(damlVocabulary.equivalentTo().getURI(),	"="  ) ;
-		wellKnownPropsMap.put(RDF.type.getURI(),				     	"a"  ) ;
+		wellKnownPropsMap.put(NS_W3_log+"implies",		"=>" ) ;
+		wellKnownPropsMap.put(OWL.sameAs.getURI(),	    "="  ) ;
+		wellKnownPropsMap.put(RDF.type.getURI(),		"a"  ) ;
 	}
 	
 	// Work variables controlling the output
 	IndentedWriter out = null ;
 	String baseName = null ;
-	String indent = pad(6) ;
+	String indent = pad(4) ;
 	int minGap = 1 ;
 	
 	boolean doingBaseHash = false ;
@@ -191,7 +193,7 @@ public class N3JenaWriter implements RDFWriter
 	private void prepare(Model model, String base) throws RDFException
 	{
 		preparePrefixes(model) ;
-		prepareDAMLLists(model) ;
+		prepareLists(model) ;
 		prepareOneRefBNodes(model) ;
 	}
 	
@@ -205,10 +207,10 @@ public class N3JenaWriter implements RDFWriter
 		if ( !prefixMap.containsValue(RDFS.getURI()) && !prefixMap.containsKey("rdfs") )
 			setNsPrefix("rdfs", RDFS.getURI()) ;
 			
-		if ( !prefixMap.containsValue(damlVocabulary.NAMESPACE_DAML().getURI())
-			  && !prefixMap.containsKey("daml") )
-			setNsPrefix("daml", damlVocabulary.NAMESPACE_DAML().getURI()) ;
-		
+//		if ( !prefixMap.containsValue(damlVocabulary.NAMESPACE_DAML().getURI())
+//			  && !prefixMap.containsKey("daml") )
+//			setNsPrefix("daml", damlVocabulary.NAMESPACE_DAML().getURI()) ;
+//		
 		if ( !prefixMap.containsValue(NS_W3_log) && !prefixMap.containsKey("log") )
 			setNsPrefix("log", NS_W3_log) ;
 		
@@ -221,38 +223,39 @@ public class N3JenaWriter implements RDFWriter
 
 	}
 	
-	// Find DAML lists - does not find empty lists (this is intentional)
+	// Find well-form RDF lists - does not find empty lists (this is intentional)
 	// Works by finding all tails, and work backwards to the head.
+    // RDF lists may, not may not, have a type element.
 
-	private void prepareDAMLLists(Model model) throws RDFException
+	private void prepareLists(Model model) throws RDFException
 	{
 		Set thisListAll = new HashSet();
 
-		StmtIterator listTailsIter = listStatements(model, null, damlVocabulary.rest(), damlVocabulary.nil());
+		StmtIterator listTailsIter = model.listStatements(null, RDF.rest, RDF.nil);
 		
 		// For every tail of a list
 		tailLoop:
 		for ( ; listTailsIter.hasNext() ; )
 		{
-			// The resource pointing to the link we have just looked at.
-			Resource validListHead = null ;
 			// The resource for the current element being considered.
 			Resource listElement  = listTailsIter.nextStatement().getSubject() ;
-			
+            // The resource pointing to the link we have just looked at.
+            Resource validListHead = null ;
+
 			// Chase to head of list
 			for ( ; ; )
 			{
-				boolean isOK = checkDAMLListElement(listElement) ;
+				boolean isOK = checkListElement(listElement) ;
 				if ( ! isOK )
 					break ;
 				
 				// At this point the element is exactly a DAML list element.
-				if ( DEBUG ) out.println("# DAML list all: "+formatResource(listElement)) ;
+				if ( DEBUG ) out.println("# RDF list all: "+formatResource(listElement)) ;
 				validListHead = listElement ;
 				thisListAll.add(listElement) ;
 
 				// Find the previous node.
-				StmtIterator sPrev = listStatements(model, null, damlVocabulary.rest(), listElement) ;
+				StmtIterator sPrev = model.listStatements(null, RDF.rest, listElement) ;
 				
 				if ( ! sPrev.hasNext() )
 					// No daml:rest link
@@ -262,46 +265,61 @@ public class N3JenaWriter implements RDFWriter
 				listElement = sPrev.nextStatement().getSubject() ;
 				if ( sPrev.hasNext() )
 				{
-					if ( DEBUG ) out.println("# DAML shared tail from "+formatResource(listElement)) ;
+					if ( DEBUG ) out.println("# RDF shared tail from "+formatResource(listElement)) ;
 					break ;
 				}
 			}
 			// At head of a pretty-able list - add its elements and its head.
 			if ( DEBUG ) out.println("# DAML list head: "+formatResource(validListHead)) ;
-			damlListsAll.addAll(thisListAll) ;
+			rdfListsAll.addAll(thisListAll) ;
 			if ( validListHead != null )
-				damlLists.add(validListHead) ;
+				rdfLists.add(validListHead) ;
 		}
 		listTailsIter.close() ;
 	}
 	
 	// Validate one list element.
-	private boolean checkDAMLListElement(Resource listElement) throws RDFException
+	private boolean checkListElement(Resource listElement) throws RDFException
 	{
-		if (!listElement.hasProperty(damlVocabulary.rest())
-			|| !listElement.hasProperty(damlVocabulary.first()))
+		if (!listElement.hasProperty(RDF.rest)
+			|| !listElement.hasProperty(RDF.first))
 		{
 			if (DEBUG)
 				out.println(
-					"# DAML list element does not have required properties: "
+					"# RDF list element does not have required properties: "
 						+ formatResource(listElement));
 			return false;
 		}
 
-		// Must be exactly two properties (the ones we just tested for).
-		int numProp = countProperties(listElement);
-		if (numProp != 2)
-		{
-			if (DEBUG)
-			out.println(
-					"# DAML list element does not right number of properties: "+formatResource(listElement));
-			return false ;
-		}
-		return true ;
+        // Must be exactly two properties (the ones we just tested for)
+        // or three including the RDF.type RDF.List statement.
+        int numProp = countProperties(listElement);
+        
+        if ( numProp == 2)
+            // Must have exactly the properties we just tested for.
+            return true ;
+        
+
+        if (numProp == 3)
+        {
+            if (listElement.hasProperty(RDF.type, RDF.List))
+                return true;
+            if (DEBUG)
+                out.println(
+                    "# RDF list element: 3 properties but no rdf:type rdf:List"
+                        + formatResource(listElement));
+            return false;
+        }
+
+        if (DEBUG)
+            out.println(
+                "# RDF list element does not right number of properties: "
+                    + formatResource(listElement));
+        return false;
 	}
 	
 	// Find bnodes that are objects of only one statement (and hence can be inlined)
-	// which are not DAML lists.
+	// which are not RDF lists.
 
 	private void prepareOneRefBNodes(Model model) throws RDFException
 	{
@@ -319,11 +337,11 @@ public class N3JenaWriter implements RDFWriter
 				// Not a bNode.
 				continue ;
 			
-			if ( damlListsAll.contains(obj) )
-				// DAML list (head or element)
+			if ( rdfListsAll.contains(obj) )
+				// RDF list (head or element)
 				continue ;
 				
-			StmtIterator pointsToIter = listStatements(model, null, null, obj) ;
+			StmtIterator pointsToIter = model.listStatements(null, null, obj) ;
 			if ( ! pointsToIter.hasNext() )
 				// Corrupt graph!
 				throw new RuntimeException(this.getClass().getName()+": found object with no arcs!") ;
@@ -341,8 +359,8 @@ public class N3JenaWriter implements RDFWriter
 		// Debug
 		if ( DEBUG )
 		{
-			out.println("# damlLists      = "+damlLists.size()) ;
-			out.println("# damlListsAll   = "+damlListsAll.size()) ;
+			out.println("# RDF Lists      = "+rdfLists.size()) ;
+			out.println("# RDF ListsAll   = "+rdfListsAll.size()) ;
 			out.println("# oneRefObjects  = "+oneRefObjects.size()) ;
 		}
 	}
@@ -379,9 +397,9 @@ public class N3JenaWriter implements RDFWriter
 		{
 			// Subject:
 			// First - it is something we will write out as a structure in an object field?
-			// That is, a DAML list or the object of exactly one statement.
+			// That is, a RDF list or the object of exactly one statement.
 			Resource subj = rIter.nextResource() ;
-			if ( damlListsAll.contains(subj)   ||
+			if ( rdfListsAll.contains(subj)   ||
 				 oneRefObjects.contains(subj)  )
 			{
 				if ( DEBUG )
@@ -396,7 +414,7 @@ public class N3JenaWriter implements RDFWriter
 				out.println() ;
 			
 			// New top level item.
-			writeTriples(subj, true) ;
+			writeSubject(subj, true) ;
 		}
 		rIter.close() ;
 		
@@ -410,27 +428,27 @@ public class N3JenaWriter implements RDFWriter
 			out.println() ;
 			if ( DEBUG )
 				out.println("# One ref") ;
-			writeTriples((Resource)leftOverIter.next() , false) ;
+			writeSubject((Resource)leftOverIter.next() , false) ;
 		}	
 			
 		
-		// Are there any unattached DAML lists?
+		// Are there any unattached RDF lists?
 		// We missed these earlier (assumed all DAML lists are values of some statement)
-		for ( Iterator leftOverIter = damlLists.iterator() ; leftOverIter.hasNext(); )
+		for ( Iterator leftOverIter = rdfLists.iterator() ; leftOverIter.hasNext(); )
 		{
 			Resource r = (Resource)leftOverIter.next() ;
-			if ( damlListsDone.contains(r) )
+			if ( rdfListsDone.contains(r) )
 				continue ;
 			out.println() ;
 			if ( DEBUG )
-				out.println("# DAML List") ;
+				out.println("# RDF List") ;
 			if ( countArcsTo(r) > 0 )
 			{
 				// Name it.
 				out.print(formatResource(r)) ;
 				out.print(" :- ") ;
 			}
-			writeDamlList(r) ;
+			writeList(r) ;
 			out.println( " .") ;
 		}
 		
@@ -441,7 +459,7 @@ public class N3JenaWriter implements RDFWriter
 	}
 	
 	
-	private void writeTriples(Resource resource, boolean allowDeep)
+	private void writeSubject(Resource resource, boolean allowDeep)
 		throws RDFException
 	{
 		String tmp = formatResource(resource);
@@ -466,7 +484,7 @@ public class N3JenaWriter implements RDFWriter
 	private void writePropertyList(Resource resource, boolean allowDeep)
 		throws RDFException
 	{
-		// Ones we have done.
+		// Properties to do.
 		Set properties = new HashSet() ;
 		StmtIterator sIter = resource.listProperties();
 		for ( ; sIter.hasNext() ; )
@@ -475,38 +493,17 @@ public class N3JenaWriter implements RDFWriter
 		}
 		sIter.close() ;
 				
+        // Should write certain well know properties in standard order
+        // e.g. rdf:type, rdfs:subClassOf, rdfs:subPropertyOf
+        
 	topLevelLoop: 
 		// For each property.
 		for (Iterator iter = properties.iterator() ; iter.hasNext();)
 		{
 			Property property = (Property)iter.next() ;
 
-			String propStr = null ;
-
-			if (wellKnownPropsMap.containsKey(property.getURI()))
-				propStr = (String) wellKnownPropsMap.get(property.getURI());
-			else
-				propStr = formatResource(property) ;
-				
-			out.print(propStr) ;
-			
-			// Need to do the same line or next trick as in writeTriples
-			//out.print("  ") ;
-			
-			// Currently at end of property
-			if (propStr.length() + minGap < indent.length())
-				out.print( pad(indent.length() - propStr.length()));
-			else
-			{
-				// Does not fit this line.
-				out.println();
-				out.print(indent);
-			}
-			out.incIndent(indent.length()) ;
-
 			// Object list
 			writeObjectList(resource, property, allowDeep) ;
-			out.decIndent(indent.length()) ;
 			
 			if (iter.hasNext())
 				out.println( " ;");
@@ -515,19 +512,85 @@ public class N3JenaWriter implements RDFWriter
 	
 
 	// Need to decide between one line or many.
-	private void writeObjectList(Resource resource, Property property, boolean allowDeep)
-		throws RDFException
-	{
-		StmtIterator sIter = resource.listProperties(property) ;
-		for ( ; sIter.hasNext() ; )
-		{
-			Statement stmt = sIter.nextStatement() ;
-			writeObject(stmt.getObject(), allowDeep) ;
-			if (sIter.hasNext())
-				out.print( " , ");
-		}
-	}
+    // Very hard to do a pretty thing here because the objects may be large or small or a mix.
+    
+    private void writeObjectList(Resource resource, Property property, boolean allowDeep)
+        throws RDFException
+    {
 
+        String propStr = null;
+
+        if (wellKnownPropsMap.containsKey(property.getURI()))
+            propStr = (String) wellKnownPropsMap.get(property.getURI());
+        else
+            propStr = formatResource(property);
+
+        if (doObjectListsAsLists)
+        {
+            // Witre object lists as "property obj, obj, obj ;"
+            // Often does a bad job when objs are large or structured 
+            
+            out.print(propStr);
+
+            // Currently at end of property
+            if (propStr.length() + minGap < indent.length())
+                out.print(pad(indent.length() - propStr.length()));
+            else
+            {
+                // Does not fit this line.
+                out.println();
+                out.print(indent);
+            }
+            out.incIndent(indent.length());
+
+            // Do all the statements with the same property.
+            StmtIterator sIter = resource.listProperties(property);
+            for (; sIter.hasNext();)
+            {
+                Statement stmt = sIter.nextStatement();
+                writeObject(stmt.getObject(), allowDeep);
+
+                // As an object list            
+                if (sIter.hasNext())
+                    out.print(" , ");
+            }
+            sIter.close();
+            out.decIndent(indent.length());
+            return;
+
+        }
+        
+        // Write with object lists as clsuters of statements with the same property
+        // Looks more like a machine did it but fewer bad cases. 
+        
+        StmtIterator sIter = resource.listProperties(property);
+        for (; sIter.hasNext();)
+        {
+            Statement stmt = sIter.nextStatement() ;
+            out.print(propStr);
+
+            // Currently at end of property
+            if (propStr.length() + minGap < indent.length())
+                out.print(pad(indent.length() - propStr.length()));
+            else
+            {
+                // Does not fit this line.
+                out.println();
+                out.print(indent);
+            }
+            out.incIndent(indent.length());
+            // Write one object
+            writeObject(stmt.getObject(), allowDeep) ;
+            out.decIndent(indent.length());
+
+            if ( sIter.hasNext() )
+            {
+                out.println(" ;") ;
+            }
+        }
+        sIter.close() ;
+          
+	}
 
 	private void writeObject(RDFNode node, boolean allowDeep) throws RDFException
 	{
@@ -557,10 +620,10 @@ public class N3JenaWriter implements RDFWriter
 			return;
 		}
 
-		if (damlLists.contains(rObj))
+		if (rdfLists.contains(rObj))
 			if (countArcsTo(rObj) <= 1)
 			{
-				writeDamlList(rObj);
+				writeList(rObj);
 				return;
 			}
 
@@ -571,13 +634,13 @@ public class N3JenaWriter implements RDFWriter
 
 	// Need to out.print in short (all on one line) and long forms (multiple lines)
 	// That needs starts point depth tracking.
-	private void writeDamlList(Resource resource)
+	private void writeList(Resource resource)
 		throws RDFException
 	{
 		out.print( "(");
 		out.incIndent(2) ;
 		boolean listFirst = true;
-		for (Iterator iter = damlListIterator(resource); iter.hasNext();)
+		for (Iterator iter = rdfListIterator(resource); iter.hasNext();)
 		{
 			if (!listFirst)
 				out.print( " ");
@@ -587,7 +650,7 @@ public class N3JenaWriter implements RDFWriter
 		}
 		out.print( ")");
 		out.decIndent(2) ;
-		damlListsDone.add(resource);
+		rdfListsDone.add(resource);
 
 	}
 	
@@ -595,6 +658,23 @@ public class N3JenaWriter implements RDFWriter
 	{
 		if ( r.isAnon() )
 		{
+            // Does anything point to it?
+            StmtIterator sIter = r.getModel().listStatements(null, null, r) ;
+            
+            if ( ! sIter.hasNext() )
+            {
+                sIter.close() ;
+                // This bNode is not referenced so don't need the bNode Id.
+                // Must be a subject - indent better be zero!
+                // This only happens for subjects because object bNodes
+                // referred to once (the other case for [] syntax)
+                // are handled elsewhere (by oneRef set)
+                
+                // Later: use [ prop value ] for this.
+                return "[]" ;
+            }
+            sIter.close() ;
+            
 			if ( ! bNodesMap.containsKey(r) )
 				bNodesMap.put(r, "_:b"+(++bNodeCounter)) ;
 			return (String)bNodesMap.get(r) ;
@@ -602,7 +682,7 @@ public class N3JenaWriter implements RDFWriter
 		}
 
 		// It has a URI.
-		if ( r.equals(damlVocabulary.nil()) )
+		if ( r.equals(RDF.nil) )
 			return "()" ;
 		
 		String uriStr = r.getURI() ;
@@ -702,9 +782,9 @@ public class N3JenaWriter implements RDFWriter
 	// Called before each writing run.
 	protected void startWriting()
 	{
-		damlLists 		= new HashSet() ;
-		damlListsAll 	= new HashSet() ;
-		damlListsDone 	= new HashSet() ;
+		rdfLists 		= new HashSet() ;
+		rdfListsAll 	= new HashSet() ;
+		rdfListsDone 	= new HashSet() ;
 		oneRefObjects 	= new HashSet() ;
 		oneRefDone 		= new HashSet() ;
 		prefixesUsed 	= new HashSet();
@@ -715,9 +795,9 @@ public class N3JenaWriter implements RDFWriter
 	// Especially release large intermediate memory objects 
 	protected void finishWriting()
 	{
-		damlLists 		= null ;
-		damlListsAll 	= null ;
-		damlListsDone 	= null ;
+		rdfLists 		= null ;
+		rdfListsAll 	= null ;
+		rdfListsDone 	= null ;
 		oneRefObjects 	= null ;
 		oneRefDone 		= null ;
 		prefixesUsed 	= null ;
@@ -761,7 +841,7 @@ public class N3JenaWriter implements RDFWriter
 	private int countArcsTo(Property prop, Resource resource) throws RDFException
 	{
 		int numArcs = 0 ;
-		StmtIterator sIter = listStatements(resource.getModel(), null, prop, resource) ;
+		StmtIterator sIter = resource.getModel().listStatements(null, prop, resource) ;
 		for ( ; sIter.hasNext() ; )
 		{
 			sIter.nextStatement() ;
@@ -772,27 +852,19 @@ public class N3JenaWriter implements RDFWriter
 	}
 	
 	
-	private StmtIterator listStatements(Model model, Resource subj, Property prop, RDFNode obj)
-		throws RDFException
-	{
-		return model.listStatements(new SimpleSelector(subj, prop, obj)) ;
-	}
-
-
-
-	private Iterator damlListIterator(Resource r)
+	private Iterator rdfListIterator(Resource r)
 		throws RDFException
 	{
 		List list = new ArrayList() ;
 		
-		for ( ; ! r.equals(damlVocabulary.nil()); )
+		for ( ; ! r.equals(RDF.nil); )
 		{
-			StmtIterator sIter = listStatements(r.getModel(), r, damlVocabulary.first(), null) ;
+			StmtIterator sIter = r.getModel().listStatements(r, RDF.first, (RDFNode)null) ;
 			list.add(sIter.nextStatement().getObject()) ;
 			if ( sIter.hasNext() )
 				// @@ need to cope with this (unusual) case
 				throw new RuntimeException("Multi valued list item") ;
-			sIter = listStatements(r.getModel(), r, damlVocabulary.rest(), null) ;
+			sIter = r.getModel().listStatements(r, RDF.rest, (RDFNode)null) ;
 			r = (Resource)sIter.nextStatement().getObject() ;
 			if ( sIter.hasNext() )
 				throw new RuntimeException("List has two tails") ;
@@ -840,7 +912,7 @@ public class N3JenaWriter implements RDFWriter
 		ResIterator rIter = model.listSubjects() ;
 		for ( ; rIter.hasNext() ; )	
 		{
-			writeTriples(rIter.nextResource(), false) ;
+			writeSubject(rIter.nextResource(), false) ;
 			if ( rIter.hasNext() )
 				out.println() ;
 		}
