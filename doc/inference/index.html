@@ -1083,7 +1083,7 @@ class B = cardinality(P,1)</pre>
 <p>Once the owl constructs are used then substantial reasoning can be required. 
   The most expensive aspect of the supported constructs is the equality reasoning 
   implied by use of cardinality restrictions and FunctionalProperties. The current 
-  rule set implements equality reasoning by identifying all sameIndividualAs deductions 
+  rule set implements equality reasoning by identifying all sameAs deductions 
   during the initial forward &quot;prepare&quot; phase. This may require the entire 
   instance dataset to be touched several times searching for occurrences of FunctionalProperties.</p>
 <p>Beyond this the rules implementing the OWL constructs can interact in complex 
@@ -1224,7 +1224,7 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple p
 		[all1b: (?Y rdf:type ?D) <- (?X ?P ?Y), (?X rdf:type ?C) ] ]
 
 [max1: (?A rdf:type max(?P, 1)), (?A ?P ?B), (?A ?P ?C) 
-      -> (?B owl:sameIndividualAs ?C) ]
+      -> (?B owl:sameAs ?C) ]
 </pre>
 <p>Rule <code>allID</code> illustrates the functor use for collecting the components 
   of an OWL restriction into a single datastructure which can then fire further 
@@ -1777,7 +1777,7 @@ while (i.hasNext()) {
 <ul>
   <li>Build a plug-in adapter for at least one external reasoner, preferably one 
     which complements the existing capabilities.</li>
-  <li>Develop a custom equality reasoner which can handle the &quot;owl:sameIndividualAs&quot; 
+  <li>Develop a custom equality reasoner which can handle the &quot;owl:sameAs&quot; 
     and related processing more efficiently that the plain rules engine.</li>
   <li>Tune the rule set and processing model for the OWL reasoner (support the 
     direct/indirect distinction, improve the datatype handling, improve the validation 
@@ -1793,7 +1793,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.17 2004-04-13 15:41:22 der Exp $</i>
+  Last modification: $Id: index.html,v 1.18 2004-04-13 15:43:57 der Exp $</i>
 </p>
 </body>
 </html>
