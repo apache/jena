@@ -1,14 +1,16 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDyadic.java,v 1.5 2003-08-27 13:01:01 andy_seaborne Exp $
+  $Id: TestDyadic.java,v 1.6 2004-07-21 15:25:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
 
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Dyadic;
 import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.mem.GraphMem;
 
 
 import java.util.*;
@@ -48,10 +50,21 @@ public class TestDyadic extends GraphTestBase
 		assertEquals( "x y z @butNot z", true, Dyadic.butNot( things( "x y z" ), things( "z" ) ).hasNext() );
 		assertEquals( "x y z @butNot a", true, Dyadic.butNot( things( "x y z" ), things( "z" ) ).hasNext() );
 		}
+    
+    public void testDyadicOperands()
+        {
+        Graph g = new GraphMem(), h = new GraphMem();
+        Dyadic d = new Dyadic( g, h )
+            {
+            public ExtendedIterator find( TripleMatch m ) { return null; }
+            };
+        assertSame( g, d.getL() );
+        assertSame( h, d.getR() );
+        }
 	}
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

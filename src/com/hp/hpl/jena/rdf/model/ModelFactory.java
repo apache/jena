@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.37 2004-07-07 17:25:24 der Exp $
+  $Id: ModelFactory.java,v 1.38 2004-07-21 15:25:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
@@ -398,7 +399,13 @@ public class ModelFactory extends ModelFactoryBase
         return new DAMLModelImpl( OntModelSpec.getDefaultSpec( ProfileRegistry.DAML_LANG ), null );
     }
 
-}
+    /**
+         Answer a new model that is the dynamic union of two other models.
+    */
+    public static Model createUnion(Model m1, Model m2)
+        { return createModelForGraph( new Union( m1.getGraph(), m2.getGraph() ) );   }
+
+    }
     
 
 /*
