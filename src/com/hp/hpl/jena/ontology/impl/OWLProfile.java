@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-30 19:15:50 $
+ * Last modified on   $Date: 2003-07-31 21:07:31 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.17 2003-07-30 19:15:50 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.18 2003-07-31 21:07:31 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -242,20 +242,6 @@ public class OWLProfile
                                                     }
                                                 }
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() );
-                                            }
-                                        }
-        },
-        { Axiom.class,                  new SupportsCheck() {
-                                            public boolean doCheck( Node n, EnhGraph g ) {
-                                                // node will support being an Axiom facet if it has rdf:type owl:AllDifferent or equivalent
-                                                for (Iterator i = ((OntModel) g).getProfile().getAxiomTypes();  i.hasNext(); ) {
-                                                    if (g.asGraph().contains( n, RDF.type.asNode(), ((Resource) i.next()).asNode() )) {
-                                                        // node has a recognised axiom type
-                                                        return true;
-                                                    }
-                                                }
-
-                                                return false;
                                             }
                                         }
         },

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.37 $
+ * Revision           $Revision: 1.38 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 20:53:01 $
+ * Last modified on   $Date: 2003-07-31 21:07:31 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.37 2003-07-31 20:53:01 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.38 2003-07-31 21:07:31 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1014,23 +1014,6 @@ public class OntModelImpl
     public AnnotationProperty createAnnotationProperty( String uri ) {
         checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
         return (AnnotationProperty) createOntResource( AnnotationProperty.class, getProfile().ANNOTATION_PROPERTY(), uri );
-    }
-    
-   
-    /**
-     * <p>
-     * Answer a resource that represents an axiom in this model. If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
-     * </p>
-     * 
-     * @param cls The class of axiom (e&#046;g&#046; <code>owl:AllDifferent</code>).
-     * @param uri The uri for the axiom, or null for an anonymous axiom.
-     * @return An Axiom resource.
-     */
-    public Axiom createAxiom( Resource cls, String uri ) {
-        // TODO
-        return null; 
     }
     
    
