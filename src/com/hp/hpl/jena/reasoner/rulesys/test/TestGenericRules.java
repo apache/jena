@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.11 2004-02-20 10:35:42 der Exp $
+ * $Id: TestGenericRules.java,v 1.12 2004-02-20 11:22:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2004-02-20 10:35:42 $
+ * @version $Revision: 1.12 $ on $Date: 2004-02-20 11:22:10 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -75,10 +75,10 @@ public class TestGenericRules extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-//        return new TestSuite( TestGenericRules.class ); 
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestGenericRules( "testAddRemove2" ));
-        return suite;
+        return new TestSuite( TestGenericRules.class ); 
+//        TestSuite suite = new TestSuite();
+//        suite.addTest(new TestGenericRules( "testAddRemove2" ));
+//        return suite;
     }  
     
      
