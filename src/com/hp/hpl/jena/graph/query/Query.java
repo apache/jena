@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.13 2003-07-18 15:38:17 chris-dollin Exp $
+  $Id: Query.java,v 1.14 2003-07-21 08:27:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -36,27 +36,27 @@ public class Query
     public static final Node ANY = Node.ANY;
     
     /**
-        A variable called "S".
+        A query variable called "S".
     */
     public static final Node S = Node.createVariable( "S" );
     /**
-        A variable called "P".
+        A query variable called "P".
     */
     public static final Node P = Node.createVariable( "P" );
     /**
-        A variable called "O".
+        A query variable called "O".
     */
     public static final Node O = Node.createVariable( "O" );
     /**
-        A variable called "X".
+        A query variable called "X".
     */
     public static final Node X = Node.createVariable( "X" );
     /**
-        A variable called "Y".
+        A query variable called "Y".
     */
     public static final Node Y = Node.createVariable( "Y" );
     /**
-        A variable called "Z".
+        A query variable called "Z".
     */
     public static final Node Z = Node.createVariable( "Z" );
     
@@ -65,33 +65,84 @@ public class Query
     */
     public static final Node NE = GraphTestBase.node( "&ne" );
         
+    /**
+        Initialiser for Query; makes an empty Query [no matches, no constraints]
+    */
 	public Query()
 		{
 		}
         
-    public static class UnboundVariableException extends JenaException
-        { public UnboundVariableException( Node n ) { super( n.toString() ); } }
-        		
+    /**
+        Initialiser for Query; makes a Query with its matches taken from 
+        <code>pattern</code>.
+        @param pattern a Graph whose triples are used as match elements
+    */
     public Query( Graph pattern )
         { 
         addMatches( pattern );
         }
-        
+
+    /**
+        Exception thrown when a query variable is discovered to be unbound.
+    */
+    public static class UnboundVariableException extends JenaException
+        { public UnboundVariableException( Node n ) { super( n.toString() ); } }
+                        
+    /**
+        Add an (S, P, O) match to the query's collection of match triples. Return
+        this query for cascading.
+        @param S the node to match the subject
+        @param P the node to match the predicate
+        @param O the node to match the object
+        @return this Query, for cascading
+    */
     public Query addMatch( Node S, Node P, Node O )
         { return addNamedMatch( anon, S, P, O ); }     
         
+    /**
+        Add a triple to thw query's collection of match triples. Return this query
+        for cascading.
+        @param t an (S, P, O) triple to add to the collection of matches
+        @return this Query, for cascading
+    */
     public Query addMatch( Triple t )
         { return addNamedMatch( anon, t ); }
         
+    /**
+        Add an (S, P, O) match triple to this query to match against the graph labelled
+        with <code>name</code>. Return this query for cascading.
+        @param name the name that will identify the graph in the matching
+        @param S the node to match the subject
+        @param P the node to match the predicate
+        @param O the node to match the object
+        @return this Query, for cascading.
+    */
     public Query addMatch( String name, Node S, Node P, Node O )
         { return addNamedMatch( name, S, P, O ); }   
    
+    /**
+        Add a constraint (S, P, O) to the query constraints. <code>S</code> and
+        <code>O</code> are value nodes, either concrete values or variable that
+        will be bound to values. <code>P</code> is a constraint predicate name.
+        A match fails if the predication (value of S, predicate P, value of O) is false.
+        Return this Query for cascading.
+        @param S the node representing the left operand of the predicate
+        @param P the node identifying the predicate
+        @param O the node representing the right operand of the predicate
+        @return this query, for cascading
+    */
     public Query addConstraint( Node S, Node P, Node O )
         {
         constraintGraph.add( new Triple( S, P, O ) ); 
         return this;
         }
         
+    /**
+        Add all the constraints encoded by the triples of <code>g</code> to this Query.
+        Return this query.
+        @param g a graph of (S, P, O) constraint triples to be added to this query
+        @return this Query, for cascading
+    */
     public Query addConstraint( Graph g )
         {
         ClosableIterator it = GraphUtil.findAll( g );
@@ -99,6 +150,9 @@ public class Query
         return this;
         }
                 
+    /**
+        Add all the (S, P, O) triples of <code>p</code> to this Query as matches.
+    */
     private void addMatches( Graph p )
         {
         ClosableIterator it = GraphUtil.findAll( p );
@@ -247,7 +301,7 @@ public class Query
 	}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
