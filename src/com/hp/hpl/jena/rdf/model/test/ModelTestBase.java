@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.25 2004-06-30 12:58:00 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.26 2004-08-05 15:04:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -57,7 +57,10 @@ public class ModelTestBase extends GraphTestBase
         Node n = Node.create( m, s );    
         return (RDFNode) ((ModelCom) m).getNodeAs( n, (n.isLiteral() ? Literal.class : Resource.class) );
         }
-        
+
+     protected static Resource resource()
+         { return ResourceFactory.createResource(); }
+         
     public static Resource resource( String s )
         { return resource( aModel, s ); }
     

@@ -1,20 +1,19 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.15 2004-08-04 17:04:55 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.16 2004-08-05 15:04:03 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.util.*;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.vocabulary.JMS;
+import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestSuite;
 
@@ -28,7 +27,12 @@ public class TestModelSpecRevised extends ModelTestBase
         { super( name ); }
     
     public static TestSuite suite()
-        { return new TestSuite( TestModelSpecRevised.class ); }
+         { return new TestSuite( TestModelSpecRevised.class ); }
+//        {
+//        TestSuite result = new TestSuite();
+//        result.addTest( new TestModelSpecRevised( "testCreateReasoningModel" ) );
+//        return result;
+//        }
     
     public static final Resource A = resource( "_a" );
 
@@ -41,7 +45,7 @@ public class TestModelSpecRevised extends ModelTestBase
         { 
         Model rs = modelWithStatements( "_a rdf:type jms:ReasonerSpec" );
         Resource A = resource( "_a" );
-        try { ModelSpecImpl.getReasonerFactory( A, rs ); fail( "should catch missing reasoner" ); }
+        try { InfModelSpec.getReasonerFactory( A, rs ); fail( "should catch missing reasoner" ); }
         catch (NoReasonerSuppliedException e) { pass(); }
         }
 
@@ -50,7 +54,7 @@ public class TestModelSpecRevised extends ModelTestBase
         Model rs = modelWithStatements( "_a rdf:type jms:ReasonerSpec; _a jms:reasoner nosuch:reasoner" );
         Resource A = resource( "_a" );
         try 
-            { ModelSpecImpl.getReasonerFactory( A, rs ); 
+            { InfModelSpec.getReasonerFactory( A, rs ); 
             fail( "should catch unknown reasoner" ); }
         catch (NoSuchReasonerException e) 
             { assertEquals( "nosuch:reasoner", e.getURI() ); 
@@ -71,7 +75,7 @@ public class TestModelSpecRevised extends ModelTestBase
         {
         String uri = GenericRuleReasonerFactory.URI;
         Model rs = modelWithStatements( "_a jms:reasoner " + uri + "; _a jms:ruleSetURL nowhere:man" );
-        try { ModelSpecImpl.getReasonerFactory( A, rs ); fail( "should report ruleset failure" ); }
+        try { InfModelSpec.getReasonerFactory( A, rs ); fail( "should report ruleset failure" ); }
         catch (RulesetNotFoundException e) { assertEquals( "nowhere:man", e.getURI() ); }
         }
     
@@ -91,7 +95,7 @@ public class TestModelSpecRevised extends ModelTestBase
         String rulesA = file( "example.rules" ), rulesB = file( "extra.rules" );
         List rules = append( Rule.rulesFromURL( rulesA ), Rule.rulesFromURL( rulesB ) );
         Model rs = modelWithStatements( "_a jms:reasoner " + factoryURI + "; _a jms:ruleSetURL " + rulesA + "; _a jms:ruleSetURL " + rulesB );
-        ReasonerFactory rf = ModelSpecImpl.getReasonerFactory( A, rs );
+        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }
@@ -106,7 +110,7 @@ public class TestModelSpecRevised extends ModelTestBase
             .add( A, JMS.ruleSet, resource( "onward:rules" ) )
             .add( resource( "onward:rules" ), JMS.hasRule, ruleStringA )
             .add( resource( "onward:rules" ), JMS.hasRule, ruleStringB );
-        ReasonerFactory rf = ModelSpecImpl.getReasonerFactory( A, rs );
+        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }    
@@ -121,9 +125,47 @@ public class TestModelSpecRevised extends ModelTestBase
             .add( A, JMS.ruleSet, resource( "onward:rules" ) )
             .add( resource( "onward:rules" ), JMS.ruleSetURL, resource( ruleFileA ) )
             .add( resource( "onward:rules" ), JMS.ruleSetURL, resource( ruleFileB ) );
-        ReasonerFactory rf = ModelSpecImpl.getReasonerFactory( A, rs );
+        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
+        }
+    
+    public void testCreateReasoningModel()
+        {
+        String ruleString = "[rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]";
+        List wanted = Rule.parseRules( ruleString );
+        ModelSpec spec = createInfModelSpec( ruleString );
+        Model m = spec.createModel();
+        Graph g = m.getGraph();
+        assertTrue( g instanceof InfGraph );
+        Reasoner r = ((InfGraph) g).getReasoner();
+        assertTrue( r instanceof RuleReasoner );
+        RuleReasoner rr = (RuleReasoner) r;
+        List rules = rr.getRules();
+        assertSameRules( wanted, rules );
+        }
+    
+    private ModelSpec createInfModelSpec( String ruleString )
+        {
+        Model desc = createInfModelDesc( A, GenericRuleReasonerFactory.URI, ruleString );
+        return ModelSpecImpl.create( desc );
+        }
+    
+    public static Model createInfModelDesc( Resource root, String URI, String ruleString )
+        {
+        Resource maker = resource();
+        Resource reasoner = resource();
+        Resource rules = resource();
+        Resource res = resource( URI );
+        return ModelFactory.createDefaultModel()
+            .add( root, JMS.reasonsWith, reasoner )
+            .add( reasoner, JMS.reasoner, res )
+            .add( root, JMS.maker, maker )
+            .add( maker, RDF.type, JMS.MemMakerSpec )
+            .add( maker, JMS.reificationMode, JMS.rsMinimal )
+            .add( reasoner, JMS.ruleSet, rules )
+            .add( rules, JMS.hasRule, ruleString )
+            ;
         }
     
     /**
@@ -134,14 +176,14 @@ public class TestModelSpecRevised extends ModelTestBase
         {
         List rules = Rule.rulesFromURL( rulesURL );
         Model rs = modelWithStatements( "_a jms:reasoner " + factoryURI + "; _a jms:ruleSetURL " + rulesURL );
-        ReasonerFactory rf = ModelSpecImpl.getReasonerFactory( A, rs );
+        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
         GenericRuleReasoner gr = (GenericRuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }
     
     protected void testGetReasoner( String uri, Class wantClass )
         {
-        ReasonerFactory rf = ModelSpecImpl.getReasonerFactory( A, rSpec( uri ) );
+        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rSpec( uri ) );
         assertEquals( wantClass, rf.create( null ).getClass() );
         }
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-07-28 14:40:33 $
+ * Last modified on   $Date: 2004-08-05 15:02:39 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.30 2004-07-28 14:40:33 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.31 2004-08-05 15:02:39 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -519,7 +519,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     public static ReasonerFactory getReasonerFactory( Model description, Resource root ) {
         Statement factStatement = description.getProperty( root, JMS.reasonsWith );
         if (factStatement == null) return null;
-        return ModelSpecImpl.getReasonerFactory( factStatement.getResource(), description );
+        return InfModelSpec.getReasonerFactory( factStatement.getResource(), description );
     }
 
     /**

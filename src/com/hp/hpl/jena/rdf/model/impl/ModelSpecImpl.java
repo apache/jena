@@ -1,16 +1,12 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.37 2004-08-04 17:04:02 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.38 2004-08-05 15:04:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedRuleReasonerFactory;
-import com.hp.hpl.jena.reasoner.rulesys.test.TestSetRules;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
@@ -296,86 +292,6 @@ public abstract class ModelSpecImpl implements ModelSpec
         while (it.hasNext()) FileUtils.loadModel( m, it.nextStatement().getResource().getURI() );
         return m;
         }
-
-    /**
-         Answer a ReasonerFactory described by the properties of the resource
-         <code>R</code> in the model <code>rs</code>. Will throw 
-         NoReasonerSuppliedException if no jms:reasoner is supplied, or
-         NoSuchReasonerException if the reasoner value isn't known to
-         ReasonerRegistry. If any <code>ruleSetURL</code>s are supplied, the
-         reasoner factory must be a RuleReasonerFactory, and is wrapped so that
-         the supplied rules are specific to this Factory.
-    */
-    public static ReasonerFactory getReasonerFactory( Resource R, Model rs )
-        {
-        StmtIterator r = rs.listStatements( R, JMS.reasoner, (RDFNode) null );
-        if (r.hasNext() == false) throw new NoReasonerSuppliedException();
-        Resource rr = r.nextStatement().getResource();
-        String rrs = rr.getURI();
-        ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( rrs );
-        if (rf == null) throw new NoSuchReasonerException( rrs );
-        return loadFactoryRulesets( rf, rs, R );
-        }
-    
-    /**
-     	If there are no jms:ruleSet or jms:ruleSetURL properties of <code>R</code>, answer the
-     	supplied factory <code>rf</code>. Otherwise, <code>rf</code> must be a RuleReasonerFactory,
-     	and it is wrapped up in a WrappedRuleReasonerFactory which is loaded with all the specified
-     	rules.
-	*/
-	private static ReasonerFactory loadFactoryRulesets( ReasonerFactory rf, Model rs, Resource R )
-		{
-		StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
-		StmtIterator others = rs.listStatements( R, JMS.ruleSet, (RDFNode) null );
-		if (rulesets.hasNext() || others.hasNext())
-		    {
-		    WrappedRuleReasonerFactory f = new WrappedRuleReasonerFactory( (RuleReasonerFactory) rf );
-		    while (rulesets.hasNext()) load( f, rulesets.nextStatement().getResource() );
-		    while (others.hasNext()) loadNamedRulesets( f, others.nextStatement().getResource() );
-		    return f;
-		    }
-		else
-			return rf;
-		}
-
-	/**
-	 	load into the factory <code>f</code> any rules described by the jms:hasRule and
-	 	jms:ruleSetURL properties of <code>ruleSet</code>.
-	*/
-	protected static void loadNamedRulesets( RuleReasonerFactory f, Resource ruleSet )
-        {
-        loadRulesetStrings( f, ruleSet );
-        loadRulesetURLs( f, ruleSet );
-        }
-    
-    /**
-     	load into the factory <code>f</code> the rules given by the literal strings
-     	which are the jms:hasRule properties of <code>ruleSet</code>.
-	*/
-	protected static void loadRulesetStrings( RuleReasonerFactory f, Resource ruleSet )
-		{
-		StmtIterator it = ruleSet.listProperties( JMS.hasRule );
-		while (it.hasNext())
-		    f.addRules( Rule.parseRules( it.nextStatement().getString() ) );
-		}
-
-	/**
-		load into the factory <code>f</code> all the rules which are at the URLs
-		specified by the resources-values of the jms:ruleSetURL properties
-		of <code>ruleSet</code>.
-	*/
-	protected static void loadRulesetURLs( RuleReasonerFactory f, Resource ruleSet )
-		{
-		StmtIterator it = ruleSet.listProperties( JMS.ruleSetURL );
-		while (it.hasNext()) load( f, it.nextStatement().getResource() );
-		}
-
-	/**
-	 	load into the factory <code>f</code> the rules at the URL which is the
-	 	URI of the resource <code>u</code>.
-    */
-    protected static void load( RuleReasonerFactory rf, Resource u )
-        { rf.addRules( Rule.rulesFromURL( u.getURI() ) ); }
                 
     }
 

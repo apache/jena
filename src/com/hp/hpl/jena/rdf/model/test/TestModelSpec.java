@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.31 2004-06-21 15:00:18 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.32 2004-08-05 15:04:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -41,9 +41,6 @@ public class TestModelSpec extends ModelTestBase
 //        TestSuite s = new TestSuite();
 //        s.addTest( new TestModelSpec( "testDefaultMaker" ) );
 //        return s; }
-        
-    protected static Resource resource()
-        { return ResourceFactory.createResource(); }
         
     public void testNotFindMaker()
         {
