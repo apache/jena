@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDBSpec.java,v 1.2 2003-08-27 12:56:20 andy_seaborne Exp $
+  $Id: TestDBSpec.java,v 1.3 2004-06-23 15:22:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.db.test;
 import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -57,6 +58,26 @@ public class TestDBSpec extends ModelTestBase
         maker.openModel( "something" ).close();
         maker.removeModel( "something" );
         maker.close();
+        }
+    
+    public void testCreateDBModelSpec()
+        {
+        Resource me = ResourceFactory.createResource();
+        Resource dbMaker = ResourceFactory.createResource();
+        String dbType = TestPackage.M_DB;
+        String className = TestPackage.M_DBDRIVER_CLASS;
+        Model spec = ModelFactory.createDefaultModel()
+        	.add( me, JMS.maker, dbMaker )
+            .add( dbMaker, RDF.type, JMS.RDBMakerSpec )
+            .add( dbMaker, JMS.dbUser, TestPackage.M_DB_USER )
+            .add( dbMaker, JMS.dbPassword, TestPackage.M_DB_PASSWD )
+            .add( dbMaker, JMS.dbURL, TestPackage.M_DB_URL )
+            .add( dbMaker, JMS.dbType, dbType )
+            .add( dbMaker, JMS.dbClass, className )
+            ;
+        ModelSpec s = ModelFactory.createSpec( spec );
+        Model d = s.createModel();
+        assertTrue( d instanceof ModelRDB );
         }
 	}
     

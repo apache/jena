@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.14 2004-06-19 18:47:40 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.15 2004-06-23 15:23:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -92,28 +92,52 @@ public class GraphTestBase extends JenaTestBase
         
     public static void assertEqualsTemplate( String title, Graph g, String template )
         {
-        assertTrue( title, g.isIsomorphicWith( graphWith( template ) ) );
+        // assertTrue( title, g.isIsomorphicWith( graphWith( template ) ) );
+        assertIsomorphic( title, graphWith( template ), g );
         }
                 
-    public static void assertIsomorphic( Graph expected, Graph got )
-        {
-        if (!expected.isIsomorphicWith( got ))
-            fail( "wanted " + nice(expected) + "\nbut got " + nice(got) );
-        }
-    
-    protected static String nice( Graph g )
-        {
-        StringBuffer b = new StringBuffer( g.size() * 100 );
-        ExtendedIterator it = GraphUtil.findAll( g );
-        while (it.hasNext()) b.append( "\n    " + ((Triple) it.next()).toString( PrefixMapping.Extended ) );
-        return b.toString();
-        }
-        
     public static void assertIsomorphic( String title, Graph expected, Graph got )
         {
         if (!expected.isIsomorphicWith( got ))
-            fail( title + ": wanted " + expected + " but got " + got );
+            {
+            Map map = new HashMap();
+            fail( "wanted " + nice( expected, map ) + "\nbut got " + nice( got, map ) );
+            }
         }
+    
+    protected static String nice( Graph g, Map bnodes )
+        {
+        StringBuffer b = new StringBuffer( g.size() * 100 );
+        ExtendedIterator it = GraphUtil.findAll( g );
+        while (it.hasNext()) niceTriple( b, bnodes, (Triple) it.next() );
+        return b.toString();
+        }
+    
+    protected static void niceTriple( StringBuffer b, Map bnodes, Triple t )
+        {
+        b.append( "\n    " );
+        appendNode( b, bnodes, t.getSubject() );
+        appendNode( b, bnodes, t.getPredicate() );
+        appendNode( b, bnodes, t.getObject() );
+        }
+
+    static int bnc = 1000;
+    
+    protected static void appendNode( StringBuffer b, Map bnodes, Node n )
+        {
+        b.append( ' ' );
+        if (n.isBlank())
+            {
+            Object already = bnodes.get( n );
+            if (already == null) bnodes.put( n, already = "_b" + bnc++ );
+            b.append( already );
+            }
+        else
+            b.append( n.toString( PrefixMapping.Extended ) );
+        }
+            
+    public static void assertIsomorphic( Graph expected, Graph got )
+        { assertIsomorphic( "graphs must be isomorphic", expected, got ); }
 
     public static void assertContains( String name, String s, Graph g )
         {
