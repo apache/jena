@@ -9,7 +9,7 @@
 
 <body id="content">
 
-<h1 id="sectionHeading">Jena 2 Inference support</h1>
+<h1 class="sectionHeading">Jena 2 Inference support</h1>
 
 <p>This section of the documentation describes the current support for inference 
   available within Jena2. It includes an outline of the general inference API, 
@@ -35,7 +35,7 @@
   <li><a href="#extensions">Extending the inference support</a></li>
   <li><a href="#futures">Futures</a></li>
 </ol>
-<h1 id="sectionHeading"><a name="overview"></a>Overview of inference support</h1>
+<h1 class="sectionHeading"><a name="overview"></a>Overview of inference support</h1>
 <p>The Jena2 inference subsystem is designed to allow a range of inference engines 
   or reasoners to be plugged into Jena. Such engines are used to derive additional 
   RDF assertions which are entailed from some base RDF together with any optional 
@@ -100,7 +100,7 @@
 </dl>
 
 <p>[<a href="#index">index</a>]</p>
-<h1 id="sectionHeading"><a name="api"></a>The Inference API</h1>
+<h1 class="sectionHeading"><a name="api"></a>The Inference API</h1>
 <ol>
   <li><a href="#reasonerAPI">Generic reasoner API</a></li>
   <li><a href="#generalExamples">Small examples</a></li>
@@ -450,7 +450,7 @@ Rule rule1 concluded (eg:A eg:p eg:D) <-
   using a <code>setTraceOn()</code> call. If you need to make use of this see 
   the full javadoc.</p>
 <p>[<a href="#index">index</a>]</p>
-<h1 id="sectionHeading"><a name="rdfs"></a>The RDFS reasoner</h1>
+<h1 class="sectionHeading"><a name="rdfs"></a>The RDFS reasoner</h1>
 <ol>
   <li><a href="#RDFSintro">RDFS reasoner - introduction and coverage</a></li>
   <li><a href="#RDFSconfiguration">RDFS Configuration</a></li>
@@ -631,7 +631,7 @@ _:anon1 rdf:type datatype .</pre>
   database backends will be considered.</p>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
-<h1 id="sectionHeading"><a name="owl"></a>The OWL reasoner</h1>
+<h1 class="sectionHeading"><a name="owl"></a>The OWL reasoner</h1>
 <ol>
   <li><a href="#OWLintro">OWL reasoner introduction</a></li>
   <li><a href="#OWLcoverage">OWL coverage</a></li>
@@ -908,7 +908,7 @@ class B = cardinality(P,1)</pre>
 <h3></h3>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
-<h1 id="sectionHeading"><a name="daml"></a>DAML support</h1>
+<h1 class="sectionHeading"><a name="daml"></a>DAML support</h1>
 <p>In Jena1 the DAML API included some hardwired support for useful DAML inferences 
   such as subClassOf and equivalence. </p>
 <p>A similar level of functionality is provided in Jena2, through the DAML profile 
@@ -921,7 +921,7 @@ class B = cardinality(P,1)</pre>
   DAML inference support.</p>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
-<h1 id="sectionHeading"><a name="transitive"></a>The transitive reasoner</h1>
+<h1 class="sectionHeading"><a name="transitive"></a>The transitive reasoner</h1>
 <p>The TransitiveReasoner provides support for storing and traversing class and 
   property lattices. This implements just the <i>transitive</i> and <i>symmetric</i> 
   properties of <code>rdfs:subPropertyOf</code> and <code>rdfs:subClassOf</code>. 
@@ -938,7 +938,7 @@ class B = cardinality(P,1)</pre>
 <p>It has no configuration options.</p>
 <p>[<a href="#index">index</a>]</p>
 
-<h1 id="sectionHeading"><a name="rules"></a>The general purpose rule engine</h1>
+<h1 class="sectionHeading"><a name="rules"></a>The general purpose rule engine</h1>
 <ol>
   <li><a href="#RULEoverview">Overview of the rule engine(s)</a></li>
   <li><a href="#RULEsyntax">Rule syntax and structure</a></li>
@@ -1206,11 +1206,11 @@ triple(s1, p1, o1) :- triple(sb1, pb1, ob1), ...
 <p>builtins</p>
 <p>preprocessing hooks</p>
 <p>[<a href="#index">index</a>]</p>
-<h1 id="sectionHeading"><a name="extensions"></a>Extending the inference support</h1>
+<h1 class="sectionHeading"><a name="extensions"></a>Extending the inference support</h1>
 <p>&nbsp;</p>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
-<h1 id="sectionHeading"><a name="futures"></a>Futures</h1>
+<h1 class="sectionHeading"><a name="futures"></a>Futures</h1>
 <p>mention database integration</p>
 <p>[<a href="#index">index</a>]</p>
 </body>
