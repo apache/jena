@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: ObjectPropertyImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:08 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-15 21:43:37 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ObjectPropertyImpl.java,v 1.7 2004-12-06 13:50:08 andy_seaborne Exp $
+ * @version CVS $Id: ObjectPropertyImpl.java,v 1.8 2004-12-15 21:43:37 ian_dickinson Exp $
  */
 public class ObjectPropertyImpl
     extends OntPropertyImpl
@@ -122,7 +122,8 @@ public class ObjectPropertyImpl
      * @return The property that is the inverse of this property, or null. 
      */
     public OntProperty getInverse() {
-        return super.getInverse().asObjectProperty();
+        OntProperty inv = super.getInverse();
+        return (inv != null) ? inv.asObjectProperty() : null;
     }
     
 
