@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.CRC32;
+import java.lang.Thread;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -51,7 +52,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.44 $ on $Date: 2004-09-17 21:44:07 $
+* @version $Revision: 1.45 $ on $Date: 2004-11-04 22:04:50 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -172,18 +173,19 @@ public abstract class DriverRDB implements IRDBDriver {
 	* Holds maximum length of table and index names in database.
 	*/
    protected int TABLE_NAME_LENGTH_MAX;
+      
+   /** Suffixes for asserted and reified table names. */
+   protected String STMT_TABLE_NAME_SUFFIX = "_stmt";
+   protected String REIF_TABLE_NAME_SUFFIX = "_reif";
    
-   /**
-	* Holds the length of the longest jena table or index name.
-	* This is really a hack and should be better architected.
-	* The currently known longest possible name is:
-	* <prefix>GnTm_StmtXSP   where prefix is the table
-	* name prefix (which isn't counted here), n is the
-	* graph identifier, m is the table number within that
-	* graph and XSP refers to the subject-predicate index.
-	* If we assume n and m might be two digits, we get 14.
-	*/
-   protected int JENA_LONGEST_TABLE_NAME_LENGTH = 14;
+   /** Maximum number of index columns. can be changed. */
+   protected int MAXIMUM_INDEX_COLUMNS = 3;
+  
+   /** Number of required system tables. */
+   protected int SYSTEM_TABLE_CNT = 0;
+   
+   /** Names of jena system tables. */
+   public String [] SYSTEM_TABLE_NAME;
   
    /** Set to true to enable cache of pre-prepared statements */
    protected boolean CACHE_PREPARED_STATEMENTS = true;
@@ -205,6 +207,9 @@ public abstract class DriverRDB implements IRDBDriver {
 
       /** Name of the graph table **/
    protected String GRAPH_TABLE;
+    
+   /** Name of the mutex table **/
+   protected String MUTEX_TABLE;
     
 	/** If not null, newly-created graphs share tables with the identified graph **/
    protected String STORE_WITH_MODEL = null;
@@ -252,7 +257,7 @@ public abstract class DriverRDB implements IRDBDriver {
     private Boolean m_transactionsSupported;
     
 	/** flag to indicate that there is a transaction active on the associated connection */
-	protected boolean inTransaction = false;
+	private boolean inTransaction = false;
 
 
 
@@ -281,61 +286,95 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	/**
 	 * Return the specialized graph used to store system properties.
-	 * (Constuct a new one if necessary).
+	 * (Constuct a new one if necessary). if the database is not
+	 * properly formatted, then if doInit is true, the database will
+	 * be formatted, else null is returned and the (unformatted
+	 * database is unchanged).
 	 */
-	public SpecializedGraph getSystemSpecializedGraph() {
+	public SpecializedGraph getSystemSpecializedGraph(boolean doInit) {
+
+		SpecializedGraph res = null;
 		
 		if (m_sysProperties != null) {
 			return m_sysProperties;
 		}
-		setTableNames(TABLE_NAME_PREFIX);
-			
-                try {
-                    if( !isDBFormatOK() ) {
-                      // Format the DB
-                      cleanDB();
-                      prefixCache = new LRUCache(PREFIX_CACHE_SIZE);
-                      return formatAndConstructSystemSpecializedGraph();
-                    }
-                } catch (Exception e) {
-                    // We see an error during format testing, might be a dead
-                    // connection rather than an unformated database so abort
-                    throw new JenaException("The database appears to be unformatted or corrupted.\n" +
-                        "If possible, call IDBConnection.cleanDB(). \n" +
-                        "Warning: cleanDB will remove all Jena models from the databases.");
-                }
-                
+
+		if (!isDBFormatOK()) {
+			// another thread could be formatting database
+			// so get the mutex and try again
+			lockDB();
+			if (!isDBFormatOK()) {
+				if (doInit) {
+					try {
+						// Format the DB
+						// throw new JenaException("The database is not
+						// formatted.\n");
+						doCleanDB(false);
+						prefixCache = new LRUCache(PREFIX_CACHE_SIZE); 
+						res = formatAndConstructSystemSpecializedGraph();
+					} catch (Exception e) {
+						unlockDB();
+						// We see an error during format testing, might be
+						// a dead connection rather than an unformated
+						// database so abort
+						throw new JenaException(
+						"The database appears to be unformatted or corrupted and\n"
+						+ "an attempt to automatically format the database has failed\n"
+						+ " (\"" + e + "\").");
+					}
+				}
+				unlockDB();
+				return res;
+			}
+			// after second try, DB is found to be correctly formatted.
+			unlockDB();
+		}
+
 		prefixCache = new LRUCache(PREFIX_CACHE_SIZE);
-        getDbInitTablesParams();  //this call is a hack. it's needed because
-        // it has the side effect of initializing some vars (e.g., EOS).
-		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_STMT_TABLE);
-		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet, DEFAULT_ID);
+		getDbInitTablesParams(); //this call is a hack. it's needed because
+		// it has the side effect of initializing some vars (e.g., EOS).
+		IPSet pSet = createIPSetInstanceFromName(m_psetClassName,
+				SYSTEM_STMT_TABLE);
+		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet,
+				DEFAULT_ID);
 		m_dbProps = new DBPropDatabase(m_sysProperties);
-		
+
 		// now reset the configuration parameters
 		checkEngine(m_dbProps);
 		checkDriverVersion(m_dbProps);
 		checkLayoutVersion(m_dbProps);
 		String val = m_dbProps.getLongObjectLength();
-		if ( val == null ) throwBadFormat("long object length");
-		else LONG_OBJECT_LENGTH = Integer.parseInt(val);
+		if (val == null)
+			throwBadFormat("long object length");
+		else
+			LONG_OBJECT_LENGTH = Integer.parseInt(val);
 		val = m_dbProps.getIndexKeyLength();
-		if ( val == null ) throwBadFormat("index key length");
-		else INDEX_KEY_LENGTH = Integer.parseInt(val);
-		val = m_dbProps.getIsTransactionDb(); 
-		if ( val == null ) throwBadFormat("database supports transactions");
-		else IS_XACT_DB = Boolean.valueOf(val).booleanValue();
+		if (val == null)
+			throwBadFormat("index key length");
+		else
+			INDEX_KEY_LENGTH = Integer.parseInt(val);
+		val = m_dbProps.getIsTransactionDb();
+		if (val == null)
+			throwBadFormat("database supports transactions");
+		else
+			IS_XACT_DB = Boolean.valueOf(val).booleanValue();
 		val = m_dbProps.getDoCompressURI();
-		if ( val == null ) throwBadFormat("compress URIs");
-		else URI_COMPRESS = Boolean.valueOf(val).booleanValue();
+		if (val == null)
+			throwBadFormat("compress URIs");
+		else
+			URI_COMPRESS = Boolean.valueOf(val).booleanValue();
 		val = m_dbProps.getCompressURILength();
-		if ( val == null ) throwBadFormat("URI compress length");
-		else URI_COMPRESS_LENGTH = Integer.parseInt(val);
+		if (val == null)
+			throwBadFormat("URI compress length");
+		else
+			URI_COMPRESS_LENGTH = Integer.parseInt(val);
 		val = m_dbProps.getTableNamePrefix();
-		if ( val == null ) throwBadFormat("table name prefix");
-		else TABLE_NAME_PREFIX = val;
-		
-		return m_sysProperties;		
+		if (val == null)
+			throwBadFormat("table name prefix");
+		else
+			TABLE_NAME_PREFIX = val;
+
+		return m_sysProperties;
 	}
 	
 	private void checkEngine ( DBProp dbProps ) {
@@ -382,35 +421,65 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * Format the database and construct a brand new system specialized graph.
 	 */
 	protected SpecializedGraph formatAndConstructSystemSpecializedGraph() {
+		String errMsg = null;
+		if (xactOp(xactIsActive))
+			throw new RDFRDBException(
+					"Cannot intialize database while transaction is active.\n"
+							+ "Commit or abort transaction before intializing database.");
 
+		boolean autoIsOn = xactOp(xactAutoOff);
 		try {
-			String [] params = 	getDbInitTablesParams();
+			String[] params = getDbInitTablesParams();
 			m_sql.runSQLGroup("initDBtables", params);
 			m_sql.runSQLGroup("initDBgenerators");//			m_sql.runSQLGroup("initDBprocedures");
 		} catch (SQLException e) {
 			logger.warn("Problem formatting database", e);
-			throw new RDFRDBException("Failed to format database", e);
+			errMsg = e.toString();
 		}
-		
-		// Construct the system properties
-		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_STMT_TABLE);
-		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet, DEFAULT_ID);
-						
-		// The following call constructs a new set of database properties and
-		// adds them to the m_sysProperties specialized graph.
-		m_dbProps = new DBPropDatabase( m_sysProperties, m_dbcon.getDatabaseType(), 
-		        VERSION, LAYOUT_VERSION,String.valueOf(LONG_OBJECT_LENGTH), 
-		        String.valueOf(INDEX_KEY_LENGTH), String.valueOf(IS_XACT_DB), 
-                        String.valueOf(URI_COMPRESS), String.valueOf(URI_COMPRESS_LENGTH),
-				TABLE_NAME_PREFIX);
-		
-		// Now we also need to construct the parameters that will be the
-		// default settings for any graph added to this database
-		DBPropGraph def_prop = new DBPropGraph( m_sysProperties, DEFAULT_PROPS, "generic");
-		
-		def_prop.addGraphId(DEFAULT_ID);
 
-		return m_sysProperties;		
+		if (errMsg == null)
+			try {
+				xactOp(xactCommit);
+				xactOp(xactBegin);
+
+				// Construct the system properties
+				IPSet pSet = createIPSetInstanceFromName(m_psetClassName,
+						SYSTEM_STMT_TABLE);
+				m_sysProperties = createLSetInstanceFromName(m_lsetClassName,
+						pSet, DEFAULT_ID);
+
+				// The following call constructs a new set of database
+				// properties and
+				// adds them to the m_sysProperties specialized graph.
+				m_dbProps = new DBPropDatabase(m_sysProperties, m_dbcon
+						.getDatabaseType(), VERSION, LAYOUT_VERSION, String
+						.valueOf(LONG_OBJECT_LENGTH), String
+						.valueOf(INDEX_KEY_LENGTH), String.valueOf(IS_XACT_DB),
+						String.valueOf(URI_COMPRESS), String
+								.valueOf(URI_COMPRESS_LENGTH),
+						TABLE_NAME_PREFIX);
+
+				// Now we also need to construct the parameters that will be the
+				// default settings for any graph added to this database
+				DBPropGraph def_prop = new DBPropGraph(m_sysProperties,
+						DEFAULT_PROPS, "generic");
+
+				def_prop.addGraphId(DEFAULT_ID);
+
+				xactOp(xactCommit);
+				if (autoIsOn)
+					xactOp(xactAutoOn);
+			} catch (Exception e) {
+				errMsg = e.toString();
+			}
+
+		if (errMsg != null) {
+			doCleanDB(false);
+			m_sysProperties = null;
+			throw new RDFRDBException(errMsg);
+		}
+
+		return m_sysProperties;
 	}
 	
 	abstract String[] getDbInitTablesParams();
@@ -423,70 +492,176 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	/**
 	 * Construct and return a new specialized graph.
-	 * @param graphProperties A set of customization properties for the specialized graph.
 	 */
-	public List createSpecializedGraphs(DBPropGraph graphProperties) {
-		
-		String graphName = graphProperties.getName();
+	public List createSpecializedGraphs(String graphName,
+			Graph requestedProperties) {
+
+		/*
+		 * create the specialized graphs for the new graph. this includes
+		 * updating the database for the new graph (allocating a new graph
+		 * identifier, updating the jena system tables and creating tables, if
+		 * necessary. this should be done atomically to avoid corrupting the
+		 * database but a single transaction is not sufficient because some
+		 * database engines (e.g., oracle) require create table statements to
+		 * run as a separate transaction, i.e., a create table statement in the
+		 * middle of a group of updates will cause an automatic commit of the
+		 * updates prior to the create table statement.
+		 * 
+		 * fortunately, we can run most of the updates in a single transaction.
+		 * however, allocation of the graph indentifier must be done prior to
+		 * creating the statement tables. so, if any subsequent operation fails,
+		 * we must run a compensating transaction to deallocate the graph
+		 * identifier.
+		 * 
+		 * because of the above, we assume that there is no active transaction
+		 * when this routine is called.
+		 */
+
+		// String graphName = graphProperties.getName();
 		String stmtTbl = null;
 		String reifTbl = null;
 		String dbSchema = STORE_WITH_MODEL;
-		int graphId = graphIdAlloc(graphName);
-		graphProperties.addGraphId(graphId);
-		boolean useDefault = false;
-				
-		// dbSchema = graphProperties.getDBSchema();
-		// use the default schema if:
-		// 1) no schema is specified and we are creating the default (unnamed) graph
-		// 2) a schema is specified and it is the default (unnamed) graph
-		if ( ((dbSchema == null) && graphName.equals(GraphRDB.DEFAULT)) ) {
-			useDefault = true;
-			dbSchema = DEFAULT_PROPS;  // default graph should use default tables
-		}
-		// else if ( ((dbSchema != null) && dbSchema.equals(GraphRDB.DEFAULT)) ) {
-		// 	useDefault = true;
-		//	dbSchema = DEFAULT_PROPS;  // default graph should use default tables
-		// }
-		if ( dbSchema != null ) {
-			DBPropGraph schProp = DBPropGraph.findPropGraphByName(getSystemSpecializedGraph(),
-												dbSchema );
-			if ( schProp != null ) {
-				reifTbl = schProp.getReifTable();
-				stmtTbl = schProp.getStmtTable();
-			}
-			if ( ((reifTbl == null) || (stmtTbl == null)) && (useDefault == false) )
-				// schema not found. this is ok ONLY IF it's the DEFAULT schema
-				throw new RDFRDBException("Creating graph " + graphName +
-					": referenced schema not found: " + dbSchema);
-		}
-		if ( (reifTbl == null) || (stmtTbl == null) ) {
-			reifTbl = createTable(graphId, true);	
-			stmtTbl = createTable(graphId, false);	
-			if ( (reifTbl == null) || (stmtTbl == null) )
-				throw new RDFRDBException("Creating graph " + graphName +
-					": cannot create tables");
-		}
-		graphProperties.addStmtTable(stmtTbl);
-		graphProperties.addReifTable(reifTbl);
-			
-		// Add the reifier first
-		DBPropPSet pSetReifier = new DBPropPSet(m_sysProperties, m_psetReifierClassName, reifTbl);
-		DBPropLSet lSetReifier = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName()+"_REIFIER", m_lsetReifierClassName);
-		lSetReifier.setPSet(pSetReifier);
-		graphProperties.addLSet(lSetReifier);
-		
-		// Now add support for all non-reified triples
-		DBPropPSet pSet = new DBPropPSet(m_sysProperties, m_psetClassName, stmtTbl);
-		DBPropLSet lSet = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName(), m_lsetClassName);
-		lSet.setPSet(pSet);
-		graphProperties.addLSet(lSet);
+		boolean didGraphIdAlloc = false;
+		boolean didTableCreate = false;
+		String errMsg = null;
+		DBPropGraph graphProperties = null;
 
-		return recreateSpecializedGraphs( graphProperties );
+		SpecializedGraph sysGraph = getSystemSpecializedGraph(false);
+		// should have already create sys graph.
+
+		if (xactOp(xactIsActive))
+			throw new RDFRDBException(
+					"Cannot create graph while transaction is active.\n"
+							+ "Commit or abort transaction before creating graph");
+
+		boolean autoOn = xactOp(xactAutoOff);
+		int graphId = -1; // bogus initialization to make java happy
+
+		try {
+			xactOp(xactBegin);
+			graphId = graphIdAlloc(graphName);
+			didGraphIdAlloc = true;
+			xactOp(xactCommit);
+			xactOp(xactBegin);
+			boolean useDefault = false;
+
+			// dbSchema = graphProperties.getDBSchema();
+			// use the default schema if:
+			// 1) no schema is specified and we are creating the default
+			// (unnamed) graph
+			// 2) a schema is specified and it is the default (unnamed) graph
+			if (((dbSchema == null) && graphName.equals(GraphRDB.DEFAULT))) {
+				useDefault = true;
+				dbSchema = DEFAULT_PROPS; // default graph should use default
+				// tables
+			}
+			// else if ( ((dbSchema != null) &&
+			// dbSchema.equals(GraphRDB.DEFAULT)) ) {
+			// 	useDefault = true;
+			//	dbSchema = DEFAULT_PROPS; // default graph should use default
+			// tables
+			// }
+			if (dbSchema != null) {
+				DBPropGraph schProp = DBPropGraph.findPropGraphByName(sysGraph,
+						dbSchema);
+				if (schProp != null) {
+					reifTbl = schProp.getReifTable();
+					stmtTbl = schProp.getStmtTable();
+				}
+				if (((reifTbl == null) || (stmtTbl == null))
+						&& (useDefault == false))
+					// schema not found. this is ok ONLY IF it's the DEFAULT
+					// schema
+					throw new RDFRDBException("Creating graph " + graphName
+							+ ": referenced schema not found: " + dbSchema);
+			}
+			if ((reifTbl == null) || (stmtTbl == null)) {
+				didTableCreate = true;
+				reifTbl = createTable(graphId, true);
+				stmtTbl = createTable(graphId, false);
+				if ((reifTbl == null) || (stmtTbl == null))
+					throw new RDFRDBException("Creating graph " + graphName
+							+ ": cannot create tables");
+			}
+			xactOp(xactCommit);  // may not be needed but it doesn't hurt
+		} catch (Exception e) {
+			errMsg = e.toString();
+		}
+
+		// we can now start a new transaction and update the metadata.
+		// we should already be committed but we commit again just in case
+
+		if (errMsg == null)
+			try {
+				xactOp(xactBegin);
+
+				graphProperties = new DBPropGraph(sysGraph, graphName,
+						requestedProperties);
+				graphProperties.addGraphId(graphId);
+				graphProperties.addStmtTable(stmtTbl);
+				graphProperties.addReifTable(reifTbl);
+
+				DBPropDatabase dbprop = new DBPropDatabase(
+						getSystemSpecializedGraph(true));
+				dbprop.addGraph(graphProperties);
+
+				// Add the reifier first
+				DBPropPSet pSetReifier = new DBPropPSet(m_sysProperties,
+						m_psetReifierClassName, reifTbl);
+				DBPropLSet lSetReifier = new DBPropLSet(m_sysProperties,
+						"LSET_" + graphProperties.getName() + "_REIFIER",
+						m_lsetReifierClassName);
+				lSetReifier.setPSet(pSetReifier);
+				graphProperties.addLSet(lSetReifier);
+
+				// Now add support for all non-reified triples
+				DBPropPSet pSet = new DBPropPSet(m_sysProperties,
+						m_psetClassName, stmtTbl);
+				DBPropLSet lSet = new DBPropLSet(m_sysProperties, "LSET_"
+						+ graphProperties.getName(), m_lsetClassName);
+				lSet.setPSet(pSet);
+				graphProperties.addLSet(lSet);
+
+				xactOp(xactCommit);
+				if (autoOn) xactOp(xactAutoOn);
+			} catch (Exception e) {
+				errMsg = e.toString();
+			}
+
+		if (errMsg == null)
+			return recreateSpecializedGraphs(graphProperties);
+		else {
+			xactOp(xactCommit); // maybe not needed but doesn't hurt
+			xactOp(xactBegin);
+			try {
+			// clean-up
+			if (didGraphIdAlloc) {
+				graphIdDealloc(graphId);
+			}
+			} catch ( Exception e ) {
+			}
+			if (didTableCreate) {
+				// make sure the order below matches
+				// the order of creation above.
+				if (reifTbl != null)
+					try { deleteTable(reifTbl); }
+					catch ( Exception e ) {};
+				if (stmtTbl != null)
+					try { deleteTable(stmtTbl); }
+					catch ( Exception e ) {};
+			}
+			xactOp(xactCommit);
+			if (autoOn) xactOp(xactAutoOn);
+			return null;
+		}
 	}
 	
 	/**
-	 * Construct and return a list of specialized graphs to match those in the store.
-	 * @param graphProperties A set of customization properties for the graph.
+	 * Construct and return a list of specialized graphs to match those in the
+	 * store.
+	 * 
+	 * @param graphProperties
+	 *            A set of customization properties for the graph.
 	 */
 	public List recreateSpecializedGraphs(DBPropGraph graphProperties) {
 		
@@ -557,12 +732,17 @@ public abstract class DriverRDB implements IRDBDriver {
 		List specializedGraphs) {
 			
 		int graphId = graphProperties.getGraphId();
-		Iterator it = specializedGraphs.iterator();
-		while (it.hasNext()){
-		   SpecializedGraph sg = (SpecializedGraph) it.next();
-		   removeSpecializedGraph(sg);
-		}
 		
+		if (xactOp(xactIsActive))
+			throw new RDFRDBException(
+					"Cannot remove graph while transaction is active.\n"
+					+ "Commit or abort transaction before removing graph");
+
+		boolean autoIsOn = xactOp(xactAutoOff);
+		xactOp(xactCommit);
+		xactOp(xactBegin);
+		
+		// remove graph metadata from jena sys table in a xact
 		String stmtTbl = graphProperties.getStmtTable();
 		String reifTbl = graphProperties.getReifTable();
 		
@@ -571,20 +751,44 @@ public abstract class DriverRDB implements IRDBDriver {
 		// take care of deleting any pset properties automatically).			
 		m_dbProps.removeGraph(graphProperties);
 		
-		// drop the tables if they are no longer referenced
+		if ( graphId != DEFAULT_ID ) graphIdDealloc(graphId);
+		
+		xactOp(xactCommit);
+		xactOp(xactBegin);
+		
+		/* now remove triples from statement tables.
+		*  if the graph is stored in its own tables, we
+		*  can simply delete those tables. else, the graph
+		*  shares tables with other graphs so we have to
+		*  remove each statement. */
+		
+		// check to see if statement tables for graph are shared
+		boolean stInUse = true;
+		boolean rtInUse = true;
+		Iterator it;
 		if ( graphId != DEFAULT_ID ) {
-			boolean stInUse = false;
-			boolean rtInUse = false;
+			stInUse = false;
+			rtInUse = false;
 			it =  m_dbProps.getAllGraphs();
 			while ( it.hasNext() ) {
 				DBPropGraph gp = (DBPropGraph) it.next();
 				if ( gp.getStmtTable().equals(stmtTbl) ) stInUse = true;
 				if ( gp.getReifTable().equals(reifTbl) ) rtInUse = true;
-			}		
-			if ( stInUse == false ) deleteTable(stmtTbl);
-			if ( rtInUse == false ) deleteTable(reifTbl);
-			graphIdDealloc(graphId);
+			}
 		}
+		// now remove the statement tables or else delete all triples.
+		if ( stInUse || rtInUse ) {
+			it = specializedGraphs.iterator();
+			while (it.hasNext()){
+			   SpecializedGraph sg = (SpecializedGraph) it.next();
+			   removeSpecializedGraph(sg);
+			}
+		} else {
+			deleteTable(stmtTbl);
+			deleteTable(reifTbl);
+		}
+		xactOp(xactCommit);
+		if ( autoIsOn ) xactOp(xactAutoOn);
 	}
 	
 	
@@ -604,7 +808,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @param databaseProperties is a Graph containing a full set of database properties
 	 */
 	public void setDatabaseProperties(Graph databaseProperties) {
-		SpecializedGraph toGraph = getSystemSpecializedGraph();
+		SpecializedGraph toGraph = getSystemSpecializedGraph(true);
 		// really need to start a transaction here
 
 		// Here add code to check if the database has been used - if so,
@@ -630,7 +834,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @return Graph containg the default properties for a new model
 	 */
 	public DBPropGraph getDefaultModelProperties() {
-		SpecializedGraph sg = getSystemSpecializedGraph();
+		SpecializedGraph sg = getSystemSpecializedGraph(true);
 		DBPropGraph result = DBPropGraph.findPropGraphByName(sg, DEFAULT_PROPS);
 		if (result == null) {
 			logger.error("No default Model Properties found");
@@ -647,37 +851,164 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * 
 	 * @return boolean true if database is correctly formatted, false on any error.
 	 */
-	public boolean isDBFormatOK() {
-			boolean result = false;
-			try {
-					ResultSet alltables = getAllTables();
-					int i = 0;
-					while ( alltables.next() ) i++;
-					alltables.close();
-					result = i >= 5;
-			} catch (Exception e1) {
-                            // An exception might be a totally unformatted db (why??)
-                            // or a real connection problem.
-                            return false;  
-                            // throw new JenaException("DB connection problem while testing formating", e1);
+	public boolean isDBFormatOK() throws RDFRDBException {
+		boolean result = true;
+		boolean[] found = new boolean[SYSTEM_TABLE_CNT];
+		int i = 0;
+		for (i = 0; i < SYSTEM_TABLE_CNT; i++) found[i] = false;
+		try {
+			// check that all required system tables exist
+			ResultSet alltables = getAllTables();
+			while (alltables.next()) {
+				String tblName = alltables.getString("TABLE_NAME");
+				for (i = 0; i < SYSTEM_TABLE_CNT; i++)
+					if (SYSTEM_TABLE_NAME[i].equals(tblName))
+						found[i] = true;
 			}
-			return result;
+			alltables.close();
+			for (i = 0; i < SYSTEM_TABLE_CNT; i++) {
+				if (!found[i]) {
+					// mutex table is not required
+					if (SYSTEM_TABLE_NAME[i].equals(MUTEX_TABLE))
+						continue;
+					result = false;
+				}
+			}
+		} catch (Exception e1) {
+			// An exception might be an unformatted or corrupt
+			// db or a connection problem.
+			throw new RDFRDBException(
+				"Exception while checking db format - " + e1);
+		}
+		return result;
 	}
 	
-	/** 
+	/**
 	 * Converts string to form accepted by database.
 	 */
 	public String stringToDBname(String aName) {
 		String result = (DB_NAMES_TO_UPPER) ? aName.toUpperCase() : aName;
 		return(result);
 	}
+	
+	private static final int lockTryMax = 5;  // max attempts to acquire/release lock
+	
+	
+    /**
+     * return true if the mutex is acquired, else false 
+     */
 
+    public boolean tryLockDB() {
+		boolean res = true;
+		try {
+			m_sql.runSQLGroup("lockDatabase", MUTEX_TABLE);
+		} catch (SQLException e) {
+			res = false;
+		}
+		return res;
+    }
 
+	
+	public void lockDB() throws RDFRDBException {
+    	String err = "";
+    	int cnt = 0;
+    	while ( cnt++ < lockTryMax ) {
+    		if ( tryLockDB() )
+    			break;
+			try {
+				Thread.sleep((long)5000);
+			} catch (InterruptedException e) {
+				err = err + " lockDB sleep interrupted" + e;
+			}
+		}
+		if ( cnt >= lockTryMax ) {
+			err = "Failed to lock database after "+ lockTryMax + " attempts.\n"
+			+ err + "\n."
+			+ "Try later or else call DriverRDB.unlockDB() after ensuring\n" +
+			"that no other Jena applications are using the database.";
+			throw new RDFRDBException(err);
+		}
+    }
+    
+    /**
+     * Release the mutex lock in the database.
+     */
+    
+    public void unlockDB() throws RDFRDBException {
+    	String err;
+    	int cnt = 0;
+    	while ( cnt++ < lockTryMax ) {
+		try {
+			m_sql.runSQLGroup("unlockDatabase", MUTEX_TABLE);
+			break;
+		} catch (SQLException e) {
+			err = "Failed to unlock database after "+ lockTryMax + " attempts - " + e;
+			try {
+				Thread.sleep((long)5000);
+			} catch (InterruptedException e1) {
+				err = err + " sleep failed" + e;
+			}
+		}
+		if ( cnt >= lockTryMax )
+			throw new RDFRDBException(err);
+		}	
+    }
+    
+    
+    /* return true if the mutex is held. */
+    
+    public boolean DBisLocked() throws RDFRDBException {
+    	boolean res;
+    	try {
+    		DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
+    		String[] tableTypes = { "TABLE" };
+    		String prefixMatch = stringToDBname(TABLE_NAME_PREFIX + "%");
+    		ResultSet iter = dbmd.getTables(null, null, MUTEX_TABLE, tableTypes);
+    		res = iter.next();
+    	} catch (SQLException e1) {
+    		throw new RDFRDBException("Internal SQL error in driver" + e1);
+    	}
+    	return res;
+    }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graphRDB.IRDBDriver#cleanDB()
 	 */
 	public void cleanDB() {
+
+		// assumes database lock is not held.
+		try {
+			lockDB();
+		} catch (RDFRDBException e) {
+			throw new RDFRDBException(
+					"DriverRDB.cleanDB() failed to acquire database lock:\n"
+							+ "("
+							+ e
+							+ ")\n."
+							+ "Try again or call DriverRDB.unlockDB() if necessary.");
+		}
+		// now clean the database
+		doCleanDB(true);
+	}
+	
+	/*
+	 * internal routine that does the actual work for cleanDB().
+	 * it assumes that the mutex is held and throws and exception
+	 * if not. it will optionally remove the mutex if dropMutex
+	 * is true.
+	 */
+	
+	protected void doCleanDB( boolean dropMutex ) throws RDFRDBException {
+		try {
+			if ( !DBisLocked() ) {
+				throw new RDFRDBException(
+				"Internal error in driver - database not locked for cleaning.\n");
+			}
+		} catch ( RDFRDBException e ) {
+			throw new RDFRDBException(
+			"Exception when checking for database lock - \n"
+			+ e);
+		}		
 		try {
 			ResultSet alltables = getAllTables();
 			List tablesPresent = new ArrayList(10);
@@ -687,19 +1018,24 @@ public abstract class DriverRDB implements IRDBDriver {
 			alltables.close();
 			Iterator it = tablesPresent.iterator();
 			while (it.hasNext()) {
-				m_sql.runSQLGroup("dropTable", (String) it.next());
+				String tblName = (String) it.next();
+				if ( tblName.equals(MUTEX_TABLE) && (dropMutex == false) )
+					continue;
+				m_sql.runSQLGroup("dropTable", tblName);
 			}
 			if (PRE_ALLOCATE_ID) {
 				clearSequences();
 			}
 		} catch (SQLException e1) {
-			throw new RDFRDBException("Internal SQL error in driver", e1);
+			throw new RDFRDBException("Internal error in driver while cleaning database\n"
+					+ "(" + e1 + ").\n"
+					+ "Database may be corrupted. Try cleanDB() again.");
 		}
 		m_sysProperties = null;
 		if ( prefixCache != null ) prefixCache.clear();
 		prefixCache = null;
-	}
-	
+	}	
+
 	private ResultSet getAllTables() {
 		try {
 			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
@@ -707,7 +1043,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			String prefixMatch = stringToDBname(TABLE_NAME_PREFIX + "%");
 			return dbmd.getTables(null, null, prefixMatch, tableTypes);
 		} catch (SQLException e1) {
-			throw new RDFRDBException("Internal SQL error in driver", e1);
+			throw new RDFRDBException("Internal SQL error in driver - " + e1);
 		}
 	}
 	
@@ -717,7 +1053,6 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public void clearSequences() {
 	}
-
 	
 	/**
 	 * Removes named sequence from the database, if it exists.
@@ -732,6 +1067,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			}
 		}
 	}
+
 	/**
 	 * Check database and see if named sequence exists.
 	 * @param seqName
@@ -842,79 +1178,152 @@ public abstract class DriverRDB implements IRDBDriver {
 	private void notSupported(String opName)
 		{ throw new UnsupportedOperationException(opName); }
 		
-		/**
-	 * If underlying database connection supports transactions, call abort()
-	 * on the connection, then turn autocommit on.
+
+	protected static final int xactBegin = 0;
+	protected static final int xactCommit = 1;
+	protected static final int xactAbort = 2;
+	protected static final int xactIsActive = 3;
+	protected static final int xactAutoOff = 4;
+	protected static final int xactAutoOn = 5;
+
+	
+	/**
+	 * Perform a transaction operation.  For begin/commit/abort,
+	 * return true if success, false if fail. for xactIsActive,
+	 * return true if this driver has an active transaction,
+	 * else return false.
+	 */
+	protected synchronized boolean xactOp(int op) throws RDFRDBException {
+		boolean ret = true;
+		try {
+			if (op == xactBegin) {
+				// start a transaction
+				// always return true
+				if (!inTransaction) {
+					xactBegin();
+					inTransaction = true;
+				}
+			} else if (op == xactCommit) {
+				// commit a transaction
+				// always return true
+				if (inTransaction) {
+					xactCommit();
+					inTransaction = false;
+				}
+			} else if (op == xactAbort) {
+				// rollback a transaction
+				// always return true
+				if (inTransaction) {
+					xactAbort();
+					inTransaction = false;
+				}
+			} else if (op == xactIsActive) {
+				// return true if xact is active, else false
+				ret = inTransaction;
+			} else if (op == xactAutoOff) {
+				// disable autocommit
+				// return true if autocommit is on, else false
+				// begins a new transaction
+				Connection c = m_sql.getConnection();
+				ret = c.getAutoCommit();
+				if ( ret )
+					xactBegin();
+				inTransaction = true;			
+			} else if (op == xactAutoOn) {
+				// enable autocommit
+				// always return true
+				if ( inTransaction )
+					throw new JenaException("Can't enable AutoCommit in middle of existing transaction");
+				Connection c = m_sql.getConnection();
+				c.setAutoCommit(true);
+				ret = true;
+			} else
+				throw new JenaException("Unknown transaction operation: " + op);
+		} catch (SQLException e) {
+			throw new JenaException("Transaction support failed: ", e);
+		}
+		return ret;
+	}
+
+	private void xactBegin() throws RDFRDBException {
+		try {
+			Connection c = m_sql.getConnection();
+			c.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			c.setAutoCommit(false);
+			// Starting a transaction could require us to lose any
+			// cached prepared statements
+			// for some jdbc drivers, currently I think all the drivers
+			// we use are safe and
+			// is a major performance hit so commented out for now.
+			//m_sql.flushPreparedStatementCache();
+		} catch (SQLException e) {
+			throw new JenaException("Transaction begin failed: ", e);
+		}
+	}
+	
+	private void xactAbort() throws RDFRDBException {
+		try {
+			Connection c = m_sql.getConnection();
+			c.rollback();
+			c.commit();
+			c.setAutoCommit(true);
+		} catch (SQLException e) {
+			throw new JenaException("Transaction rollback failed: ", e);
+		}
+	}
+	
+	private void xactCommit() throws RDFRDBException {
+		try {
+			Connection c = m_sql.getConnection();
+			c.commit();
+			c.setAutoCommit(true);
+			// not sure why read_uncommitted is set, below. commented
+			// out by kw.
+			// c.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+		} catch (SQLException e) {
+			throw new JenaException("Transaction commit failed: ", e);
+		}
+	}
+
+        
+	/**
+	 * If the underlying database connection supports transactions, turn
+	 * autocommit off, then begin a new transaction. Note that transactions are
+	 * associated with connections, not with Models. This
+	 */
+	public synchronized void begin() throws RDFRDBException {
+		if (transactionsSupported()) {
+			xactOp(xactBegin);
+		} else {
+			notSupported("begin transaction");
+		}
+	}
+
+	/**
+	 * If the underlying database connection supports transactions, call
+	 * commit(), then turn autocommit on.
+	 */
+	public void commit() throws RDFRDBException {
+		if (transactionsSupported()) {
+			xactOp(xactCommit);
+		} else {
+			notSupported("commit transaction");
+		}
+	}
+
+	/**
+	 * If underlying database connection supports transactions, call abort() on
+	 * the connection, then turn autocommit on.
 	 */
 	public synchronized void abort() throws RDFRDBException {
 		if (transactionsSupported()) {
-			try {
-				if (inTransaction) {
-				  Connection c = m_sql.getConnection();
-				  c.rollback();
-				  c.commit();
-				  c.setAutoCommit(true);
-				  inTransaction = false;
-				}
-			} catch (SQLException e) {
-				throw new JenaException("Transaction support failed: ", e);
-			}
+			xactOp(xactAbort);
 		} else {
+			notSupported("abort transaction");
 		}
 	}
         
 
-
-
-        
-	/**
-	 * If the underlying database connection supports transactions,
-	 * turn autocommit off, then begin a new transaction.
-	 * Note that transactions are associated with connections, not with
-	 * Models.  This 
-	 */
-	public synchronized void begin() throws  RDFRDBException {
-	  if (transactionsSupported()) {
-		try {
-			if (!inTransaction) {
-				// Starting a transaction could require us to lose any cached prepared statements
-				// for some jdbc drivers, currently I think all the drivers we use are safe and
-				// is a major performance hit so commented out for now.
-			  //m_sql.flushPreparedStatementCache();
-			  Connection c = m_sql.getConnection();
-			  c.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-			  c.setAutoCommit(false);
-			  inTransaction = true;
-			}
-		} catch (SQLException e) {
-			throw new RDFRDBException("Transaction support failed: ", e);
-		}
-	} else
-		{ notSupported("begin transaction"); }
-	}
-	
-	/**
-	 * If the underlying database connection supports transactions,
-	 * call commit(), then turn autocommit on.
-	 */
-	public void commit() throws RDFRDBException{
-		if (transactionsSupported()) {
-			try {
-				  if (inTransaction) {
-				  	Connection c = m_sql.getConnection();
-					c.commit();
-					c.setAutoCommit(true);
-					// not sure why read_uncommitted is set, below. commented out by kw.
-					// c.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-					inTransaction =  false;
-				   }
-				} catch (SQLException e) {
-						throw new RDFRDBException("Transaction support failed: ", e);
-				}
-		} else {
-				  notSupported("commit transaction"); 
-		}
-	}
         
 	/**
 	 * Return a string identifying underlying database type.
@@ -946,7 +1355,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		return (false);
 			
 		}
-        
 
 
 
@@ -1961,7 +2369,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			alltables.close();
 			return res;
 		} catch (SQLException e1) {
-			throw new RDFRDBException("Internal SQL error in driver", e1);
+			throw new RDFRDBException("Internal SQL error in driver - " + e1);
 		}
 	}
 	
@@ -2037,7 +2445,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	}
 	
 	protected void checkDbUninitialized() {
-		if ( dbIsOpen() || (isDBFormatOK() == true))
+		if ( dbIsOpen() || isDBFormatOK() )
 			throw new JenaException("Database configuration option cannot be set after database is formatted");
 	}
 
@@ -2046,22 +2454,83 @@ public abstract class DriverRDB implements IRDBDriver {
 	}
 
 	public void setTableNamePrefix ( String prefix ) {
-		if ( (prefix.length() + JENA_LONGEST_TABLE_NAME_LENGTH) >
-										TABLE_NAME_LENGTH_MAX )
-			throw new JenaException("TableNamePrefix exceeds maximum length for database: "				+ TABLE_NAME_LENGTH_MAX);
 		if ( dbIsOpen() )
 			throw new JenaException("Table name prefix must be set before opening or connecting to a model.");
+		/* sanity check that the new prefix length is not too long.
+		 * we have to add a few characters to the given prefix to
+		 * account for the index names (see the createStatementTable
+		 * template in the etc/<db>.sql files).
+		 */
+		String sav = TABLE_NAME_PREFIX;
+		String testpfx = prefix;
+		int i;
+		for ( i=0;i<MAXIMUM_INDEX_COLUMNS;i++) testpfx += "X";
+		setTableNames(testpfx);
+		// now see if the table names will be too long with this "prefix".
+		try {
+			String s = genTableName(10,10,true);
+			s = genTableName(10,10,false);
+		} catch ( RDFRDBException e ) {
+			setTableNames(sav);
+			throw new JenaException("New prefix (\"" + prefix +
+				"\") is too long and will cause table names \n" +
+				"to exceed maximum length for database (" + TABLE_NAME_LENGTH_MAX + ").");
+		}
+		// all ok. switch to the new prefix.
 		setTableNames(prefix);
 	}
-
-	private void setTableNames ( String prefix ) {
-		TABLE_NAME_PREFIX = stringToDBname(prefix);
-		SYSTEM_STMT_TABLE = TABLE_NAME_PREFIX + "sys_stmt";
-		LONG_LIT_TABLE = TABLE_NAME_PREFIX + "long_lit";
-		LONG_URI_TABLE = TABLE_NAME_PREFIX + "long_uri";
-		PREFIX_TABLE = TABLE_NAME_PREFIX + "prefix";
-		GRAPH_TABLE = TABLE_NAME_PREFIX + "graph";
+	
+	
+	/** generate a table name and verify that it does not
+	 * exceed the maximum length.
+	 */
+	
+	protected String genTableName( int graphId, int tblId, boolean isReif )
+	{
+		String res = stringToDBname(TABLE_NAME_PREFIX + 
+				"g" + Integer.toString(graphId) +
+				"t" + Integer.toString(tblId) +
+				(isReif ? REIF_TABLE_NAME_SUFFIX : STMT_TABLE_NAME_SUFFIX));
+		if ( res.length() > TABLE_NAME_LENGTH_MAX )
+			throw new RDFRDBException("New table name (\"" + res +
+			"\") exceeds maximum length for database (" + TABLE_NAME_LENGTH_MAX + ").");
+		return res;
 	}
+	
+	
+	   /** Names of jena system tables.
+	   protected String [] SYSTEM_TABLE_NAME; */
+	
+	protected void setTableNames ( String prefix ) {
+		TABLE_NAME_PREFIX = stringToDBname(prefix);
+		int i = 0;
+		SYSTEM_TABLE_NAME = new String[6];
+		SYSTEM_TABLE_NAME[i++] = SYSTEM_STMT_TABLE = stringToDBname(TABLE_NAME_PREFIX + "sys_stmt");
+		SYSTEM_TABLE_NAME[i++] = LONG_LIT_TABLE = stringToDBname(TABLE_NAME_PREFIX + "long_lit");
+		SYSTEM_TABLE_NAME[i++] = LONG_URI_TABLE = stringToDBname(TABLE_NAME_PREFIX + "long_uri");
+		SYSTEM_TABLE_NAME[i++] = PREFIX_TABLE = stringToDBname(TABLE_NAME_PREFIX + "prefix");
+		SYSTEM_TABLE_NAME[i++] = GRAPH_TABLE = stringToDBname(TABLE_NAME_PREFIX + "graph");
+		SYSTEM_TABLE_NAME[i++] = MUTEX_TABLE = stringToDBname(TABLE_NAME_PREFIX + "mutex");
+		SYSTEM_TABLE_CNT = i;
+	}
+	
+	/**
+	 * Return the number of system tables.
+	 */
+
+	public int getSystemTableCount() {
+		return SYSTEM_TABLE_CNT;
+	}
+	
+	/**
+	 * Return the name of a system table
+	 */
+
+	public String getSystemTableName ( int i ) {
+		return ((i < 0) || (i >= SYSTEM_TABLE_CNT)) ?
+			null : SYSTEM_TABLE_NAME[i];
+	}
+
 	
 	public String getStoreWithModel() {
 		return STORE_WITH_MODEL;
