@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.7 2003-05-16 11:12:21 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.8 2003-05-27 11:21:41 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -62,13 +62,18 @@ public class FileGraph extends GraphMem
         
     private void readModel( Model m, String name, String lang, boolean strict )
         {
+        FileInputStream in = null;
         try
             {
-            FileInputStream in = new FileInputStream( name );
+            in = new FileInputStream( name );
             model.read( in, "", this.lang );
             }
         catch (FileNotFoundException f)
             { if (strict) throw new DoesNotExistException( name ); }
+        finally 
+            {
+            if (in != null) try {in.close();} catch (IOException ignore) {}
+            }
         }
         
     /**
@@ -134,17 +139,8 @@ public class FileGraph extends GraphMem
         {
         if (intermediate.renameTo( name ) == false)
             {
-            File old = new File( name.getPath() + ".old" );
-            if (name.renameTo( old ))
-                {
-                mustRename( intermediate, name );
-                mustDelete( old );
-                }
-            else
-                {
-                mustDelete( name );
-                mustRename( intermediate, name );
-                }
+            if (name.exists()) mustDelete( name );
+            mustRename( intermediate, name );
             }
         }    
         
