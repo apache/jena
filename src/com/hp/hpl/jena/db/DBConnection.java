@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.7 $
+* @version $Revision: 1.8 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -117,8 +117,8 @@ public class DBConnection implements IDBConnection {
     }
         
 
-	/**
-	 * Return the jdbc connection or null if we no longer have access to a connection.
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#getConnection()
 	 */
 	public Connection getConnection() throws SQLException {
 		if (m_connection == null) {
@@ -131,10 +131,8 @@ public class DBConnection implements IDBConnection {
 		return m_connection;
 	}
 
-	/**
-	 * Close the jdbc connection.
-	 * It might be reopend with a getConnection() if the full database uri, user and password
-	 * were provided.
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#close()
 	 */
 	public void close() throws SQLException {
 		if( m_driver != null ) {
@@ -147,22 +145,17 @@ public class DBConnection implements IDBConnection {
 		}
 	}
 
-    /**
-     * Clear all RDF information from the database.
-     * This is equivalent to (but faster than) calling ModelRDB.clear() 
-     * on every model in the database and then deleting the underlying tables.
-     */
-    public void cleanDB() throws SQLException {
+    /* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#cleanDB()
+	 */
+	public void cleanDB() throws SQLException {
 		if (m_driver == null)
 			m_driver = getDriver();
     	m_driver.cleanDB();
     }
 
-	/**
-	 * Return true if the database seems to be formated for RDF storage.
-	 * This is <em>not</em> an integrity check this is simply a flag
-	 * recording that a base level table exists.
-	 * Any access errors are treated as the database not being formated.
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#isFormatOK()
 	 */
 	public boolean isFormatOK() {
 		try {
@@ -174,37 +167,8 @@ public class DBConnection implements IDBConnection {
 		}
 	}
 
-	/** 
-	 * Set the database-specific properties.
-	 * 
-	 * <p>
-	 * This call is only valid before the first Model is stored in the
-	 * database.  After that point, the database structure is frozen.
-	 * </p>
-	 * <p>
-	 * Use the properties to optionally customize the database - this
-	 * won't change the results you see when using the Graph or Model interfaces,
-	 * but it may alter the speed with which you get them or the space
-	 * required by the database.
-	 * </p>
-	 * <p>
-	 * The properties must form a complete and consistent set.
-	 * The easist way to get a complete and consistent set is to call
-	 * <code>getDatabaseProperties()</code>, modify it, and then use that as an argument
-	 * in the call to <code>setDatbaseProperties()</code>.  Remember that most properties
-	 * can only have a single value, so to change values you'll need to replace the
-	 * appropriate statements (rather than just adding additional ones).
-	 * </p>
-	 * <p>
-	 * May throw an exception if the database cannot be suitably formatted with
-	 * the new parameters.  Note that some implementations may delay processing the parameters until
-	 * the first Model is constructed.  Thus a successful return from this
-	 * call does not guarantee the properties are correct and consistent.
-	 * </p>
-	 * 
-	 * @param dbProperties is a Jena Model describing the database parameters
-	 * @since Jena 2.0
-	 * 
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#setDatabaseProperties(com.hp.hpl.jena.rdf.model.Model)
 	 */
 	public void setDatabaseProperties(Model dbProperties) throws RDFRDBException {
 		if (m_driver == null)
@@ -212,20 +176,8 @@ public class DBConnection implements IDBConnection {
 		m_driver.setDatabaseProperties( dbProperties.getGraph());
 	}
 
-	/** 
-	 * Returns a Jena Model containing database-specific properties.
-	 * These describe the optimization/layout for the database.
-	 * 
-	 * If the database has not been formatted, then a default
-	 * set of properties is returned.  Otherwise the actual properties
-	 * are returned.
-	 * 
-	 * The returned Model is a copy, modifying it will have no
-	 * immediate effect on the database.  To change the database
-	 * use <code>setDatabaseProperties</code>.
-	 * 
-	 * 
-	 * @since Jena 2.0
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#getDatabaseProperties()
 	 */
 	public Model getDatabaseProperties() throws RDFRDBException {
 		if (m_driver == null)
@@ -237,15 +189,9 @@ public class DBConnection implements IDBConnection {
 		return resultModel;
 	}
 	
-	/**
-	 * Retrieve a default set of model customization properties.
-	 * 
-	 * The returned default set of properties is suitable for use in a call to
-	 * ModelRDB.create(..., modelProperties);
-	 * 
-     * @return Model containing default properties
-     */
-	
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#getDefaultModelProperties()
+	 */
 	public Model getDefaultModelProperties() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
@@ -257,10 +203,8 @@ public class DBConnection implements IDBConnection {
 		return resultModel;
 	}
 	
-	/** Retrieve a list of all graphs in the database.
-	 *
-	 * @return Iterator over String names for graphs.
-	 * @throws RDFDBException
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#getAllModelNames()
 	 */
 	public ExtendedIterator getAllModelNames() throws RDFRDBException {
 		if (m_driver == null)
@@ -269,32 +213,19 @@ public class DBConnection implements IDBConnection {
 		return dbprops.getAllGraphNames();		
 	}
 	
-	/**
-	 * Test if a given model is contained in the database.
-	 * 
-	 * @param name the name of a model which may be in the database
-	 * @return Boolean true if the model is contained in the database
-	 * @throws RDFDBException
-	 * @since Jena 2.0
-	 */     
-	 public boolean containsModel(String name) throws RDFRDBException {
+	 /* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#containsModel(java.lang.String)
+	 */
+	public boolean containsModel(String name) throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
 		return (DBPropGraph.findPropGraphByName(m_driver.getSystemSpecializedGraph(), name ) != null );		
 	 }
 
-	/**
-	 * Test if a default model is contained in the database.
-	 * 
-	 * A default model is a model for which no specific name was specified.
-	 * (One that was created by calling ModelRDB.createModel without specifying
-	 * a name).
-	 * 
-	 * @return Boolean true if the model is contained in the database
-	 * @throws RDFDBException
-	 * @since Jena 2.0
-	 */     
-	 public boolean containsDefaultModel() throws RDFRDBException {
+	 /* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#containsDefaultModel()
+	 */
+	public boolean containsDefaultModel() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
 		return (DBPropGraph.findPropGraphByName(m_driver.getSystemSpecializedGraph(), GraphRDB.DEFAULT ) != null );		
@@ -316,12 +247,8 @@ public class DBConnection implements IDBConnection {
 		it.close();
 	}
 		
-	/** Set the database type manually.
-	 * This is not for public use (it is preferable to
-	 * specify it in the constructor) - included here to handle
-	 * older code, which didn't use the new constructor.
-	 *
-	 * @since Jena 2.0
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#setDatabaseType(java.lang.String)
 	 */
 	public void setDatabaseType( String databaseType ) {
 		if (databaseType != null) {
@@ -334,20 +261,14 @@ public class DBConnection implements IDBConnection {
 					
 	}
 	
-	/** Get the database type.
-	 * @return String database type, or null if unset
-	 * 
-	 * @since Jena 2.0
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#getDatabaseType()
 	 */
 	public String getDatabaseType() { return m_databaseType; }
 	
-	/** Get the database-specific driver 
-	 *
-	 * For this to work, it needs to know the type of database being used.
-	 * That may be specified in the constructor (preferred) or done later
-	 * by using the setDatabaseType method (for backward compatability).
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#getDriver()
 	 */
-	
 	public IRDBDriver getDriver() throws RDFRDBException {
 		try {
 			if (m_connection == null)
@@ -370,12 +291,10 @@ public class DBConnection implements IDBConnection {
 		return m_driver;
 	}
 
-    /**
-     * Set the IRDBDriver to use for this connection.
-     * Useful to enable external drivers to be registered outside of the
-     * standard driver package.
-     */
-    public void setDriver(IRDBDriver driver) {
+    /* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.IDBConnection#setDriver(com.hp.hpl.jena.db.impl.IRDBDriver)
+	 */
+	public void setDriver(IRDBDriver driver) {
     	m_driver = driver;
     }
 
@@ -383,13 +302,12 @@ public class DBConnection implements IDBConnection {
 	 * Helper function to locate and instantiate the driver class corresponding
 	 * to a given layout and database name
 	 * Throws an RDFRDBexception if the driver can't be instantiated
-	 * @deprecated As of Jena 2.0 this call should not be used.  Instead 
-	 * specify the database type when constructing a DBConnection and then 
-	 * pass that connection to the ModelRDB.  There is no longer any need for 
-	 * applications to interact directly with the IRDBDriver.  To customize the
-	 * database configuration/layout use the setDatabaseProperties method.
+	 * @deprecated As of Jena 2.0 this call should not be used.  Instead specify the database type
+	 * when constructing a DBConnection and then pass that connection to the GraphRDB.  There is
+	 * no longer any need for applications to interact with the IRDBDriver.  To customize the
+	 * database configuration/layout use the formatDB(propertyModel) call.
 	 */
-    public IRDBDriver getDriver(String layout, String database) throws RDFRDBException {
+	public IRDBDriver getDriver(String layout, String database) throws RDFRDBException {
     	// the layout is not supported in Jena2 - ignore this parameter
     	setDatabaseType(database);
     	return getDriver();

@@ -17,8 +17,6 @@ import com.hp.hpl.jena.graph.*;
 /** A persistent relational database implemention of the RDF API.
  *
  * <p>This implementation of the RDF API stores all its data in a relational database.</p>
- * <p>This is a prototype implementation, and should be considered to be alpha
- *   quality code and has not been well tested.</p>
  * <p> To construct a persistent RDB Model, first load the jdbc connector for 
  * your database - in this example, mysql:</p>
  * 
@@ -37,7 +35,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -79,7 +77,7 @@ public class ModelRDB extends ModelCom implements Model {
     /** 
      * A model which is stored persistently in a Relational DataBase
      * 
-     * Most applications should not need to deal directly with Graphs - use
+     * Most applications should not call the constructor - use
      * ModelRDB.createModel (to create a new model) or
      * ModelRDB.open (to open an exising model).
 	 * 
@@ -94,8 +92,8 @@ public class ModelRDB extends ModelCom implements Model {
     }
 
     /**
-     * Open the default model from an existing rdf database. The layout and datatype type information
-     * will be dynamically loaded from the database. 
+     * Open the default model from an existing rdf database. The layout and 
+     * datatype type information will be dynamically loaded from the database. 
      * 
      * @param dbcon an IDBConnection specifying the database connection
      */
@@ -118,7 +116,7 @@ public class ModelRDB extends ModelCom implements Model {
     /**
      * Create a new default model on an existing database.
      * Will format the database if it has not already been formatted.
-     * @param dbcon a DBConnectionI specifying the database connection
+     * @param dbcon a DBConnection specifying the database connection
      * @since Jena 2.0
      */
     public static ModelRDB createModel(IDBConnection dbcon) throws RDFRDBException {
@@ -129,17 +127,19 @@ public class ModelRDB extends ModelCom implements Model {
      * Create a new model on an existing database.
      * Will format the database if it has not already been formatted.
      *
+     * <p>
 	 * Use the properties to optionally customize the model - this
 	 * won't change the results you see when using the model interface,
 	 * but it may alter the speed with which you get them or the space
-	 * required by the underlying database.
+	 * required by the underlying database.</p>
 	 *
+	 * <p>
 	 * The properties must form a complete and consistent set.
 	 * The easist way to get a complete and consistent set is to call
 	 * getDefaultModelProperties, modify it, and then use that as an argument
-	 * in the call.
+	 * in the call.</p>
 	 * 
-     * @param dbcon a DBConnectionI specifying the database connection
+     * @param dbcon a DBConnection specifying the database connection
      * @param modelProperties a Model containing customization properties
      * @since Jena 2.0
      */
@@ -162,17 +162,19 @@ public class ModelRDB extends ModelCom implements Model {
      * Create a new model on an existing database.
      * Will format the database if it has not already been formatted.
      *
+     * <p>
 	 * Use the properties to optionally customize the model - this
 	 * won't change the results you see when using the model interface,
 	 * but it may alter the speed with which you get them or the space
-	 * required by the underlying database.
+	 * required by the underlying database.</p>
 	 *
+	 * <p>
 	 * The properties must form a complete and consistent set.
 	 * The easist way to get a complete and consistent set is to call
 	 * getDefaultModelProperties, modify it, and then use that as an argument
-	 * in the call.
+	 * in the call.</p>
 	 * 
-     * @param dbcon a DBConnectionI specifying the database connection
+     * @param dbcon a DBConnection specifying the database connection
      * @param name the name to give the newly created model.
      * The name "DEFAULT" is reserved and may not be used for user models.
      * @param modelProperties a Model containing customization properties
@@ -195,9 +197,9 @@ public class ModelRDB extends ModelCom implements Model {
      * <p>
      * The appropriate RDF-RDB driver to use is assumed to be the class Driver<DatabaseType><LayoutType>.
      * If that can't be found it defaults to looking for a property file in /etc/Driver<DatabaseType><LayoutType>.config
-     * and uses that to determine the driver class and parameters.
+     * and uses that to determine the driver class and parameters.</p>
      *
-     * @param dbcon a DBConnectionI specifying the database connection
+     * @param dbcon a DBConnection specifying the database connection
      * @param layoutType the name of the layout style to use. Currently one of:
      * "Generic", "Hash", "MMGeneric", "MMHash", "Proc", "ThinProc".
      * @param databaseType the name of the database type. Currently one of:
@@ -220,7 +222,7 @@ public class ModelRDB extends ModelCom implements Model {
      * and this call will format it with appropriate tables and stored procedures.
      * <p>
      * Uses a default layout format which is able to support multiple models in a single database.
-     *
+     * </p>
      * @param dbcon a DBConnectionI specifying the database connection
      * @param databaseType the name of the database type. Currently one of:
      * "Interbase" "Postgresql" "Mysql" "Oracle". This may seem a little redundant
@@ -271,7 +273,7 @@ public class ModelRDB extends ModelCom implements Model {
 	
     /**
      * List the names of all models stored in the database
-     * 
+     * @return ExtendedIterator over the model names.
      */
      
      public static ExtendedIterator listModels(IDBConnection dbcon) throws RDFRDBException {
@@ -382,7 +384,7 @@ public class ModelRDB extends ModelCom implements Model {
 
 	/**
 	 * Get the value of QueryOnlyAsserted.
-	 * @return
+	 * @return boolean
 	 */
 	public boolean getQueryOnlyAsserted() {
 		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryOnlyAsserted();

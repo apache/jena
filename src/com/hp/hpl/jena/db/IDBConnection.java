@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based on earlier code by der)
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:56:52 $
+* @version $Revision: 1.2 $ on $Date: 2003-08-25 21:32:05 $
 */
 
 public interface IDBConnection {
@@ -33,8 +33,9 @@ public interface IDBConnection {
 
     /**
      * Clear all RDF information from the database.
-     * This is equivalent to (but faster than) calling ModelRDB.clear() 
-     * on every model in the database.
+     * 
+     * This wipes all the information stored by Jena from the database.
+     * Obviously should be used with care.
      */
     public void cleanDB() throws SQLException;
 
@@ -49,29 +50,30 @@ public interface IDBConnection {
 	/** 
 	 * Sets database-specific properties.
 	 * 
+	 * <p>
 	 * These properties may only be set before the first Model has been
 	 * stored in the database.  After that point, the database structure
-	 * is frozen.
+	 * is frozen.</p>
 	 * 
-	 * Use the properties to optionally customize the database - this
+	 * <p>
+	 * Use these properties to optionally customize the database - this
 	 * won't change the results you see when using the graph interface,
 	 * but it may alter the speed with which you get them or the space
-	 * required by the database.
+	 * required by the database.</p>
 	 *
+	 * <p>
 	 * The properties must form a complete and consistent set.
 	 * The easist way to get a complete and consistent set is to call
-	 * getDBProperties(), modify it, and then use that as an argument
-	 * in the call to format().
+	 * getDatabaseProperties, modify the returned model, and then use 
+	 * that as an argument in the call to setDatabaseProperties.</p>
 	 * 
+	 * <p>
 	 * Note that some implementations may choose to delay actually peforming
 	 * the formatting operation until at least one Graph is constructed in
-	 * the database.
+	 * the database.  Consequently, a successful return from this call
+	 * does not necessarily guarantee that the database properties
+	 * were set correctly.</p>
 	 * 
-	 * Throws an exception if the database cannot be suitably formatted.
-	 * A database may only be formatted once.  Attempting to reformat a
-	 * database causes an exception (use isFormatOK() if you need to
-	 * test).
-
 	 * @param propertyModel is a Model describing the database parameters
 	 * @since Jena 2.0
 	 * 
@@ -80,23 +82,28 @@ public interface IDBConnection {
 	
 	/** 
 	 * Returns a Jena Model containing database properties.
-	 * These describe the optimization/layout for the database.
+	 * <p>
+	 * These describe the optimization/layout for the database.</p>
 	 * 
+	 * <p>
 	 * If the database has not been formatted, then a default
 	 * set of properties is returned.  Otherwise the actual properties
-	 * are returned.
+	 * are returned.</p>
 	 * 
+	 * <p>
 	 * The returned Model is a copy, modifying it will have no
-	 * immediate effect on the database.
+	 * effect on the database.  (Use setDatabaseProperties to
+	 * make changes).</p>
 	 * 
 	 * @since Jena 2.0
 	 */
 	public Model getDatabaseProperties() throws RDFRDBException; 
 	
 	/** Set the database type manually.
+	 * <p>
 	 * This is not for public use (it is preferable to
 	 * specify it in the constructor) - included here to handle
-	 * older code, which didn't use the new constructor.
+	 * older code, which didn't use the new constructor.</p>
 	 * 
 	 * @since Jena 2.0
 	 */
@@ -104,7 +111,7 @@ public interface IDBConnection {
 	public void setDatabaseType( String databaseType );
 	
 	/**
-	 * Retrieve a default set of model customization properties
+	 * Retrieve a default set of model customization properties.
 	 * 
 	 * The returned default set of properties is suitable for use in a call to
 	 * ModelRDB.create(..., modelProperties);

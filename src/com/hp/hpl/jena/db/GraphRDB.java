@@ -16,40 +16,44 @@ import java.util.*;
 
 /**
  *
- * GraphRDB implementation
+ * A persistent Graph implementation using a relational database for storage.
  * 
- * This graph stores data persistently in a relational database.
- * Most application developers should not need to interact directly
- * with GraphRDB, instead use ModelRDB.
+ * <p>This graph stores data persistently in a relational database.
+ * It supports the full Graph interface and should operate just like
+ * a GraphMem.</p>
  * 
- * Each GraphRDB keeps a list of specialized graphs.
- * 
+ * <p>
+ * Internally, each GraphRDB keeps a list of specialized graphs.
  * For each operation, it works through the list of graphs
- * attempting to perform the operation on each one.
+ * attempting to perform the operation on each one.</p>
  * 
+ * <p>
  * The intention is that each type of specialized graph is
  * optimized for a different type of triple.  For example, one
  * type of specialied graph might be optimized for storing
  * triples in a particular ontology.  The last specialized
  * graph in the list is always a generic one that can handle any
- * valid RDF triple.
+ * valid RDF triple.</p>
  * 
- * The order of the specialied graphs is consistent and
+ * <p>
+ * The order of the specialized graphs is consistent and
  * immutable after the graph is constructed.  This aids 
- * optimization.  For example, if a specialied graph
+ * optimization.  For example, if a specialized graph
  * is asked to perform an operatin on a triple, and it knows 
  * that it would have added it if asked, then it can advise the 
  * calling GraphRDB that the operaton is complete even though
  * it doesn't know anything about other specialized graphs later
- * in the list.
+ * in the list.</p>
  * 
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
+	/** The name used for the default graph.
+	 */
     static public final String DEFAULT = "DEFAULT";
 
 	protected IRDBDriver m_driver = null;
@@ -62,13 +66,13 @@ public class GraphRDB extends GraphBase implements Graph {
 	protected int m_reificationBehaviour = 0;
 	
 	/**
-	 * Optimize all triples representing part or all of a reified statement.
+	 * Optimize all triples representing part or all of a reified statement; 
+	 * this is the recommended option.
 	 * 
 	 * <p>
-	 * For common cases, where Graphs either contain mostly reified triples,
-	 * or mostly non-reified triples, this is the best choice.  It optimizes
+	 * This is the best choice in almost every case.  It optimizes
 	 * all reified triples regardless of how they are added to the graph,
-	 * provides a simple interface, and is quite efficient.
+	 * provides a simple interface, and is quite efficient. 
 	 * </p>
 	 * 
 	 * <p> 
@@ -81,12 +85,15 @@ public class GraphRDB extends GraphBase implements Graph {
 
 	/**
 	 * Optimize and hide any triples representing part or all of a reified statement.
-	 * (regardless of whether added by <code>add(Triple)</code> or using the Reifier interface).
 	 * 
 	 * <p>
-	 * If you store a mix of reified and non-reified statments within a single graph
-	 * and you wish to query only non-reified statements, then this is more efficient than
-	 * the other options.  However, it can cause unexpected behaviour, for example, if you do:
+	 * This optimizes all triples but hides them so they are visible only via the reifier interface.
+	 * There is no significant performance advantage in using this option and it is not recommended.
+	 * It is included only for compatability with in-memory graphs.
+	 * </p>
+	 * 
+	 * <p>
+	 * Note that it will also cause unexpected behaviour, for example, if you do:
 	 *   <code>
 	 * 		add(new Triple( s, RDF.predicate, o))
 	 *   </code>
@@ -99,7 +106,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	public static final int OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS = 2;
 
 	/**
-	 * Optimize and hide only fully reified statements added via the Reifier interface.
+	 * Optimize and hide only fully reified statements added via the Reifier interface, use only for backward-compatability with Jena1.
 	 * 
 	 * <p>
 	 * This treats triples added through the Reifier interface as distinct from those
@@ -111,7 +118,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * <p>
 	 * Since many of the techniques for adding triple to Graphs use Graph.add, and
 	 * that is never optimized, this is not usually a good choice.  It is included 
-	 * for backward compability with Jena 1.	
+	 * only for backward compability with Jena 1.	There is no performance advantage
+	 * in using this option.
 	 * </p>
 	 */
 	public static final int OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS = 3;
@@ -131,7 +139,7 @@ public class GraphRDB extends GraphBase implements Graph {
         }
         
 	/**
-	 * Construct a new GraphRDB
+	 * Construct a new GraphRDB using an unusual reification style.
 	 * @param con an open connection to the database
 	 * @param graphID is the name of a graph or GraphRDB.DEFAULT
 	 * @param requestedProperties a set of default properties. 
@@ -140,7 +148,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @param isNew is true if the graph doesn't already exist and 
 	 * false otherwise.  (If unsure, test for existance by using 
 	 * IDBConnection.containsGraph ).
-	 * @deprecated Please use the alernate constructor and explicely choose the desired 
+	 * @deprecated Please use the alternate constructor and choose the desired 
 	 * reification behaviour.
 	 */
 	public GraphRDB( IDBConnection con, String graphID, Graph requestedProperties, boolean isNew) {
@@ -155,8 +163,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * (May be null, if non-null should be a superset of the properties 
 	 * obtained by calling ModelRDB.getDefaultModelProperties ).
 	 * @param reificationBehaviour specifies how this graph should handle reified triples.
-	 * The options are 	OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS, 
-	 * OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS or OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING.
+	 * The options are OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING (strongly recommended), OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS (included only for full compatability with all the options for in-memory Graphs), 
+	 * OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS (included only for compatability with older jena1-style usage).
 	 *
 	 * @param isNew is true if the graph doesn't already exist and 
 	 * false otherwise.  (If unsure, test for existance by using
@@ -499,9 +507,12 @@ public class GraphRDB extends GraphBase implements Graph {
 	public Iterator getSpecializedGraphs() {
 		return m_specializedGraphs.iterator();
 	}
-//*	
+
 	private QueryHandler q = null;
    
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.graph.Graph#queryHandler()
+	 */
 	public QueryHandler queryHandler()
 		{
 		if (q == null) q = new DBQueryHandler( this);
@@ -516,7 +527,7 @@ public class GraphRDB extends GraphBase implements Graph {
 		return m_driver.getDoDuplicateCheck();
 	}
 
-	/*
+	/**
 	* Set the value of DoDuplicateCheck.
 	* @param bool boolean
 	*/
