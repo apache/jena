@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.55 $' Date='$Date: 2003-07-08 09:15:43 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.56 $' Date='$Date: 2003-07-08 13:15:55 $'
  */
 
 public class ModelCom 
@@ -969,7 +969,9 @@ implements Model, ModelI, PrefixMapping, ModelLock
         add a Statement to this Model by adding its SPO components.
     */
     public Model add(Statement s)  {
-        return add( s.getSubject(), s.getPredicate(), s.getObject() );
+        add( s.getSubject(), s.getPredicate(), s.getObject() );
+        listenersAdd( s );
+        return this;
     }
     
     /**
@@ -1421,5 +1423,21 @@ implements Model, ModelI, PrefixMapping, ModelLock
     {
         this.getModelLock().leaveCriticalSection() ;
     }
-            
+        
+    protected ModelChangedListener listener;
+        
+    protected void listenersAdd( Statement s )
+        {
+        if (listener != null) listener.addedStatement( s );
+        }
+        
+    public Model register( ModelChangedListener listener )
+        {
+        this.listener = listener;
+        return this;
+        }
+        
+    public void unregister( ModelChangedListener listener )
+        {
+        }
 }

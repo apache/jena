@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.10 2003-07-03 16:42:01 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.11 2003-07-08 13:15:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -12,7 +12,6 @@ import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.impl.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import junit.framework.*;
 
@@ -490,6 +489,14 @@ public class QueryTest extends GraphTestBase
         assertEquals( expected, q.getVariableCount() );
         q.executeBindings( g, nodes( "?notPresentInQuery" ) );
         assertEquals( expected + 1, q.getVariableCount() );
+        }
+        
+    /**
+        PLACEHOLDER
+    */
+    public void testQueryConstraintNull()
+        {
+        Query q = new Query();
         }
     }
 
