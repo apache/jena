@@ -1,11 +1,10 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.16 2003-04-18 10:45:28 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.17 2003-05-07 20:28:25 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.Arrays;
 class Grammar {
-	static final int owlNothing = -5;
     static final int orphan = 1;
     static final int notype = 2;
     static final int cyclic = 3;
@@ -175,7 +174,7 @@ static int getBuiltinID(String uri) {
        } else if ( uri.equals("Thing") ) {
           return classID;
        } else if ( uri.equals("Nothing") ) {
-          return owlNothing;
+          return classID;
        } else if ( uri.equals("versionInfo") ) {
           return annotationPropID;
        } else if ( uri.equals("imports") ) {
@@ -652,9 +651,8 @@ restriction66disjointWith,
 static final int MAX_SINGLETON_SET = 147 + 1;
 static {
 for (int i=0; i<147; i++) {
-	int j = CategorySet.find(new int[]{i},true);
-if ( i != j )
-      System.err.println("initialization problem: " + i + " != " + j);
+if ( i != CategorySet.find(new int[]{i},true) )
+      System.err.println("initialization problem");
 }
 };
 static final private int SPOA(int s, int p, int o, int a) {

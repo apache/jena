@@ -16,6 +16,7 @@ abstract class CNode extends EnhNode implements CNodeI {
 			if (n.isURI()) {
 				int type = Grammar.getBuiltinID(n.getURI());
                 switch ( type ) {
+                	/*
                 case Grammar.owlNothing:
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
@@ -25,6 +26,7 @@ abstract class CNode extends EnhNode implements CNodeI {
                        )
                     );
 					return new CURIref(n,eg,Grammar.classID);
+					*/
                 	
                 case Grammar.DisallowedVocab:
                 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.1 2003-04-18 20:36:01 jeremy_carroll Exp $
+  $Id: TestPackage.java,v 1.2 2003-05-07 20:27:50 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -22,7 +22,7 @@ public class TestPackage extends TestSuite {
 	private TestPackage() {
 		super("OWL Syntax");
 		addTest( "equivalentProperty/premises005", "Full" );
-		addTest( "Nothing/inconsistent001", "DL" );
+		addTest( "Nothing/inconsistent001", "Lite" );
 		addTest( "I3.4/bad001", "Full" );   
 		addTest( "I4.6/premises001", "Full" );
 		addTest( "I5.24/conclusions001", "Full");
