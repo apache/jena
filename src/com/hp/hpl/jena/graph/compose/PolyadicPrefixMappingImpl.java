@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PolyadicPrefixMappingImpl.java,v 1.2 2004-01-25 16:56:00 chris-dollin Exp $
+  $Id: PolyadicPrefixMappingImpl.java,v 1.3 2004-04-23 10:32:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -140,19 +140,34 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         efficient algorithm available, preprocessing the prefix strings into some
         kind of search table, but for the moment we don't need it.
     */
-    public String usePrefix( String uri )
+    public String shortForm( String uri )
         {
-        String s = getBaseMapping().usePrefix( uri );
+        String s = getBaseMapping().shortForm( uri );
         if (s.equals( uri ))
             {
             List graphs = poly.getSubGraphs();
             for (int i = 0; i < graphs.size(); i += 1)
                 {
-                String ss = ((Graph) graphs.get(i)).getPrefixMapping().usePrefix( uri );
+                String ss = ((Graph) graphs.get(i)).getPrefixMapping().shortForm( uri );
                 if (!ss.equals( uri )) return ss;
                 }
             }
         return s;
+        }
+    
+    public String qnameFor( String uri )
+        {
+        String result = getBaseMapping().qnameFor( uri );
+        if (result == null)
+            {
+            List graphs = poly.getSubGraphs();
+            for (int i = 0; i < graphs.size(); i += 1)
+                {
+                String ss = ((Graph) graphs.get(i)).getPrefixMapping().qnameFor( uri );
+                if (ss != null) return ss;
+                }
+            }
+        return result;
         }
     }
 

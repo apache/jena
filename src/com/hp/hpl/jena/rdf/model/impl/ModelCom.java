@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.87 2004-04-22 12:42:28 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.88 2004-04-23 10:33:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -31,7 +31,6 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.87 $' Date='$Date: 2004-04-22 12:42:28 $'
  */
 
 public class ModelCom 
@@ -870,6 +869,12 @@ implements Model, PrefixMapping, ModelLock
         
     public String usePrefix( String uri )
         { return getPrefixMapping().usePrefix( uri ); }
+    
+    public String qnameFor( String uri )
+        { return getPrefixMapping().qnameFor( uri ); }
+    
+    public String shortForm( String uri )
+        { return getPrefixMapping().shortForm( uri ); }
         
     /**
         Service method to update the namespaces of  a Model given the

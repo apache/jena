@@ -1,18 +1,15 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPolyadicPrefixMapping.java,v 1.2 2004-01-25 16:58:02 chris-dollin Exp $
+  $Id: TestPolyadicPrefixMapping.java,v 1.3 2004-04-23 10:33:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
 
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
-import com.hp.hpl.jena.graph.compose.Polyadic;
-import com.hp.hpl.jena.graph.compose.PolyadicPrefixMappingImpl;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
 
@@ -78,6 +75,14 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
         g1.getPrefixMapping().setNsPrefix( "x", alpha );
         poly.getPrefixMapping().setNsPrefix( "x", beta );
         assertEquals( beta, poly.getPrefixMapping().getNsPrefixURI( "x" ) );
+        }
+    
+    public void testQNameComponents()
+        {
+        g1.getPrefixMapping().setNsPrefix( "x", alpha );
+        g2.getPrefixMapping().setNsPrefix( "y", beta );
+        assertEquals( "x:hoop", poly.getPrefixMapping().qnameFor( alpha + "hoop" ) );
+        assertEquals( "y:lens", poly.getPrefixMapping().qnameFor( beta + "lens" ) );
         }
     
     }

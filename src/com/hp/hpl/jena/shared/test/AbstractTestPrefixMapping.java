@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.14 2004-04-16 15:16:40 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.15 2004-04-23 10:33:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -194,9 +194,16 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     public void testUseEasyPrefix()
        {
        testUseEasyPrefix( "prefix mapping impl", getMapping() );
+       testShortForm( "prefix mapping impl", getMapping() );
        }
     
     public static void testUseEasyPrefix( String title, PrefixMapping ns )
+        {
+        testUsePrefix( title, ns );
+        testShortForm( title, ns );
+        }
+    
+    public static void testUsePrefix( String title, PrefixMapping ns )
         {
         ns.setNsPrefix( "crisp", crispURI );
         ns.setNsPrefix( "butter", butterURI );
@@ -205,6 +212,54 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( title, "crisp:tail", ns.usePrefix( crispURI + "tail" ) );
         assertEquals( title, "butter:here:we:are", ns.usePrefix( butterURI + "here:we:are" ) );
         }
+            
+    public static void testShortForm( String title, PrefixMapping ns )
+        {
+        ns.setNsPrefix( "crisp", crispURI );
+        ns.setNsPrefix( "butter", butterURI );
+        assertEquals( title, "", ns.shortForm( "" ) );
+        assertEquals( title, ropeURI, ns.shortForm( ropeURI ) );
+        assertEquals( title, "crisp:tail", ns.shortForm( crispURI + "tail" ) );
+        assertEquals( title, "butter:here:we:are", ns.shortForm( butterURI + "here:we:are" ) );
+        }
+    
+    public void testEasyQName()
+        {
+        PrefixMapping ns = getMapping();
+        String alphaURI = "http://seasonal.song/preamble/";
+        ns.setNsPrefix( "alpha", alphaURI );
+        assertEquals( "alpha:rowboat", ns.qnameFor( alphaURI + "rowboat" ) );
+        }
+    
+    public void testNoQNameNoPrefix()
+        {
+        PrefixMapping ns = getMapping();
+        String alphaURI = "http://seasonal.song/preamble/";
+        ns.setNsPrefix( "alpha", alphaURI );
+        assertEquals( null, ns.qnameFor( "eg:rowboat" ) );
+        }
+    
+    public void testNoQNameBadLocal()
+        {
+        PrefixMapping ns = getMapping();
+        String alphaURI = "http://seasonal.song/preamble/";
+        ns.setNsPrefix( "alpha", alphaURI );
+        assertEquals( null, ns.qnameFor( alphaURI + "12345" ) );
+        }
+    
+    /**
+        The tests implied by the email where Chris suggested adding qnameFor;
+        shortForm generates illegal qnames but qnameFor does not.
+    */
+    public void testQnameFromEmail()
+        {
+    	String uri = "http://some.long.uri/for/a/namespace#";
+        PrefixMapping ns = getMapping();
+    	ns.setNsPrefix( "x", uri );
+    	assertEquals( null, ns.qnameFor( uri ) );
+        assertEquals( null, ns.qnameFor( uri + "non/fiction" ) );
+        }
+
         
     /**
         test that we can add the maplets from another PrefixMapping without

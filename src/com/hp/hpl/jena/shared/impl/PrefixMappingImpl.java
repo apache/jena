@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.13 2003-12-10 11:58:48 jeremy_carroll Exp $
+  $Id: PrefixMappingImpl.java,v 1.14 2004-04-23 10:33:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
 
+import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import java.util.*;
@@ -154,7 +155,32 @@ public class PrefixMappingImpl implements PrefixMapping
     public String toString()
         { return "pm:" + map; }
         
-
+    /**
+        Answer the qname for <code>uri</code> which uses a prefix from this
+        mapping, or null if there isn't one.
+    <p>
+        Relies on <code>splitNamespace</code> to carve uri into namespace and
+        localname components; this ensures that the localname is legal and we just
+        have to (reverse-)lookup the namespace in the prefix table.
+        
+     	@see com.hp.hpl.jena.shared.PrefixMapping#qnameFor(java.lang.String)
+     */
+    public String qnameFor( String uri )
+        { 
+        int split = Util.splitNamespace( uri );
+        String ns = uri.substring( 0, split ), local = uri.substring( split );
+        if (local.equals( "" )) return null;
+        Map.Entry e = findMapping( ns, false );
+        return e == null ? null : (String) e.getKey() + ":" + local;
+        }
+    
+    /**
+        Obsolete - use shortForm.
+     	@see com.hp.hpl.jena.shared.PrefixMapping#usePrefix(java.lang.String)
+     */
+    public String usePrefix( String uri )
+        { return shortForm( uri ); }
+    
     /**
         Compress the URI using the prefix mapping. This version of the code looks
         through all the maplets and checks each candidate prefix URI for being a
@@ -162,7 +188,7 @@ public class PrefixMappingImpl implements PrefixMapping
         efficient algorithm available, preprocessing the prefix strings into some
         kind of search table, but for the moment we don't need it.
     */
-    public String usePrefix( String uri )
+    public String shortForm( String uri )
         {
         Map.Entry e = findMapping( uri, true );
         return e == null ? uri : e.getKey() + ":" + uri.substring( ((String) e.getValue()).length() );
@@ -188,7 +214,8 @@ public class PrefixMappingImpl implements PrefixMapping
             if (uri.startsWith( ss ) && (partial || ss.length() == uri.length())) return e;
             } 
         return null;         
-        }
+        }    
+
     }
 
 
