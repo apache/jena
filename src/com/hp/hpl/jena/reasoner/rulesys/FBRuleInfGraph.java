@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.42 2004-01-31 15:47:45 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.43 2004-03-02 11:57:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.42 $ on $Date: 2004-01-31 15:47:45 $
+ * @version $Revision: 1.43 $ on $Date: 2004-03-02 11:57:15 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -124,6 +124,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         tempNodecache = new TempNodeCache(this);
         if (JenaParameters.enableFilteringOfHiddenInfNodes) {
             hiddenNodes = new HashSet();
+            if (schema != null && schema instanceof FBRuleInfGraph) {
+                hiddenNodes.addAll(((FBRuleInfGraph)schema).hiddenNodes);
+            }
         }
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.18 2004-02-02 14:21:52 der Exp $
+ * $Id: TestBugs.java,v 1.19 2004-03-02 11:56:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2004-02-02 14:21:52 $
+ * @version $Revision: 1.19 $ on $Date: 2004-03-02 11:56:12 $
  */
 public class TestBugs extends TestCase {
 
@@ -399,6 +399,16 @@ public class TestBugs extends TestCase {
         TestUtil.assertIteratorLength(inf.listStatements(y, null, (RDFNode)null), 0);
     }
     
+    /**
+     * Bug that exposed prototypes of owl:Thing despite hiding being switched on.
+     */
+    public void testHideOnOWLThing() {
+        Reasoner r = ReasonerRegistry.getOWLReasoner();
+        Model data = ModelFactory.createDefaultModel();
+        InfModel inf = ModelFactory.createInfModel(r, data);
+        StmtIterator things = inf.listStatements(null, RDF.type, OWL.Thing);
+        TestUtil.assertIteratorLength(things, 0);
+    }
     
     // debug assistant
     private void tempList(Model m, Resource s, Property p, RDFNode o) {
