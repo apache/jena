@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-30 09:45:20 $
+ * Last modified on   $Date: 2004-01-30 20:53:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -78,6 +78,24 @@ public class TestBugReports extends TestCase {
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
+    }
+    
+    
+    /** Bug report by Danah Nada - listIndividuals returning too many results */
+    public void test_dn_0() {
+        OntModel schema = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM_RULES_INF, null );
+        
+        schema.read( "file:doc/inference/data/owlDemoSchema.xml", null );
+
+        for (Iterator i = schema.listIndividuals(); i.hasNext(); ) {
+            Resource r = (Resource) i.next();
+            
+            /* Debugging 
+            for (StmtIterator j = r.listProperties(RDF.type); j.hasNext(); ) {
+                System.out.println( "ind - " + r + " rdf:type = " + j.nextStatement().getObject() );
+            }
+            System.out.println("----------"); */
+        }
     }
     
     

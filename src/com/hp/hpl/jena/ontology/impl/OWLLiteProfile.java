@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-30 20:53:34 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -24,7 +24,13 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+
+import java.util.*;
 
 
 
@@ -35,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.8 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: OWLLiteProfile.java,v 1.9 2004-01-30 20:53:34 ian_dickinson Exp $
  */
 public class OWLLiteProfile
     extends OWLProfile
@@ -86,12 +92,191 @@ public class OWLLiteProfile
     // Internal implementation methods
     //////////////////////////////////
 
-
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
+    protected static Object[][] s_supportsCheckData = new Object[][] {
+            // Resource (key),              check method
+            {  AllDifferent.class,          new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.AllDifferent.asNode() );
+                }
+            }
+            },
+            {  AnnotationProperty.class,    new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    for (Iterator i = ((OntModel) g).getProfile().getAnnotationProperties();  i.hasNext(); ) {
+                        if (((Resource) i.next()).asNode().equals( n )) {
+                            // a built-in annotation property
+                            return true;
+                        }
+                    }
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() );
+                }
+            }
+            },
+            {  OntClass.class,              new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) || 
+                    g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() );
+                }
+            }
+            },
+            {  DatatypeProperty.class,      new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
+                }
+            }
+            },
+            {  ObjectProperty.class,        new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() );
+                }
+            }
+            },
+            {  FunctionalProperty.class,    new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.FunctionalProperty.asNode() );
+                }
+            }
+            },
+            {  InverseFunctionalProperty.class, new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() ) &&
+                    !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
+                }
+            }
+            },
+            {  ObjectProperty.class,        new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() );
+                }
+            }
+            },
+            {  RDFList.class,               new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return n.equals( RDF.nil.asNode() )  ||
+                    g.asGraph().contains( n, RDF.type.asNode(), RDF.List.asNode() );
+                }
+            }
+            },
+            {  OntProperty.class,           new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), RDF.Property.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() );
+                }
+            }
+            },
+            {  Ontology.class,              new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Ontology.asNode() );
+                }
+            }
+            },
+            {  Restriction.class,           new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() );
+                }
+            }
+            },
+            {  AllValuesFromRestriction.class,   new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
+                    containsSome( g, n, OWL.allValuesFrom ) &&
+                    containsSome( g, n, OWL.onProperty );
+                }
+            }
+            },
+            {  SomeValuesFromRestriction.class,   new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
+                    containsSome( g,n, OWL.someValuesFrom ) &&
+                    containsSome( g,n, OWL.onProperty );
+                }
+            }
+            },
+            {  CardinalityRestriction.class,   new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
+                    containsSome( g, n, OWL.cardinality ) &&
+                    containsSome( g, n, OWL.onProperty );
+                }
+            }
+            },
+            {  MinCardinalityRestriction.class,   new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
+                    containsSome( g, n, OWL.minCardinality ) &&
+                    containsSome( g, n, OWL.onProperty );
+                }
+            }
+            },
+            {  MaxCardinalityRestriction.class,   new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
+                    containsSome( g, n, OWL.maxCardinality ) &&
+                    containsSome( g, n, OWL.onProperty ); 
+                }
+            }
+            },
+            {  SymmetricProperty.class,     new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) &&
+                    !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
+                }
+            }
+            },
+            {  TransitiveProperty.class,    new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) &&
+                    !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
+                }
+            }
+            },
+            {  Individual.class,    new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph eg ) {
+                    if (n instanceof Node_URI || n instanceof Node_Blank) {
+                        // necessary to be a uri or bNode, but not sufficient
+                        Graph g = eg.asGraph();
+                        
+                        // this check filters out OWL-full entailments from the OWL-rule reasoner
+                        return !(g.contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
+                                 g.contains( n, RDF.type.asNode(), RDF.Property.asNode() ));                            
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+            }};
+    
 
+    // to allow concise reference in the code above.
+    public static boolean containsSome( EnhGraph g, Node n, Property p ) {
+        return AbstractProfile.containsSome( g, n, p ); 
+    }
+    
+    // Static variables
+    //////////////////////////////////
+
+    /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
+    private static HashMap s_supportsChecks = new HashMap();
+    
+    static {
+        // initialise the map of supports checks from a table of static data
+        for (int i = 0;  i < s_supportsCheckData.length;  i++) {
+            s_supportsChecks.put( s_supportsCheckData[i][0], s_supportsCheckData[i][1] );
+        }
+    }
+
+    protected Map getCheckTable() {
+        return s_supportsChecks;
+    }
 }
 
 

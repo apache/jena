@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-06 17:21:55 $
+ * Last modified on   $Date: 2004-01-30 20:53:35 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.22 2003-11-06 17:21:55 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.23 2004-01-30 20:53:35 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -189,7 +189,7 @@ public class OWLProfile
             }
             else {
                 // lookup the profile check for this resource
-                SupportsCheck check = (SupportsCheck) s_supportsChecks.get( type );
+                SupportsCheck check = (SupportsCheck) getCheckTable().get( type );
                 
                 // a check must be defined for the test to succeed
                 return (check != null)  && check.doCheck( n, g );  
@@ -230,7 +230,7 @@ public class OWLProfile
     // Table of check data
     //////////////////////
     
-    private static Object[][] s_supportsCheckTable = new Object[][] {
+    private static Object[][] s_supportsCheckData = new Object[][] {
         // Resource (key),              check method
         {  AllDifferent.class,          new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
@@ -391,27 +391,30 @@ public class OWLProfile
                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.DataRange.asNode() );
                                             }
                                         }
-        },
-    };
+        }};
 
     // to allow concise reference in the code above.
     public static boolean containsSome( EnhGraph g, Node n, Property p ) {
         return AbstractProfile.containsSome( g, n, p ); 
-        }
-        
+    }
+    
+    
     // Static variables
     //////////////////////////////////
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
-    protected static HashMap s_supportsChecks = new HashMap();
+    private static HashMap s_supportsChecks = new HashMap();
     
     static {
         // initialise the map of supports checks from a table of static data
-        for (int i = 0;  i < s_supportsCheckTable.length;  i++) {
-            s_supportsChecks.put( s_supportsCheckTable[i][0], s_supportsCheckTable[i][1] );
+        for (int i = 0;  i < s_supportsCheckData.length;  i++) {
+            s_supportsChecks.put( s_supportsCheckData[i][0], s_supportsCheckData[i][1] );
         }
     }
 
+    protected Map getCheckTable() {
+        return s_supportsChecks;
+    }
 }
 
 

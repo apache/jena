@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.56 $
+ * Revision           $Revision: 1.57 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-30 17:29:11 $
+ * Last modified on   $Date: 2004-01-30 20:53:35 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.56 2004-01-30 17:29:11 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.57 2004-01-30 20:53:35 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2229,7 +2229,8 @@ public class OntModelImpl
         }
         
         // map each answer value to the appropriate ehnanced node
-        return mainQuery.mapWith( new SubjectNodeAs( asKey ) );
+        return mainQuery.filterKeep( new SubjectNodeCanAs( asKey ) )
+                        .mapWith( new SubjectNodeAs( asKey ) );
     }
     
     // output operations - delegate to base model
@@ -2632,7 +2633,27 @@ public class OntModelImpl
         
     }
     
-    
+    /** Filter that accepts nodes that can be mapped to the given facet */
+    protected class SubjectNodeCanAs implements Filter
+    {
+        protected Class m_asKey;
+        protected SubjectNodeCanAs( Class asKey ) { m_asKey = asKey; }
+        
+        public boolean accept( Object x ) {
+            Node n = (x instanceof Triple) 
+                    ? ((Triple) x).getSubject() 
+                    : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);
+            try {
+                getNodeAs( n, m_asKey );
+            }
+            catch (Exception ignore) {
+                return false;
+            }
+            
+            return true;
+        }
+        
+    }
     
     /** Project out the first element of a list of bindings */
     protected class GetBinding implements Map1
