@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.31 2003-07-01 12:48:12 chris-dollin Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.32 2003-07-10 18:40:47 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.31 $ on $Date: 2003-07-01 12:48:12 $
+* @version $Revision: 1.32 $ on $Date: 2003-07-10 18:40:47 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -425,7 +425,7 @@ public void deleteTripleAR(
 
 	// get statement string	   	   
 	PreparedStatement ps = null;
-	stmtStr = isReif ? "deleteReifStatement" : "deleteStatement";
+	stmtStr = isReif ? "deleteReified" : "deleteStatement";
 	try {
 		ps =
 			getPreparedStatement(
@@ -586,7 +586,7 @@ public void deleteTripleAR(
 		// get statement string
 
 		PreparedStatement ps = null;
-		stmtStr = isReif ? "insertReifStatement" : "insertStatement";
+		stmtStr = isReif ? "insertReified" : "insertStatement";
 		try {
 			ps =
 				getPreparedStatement(
@@ -819,7 +819,7 @@ public void deleteTripleAR(
 		String subj = null;
 		String pred = null;
 		String obj = null;
-		String op = "SelectStatement";
+		String op = "selectStatement";
 		int args = 1;
 
 		if (subj_node != null) {
