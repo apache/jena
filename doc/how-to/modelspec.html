@@ -1,7 +1,6 @@
 <html>
 <head>
 <title>ModelSpec howto</title>
-<link href="../styles/doc.css" rel="stylesheet" type="text/css">
 <style>
 pre {
     background-color: #eee;
@@ -9,6 +8,7 @@ pre {
     margin-bottom: 2mm;
     margin-left: 0;
     }
+<link href="../styles/doc.css" rel="stylesheet" type="text/css">
 </style>
 </head>
 <body>
@@ -39,15 +39,21 @@ that resource has. [Fortunately, the current type tree allows this.]
 <p>That type identifies the kind of Java ModelSpec to create. The
 constructor for that type analyses the description to find the
 relevant properties: irrelevant ones are ignored. [The mapping from
-RDF types to ModelSpecCreators is driven from 
+RDF types to ModelSpecCreators is driven from the
 <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpecCreatorRegistry.html">
-and is extensible.]</a>
+ModelSpecCreatorRegistry
+</a>
+and is extensible.]
+
+[Future versions of <code>ModelSpec</code> will allow models to contain
+multiple descriptions, with the appropriate one to be selected by root
+subject name, and for models to be specified by URL as well as directly.]
 
 <h1>using a ModelSpec</h1>
 
 <code>ModelSpec</code>s can be used to create models, and they can
 regenerate their descriptions. The full set of methods is described
-in <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpec.html">ModelSpec's #
+in <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpec.html">ModelSpec's
 javadoc</a>, but the three directly useful to users are:
 
 <ul>
@@ -74,7 +80,8 @@ javadoc</a>, but the three directly useful to users are:
 
 In these descriptions, we write triples one per line, using the Jena
 standard prefixes and <code>_A, _B</code> etc being bnodes. The root 
-subject of the description we call <code>_this</code>.
+subject of the description we call <code>_this</code>. Your own descriptions
+can use whatever named resources and bnodes you like.
 
 <h2>PlainModelSpec, no frills</h2>
 
@@ -121,7 +128,8 @@ such <code>ModelSpec</code> will create its own connection.
 
 Inference models require a reasoner specification as well as a
 base ModelMaker. In the current ModelSpec implementation, the
-reasoner only requires the URI describing the necessary inference.
+reasoner only requires the URI describing the necessary inference:
+other reasoner properties will be introduced in later revisions.
 
 <pre>
     _this jms:maker _M

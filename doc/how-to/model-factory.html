@@ -32,16 +32,16 @@ consult the Javadoc for details of the methods and classes to use.
 The simplest way to create a model (if not the shortest) is to call
 <code>ModelFactory.createDefaultModel()</code>. This [by default] delivers a
 plain RDF model, stored in-memory, that does no inference and has no special
-ontology.
+ontology interface.
 
-<blockquote>
+<blockquote style="background-color: pink">
     Jena 1 users used to <code>new ModelMem()</code> for creating models
     should switch to using <code>createDefaultModel()</code>.
 </blockquote>
 
 <h1>ModelMakers</h1>
 
-Plain models can be given names which allows them "saved" and looked up by
+Plain models can be given names which allows them to be "saved" and looked up by
 name later. This is handled by implementations of the interface
 <code>ModelMaker</code>; each <code>ModelMaker</code> produces Models of the
 same kind. The simplest kind of <code>ModelMaker</code> is a memory model
@@ -52,7 +52,7 @@ to start with on a ModelMaker are:
 <ul>
 
 <li><code>createModel(String)</code>: create a model with the given name in
-the ModelMaker. If a model with that name already exists, then that model iis
+the ModelMaker. If a model with that name already exists, then that model is
 used instead.
 
 <li><code>openModel(String)</code>: open an existing model with the given
@@ -116,7 +116,7 @@ And methods corresponding to those already discussed:
 <li><code>ModelFactory.createMemModelMaker(style)</code> creates a ModelMaker
     that creates memory models with the specified reification style.
     
-<li><code>ModelFactory.createMemModelMaker(root,style)</code></li> creates
+<li><code>ModelFactory.createFileModelMaker(root,style)</code></li> creates
     a ModelMaker that creates file-associated models with the specified reification
     style.
 </ul>
@@ -128,9 +128,9 @@ Javadoc for appropriate details.
 <h1>database model creation</h1>
 
 Jena allows models to be created within databases. For an extensive discussion
-of the available optiosn and controls, see the <a href="../DB/index.html">database 
-howto documents</a>. The current ModelFactory interface aonly provides simple
-acecss to database model creation.
+of the available options and controls, see the <a href="../DB/index.html">database 
+howto documents</a>. The current ModelFactory interface only provides simple
+access to database model creation.
 
 <p>ModelFactory creation of models takes place through RDB ModelMakers:
 
@@ -146,11 +146,11 @@ likely to be significantly slower, and persist over application termination.
 <p>The connection can be created in two ways:
 
 <ul>
-<li><code>ModelFactory.createSimpleRDBConnection(url,user,pass,type)</code>, which
+<li><code>ModelFactory.createSimpleRDBConnection(url,user,pass,type)</code>:
     creates a connection to the database with the given JDBC url, the given user
     and password, and the database type. 
 
-<li><code>ModelFactory.createSimpleRDBConnection()</code></li>, which creates
+<li><code>ModelFactory.createSimpleRDBConnection()</code>: creates
     a connection to the database, taking the URL from the system property <b>jena.db.url</b>,
     the user name from <b>jena.db.user</b>, the password from <b>jena.db.password</b>,
     and the database type from <b>jena.db.type</b>.
@@ -182,7 +182,7 @@ inferred model alongside the statements from the base model itself.
     base model using the built-in RDFS inference rules and any RDFS statements
     in the base model.
      
-<li><code>createRDFSModel(Model schema, Model base) </code> creates an RDFS
+<li><code>createRDFSModel(Model schema, Model base)</code> creates an RDFS
     inference model from the base model and the supplied schema model. The advantage
     of supplying the schema separately is that the reasoner may be able to compute
     useful information in advance on the assumption that the schema won't change,
@@ -197,7 +197,7 @@ required:
     an inference model using the rules of <code>reasoner</code> over the
     model <code>base</code>.
 
-<li><code></code>createInfModel(Reasoner reasoner, Model schema, Model base)</code>
+<li><code>createInfModel(Reasoner reasoner, Model schema, Model base)</code>
     Just as for the RDFS case, the schema may be supplied separately to allow the
     reasoner to digest them before working on the model.
 </ul>
@@ -205,14 +205,14 @@ required:
 Ah, but from where do you fetch your reasoners? From the <i>reasoner registry</i>,
 the class <a href="../javadoc/com/hp/hpl/jena/reasoner/ReasonerRegistry.html">
 ReasonerRegistry</a>. This allows reasoners to be looked up by name, but also
-provides some predefined constants:
+provides some predefined access methods for well-know reasoners:
 
 <ul>
-<li><code>theOWLReasoner</code>: the reasoner used for OWL inference
+<li><code>getOWLReasoner()</code>: the reasoner used for OWL inference
 
-<li><code>theRDFSReasoner</code>: the reasoner used for RDFS inference
+<li><code>getRDFSReasoner()</code>: the reasoner used for RDFS inference
 
-<li><code>theTRANSITIVEReasoner</code>: a reasoner for doing subclass and
+<li><code>getTransitiveReasoner()</code>: a reasoner for doing subclass and
     supproperty closure.
 </ul>
 
@@ -220,7 +220,7 @@ provides some predefined constants:
 <h1>ontology model creation</h1>
 
 An <i>ontology model</i> is one that presents RDF as an ontology - classes,
-individuals, different kinds of propertys, and so forth. Jena supports OWL
+individuals, different kinds of properties, and so forth. Jena supports RDFS, OWL,
 and DAML ontologies through <i>profiles</i>. There is extensive documentation
 on <a href="../ontology/index.html">Jena's ontology support</a>, so all we'll
 do here is summarise the creation methods.
@@ -252,7 +252,7 @@ in the class which provide for common uses; to name but three:
     no additional inferences
     
 <li><code>OntModelSpec.OWL_DL_MEM_RULE_INF</code> OWL ontologies, in memory,
-    with the full OWL inference
+    with the full OWL Lite inference
 </ul>
 
 <h1>ModelSpecs</h1>
