@@ -45,4 +45,3 @@
 []	lm:mapping [ lm:name "file:foo.n3" ; lm:altName "file:etc/foo.n3" ] .
 []	lm:mapping [ lm:prefix "file:etc/" ; lm:altPrefix "file:ETC/" ] .
 []	lm:mapping [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ] .
-	.
