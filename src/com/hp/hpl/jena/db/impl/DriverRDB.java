@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.2 $ on $Date: 2003-04-30 21:18:24 $
+* @version $Revision: 1.3 $ on $Date: 2003-04-30 23:55:37 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -43,6 +43,11 @@ public abstract class DriverRDB implements IRDBDriver {
 // Cutomization variables
 // =======================================================================
    /**
+    * This Graph's db properties
+    */
+   protected DBPropDatabase m_dbProps;
+    
+	/**
 	* Name of this class's PSet_TripleStore_XXX class
 	*/
    protected String m_psetClassName;
@@ -198,7 +203,7 @@ public abstract class DriverRDB implements IRDBDriver {
 						
 		// The following call constructs a new set of database properties and
 		// adds them to the m_sysProperties specialized graph.
-		new DBPropDatabase( m_sysProperties, createUniqueIdentifier(), 
+		m_dbProps = new DBPropDatabase( m_sysProperties, createUniqueIdentifier(), 
 							m_dbcon.getDatabaseType(), VERSION, String.valueOf(MAX_LITERAL));
 			
 		// Now we also need to construct the parameters that will be the
@@ -381,33 +386,29 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @param graphId The identity of the Graph which these specialized graphs should hold
 	 * @param graphProperties The properties for the graph to be removed.
 	 */
-	public void removeSpecializedGraphs(DBPropGraph graphProperties){
-		Iterator L_iter = graphProperties.getAllLSets();
-		
-		DBPropLSet lProp;
-		DBPropPSet pProp;
-		while (L_iter.hasNext()) {
-			lProp = (DBPropLSet) L_iter.next();
-			pProp = lProp.getPset();
+	public void removeSpecializedGraphs( DBPropGraph graphProperties,
+		List specializedGraphs) {
 			
-			// get handle to specialized graph
-			SpecializedGraph sg = pProp.graph;
-			
-			// remove each SpecializedGraph from the main graph (via properties)
-			
-			// remove database tables
-			sg.clear();
-			
-			// remove from system properties table
-			// It is sufficient just to remove the lSet properties (it will
-			// take care of deleting any pset properties automatically).			
-			lProp.remove();
-			
+		Iterator it = specializedGraphs.iterator();
+		while (it.hasNext()){
+		   removeSpecializedGraph((SpecializedGraph) it.next());
 		}
-		
+
+		// remove from system properties table
+		// It is sufficient just to remove the lSet properties (it will
+		// take care of deleting any pset properties automatically).			
+		m_dbProps.removeGraph(graphProperties);
 	}
 	
 	
+	/**
+	 * Remove specialized graph from the datastore.
+	 * @param graph is the graph to be removed.
+	 */
+	private void removeSpecializedGraph(SpecializedGraph graph) {
+		graph.clear();		
+	}
+
 	/**
 	 * Method setDatabaseProperties.
 	 * 
