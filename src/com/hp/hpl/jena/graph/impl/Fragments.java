@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Fragments.java,v 1.8 2004-06-30 12:57:58 chris-dollin Exp $
+  $Id: Fragments.java,v 1.9 2004-09-14 17:46:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -14,11 +14,9 @@ import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
-    A <code>Fragments</code> object represents the reification triples that have been
-    asserted about some node. The triples may form an incomplete or
-    inconsistent reification. They may even form a complete, single
-    reification. Rather than keeping the triples, we keep the subject node
-    (the one that has ref:subject etc properties) and sets of objects for
+    A <code>Fragments</code> object represents the incomplete or over-specified
+    reification triples that have been asserted about some node. Rather than keeping 
+    the triples, we keep the subject node (the one that has ref:subject etc properties) and sets of objects for
     each of the four relevant properties.
 <p>
     See SimpleReifier for the use of Fragments. A longer and more
