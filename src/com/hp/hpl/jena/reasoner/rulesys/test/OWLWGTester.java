@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.14 2003-08-15 16:11:17 der Exp $
+ * $Id: OWLWGTester.java,v 1.15 2003-08-17 20:09:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-08-15 16:11:17 $
+ * @version $Revision: 1.15 $ on $Date: 2003-08-17 20:09:57 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -177,7 +177,7 @@ public class OWLWGTester {
         Model result = ModelFactory.createModelForGraph(graph);
         
         if (stats && graph instanceof FBLPRuleInfGraph) {
-            ((FBLPRuleInfGraph)graph).resetLPProfile(true);
+//            ((FBLPRuleInfGraph)graph).resetLPProfile(true);
         }
         
         // Check the results against the official conclusions

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.22 2003-08-15 16:10:30 der Exp $
+ * $Id: RuleClauseCode.java,v 1.23 2003-08-17 20:09:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-08-15 16:10:30 $
+ * @version $Revision: 1.23 $ on $Date: 2003-08-17 20:09:18 $
  */
 public class RuleClauseCode {
     
@@ -114,7 +114,13 @@ public class RuleClauseCode {
     /** Allocate a new environment frame */
     public static final byte ALLOCATE = 0x16;
     
-    // current next = 0x20
+    /** Test if an argument is bound (Ai) */
+    public static final byte TEST_BOUND = 0x20;
+    
+    /** Test if an argument is unbound (Ai) */
+    public static final byte TEST_UNBOUND = 0x21;
+    
+    // current next = 0x22
     
     /** The maximum number of permanent variables allowed in a single rule clause. 
      *   Future refactorings will remove this restriction. */
@@ -173,7 +179,10 @@ public class RuleClauseCode {
      */
     public void compile(LPRuleStore ruleStore) {
         CompileState state = new CompileState(rule);
-
+        
+        // Compile any early binding tests
+        int skip = 0; // state.emitBindingTests();
+        
         // Compile the head operations
         ClauseEntry head = rule.getHeadElement(0);
         if (!(head instanceof TriplePattern)) {
@@ -182,7 +191,7 @@ public class RuleClauseCode {
         state.emitHead((TriplePattern)head);
         
         // Compile the body operations
-        for (int i = 0; i < rule.bodyLength(); i++) {
+        for (int i = skip; i < rule.bodyLength(); i++) {
             ClauseEntry entry = rule.getBodyElement(i);
             if (entry instanceof TriplePattern) {
                 state.emitBody((TriplePattern)entry, ruleStore);
@@ -238,6 +247,12 @@ public class RuleClauseCode {
                     break;
                 case PUT_DEREF_VARIABLE:
                     out.println("PUT_DEREF_VARIABLE " + "Y" + code[p++] + ", A" + code[p++]);
+                    break;
+                case TEST_BOUND:
+                    out.println("TEST_BOUND A" + code[p++]);
+                    break;
+                case TEST_UNBOUND:
+                    out.println("TEST_UNBOUND A" + code[p++]);
                     break;
                 case CALL_PREDICATE:
                     out.println("CALL_PREDICATE " + args[argi++]);
@@ -338,6 +353,53 @@ public class RuleClauseCode {
             // Create a scratch area for assembling the code, use a worst-case size estimate
             code = new byte[10 + totalOccurrences + rule.bodyLength()*10];
             args = new ArrayList();
+        }
+        
+        /**
+         * Emit the code for any bound/unbound tests add start of body
+         * and return the number of body clauses dealt with.
+         */
+        int emitBindingTests() {
+            int i = 0;
+            while  (i < rule.bodyLength()) {
+                ClauseEntry term = rule.getBodyElement(i);
+                if (term instanceof Functor) {
+                    Functor f = (Functor)term;
+                    if (f.getArgLength() != 1) break;
+                    int ai = aIndex(f.getArgs()[0]);
+                    if (ai >= 0) {
+                        if (f.getName().equals("bound")) {
+                            code[p++] = TEST_BOUND;
+                            code[p++] = (byte)ai;
+                        } else if (f.getName().equals("unbound")) {
+                            code[p++] = TEST_UNBOUND;
+                            code[p++] = (byte)ai;
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    break;
+                }
+                i++;
+            }
+            return i;
+        }
+        
+        /**
+         * Return the argument index of the given variable.
+         */
+        int aIndex(Node n) {
+            TriplePattern tp = (TriplePattern)rule.getHeadElement(0);
+            if (tp.getSubject() == n) {
+                return 0;
+            } else if (tp.getPredicate() == n) {
+                return 1;
+            } else if (tp.getObject() == n) {
+                return 2;
+            } else {
+                return -1;
+            }
         }
         
         /** 
@@ -584,10 +646,10 @@ public class RuleClauseCode {
                         inBuiltin = true;
                     }
                 }
-                if (inBuiltin) {
-                    // inBuiltin case is overkill but safe
-                    permanentVars.add(var);
-                } else {
+                // Don't think we need to protected builtin's any more, so ignore that test
+//                if (inBuiltin) {
+//                    permanentVars.add(var);
+//                } else {
                     if (!isDummy(var)) {
                         if (inLaterBody || !inFirst) {
                             permanentVars.add(var);
@@ -595,7 +657,7 @@ public class RuleClauseCode {
                             tempVars.add(var);
                         }
                     }
-                }
+//                }
                  
             }
             
@@ -704,7 +766,8 @@ public class RuleClauseCode {
             String test16 = "(a p b ) <- unbound(?x).";
             String test17 = "(?a p ?a) <- (?a q class).";
             String test18 = "(?a p ?a) <- (?a s ?a).";
-            store.addRule(Rule.parseRule(test18));
+            String test19 = "(?X p ?T) <- (?X rdf:type c), noValue(?X, p), makeInstance(?X, p, ?T).";
+            store.addRule(Rule.parseRule(test15));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.11 2003-08-15 16:10:30 der Exp $
+ * $Id: LPRuleStore.java,v 1.12 2003-08-17 20:09:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-15 16:10:30 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-17 20:09:18 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -130,7 +130,10 @@ public class LPRuleStore extends RuleStore {
      * tabled predictes exist.
      */
     public boolean isTabled(TriplePattern goal) {
-        return isTabled(goal.getPredicate());
+        // This version forces tabling of all goals anyway
+        return true;
+        // Original used selective tabling, small perf disadvantage on early tests
+//        return isTabled(goal.getPredicate());
     }
     
     /**

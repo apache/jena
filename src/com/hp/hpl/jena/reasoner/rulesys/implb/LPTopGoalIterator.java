@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.8 2003-08-14 07:51:10 der Exp $
+ * $Id: LPTopGoalIterator.java,v 1.9 2003-08-17 20:09:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * inference graph if the iterator hits the end of the result set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-14 07:51:10 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-17 20:09:17 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
@@ -54,7 +54,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
 //        engine.setState(this);
         engine.setTopInterpreter(this);
     }
-    
+        
     /**
      * Find the next result in the goal state and put it in the
      * lookahead buffer.
@@ -134,13 +134,15 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
      */
     public void close() {
         if (interpreter != null) {
-            lookAhead = null;
-            interpreter.close();
-            interpreter = null;
-            isReady = false;
-            checkReadyNeeded = false;
-            nextToRun = null;
-            choicePoints = null;
+            synchronized (interpreter.getEngine().getInfGraph()) {
+                lookAhead = null;
+                interpreter.close();
+                interpreter = null;
+                isReady = false;
+                checkReadyNeeded = false;
+                nextToRun = null;
+//                choicePoints = null;  // disabled to prevent async close causing problems
+            }
         }
     }
 

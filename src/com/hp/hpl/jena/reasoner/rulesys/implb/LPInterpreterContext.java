@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreterContext.java,v 1.1 2003-08-10 21:49:41 der Exp $
+ * $Id: LPInterpreterContext.java,v 1.2 2003-08-17 20:09:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -15,7 +15,7 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * suspended awaiting further results for a given generator.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-10 21:49:41 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-17 20:09:17 $
  */
 public interface LPInterpreterContext extends LPInterpreterState {
 
@@ -33,6 +33,9 @@ public interface LPInterpreterContext extends LPInterpreterState {
     /** Called by a generating choice point to indicate we can be run
      * because the indicated choice point is ready. */
     public void setReady(ConsumerChoicePointFrame ccp);
+    
+//    /** Return an estimate of the distance of this context from the top level one */
+//    public int getDepth();
 }
 
 

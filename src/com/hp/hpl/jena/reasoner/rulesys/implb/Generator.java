@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Generator.java,v 1.10 2003-08-15 16:10:30 der Exp $
+ * $Id: Generator.java,v 1.11 2003-08-17 20:09:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-15 16:10:30 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-17 20:09:18 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -61,6 +61,12 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     
     /** True if this generator can produce at most one answer */
     protected boolean isSingleton;
+    
+//    /** Distance of generator from top level goal, used in scheduling */
+//    protected int depth = DEFAULT_DEPTH;
+//    
+//    /** Default depth if not known */
+//    public static final int DEFAULT_DEPTH = 100;
     
     /**
      * Constructor.
@@ -104,7 +110,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     }
     
     /**
-     * Directly set that this generator is ready (because the generating
+     * Directly set that this generator is ready (because the generator
      * for one of its generatingCPs has produced new results).
      */
     public void setReady(ConsumerChoicePointFrame ccp) {
@@ -121,6 +127,21 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     public boolean isComplete() {
         return interpreter == null;
     }
+    
+//    /**
+//     * Return the estimated number of generators between the top level goal and this one.
+//     */
+//    public int getDepth() {
+//        return depth;
+//    }
+    
+//    /**
+//     * Set the depth of this generator, it will not be propagated until
+//     * a further depednents are found.
+//     */
+//    public void setDepth(int d) {
+//        depth = d;
+//    }
     
     /**
      * Signal that this generator is complete, no more results can be created.
@@ -148,6 +169,9 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      */
     public void addConsumer(ConsumerChoicePointFrame ccp) {
         consumingCPs.add(ccp);
+//        // Update distance from top goal
+//        int newDepth = ccp.context == null ? 1 : ccp.context.getDepth() + 1;
+//        if (newDepth < depth) depth = newDepth;
     }
     
     /**
@@ -203,11 +227,6 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      */
     public synchronized void pump(LPInterpreterState context) {
         if (isComplete()) return;
-        if (consumingCPs.isEmpty()) {
-            System.out.println("*** Cleaning up unused generator");       // TODO: remove
-            setComplete();
-            return;
-        }
         interpreter.setState(context);
         int priorNresults = results.size();
         while (true) {
@@ -229,65 +248,55 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
         if (results.size() > priorNresults) {
             notifyResults();
         }
-        checkForCompletions();
+        // Early termination check, close a singleton as soon as we have the ans
+        if (isSingleton && results.size() == 1) {
+            setComplete();
+        }
+        if (LPBRuleEngine.CYCLES_BETWEEN_COMPLETION_CHECK == 0) {
+            checkForCompletions();
+        }
+    }
+    
+    /**
+     * Return the generator associated with this entry (might be the entry itself)
+     */
+    public Generator getGenerator() {
+        return this;
     }
     
     /**
      * Check for deadlocked states where none of the generators we are (indirectly)
      * dependent on can run.
      */
-    protected void checkForCompletions() {
-        if (isSingleton && results.size() == 1) {
-            // Special, terminate a singleton as soon as we have the answer
-            setComplete();
-            return;
-        }
-        
+    public void checkForCompletions() {
         HashSet visited = new HashSet();
         if (runCompletionCheck(visited) != LFlag.LIVE) {
-            // The scan may have left some nodes as unknown so need to 
-            // propagate LIVE flags back up to decide if they are a closed loop.
-            HashSet suspects = new HashSet();
-            HashSet newLive = new HashSet();
-            for (Iterator iv = visited.iterator(); iv.hasNext(); ) {
-                Generator g = (Generator)iv.next();
-                if (g.completionState == LFlag.UNKNOWN) {
-                    suspects.add(g);
-                } else if (g.completionState == LFlag.LIVE) {
-                    newLive.add(g);
-                }
-            }
-            while (newLive.size() > 0) {
-                HashSet temp = new HashSet();
-                for (Iterator il = newLive.iterator(); il.hasNext(); ) {
-                    Generator g = (Generator)il.next();
-                    for (Iterator id = g.consumingCPs.iterator(); id.hasNext(); ) {
-                        Generator dep = (Generator)id.next();
-                        if (suspects.contains(dep)) {
-                            suspects.remove(dep);
-                            dep.completionState = LFlag.LIVE;
-                            temp.add(dep);
-                        }
-                    }
-                }
-                newLive = temp;
-            }
-            // Any remaining suspects are DEAD, have no indirect live generators
-            for (Iterator ic = suspects.iterator(); ic.hasNext(); ) {
-                Generator g = (Generator)ic.next();
-                g.setComplete();
-            }
-        } else {
-            // We are known to be live. We could also check for dead branches of
-            // subgraph we have searched but don't think there will be any. Worst
-            // that happens if I'm wrong is the those will get completed when someone
-            // pumps them.
+            postCompletionCheckScan(visited);
         }
     }
     
     /**
-     * Check for deadlocked states where none of the generators we are (indirectly)
-     * dependent on can run.
+     * Check for deadlocked states across a collection of generators which have
+     * been run.
+     */
+    public static void checkForCompletions(Collection completions) {
+        HashSet visited = new HashSet();
+        boolean atLeastOneZombie = false;
+        for (Iterator i = completions.iterator(); i.hasNext(); ) {
+            Generator g = (Generator)i.next();
+            if (g.runCompletionCheck(visited) != LFlag.LIVE) {
+                atLeastOneZombie = true;
+            }
+        }
+        if (atLeastOneZombie) {
+            postCompletionCheckScan(visited);
+        }
+    }
+    
+    /**
+     * Check whether this generator is live (indirectly dependent on a ready
+     * generator), dead (complete) or in a deadlock loop which might or
+     * might not be live (unknown).
      */
     protected LFlag runCompletionCheck(Set visited) {
         if (isComplete()) return LFlag.DEAD;
@@ -308,6 +317,82 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
             }
         }
         return completionState;
+    }
+    
+    /**
+     * Scan the result of a (set of) completion check(s) to detect which of the
+     * unknowns are actually live and set the remaining (deadlocked) states
+     * to complete.
+     */
+    protected static void postCompletionCheckScan(Set visited ) {
+        for (Iterator iv = visited.iterator(); iv.hasNext(); ) {
+            Generator g = (Generator)iv.next();
+            if (g.completionState == LFlag.LIVE) {
+                for (Iterator i = g.consumingCPs.iterator(); i.hasNext(); ) {
+                    ((ConsumerChoicePointFrame)i.next()).getGenerator().propagateLive(visited);
+                }
+            }
+        }
+        
+        for (Iterator iv = visited.iterator(); iv.hasNext(); ) {
+            Generator g = (Generator)iv.next();
+            if (g.completionState != LFlag.LIVE) {
+                g.setComplete();
+            }
+        }
+        return;
+        
+        // Earlier version. This has the advantage of only propgating more selectively
+        // but has to a lot of hashset turn over.
+        // Current figures suggest negligable difference in cost.
+//        HashSet suspects = new HashSet();
+//        for (Iterator iv = visited.iterator(); iv.hasNext(); ) {
+//            Generator g = (Generator)iv.next();
+//            if (g.completionState == LFlag.UNKNOWN) {
+//                suspects.add(g);
+//            }
+//        }
+//        
+//        Set newLive = visited;
+//        newLive.removeAll(suspects);
+//        while (newLive.size() > 0 && suspects.size() > 0) {
+//            HashSet temp = new HashSet();
+//            for (Iterator il = newLive.iterator(); il.hasNext(); ) {
+//                Generator g = (Generator)il.next();
+//                if (g.completionState == LFlag.LIVE) {
+//                    for (Iterator id = g.consumingCPs.iterator(); id.hasNext(); ) {
+//                        Generator dep = ((ConsumerChoicePointFrame)id.next()).getGenerator();
+//                        if (suspects.contains(dep)) {
+//                            suspects.remove(dep);
+//                            dep.completionState = LFlag.LIVE;
+//                            temp.add(dep);
+//                        }
+//                    }
+//                }
+//            }
+//            newLive = temp;
+//        }
+//        // Any remaining suspects are DEAD, have no indirect live generators
+//        for (Iterator ic = suspects.iterator(); ic.hasNext(); ) {
+//            Generator g = (Generator)ic.next();
+//            g.setComplete();
+//        }
+    }
+    
+    /**
+     * Propagate liveness state forward to consuming generators, but only those 
+     * within the filter set.
+     */
+    protected void propagateLive(Set filter) {
+        if (completionState != LFlag.LIVE) {
+            completionState = LFlag.LIVE;
+            for (Iterator i = consumingCPs.iterator(); i.hasNext(); ) {
+                Generator g = ((ConsumerChoicePointFrame)i.next()).getGenerator(); 
+                if (filter.contains(g)) {
+                    g.propagateLive(filter);
+                }
+            }
+        }
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.11 2003-08-15 16:10:30 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.12 2003-08-17 20:09:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-15 16:10:30 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-17 20:09:17 $
  */
 public class LPBRuleEngine {
     
@@ -52,10 +52,15 @@ public class LPBRuleEngine {
     protected HashMap tabledGoals = new HashMap();
     
     /** Set of generators waiting to be run */
-    protected LinkedList agenda = new LinkedList();
+//    protected LinkedList agenda = new LinkedList();
+    protected List agenda = new ArrayList();
     
     /** Optional profile of number of time each rule is entered, set to non-null to profile */
     protected HashMap profile;
+    
+    /** The number of generator cycles to wait before running a completion check.
+     *  If set to 0 then checks will be done in the generator each time. */
+    public static final int CYCLES_BETWEEN_COMPLETION_CHECK = 3;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPBRuleEngine.class);
@@ -258,18 +263,29 @@ public class LPBRuleEngine {
      */
     public synchronized void pump(LPInterpreterContext gen) {
 //        System.out.println("Pump agenda on engine " + this + ", size = " + agenda.size());
-//        int count = 0; 
+        Collection batch = null;
+        if (CYCLES_BETWEEN_COMPLETION_CHECK > 0) {
+            batch = new ArrayList(CYCLES_BETWEEN_COMPLETION_CHECK);
+        }
+        int count = 0; 
         while(!gen.isReady()) {
             if (agenda.isEmpty()) {
 //                System.out.println("Cycled " + this + ", " + count);
                 return;
             } 
-            // TODO: Consider scanning agenda for entries with max # dependents
-            LPAgendaEntry next = (LPAgendaEntry) agenda.removeFirst();
-//            LPAgendaEntry next = (LPAgendaEntry) agenda.removeLast();
+            int chosen = agenda.size() -1;
+            LPAgendaEntry next = (LPAgendaEntry) agenda.get(chosen);
+            agenda.remove(chosen);
 //            System.out.println("  pumping entry " + next);
             next.pump();
-//            count ++; 
+            count ++;
+            if (CYCLES_BETWEEN_COMPLETION_CHECK > 0) {
+                batch.add(next.getGenerator());
+                if (count % CYCLES_BETWEEN_COMPLETION_CHECK == 0) {
+                    Generator.checkForCompletions(batch);
+                    batch.clear();
+                }
+            }
         }
 //        System.out.println("Cycled " + this + ", " + count);
     }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.15 2003-08-15 16:11:17 der Exp $
+ * $Id: TestOWLRules.java,v 1.16 2003-08-17 20:09:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-08-15 16:11:17 $
+ * @version $Revision: 1.16 $ on $Date: 2003-08-17 20:09:56 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -63,56 +63,56 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest001.rdf"));
         suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest002.rdf"));
         suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest003.rdf"));
-        
-//        suite.addTest(new TestOWLRules("rdf-charmod-uris/Manifest.rdf"));
-//        suite.addTest(new TestOWLRules("I5.5/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("I5.5/Manifest002.rdf"));
-//        suite.addTest(new TestOWLRules("I5.5/Manifest003.rdf"));
-//        suite.addTest(new TestOWLRules("I5.5/Manifest004.rdf"));
-//        suite.addTest(new TestOWLRules("inverseOf/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("TransitiveProperty/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("equivalentClass/Manifest001.rdf"));   // bx - long
-//        suite.addTest(new TestOWLRules("equivalentClass/Manifest002.rdf"));    // bx - long but terminates
-//        suite.addTest(new TestOWLRules("equivalentClass/Manifest003.rdf"));    // bx - long but terminates
-//        suite.addTest(new TestOWLRules("equivalentClass/Manifest005.rdf"));  // bx - timeout
-//        suite.addTest(new TestOWLRules("equivalentProperty/Manifest001.rdf"));    // bx - long but terminates
-//        suite.addTest(new TestOWLRules("equivalentProperty/Manifest002.rdf"));    // bx - long but terminates
-//        suite.addTest(new TestOWLRules("equivalentProperty/Manifest003.rdf"));
-//        suite.addTest(new TestOWLRules("I4.6/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("I4.6/Manifest002.rdf"));
-//        suite.addTest(new TestOWLRules("I5.1/Manifest001.rdf"));   // bx - v. long but terminates
-//        suite.addTest(new TestOWLRules("I5.24/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("I5.24/Manifest002-mod.rdf"));
-//        suite.addTest(new TestOWLRules("equivalentProperty/Manifest006.rdf"));
-//        suite.addTest(new TestOWLRules("intersectionOf/Manifest001.rdf")); // bx - takes a long time
-//
-//        // Disjointness tests
-//        suite.addTest(new TestOWLRules("differentFrom/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("disjointWith/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("disjointWith/Manifest002.rdf"));
-//        suite.addTest(new TestOWLRules("AllDifferent/Manifest001.rdf")); // bx gets lost
-//
-//        // Restriction tests
-//        suite.addTest(new TestOWLRules("allValuesFrom/Manifest001.rdf"));    // bx - long but terminates
-//        suite.addTest(new TestOWLRules("allValuesFrom/Manifest002.rdf"));   // bx - slow
-//        suite.addTest(new TestOWLRules("someValuesFrom/Manifest002.rdf"));   // bx - slow
-//        suite.addTest(new TestOWLRules("maxCardinality/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("maxCardinality/Manifest002.rdf"));
-//        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest005-mod.rdf"));
-//        suite.addTest(new TestOWLRules("I5.24/Manifest004-mod.rdf"));  // bx - long
-//        suite.addTest(new TestOWLRules("localtests/Manifest001.rdf"));      // bx - long but terminates
-//        suite.addTest(new TestOWLRules("localtests/Manifest002.rdf"));   // bx - long but terminates
-//        suite.addTest(new TestOWLRules("cardinality/Manifest001-mod.rdf")); // bx gets lost
-//        suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
-//        suite.addTest(new TestOWLRules("cardinality/Manifest003-mod.rdf")); // bx gets lost
-//        suite.addTest(new TestOWLRules("cardinality/Manifest004-mod.rdf")); // bx gets lost
-//        suite.addTest(new TestOWLRules("I5.24/Manifest003-mod.rdf"));
-//        suite.addTest(new TestOWLRules("cardinality/Manifest005-mod.rdf")); // bx gets lost
-//        suite.addTest(new TestOWLRules("cardinality/Manifest006-mod.rdf")); // bx gets lost
-//        suite.addTest(new TestOWLRules("equivalentClass/Manifest004.rdf"));  // bx - timeout
 //        
-//        // Needs prototype creation rule
-//        suite.addTest(new TestOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
+        suite.addTest(new TestOWLRules("rdf-charmod-uris/Manifest.rdf"));
+        suite.addTest(new TestOWLRules("I5.5/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("I5.5/Manifest002.rdf"));
+        suite.addTest(new TestOWLRules("I5.5/Manifest003.rdf"));
+        suite.addTest(new TestOWLRules("I5.5/Manifest004.rdf"));
+        suite.addTest(new TestOWLRules("inverseOf/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("TransitiveProperty/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("equivalentClass/Manifest001.rdf"));   // bx - long
+        suite.addTest(new TestOWLRules("equivalentClass/Manifest002.rdf"));    // bx - long but terminates
+        suite.addTest(new TestOWLRules("equivalentClass/Manifest003.rdf"));    // bx - long but terminates
+        suite.addTest(new TestOWLRules("equivalentClass/Manifest005.rdf"));  // bx - timeout
+        suite.addTest(new TestOWLRules("equivalentProperty/Manifest001.rdf"));    // bx - long but terminates
+        suite.addTest(new TestOWLRules("equivalentProperty/Manifest002.rdf"));    // bx - long but terminates
+        suite.addTest(new TestOWLRules("equivalentProperty/Manifest003.rdf"));
+        suite.addTest(new TestOWLRules("I4.6/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("I4.6/Manifest002.rdf"));
+        suite.addTest(new TestOWLRules("I5.1/Manifest001.rdf"));   // bx - v. long but terminates
+        suite.addTest(new TestOWLRules("I5.24/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("I5.24/Manifest002-mod.rdf"));
+        suite.addTest(new TestOWLRules("equivalentProperty/Manifest006.rdf"));
+        suite.addTest(new TestOWLRules("intersectionOf/Manifest001.rdf")); // bx - takes a long time
+
+        // Disjointness tests
+        suite.addTest(new TestOWLRules("differentFrom/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("disjointWith/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("disjointWith/Manifest002.rdf"));
+        suite.addTest(new TestOWLRules("AllDifferent/Manifest001.rdf")); // bx gets lost
+
+        // Restriction tests
+        suite.addTest(new TestOWLRules("allValuesFrom/Manifest001.rdf"));    // bx - long but terminates
+        suite.addTest(new TestOWLRules("allValuesFrom/Manifest002.rdf"));   // bx - slow
+        suite.addTest(new TestOWLRules("someValuesFrom/Manifest002.rdf"));   // bx - slow
+        suite.addTest(new TestOWLRules("maxCardinality/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("maxCardinality/Manifest002.rdf"));
+        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest005-mod.rdf"));
+        suite.addTest(new TestOWLRules("I5.24/Manifest004-mod.rdf"));  // bx - long
+        suite.addTest(new TestOWLRules("localtests/Manifest001.rdf"));      // bx - long but terminates
+        suite.addTest(new TestOWLRules("localtests/Manifest002.rdf"));   // bx - long but terminates
+        suite.addTest(new TestOWLRules("cardinality/Manifest001-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("cardinality/Manifest003-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("cardinality/Manifest004-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("I5.24/Manifest003-mod.rdf"));
+        suite.addTest(new TestOWLRules("cardinality/Manifest005-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("cardinality/Manifest006-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("equivalentClass/Manifest004.rdf"));  // bx - timeout
+        
+        // Needs prototype creation rule
+        suite.addTest(new TestOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
         
         // Duplications of tests included earlier
 //        suite.addTest(new TestOWLRules("differentFrom/Manifest002.rdf"));  // Duplication of AllDifferent#1

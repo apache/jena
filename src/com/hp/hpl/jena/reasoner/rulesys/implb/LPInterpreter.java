@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.26 2003-08-15 16:10:30 der Exp $
+ * $Id: LPInterpreter.java,v 1.27 2003-08-17 20:09:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $ on $Date: 2003-08-15 16:10:30 $
+ * @version $Revision: 1.27 $ on $Date: 2003-08-17 20:09:17 $
  */
 public class LPInterpreter {
 
@@ -365,6 +365,22 @@ public class LPInterpreter {
         
                 codeloop: while (true) {
                     switch (code[pc++]) {
+                        case RuleClauseCode.TEST_BOUND:
+                            ai = code[pc++];
+                            if (deref(argVars[ai]).isVariable()) {
+                                if (traceOn) logger.info("FAIL " + clause);
+                                continue main;  
+                            }
+                            break;
+                            
+                        case RuleClauseCode.TEST_UNBOUND:
+                            ai = code[pc++];
+                            if (! deref(argVars[ai]).isVariable()) {
+                                if (traceOn) logger.info("FAIL " + clause);
+                                continue main;  
+                            }
+                            break;
+                            
                         case RuleClauseCode.ALLOCATE:
                             envFrame.allocate(RuleClauseCode.MAX_PERMANENT_VARS);
                             pVars = envFrame.pVars;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPAgendaEntry.java,v 1.1 2003-08-08 16:12:53 der Exp $
+ * $Id: LPAgendaEntry.java,v 1.2 2003-08-17 20:09:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * agenda. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-08 16:12:53 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-17 20:09:17 $
  */
 public interface LPAgendaEntry {
 
@@ -28,6 +28,11 @@ public interface LPAgendaEntry {
      * Tests true if this state is ready to be usefully run.
      */
     public boolean isReady();
+    
+    /**
+     * Return the generator associated with this entry (might be the entry itself)
+     */
+    public Generator getGenerator();
     
 }
 
