@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 15:30:37 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-18 10:37:04 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -28,6 +28,7 @@ package com.hp.hpl.jena.ontology;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 
@@ -39,9 +40,9 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.9 2003-07-24 15:30:37 ian_dickinson Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.10 2003-08-18 10:37:04 chris-dollin Exp $
  */
-public class OntModelSpec {
+public class OntModelSpec implements ModelSpec {
     // Constants
     //////////////////////////////////
 
@@ -337,6 +338,15 @@ public class OntModelSpec {
     public Profile getProfile() {
         return m_profile;
     }
+    
+    /**
+        Satisfy the ModelSpec interface: create an [Ont]Model according to the specification.
+        The base model comes from the underlying ModelMaker.
+    */
+    public Model createModel()
+        {
+        return new OntModelImpl( this, m_maker.createModel() );
+        }
     
     
     // Internal implementation methods

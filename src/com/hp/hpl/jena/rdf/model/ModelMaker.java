@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelMaker.java,v 1.2 2003-05-09 14:03:47 chris-dollin Exp $
+  $Id: ModelMaker.java,v 1.3 2003-08-18 10:37:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -31,6 +31,21 @@ public interface ModelMaker
         <br><code>createModel( name, false )</code>.
     */
     public Model createModel( String name );
+    
+    /**
+        Create a new anonymous Model.
+        
+        @return a fresh Model, not accessible under a[nother] name.
+    */
+    public Model createModel();
+    
+    /**
+        Answer the default Model for this Maker. Each call gets the same [or equivalent]
+        model. The Model need not be created until the first such call.
+        
+        @return the default Model for this Maker.
+    */
+    public Model getModel();
 
     /**
         Find an existing Model that this factory knows about under the given

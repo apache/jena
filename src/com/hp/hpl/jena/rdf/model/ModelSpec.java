@@ -1,40 +1,21 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelSpec.java,v 1.2 2003-08-18 10:36:50 chris-dollin Exp $
+  $Id: ModelSpec.java,v 1.1 2003-08-18 10:37:04 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model.test;
-
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.rdf.model.impl.*;
-
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.ontology.*;
-import java.util.*;
-
-import java.util.*;
-
-import junit.framework.*;
+package com.hp.hpl.jena.rdf.model;
 
 /**
+    A ModelSpec allows Models to be created.
+    
  	@author kers
 */
-
-public class TestModelSpec extends ModelTestBase
+public interface ModelSpec
     {
-    public TestModelSpec( String name )
-        { super( name ); }
-
-    public static TestSuite suite()
-        { return new TestSuite( TestModelSpec.class ); }
-        
-    public void testXXX()
-        {
-        assertTrue( OntModelSpec.DAML_MEM_RULE_INF instanceof ModelSpec );
-        }
+    Model createModel();
     }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003
