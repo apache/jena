@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleGraphFactory.java,v 1.2 2003-05-03 11:40:31 chris-dollin Exp $
+  $Id: SimpleGraphFactory.java,v 1.3 2003-05-03 14:09:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -62,8 +62,7 @@ public class SimpleGraphFactory implements GraphFactory
      */
     public void removeGraph( String name )
         {
-        Graph already = (Graph) graphs.get( name );
-        if (already == null) throw new DoesNotExistException( name );
+        if (!graphs.containsKey( name )) throw new DoesNotExistException( name );
         graphs.remove( name );
         }
      

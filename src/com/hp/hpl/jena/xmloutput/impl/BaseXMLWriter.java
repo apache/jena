@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.9 2003-04-22 19:15:47 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.10 2003-05-03 14:11:26 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -58,7 +58,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-04-22 19:15:47 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-05-03 14:11:26 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -288,7 +288,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	String splitTag(String uriref, int type) {
 		int split = Util.splitNamespace(uriref);
 		if (split == uriref.length())
-			throw new RDFException(RDFException.INVALIDPROPERTYURI);
+			throw new RDFException(RDFException.INVALIDPROPERTYURI, uriref );
 		return tag(
 			uriref.substring(0, split),
 			uriref.substring(split),

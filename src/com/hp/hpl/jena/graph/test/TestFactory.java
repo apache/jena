@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFactory.java,v 1.6 2003-05-03 11:40:31 chris-dollin Exp $
+  $Id: TestFactory.java,v 1.7 2003-05-03 14:11:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -11,12 +11,6 @@ package com.hp.hpl.jena.graph.test;
 */
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.db.impl.*;
-import com.hp.hpl.jena.db.test.*;
-import com.hp.hpl.jena.shared.*;
-
-import java.util.*;
 
 import junit.framework.*;
 
@@ -31,10 +25,8 @@ public class TestFactory extends GraphTestBase
     public void testFactory()
         {
         Graph g = Factory.createDefaultGraph();
-        }
-        
+        }        
     }
-
 
 /*
     (c) Copyright Hewlett-Packard Company 2003
