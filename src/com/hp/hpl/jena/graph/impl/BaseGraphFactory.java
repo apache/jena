@@ -1,49 +1,37 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.9 2003-05-08 14:53:57 chris-dollin Exp $
+  $Id: BaseGraphFactory.java,v 1.1 2003-05-08 14:53:57 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.test;
+package com.hp.hpl.jena.graph.impl;
 
-import junit.framework.*;
-import com.hp.hpl.jena.graph.query.test.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphFactory;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
+ 	@author kers
 */
-
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+public abstract class BaseGraphFactory implements GraphFactory
+    {
+    public BaseGraphFactory()
+        { super(); }
+        
+    private int counter = 0;
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("graph");
-        addTest( "TestNode", TestNode.suite() );
-        addTest( "TestTriple", TestTriple.suite() );
-        addTest( "TestReifier", TestReifier.suite() );   
-        addTest( "TestTypedLiterals", TestTypedLiterals.suite() );
-        addTest( "TestGraphQuery", QueryTest.suite() );
-        // addTest( "TestFactory", TestFactory.suite() );
-        addTest( "TestSimpleGraphFactory", TestSimpleGraphFactory.suite() );
-        addTest( "TestFileGraph", TestFileGraph.suite() );
-        addTest( "TestFileGraphFactory", TestFileGraphFactory.suite() );
-        addTest( "TestCapabilities", TestCapabilities.suite() );
-        addTest( "TestGraphPrefixMapping", TestGraphPrefixMapping.suite() );       }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+    public Graph getGraph()
+        { return createGraph( "anon_" + counter++ + "", false ); }
+         
+    public Graph createGraph(String name)
+        { return createGraph( name, false ); }
+        
+    public Graph openGraph( String name )
+        { return openGraph( name, false ); }
     }
 
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphFactory.java,v 1.1 2003-05-03 16:53:21 chris-dollin Exp $
+  $Id: FileGraphFactory.java,v 1.2 2003-05-08 14:53:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import java.io.*;
 import java.util.*;
 import com.hp.hpl.jena.shared.*;
@@ -19,7 +20,7 @@ import com.hp.hpl.jena.shared.*;
     
  	@author hedgehog
 */
-public class FileGraphFactory implements GraphFactory
+public class FileGraphFactory extends BaseGraphFactory
     {
     private String root;
     private boolean deleteOnClose;
@@ -50,19 +51,25 @@ public class FileGraphFactory implements GraphFactory
     public Graph getGraph()
         { return FileGraph.create(); }
 
-    public Graph createGraph( String name )
+    public Graph createGraph( String name, boolean strict )
         {
         File f = withRoot( name );
-        if (created.containsKey( f )) throw new AlreadyExistsException( name ); 
-        return remember( f, new FileGraph( f, true ) ); 
+        Graph already = (Graph) created.get( f );
+        if (already == null)
+            return remember( f, new FileGraph( f, true, strict ) ); 
+        else
+            {
+            if (strict) throw new AlreadyExistsException( name );
+            else return already;
+            }
         }
 
-    public Graph openGraph( String name )
+    public Graph openGraph( String name, boolean strict )
         { 
         File f = withRoot( name );
         return created.containsKey( f )  
             ? (Graph) created.get( f ) 
-            : new FileGraph( f, false )
+            : new FileGraph( f, false, strict )
             ;
         }
 
@@ -82,6 +89,12 @@ public class FileGraphFactory implements GraphFactory
         {
         created.remove( f );
         return f;
+        }
+        
+    public boolean hasGraph( String name )
+        {
+        File f = withRoot( name );
+        return created.containsKey( f ) || f.exists(); 
         }
         
     public void close()

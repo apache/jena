@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: GraphFactory.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-03 11:40:31 $
+ * Last modified on   $Date: 2003-05-08 14:53:51 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ package com.hp.hpl.jena.graph;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: GraphFactory.java,v 1.3 2003-05-03 11:40:31 chris-dollin Exp $
+ * @version CVS $Id: GraphFactory.java,v 1.4 2003-05-08 14:53:51 chris-dollin Exp $
  */
 public interface GraphFactory 
 {
@@ -52,21 +52,36 @@ public interface GraphFactory
     public Graph getGraph();
     
     /**
-        Create a new graph associated with the given name. If this factory
-        already knows about a graph with this name, throw an AlreadyExistsException.
-        Otherwise create and return the new graph.
+        Create a new graph associated with the given name. If there is no such
+        association, create one and return it. If one exists but <code>strict</code>
+        is false, return the associated graph. Otherwise throw an AlreadyExistsException.
         
         @param name the name to give to the new graph
+        @param strict true to cause existing bindings to throw an exception
         @exception AlreadyExistsException if that name is already bound.
+    */
+    public Graph createGraph( String name, boolean strict );
+    
+    /**
+        Create a graph that does not already exist - equivalent to
+        <br><code>createGraph( name, false )</code>.
     */
     public Graph createGraph( String name );
     
     /**
         Find an existing graph that this factory knows about under the given
-        name. If no such graph exists, throw a DoesNotExistException.
+        name. If such a graph exists, return it. Otherwise, if <code>strict</code>
+        is false, create a new graph, associate it with the name, and return it.
+        Otherwise throw a DoesNotExistException. 
         
         @param name the name of the graph to find and return
+        @param strict false to create a new one if one doesn't already exist
         @exception DoesNotExistException if there's no such named graph
+    */
+    public Graph openGraph( String name, boolean strict );
+    
+    /**
+        Equivalent to <code>openGraph( name, false )</code> 
     */
     public Graph openGraph( String name );
     
@@ -80,6 +95,14 @@ public interface GraphFactory
         @exception DoesNotExistException if the name is unbound
     */
     public void removeGraph( String name );
+    
+    /**
+        return true iff the factory has a graph with the given name
+        
+        @param name the name of the graph to look for
+        @return true iff there's a graph with that name
+    */
+    public boolean hasGraph( String name );
     
     /**
         Close the factory - no more requests need be honoured, and any clean-up

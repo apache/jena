@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphFactory.java,v 1.3 2003-05-05 10:30:59 chris-dollin Exp $
+  $Id: AbstractTestGraphFactory.java,v 1.4 2003-05-08 14:53:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -52,15 +52,28 @@ public abstract class AbstractTestGraphFactory extends GraphTestBase
     */    
     public void testCannotCreateTwice()
         {
-        String name = "bonsai";
-        Graph g1 = gf.createGraph( name );
+        String name = jName( "bonsai" );
+        Graph g1 = gf.createGraph( name, true );
         try
             {
-            Graph g2 = gf.createGraph( name );
+            Graph g2 = gf.createGraph( name, true );
             fail( "should not be able to create " + name + " twice" );
             }
         catch (AlreadyExistsException e)
             {}
+        }
+        
+    private String jName( String name )
+        { return "jena_test_" + name; }
+        
+    public void testCanCreateTwice()
+        {
+        String name = jName( "bridge" );
+        Graph g1 = gf.createGraph( name, true );
+        Graph g2 = gf.createGraph( name, false );
+        assertTrue( "graphs should be the same", sameGraph( g1, g2 ) );
+        Graph g3 = gf.createGraph( name );
+        assertTrue( "graphs should be the same", sameGraph( g1, g3 ) );
         }
     
     /**
@@ -68,26 +81,34 @@ public abstract class AbstractTestGraphFactory extends GraphTestBase
     */    
     public void testCannotOpenUncreated()
         {
-        testDoesNotExist( "noSuchGraph" );
-        }
-    
-    /**
-        Utility - test that a graph with the given name exists. Hackwork.
-     */    
-    private void testExists( String name )
-        { 
-        try { gf.openGraph( name ); }
-        catch (DoesNotExistException e) { fail( name + " should exist" ); }
+        String name = jName( "noSuchGraph" );
+        try { gf.openGraph( name, true );  fail( name + " should not exist" ); }
+        catch (DoesNotExistException e) { }  
         }
         
     /**
-        Utility - test that no graphb with the given name eixsts. Hackwork.
+        Test that we *can* open a graph that hasn't been created
+    */
+    public void testCanOpenUncreated()
+        {
+        String name = jName( "willBeCreated" );
+        Graph g1 = gf.openGraph( name );
+        g1.close();
+        Graph g2 = gf.openGraph( name, true );
+        }
+    
+    /**
+        Utility - test that a graph with the given name exists.
+     */    
+    private void testExists( String name )
+        { assertTrue( name + " should exist", gf.hasGraph( name ) ); }
+     
+        
+    /**
+        Utility - test that no graph with the given name exists.
      */
     private void testDoesNotExist( String name )
-        { 
-        try { gf.createGraph( name ); }
-        catch (AlreadyExistsException e) { fail( name + " should not exist" ); }
-        }
+        {  assertFalse( name + " should exist", gf.hasGraph( name ) ); }
             
     /**
         Test that we can find a graph once its been created. We need to know
@@ -98,11 +119,11 @@ public abstract class AbstractTestGraphFactory extends GraphTestBase
      */
     public void testCanFindCreatedGraph()
         {
-        String alpha = "alpha", beta = "beta";
-        Graph g1 = gf.createGraph( alpha );
-        Graph h1 = gf.createGraph( beta );
-        Graph g2 = gf.openGraph( alpha );
-        Graph h2 = gf.openGraph( beta );
+        String alpha = jName( "alpha" ), beta = jName( "beta" );
+        Graph g1 = gf.createGraph( alpha, true );
+        Graph h1 = gf.createGraph( beta, true );
+        Graph g2 = gf.openGraph( alpha, true );
+        Graph h2 = gf.openGraph( beta, true );
         assertTrue( "should find alpha", sameGraph( g1, g2 ) );
         assertTrue( "should find beta", sameGraph( h1, h2 ) );
         }
@@ -126,14 +147,36 @@ public abstract class AbstractTestGraphFactory extends GraphTestBase
      */
     public void testCanRemoveGraph()
         {
-        String alpha = "bingo", beta = "brillo";
-        Graph g1 = gf.createGraph( alpha );
-        Graph g2 = gf.createGraph( beta );
+        String alpha = jName( "bingo" ), beta = jName( "brillo" );
+        Graph g1 = gf.createGraph( alpha, true );
+        Graph g2 = gf.createGraph( beta, true );
         testExists( alpha );
         testExists( beta );
         gf.removeGraph( alpha );
         testExists( beta );
         testDoesNotExist( alpha );
+        }
+        
+    public void testHasnt()
+        {
+        assertFalse( "no such graph", gf.hasGraph( "john" ) );
+        assertFalse( "no such graph", gf.hasGraph( "paul" ) );
+        assertFalse( "no such graph", gf.hasGraph( "george" ) );
+    /* */
+        gf.createGraph( "john", true );
+        assertTrue( "john now exists", gf.hasGraph( "john" ) );
+        assertFalse( "no such graph", gf.hasGraph( "paul" ) );
+        assertFalse( "no such graph", gf.hasGraph( "george" ) );
+    /* */    
+        gf.createGraph( "paul", true );
+        assertTrue( "john still exists", gf.hasGraph( "john" ) );
+        assertTrue( "paul now exists", gf.hasGraph( "paul" ) );
+        assertFalse( "no such graph", gf.hasGraph( "george" ) );
+    /* */    
+        gf.removeGraph( "john" );
+        assertFalse( "john has been removed", gf.hasGraph( "john" ) );
+        assertTrue( "paul still exists", gf.hasGraph( "paul" ) );
+        assertFalse( "no such graph", gf.hasGraph( "george" ) );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleGraphFactory.java,v 1.3 2003-05-03 14:09:55 chris-dollin Exp $
+  $Id: SimpleGraphFactory.java,v 1.4 2003-05-08 14:53:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -19,42 +19,39 @@ import java.util.*;
     in a local map.
 */
 
-public class SimpleGraphFactory implements GraphFactory 
+public class SimpleGraphFactory extends BaseGraphFactory 
 	{
-    private int counter = 0;
     private Map graphs = new HashMap();
     
     /**
-        Get "a" graph - create a new one with a unique (within this factory) name,
-        which we generate by counting up.
-    */
-	public Graph getGraph()
-        { return createGraph( "anon_" + counter++ + "" ); }
-        
-    /**
         Create a graph and record it with the given name in the local map.
      */
-    public Graph createGraph( String name )
+    public Graph createGraph( String name, boolean strict )
         {
         Graph already = (Graph) graphs.get( name );
         if (already == null)
             {
             Graph result = new GraphMem();
             graphs.put( name, result );
-            return result;
+            return result;            
             }
-        else
+        else if (strict)
             throw new AlreadyExistsException( name );
+        else
+            return already;
         }
         
     /**
         Open (aka find) a graph with the given name in the local map.
      */
-    public Graph openGraph( String name )
+    public Graph openGraph( String name, boolean strict )
         {
         Graph already = (Graph) graphs.get( name );
-        if (already == null) throw new DoesNotExistException( name );
-        return already;
+        if (already == null) 
+            if (strict) throw new DoesNotExistException( name );
+            else return createGraph( name, true );
+        else
+            return already;
         }
         
     /**
@@ -65,7 +62,13 @@ public class SimpleGraphFactory implements GraphFactory
         if (!graphs.containsKey( name )) throw new DoesNotExistException( name );
         graphs.remove( name );
         }
-     
+        
+    /**
+        Return true iff we have a graph with the given name
+    */
+    public boolean hasGraph( String name )
+        { return graphs.containsKey( name ); }
+             
     /**
         Close this factory - we choose to do nothing.
      */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBFactory.java,v 1.2 2003-05-03 11:39:59 chris-dollin Exp $
+  $Id: GraphRDBFactory.java,v 1.3 2003-05-08 14:53:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -9,6 +9,8 @@ package com.hp.hpl.jena.db.impl;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 
@@ -21,7 +23,7 @@ import java.util.*;
     @author kers 
 */
 
-public class GraphRDBFactory implements GraphFactory
+public class GraphRDBFactory extends BaseGraphFactory
     {
     private IDBConnection c;
     private int counter = 0;
@@ -37,21 +39,34 @@ public class GraphRDBFactory implements GraphFactory
      	@see com.hp.hpl.jena.graph.GraphFactory#getGraph()
      */
     public Graph getGraph()
-        { return createGraph( "anon_" + counter++ + "" ); }
+        { return createGraph( "anon_" + counter++ + "", false ); }
     
     /**
      	Create an RDB graph and remember its name.
      	@see com.hp.hpl.jena.graph.GraphFactory#createGraph(java.lang.String)
      */
-    public Graph createGraph( String name )
+    public Graph createGraph( String name, boolean strict )
         {
-        Graph p = c.getDefaultModelProperties().getGraph();
         created.add( name );
-        return new GraphRDB( c, name, p, true );
+        boolean fresh = strict || !hasGraph( name );
+        return consGraph( name, fresh );
         }
     
-    public Graph openGraph( String name )
-        { return new GraphRDB( c, name, null, false ); }
+    /**
+        Open an existing graph; if there's no such graph, but failIfAbsent is
+        false, create a new one. In any case, return that graph.
+    */
+    public Graph openGraph( String name, boolean strict )
+        {
+        boolean fresh = hasGraph( name ) == false && strict == false;
+        return consGraph( name, fresh );
+        }
+        
+    private Graph consGraph( String name, boolean fresh )
+        {        
+        Graph p = c.getDefaultModelProperties().getGraph();
+        return new GraphRDB( c, name, (fresh ? p : null), fresh );
+        }
         
     /**
      	Remove a graph from the database - at present, this has to be done by
@@ -61,10 +76,21 @@ public class GraphRDBFactory implements GraphFactory
      */
     public void removeGraph( String name )
         {
-        GraphRDB toDelete = (GraphRDB) openGraph( name );
+        GraphRDB toDelete = (GraphRDB) openGraph( name, true );
         toDelete.remove();
         toDelete.close();
         created.remove( name );
+        }
+        
+    /**
+        Return true iff there's a graph with the given name. The implementation
+        is horrid.
+    */
+    public boolean hasGraph( String name )
+        {
+        DBPropGraph properties = DBPropGraph.findPropGraphByName
+            ( c.getDriver().getSystemSpecializedGraph(), name.toUpperCase() );
+        return properties != null; 
         }
         
     /**

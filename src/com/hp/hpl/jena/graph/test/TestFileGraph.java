@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFileGraph.java,v 1.3 2003-05-04 18:51:00 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.4 2003-05-08 14:53:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -78,10 +78,10 @@ public class TestFileGraph extends GraphTestBase
             {
             File foo = tempFileName( prefix, suffix );
             Graph original = graphWith( content );
-            Graph g = new FileGraph( foo, true );
+            Graph g = new FileGraph( foo, true, true );
             g.getBulkUpdateHandler().add( original );
             g.close();
-            Graph g2 = new FileGraph( foo, false );
+            Graph g2 = new FileGraph( foo, false, true );
             assertEquals( "", original, g2 );
             g2.close();
             }
