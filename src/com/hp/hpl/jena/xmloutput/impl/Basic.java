@@ -2,12 +2,11 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.3 2003-04-14 15:10:58 chris-dollin Exp $
+  $Id: Basic.java,v 1.4 2003-04-15 06:49:47 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -18,7 +17,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-14 15:10:58 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-15 06:49:47 $'
  */
 public class Basic extends BaseXMLWriter {
 

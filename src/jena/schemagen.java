@@ -24,12 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: schemagen.java,v 1.9 2003-04-14 15:11:00 chris-dollin Exp $
+ * $Id: schemagen.java,v 1.10 2003-04-15 06:49:47 jeremy_carroll Exp $
  */
 
 package jena;
 
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -66,7 +65,7 @@ import java.util.HashSet;
  *     are used, or this fixup leads to name clashes.</p>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-04-14 15:11:00 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2003-04-15 06:49:47 $
  */
 public class schemagen extends java.lang.Object {
 
