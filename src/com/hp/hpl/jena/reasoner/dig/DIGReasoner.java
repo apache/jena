@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGReasoner.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-06 11:21:17 $
+ * Last modified on   $Date: 2004-05-21 12:45:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -25,12 +25,19 @@ package com.hp.hpl.jena.reasoner.dig;
 
 // Imports
 ///////////////
+import java.io.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
+import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
 
@@ -41,7 +48,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGReasoner.java,v 1.3 2004-05-06 11:21:17 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGReasoner.java,v 1.4 2004-05-21 12:45:55 ian_dickinson Exp $)
  */
 public class DIGReasoner 
     implements Reasoner
@@ -301,7 +308,28 @@ public class DIGReasoner
         else if (parameter.equals(ReasonerVocabulary.EXT_REASONER_AXIOMS)) {
             String axURL = (value instanceof Resource) ? ((Resource) value).getURI() : value.toString();
             m_axioms = ModelFactory.createDefaultModel();
-            m_axioms.read( axURL );
+            
+            // if a file URL, try to load it as a stream (which means we can extract from jars etc)
+            if (axURL.startsWith( "file:")) {
+                String fileName = axURL.substring( 5 );
+                InputStream in = null;
+                try {
+                    in = FileUtils.openResourceFileAsStream( fileName );
+                    m_axioms.read( in, axURL );
+                }
+                catch (FileNotFoundException e) {
+                    LogFactory.getLog( getClass() ).error( "Could not open DIG axioms " + axURL );
+                }
+                finally { 
+                    if (in != null) {
+                        try {in.close();} catch (IOException ignore) {}
+                    }
+                }
+            }
+            else {
+                m_axioms.read( axURL );
+            }
+            
             return true;
         } 
         else {
