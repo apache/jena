@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.38 $
+ * Revision           $Revision: 1.39 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 11:49:13 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-04-05 15:35:51 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.38 2005-02-21 11:49:13 andy_seaborne Exp $
+ * @version CVS $Id: schemagen.java,v 1.39 2005-04-05 15:35:51 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -268,7 +268,7 @@ public class schemagen {
     /** List of allowed namespace URI strings for admissible values */
     protected List m_includeURI = new ArrayList();
 
-
+    
     // Constructors
     //////////////////////////////////
 
@@ -951,7 +951,16 @@ public class schemagen {
     protected void writeRDFClasses() {
         String template = hasValue( OPT_CLASS_TEMPLATE ) ?  getValue( OPT_CLASS_TEMPLATE ) : DEFAULT_TEMPLATE;
 
-        for (StmtIterator i = m_source.listStatements( null, RDF.type, RDFS.Class ); i.hasNext(); ) {
+        // make sure we're looking for the appropriate type of class
+        Resource cls = OWL.Class;
+        if (isTrue( OPT_LANG_DAML )) {
+            cls = DAML_OIL.Class;
+        }
+        else if (isTrue( OPT_LANG_RDFS )) {
+            cls = RDFS.Class;
+        }
+        
+        for (StmtIterator i = m_source.listStatements( null, RDF.type, cls ); i.hasNext(); ) {
             writeValue( i.nextStatement().getSubject(), template, "Resource", "createResource", "_CLASS" );
         }
     }
