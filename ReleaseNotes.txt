@@ -6,11 +6,13 @@ Post jena 2.0 changes:
 RDF API:
 o Bug fixes:
   - fixed issue with typed literals sometimes treating lexically different, 
-    sameValueAs resources as equals.
+    sameValueAs resources as equal.
     
 Reasoner subsystem:
 o various bug fixes in OWL rules (maxCardinality bug, hasValue in intersection 
-  lists fixed, bug in someValuesFrom fixed).
+  lists fixed, bug in someValuesFrom fixed, misssing property subclass axioms).
+
+
   
 Jena 2.0 (August 2003)
 
