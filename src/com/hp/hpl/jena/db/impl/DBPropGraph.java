@@ -26,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DBPropGraph extends DBProp {
 
@@ -103,7 +103,7 @@ public class DBPropGraph extends DBProp {
 		ExtendedIterator prefixes = getAllPrefixes();
 		while( prefixes.hasNext() ) {
 			DBPropPrefix prefix = (DBPropPrefix)prefixes.next();
-			if( prefix.getValue().matches(value)) 
+			if( prefix.getValue().compareTo(value)==0) 
 				return prefix;
 		}
 		return null;
