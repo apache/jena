@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETERuleContext.java,v 1.1 2003-06-09 16:43:23 der Exp $
+ * $Id: RETERuleContext.java,v 1.2 2003-06-09 21:00:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -13,15 +13,13 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.graph.*;
-import java.util.*;
-import org.apache.log4j.Logger;
 
 /**
  * An implementation of the generic RuleContext for use in the RETE implementation.
  * The RuleContext is used to supply context information to the builtin operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-09 16:43:23 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:45 $
  */
 public class RETERuleContext implements RuleContext {
     
@@ -33,15 +31,6 @@ public class RETERuleContext implements RuleContext {
     
     /** The enclosing inference graph. */
     protected ForwardRuleInfGraphI graph;
-    
-    /** A stack of triples which have been added to the graph but haven't yet been processed. */
-    protected ArrayList addStack = new ArrayList();
-    
-    /** A stack of triples which have been removed from the graph but haven't yet been processed. */
-    protected ArrayList removeStack = new ArrayList();
-        
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(BFRuleContext.class);
     
     /**
      * Constructor.
@@ -84,12 +73,10 @@ public class RETERuleContext implements RuleContext {
     }
 
     /**
-     * Sets both the rule and the current binding environment for this context.
-     * @param rule the rule being processed
+     * Sets the current binding environment for this context.
      * @param env the binding environment so far
      */
-    public void setRuleEnv(Rule rule, BindingEnvironment env) {
-        this.rule = rule;
+    public void setEnv(BindingEnvironment env) {
         this.env = env;
     }
     

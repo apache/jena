@@ -5,11 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEQueue.java,v 1.1 2003-06-09 08:28:19 der Exp $
+ * $Id: RETEQueue.java,v 1.2 2003-06-09 21:00:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.graph.*;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * against.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-09 08:28:19 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:37 $
  */
 public class RETEQueue implements RETENode {
     
@@ -76,10 +76,79 @@ public class RETEQueue implements RETENode {
      * @param env a set of variable bindings for the rule being processed. 
      * @param isAdd distinguishes between add and remove operations.
      */
-    public void fire(BindingEnvironment env, boolean isAdd) {
-        // TODO: Implement
+    public void fire(BindingVector env, boolean isAdd) {
+        // Store the new token in this store
+        Count count = (Count)queue.get(env);
+        if (count == null) {
+            // no entry yet
+            if (!isAdd) return;
+            queue.put(env, new Count(1));
+        } else {
+            if (isAdd) {
+                count.inc();
+            } else {
+                count.dec();
+            }
+        }
+        
+        // Cross match new token against the entries in the sibling queue
+        for (Iterator i = sibling.queue.keySet().iterator(); i.hasNext(); ) {
+            Node[] candidate = ((BindingVector)i.next()).getEnvironment();
+            Node[] envNodes = env.getEnvironment();
+            boolean matchOK = true;
+            for (int j = 0; j < matchIndices.length; j++) {
+                int index = matchIndices[j];
+                if ( ! candidate[index].sameValueAs(envNodes[index])) {
+                    matchOK = false;
+                    break;
+                }
+            }
+            if (matchOK) {
+                // Instantiate a new extended environment
+                Node[] newNodes = new Node[candidate.length];
+                for (int j = 0; j < candidate.length; j++) {
+                    Node n = candidate[j];
+                    newNodes[j] = (n == null) ? envNodes[j] : n;
+                }
+                BindingVector newEnv = new BindingVector(newNodes);
+                // Fire the successor processing
+                continuation.fire(newEnv, isAdd);
+            }
+        }
     }
 
+    /**
+     * Inner class used to represent an updatable count.
+     */
+    protected static class Count {
+        /** the count */
+        int count;
+        
+        /** Constructor */
+        public Count(int count) {
+            this.count = count;
+        }
+        
+        /** Access count value */
+        public int getCount() {
+            return count;
+        }
+        
+        /** Increment the count value */
+        public void inc() {
+            count++;
+        }
+        
+        /** Decrement the count value */
+        public void dec() {
+            count--;
+        }
+        
+        /** Set the count value */
+        public void setCount(int count) {
+            this.count = count;
+        }
+    }
 }
 
 

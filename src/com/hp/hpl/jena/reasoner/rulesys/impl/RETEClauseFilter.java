@@ -5,12 +5,16 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEClauseFilter.java,v 1.1 2003-06-09 08:28:19 der Exp $
+ * $Id: RETEClauseFilter.java,v 1.2 2003-06-09 21:00:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.*;
+
+import java.util.*;
 
 /**
  * Checks a triple against the grounded matches and intra-triple matches
@@ -19,7 +23,7 @@ import com.hp.hpl.jena.graph.*;
  * and bindings are implemented using a simple byte-coded interpreter.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-09 08:28:19 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:38 $
  */
 public class RETEClauseFilter {
     
@@ -35,32 +39,33 @@ public class RETEClauseFilter {
     /** Instruction code: Check triple entry (arg1) against literal value (arg2). */
     public static final byte TESTValue = 0x01;
     
+    /** Instruction code: Check literal value is a functor of name arg1 */
+    public static final byte TESTFunctorName = 0x02;
+    
     /** Instruction code: Cross match two triple entries (arg1, arg2) */
-    public static final byte TESTIntraMatch = 0x02;
+    public static final byte TESTIntraMatch = 0x03;
     
     /** Instruction code: Create a result environment of length arg1. */
-    public static final byte CREATEToken = 0x03;
+    public static final byte CREATEToken = 0x04;
     
     /** Instruction code: Bind a node (arg1) to a place in the rules token (arg2). */
-    public static final byte BIND = 0x04;
+    public static final byte BIND = 0x05;
     
     /** Instruction code: Final entry - dispatch to the network. */
-    public static final byte END = 0x05;
+    public static final byte END = 0x06;
     
     /** Argument addressing code: triple subject */
-    public static final byte ADDRSubject = 0x01;
+    public static final byte ADDRSubject = 0x10;
     
     /** Argument addressing code: triple predicate */
-    public static final byte ADDRPredicate = 0x02;
+    public static final byte ADDRPredicate = 0x20;
     
     /** Argument addressing code: triple object as a whole */
-    public static final byte ADDRObject = 0x03;
+    public static final byte ADDRObject = 0x30;
     
-    /** Argument addressing code: triple object functor name (null if not functor) */
-    public static final byte ADDRFunctorName = 0x04;
-    
-    /** Argument addressing code: triple object functor node, offset in low nibble */
-    public static final byte ADDRFunctorNode = 0x10;
+    /** Argument addressing code: triple object functor node, offset in 
+     *  low nibble, only usable after a successful TestFunctorName. */
+    public static final byte ADDRFunctorNode = 0x40;
         
     /**
      * Contructor.
@@ -70,6 +75,82 @@ public class RETEClauseFilter {
     public RETEClauseFilter(byte[] instructions, Object[] args) {
         this.instructions = instructions;
         this.args = args;
+    }
+    
+    /**
+     * Create a filter node from a rule clause.
+     * Clause complexity is limited to less than 50 args in a Functor.
+     */
+    public static RETEClauseFilter compile(TriplePattern clause) { 
+        byte[] instructions = new byte[300];
+        byte[] bindInstructions = new byte[100];
+        ArrayList args = new ArrayList();
+        int pc = 0;   
+        int bpc = 0;
+        
+        // Pass 1 - check literal values
+        Node n = clause.getSubject();
+        if ( !n.isVariable() ) {
+            instructions[pc++] = TESTValue;
+            instructions[pc++] = ADDRSubject;
+            instructions[pc++] = (byte)args.size();
+            args.add( n );
+        } else {
+            bindInstructions[bpc++] = BIND;
+            bindInstructions[bpc++] = ADDRSubject;
+            bindInstructions[bpc++] = (byte)((Node_RuleVariable)n).getIndex();
+        }
+        n = clause.getPredicate();
+        if ( !n.isVariable() ) {
+            instructions[pc++] = TESTValue;
+            instructions[pc++] = ADDRPredicate;
+            instructions[pc++] = (byte)args.size();
+            args.add( clause.getPredicate() );
+        } else {
+            bindInstructions[bpc++] = BIND;
+            bindInstructions[bpc++] = ADDRPredicate;
+            bindInstructions[bpc++] = (byte)((Node_RuleVariable)n).getIndex();
+        }
+        n = clause.getObject();
+        if ( !n.isVariable() ) {
+            if (Functor.isFunctor(n)) {
+                // Pass 2 - check functor
+                Functor f = (Functor)n.getLiteral().getValue();
+                instructions[pc++] = TESTFunctorName;
+                instructions[pc++] = (byte)args.size();
+                args.add(f.getName());
+                Node[] fargs = f.getArgs();
+                for (int i = 0; i < fargs.length; i++) {
+                    Node fn = fargs[i];
+                    byte addr = (byte) (ADDRFunctorNode | (0x0f & i));
+                    if ( !fn.isVariable() ) {
+                        instructions[pc++] = TESTValue;
+                        instructions[pc++] = addr;
+                        instructions[pc++] = (byte)args.size();
+                        args.add( fn );
+                    } else {
+                        bindInstructions[bpc++] = BIND;
+                        bindInstructions[bpc++] = addr;
+                        bindInstructions[bpc++] = (byte)((Node_RuleVariable)n).getIndex();
+                    }
+                }
+            } else {
+                instructions[pc++] = TESTValue;
+                instructions[pc++] = ADDRObject;
+                instructions[pc++] = (byte)args.size();
+                args.add( n );
+            }
+        } else {
+            bindInstructions[bpc++] = BIND;
+            bindInstructions[bpc++] = ADDRObject;
+            bindInstructions[bpc++] = (byte)((Node_RuleVariable)n).getIndex();
+        }
+        // Pass 4 - Pack instructions
+        byte[] packed = new byte[pc + bpc];
+        System.arraycopy(instructions, 0, packed, 0, pc);
+        System.arraycopy(instructions, pc, packed, 0, bpc);
+        Object[] packedArgs = args.toArray();
+        return new RETEClauseFilter(packed, packedArgs);
     }
     
     /**
@@ -85,10 +166,67 @@ public class RETEClauseFilter {
      * @param isAdd true if the triple is being added to the working set.
      */
     public void fire(Triple triple, boolean isAdd) {
-        // TODO: implement filter
-        // rest are just dummies
-        BindingEnvironment env = new BindingVector(new Node[10]);
-        continuation.fire(env, isAdd);
+        
+        Functor lastFunctor = null;     // bound by TESTFunctorName
+        BindingVector env = null;       // bound by CREATEToken
+        Node n = null;                  // Temp workspace
+        
+        for (int pc = 0; pc < instructions.length; ) {
+            switch(instructions[pc++]) {
+                
+            case TESTValue: 
+                // Check triple entry (arg1) against literal value (arg2)
+                if (! getTripleValue(triple, instructions[pc++], lastFunctor)
+                                .sameValueAs(args[instructions[pc++]])) return;
+                break;
+                
+            case TESTFunctorName:
+                // Check literal value is a functor of name arg1.
+                // Side effect: leaves a loop variable pointing to functor 
+                // for possible later functor argument accesses
+                n = triple.getObject();
+                if ( !n.isLiteral() ) return;
+                LiteralLabel ll = n.getLiteral();
+                if ( ll.getDatatype() != Functor.FunctorDatatype.theFunctorDatatype) return;
+                lastFunctor = (Functor)ll.getValue();
+                if ( !lastFunctor.getName().equals(args[instructions[pc++]]) ) return;
+                break;
+                
+            case CREATEToken:
+                // Create a result environment of length arg1
+                env = new BindingVector(new Node[instructions[pc++]]);
+                break;
+                
+            case BIND:
+                // Bind a node (arg1) to a place in the rules token (arg2)
+                n = getTripleValue(triple, instructions[pc++], lastFunctor);
+                if ( !env.bind(instructions[pc++], n) ) return;
+                break;
+                
+            case END:
+                // Success, fire the continuation
+                continuation.fire(env, isAdd);
+            }
+        }
+
+    }
+    
+    /**
+     * Helperful function. Return the node from the argument triple
+     * corresponding to the byte code address.
+     */
+    private Node getTripleValue(Triple triple, byte address, Functor lastFunctor) {
+        switch (address & 0xf0) {
+        case ADDRSubject:
+            return triple.getSubject();
+        case ADDRPredicate:
+            return triple.getPredicate();
+        case ADDRObject:
+            return triple.getObject();
+        case ADDRFunctorNode:
+            return lastFunctor.getArgs()[address & 0x0f];
+        }
+        return null;
     }
 }
 

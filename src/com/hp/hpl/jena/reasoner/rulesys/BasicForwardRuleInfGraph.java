@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.14 2003-06-09 10:30:54 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.15 2003-06-09 21:02:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-09 10:30:54 $
+ * @version $Revision: 1.15 $ on $Date: 2003-06-09 21:02:28 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -314,6 +314,13 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         } else {
             derivations = null;
         }
+    }
+    
+    /**
+     * Return true if derivation logging is enabled.
+     */
+    public boolean shouldLogDerivations() {
+        return recordDerivations;
     }
     
     /**

@@ -5,34 +5,43 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETETerminal.java,v 1.1 2003-06-09 16:43:24 der Exp $
+ * $Id: RETETerminal.java,v 1.2 2003-06-09 21:00:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.graph.*;
+import java.util.*;
+import org.apache.log4j.Logger;
 
 /**
  * The final node in a RETE graph. It runs the builtin guard clauses
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-09 16:43:24 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:45 $
  */
 public class RETETerminal implements RETENode {
 
-    /** The Rule which this is being fired by this terminal node */
-    protected Rule rule;
+    /** Context containing the specific rule and parent graph */
+    protected RETERuleContext context;
     
     /** The parent rule engine through which the deductions and recursive network can be reached */
     protected RETEEngine engine;
+    
+    /** log4j logger */
+    protected static Logger logger = Logger.getLogger(FRuleEngine.class);
     
     /**
      * Constructor.
      * @param rule the rule which this terminal should fire.
      * @param engine the parent rule engine through which the deductions and recursive network can be reached.
+     * @param graph the wider encompasing infGraph needed to for the RuleContext
      */
-    public RETETerminal(Rule rule, RETEEngine engine) {
-        this.rule = rule;
+    public RETETerminal(Rule rule, RETEEngine engine, ForwardRuleInfGraphI graph) {
+        context = new RETERuleContext(graph);
+        context.rule = rule;
         this.engine = engine;
     }
     
@@ -41,10 +50,97 @@ public class RETETerminal implements RETENode {
      * @param env a set of variable bindings for the rule being processed. 
      * @param isAdd distinguishes between add and remove operations.
      */
-    public void fire(BindingEnvironment env, boolean isAdd) {
-        // TODO: Implement
+    public void fire(BindingVector env, boolean isAdd) {
+        Rule rule = context.getRule();
+        context.setEnv(env);
+        
+        // Check any non-pattern clauses 
+        for (int i = 0; i < rule.bodyLength(); i++) {
+            Object clause = rule.getBodyElement(i);
+            if (clause instanceof Functor) {
+                // Fire a built in
+                // TODO: Add check for side effects before running in remove mode
+                if (!((Functor)clause).evalAsBodyClause(context)) {
+                    // Failed guard so just discard and return
+                    return;
+                }
+            }
+        }
+        
+        // Now fire the rule
+        ForwardRuleInfGraphI infGraph = (ForwardRuleInfGraphI)context.getGraph();
+        if (infGraph.shouldTrace()) {
+            logger.info("Fired rule: " + rule.toShortString());
+        }
+        List matchList = null;
+        if (infGraph.shouldLogDerivations()) {
+            // Create derivation record
+            matchList = new ArrayList(rule.bodyLength());
+            for (int i = 0; i < rule.bodyLength(); i++) {
+                Object clause = rule.getBodyElement(i);
+                if (clause instanceof TriplePattern) {
+                    matchList.add(instantiate((TriplePattern)clause, env));
+                } 
+            }
+        }
+        for (int i = 0; i < rule.headLength(); i++) {
+            Object hClause = rule.getHeadElement(i);
+            if (hClause instanceof TriplePattern) {
+                Triple t = instantiate((TriplePattern) hClause, env);
+                if (!t.getSubject().isLiteral()) {
+                    // Only add the result if it is legal at the RDF level.
+                    // E.g. RDFS rules can create assertions about literals
+                    // that we can't record in RDF
+                    if (isAdd) {
+                        if ( ! context.contains(t) ) {
+                            // TODO: Check is this is the right add route
+                            infGraph.add(t);
+                            if (infGraph.shouldLogDerivations()) {
+                                infGraph.logDerivation(t, new RuleDerivation(rule, t, matchList, infGraph));
+                            }
+                        }
+                    } else {
+                        // Remove the generated triple
+                        // TODO: Check is this is the right delete route
+                        infGraph.delete(t);
+                    }
+                }
+            } else if (hClause instanceof Functor) {
+                Functor f = (Functor)hClause;
+                Builtin imp = f.getImplementor();
+                if (imp != null) {
+                    imp.headAction(f.getBoundArgs(env), context);
+                } else {
+                    throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + rule.toShortString());
+                }
+            } else if (hClause instanceof Rule) {
+                Rule r = (Rule)hClause;
+                if (r.isBackward()) {
+                    infGraph.addBRule(r.instantiate(env));
+                } else {
+                    throw new ReasonerException("Found non-backward subrule : " + r); 
+                }
+            }
+        }
     }
     
+    /**
+     * Instantiate a triple pattern against the current environment.
+     * This version handles unbound varibles by turning them into bNodes.
+     * @param clause the triple pattern to match
+     * @param env the current binding environment
+     * @return a new, instantiated triple
+     */
+    public static Triple instantiate(TriplePattern pattern, BindingEnvironment env) {
+        Node s = env.getGroundVersion(pattern.getSubject());
+        if (s == null) s = Node.createAnon();
+        Node p = env.getGroundVersion(pattern.getPredicate());
+        if (p == null) p = Node.createAnon();
+        Node o = env.getGroundVersion(pattern.getObject());
+        if (o == null) o = Node.createAnon();
+        return new Triple(s, p, o);
+    }
+     
 }
 
 

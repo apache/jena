@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEEngine.java,v 1.1 2003-06-09 16:43:24 der Exp $
+ * $Id: RETEEngine.java,v 1.2 2003-06-09 21:00:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-09 16:43:24 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:43 $
  */
 public class RETEEngine {
     
@@ -290,94 +290,6 @@ public class RETEEngine {
      * @return true if the rule actually fires
      */
 //    private boolean matchClauseList(List clauses, BFRuleContext context) {
-//        Rule rule = context.getRule();
-//        BindingStack env = context.getEnvStack();
-//        int index = clauses.size() - 1;
-//        if (index == -1) {
-//            // Check any non-pattern clauses 
-//            for (int i = 0; i < rule.bodyLength(); i++) {
-//                Object clause = rule.getBodyElement(i);
-//                if (clause instanceof Functor) {
-//                    // Fire a built in
-//                    if (!((Functor)clause).evalAsBodyClause(context)) {
-//                        return false;       // guard failed
-//                    }
-//                }
-//            }
-//            // Now fire the rule
-//            if (infGraph.shouldTrace()) {
-//                logger.info("Fired rule: " + rule.toShortString());
-//            }
-//            List matchList = null;
-//            if (recordDerivations) {
-//                // Create derivation record
-//                matchList = new ArrayList(rule.bodyLength());
-//                for (int i = 0; i < rule.bodyLength(); i++) {
-//                    Object clause = rule.getBodyElement(i);
-//                    if (clause instanceof TriplePattern) {
-//                        matchList.add(instantiate((TriplePattern)clause, env));
-//                    } 
-//                }
-//            }
-//            for (int i = 0; i < rule.headLength(); i++) {
-//                Object hClause = rule.getHeadElement(i);
-//                if (hClause instanceof TriplePattern) {
-//                    Triple t = instantiate((TriplePattern) hClause, env);
-//                    if (!t.getSubject().isLiteral()) {
-//                        // Only add the result if it is legal at the RDF level.
-//                        // E.g. RDFS rules can create assertions about literals
-//                        // that we can't record in RDF
-//                        if ( ! context.contains(t)  ) {
-//                            context.addPending(t);
-//                            if (recordDerivations) {
-//                                infGraph.logDerivation(t, new RuleDerivation(rule, t, matchList, infGraph));
-//                            }
-//                        }
-//                    }
-//                } else if (hClause instanceof Functor) {
-//                    Functor f = (Functor)hClause;
-//                    Builtin imp = f.getImplementor();
-//                    if (imp != null) {
-//                        imp.headAction(f.getBoundArgs(env), context);
-//                    } else {
-//                        throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + rule.toShortString());
-//                    }
-//                } else if (hClause instanceof Rule) {
-//                    Rule r = (Rule)hClause;
-//                    if (r.isBackward()) {
-//                        infGraph.addBRule(r.instantiate(env));
-//                    } else {
-//                        throw new ReasonerException("Found non-backward subrule : " + r); 
-//                    }
-//                }
-//            }
-//            return true;
-//        }
-//        // More clauses left to match ...
-//        ArrayList clausesCopy = (ArrayList)((ArrayList)clauses).clone();
-//        TriplePattern clause = (TriplePattern) clausesCopy.remove(index);
-//        Node objPattern = env.getBinding(clause.getObject());
-//        if (Functor.isFunctor(objPattern)) {
-//            // Can't search on functor patterns so leave that as a wildcard
-//            objPattern = null;
-//        }
-//        Iterator i = infGraph.findDataMatches(
-//                            env.getBinding(clause.getSubject()),
-//                            env.getBinding(clause.getPredicate()),
-//                            env.getBinding(objPattern));
-//        boolean foundMatch = false;
-//        while (i.hasNext()) {
-//            Triple t = (Triple) i.next();
-//            // Add the bindings to the environment
-//            env.push();
-//            if (match(clause.getPredicate(), t.getPredicate(), env)
-//                    && match(clause.getObject(), t.getObject(), env)
-//                    && match(clause.getSubject(), t.getSubject(), env)) {
-//                foundMatch |= matchClauseList(clausesCopy, context);
-//            }
-//            env.unwind();
-//        }
-//        return foundMatch;
 //    }
 
 //=======================================================================

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ForwardRuleInfGraphI.java,v 1.3 2003-06-02 16:52:31 der Exp $
+ * $Id: ForwardRuleInfGraphI.java,v 1.4 2003-06-09 21:02:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * are needed to support the forward rule engine. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-02 16:52:31 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-09 21:02:28 $
  */
 public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
     
@@ -46,6 +46,11 @@ public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
      */
     public ExtendedIterator findDataMatches(Node subject, Node predicate, Node object);
 
+    /**
+     * Return true if derivation logging is enabled.
+     */
+    public boolean shouldLogDerivations();
+    
     /**
      * Log a dervivation record against the given triple.
      */

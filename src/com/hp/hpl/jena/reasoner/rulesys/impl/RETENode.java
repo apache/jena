@@ -5,11 +5,9 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETENode.java,v 1.1 2003-06-09 08:28:20 der Exp $
+ * $Id: RETENode.java,v 1.2 2003-06-09 21:00:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
-
-import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
 
 /**
  * Interface for all inner nodes in the RETE network. Tokens are 
@@ -17,7 +15,7 @@ import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
  * if we don't overlap the networks for different rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-09 08:28:20 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:39 $
  */
 public interface RETENode {
 
@@ -26,7 +24,7 @@ public interface RETENode {
      * @param env a set of variable bindings for the rule being processed. 
      * @param isAdd distinguishes between add and remove operations.
      */
-    public void fire(BindingEnvironment env, boolean isAdd);
+    public void fire(BindingVector env, boolean isAdd);
     
 }
 
