@@ -1,13 +1,14 @@
 /*
 	 (c) Copyright 2004, Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.2 2004-08-04 06:33:05 chris-dollin Exp $
- */
+	 $Id: StatementBase.java,v 1.3 2004-08-04 08:00:12 chris-dollin Exp $
+*/
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
  	Abstract base class for StaementImpl - pulls up the stuff that doesn't depend
@@ -19,19 +20,10 @@ public abstract class StatementBase
 	{
 	protected final ModelCom model;
 
-	protected StatementBase(ModelCom model)
+	protected StatementBase( ModelCom model )
 		{
+		if (model == null) throw new JenaException( "Statement models must no be null" );
 		this.model = model;
-		}
-
-	/**
-	 * answer the Model for this StatementImpl, and die if it doesn't have one
-	 */
-	protected Model mustHaveModel()
-		{
-		if (model == null)
-			throw new HasNoModelException(this);
-		return model;
 		}
 
 	public Model getModel()
@@ -44,7 +36,7 @@ public abstract class StatementBase
 	 * P, n). Answer the new StaementImpl. Abstract here to allow methods to be
 	 * pulled up.
 	 */
-	protected abstract StatementImpl replace(RDFNode n);
+	protected abstract StatementImpl replace( RDFNode n );
 
 	/**
 	 * Answer the object of this statement as a Literal, or throw a
@@ -73,65 +65,66 @@ public abstract class StatementBase
 	 * constructor; when data-types are put properly into Jena, it will likely
 	 * disappear.
 	 */
-	protected StatementImpl stringReplace(String s)
+	protected StatementImpl stringReplace( String s )
 		{
-		return stringReplace(s, "", false);
+		return stringReplace( s, "", false );
 		}
 
-	public Statement changeObject(boolean o)
+	public Statement changeObject( boolean o )
 		{
-		return stringReplace(String.valueOf(o));
+		return stringReplace( String.valueOf( o ) );
 		}
 
-	public Statement changeObject(long o)
+	public Statement changeObject( long o )
 		{
-		return stringReplace(String.valueOf(o));
+		return stringReplace( String.valueOf( o ) );
 		}
 
-	public Statement changeObject(char o)
+	public Statement changeObject( char o )
 		{
-		return stringReplace(String.valueOf(o));
+		return stringReplace( String.valueOf( o ) );
 		}
 
-	public Statement changeObject(float o)
+	public Statement changeObject( float o )
 		{
-		return stringReplace(String.valueOf(o));
+		return stringReplace( String.valueOf( o ) );
 		}
 
-	public Statement changeObject(double o)
+	public Statement changeObject( double o )
 		{
-		return stringReplace(String.valueOf(o));
+		return stringReplace( String.valueOf( o ) );
 		}
 
-	public Statement changeObject(String o)
+	public Statement changeObject( String o )
 		{
-		return stringReplace(String.valueOf(o));
+		return stringReplace( String.valueOf( o ) );
 		}
 
-	public Statement changeObject(String o, boolean wellFormed)
+	public Statement changeObject( String o, boolean wellFormed )
 		{
-		return stringReplace(String.valueOf(o), "", wellFormed);
+		return stringReplace( String.valueOf( o ), "", wellFormed );
 		}
 
-	public Statement changeObject(String o, String l)
+	public Statement changeObject( String o, String l )
 		{
-		return stringReplace(String.valueOf(o), l, false);
+		return stringReplace( String.valueOf( o ), l, false );
 		}
 
-	public Statement changeObject(String o, String l, boolean wellFormed)
+	public Statement changeObject( String o, String l, boolean wellFormed )
 		{
-		return stringReplace(String.valueOf(o), l, wellFormed);
+		return stringReplace( String.valueOf( o ), l, wellFormed );
 		}
 
-	public Statement changeObject(RDFNode o)
+	public Statement changeObject( RDFNode o )
 		{
-		return replace(o);
+		return replace( o );
 		}
 
-	public Statement changeObject(Object o)
+	public Statement changeObject( Object o )
 		{
-		return o instanceof RDFNode ? replace((RDFNode) o) : stringReplace(o
-				.toString());
+		return o instanceof RDFNode 
+			? replace( (RDFNode) o ) 
+		    : stringReplace( o.toString() );
 		}
 
 	public boolean getBoolean()

@@ -1,4 +1,8 @@
-
+/*
+	(c) Copyright 2004, Hewlett-Packard Development Company, LP
+	[See end of file]
+	$Id: StatementImpl.java,v 1.27 2004-08-04 08:00:12 chris-dollin Exp $
+*/
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -10,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.26 $ $Date: 2004-08-04 06:33:05 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.27 $ $Date: 2004-08-04 08:00:12 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     
@@ -18,30 +22,32 @@ public class StatementImpl  extends StatementBase implements Statement {
     protected Property predicate;
     protected RDFNode  object;
     
-    public StatementImpl(Resource subject, Property predicate, RDFNode object) {
-        super( null );
-       
-        this.subject = subject;
-        this.predicate = predicate;
-        this.object = object;
-    }
-    
     /** Creates new StatementImpl */
-    public StatementImpl(Resource subject,
-                         Property predicate,
-                         RDFNode object,
-                         ModelCom model)  {
-        super( model );
-        this.subject = (Resource) subject.inModel( model ); 
-        this.predicate = (Property) predicate.inModel( model ); 
-        this.object = object.inModel( model ); 
-    }    
+    public StatementImpl(Resource subject, Property predicate, RDFNode object,
+			ModelCom model)
+		{
+		super( model );
+		this.subject = (Resource) subject.inModel( model );
+		this.predicate = (Property) predicate.inModel( model );
+		this.object = object.inModel( model );
+		}
+    
+    // TODO fix this hack
+    protected static ModelCom empty = (ModelCom) ModelFactory.createDefaultModel();
+    
+	public StatementImpl(Resource subject, Property predicate, RDFNode object)
+		{
+		super( empty );
+		this.subject = (Resource) subject.inModel( model );
+		this.predicate = (Property) predicate.inModel( model );
+		this.object = object.inModel( model );
+		}    
     
     /**
-        create a Statement from the triple _t_ in the enhanced graph _eg_.
-        The Statement has subject, predicate, and object corresponding to
-        those of _t_.
-    */
+	 * create a Statement from the triple _t_ in the enhanced graph _eg_. The
+	 * Statement has subject, predicate, and object corresponding to those of
+	 * _t_.
+	 */
     public static Statement toStatement( Triple t, ModelCom eg )
         {
         Resource s = new ResourceImpl( t.getSubject(), eg );
@@ -50,21 +56,25 @@ public class StatementImpl  extends StatementBase implements Statement {
         return new StatementImpl( s, p, o, eg );
         }
     
-    public Resource getSubject() {
-        return subject;
-    }
-    
-    public Property getPredicate() {
-        return predicate;
-    }
-    
-    public RDFNode getObject() {
-        return object;
-    }    
-    
-    public Statement getStatementProperty(Property p)  {
-        return asResource().getRequiredProperty(p);
-    }
+    public Resource getSubject()
+		{
+		return subject;
+		}
+
+	public Property getPredicate()
+		{
+		return predicate;
+		}
+
+	public RDFNode getObject()
+		{
+		return object;
+		}
+
+	public Statement getStatementProperty( Property p )
+		{
+		return asResource().getRequiredProperty( p );
+		}
     
     public Resource getResource()
         { return mustBeResource( object ); }
@@ -117,7 +127,7 @@ public class StatementImpl  extends StatementBase implements Statement {
     /** it turns out to be handy to return the new StatementImpl as the result */ 
     protected StatementImpl replace(RDFNode n)  {
     	StatementImpl s = new StatementImpl( subject, predicate, n, model );
-    	mustHaveModel().remove( this ).add( s );
+    	model.remove( this ).add( s );
         return s;
     }
         
@@ -162,17 +172,17 @@ public class StatementImpl  extends StatementBase implements Statement {
     }
     
     public Resource asResource() {
-    	return mustHaveModel().getAnyReifiedStatement(this);
+    	return model.getAnyReifiedStatement(this);
     }    
 
     public Statement remove()
         {
-        mustHaveModel().remove( this );
+        model.remove( this );
         return this;
         }
     
     public void removeReification() {
-    	mustHaveModel().removeAllReifications(this);
+    	model.removeAllReifications(this);
     }
     
     public Triple asTriple() {
@@ -193,7 +203,7 @@ public class StatementImpl  extends StatementBase implements Statement {
         }
     
     public boolean isReified()  {
-        return mustHaveModel().isReified( this );
+        return model.isReified( this );
     }
         
     /**
@@ -210,7 +220,7 @@ public class StatementImpl  extends StatementBase implements Statement {
         { return ReifiedStatementImpl.create( (ModelCom) this.getModel(), uri, this ); }
         
     public RSIterator listReifiedStatements()
-        { return mustHaveModel().listReifiedStatements( this ); }
+        { return model.listReifiedStatements( this ); }
 
     /**
         create an RDF node which might be a literal, or not.
@@ -223,32 +233,28 @@ public class StatementImpl  extends StatementBase implements Statement {
 }
 
 /*
- *  (c) Copyright 2000, 2001, 2004 Hewlett-Packard Development Company, LP
- *  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * StatementImpl.java
- *
- * Created on 03 August 2000, 13:58
- */
+	 (c) Copyright 2000, 2001, 2004 Hewlett-Packard Development Company, LP
+	 All rights reserved.
+	 
+	 Redistribution and use in source and binary forms, with or without
+	 modification, are permitted provided that the following conditions
+	 are met:
+	 1. Redistributions of source code must retain the above copyright
+	    notice, this list of conditions and the following disclaimer.
+	 2. Redistributions in binary form must reproduce the above copyright
+	    notice, this list of conditions and the following disclaimer in the
+	    documentation and/or other materials provided with the distribution.
+	 3. The name of the author may not be used to endorse or promote products
+	    derived from this software without specific prior written permission.
+	
+	 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+	 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+	 IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+	 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	 NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+	 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
