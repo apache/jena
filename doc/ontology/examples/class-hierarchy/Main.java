@@ -10,11 +10,9 @@
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-23 00:10:40 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 14:29:36 $
+ *               by   $Author: der $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
- * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
@@ -22,20 +20,18 @@
 
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 
 /**
  * <p>
- * Execution wrapper for describe-class example
+ * Execution wrapper for class hierarchy example
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Main.java,v 1.1 2003-08-23 00:10:40 ian_dickinson Exp $
+ * @version CVS $Id: Main.java,v 1.1 2003-08-26 14:29:36 der Exp $
  */
 public class Main {
     // Constants
@@ -52,7 +48,7 @@ public class Main {
 
     // External signature methods
     //////////////////////////////////
-
+    
     public static void main( String[] args ) {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
         
@@ -65,15 +61,11 @@ public class Main {
                                             "file:testing/reasoners/bugs/food.owl" );
 
         m.read( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine" );
-        
-        // now list the classes
-        DescribeClass dc = new DescribeClass();
-        for (Iterator i = m.listClasses();  i.hasNext(); ) {
-            dc.describeClass( System.out, (OntClass) i.next() );
-        }
+
+        new ClassHierarchy().showHierarchy( System.out, m );
     }
-    
-    
+
+
     // Internal implementation methods
     //////////////////////////////////
 

@@ -10,8 +10,8 @@
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-23 00:10:57 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 14:29:36 $
+ *               by   $Author: der $
  *
  *****************************************************************************/
 
@@ -36,7 +36,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassHierarchy.java,v 1.1 2003-08-23 00:10:57 ian_dickinson Exp $
+ * @version CVS $Id: ClassHierarchy.java,v 1.1 2003-08-26 14:29:36 der Exp $
  */
 public class ClassHierarchy {
     // Constants

@@ -10,8 +10,8 @@
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-23 00:10:40 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 14:29:36 $
+ *               by   $Author: der $
  *
  *****************************************************************************/
 
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DescribeClass.java,v 1.1 2003-08-23 00:10:40 ian_dickinson Exp $
+ * @version CVS $Id: DescribeClass.java,v 1.1 2003-08-26 14:29:36 der Exp $
  */
 public class DescribeClass {
     // Constants

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Jul-2003
  * Filename           $RCSfile: PersistentOntology.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-23 00:10:58 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 14:29:35 $
+ *               by   $Author: der $
  *
  *****************************************************************************/
 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PersistentOntology.java,v 1.2 2003-08-23 00:10:58 ian_dickinson Exp $
+ * @version CVS $Id: PersistentOntology.java,v 1.1 2003-08-26 14:29:35 der Exp $
  */
 public class PersistentOntology {
     // Constants
