@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionSet.java,v 1.1 2003-10-06 10:45:54 chris-dollin Exp $
+  $Id: ExpressionSet.java,v 1.2 2003-10-06 13:41:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-	ExpressionSet
+	ExpressionSet: represent a set of (boolean) expressions ANDed together.
 
 	@author kers
 */
@@ -15,15 +15,31 @@ public class ExpressionSet
     {
     private Expression x = Expression.TRUE;
 
+    /**
+        Initialise an expression set with no members.
+    */
 	public ExpressionSet() 
         {}
 
+    /**
+        Answer this expressionset after e has been anded into it.
+     	@param e the expression to and into the set
+     	@return this ExpressionSet
+    */
     public ExpressionSet add( Expression e )
         {
         x = x.and( e );
         return this;    
         }
+    
+    /**
+        Evaluate this expression set, delivering true iff no member of the set evaluates
+        to false.
         
+     	@param map the binding map to pass to the sub-expressions
+     	@param d the bound variable values to pass to the sub-expressions
+     	@return true iff no member evaluates to false
+     */    
     public boolean evalBool( Mapping map, Domain d )
         {
         return x.evalBool( map, d );    
