@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.7 2003-06-16 21:27:54 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.8 2003-06-17 15:51:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -37,7 +37,7 @@ import java.util.*;
  * <p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-16 21:27:54 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-17 15:51:17 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -75,12 +75,27 @@ public class TransitiveGraphCache implements Finder {
      * Register a new relation instance in the cache
      */
     public void addRelation(Node start, Node end) {
+        clearClosureCache();
+        getGraphNode(start).addDirectLink(getGraphNode(end));
+    }
+    
+    /**
+     * Remove an instance of a relation from the cache.
+     */
+    public void removeRelation(Node start, Node end) {
+        clearClosureCache();
+        getGraphNode(start).removeLink(getGraphNode(end));
+    }
+    
+    /**
+     * Clear the closure cache, if any.
+     */
+    private void clearClosureCache() {
         if (cacheOn) {
             // blow away the cache, don't try to do incremental updates
             if (cacheClosureBackward.size() > 0) cacheClosureBackward = new HashMap();
             if (cacheClosureForward.size() > 0) cacheClosureForward = new HashMap();
         }
-        getGraphNode(start).addDirectLink(getGraphNode(end));
     }
     
     /**
@@ -394,6 +409,12 @@ public class TransitiveGraphCache implements Finder {
                 successors.add(n);
                 n.predecessors.add(this);
             }
+        }
+        
+        /** Remove a link, if any, from this node to the given graph node */
+        void removeLink(GraphNode n) {
+            successors.remove(n);
+            n.predecessors.remove(this);
         }
                
         /** Add a new forward link retaining only direct links */

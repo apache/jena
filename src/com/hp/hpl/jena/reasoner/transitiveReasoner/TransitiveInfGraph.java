@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.8 2003-05-15 17:30:00 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.9 2003-06-17 15:51:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -29,7 +29,7 @@ import java.util.HashSet;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-15 17:30:00 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-17 15:51:17 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -175,7 +175,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * SIZE.
      */
     public int capabilities() {
-        return ADD | SIZE;
+        return ADD | SIZE | DELETE;
     }
     
     /** 
@@ -183,7 +183,17 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * TODO: This will not work on subClass/subPropertOf yet. 
      */   
     public void delete(Triple t) {
-        if (!isPrepared) prepare();
+        if (isPrepared) {
+            Node predicate = t.getPredicate();
+            if (specialPredicates.contains(predicate)) {
+                if (predicate.equals(TransitiveReasoner.directSubClassOf)  
+                || predicate.equals(TransitiveReasoner.subClassOf)) {
+                    subClassCache.removeRelation(t.getSubject(), t.getObject());
+                } else {
+                    subPropertyCache.removeRelation(t.getSubject(), t.getObject());
+                }
+            }
+        }
         fdata.getGraph().delete(t);
     }
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.5 2003-06-16 21:28:30 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.6 2003-06-17 15:51:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-16 21:28:30 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-17 15:51:16 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -40,7 +40,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     /** Flag, if true we cache the closure of the pure rule set with its axioms */
     protected static final boolean cachePreload = true;
     
-    /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs */
+    /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs, only applicable to HYBRID reasoners */
     protected boolean enableTGCCaching = false;
     
     /** Flag, if true then rules will be augmented by OWL translations of the schema */

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTransitiveGraphCache.java,v 1.4 2003-04-15 21:26:52 jeremy_carroll Exp $
+ * $Id: TestTransitiveGraphCache.java,v 1.5 2003-06-17 15:51:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -20,7 +20,7 @@ import junit.framework.TestSuite;
 /**
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:26:52 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-17 15:51:16 $
  */
 public class TestTransitiveGraphCache extends TestCase {
     
@@ -261,6 +261,62 @@ public class TestTransitiveGraphCache extends TestCase {
         */
     }
     
+    /**
+     * Test the removeRelation functionality.
+     */
+    public void testRemove() {
+        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
+        cache.addRelation(a, b);
+        cache.addRelation(a, c);
+        cache.addRelation(b, d);
+        cache.addRelation(c, d);
+        cache.addRelation(d, e);
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(a, closedP, null)),
+            new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(a, closedP, b),
+                new Triple(a, closedP, b),
+                new Triple(a, closedP, c),
+                new Triple(a, closedP, d),
+                new Triple(a, closedP, e)
+            });
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(b, closedP, null)),
+            new Object[] {
+                new Triple(b, closedP, b),
+                new Triple(b, closedP, d),
+                new Triple(b, closedP, e)
+            });
+        cache.removeRelation(b, d);
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(a, closedP, null)),
+            new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(a, closedP, b),
+                new Triple(a, closedP, b),
+                new Triple(a, closedP, c),
+                new Triple(a, closedP, d),
+                new Triple(a, closedP, e)
+            });
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(b, closedP, null)),
+            new Object[] {
+                new Triple(b, closedP, b),
+            });
+        cache.removeRelation(a, c);
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(a, closedP, null)),
+            new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(a, closedP, b)
+            });
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(b, closedP, null)),
+            new Object[] {
+                new Triple(b, closedP, b),
+            });
+    }
 }
 
 /*

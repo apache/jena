@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.6 2003-06-16 21:28:34 der Exp $
+ * $Id: DebugOWL.java,v 1.7 2003-06-17 15:51:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-16 21:28:34 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-17 15:51:08 $
  */
 public class DebugOWL {
 
@@ -243,6 +243,7 @@ public class DebugOWL {
      * Run a standard test squence based on Volz et al sets
      */
     public void run() {
+        run(3,5,10);
         run(3,5,10);
         run(4,5,10);
         run(5,5,10);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.13 2003-06-16 21:28:30 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.14 2003-06-17 15:51:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,6 +23,8 @@ import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
+//import com.hp.hpl.jena.util.PrintUtil;
+//import com.hp.hpl.jena.vocabulary.RDF;
 
 import org.apache.log4j.Logger;
 
@@ -35,7 +37,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-16 21:28:30 $
+ * @version $Revision: 1.14 $ on $Date: 2003-06-17 15:51:16 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -227,6 +229,21 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         return engine.getRuleStore();
     }
     
+    /**
+     * Add a new deduction to the deductions graph.
+     */
+    public void addDeduction(Triple t) {
+        getDeductionsGraph().add(t);
+        if (useTGCCaching) {
+            Node predicate = t.getPredicate();
+            if (predicate.equals(TransitiveReasoner.subClassOf)) {
+                subClassCache.addRelation(t.getSubject(), t.getObject());
+            } else if (predicate.equals(TransitiveReasoner.subPropertyOf)) {
+                subPropertyCache.addRelation(t.getSubject(), t.getObject());
+            } 
+        }
+    }
+   
 //  =======================================================================
 //  Core inf graph methods
     
@@ -295,7 +312,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
                 subPropertyCache.setCaching(true);
                 subClassCache.setCaching(true);
-                dataFind = FinderUtil.cascade(subClassCache, subPropertyCache, dataFind);
+//                dataFind = FinderUtil.cascade(subClassCache, subPropertyCache, dataFind);
+                dataFind = FinderUtil.cascade(dataFind, subClassCache, subPropertyCache);
             }
 
             boolean rulesLoaded = false;
@@ -481,6 +499,19 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             return false;
         }
     }
+    
+//    /**
+//     * Temporary debuggin support. List the dataFind graph.
+//     */
+//    public void debugListDataFind() {
+//        logger.debug("DataFind contains (ty and sc only:");
+//        for (Iterator i = dataFind.findWithContinuation(new TriplePattern(null, RDF.type.asNode(), null),null); i.hasNext(); ) {
+//            logger.debug(" " + PrintUtil.print(i.next()));
+//        }
+//        for (Iterator i = dataFind.findWithContinuation(new TriplePattern(null, RDFS.subClassOf.asNode(), null),null); i.hasNext(); ) {
+//            logger.debug(" " + PrintUtil.print(i.next()));
+//        }
+//    }
     
 //  =======================================================================
 //   Inner classes

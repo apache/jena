@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.14 2003-06-16 21:28:34 der Exp $
+ * $Id: TestRDFSRules.java,v 1.15 2003-06-17 15:51:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.14 $ on $Date: 2003-06-16 21:28:34 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.15 $ on $Date: 2003-06-17 15:51:08 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -49,7 +49,7 @@ public class TestRDFSRules extends TestCase {
     public static TestSuite suite() {
         return new TestSuite(TestRDFSRules.class);
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestRDFSRules( "testRDFSExptReasoner" ));
+//        suite.addTest(new TestRDFSRules( "hiddenTestRDFSReasonerDebug" ));
 //        return suite;
     }  
 
@@ -62,15 +62,15 @@ public class TestRDFSRules extends TestCase {
         assertTrue("RDFS forward reasoner tests", tester.runTests(rf, this, null));
     }
 
-//    /**
-//     * Test a single RDFS case.
-//     */
-//    public void testRDFSReasonerDebug() throws IOException {
-//        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect-noresource.rdf");
-//        ReasonerFactory rf = RDFSFBRuleReasonerFactory.theInstance();
-//        
-//        assertTrue("RDFS forward reasoner test", tester.runTest("http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/test6", rf, this, null));
-//    }
+    /**
+     * Test a single RDFS case.
+     */
+    public void hiddenTestRDFSReasonerDebug() throws IOException {
+        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect-noresource.rdf");
+        ReasonerFactory rf = RDFSExptRuleReasonerFactory.theInstance();
+        
+        assertTrue("RDFS hybrid-tgc reasoner test", tester.runTest("http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/test11", rf, this, null));
+    }
 
     /**
      * Test the basic functioning of the hybrid RDFS rule reasoner

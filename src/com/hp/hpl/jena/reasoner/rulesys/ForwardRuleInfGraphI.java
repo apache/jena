@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ForwardRuleInfGraphI.java,v 1.5 2003-06-10 22:26:33 der Exp $
+ * $Id: ForwardRuleInfGraphI.java,v 1.6 2003-06-17 15:51:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * are needed to support the forward rule engine. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-10 22:26:33 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-17 15:51:16 $
  */
 public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
     
@@ -38,6 +38,11 @@ public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
      * Return the Graph containing all the static deductions available so far.
      */
     public Graph getDeductionsGraph();
+    
+    /**
+     * Add a new deduction to the deductions graph.
+     */
+    public void addDeduction(Triple t);
     
     /**
      * Search the combination of data and deductions graphs for the given triple pattern.

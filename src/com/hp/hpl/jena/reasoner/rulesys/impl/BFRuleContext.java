@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.7 2003-06-12 14:17:01 der Exp $
+ * $Id: BFRuleContext.java,v 1.8 2003-06-17 15:51:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-12 14:17:01 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-17 15:51:17 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -137,13 +137,12 @@ public class BFRuleContext implements RuleContext {
     /**
      * Take all the pending triples and add them to both the given graph and
      * to the processing stack.
-     * @param deductions the graph to which the pending triples should be added
      */
-    public void flushPending(Graph deductions) {
+    public void flushPending() {
         for (Iterator i = pending.iterator(); i.hasNext(); ) {
             Triple t = (Triple)i.next();
             stack.add(t);
-            deductions.add(t);
+            graph.addDeduction(t);
             i.remove();
             // pendingCache.delete(t);
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.13 2003-06-16 21:28:34 der Exp $
+ * $Id: ReasonerTester.java,v 1.14 2003-06-17 15:51:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -46,7 +46,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-16 21:28:34 $
+ * @version $Revision: 1.14 $ on $Date: 2003-06-17 15:51:16 $
  */
 public class ReasonerTester {
 
@@ -244,7 +244,7 @@ public class ReasonerTester {
             for (Iterator i = correctG.find(null, null, null); i.hasNext(); ) {
                 Triple t = (Triple) i.next();
                 if (!resultG.contains(t)) {
-                    System.out.println("  - " + t);
+                    System.out.println("  " + t);
                 }
             }
             System.out.println("Extra triples:");
@@ -256,6 +256,7 @@ public class ReasonerTester {
             }
             
         }
+        ((FBRuleInfGraph)graph).debugListDataFind();
         */
         // ... end of debugging hack
         if (testcase != null) {
