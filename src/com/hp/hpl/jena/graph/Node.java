@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.18 2003-08-01 13:25:21 chris-dollin Exp $
+  $Id: Node.java,v 1.19 2003-08-11 02:38:23 wkw Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -37,6 +37,12 @@ public abstract class Node {
         constructor.
     */       
     public static final Node ANY = new Node_ANY();
+    
+	/**
+		The canonical instance of Node_NULL.
+	*/       
+	public static final Node NULL = new Node_NULL();
+
         
     static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     
