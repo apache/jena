@@ -1,5 +1,0 @@
-// Test 1-07 : fixed triple pattern, no variables
-
-SELECT *
-SOURCE <model1.nt>
-WHERE  (<http://rdf.hp.com/r-1>, <http://rdf.hp.com/p-1>, "v-1-1")

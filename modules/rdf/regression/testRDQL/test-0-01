@@ -1,7 +1,0 @@
-// Syntactic test
-
-SELECT *
-// Comment
-FROM   <model0.nt>
-/* Comment */
-WHERE  (?x, ?y, ?z)

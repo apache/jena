@@ -1,2 +1,0 @@
-// Syntactic test
-SELECT /* ?x */ * FROM <model0.nt> WHERE (?x,?y,?z) // All

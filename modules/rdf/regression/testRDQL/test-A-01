@@ -1,9 +1,0 @@
-// Test A-07 : Contents of bags
-
-SELECT ?b, ?y
-SOURCE <model5.nt>
-WHERE  (?b, <RDFS:type>, <RDFS:Bag>), (?b, ?x, ?y)
-AND ! ( ?x eq <RDFS:type> && ?y eq <RDFS:Bag> )
-USING
-  RDFS FOR <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, 
-  RDF  FOR <http://www.w3.org/1999/02/22-rdf-syntax-ns#>

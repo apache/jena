@@ -1,5 +1,0 @@
-// Test 1-03 : bound predicate
-
-SELECT *
-SOURCE <model1.nt>
-WHERE  (?x, <http://rdf.hp.com/p-1>, ?z)

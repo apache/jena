@@ -1,6 +1,0 @@
-// Test 3-01 : Triple patterns and constraints
-
-SELECT *
-SOURCE <model1.nt>
-WHERE  (?x, ?y, ?z)
-AND    ?x eq <http://rdf.hp.com/r-1>

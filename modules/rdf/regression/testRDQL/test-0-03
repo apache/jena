@@ -1,5 +1,0 @@
-// Syntactic test : variable is a keyword
-
-SELECT ?select
-FROM   <model0.nt>
-WHERE  (?x, <http://localhost/p1>, ?select)
