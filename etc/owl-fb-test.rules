@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.5 2003-07-13 21:16:47 der Exp $
+# $Id: owl-fb-test.rules,v 1.6 2003-07-17 11:02:11 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -199,7 +199,7 @@
 [min: (?C rdfs:subClassOf min(?P, '1')) ->
     [min1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?T)] ]
 
-[minRec: (?C owl:equivalentClass min(?P, '1')) ->
+[minRec: (?C owl:equivalentClass min(?P, '1')), notEqual(?P, rdf:type) ->
     [min2b: (?X rdf:type ?C) <- (?X ?P ?Y)] ]
 
 [restriction-inter-MnS: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, '1')) 

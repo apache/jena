@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.24 2003-07-09 15:50:17 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.25 2003-07-17 11:01:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2003-07-09 15:50:17 $
+ * @version $Revision: 1.25 $ on $Date: 2003-07-17 11:01:59 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -519,7 +519,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
-    public synchronized void add(Triple t) {
+    public synchronized void performAdd(Triple t) {
         fdata.getGraph().add(t);
         if (useTGCCaching) {
             if (transitiveEngine.add(t)) isPrepared = false;
@@ -533,7 +533,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
-    public void delete(Triple t) {
+    public void performDelete(Triple t) {
         fdata.getGraph().delete(t);
         if (useTGCCaching) {
             if (transitiveEngine.delete(t)) {

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.16 2003-06-25 07:57:19 der Exp $
+ * $Id: TestBasics.java,v 1.17 2003-07-17 11:01:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-06-25 07:57:19 $
+ * @version $Revision: 1.17 $ on $Date: 2003-07-17 11:01:19 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -442,6 +442,18 @@ public class TestBasics extends TestCase  {
                 new Triple(n1, p, n3),
                 new Triple(n1, q, n3)
             });
+    }
+    
+    /**
+     * Test size bug, used to blow up if size was called before any queries.
+     */
+    public void testSize() {
+        String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
+        List ruleList = Rule.parseRules(rules);
+        Graph data = new GraphMem();
+        data.add(new Triple(n1, p, n2));
+        InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
+        assertEquals(infgraph.size(), 2);
     }
         
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.12 2003-07-13 21:15:56 der Exp $
+ * $Id: DebugOWL.java,v 1.13 2003-07-17 11:01:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-07-13 21:15:56 $
+ * @version $Revision: 1.13 $ on $Date: 2003-07-17 11:01:19 $
  */
 public class DebugOWL {
 
@@ -315,7 +315,8 @@ public class DebugOWL {
 //            new DebugOWL(OWL).run("file:temp/owl-subset.owl");
             
             // Test volz examples on OWL config
-//            new DebugOWL(OWLFB).run();
+//            new DebugOWL(OWLFB).runVolz();
+//            new DebugOWL(OWLExpt).runVolz();
             
             // Test volz examples on RDFS config
 //            System.out.println("Volz tests on RDFSRule");
