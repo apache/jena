@@ -2,7 +2,7 @@
     (c)      Copyright 2001, 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterInterface.java,v 1.9 2003-09-09 10:58:59 chris-dollin Exp $
+    $Id: testWriterInterface.java,v 1.10 2003-12-08 11:29:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -19,7 +19,7 @@ import java.io.*;
 /**
  *
  * @author  bwm, jjc
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class testWriterInterface extends ModelTestBase {
     private String lang;
@@ -68,24 +68,24 @@ public class testWriterInterface extends ModelTestBase {
     }
 
     public void testWriting() {
+        // Changed to use "in-memory files" (ByteArrayOutputStream)
+        // Used to use temporary file. 
         //System.err.println(lang);
-        File file = null;
         OutputStream output = null;
         Model m1 = createMemModel();
         try {
-            file = File.createTempFile("~jena", ".rdf");
-            output = new FileOutputStream(file);
+            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+            output = out ;
             m1.write(output, lang);
+            out.reset() ;
+            output.close() ;
         } catch (Exception e) {
             fail(e.getMessage());
         } finally {
             if (output != null)
                 try {
                     output.close();
-                } catch (Exception e) {
-                }
-            if (file != null)
-                file.delete();
+                } catch (Exception e) { }
         }
     }
 
@@ -116,5 +116,5 @@ public class testWriterInterface extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterInterface.java,v 1.9 2003-09-09 10:58:59 chris-dollin Exp $
+ * $Id: testWriterInterface.java,v 1.10 2003-12-08 11:29:11 andy_seaborne Exp $
  */
