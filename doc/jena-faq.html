@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.6 2003-12-15 15:08:00 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.html,v 1.7 2003-12-15 15:52:30 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -222,7 +222,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <h3>Database and persistence</h3>
 <p id="db-0"><strong>Q: Why do I get an exception when trying to create a new persistent model?</strong><br>
   A: Assuming that your program uses correct methods to create the model (see
-examples in the database <a href="../DB/howto.html">howto</a>), it may be that
+examples in the database <a href="DB/howto.html">howto</a>), it may be that
 your database files are corrupted. Jena2 does <i>not</i> do a good job in
 checking the validity of the database. It makes a cursory check that some
 required tables exist but does not check that the tables contain valid data. If
@@ -247,7 +247,7 @@ that this is what you want to do. </p>
 <p id="db-2"><strong>Q: Has Jena2 persistence been ported to other database engines and platforms
   besides those officially supported?</strong><br>
   A: The Jena team  supports Jena2 persistence on the databases and operating
-systems listed in the <a href="../DB/index.html">Database Interface Release
+systems listed in the <a href="DB/index.html">Database Interface Release
 Notes</a>.
 Other users have had success porting Jena2 to other databases and platforms.
 Jena2 has been ported to IBM's DB2 database. Contact
@@ -267,7 +267,7 @@ the number of models in a database?</b><br>
 database engine (MySQL, PostgreSQL, Oracle, etc). Recall that a Jena model may 
 either be stored separately in its own database tables (the default) or, 
 alternatively, in tables that are shared with other models (see <i>
-StoreWithModel</i> in the <a href="../DB/options.html">options</a> for 
+StoreWithModel</i> in the <a href="DB/options.html">options</a> for 
 persistent models). Also, a Jena model is identified internally by a 32 bit 
 integer. Consequently the maximum number of models is limited either by the 
 maximum number of tables allowed in a database (which depends on the database 
