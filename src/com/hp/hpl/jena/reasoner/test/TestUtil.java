@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.13 2004-07-30 15:16:03 chris-dollin Exp $
+ * $Id: TestUtil.java,v 1.14 2004-11-25 17:32:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2004-07-30 15:16:03 $
+ * @version $Revision: 1.14 $ on $Date: 2004-11-25 17:32:36 $
  */
 public class TestUtil {
     
@@ -73,14 +73,13 @@ public class TestUtil {
             if (!gotit) {
                 logger.debug( testCase.getName() + " found unexpected iterator value: " + n);
             }
-            TestCase.assertTrue( testCase.getName() + " found unexpected iterator value", gotit);
+            TestCase.assertTrue( testCase.getName() + " found unexpected iterator value: " + n, gotit);
         }
         
         // check that no expected values were unfound
         for (int i = 0; i < vals.length; i++) {
             if (!found[i]) {
-
-                for (int j = 0; j < vals.length; j += 1) System.err.println( "#" + j + ": " + vals[j] );
+//                for (int j = 0; j < vals.length; j += 1) System.err.println( "#" + j + ": " + vals[j] );
                 logger.debug( testCase.getName() + " failed to find expected iterator value: " + vals[i]);
             }
             TestCase.assertTrue(testCase.getName() + " failed to find expected iterator value: " + vals[i], found[i]);

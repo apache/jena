@@ -1,15 +1,16 @@
 /******************************************************************
- * File:        TestTransitiveGraphCache.java
+ * File:        TestTransitiveGraphCacheNew.java
  * Created by:  Dave Reynolds
- * Created on:  14-Jan-03
+ * Created on:  25-Nov-2004
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTransitiveGraphCache.java,v 1.10 2004-11-25 17:32:36 der Exp $
+ * $Id: TestTransitiveGraphCacheNew.java,v 1.1 2004-11-25 17:32:36 der Exp $
  *****************************************************************/
+
 package com.hp.hpl.jena.reasoner.test;
 
-import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCache;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCacheNew;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import  com.hp.hpl.jena.graph.Node;
 import  com.hp.hpl.jena.graph.Triple;
@@ -18,15 +19,17 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Test harness for the transitive graph cache which underpins the TransitiveEngine.
- * 
+ * A purely temporary test suite just used during development and kept
+ * off the main unit test paths.
+ *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2004-11-25 17:32:36 $
+ * @version $Revision: 1.1 $
  */
-public class TestTransitiveGraphCache extends TestCase {
+
+public class TestTransitiveGraphCacheNew extends TestCase {
     
     /** The cache under test */
-    TransitiveGraphCache cache;
+    TransitiveGraphCacheNew cache;
     
     // Dummy predicates and nodes for the graph
     String NS = "urn:x-hp-test:ex/";
@@ -44,7 +47,7 @@ public class TestTransitiveGraphCache extends TestCase {
     /**
      * Boilerplate for junit
      */ 
-    public TestTransitiveGraphCache( String name ) {
+    public TestTransitiveGraphCacheNew( String name ) {
         super( name ); 
     }
     
@@ -53,7 +56,7 @@ public class TestTransitiveGraphCache extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestTransitiveGraphCache.class ); 
+        return new TestSuite( TestTransitiveGraphCacheNew.class ); 
     }  
 
     /**
@@ -81,7 +84,7 @@ public class TestTransitiveGraphCache extends TestCase {
      */
     public void testCloning() {
         initCache();
-        TransitiveGraphCache clone = cache.deepCopy();
+        TransitiveGraphCacheNew clone = cache.deepCopy();
         // Mess with the original to check cloning
         cache.addRelation(a, d);
         cache.addRelation(g, a);
@@ -93,7 +96,7 @@ public class TestTransitiveGraphCache extends TestCase {
      */
     private void initCache() {
         // Create a graph with reflexive references, cycles, redundant links
-        cache = new TransitiveGraphCache(directP, closedP);        
+        cache = new TransitiveGraphCacheNew(directP, closedP);        
         cache.addRelation(a, b);
         cache.addRelation(b, e);
         cache.addRelation(b, c);
@@ -115,7 +118,7 @@ public class TestTransitiveGraphCache extends TestCase {
         cache.addRelation(g, g);
     }
             
-    public void doBasicTest(TransitiveGraphCache cache) {
+    public void doBasicTest(TransitiveGraphCacheNew cache) {
          // Test forward property patterns
         TestUtil.assertIteratorValues(this, 
             cache.find(new TriplePattern(a, directP, null)),
@@ -267,7 +270,7 @@ public class TestTransitiveGraphCache extends TestCase {
      * a link which was required rather than redundant.
      */
     public void testBug1() {
-        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
+        TransitiveGraphCacheNew cache = new TransitiveGraphCacheNew(directP, closedP);
         cache.addRelation(a, b);        
         cache.addRelation(c, a);        
         cache.addRelation(c, b);        
@@ -286,7 +289,7 @@ public class TestTransitiveGraphCache extends TestCase {
      * Test the removeRelation functionality.
      */
     public void testRemove() {
-        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
+        TransitiveGraphCacheNew cache = new TransitiveGraphCacheNew(directP, closedP);
         cache.addRelation(a, b);
         cache.addRelation(a, c);
         cache.addRelation(b, d);
@@ -339,88 +342,89 @@ public class TestTransitiveGraphCache extends TestCase {
             });
     }
     
-//    /**
-//     * Test direct link case with adverse ordering.
-//     */
-//    public void testDirect() {
-//        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
-//        cache.addRelation(a, b);
-//        cache.addRelation(c, d);
-//        cache.addRelation(a, d);
-//        cache.addRelation(b, c);
-//        TestUtil.assertIteratorValues(this, 
-//            cache.find(new TriplePattern(a, directP, null)),
-//            new Object[] {
-//                new Triple(a, closedP, a),
-//                new Triple(a, closedP, b),
-//            });
-//    }
-//    
-//    /**
-//     * Test cycle detection.
-//     */
-//    public void testCycle() {
-//        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
-//        cache.addRelation(a, b);
-//        cache.addRelation(b, c);
-//        cache.addRelation(a, c);
-//        cache.addRelation(c, b);
-//        TestUtil.assertIteratorValues(this, 
-//            cache.find(new TriplePattern(a, directP, null)),
-//            new Object[] {
-//                new Triple(a, closedP, a),
-//                new Triple(a, closedP, b),
-//                new Triple(a, closedP, c),
-//            });
-//    }
-//    
-//    /**
-//     * A ring of three cycle
-//     */
-//    public void testCycle2() {
-//        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
-//        cache.addRelation(a, b);
-//        cache.addRelation(a, c);
-//        cache.addRelation(f, b);
-//        cache.addRelation(b, g);
-//        cache.addRelation(b, d);
-//        cache.addRelation(d, c);
-//        cache.addRelation(d, e);
-//        cache.addRelation(c, e);
-//        cache.addRelation(c, b);
-//        TestUtil.assertIteratorValues(this, 
-//                cache.find(new TriplePattern(c, directP, null)),
-//                new Object[] {
-//                    new Triple(c, closedP, e),
-//                    new Triple(c, closedP, g),
-//                    new Triple(c, closedP, b),
-//                    new Triple(c, closedP, d),
-//                    new Triple(c, closedP, c),
-//                });
-//        TestUtil.assertIteratorValues(this, 
-//                cache.find(new TriplePattern(null, directP, c)),
-//                new Object[] {
-//                    new Triple(a, closedP, c),
-//                    new Triple(b, closedP, c),
-//                    new Triple(d, closedP, c),
-//                    new Triple(f, closedP, c),
-//                    new Triple(c, closedP, c),
-//                });
-//        TestUtil.assertIteratorValues(this, 
-//                cache.find(new TriplePattern(f, closedP, null)),
-//                new Object[] {
-//                    new Triple(f, closedP, f),
-//                    new Triple(f, closedP, b),
-//                    new Triple(f, closedP, c),
-//                    new Triple(f, closedP, d),
-//                    new Triple(f, closedP, g),
-//                });
-//    }
+    /**
+     * Test direct link case with adverse ordering.
+     */
+    public void testDirect() {
+        TransitiveGraphCacheNew cache = new TransitiveGraphCacheNew(directP, closedP);
+        cache.addRelation(a, b);
+        cache.addRelation(c, d);
+        cache.addRelation(a, d);
+        cache.addRelation(b, c);
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(a, directP, null)),
+            new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(a, closedP, b),
+            });
+    }
+    
+    /**
+     * Test cycle detection.
+     */
+    public void testCycle() {
+        TransitiveGraphCacheNew cache = new TransitiveGraphCacheNew(directP, closedP);
+        cache.addRelation(a, b);
+        cache.addRelation(b, c);
+        cache.addRelation(a, c);
+        cache.addRelation(c, b);
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(a, directP, null)),
+            new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(a, closedP, b),
+                new Triple(a, closedP, c),
+            });
+    }
+    
+    /**
+     * A ring of three cycle
+     */
+    public void testCycle2() {
+        TransitiveGraphCacheNew cache = new TransitiveGraphCacheNew(directP, closedP);
+        cache.addRelation(a, b);
+        cache.addRelation(a, c);
+        cache.addRelation(f, b);
+        cache.addRelation(b, g);
+        cache.addRelation(b, d);
+        cache.addRelation(d, c);
+        cache.addRelation(d, e);
+        cache.addRelation(c, e);
+        cache.addRelation(c, b);
+        TestUtil.assertIteratorValues(this, 
+                cache.find(new TriplePattern(c, directP, null)),
+                new Object[] {
+                    new Triple(c, closedP, e),
+                    new Triple(c, closedP, g),
+                    new Triple(c, closedP, b),
+                    new Triple(c, closedP, d),
+                    new Triple(c, closedP, c),
+                });
+        TestUtil.assertIteratorValues(this, 
+                cache.find(new TriplePattern(null, directP, c)),
+                new Object[] {
+                    new Triple(a, closedP, c),
+                    new Triple(b, closedP, c),
+                    new Triple(d, closedP, c),
+                    new Triple(f, closedP, c),
+                    new Triple(c, closedP, c),
+                });
+        TestUtil.assertIteratorValues(this, 
+                cache.find(new TriplePattern(f, closedP, null)),
+                new Object[] {
+                    new Triple(f, closedP, f),
+                    new Triple(f, closedP, b),
+                    new Triple(f, closedP, c),
+                    new Triple(f, closedP, d),
+                    new Triple(f, closedP, g),
+                });
+    }
 
 }
 
+
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -448,4 +452,3 @@ public class TestTransitiveGraphCache extends TestCase {
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
