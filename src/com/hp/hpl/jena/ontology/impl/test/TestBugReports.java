@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.35 $
+ * Revision           $Revision: 1.36 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-01 11:51:08 $
+ * Last modified on   $Date: 2004-03-02 13:17:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -96,10 +96,10 @@ public class TestBugReports extends TestCase {
             for (StmtIterator j = r.listProperties(RDF.type); j.hasNext(); ) {
                 System.out.println( "ind - " + r + " rdf:type = " + j.nextStatement().getObject() );
             }
-            System.out.println("----------"); / **/
+            System.out.println("----------"); /**/
         }
         
-        assertEquals( "Expecting 3 individuals", 6, count );
+        assertEquals( "Expecting 6 individuals", 6, count );
     }
     
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-08 18:36:11 $
+ * Last modified on   $Date: 2004-03-02 13:17:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.19 2004-02-08 18:36:11 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.20 2004-03-02 13:17:01 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -242,8 +242,35 @@ public class TestListSyntaxCategories
                 return r instanceof Individual;
             }
         },
+        new DoListTest( "empty OWL list individuals",  null,  OntModelSpec.OWL_MEM,  0, new String[] {} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "empty OWL+rule list individuals",  null,  OntModelSpec.OWL_MEM_RULE_INF,  0, new String[] {} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
         new DoListTest( "DAML list individuals",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  6,  
                         new String[] {NS+"A0", NS+"A1", NS+"C0", NS+"a1", NS+"a2", NS+"a0"} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "empty DAML+rule list individuals",  null,  OntModelSpec.DAML_MEM_RULE_INF,  0, new String[] {} ) 
         {
             public Iterator doList( OntModel m ) {
                 return m.listIndividuals();
@@ -639,7 +666,9 @@ public class TestListSyntaxCategories
             OntModel m = ModelFactory.createOntologyModel( m_spec, null );
             m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
             
-            m.read( m_fileName );
+            if (m_fileName != null) {
+                m.read( m_fileName );
+            }
             
             boolean exOccurred = false;
             Iterator i = null;
