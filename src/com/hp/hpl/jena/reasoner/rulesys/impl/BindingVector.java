@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.14 2003-06-09 21:00:44 der Exp $
+ * $Id: BindingVector.java,v 1.15 2003-06-10 17:10:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-09 21:00:44 $
+ * @version $Revision: 1.15 $ on $Date: 2003-06-10 17:10:37 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -345,7 +345,8 @@ public class BindingVector implements BindingEnvironment {
     public int hashCode() {
         int hash = 0;
         for (int i = 0; i < environment.length; i++) {
-            hash = (hash << 1) ^ environment[i].hashCode();
+            Node n = environment[i];
+            hash = (hash << 1) ^ (n == null ? 0x537c: n.hashCode());
         }
         return hash;
     }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEEngine.java,v 1.2 2003-06-09 21:00:43 der Exp $
+ * $Id: RETEEngine.java,v 1.3 2003-06-10 17:10:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
+import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
 import org.apache.log4j.Logger;
 
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:43 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-10 17:10:38 $
  */
 public class RETEEngine {
     
@@ -35,6 +36,12 @@ public class RETEEngine {
     
     /** Map from predicate node to rule + clause, Node_ANY is used for wildcard predicates */
     protected OneToManyMap clauseIndex;
+    
+    /** Queue of newly added triples waiting to be processed */
+    protected List addsPending = new ArrayList();
+    
+    /** Queue of newly deleted triples waiting to be processed */
+    protected List deletesPending = new ArrayList();
     
     /** List of predicates used in rules to assist in fast data loading */
     protected HashSet predicatesUsed;
@@ -91,7 +98,7 @@ public class RETEEngine {
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
      */
     public void init(boolean ignoreBrules) {
-        buildClauseIndex(ignoreBrules);
+//        buildClauseIndex(ignoreBrules);
         findAndProcessAxioms();
         nAxiomRulesFired = nRulesFired;
         logger.debug("Axioms fired " + nAxiomRulesFired + " rules");
@@ -175,8 +182,143 @@ public class RETEEngine {
     }
     
 //  =======================================================================
-//  Internal methods
+//  Compiler support  
 
+//    /**
+//     * Compile a list of rules into the internal rule store representation.
+//     * @param rules the list of Rule objects
+//     * @param ignoreBrules set to true if rules written in backward notation should be ignored
+//     * @return an object that can be installed into the engine using setRuleStore.
+//     */
+//    public static RuleStore compile(List rules, boolean ignoreBrules) {
+//        OneToManyMap clauseIndex = new OneToManyMap();
+//        HashSet predicatesUsed = new HashSet();
+//        boolean wildcardRule = false;
+//            
+//        for (Iterator it = rules.iterator(); it.hasNext(); ) {
+//            Rule rule = (Rule)it.next();
+//            if (ignoreBrules && rule.isBackward()) continue;
+//            
+//            compileRule(rule);      // Can do this static
+//            
+//        }
+//            
+//        if (wildcardRule) predicatesUsed = null;
+//        return new RuleStore(clauseIndex, predicatesUsed, wildcardRule);
+//    }
+
+    /**
+     * Test version of rule compiler - temp during development.
+     * @param rule the rule to compile
+     * @return the final node (either a filter or a queue)
+     */
+    public RETESourceNode compileRule(Rule rule) {
+        if (clauseIndex == null) {
+            clauseIndex = new OneToManyMap();
+            predicatesUsed = new HashSet();
+        } 
+        
+        int numVars = rule.getNumVars();
+        boolean[] seenVar = new boolean[numVars];
+        RETESourceNode prior = null;
+        
+        for (int i = 0; i < rule.bodyLength(); i++) {
+            Object clause = rule.getBodyElement(i);
+            if (clause instanceof TriplePattern) {
+                // Create the filter node for this pattern
+                ArrayList clauseVars = new ArrayList(numVars);
+                RETEClauseFilter clauseNode = RETEClauseFilter.compile((TriplePattern)clause, numVars, clauseVars);
+                Node predicate = ((TriplePattern)clause).getPredicate();
+                if (predicate.isVariable()) {
+                    clauseIndex.put(Node.ANY, clauseNode);
+                    wildcardRule = true;
+                } else {
+                    clauseIndex.put(predicate, clauseNode);
+                    if (! wildcardRule) {
+                        predicatesUsed.add(predicate);
+                    }
+                }
+                
+                // Create list of variables which should be cross matched between the earlier clauses and this one
+                ArrayList matchIndices = new ArrayList(numVars);
+                for (Iterator iv = clauseVars.iterator(); iv.hasNext(); ) {
+                    int varIndex = ((Node_RuleVariable)iv.next()).getIndex();
+                    if (seenVar[varIndex]) matchIndices.add(new Byte((byte)varIndex));
+                    seenVar[varIndex] = true;
+                }
+                
+                // Build the join node
+                if (prior == null) {
+                    // First clause, no joins yet
+                    prior = clauseNode;
+                } else {
+                    RETEQueue leftQ = new RETEQueue(matchIndices);
+                    RETEQueue rightQ = new RETEQueue(matchIndices);
+                    leftQ.setSibling(rightQ);
+                    rightQ.setSibling(leftQ);
+                    clauseNode.setContinuation(rightQ);
+                    prior.setContinuation(leftQ);
+                    prior = leftQ;
+                }
+            }
+        }
+            
+        // Finished compiling a rule - add terminal 
+//        if (prior != null) {
+//            RETETerminal term = new RETETerminal(rule, this, infGraph);
+//            prior.setContinuation(term);
+//        }
+        
+        return prior;
+    }
+    
+    /**
+     * This fires a triple into the current RETE network. 
+     * This format of call is used in the unit testing but needs to be public
+     * because the tester is in another package.
+     */
+    public void testTripleInsert(Triple t) {
+        Iterator i1 = clauseIndex.getAll(t.getPredicate());
+        Iterator i2 = clauseIndex.getAll(Node.ANY);
+        Iterator i = new ConcatenatedIterator(i1, i2);
+        while (i.hasNext()) {
+            RETEClauseFilter cf = (RETEClauseFilter) i.next();
+            // firedRules guard in here?
+            cf.fire(t, true);
+        }
+    }
+    
+
+//  =======================================================================
+//  Internal implementation methods
+
+    /**
+     * Add a new triple to the network. 
+     * @param triple the new triple
+     * @param deduction true if the triple has been generated by the rules and so should be 
+     * added to the deductions graph.
+     */
+    public synchronized void addTriple(Triple triple, boolean deduction) {
+        deletesPending.remove(triple);
+        addsPending.add(triple);
+        if (deduction) {
+            infGraph.getDeductionsGraph().add(triple);
+        }
+    }
+
+    /**
+     * Remove a new triple from the network. 
+     * @param triple the new triple
+     * @param deduction true if the remove has been generated by the rules 
+     */
+    public synchronized void deleteTriple(Triple triple, boolean deduction) {
+        addsPending.remove(triple);
+        deletesPending.add(triple);
+        if (deduction) {
+            infGraph.getDeductionsGraph().delete(triple);
+        }
+    }
+    
     /**
      * Add a set of new triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
@@ -212,51 +354,15 @@ public class RETEEngine {
 //        }
     }
     
-    /**
-     * Compile a list of rules into the internal rule store representation.
-     * @param rules the list of Rule objects
-     * @param ignoreBrules set to true if rules written in backward notation should be ignored
-     * @return an object that can be installed into the engine using setRuleStore.
-     */
-    public static RuleStore compile(List rules, boolean ignoreBrules) {
-        OneToManyMap clauseIndex = new OneToManyMap();
-        HashSet predicatesUsed = new HashSet();
-        boolean wildcardRule = false;
-            
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
-            if (ignoreBrules && r.isBackward()) continue;
-            Object[] body = r.getBody();
-            for (int j = 0; j < body.length; j++) {
-                if (body[j] instanceof TriplePattern) {
-                    Node predicate = ((TriplePattern) body[j]).getPredicate();
-                    ClausePointer cp = new ClausePointer(r, j);
-                    if (predicate.isVariable()) {
-                        clauseIndex.put(Node.ANY, cp);
-                        wildcardRule = true;
-                    } else {
-                        clauseIndex.put(predicate, cp);
-                        if (! wildcardRule) {
-                            predicatesUsed.add(predicate);
-                        }
-                    }
-                }
-            }
-        }
-            
-        if (wildcardRule) predicatesUsed = null;
-        return new RuleStore(clauseIndex, predicatesUsed, wildcardRule);
-    }
-    
-    /**
-     * Index the rule clauses by predicate.
-     * @param ignoreBrules set to true if rules written in backward notation should be ignored
-     */
-    protected void buildClauseIndex(boolean ignoreBrules) {
-        if (clauseIndex == null) {
-            setRuleStore(compile(rules, ignoreBrules));
-        }
-    }
+//    /**
+//     * Index the rule clauses by predicate.
+//     * @param ignoreBrules set to true if rules written in backward notation should be ignored
+//     */
+//    protected void buildClauseIndex(boolean ignoreBrules) {
+//        if (clauseIndex == null) {
+//            setRuleStore(compile(rules, ignoreBrules));
+//        }
+//    }
     
     /**
      * Scan the rules for any axioms and insert those
@@ -281,17 +387,7 @@ public class RETEEngine {
         addSet(context);
         processedAxioms = true;
     }
-    
-    /**
-     * Match each of a list of clauses in turn. For all bindings for which all
-     * clauses match check the remaining clause guards and fire the rule actions.
-     * @param clauses the list of clauses to match, start with last clause
-     * @param context a context containing a set of new triples to be added
-     * @return true if the rule actually fires
-     */
-//    private boolean matchClauseList(List clauses, BFRuleContext context) {
-//    }
-
+ 
 //=======================================================================
 // Inner classes
 

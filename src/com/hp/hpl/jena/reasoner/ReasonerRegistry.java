@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.12 2003-06-10 13:50:48 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.13 2003-06-10 17:13:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -32,7 +32,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-06-10 13:50:48 $
+ * @version $Revision: 1.13 $ on $Date: 2003-06-10 17:13:48 $
  */
 public class ReasonerRegistry {
 
@@ -167,22 +167,39 @@ public class ReasonerRegistry {
         return Node.createURI(directName);
     }
     
-    /**
-     * Prebuilt standard configuration for the default RDFS reasoner.
-     */
-    public static final Reasoner RDFS = RDFSReasonerFactory.theInstance().create(null);
+    /** Prebuilt standard configuration for the default RDFS reasoner. */
+    protected static Reasoner theRDFSReasoner = null;
     
     /**
-     * Prebuilt standard configuration for the default subclass/subproperty transitive closure reasoner.
+     * Return a prebuilt standard configuration for the default RDFS reasoner
      */
-    public static final Reasoner TRANSITIVE = TransitiveReasonerFactory.theInstance().create(null);
+     public static Reasoner getRDFSReasoner() {
+         if (theRDFSReasoner == null) theRDFSReasoner = RDFSReasonerFactory.theInstance().create(null);
+         return theRDFSReasoner;
+     }
+     
+    /** Prebuilt standard configuration for the default subclass/subproperty transitive closure reasoner. */
+    protected static Reasoner theTRANSITIVEReasoner;
     
-    // Suppressed to avoid the start up overhead. The above two will also disappear and 
-    // be replaced by lazilly constructed instances.
-//    /**
-//     * Prebuilt stanard configuration for the default OWL reasoner. 
-//     */
-//    public static final Reasoner OWL = OWLFBRuleReasonerFactory.theInstance().create(null);
+    /**
+     * Return a prebuilt standard configuration for the default subclass/subproperty transitive closure reasoner.
+     */
+    public static Reasoner getTransitiveReasoner() {
+        if (theTRANSITIVEReasoner == null) theTRANSITIVEReasoner = TransitiveReasonerFactory.theInstance().create(null);
+        return theTRANSITIVEReasoner;
+    }
+    
+    /** Prebuilt standard configuration OWL reasoner */
+    protected static Reasoner theOWLReasoner;
+    
+    /**
+     * Prebuilt standard configuration for the default OWL reasoner. This configuration is
+     * hybrid forward/backward reasoner.
+     */
+    public static Reasoner getOWLReasoner() {
+        if (theOWLReasoner == null) theOWLReasoner = OWLFBRuleReasonerFactory.theInstance().create(null);
+        return theOWLReasoner;
+    }
     
 }
 

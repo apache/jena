@@ -5,14 +5,15 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRETE.java,v 1.1 2003-06-10 08:53:01 der Exp $
+ * $Id: TestRETE.java,v 1.2 2003-06-10 17:14:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
+import java.util.*;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.Functor;
-import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 
 import junit.framework.TestCase;
@@ -21,7 +22,7 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-10 08:53:01 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-10 17:14:54 $
  */
 public class TestRETE  extends TestCase {
      
@@ -34,6 +35,8 @@ public class TestRETE  extends TestCase {
     Node a = Node.createURI("a");
     Node b = Node.createURI("b");
     Node c = Node.createURI("c");
+    Node d = Node.createURI("d");
+    Node e = Node.createURI("e");
          
     /**
      * Boilerplate for junit
@@ -91,19 +94,19 @@ public class TestRETE  extends TestCase {
             new Triple(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
             null);
     }
-    
+
     /**
      * Helper for testing clause filters.
      */
     private void doTestClauseFilter(TriplePattern pattern, Triple test, Node[] expected) {
         RETETestNode tnode = new RETETestNode();
-        RETEClauseFilter cf = RETEClauseFilter.compile(pattern, 3);
+        RETEClauseFilter cf = RETEClauseFilter.compile(pattern, 3, new LinkedList());
         cf.setContinuation(tnode);
         cf.fire(test, true);
         if (expected == null) {
-            assertTrue(!tnode.fired);
+            assertTrue(tnode.firings == 0);
         } else {
-            assertTrue(tnode.fired);
+            assertTrue(tnode.firings == 1);
             assertTrue(tnode.isAdd);
             assertEquals(new BindingVector(expected), tnode.env);
         }
@@ -112,7 +115,7 @@ public class TestRETE  extends TestCase {
     /**
      * Inner class usable as a dummy RETENode end point for testing.
      */
-    protected static class RETETestNode implements RETENode {
+    protected static class RETETestNode implements RETESinkNode {
         /** The environment passed in */
         BindingVector env;
         
@@ -120,7 +123,7 @@ public class TestRETE  extends TestCase {
         boolean isAdd;
         
         /** True if the fire has been called */
-        boolean fired = false;
+        int firings = 0;
 
         /** 
          * Propagate a token to this node.
@@ -128,13 +131,60 @@ public class TestRETE  extends TestCase {
          * @param isAdd distinguishes between add and remove operations.
          */
         public void fire(BindingVector env, boolean isAdd) {
-            fired = true;
+            firings++;
             this.env = env;
             this.isAdd = isAdd;
         }
-
     }
-    
+
+    /**
+     * Test the join nodes.
+     */
+    public void testJoins() {
+        doTestJoin( "(a p ?x), (?x p c) -> (?x q ?x).", 
+                     new Triple[] {
+                         new Triple(a, p, b), 
+                         new Triple(b, p, c)},
+                     new Node[] {b} );
+        doTestJoin( "(a p ?x), (?x p c) -> (?x q ?x).", 
+                     new Triple[] {
+                         new Triple(a, p, b), 
+                         new Triple(a, p, c), 
+                         new Triple(a, p, d), 
+                         new Triple(b, p, c)},
+                     new Node[] {b} );
+        doTestJoin( "(a p ?x) -> (?x q ?x).", 
+                     new Triple[] {
+                         new Triple(a, p, b), 
+                         new Triple(b, p, c)},
+                     new Node[] {b} );
+        doTestJoin( "(a p ?x), (?x p ?y), (?x q ?y) -> (?x r ?y).", 
+                     new Triple[] {
+                         new Triple(a, p, b), 
+                         new Triple(b, p, c), 
+                         new Triple(b, q, c)}, 
+                     new Node[] {b, c} );
+    }
+
+    /**
+     * Helper for testing clause joins.
+     */
+    private void doTestJoin(String ruleSource, Triple[] test, Node[] expected) {
+        Rule rule = Rule.parseRule(ruleSource);
+        RETETestNode tnode = new RETETestNode();
+        RETEEngine engine = new RETEEngine(null);
+        engine.compileRule(rule).setContinuation(tnode);
+        for (int i = 0; i < test.length; i++) {
+            engine.testTripleInsert(test[i]);
+        }
+        if (expected == null) {
+            assertTrue(tnode.firings == 0);
+        } else {
+            assertTrue(tnode.firings > 0);
+            assertTrue(tnode.isAdd);
+            assertEquals(new BindingVector(expected), tnode.env);
+        }
+    }
 }
 
 

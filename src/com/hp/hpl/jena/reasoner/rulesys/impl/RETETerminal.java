@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETETerminal.java,v 1.2 2003-06-09 21:00:45 der Exp $
+ * $Id: RETETerminal.java,v 1.3 2003-06-10 17:10:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,9 +20,9 @@ import org.apache.log4j.Logger;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:45 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-10 17:10:38 $
  */
-public class RETETerminal implements RETENode {
+public class RETETerminal implements RETESinkNode {
 
     /** Context containing the specific rule and parent graph */
     protected RETERuleContext context;
@@ -93,16 +93,14 @@ public class RETETerminal implements RETENode {
                     // that we can't record in RDF
                     if (isAdd) {
                         if ( ! context.contains(t) ) {
-                            // TODO: Check is this is the right add route
-                            infGraph.add(t);
+                            engine.addTriple(t, true);
                             if (infGraph.shouldLogDerivations()) {
                                 infGraph.logDerivation(t, new RuleDerivation(rule, t, matchList, infGraph));
                             }
                         }
                     } else {
                         // Remove the generated triple
-                        // TODO: Check is this is the right delete route
-                        infGraph.delete(t);
+                        engine.deleteTriple(t, true);
                     }
                 }
             } else if (hClause instanceof Functor) {
