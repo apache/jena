@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedGraph.java,v 1.9 2004-12-03 12:11:33 chris-dollin Exp $
+  $Id: WrappedGraph.java,v 1.10 2004-12-03 14:56:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -66,10 +65,10 @@ public class WrappedGraph implements GraphWithPerform
         getEventManager().notifyDeleteTriple( this, t ); }
 
     public ExtendedIterator find( TripleMatch m )
-        { return MultiUnion.notifyingRemove( this, base.find( m ) ); }
+        { return SimpleEventManager.notifyingRemove( this, base.find( m ) ); }
 
     public ExtendedIterator find( Node s, Node p, Node o )
-        { return MultiUnion.notifyingRemove( this, base.find( s, p, o ) ); }
+        { return SimpleEventManager.notifyingRemove( this, base.find( s, p, o ) ); }
 
     public boolean isIsomorphicWith( Graph g )
         { return base.isIsomorphicWith( g ); }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.5 2004-12-03 12:11:34 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.6 2004-12-03 14:56:41 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -76,13 +76,13 @@ public class GraphTripleStore implements TripleStore
         { return subjects.isEmpty(); }
     
     public ExtendedIterator listSubjects()
-        { return WrappedIterator.create( subjects.domain() ); }
+        { return WrappedIterator.createNoRemove( subjects.domain() ); }
 
     public ExtendedIterator listPredicates()
-        { return WrappedIterator.create( predicates.domain() ); }
+        { return WrappedIterator.createNoRemove( predicates.domain() ); }
     
     public ExtendedIterator listObjects()
-        { return WrappedIterator.create( objects.domain() ); }
+        { return WrappedIterator.createNoRemove( objects.domain() ); }
     
     /**
          Answer true iff this triple store contains the (concrete) triple <code>t</code>.

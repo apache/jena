@@ -7,7 +7,6 @@ package com.hp.hpl.jena.db;
 
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.shared.*;
@@ -49,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -414,7 +413,7 @@ public class GraphRDB extends GraphBase implements Graph {
 			if( complete.isDone())
 				break;
 		}
-		return MultiUnion.notifyingRemove( this, result );
+		return SimpleEventManager.notifyingRemove( this, result );
 	}
 
     public ExtendedIterator reifierTriples( TripleMatch m )

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.6 2004-11-24 18:30:19 chris-dollin Exp $
+  $Id: WrappedIterator.java,v 1.7 2004-12-03 14:56:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -20,18 +20,36 @@ import java.util.*;
 public class WrappedIterator extends NiceIterator
     {
     /**
+         set to <code>true</code> if this wrapping doesn't permit the use of .remove().
+         Otherwise the .remove() is delegated to the base iterator.
+    */
+    protected boolean removeDenied;
+    
+    /**
         factory method for creating a wrapper around _it_. We reserve
         the right to deliver the argument if it's already an extended iterator.
     */
-    public static WrappedIterator create( Iterator it )
-        { return new WrappedIterator( it ); }
+    public static ExtendedIterator create( Iterator it )
+        { return it instanceof ExtendedIterator ? (ExtendedIterator) it : new WrappedIterator( it, false ); }
+    
+    public static WrappedIterator createNoRemove( Iterator it )
+        { return new WrappedIterator( it, true ); }
       
     /** the base iterator that we wrap */  
     private Iterator base;
     
     /** constructor: remember the base iterator */
     protected WrappedIterator( Iterator base )
-        { this.base = base; }
+        { this( base, false ); }
+    
+    /**
+         Initialise this wrapping with the given base iterator and remove-control.
+     * @param base the base iterator that this tierator wraps
+     * @param removeDenied true if .remove() must throw an exception
+     */
+    protected WrappedIterator( Iterator base, boolean removeDenied )
+        { this.base = base; 
+        this.removeDenied = removeDenied; }
         
     /** hasNext: defer to the base iterator */
     public boolean hasNext()
@@ -41,9 +59,15 @@ public class WrappedIterator extends NiceIterator
     public Object next()
         { return base.next(); }
         
-    /** remove: defer to the base iterator */
+    /** 
+         if .remove() is allowed, delegate to the abse iterator's .remove; otherwise,
+         throw an UnsupportedOperationException. 
+    */
     public void remove()
-        { base.remove(); }
+        {
+        if (removeDenied) throw new UnsupportedOperationException();
+        base.remove(); 
+        }
         
     /** close: defer to the base, iff it is closable */
     public void close()
@@ -58,7 +82,7 @@ public class WrappedIterator extends NiceIterator
     }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryHandler.java,v 1.13 2004-12-02 15:48:12 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.14 2004-12-03 14:56:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -44,19 +44,22 @@ public interface QueryHandler
     
     /**
     	deliver an iterator over all the objects _o_ such that _(s, p, o)_ is in the
-    	underlying graph; nulls count as wildcards.
+    	underlying graph; nulls count as wildcards.  .remove() is not defined 
+        on this iterator.
     */
     public ExtendedIterator objectsFor( Node s, Node p );
 
     /**
     	deliver an iterator over all the subjects _s_ such that _(s, p, o)_ is in the
-    	underlying graph; nulls count as wildcards.
+    	underlying graph; nulls count as wildcards.  .remove() is not defined 
+        on this iterator.
     */
     public ExtendedIterator subjectsFor( Node p, Node o );
 
     /**
          Answer an iterator over all the predicates <code>p</code> such that
-         <code>(s, p, o)</code> is in the underlying graph.
+         <code>(s, p, o)</code> is in the underlying graph.  .remove() is not 
+         defined on this iterator.
     */
     public ExtendedIterator predicatesFor( Node s, Node o );
     

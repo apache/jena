@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestWrappedIterator.java,v 1.3 2003-08-27 13:07:55 andy_seaborne Exp $
+  $Id: TestWrappedIterator.java,v 1.4 2004-12-03 14:56:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -36,10 +36,21 @@ public class TestWrappedIterator extends GraphTestBase
         assertEquals( "", "ben", e.next() );
         assertFalse( "wrapper is now empty", e.hasNext() );
         }
+    
+    public void testWrappedNoRemove()
+        {
+        Iterator base = nodeSet( "a b c" ).iterator();
+        base.next();
+        base.remove();
+        ExtendedIterator wrapped = WrappedIterator.createNoRemove( base );
+        wrapped.next();
+        try { wrapped.remove(); fail( "wrapped-no-remove iterator should deny .remove()" ); }
+        catch (UnsupportedOperationException e) { pass(); }
+        }
     }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

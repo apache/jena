@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.54 2004-12-03 12:11:33 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.55 2004-12-03 14:56:41 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -14,8 +14,6 @@ import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
-
-import junit.framework.Assert;
 
 /**
     AbstractTestGraph provides a bunch of basic tests for something that
@@ -404,6 +402,10 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         L.assertHas( new Object[] { "delete", g, SPO} );
         }
         
+    /**
+         Ensure that triples removed by calling .remove() on the iterator returned by
+         a find() will generate deletion notifications.
+    */
     public void testEventDeleteByFind()
         {
         Graph g = getAndRegister( L );
@@ -411,15 +413,10 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
             {
             Triple toRemove = triple( "remove this triple" );
             g.add( toRemove );
-            ExtendedIterator spo = g.find( toRemove );
-            assertTrue( "ensure a(t least) one triple", spo.hasNext() );
-            spo.next();
-            spo.remove();
-            /* */
-            ;
-            List things = Arrays.asList( (new Object[] { "add", g, toRemove, "delete", g, toRemove}) );
-            if (L.has( things ) == false) 
-                System.err.println( ">> failed, graph type = " + g.getClass() );
+            ExtendedIterator rtr = g.find( toRemove );
+            assertTrue( "ensure a(t least) one triple", rtr.hasNext() );
+            rtr.next();
+            rtr.remove();
             L.assertHas( new Object[] { "add", g, toRemove, "delete", g, toRemove} );
             }
         }
@@ -591,6 +588,15 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         Set bis = iteratorToSet( SimpleQueryHandler.subjectsFor( g, p, o ) );
         Set qhs = iteratorToSet( g.queryHandler().subjectsFor( p, o ) );
         assertEquals( bis, qhs );
+        }    
+    
+    public void testListSubjectsNoRemove()
+        {
+        Graph g = getGraphWith( "a P b; b Q c; c R a" );
+        Iterator it = g.queryHandler().subjectsFor( Node.ANY, Node.ANY );
+        it.next();
+        try { it.remove(); fail( "listSubjects for " + g.getClass() + " should not support .remove()" ); }
+        catch (UnsupportedOperationException e) { pass(); }
         }
     
     public void testObjectsFor()
@@ -607,6 +613,15 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         Set qhs = iteratorToSet( g.queryHandler().objectsFor( s, p ) );
         assertEquals( bis, qhs );
         }
+
+    public void testListObjectsNoRemove()
+        {
+        Graph g = getGraphWith( "a P b; b Q c; c R a" );
+        Iterator it = g.queryHandler().objectsFor( Node.ANY, Node.ANY );
+        it.next();
+        try { it.remove(); fail( "listObjects for " + g.getClass() + " should not support .remove()" ); }
+        catch (UnsupportedOperationException e) { pass(); }
+        }
     
     public void testPredicatesFor()
         {
@@ -622,6 +637,15 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         Set bis = iteratorToSet( SimpleQueryHandler.predicatesFor( g, s, o ) );
         Set qhs = iteratorToSet( g.queryHandler().predicatesFor( s, o ) );
         assertEquals( bis, qhs );
+        }
+
+    public void testListPredicatesNoRemove()
+        {
+        Graph g = getGraphWith( "a P b; b Q c; c R a" );
+        Iterator it = g.queryHandler().predicatesFor( Node.ANY, Node.ANY );
+        it.next();
+        try { it.remove(); fail( "listPredicates for " + g.getClass() + " should not support .remove()" ); }
+        catch (UnsupportedOperationException e) { pass(); }
         }
         
     public void testRemoveAll()

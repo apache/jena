@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.11 2004-11-24 18:30:17 chris-dollin Exp $
+  $Id: SimpleEventManager.java,v 1.12 2004-12-03 14:56:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -9,7 +9,9 @@ package com.hp.hpl.jena.graph.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.util.IteratorCollection;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
     Simple implementation of GraphEventManager for GraphBase to use.
@@ -18,6 +20,10 @@ import com.hp.hpl.jena.util.IteratorCollection;
     The code duplication is a right pain. The most natural removal tactic, a
     meta-method that took the notification method as an argument, is not
     available in Java, and I can't off-hand think of a clean alternative.
+<p>
+    This class also holds the utility method notifyingRemove, which wraps 
+    iterators so that their .remove() operation notifies the specified graph of
+    the removal.    
     
     @author hedgehog
 */
@@ -118,11 +124,28 @@ public class SimpleEventManager implements GraphEventManager
         {
         for (int i = 0; i < listeners.size(); i += 1) 
             ((GraphListener) listeners.get(i)).notifyEvent( source, event ); }
+
+    /**
+     * Answer an iterator which wraps <code>i</code> to ensure that if a .remove()
+     * is executed on it, the graph <code>g</code> will be notified.
+    */
+    public static ExtendedIterator notifyingRemove( final Graph g, Iterator i )
+        {
+        return new TrackingTripleIterator( i )
+            {            
+            protected final GraphEventManager gem = g.getEventManager();
+            public void remove()
+                {
+                super.remove();
+                gem.notifyDeleteTriple( g, current );
+                }
+            };
+        }
     
     }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: UniqueExtendedIterator.java,v 1.9 2004-11-01 14:20:28 chris-dollin Exp $
+ * $Id: UniqueExtendedIterator.java,v 1.10 2004-12-03 14:56:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.iterator;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * to be returned by the iterator. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2004-11-01 14:20:28 $
+ * @version $Revision: 1.10 $ on $Date: 2004-12-03 14:56:43 $
  */
 public class UniqueExtendedIterator extends WrappedIterator {
 
@@ -46,7 +46,7 @@ public class UniqueExtendedIterator extends WrappedIterator {
      * iterator exactly once.  If <code>it</code> is already a unique
      * extended iteator, it is not further wrapped.
      */
-    public static WrappedIterator create( Iterator it ) {
+    public static ExtendedIterator create( Iterator it ) {
         return (it instanceof UniqueExtendedIterator) ? 
                     ((UniqueExtendedIterator) it) : new UniqueExtendedIterator( it );
     }

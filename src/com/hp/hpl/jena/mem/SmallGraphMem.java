@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.6 2004-12-03 12:11:34 chris-dollin Exp $
+  $Id: SmallGraphMem.java,v 1.7 2004-12-03 14:56:41 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.SimpleEventManager;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -65,17 +66,9 @@ public class SmallGraphMem extends GraphMemBase
     
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
         {
-        return new TrackingTripleIterator( triples.iterator() ) 
-            {
-            final Graph parent = SmallGraphMem.this;
-            final GraphEventManager man = parent.getEventManager();
-            
-            public void remove() 
-                {
-                super.remove();
-                man.notifyDeleteTriple( parent, current );
-                }
-            } .filterKeep ( new TripleMatchFilter( m.asTriple() ) );
+        return 
+            SimpleEventManager.notifyingRemove( this, triples.iterator() ) 
+            .filterKeep ( new TripleMatchFilter( m.asTriple() ) );
         }
     }
 

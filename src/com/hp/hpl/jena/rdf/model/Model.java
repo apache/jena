@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.56 2004-11-22 14:42:20 chris-dollin Exp $
+  $Id: Model.java,v 1.57 2004-12-03 14:56:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.56 $Date: 2004/11/22 12:23:49 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.57 $Date: 2004/11/22 14:42:20 $'
  */
 public interface Model 
     extends ModelCon, ModelGraphInterface, 
@@ -88,18 +88,16 @@ public interface Model
     */
     boolean isEmpty();
     
-	// @deprecated Too difficult to implement scalably.
 	/** List all resources which are subjects of statements.
 	 *
 	 * <p>Subsequent operations on those resource may modify this model.</p>
 	 
 	 * @return an iterator over a set of resources which are subjects of statements
-	 *         in the model.
+	 *         in the model. .remove() is not implemented on this iterator.
 	 * 
 	 */
 	ResIterator listSubjects() ;
 
-	//* @deprecated Too difficult to implement scalably.
 	/** 
         List the namespaces used by predicates and types in the model. This method is
         really intended for use by the RDF/XML writer, which needs to know these
@@ -583,14 +581,16 @@ public interface Model
     */
     Statement getProperty( Resource s, Property p );
 
-	/** List all subjects with a given property.
+	/** List all subjects with a given property. .remove() is not implemented on
+     *  this iterator.
 	 * @return an iterator over the subjects
 	 * @param p the property sought.
 	 
 	 */
 	ResIterator listSubjectsWithProperty(Property p) ;
 
-	/** List all subjects with a given property and property value
+	/** List all subjects with a given property and property value.  .remove() is not
+     *  implemented on this iterator.
 	 * @return an iterator over the subjects
 	 * @param p The predicate sought
 	 * @param o The value sought
@@ -599,18 +599,18 @@ public interface Model
 		;
 
 	/** List all objects in a model.
-	 * @return an iterator over the objects
+	 * @return an iterator over the objects.  .remove() is not implemented on this iterator.
 	 */
 	NodeIterator listObjects() ;
 
-	/** List all objects of a given property.
+	/** List all objects of a given property.  .remove() is not implemented on this iterator.
 	 * @return an iterator over the objects
 	 * @param p The predicate sought
 	 */
 	NodeIterator listObjectsOfProperty(Property p) ;
 
 	/** List the values of a property of a resource.
-	 * @return an iterator over the objects
+	 * @return an iterator over the objects.  .remove() is not implemented on this iterator.
 	 * @param p The predicate sought
 	 */
 	NodeIterator listObjectsOfProperty(Resource s, Property p);
@@ -975,5 +975,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.56 2004-11-22 14:42:20 chris-dollin Exp $
+ * $Id: Model.java,v 1.57 2004-12-03 14:56:42 chris-dollin Exp $
  */
