@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEEngine.java,v 1.4 2003-06-10 22:26:38 der Exp $
+ * $Id: RETEEngine.java,v 1.5 2003-06-11 08:14:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,9 +25,9 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-10 22:26:38 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-11 08:14:36 $
  */
-public class RETEEngine {
+public class RETEEngine implements FRuleEngineI {
     
     /** The parent InfGraph which is employing this engine instance */
     protected ForwardRuleInfGraphI infGraph;
@@ -161,14 +161,14 @@ public class RETEEngine {
      * Access the precomputed internal rule form. Used when precomputing the
      * internal axiom closures.
      */
-    public RuleStore getRuleStore() {
+    public Object getRuleStore() {
         return new RuleStore(clauseIndex, predicatesUsed, wildcardRule);
     }
     
     /**
      * Set the internal rule from from a precomputed state.
      */
-    public void setRuleStore(RuleStore ruleStore) {
+    public void setRuleStore(Object ruleStore) {
         // TODO need to clone the network here
         RuleStore rs = (RuleStore)ruleStore;
         clauseIndex = rs.clauseIndex;
@@ -185,11 +185,9 @@ public class RETEEngine {
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
      */
     public void compile(List rules, boolean ignoreBrules) {
-        if (clauseIndex == null) {
-            clauseIndex = new OneToManyMap();
-            predicatesUsed = new HashSet();
-            wildcardRule = false;
-        } 
+        clauseIndex = new OneToManyMap();
+        predicatesUsed = new HashSet();
+        wildcardRule = false;
             
         for (Iterator it = rules.iterator(); it.hasNext(); ) {
             Rule rule = (Rule)it.next();

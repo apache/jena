@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.1 2003-06-08 17:49:17 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.2 2003-06-11 08:17:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-08 17:49:17 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-11 08:17:11 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -119,7 +119,6 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         this.mode = mode;
         preload = null;
         bRuleStore = null;
-        ruleStore = null;
     }
     
     /**
@@ -231,7 +230,6 @@ public class GenericRuleReasoner extends FBRuleReasoner {
                 ruleSet = OWLFBRuleReasoner.augmentRules(ruleSet, tbox);
             }
             graph = new FBRuleInfGraph(this, ruleSet, getPreload(), tbox);
-            if (!cachePreload && (rules == ruleSet)) ((FBRuleInfGraph)graph).setRuleStore(getRuleStore());
             ((FBRuleInfGraph)graph).prepare();
         }
         GenericRuleReasoner grr = new GenericRuleReasoner(rules, graph, factory, mode);
@@ -266,7 +264,6 @@ public class GenericRuleReasoner extends FBRuleReasoner {
                 ruleSet = OWLFBRuleReasoner.augmentRules(ruleSet, data);
             }
             graph = new FBRuleInfGraph(this, ruleSet, schemaArg);
-            if (schemaArg == null) ((FBRuleInfGraph)graph).setRuleStore(getRuleStore());
             ((FBRuleInfGraph)graph).setTraceOn(traceOn);
         }
         graph.setDerivationLogging(recordDerivations);
@@ -281,7 +278,6 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         if (cachePreload && preload == null && mode == HYBRID) {
             if (mode == HYBRID) {
                 preload = new FBRuleInfGraph(this, rules, null);
-                ((FBRuleInfGraph)preload).setRuleStore(getRuleStore());
             } else if (mode == FORWARD) {
                 preload = new BasicForwardRuleInfGraph(this, rules, null);
             }

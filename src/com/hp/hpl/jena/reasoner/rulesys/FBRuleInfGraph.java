@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.8 2003-06-08 17:49:16 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.9 2003-06-11 08:17:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
-import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
@@ -19,7 +18,6 @@ import java.util.*;
 //import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 import org.apache.log4j.Logger;
 
@@ -32,7 +30,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-08 17:49:16 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-11 08:17:13 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -173,37 +171,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Return a compiled representation of all the registered
      * forward rules.
      */
-    private FRuleEngine.RuleStore getForwardRuleStore() {
+    private Object getForwardRuleStore() {
         return engine.getRuleStore();
-    }
-    
-    /**
-     * Record a class prototype which should be checked for subtypes
-     * during the f->b transition phase.
-     */
-    public void schedulePrototypeCheck(Node[] prototypeSpec) {
-//        System.out.println("Scheduling prototype check on " + PrintUtil.print(prototypeSpec[1]));
-        prototypes.add(prototypeSpec);
-    }
-    
-    /**
-     * Execute the prototype checks.
-     */
-    public void processPrototypeChecks() {
-        BFRuleContext context = new BFRuleContext(this);
-        for (Iterator i = prototypes.iterator(); i.hasNext(); ) {
-            Node[] prototypeSpec = (Node[])i.next();
-            Node prototype = prototypeSpec[0];
-            Node type = prototypeSpec[1];
-            for (Iterator tyi = find(prototype, RDF.type.asNode(), null); tyi.hasNext(); ) {
-                Node newTy = ((Triple)tyi.next()).getObject();
-                Triple sct = new Triple(type, TransitiveReasoner.subClassOf, newTy);
-//                System.out.println("Adding prototype derivation: " + PrintUtil.print(sct));
-                context.addTriple(sct);
-            }
-        }
-        engine.addSet(context);
-        prototypes.clear();
     }
     
 //  =======================================================================
@@ -258,27 +227,29 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         isPrepared = false;
     }
     
-    /**
-     * Create a compiled representation of a list of rules.
-     * @param rules a list of Rule objects
-     * @return a datastructure containing precompiled representations suitable
-     * for initializing FBRuleInfGraphs
-     */
-    public static RuleStore compile(List rules) {
-        FRuleEngine.RuleStore fRules = FRuleEngine.compile(rules, true);
-        List bRules = extractPureBackwardRules(rules);
-        return new RuleStore(rules, fRules, bRules);
-    }
-
-    /**
-     * Attach a compiled rule set to this inference graph.
-     * @param rulestore a compiled set of rules.
-     */
-    public void setRuleStore(RuleStore ruleStore) {
-        this.rules = ruleStore.rawRules;
-        addBRules(ruleStore.bRules);
-        engine.setRuleStore(ruleStore.fRuleStore);
-    }
+// Suppressed - not all engines do static compilation. Now done as part of preload phase.
+    
+//    /**
+//     * Create a compiled representation of a list of rules.
+//     * @param rules a list of Rule objects
+//     * @return a datastructure containing precompiled representations suitable
+//     * for initializing FBRuleInfGraphs
+//     */
+//    public static RuleStore compile(List rules) {
+//        Object fRules = FRuleEngine.compile(rules, true);
+//        List bRules = extractPureBackwardRules(rules);
+//        return new RuleStore(rules, fRules, bRules);
+//    }
+//
+//    /**
+//     * Attach a compiled rule set to this inference graph.
+//     * @param rulestore a compiled set of rules.
+//     */
+//    public void setRuleStore(RuleStore ruleStore) {
+//        this.rules = ruleStore.rawRules;
+//        addBRules(ruleStore.bRules);
+//        engine.setRuleStore(ruleStore.fRuleStore);
+//    }
     
     /**
      * Set the state of the trace flag. If set to true then rule firings
@@ -419,7 +390,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         protected List rawRules;
         
         /** The indexed store used by the forward chainer */
-        protected FRuleEngine.RuleStore fRuleStore;
+        protected Object fRuleStore;
         
         /** The separated backward rules */
         protected List bRules;
@@ -427,7 +398,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         /** 
          * Constructor.
          */
-        public RuleStore(List rawRules, FRuleEngine.RuleStore fRuleStore, List bRules) {
+        public RuleStore(List rawRules, Object fRuleStore, List bRules) {
             this.rawRules = rawRules;
             this.fRuleStore = fRuleStore;
             this.bRules = bRules;

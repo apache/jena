@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.9 2003-06-10 22:26:36 der Exp $
+ * $Id: FRuleEngine.java,v 1.10 2003-06-11 08:14:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,9 +26,9 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-10 22:26:36 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-11 08:14:35 $
  */
-public class FRuleEngine {
+public class FRuleEngine implements FRuleEngineI {
     
     /** The parent InfGraph which is employing this engine instance */
     protected ForwardRuleInfGraphI infGraph;
@@ -97,7 +97,7 @@ public class FRuleEngine {
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
      */
     public void init(boolean ignoreBrules) {
-        buildClauseIndex(ignoreBrules);
+        if (clauseIndex == null) compile(rules, ignoreBrules);
         findAndProcessAxioms();
         nAxiomRulesFired = nRulesFired;
         logger.debug("Axioms fired " + nAxiomRulesFired + " rules");
@@ -166,14 +166,14 @@ public class FRuleEngine {
      * Access the precomputed internal rule form. Used when precomputing the
      * internal axiom closures.
      */
-    public RuleStore getRuleStore() {
+    public Object getRuleStore() {
         return new RuleStore(clauseIndex, predicatesUsed, wildcardRule);
     }
     
     /**
      * Set the internal rule from from a precomputed state.
      */
-    public void setRuleStore(RuleStore ruleStore) {
+    public void setRuleStore(Object ruleStore) {
         RuleStore rs = (RuleStore)ruleStore;
         clauseIndex = rs.clauseIndex;
         predicatesUsed = rs.predicatesUsed;
@@ -225,10 +225,10 @@ public class FRuleEngine {
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
      * @return an object that can be installed into the engine using setRuleStore.
      */
-    public static RuleStore compile(List rules, boolean ignoreBrules) {
-        OneToManyMap clauseIndex = new OneToManyMap();
-        HashSet predicatesUsed = new HashSet();
-        boolean wildcardRule = false;
+    public void compile(List rules, boolean ignoreBrules) {
+        clauseIndex = new OneToManyMap();
+        predicatesUsed = new HashSet();
+        wildcardRule = false;
             
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
             Rule r = (Rule)i.next();
@@ -252,19 +252,8 @@ public class FRuleEngine {
         }
             
         if (wildcardRule) predicatesUsed = null;
-        return new RuleStore(clauseIndex, predicatesUsed, wildcardRule);
     }
-    
-    /**
-     * Index the rule clauses by predicate.
-     * @param ignoreBrules set to true if rules written in backward notation should be ignored
-     */
-    protected void buildClauseIndex(boolean ignoreBrules) {
-        if (clauseIndex == null) {
-            setRuleStore(compile(rules, ignoreBrules));
-        }
-    }
-    
+        
     /**
      * Scan the rules for any axioms and insert those
      */
