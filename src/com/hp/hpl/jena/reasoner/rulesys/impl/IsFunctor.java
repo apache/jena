@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: IsFunctor.java,v 1.1 2003-04-17 15:24:27 der Exp $
+ * $Id: IsFunctor.java,v 1.2 2003-04-28 20:19:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Used to prevent runaway nesting of functors
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:27 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:37 $
  */
 public class IsFunctor implements Builtin {
 

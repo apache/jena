@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.2 2003-04-25 09:32:51 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.3 2003-04-28 20:17:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-25 09:32:51 $
+ * @version $Revision: 1.3 $ on $Date: 2003-04-28 20:17:55 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph {
 
@@ -144,7 +144,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      */
     public void bindData(Graph data) {
         fdata = new FGraph( data );
-        RuleContext context = new RuleContext(this);
+        BFRuleContext context = new BFRuleContext(this);
         for (Iterator i = data.find(null, null, null); i.hasNext(); ) {
             context.addTriple((Triple)i.next());
         }
@@ -232,7 +232,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * the new data item, recursively adding any generated triples.
      */
     public synchronized void add(Triple t) {
-        RuleContext context = new RuleContext(this);
+        BFRuleContext context = new BFRuleContext(this);
         context.addTriple(t);
         fdata.getGraph().add(t);
         addSet(context);
@@ -320,7 +320,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * process the stack of additions firing any relevant rules.
      * @param context a context containing a set of new triples to be added
      */
-    protected void addSet(RuleContext context) {
+    protected void addSet(BFRuleContext context) {
         long cutoff = nRulesFired + nRulesThreshold;
         Triple t;
         while ((t = context.getNextTriple()) != null) {
@@ -337,7 +337,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
                 if (firedRules.contains(cp.rule)) continue;
                 context.resetEnv();
                 TriplePattern trigger = (TriplePattern) cp.rule.getBodyElement(cp.index);
-                if (match(trigger, t, context.getEnv())) {
+                if (match(trigger, t, context.getEnvStack())) {
                     nRulesTriggered++;
                     context.setRule(cp.rule);
                     if (matchRuleBody(cp.index, context)) {
@@ -388,7 +388,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * Scan the rules for any axioms and insert those
      */
     protected void findAndProcessAxioms() {
-        RuleContext context = new RuleContext(this);
+        BFRuleContext context = new BFRuleContext(this);
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
             Rule r = (Rule)i.next();
             if (r.bodyLength() == 0) {
@@ -415,7 +415,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * @param context a context containing a set of new triples to be added
      * @return true if the rule actually fires
      */
-    private boolean matchRuleBody(int trigger, RuleContext context) {
+    private boolean matchRuleBody(int trigger, BFRuleContext context) {
         Rule rule = context.getRule();
         // Create an ordered list of body clauses to process, best at the end
         Object[] body = rule.getBody();
@@ -475,9 +475,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * @param context a context containing a set of new triples to be added
      * @return true if the rule actually fires
      */
-    private boolean matchClauseList(List clauses, RuleContext context) {
+    private boolean matchClauseList(List clauses, BFRuleContext context) {
         Rule rule = context.getRule();
-        BindingEnvironment env = context.getEnv();
+        BindingStack env = context.getEnvStack();
         int index = clauses.size() - 1;
         if (index == -1) {
             // Check any non-pattern clauses 
@@ -602,7 +602,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * the reflect any additional bindings.
      * @return true if the pattern matches the triple
      */
-    public static boolean match(TriplePattern pattern, Triple triple, BindingEnvironment env) {
+    public static boolean match(TriplePattern pattern, Triple triple, BindingStack env) {
         env.push();
         boolean matchOK = match(pattern.getPredicate(), triple.getPredicate(), env)
                         && match(pattern.getObject(), triple.getObject(), env)
@@ -622,7 +622,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * the reflect any additional bindings.
      * @return true if the pattern matches the node
      */
-    public static boolean match(Node pattern, Node node, BindingEnvironment env) {
+    public static boolean match(Node pattern, Node node, BindingStack env) {
         if (pattern instanceof Node_RuleVariable) {
             int index = ((Node_RuleVariable)pattern).getIndex();
             return env.bind(index, node);

@@ -5,167 +5,40 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingEnvironment.java,v 1.1 2003-04-17 15:24:19 der Exp $
+ * $Id: BindingEnvironment.java,v 1.2 2003-04-28 20:17:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.*;
 
-import java.util.*;
-
 /**
- * Provides a trail of possible variable bindings for a rule.
+ * Interface through which the current bound values of variables
+ * can be found.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:19 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:17:54 $
  */
-public class BindingEnvironment {
-    
-    // Current slightly quirky implementation tries to avoid allocating
-    // store in which will be an inner loop. Does one array copy on
-    // push but handles both versions of pop with point manipulation.
-    
-    /** The current binding set */
-    protected Node[] environment;
-    
-    /** A stack of prior binding sets */
-    protected ArrayList trail = new ArrayList();
-    
-    /** Index of the current binding set */
-    protected int index = 0;
-    
-    /** Index of maximum allocated slot in the trail */
-    protected int highWater = 0;
-    
-    /** Maximum number of distinct variables allowed in rules */
-    protected static final int MAX_VAR = 10;
+public interface BindingEnvironment {
     
     /**
-     * Constructor
+     * If the node is a variable then return the current binding 
+     * (null if not bound) otherwise return the node itself.
      */
-    public BindingEnvironment() {
-        trail.add(new Node[MAX_VAR]);
-        environment = (Node[])trail.get(0);
-        index = highWater = 0;
-    }
-    
-    /**
-     * Save the current environment on an internal stack 
-     */
-    public void push() {
-        if (index == highWater) {
-            trail.add(new Node[MAX_VAR]);
-            highWater++;
-        }
-        Node[] newenv = (Node[]) trail.get(++index);
-        System.arraycopy(environment, 0, newenv, 0, MAX_VAR);
-        environment = newenv;
-    }
-    
-    /**
-     * Forget the current environment and return the previously
-     * pushed state.
-     * @throws IndexOutOfBoundsException if there was not previous push
-     */
-    public void unwind() throws IndexOutOfBoundsException {
-        if (index > 0) {
-            // just point to previous stack entry
-            environment = (Node[]) trail.get(--index);
-        } else {
-            throw new IndexOutOfBoundsException("Underflow of BindingEnvironment");
-        }
-    }
-    
-    /**
-     * Forget the previously pushed state but keep the current environment.
-     * @throws IndexOutOfBoundsException if there was not previous push
-     */
-    public void commit() throws IndexOutOfBoundsException {
-        if (index > 0) {
-            // Swap top and previous stack entries and point to previous
-            Node[] newenv = (Node[]) trail.get(index-1);
-            trail.set(index-1, environment);
-            trail.set(index, newenv);
-            --index;
-        } else {
-            throw new IndexOutOfBoundsException("Underflow of BindingEnvironment");
-        }
-    }
-   
-    /**
-     * Reset the binding environment to empty.
-     */
-    public void reset() {
-        index = 0;
-        environment = (Node[]) trail.get(0);
-        Arrays.fill(environment, null);
-    }
-    
-    /**
-     * Return the current array of bindings
-     */
-    public Node[] getEnvironment() {
-        return environment;
-    }
-    
-    /**
-     * If the node is a variable then return the current binding (null if not bound)
-     * otherwise return the node itself.
-     */
-    public Node getBinding(Node node) {
-        if (node instanceof Node_RuleVariable) {
-            return environment[((Node_RuleVariable)node).getIndex()];
-        } else if (node instanceof Node_ANY) {
-            return null;
-        } else if (Functor.isFunctor(node)) {
-            Functor functor = (Functor)node.getLiteral().getValue();
-            if (functor.isGround()) return node;
-            Node[] args = functor.getArgs();
-            ArrayList boundargs = new ArrayList(args.length);
-            for (int i = 0; i < args.length; i++) {
-                Object binding = getBinding(args[i]);
-                if (binding == null) {
-                    // Not sufficent bound to instantiate functor yet
-                    return null;
-                }
-                boundargs.add(binding);
-            }
-            Functor newf = new Functor(functor.getName(), boundargs);
-            LiteralLabel ll = new LiteralLabel(newf, null, Functor.FunctorDatatype.theFunctorDatatype);
-            return new Node_Literal(ll);
-        } else {
-            return node;
-        }
-    }
+    public Node getBinding(Node node);
     
     /**
      * Return the most ground version of the node. If the node is not a variable
-     * just return it, if it is a varible bound in this enviroment return the binding,
+     * just return it, if it is a varible bound in this environment return the binding,
      * if it is an unbound variable return the variable.
      */
-    public Node getGroundVersion(Node node) {
-        Node bind = getBinding(node);
-        if (bind == null) {
-            return node;
-        } else {
-            return bind;
-        }
-    }
+    public Node getGroundVersion(Node node);
     
     /**
      * Bind the ith variable in the current envionment to the given value.
      * Checks that the new binding is compatible with any current binding.
      * @return false if the binding fails
      */
-    public boolean bind(int i, Node value) {
-        Node node = environment[i];
-        if (node == null) {
-            environment[i] = value;
-            return true;
-        } else {
-            return node.sameValueAs(value);
-        }
-    }
+    public boolean bind(int i, Node value);
     
     /**
      * Bind a variable in the current envionment to the given value.
@@ -174,13 +47,15 @@ public class BindingEnvironment {
      * @param value the value to bind
      * @return false if the binding fails
      */
-    public boolean bind(Node var, Node value) {
-        if (var instanceof Node_RuleVariable) {
-            return bind(((Node_RuleVariable)var).getIndex(), value);
-        } else {
-            return var.sameValueAs(value);
-        }
-    }
+    public boolean bind(Node var, Node value);
+    
+    /**
+     * Bind a variable in the current envionment to the given value.
+     * Overrides and ignores any current binding.
+     * @param var a Node_RuleVariable defining the variable to bind
+     * @param value the value to bind
+     */
+    public void bindNoCheck(Node_RuleVariable var, Node value);
     
 }
 

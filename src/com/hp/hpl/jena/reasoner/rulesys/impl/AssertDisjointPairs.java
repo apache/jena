@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: AssertDisjointPairs.java,v 1.1 2003-04-17 15:24:27 der Exp $
+ * $Id: AssertDisjointPairs.java,v 1.2 2003-04-28 20:19:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * Assert the n^2 differtFrom pairs from a distinctMembers list
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:27 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:38 $
  */
 public class AssertDisjointPairs implements Builtin {
 
@@ -61,7 +61,7 @@ public class AssertDisjointPairs implements Builtin {
             for (Iterator j = l.iterator(); j.hasNext(); ) {
                 Node y = (Node)j.next();
                 if (!x.equals(y)) {
-                    context.addPending( new Triple(x, OWL.differentFrom.asNode(), y) );
+                    ((BFRuleContext)context).addPending( new Triple(x, OWL.differentFrom.asNode(), y) );
                 }
             }
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BuiltinException.java,v 1.1 2003-04-17 15:24:22 der Exp $
+ * $Id: BuiltinException.java,v 1.2 2003-04-28 20:17:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.reasoner.rulesys;
  * builtin operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:22 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:17:59 $
  */
 public class BuiltinException extends RuntimeException {
 
