@@ -35,7 +35,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.5 $ on $Date: 2003-05-02 22:18:52 $
+* @version $Revision: 1.6 $ on $Date: 2003-05-02 22:39:19 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -566,7 +566,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				// Starting a transaction could require us to lose any cached prepared statements
 				// for some jdbc drivers, currently I think all the drivers we use are safe and
 				// is a major performance hit so commented out for now.
-			  m_sql.flushPreparedStatementCache();
+			  //m_sql.flushPreparedStatementCache();
 			  Connection c = m_sql.getConnection();
 			  c.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			  c.setAutoCommit(false);
