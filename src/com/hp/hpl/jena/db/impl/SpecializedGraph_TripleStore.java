@@ -100,6 +100,7 @@ public abstract class SpecializedGraph_TripleStore implements SpecializedGraph {
 	 */
 	public void add(List triples, CompletionFlag complete) {
 		m_pset.storeTripleList(triples,my_GID);
+		complete.setDone();
 	}
 
 	/* (non-Javadoc)
@@ -115,6 +116,7 @@ public abstract class SpecializedGraph_TripleStore implements SpecializedGraph {
 	 */
 	public void delete(List triples, CompletionFlag complete) {
 		m_pset.deleteTripleList(triples,my_GID);
+		complete.setDone();
 	}
 	
 	/* (non-Javadoc)
