@@ -2,7 +2,7 @@
 # OWL rule set v0.2
 # This rule set is design to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining).
-# $Id: owl-fb.rules,v 1.9 2003-06-22 16:11:51 der Exp $
+# $Id: owl-fb.rules,v 1.10 2003-06-30 15:07:49 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -76,6 +76,14 @@
 #------------------------------------------------------------------
 [rdfs2a: (?x rdfs:domain ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:domain ?z)]
 [rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]
+
+[rdfs12a: (rdf:type rdfs:subPropertyOf ?z), (?z rdfs:domain ?y) -> (rdfs:Resource rdfs:subClassOf ?y)]
+[rdfs12a: (rdfs:subClassOf rdfs:subPropertyOf ?z), (?z rdfs:domain ?y) -> (rdfs:Class rdfs:subClassOf ?y)]
+[rdfs12a: (rdfs:subPropertyOf rdfs:subPropertyOf ?z), (?z rdfs:domain ?y) -> (rdf:Property rdfs:subClassOf ?y)]
+
+[rdfs12b: (rdfs:subClassOf rdfs:subPropertyOf ?z), (?z rdfs:range ?y) -> (rdfs:Class rdfs:subClassOf ?y)]
+[rdfs12b: (rdfs:subPropertyOf rdfs:subPropertyOf ?z), (?z rdfs:range ?y) -> (rdf:Property rdfs:subClassOf ?y)]
+
 
 #------------------------------------------------------------------
 # OWL axioms

@@ -5,10 +5,12 @@
     <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
 ]>
 
+<!-- tests of the simplified RDFS rule set -->
+
 <rdf:RDF xmlns:rdf="&rdf;" xmlns="&test;">
 
   <Test rdf:about="test1">
-    <description>RDFS reasoner: range test, wildcard</description>
+    <description>RDFS reasoner: subproperty test</description>
     <tbox>rdfs/tbox1.rdf</tbox>
     <data>rdfs/data2.rdf</data>
     <query>rdfs/query18.nt</query>

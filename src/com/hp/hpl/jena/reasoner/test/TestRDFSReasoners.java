@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.6 2003-06-26 10:54:30 der Exp $
+ * $Id: TestRDFSReasoners.java,v 1.7 2003-06-30 15:07:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-26 10:54:30 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-30 15:07:49 $
  */
 public class TestRDFSReasoners extends TestCase {
     
@@ -71,6 +71,10 @@ public class TestRDFSReasoners extends TestCase {
 
             Resource configFull = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_FULL);
             constructQuerytests(suite, "rdfs/manifest.rdf", RDFSRuleReasonerFactory.theInstance(), configFull);
+            
+            // This test was needed for the brief time the rdfs12 rules might have been in the standard
+            // That's no longer true but left comment out because we might want them for OWL someday
+//            constructQuerytests(suite, "rdfs/manifest-rdfs12.rdf", RDFSRuleReasonerFactory.theInstance(), configFull);
 
             Resource configSimple = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_SIMPLE);
             constructQuerytests(suite, "rdfs/manifest-simple.rdf", RDFSRuleReasonerFactory.theInstance(), configSimple);
