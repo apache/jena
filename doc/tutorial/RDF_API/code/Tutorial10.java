@@ -1,10 +1,8 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Tutorial10.java,v 1.1 2003-06-26 07:22:25 chris-dollin Exp $
+  $Id: Tutorial10.java,v 1.2 2003-06-27 08:19:15 chris-dollin Exp $
 */
-
-package com.hp.hpl.jena.tutorial.rdf;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -16,7 +14,7 @@ import java.io.PrintWriter;
 /** Tutorial 10 - demonstrate a container
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2003-06-26 07:22:25 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-27 08:19:15 $'
  */
 public class Tutorial10 extends Object {
     
