@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommon.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 12:24:10 $
+ * Last modified on   $Date: 2003-06-10 18:32:26 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommon.java,v 1.3 2003-06-10 12:24:10 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommon.java,v 1.4 2003-06-10 18:32:26 ian_dickinson Exp $
  */
 public interface DAMLCommon
     extends OntResource
@@ -142,14 +142,6 @@ public interface DAMLCommon
 
 
     /**
-     * <p>Remove all the values for a given property on the principal resource.</p>
-     *
-     * @param prop The RDF resource that defines the property to be removed
-     */
-    public void removeAll( Property prop );
-
-
-    /**
      * <p>Replace the value of the named property with the given value.  Any existing
      * values, if any, for the property are first removed.</p>
      *
@@ -247,7 +239,7 @@ public interface DAMLCommon
      * Answer true if this resource is a member of the class denoted by the
      * given class resource.  Includes all available types, so is equivalent to
      * <code><pre>
-     * hasRDF( ontClass, false );
+     * hasRDF( uri, false );
      * </pre></code>
      * </p>
      * 
