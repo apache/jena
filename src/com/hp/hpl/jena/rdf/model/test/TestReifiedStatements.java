@@ -3,11 +3,10 @@ package com.hp.hpl.jena.rdf.model.test;
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.4 2003-04-04 11:31:09 chris-dollin Exp $
+  $Id: TestReifiedStatements.java,v 1.5 2003-04-09 20:43:16 jeremy_carroll Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.util.*;

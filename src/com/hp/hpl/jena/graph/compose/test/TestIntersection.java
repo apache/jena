@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestIntersection.java,v 1.3 2003-04-08 14:14:49 chris-dollin Exp $
+  $Id: TestIntersection.java,v 1.4 2003-04-09 20:44:42 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -9,8 +9,6 @@ package com.hp.hpl.jena.graph.compose.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Intersection;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.*;
-
 import junit.framework.*;
 
 public class TestIntersection extends GraphTestBase 

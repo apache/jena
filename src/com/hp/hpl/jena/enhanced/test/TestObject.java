@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestObject.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: TestObject.java,v 1.3 2003-04-09 20:44:40 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
-import com.hp.hpl.jena.enhanced.*;
-
 /**
  * An interface for viewing object nodes in the graph.
  * @author  jjc

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelMem.java,v 1.2 2003-04-08 14:14:58 chris-dollin Exp $
+  $Id: ModelMem.java,v 1.3 2003-04-09 20:44:40 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,9 +9,6 @@ package com.hp.hpl.jena.mem;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.*;
-
-
 /** 
     OBSOLETE. Use the code in ModelFactory.
     @author bwm (original), jjc + kers (for Jena 2)

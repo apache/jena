@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.8 2003-04-08 14:14:57 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.9 2003-04-09 20:44:41 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.*;
 
 /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCaseBasic.java,v 1.2 2003-04-08 14:14:48 chris-dollin Exp $
+  $Id: TestCaseBasic.java,v 1.3 2003-04-09 20:44:42 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -10,8 +10,6 @@ package com.hp.hpl.jena.graph.compose.test;
 	@author kers
 */
 
-import com.hp.hpl.jena.mem.ModelMem;
-
 import java.lang.reflect.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
@@ -19,7 +17,7 @@ import com.hp.hpl.jena.mem.*;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-04-08 14:14:48 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-04-09 20:44:42 $
  */
 public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic 
 	{

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.11 2003-04-08 14:54:14 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.12 2003-04-09 20:44:39 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -15,8 +15,6 @@ package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
-
 import java.util.*;
 
 public class SimpleReifier implements Reifier
