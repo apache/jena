@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: EnvironmentFrame.java,v 1.1 2003-07-22 21:44:19 der Exp $
+ * $Id: EnvironmentFrame.java,v 1.2 2003-07-24 22:07:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.graph.Node;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-22 21:44:19 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-24 22:07:27 $
  */
 public class EnvironmentFrame extends FrameObject {
 
@@ -31,11 +31,11 @@ public class EnvironmentFrame extends FrameObject {
     /** The code the the clause currently being processed */
     RuleClauseCode clause;
     
-    /** The program counter offet in the clause's byte code */
-    int pc;
+    /** The continuation program counter offet in the parent clause's byte code */
+    int cpc = 0;
     
-    /** The argument counter offset in the clause's arg stream */
-    int ac;
+    /** The continuation argument counter offset in the parent clause's arg stream */
+    int cac = 0;
     
     /** 
      * Constructor 
@@ -51,7 +51,6 @@ public class EnvironmentFrame extends FrameObject {
      */
     public void init(RuleClauseCode clause) { 
         this.clause = clause;
-        pc = 0;
         // Note that the current fixed-frame implementation is just a short cut 
         // the first implementation and will get relaced by a
         // dynamic (and possibly trimmable) implementation in the future

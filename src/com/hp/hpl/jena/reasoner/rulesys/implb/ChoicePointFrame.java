@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ChoicePointFrame.java,v 1.3 2003-07-24 16:52:41 der Exp $
+ * $Id: ChoicePointFrame.java,v 1.4 2003-07-24 22:07:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-24 16:52:41 $
+ * @version $Revision: 1.4 $ on $Date: 2003-07-24 22:07:27 $
  */
 public class ChoicePointFrame extends FrameObject {
 
@@ -38,11 +38,11 @@ public class ChoicePointFrame extends FrameObject {
     /** Iterator over the set of clause code objects comprising the set of choices */
     Iterator clauseIterator;
     
-    /** The program counter offet in the clause's byte code */
-    int pc;
+    /** The continuation program counter offet in the parent clause's byte code */
+    int cpc;
     
-    /** The argument counter offset in the clause's arg stream */
-    int ac;
+    /** The continuation argument counter offset in the parent clause's arg stream */
+    int cac;
 
     /**
      * Constructor.
@@ -59,21 +59,19 @@ public class ChoicePointFrame extends FrameObject {
      */
     public void init(LPInterpreter interpreter, List predicateClauses) {
         envFrame = interpreter.envFrame;
-        pc = envFrame.pc;
-        ac = envFrame.ac;
         trailIndex = interpreter.trail.size();
         System.arraycopy(interpreter.argVars, 0, argVars, 0, argVars.length);
         clauseIterator = predicateClauses.iterator();
     }
-    
-    /**
-     * Reset the environment frame suitable for restarting.
-     */
-    public void reset() {
-        envFrame.pc = pc;
-        envFrame.ac = ac;
-    }
 
+    /**
+     * Set the continuation point for this frame.
+     */
+    public void setContinuation(int pc, int ac) {
+        cpc = pc;
+        cac = ac; 
+    }
+    
     /**
      * Override close method to reclaim the environment stack (imporant for
      * closing any embedded triple match iterators)
