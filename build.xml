@@ -208,6 +208,7 @@
     <target name="distribution-init">
         <delete includeEmptyDir="true">
             <fileset dir="${dist.dir}"/>
+        </delete>
         <mkdir dir="${dist.dir}"/>
     </target>
 
