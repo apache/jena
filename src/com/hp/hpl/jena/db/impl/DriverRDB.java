@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.zip.CRC32;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -46,7 +47,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.21 $ on $Date: 2003-07-12 00:07:34 $
+* @version $Revision: 1.22 $ on $Date: 2003-07-15 03:20:03 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -114,6 +115,12 @@ public abstract class DriverRDB implements IRDBDriver {
    protected char	QUOTE_CHAR = '\"';
    /** the quote character used to delimit characters and strings.
     */
+   
+   /**
+    * Indicates whether search pattern used to select system objects by name should be upper-case.
+    */
+   protected  boolean DB_NAMES_TO_UPPER = false;
+  
 
    protected boolean URI_COMPRESS;
    /** true if URI's are to be compressed by storing prefixes (an approximation
@@ -126,7 +133,7 @@ public abstract class DriverRDB implements IRDBDriver {
 
    /** The maximum size of an object that can be stored in a Statement table */
    protected int LONG_OBJECT_LENGTH;
-
+   
    /** The SQL type to use for storing ids (compatible with wrapDBID) */
    protected String ID_SQL_TYPE;
    
@@ -158,7 +165,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	* Every triple store has at least one tables for AssertedStatements.
 	*/
    protected static final String TABLE_BASE_NAME = "jena_";
-  
+   
+   
    /** Set to true to enable cache of pre-prepared statements */
    protected boolean CACHE_PREPARED_STATEMENTS = true;
 
@@ -254,7 +262,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		
 		if( !isDBFormatOK() ) {
-			// Format the DB
+			// Re-format the DB
+			cleanDB();
 			return formatAndConstructSystemSpecializedGraph();
 		}
         getDbInitTablesParams();
@@ -525,25 +534,36 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Test if the database has previously been formatted.
 	 * 
 	 * @return boolean true if database is correctly formatted, false on any error.
 	 */
 	public boolean isDBFormatOK() {
-		boolean result = false;
-		try {
-			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
-			String[] tableTypes = { "TABLE" };
-			ResultSet alltables = dbmd.getTables(null, null, "jena%", tableTypes);
-			result = alltables.next();
-			alltables.close();
-		} catch (Exception e1) {
-			;// if anything goes wrong, the database is not formatted correctly;
-		}
-		return result;
+			boolean result = false;
+			try {
+					DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
+					String[] tableTypes = { "TABLE" };
+					String prefixMatch = stringToDBname("jena%");
+					ResultSet alltables = dbmd.getTables(null, null, prefixMatch, tableTypes);
+					result = alltables.next();
+					alltables.close();
+			} catch (Exception e1) {
+					;// if anything goes wrong, the database is not formatted correctly;
+			}
+			return result;
 	}
+	
+	/** 
+	 * Converts string to form accepted by database.
+	 */
+	public String stringToDBname(String aName) {
+		String result = (DB_NAMES_TO_UPPER) ? aName.toUpperCase() : aName;
+		return(result);
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graphRDB.IRDBDriver#cleanDB()
@@ -552,7 +572,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		try {
 			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
 			String[] tableTypes = { "TABLE" };
-			ResultSet alltables = dbmd.getTables(null, null, "jena%", tableTypes);
+			String prefixMatch = stringToDBname("jena%");
+			ResultSet alltables = dbmd.getTables(null, null, prefixMatch, tableTypes);
 			List tablesPresent = new ArrayList(10);
 			while (alltables.next()) {
 				tablesPresent.add(alltables.getString("TABLE_NAME"));
@@ -597,16 +618,19 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public boolean sequenceExists(String seqName) {
 		Object[] args = {seqName};
-		ResultSetIterator it = null;
+		ResultSet rs = null;
+		boolean result = false;
 		try {
-		    it = m_sql.runSQLQuery("SelectSequenceName",args);
+			String op = "SelectSequenceName";
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(op);
+			ps.setString(1,seqName);
+			rs = ps.executeQuery();
+			result = rs.next();
+			m_sql.returnPreparedSQLStatement(ps,op);
 		} catch (Exception e) {
 		  logger.error("Unable to select sequence " + seqName,  e);
 			}
-		if (it != null) {
-			return (it.hasNext());
-		}		
-		return false;
+		return result;
 	}
 
 	/**
@@ -618,11 +642,14 @@ public abstract class DriverRDB implements IRDBDriver {
 		Object[] args = {};
 		ResultSetIterator it = null;
 		try {
-		    it = m_sql.runSQLQuery("SelectJenaSequences",args);
-		    while (it.hasNext()) {
-		    	results.add((String)it.getSingleton());
+			String opname = "SelectJenaSequences";
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname);
+		    ResultSet rs = ps.executeQuery();
+		    while (rs.next()) {
+		    	results.add(rs.getString(1));
 		    }
-		    it.close();
+		    //rs.close();
+		    m_sql.returnPreparedSQLStatement(ps,opname);
 		} catch (Exception e) {
 		  logger.error("Unable to select Jena sequences: ", e);
 		 }
@@ -1250,9 +1277,13 @@ public abstract class DriverRDB implements IRDBDriver {
 	public DBIDInt getLongObjectID(RDBLongObject lobj, String table, boolean add) throws RDFRDBException {
 		try {
 			String opName = "getLongObjectID";
+			if ( lobj.tail.length() > 0 ) 
+				opName += "withChkSum";
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(opName, table); 
 			ps.setString(1,lobj.head);
-			ps.setLong(2,lobj.hash);
+			if ( lobj.tail.length() > 0 ) 
+				ps.setLong(2, lobj.hash);
+			
 			ResultSet rs = ps.executeQuery();
 			DBIDInt result = null;
 			if (rs.next()) {
@@ -1261,7 +1292,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				if ( add )
 					result = addRDBLongObject(lobj, table);
 			}
-		 //   m_sql.returnPreparedSQLStatement(ps, opName);
+		    m_sql.returnPreparedSQLStatement(ps, opName);
 			return result;
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
@@ -1316,6 +1347,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			} 
 */            
 			ps.executeUpdate();
+			//m_sql.returnPreparedSQLStatement(ps,opname);
 			if ( !PRE_ALLOCATE_ID ) dbid = getInsertID(table);
 			return wrapDBID(new Integer(dbid));
 		} catch (Exception e1) {
@@ -1391,11 +1423,12 @@ public abstract class DriverRDB implements IRDBDriver {
 				res.head = rs.getString(1);
 				res.tail = rs.getString(2);			
 			}
-			return res;
+			m_sql.returnPreparedSQLStatement(ps,opName);
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
 			throw new RDFRDBException("Failed to find literal", e1);
 		}		
+		return res;
 	}
 	
 	protected RDBLongObject IDtoLongObject ( String idAsString, String table ) {
@@ -1450,6 +1483,59 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		return qual;	
 	}
+	
+	protected int getTableCount ( int graphId ) {		
+	try {
+		DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
+		String[] tableTypes = { "TABLE" };
+		int	res = 0;
+		String	tblPattern = TABLE_BASE_NAME + "g" + Integer.toString(graphId) + "%";
+		tblPattern = stringToDBname(tblPattern);
+		ResultSet alltables = dbmd.getTables(null, null, tblPattern, tableTypes);
+		while (alltables.next()) {
+			res += 1;
+		}
+		alltables.close();
+		return res;
+	} catch (SQLException e1) {
+		throw new RDFRDBException("Internal SQL error in driver", e1);
+	}
+}
+
+//=======================================================================
+//Database operations
+
+    
+  /**
+   * Check to see if a table with the specified name exists in the database.
+   * @param tName table name
+   * @return boolean indicating whether or not table is present.
+   */
+  public boolean doesTableExist(String tName) {
+	  boolean ok = false;
+	  try {
+			  DatabaseMetaData dbmd = getConnection().getConnection().getMetaData();
+			  String[] tableTypes = { "TABLE" };
+			  String prefix = stringToDBname("jena%");
+			  ResultSet alltables = dbmd.getTables(null, null, prefix, tableTypes);
+			  List tablesPresent = new ArrayList(10);
+			  while (alltables.next()) {
+					  tablesPresent.add(alltables.getString("TABLE_NAME"));
+			  }
+			  alltables.close();
+			  //TODO get these names from someplace
+			  ok &= tablesPresent.contains(stringToDBname(tName));
+	  } catch (SQLException e1) {
+			  throw new RDFRDBException("Internal SQL error in driver", e1);
+	  }
+	  return ok;
+  }
+
+    
+    
+
+
+
 }
 
 
