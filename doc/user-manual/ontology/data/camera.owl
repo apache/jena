@@ -103,13 +103,13 @@
      </owl:Class>
 
      <owl:Class rdf:ID="Large-Format">
-          <owl:subClassOf rdf:resource="#Camera"/>
-          <owl:subClassOf>
+          <rdfs:subClassOf rdf:resource="#Camera"/>
+          <rdfs:subClassOf>
                <owl:Restriction>
                      <owl:onProperty rdf:resource="#body"/>
                      <owl:allValuesFrom rdf:resource="#BodyWithNonAdjustableShutterSpeed"/>
                </owl:Restriction>
-          </owl:subClassOf>
+          </rdfs:subClassOf>
      </owl:Class>
 
      <owl:Class rdf:ID="Digital">

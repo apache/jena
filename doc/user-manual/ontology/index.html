@@ -42,13 +42,14 @@
   <li><a href="#documentHandling">Handling ontology documents and imports</a></li>
   <li><a href="#ontResource">The generic ontology type: OntResource</a></li>
   <li><a href="#classesBasic">Handling ontology components: basic class expressions</a></li>
-  <li>Handling ontology components: properties</li>
-  <li>Handling ontology components: more complex class expressions</li>
-  <li>Ontology meta-data</li>
-  <li>Ontology inference: introduction</li>
-  <li>Built-in Jena reasoners</li>
-  <li>Using external reasoners</li>
-  <li>FAQ, common problems and other tips</li>
+  <li><a href="#properties">Handling ontology components: properties</a></li>
+  <li><a href="#complexClasses">Handling ontology components: more complex class 
+    expressions</a></li>
+  <li><a href="#metadata">Ontology meta-data</a></li>
+  <li><a href="inferenceIntro">Ontology inference: introduction</a></li>
+  <li><a href="builtinReasoners">Built-in Jena reasoners</a></li>
+  <li><a href="externalReasoners">Using external reasoners</a></li>
+  <li><a href="faq">FAQ, common problems and other tips</a></li>
 </ol>
 <h3>Further assistance</h3>
 <p> We hope that this documentation will be sufficient to help most readers to 
@@ -732,7 +733,7 @@ m.read( &quot;http://www.xfront.com/owl/ontologies/camera/&quot; );</pre>
 <pre>listRDFTypes()                 // assumes not-direct
 listRDFTypes( boolean direct ) // if true, show only direct relationships</pre>
 <p>Related methods allow the <code>rdf:type</code> to be tested, set and returned.</p>
-<h2>Handling ontology components: basic class expressions</h2>
+<h2 id="classesBasic">Handling ontology components: basic class expressions</h2>
 <p>Classes are the basic building blocks of an ontology. A simple class is represented 
   in Jena by an OntClass object. As mentioned <a href="#rdfPolymorphism">above</a>, 
   a ontology class is a facet of an RDF resource. One way, therefore, to get an 
@@ -754,6 +755,231 @@ OntClass camera = (OntClass) r.as( OntClass.class );</pre>
   complex ontologies in OWL or DAML. They are less useful in RDFS.</p>
 <pre>OntClass anonClass = m.createClass();</pre>
 <p>Once we have the ontology class object, we can begin processing it through 
-  the methods defined on OntClass. Some of these methods are listed below</p>
+  the methods defined on <code>OntClass</code>. The attributes of a class are 
+  handled in a similar way to the attributes of OntResource, above, with a collection 
+  of methods to set, add, get, test, list and remove values. Class properties 
+  that are handled in this way are:</p>
+<table width="445" border="1" cellspacing="1" cellpadding="1">
+  <tr> 
+    <th width="130">Attribute</th>
+    <th width="302">Meaning</th>
+  </tr>
+  <tr> 
+    <td width="130"> 
+      <div align="left">subClass</div>
+    </td>
+    <td width="302"> 
+      <div align="left">A sub-class of this class, i.e. those classes that are 
+        declared <code>subClassOf</code> this class.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="130"> 
+      <div align="left">superClass</div>
+    </td>
+    <td width="302"> 
+      <div align="left">A super-class of this class, i.e. a class that this class 
+        is a <code>subClassOf</code>.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="130"> 
+      <div align="left">equivalentClass</div>
+    </td>
+    <td width="302"> 
+      <div align="left">A class that represents the same concept as this class. 
+        This is not just having the same class extension: the class 'British Prime 
+        Minister in 2003' contains the same individual as the class 'the husband 
+        of Cherie Blair', but they represent different concepts.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="130"> 
+      <div align="left">disjointWith</div>
+    </td>
+    <td width="302"> 
+      <div align="left">Denotes a class with which this class has no instances 
+        in common. </div>
+    </td>
+  </tr>
+</table>
+<p>Thus, in our example ontology, we can print a list the sub-classes of Camera 
+  as follows:</p>
+<pre>OntClass camera = m.getOntClass( camNS + &quot;Camera&quot; );
+for (Iterator i = camera.listSubClasses(); i.hasNext(); ) {
+  OntClass c = (OntClass) i.next();
+  System.out.print( c.getLocalName() + &quot; &quot; );
+}</pre>
+<p>The result from this code, incidentally, is <code>Large-Format Digital Camera</code> 
+  (the order may vary on different systems). Some readers may be surprised to 
+  see Camera appearing as its own sub-class. This is an entailment of RDFS, which 
+  states that all classes are sub-classes of themselves. While this is a correct 
+  entailment, it is not useful information in many contexts. Future versions of 
+  Jena will contain means of selectively ignoring such correct but unhelpful entailments.</p>
+<p>OntClass has some other commonly used utilities. To show all of the instances 
+  that mention this class as their <code>rdf:type</code> (or one of them), use 
+  <code>listInstances()</code>. The domain of a property is intended to allow 
+  entailments about the class of an individual, given that it appears as a statement 
+  subject. It is not a constraint that can be used to validate a document, in 
+  the way that XML schema can do. Nevertheless, many developers find it convenient 
+  to use the domain of a property to document the design intent that the property 
+  only applies to known instances of the domain class. Given this observation, 
+  it can be a useful debugging or display aide to show the properties that have 
+  this class among their domain classes. The method <code>listDeclaredProperties()</code> 
+  attempts to identify the properties that are intended to apply to instances 
+  of this class. With an optional parameter <code>all</code> this method will 
+  inspect just the class itself (<code>all = false</code>) or the class and all 
+  of its super-classes (<code>all = true</code>).</p>
+<h2 id="properties">Handling ontology components: properties</h2>
+<p>A property in an ontology model is an extension of the RDF Java class <code>Property</code>, 
+  and allows access to the additional information that can be asserted about properties 
+  in an ontology langauge. The common super-class for representing ontology properties 
+  in Java is <code>OntProperty</code>. Again, using the pattern of add, set, get, 
+  list, has, and remove methods, we can access the following attributes of an 
+  <code>OntProperty</code>: </p>
+<table width="445" border="1" cellspacing="1" cellpadding="1">
+  <tr> 
+    <th width="125">Attribute</th>
+    <th width="307">Meaning</th>
+  </tr>
+  <tr> 
+    <td width="125"> 
+      <div align="left">subProperty</div>
+    </td>
+    <td width="307"> 
+      <div align="left">A sub property of this property; i.e. a property which 
+        is declared to be a <code>subPropertyOf</code> this property. If p is 
+        a sub property of q, and we know that <code>A&nbsp;p&nbsp;B</code> is 
+        true, we can infer that <code>A&nbsp;q&nbsp;B</code> is also true.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="125"> 
+      <div align="left">superProperty</div>
+    </td>
+    <td width="307"> 
+      <div align="left">A super property of this property, i.e. a property that 
+        this property is a <code>subPropertyOf</code></div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="125"> 
+      <div align="left">domain</div>
+    </td>
+    <td width="307"> 
+      <div align="left">Denotes the class or classes that form the domain of this 
+        property. Multiple domain values are interpreted as a conjunction. The 
+        domain denotes the class of value the property maps from.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="125"> 
+      <div align="left">range</div>
+    </td>
+    <td width="307"> 
+      <div align="left">Denotes the class or classes that form the range of this 
+        property. Multiple range values are interpreted as a conjunction. The 
+        range denotes the class of values the property maps to.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="125"> 
+      <div align="left">equivalentProperty</div>
+    </td>
+    <td width="307"> 
+      <div align="left">Denotes a property that is the same as this property.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="125"> 
+      <div align="left">inverse</div>
+    </td>
+    <td width="307"> 
+      <div align="left">Denotes a property that is the inverse of this property. 
+        Thus if q is the inverse of p, and we know that <code>A q B</code>, then 
+        we can infer that <code>B p A</code>.</div>
+    </td>
+  </tr>
+</table>
+<p>In the example camera ontology, the property body is a sub-property of part, 
+  and has domain Camera and range Body (that is, it maps from instances of cameras 
+  to instances of camera bodies). We can reconstruct this definition in an empty 
+  ontology model as follows:</p>
+<pre>OntModel newM = ModelFactory.createOntologyModel();
+OntClass Camera = newM.createClass( camNS + &quot;Camera&quot; );
+OntClass Body = newM.createClass( camNS + &quot;Body&quot; );
+   
+ObjectProperty part = newM.createObjectProperty( camNS + &quot;part&quot; );
+ObjectProperty body = newM.createObjectProperty( camNS + &quot;body&quot; );
+   
+body.addSuperProperty( part );
+body.addDomain( Camera );
+body.addRange( Body );</pre>
+<p>OWL and DAML+OIL refine the basic <code>Property</code> class from RDF into 
+  two types: <code>ObjectProperty</code> and <code>DatatypeProperty</code>. The 
+  difference between them is that an object property can have only individuals 
+  in its range, while a datatype property has concrete data literals (only) in 
+  its range. This separation allows the semantic theories for these languages 
+  not to have to include the interpretations of the myriad concrete datatypes, 
+  arithmetic, and so forth, which would clearly overwhelm what are otherwise quite 
+  compact theoretial treatments. </p>
+<p>In Jena, the Java interfaces <code>ObjectProperty</code> and <code>DatatypeProperty</code> 
+  are sub-types of <code>OntProperty</code>. However, they do not have any behaviours 
+  (methods) particular to themselves. Their existence allows the more complex 
+  sub-types of ObjectProperty - transitive properties and so forth - to be kept 
+  separate in the class hierarchy. Creating an object property or datatype property 
+  will have the effect of asserting different <code>rdf:type</code> statements 
+  into the underlying model.</p>
+<p>Both DAML+OIL and OWL permit object and datatype properties to be <i>functional</i> 
+  - that is, for a given individual in the domain, the range value will always 
+  be the same. In DAML+OIL, this characteristic is labelled as a<i> unique </i>property, 
+  but the idea is the same. Rather than model being functional as an addtional 
+  component of the Java class name (such as FunctionalObjectProperty), we have 
+  chosen to model the capability of being functional as a flag on the <code>OntProperty</code> 
+  object. Thus, when creating an object or datatype property, there is an optional 
+  Boolean parameter to indicate whether this property is functional. A property 
+  that is functional will also support the facet interface <code>FunctionalProperty</code>.</p>
+<p>There are several additional sub-types of ObjectProperty that represent additional 
+  capabilities of ontology properties. A <code>TransitiveProperty</code> means 
+  that if p is transitive, and we know <code>A p B</code> and also <code>B p C</code>, 
+  we can infer that <code>A p C</code>. A <code>SymmetricProperty</code> means 
+  that if p is symmetric, and we know <code>A p B</code>, we can infer <code>B 
+  p A</code>. An <code>InverseFunctionalProperty</code> means that for any given 
+  range element, the domain value is unique. (Note that in DAML+OIL, the terminology 
+  for inverse functional property is <i>unambiguous property</i>).</p>
+<p>Given that all properties are RDFNode objects, and therefore support the as() 
+  method, we can use as() to change from an object property facet to a transitive 
+  property facet. To make this more straighforward, the OntProperty Java class 
+  has a number of methods that support directly switching to the corresponding 
+  facet view:</p>
+<pre>public TransitiveProperty asTransitiveProperty();
+public FunctionalProperty asFunctionalProperty();
+public SymmetricProperty asSymmetricPropery();
+public InverseFunctionalProperty asInverseFunctionalProperty();</pre>
+<p>These methods all assume that the underlying model will support this change 
+  in perspective, and so will fail with a <code>ConversionException</code> if 
+  a given property is not, for example, already a transitive property when that 
+  change is attempted. The following will, if necessary, add additional information 
+  (i.e the additional rdf:type statement) to allow the conversion to an alternative 
+  facet to succeed.</p>
+<pre>public TransitiveProperty convertToTransitiveProperty();
+public FunctionalProperty convertToFunctionalProperty();
+public SymmetricProperty convertToSymmetricPropery();
+public InverseFunctionalProperty convertToInverseFunctionalProperty();</pre>
+<p>Finally, methods on the pattern <code>isXXX</code> (e.g. <code>isTransitiveProperty</code>) 
+  allow the programmer to test whether a given property is already of a given 
+  sub-type.</p>
+<h2 id="classesComplex">Handling ontology components: more complex class expressions</h2>
+<p>&nbsp;</p>
+<h2 is="ontology">Ontology meta-data</h2>
+<p>&nbsp;</p>
+<h2 id="inferenceIntro">Ontology inference: introduction</h2>
+<p>&nbsp;</p>
+<h2 id="builtinReasoners">Built-in Jena reasoners</h2>
+<p>&nbsp;</p>
+<h2 id="externalReasoners">Using external reasoners</h2>
+<p>&nbsp;</p>
+<h2 id="faq">FAQ, common problems and other tips</h2>
+<p>&nbsp;</p>
 </body>
 </html>
