@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.19 2003-08-03 09:39:18 der Exp $
+ * $Id: ReasonerTester.java,v 1.20 2003-08-03 09:53:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -46,7 +46,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.20 $ on $Date: 2003-08-03 09:53:57 $
  */
 public class ReasonerTester {
 
@@ -278,7 +278,7 @@ public class ReasonerTester {
         // Used in debugging the tests ...
         // Can't just leave it as a logger.debug because there are unit tests to which are supposed to given
         // a test failure which would then problem unwanted output.
-        // /*
+        /*
         System.out.println("Reasoner test " + test.getURI() + " - " + description);
         if (!correct) {
             System.out.println("Missing triples:");
@@ -297,7 +297,7 @@ public class ReasonerTester {
             }
             
         }
-        // */
+        */
         // ... end of debugging hack
         if (testcase != null) {
             TestCase.assertTrue(description, correct);
