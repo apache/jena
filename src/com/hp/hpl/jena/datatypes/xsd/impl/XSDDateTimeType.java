@@ -1,11 +1,11 @@
 /******************************************************************
- * File:        XSDDurationType.java
+ * File:        XSDDateTimeType.java
  * Created by:  Dave Reynolds
- * Created on:  16-Dec-02
+ * Created on:  16-Dec-2002
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDurationType.java,v 1.1 2003-03-31 10:01:26 der Exp $
+ * $Id: XSDDateTimeType.java,v 1.3 2003-04-15 21:05:34 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -14,30 +14,28 @@ import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * The XSD duration type, the only job of this extra layer is to
- * wrap the return value in a more convenient accessor type. We could
- * avoid this proliferation of trivial types by use of reflection but
- * since that causes allergic reactions in some we use brute force.
+ * The XSD date/time type, the only job of this extra layer is to
+ * wrap the return value in a more convenient accessor type. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:26 $
+ * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:05:34 $
  */
-public class XSDDurationType extends XSDDatatype {
-    
+public class XSDDateTimeType extends XSDDatatype {
+
     /**
      * Constructor
      */
-    public XSDDurationType() {
-        super("duration");
+    public XSDDateTimeType(String typename) {
+        super(typename);
     }
-        
+
     /**
      * Parse a lexical form of this datatype to a value
      * @return a Duration value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
     public Object parse(String lexicalForm) throws DatatypeFormatException {
-        return new XSDDuration(super.parse(lexicalForm), typeDeclaration);
+        return new XSDDateTime(super.parse(lexicalForm), typeDeclaration);
     }
     
     /**
