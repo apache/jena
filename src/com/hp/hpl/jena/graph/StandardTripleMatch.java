@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: StandardTripleMatch.java,v 1.1.1.1 2002-12-19 19:13:33 bwm Exp $
+  $Id: StandardTripleMatch.java,v 1.2 2003-02-10 09:55:43 der Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -98,7 +98,9 @@ public class StandardTripleMatch implements TripleMatch {
         }
         
         protected boolean matches(Node matcherNode, Node testNode) {
-            return matcherNode == null  || matcherNode.equals(testNode);
+            // return matcherNode == null  || matcherNode.equals(testNode);
+            // der - modified to support sameValueAs semantics
+            return matcherNode == null  || matcherNode.sameValueAs(testNode);
         }
     }
 

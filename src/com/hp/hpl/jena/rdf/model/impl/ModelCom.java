@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-01 14:35:31 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-02-10 09:57:38 $'
  */
 
 import com.hp.hpl.jena.mem.*;
@@ -571,7 +571,7 @@ abstract public class ModelCom extends EnhGraph
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
     public Literal createTypedLiteral(String lex, String lang, String typeURI) throws RDFException {
-        RDFDatatype dt = TypeMapper.getInstance().getTypeByName(typeURI);
+        RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = new LiteralLabel(lex, lang, dt);
         return new LiteralImpl(Node.makeLiteral(ll), (Model)this);
     }
@@ -584,7 +584,7 @@ abstract public class ModelCom extends EnhGraph
      * @param typeURI the URI of the type of the literal, null for old style "plain" literals
      */
     public Literal createTypedLiteral(Object value, String lang, String typeURI) {
-        RDFDatatype dt = TypeMapper.getInstance().getTypeByName(typeURI);
+        RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = new LiteralLabel(value, lang, dt);
         return new LiteralImpl(Node.makeLiteral(ll), (Model)this);
     }

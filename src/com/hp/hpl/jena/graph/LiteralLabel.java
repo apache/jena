@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.1.1.1 2002-12-19 19:13:28 bwm Exp $
+  $Id: LiteralLabel.java,v 1.2 2003-02-10 09:55:43 der Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -271,8 +271,6 @@ final public class LiteralLabel {
      * the same value but different language tag are semantically
      * equivalent but distinguished by the java equality function
      * in order to support round tripping.
-     * <p>Default implementation is to use equals, subclasses should
-     * override this.</p>
      */
     public boolean sameValueAs(LiteralLabel other) {
         if (other == null)

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fixed.java,v 1.1.1.1 2002-12-19 19:13:53 bwm Exp $
+  $Id: Fixed.java,v 1.2 2003-02-10 09:57:37 der Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -23,7 +23,11 @@ public class Fixed extends Element
         { return "<fixed " + value + ">"; }
 			
 	public boolean accepts( Domain d, Node x ) 
-        { return value.equals( x ); }
+        // { return value.equals( x ); }
+        // Modified by der to move to value semantics
+        {
+            return x.sameValueAs(value);
+        }
     
     public Node asNode( Domain d ) 
         { return value; }

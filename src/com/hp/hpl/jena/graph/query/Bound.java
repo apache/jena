@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Bound.java,v 1.1.1.1 2002-12-19 19:13:50 bwm Exp $
+  $Id: Bound.java,v 1.2 2003-02-10 09:57:37 der Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -16,7 +16,11 @@ public class Bound extends Element
 	public Bound( int n ) { super( n ); }
 	
 	public boolean accepts( Domain d, Node x )
-		{ return d.get( index ).equals( x ); }
+	//	{ return d.get( index ).equals( x ); }
+        // Modified by der to move to value semantics
+        {
+            return x.sameValueAs(d.get( index ) );
+        }
         
     public Node asNode( Domain d ) 
         { return (Node) d.get( index ); }
