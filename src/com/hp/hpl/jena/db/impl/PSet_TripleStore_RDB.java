@@ -9,10 +9,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +53,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:57:17 $
+* @version $Revision: 1.2 $ on $Date: 2003-05-01 17:55:45 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -433,7 +436,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
      public String toString() {
         return this.getClass().getPackage().getName();
      }
-
+     
 	/**
 	 * Extract an indexable sub-string from a literal.
 	 * This is used for literals that are too long to index for the given
@@ -562,6 +565,25 @@ public  class PSet_TripleStore_RDB implements IPSet {
             throw new RDFRDBException("Failed to find literal", e1);
         }
     }
+    
+    /**
+     * Lookup Literal in Literals table, and insert it if it is not there.
+     * 
+     * @param rs
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     * @throws RDFException
+     * @throws UnsupportedEncodingException
+     */
+    IDBID lookupOrInsertLiteral(Node_Literal litNode) {
+		IDBID result = getLiteralID(litNode);
+		if (result == null) {
+			  result = addLiteral(litNode);
+		}
+		return (result);
+    }
+			
 
 
 	/**
@@ -753,6 +775,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
    }
 }
 
+
 		/**
 		 *
 		 * Attempt to store a statement into an Asserted_Statement table.
@@ -850,6 +873,63 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	
 	   }
 	}
+	
+	/** 
+	 * Attempt to add a list of triples to the specialized graph.
+	 * 
+	 * As each triple is successfully added it is removed from the List.
+	 * If complete is true then the entire List was added and the List will 
+	 * be empty upon return.  if complete is false, then at least one triple 
+	 * remains in the List.
+	 * 
+	 * If a triple can't be stored for any reason other than incompatability
+	 * (for example, a lack of disk space) then the implemenation should throw
+	 * a runtime exception.
+	 * 
+	 * @param triples List of triples to be added.  This is modified by the call.
+	 * @param my_GID  ID of the graph.
+	 */
+		public void storeTripleList(List triples, IDBID my_GID) {
+			// for relational dbs, there are two styles for bulk inserts.
+			// JDBC 2.0 supports batched updates.
+			// MySQL also supports a multiple-row insert.
+			// For now, we support only jdbc 2.0 batched updates
+			
+			
+			Triple t;
+			String cmd;
+			try {
+				Connection con = m_sql.getConnection();
+				con.setAutoCommit(false);
+				Statement stmt = con.createStatement();
+				Iterator it = triples.iterator();
+				
+				while (it.hasNext()) {
+					t = (Triple) it.next();
+					//TODO stmt.addBatch(generateInsertCmd(t,my_GID)); 
+					storeTriple(t, my_GID);	
+				}
+				//TODO  stmt.executeBatch();
+				ArrayList c = new ArrayList(triples);
+				triples.removeAll(c);
+								
+		} catch(BatchUpdateException b) {
+					System.err.println("SQLException: " + b.getMessage());
+					System.err.println("SQLState: " + b.getSQLState());
+					System.err.println("Message: " + b.getMessage());
+					System.err.println("Vendor: " + b.getErrorCode());
+					System.err.print("Update counts: ");
+					int [] updateCounts = b.getUpdateCounts();
+					for (int i = 0; i < updateCounts.length; i++) {
+						System.err.print(updateCounts[i] + " ");
+					}
+				} catch(SQLException ex) {
+					System.err.println("SQLException: " + ex.getMessage());
+					System.err.println("SQLState: " + ex.getSQLState());
+					System.err.println("Message: " + ex.getMessage());
+					System.err.println("Vendor: " + ex.getErrorCode());
+				}
+		}
 
 	/** 
 	 * Compute the number of unique triples added to the Specialized Graph.
