@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleTripleSorter.java,v 1.4 2003-08-12 15:23:11 chris-dollin Exp $
+  $Id: TestSimpleTripleSorter.java,v 1.5 2003-08-13 09:27:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -99,6 +99,15 @@ public class TestSimpleTripleSorter extends GraphTestBase
     public void testInteraction()
         {
         testReordersTo( "?a P b; ?a Q ?b; ?b R ?c", "?b R ?c; ?a Q ?b; ?a P b" );    
+        }
+        
+    /**
+        Test that a triple that binds more things gets sorted earlier than a equally-light
+        triple that binds fewer things
+    */
+    public void testSortByMass()
+        {
+        testReordersTo( "?b c d; ?a b c; ?b ?c d; ?a ?b ?d", "?a b c; ?b c d; ?b ?c d; ?a ?b ?d" );    
         }
         
     /**

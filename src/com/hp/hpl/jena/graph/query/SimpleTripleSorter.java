@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleTripleSorter.java,v 1.5 2003-08-12 15:22:48 chris-dollin Exp $
+  $Id: SimpleTripleSorter.java,v 1.6 2003-08-13 09:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -11,6 +11,21 @@ import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
 /**
+    A TripleSorter for "optimising" queries. The triples of the query are permuted by
+    moving the "lightest" triples to earlier positions. Within each region of the same
+    lightness, triples the bind the most variables to their right are preferred. Otherwise
+    the order is preserved.
+<p>
+    The notion of "lightness" makes more concrete triples lighter than less concrete ones,
+    and variables lighter than ANY. Variables that have been bound by the time their
+    containing triple is processed weigh just a little.
+<p>
+    The notion of "bind the most" is just the sum of occurances of the variables in the
+    triple in the other triples.
+<p>
+    No weighting is applied to predicate position, and no knowledge about the graph 
+    being queried is required.
+    
  	@author kers
 */
 public class SimpleTripleSorter implements TripleSorter
@@ -19,7 +34,6 @@ public class SimpleTripleSorter implements TripleSorter
     private int putIndex;
     private Set bound;
     private List remaining;
-    private int currentWeight;
         
     /**
         A public SimpleTripleSorter needs no arguments (we imagine more sophisticated
@@ -60,34 +74,118 @@ public class SimpleTripleSorter implements TripleSorter
     */
     protected Triple [] sort() 
         {
-        while (remaining.size() > 0)
-            {
-            int minWeight = 100;
-            Triple firstLightest = null;
-            for (int i = 0; i < remaining.size(); i +=1)
-                {
-                Triple t = (Triple) remaining.get(i);
-                int w = weight( t );
-                if (w < minWeight) { minWeight = w; firstLightest = t; }    
-                }    
-            accept( firstLightest );    
-            }
+        while (remaining.size() > 0) accept( findMostBinding( findLightest( remaining ) ) );    
         return result;
         }
         
+    /**
+        Accept a triple as the next element in the result array, note that all its variables are
+        now bound, and remove it from the list of remaining triples.
+    */
     protected void accept( Triple t )
         {
         result[putIndex++] = t;
         bind( t );
         remaining.remove( t );  
         }
+                
+    /**
+        Answer a list of the lightest triples in the candidate list; takes one pass over the
+        candidates.
         
+        @param candidates the list of triples to select from
+        @return the light of lightest triples [by <code>weight</code>], preserving order
+    */
+    protected List findLightest( List candidates )
+        {
+        List lightest = new ArrayList();
+        int minWeight = 100;
+        for (int i = 0; i < candidates.size(); i +=1)
+            {
+            Triple t = (Triple) candidates.get(i);
+            int w = weight( t );
+            if (w < minWeight) 
+                { 
+                lightest.clear(); 
+                lightest.add( t ); 
+                minWeight = w; 
+                }
+            else if (w == minWeight)
+                lightest.add( t );      
+            }
+        return lightest;
+        }
+        
+    /**
+        Answer the first most-binding triple in the list of candidates.
+    */
+    protected Triple findMostBinding( List candidates )
+        {
+        int maxBinding = -1;
+        Triple mostBinding = null;
+        for (int i = 0; i < candidates.size(); i += 1)
+            {
+            Triple t = (Triple) candidates.get(i);
+            int count = bindingCount( t );
+            if (count > maxBinding) { mostBinding = t; maxBinding = count; }    
+            }  
+        return mostBinding;
+        }
+        
+    /**
+        The binding count of a triple is the number of instances of variables in other triples 
+        it would capture if it were to be bound.
+        
+        @param t the triple to compute the binding count for
+        @return the total binding count of t with respect to all the triples in remaining
+    */
+    protected int bindingCount( Triple t )
+        {
+        int count = 0;
+        for (int i = 0; i < remaining.size(); i += 1)
+            {
+            Triple other = (Triple) remaining.get(i);    
+            if (other != t) count += bindingCount( t, other );
+            }
+        return count;    
+        }
+        
+    /**
+        Answer the binding count of t with respect to some other triple
+    */
+    protected int bindingCount( Triple t, Triple other )
+        {
+        return 
+            bindingCount( t.getSubject(), other ) 
+            + bindingCount( t.getPredicate(), other ) 
+            + bindingCount( t.getObject(), other ) ; 
+        }
+        
+    protected int bindingCount( Node n, Triple o )
+        {
+        return n.isVariable()   
+            ? bc( n, o.getSubject() ) + bc( n, o.getPredicate() ) + bc( n, o.getObject() )
+            : 0;
+        }
+        
+    /**
+        Answer 1 if nodes are .equals, 0 otherwise.
+    */
+    protected int bc( Node n, Node other )
+        { return n.equals( other ) ? 1 : 0; }
+
+    /**
+        Bind a triple by binding each of its nodes.
+    */
     protected void bind( Triple t )
         {
-        bound.add( t.getSubject() );
-        bound.add( t.getPredicate() );
-        bound.add( t.getObject() );    
+        bind( t.getSubject() );
+        bind( t.getPredicate() );
+        bind( t.getObject() );    
         }
+        
+    protected void bind( Node n )
+        { if (n.isVariable()) bound.add( n ); }
         
     /**
         In this simple sorter, the weight of a triple is the sum of the weights of its nodes.
