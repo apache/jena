@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.22 2003-08-21 12:04:46 der Exp $
+ * $Id: TestFBRules.java,v 1.23 2003-08-22 16:31:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -32,7 +33,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.23 $ on $Date: 2003-08-22 16:31:25 $
  */
 public class TestFBRules extends TestCase {
     
@@ -274,6 +275,30 @@ public class TestFBRules extends TestCase {
             });
     }
     
+   
+    /**
+     * Test the close operation.
+     */
+    public void testClose() {
+        String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
+        List ruleList = Rule.parseRules(rules);
+        Graph data = new GraphMem();
+        data.add(new Triple(n1, p, n2));
+        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+            new Triple[] {
+                new Triple(n1, p, n2),
+                new Triple(n1, q, n2)
+            });
+        infgraph.close();
+        boolean foundException = false;
+        try {
+            infgraph.find(n1, null, null);
+        } catch (ClosedException e) {
+            foundException = true;
+        }
+        assertTrue("Close detected", foundException);
+    }
 
     /**
      * Test example pure backchaining rules
@@ -439,12 +464,12 @@ public class TestFBRules extends TestCase {
               
         // Check derivation tracing as well
         // Suppressed until LP engine implements derivation tracing
-//        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
-//        assertTrue(di.hasNext());
-//        RuleDerivation d = (RuleDerivation)di.next();
-//        assertTrue(d.getRule().getName().equals("r1b"));
-//        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
-//        assertTrue(! di.hasNext());
+        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
+        assertTrue(di.hasNext());
+        RuleDerivation d = (RuleDerivation)di.next();
+        assertTrue(d.getRule().getName().equals("r1b"));
+        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
+        assertTrue(! di.hasNext());
     }
     
     /**
