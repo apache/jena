@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.20 2004-02-27 17:30:04 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.21 2004-04-26 13:20:48 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -69,6 +69,8 @@ Jena 2 &ndash; Frequently Asked Questions
 <h3>XML serialisation (reading and writing)</h3>
 <ul>
   <li><a href="#xml-0">Why are some of my statement objects serialised as XML elements, and some as XML attributes?</a></li>
+  <li><a href="#xml-1">Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code> 
+    when I want output like <code>&lt;owl:Class&nbsp;...&gt;</code>?</a></li>
 </ul>
 <h3>RDQL and query processing</h3>
 <ul>
@@ -344,6 +346,32 @@ engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
   must be enabled or disabled.
   </p>
 
+<p id="#xml-1"><strong>Q: Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code> 
+    when I want output like <code>&lt;owl:Class&nbsp;...&gt;</code>?</strong><br />
+<strong>A:</strong> This is the raw form of the RDF serialisation into XML. In terms of RDF's
+information model, it expresses the same semantics as the compressed form. So the following
+fragments are equivalent (in RDF terms):</p>
+  <pre>
+  &lt;rdf:Description rdf:about="#foo"&gt;
+    &lt;rdf:type rdf:resource=&quot;http://www.w3.org/2002/07/owl#Class&quot;&gt;
+  &lt;/rdf:Description&gt;
+  
+  &lt;owl:Class rdf:about=&quot;#foo&quot; /&gt;</pre>
+<p>However, the second is considerably easier for human readers to read, and tends to 
+  be the form most people come across when reading OWL or DAML ontologies, for example.  The default
+  output format is <code>RDF/XML</code>, the abbreviated format is <code>RDF/XML-ABBREV</code>.
+  To change from the default output style, pass the required output format to 
+  the <a href="javadoc/com/hp/hpl/jena/rdf/model/Model#write()">Model.write()</a> method:
+</p>
+<pre>
+  yourModel.write( yourOutputStream, "RDF/XML-ABBREV" );</pre>
+<p>Note that the abbreviated form requires the writer to do much more work (multiple passes are
+  needed over the RDF model, to see which abbreviation rules can apply). Hence it may be 
+  inappropriate for large models.  In particular, the abbreviated form is 
+    <strong>not</strong> recommended for serialising
+  large models from a persistent database to RDF XML. More details on controlling the
+  precise behaviour of the writer, including turning on and off abbreviation rules, are
+  in the <a href="IO/iohowto.html#output">I/O howto</a>.</p>
 <h3>RDQL and query processing</h3>
 <p>no entries yet</p>
 
