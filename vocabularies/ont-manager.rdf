@@ -21,42 +21,49 @@
   xml:base  ="&base;"
 >
 
-<!--
+<owl:Ontology rdf:about="">
+  <rdfs:comment>
 	A simple schema (vocabulary) for the properties used to store metadata for the Jena ontology document manager.
+  </rdfs:comment>
 
-	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS:    $Id: ont-manager.rdf,v 1.1 2003-03-25 10:34:57 ian_dickinson Exp $
--->
+  <dc:creator>
+    Ian Dickinson, mailto:ian.dickinson@hp.com
+  </dc:creator>
+
+  <owl:versionInfo>
+	CVS:    $Id: ont-manager.rdf,v 1.2 2003-04-16 12:00:24 ian_dickinson Exp $
+  </owl:versionInfo>
+</owl:Ontology>
 
 <rdfs:Class rdf:ID="OntologySpec">
 	<rdfs:label>Ontology document specification</rdfs:label>
 	<rdfs:comment>A class of node that specifies document metadata for the DocumentManager</rdfs:comment>
 </rdfs:Class>
 
-<rdfs:Property rdf:ID="publicURI">
+<rdf:Property rdf:ID="publicURI">
 	<rdfs:label>Public URI</rdfs:label>
 	<rdfs:comment>The public URI that is used to refer to the ontology document</rdfs:comment>
 	<rdfs:domain rdf:resource="#OntologySpec" />
-</rdfs:Property>
+</rdf:Property>
 
-<rdfs:Property rdf:ID="altURL">
+<rdf:Property rdf:ID="altURL">
 	<rdfs:label>Alternative URL</rdfs:label>
 	<rdfs:comment>The resolvable URL that an alternative copy of the ontology document may be fetched from</rdfs:comment>
 	<rdfs:domain rdf:resource="#OntologySpec" />
-</rdfs:Property>
+</rdf:Property>
 
-<rdfs:Property rdf:ID="prefix">
+<rdf:Property rdf:ID="prefix">
 	<rdfs:label>Prefix</rdfs:label>
 	<rdfs:comment>The prefix string that is used when writing qnames in the ontology's namespace</rdfs:comment>
 	<rdfs:domain rdf:resource="#OntologySpec" />
 	<rdfs:range rdf:resource="&xsd;string" />
-</rdfs:Property>
+</rdf:Property>
 
-<rdfs:Property rdf:ID="language">
+<rdf:Property rdf:ID="language">
 	<rdfs:label>Ontology language</rdfs:label>
 	<rdfs:comment>The representation language used by the ontology document</rdfs:comment>
 	<rdfs:domain rdf:resource="#OntologySpec" />
-</rdfs:Property>
+</rdf:Property>
 
 
 
@@ -65,25 +72,25 @@
 	<rdfs:comment>A node that specifies behavioural options for the document manager</rdfs:comment>
 </rdfs:Class>
 
-<rdfs:Property rdf:ID="cacheModels">
+<rdf:Property rdf:ID="cacheModels">
 	<rdfs:label>cache models</rdfs:label>
 	<rdfs:comment>If true, this property denotes that loaded models should be cached for re-use</rdfs:comment>
 	<rdfs:domain rdf:resource="#DocumentManagerPolicy" />
 	<rdfs:range rdf:resource="&xsd;boolean" />
-</rdfs:Property>
+</rdf:Property>
 
-<rdfs:Property rdf:ID="processImports">
+<rdf:Property rdf:ID="processImports">
 	<rdfs:label>process imports</rdfs:label>
 	<rdfs:comment>If true, this property denotes that the document manager should process the imports closure of documents</rdfs:comment>
 	<rdfs:domain rdf:resource="#DocumentManagerPolicy" />
 	<rdfs:range rdf:resource="&xsd;boolean" />
-</rdfs:Property>
+</rdf:Property>
 
-<rdfs:Property rdf:ID="ignoreImport">
+<rdf:Property rdf:ID="ignoreImport">
 	<rdfs:label>Ignore specified import</rdfs:label>
 	<rdfs:comment>Specifies URL that will never be loaded as the result of processing an imports statement</rdfs:comment>
 	<rdfs:domain rdf:resource="#DocumentManagerPolicy" />
-</rdfs:Property>
+</rdf:Property>
 
 
 </rdf:RDF>
