@@ -67,13 +67,13 @@ public class JenaException extends RuntimeException {
     
     public void printStackTrace( PrintStream s )
         {
-        cause.printStackTrace( s );
+        if (cause != null) cause.printStackTrace( s );
         super.printStackTrace( s );
         }
         
     public void printStackTrace( PrintWriter w )
         {
-        cause.printStackTrace( w );
+        if (cause != null) cause.printStackTrace( w );
         super.printStackTrace( w );
         }
 

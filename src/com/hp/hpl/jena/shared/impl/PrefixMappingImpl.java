@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.1 2003-04-28 11:28:37 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.2 2003-04-29 12:31:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -22,7 +22,25 @@ public class PrefixMappingImpl implements PrefixMapping
         { map = new HashMap(); }
            
     public void setNsPrefix( String prefix, String uri ) 
-        { map.put( prefix, uri ); }
+        {
+        checkLegal( prefix );
+        map.put( prefix, uri ); 
+        }
+        
+    /**
+        Checks that a prefix is "legal". This code is probably wrong.
+    */
+    private void checkLegal( String prefix )
+        {
+        for (int i = 0; i < prefix.length(); i += 1)
+            {
+            char ch = prefix.charAt( i );
+            if (Character.isLetterOrDigit( ch ) || ch == '.' || ch == '_')
+                { /* that's all right then */ }
+            else 
+                throw new PrefixMapping.IllegalPrefixException( prefix );
+            }
+        }
     
     public String getNsPrefixURI( String prefix ) 
         { return (String) map.get( prefix ); }

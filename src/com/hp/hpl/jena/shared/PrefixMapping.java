@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMapping.java,v 1.1 2003-04-28 11:28:37 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.2 2003-04-29 12:30:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
+
+import com.hp.hpl.jena.util.*;
 
 import java.util.*;
 
@@ -63,6 +65,15 @@ public interface PrefixMapping
         @return the QName form if possible, otherwise the unchanged argument
     */
     String usePrefix( String uri );
+    
+    /**
+        Exception to throw when the prefix argument to setNsPrefix is
+        illegal for some reason.
+    */
+    public static class IllegalPrefixException extends JenaException
+        {
+        public IllegalPrefixException( String prefixName ) { super( prefixName ); }     
+        }
     }
 
 
