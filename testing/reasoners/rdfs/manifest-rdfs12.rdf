@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY test 'http://www.hpl.hp.com/semweb/2003/query_tester#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+]>
+
+<!-- tests of the expaned RDFS rule set, notably proposed rules 12a/b -->
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns="&test;">
+
+  <Test rdf:about="test1">
+    <description>RDFS reasoner: example of rule 12a</description>
+    <data>rdfs/dataRDFS12.rdf</data>
+    <query>rdfs/queryRDFS12.nt</query>
+    <result>rdfs/resultRDFS12.rdf</result>
+  </Test>
+   
+</rdf:RDF>
+   
