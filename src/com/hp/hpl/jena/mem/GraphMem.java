@@ -1,23 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.8 2003-04-15 11:47:57 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.9 2003-05-13 14:59:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphBase;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.graph.TripleMatchIterator;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 
 /**
@@ -34,6 +26,9 @@ public class GraphMem extends GraphBase implements Graph {
 
     /** Creates new Store */
     public GraphMem() {}
+    
+    public GraphMem( Reifier.Style style )
+        { super( style ); }
 
     public void add( Triple t )
         {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.8 2003-05-11 10:19:44 chris-dollin Exp $
+  $Id: Reifier.java,v 1.9 2003-05-13 14:59:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -27,6 +27,30 @@ public interface Reifier extends GetTriple
     public static final Node object = RDF.object.asNode();
     public static final Node Statement = RDF.Statement.asNode();
           
+    public static final Style Standard = new Style( true, false );
+    public static final Style Convenient = new Style( true, true );
+    public static final Style Minimal = new Style( false, false );
+    
+    public static final Style Default = Convenient;
+    
+    /**
+        Reification styles have two booean components: whether the
+        graph+reifier will intercept reification triples or not [if not, the only
+        in-Jena reification is through the reifyAs operation], and whether or
+        not reification triples will be visible in the graph.
+    */
+    public static class Style
+        {
+        boolean intercept;
+        boolean conceal;
+        
+        Style( boolean intercept, boolean conceal )
+            {
+            this.intercept = intercept;
+            this.conceal = conceal;
+            }
+        }
+        
     /**
          return a read-only Graph of the triples used for reification.
     */    

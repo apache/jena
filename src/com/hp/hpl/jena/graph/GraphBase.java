@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.12 2003-04-28 11:28:36 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.13 2003-05-13 14:59:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -26,6 +26,12 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 public abstract class GraphBase implements Graph {
 
+    public GraphBase( Reifier.Style style )
+        {}
+        
+    public GraphBase()
+        {}
+        
 	public boolean dependsOn(Graph other) {
 		return this == other;
 	}
