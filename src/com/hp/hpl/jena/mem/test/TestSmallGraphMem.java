@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: TestSmallGraphMem.java,v 1.1 2004-07-09 07:59:53 chris-dollin Exp $
+	$Id: TestSmallGraphMem.java,v 1.2 2004-07-09 11:02:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.mem.GraphMemBulkUpdateHandler;
+import com.hp.hpl.jena.mem.SmallGraphMem;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
@@ -23,7 +24,7 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
  @author hedgehog
 */
-public class TestSmallGraphMem extends AbstractTestGraph
+public class TestSmallGraphMem extends TestGraphMem
     {
     public TestSmallGraphMem( String name ) 
         { super( name ); }
@@ -33,60 +34,6 @@ public class TestSmallGraphMem extends AbstractTestGraph
         
     public Graph getGraph()
         { return new SmallGraphMem(); }
-    
-    public static class SmallGraphMem extends GraphMem
-    	{
-        protected Set triples = HashUtils.createSet();
-        
-        public SmallGraphMem()
-            { this( ReificationStyle.Minimal ); }
-        
-        public SmallGraphMem( ReificationStyle style )
-            { super( style ); }
-        
-        public void performAdd( Triple t )
-            {
-            if (getReifier().handledAdd( t )) return;
-            else triples.add( t );
-            }
-
-        public void performDelete( Triple t )
-            {
-            if (getReifier().handledRemove( t )) return;
-            else triples.remove( t );
-            }
-
-        public int size()  
-            {
-            checkOpen();
-            return triples.size();
-            }
-
-        public boolean isEmpty()
-            {
-            checkOpen();
-            return triples.isEmpty();
-            }
-        
-        public BulkUpdateHandler getBulkUpdateHandler()
-            {
-            if (bud == null) bud = new GraphMemBulkUpdateHandler( this )
-            	{
-                protected void clearComponents()
-            	    {
-            	    SmallGraphMem g = (SmallGraphMem) graph;
-            	    g.triples.clear();
-            	    }
-            	};
-            return bud;
-            }
-        
-	        public ExtendedIterator find( TripleMatch m ) 
-	            {
-	            checkOpen();
-	            return WrappedIterator.create( triples.iterator() ) .filterKeep ( new TripleMatchFilter( m.asTriple() ) );
-	    	}
-    	}
     }
 
 /*

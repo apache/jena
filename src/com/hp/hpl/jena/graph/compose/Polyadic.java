@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-28 14:43:15 $
+ * Last modified on   $Date: 2004-07-09 11:00:17 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.11 2004-06-28 14:43:15 chris-dollin Exp $
+ * @version CVS $Id: Polyadic.java,v 1.12 2004-07-09 11:00:17 chris-dollin Exp $
  */
 public abstract class Polyadic
     extends CompositionBase
@@ -213,7 +213,7 @@ public abstract class Polyadic
     public void setBaseGraph( Graph graph ) {
         if (m_subGraphs.contains( graph )) {
             m_baseGraph = graph;
-            bud = null;
+            bulkHandler = null;
         }
         else {
             throw new IllegalArgumentException( "The updateable graph must be one of the graphs from the composition" );
@@ -241,9 +241,9 @@ public abstract class Polyadic
     public BulkUpdateHandler getBulkUpdateHandler() {
         if (getBaseGraph() == null)
             throw new RuntimeException(); // return super.getBulkUpdateHandler();
-        if (bud == null)  
-            bud = new WrappedBulkUpdateHandler( this, getBaseGraph().getBulkUpdateHandler() );
-        return bud;
+        if (bulkHandler == null)  
+            bulkHandler = new WrappedBulkUpdateHandler( this, getBaseGraph().getBulkUpdateHandler() );
+        return bulkHandler;
     }
 
     // the following methods all delegate handling capabilities to the base graph

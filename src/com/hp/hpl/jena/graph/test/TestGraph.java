@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.21 2004-06-30 12:57:59 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.22 2004-07-09 11:02:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -38,6 +38,8 @@ public class TestGraph extends GraphTestBase
         TestSuite result = new TestSuite( TestGraph.class );
         result.addTest( suite( MetaTestGraph.class, GraphMem.class ) );
         result.addTest( suite( TestReifier.class, GraphMem.class ) );
+        result.addTest( suite( MetaTestGraph.class, SmallGraphMem.class ) );
+        result.addTest( suite( TestReifier.class, SmallGraphMem.class ) );
         result.addTest( suite( MetaTestGraph.class, WrappedGraphMem.class ) );
         result.addTest( suite( TestReifier.class, WrappedGraphMem.class ) );
         return result;

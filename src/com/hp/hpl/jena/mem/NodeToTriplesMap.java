@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.11 2004-07-09 06:36:41 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.12 2004-07-09 11:02:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -18,15 +18,36 @@ import com.hp.hpl.jena.util.iterator.*;
 */
 public abstract class NodeToTriplesMap 
     {
+    /**
+         The map from nodes to Set(Triple).
+    */
     private Map map = HashUtils.createMap();
     
+    /**
+          The number of triples held in this NTM, maingained incrementally (because
+          it's a pain to compute from scratch).
+    */
     private int size = 0;
     
+    /**
+         The nodes which appear in the index position of the stored triples; useful
+         for eg listSubjects().
+    */
     public Iterator domain()
         { return map.keySet().iterator(); }
     
+    /**
+         Subclasses must over-ride to return the node at the index position in the
+         triple <code>t</code>; should be equivalent to one of getSubject(),
+         getPredicate(), or getObject().
+    */
     public abstract Node getIndexNode( Triple t );
     
+    /**
+         Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
+         be the index node of the triple. Answer <code>true</code> iff the triple
+         was not previously in the set, ie, it really truly has been added. 
+    */
     public boolean add( Node o, Triple t ) 
         {
         Set s = (Set) map.get( o );
@@ -34,6 +55,11 @@ public abstract class NodeToTriplesMap
         if (s.add( t )) { size += 1; return true; } else return false; 
         }
 
+    /**
+         Remove <code>t</code> from this NTM; the node <code>o</code> <i>must</i>
+         be the index node of the triple. Answer <code>true</code> iff the triple
+         was previously in the set, ie, it really truly has been removed. 
+    */
     public boolean remove( Node o, Triple t ) 
         {
         Set s = (Set) map.get( o );
@@ -48,12 +74,19 @@ public abstract class NodeToTriplesMap
         	}
         }
 
+    /**
+         Answer an iterator over all the triples in this NTM which have index node
+         <code>o</code>.
+    */
     public Iterator iterator( Node o ) 
         {
         Set s = (Set) map.get( o );
         return s == null ? NullIterator.instance :  s.iterator();
         }
     
+    /**
+         Answer an iterator over all the triples in this NTM.
+    */
     public ExtendedIterator iterator()
         {
         final Iterator nodes = domain();
@@ -85,6 +118,9 @@ public abstract class NodeToTriplesMap
         	};
         }
     
+    /**
+         Clear this NTM; it will contain no triples.
+    */
     public void clear() 
         { map.clear(); size = 0; }
     
@@ -95,26 +131,25 @@ public abstract class NodeToTriplesMap
         { return size == 0; }
 
     /**
-     * @param triple
-     * @return
+         Answer an iterator over all the triples in this NTM wich are accepted by
+         <code>pattern</code>.
     */
-    public ExtendedIterator iterator( Triple triple )
+    public ExtendedIterator iterator( Triple pattern )
         {
-        return iterator() .filterKeep ( new TripleMatchFilter( triple ) );
+        return iterator() .filterKeep ( new TripleMatchFilter( pattern ) );
+        }
+    
+    /**
+         Answer an iterator over all the triples in this NTM with index node 
+         <code>x</code> and which are accepted by <code>pattern</code>.
+    */
+    public ExtendedIterator iterator( Node x, Triple pattern )
+        {
+        return new FilterIterator( new TripleMatchFilter( pattern ), iterator( x ) );
         }
 
     /**
-     * @param x
-     * @param triple
-     * @return
-    */
-    public ExtendedIterator iterator( Node x, Triple triple )
-        {
-        return new FilterIterator( new TripleMatchFilter( triple ), iterator( x ) );
-        }
-
-    /**
-     * @param t
+         Remove the triple <code>t</code>, returning true iff it was originally present.
     */
     public boolean remove( Triple t )
         { return remove( getIndexNode( t ), t ); }

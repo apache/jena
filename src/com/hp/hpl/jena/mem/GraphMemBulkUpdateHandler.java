@@ -1,7 +1,7 @@
 /*
 (c) Copyright 2004, Hewlett-Packard Development Company, LP
 [See end of file]
-$Id: GraphMemBulkUpdateHandler.java,v 1.3 2004-07-08 15:33:00 chris-dollin Exp $
+$Id: GraphMemBulkUpdateHandler.java,v 1.4 2004-07-09 11:02:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -26,7 +26,7 @@ public class GraphMemBulkUpdateHandler extends SimpleBulkUpdateHandler
 	    notifyRemoveAll();
 	    }
 	
-	private void clearComponents()
+	protected void clearComponents()
 	    {
 	    GraphMem g = (GraphMem) graph;
 	    g.subjects.clear();

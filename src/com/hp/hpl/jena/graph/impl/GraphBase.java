@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.28 2004-06-29 09:43:21 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.29 2004-07-09 11:02:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -50,16 +50,19 @@ public abstract class GraphBase implements GraphWithPerform
     public void close() 
         { closed = true; }
             
-	public boolean dependsOn(Graph other) {
-		return this == other;
-	}
+	public boolean dependsOn(Graph other) 
+        { return this == other; }
 
 	/**
 		@see com.hp.hpl.jena.graph.Graph#queryHandler
 	*/
-
 	public QueryHandler queryHandler() 
-        { return new SimpleQueryHandler(this); }
+        { 
+        if (queryHandler == null) queryHandler = new SimpleQueryHandler(this);
+        return queryHandler;
+        }
+    
+    protected QueryHandler queryHandler;
     
     /**
         The event manager that this Graph uses to, well, manage events; allocated on
@@ -93,12 +96,12 @@ public abstract class GraphBase implements GraphWithPerform
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
         
-    protected BulkUpdateHandler bud;
+    protected BulkUpdateHandler bulkHandler;
     
     public BulkUpdateHandler getBulkUpdateHandler()
         { 
-        if (bud == null) bud = new SimpleBulkUpdateHandler( this ); 
-        return bud;
+        if (bulkHandler == null) bulkHandler = new SimpleBulkUpdateHandler( this ); 
+        return bulkHandler;
         }
         
     protected Capabilities capabilities = null;
@@ -150,9 +153,9 @@ public abstract class GraphBase implements GraphWithPerform
 	/**
 		contains( t ) - return true iff the triple t is in this graph
 	*/
-	public boolean contains(Triple t) {
+	public boolean contains( Triple t ) {
         checkOpen();
-		return contains( t.getSubject(), t.getPredicate(), t.getObject() );
+		return containsByFind( t );
 	}
 
 	/**

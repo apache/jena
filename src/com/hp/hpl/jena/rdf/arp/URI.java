@@ -96,7 +96,7 @@ import org.apache.commons.logging.LogFactory;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.15 2004-07-07 14:59:11 chris-dollin Exp $
+* @version  $Id: URI.java,v 1.16 2004-07-09 11:02:44 chris-dollin Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -560,7 +560,7 @@ public class URI implements Serializable {
 			throw new MalformedURIException("No scheme found in URI '" + p_uriSpec + "'" );
 
 		if (index == uriSpecLen - 1)
-			throw new MalformedURIException("A bare scheme name is not a URI.");
+			throw new MalformedURIException( "A bare scheme name is not a URI: '" +  p_uriSpec + "'" );
 
 		setScheme(p_uriSpec.substring(0, index));
 	}
@@ -672,7 +672,7 @@ public class URI implements Serializable {
 				!isReservedCharacter(testChar)
 					&& !isUnreservedCharacter(testChar)) {
 				throw new MalformedURIException(
-					"Path contains invalid character: " + testChar);
+					"Path '" + p_uriSpec + "' contains invalid character: " + testChar);
 			}
 			index++;
 		}
@@ -691,13 +691,12 @@ public class URI implements Serializable {
 					if (index + 2 >= end
 						|| !isHex(p_uriSpec.charAt(index + 1))
 						|| !isHex(p_uriSpec.charAt(index + 2))) {
-						throw new MalformedURIException("Query string contains invalid escape sequence!");
+						throw new MalformedURIException("Query string contains invalid escape sequence in '" + p_uriSpec + "'" );
 					}
 				} else if (
 					!isReservedCharacter(testChar)
 						&& !isUnreservedCharacter(testChar)) {
-					throw new MalformedURIException(
-						"Query string contains invalid character:" + testChar);
+					throw new MalformedURIException( "Query string contains invalid character '" + testChar + "' in '" + p_uriSpec + "'" );
 				}
 				index++;
 			}
@@ -715,13 +714,13 @@ public class URI implements Serializable {
 					if (index + 2 >= end
 						|| !isHex(p_uriSpec.charAt(index + 1))
 						|| !isHex(p_uriSpec.charAt(index + 2))) {
-						throw new MalformedURIException("Fragment contains invalid escape sequence!");
+						throw new MalformedURIException( "Fragment contains invalid escape sequence in '" + p_uriSpec + "'" );
 					}
 				} else if (
 					!isReservedCharacter(testChar)
 						&& !isUnreservedCharacter(testChar)) {
 					throw new MalformedURIException(
-						"Fragment contains invalid character:" + testChar);
+						"Fragment contains invalid character '" + testChar + "' in '" + p_uriSpec + "'" );
 				}
 				index++;
 			}
@@ -950,7 +949,7 @@ public class URI implements Serializable {
 			m_port = null;
 			n_port = -1;
 		} else if (!isWellFormedAddress(p_host)) {
-			throw new MalformedURIException("Host is not a well formed address!");
+			throw new MalformedURIException( "Host is not a well formed address in '" + p_host + "'" );
 		}
 		m_host = p_host;
 	}

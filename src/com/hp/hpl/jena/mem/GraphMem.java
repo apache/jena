@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.35 2004-07-09 06:36:41 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.36 2004-07-09 11:02:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -15,18 +15,11 @@ import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
 /**
-    A memory-backed graph with S/P/O indexes. A GraphMem maintains a 
-    reference count, set to one when it is created, and incremented by the method
-    <code>openAgain()</code>. When the graph is closed, the count is decrememented,
-    and when it reaches 0, the tables are trashed and GraphBase.close() called.
-    Thus in normal use one close is enough, but GraphMakers using GraphMems
-    can arrange to re-use the same named graph.
-    
+    A memory-backed graph with S/P/O indexes. 
     @author  bwm, kers
 */
-public class GraphMem extends GraphBase implements Graph 
+public class GraphMem extends GraphMemBase implements Graph 
     {
-
     NodeToTriplesMap subjects = new NodeToTriplesMap()
     	{ public Node getIndexNode( Triple t ) { return t.getSubject(); } };
     	
@@ -36,8 +29,6 @@ public class GraphMem extends GraphBase implements Graph
     NodeToTriplesMap objects = new NodeToTriplesMap()
     	{ public Node getIndexNode( Triple t ) { return t.getObject(); } };
 
-    protected int count;
-    
     /**
         Initialises a GraphMem with the Minimal reification style
     */
@@ -48,26 +39,11 @@ public class GraphMem extends GraphBase implements Graph
         Initialises a GraphMem with the given reification style.
     */
     public GraphMem( ReificationStyle style )
-        { 
-        super( style );
-        count = 1; 
-        }
+        { super( style ); }
 
-    public void close()
-        {
-        if (--count == 0)
-            {
-            subjects = predicates = objects = null;
-            super.close();
-            }
-        }
-        
-    public GraphMem openAgain()
-        { 
-        count += 1; 
-        return this;
-        }
-        
+    protected void destroy()
+        { subjects = predicates = objects = null; }
+
     public void performAdd( Triple t )
         {
         if (getReifier().handledAdd( t ))
@@ -101,40 +77,18 @@ public class GraphMem extends GraphBase implements Graph
         checkOpen();
         return subjects.isEmpty();
         }
-        
-    private QueryHandler q;
     
     public QueryHandler queryHandler()
         {
-        if (q == null) q = new GraphMemQueryHandler( this );
-        return q;
+        if (queryHandler == null) queryHandler = new GraphMemQueryHandler( this );
+        return queryHandler;
         }
         
     public BulkUpdateHandler getBulkUpdateHandler()
         {
-        if (bud == null) bud = new GraphMemBulkUpdateHandler( this );
-        return bud;
+        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
+        return bulkHandler;
         }
-    
-    /**
-        Answer true iff t matches some triple in the graph. If t is concrete, we
-        can use a simple membership test; otherwise we resort to the generic
-        method using find.
-    */
-    public boolean contains( Triple t ) {
-        checkOpen();
-        return containsByFind( t ); 
-    }
-
-    /**
-        Answer true if there's some triple in the graph that (s, p, o) matches.
-        Ensures that nulls are not present and then defers to contains(Triple). 
-    */
-    public boolean contains( Node s, Node p, Node o ) {
-        checkOpen();
-        if (s == null || p == null || o == null) throw new JenaException( "null not allowed" );
-        return contains( Triple.create( s, p, o ) );
-    }
 
     /** 
      	Answer an ExtendedIterator returning all the triples from this Graph that
