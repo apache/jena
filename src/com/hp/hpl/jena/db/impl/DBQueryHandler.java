@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.12 2004-09-17 21:44:08 wkw Exp $
+  $Id: DBQueryHandler.java,v 1.13 2004-11-04 16:06:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -161,7 +161,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
 							VarDesc vx = (VarDesc) varList.get(i);
 							// see if any constraints on a result var.
 							// if so, push down constraint.
-/*/ UNCOMMENT THE LINES BELOW TO ENABLE CONSTRAINT EVALUATION WITHIN THE DB.
+/*/ UNCOMMENT THE LINES BELOW TO ENABLE CONSTRAINT EVALUATION WITHIN THE DB. */
 							if ( (vx.isArgVar == false) &&
 								findConstraints(constraints,evalCons,vx) )
 								doQuery = true;
