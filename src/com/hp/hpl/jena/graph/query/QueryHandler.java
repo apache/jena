@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryHandler.java,v 1.10 2003-09-25 13:26:55 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.11 2003-10-06 05:37:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -32,10 +32,10 @@ public interface QueryHandler
         (see Stage for details)
     <p>
         _map_ is the variable binding map to use and update. _constraints_ is
-        the current constraint graph: if this Stage can absorb some of the constraints, 
-        it may do so, remove them from the graph.
+        the current constraint expression: if this Stage can absorb some of the 
+        ANDed constraints, it may do so, remove them from the graph.
     */
-    public Stage patternStage( Mapping map, Graph constraints, Triple [] p );
+    public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] p );
     
     /**
     	deliver a plan for executing the tree-match query defined by _pattern_.

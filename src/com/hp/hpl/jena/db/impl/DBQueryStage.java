@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.5 2003-08-27 12:56:39 andy_seaborne Exp $
+  $Id: DBQueryStage.java,v 1.6 2003-10-06 05:37:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.BufferPipe;
 import com.hp.hpl.jena.graph.query.Domain;
+import com.hp.hpl.jena.graph.query.ExpressionSet;
 import com.hp.hpl.jena.graph.query.Pipe;
 import com.hp.hpl.jena.graph.query.Stage;
 import com.hp.hpl.jena.shared.JenaException;
@@ -29,17 +30,17 @@ public class DBQueryStage extends Stage
     protected DBQuery compiled;
             
 	public DBQueryStage( GraphRDB graph, SpecializedGraph sg, 
-					List varList, List dbPat, Graph constraints )
+					List varList, List dbPat, ExpressionSet constraints )
 		{
 		this.graph = graph;
 		this.compiled = compile (sg, varList, dbPat, constraints);
 		}
 
-	protected DBQuery compile( SpecializedGraph sg, List varList, List dbPat, Graph constraints )
+	protected DBQuery compile( SpecializedGraph sg, List varList, List dbPat, ExpressionSet constraints )
         { return compile( compiler, sg, varList, dbPat, constraints ); }
         
     protected DBQuery compile( DBQueryStageCompiler compiler, SpecializedGraph sg,
-    			List varList, List dbPat, Graph constraints )
+    			List varList, List dbPat, ExpressionSet constraints )
         {
         return DBQueryStageCompiler.compile( compiler, (DBQueryHandler) graph.queryHandler(),
         			sg, varList, dbPat, constraints );

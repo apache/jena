@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTest.java,v 1.19 2003-10-03 14:04:51 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.20 2003-10-06 05:37:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -24,6 +24,7 @@ public class QueryTest extends AbstractTestQuery
     	{ 
         TestSuite result = new TestSuite();
         result.addTest( new TestSuite( QueryTest.class ) );
+        // result.addTest( new QueryTest( "testQueryConstraintUnbound" ) );
         return result;
         } 
     	

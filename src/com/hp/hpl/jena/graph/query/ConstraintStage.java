@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.8 2003-09-26 11:53:51 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.9 2003-10-06 05:37:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
 
@@ -23,58 +22,62 @@ import java.util.*;
 
 public class ConstraintStage extends Stage
     {
-    /** the compiled predicate */
-    protected Predicate predicate;
-    protected Expression constraint;
+    protected ExpressionSet constraint;
     protected Mapping map;
         
     /**
         constructor: compile the graph _g_ into a Predicate using the
         supplied _map_ for bindings of variables.
     */
-    public ConstraintStage( Mapping map, Expression constraint, Graph g )
-        { this.predicate = translate( map, g ); 
-        this.constraint = constraint; 
+    public ConstraintStage( Mapping map, ExpressionSet constraint )
+        { this.constraint = constraint; 
+        checkConstraint( map, constraint );
         this.map = map; }
+        
+    protected void checkConstraint( Mapping map, ExpressionSet constraint )
+        { // TODO this properly
+        Node n = Node.create( "deadwood" );
+        constraint.evalBool( map, new Domain( new Node [] {n,n,n,n,n,n,n,n,n,n,n} ) );    
+        }
         
     /**
         the translated graph is the AND-composition of the translated
         component triples.
     */
-    private Predicate translate( Mapping map, Graph g )
-        {
-        Predicate result = Predicate.TRUE;
-        ClosableIterator it = GraphUtil.findAll( g );
-        while (it.hasNext()) result = result.and( translate( map, (Triple) it.next() ) );
-        return result;
-        }
+//    private Predicate translate( Mapping map, Graph g )
+//        {
+//        Predicate result = Predicate.TRUE;
+//        ClosableIterator it = GraphUtil.findAll( g );
+//        while (it.hasNext()) result = result.and( translate( map, (Triple) it.next() ) );
+//        return result;
+//        }
 
     /**
         The subject and object fields of _t_ are converted to Valuators using
         the given _map_. The predicate is used to find a factory in the factory map.
     */
-    private Predicate translate( Mapping map, Triple t )
-        {
-        Node pred = t.getPredicate();
-        Valuator L = translate( map, t.getSubject() ), R = translate( map, t.getObject() );
-        PredicateFactory f = (PredicateFactory) factories.get( pred );
-        if (f == null) 
-            throw new UnsupportedOperationException( pred.toString() );
-        else 
-            return f.construct( L, R );
-        }
+//    private Predicate translate( Mapping map, Triple t )
+//        {
+//        Node pred = t.getPredicate();
+//        Valuator L = translate( map, t.getSubject() ), R = translate( map, t.getObject() );
+//        PredicateFactory f = (PredicateFactory) factories.get( pred );
+//        if (f == null) 
+//            throw new UnsupportedOperationException( pred.toString() );
+//        else 
+//            return f.construct( L, R );
+//        }
       
     /**
         it's possible that this code should belong in Node and its children
     */  
-    private Valuator translate( Mapping map, Node X )
-        {
-        return X.isVariable()
-            ? new ValuatorVariable( map.indexOf( X ) )
-            : (Valuator) new ValuatorConst( X )
-            ;
-        }
-                
+//    private Valuator translate( Mapping map, Node X )
+//        {
+//        return X.isVariable()
+//            ? new ValuatorVariable( map.indexOf( X ) )
+//            : (Valuator) new ValuatorConst( X )
+//            ;
+//        }
+//                
     /**
         the map which relates predicate nodes to the corresponding predicate
         factories.
@@ -129,7 +132,7 @@ public class ConstraintStage extends Stage
         addFactory( "q:matches", makeMATCHES );
         }
                 
-   private boolean evalConstraint( Domain d, Expression e )
+   private boolean evalConstraint( Domain d, ExpressionSet e )
         {
         return constraint.evalBool( map, d );
         }
@@ -148,7 +151,7 @@ public class ConstraintStage extends Stage
 		        while (mine.hasNext())
 		            {
 		            Domain d = mine.get();
-		            if (predicate.evaluateBool( d ) && evalConstraint( d, constraint )) L.put( d );
+		            if (evalConstraint( d, constraint )) L.put( d );
 		            }
 		        L.close();
         		}

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.15 2003-10-03 14:04:50 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.16 2003-10-06 05:37:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -353,13 +353,11 @@ public abstract class AbstractTestQuery extends GraphTestBase
                 
     public void testGraphConstraints( String title, Expression constraint, String wanted )
         { 
-        Map1 get0 = new Map1() { public Object map1( Object x ) { return ((List) x).get(0); } };
-        Node O = node( "?O" );
-        Query Q = new Query();
-        Q.addMatch( Query.ANY, Query.ANY, O );
+        Query Q = new Query()
+            .addMatch( Query.ANY, Query.ANY, O )
+            .addConstraint( constraint );
         Graph G = getGraphWith( "pigs fly south; dogs fly badly; plans fly flat" );
-        Q.addConstraint( constraint );
-        Set results = iteratorToSet( G.queryHandler().prepareBindings( Q, new Node[] {O} ).executeBindings().mapWith( get0 ) );
+        Set results = iteratorToSet( G.queryHandler().prepareBindings( Q, new Node[] {O} ).executeBindings().mapWith( getFirst ) );
         assertEquals( "tgs", nodeSet( wanted ), results );
         }
         
@@ -505,7 +503,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
                 {
                 return new SimpleQueryHandler( this )
                     {
-                    public Stage patternStage( Mapping map, Graph constraints, Triple [] t )
+                    public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] t )
                         {
                         if (t.length > 1) tripleses[0] = t;
                         return super.patternStage( map, constraints, t );
@@ -561,8 +559,8 @@ public abstract class AbstractTestQuery extends GraphTestBase
     public void testQueryConstraintUnbound()
         {
         Query q = new Query()
-            .addConstraint( Query.X, Query.NE, Query.Y )
-            .addMatch( Query.X, Query.ANY, Query.X )
+            .addConstraint( notEqual( X, Y ) )
+            .addMatch( X, Query.ANY, X )
             ;
         Graph g = getGraphWith( "x R x; x R y" );
         try
@@ -570,7 +568,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
             ExtendedIterator it = q.executeBindings( g, new Node[] {Query.X} );
             fail( "should spot unbound variable" );
             }
-        catch (Query.UnboundVariableException b) { /* as required */ }
+        catch (Query.UnboundVariableException b) { pass(); }
         } 
         
     public void testCloseQuery()
@@ -626,7 +624,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
         Map result = new HashMap();
         Query q = new Query();
         q.addMatch( triple( "?a ?? ?d " ) ).addMatch( triple( "?a X ?b" ) ).addMatch( triple( "?b Y ?c" ) );
-        q.addConstraint( node( "?d" ), Query.NE, node( "?b" ) );
+        q.addConstraint( notEqual( node( "?d" ), node( "?b" ) ) );
         Node [] answers = nodes( "?a ?d" );
         q.setTripleSorter( sorter );
         ExtendedIterator it = q.executeBindings( g, answers );    

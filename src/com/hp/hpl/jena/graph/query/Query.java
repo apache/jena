@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.26 2003-09-26 11:53:51 chris-dollin Exp $
+  $Id: Query.java,v 1.27 2003-10-06 05:37:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -56,20 +56,12 @@ public class Query
         A query variable called "Z".
     */
     public static final Node Z = Node.createVariable( "Z" );
-    
-    /**
-        The built-in constraint operator not-equals.
-    */
-    public static final Node NE = Node.create( "&ne" );
-    
-    public static final Node MATCHES = Node.create( "&matches" );
         
     /**
         Initialiser for Query; makes an empty Query [no matches, no constraints]
     */
 	public Query()
-		{
-		}
+		{ }
         
     /**
         Initialiser for Query; makes a Query with its matches taken from 
@@ -77,9 +69,7 @@ public class Query
         @param pattern a Graph whose triples are used as match elements
     */
     public Query( Graph pattern )
-        { 
-        addMatches( pattern );
-        }
+        { addMatches( pattern ); }
 
     /**
         Exception thrown when a query variable is discovered to be unbound.
@@ -118,42 +108,12 @@ public class Query
     */
     public Query addMatch( String name, Node s, Node p, Node o )
         { return addNamedMatch( name, s, p, o ); }   
-   
-    /**
-        Add a constraint (S, P, O) to the query constraints. <code>S</code> and
-        <code>O</code> are value nodes, either concrete values or variable that
-        will be bound to values. <code>P</code> is a constraint predicate name.
-        A match fails if the predication (value of S, predicate P, value of O) is false.
-        Return this Query for cascading.
-        @param s the node representing the left operand of the predicate
-        @param p the node identifying the predicate
-        @param o the node representing the right operand of the predicate
-        @return this query, for cascading
-    */
-    public Query addConstraint( Node s, Node p, Node o )
-        {
-        constraintGraph.add( new Triple( s, p, o ) ); 
-        return this;
-        }
         
-    /**
-        Add all the constraints encoded by the triples of <code>g</code> to this Query.
-        Return this query.
-        @param g a graph of (S, P, O) constraint triples to be added to this query
-        @return this Query, for cascading
-    */
-    public Query addConstraint( Graph g )
-        {
-        ClosableIterator it = GraphUtil.findAll( g );
-        while (it.hasNext()) constraintGraph.add( (Triple) it.next() );
-        return this;
-        }
-        
-    private Expression constraint = Expression.TRUE;
+    private ExpressionSet constraint = new ExpressionSet();
     
     public Query addConstraint( Expression e )
-        { // TODO implement this
-        constraint = constraint.and( e );
+        { 
+        constraint.add( e );
         return this;    
         }
                 
@@ -183,8 +143,8 @@ public class Query
         Mapping map = new Mapping( nodes );
         ArrayList stages = new ArrayList();        
         addStages( stages, args, map );
-        if (constraintGraph.size() > 0 || constraint != Expression.TRUE) 
-            stages.add( new ConstraintStage( map, constraint, constraintGraph ) );
+        if (constraint != Expression.TRUE) 
+            stages.add( new ConstraintStage( map, constraint ) );
         outStages.addAll( stages );
         variableCount = map.size();
         return filter( connectStages( stages, variableCount ) );
@@ -210,7 +170,7 @@ public class Query
     private HashMap triples = new HashMap();
     
     /** the combined constraint graph */
-    private Graph constraintGraph = new GraphMem();
+    // private Graph constraintGraph = new GraphMem();
     
     /** mapping of graph name -> graph */
     private ArgMap argMap = new ArgMap();
@@ -265,7 +225,7 @@ public class Query
                 nodeTriples = nodeTriples.tail;
                 }
             nodes = sortTriples( nodes );
-            Stage next = g.queryHandler().patternStage( map, constraintGraph, nodes );
+            Stage next = g.queryHandler().patternStage( map, constraint, nodes );
             stages.add( next );
             }
         }

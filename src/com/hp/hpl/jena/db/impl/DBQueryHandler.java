@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.8 2003-08-27 12:56:39 andy_seaborne Exp $
+  $Id: DBQueryHandler.java,v 1.9 2003-10-06 05:37:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
 
 	public Stage patternStage(
 		Mapping varMap,
-		Graph constraints,
+		ExpressionSet constraints,
 		Triple[] ptn) {
 		final Stage[] stages = new Stage[ptn.length];
 		int stageCnt = 0;

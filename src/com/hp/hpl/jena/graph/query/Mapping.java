@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Mapping.java,v 1.9 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: Mapping.java,v 1.10 2003-10-06 05:37:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -52,18 +52,18 @@ public class Mapping
         return res;
         }
 
-		/**
-			get the index of a node in the mapping; return -1
-			if the node is not mapped.       
-			@param v the node to look up
-			@return the index of v in the mapping
-		*/
-		public int lookUp( Node v )
-			{ 
-			Integer i = (Integer) map.get( v );
-			if (i == null || i.intValue() < 0) return -1;
-			return i.intValue();
-			}
+	/**
+		get the index of a node in the mapping; return -1
+		if the node is not mapped.       
+		@param v the node to look up
+		@return the index of v in the mapping
+	*/
+	public int lookUp( Node v )
+		{ 
+		Integer i = (Integer) map.get( v );
+		if (i == null || i.intValue() < 0) return -1;
+		return i.intValue();
+		}
 
     /**
         allocate an index to the node _v_. _v_ must not already
