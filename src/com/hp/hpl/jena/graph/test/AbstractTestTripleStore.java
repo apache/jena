@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: AbstractTestTripleStore.java,v 1.2 2004-09-10 12:32:19 chris-dollin Exp $
+  $Id: AbstractTestTripleStore.java,v 1.3 2004-09-13 15:21:04 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -17,9 +17,6 @@ public abstract class AbstractTestTripleStore extends GraphTestBase
     {
     public AbstractTestTripleStore( String name )
         { super( name ); }
-    
-    public static TestSuite suite()
-        { return new TestSuite( AbstractTestTripleStore.class ); }
     
     /**
          Subclasses must over-ride to return a new empty TripleStore. 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.2 2004-09-10 09:47:56 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.3 2004-09-13 15:21:05 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -52,7 +52,7 @@ public class GraphTripleStore implements TripleStore
     /**
          Remove a triple from this triple store.
     */
-    public void remove( Triple t )
+    public void delete( Triple t )
         {
         if (subjects.remove( t.getSubject(), t ))
             {
@@ -102,19 +102,20 @@ public class GraphTripleStore implements TripleStore
         (ANY, P, O) searches on largish models with few predicates declined
         dramatically - specifically on the not-galen.owl ontology.
     */
-    public ExtendedIterator find( Triple tm )
+    public ExtendedIterator find( TripleMatch tm )
         {
-        Node pm = tm.getPredicate();
-        Node om = tm.getObject();
-        Node sm = tm.getSubject();
+        Triple t = tm.asTriple();
+        Node pm = t.getPredicate();
+        Node om = t.getObject();
+        Node sm = t.getSubject();
         if (sm.isConcrete())
-            return new StoreTripleIterator( subjects.iterator( sm , tm ), predicates, objects );
+            return new StoreTripleIterator( subjects.iterator( sm , t ), predicates, objects );
         else if (om.isConcrete() && !om.isLiteral())
-            return new StoreTripleIterator( objects.iterator( om, tm ), subjects, predicates );
+            return new StoreTripleIterator( objects.iterator( om, t ), subjects, predicates );
         else if (pm.isConcrete())
-            return new StoreTripleIterator( predicates.iterator( pm, tm ), subjects, objects );
+            return new StoreTripleIterator( predicates.iterator( pm, t ), subjects, objects );
         else
-            return new StoreTripleIterator( subjects.iterator( tm ), predicates, objects );
+            return new StoreTripleIterator( subjects.iterator( t ), predicates, objects );
         }
     
     /**
