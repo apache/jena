@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.37 2003-09-22 12:16:28 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.38 2003-10-02 09:13:05 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -116,7 +116,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
             assertTrue( g.isEmpty() );
             }
         }
-                
+        
+
     public void testAGraph()
         {
         String title = this.getClass().getName();

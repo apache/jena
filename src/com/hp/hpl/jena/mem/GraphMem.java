@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.24 2003-10-02 08:35:20 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.25 2003-10-02 09:13:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -153,82 +153,60 @@ public class GraphMem extends GraphBase implements Graph
         }
     }
 
-    private TripleMatchIterator objectIterator(Triple tm, Node o)
+    protected static class TrackingTripleIterator extends TripleMatchIterator
         {
-        return new TripleMatchIterator(tm, objects.iterator(o))
-            {
-            private Object current;
+        TrackingTripleIterator( Triple t, Iterator it ) { super( t, it ); }    
+        
+        protected Triple current;
             
-            public Object next()
-                { return current = super.next(); }       
-             
-            public void remove()
-                {
-                Triple t = (Triple) current;
-                super.remove();     
-                triples.remove( t );
-                predicates.remove( t.getSubject(), t );
-                subjects.remove( t.getObject(), t );
-                }       
-            };
+        public Object next()
+            { return current = (Triple) super.next(); }       
+         
+        public void remove()
+            {
+            super.remove();     
+            }       
         }
+        
+    protected static class TripleFieldIterator extends TrackingTripleIterator
+        {
+        private NodeMap A, B;
+        private Set triples;
+        
+        TripleFieldIterator( Triple t , Iterator it, Set triples, NodeMap A, NodeMap B )
+            { super( t, it ); this.triples = triples; this.A = A; this.B = B; }    
+            
+        public void remove()
+            {
+            super.remove();     
+            triples.remove( current );
+            A.remove( current.getSubject(), current );
+            B.remove( current.getObject(), current );
+            }       
+        }
+        
+    protected TripleMatchIterator objectIterator(Triple tm, Node o)
+        { return new TripleFieldIterator
+            ( tm, objects.iterator( o ), triples, subjects, predicates ); }
 
-    private TripleMatchIterator subjectIterator(Triple tm, Node ms)
-        {
-        return new TripleMatchIterator(tm, subjects.iterator( ms ))
-            {
-            private Object current;
-            
-            public Object next()
-                { return current = super.next(); }       
-             
-            public void remove()
-                {
-                Triple t = (Triple) current;
-                super.remove();     
-                triples.remove( t );
-                predicates.remove( t.getSubject(), t );
-                objects.remove( t.getObject(), t );
-                }       
-            };
-        }
+    protected TripleMatchIterator subjectIterator(Triple tm, Node ms)
+        { return new TripleFieldIterator
+            ( tm, subjects.iterator( ms ), triples, predicates, objects ); }
 
-    private TripleMatchIterator predicateIterator(Triple tm, Node p)
-        {
-        return new TripleMatchIterator(tm, predicates.iterator(p))
-            {
-            private Object current;
-            
-            public Object next()
-                { return current = super.next(); }       
-             
-            public void remove()
-                {
-                Triple t = (Triple) current;
-                super.remove();     
-                triples.remove( t );
-                subjects.remove( t.getSubject(), t );
-                objects.remove( t.getObject(), t );
-                }   
-            };
-        }
+    protected TripleMatchIterator predicateIterator(Triple tm, Node p)
+        { return new TripleFieldIterator
+            (tm, predicates.iterator( p ), triples, subjects, objects ); }
 
     protected ExtendedIterator baseIterator( Triple t )
         {
-        return new TripleMatchIterator( t, triples.iterator() )
+        return new TrackingTripleIterator( t, triples.iterator() )
             {
-            private Object current;
-            
-            public Object next()
-                { return current = super.next(); }       
-            
             public void remove()
                 {
-                Triple t = (Triple) current;
                 super.remove();    
-                subjects.remove( t.getSubject(), t );
-                predicates.remove( t.getPredicate(), t );
-                objects.remove( t.getObject(), t );
+                subjects.remove( current.getSubject(), current );
+                predicates.remove( current.getPredicate(), current );
+                objects.remove( current.getObject(), current );
                 }
             };
         }
