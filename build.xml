@@ -3,7 +3,7 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="2p2-RC2"/>
+    <property name="version"         value="2p2-RC3"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
 
@@ -19,6 +19,7 @@
     <property name="lib.dir"         value="lib"/>
 
     <property name="doc.dir"         value="doc"/>
+	<property name="vocab.dir"		 value="vocabularies"/>
     <property name="javadoc.dir"     value="javadoc"/>
     <property name="etc.dir"         value="etc"/>
     <property name="test.dir"        value="testing"/>
@@ -299,6 +300,10 @@
 
         <copy todir="${dist.dir}/${doc.dir}">
             <fileset dir="${doc.dir}" includes="**" excludes="tutorial/**"/>
+        </copy>
+
+        <copy todir="${dist.dir}/${vocab.dir}">
+            <fileset dir="${vocab.dir}" includes="**"/>
         </copy>
 
         <copy todir="${dist.dir}/modules">

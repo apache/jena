@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: MegaTestSuite.java,v 1.5 2003-03-13 14:15:59 chris-dollin Exp $
+ * $Id: MegaTestSuite.java,v 1.6 2003-04-09 09:31:14 chris-dollin Exp $
  */
 
 /*
@@ -70,10 +70,10 @@ public class MegaTestSuite extends TestSuite {
             "inference test",
             com.hp.hpl.jena.inference.InferenceTestSuite.suite());
             */
-        if (false)
-            addTest("DAML", com.hp.hpl.jena.ontology.daml.test.DAMLTest.suite());
-        else
-            System.err.println("WARNING: DAML tests suppressed for the moment");
+//         if (false)
+//             addTest("DAML", com.hp.hpl.jena.ontology.daml.test.DAMLTest.suite());
+//         else
+//             System.err.println("WARNING: DAML tests suppressed for the moment");
     }
     private void addTest(String name, TestSuite tc) {
         tc.setName(name);
