@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntList.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-04-30 15:17:48 $
+ * Last modified on   $Date: 2003-05-09 16:03:56 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -55,7 +55,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: OntList.java,v 1.6 2003-04-30 15:17:48 ian_dickinson Exp $)
+ * @version Release ($Id: OntList.java,v 1.7 2003-05-09 16:03:56 ian_dickinson Exp $)
  */
 public interface OntList
     extends OntResource
@@ -129,18 +129,6 @@ public interface OntList
      * @return True if this is the empty (nil) list, otherwise false.
      */
     public boolean isEmpty();
-    
-    
-    /**
-     * <p>
-     * Answer the vocabulary that defines the properties and resources used to
-     * make the assocations forming this list.  Every list must have a defined
-     * vocabulary.
-     * </p>
-     * 
-     * @return A list vocabulary
-     */
-    public OntList.Vocabulary getVocabulary();
     
     
     /**
@@ -441,56 +429,6 @@ public interface OntList
     // Inner class definitions
     //==============================================================================
 
-    /**
-     * Encapsulates the sub-set of a general RDF vocabulary that is used to
-     * build a well-formed list. In particular, this vocabulary defines the
-     * relations that relate the list cell to a value ({@link #getHead head}),
-     * and a  list cell to the next cell in the list ({@link #getTail tail}),
-     * the <code>rdf:type</code> for each cell in the list ({@link
-     * #getCellType}) and the resource used to represent an empty list ({@link
-     * #getNil nil}).
-     */
-    public static interface Vocabulary {
-        
-        /**
-         * <p>Answer the constant Resource that represents the end of the list
-         * in this formulation.
-         * </p>
-         * 
-         * @return The nil resource.
-         */
-        public Resource getNil();
-        
-        /**
-         * <p>Answer the Property that represents the link to the value at the
-         * head of the list.
-         * </p>
-         * 
-         * @return The list head property
-         */
-        public Property getHead();
-        
-        /**
-         * <p>Answer the Property that represents the link to the tail of the
-         * list.
-         * </p>
-         * 
-         * @return The list tail property
-         */
-        public Property getTail();
-        
-        /**
-         * <p>Answer the resource that will be the type of each cell in the
-         * list.
-         * </p>
-         * 
-         * @return A resource that should be the <code>rdf:type</code> of each
-         * list cell.
-         */
-        public Resource getCellType();
-    }
-    
-    
     /**
      * Interface that encapsulates a function to apply to every element in a
      * list.

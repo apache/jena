@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:27 $
+ * Last modified on   $Date: 2003-05-09 16:03:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.10 2003-05-08 14:45:27 ian_dickinson Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.11 2003-05-09 16:03:55 ian_dickinson Exp $
  */
 public class OntListImpl
     extends OntResourceImpl
@@ -76,15 +76,6 @@ public class OntListImpl
     };
 
 
-    /** A list vocabulary that encapsulates the terms used by RDF 2003 to construct lists */
-    public static final OntList.Vocabulary RDF_LIST_VOCAB = 
-        new OntList.Vocabulary() {
-            public Resource getNil()        { return RDF.nil; }
-            public Property getHead()       { return RDF.first; }
-            public Property getTail()       { return RDF.rest; }
-            public Resource getCellType()   { return RDF.List; }
-        };
-        
 
     // Instance variables
     //////////////////////////////////
@@ -156,7 +147,7 @@ public class OntListImpl
         
         checkNotNil( "Tried to get the head of an empty list" );
         
-        return getProperty( getVocabulary().getHead() ).getObject();
+        return getProperty( getProfile().FIRST() ).getObject();
     }
     
     
@@ -177,12 +168,12 @@ public class OntListImpl
         checkNotNil( "Tried to get the head of an empty list" );
         
         // first remove the existing head
-        Statement current = getProperty( getVocabulary().getHead() );
+        Statement current = getProperty( getProfile().FIRST() );
         RDFNode n = current.getObject();
         current.remove();
         
         // now add the new head value to the graph
-        addProperty( getVocabulary().getHead(), value );
+        addProperty( getProfile().FIRST(), value );
         
         return n;
     }
@@ -203,7 +194,7 @@ public class OntListImpl
         
         checkNotNil( "Tried to get the tail of an empty list" );
         
-        Resource tail = getProperty( getVocabulary().getTail() ).getResource();
+        Resource tail = getProperty( getProfile().REST() ).getResource();
         return (OntList) tail.as( OntList.class );
     }
     
@@ -224,7 +215,7 @@ public class OntListImpl
         
         checkNotNil( "Tried to set the tail of an empty list" );
 
-        return (OntList) (setTailAux( this, tail, getVocabulary().getTail() )).as( OntList.class );
+        return (OntList) (setTailAux( this, tail, getProfile().REST() )).as( OntList.class );
     }
     
     
@@ -238,21 +229,7 @@ public class OntListImpl
             checkValid();
         }
         
-        return equals( getVocabulary().getNil() );
-    }
-    
-    
-    /**
-     * <p>
-     * Answer the vocabulary that defines the properties and resources used to
-     * make the assocations forming this list.  Every list must have a defined
-     * vocabulary.
-     * </p>
-     * 
-     * @return A list vocabulary
-     */
-    public OntList.Vocabulary getVocabulary() {
-        return RDF_LIST_VOCAB;
+        return equals( getProfile().NIL() );
     }
     
     
@@ -300,7 +277,7 @@ public class OntListImpl
         OntList tail = findElement( true, 0 );
         
         // now do the concatenate
-        setTailAux( tail, newListCell( value, getVocabulary().getNil() ), getVocabulary().getTail() );
+        setTailAux( tail, newListCell( value, getProfile().NIL() ), getProfile().REST() );
 
         // return this list to allow chaining
         return this;
@@ -405,9 +382,9 @@ public class OntListImpl
         Resource l = findElement( false, start );
         int index = start;
         
-        Property head = getVocabulary().getHead();
-        Property tail = getVocabulary().getTail();
-        Resource nil = getVocabulary().getNil();
+        Property head = getProfile().FIRST();
+        Property tail = getProfile().REST();
+        Resource nil = getProfile().NIL();
         
         boolean found = l.hasProperty( head, value );
         
@@ -440,7 +417,7 @@ public class OntListImpl
             checkValid();
             
             // also check that the two lists have the same vocabulary
-            if (!list.getValidityErrorMessage().equals( getVocabulary() )) {
+            if (!list.getProfile().getLabel().equals( getProfile().getLabel() )) {
                 throw new IllegalArgumentException( "Cannot append two lists that have different vocabularies" );
             }
         }
@@ -666,9 +643,9 @@ public class OntListImpl
         Resource r0 = this;
         Resource r1 = list;
         
-        Property head = getVocabulary().getHead();
-        Property tail = getVocabulary().getTail();
-        Resource nil = getVocabulary().getNil();
+        Property head = getProfile().FIRST();
+        Property tail = getProfile().REST();
+        Resource nil = getProfile().NIL();
         
         // iterate through to the end of the list
         while (!(r0.equals( nil ) || r1.equals( nil ))) {
@@ -763,11 +740,11 @@ public class OntListImpl
      * @return A new list cell as a resource
      */
     public Resource newListCell( RDFNode value, Resource tail ) {
-        Resource cell = getModel().createResource( getVocabulary().getCellType() );
+        Resource cell = getModel().createResource( getProfile().LIST() );
         
         // set the head and tail
-        cell.addProperty( getVocabulary().getHead(), value );
-        cell.addProperty( getVocabulary().getTail(), tail );
+        cell.addProperty( getProfile().FIRST(), value );
+        cell.addProperty( getProfile().REST(), tail );
         
         return cell;        
     }
@@ -785,14 +762,14 @@ public class OntListImpl
      * @return True if this list cell passes basic validity checks
      */
     protected void checkValid() {
-        OntList.Vocabulary v = getVocabulary();
+        Profile prof = getProfile();
         
-        if (!equals( v.getNil() )) {
+        if (!equals( prof.NIL() )) {
             // note that the rdf:type of nil is implied by the RDF M&S
-            checkValidProperty( RDF.type, v.getCellType() );
+            checkValidProperty( RDF.type, prof.LIST() );
             
-            checkValidProperty( v.getHead(), null );
-            checkValidProperty( v.getTail(), null );
+            checkValidProperty( prof.FIRST(), null );
+            checkValidProperty( prof.REST(), null );
         }
     }
     
@@ -851,8 +828,8 @@ public class OntListImpl
      * list
      */
     protected OntList findElement( boolean last, int index ) {
-        Property tail = getVocabulary().getTail();
-        Resource nil = getVocabulary().getNil();
+        Property tail = getProfile().REST();
+        Resource nil = getProfile().NIL();
         
         Resource l = this;
         int i = index;
@@ -891,9 +868,9 @@ public class OntListImpl
         Resource list = null;
         Resource start = null;
         
-        Property head = getVocabulary().getHead();
-        Property tail = getVocabulary().getTail();
-        Resource cellType = getVocabulary().getCellType();
+        Property head = getProfile().FIRST();
+        Property tail = getProfile().REST();
+        Resource cellType = getProfile().LIST();
         
         while (i.hasNext()){
             // create a list cell to hold the next value from the existing list
@@ -913,7 +890,7 @@ public class OntListImpl
         }
             
         // finally close the list
-        list.addProperty( tail, getVocabulary().getNil() );
+        list.addProperty( tail, getProfile().NIL() );
             
         return (OntList) start.as( OntList.class );
     }
