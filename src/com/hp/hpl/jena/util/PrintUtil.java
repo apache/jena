@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.9 2003-08-27 13:07:55 andy_seaborne Exp $
+ * $Id: PrintUtil.java,v 1.10 2003-10-03 13:16:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-08-27 13:07:55 $
+ * @version $Revision: 1.10 $ on $Date: 2003-10-03 13:16:21 $
  */
 public class PrintUtil {
 
@@ -108,6 +108,7 @@ public class PrintUtil {
      * Return a simplified print string for a Triple
      */
     public static String print(Triple triple) {
+        if (triple == null) return "(null)";
         return "(" + print(triple.getSubject()) + " " +
                       print(triple.getPredicate()) + " " +
                       print(triple.getObject()) + ")";
@@ -117,6 +118,7 @@ public class PrintUtil {
      * Return a simplified print string for a TriplePattern
      */
     public static String print(TriplePattern triple) {
+        if (triple == null) return "(null)";
         return "(" + print(triple.getSubject()) + " " +
                       print(triple.getPredicate()) + " " +
                       print(triple.getObject()) + ")";
@@ -126,6 +128,7 @@ public class PrintUtil {
      * Return a simplified print string for a statment
      */
     public static String print(Statement stmt) {
+        if (stmt == null) return "(null)";
         return print(stmt.asTriple());
     }
     
