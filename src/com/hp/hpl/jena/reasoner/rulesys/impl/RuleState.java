@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.4 2003-05-15 08:38:24 der Exp $
+ * $Id: RuleState.java,v 1.5 2003-05-15 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-15 08:38:24 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-15 17:01:57 $
  */
 public class RuleState {
 
@@ -73,7 +73,7 @@ public class RuleState {
         ruleInstance = parent.ruleInstance;
         clauseIndex = index;
         this.env = env;
-        TriplePattern subgoal = env.bind((TriplePattern)clause);
+        TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
         goalState = ruleInstance.engine.findGoal(subgoal);
         initMapping(subgoal);
     }
@@ -107,10 +107,9 @@ public class RuleState {
      */
     public BindingVector newEnvironment(Triple result) {
         BindingVector newenv = new BindingVector(env);
-        Node[] rawenv = newenv.getEnvironment();
-        if (subjectBind != -1) rawenv[subjectBind] = result.getSubject();
-        if (predicateBind != -1) rawenv[predicateBind] = result.getPredicate();
-        if (objectBind != -1) rawenv[objectBind] = result.getObject();
+        if (subjectBind != -1)   newenv.bind(subjectBind, result.getSubject());
+        if (predicateBind != -1) newenv.bind(predicateBind, result.getPredicate());
+        if (objectBind != -1)    newenv.bind(objectBind, result.getObject());
         // Functor matches are not precompiled but intepreted
         if (functorMatch != null) {
             Node obj = result.getObject();
@@ -123,7 +122,7 @@ public class RuleState {
                     for (int i = 0; i < margs.length; i++) {
                         Node match = margs[i];
                         if (match instanceof Node_RuleVariable) {
-                            rawenv[((Node_RuleVariable)match).getIndex()] = args[i]; 
+                            newenv.bind(match, args[i]);
                         }
                     }
                 } else {
@@ -165,39 +164,22 @@ public class RuleState {
      * fails so the rule is not applicable.
      */
     public static RuleState createInitialState(Rule rule, GoalResults generator) {
-        BindingVector env = new BindingVector();
         TriplePattern goal = generator.goal;
-        
-        Object headClause = rule.getHeadElement(0);
-        TriplePattern head = (TriplePattern)headClause;
-        Node n = head.getSubject();
-        if (n instanceof Node_RuleVariable) {
-            Node g = goal.getSubject();
-            if (!g.isVariable()) env.bind(n, g);
-        }
-        n = head.getPredicate();
-        if (n instanceof Node_RuleVariable) {
-            Node g = goal.getPredicate();
-            if (!g.isVariable()) env.bind(n, g);
-        }
-        n = head.getObject();
-        if (n instanceof Node_RuleVariable) {
-            Node g = goal.getObject();
-            if (!g.isVariable()) env.bind(n, g);
-        }
-        int maxClause = rule.bodyLength();
+        TriplePattern head = (TriplePattern) rule.getHeadElement(0);
+        BindingVector env = BindingVector.unify(goal, head);
+        if (env == null) return null;
         
         // Find the first goal clause
         RuleInstance ri = new RuleInstance(generator, rule, head);
+        int maxClause = rule.bodyLength();
         int clauseIndex = 0;
         while (clauseIndex < maxClause) {
             Object clause = rule.getBodyElement(clauseIndex++);
             if (clause instanceof TriplePattern) {
-                TriplePattern subgoal = env.bind((TriplePattern)clause);
+                TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
                 GoalState gs = generator.getEngine().findGoal(subgoal);
                 RuleState rs = new RuleState(ri, env, gs, clauseIndex);
                 rs.initMapping(subgoal);
-//                BRuleEngine.logger.debug("Created " + rs + ", for goal(" + goal +")");
                 return rs;
             } else {
                 if (!generator.getEngine().processBuiltin(clause, rule, env)) {
@@ -209,101 +191,6 @@ public class RuleState {
         return new RuleState(ri, env, null, 0);
     }
     
-    /**
-     * Unify a goal with the head of a rule. This is a poor-man's unification,
-     * we should try swtiching to a more conventional global-variables-with-trail
-     * implementation in the future.
-     * @return An initialized binding environment for the rule variables
-     * or null if the unificatin fails. If a variable in the environment becomes
-     * aliased to another variable through the unification this is represented
-     * by having its value in the environment be the variable to which it is aliased.
-     */ 
-    public static BindingVector unify(TriplePattern goal, TriplePattern head) {
-        Node[] gEnv = new Node[BindingStack.MAX_VAR];
-        Node[] hEnv = new Node[BindingStack.MAX_VAR];
-        
-        if (!unify(goal.getSubject(), head.getSubject(), gEnv, hEnv)) {
-            return null;
-        } 
-        if (!unify(goal.getPredicate(), head.getPredicate(), gEnv, hEnv)) {
-            return null; 
-        } 
-        
-        Node gObj = goal.getObject();
-        Node hObj = goal.getObject();
-        if (Functor.isFunctor(hObj)) {
-            if (Functor.isFunctor(hObj)) {
-                Functor gFunctor = (Functor)gObj.getLiteral().getValue();
-                Functor hFunctor = (Functor)hObj.getLiteral().getValue();
-                if ( ! gFunctor.getName().equals(hFunctor.getName()) ) {
-                    return null;
-                }
-                Node[] gArgs = gFunctor.getArgs();
-                Node[] hArgs = hFunctor.getArgs();
-                if ( gArgs.length != hArgs.length ) return null;
-                for (int i = 0; i < gArgs.length; i++) {
-                    if (! unify(gArgs[i], hArgs[i], gEnv, hEnv) ) {
-                        return null;
-                    }
-                }
-            } else if (hObj instanceof Node_RuleVariable) {
-                // No extra biding to do, success
-            } else {
-                // unifying simple ground object with functor, failure
-                return null;
-            }
-        } else if (hObj instanceof Node_RuleVariable) {
-            if (!unify(gObj, hObj, gEnv, hEnv)) return null;
-        } else {
-            if ( ! hObj.sameValueAs(gObj) ) return null;
-        }
-        // Successful bind if we get here
-        return new BindingVector(hEnv);
-    }
-    
-    /**
-     * Unify a single pair of goal/head nodes. Unification of a head var to
-     * a goal var is recorded using an Integer in the head env to point to a
-     * goal env and storing the head var in the goal env slot.
-     * @return true if they are unifiable, side effects the environments
-     */
-    private static boolean unify(Node gNode, Node hNode, Node[] gEnv, Node[] hEnv) {
-        if (hNode instanceof Node_RuleVariable) {
-            int hIndex = ((Node_RuleVariable)hNode).getIndex();
-            if (gNode instanceof Node_RuleVariable) {
-                // Record variable bind between head and goal to detect aliases
-                int gIndex = ((Node_RuleVariable)gNode).getIndex();
-                if (gEnv[gIndex] == null) {
-                    // First time bind so record link 
-                    gEnv[gIndex] = hNode;
-                } else {
-                    // aliased var so follow trail to alias
-                    hEnv[hIndex] = gEnv[gIndex];
-                }
-            } else {
-                hEnv[hIndex] = gNode;
-            }
-            return true;
-        } else {
-            if (gNode instanceof Node_RuleVariable) {
-                int gIndex = ((Node_RuleVariable)gNode).getIndex();
-                Node gVal = gEnv[gIndex]; 
-                if (gVal == null) {
-                    //. No variable alias so just record binding
-                    gEnv[gIndex] = hNode;
-                } else if (gVal instanceof Node_RuleVariable) {
-                    // Already an alias
-                    hEnv[((Node_RuleVariable)gVal).getIndex()] = hNode;
-                    gEnv[gIndex] = hNode;
-                } else {
-                    return gVal.sameValueAs(hNode);
-                }
-                return true;
-            } else {
-                return hNode.sameValueAs(gNode); 
-            }
-        }
-    }
     
     /**
      * Printable string

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.6 2003-05-15 08:38:24 der Exp $
+ * $Id: BindingVector.java,v 1.7 2003-05-15 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-15 08:38:24 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-15 17:01:57 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -68,7 +68,12 @@ public class BindingVector implements BindingEnvironment {
      */
     public Node getBinding(Node node) {
         if (node instanceof Node_RuleVariable) {
-            return environment[((Node_RuleVariable)node).getIndex()];
+            Node val = environment[((Node_RuleVariable)node).getIndex()];
+            if (val instanceof Node_RuleVariable) {
+                return getBinding(val);
+            } else {
+                return val;
+            }
         } else if (node instanceof Node_ANY) {
             return null;
         } else if (Functor.isFunctor(node)) {
@@ -109,6 +114,7 @@ public class BindingVector implements BindingEnvironment {
     /**
      * Bind the ith variable in the current envionment to the given value.
      * Checks that the new binding is compatible with any current binding.
+     * Handles aliased variables.
      * @return false if the binding fails
      */
     public boolean bind(int i, Node value) {
@@ -116,6 +122,9 @@ public class BindingVector implements BindingEnvironment {
         if (node == null) {
             environment[i] = value;
             return true;
+        } else if (node instanceof Node_RuleVariable) {
+            environment[i] = value;
+            return bind(((Node_RuleVariable)node).getIndex(), value);
         } else {
             return node.sameValueAs(value);
         }
@@ -137,32 +146,12 @@ public class BindingVector implements BindingEnvironment {
     }
    
     /**
-     * Bind a variable in the current envionment to the given value.
-     * Overrides and ignores any current binding.
-     * @param var a Node_RuleVariable defining the variable to bind
-     * @param value the value to bind
-     */
-    public void bindNoCheck(Node_RuleVariable var, Node value) {
-        environment[var.getIndex()] = value;
-    }
-   
-    /**
-     * Bind a variable in the current envionment to the given value.
-     * Overrides and ignores any current binding.
-     * @param index the index of the variable to bind
-     * @param value the value to bind
-     */
-    public void bindNoCheck(int index, Node value) {
-        environment[index] = value;
-    }
-    
-    /**
      * Bind the variables in a goal pattern using the binding environment, to
      * generate a more specialized goal
      * @param goal the TriplePattern to be instantiated
      * @return a TriplePattern obtained from the goal by substituting current bindinds
      */
-    public TriplePattern bind(TriplePattern goal) {
+    public TriplePattern partInstantiate(TriplePattern goal) {
         return new TriplePattern(
                 getGroundVersion(goal.getSubject()),
                 getGroundVersion(goal.getPredicate()),
@@ -197,6 +186,119 @@ public class BindingVector implements BindingEnvironment {
             buffer.append(" ");
         }
         return buffer.toString();
+    }
+    
+    /**
+     * Unify a goal with the head of a rule. This is a poor-man's unification,
+     * we should try swtiching to a more conventional global-variables-with-trail
+     * implementation in the future.
+     * @return An initialized binding environment for the rule variables
+     * or null if the unificatin fails. If a variable in the environment becomes
+     * aliased to another variable through the unification this is represented
+     * by having its value in the environment be the variable to which it is aliased.
+     */ 
+    public static BindingVector unify(TriplePattern goal, TriplePattern head) {
+        Node[] gEnv = new Node[BindingStack.MAX_VAR];
+        Node[] hEnv = new Node[BindingStack.MAX_VAR];
+        
+        if (!unify(goal.getSubject(), head.getSubject(), gEnv, hEnv)) {
+            return null;
+        } 
+        if (!unify(goal.getPredicate(), head.getPredicate(), gEnv, hEnv)) {
+            return null; 
+        } 
+        
+        Node gObj = goal.getObject();
+        Node hObj = head.getObject();
+        if (Functor.isFunctor(hObj)) {
+            if (Functor.isFunctor(hObj)) {
+                Functor gFunctor = (Functor)gObj.getLiteral().getValue();
+                Functor hFunctor = (Functor)hObj.getLiteral().getValue();
+                if ( ! gFunctor.getName().equals(hFunctor.getName()) ) {
+                    return null;
+                }
+                Node[] gArgs = gFunctor.getArgs();
+                Node[] hArgs = hFunctor.getArgs();
+                if ( gArgs.length != hArgs.length ) return null;
+                for (int i = 0; i < gArgs.length; i++) {
+                    if (! unify(gArgs[i], hArgs[i], gEnv, hEnv) ) {
+                        return null;
+                    }
+                }
+            } else if (hObj instanceof Node_RuleVariable) {
+                // No extra biding to do, success
+            } else {
+                // unifying simple ground object with functor, failure
+                return null;
+            }
+        } else {
+            if (!unify(gObj, hObj, gEnv, hEnv)) return null;
+        } 
+        // Successful bind if we get here
+        return new BindingVector(hEnv);
+    }
+    
+    /**
+     * Unify a single pair of goal/head nodes. Unification of a head var to
+     * a goal var is recorded using an Integer in the head env to point to a
+     * goal env and storing the head var in the goal env slot.
+     * @return true if they are unifiable, side effects the environments
+     */
+    private static boolean unify(Node gNode, Node hNode, Node[] gEnv, Node[] hEnv) {
+        if (hNode instanceof Node_RuleVariable) {
+            int hIndex = ((Node_RuleVariable)hNode).getIndex();
+            if (gNode instanceof Node_RuleVariable) {
+                // Record variable bind between head and goal to detect aliases
+                int gIndex = ((Node_RuleVariable)gNode).getIndex();
+                if (gIndex < 0) return true;
+                if (gEnv[gIndex] == null) {
+                    // First time bind so record link 
+                    gEnv[gIndex] = hNode;
+                } else {
+                    // aliased var so follow trail to alias
+                    // but ignore self-aliases
+                    Node gVal = gEnv[gIndex];
+                    if (hIndex != gIndex || ! (gVal instanceof Node_RuleVariable)) {
+                        hEnv[hIndex] = gVal;
+                    }
+                }
+            } else {
+                Node hVal = hEnv[hIndex];
+                if (hVal == null) {
+                    hEnv[hIndex] = gNode;
+                } else {
+                    // Already bound
+                    if (hVal instanceof Node_RuleVariable) {
+                        // Already an aliased variable, so bind both this an the alias
+                        hEnv[((Node_RuleVariable)hVal).getIndex()] = gNode;
+                        hEnv[hIndex] = gNode;
+                    } else {
+                        // Already bound to a ground node
+                        return hVal.sameValueAs(gNode); 
+                    }
+                }
+            }
+            return true;
+        } else {
+            if (gNode instanceof Node_RuleVariable) {
+                int gIndex = ((Node_RuleVariable)gNode).getIndex();
+                if (gIndex < 0) return true;
+                Node gVal = gEnv[gIndex]; 
+                if (gVal == null) {
+                    //. No variable alias so just record binding
+                    gEnv[gIndex] = hNode;
+                } else if (gVal instanceof Node_RuleVariable) {
+                    // Already an alias
+                    hEnv[((Node_RuleVariable)gVal).getIndex()] = hNode;
+                    gEnv[gIndex] = hNode;
+                } else {
+                    return gVal.sameValueAs(hNode);
+                }
+                return true;
+            } else {
+                return hNode.sameValueAs(gNode); 
+            }
+        }
     }
     
 }
