@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPString.java,v 1.1.1.1 2002-12-19 19:16:07 bwm Exp $
+ * * $Id: ARPString.java,v 1.2 2003-06-19 13:14:25 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -49,7 +49,7 @@ class ARPString implements ALiteral {
     /** Creates new StringToken */
     ARPString(String value,String lang,String parseType) {
         this.value = value;
-        this.lang = lang;
+        this.lang = "";
         this.isWellFormedXML = true;
         this.parseType = parseType;
     }

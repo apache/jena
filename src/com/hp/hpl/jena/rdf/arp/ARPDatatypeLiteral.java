@@ -7,11 +7,11 @@ package com.hp.hpl.jena.rdf.arp;
 class ARPDatatypeLiteral implements ALiteral {
 
     final private String datatype;
-    final private String lang;
+   // final private String lang;
     final private String lexForm;
     ARPDatatypeLiteral(ARPString lexf,URIReference dt){
        datatype = dt.getURI();
-       lang = lexf.getLang();
+    //   lang = lexf.getLang();
        lexForm = lexf.toString();
     }
     /**
@@ -41,7 +41,7 @@ class ARPDatatypeLiteral implements ALiteral {
      * @see com.hp.hpl.jena.rdf.arp.ALiteral#getLang()
      */
     public String getLang() {
-        return lang;
+        return ""; //lang;
     }
 
 }

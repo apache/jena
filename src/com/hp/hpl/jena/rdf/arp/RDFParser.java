@@ -5,7 +5,7 @@ import java.util.*;
 import org.xml.sax.SAXException;
 
 class RDFParser implements ARPErrorNumbers, RDFParserConstants {
-    private static  URIReference RDFList = null;
+//    private static  URIReference RDFList = null;
     private static URIReference RDFfirst = null;
     private static URIReference RDFrest = null;
     private static URIReference RDFnil = null;
@@ -13,8 +13,8 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
 
 
     static {
-        try {
-            RDFList     = new URIReference(ARPFilter.rdfns+"List");
+        try { 
+   //         RDFList     = new URIReference(ARPFilter.rdfns+"List");
             RDFnil        = new URIReference(ARPFilter.rdfns+"nil");
 
             RDFfirst = new URIReference(ARPFilter.rdfns+"first");
@@ -862,7 +862,7 @@ E_END.
                                          cell.setPredicateObject( RDFrest,
                                                                   tail,
                                                                   null );
-                                         cell.setType(RDFList);
+                               //          cell.setType(RDFList);
                                          {if (true) return cell;}
       break;
     default:

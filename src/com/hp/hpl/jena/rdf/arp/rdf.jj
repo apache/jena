@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.4 2003-04-02 13:26:31 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.5 2003-06-19 13:14:25 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -43,7 +43,7 @@ import java.util.*;
 import org.xml.sax.SAXException;
 
 class RDFParser implements ARPErrorNumbers {
-    private static  URIReference RDFList = null;
+//    private static  URIReference RDFList = null;
     private static URIReference RDFfirst = null;
     private static URIReference RDFrest = null;
     private static URIReference RDFnil = null;
@@ -52,7 +52,7 @@ class RDFParser implements ARPErrorNumbers {
     
     static {
         try {
-            RDFList     = new URIReference(ARPFilter.rdfns+"List");
+   //         RDFList     = new URIReference(ARPFilter.rdfns+"List");
             RDFnil        = new URIReference(ARPFilter.rdfns+"nil");
             
             RDFfirst = new URIReference(ARPFilter.rdfns+"first");
@@ -496,7 +496,7 @@ AResource collection(XMLContext ctxt)
                                          cell.setPredicateObject( RDFrest, 
                                                                   tail, 
                                                                   null );
-                                         cell.setType(RDFList);
+                               //          cell.setType(RDFList);
                                          return cell;
                                       }
  | // OR empty exansion.
