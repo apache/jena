@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.52 $' Date='$Date: 2003-06-19 15:51:00 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.53 $' Date='$Date: 2003-06-20 15:18:51 $'
  */
 
 public class ModelCom 
@@ -769,6 +769,12 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return createList( Arrays.asList( members ).iterator() );
     }
     
+    public RDFNode getRDFNode( Node n )
+        {   
+        return n.isURI() || n.isBlank()
+            ? (RDFNode) new ResourceImpl( n, (Model) this )
+            : (RDFNode) new LiteralImpl( n, (Model) this); 
+        }
     
     public Resource getResource(String uri)  {
         return IteratorFactory.asResource(makeURI(uri),this);

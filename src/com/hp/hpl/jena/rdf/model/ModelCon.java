@@ -31,6 +31,8 @@
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.graph.Node;
+
 
 /** Convenience methods which extend the {@link Model} interface.
  * <P>The {@link Model} interface provides a set of primitive operations on
@@ -52,8 +54,8 @@ package com.hp.hpl.jena.rdf.model;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.5 $'
-            Date='$Date: 2003-06-17 12:25:04 $'
+            Revision='$Revision: 1.6 $'
+            Date='$Date: 2003-06-20 15:18:06 $'
  */
 public interface ModelCon {
 
@@ -166,6 +168,17 @@ public interface ModelCon {
  
  */
     public Resource createResource(Resource type) ;
+    
+/**
+    create or find a Resource from a graph Node. This is provided for users and
+    developers operating at the API/SPI interface where Resources are
+    constructed from Nodes. Providing this method allows each Model
+    the opportunity to cache node-to-resource maps if it requires. 
+    
+    @param the graph.Node on which to base the Model.RDFNode
+    @return a suitable RDFNode 
+*/
+    public RDFNode getRDFNode( Node n );
 
 /** Create a new resource with a given type.
  *
@@ -179,8 +192,7 @@ public interface ModelCon {
  * @param type A resource representing the RDF type of the new resource.
  .
  */
-    public Resource createResource(String uri, Resource type)
-                                    ;
+    public Resource createResource(String uri, Resource type);
 
 /** Create a new anonymous resource using the supplied factory.
  *
@@ -218,35 +230,30 @@ public interface ModelCon {
      * <p> The value is converted to a string using its <CODE>toString</CODE>
      * method. </p>
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createLiteral(boolean v) ; 
     /** create a literal from an integer value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */   
     public Literal createLiteral(long v) ;
     /** create a literal from a char value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createLiteral(char v) ;
     /** create a literal from a float value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createLiteral(float v) ;
     /** create a literal from a double value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createLiteral(double v) ;
@@ -254,7 +261,6 @@ public interface ModelCon {
     /** create a literal from a String value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createLiteral(String v) ;
@@ -272,7 +278,6 @@ public interface ModelCon {
      * <p> The value is converted to a string using its <CODE>toString</CODE>
      * method. </p>
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(boolean v) ; 
@@ -280,7 +285,6 @@ public interface ModelCon {
     /** create a typed literal from an integer value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */   
     public Literal createTypedLiteral(int v) ;
@@ -288,7 +292,6 @@ public interface ModelCon {
     /** create a typed literal from an integer value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */   
     public Literal createTypedLiteral(long v) ;
@@ -296,7 +299,6 @@ public interface ModelCon {
     /** create a typed literal from a char value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(char v) ;
@@ -304,7 +306,6 @@ public interface ModelCon {
     /** create a typed literal from a float value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(float v) ;
@@ -312,7 +313,6 @@ public interface ModelCon {
     /** create a typed literal from a double value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(double v) ;
@@ -320,7 +320,6 @@ public interface ModelCon {
     /** create a typed literal from a String value.
      *
      * @param v the value of the literal
-     
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(String v) ;
@@ -329,7 +328,6 @@ public interface ModelCon {
      *
      * @return a new literal representing the value v
      * @param v the value of the literal.
-      
      */
     public Literal createTypedLiteral(Object v) ;
 
@@ -343,8 +341,7 @@ public interface ModelCon {
      * @param typeURI the uri of the type of the literal, null for old style "plain" literals
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
-    public Literal createTypedLiteral(String lex, String lang, String typeURI) 
-                                        ;
+    public Literal createTypedLiteral(String lex, String lang, String typeURI)  ;
     
     /**
      * Build a typed literal from its value form.
@@ -368,8 +365,7 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, boolean o) 
-                                      ;
+    public Statement createStatement(Resource s, Property p, boolean o)  ;
     
     /** Create a Statement instance.
      *
@@ -384,8 +380,7 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, long o)
-                                      ;
+    public Statement createStatement(Resource s, Property p, long o) ;
     
     /** Create a Statement instance.
      *
@@ -400,8 +395,7 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, char o)
-                                      ;
+    public Statement createStatement(Resource s, Property p, char o) ;
     
     /** Create a Statement instance.
      *
@@ -416,8 +410,7 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, float o)
-                                      ;
+    public Statement createStatement(Resource s, Property p, float o) ;
     
     /** Create a Statement instance.
      *
@@ -432,8 +425,7 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, double o)
-                                      ;
+    public Statement createStatement(Resource s, Property p, double o) ;
     
     /** Create a Statement instance.
      *
@@ -448,8 +440,7 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, String o)  
-                                      ;
+    public Statement createStatement(Resource s, Property p, String o)  ;
     
     /** Create a Statement instance.
      *
@@ -465,8 +456,7 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, String o, String l)  
-                                      ;
+    public Statement createStatement(Resource s, Property p, String o, String l) ;
 
     /** Create a Statement instance.
      *
@@ -516,8 +506,7 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, Object o)  
-                                      ;
+    public Statement createStatement(Resource s, Property p, Object o)   ;
     
     /** Create a new anonymous bag.
      *
@@ -525,7 +514,6 @@ public interface ModelCon {
      * modify this model.</p>
      * <p>A statement defining the type of the new bag is added to this model.
      * </p>
-     .
      * @return a new anonymous bag.
      */
     public Bag createBag() ;
@@ -537,7 +525,6 @@ public interface ModelCon {
      * <p>A statement defining the type of the new bag is added to this model.
      * </p>
      * @param uri The URI of the new Bag.
-     .
      * @return a new bag.
      */
     public Bag createBag(String uri) ;
@@ -548,7 +535,6 @@ public interface ModelCon {
      * modify this model.</p>
      * <p>A statement defining the type of the new alt is added to this model.
      * </p>
-     .
      * @return a new anonymous alt.
      */
     public Alt createAlt() ;
@@ -560,7 +546,6 @@ public interface ModelCon {
      * <p>A statement defining the type of the new alt is added to this model.
      * </p>
      * @param uri The URI of the new alt.
-     .
      * @return a new alt.
      */
     public Alt createAlt(String uri) ;
@@ -571,7 +556,6 @@ public interface ModelCon {
      * modify this model.</p>
      * <p>A statement defining the type of the new seq is added to this model.
      * </p>
-     .
      * @return a new anonymous seq.
      */
     public Seq createSeq() ;
@@ -583,7 +567,6 @@ public interface ModelCon {
      * <p>A statement defining the type of the new seq is added to this model.
      * </p>
      * @param uri The URI of the new seq.
-     .
      * @return a new seq.
      */
     public Seq createSeq(String uri) ;
@@ -593,7 +576,6 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- 
  */ 
     Model add(Resource s, Property p, RDFNode o)     ;
 
@@ -603,27 +585,29 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- 
  */ 
     Model add(Resource s, Property p, boolean o) ;
+    
 /** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- 
+
  */ 
     Model add(Resource s, Property p, long o) ;
+    
 /** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- 
+
  */ 
     Model add(Resource s, Property p, char o) ;
+    
 /** add a statement to this model.
  *
  * @return this model

@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.1 2003-05-20 11:20:46 chris-dollin Exp $
+  $Id: AbstractTestModel.java,v 1.2 2003-06-20 15:18:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.graph.*;
 
 /**
  	@author kers
@@ -35,6 +36,27 @@ public abstract class AbstractTestModel extends ModelTestBase
         { 
         Command cmd = null;
         if (model.supportsTransactions()) model.executeInTransaction( cmd );
+        }
+        
+    public void testCreateResourceFromNode()
+        {
+        RDFNode S = model.getRDFNode( Node.create( "spoo:S" ) ); 
+        assertTrue( S instanceof Resource );
+        assertEquals( "spoo:S", ((Resource) S).getURI() );
+        }
+        
+    public void testCreateLiteralFromNode()
+        {
+        RDFNode S = model.getRDFNode( Node.create( "42" ) ); 
+        assertTrue( S instanceof Literal );
+        assertEquals( "42", ((Literal) S).getLexicalForm() );
+        }    
+            
+   public void testCreateBlankFromNode()
+        {
+        RDFNode S = model.getRDFNode( Node.create( "_Blank" ) ); 
+        assertTrue( S instanceof Resource );
+        assertEquals( new AnonId( "_Blank" ), ((Resource) S).getId() );
         }
     }
 
