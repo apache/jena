@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCacheNew.java,v 1.5 2004-11-28 21:50:22 der Exp $
+ * $Id: TransitiveGraphCacheNew.java,v 1.6 2004-11-29 09:21:44 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,14 +42,13 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 
-// TODO: This version is a compromise between bug fixing earlier code,
-// getting reasonable performance and cost, and speed of implementation.
-// In an ideal world we'd create a test harness to measure the space and
-// time costs in practice and compare variants on the implementation 
-// including the internal index alternative
+// Note to maintainers. The GraphNode object is treated as a record structure
+// rather than an abstract datatype by the rest of the GraphCache code - which
+// directly access its structure. I justify this on the flimsy grounds that it is a
+// private inner class.
 
 public class TransitiveGraphCacheNew {
 
@@ -69,6 +68,10 @@ public class TransitiveGraphCacheNew {
     /** A list of pending deletes which break the cycle-free normal form */
     protected Set deletesPending;
     
+	/** The original triples, needed for processing delete operations
+	 * because some information is lost in the SCC process */ 
+	protected Set originalTriples = new HashSet();
+	
     /**
      * Inner class used to represent vistors than can be applied to each
      * node in a graph walk.
@@ -79,6 +82,7 @@ public class TransitiveGraphCacheNew {
     
 	/**
 	 * Inner class used to represent the graph node structure.
+	 * Rather fat nodes (four sets)
 	 */
 	private static class GraphNode {
         /** The RDF Graph Node this corresponds to */
@@ -100,7 +104,6 @@ public class TransitiveGraphCacheNew {
 		 * of all the nodes in the SCC. For non-lead nodes it will be a ref to the lead node. */
 		protected Object aliases;
 
-		
         /**
          * Constructor.
          */
@@ -561,10 +564,18 @@ public class TransitiveGraphCacheNew {
     /**
      * Register a new relation instance in the cache
      */
-    public synchronized void addRelation(Node start, Node end) {
+    public synchronized void addRelation(Triple t) {
+    	originalTriples.add(t);
+    	addRelation(t.getSubject(), t.getObject());
+    }
+    
+    /**
+     * Register a new relation instance in the cache
+     */
+    private void addRelation(Node start, Node end) {
         if (start.equals(end)) return;      // Reflexive case is built in
-    	GraphNode startN = getLead(start);
-    	GraphNode endN = getLead(end);
+        GraphNode startN = getLead(start);
+        GraphNode endN = getLead(end);
     	
     	// Check if this link is already known about
     	if (startN.pathTo(endN)) {
@@ -603,11 +614,79 @@ public class TransitiveGraphCacheNew {
     /**
      * Remove an instance of a relation from the cache.
      */
-    public void removeRelation(Node start, Node end) {
-    	// TODO implement
-        throw new ReasonerException("Call to unimplemented remove method in TransitiveGraphCache");
+    public void removeRelation(Triple t) {
+    	Node start = t.getSubject();
+    	Node end = t.getObject();
+    	if (start == end) {
+    		return;		// Reflexive case is built in
+    	}
+    	GraphNode startN = getLead(start);
+    	GraphNode endN = getLead(end);
+    	if (startN != endN && !(startN.directPathTo(endN))) {
+    		// indirect link can't be removed by itself
+    		return;
+    	}
+    	// This is a remove of a direct link possibly within an SCC
+    	// Delay as long as possible and do deletes in a batch
+    	if (deletesPending == null) {
+    		deletesPending = new HashSet();
+    	}
+    	deletesPending.add(t);
     }
 
+    /**
+     * Process outstanding delete actions
+     */
+    private void processDeletes() {
+    	// The kernel is the set of start nodes of deleted links
+    	Set kernel = new HashSet();
+    	for (Iterator i = deletesPending.iterator(); i.hasNext(); ) {
+    		Triple t = (Triple)i.next();
+    		GraphNode start = (GraphNode)nodeMap.get(t.getSubject());
+    		kernel.add(start);
+    	}
+    	
+    	// The predecessor set of kernel
+    	Set pKernel = new HashSet();
+    	pKernel.addAll(kernel);
+    	for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
+    		GraphNode n = (GraphNode)i.next();
+    		for (Iterator j = kernel.iterator(); j.hasNext();) {
+    			GraphNode target = (GraphNode)j.next();
+    			if (n.pathTo(target)) {
+    				pKernel.add(n); break;
+    			}
+    		}
+    	}
+    	
+    	// Cut the pKernel away from the finge of nodes that it connects to
+    	for (Iterator i = pKernel.iterator(); i.hasNext(); ) {
+    		GraphNode n = (GraphNode)i.next();
+    		for (Iterator j = n.succ.iterator(); j.hasNext(); ) {
+    			GraphNode fringe = (GraphNode)j.next();
+    			if (! pKernel.contains(fringe)) {
+    				fringe.pred.remove(n);
+    			}
+    		}
+    		n.succ.clear();
+    		n.succClosed.clear();
+    		n.pred.clear();
+    	}
+    	
+    	// Delete the triples
+    	originalTriples.removeAll(deletesPending);
+    	deletesPending.clear();
+    	
+    	// Reinsert the remaining links
+    	for (Iterator i = originalTriples.iterator(); i.hasNext(); ) {
+    		Triple t = (Triple)i.next();
+    		GraphNode n = (GraphNode)nodeMap.get(t.getSubject());
+    		if (pKernel.contains(n)) {
+    			addRelation(t);
+    		}
+    	}
+    }
+    
     /**
      * Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. 
@@ -642,7 +721,11 @@ public class TransitiveGraphCacheNew {
      *  that match the pattern
      */
     public ExtendedIterator find(TriplePattern pattern) {
-        Node s = pattern.getSubject();
+    	if (deletesPending != null && deletesPending.size() > 0) {
+    		processDeletes();
+    	}
+
+    	Node s = pattern.getSubject();
         Node p = pattern.getPredicate();
         Node o = pattern.getObject();
         
