@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.14 2003-06-13 08:47:41 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.15 2003-06-13 09:27:19 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-06-13 08:47:41 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-06-13 09:27:19 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -399,7 +399,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     private void primeNamespace( Model model )
         {
         Map m = model.getNsPrefixMap();
-        // System.err.println( "| primeNamespace: " + m );
         Iterator it  = m.entrySet().iterator();
         while (it.hasNext())
             {
@@ -407,7 +406,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             String key = (String) e.getKey();
             String value = (String) e.getValue();
             String already = this.getPrefixFor( value );
-            // System.err.println( "| key=" + key + ", value=" + value + ", already=" + already );
             if (already == null) this.setNsPrefix( key, value );
             }
         }
@@ -539,47 +537,33 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		return rslt;
 	}
 
+
 	static private final char ESCAPE = 'X';
+    
 	static private String escapedId(String id) {
-		String result = new String();
+		StringBuffer result = new StringBuffer();
 		for (int i = 0; i < id.length(); i++) {
 			char ch = id.charAt(i);
 			if (ch != ESCAPE
 				&& (i == 0 ? XMLChar.isNCNameStart(ch) : XMLChar.isNCName(ch))) {
-				result = result + ch;
+				result.append( ch );
 			} else {
-				result = result + escape(ch);
+				escape( result, ch );
 			}
 		}
-		return result;
+		return result.toString();
 	}
 
-	static private String escape(char ch) {
-		final char[] hexchar =
-			{
-				'0',
-				'1',
-				'2',
-				'3',
-				'4',
-				'5',
-				'6',
-				'7',
-				'8',
-				'9',
-				'a',
-				'b',
-				'c',
-				'd',
-				'e',
-				'f' };
-		String result = new String() + ESCAPE;
+    static final char [] hexchar = "0123456789abcdef".toCharArray();
+                
+	static private void escape( StringBuffer sb, char ch) {
+		sb.append( ESCAPE );
 		int charcode = ch;
 		do {
-			result = result + hexchar[charcode & 15];
+			sb.append( hexchar[charcode & 15] );
 			charcode = charcode >> 4;
 		} while (charcode != 0);
-		return new String(result + ESCAPE);
+		sb.append( ESCAPE );
 	}
 
 	
