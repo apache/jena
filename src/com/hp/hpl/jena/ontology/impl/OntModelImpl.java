@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.45 $
+ * Revision           $Revision: 1.46 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-26 13:46:51 $
+ * Last modified on   $Date: 2003-08-26 16:38:55 $
  *               by   $Author: der $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.45 2003-08-26 13:46:51 der Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.46 2003-08-26 16:38:55 der Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -270,7 +270,7 @@ public class OntModelImpl
      * @return An iterator over Individuals. 
      */
     public ExtendedIterator listIndividuals() {
-        return queryFor( m_individualsQuery, null, Individual.class );
+        return new UniqueExtendedIterator( queryFor( m_individualsQuery, null, Individual.class ) );
     }
     
 
