@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.37 2004-07-13 20:54:58 chris-dollin Exp $
+  $Id: Node.java,v 1.38 2004-07-14 08:52:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -99,16 +99,49 @@ public abstract class Node {
     
     private static LiteralLabel literal( String spelling, String langOrType )
         {
+        String content = escape( spelling );
         int colon = langOrType.indexOf( ':' );
         return colon < 0 
-            ? new LiteralLabel( spelling, langOrType, false )
-            : new LiteralLabel( spelling, "", getType( langOrType ) )
+            ? new LiteralLabel( content, langOrType, false )
+            : new LiteralLabel( content, "", getType( langOrType ) )
             ;
+        }
+    
+    private static String escape( String spelling )
+        {
+        if (spelling.indexOf( '\\' ) < 0) return spelling;
+        StringBuffer result = new StringBuffer( spelling.length() );
+        int start = 0;
+        while (true)
+            {
+            int b = spelling.indexOf( '\\', start );
+            if (b < 0) break;
+            result.append( spelling.substring( start, b ) );
+            result.append( escape( spelling.charAt( b + 1 ) ) );
+            start = b + 2;
+            }
+        result.append( spelling.substring( start ) );
+        System.err.println( ">> escaped => " + result );
+        return result.toString();
+        }
+    
+    private static char escape( char ch )
+        {
+        switch (ch)
+        	{
+            case '\\':
+            case '\"':
+            case '\'': return ch;
+            case 'n': return '\n';
+            case 's': return ' ';
+            case 't': return '\t';
+            default: return 'Z';
+        	}
         }
     
     private static LiteralLabel newString( char quote, String nodeString )
         {
-        int close = nodeString.indexOf( quote, 1 );
+        int close = nodeString.lastIndexOf( quote );
         return literal( nodeString.substring( 1, close ), nodeString.substring( close + 1 ) );
         }
     
