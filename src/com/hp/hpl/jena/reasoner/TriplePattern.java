@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TriplePattern.java,v 1.15 2003-07-21 15:16:41 der Exp $
+ * $Id: TriplePattern.java,v 1.16 2003-08-12 09:33:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-07-21 15:16:41 $
+ * @version $Revision: 1.16 $ on $Date: 2003-08-12 09:33:02 $
  */
 public class TriplePattern implements ClauseEntry {
 
@@ -266,6 +266,7 @@ public class TriplePattern implements ClauseEntry {
      */
     private static Node normalize(Node node) {
         if (node == null || node == Node.ANY) return Node_RuleVariable.WILD;
+//        if (node == null) return Node.ANY;
         return node;
     }
             

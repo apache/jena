@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.19 2003-07-25 12:16:47 der Exp $
+ * $Id: TestBasics.java,v 1.20 2003-08-12 09:33:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-07-25 12:16:47 $
+ * @version $Revision: 1.20 $ on $Date: 2003-08-12 09:33:02 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -63,26 +63,26 @@ public class TestBasics extends TestCase  {
      */
     public void testRuleParser() {
        String[] testRules = new String[] {
-            "(?a rdf:type _) -> (?a rdf:type ?b).",
-            "(?a rdf:type _), (?a rdf:type _) -> (?a rdf:type ?b).",
+            "(?a rdf:type ?_) -> (?a rdf:type ?b).",
+            "(?a rdf:type ?_), (?a rdf:type ?_) -> (?a rdf:type ?b).",
             "(?a rdf:type max(?a,1)) -> (?a rdf:type 'foo').",
-            "(?a rdf:type _) -> addOne(?a).",
-            "(?a rdf:type _) -> [(?a rdf:type _) -> addOne(?a)].",
-           "(?a rdf:type _) -> (?a rdf:type '42').",
-           "(?a rdf:type _) -> (?a rdf:type 4.2).",
-           "(?a rdf:type _) -> (?a rdf:type ' fool that,I(am)').",
-            "[rule1: (?a rdf:type _) -> (?a rdf:type a)]"
+            "(?a rdf:type ?_) -> addOne(?a).",
+            "(?a rdf:type ?_) -> [(?a rdf:type ?_) -> addOne(?a)].",
+           "(?a rdf:type ?_) -> (?a rdf:type '42').",
+           "(?a rdf:type ?_) -> (?a rdf:type 4.2).",
+           "(?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)').",
+            "[rule1: (?a rdf:type ?_) -> (?a rdf:type a)]"
         };
         String[] testResults = new String[] {
-            "[ (?a rdf:type *) -> (?a rdf:type ?b) ]",
-            "[ (?a rdf:type *) (?a rdf:type *) -> (?a rdf:type ?b) ]",
+            "[ (?a rdf:type ?_) -> (?a rdf:type ?b) ]",
+            "[ (?a rdf:type ?_) (?a rdf:type ?_) -> (?a rdf:type ?b) ]",
             "[ (?a rdf:type max(?a 1^^http://www.w3.org/2001/XMLSchema#int)^^urn:x-hp-jena:Functor) -> (?a rdf:type 'foo') ]",
-            "[ (?a rdf:type *) -> addOne(?a) ]",
-            "[ (?a rdf:type *) -> [ (?a rdf:type *) -> addOne(?a) ] ]",
-            "[ (?a rdf:type *) -> (?a rdf:type '42') ]",
-            "[ (?a rdf:type *) -> (?a rdf:type 4.2^^http://www.w3.org/2001/XMLSchema#float) ]",
-            "[ (?a rdf:type *) -> (?a rdf:type ' fool that,I(am)') ]",
-            "[ rule1: (?a rdf:type *) -> (?a rdf:type a) ]"
+            "[ (?a rdf:type ?_) -> addOne(?a) ]",
+            "[ (?a rdf:type ?_) -> [ (?a rdf:type ?_) -> addOne(?a) ] ]",
+            "[ (?a rdf:type ?_) -> (?a rdf:type '42') ]",
+            "[ (?a rdf:type ?_) -> (?a rdf:type 4.2^^http://www.w3.org/2001/XMLSchema#float) ]",
+            "[ (?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)') ]",
+            "[ rule1: (?a rdf:type ?_) -> (?a rdf:type a) ]"
         };
         
         for (int i = 0; i < testRules.length; i++) {
@@ -340,7 +340,7 @@ public class TestBasics extends TestCase  {
                        "(?C rb:restriction all(eg:p, eg:D)) -> (?C rb:restriction 'allOK')." +
                        "[ -> (eg:foo eg:prop functor(eg:bar, 1)) ]" +
                        "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
-                       "[ (?x eg:prop functor(?v, *)) -> (?x eg:propfunc ?v) ]" +
+                       "[ (?x eg:prop functor(?v, ?*)) -> (?x eg:propfunc ?v) ]" +
                        "";
         List ruleList = Rule.parseRules(rules);
         

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Trail.java,v 1.3 2003-05-21 11:13:49 der Exp $
+ * $Id: Trail.java,v 1.4 2003-08-12 09:33:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * own trail segment which is an instance of this class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-21 11:13:49 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-12 09:33:02 $
  */
 public class Trail implements BindingEnvironment {
     
@@ -204,6 +204,7 @@ public class Trail implements BindingEnvironment {
      */
     public boolean bind(Node var, Node value) {
         if (var == Node_RuleVariable.WILD || value == Node_RuleVariable.WILD) return true;
+//        if (var == Node.ANY || value == Node.ANY) return true;
         Node dvar = getGroundVersion(var);
         if (dvar instanceof Node_RuleVariable) {
             trail.add(new TrailEntry((Node_RuleVariable)dvar, value));

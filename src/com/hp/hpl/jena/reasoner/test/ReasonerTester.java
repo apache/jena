@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.20 2003-08-03 09:53:57 der Exp $
+ * $Id: ReasonerTester.java,v 1.21 2003-08-12 09:33:03 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -46,7 +46,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-08-03 09:53:57 $
+ * @version $Revision: 1.21 $ on $Date: 2003-08-12 09:33:03 $
  */
 public class ReasonerTester {
 
@@ -166,6 +166,7 @@ public class ReasonerTester {
     public static Node nodeToPattern(Node n) {
         if (n.isURI() && n.toString().startsWith("var:")) {
             return Node_RuleVariable.WILD;
+//            return Node.ANY;
         } else {
             return n;
         }

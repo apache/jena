@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.19 2003-07-25 12:16:47 der Exp $
+ * $Id: TestFBRules.java,v 1.20 2003-08-12 09:33:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-07-25 12:16:47 $
+ * @version $Revision: 1.20 $ on $Date: 2003-08-12 09:33:02 $
  */
 public class TestFBRules extends TestCase {
     
@@ -125,7 +125,7 @@ public class TestFBRules extends TestCase {
                         "(?C rb:restriction all(eg:p, eg:D)) -> (?C rb:restriction 'allOK')." +
                        "[ -> (eg:foo eg:prop functor(eg:bar, 1)) ]" +
                        "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
-                       "[ (?x eg:prop functor(?v, *)) -> (?x eg:propfunc ?v) ]" +
+                       "[ (?x eg:prop functor(?v, ?*)) -> (?x eg:propfunc ?v) ]" +
                        "";
         List ruleList = Rule.parseRules(rules);
         

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.15 2003-07-25 12:16:16 der Exp $
+ * $Id: Rule.java,v 1.16 2003-08-12 09:32:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.15 $ on $Date: 2003-07-25 12:16:16 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.16 $ on $Date: 2003-08-12 09:32:57 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -552,8 +552,11 @@ public class Rule implements ClauseEntry {
         Node parseNode(String token) {
             if (token.startsWith("?")) {
                 return getNodeVar(token);
+                // Dropped support for anon wildcards until the implementation is better resolved
             } else if (token.equals("*") || token.equals("_")) {
-                return Node_RuleVariable.ANY;
+                throw new ParserException("Wildcard variables no longer supported", this);
+////                return Node_RuleVariable.ANY;
+//                return Node_RuleVariable.WILD;
             } else if (token.indexOf(':') != -1) {
                 String exp = PrintUtil.expandQname(token);
                 if (exp == token) {
@@ -563,7 +566,7 @@ public class Rule implements ClauseEntry {
                         // assume it is all OK and fall through
                     } else {
                         // Likely to be a typo in a qname or failure to register
-                        throw new JenaException("Unrecognized qname prefix (" + prefix + ") in rule");
+                        throw new ParserException("Unrecognized qname prefix (" + prefix + ") in rule", this);
                     }
                 }
                 return Node.createURI(exp);
