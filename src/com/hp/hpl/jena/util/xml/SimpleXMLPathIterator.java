@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Dec-2003
  * Filename           $RCSfile: SimpleXMLPathIterator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:36:46 $
+ * Last modified on   $Date: 2003-12-08 09:28:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -35,7 +35,7 @@ import org.w3c.dom.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SimpleXMLPathIterator.java,v 1.1 2003-12-04 16:36:46 ian_dickinson Exp $
+ * @version CVS $Id: SimpleXMLPathIterator.java,v 1.2 2003-12-08 09:28:14 ian_dickinson Exp $
  */
 public class SimpleXMLPathIterator 
     implements Iterator
@@ -131,10 +131,14 @@ public class SimpleXMLPathIterator
      */
     protected void evaluate() {
         // search for a route through to the end of the path
-        int i = m_len - 1;
+        int i = 0;
         m_result = null;
         
-        while (i >= 0 && i < m_len) {
+        // find the tidemark
+        for (; i < min(m_len, m_stack.size()) && (m_stack.get(i) != null); i++);
+        i--;
+        
+        while (i >= 0 && i < min(m_len, m_stack.size())) {
             Iterator j = (Iterator) m_stack.get( i );
             
             if (j == null) {
@@ -159,6 +163,12 @@ public class SimpleXMLPathIterator
         }
     }
 
+
+    /** Answer the minimum of two ints */
+    private int min( int x, int y ) {
+        return (x < y) ? x : y;
+    }
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================

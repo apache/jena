@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Dec-2003
  * Filename           $RCSfile: SimpleXMLPathAttr.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:36:46 $
+ * Last modified on   $Date: 2003-12-08 09:28:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -35,7 +35,7 @@ import org.w3c.dom.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SimpleXMLPathAttr.java,v 1.1 2003-12-04 16:36:46 ian_dickinson Exp $
+ * @version CVS $Id: SimpleXMLPathAttr.java,v 1.2 2003-12-08 09:28:14 ian_dickinson Exp $
  */
 public class SimpleXMLPathAttr 
     implements SimpleXMLPathComponent
@@ -53,6 +53,11 @@ public class SimpleXMLPathAttr
     // Constructors
     //////////////////////////////////
 
+    /**
+     * <p>Construct a simple XML path component that selects the value
+     * of a named attribute.</p>
+     * @param attrName The name of the attribute to select
+     */
     public SimpleXMLPathAttr( String attrName ) {
         m_attrName = attrName;
     }
