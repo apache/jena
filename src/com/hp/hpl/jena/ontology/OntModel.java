@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-07 09:33:41 $
+ * Last modified on   $Date: 2003-04-08 14:38:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -59,7 +59,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.6 2003-04-07 09:33:41 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.7 2003-04-08 14:38:27 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -606,6 +606,20 @@ public interface OntModel
      * @return The base-graph for this ontology model
      */
     public Graph getBaseGraph();
+    
+    
+    /**
+     * <p>
+     * Answer the base model of this model. The base model is the model wrapping
+     * the graph that contains the triples read from the source document for this 
+     * ontology.  It is therefore the model that will be updated if statements are
+     * added to a model that is built from a union of documents (via the 
+     * <code>imports</code> statements in the source document).
+     * </p>
+     * 
+     * @return The base model for this ontology model
+     */
+    public Model getBaseModel();
     
     
     /**

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 14:29:59 $
+ * Last modified on   $Date: 2003-04-08 14:37:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.6 2003-04-08 14:29:59 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.7 2003-04-08 14:37:55 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -103,7 +103,6 @@ public class OntModelImpl
      */
     public OntModelImpl( String languageURI, Model model, OntDocumentManager docMgr, GraphFactory gf ) {
         // all ontologies are defined to be union graphs, to allow us to add the imports to the union
-        //super( new MultiUnion(), BuiltinPersonalities.model );
         super( new OntologyGraph(), BuiltinPersonalities.model );
         
         Profile lang = ProfileRegistry.getInstance().getProfile( languageURI );
@@ -899,6 +898,22 @@ public class OntModelImpl
      */
     public Graph getBaseGraph() {
         return ((MultiUnion) getGraph()).getBaseGraph();
+    }
+    
+    
+    /**
+     * <p>
+     * Answer the base model of this model. The base model is the model wrapping
+     * the graph that contains the triples read from the source document for this 
+     * ontology.  It is therefore the model that will be updated if statements are
+     * added to a model that is built from a union of documents (via the 
+     * <code>imports</code> statements in the source document).
+     * </p>
+     * 
+     * @return The base model for this ontology model
+     */
+    public Model getBaseModel() {
+        return ModelFactory.createModelForGraph( getBaseGraph() );
     }
     
     
