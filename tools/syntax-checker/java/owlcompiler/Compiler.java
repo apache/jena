@@ -137,6 +137,12 @@ public class Compiler implements Constants, LookupLimits {
 		refinedSubject,
 		refinedProperty,
 		refinedObject).save();
+		
+		System.err.println(internedCalled + " calls to intern.");
+		System.err.println(internedCalledLength + " total array length.");
+		
+		System.err.println(internedIntArrays.size() + " interned arrays.");
+		System.err.println(internedAddedLength + " interned array length.");
 	}
 
 	private void initLookup() {
