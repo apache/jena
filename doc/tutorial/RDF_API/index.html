@@ -73,7 +73,8 @@ href="http://www.w3.org/TR/vcard-rdf">RDF representation of VCARDS</a>.  RDF
 is best thought of in the form of node and arc diagrams.  A simple vcard
 might look like this in RDF:</p>
 
-<p align="center"><img border="0" src="figures/fig1.png" alt="figure 1"></p>
+<p align="center">
+<img border="0" src="figures/fig1.png" alt="figure 1" width="240" height="180"></p>
 
 <p>The <a href="#glos-Resource"><i>resource</i></a>, John Smith, is shown as
 an elipse and is identified by a Uniform Resource Identifier (URI)<font
@@ -163,7 +164,8 @@ properties can also take other resources as their value.  Using a common RDF
 technique, this example shows how to represent the different parts of John
 Smith's name:</p>
 
-<p align="center"><img border="0" src="figures/fig2.png" alt="figure 2"></p>
+<p align="center">
+<img border="0" src="figures/fig2.png" alt="figure 2" width="360" height="240"></p>
 
 <p>Here we have added a new property, vcard:N, to represent the structure of
 John Smith's name.  There are several things of interest about this
@@ -313,9 +315,9 @@ model.write(System.out);</code></pre>
  &gt;
   &lt;rdf:Description rdf:about='http://somewhere/JohnSmith'&gt;
     &lt;vcard:FN&gt;John Smith&lt;/vcard:FN&gt;
-    &lt;vcard:N rdf:resource='#A0'/&gt;
+    &lt;vcard:N rdf:nodeID=&quot;A0&quot;/&gt;
   &lt;/rdf:Description&gt;
-  &lt;rdf:Description rdf:about='#A0'&gt;
+  &lt;rdf:Description rdf:nodeID=&quot;A0&quot;&gt;
     &lt;vcard:Given&gt;John&lt;/vcard:Given&gt;
     &lt;vcard:Family&gt;Smith&lt;/vcard:Family&gt;
   &lt;/rdf:Description&gt;
@@ -365,7 +367,7 @@ RDF/XML writer which can be invoked by specifying another argument to the
 
 <blockquote>
   <pre><code>// now write the model in XML form to a file
-model.write(system.out, "RDF/XML-ABBREV");
+model.write(System.out, "RDF/XML-ABBREV");
  </code></pre>
 </blockquote>
 
@@ -378,7 +380,7 @@ N-Triples format:</p>
 
 <blockquote>
   <pre><code>// now write the model in XML form to a file
-model.write(system.out, "N-TRIPLE");
+model.write(System.out, "N-TRIPLE");
   </code></pre>
 </blockquote>
 
@@ -412,7 +414,7 @@ if (in == null) {
 model.read(new InputStreamReader(in), "");
 
 // write it to standard out
-model.write(system.out);
+model.write(System.out);
       </code></pre>
 </blockquote>
 
@@ -427,37 +429,37 @@ looks like:</p>
   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
   xmlns:vcard='http://www.w3.org/2001/vcard-rdf/3.0#'
  &gt;
-  &lt;rdf:Description rdf:about='#A0'&gt;
+  &lt;rdf:Description rdf:nodeID=&quot;A0&quot;&gt;
     &lt;vcard:Family&gt;Smith&lt;/vcard:Family&gt;
     &lt;vcard:Given&gt;John&lt;/vcard:Given&gt;
   &lt;/rdf:Description&gt;
   &lt;rdf:Description rdf:about='http://somewhere/JohnSmith/'&gt;
     &lt;vcard:FN&gt;John Smith&lt;/vcard:FN&gt;
-    &lt;vcard:N rdf:resource='#A0'/&gt;
+    &lt;vcard:N rdf:nodeID=&quot;A0&quot;/&gt;
   &lt;/rdf:Description&gt;
   &lt;rdf:Description rdf:about='http://somewhere/SarahJones/'&gt;
     &lt;vcard:FN&gt;Sarah Jones&lt;/vcard:FN&gt;
-    &lt;vcard:N rdf:resource='#A1'/&gt;
+    &lt;vcard:N rdf:nodeID=&quot;A1&quot;/&gt;
   &lt;/rdf:Description&gt;
   &lt;rdf:Description rdf:about='http://somewhere/MattJones/'&gt;
     &lt;vcard:FN&gt;Matt Jones&lt;/vcard:FN&gt;
-    &lt;vcard:N rdf:resource='#A2'/&gt;
+    &lt;vcard:N rdf:nodeID=&quot;A2&quot;/&gt;
   &lt;/rdf:Description&gt;
-  &lt;rdf:Description rdf:about='#A3'&gt;
+  &lt;rdf:Description rdf:nodeID=&quot;A3&quot;&gt;
     &lt;vcard:Family&gt;Smith&lt;/vcard:Family&gt;
     &lt;vcard:Given&gt;Rebecca&lt;/vcard:Given&gt;
   &lt;/rdf:Description&gt;
-  &lt;rdf:Description rdf:about='#A1'&gt;
+  &lt;rdf:Description rdf:nodeID=&quot;A1&quot;&gt;
     &lt;vcard:Family&gt;Jones&lt;/vcard:Family&gt;
     &lt;vcard:Given&gt;Sarah&lt;/vcard:Given&gt;
   &lt;/rdf:Description&gt;
-  &lt;rdf:Description rdf:about='#A2'&gt;
+  &lt;rdf:Description rdf:nodeID=&quot;A2&quot;&gt;
     &lt;vcard:Family&gt;Jones&lt;/vcard:Family&gt;
     &lt;vcard:Given&gt;Matthew&lt;/vcard:Given&gt;
   &lt;/rdf:Description&gt;
   &lt;rdf:Description rdf:about='http://somewhere/RebeccaSmith/'&gt;
     &lt;vcard:FN&gt;Becky Smith&lt;/vcard:FN&gt;
-    &lt;vcard:N rdf:resource='#A3'/&gt;
+    &lt;vcard:N rdf:nodeID=&quot;A3&quot;/&gt;
   &lt;/rdf:Description&gt;
 &lt;/rdf:RDF&gt;</code></pre>
 </blockquote>
@@ -793,13 +795,15 @@ represent each Model.  This is one of the key operations that the design of
 RDF supports.  It enables data from disparate data sources to be merged.
 Consider the following two Models:</p>
 
-<p style="text-align: center"><img alt="figure 4" src="figures/fig4.png">and
-<img alt="figure 5" src="figures/fig5.png"></p>
+<p style="text-align: center">
+<img alt="figure 4" src="figures/fig4.png" width="240" height="240">and
+<img alt="figure 5" src="figures/fig5.png" width="240" height="240"></p>
 
 <p>When these are merged, the two http://...JohnSmith nodes are merged into
 one and the duplicate <code>vcard:FN</code> arc is dropped to produce:</p>
 
-<p style="text-align: center"><img alt="figure 6" src="figures/fig6.png"></p>
+<p style="text-align: center">
+<img alt="figure 6" src="figures/fig6.png" width="540" height="240"></p>
 
 <p>Lets look at the code to do this (the full code is in <a
 href="code/Tutorial09.java">tutorial 9</a>) and see what happens.</p>
@@ -819,21 +823,23 @@ model.write(system.out, "RDF/XML-ABBREV");</code></pre>
 <p>The output produced by the pretty writer looks like this:</p>
 
 <blockquote>
-  <pre><code>&lt;?xml version='1.0'?&gt;
-&lt;rdf:RDF
-    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
-    xmlns:vcard='http://www.w3.org/2001/vcard-rdf/3.0#'&gt;
-    &lt;rdf:Description rdf:about='http://somewhere/JohnSmith/'&gt;
-        &lt;vcard:N
-             vcard:Given='John'
-             vcard:Family='Smith'/&gt;
-        &lt;vcard:FN&gt;John Smith&lt;/vcard:FN&gt;
-        &lt;vcard:EMAIL
-             rdf:value='John@somewhere.com'
-             rdf:type='http://www.w3.org/2001/vcard-rdf/3.0#internet'/&gt;
-    &lt;/rdf:Description&gt;
-&lt;/rdf:RDF&gt;
-  </code></pre>
+  <pre>&lt;rdf:RDF
+    xmlns:rdf=&quot;<a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#">http://www.w3.org/1999/02/22-rdf-syntax-ns#</a>&quot;
+    xmlns:vcard=&quot;http://www.w3.org/2001/vcard-rdf/3.0#&quot;&gt;
+  &lt;rdf:Description rdf:about=&quot;http://somewhere/JohnSmith/&quot;&gt;
+    &lt;vcard:EMAIL&gt;
+      &lt;vcard:internet&gt;
+        &lt;rdf:value&gt;John@somewhere.com&lt;/rdf:value&gt;
+      &lt;/vcard:internet&gt;
+    &lt;/vcard:EMAIL&gt;
+    &lt;vcard:N rdf:parseType=&quot;Resource&quot;&gt;
+      &lt;vcard:Given&gt;John&lt;/vcard:Given&gt;
+      &lt;vcard:Family&gt;Smith&lt;/vcard:Family&gt;
+    &lt;/vcard:N&gt;
+    &lt;vcard:FN&gt;John Smith&lt;/vcard:FN&gt;
+  &lt;/rdf:Description&gt;
+&lt;/rdf:RDF&gt;</pre>
+  <pre><code> </code></pre>
 </blockquote>
 
 <p>Even if you are unfamiliar with the details of the RDF/XML syntax, it
@@ -866,7 +872,8 @@ rdf:_2 property and so on. The rdf:_nnn properties are known as the
 <p>For example, the Model for a simple bag containing the vcards of the
 Smith's might look like this:</p>
 
-<p align="center"><img border="0" src="figures/fig3.png" alt="figure 3"></p>
+<p align="center">
+<img border="0" src="figures/fig3.png" alt="figure 3" width="720" height="420"></p>
 
 <p align="left">Whilst the members of the bag are represented by the
 properties rdf:_1, rdf:_2 etc the ordering of the properties is not
@@ -915,7 +922,7 @@ while (iter.hasNext()) {
   xmlns:vcard='http://www.w3.org/2001/vcard-rdf/3.0#'
  &gt;
 ...
-  &lt;rdf:Description rdf:about='#A3'&gt;
+  &lt;rdf:Description rdf:nodeID=&quot;A3&quot;&gt;
     &lt;rdf:type rdf:resource='http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag'/&gt;
     &lt;rdf:_1 rdf:resource='http://somewhere/JohnSmith/'/&gt;
     &lt;rdf:_2 rdf:resource='http://somewhere/RebeccaSmith/'/&gt;
@@ -1002,7 +1009,7 @@ model.write(system.out);</code></pre>
   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
   xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
  &gt;
-  &lt;rdf:Description rdf:about='#A0'&gt;
+  &lt;rdf:Description rdf:nodeID=&quot;A0&quot;&gt;
     &lt;rdfs:label xml:lang='en'&gt;chat&lt;/rdfs:label&gt;
     &lt;rdfs:label xml:lang='fr'&gt;chat&lt;/rdfs:label&gt;
     &lt;rdfs:label xml:lang='en' rdf:parseType='Literal'&gt;&lt;em&gt;chat&lt;/em&gt;&lt;/rdfs:label&gt;
@@ -1111,5 +1118,4 @@ Another term for a statement.
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
 <br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>
-<br> $Date: 2003-08-04 11:17:50 $ $Revision: 1.10 $</small></i></body>
-</html>
+<br> $Id: index.html,v 1.11 2004-01-09 17:16:06 andy_seaborne Exp $</small></i></body></html>

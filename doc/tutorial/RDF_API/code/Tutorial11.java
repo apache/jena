@@ -1,8 +1,9 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
-  [See end of file]
-  $Id: Tutorial11.java,v 1.3 2003-07-08 07:38:38 chris-dollin Exp $
-*/
+ * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ * $Id: Tutorial11.java,v 1.4 2004-01-09 17:16:30 andy_seaborne Exp $
+ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -12,7 +13,7 @@ import java.io.PrintWriter;
 /** Tutorial 11 - more on literals
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-07-08 07:38:38 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2004-01-09 17:16:30 $'
  */
 public class Tutorial11 extends Object {
     
@@ -49,8 +50,8 @@ public class Tutorial11 extends Object {
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
- *  All rights reserved.
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -62,7 +63,7 @@ public class Tutorial11 extends Object {
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
-
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -73,5 +74,4 @@ public class Tutorial11 extends Object {
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
