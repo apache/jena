@@ -37,6 +37,7 @@ abstract class AbsChecker extends EnhGraph {
 		 * @return 0 on failure, 1 on trivial, 2 on refinement
 		 */
 	final int addX(Triple t, boolean topLevelCall) {
+//		System.err.println("+ " + t.toString() + (topLevelCall?" !":""));
 		CNodeI s = (CNodeI) getNodeAs(t.getSubject(), CNodeI.class);
 		CNodeI p = (CNodeI) getNodeAs(t.getPredicate(), CNodeI.class);
 		CNodeI o = (CNodeI) getNodeAs(t.getObject(), CNodeI.class);
@@ -61,6 +62,10 @@ abstract class AbsChecker extends EnhGraph {
 		while (success) {
 			if (s1 == s0 && p1 == p0 && o1 == o0)
 				break; // the exit point for success
+				/*
+		    System.err.println("s:" + s0 + " -> " + s1 + "\n" +
+                              " p:" + p0 + " -> " + p1 + "\n" +
+                              " o:" + o0 + " -> " + o1); */
 			s0 = s1; // record these values, exit when stable
 			p0 = p1;
 			o0 = o1;
@@ -97,14 +102,17 @@ abstract class AbsChecker extends EnhGraph {
 			p.setCategories(pOrig, false);
 			o.setCategories(oOrig, false);
 		}
+		int rr;
 		if (!success) {
 			setMonotoneLevel(wantLite?Levels.DL:Levels.Full);
-			return 0;
-		}
+			rr = 0;
+		} else
 		if (s1 == sOrig && p1 == pOrig && o1 == oOrig)
-			return 1;
+			rr = 1;
 		else
-			return 2;
+			rr = 2;
+	//	System.err.println("* " + t.toString() + "[" + rr + "]");
+		return rr;
 	}
 	void setMonotoneLevel(int l) {
 		if (monotoneLevel < l)
@@ -115,12 +123,18 @@ abstract class AbsChecker extends EnhGraph {
 	boolean recursivelyUpdate(Node n) {
 		return rec(n, null, null) && rec(null, n, null) && rec(null, null, n);
 	}
-
+    //static int call = 0;
 	private boolean rec(Node s, Node p, Node o) {
 		boolean rslt = true;
+		//int i =0;
+		//int n = hasBeenChecked.size();
+		//int c = call++;
 		ClosableIterator it = new EarlyBindingIterator(hasBeenChecked.find(s, p, o));
-		while (rslt && it.hasNext())
+		while (rslt && it.hasNext()) {
+		//	System.err.println("[" + c +"]rec " + i++ + " of " + n);
 			rslt = add((Triple) it.next(), false);
+		}
+		//System.err.println("[" + c +"]rec done " + n);
 
 		it.close();
 		return rslt;

@@ -62,7 +62,7 @@ public class Checker extends AbsChecker {
 		if (nonMonotoneProblems == null) {
 			nonMonotoneProblems = new Vector();
 			nonMonotoneLevel = Levels.Lite;
-			Model m = ModelFactory.createModelForGraph(hasBeenChecked);
+			Model m = ModelFactory.createModelForGraph(asGraph());
 		
 		/*
 		 * Easy problems to check.
@@ -214,7 +214,7 @@ public class Checker extends AbsChecker {
 		GraphFactory gf = dm.getDefaultGraphFactory();
 		Checker chk = new Checker(argv.length==2 && argv[1].equalsIgnoreCase("Lite"), gf);
 		chk.add(m.getGraph());
-
+      //  System.err.println("g added.");
 		String subLang = chk.getSubLanguage();
 		System.out.println(subLang);
 

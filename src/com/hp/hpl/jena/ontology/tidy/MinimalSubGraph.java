@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.1 2003-04-17 10:50:02 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.2 2003-04-17 21:40:08 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -60,6 +60,7 @@ class MinimalSubGraph extends AbsChecker {
 			// todo cannot be empty, because if it were
 			// we would have found a contradiction.
 			Node n = (Node) todo.iterator().next();
+			todo.remove(n);
 			done.add(n);
 			if (unfinished(n)) {
 				if (extend(n))
