@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.33 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.34 2003-11-20 15:48:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.33 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.34 $ on $Date: 2003-11-20 15:48:54 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -169,6 +169,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * this prepration is done.
      */
     public synchronized void prepare() {
+        if (isPrepared) return;
         isPrepared = true;
         // initilize the deductions graph
         fdeductions = new FGraph( new GraphMem() );
