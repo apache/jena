@@ -8,16 +8,13 @@ package jena;
 import jena.cmdline.*;
 
 import java.util.*;
-import com.hp.hpl.jena.ontology.tidy.test.WGTests;
 import com.hp.hpl.jena.ontology.tidy.*;
-import com.hp.hpl.jena.ontology.OntDocumentManager;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.ontology.ProfileRegistry;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
 
 /**
  * Implements the OWL Syntax Checker from the OWL Test Cases. Current known
@@ -33,7 +30,7 @@ import java.io.*;
  * class in the second then a Full reasoner is needed.
  * 
  * @author Jeremy Carroll
- * @version $Id: owlsyntax.java,v 1.7 2005-02-21 11:49:12 andy_seaborne Exp $
+ * @version $Id: owlsyntax.java,v 1.8 2005-04-06 08:53:29 chris-dollin Exp $
  */
 public class owlsyntax {
 	private owlsyntax() {
@@ -154,7 +151,7 @@ public class owlsyntax {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		System.out.println(mainStr(args));
 	}
 
@@ -162,7 +159,7 @@ public class owlsyntax {
 	 * Run the OWL Syntax Checker, return result as a string. See {@link #main}
 	 * for usage etc.
 	 */
-	public static String mainStr(String args[]) {
+	public static String mainStr(String args[]) throws Exception {
 		String lang = "RDF/XML";
 		CommandLine cmd = new CommandLine();
 		cmd.setUsage(usageMessage);
@@ -180,7 +177,8 @@ public class owlsyntax {
 		if (cmd.contains(langDecl))
 			lang = cmd.getArg(langDecl).getValue();
 
-		boolean testing = cmd.contains(testDecl) || cmd.contains(textUIDecl);
+        boolean wantsTextUI = cmd.contains(textUIDecl);
+        boolean testing = cmd.contains(testDecl) || wantsTextUI;
 		boolean running = (!testing) || cmd.contains(quietDecl)
 				|| cmd.contains(shortDecl) || cmd.contains(liteDecl)
 				|| cmd.contains(bigDecl);
@@ -208,7 +206,7 @@ public class owlsyntax {
 			if (cmd.items().size() > 0) {
 				manifest = (String) cmd.items().get(0);
 			}
-			WGTests.test(cmd.contains(textUIDecl), manifest);
+			runWGTests( wantsTextUI, manifest );
 		    return "";
 		} else if (lang.equals("RDF/XML")) {
 			StreamingChecker chk = new StreamingChecker(cmd.contains(liteDecl),dm);
@@ -260,6 +258,14 @@ public class owlsyntax {
 			}
 		}
 	}
+
+    protected static void runWGTests( boolean wantsTextUI, String manifest ) throws Exception
+        { // to allow splitting off JUnit dependencies
+        Class rdfparse = Class.forName( "jena.test.owlsyntax" );
+        Constructor constructor = rdfparse.getConstructor( new Class[] {boolean.class, String.class} );
+        Command c = (Command) constructor.newInstance( new Object[] {new Boolean( wantsTextUI ), manifest } );
+        c.execute();
+        }
 
 
 	static private String check(Checker chk, String url, String lang,
