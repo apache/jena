@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.7 2003-08-22 14:34:01 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.8 2003-08-24 16:23:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -76,9 +76,12 @@ public abstract class ModelSpecImpl implements ModelSpec
     public static ModelSpec create( Model desc )
         {
         Model d = ModelFactory.createRDFSModel( JMS.schema, desc );
+        Resource r = findRootByType( d, JMS.MakerSpec );
         if (d.listStatements( null, RDF.type, JMS.OntModelSpec ).hasNext())
+            {
             return new OntModelSpec( desc );
-        if (d.listStatements( null, RDF.type, JMS.ReasonerSpec).hasNext())
+            }
+        if (d.listStatements( null, RDF.type, JMS.InfModelSpec).hasNext())
             return new InfModelSpec( desc );
         if (d.listStatements( null, RDF.type, JMS.MemMakerSpec).hasNext())
             return new PlainModelSpec( desc );
@@ -145,7 +148,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         Model d = ModelFactory.createRDFSModel( JMS.schema, description );
         ResIterator rs  = d.listSubjectsWithProperty( RDF.type, r );
         if (rs.hasNext()) return rs.nextResource();
-        throw new JenaException( "no " + r + " thing found" );
+        throw new BadDescriptionException( "no " + r + " thing found", description );
         }
     
     /**
