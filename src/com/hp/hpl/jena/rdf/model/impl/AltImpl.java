@@ -35,12 +35,11 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.shared.*;
 
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-06-13 15:28:36 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-06-16 15:14:56 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     

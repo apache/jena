@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testReaderInterface.java,v 1.5 2003-06-16 09:16:59 chris-dollin Exp $
+ * $Id: testReaderInterface.java,v 1.6 2003-06-16 15:15:24 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class testReaderInterface extends Object {
 
@@ -74,10 +74,8 @@ public class testReaderInterface extends Object {
                     m1.setReaderClassName("foobar", "");
                     reader = m1.getReader("foobar");
                     error(test, n);
-                 } catch (RDFException e) {
-                     if (e.getErrorCode() != RDFException.NOREADERFORLANG) {
-                         error(test, n);
-                     }
+                 } catch (JenaNoReaderForLangException jx) {
+                     // that's what we expect
                  }
 
             n++; m1.setReaderClassName("foobar",

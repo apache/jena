@@ -1,30 +1,7 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
- *  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * $Id: Regression.java,v 1.7 2003-05-21 15:33:19 chris-dollin Exp $
+    (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+    [See end of file]
+    $Id: Regression.java,v 1.8 2003-06-16 15:15:24 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -49,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-05-21 15:33:19 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-06-16 15:15:24 $'
  */
 public class Regression extends Object {
 
@@ -490,28 +467,11 @@ public class Regression extends Object {
 
                 try {
                     n++; p = m.createProperty(null); error(test, n);
-                } catch (RDFException e) {
-                    if (e.getErrorCode() != RDFException.INVALIDPROPERTYURI) {
-                        error(test, n, e);
-                    }
+                } catch (JenaInvalidPropertyURIException jx) {
+                    // as expected.
+                    
                 }
-/*
-                try {
-                    n++; p = m.createProperty(""); error(test, n);
-                } catch (JenaException e) {
-                    if (e.getErrorCode() != RDFException.INVALIDPROPERTYURI) {
-                        error(test, n, e);
-                    }
-                }
-
-                try {
-                    n++; p = m.createProperty("abc"); error(test, n);
-                } catch (JenaException e) {
-                    if (e.getErrorCode() != RDFException.INVALIDPROPERTYURI) {
-                        error(test, n, e);
-                    }
-                }
-*/
+                
                 try {
                     n++; p = m.createProperty("abc/def");
                     n++; if (! p.getNameSpace().equals("abc/")) error(test, n);
@@ -520,7 +480,7 @@ public class Regression extends Object {
                 } catch (JenaException e) {
                     error(test, n, e);
                 }
-
+                
                 try {
                     n++; p = m.createProperty("abc/", "def");
                     n++; if (! p.getNameSpace().equals("abc/")) error(test, n);
@@ -1468,9 +1428,8 @@ public class Regression extends Object {
 
             n++; try {
                 stmt = m.getProperty(subject[1], RDF.value); error(test,n);
-            } catch (RDFException e) {
-                if (e.getErrorCode() != RDFException.PROPERTYNOTFOUND)
-                error(test,n);
+            } catch (JenaPropertyNotFoundException jx) {
+                // as required
             }
 
             for (int i=0; i<num; i++) {
@@ -2641,9 +2600,7 @@ public class Regression extends Object {
                        error(test,n);
             n++; try {
                      r.getProperty(RDF.type); error(test, n);
-                } catch (RDFException e) {
-                    if (e.getErrorCode() != RDFException.PROPERTYNOTFOUND)
-                        error(test,n);
+                } catch (JenaPropertyNotFoundException e) { // as expected
                 }
             n++; iter = r.listProperties(RDF.value);
                  int count = 0;
@@ -2724,9 +2681,8 @@ public class Regression extends Object {
                        m.createStatement(r, RDF.value, false)
                         .getResource();
                        error(test,n);
-                } catch(RDFException e) {
-                    if (e.getErrorCode() != RDFException.OBJECTNOTRESOURCE)
-                        error(test,n);
+                } catch(JenaResourceRequiredException e) {
+                    // as required
                 }
             n++; if (! m.createStatement(r, RDF.value, true)
                         .getLiteral()
@@ -2735,9 +2691,8 @@ public class Regression extends Object {
                        m.createStatement(r, RDF.value, r)
                         .getLiteral();
                        error(test,n);
-                } catch(RDFException e) {
-                    if (e.getErrorCode() != RDFException.OBJECTNOTLITERAL)
-                        error(test,n);
+                } catch(JenaLiteralRequiredException e) {
+                    // as required
                 }
             n = 200;
             n++; if (! m.createStatement(r, RDF.value, true)
@@ -3547,15 +3502,13 @@ public class Regression extends Object {
                 n++; if (!  (seq.getSeq(16).equals(tvSeq))) error(test,n);
                 n++; try {
                         seq.getInt(17); error(test,n);
-                    } catch (RDFException e) {
-                n++;    if (! (e.getErrorCode()==RDFException.SEQINDEXBOUNDS))
-                             error(test,n);
+                    } catch (JenaSeqIndexBoundsException e) {
+                        // as required
                     }
                 n++; try {
                         seq.getInt(0); error(test,n);
-                    } catch (RDFException e) {
-                n++;    if (! (e.getErrorCode()==RDFException.SEQINDEXBOUNDS))
-                             error(test,n);
+                    } catch (JenaSeqIndexBoundsException e) {
+                        // as required
                     }
             }
 
@@ -3568,18 +3521,16 @@ public class Regression extends Object {
 
                      try {
                 n++;        seq.add(0, false); error(test,n);
-                     } catch (RDFException e) {
-                n++;     if (! (e.getErrorCode()==RDFException.SEQINDEXBOUNDS))
-                             error(test,n);
+                     } catch (JenaSeqIndexBoundsException e) {
+                        // as required
                      }
                      seq.add(num+1, false);
                      if (seq.size() != num+1) error(test,n);
                      seq.remove(num+1);
                      try {
                 n++;        seq.add(num+2, false); error(test,n);
-                     } catch (RDFException e) {
-                n++;     if (! (e.getErrorCode()==RDFException.SEQINDEXBOUNDS))
-                             error(test,n);
+                     } catch (JenaSeqIndexBoundsException e) {
+                        // as required
                      }
 
                n=820;
@@ -3837,11 +3788,11 @@ public class Regression extends Object {
                 }
                 if (! m.contains(RDF.Property, RDF.type, RDFS.Class))
                     error(test, n);
-            } catch (RDFException rdfx) {
-                if (rdfx.getErrorCode() == RDFException.NESTEDEXCEPTION &&
-                 ( rdfx.getNestedException() instanceof NoRouteToHostException
-                 ||rdfx.getNestedException() instanceof UnknownHostException
-                 ||rdfx.getNestedException() instanceof ConnectException)) {
+            } catch (JenaException rdfx) {
+                Throwable th = rdfx.getCause();
+                if ( th instanceof NoRouteToHostException
+                 || th instanceof UnknownHostException
+                 || th instanceof ConnectException) {
                     Log.warning("Cannot access public internet" +
                                  "- part of test note executed",
                                                      "Regression", "test18");
@@ -4103,9 +4054,8 @@ public class Regression extends Object {
             n++;Property p = m.createProperty("foo/", "bar");
                 try {
                      r.getProperty(p); error(test, n);
-                } catch (RDFException e) {
-                    if (e.getErrorCode() != RDFException.PROPERTYNOTFOUND)
-                        error(test,n);
+                } catch (JenaPropertyNotFoundException e) {
+                    // as required
                 }
             n++; iter = r.listProperties(RDF.value);
                  int count = 0;
@@ -4728,15 +4678,13 @@ public class Regression extends Object {
                 n++; if (!  (seq4.getSeq(17).equals(tvSeq))) error(test,n);
                 n++; try {
                         seq4.getInt(18); error(test,n);
-                    } catch (RDFException e) {
-                n++;    if (! (e.getErrorCode()==RDFException.SEQINDEXBOUNDS))
-                             error(test,n);
+                    } catch (JenaSeqIndexBoundsException e) {
+                        // as required
                     }
                 n++; try {
                         seq4.getInt(0); error(test,n);
-                    } catch (RDFException e) {
-                n++;    if (! (e.getErrorCode()==RDFException.SEQINDEXBOUNDS))
-                             error(test,n);
+                    } catch (JenaSeqIndexBoundsException e) {
+                        // as required 
                     }
             }
 
@@ -4748,18 +4696,16 @@ public class Regression extends Object {
 
                      try {
                 n++;        seq5.add(0, false); error(test,n);
-                     } catch (RDFException e) {
-                n++;     if (! (e.getErrorCode()==RDFException.SEQINDEXBOUNDS))
-                             error(test,n);
+                     } catch (JenaSeqIndexBoundsException e) {
+                        // as required
                      }
                      seq5.add(num+1, false);
                      if (seq5.size()!=num+1) error(test,n);
                      seq5.remove(num+1);
                      try {
                 n++;        seq5.add(num+2, false); error(test,n);
-                     } catch (RDFException e) {
-                n++;     if (! (e.getErrorCode()==RDFException.SEQINDEXBOUNDS))
-                             error(test,n);
+                     } catch (JenaSeqIndexBoundsException e) {
+                        // as required
                      }
 
                n=(n/100)*100 + 100;
@@ -4988,3 +4934,31 @@ public class Regression extends Object {
             { return new ResourceImpl( r, r.getModel() ); }
     }
 }
+/*
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * $Id: Regression.java,v 1.8 2003-06-16 15:15:24 chris-dollin Exp $
+ */
