@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            01-Apr-2003
- * Filename           $RCSfile: InverseFunctionalPropertyImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Created            08-May-2003
+ * Filename           $RCSfile: CardinalityRestrictionImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:25 $
+ * Last modified on   $Date: 2003-05-08 14:45:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -30,19 +30,18 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 
 
-
 /**
  * <p>
- * Implementation of the functional property abstraction
+ * Implementation of the cardinality restriction abstraction.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: InverseFunctionalPropertyImpl.java,v 1.4 2003-05-08 14:45:25 ian_dickinson Exp $
+ * @version CVS $Id: CardinalityRestrictionImpl.java,v 1.1 2003-05-08 14:45:29 ian_dickinson Exp $
  */
-public class InverseFunctionalPropertyImpl
-    extends ObjectPropertyImpl
-    implements InverseFunctionalProperty 
+public class CardinalityRestrictionImpl 
+    extends RestrictionImpl
+    implements CardinalityRestriction
 {
     // Constants
     //////////////////////////////////
@@ -51,24 +50,25 @@ public class InverseFunctionalPropertyImpl
     //////////////////////////////////
 
     /**
-     * A factory for generating InverseFunctionalProperty facets from nodes in enhanced graphs.
+     * A factory for generating CardinalityRestriction facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
-                return new InverseFunctionalPropertyImpl( n, eg );
+                return new CardinalityRestrictionImpl( n, eg );
             }
             else {
-                throw new ConversionException( "Cannot convert node " + n + " to InverseFunctionalProperty");
+                throw new ConversionException( "Cannot convert node " + n + " to CardinalityRestriction");
             } 
         }
             
         public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an InverseFunctionalProperty facet if it has rdf:type owl:InverseFunctionalProperty or equivalent
+            // node will support being a CardinalityRestriction facet if it has rdf:type owl:Restriction or equivalent
+            // and the combination of owl:onProperty and owl:cardinality (or equivalents) 
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, InverseFunctionalProperty.class );
+            return (profile != null)  &&  profile.isSupported( node, eg, CardinalityRestriction.class );
         }
     };
 
@@ -81,16 +81,15 @@ public class InverseFunctionalPropertyImpl
 
     /**
      * <p>
-     * Construct an inverse functional property node represented by the given node in the given graph.
+     * Construct a cardinality restriction node represented by the given node in the given graph.
      * </p>
      * 
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
-    public InverseFunctionalPropertyImpl( Node n, EnhGraph g ) {
+    public CardinalityRestrictionImpl( Node n, EnhGraph g ) {
         super( n, g );
     }
-
 
     // External signature methods
     //////////////////////////////////
@@ -134,4 +133,3 @@ public class InverseFunctionalPropertyImpl
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-

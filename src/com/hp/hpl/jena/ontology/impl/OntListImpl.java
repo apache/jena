@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-22 19:18:54 $
+ * Last modified on   $Date: 2003-05-08 14:45:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.9 2003-04-22 19:18:54 ian_dickinson Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.10 2003-05-08 14:45:27 ian_dickinson Exp $
  */
 public class OntListImpl
     extends OntResourceImpl
@@ -64,7 +64,7 @@ public class OntListImpl
                 return new OntListImpl( n, eg );
             }
             else {
-                throw new OntologyException( "Cannot convert node " + n + " to OntList");
+                throw new ConversionException( "Cannot convert node " + n + " to OntList");
             } 
         }
             

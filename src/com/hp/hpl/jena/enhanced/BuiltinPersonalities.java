@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.17 2003-05-07 13:00:41 ian_dickinson Exp $
+  $Id: BuiltinPersonalities.java,v 1.18 2003-05-08 14:46:27 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -42,6 +42,9 @@ public class BuiltinPersonalities {
         .add( HasValueRestriction.class, HasValueRestrictionImpl.factory )
         .add( AllValuesFromRestriction.class, AllValuesFromRestrictionImpl.factory )
         .add( SomeValuesFromRestriction.class, SomeValuesFromRestrictionImpl.factory )
+        .add( CardinalityRestriction.class, CardinalityRestrictionImpl.factory )
+        .add( MinCardinalityRestriction.class, MinCardinalityRestrictionImpl.factory )
+        .add( MaxCardinalityRestriction.class, MaxCardinalityRestrictionImpl.factory )
     
         .add( OntProperty.class, OntPropertyImpl.factory )
         .add( ObjectProperty.class, ObjectPropertyImpl.factory )

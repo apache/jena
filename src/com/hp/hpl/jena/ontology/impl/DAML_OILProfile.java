@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-07 16:10:46 $
+ * Last modified on   $Date: 2003-05-08 14:45:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.9 2003-05-07 16:10:46 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.10 2003-05-08 14:45:27 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -400,6 +400,30 @@ public class DAML_OILProfile
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) &&
                                                        g.asGraph().contains( n, DAML_OIL.hasClass.asNode(), null ) &&
+                                                       g.asGraph().contains( n, DAML_OIL.onProperty.asNode(), null );
+                                            }
+                                        }
+        },
+        {  CardinalityRestriction.class,   new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) &&
+                                                       g.asGraph().contains( n, DAML_OIL.cardinality.asNode(), null ) &&
+                                                       g.asGraph().contains( n, DAML_OIL.onProperty.asNode(), null );
+                                            }
+                                        }
+        },
+        {  MinCardinalityRestriction.class,   new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) &&
+                                                       g.asGraph().contains( n, DAML_OIL.minCardinality.asNode(), null ) &&
+                                                       g.asGraph().contains( n, DAML_OIL.onProperty.asNode(), null );
+                                            }
+                                        }
+        },
+        {  MaxCardinalityRestriction.class,   new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) &&
+                                                       g.asGraph().contains( n, DAML_OIL.maxCardinality.asNode(), null ) &&
                                                        g.asGraph().contains( n, DAML_OIL.onProperty.asNode(), null );
                                             }
                                         }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: SymmetricPropertyImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:57 $
+ * Last modified on   $Date: 2003-05-08 14:45:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SymmetricPropertyImpl.java,v 1.3 2003-04-08 22:11:57 ian_dickinson Exp $
+ * @version CVS $Id: SymmetricPropertyImpl.java,v 1.4 2003-05-08 14:45:30 ian_dickinson Exp $
  */
 public class SymmetricPropertyImpl
     extends ObjectPropertyImpl
@@ -61,7 +61,7 @@ public class SymmetricPropertyImpl
                 return new SymmetricPropertyImpl( n, eg );
             }
             else {
-                throw new OntologyException( "Cannot convert node " + n + " to SymmetricProperty");
+                throw new ConversionException( "Cannot convert node " + n + " to SymmetricProperty");
             } 
         }
             

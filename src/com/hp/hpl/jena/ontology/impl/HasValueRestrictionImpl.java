@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: HasValueRestrictionImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-07 12:59:56 $
+ * Last modified on   $Date: 2003-05-08 14:45:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: HasValueRestrictionImpl.java,v 1.1 2003-05-07 12:59:56 ian_dickinson Exp $
+ * @version CVS $Id: HasValueRestrictionImpl.java,v 1.2 2003-05-08 14:45:28 ian_dickinson Exp $
  */
 public class HasValueRestrictionImpl
     extends RestrictionImpl
@@ -60,7 +60,7 @@ public class HasValueRestrictionImpl
                 return new HasValueRestrictionImpl( n, eg );
             }
             else {
-                throw new OntologyException( "Cannot convert node " + n + " to HasValueRestriction");
+                throw new ConversionException( "Cannot convert node " + n + " to HasValueRestriction");
             } 
         }
             

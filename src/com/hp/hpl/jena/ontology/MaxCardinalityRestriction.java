@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            01-Apr-2003
- * Filename           $RCSfile: ObjectPropertyImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Created            08-May-2003
+ * Filename           $RCSfile: MaxCardinalityRestriction.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:26 $
+ * Last modified on   $Date: 2003-05-08 14:46:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,88 +19,33 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.impl;
-
+package com.hp.hpl.jena.ontology;
 
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.ontology.*;
-
-
 
 /**
  * <p>
- * Implementation of the object property abstraction
+ * A property restriction that requires the named property to have have at most
+ * the given number of values for a given instance to be a member of the class defined
+ * by the restriction.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ObjectPropertyImpl.java,v 1.4 2003-05-08 14:45:26 ian_dickinson Exp $
+ * @version CVS $Id: MaxCardinalityRestriction.java,v 1.1 2003-05-08 14:46:25 ian_dickinson Exp $
  */
-public class ObjectPropertyImpl
-    extends OntPropertyImpl
-    implements ObjectProperty 
+public interface MaxCardinalityRestriction
+    extends Restriction 
 {
     // Constants
     //////////////////////////////////
-
-    // Static variables
-    //////////////////////////////////
-
-    /**
-     * A factory for generating ObjectProperty facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
-     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
-     */
-    public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
-            if (canWrap( n, eg )) {
-                return new ObjectPropertyImpl( n, eg );
-            }
-            else {
-                throw new ConversionException( "Cannot convert node " + n + " to ObjectProperty");
-            } 
-        }
-            
-        public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an ObjectProperty facet if it has rdf:type owl:ObjectProperty or equivalent
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, ObjectProperty.class );
-        }
-    };
-
-
-    // Instance variables
-    //////////////////////////////////
-
-    // Constructors
-    //////////////////////////////////
-
-    /**
-     * <p>
-     * Construct a functional property node represented by the given node in the given graph.
-     * </p>
-     * 
-     * @param n The node that represents the resource
-     * @param g The enh graph that contains n
-     */
-    public ObjectPropertyImpl( Node n, EnhGraph g ) {
-        super( n, g );
-    }
 
 
     // External signature methods
     //////////////////////////////////
 
-    // Internal implementation methods
-    //////////////////////////////////
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
 
 }
 

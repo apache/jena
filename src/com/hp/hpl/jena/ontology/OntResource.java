@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-16 11:37:41 $
+ * Last modified on   $Date: 2003-05-08 14:46:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.5 2003-04-16 11:37:41 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.6 2003-05-08 14:46:25 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -277,6 +277,56 @@ public interface OntResource
     public Iterator getRDFTypes( boolean closed );
 
 
+    // Conversion methods
+    
+    /** 
+     * <p>Answer a view of this resource as an annotation property</p>
+     * @return This resource, but viewed as an AnnotationProperty
+     * @exception ConversionException if the resource cannot be converted to an annotation property
+     */
+    public AnnotationProperty asAnnotationProperty();
+    
+    /** 
+     * <p>Answer a view of this resource as a list </p>
+     * @return This resource, but viewed as an OntList
+     * @exception ConversionException if the resource cannot be converted to a list
+     */
+    public OntList asList();
+    
+    /** 
+     * <p>Answer a view of this resource as a property</p>
+     * @return This resource, but viewed as an OntProperty
+     * @exception ConversionException if the resource cannot be converted to a property
+     */
+    public OntProperty asProperty();
+    
+    /** 
+     * <p>Answer a view of this resource as an individual</p>
+     * @return This resource, but viewed as an Individual
+     * @exception ConversionException if the resource cannot be converted to an individual
+     */
+    public Individual asIndividual();
+    
+    /** 
+     * <p>Answer a view of this resource as a class</p>
+     * @return This resource, but viewed as an OntClass
+     * @exception ConversionException if the resource cannot be converted to a class
+     */
+    public OntClass asClass();
+    
+    /** 
+     * <p>Answer a view of this resource as an ontology description node</p>
+     * @return This resource, but viewed as an Ontology
+     * @exception ConversionException if the resource cannot be converted to an ontology description node
+     */
+    public Ontology asOntology();
+    
+    /** 
+     * <p>Answer a view of this resource as an 'all different' declaration</p>
+     * @return This resource, but viewed as an AllDifferent node
+     * @exception ConversionException if the resource cannot be converted to an all different declaration
+     */
+    public AllDifferent asAllDifferent();
 
 
 }

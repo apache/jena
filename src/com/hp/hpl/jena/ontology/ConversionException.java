@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            01-Apr-2003
- * Filename           $RCSfile: InverseFunctionalPropertyImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Created            07-May-2003
+ * Filename           $RCSfile: ConversionException.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:25 $
+ * Last modified on   $Date: 2003-05-08 14:46:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,59 +19,33 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.impl;
-
+package com.hp.hpl.jena.ontology;
 
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.ontology.*;
-
-
 
 /**
  * <p>
- * Implementation of the functional property abstraction
+ * Exception that is thrown when an ontology resource is converted to another
+ * facet, using {@link RDFNode#as as()}, and the requested conversion is not
+ * possible. The reasons for the failure may be that the requested term is not
+ * in the language {@linkplain Profile profile} of the language attached to the
+ * ontology model, or because the pre-conditions for the conversion are not met. 
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: InverseFunctionalPropertyImpl.java,v 1.4 2003-05-08 14:45:25 ian_dickinson Exp $
+ * @version CVS $Id: ConversionException.java,v 1.1 2003-05-08 14:46:25 ian_dickinson Exp $
  */
-public class InverseFunctionalPropertyImpl
-    extends ObjectPropertyImpl
-    implements InverseFunctionalProperty 
+public class ConversionException 
+    extends OntologyException
 {
     // Constants
     //////////////////////////////////
 
     // Static variables
     //////////////////////////////////
-
-    /**
-     * A factory for generating InverseFunctionalProperty facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
-     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
-     */
-    public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
-            if (canWrap( n, eg )) {
-                return new InverseFunctionalPropertyImpl( n, eg );
-            }
-            else {
-                throw new ConversionException( "Cannot convert node " + n + " to InverseFunctionalProperty");
-            } 
-        }
-            
-        public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an InverseFunctionalProperty facet if it has rdf:type owl:InverseFunctionalProperty or equivalent
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, InverseFunctionalProperty.class );
-        }
-    };
-
 
     // Instance variables
     //////////////////////////////////
@@ -80,15 +54,12 @@ public class InverseFunctionalPropertyImpl
     //////////////////////////////////
 
     /**
-     * <p>
-     * Construct an inverse functional property node represented by the given node in the given graph.
-     * </p>
+     * Construct an ontology exception with a given message.
      * 
-     * @param n The node that represents the resource
-     * @param g The enh graph that contains n
+     * @param msg The exception message.
      */
-    public InverseFunctionalPropertyImpl( Node n, EnhGraph g ) {
-        super( n, g );
+    public ConversionException( String msg ) {
+        super( msg );
     }
 
 

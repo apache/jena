@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:44:12 $
+ * Last modified on   $Date: 2003-05-08 14:45:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Property;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.1 2003-04-28 15:44:12 ian_dickinson Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.2 2003-05-08 14:45:30 ian_dickinson Exp $
  */
 public class ComplementClassImpl 
     extends OntClassImpl
@@ -61,7 +61,7 @@ public class ComplementClassImpl
                 return new ComplementClassImpl( n, eg );
             }
             else {
-                throw new OntologyException( "Cannot convert node " + n + " to ComplementClass");
+                throw new ConversionException( "Cannot convert node " + n + " to ComplementClass");
             } 
         }
             

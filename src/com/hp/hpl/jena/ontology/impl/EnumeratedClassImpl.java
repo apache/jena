@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClassImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:44:11 $
+ * Last modified on   $Date: 2003-05-08 14:45:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClassImpl.java,v 1.3 2003-04-28 15:44:11 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClassImpl.java,v 1.4 2003-05-08 14:45:27 ian_dickinson Exp $
  */
 public class EnumeratedClassImpl 
     extends OntClassImpl
@@ -60,7 +60,7 @@ public class EnumeratedClassImpl
                 return new EnumeratedClassImpl( n, eg );
             }
             else {
-                throw new OntologyException( "Cannot convert node " + n + " to EnumeratedClass");
+                throw new ConversionException( "Cannot convert node " + n + " to EnumeratedClass");
             } 
         }
             
