@@ -1,33 +1,33 @@
 /* (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   All rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.7 2004-12-06 13:50:14 andy_seaborne Exp $
+  $Id: Grammar.java,v 1.8 2005-01-05 23:48:18 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
-class Grammar implements Constants {
+public class Grammar implements Constants {
     static final int orphan = 1;
     static final int notype = 2;
     static final int cyclicRest = 3;
     static final int cyclicFirst = 4;
     static final int badRestriction = 5;
     static final int annotationPropID = 6;
-    static final int badID = 7;
+    public static final int badID = 7;
     static final int classID = 8;
     static final int dataAnnotationPropID = 9;
     static final int dataPropID = 10;
     static final int dataRangeID = 11;
     static final int datatypeID = 12;
-    static final int dlInteger = 13;
+    public static final int dlInteger = 13;
     static final int individualID = 14;
-    static final int liteInteger = 15;
-    static final int literal = 16;
+    public static final int liteInteger = 15;
+    public static final int literal = 16;
     static final int objectPropID = 17;
     static final int ontologyID = 18;
     static final int ontologyPropertyID = 19;
     static final int transitivePropID = 20;
     static final int unnamedIndividual = 21;
     static final int unnamedOntology = 22;
-    static final int userTypedLiteral = 23;
+    public static final int userTypedLiteral = 23;
     static final int allDifferent = 24;
     static final int description5disjointWith = 25;
     static final int description5equivalentClass = 26;
@@ -632,15 +632,15 @@ if ( i != CategorySet.find(new int[]{i},true) )
       System.err.println("initialization problem");
 }
 };
-static final int userID = CategorySet.find( userIDX,false);
-static final int propertyOnly = CategorySet.find( propertyOnlyX,false);
-static final int classOnly = CategorySet.find( classOnlyX,false);
-static final int blank = CategorySet.find( blankX,false);
+public static final int userID = CategorySet.find( userIDX,false);
+public static final int propertyOnly = CategorySet.find( propertyOnlyX,false);
+public static final int classOnly = CategorySet.find( classOnlyX,false);
+public static final int blank = CategorySet.find( blankX,false);
 static final int restrictions = CategorySet.find( restrictionsX,false);
 static final int descriptions = CategorySet.find( descriptionsX,false);
 static final int lists = CategorySet.find( listsX,false);
 static final int disjointWith = CategorySet.find( disjointWithX,false);
- static boolean isPseudoCategory(int x) {
+ public static boolean isPseudoCategory(int x) {
      switch ( x ) {
       case orphan:
       case notype:
