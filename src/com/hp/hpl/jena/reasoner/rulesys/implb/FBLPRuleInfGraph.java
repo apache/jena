@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBLPRuleInfGraph.java,v 1.7 2003-08-19 20:10:01 der Exp $
+ * $Id: FBLPRuleInfGraph.java,v 1.8 2003-08-21 18:07:30 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 
@@ -27,7 +28,7 @@ import org.apache.log4j.Logger;
  * and this one will disappear
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-19 20:10:01 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-21 18:07:30 $
  */
 public class FBLPRuleInfGraph  extends FBRuleInfGraph {
     
