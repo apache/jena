@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryMapper.java,v 1.2 2003-08-27 13:07:55 andy_seaborne Exp $
+  $Id: QueryMapper.java,v 1.3 2004-04-22 12:42:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util;
@@ -49,7 +49,7 @@ public class QueryMapper
     
     public Triple toQueryTriple( Statement s )
         {
-        return new Triple
+        return Triple.create
             ( 
             toQueryNode( s.getSubject() ), 
             toQueryNode( s.getPredicate() ), 

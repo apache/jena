@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.13 2003-09-10 15:31:42 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.14 2004-04-22 12:42:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -152,8 +152,8 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
     private boolean sameGraph( Graph g1, Graph g2 )
         {
         Node S = node( "S" ), P = node( "P" ), O = node( "O" );
-        g1.add( new Triple( S, P, O ) );
-        g2.add( new Triple( O, P, S ) );
+        g1.add( Triple.create( S, P, O ) );
+        g2.add( Triple.create( O, P, S ) );
         return g2.contains( S, P, O ) && g1.contains( O, P, S );
         }
         

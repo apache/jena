@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.31 2003-10-16 09:45:08 chris-dollin Exp $
+  $Id: Query.java,v 1.32 2004-04-22 12:42:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -163,7 +163,7 @@ public class Query
         { return argMap; }
 
     private Query addNamedMatch( String name, Node s, Node p, Node o )
-        { triples.add( name, new Triple( s, p, o ) ); 
+        { triples.add( name, Triple.create( s, p, o ) ); 
         return this; }
 
     public TripleSorter getSorter()

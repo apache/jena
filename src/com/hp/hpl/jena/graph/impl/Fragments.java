@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Fragments.java,v 1.6 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: Fragments.java,v 1.7 2004-04-22 12:42:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -104,7 +104,7 @@ public class Fragments
         {
         Iterator it = slots[which].iterator();
         while (it.hasNext())
-            g.add( new Triple( anchor, predicate, (Node) it.next() ) );
+            g.add( Triple.create( anchor, predicate, (Node) it.next() ) );
         }
         
     /**
@@ -129,7 +129,7 @@ public class Fragments
         isComplete() is true.    
     */        
     Triple asTriple()
-        { return new Triple( only( slots[SUBJECTS] ), only( slots[PREDICATES] ), only( slots[OBJECTS] ) ); }
+        { return Triple.create( only( slots[SUBJECTS] ), only( slots[PREDICATES] ), only( slots[OBJECTS] ) ); }
                
     /**
         precondition: s.size() == 1

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.42 2004-03-11 21:49:16 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.43 2004-04-22 12:42:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.42 $ on $Date: 2004-03-11 21:49:16 $
+* @version $Revision: 1.43 $ on $Date: 2004-04-22 12:42:26 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -232,7 +232,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		Node predNode = pred == null ? null : m_driver.RDBStringToNode(pred);
 		Node objNode = obj == null ? null : m_driver.RDBStringToNode(obj);
 
-		return (new Triple(subjNode, predNode, objNode));
+		return ( Triple.create(subjNode, predNode, objNode) );
 	}
 
 

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.86 2004-03-23 13:47:41 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.87 2004-04-22 12:42:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.86 $' Date='$Date: 2004-03-23 13:47:41 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.87 $' Date='$Date: 2004-04-22 12:42:28 $'
  */
 
 public class ModelCom 
@@ -972,7 +972,7 @@ implements Model, PrefixMapping, ModelLock
            
     public Model add(Resource s,Property p,RDFNode o)  {
         modelReifier.noteIfReified( s, p, o );
-        graph.add( new Triple( s.asNode(), p.asNode(), o.asNode() ) );
+        graph.add( Triple.create( s.asNode(), p.asNode(), o.asNode() ) );
         return this;
     }
     

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.27 2004-04-06 20:43:23 chris-dollin Exp $
+  $Id: TestNode.java,v 1.28 2004-04-22 12:42:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -295,6 +295,7 @@ public class TestNode extends GraphTestBase
         assertEquals( "en-UK", n.getLiteral().language() );
         assertEquals( null, n.getLiteral().getDatatypeURI() );
         }    
+    
     public void testCreateLanguagedLiteralXY()
         {
         Node n = Node.create( "'chat'xy-AB" );
@@ -502,6 +503,7 @@ public class TestNode extends GraphTestBase
         assertFalse( Node.create( "??" ).isConcrete() );
         assertFalse( Node.create( "?x" ).isConcrete() );
         }
+
     }
 
 /*

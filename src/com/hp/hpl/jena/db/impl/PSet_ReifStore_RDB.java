@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.19 $ on $Date: 2003-12-08 10:47:59 $
+* @version $Revision: 1.20 $ on $Date: 2004-04-22 12:42:26 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -328,7 +328,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		Node subj = fragMask.hasSubj() ? frag.getObject() : Node.NULL;
 		Node prop = fragMask.hasPred() ? frag.getObject() : Node.NULL;
 		Node obj = fragMask.hasObj() ? frag.getObject() : Node.NULL;
-		Triple t = new Triple(subj, prop, obj);
+		Triple t = Triple.create(subj, prop, obj);
 		storeTripleAR(t, my_GID, stmtURI, fragMask.hasType(), false, null);
 	}
 

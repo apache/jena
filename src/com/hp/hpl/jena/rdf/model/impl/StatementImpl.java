@@ -40,7 +40,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.22 $ $Date: 2003-08-27 13:05:53 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.23 $ $Date: 2004-04-22 12:42:28 $
  */
 public class StatementImpl  implements Statement {
     
@@ -328,7 +328,7 @@ public class StatementImpl  implements Statement {
     }
     
     public Triple asTriple() {
-    	return new Triple( subject.asNode(), predicate.asNode(), object.asNode() );
+    	return Triple.create( subject.asNode(), predicate.asNode(), object.asNode() );
     }
     
     /**

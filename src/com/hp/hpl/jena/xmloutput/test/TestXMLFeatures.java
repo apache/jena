@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.38 2003-12-13 21:10:59 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.39 2004-04-22 12:42:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -31,7 +31,7 @@ import java.io.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.38 $ $Date: 2003-12-13 21:10:59 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.39 $ $Date: 2004-04-22 12:42:29 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
@@ -748,7 +748,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		Node blank = Node.createAnon();
 		Node prop = Node.createURI(s);
 		Graph g = new GraphMem();
-		g.add(new Triple(blank, prop, blank));
+		g.add( Triple.create( blank, prop, blank ) );
 		// create Model
 		Model m = ModelFactory.createModelForGraph(g);
 		// serialize
@@ -1184,5 +1184,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.38 2003-12-13 21:10:59 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.39 2004-04-22 12:42:29 chris-dollin Exp $
  */

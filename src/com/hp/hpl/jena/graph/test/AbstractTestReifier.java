@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.12 2003-11-26 18:35:19 wkw Exp $
+  $Id: AbstractTestReifier.java,v 1.13 2004-04-22 12:42:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -79,12 +79,12 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Node S = node( "sub" ), O = node( "obj" );
         Node RS = node( "http://example.org/type" );
     /* */
-        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, RDF.Nodes.type,  RS )  ) );
-        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, S,  RDF.Nodes.subject )  ) );
-        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, S,  RDF.Nodes.type )  ) );
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( Triple.create( S, RDF.Nodes.type,  RS )  ) );
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( Triple.create( S, S,  RDF.Nodes.subject )  ) );
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( Triple.create( S, S,  RDF.Nodes.type )  ) );
     /* */
-        assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, RDF.Nodes.predicate, O ) ) );
-        assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, RDF.Nodes.type,  RDF.Nodes.Statement )  ) );
+        assertTrue( "reifier must intercept quadlet", r.handledAdd( Triple.create( S, RDF.Nodes.predicate, O ) ) );
+        assertTrue( "reifier must intercept quadlet", r.handledAdd( Triple.create( S, RDF.Nodes.type,  RDF.Nodes.Statement )  ) );
         }
 
     /**
@@ -277,8 +277,8 @@ public abstract class AbstractTestReifier extends GraphTestBase
         {
         Graph G = getGraph( Standard );
         Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
-        G.add( new Triple( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
-        G.getReifier().reifyAs( X, new Triple( a, b, c ) ); 
+        G.add( Triple.create( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
+        G.getReifier().reifyAs( X, Triple.create( a, b, c ) ); 
         }
         
     public void testKevinCaseB()
@@ -286,10 +286,10 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph G = getGraph( Standard );
         Node X = node( "x" ), Y = node( "y" );
         Node a = node( "a" ), b = node( "b" ), c = node( "c" );
-        G.add( new Triple( X, RDF.Nodes.subject, Y ) );
+        G.add( Triple.create( X, RDF.Nodes.subject, Y ) );
         try
             {
-            G.getReifier().reifyAs( X, new Triple( a, b, c ) );
+            G.getReifier().reifyAs( X, Triple.create( a, b, c ) );
             fail( "X already has subject Y: cannot make it a" );
             }
         catch (CannotReifyException e)
@@ -338,10 +338,10 @@ public abstract class AbstractTestReifier extends GraphTestBase
 //        Graph G = GraphBase.withReification( getGraph() );
 //        Node X = node( "x" ), Y = node( "y" );
 //        Node a = node( "a" ), b = node( "b" ), c = node( "c" );
-//        G.getReifier().reifyAs( X, new Triple( a, b, c ) );         
+//        G.getReifier().reifyAs( X, Triple.create( a, b, c ) );         
 //        try
 //            {
-//            G.add( new Triple( X, Reifier.subject, Y ) );
+//            G.add( Triple.create( X, Reifier.subject, Y ) );
 //            fail( "X already reifies (a, b, c): cannot give it subject Y" );
 //            }
 //        catch (Reifier.CannotReifyException e)

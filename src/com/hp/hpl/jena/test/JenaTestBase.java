@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.8 2003-11-27 16:16:57 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.9 2004-04-22 12:42:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -30,7 +30,7 @@ public class JenaTestBase extends TestCase
     */
     public static void assertDiffer( String title, Object x, Object y )
         { 
-        if (x.equals( y ))
+        if (x == null ? y == null : x.equals( y ))
             fail( (title == null ? "objects should be different, but both were: " : title) + x );
         }
         

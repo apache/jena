@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.32 2004-04-20 07:30:09 chris-dollin Exp $
+  $Id: Node.java,v 1.33 2004-04-22 12:42:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -29,7 +29,9 @@ public abstract class Node {
     
     final protected Object label;
     static final int THRESHOLD = 10000;
-    static final HashMap present = new HashMap( THRESHOLD * 2 );
+    
+    static final NodeCache present = new NodeCache(); 
+    // static final HashMap present = new HashMap( THRESHOLD * 2 );
 
     static final Log log = LogFactory.getLog( Node.class );
 
@@ -257,6 +259,7 @@ public abstract class Node {
         if (wantCache == false) present.clear();
         caching = wantCache;
         }
+        
     /**
         We object strongly to null labels: for example, they make .equals flaky. We reuse nodes 
         from the recent cache if we can. Otherwise, the maker knows how to construct a new

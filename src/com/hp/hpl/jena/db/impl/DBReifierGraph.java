@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -103,7 +103,7 @@ public class DBReifierGraph implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
 	 */
 	public boolean contains(Node s, Node p, Node o) {
-		return contains(new Triple(s, p, o));
+		return contains( Triple.create( s, p, o ) );
 	} 
 			
 

@@ -91,22 +91,22 @@ public class SpecializedGraphReifier_RDB
 				boolean didUpdate = false;
 				/* add whatever is missing to reify t */
 				if ( !same.hasSubj() ) {
-					Triple st = new Triple(n,RDF.Nodes.subject,t.getSubject());
+					Triple st = Triple.create(n,RDF.Nodes.subject,t.getSubject());
 					m_reif.updateFrag(n, st, new StmtMask(st), my_GID);
 					didUpdate = true;
 				}
 				if ( !same.hasPred() ) {
-					Triple pt = new Triple(n,RDF.Nodes.predicate,t.getPredicate());
+					Triple pt = Triple.create(n,RDF.Nodes.predicate,t.getPredicate());
 					m_reif.updateFrag(n, pt, new StmtMask(pt), my_GID);
 					didUpdate = true;
 				}
 				if ( !same.hasObj() ) {
-					Triple ot = new Triple(n,RDF.Nodes.object,t.getObject());
+					Triple ot = Triple.create(n,RDF.Nodes.object,t.getObject());
 					m_reif.updateFrag(n, ot, new StmtMask(ot), my_GID);
 					didUpdate = true;
 				}
 				if ( !rs.mask.hasType() ) {
-					Triple tt = new Triple(n,RDF.Nodes.type,RDF.Nodes.Statement);
+					Triple tt = Triple.create(n,RDF.Nodes.type,RDF.Nodes.Statement);
 					m_reif.updateFrag(n, tt, new StmtMask(tt), my_GID);
 					didUpdate = true;
 				}
@@ -354,7 +354,7 @@ public class SpecializedGraphReifier_RDB
 		if ( valCnt != 1 )
 			throw new JenaException("Partially reified row must have exactly one value");
 		
-		return new Triple(stmtURI, pred, obj);
+		return Triple.create(stmtURI, pred, obj);
 	}
 	
 	/* (non-Javadoc)

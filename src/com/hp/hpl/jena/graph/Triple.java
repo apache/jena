@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.12 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Triple.java,v 1.13 2004-04-22 12:42:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -18,6 +18,7 @@ import java.util.*;
  */
 final public class Triple implements TripleMatch {
 	private final Node subj, pred, obj;
+    
 	public Triple(Node s, Node p, Node o) {
         if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
         if (p == null) throw new UnsupportedOperationException( "predicate cannot be null" );
@@ -83,18 +84,16 @@ final public class Triple implements TripleMatch {
         { return subj.isConcrete() && pred.isConcrete() && obj.isConcrete(); }
         
     /** 
-        triples only equal other triples with the same components. 
-    <p>
-        internals: avoids grubbing around in the insides of the other triple.  
+         Answer true if <code>o</code> is a Triple with the same subject, predicate,
+         and object as this triple.
     */
-    
 	public boolean equals(Object o) 
         { return o instanceof Triple && ((Triple) o).sameAs( subj, pred, obj ); }
     
     /** 
-        component-wise equality, might choose to make public.
+        Answer true iff this triple has subject s, predicate p, and object o.
     */    
-    private boolean sameAs( Node s, Node p, Node o )
+    public boolean sameAs( Node s, Node p, Node o )
         { return subj.equals( s ) && pred.equals( p ) && obj.equals( o ); }
         
     public boolean matches( Triple other )
@@ -117,21 +116,38 @@ final public class Triple implements TripleMatch {
         
     /**
         The hash-code of a triple is the hash-codes of its components munged
-        together. The current hash-code is an exclusive-or of the slightly-shifted
-        component hashcodes; this means (almost) all of the bits count, and
-        the order matters, so (S @P O) has a different hash from (O @P S), etc.
+        together: see hashCode(S, P, O).
     */
-    public int hashCode() {
-    	return (subj.hashCode() >> 1) ^ pred.hashCode() ^ (obj.hashCode() << 1);
-    }
-        
+    public int hashCode() 
+        { return hashCode( subj, pred, obj );
+    	// return (subj.hashCode() >> 1) ^ pred.hashCode() ^ (obj.hashCode() << 1);
+        }
+    
     /**
-        Factory method for creating triples, allows caching opportunities.
+        Return the munged hashCodes of the specified nodes, an exclusive-or of 
+        the slightly-shifted component hashcodes; this means (almost) all of the bits 
+        count, and the order matters, so (S @P O) has a different hash from 
+        (O @P S), etc.
+    */    
+    public static int hashCode( Node s, Node p, Node o ) 
+        { return (s.hashCode() >> 1) ^ p.hashCode() ^ (o.hashCode() << 1); }
+    
+    /**
+        Factory method for creating triples, allows caching opportunities. Attempts
+        to use triples from the cache, if any suitable ones exist.
         
         @return a triple with subject=s, predicate=p, object=o
     */
     public static Triple create( Node s, Node p, Node o )
-        { return new Triple( s, p, o ); }
+        { 
+        Triple already = cache.get( s, p, o );
+        return already == null ? cache.put( new Triple( s, p, o ) ) : already;
+        }
+    
+    /**
+        The cache of already-created triples.
+    */
+    protected static TripleCache cache = new TripleCache();
         
     public static Triple createMatch( Node s, Node p, Node o )
         { return Triple.create( nullToAny( s ), nullToAny( p ), nullToAny( o ) ); }
@@ -156,7 +172,7 @@ final public class Triple implements TripleMatch {
         Node sub = Node.create( pm, st.nextToken() );
         Node pred = Node.create( pm, st.nextToken() );
         Node obj = Node.create( pm, st.nextToken() );
-        return new Triple( sub, pred, obj );
+        return Triple.create( sub, pred, obj );
         }
             
 }

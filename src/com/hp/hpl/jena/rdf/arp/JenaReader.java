@@ -163,10 +163,10 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		}
 	}
 	static Triple convert(AResource s,AResource p, AResource o){
-	    return new Triple(convert(s),convert(p),convert(o));
+	    return Triple.create(convert(s),convert(p),convert(o));
 	}
 	static Triple convert(AResource s,AResource p, ALiteral o){
-		return new Triple(convert(s),convert(p),convert(o));
+		return Triple.create(convert(s),convert(p),convert(o));
 	}
 	/** Converts an ARP resource into a Jena property.
 	 * @param r The ARP resource.
@@ -639,7 +639,7 @@ read(model.getGraph(), inputS, xmlBase);
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.20 2003-12-10 18:03:47 jeremy_carroll Exp $
+ * * $Id: JenaReader.java,v 1.21 2004-04-22 12:42:28 chris-dollin Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */

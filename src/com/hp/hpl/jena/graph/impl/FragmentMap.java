@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentMap.java,v 1.5 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: FragmentMap.java,v 1.6 2004-04-22 12:42:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -53,10 +53,10 @@ public class FragmentMap extends HashMap
     */         
     public static void graphAddQuad( GraphAdd g, Node node, Triple t )
         {
-        g.add( new Triple( node, RDF.Nodes.subject, t.getSubject() ) );
-        g.add( new Triple( node, RDF.Nodes.predicate, t.getPredicate() ) );
-        g.add( new Triple( node, RDF.Nodes.object, t.getObject() ) );
-        g.add( new Triple( node, RDF.Nodes.type, RDF.Nodes.Statement ) );
+        g.add( Triple.create( node, RDF.Nodes.subject, t.getSubject() ) );
+        g.add( Triple.create( node, RDF.Nodes.predicate, t.getPredicate() ) );
+        g.add( Triple.create( node, RDF.Nodes.object, t.getObject() ) );
+        g.add( Triple.create( node, RDF.Nodes.type, RDF.Nodes.Statement ) );
         }
                 
     /**

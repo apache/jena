@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP [See end of
- * file] $Id: StreamingChecker.java,v 1.1 2004-01-27 15:45:24 jeremy_carroll Exp $
+ * file] $Id: StreamingChecker.java,v 1.2 2004-04-22 12:42:28 chris-dollin Exp $
  */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -122,10 +122,10 @@ public class StreamingChecker extends CheckerImpl implements CheckerResults {
 		}
 	}
 	static Triple convert(AResource s, AResource p, AResource o) {
-		return new Triple(convert(s), convert(p), convert(o));
+	return Triple.create(convert(s), convert(p), convert(o));
 	}
 	static Triple convert(AResource s, AResource p, ALiteral o) {
-		return new Triple(convert(s), convert(p), convert(o));
+		return Triple.create(convert(s), convert(p), convert(o));
 	}
 	private StatementHandler sh = new StatementHandler() {
 

@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 * Version of ResultSetIterator that extracts database rows as Triples from a reified statement table.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.6 $ on $Date: 2003-12-08 10:47:59 $
+* @version $Revision: 1.7 $ on $Date: 2004-04-22 12:42:26 $
 */
 public class ResultSetReifIterator extends ResultSetIterator {
 
@@ -145,28 +145,28 @@ public class ResultSetReifIterator extends ResultSetIterator {
 			if ( m_getTriples == true ) {
 				if ( m_nextFrag == 0) {
 					if ( !m_subjNode.equals(Node.NULL) ) {
-						t = new Triple(m_stmtURI,RDF.Nodes.subject,m_subjNode);
+						t = Triple.create(m_stmtURI,RDF.Nodes.subject,m_subjNode);
 						m_fragRem--;
 					} else
 						m_nextFrag++;
 				}
 				if ( m_nextFrag == 1) {
 					if ( !m_predNode.equals(Node.NULL) ) {
-						t = new Triple(m_stmtURI,RDF.Nodes.predicate,m_predNode);
+						t = Triple.create(m_stmtURI,RDF.Nodes.predicate,m_predNode);
 						m_fragRem--;
 					} else
 						m_nextFrag++;
 				}
 				if ( m_nextFrag == 2) {
 					if ( !m_objNode.equals(Node.NULL) ) {
-						t = new Triple(m_stmtURI,RDF.Nodes.object,m_objNode);
+						t = Triple.create(m_stmtURI,RDF.Nodes.object,m_objNode);
 						m_fragRem--;
 					} else
 						m_nextFrag++;
 				}
 				if ( m_nextFrag >= 3) {
 					if ( m_hasType ) {
-						t = new Triple(m_stmtURI,RDF.Nodes.type,RDF.Nodes.Statement);
+						t = Triple.create(m_stmtURI,RDF.Nodes.type,RDF.Nodes.Statement);
 						m_fragRem--;
 					} else
 						throw new JenaException("Reified triple not found");
@@ -176,7 +176,7 @@ public class ResultSetReifIterator extends ResultSetIterator {
 					m_prefetched = true;
 
 			} else {
-				t = new Triple(m_subjNode, m_predNode, m_objNode);
+				t = Triple.create(m_subjNode, m_predNode, m_objNode);
 			}
 		
 			return t;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTriple.java,v 1.14 2003-08-27 13:00:37 andy_seaborne Exp $
+  $Id: TestTriple.java,v 1.15 2004-04-22 12:42:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -252,7 +252,8 @@ public class TestTriple extends GraphTestBase
         Triple t1 = Triple.create( "eg://domain.dom/spoo#a b c" );
         assertEquals( "spoo:a @eh:b eh:c", t1.toString( pm ) );
         }
-}
+
+    }
 /*
     (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
