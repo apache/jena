@@ -16,8 +16,9 @@
                           Richard McCullough, Yuzhong Qu,         
                           Leo Sauermann, Brian McBride and        
                           Jim Farrugia.                           
+     
+      Modified as a Jena example by Ian Dickinson
         </rdfs:comment>
-        <owl:imports rdf:resource="http://www.w3.org/2002/07/owl" />
     </owl:Ontology>
 
      <owl:Class rdf:ID="Money">
