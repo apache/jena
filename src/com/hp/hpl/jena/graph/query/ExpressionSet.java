@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionSet.java,v 1.3 2003-10-09 14:06:13 chris-dollin Exp $
+  $Id: ExpressionSet.java,v 1.4 2003-10-10 10:29:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -48,6 +48,22 @@ public class ExpressionSet
         while (it.hasNext()) 
             if (((Expression) it.next()).evalBool( vv ) == false) return false;
         return true;
+        }
+        
+    public boolean evalBool( IndexValues vv )
+        { 
+        Iterator it = expressions.iterator();
+        while (it.hasNext()) 
+            if (((Expression) it.next()).evalBool( vv ) == false) return false;
+        return true;
+        }
+                
+    public ExpressionSet prepare( VariableIndexes vi )
+        {
+        ExpressionSet result = new ExpressionSet();
+        Iterator it = expressions.iterator();
+        while (it.hasNext()) result.add( ((Expression) it.next()).prepare( vi ) );
+        return result;    
         }
     }
 

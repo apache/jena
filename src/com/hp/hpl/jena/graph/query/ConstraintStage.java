@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.12 2003-10-09 14:06:13 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.13 2003-10-10 10:29:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -25,6 +25,7 @@ public class ConstraintStage extends Stage
     protected ExpressionSet constraint;
     protected Mapping map;
     protected Valof valof;
+    protected ExpressionSet prepared;
     
     static class Valof implements VariableValues
         {
@@ -40,112 +41,32 @@ public class ConstraintStage extends Stage
         }
         
     /**
-        constructor: compile the graph _g_ into a Predicate using the
-        supplied _map_ for bindings of variables.
+        Initialise this ConstraintStage with the mapping [from names to indexes] and
+        ExpressionSet [the constraint expressions] that will be evaluated when the
+        constraint stage runs.
     */
     public ConstraintStage( Mapping map, ExpressionSet constraint )
         { this.constraint = constraint; 
         this.map = map; 
         this.valof = new Valof( map );
+        this.prepared = constraint.prepare( map );
         checkConstraint( map, constraint ); }
         
     protected void checkConstraint( Mapping map, ExpressionSet constraint )
         { // TODO this properly
-        Node n = Node.create( "deadwood" );
-        constraint.evalBool( valof.setDomain( new Domain( new Node [] {n,n,n,n,n,n,n,n,n,n,n} ) ) );    
+        // Node n = Node.create( "?deadwood" );
+        // constraint.evalBool( valof.setDomain( new Domain( new Boolean [10] ) ) );    
         }
         
-    /**
-        the translated graph is the AND-composition of the translated
-        component triples.
-    */
-//    private Predicate translate( Mapping map, Graph g )
-//        {
-//        Predicate result = Predicate.TRUE;
-//        ClosableIterator it = GraphUtil.findAll( g );
-//        while (it.hasNext()) result = result.and( translate( map, (Triple) it.next() ) );
-//        return result;
-//        }
-
-    /**
-        The subject and object fields of _t_ are converted to Valuators using
-        the given _map_. The predicate is used to find a factory in the factory map.
-    */
-//    private Predicate translate( Mapping map, Triple t )
-//        {
-//        Node pred = t.getPredicate();
-//        Valuator L = translate( map, t.getSubject() ), R = translate( map, t.getObject() );
-//        PredicateFactory f = (PredicateFactory) factories.get( pred );
-//        if (f == null) 
-//            throw new UnsupportedOperationException( pred.toString() );
-//        else 
-//            return f.construct( L, R );
-//        }
-      
-    /**
-        it's possible that this code should belong in Node and its children
-    */  
-//    private Valuator translate( Mapping map, Node X )
-//        {
-//        return X.isVariable()
-//            ? new ValuatorVariable( map.indexOf( X ) )
-//            : (Valuator) new ValuatorConst( X )
-//            ;
-//        }
-//                
-//    /**
-//        the map which relates predicate nodes to the corresponding predicate
-//        factories.
-//    */
-//    private static HashMap factories = new HashMap();
-//
-//    /**
-//        associate the predicate factory _f_ with _uri_, which must be a legal
-//        URI string. You can't change an existing binding.
-//    */
-//    static public void addFactory( String uri, PredicateFactory f )
-//        {
-//        Node n = Node.createURI( uri );
-//        if (factories.containsKey( n ))
-//            throw new UnsupportedOperationException( "cannot redefine: " + f );
-//        else
-//            factories.put( n, f );
-//        }
-//               
-//    static final PredicateFactory makeEQ = new PredicateFactory()
-//        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_EQ( L, R ); }};
-//
-//    static final PredicateFactory makeNE = new PredicateFactory()
-//        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_NE( L, R ); }};
-
-//    static final PredicateFactory makeMATCHES = new PredicateFactory()
-//        { public Predicate construct( Valuator L, Valuator R ) { return new Relation_MATCHES( L, R ); }};
-
-//    static class Relation_MATCHES extends Relation
-//        {
-//        Relation_MATCHES( Valuator L, Valuator R ) { super( L, R ); }   
-//        
-//        private String asString( Node n )
-//            {
-//            if (n.isLiteral()) return n.getLiteral().getLexicalForm();
-//            else return n.toString();    
-//            }
-//            
-//        public boolean matches( Node L, Node R )
-//            { 
-//                String x = asString( L ), y = asString( R );
-//                return x.indexOf( y ) > -1; }
-//            
-//        public boolean evaluateBool( Domain d )
-//            { return matches( valueL( d ), valueR( d ) ); }
-//        }
-        
+ 
    private boolean evalConstraint( Domain d, ExpressionSet e )
-        {
-        return e.evalBool( valof.setDomain( d ) );
-        // return e.evalBool( map, d );
-        }
-    
+        // { return e.evalBool( valof.setDomain( d ) ); }
+        { 
+        try { return e.evalBool( d ); } 
+        catch (Exception ex) 
+            { ex.printStackTrace( System.err );
+                return false; } }
+        
     /**
         the delivery component: read the domain elements out of the
         input pipe, and only pass on those that satisfy the predicate.

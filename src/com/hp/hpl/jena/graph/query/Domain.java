@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Domain.java,v 1.5 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: Domain.java,v 1.6 2003-10-10 10:29:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -20,7 +20,7 @@ import java.util.*;
 */
 
 
-public class Domain extends AbstractList
+public class Domain extends AbstractList implements IndexValues
 	{
     /**
         The array holding the bound values. 

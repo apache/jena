@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.7 2003-10-10 09:06:41 chris-dollin Exp $
+  $Id: Expression.java,v 1.8 2003-10-10 10:29:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -19,12 +19,17 @@ public interface Expression
     
     public boolean evalBool( IndexValues iv );
     
+    public Object eval( IndexValues iv );
+    
+    public Object eval( VariableValues vv );
+    
     public static abstract class EE implements Expression
         {
         public Expression prepare( VariableIndexes vi ) { return this; }   
         public abstract boolean evalBool( VariableValues vv );
         public abstract boolean evalBool( IndexValues vv );
         public abstract Object eval( IndexValues vv );
+        public abstract Object eval( VariableValues vv );
         }
         
     public static Expression TRUE = new EE() 
@@ -32,6 +37,7 @@ public interface Expression
         public boolean evalBool( VariableValues vv ) { return true; }
         public boolean evalBool( IndexValues vv ) { return true; }
         public Object eval( IndexValues vv ) { return Boolean.TRUE; }
+        public Object eval( VariableValues vv ) {  return Boolean.TRUE; }
         };
     
     public static Expression FALSE = new EE() 
@@ -39,6 +45,7 @@ public interface Expression
         public boolean evalBool( VariableValues vv ) { return false; }
         public boolean evalBool( IndexValues vv ) { return false; }
         public Object eval( IndexValues vv ) { return Boolean.FALSE; }
+        public Object eval( VariableValues vv ) {  return Boolean.FALSE; }
         };
     }
 
