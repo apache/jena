@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-03-22 15:49:12 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -27,6 +27,8 @@ package com.hp.hpl.jena.ontology.impl.test;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 
@@ -38,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.8 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS $Id: TestResource.java,v 1.9 2004-03-22 15:49:12 ian_dickinson Exp $
  */
 public class TestResource 
     extends OntTestBase
@@ -387,7 +389,207 @@ public class TestResource
                     assertTrue( "super-class of E", !E.hasSuperClass( C, false ) );
                     iteratorTest( A.listSubClasses(), new Object[] {B} );
                 }
-            }
+            },
+            new OntTestCase( "OntResource.asClass", true, true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Resource r = m.createResource();
+                    r.addProperty( RDF.type, m.getProfile().CLASS() );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    boolean f = owlFull();
+                    assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
+                    assertFalse( "should not be all different", or.isAllDifferent() );
+                    assertTrue( "should be class", or.isClass() );
+                    assertFalse( "should not be property", or.isProperty() );
+                    assertFalse( "should not be object property", or.isObjectProperty() );
+                    assertFalse( "should not be datatype property", or.isDatatypeProperty() );
+                    assertTrue( "should not be individual", owlFull() || !or.isIndividual() );
+                    assertFalse( "should not be data range", or.isDataRange() );
+                    assertFalse( "should not be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asClass();
+                    assertTrue( "Should be OntClass", n instanceof OntClass );
+                }
+            },
+            new OntTestCase( "OntResource.asAnnotationProperty", true, true, false, false) {
+                public void ontTest( OntModel m ) throws Exception {
+                    if (m.getProfile().ANNOTATION_PROPERTY() == null) {
+                        throw new ProfileException(null,null);
+                    }
+                    Resource r = m.createResource();
+                    r.addProperty( RDF.type, m.getProfile().ANNOTATION_PROPERTY() );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    
+                    assertTrue( "should be annotation prop", or.isAnnotationProperty() );
+                    assertFalse( "should not be all different", or.isAllDifferent() );
+                    assertFalse( "should not be class", or.isClass() );
+                    assertTrue( "should be property", or.isProperty() );
+                    assertFalse( "should not be object property", or.isObjectProperty() );
+                    assertFalse( "should not be datatype property", or.isDatatypeProperty() );
+                    assertFalse( "should not be individual", or.isIndividual() );
+                    assertFalse( "should not be data range", or.isDataRange() );
+                    assertFalse( "should not be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asAnnotationProperty();
+                    assertTrue( "Should be AnnotationProperty", n instanceof AnnotationProperty);
+                }
+            },
+            new OntTestCase( "OntResource.asObjectProperty", true, true, true, false) {
+                public void ontTest( OntModel m ) throws Exception {
+                    if (m.getProfile().OBJECT_PROPERTY() == null) {
+                        throw new ProfileException(null,null);
+                    }
+                    Resource r = m.createResource();
+                    r.addProperty( RDF.type, m.getProfile().OBJECT_PROPERTY() );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    
+                    assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
+                    assertFalse( "should not be all different", or.isAllDifferent() );
+                    assertFalse( "should not be class", or.isClass() );
+                    assertTrue( "should be property", or.isProperty() );
+                    assertTrue( "should be object property", or.isObjectProperty() );
+                    assertFalse( "should not be datatype property", or.isDatatypeProperty() );
+                    assertFalse( "should not be individual", or.isIndividual() );
+                    assertFalse( "should not be data range", or.isDataRange() );
+                    assertFalse( "should not be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asObjectProperty();
+                    assertTrue( "Should be ObjectProperty", n instanceof ObjectProperty);
+                }
+            },
+            new OntTestCase( "OntResource.asDatatypeProperty", true, true, true, false) {
+                public void ontTest( OntModel m ) throws Exception {
+                    if (m.getProfile().DATATYPE_PROPERTY() == null) {
+                        throw new ProfileException(null,null);
+                    }
+                    Resource r = m.createResource();
+                    r.addProperty( RDF.type, m.getProfile().DATATYPE_PROPERTY() );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    
+                    assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
+                    assertFalse( "should not be all different", or.isAllDifferent() );
+                    assertFalse( "should not be class", or.isClass() );
+                    assertTrue( "should be property", or.isProperty() );
+                    assertFalse( "should not be object property", or.isObjectProperty() );
+                    assertTrue( "should be datatype property", or.isDatatypeProperty() );
+                    assertFalse( "should not be individual", or.isIndividual() );
+                    assertFalse( "should not be data range", or.isDataRange() );
+                    assertFalse( "should not be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asDatatypeProperty();
+                    assertTrue( "Should be DatatypeProperty", n instanceof DatatypeProperty);
+                }
+            },
+            new OntTestCase( "OntResource.asAllDifferent", true, true, false, false) {
+                public void ontTest( OntModel m ) throws Exception {
+                    if (m.getProfile().ALL_DIFFERENT() == null) {
+                        throw new ProfileException(null,null);
+                    }
+                    Resource r = m.createResource();
+                    r.addProperty( RDF.type, m.getProfile().ALL_DIFFERENT() );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    
+                    assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
+                    assertTrue( "should be all different", or.isAllDifferent() );
+                    assertFalse( "should not be class", or.isClass() );
+                    assertFalse( "should not be property", or.isProperty() );
+                    assertFalse( "should not be object property", or.isObjectProperty() );
+                    assertFalse( "should not be datatype property", or.isDatatypeProperty() );
+                    assertFalse( "should not be individual", or.isIndividual() );
+                    assertFalse( "should not be data range", or.isDataRange() );
+                    assertFalse( "should not be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asAllDifferent();
+                    assertTrue( "Should be AnnotationProperty", n instanceof AllDifferent);
+                }
+            },
+            new OntTestCase( "OntResource.asProperty", true, true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Resource r = m.createResource();
+                    r.addProperty( RDF.type, m.getProfile().PROPERTY() );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    
+                    assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
+                    assertFalse( "should not be all different", or.isAllDifferent() );
+                    assertFalse( "should not be class", or.isClass() );
+                    assertTrue( "should be property", or.isProperty() );
+                    assertFalse( "should not be object property", or.isObjectProperty() );
+                    assertFalse( "should not be datatype property", or.isDatatypeProperty() );
+                    assertFalse( "should not be individual", or.isIndividual() );
+                    assertFalse( "should not be data range", or.isDataRange() );
+                    assertFalse( "should not be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asProperty();
+                    assertTrue( "Should be OntProperty", n instanceof OntProperty);
+                }
+            },
+            new OntTestCase( "OntResource.asIndividual", true, true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Resource r = m.createResource();
+                    Resource s = m.createResource();
+                    s.addProperty( RDF.type, m.getProfile().CLASS() );
+                    r.addProperty( RDF.type, s );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    
+                    assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
+                    assertFalse( "should not be all different", or.isAllDifferent() );
+                    assertFalse( "should not be class", or.isClass() );
+                    assertFalse( "should not be property", or.isProperty() );
+                    assertFalse( "should not be object property", or.isObjectProperty() );
+                    assertFalse( "should not be datatype property", or.isDatatypeProperty() );
+                    assertTrue( "should be individual", or.isIndividual() );
+                    assertFalse( "should not be data range", or.isDataRange() );
+                    assertFalse( "should not be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asIndividual();
+                    assertTrue( "Should be individual", n instanceof Individual);
+                }
+            },
+            new OntTestCase( "OntResource.asDataRange", true, false, false, false ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    if (m.getProfile().DATARANGE() == null) {
+                        throw new ProfileException(null,null);
+                    }
+                    Resource r = m.createResource();
+                    r.addProperty( RDF.type, m.getProfile().DATARANGE() );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    
+                    assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
+                    assertFalse( "should not be all different", or.isAllDifferent() );
+                    assertFalse( "should not be class", or.isClass() );
+                    assertFalse( "should not be property", or.isProperty() );
+                    assertFalse( "should not be object property", or.isObjectProperty() );
+                    assertFalse( "should not be datatype property", or.isDatatypeProperty() );
+                    assertFalse( "should not be individual", or.isIndividual() );
+                    assertTrue( "should be data range", or.isDataRange() );
+                    assertFalse( "should not be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asDataRange();
+                    assertTrue( "Should be DataRange", n instanceof DataRange );
+                }
+            },
+            new OntTestCase( "OntResource.asOntology", true, true, true, false ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    if (m.getProfile().ONTOLOGY() == null) {
+                        throw new ProfileException(null,null);
+                    }
+                    Resource r = m.createResource();
+                    r.addProperty( RDF.type, m.getProfile().ONTOLOGY() );
+                    OntResource or = (OntResource) r.as( OntResource.class );
+                    
+                    assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
+                    assertFalse( "should not be all different", or.isAllDifferent() );
+                    assertFalse( "should not be class", or.isClass() );
+                    assertFalse( "should not be property", or.isProperty() );
+                    assertFalse( "should not be object property", or.isObjectProperty() );
+                    assertFalse( "should not be datatype property", or.isDatatypeProperty() );
+                    assertFalse( "should not be individual", or.isIndividual() );
+                    assertFalse( "should not be data range", or.isDataRange() );
+                    assertTrue( "should be ontology", or.isOntology() );
+                    
+                    RDFNode n = or.asOntology();
+                    assertTrue( "Should be Ontology", n instanceof Ontology);
+                }
+            },
         };
     }
 
