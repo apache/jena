@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-11-01 15:22:07 $
+ * Last modified on   $Date: 2004-11-01 15:50:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.8 2004-11-01 15:22:07 ian_dickinson Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.9 2004-11-01 15:50:51 ian_dickinson Exp $
  */
 public class OneToManyMap
     implements Map
@@ -56,6 +56,34 @@ public class OneToManyMap
 
     // Constructors
     //////////////////////////////////
+
+    /**
+     * <p>Construct a new empty one-to-many map</p>
+     */
+    public OneToManyMap() {
+    }
+    
+    
+    /**
+     * <p>Construct a new one-to-many map whose contents are
+     * initialised from the existing map.</p>
+     *
+     * @param map An existing one-to-many map
+     */
+    public OneToManyMap( OneToManyMap map ) {
+        // copy the contents of the existing map
+        // note we can't just use the copying constructor for hashmap
+        // as we don't want to share the arraylists that are the key values
+        for (Iterator i = map.keySet().iterator();  i.hasNext(); ) {
+            Object key = i.next();
+
+            for (Iterator j = map.getAll( key );  j.hasNext();  ) {
+                put( key, j.next() );
+            }
+        }
+    }
+
+
 
 
     // External signature methods
