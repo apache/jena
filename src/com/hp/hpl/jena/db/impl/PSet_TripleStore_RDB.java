@@ -53,7 +53,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.2 $ on $Date: 2003-05-01 17:55:45 $
+* @version $Revision: 1.3 $ on $Date: 2003-05-01 18:00:29 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -900,7 +900,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			String cmd;
 			try {
 				Connection con = m_sql.getConnection();
-				con.setAutoCommit(false);
+				//TODO when doing batch.  con.setAutoCommit(false);
 				Statement stmt = con.createStatement();
 				Iterator it = triples.iterator();
 				
