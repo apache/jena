@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.14 2004-08-04 14:54:03 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.15 2004-08-04 17:04:55 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -91,7 +91,6 @@ public class TestModelSpecRevised extends ModelTestBase
         String rulesA = file( "example.rules" ), rulesB = file( "extra.rules" );
         List rules = append( Rule.rulesFromURL( rulesA ), Rule.rulesFromURL( rulesB ) );
         Model rs = modelWithStatements( "_a jms:reasoner " + factoryURI + "; _a jms:ruleSetURL " + rulesA + "; _a jms:ruleSetURL " + rulesB );
-        Resource A = resource( "_a" );
         ReasonerFactory rf = ModelSpecImpl.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.36 2004-08-04 14:53:03 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.37 2004-08-04 17:04:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -314,44 +314,68 @@ public abstract class ModelSpecImpl implements ModelSpec
         String rrs = rr.getURI();
         ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( rrs );
         if (rf == null) throw new NoSuchReasonerException( rrs );
-        // System.err.println( ">> getReasonerFactory " + R );
-        StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
-        StmtIterator others = rs.listStatements( R, JMS.ruleSet, (RDFNode) null );
-        if (rulesets.hasNext() || others.hasNext())
-            {
-            WrappedRuleReasonerFactory f = new WrappedRuleReasonerFactory( (RuleReasonerFactory) rf );
-            while (rulesets.hasNext()) load( f, rulesets.nextStatement().getResource() );
-            while (others.hasNext()) loadInline( f, others.nextStatement().getResource() );
-            rf = f;
-            }
-        return rf;
-        }
-    
-    private static void loadInline( RuleReasonerFactory f, Resource ruleSet )
-        {
-        StmtIterator it = ruleSet.listProperties( JMS.hasRule );
-        while (it.hasNext())
-            {
-            String rule = it.nextStatement().getString();
-            f.addRules( Rule.parseRules( rule ) );
-            }
-        StmtIterator that = ruleSet.listProperties( JMS.ruleSetURL );
-        while (that.hasNext())
-            {
-            Resource u = that.nextStatement().getResource();
-            load( f, u );
-            }
+        return loadFactoryRulesets( rf, rs, R );
         }
     
     /**
-         @param rf
-         @param resource
-         Rule.parseRules(Util.loadResourceFile(RULE_FILE))
-    */
-    private static void load( RuleReasonerFactory rf, Resource u )
+     	If there are no jms:ruleSet or jms:ruleSetURL properties of <code>R</code>, answer the
+     	supplied factory <code>rf</code>. Otherwise, <code>rf</code> must be a RuleReasonerFactory,
+     	and it is wrapped up in a WrappedRuleReasonerFactory which is loaded with all the specified
+     	rules.
+	*/
+	private static ReasonerFactory loadFactoryRulesets( ReasonerFactory rf, Model rs, Resource R )
+		{
+		StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
+		StmtIterator others = rs.listStatements( R, JMS.ruleSet, (RDFNode) null );
+		if (rulesets.hasNext() || others.hasNext())
+		    {
+		    WrappedRuleReasonerFactory f = new WrappedRuleReasonerFactory( (RuleReasonerFactory) rf );
+		    while (rulesets.hasNext()) load( f, rulesets.nextStatement().getResource() );
+		    while (others.hasNext()) loadNamedRulesets( f, others.nextStatement().getResource() );
+		    return f;
+		    }
+		else
+			return rf;
+		}
+
+	/**
+	 	load into the factory <code>f</code> any rules described by the jms:hasRule and
+	 	jms:ruleSetURL properties of <code>ruleSet</code>.
+	*/
+	protected static void loadNamedRulesets( RuleReasonerFactory f, Resource ruleSet )
         {
-        rf.addRules( Rule.rulesFromURL( u.getURI() ) ); 
+        loadRulesetStrings( f, ruleSet );
+        loadRulesetURLs( f, ruleSet );
         }
+    
+    /**
+     	load into the factory <code>f</code> the rules given by the literal strings
+     	which are the jms:hasRule properties of <code>ruleSet</code>.
+	*/
+	protected static void loadRulesetStrings( RuleReasonerFactory f, Resource ruleSet )
+		{
+		StmtIterator it = ruleSet.listProperties( JMS.hasRule );
+		while (it.hasNext())
+		    f.addRules( Rule.parseRules( it.nextStatement().getString() ) );
+		}
+
+	/**
+		load into the factory <code>f</code> all the rules which are at the URLs
+		specified by the resources-values of the jms:ruleSetURL properties
+		of <code>ruleSet</code>.
+	*/
+	protected static void loadRulesetURLs( RuleReasonerFactory f, Resource ruleSet )
+		{
+		StmtIterator it = ruleSet.listProperties( JMS.ruleSetURL );
+		while (it.hasNext()) load( f, it.nextStatement().getResource() );
+		}
+
+	/**
+	 	load into the factory <code>f</code> the rules at the URL which is the
+	 	URI of the resource <code>u</code>.
+    */
+    protected static void load( RuleReasonerFactory rf, Resource u )
+        { rf.addRules( Rule.rulesFromURL( u.getURI() ) ); }
                 
     }
 
