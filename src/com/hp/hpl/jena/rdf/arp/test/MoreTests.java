@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.15 2004-10-11 11:55:11 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.16 2004-10-20 10:40:37 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -194,7 +194,6 @@ public class MoreTests
 				AResource subj,
 				AResource pred,
 				ALiteral lit) {
-				// TODO Auto-generated method stub
 
 			}
 		});

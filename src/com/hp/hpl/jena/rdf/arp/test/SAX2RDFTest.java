@@ -23,6 +23,7 @@ import org.xml.sax.*;
 public class SAX2RDFTest extends TestCase {
 	
 	static final private String all[] = {
+			/*
 			"abbreviated/collection.rdf",
 			"abbreviated/container.rdf",
 			"abbreviated/cookup.rdf",
@@ -1079,7 +1080,9 @@ public class SAX2RDFTest extends TestCase {
 			"wg/rdf-containers-syntax-vs-schema/test002.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test003.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test004.rdf",
+			*/
 			"wg/rdf-containers-syntax-vs-schema/test005.rdf",
+			/*
 			"wg/rdf-containers-syntax-vs-schema/test006.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test007.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test008.rdf",
@@ -1142,8 +1145,8 @@ public class SAX2RDFTest extends TestCase {
 			"wg/rdfms-literal-is-xml-structure/test002.rdf",
 			"wg/rdfms-literal-is-xml-structure/test003.rdf",
 			"wg/rdfms-literal-is-xml-structure/test004.rdf",
-			"wg/rdfms-literal-is-xml-structure/test005.rdf",
-			"wg/rdfms-nested-bagIDs/test001.rdf",
+			"wg/rdfms-literal-is-xml-structure/test005.rdf", */
+			"wg/rdfms-nested-bagIDs/test001.rdf", /*
 			"wg/rdfms-nested-bagIDs/test002.rdf",
 			"wg/rdfms-nested-bagIDs/test003.rdf",
 			"wg/rdfms-nested-bagIDs/test004.rdf",
@@ -1343,7 +1346,7 @@ public class SAX2RDFTest extends TestCase {
 			"wg/xmlbase/test014.rdf",
 			"wg/xmlbase/test015.rdf",
 			"wg/xmlbase/test016.rdf",
-
+*/
 	};
 
 	/**

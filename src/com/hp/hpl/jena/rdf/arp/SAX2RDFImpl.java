@@ -223,7 +223,14 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	}
 	
 	void close() throws SAXParseException {
-		pipe().close();
+		if (pipe() != null) {
+		    pipe().close();
+		    if (!pipe().exactlyExhausted()) {
+		    	// TODO don't think this works.
+		    	super.error(new SAXParseException("Too many XML events for RDF grammar.",getLocator()));
+		    }
+		}
+		endBnodeScope();
 	}
 
 	/*
@@ -268,11 +275,10 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 
 	/*
 	 * (non-Javadoc)
-	 * Does not return.
 	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 	 */
 	public void fatalError(SAXParseException exception) throws SAXException {
-		// catch runtime exception, throw checked exception
+		if (depth > 0)
 		try {
 			super.fatalError(exception);
 		}
@@ -280,7 +286,6 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 			pipe().close();
 			throw exception;
 		}
-
 	}
 	
 	private PushMePullYouPipe pipe() {

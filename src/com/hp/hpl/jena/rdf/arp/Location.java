@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Location.java,v 1.4 2004-10-19 14:46:29 jeremy_carroll Exp $
+ * * $Id: Location.java,v 1.5 2004-10-20 10:40:35 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -48,11 +48,17 @@ class Location implements Locator {
     final int endLine;
     final int endColumn;
     Location(Locator locator) {
-    	// TODO null locator
+    	if (locator==null){
+    	  inputName = "unknown-source";
+    	  publicId = "unknown-source";
+    	  endLine = -1;
+    	  endColumn = -1;
+    	}else {
         inputName = locator.getSystemId();
         endLine = locator.getLineNumber();
         endColumn = locator.getColumnNumber();
         publicId = locator.getPublicId();
+    	}
     }
     Location(String sysId,int line,int col) {
         inputName = sysId;

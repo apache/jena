@@ -144,16 +144,7 @@ class SingleThreadedParser extends XMLHandler {
 				
 			}
 		} finally {
-			// TODO pull up
-			if ( getHandlers().getExtendedHandler() != ARPHandlers.nullScopeHandler ) {
-				Iterator it = nodeIdUserData.keySet().iterator();
-				while (it.hasNext()) {
-					String nodeId = (String)it.next();
-					ARPResource bn = new ARPResource(this);
-					bn.setNodeId(nodeId);
-					getHandlers().getExtendedHandler().endBNodeScope(bn);
-				}
-			}
+			endBnodeScope();
 		}
 
 	}

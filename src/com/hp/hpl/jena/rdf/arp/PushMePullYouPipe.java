@@ -26,6 +26,8 @@ class PushMePullYouPipe extends TokenPipe {
 	volatile private Throwable brokenPipe = null;
 
 	private boolean open = true;
+	
+	private boolean overflow = false;
 
 	private BoundedBuffer buffer = new BoundedBuffer(5);
 
@@ -85,6 +87,13 @@ class PushMePullYouPipe extends TokenPipe {
 
 	private void isPipeBroken() throws SAXParseException {
 		if (brokenPipe != null) {
+			if ( brokenPipe == naturalEnd ){
+				SAXParseException ee = new SAXParseException("RDF parsing finished, additional XML events",getLocator());
+				//System.err.println(
+				//		ParseException.formatMessage(ee));
+				overflow = true;
+				throw ee;
+			}
 			try {
 				throw brokenPipe;
 			} catch (RuntimeException e) {
@@ -140,6 +149,10 @@ class PushMePullYouPipe extends TokenPipe {
 				return true;
 		} else
 			return false;
+	}
+	
+	boolean exactlyExhausted() {
+		return !(overflow||hasNext());
 	}
 
 	public Token getNextToken() {
