@@ -9,7 +9,9 @@ import com.hp.hpl.jena.util.iterator.*;
  */
 abstract class CNode extends EnhNode implements CNodeI {
 	final static public Implementation factory = new Implementation() {
-		public EnhNode wrap(Node n, EnhGraph eg) {
+        public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
+        public EnhNode wrap(Node n, EnhGraph eg) {
 				// work out what sort of node this is.
 	        if (n.isLiteral())
 				return new CLit(n, eg);

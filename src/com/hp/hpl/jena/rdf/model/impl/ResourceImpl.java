@@ -39,18 +39,22 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-05-20 10:10:22 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-05-20 12:42:09 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
     
     final static public Implementation factory = new Implementation() {
+        public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
         public EnhNode wrap(Node n,EnhGraph eg) {
             return new ResourceImpl(n,eg);
         }
     };
     final static public Implementation rdfNodeFactory = new Implementation() {
-	public EnhNode wrap(Node n,EnhGraph eg) {
+        public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
+        public EnhNode wrap(Node n,EnhGraph eg) {
 		if ( n.isURI() || n.isBlank() )
 		  return new ResourceImpl(n,eg);
 		if ( n.isLiteral() )

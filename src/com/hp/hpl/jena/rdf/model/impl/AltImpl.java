@@ -39,11 +39,13 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-14 15:10:52 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-05-20 12:42:09 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     
     final static public Implementation factory = new Implementation() {
+        public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
         public EnhNode wrap(Node n,EnhGraph eg) {
             return new AltImpl(n,eg);
         }

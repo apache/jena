@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:57 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-20 12:42:09 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.2 2003-04-08 22:11:57 ian_dickinson Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.3 2003-05-20 12:42:09 chris-dollin Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -55,7 +55,10 @@ public class IndividualImpl
      */
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { return new IndividualImpl( n, eg ); }
+        public boolean canWrap( Node n, EnhGraph eg ) { return true; }
     };
+    
+    
 
 
 

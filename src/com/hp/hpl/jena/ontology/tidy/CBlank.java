@@ -15,6 +15,8 @@ class CBlank extends OneTwoImpl implements Blank {
 	public EnhNode wrap(Node n, EnhGraph eg) {
 					return new CBlank(n, eg);
 	}
+    public boolean canWrap( Node n, EnhGraph eg )
+        { return true; }
 	};
 	
 	/**

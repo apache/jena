@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSubjectImpl.java,v 1.3 2003-04-24 14:20:14 chris-dollin Exp $
+  $Id: TestSubjectImpl.java,v 1.4 2003-05-20 12:42:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -13,13 +13,10 @@ import com.hp.hpl.jena.graph.*;
  * @author  jjc
  */
 public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
-    private static Class [] myTypes = new Class []{
-       TestSubject.class
-    };
+
     public static final Implementation factory = new Implementation() {
-    public Class [] implementedTypes() {
-        return myTypes;
-    }
+    public boolean canWrap( Node n, EnhGraph eg )
+        { return true; }
     public EnhNode wrap(Node n,EnhGraph eg) {
         return new TestSubjectImpl(n,eg);
     }
@@ -27,7 +24,7 @@ public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
     
     /** Creates a new instance of TestAllImpl */
     private TestSubjectImpl(Node n,EnhGraph eg) {
-        super(n,eg,myTypes);
+        super( n, eg );
     }
     
     public boolean supports( Class t)

@@ -39,11 +39,13 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-15 12:43:42 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-05-20 12:42:09 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
     final static public Implementation factory = new Implementation() {
+        public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
         public EnhNode wrap(Node n,EnhGraph eg) {
             return new SeqImpl(n,eg);
         }

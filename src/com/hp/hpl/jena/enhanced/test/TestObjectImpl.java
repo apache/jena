@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestObjectImpl.java,v 1.3 2003-04-24 14:20:12 chris-dollin Exp $
+  $Id: TestObjectImpl.java,v 1.4 2003-05-20 12:42:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -13,44 +13,27 @@ import com.hp.hpl.jena.graph.*;
  * @author  jjc
  */
 public class TestObjectImpl extends TestCommonImpl implements TestObject {
-	/**
-	 * Implementation classes have two required fields.
-	 * The first one always lists the type objects from the implemented
-	 * interfaces (all of them, proceeding up the interface hierachy if
-	 * necessary).
-	 */
-    private static Class [] myTypes = new Class []{
-       TestObject.class
-    };
-    /** The second required field is the factory field, of
+
+    /** The  required field is the factory field, of
      * class Implementation.
      * This tells how to construct a new EnhNode of this typ
      * from a Node. Note that caching has already happened, so
      * there is no point in implementing another cache here.
      */
     public static final Implementation factory = new Implementation() {
-    	/**
-    	 * This method should always return the constant array already
-    	 * constructed.
-    	 */
-    public Class [] implementedTypes() {
-        return myTypes;
-    }
     /** This method should probably always just call a constructor.
      *  Note the constructor can/should be private.
      */
     public EnhNode wrap(Node n,EnhGraph eg) {
         return new TestObjectImpl(n,eg);
     }
+    public boolean canWrap( Node n, EnhGraph eg )
+        { return true; }
 };
     
     /** Creates a new instance of TestAllImpl */
     private TestObjectImpl(Node n,EnhGraph eg) {
-    	// Note that the myTypes array should either be 
-    	// passed into the superclass constructor
-    	// or applied immediately after using 
-    	// the Polymorphic.setTypes() method.
-        super(n,eg,myTypes);
+        super( n, eg );
     }
     
     public boolean supports( Class t )

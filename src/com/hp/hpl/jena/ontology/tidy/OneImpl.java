@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: OneImpl.java,v 1.3 2003-04-17 10:50:02 jeremy_carroll Exp $
+  $Id: OneImpl.java,v 1.4 2003-05-20 12:42:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -20,7 +20,9 @@ import com.hp.hpl.jena.graph.Node;
 */
 class OneImpl extends OneTwoImpl implements One {
 	final static public Implementation factory = new Implementation() {
-	public EnhNode wrap(Node n, EnhGraph eg) {
+        public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
+        public EnhNode wrap(Node n, EnhGraph eg) {
 					return new OneImpl(n, eg);
 	}
 	};

@@ -39,11 +39,13 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Bag
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-19 10:53:39 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-20 12:42:09 $' 
  */
 public class BagImpl extends ContainerImpl implements Bag {
     
     final static public Implementation factory = new Implementation() {
+        public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
         public EnhNode wrap(Node n,EnhGraph eg) {
             return new BagImpl(n,eg);
         }

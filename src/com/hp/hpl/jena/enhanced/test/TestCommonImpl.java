@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCommonImpl.java,v 1.3 2003-04-24 14:20:12 chris-dollin Exp $
+  $Id: TestCommonImpl.java,v 1.4 2003-05-20 12:42:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.*;
 class TestCommonImpl extends EnhNode implements TestNode {
 
     /** Creates new TestCommonImpl */
-    TestCommonImpl(Node n,EnhGraph m,Class myTypes[]) {
+    TestCommonImpl(Node n, EnhGraph m ) {
         super(n,m);
     }
     TestModel getModel() {

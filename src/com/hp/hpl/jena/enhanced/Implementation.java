@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Implementation.java,v 1.3 2003-03-26 12:39:08 chris-dollin Exp $
+  $Id: Implementation.java,v 1.4 2003-05-20 12:41:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -35,8 +35,7 @@ public abstract class Implementation {
         @param eg the enhanced graph the node appears in
         @return true iff the node can represent our type in that graph
      */
-     public boolean canWrap( Node node, EnhGraph eg )
-        { return true; }
+     public abstract boolean canWrap( Node node, EnhGraph eg );
      
 }
 

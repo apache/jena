@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TwoImpl.java,v 1.3 2003-04-17 10:50:01 jeremy_carroll Exp $
+  $Id: TwoImpl.java,v 1.4 2003-05-20 12:42:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -22,7 +22,9 @@ class TwoImpl extends OneTwoImpl implements Two {
 	final static public Implementation factory = new Implementation() {
 	public EnhNode wrap(Node n, EnhGraph eg) {
 					return new TwoImpl(n, eg);
-	}
+	}    
+    public boolean canWrap( Node n, EnhGraph eg )
+        { return true; }
 	};
 	public TwoImpl(Node n, EnhGraph g) {
 		super(n, g);
