@@ -51,3 +51,16 @@ Reification:
 + RDF/XML readers/writers will round-trip reified statements
 + reification statements normally invisible but can be seen for
   WG conformance
+
+Ontology API:
++ first release of the new ontology API, which provides language
+  neutral (specfically DAML+OIL, OWL and - soon - RDFS)
+  convenience API
++ addresses the limitations of the Jena 1 DAML API though
+  RDF resource polymorphism, allowing resources to be viewed via
+  different abstract views
++ ontology document manager constructs imports closure of a model
+  and allows redirection of imported URL's to locally cached copies
++ computes the transitive closure of the class and property
+  hierarchies, as a pre-cursor to supporting flexible reasoner
+  plugins for OWL and DAML reasoning.
