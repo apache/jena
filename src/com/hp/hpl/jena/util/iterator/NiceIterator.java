@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NiceIterator.java,v 1.3 2003-06-20 14:28:40 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.4 2003-08-04 11:08:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -9,10 +9,11 @@ package com.hp.hpl.jena.util.iterator;
 import java.util.*;
 
 /**
+    NiceIterator is the standard base class implementing ExtendedIterator. It provides
+    the static methods for <code>andThen</code>, <code>filterKeep</code> and
+    <code>filterDrop</code>; these can be reused from any other class. It defines
+    equivalent instance methods for descendants and to satisfy ExtendedIterator.  
 	@author kers
-<br>
-    A NiceIterator is an abstract class implementing ClosableIterator, which is
-    about to become more complicated ...
 */
 
 public class NiceIterator implements ExtendedIterator
