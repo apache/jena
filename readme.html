@@ -39,10 +39,15 @@ features:</p>
   <li>built in support for RDF containers - bag, alt and seq</li>
   <li>enhanced resources - the application can extend the behaviour of
     resources</li>
-  <li>integrated parsers and writers for RDF/XML (ARP), N3 and N-TRIPLES<br>
-&nbsp;</li>
+  <li>integrated parsers and writers for RDF/XML (ARP), N3 and N-TRIPLES</li>
 </ul></dd>
-
+  <dd>&nbsp;</dd>
+<dt>ARP - Jena's RDF/XML Parser</dt>
+  <dd>ARP aims to be fully compliant with the latest decisions of the RDF Core 
+  WG. The Jena 2.0 version is compliant with the Editor's Working Drafts at time 
+  of release. ARP is typically invoked using Jena's read operations, but can 
+  also be used standalone.</dd>
+<dd>&nbsp;</dd>
   <dt>Persistence</dt>
   <dd>The Jena2 persistence subsystem implements an extension to the Jena Model 
   class that provides persistence for models through use of a back-end database 
@@ -54,15 +59,16 @@ features:</p>
   statements. Thus, the Jena2 layout enables faster insertion and retrieval but 
   uses more storage than Jena1. Configuration options are available that give 
   Jena2 users some control over the degree of denormalization in order to reduce 
-  storage consumption.<br>
-  <br>
+  storage consumption.</dd>
+<dd>&nbsp;</dd>
+  <dd>
   The persistence subsystem supports a Fastpath capability for RDQL queries that 
   dynamically generates SQL queries to perform as much of the RDQL query as 
   possible within an SQL database engine. Currently, Jena2 can use three SQL 
   database engines, MySQL, Oracle and PostgreSQL. These are supported on Linux 
   and WindowsXP. As with Jena1, the persistence subsystem is designed to be 
-  portable to other SQL database engines.<br>
-&nbsp;</dd>
+  portable to other SQL database engines.</dd>
+<dd>&nbsp;</dd>
     <dt><b>Reasoning Subsystem</b></dt>
     <dd>The Jena2 reasoner subsystem is designed to allow a range of inference 
       engines to be plugged into Jena. Such reasoners are primarily used to derive 
@@ -70,7 +76,7 @@ features:</p>
       with any optional ontology information and the axioms and rule. See the
     <a href="doc/inference/index.html">reasoner documentation</a> 
       for more details. </dd>
-  <dt>&nbsp;</dt>
+  <dd>&nbsp;</dd>
     <dt><b>Ontology Subsystem</b></dt>
     <dd>The Jena2 ontology API is intended to support programmers who are working
     	with ontology data based on RDF. Specifically, this means support for 
@@ -84,7 +90,8 @@ features:</p>
     	and pulish these on the web, the Jena2 ontology subsystem also includes a
     	document manager that assists with process of managing imported ontology documents.
  	See the <a href="doc/ontology/index.html">ontology documentation</a> 
-      for more details.<p>&nbsp;</p></dd>
+      for more details.</dd>
+    <dd>&nbsp;</dd>
   <dt><b>RDQL query language</b></dt>
 	<dd>RDQL is a query language for RDF data. The implementation 
         in Jena is coupled to relational database storage so that optimized 
@@ -173,7 +180,7 @@ line:</p>
 <pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
 
 		<h2>License</h2>
-		<p>Jena is distributed under a BSD style open source <a
+		<p>Jena is distributed under a BSD-style open source <a
 href="copyright.txt">license</a>.</p>
 
 <p>It includes software developed by the Apache Software Foundation
