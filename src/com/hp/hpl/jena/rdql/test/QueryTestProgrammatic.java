@@ -14,17 +14,16 @@ import java.util.* ;
 import com.hp.hpl.jena.rdql.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.mem.* ;
 
 
 /** Bunch of programmatic uses of query to complrment the script tests.
  * @author Andy Seaborne
- * @version $Id: QueryTestProgrammatic.java,v 1.4 2003-03-19 17:17:40 andy_seaborne Exp $
+ * @version $Id: QueryTestProgrammatic.java,v 1.5 2003-05-28 14:49:09 andy_seaborne Exp $
  */
 
 public class QueryTestProgrammatic extends TestSuite
 {
-	static final String testSetName = "RDQL - Query - Programmtic" ;
+	static final String testSetName = "RDQL - Query - Programmatic" ;
 	
     public static boolean dumpModel = false ;
     public static boolean verbose = false ;
@@ -175,8 +174,7 @@ public class QueryTestProgrammatic extends TestSuite
     
     static public Model makeModel1() throws Exception
     {
-        Model model = new ModelMem() ;
-
+        Model model = ModelFactory.createDefaultModel() ;
 
         // Resource loop
         for ( int i = 0 ; i < 2 ; i++ )
@@ -230,7 +228,7 @@ public class QueryTestProgrammatic extends TestSuite
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003, 2001-2003
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.6 2003-04-08 22:12:03 ian_dickinson Exp $
+ * @version  $Id: ResultBinding.java,v 1.7 2003-05-28 14:51:02 andy_seaborne Exp $
  */
 
 
@@ -111,7 +111,7 @@ public class ResultBinding
                             p = model.createProperty(((Resource)p).getURI()) ;
                         RDFNode o = QueryEngine.convertNodeToRDFNode(t2.getObject(), model) ;
                         Statement stmt = model.createStatement((Resource)s, (Property)p, o) ;
-                        acc.add(stmt) ;
+                        causalTriples.add(stmt) ;
                     }
                 } catch (Exception ex)
                 {

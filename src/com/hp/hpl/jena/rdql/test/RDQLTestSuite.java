@@ -10,7 +10,7 @@ import junit.framework.*;
 /**
  * All the RDQL tests 
  * @author		Andy Seaborne
- * @version 	$Id: RDQLTestSuite.java,v 1.3 2003-02-20 16:46:31 andy_seaborne Exp $
+ * @version 	$Id: RDQLTestSuite.java,v 1.4 2003-05-28 14:49:10 andy_seaborne Exp $
  */
 
 public class RDQLTestSuite extends TestSuite
@@ -26,6 +26,7 @@ public class RDQLTestSuite extends TestSuite
         addTest(TestExpressions.suite()) ;
         addTest(QueryTestScripts.suite()) ;
         addTest(QueryTestProgrammatic.suite()) ;
+        addTest(QueryTestsMisc.suite()) ;
     }
 }
 
