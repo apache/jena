@@ -13,11 +13,11 @@ import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
  * Vocabulary for Database properties.
  * 
  * @author csayers
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DB {
 
-    protected static final String uri = "http://jena.hpl.hp.com/2003/04/DB#";
+    public static final String uri = "http://jena.hpl.hp.com/2003/04/DB#";
 
     /** returns the URI for this schema
      * @return the URI for this schema
@@ -41,7 +41,9 @@ public class DB {
     public static Property maxLiteral;
     
 	// Graph properties
-		   static String nGraphType = "GraphType";
+	       static String nGraphName = "GraphName";
+	public static Property graphName;
+	       static String nGraphType = "GraphType";
 	public static Property graphType;
 		   static String nGraphLSet = "GraphLSet";
 	public static Property graphLSet;
@@ -55,13 +57,17 @@ public class DB {
 	public static Property prefixURI;
     
 	// LSet properties
-		   static String nLSetType = "LSetType";
+	       static String nLSetName = "LSetName";
+	public static Property lSetName;
+	       static String nLSetType = "LSetType";
 	public static Property lSetType;
 		   static String nLSetPSet = "LSetPSet";
 	public static Property lSetPSet;
     
 	// PSet properties
-		   static String nPSetType = "PSetType";
+	   static String nPSetName = "PSetName";
+	public static Property pSetName;    
+	   static String nPSetType = "PSetType";
 	public static Property pSetType;    
     
     // Added - schemagen does not generate this
@@ -78,16 +84,19 @@ public class DB {
             graph = ResourceFactory.createProperty(uri + nGraph);
             maxLiteral = ResourceFactory.createProperty(uri + nMaxLiteral);
             
-            graphType = ResourceFactory.createProperty(uri + nGraphType);
+			graphName = ResourceFactory.createProperty(uri + nGraphName);
+			graphType = ResourceFactory.createProperty(uri + nGraphType);
 			graphLSet = ResourceFactory.createProperty(uri + nGraphLSet);
 			graphPrefix = ResourceFactory.createProperty(uri + nGraphPrefix);
             
 			prefixValue = ResourceFactory.createProperty(uri + nPrefixValue);
 			prefixURI = ResourceFactory.createProperty(uri + nPrefixURI);
             
+			lSetName = ResourceFactory.createProperty(uri + nLSetName);
 			lSetType = ResourceFactory.createProperty(uri + nLSetType);
 			lSetPSet = ResourceFactory.createProperty(uri + nLSetPSet);
             
+			pSetName = ResourceFactory.createProperty(uri + nPSetName);
 			pSetType = ResourceFactory.createProperty(uri + nPSetType);
 
             undefined = ResourceFactory.createResource(uri + nundefined) ;
