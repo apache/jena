@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.11 2003-08-15 16:08:24 der Exp $
+# $Id: owl-fb-test.rules,v 1.12 2003-08-17 20:03:25 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -20,6 +20,7 @@
 -> table(rdfs:subClassOf).
 -> table(rdfs:range).
 -> table(rdfs:domain).
+-> table(owl:equivalentClass).
 
 #------------------------------------------------------------------
 # RDFS Axioms
@@ -91,8 +92,10 @@
 # RDFS iff extensions needed for OWL
 #------------------------------------------------------------------
 
-[rdfs2a: (?x rdfs:domain ?z) <- (?x rdfs:domain ?y), (?y rdfs:subClassOf ?z) ]
-[rdfs3a: (?x rdfs:range  ?z) <- (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) ]
+[rdfs2a: (?x rdfs:domain ?z) <- bound(?x), (?x rdfs:domain ?y), (?y rdfs:subClassOf ?z) ]
+[rdfs2a: (?x rdfs:domain ?z) <- unbound(?x), (?y rdfs:subClassOf ?z), (?x rdfs:domain ?y) ]
+[rdfs3a: (?x rdfs:range  ?z) <- bound(?x), (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) ]
+[rdfs3a: (?x rdfs:range  ?z) <- unbound(?x), (?y rdfs:subClassOf ?z), (?x rdfs:range  ?y) ]
 
 [rdfs12a: (rdf:type rdfs:subPropertyOf ?z), (?z rdfs:domain ?y) -> (rdfs:Resource rdfs:subClassOf ?y)]
 [rdfs12a: (rdfs:subClassOf rdfs:subPropertyOf ?z), (?z rdfs:domain ?y) -> (rdfs:Class rdfs:subClassOf ?y)]
@@ -206,10 +209,10 @@
 # min cardinality
 #------------------------------------------------------------------
 
-[min: (?C rdfs:subClassOf min(?P, 1)) ->
+[min: (?C rdfs:subClassOf min(?P, 1)) -> table(?P),
     [min1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?T)] ]
 
-[minRec: (?C owl:equivalentClass min(?P, 1)), notEqual(?P, rdf:type) ->
+[minRec: (?C owl:equivalentClass min(?P, 1)), notEqual(?P, rdf:type) -> table(?P),
     [min2b: (?X rdf:type ?C) <- (?X ?P ?Y)] ]
 
 [restriction-inter-MnS: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, 1)) 
@@ -219,7 +222,7 @@
 # max cardinality 1
 #------------------------------------------------------------------
 
-[max1: (?C rdfs:subClassOf max(?P, 1)) ->
+[max1: (?C rdfs:subClassOf max(?P, 1)) -> table(?P),
     [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- bound(?Y1),   (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notEqual(?Y1, ?Y2)]
     [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- unbound(?Y1), (?X ?P ?Y2), (?X rdf:type ?C), (?X ?P ?Y1), notEqual(?Y1, ?Y2)]
     ]
@@ -231,7 +234,7 @@
 # max cardinality 0
 #------------------------------------------------------------------
 
-[max2: (?C rdfs:subClassOf max(?P, 0)) ->
+[max2: (?C rdfs:subClassOf max(?P, 0)) -> table(?P),
     [max2b: (?X rdf:type owl:Nothing) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
 
 # For completeness this requires iff version of rdfs:domain working forwards which it does not just now
@@ -241,7 +244,7 @@
 [cardRec1: (?C owl:equivalentClass card(?P, 0)), (?P rdfs:domain ?D), (?E owl:disjointWith ?D)
 	-> (?E owl:equivalentClass ?C)]
 	
-[cardRec3: (?C owl:equivalentClass card(?P, 0)) ->
+[cardRec3: (?C owl:equivalentClass card(?P, 0)) -> table(?P),
 	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type max(?P, 0))] ]
 
 #------------------------------------------------------------------
@@ -251,7 +254,7 @@
 [restriction-inter-CFP: (?C owl:equivalentClass card(?P, 1)), (?P rdf:type owl:FunctionalProperty) ->
      (?C owl:equivalentClass min(?P, 1)) ]
 
-[cardRec2: (?C owl:equivalentClass card(?P, 1)) ->
+[cardRec2: (?C owl:equivalentClass card(?P, 1)) -> table(?P),
 	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type min(P, 1)), (?X rdf:type max(P, 1)) ] ]
 
 #------------------------------------------------------------------
@@ -263,25 +266,25 @@
 					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), 
 					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
 					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass),
-   ->
-    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), print (instClause, ?T, ?X), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T), print('?T=', ?T) ] 
-    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), print(typeClause, ?T, ?X), makeInstance(?X, ?P, ?D, ?T), print('?T=', ?T) ] 
+   -> table(?P),
+#    [some1b: (?X ?P ?T) <- (?X rdf:type ?C),  noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+#    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), makeInstance(?X, ?P, ?D, ?T) ] 
     
-#    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
-#    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
-#    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
-#    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
     ]
     
-[someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) ->
+[someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) -> table(?P),
      [someRecb: (?X rdf:type ?C) <- (?X ?P ?A) ] ]
     
 #------------------------------------------------------------------
 # allValuesFrom
 #------------------------------------------------------------------
 
-[all1: (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type), notEqual(?C, ?D) ->
-		[all1b: (?Y rdf:type ?D) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
+[all1: (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type), notEqual(?C, ?D) -> table(?P),
+		[all1b: (?Y rdf:type ?D) <- (?X ?P ?Y), (?X rdf:type ?C) ] ]
 
 [allRec1: (?C rdfs:subClassOf max(?P, 1)), (?C rdfs:subClassOf some(?P, ?D))
 						-> (?C rdfs:subClassOf all(?P, ?D)) ]
@@ -289,7 +292,7 @@
 [allRec2: (?P rdf:type owl:FunctionalProperty), (?C rdfs:subClassOf some(?P, ?C))
 						 -> (?C rdfs:subClassOf all(?P, ?C)) ]
     
-[allRec3: (?C owl:equivalentClass all(?P, ?D)), (?P rdfs:range ?D) ->
+[allRec3: (?C owl:equivalentClass all(?P, ?D)), (?P rdfs:range ?D) -> table(?P),
     [ (?X rdf:type ?C) <- (?X rdf:type owl:Thing)] ]
 
 [restriction-inter-RA-T: (?P rdfs:range ?C), (?D owl:equivalentClass all(?P, ?C)) 
@@ -337,12 +340,12 @@
 
 # sameIndividualAs
 
-[sameIndividualAs1: (?P rdf:type owl:FunctionalProperty) ->
+[sameIndividualAs1: (?P rdf:type owl:FunctionalProperty) -> table(?P),
       [sameIndividualAs1b: (?B owl:sameIndividualAs ?C) <- unbound(?C), (?A ?P ?B), (?A ?P ?C) ] 
       [sameIndividualAs1b: (?B owl:sameIndividualAs ?C) <-   bound(?C), (?A ?P ?C), (?A ?P ?B) ] 
       ]
                     
-[sameIndividualAs2: (?P rdf:type owl:InverseFunctionalProperty) ->
+[sameIndividualAs2: (?P rdf:type owl:InverseFunctionalProperty) -> table(?P),
       [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <- unbound(?C), (?A ?P ?B), (?C ?P ?B) ] 
       [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <-   bound(?C), (?C ?P ?B), (?A ?P ?B) ] 
       ]
@@ -393,4 +396,8 @@
 # TransitiveProperty
 
 [transitiveProperty1: (?P rdf:type owl:TransitiveProperty) -> table(?P),
-			[transitiveProperty1b:  (?A ?P ?C) <- (?A ?P ?B), (?B ?P ?C)] ]
+#			[transitiveProperty1b:  (?A ?P ?C) <- (?A ?P ?B), (?B ?P ?C)] ]
+			[transitiveProperty1b:  (?A ?P ?C) <- bound (?C), (?B ?P ?C), (?A ?P ?B)] 
+			[transitiveProperty1b:  (?A ?P ?C) <- unbound (?C), (?A ?P ?B) (?B ?P ?C)] 
+			]
+			
