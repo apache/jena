@@ -45,7 +45,7 @@ import com.hp.hpl.jena.shared.*;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.16 $ on $Date: 2003-06-27 15:14:33 $
+* @version $Revision: 1.17 $ on $Date: 2003-06-27 18:07:41 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -292,12 +292,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		// default settings for any graph added to this database
 		DBPropGraph def_prop = new DBPropGraph( m_sysProperties, DEFAULT_PROPS, "generic");
 		
-		String reifTbl = createTable(DEFAULT_ID, true);
-		String stmtTbl = createTable(DEFAULT_ID, false);
-		
 		def_prop.addGraphId(DEFAULT_ID);
-		def_prop.addStmtTable(stmtTbl);
-		def_prop.addReifTable(reifTbl);
 
 		return m_sysProperties;		
 	}
@@ -323,14 +318,17 @@ public abstract class DriverRDB implements IRDBDriver {
 		String dbSchema;
 		int graphId = graphIdAlloc(graphName);
 		graphProperties.addGraphId(graphId);
+		boolean useDefault = false;
 				
 		dbSchema = graphProperties.getDBSchema();
 		// use the default schema if:
 		// 1) no schema is specified and we are creating the default (unnamed) graph
 		// 2) a schema is specified and it is the default (unnamed) graph
 		if ( ((dbSchema == null) && graphName.equals(GraphRDB.DEFAULT)) ||
-			 ((dbSchema != null) && dbSchema.equals(GraphRDB.DEFAULT)) )
+			 ((dbSchema != null) && dbSchema.equals(GraphRDB.DEFAULT)) ) {
+			useDefault = true;
 			dbSchema = DEFAULT_PROPS;  // default graph should use default tables
+		}
 		if ( dbSchema != null ) {
 			DBPropGraph schProp = DBPropGraph.findPropGraphByName(getSystemSpecializedGraph(),
 												dbSchema );
@@ -338,10 +336,12 @@ public abstract class DriverRDB implements IRDBDriver {
 				reifTbl = schProp.getReifTable();
 				stmtTbl = schProp.getStmtTable();
 			}
-			if ( (reifTbl == null) || (stmtTbl == null) )
+			if ( ((reifTbl == null) || (stmtTbl == null)) && (useDefault == false) )
+				// schema not found. this is ok ONLY IF it's the DEFAULT schema
 				throw new RDFRDBException("Creating graph " + graphName +
 					": referenced schema not found: " + dbSchema);
-		} else {
+		}
+		if ( (reifTbl == null) || (stmtTbl == null) ) {
 			reifTbl = createTable(graphId, true);	
 			stmtTbl = createTable(graphId, false);	
 			if ( (reifTbl == null) || (stmtTbl == null) )
@@ -441,15 +441,35 @@ public abstract class DriverRDB implements IRDBDriver {
 	public void removeSpecializedGraphs( DBPropGraph graphProperties,
 		List specializedGraphs) {
 			
+		int graphId = graphProperties.getGraphId();
 		Iterator it = specializedGraphs.iterator();
 		while (it.hasNext()){
-		   removeSpecializedGraph((SpecializedGraph) it.next());
+		   SpecializedGraph sg = (SpecializedGraph) it.next();
+		   removeSpecializedGraph(sg);
 		}
-
+		
+		String stmtTbl = graphProperties.getStmtTable();
+		String reifTbl = graphProperties.getReifTable();
+		
 		// remove from system properties table
 		// It is sufficient just to remove the lSet properties (it will
 		// take care of deleting any pset properties automatically).			
 		m_dbProps.removeGraph(graphProperties);
+		
+		// drop the tables if they are no longer referenced
+		if ( graphId != DEFAULT_ID ) {
+			boolean stInUse = false;
+			boolean rtInUse = false;
+			it =  m_dbProps.getAllGraphs();
+			while ( it.hasNext() ) {
+				DBPropGraph gp = (DBPropGraph) it.next();
+				if ( gp.getStmtTable().equals(stmtTbl) ) stInUse = true;
+				if ( gp.getReifTable().equals(reifTbl) ) rtInUse = true;
+			}		
+			if ( stInUse == false ) deleteTable(stmtTbl);
+			if ( rtInUse == false ) deleteTable(reifTbl);
+			graphIdDealloc(graphId);
+		}
 	}
 	
 	
@@ -641,6 +661,24 @@ public abstract class DriverRDB implements IRDBDriver {
 			}
 		}
 		return params[0];
+	}
+
+
+	/**
+	 * Delete a table.
+	 * 
+	 * @param tableName the name of the table to delete.	 * 
+	 */
+	public void deleteTable( String tableName ) {
+		
+		String opname = "dropTable"; 
+		try {         			
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, tableName);
+			ps.executeUpdate();
+			return;
+		} catch (Exception e1) {
+			throw new RDFRDBException("Failed to delete table ", e1);
+		}
 	}
 
 
