@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:01:00 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-29 12:33:25 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.9 2003-08-27 13:01:00 andy_seaborne Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.10 2004-01-29 12:33:25 chris-dollin Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -97,6 +97,10 @@ public class MultiUnion
     // External signature methods
     //////////////////////////////////
 
+    public Reifier getReifier()
+        { Graph base = getBaseGraph();
+        return base == null ? super.getReifier() : base.getReifier(); }
+    
     /**
      * <p>
      * Add the given triple to the union model; the actual component model to
@@ -115,6 +119,17 @@ public class MultiUnion
         }
     }
 
+    /**
+        adds are notified by the base graph (and we share its event handler). 
+    */
+    public void notifyAdd( Triple t )
+        {}
+
+    /**
+        deletes are notified by the base graph (and we share its event handler). 
+    */    
+    public void notifyDelete( Triple t )
+        {}
 
     /**
      * <p>

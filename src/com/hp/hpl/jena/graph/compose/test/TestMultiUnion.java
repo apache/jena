@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestMultiUnion.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:01:01 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-29 12:34:03 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,10 +42,10 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestMultiUnion.java,v 1.5 2003-08-27 13:01:01 andy_seaborne Exp $
+ * @version CVS $Id: TestMultiUnion.java,v 1.6 2004-01-29 12:34:03 chris-dollin Exp $
  */
 public class TestMultiUnion
-    extends GraphTestBase
+    extends AbstractTestGraph
 {
     // Constants
     //////////////////////////////////
@@ -72,7 +72,12 @@ public class TestMultiUnion
 
     public static TestSuite suite()
         { return new TestSuite( TestMultiUnion.class ); }   
-
+    
+    public Graph getGraph()
+        {
+        Graph gBase = graphWith( "" ), g1 = graphWith( "" );
+        return new MultiUnion( new Graph[] {gBase, g1} ); 
+        };
 
     public void testEmptyGraph() {
         Graph m = new MultiUnion();
@@ -81,6 +86,15 @@ public class TestMultiUnion
         assertEquals( "Empty model should have size zero", 0, m.size() );
         assertFalse( "Empty model should not contain another graph", m.dependsOn( g0 ) );
     }
+    
+   
+//    public void testDeferredReifier()
+//        {
+//        Graph g1 = graphWith( "" ), g2 = graphWith( "" );
+//        MultiUnion m = new MultiUnion( new Graph[] {g1, g2} );
+//        m.setBaseGraph( g1 );
+//        assertSame( m.getReifier(), g1.getReifier() );
+//        }
     
 
     public void testGraphSize1() {

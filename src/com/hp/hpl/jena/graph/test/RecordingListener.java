@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RecordingListener.java,v 1.6 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: RecordingListener.java,v 1.7 2004-01-29 12:34:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -15,9 +15,9 @@ import java.util.*;
     This testing listener records the event names and data, and provides
     a method for comparing the actual with the expected history. 
 */    
-class RecordingListener implements GraphListener
+public class RecordingListener implements GraphListener
     {
-    List history = new ArrayList();
+    public List history = new ArrayList();
     
     public void notifyAddTriple( Triple t )
         { record( "add", t ); }

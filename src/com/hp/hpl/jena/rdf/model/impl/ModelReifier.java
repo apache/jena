@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.10 2003-09-08 11:28:22 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.11 2004-01-29 12:34:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.*;
 public class ModelReifier
     {
     private ModelCom model;
-    private Reifier reifier;
+    public Reifier reifier;
     
     /**
         DEVEL. setting this _true_ means that nodes that reify statements

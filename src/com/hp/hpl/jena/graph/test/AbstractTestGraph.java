@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.39 2004-01-16 16:06:17 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.40 2004-01-29 12:34:03 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -247,16 +247,17 @@ public abstract class AbstractTestGraph extends GraphTestBase
         
     public void testBulkAddWithReification( boolean withReifications )
         {
-        Graph g = getGraph();
-        BulkUpdateHandler bu = g.getBulkUpdateHandler();
-        Graph items = graphWith( "pigs might fly; dead can dance" );
-        Reifier gr = g.getReifier(), ir = items.getReifier();
-        xSPOyXYZ( ir );
-        bu.add( items, withReifications );
+        Graph graphToUpdate = getGraph();
+        BulkUpdateHandler bu = graphToUpdate.getBulkUpdateHandler();
+        Graph graphToAdd = graphWith( "pigs might fly; dead can dance" );
+        Reifier updatedReifier = graphToUpdate.getReifier();
+        Reifier addedReifier = graphToAdd.getReifier();
+        xSPOyXYZ( addedReifier );
+        bu.add( graphToAdd, withReifications );
         assertIsomorphic
             ( 
-            withReifications ? ir.getReificationTriples() : graphWith( "" ), 
-            gr.getReificationTriples() 
+            withReifications ? addedReifier.getReificationTriples() : graphWith( "" ), 
+            updatedReifier.getReificationTriples() 
             );
         }
         

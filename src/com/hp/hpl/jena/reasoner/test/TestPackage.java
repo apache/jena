@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestPackage.java,v 1.13 2004-01-25 16:58:41 chris-dollin Exp $
+ * $Id: TestPackage.java,v 1.14 2004-01-29 12:34:04 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -16,7 +16,7 @@ import junit.framework.*;
  * Aggregate tester that runs all the test associated with the reasoner package.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2004-01-25 16:58:41 $
+ * @version $Revision: 1.14 $ on $Date: 2004-01-29 12:34:04 $
  */
 
 public class TestPackage extends TestSuite {
@@ -33,6 +33,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestRDFSReasoners", TestRDFSReasoners.suite() );
         addTest( "TestRuleReasoners",  com.hp.hpl.jena.reasoner.rulesys.test.TestPackage.suite() );
         addTest( "TestReasonerPrefixMapping", TestInfPrefixMapping.suite() );
+        addTest( "TestInfGraph", TestInfGraph.suite() );
     }
 
     // helper method

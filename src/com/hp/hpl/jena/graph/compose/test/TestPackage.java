@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.4 2004-01-25 16:58:01 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.5 2004-01-29 12:34:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -10,17 +10,14 @@ package com.hp.hpl.jena.graph.compose.test;
 	@author kers
 */
 
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
 
 import junit.framework.TestSuite;
 
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2004-01-25 16:58:01 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2004-01-29 12:34:03 $
  */
 public class TestPackage extends Object {
     
