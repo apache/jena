@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.16 2004-07-20 17:17:18 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.17 2004-07-22 10:11:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -23,7 +23,7 @@ import java.util.*;
 
 	@author kers
 */
-public class TestExpressionConstraints extends GraphTestBase 
+public class TestExpressionConstraints extends QueryTestBase 
     {
     public TestExpressionConstraints( String name )    
         { super( name ); }
@@ -31,51 +31,22 @@ public class TestExpressionConstraints extends GraphTestBase
     public static TestSuite suite()
         { return new TestSuite( TestExpressionConstraints.class ); }
 
-    protected static final Node X = Query.X;
-    protected static final Node Y = Query.Y;
-    protected static final Node Z = Query.Z;
-    protected static final Node ANY = Query.ANY;
-    
     protected static final Expression eTRUE = Expression.TRUE;
     protected static final Expression eFALSE = Expression.FALSE;
-
-    protected VariableIndexes emptyVI = new VariableIndexes()
-        { public int indexOf(String name) { return -1; } };
-        
-    protected IndexValues emptyIV = new IndexValues()
-        { public Object get( int index ) { return null; } };
     
-    protected static final Map1 getFirst = new Map1()
-        { public Object map1(Object x) { return ((List) x).get(0); }};        
-        
     public void testConstraintFALSE()
         {
         Graph g = graphWith( "x R y; a P b" );
-        Query q = new Query().addMatch( X, ANY, ANY ).addConstraint( eFALSE )
-            ;
-        assertFalse( q.executeBindings( g, new Node[] {X} ).hasNext() ); 
+        Query q = new Query().addMatch( X, ANY, ANY ).addConstraint( eFALSE );
+        assertFalse( q.executeBindings( g, justX ).hasNext() ); 
         }    
         
     public void testConstraintTRUE()
         {
         Graph g = graphWith( "x R y; a P b" );
-        Query q = new Query().addMatch( X, ANY, ANY ).addConstraint( eTRUE )
-            ;
-        assertTrue( q.executeBindings( g, new Node[] {X} ).hasNext() ); 
+        Query q = new Query().addMatch( X, ANY, ANY ).addConstraint( eTRUE );
+        assertTrue( q.executeBindings( g, justX ).hasNext() ); 
         }
-        
-    private BaseExampleExpression notEqual( Node x, Node y )
-        {
-        return ExampleCreate.NE( x, y );
-        }
-
-    private BaseExampleExpression areEqual( Node x, Node y )
-        {
-        return ExampleCreate.EQ( x, y );
-        }
-        
-    protected BaseExampleExpression matches( Node x, Node y )
-        { return ExampleCreate.MATCHES( x, y ); }
 
     public void testConstraintNE1()
         {        
@@ -86,7 +57,7 @@ public class TestExpressionConstraints extends GraphTestBase
             ;
         Set expected = HashUtils.createSet();
         expected.add( node( "x" ) );
-        assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
+        assertEquals( expected, iteratorToSet( q.executeBindings( g, justX ).mapWith( getFirst ) ) );     
         }        
         
     public void testConstraintNE2()
@@ -99,7 +70,7 @@ public class TestExpressionConstraints extends GraphTestBase
             ;
         Set expected = HashUtils.createSet();
         expected.add( node( "x" ) );
-        assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
+        assertEquals( expected, iteratorToSet( q.executeBindings( g, justX ).mapWith( getFirst ) ) );     
         }
                 
     public void testConstraintNE3()
@@ -112,7 +83,7 @@ public class TestExpressionConstraints extends GraphTestBase
         Set expected = HashUtils.createSet();
         expected.add( node( "x" ) );
         expected.add( node( "z" ) );
-        assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
+        assertEquals( expected, iteratorToSet( q.executeBindings( g, justX ).mapWith( getFirst ) ) );     
         }    
         
     public void testConstraintNE4()
@@ -125,7 +96,7 @@ public class TestExpressionConstraints extends GraphTestBase
             ;
         Set expected = HashUtils.createSet();
         expected.add( node( "z" ) );
-        assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
+        assertEquals( expected, iteratorToSet( q.executeBindings( g, justX ).mapWith( getFirst ) ) );     
         }
         
     public static class VI implements VariableIndexes
@@ -163,10 +134,10 @@ public class TestExpressionConstraints extends GraphTestBase
         }
         
 	public void testVVTrue()
-        { assertEquals( true, Expression.TRUE.prepare( emptyVI ).evalBool( emptyIV ) ); }
+        { assertEquals( true, Expression.TRUE.prepare( noVariables ).evalBool( noIVs ) ); }
         
     public void testVVFalse()
-        { assertEquals( false, Expression.FALSE.prepare( emptyVI ).evalBool( emptyIV ) ); }
+        { assertEquals( false, Expression.FALSE.prepare( noVariables ).evalBool( noIVs ) ); }
 
     public void testVVMatches()
         { VariableIndexes vi = new VI().set( "X", 0 ).set( "Y", 1 );
@@ -195,8 +166,8 @@ public class TestExpressionConstraints extends GraphTestBase
     
     public void testDetectAnd()
         {
-        BaseExampleExpression e1 = notEqual( X, Y ), e2 = notEqual( X, Z );
-        Query q = new Query().addConstraint( e1.and( e2 ) );
+        Expression e1 = notEqual( X, Y ), e2 = notEqual( X, Z );
+        Query q = new Query().addConstraint( Dyadic.and( e1, e2 ) );
         Set eBoth = HashUtils.createSet(); eBoth.add( e1 ); eBoth.add( e2 );
         Set s = iteratorToSet( q.getConstraints().iterator() );
         assertEquals( eBoth, s );

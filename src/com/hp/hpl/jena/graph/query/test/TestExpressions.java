@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.5 2004-07-21 13:46:03 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.6 2004-07-22 10:11:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -15,20 +15,14 @@ import com.hp.hpl.jena.graph.test.GraphTestBase;
 /**
  	@author hedgehog
 */
-public class TestExpressions extends GraphTestBase
+public class TestExpressions extends QueryTestBase
     {
-    
     public TestExpressions( String name ) 
         { super( name ); }
     
     public static TestSuite suite()
         { return new TestSuite( TestExpressions.class ); }
-
-    protected static final IndexValues none = new IndexValues() 
-        { public Object get( int i ) { return null; } };
-        
-    protected static final Mapping empty = new Mapping( new Node[0] );
-        
+   
     public void testBooleanEquality()
         {
         assertEquals( Expression.TRUE, Expression.TRUE );
@@ -60,16 +54,16 @@ public class TestExpressions extends GraphTestBase
     
     public void testPrepareTRUE()
         {
-        Valuator t = Expression.TRUE.prepare( empty );  
-        assertEquals( true, t.evalBool( none ) );    
-        assertEquals( Boolean.TRUE, t.evalObject( none ) );
+        Valuator t = Expression.TRUE.prepare( emptyMapping );  
+        assertEquals( true, t.evalBool( noIVs ) );    
+        assertEquals( Boolean.TRUE, t.evalObject( noIVs ) );
         }
         
     public void testPrepareFALSE()
         {
-        Valuator t = Expression.FALSE.prepare( empty );  
-        assertEquals( false, t.evalBool( none ) );    
-        assertEquals( Boolean.FALSE, t.evalObject( none ) );
+        Valuator t = Expression.FALSE.prepare( emptyMapping );  
+        assertEquals( false, t.evalBool( noIVs ) );    
+        assertEquals( Boolean.FALSE, t.evalObject( noIVs ) );
         }
     
     public void testFixed()
@@ -134,10 +128,10 @@ public class TestExpressions extends GraphTestBase
         }
 
     private Object evalObject(Expression e)
-        { return e.prepare( empty ).evalObject( none ); }
+        { return e.prepare( emptyMapping ).evalObject( noIVs ); }
     
     private boolean evalBool(Expression e)
-        { return e.prepare( empty ).evalBool( none ); }
+        { return e.prepare( emptyMapping ).evalBool( noIVs ); }
 
     protected Expression lit( Object x )
         { return new Expression.Fixed( x ); }

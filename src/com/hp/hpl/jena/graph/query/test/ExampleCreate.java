@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.11 2004-07-21 07:38:14 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.12 2004-07-22 10:11:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -19,131 +19,45 @@ import java.util.*;
  */
 public class ExampleCreate
     {
-    public static abstract class DyadicValuator 
-        extends BaseExampleExpression.BaseExampleValuator
-        implements Valuator
+    public static Expression NE( final Node x, final Node y )
         {
-        Valuator L;
-        Valuator R;
-        DyadicValuator( Valuator L, Valuator R ) 
-            { this.L = L; this.R = R; }    
-        
-        public Object evalObject( IndexValues iv )
-            { return Boolean.valueOf( evalBool( iv ) ); }
-        }
-    
-    public static abstract class Dyadic extends BaseExampleExpression
-        {
-        protected BaseExampleExpression L;
-        protected BaseExampleExpression R;
-        protected List args;
-        
-        public Dyadic( Node L, Node R )
-            { this.L = asExpression( L ); this.R = asExpression( R ); }
-        
-        public boolean isApply() 
-            { return true; }
-
-        public int argCount()
-            { return 2; }
-        
-        public Expression getArg( int i )
-            { return i == 0 ? L : R; }
-
-        public BaseExampleExpression asExpression( final Node x )
-            {
-            return new BaseExampleExpression()
-                {
-                public boolean evalBool( VariableValues vv )
-                    {
-                    if (x.isVariable()) return ((Boolean) vv.get( x.getName() )).booleanValue();
-                    else return false;    
-                    }
-                    
-                public boolean isVariable()
-                    { return x.isVariable(); }
-                
-                public String getName()
-                    { return x.getName(); }
-                
-                public Object eval( VariableValues vv )
-                    {
-                    if (x.isVariable()) return vv.get( x.getName() );
-                    else return x;    
-                    }
-                    
-                public Valuator prepare( VariableIndexes vi )
-                    { if (x.isVariable()) return new SlotValuator( vi.indexOf( x.getName() ) );
-                    else return new FixedValuator( x ); }    
-                    
-                };    
-            }
-        }
-        
-    public static BaseExampleExpression NE( final Node x, final Node y )
-        {
-        return new Dyadic( x, y ) 
-            {            
-            public String getFun()
-                { return "http://jena.hpl.hp.com/constraints/NE"; }
-                
-            public Valuator prepare( VariableIndexes vi )
-                {
-                return new DyadicValuator( L.prepare( vi ), R.prepare( vi ) )
-                    {                    
-                    public boolean evalBool( IndexValues iv )
-                        { return !L.evalObject( iv ).equals( R.evalObject( iv ) ); }
-                    };    
-                }                
-            };    
+        return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/NE", asExpression( y ) )
+        	{
+            public boolean evalBool( Object x, Object y )
+                { return !x.equals( y ); }
+        	};    
         }    
     
-    public static BaseExampleExpression EQ( Node x, Node y )
+    public static Expression EQ( Node x, Node y )
         {
-        return new Dyadic( x, y ) 
+        return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/EQ", asExpression( y ) ) 
             {            
-            public String getFun()
-                { return "http://jena.hpl.hp.com/constraints/EQ"; }
-                
-            public Valuator prepare( VariableIndexes vi )
-                {
-                return new DyadicValuator( L.prepare( vi ), R.prepare( vi ) )
-                    {                    
-                    public boolean evalBool( IndexValues iv )
-                        { return L.evalObject( iv ).equals( R.evalObject( iv ) ); }
-                    };    
-                }
+            public boolean evalBool( Object x, Object y )
+                { return x.equals( y ); }
             };    
         }         
         
-    public static BaseExampleExpression MATCHES( Node x, Node y )
+    public static Expression MATCHES( Node x, Node y )
         {
-        return new Dyadic( x, y ) 
+        return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/MATCHES", asExpression( y ) ) 
             {
-            public String getFun()
-                { return "http://jena.hpl.hp.com/constraints/MATCHES"; }
-            
-            private String asString( Object n )
-                {
-                if (n instanceof Node_Literal) return ((Node) n).getLiteral().getLexicalForm();
-                else return n.toString();    
-                }
-        
-            public boolean matches( Object L, Object R )
-                { String x = asString( L ), y = asString( R );
-                return x.indexOf( y ) > -1; }       
-                         
-            public Valuator prepare( VariableIndexes vi )
-                {
-                return new DyadicValuator( L.prepare( vi ), R.prepare( vi ) )
-                    {                    
-                    public String toString() { return super.toString() + " :: MATCHES()"; }
-                    public boolean evalBool( IndexValues iv )
-                        { return matches( L.evalObject( iv ), R.evalObject( iv ) ); }
-                    };    
-                }
+            public boolean evalBool( Object L, Object R )
+                { return L.toString().indexOf( R.toString() ) > -1; }       
             };    
         }
+
+    public static Expression asExpression( final Node x )
+	    {
+	    if( x.isVariable()) return new Expression.Variable()
+		    {
+            public String getName()
+                { return x.getName(); }
+
+            public Valuator prepare( VariableIndexes vi )
+                { return new SlotValuator( vi.indexOf( x.getName() ) ); }
+		    };
+		return new Expression.Fixed( x );
+	    }
     }
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP

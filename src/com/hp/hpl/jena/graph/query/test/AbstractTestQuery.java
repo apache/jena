@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.25 2004-07-21 13:46:03 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.26 2004-07-22 10:11:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -20,7 +20,7 @@ import junit.framework.*;
     Abstract tests for graph query, parameterised on getGraph().
  	@author kers
 */
-public abstract class AbstractTestQuery extends GraphTestBase
+public abstract class AbstractTestQuery extends QueryTestBase
     {
     public AbstractTestQuery(String name)
         { super(name); }
@@ -29,15 +29,12 @@ public abstract class AbstractTestQuery extends GraphTestBase
 
     protected Query Q;
     protected Node O = node( "?O" );
-    protected Node X = node( "?x" );
-    protected Node Y = node( "?y" );
-    protected Node Z = node( "?z" );
     protected Graph empty;
     protected Graph single;
     
     protected final Node [] none = new Node[] {};
     
-    protected final Node [] justX = new Node [] {X};
+    protected final Node [] justX = new Node [] {Query.X};
     
     public static TestSuite suite()
         { return new TestSuite( QueryTest.class ); }
@@ -332,18 +329,6 @@ public abstract class AbstractTestQuery extends GraphTestBase
         assertEquals( "testTwoGraphs: X = chris", d.get(0), node("chris") );
         assertEquals( "testTwoGraphs: Y = SF", d.get(1), node("SF") );     
         }
-
-    protected static Map1 getFirst = new Map1() 
-        { public Object map1( Object x ) { return ((List) x).get(0); } };        
-    
-    protected BaseExampleExpression notEqual( Node x, Node y )
-        { return ExampleCreate.NE( x, y );  }
-        
-    protected BaseExampleExpression areEqual( Node x, Node y )
-        { return ExampleCreate.EQ( x, y );  }
-        
-    protected BaseExampleExpression matches( Node x, Node y )
-        { return ExampleCreate.MATCHES( x, y ); }
                 
     public void testGraphConstraints( String title, Expression constraint, String wanted )
         { 
@@ -360,7 +345,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
         Node badly = node( "badly" ), flat = node( "flat" );
         testGraphConstraints( "tgs A", Expression.TRUE, "south flat badly" );
         testGraphConstraints( "tgs B", notEqual( O, badly ), "south flat" );
-        testGraphConstraints( "tgs C", notEqual( O, badly ).and( notEqual( O, flat ) ), "south" );
+        testGraphConstraints( "tgs C", Dyadic.and( notEqual( O, badly ), notEqual( O, flat ) ), "south" );
         }
         
     private void helpConstraint( String title, Expression constraints, int n )
@@ -377,7 +362,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
         {
         helpConstraint( "none", Expression.TRUE, 3 );
         helpConstraint( "X /= blish", notEqual( X, node( "blish" ) ), 1 ); 
-        helpConstraint( "X /= blish & X /= hambly", notEqual( X, node( "blish" ) ).and( notEqual( X, node( "hambly" ) ) ), 0 ); 
+        helpConstraint( "X /= blish & X /= hambly", Dyadic.and( notEqual( X, node( "blish" ) ), notEqual( X, node( "hambly" ) ) ), 0 ); 
         }
 
     private void helpConstraintThree( String title, Expression c, int n )
