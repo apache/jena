@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.78 $
+ * Revision           $Revision: 1.79 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-10 15:20:09 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2005-01-06 22:41:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.78 2004-12-10 15:20:09 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.79 2005-01-06 22:41:27 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1733,7 +1733,17 @@ public class OntModelImpl
         return (OntResource) getResourceWithType( uri, rdfType ).as( javaClass );
     }
     
+    /**
+     * <p>Answer a resource presenting the {@link OntResource} facet, which has the
+     * given URI.</p>
+     * @param uri The URI of the resource, or null for an anonymous resource (aka bNode)
+     * @return An OntResource with the given URI
+     */
+    public OntResource createOntResource( String uri ) {
+        return (OntResource) getResource( uri ).as( OntResource.class );
+    }
     
+
     /**
      * <p>Answer a new empty list.  This method overrides the list create method in ModelCom,
      * to allow both DAML and RDFS lists to be created.</p>
@@ -2751,6 +2761,31 @@ public class OntModelImpl
     }
     
     
+    /**
+     * <p>Answer a resource presenting the {@link OntResource} facet, which has the given
+     * URI. If no such resource is currently present in the model, return null.</p>
+     * @param uri The URI of a resource
+     * @return An OntResource with the given URI, or null
+     */
+    public OntResource getOntResource( String uri ) {
+        Resource r = getResource( uri );
+        if (containsResource( r )) {
+            return (OntResource) r.as( OntResource.class );
+        }
+        return null;
+    }
+   
+    /**
+     * <p>Answer a resource presenting the {@link OntResource} facet, which 
+     * corresponds to the given resource but attached to this model.</p>
+     * @param resource An existing resource
+     * @return An OntResource attached to this model that has the same URI
+     * or anonID as the given resource
+     */
+    public OntResource getOntResource( Resource res ) {
+        return (OntResource) res.inModel( this ).as( OntResource.class );
+    }
+   
     /**
      * <p>Throw an OntologyException if the term is not in language profile</p>
      * 

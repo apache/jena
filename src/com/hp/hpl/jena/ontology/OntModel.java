@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.42 $
+ * Revision           $Revision: 1.43 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 19:47:36 $
+ * Last modified on   $Date: 2005-01-06 22:41:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -70,7 +70,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.42 2004-12-07 19:47:36 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.43 2005-01-06 22:41:55 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -532,6 +532,22 @@ public interface OntModel
      */
     public AnnotationProperty getAnnotationProperty( String uri );
     
+    /**
+     * <p>Answer a resource presenting the {@link OntResource} facet, which has the given
+     * URI. If no such resource is currently present in the model, return null.</p>
+     * @param uri The URI of a resource
+     * @return An OntResource with the given URI, or null
+     */
+    public OntResource getOntResource( String uri );
+   
+    /**
+     * <p>Answer a resource presenting the {@link OntResource} facet, which 
+     * corresponds to the given resource but attached to this model.</p>
+     * @param resource An existing resource
+     * @return An OntResource attached to this model that has the same URI
+     * or anonID as the given resource
+     */
+    public OntResource getOntResource( Resource res );
    
     /**
      * <p>
@@ -1180,6 +1196,13 @@ public interface OntModel
      */
     public OntResource createOntResource( Class javaClass, Resource rdfType, String uri );
 
+    /**
+     * <p>Answer a resource presenting the {@link OntResource} facet, which has the
+     * given URI.</p>
+     * @param uri The URI of the resource, or null for an anonymous resource (aka bNode)
+     * @return An OntResource with the given URI
+     */
+    public OntResource createOntResource( String uri );
     
     /**
      * <p>

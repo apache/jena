@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 19:47:39 $
+ * Last modified on   $Date: 2005-01-06 22:41:56 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.16 2004-12-07 19:47:39 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.17 2005-01-06 22:41:56 ian_dickinson Exp $
  */
 public class TestOntModel 
     extends ModelTestBase
@@ -321,6 +321,21 @@ public class TestOntModel
         assertNull( "result of get r", m.getAnnotationProperty( NS+"r"));
     }
     
+    public void testGetOntResource() {
+        OntModel m = ModelFactory.createOntologyModel();
+        OntResource r0 = m.getOntResource( NS + "a" );
+        assertNull( r0 );
+        OntResource r1 = m.createOntResource( NS + "aaa" );
+        assertTrue( r1 instanceof OntResource );
+        Resource r2a = m.getResource( NS + "a" );
+        Resource r2b = m.getResource( NS + "b" );
+        Property p = m.getProperty( NS + "p" );
+        m.add( r2a, p, r2b );
+        r0 = m.getOntResource( NS + "a" );
+        assertTrue( r0 instanceof OntResource );
+        OntResource r3 = m.getOntResource( r2b );
+        assertTrue( r3 instanceof OntResource );
+    }
    
     public void testGetOntClass() {
         OntModel m = ModelFactory.createOntologyModel();
