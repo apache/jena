@@ -9,20 +9,20 @@ package com.hp.hpl.jena.util;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.* ;
 
 import org.apache.commons.logging.*;
 
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.3 2004-11-20 21:35:43 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.4 2004-11-30 16:21:15 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
 {
     static Log log = LogFactory.getLog(LocatorURL.class) ;
+    static final String acceptHeader = "application/rdf+xml,application/xml;q=0.9,*/*;q=0.5" ;
 
     public InputStream open(String filenameOrURI)
     {
@@ -38,7 +38,16 @@ public class LocatorURL implements Locator
         try
         {
             URL url = new URL(filenameOrURI);
-            InputStream in = new BufferedInputStream(url.openStream());
+            URLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("Accept", acceptHeader) ;
+            conn.setRequestProperty("Accept-Charset", "utf-8,*") ;
+            conn.setDoInput(true) ;
+            conn.setDoOutput(false) ;
+            // Default is true.  See javadoc for HttpURLConnection
+            //((HttpURLConnection)conn).setInstanceFollowRedirects(true) ;
+            conn.connect() ;
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            
             if ( in == null )
             {
                 if ( FileManager.logAllLookups && log.isTraceEnabled() )
