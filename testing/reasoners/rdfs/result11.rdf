@@ -86,4 +86,27 @@
   <rdfs:Datatype rdf:about="&rdf;XMLLiteral" />
   <rdf:List rdf:about="&rdf;nil" />
 
+   <rdf:Property rdf:about="&rdfs;seeAlso" />
+   <rdf:Property rdf:about="&rdfs;label" />
+   <rdf:Property rdf:about="&rdfs;isDefinedBy" />
+   <rdf:Property rdf:about="&rdfs;comment" />
+
+   <rdfs:Resource rdf:about="&rdf;Seq" />
+   <rdfs:Resource rdf:about="&rdf;Bag" />
+   <rdfs:Resource rdf:about="&rdf;Alt" />
+   <rdfs:Resource rdf:about="&rdfs;isDefinedBy" />
+   <rdfs:Resource rdf:about="&rdfs;seeAlso" />
+   <rdfs:Resource rdf:about="&rdfs;comment" />
+   <rdfs:Resource rdf:about="&rdfs;ContainerMembershipProperty" />
+   <rdfs:Resource rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Resource rdf:about="&rdfs;Container" />
+   <rdfs:Resource rdf:about="&rdfs;label" />
+
+   <rdfs:Class rdf:about="&rdf;Seq" />
+   <rdfs:Class rdf:about="&rdf;Bag" />
+   <rdfs:Class rdf:about="&rdf;Alt" />
+   <rdfs:Class rdf:about="&rdfs;ContainerMembershipProperty" />
+   <rdfs:Class rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Class rdf:about="&rdfs;Container" />
+
 </rdf:RDF>

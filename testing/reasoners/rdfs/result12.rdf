@@ -42,4 +42,15 @@
    <rdfs:Resource rdf:about="&rdfs;subPropertyOf" />
    <rdfs:Resource rdf:about="&rdfs;subClassOf" />
 
+   <rdfs:Resource rdf:about="&rdf;Seq" />
+   <rdfs:Resource rdf:about="&rdf;Bag" />
+   <rdfs:Resource rdf:about="&rdf;Alt" />
+   <rdfs:Resource rdf:about="&rdfs;isDefinedBy" />
+   <rdfs:Resource rdf:about="&rdfs;seeAlso" />
+   <rdfs:Resource rdf:about="&rdfs;comment" />
+   <rdfs:Resource rdf:about="&rdfs;ContainerMembershipProperty" />
+   <rdfs:Resource rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Resource rdf:about="&rdfs;Container" />
+   <rdfs:Resource rdf:about="&rdfs;label" />
+
 </rdf:RDF>

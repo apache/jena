@@ -21,4 +21,11 @@
   <rdfs:Class rdf:about="&rdfs;Literal" />
   <rdfs:Class rdf:about="&rdf;Statement" />
 
+   <rdfs:Class rdf:about="&rdf;Seq" />
+   <rdfs:Class rdf:about="&rdf;Bag" />
+   <rdfs:Class rdf:about="&rdf;Alt" />
+   <rdfs:Class rdf:about="&rdfs;ContainerMembershipProperty" />
+   <rdfs:Class rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Class rdf:about="&rdfs;Container" />
+
 </rdf:RDF>

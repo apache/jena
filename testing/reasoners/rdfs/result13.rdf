@@ -25,4 +25,10 @@
    <rdf:Property rdf:about="&rdfs;subPropertyOf" />
    <rdf:Property rdf:about="&rdfs;subClassOf" />
 
+   <rdf:Property rdf:about="&rdfs;seeAlso" />
+   <rdf:Property rdf:about="&rdfs;label" />
+   <rdf:Property rdf:about="&rdfs;isDefinedBy" />
+   <rdf:Property rdf:about="&rdfs;comment" />
+
+
 </rdf:RDF>

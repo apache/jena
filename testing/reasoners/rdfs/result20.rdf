@@ -12,6 +12,7 @@
   <rdf:Description rdf:about="&eg;C1">
     <rdf:type rdf:resource="&rdfs;Class" />
     <rdf:type rdf:resource="&rdfs;Resource" />
+    <rdfs:subClassOf rdf:resource="&rdfs;Resource"/>
     <rdfs:subClassOf rdf:resource="&eg;C2"/>
     <rdfs:subClassOf rdf:resource="&eg;C3"/>
     <rdfs:subClassOf rdf:resource="&eg;C1"/>

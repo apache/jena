@@ -8,25 +8,32 @@
 
 <rdf:RDF xmlns:rdf="&rdf;" xmlns:rdfs="&rdfs;" xmlns="&eg;">
 
-  <rdf:Description rdf:about="&eg;p">
+  <rdf:Description rdf:about="&eg;r">
     <rdfs:subPropertyOf rdf:resource="&eg;q"/>
   </rdf:Description>
 
   <rdf:Description rdf:about="&eg;q">
-    <rdfs:subPropertyOf rdf:resource="&eg;r"/>
+    <rdfs:subPropertyOf rdf:resource="&eg;p"/>
   </rdf:Description>
 
-  <rdf:Description rdf:about="&eg;r">
-    <rdfs:range rdf:resource="&eg;C1"/>
-    <rdfs:domain rdf:resource="&eg;D"/>
+  <rdf:Description rdf:about="&eg;p">
+    <rdfs:domain rdf:resource="&eg;C5"/>
   </rdf:Description>
 
-  <rdfs:Class rdf:about="&eg;C1">
+  <rdf:Description rdf:about="&eg;C4">
+    <rdfs:subClassOf rdf:resource="&eg;C3"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;C5">
+    <rdfs:subClassOf rdf:resource="&eg;C3"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;C3">
     <rdfs:subClassOf rdf:resource="&eg;C2"/>
-  </rdfs:Class>
+  </rdf:Description>
 
   <rdf:Description rdf:about="&eg;C2">
-    <rdfs:subClassOf rdf:resource="&eg;C3"/>
+    <rdfs:subClassOf rdf:resource="&eg;C1"/>
   </rdf:Description>
 
 </rdf:RDF>
