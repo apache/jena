@@ -23,6 +23,15 @@ import com.hp.hpl.jena.util.iterator.*;
  * instead this implements <a href= 
  * "http://lists.w3.org/Archives/Public/www-webont-wg/2003Apr/0004.html"
  * >fix 2</a>.</li>
+ * <li>The rule of S&AS seems to be that 
+ * <pre>owl:imports rdf:type owl:OntologyProperty .
+ * </pre> is permitted only if there is a triple with 
+ * owl:imports as predicate.
+ * This is implemented</li>
+ * <li>The phrase "In keeping with their definition in RDF, rdfs:label and rdfs:
+ * comment can only be used with data literals." is implemented here but missing
+ * from OWL DL as triples.</li>
+ * </ul>
  * 
  * 
  * @author jjc
@@ -93,11 +102,26 @@ public class Checker extends EnhGraph {
 			if (m == Grammar.EmptyCategorySet)
 				errorCnt++;
 			s.setCategories(m);
+            nkey >>= Shift;
+            int action = nkey & Grammar.ActionMask;
+            nkey >>= Grammar.ActionBits;
+            switch ( nkey & Grammar.ActionMask ) {
+                // nothing
+                // restriction-part-1
+                // restriction-part-2
+                // blank node with 1 part
+                // blank node with 2 part-part 1
+                // blank node with 2 part-part 2
+            }
 		}
+        // not if pred is owl:equivalentClass or owl:disjointClass
+        // also ontologyproperty crap?
 		o.incrObjectCount(1);
-		if ((key & (Mask | (Mask << Shift)))
-			== ((Grammar.rdftype << Shift) | Grammar.rdfList)) {
-			s.incrObjectCount(0);
+        switch ( key & (Mask | (Mask << Shift)) ) {
+            case (Grammar.rdftype << Shift) | Grammar.rdfList:
+            case (Grammar.rdftype << Shift) | Grammar.owlDataRange:
+                  s.incrObjectCount(0);
+                  break;
 		}
 	}
 

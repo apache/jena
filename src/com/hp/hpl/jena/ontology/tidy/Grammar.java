@@ -20,4 +20,7 @@ class Grammar {
   }
   static final int rdftype = 33;
   static final int rdfList = 34;
+  static final int owlDataRange = 35;
+  static final int ActionMask = 7;
+  static final int ActionBits = 3;
 }
