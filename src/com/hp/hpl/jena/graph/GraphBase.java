@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.1.1.1 2002-12-19 19:13:21 bwm Exp $
+  $Id: GraphBase.java,v 1.2 2003-01-27 15:12:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -87,7 +87,14 @@ public abstract class GraphBase implements Graph {
 	 */
 	public void close() {
 	}
-
+	
+	private Reifier reifier = null;
+	
+	public Reifier getReifier() {
+		if (reifier == null) reifier = new SimpleReifier( this );
+		return reifier;
+	}
+    
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#size()
 	 */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.1.1.1 2002-12-19 19:14:16 bwm Exp $
+  $Id: GraphMem.java,v 1.2 2003-01-27 15:11:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -84,10 +84,6 @@ public class GraphMem extends GraphBase implements Graph {
         } else {
             return new TripleMatchIterator(m, triples.iterator());
         }
-    }
-    
-    public Reifier getReifier() {
-        return null;  //@@ not approved or done yet
     }
     
     protected class NodeMap {
