@@ -84,13 +84,14 @@ features:</p>
       be reasonably stable. The OWL configuration is preliminary and still under development.</dd>
   <dd>&nbsp;</dd>
     <dt><b>Ontology Subsystem</b></dt>
-    <dd>The Jena2 ontology API is intended to support programmers who are working
+    <dd>The Jena2 ontology API is intended to support programmers working
     	with ontology data based on RDF. Specifically, this means support for 
     	OWL, DAML+OIL and RDFS.  A set of Java abstractions extend the generic
     	RDF Resource and Property classes to model more directly the class and
-    	property expressions found in ontologies using the above languages, and
-    	the relationships between these classes and properties. The ontology API
-    	works closely with the reasoning subsystem derive additional information
+    	property expressions found in ontologies using these languages, and
+    	the relationships between these classes and properties, and the individuals
+    	created from them. The ontology API
+    	works closely with the reasoning subsystem to derive additional information
     	that can be inferred from a particular ontology source. Given that ontologists
     	typically modularise ontologies into individual, re-usable components, 
     	and pulish these on the web, the Jena2 ontology subsystem also includes a
