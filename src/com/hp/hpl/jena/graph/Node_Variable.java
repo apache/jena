@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Variable.java,v 1.9 2004-03-20 09:28:30 chris-dollin Exp $
+  $Id: Node_Variable.java,v 1.10 2004-08-06 13:17:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -39,6 +39,7 @@ public class Node_Variable extends Node_Fluid
     public static class VariableName
         {
         String name;
+        
         VariableName( String name ) 
             { this.name = name; }
         
@@ -47,6 +48,9 @@ public class Node_Variable extends Node_Fluid
         
         public boolean equals( Object other )
             { return other instanceof VariableName && name.equals( ((VariableName) other).name );  }
+        
+        public String toString()
+            { return "?" + name; }
         }
     }
 

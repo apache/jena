@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.17 2004-08-06 08:02:31 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.18 2004-08-06 13:17:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
@@ -30,13 +32,62 @@ public class TestModelSpecRevised extends ModelTestBase
     
     public static TestSuite suite()
          { return new TestSuite( TestModelSpecRevised.class ); }
-//        {
-//        TestSuite result = new TestSuite();
-//        result.addTest( new TestModelSpecRevised( "testCreateReasoningModel" ) );
-//        return result;
-//        }
     
     public static final Resource A = resource( "_a" );
+
+    public void testTriples()
+        {
+        check( "a R b", "a R b", new Object[] {} );
+        check( "a R b", "a R ?0", new Object[] {"b"} );
+        check( "a P b", "a ?0 ?1", new Object[] {"P", "b"} );
+        check( "_a P 17; Q P _a", "?0 ?1 ?2; ?3 ?1 ?0", new Object[] {"_a", "P", "17", "Q"} );
+        }
+    
+    public void check( String wanted, String template, Object [] args )
+        {
+        Model m = modelWithStatements( template, args );
+        assertIsoModels( modelWithStatements( wanted ), m );
+        }
+    
+    /**
+     * @param string
+     * @param objects
+     * @return
+     */
+    private static Model modelWithStatements( String facts, Object[] objects )
+        {
+        Graph g = new GraphMem();
+        StringTokenizer semis = new StringTokenizer( facts, ";" );
+        while (semis.hasMoreTokens()) 
+            g.add( replace( triple( PrefixMapping.Extended, semis.nextToken() ), objects ) );
+        return ModelFactory.createModelForGraph( g );
+        }
+
+    /**
+     * @param t
+     * @param objects
+     * @return
+     */
+    private static Triple replace( Triple t, Object[] objects )
+        {
+        return Triple.create
+            ( replace( t.getSubject(), objects ), replace( t.getPredicate(), objects ), replace( t.getObject(), objects ) );
+        }
+
+    /**
+     * @param n
+     * @return
+     */
+    private static Node replace( Node n, Object [] objects )
+        {
+        if (n.isVariable())
+            {
+            String name = n.getName();
+            if (Character.isDigit( name.charAt(0))) 
+                return Node.create( (String) objects[Integer.parseInt( name )] );
+            }
+        return n;
+        }
 
     protected static void assertSameRules( List wanted, List got )
         {
@@ -76,7 +127,7 @@ public class TestModelSpecRevised extends ModelTestBase
     public void testRulesetURLFails()
         {
         String uri = GenericRuleReasonerFactory.URI;
-        Model rs = modelWithStatements( "_a jms:reasoner " + uri + "; _a jms:ruleSetURL nowhere:man" );
+        Model rs = modelWithStatements( "_a jms:reasoner ?0; _a jms:ruleSetURL nowhere:man", new Object[] { uri } ); 
         try { InfModelSpec.getReasonerFactory( A, rs ); fail( "should report ruleset failure" ); }
         catch (RulesetNotFoundException e) { assertEquals( "nowhere:man", e.getURI() ); }
         }
@@ -96,7 +147,7 @@ public class TestModelSpecRevised extends ModelTestBase
         String factoryURI = GenericRuleReasonerFactory.URI;
         String rulesA = file( "example.rules" ), rulesB = file( "extra.rules" );
         List rules = append( Rule.rulesFromURL( rulesA ), Rule.rulesFromURL( rulesB ) );
-        Model rs = modelWithStatements( "_a jms:reasoner " + factoryURI + "; _a jms:ruleSetURL " + rulesA + "; _a jms:ruleSetURL " + rulesB );
+        Model rs = modelWithStatements( "_a jms:reasoner ?0; _a jms:ruleSetURL ?1; _a jms:ruleSetURL ?2", new Object[] {factoryURI, rulesA, rulesB});
         ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
@@ -135,26 +186,32 @@ public class TestModelSpecRevised extends ModelTestBase
     public void testSchema()
     	{
     	ReasonerRegistry.theRegistry().register( "fake:factory", new FakeFactory() );
-    	Resource root = resource(), reasoner = resource(), res = resource( "fake:factory" );
-    	Resource maker = resource(), rules = resource();
-    	Model desc = ModelFactory.createDefaultModel()
-	        .add( root, JMS.reasonsWith, reasoner )
-	        .add( reasoner, JMS.reasoner, res )
-	        .add( root, JMS.maker, maker )
-	        .add( maker, RDF.type, JMS.MemMakerSpec )
-	        .add( maker, JMS.reificationMode, JMS.rsMinimal )
-	        .add( reasoner, JMS.schemaURL, resource( file( "schema.n3" ) ) )
-	        .add( reasoner, JMS.schemaURL, resource( file( "schema2.n3" ) ) )
-			;
+        String d = 
+            "_root jms:reasonsWith _reasoner"
+            + "; _reasoner jms:reasoner fake:factory"
+            + "; _root jms:maker _maker"
+            + "; _maker rdf:type jms:MemMakerSpec"
+            + "; _maker jms:reificationMode jms:rsMinimal"
+            + "; _reasoner jms:schemaURL ?0"
+            + "; _reasoner jms:schemaURL ?1"
+            ;
+        Model desc = modelWithStatements( d, new Object[] {file("schema.n3"), file("schema2.n3")} );
 		ModelSpec spec = ModelFactory.createSpec( desc );
-		Model m = spec.createModel();
-		Model schema = FileUtils.loadModel( file( "schema.n3" ) );
-		Model schema2 = FileUtils.loadModel( file( "schema2.n3" ) );
-		schema.add( schema2 );
-		getSchema( m, schema.getGraph() );
+		validateHasSchema( loadBoth( "schema.n3", "schema2.n3" ), spec.createModel() );
     	}
     
-	private void getSchema( Model m, Graph schema )
+	/**
+     * @return
+     */
+    private Graph loadBoth( String x, String y )
+        {
+        Model schema = FileUtils.loadModel( file( x ) );
+        Model schema2 = FileUtils.loadModel( file( y ) );
+        schema.add( schema2 );
+        return schema.getGraph();
+        }
+
+    private void validateHasSchema( Graph schema, Model m )
 		{
 		((FakeReasoner) ((InfGraph) m.getGraph()).getReasoner()).validate( schema );
 		}
@@ -234,19 +291,16 @@ public class TestModelSpecRevised extends ModelTestBase
     
     public static Model createInfModelDesc( Resource root, String URI, String ruleString )
         {
-        Resource maker = resource();
-        Resource reasoner = resource();
-        Resource rules = resource();
-        Resource res = resource( URI );
-        return ModelFactory.createDefaultModel()
-            .add( root, JMS.reasonsWith, reasoner )
-            .add( reasoner, JMS.reasoner, res )
-            .add( root, JMS.maker, maker )
-            .add( maker, RDF.type, JMS.MemMakerSpec )
-            .add( maker, JMS.reificationMode, JMS.rsMinimal )
-            .add( reasoner, JMS.ruleSet, rules )
-            .add( rules, JMS.hasRule, ruleString )
+        String d = 
+            "_root jms:reasonsWith _reasoner"
+            + "; _reasoner jms:reasoner ?0"
+            + "; _root jms:maker _maker"
+            + "; _maker rdf:type jms:MemMakerSpec"
+            + "; _maker jms:reificationMode jms:rsMinimal"
+            + "; _reasoner jms:ruleSet _rules"
+            + "; _rules jms:hasRule ?1"
             ;
+        return modelWithStatements( d, new Object[] {URI, "'" + ruleString + "'"} ); 
         }
     
     /**
@@ -256,7 +310,7 @@ public class TestModelSpecRevised extends ModelTestBase
     private void testRuleSetURL( String factoryURI, String rulesURL )
         {
         List rules = Rule.rulesFromURL( rulesURL );
-        Model rs = modelWithStatements( "_a jms:reasoner " + factoryURI + "; _a jms:ruleSetURL " + rulesURL );
+        Model rs = modelWithStatements( "_a jms:reasoner ?0; _a jms:ruleSetURL ?1", new Object[] {factoryURI, rulesURL} );
         ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
         GenericRuleReasoner gr = (GenericRuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
