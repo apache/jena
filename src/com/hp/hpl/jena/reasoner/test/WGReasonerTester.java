@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.17 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: WGReasonerTester.java,v 1.18 2003-11-07 17:43:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -41,7 +41,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.18 $ on $Date: 2003-11-07 17:43:17 $
  */
 public class WGReasonerTester {
 
@@ -80,6 +80,9 @@ public class WGReasonerTester {
     
     /** The predicate defining the conclusion from the test */
     public static final Property conclusionDocumentP;
+    
+    /** The type of the current test */
+    Resource testType;
     
     /** List of tests block because they are only intended for non-dt aware processors */
     public static final String[] blockedTests = {
@@ -199,6 +202,14 @@ public class WGReasonerTester {
     }
     
     /**
+     * Return the type of the last test run. Nasty hack to enable calling test harness
+     * to interpret the success/fail boolen differently according to test type.
+     */
+    public Resource getTypeOfLastTest() {
+        return testType;
+    }
+    
+    /**
      * Run a single designated test.
      * @param uri the uri of the test, as defined in the manifest file
      * @param reasonerF the factory for the reasoner to be tested
@@ -211,7 +222,7 @@ public class WGReasonerTester {
     public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
         // Find the specification for the named test
         Resource test = testManifest.getResource(uri);
-        Resource testType = (Resource)test.getRequiredProperty(RDF.type).getObject();
+        testType = (Resource)test.getRequiredProperty(RDF.type).getObject();
         if (!(testType.equals(NegativeEntailmentTest) ||
                testType.equals(PositiveEntailmentTest) ) ) {
             throw new JenaException("Can't find test: " + uri);
