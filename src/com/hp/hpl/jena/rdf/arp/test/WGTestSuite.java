@@ -278,6 +278,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 : "no status";
         TestSuite sub = (TestSuite) parts.get(keyName);
         if (sub == null) {
+            if ( keyName.equals("OBSOLETED"))
+              return;
             sub = new TestSuite();
             sub.setName(keyName);
             parts.put(keyName, sub);

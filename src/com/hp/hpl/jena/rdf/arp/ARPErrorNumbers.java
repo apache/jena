@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.7 2003-04-05 09:45:43 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.8 2003-04-05 21:09:09 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -277,8 +277,9 @@ public interface ARPErrorNumbers {
     /**
       * The idSymbol production matched a string with a colon in it.
       * This is, at best, unwise.
-      *  This is a warning in both default and strict modes (W122).
-      **/
+      *  This  is a warning in default and an errror in strict mode (W122). 
+      * 
+      * @deprecated Superceded by the more general {@link #WARN_BAD_NAME} */
     public int WARN_QNAME_AS_ID = 122;
 
     /**

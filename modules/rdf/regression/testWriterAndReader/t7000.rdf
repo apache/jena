@@ -5,7 +5,7 @@
 
   <RDF:Description RDF:about="NC:ispinfo">
     <NC:providers>
-      <NC:nsIMsgAccount RDF:about="domain:aol.com" RDF:bagID="TestBag">
+      <NC:nsIMsgAccount RDF:about="domain:aol.com" >
 
         <!-- server info -->
         <NC:incomingServer>

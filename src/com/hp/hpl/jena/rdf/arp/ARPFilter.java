@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   *$Id: ARPFilter.java,v 1.7 2003-04-03 08:17:00 jeremy_carroll Exp $
+   *$Id: ARPFilter.java,v 1.8 2003-04-05 21:09:09 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -326,7 +326,7 @@ class ARPFilter
 			"about",
 			"nodeID",
 			"resource",
-			"bagID",
+		//	"bagID",
 			"parseType",
 			"datatype",
 			"type" };
@@ -338,7 +338,7 @@ class ARPFilter
 			rdfns,
 			rdfns,
 			rdfns,
-			rdfns,
+		//	rdfns,
 			rdfns,
 			rdfns,
 			rdfns,
@@ -353,7 +353,7 @@ class ARPFilter
 			A_ABOUT,
 			A_NODEID,
 			A_RESOURCE,
-			A_BAGID,
+		//	A_BAGID,
 			A_PARSETYPE,
 			A_DATATYPE,
 			A_TYPE,
@@ -390,8 +390,6 @@ class ARPFilter
 		setDefaultErrorMode();
 		for (int i = 1; i < 100; i++)
 			setErrorMode(i, nonErrorMode);
-		for (int i = 100; i < 200; i++)
-			setErrorMode(i, EM_ERROR);
 		int warning = EM_WARNING;
 		int error = EM_ERROR;
 		switch (nonErrorMode) {
@@ -402,6 +400,8 @@ class ARPFilter
 				warning = error = EM_FATAL;
 				break;
 		}
+        for (int i = 100; i < 200; i++)
+            setErrorMode(i,error);
 		// setErrorMode(IGN_XMLBASE_USED,warning);
 		// setErrorMode(IGN_XMLBASE_SIGNIFICANT,error);
 		setErrorMode(WARN_MINOR_INTERNAL_ERROR, warning);
@@ -417,7 +417,7 @@ class ARPFilter
 		setErrorMode(WARN_UNKNOWN_RDF_ATTRIBUTE, warning);
         setErrorMode(WARN_UNQUALIFIED_RDF_ATTRIBUTE, warning);
 		setErrorMode(WARN_UNKNOWN_XML_ATTRIBUTE, nonErrorMode);
-		setErrorMode(WARN_QNAME_AS_ID, error);
+		// setErrorMode(WARN_QNAME_AS_ID, error);
 		//      setErrorMode(WARN_BAD_XML, error);
 		setErrorMode(WARN_SAX_WARNING, warning);
 		setErrorMode(IGN_DAML_COLLECTION, error);
@@ -734,7 +734,7 @@ class ARPFilter
 					putWarning(
 						ERR_BAD_RDF_ATTRIBUTE,
 						where,
-						"Creating statement for inappropriate RDF property: 'rdf:"
+						"Inappropriate or removed RDF attribute: 'rdf:"
 							+ local
 							+ "'.");
 				else
