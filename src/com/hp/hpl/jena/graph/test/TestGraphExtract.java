@@ -1,7 +1,7 @@
 /*
       (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: TestGraphExtract.java,v 1.3 2004-08-07 12:31:53 chris-dollin Exp $
+      $Id: TestGraphExtract.java,v 1.4 2004-08-09 15:09:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -73,6 +73,15 @@ public class TestGraphExtract extends GraphTestBase
     public void testExtractBoundary()
         {
         testExtract( "a R b; b S _c", "a", "a R b; b S _c; _c T d", TripleBoundary.stopAtAnonObject );
+        }
+    
+    public void testPartialUpdate()
+        {
+        Graph source = graphWith( "a R b; b S e" );
+        Graph dest = graphWith( "b R d" );
+        GraphExtract e = new GraphExtract( TripleBoundary.stopNowhere );
+        e.extractInto( dest, node( "a" ), source );
+        assertIsomorphic( graphWith( "a R b; b S e; b R d" ), dest );
         }
 
     public void testExtract( String wanted, String node, String source )

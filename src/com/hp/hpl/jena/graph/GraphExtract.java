@@ -1,14 +1,16 @@
 /*
       (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: GraphExtract.java,v 1.2 2004-08-07 15:45:29 chris-dollin Exp $
+      $Id: GraphExtract.java,v 1.3 2004-08-09 15:08:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.util.HashUtils;
 
 /**
      GraphExtract offers a very simple recursive extraction of a subgraph with a
@@ -38,18 +40,46 @@ public class GraphExtract
          by this instance's TripleBoundary.
     */
     public Graph extractInto( Graph toUpdate, Node root, Graph extractFrom )
+        { new Extraction( b, toUpdate, extractFrom ).extractInto( root );
+        return toUpdate; }
+    
+    /**
+         This is the class that does all the work, in the established context of the
+         source and destination graphs, the TripleBoundary that determines the
+         limits of the extraction, and a local set <code>active</code> of nodes 
+         already seen and hence not to be re-processed.
+        @author kers
+     */
+    protected static class Extraction
         {
-        Iterator it = extractFrom.find( root, Node.ANY, Node.ANY );
-        while (it.hasNext())
+        protected Graph toUpdate;
+        protected Graph extractFrom;
+        protected Set active;
+        protected TripleBoundary b;
+        
+        Extraction( TripleBoundary b, Graph toUpdate, Graph extractFrom )
             {
-            Triple t = (Triple) it.next();
-            Node subRoot = t.getObject();
-            toUpdate.add( t );
-            if (toUpdate.contains( subRoot, Node.ANY, Node.ANY ) == false && b.stopAt( t ) == false)
-                extractInto( toUpdate, subRoot, extractFrom );
+            this.toUpdate = toUpdate;
+            this.extractFrom = extractFrom;
+            this.active = HashUtils.createSet();
+            this.b = b;
             }
-        return toUpdate;
+        
+        public void extractInto( Node root  )
+            {
+            active.add( root );
+            Iterator it = extractFrom.find( root, Node.ANY, Node.ANY );
+            while (it.hasNext())
+                {
+                Triple t = (Triple) it.next();
+                Node subRoot = t.getObject();
+                toUpdate.add( t );
+                if (! (active.contains( subRoot ) || b.stopAt( t ))) extractInto( subRoot );
+                }
+            }
         }
+    
+
     }
 
 /*
