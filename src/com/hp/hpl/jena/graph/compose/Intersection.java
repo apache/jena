@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Intersection.java,v 1.1 2003-02-21 15:45:00 chris-dollin Exp $
+  $Id: Intersection.java,v 1.2 2003-03-04 17:54:59 ian_dickinson Exp $
 */
 
 /*
@@ -13,14 +13,8 @@
 package com.hp.hpl.jena.graph.compose;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.RDF;
 
-import java.io.*;
-import java.util.*;
 
 /**
     an implementation of a dynamic intersection of two models.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFS.java,v 1.1 2003-02-21 15:45:00 chris-dollin Exp $
+  $Id: RDFS.java,v 1.2 2003-03-04 17:55:00 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.mem.*;
 
-import java.util.*;
 
 public class RDFS extends Dyadic implements Vocabulary
     {

@@ -1,62 +1,23 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Dyadic.java,v 1.1 2003-02-21 15:45:00 chris-dollin Exp $
+  $Id: Dyadic.java,v 1.2 2003-03-04 17:54:59 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.util.iterator.*;
 
-import java.io.*;
-import java.util.*;
 
 /**
     @author kers
+    @author Ian Dickinson - refactored most of the content to {@link CompositionBase}.
 */
 
-public abstract class Dyadic extends GraphBase implements Graph 
+public abstract class Dyadic extends CompositionBase
 	{
-	public abstract void add( Triple t );
-
-	public abstract void delete( Triple t );
-    
-	public abstract ExtendedIterator find( TripleMatch t ); 
-	
-    public QueryHandler queryHandler() 
-        { return new SimpleQueryHandler( this ); }
-        
-    private Reifier reifier;
-    
-    public Reifier getReifier()
-        {
-        if (reifier == null)  reifier = new SimpleReifier( this );
-        return reifier; 
-        }
-    
-	public ExtendedIterator find( Node s, Node p, Node o ) 
-		{ return find( new StandardTripleMatch( s, p, o ) ); }
-		
-	public ClosableIterator findAll()
-		{ return find( null, null, null ); }
-
-	public int size()
-		{ return countIterator( findAll() ); }		
-
 	public int capabilities() 
 		{ return ADD | DELETE | SIZE;  }
-
-/* */
-    public void die( String message )
-        { throw new UnsupportedOperationException( message ); }
-/* */
 
 	protected Graph L;
 	protected Graph R;
@@ -78,82 +39,10 @@ public abstract class Dyadic extends GraphBase implements Graph
         return other == this || L.mightContain( other ) || R.mightContain( other );
         }
  				
-/*
-	useful shared functionality.
-*/
-	private static HashSet hashSet( ClosableIterator x )
-		{
-		HashSet result = new HashSet();
-		while (x.hasNext()) result.add( x.next() );
-		return result;
-		}
-		
-	protected static Filter reject( final ClosableIterator it )
-		{
-		final HashSet suppress = hashSet( it );
-		return new Filter()
-			{ public boolean accept( Object o ) { return suppress.contains( o ) == false; } };
-		}
-		
-	public static ClosableIterator butNot( final ClosableIterator a, final ClosableIterator b )
-		{
-		return new FilterIterator( reject( b ), a );
-		}
-		
-	public ExtendedIterator recording( final ClosableIterator it, final HashSet seen )
-		{
-		return new NiceIterator()
-			{
-			public void remove()
-				{ it.remove(); }
-			
-			public boolean hasNext()
-				{ return it.hasNext(); }	
-			
-			public Object next()
-				{ Object x = it.next(); seen.add( x ); return x; }	
-				
-			public void close()
-				{ it.close(); }
-			};
-		}
-		
-	static final Object absent = new Object();
-	
-	public ExtendedIterator rejecting( final ExtendedIterator it, final HashSet seen )
-		{
-        Filter seenFilter = new Filter()
-            { public boolean accept( Object x ) { return seen.contains( x ); } };
-        return it .filterDrop ( seenFilter );
-		}
-		
-    protected int countIterator( ClosableIterator them )
-        {
-        try { int n = 0; while (them.hasNext()) { n += 1; them.next(); } return n; }
-        finally { them.close(); }
-        }
-  
-    public boolean contains( Triple t )
-      {
-      return contains( t.getSubject(), t.getPredicate(), t.getObject() );
-      }             	    
-      
-    protected static Filter ifIn( final ClosableIterator it )
-        {
-        final HashSet allow = hashSet( it );
-        return new Filter()
-            { public boolean accept( Object o ) { return allow.contains( o ); } };
-        }
-        
-     public static Filter ifIn( final Graph g )
-        {
-        return new Filter()
-            { public boolean accept( Object x ) { return g.contains( (Triple) x ); } };
-        }
-        
     public Union union( Graph X )
         { return new Union( this, X ); }
-	}
+    
+    }
 
 /*
     (c) Copyright Hewlett-Packard Company 2002
