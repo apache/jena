@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-10-22 09:35:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.24 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS $Id: OntResource.java,v 1.25 2003-10-22 09:35:27 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -633,6 +633,16 @@ public interface OntResource
      * <p>Removes this resource from the ontology by deleting any statements that refer to it.
      * If this resource is a property, this method will <strong>not</strong> remove instances
      * of the property from the model.</p>
+     * <p><strong>Caveat:</strong> Jena RDF models contain statements, not resources <em>per se</em>,
+     * so this method simulates removal of an object by removing all of the statements that have
+     * this resource as subject or object, with one exception. If the resource is referenced
+     * in an RDF List, i.e. as the object of an <code>rdf:first</code> statement in a list cell,
+     * this reference is <strong>not</strong> removed.  Removing an arbitrary <code>rdf:first</code>
+     * statement from the midst of a list, without doing other work to repair the list, would
+     * leave an ill-formed list in the model.  Therefore, if this resource is known to appear
+     * in a list somewhere in the model, it should be separately deleted from that list before
+     * calling this removal method.
+     * </p>
      */
     public void remove();
     
