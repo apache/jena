@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ResourceImpl.java,v 1.15 2003-06-17 14:39:38 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.16 2003-07-02 09:00:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-06-17 14:39:38 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-07-02 09:00:21 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -252,7 +252,15 @@ public class ResourceImpl extends EnhNode implements Resource {
         while (it.hasNext()) { it.nextStatement(); it.remove(); }
         return this;
     }
-
+    
+    public Resource removeAll( Property p ) {
+        for (StmtIterator i = listProperties( p );  i.hasNext();  ) {
+            i.next();
+            i.remove();
+        }
+        return this;
+    }
+    
     public Resource begin()  {
         mustHaveModel().begin();
         return this;

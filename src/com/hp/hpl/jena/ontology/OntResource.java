@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:22:13 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-02 09:00:20 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.22 2003-06-22 19:22:13 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.23 2003-07-02 09:00:20 chris-dollin Exp $
  */
 public interface OntResource
     extends Resource
@@ -628,17 +628,6 @@ public interface OntResource
      * @return An Iterator over the values of the property
      */
     public NodeIterator listPropertyValues( Property property );
-
-
-    /**
-     * <p>
-     * Remove any values for a given property from this resource.
-     * </p>
-     *
-     * @param property The RDF resource that defines the property to be removed
-     */
-    public void removeAll( Property property );
-
     
     /** 
      * <p>Removes this resource from the ontology by deleting any statements that refer to it.

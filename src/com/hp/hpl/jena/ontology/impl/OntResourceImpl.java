@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-28 21:22:22 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-02 09:00:20 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.32 2003-06-28 21:22:22 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.33 2003-07-02 09:00:20 chris-dollin Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -944,22 +944,6 @@ public class OntResourceImpl
     public NodeIterator listPropertyValues( Property property ) {
         return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectMapper() ), null );
     }
-
-
-    /**
-     * <p>
-     * Remove any values for a given property from this resource.
-     * </p>
-     *
-     * @param property The RDF resource that defines the property to be removed
-     */
-    public void removeAll( Property property ) {
-        for (StmtIterator i = listProperties( property );  i.hasNext();  ) {
-            i.next();
-            i.remove();
-        }
-    }
-
     
     /** 
      * <p>Removes this resource from the ontology by deleting any statements that refer to it.

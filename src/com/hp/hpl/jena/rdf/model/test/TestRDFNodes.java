@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.1 2003-05-20 10:10:23 chris-dollin Exp $
+  $Id: TestRDFNodes.java,v 1.2 2003-07-02 09:00:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -64,6 +64,24 @@ public class TestRDFNodes extends ModelTestBase
         assertEquals( strings.get(0), "blank" );
         assertEquals( strings.get(1), "uri" );
         assertEquals( strings.get(2), "literal" );
+        }
+        
+    public void testRemoveAllRemoves()
+        {
+        String ps = "x P a; x P b", rest = "x Q c; y P a; y Q b";
+        Model m = modelWithStatements( ps + "; " + rest );
+        Resource r = resource( m, "x" );
+        Resource r2 = r.removeAll( property( m, "P" ) );
+        assertSame( "removeAll should deliver its receiver", r, r2 );
+        assertIsoModels( "x's P-values should go", modelWithStatements( rest ), m );
+        }
+        
+    public void testRemoveAllBoring()
+        {
+        Model m1 = modelWithStatements( "x P a; y Q b" );
+        Model m2 = modelWithStatements( "x P a; y Q b" );
+        resource( m2, "x" ).removeAll( property( m2, "Z" ) );
+        assertIsoModels( "m2 should be unchanged", m1, m2 );
         }
     }
 

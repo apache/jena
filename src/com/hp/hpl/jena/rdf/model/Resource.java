@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Node;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-17 12:25:04 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-07-02 09:00:20 $'
  */
 public interface Resource extends RDFNode {
       
@@ -68,7 +68,6 @@ public interface Resource extends RDFNode {
      *
      * <p>This method is undefined if called on resources which are not anonymous
      * and may raise an exception.</p>
-     .
      * @return A unique id for an anonymous resource.
      */
     public AnonId getId() ;
@@ -127,7 +126,6 @@ public interface Resource extends RDFNode {
      * is found, it is returned.  If several such statements are found, any one may
      * be returned.  If no such statements are found, and exception is thrown.</p>
      * @param p The property sought.
-     .
      * @return A statement specifying the property value.
      */
     public Statement  getProperty(Property p) ;
@@ -136,7 +134,6 @@ public interface Resource extends RDFNode {
      * <p>Returns an iterator over all the statements in the associated model whose
      * subject is this resource and whose predicate is p.</p>
      * @param p The predicate sought.
-     .
      * @return An iterator over the statements.
      */
     public StmtIterator listProperties(Property p) ;
@@ -145,7 +142,6 @@ public interface Resource extends RDFNode {
      * <p>The model associated with this resource is search and an iterator is
      * returned which iterates over all the statements which have this resource
      * as a subject.</p>
-     .
      * @return An iterator over all the statements about this object.
      */
     public StmtIterator listProperties() ;
@@ -158,7 +154,6 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, boolean o) ;
@@ -171,7 +166,6 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, long o) ;
@@ -184,7 +178,6 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, char o) ;
@@ -197,7 +190,6 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, float o) ;
@@ -210,7 +202,6 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, double o) ;
@@ -221,7 +212,6 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, String o) ;
@@ -233,7 +223,6 @@ public interface Resource extends RDFNode {
      * @param p The property to be added.
      * @param o The value of the property to be added.
      * @param l the language of the property
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, String o, String l) ;
@@ -246,7 +235,6 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, Object o) ;
@@ -257,14 +245,12 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     .
      * @return This resource to allow cascading calls.
      */
     public Resource addProperty(Property p, RDFNode o);
     
     /** Determine whether this resource has any values for a given property.
      * @param p The property sought.
-     .
      * @return true if and only if this resource has at least one
      * value for the property.
      */
@@ -273,7 +259,6 @@ public interface Resource extends RDFNode {
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
@@ -282,7 +267,6 @@ public interface Resource extends RDFNode {
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
@@ -291,7 +275,6 @@ public interface Resource extends RDFNode {
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
@@ -300,7 +283,6 @@ public interface Resource extends RDFNode {
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
@@ -309,7 +291,6 @@ public interface Resource extends RDFNode {
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
@@ -318,7 +299,6 @@ public interface Resource extends RDFNode {
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
@@ -328,7 +308,6 @@ public interface Resource extends RDFNode {
      * @param p The property sought.
      * @param o The value of the property sought.
      * @param l The language of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
@@ -337,7 +316,6 @@ public interface Resource extends RDFNode {
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
@@ -346,32 +324,36 @@ public interface Resource extends RDFNode {
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     .
      * @return true if and only if this resource has property p with
      * value o.
      */
     public boolean  hasProperty(Property p, RDFNode o) ;
     
     /** Delete all the properties for this resource from the associated model.
-     .
      * @return This resource to permit cascading.
      */
     public Resource removeProperties() ;
     
+    /**
+        Delete all the statements with predicate <code>p</code> for this resource
+        from its associated model.
+        
+        @param p the property to remove
+        @return this resource, to permit cascading
+    */
+    public Resource removeAll( Property p );
+    
     /** Begin a transaction in the associated model.
-     .
      * @return This resource to permit cascading.
      */
     public Resource begin() ;
     
     /** Abort the  transaction in the associated model.
-     .
      * @return This resource to permit cascading.
      */
     public Resource abort() ;
     
     /** Commit the transaction in the associated model.
-     .
      * @return This resource to permit cascading.
      */
     public Resource commit() ;
