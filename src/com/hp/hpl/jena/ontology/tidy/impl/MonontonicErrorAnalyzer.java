@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: MonontonicErrorAnalyzer.java,v 1.4 2003-12-09 18:57:23 jeremy_carroll Exp $
+  $Id: MonontonicErrorAnalyzer.java,v 1.5 2003-12-10 10:13:34 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
@@ -13,7 +13,32 @@ import java.util.*;
  *
 */
 class MonontonicErrorAnalyzer implements Constants {
-
+	final static int TYPE_FOR_BUILTIN = 184;
+	final static int TYPE_OF_PROPERTY_ONLY_ID = 183;
+	final static int TYPE_OF_CLASS_ONLY_ID = 182;
+	final static int BAD_RANGE_LIST_DESC = 140;
+	final static int BAD_RANGE_GENERAL_CLASS = 141;
+	final static int BAD_RANGE_HAS_VALUE = 142;
+	final static int BAD_RANGE_CARDINALITY = 143;
+	final static int BAD_RANGE_INDIVIDUAL = 144;
+	final static int BAD_RANGE_LIST = 145;
+	final static int BAD_RANGE_FIRST = 146;
+	final static int BAD_RANGE_PROP = 147;
+	final static int BAD_RANGE_LIST_IND = 148;
+	final static int BAD_RANGE_ONEOF = 149;
+	final static int BAD_RANGE_CLASS_DATATYPE = 150;
+	final static int BAD_RANGE_TYPE = 151;
+	final static int BAD_RANGE_ONT_PROP = 152;
+	final static int BAD_DOMAIN_REST = 160;
+	final static int BAD_DOMAIN_ALL_DIFF = 161;
+	final static int BAD_DOMAIN_INDIVIDUAL = 162;
+	final static int BAD_DOMAIN_LIST = 163;
+	final static int BAD_DOMAIN_PROP = 164;
+	final static int BAD_DOMAIN_CLASS_DESC = 165;
+	final static int BAD_DOMAIN_GENERAL_CLASS = 166;
+	final static int BAD_DOMAIN_CLASS = 167;
+	final static int BAD_DOMAIN_TYPE = 168;
+	final static int BAD_DOMAIN_ONT_PROP = 169;
 	static final int GENERIC = 100;
 	static final int SINGLE_TRIPLE = 101;
 	static final int DIFFICULT = 110;
@@ -30,17 +55,15 @@ class MonontonicErrorAnalyzer implements Constants {
 	final static int BLANK_PROP = 130;
 	final static int LITERAL_PROP = 131;
 	final static int LITERAL_SUBJ = 132;
-	final static int BADID_USE    = 133;
+	final static int BADID_USE = 133;
 	final static int BUILTIN_NON_PRED = 134;
 	final static int BUILTIN_NON_SUBJ = 135;
-	final static int CLASS_AS_PROP    = 136;
+	final static int CLASS_AS_PROP = 136;
 	final static int DATA_ANN_PROP_BAD_OBJ = 137;
-	final static int BUILTIN_WITH_RANGE_CLASS = 138;
-	final static int BUILTIN_WITH_DOMAIN_CLASS = 139;
-	final static int BUILTIN_WITH_RANGE_PROPERTY = 140;
-	final static int BUILTIN_WITH_DOMAIN_PROPERTY = 141;
-	
-	static LookupTable look = (LookupTable)LookupTable.get();
+	final static int TYPE_NEEDS_ID = 180;
+	final static int TYPE_NEEDS_BLANK = 181;
+
+	static LookupTable look = (LookupTable) LookupTable.get();
 	static final int SZ = CategorySet.unsorted.size();
 	static final boolean isClassOnly[] = new boolean[SZ];
 	static final boolean isPropertyOnly[] = new boolean[SZ];
@@ -74,18 +97,22 @@ class MonontonicErrorAnalyzer implements Constants {
 			}
 			if (ix == 0) {
 				s[ix++] = i;
-				switch (i){
-					case Grammar.badID:
-					case Grammar.dlInteger:
-					case Grammar.liteInteger:
-					case Grammar.literal:
-					case Grammar.userTypedLiteral:
-					  break;
-					default:
-					System.err.println("Builtin: " + Grammar.catNames[i]);
-					isBuiltin[i]=true;
+				switch (i) {
+					case Grammar.badID :
+					case Grammar.dlInteger :
+					case Grammar.liteInteger :
+					case Grammar.literal :
+					case Grammar.userTypedLiteral :
+						break;
+					default :
+						System.err.println("Builtin: " + Grammar.catNames[i]);
+						isBuiltin[i] = true;
 				}
 			}
+			if (maybeBuiltinID(i)) {
+				s[ix++] = i;
+			}
+
 			start[i] = new int[ix];
 			System.arraycopy(s, 0, start[i], 0, ix);
 		}
@@ -120,16 +147,7 @@ class MonontonicErrorAnalyzer implements Constants {
 			}
 			return rslt;
 		}
-	}
-	/**
-	 * @param s
-	 * @param p
-	 * @param o
-	 * @param sz
-	 * @param pz
-	 * @param oz
-	 * @return
-	 */
+	}	
 	private static int difficultCase(
 		int s,
 		int p,
@@ -165,13 +183,8 @@ class MonontonicErrorAnalyzer implements Constants {
 			dumpc("DC-prop", p, pz);
 			dumpc("DC-obj", o, oz);
 		}
-
 		return rslt;
 	}
-
-	/**
-	 * @param s
-	 */
 	private static boolean isNotOntology(int s) {
 		int c[] = CategorySet.getSet(s);
 		return !Q.intersect(ontos, c);
@@ -180,20 +193,11 @@ class MonontonicErrorAnalyzer implements Constants {
 		CategorySet.find(
 			new int[] { Grammar.notype, Grammar.ontologyPropertyID },
 			false);
-	/**
-	 * @param p
-	 */
 	private static boolean isOntologyProp(int p) {
 		return p == Grammar.ontologyPropertyID || p == ontp2;
 	}
-
 	static int class2 =
-		CategorySet.find(
-			new int[] { Grammar.notype, Grammar.classID },
-			false);
-	/**
-	 * @param p
-	 */
+		CategorySet.find(new int[] { Grammar.notype, Grammar.classID }, false);
 	private static boolean isClassID(int p) {
 		return p == Grammar.classID || p == class2;
 	}
@@ -202,13 +206,9 @@ class MonontonicErrorAnalyzer implements Constants {
 		CategorySet.find(
 			new int[] { Grammar.notype, Grammar.dataPropID },
 			false);
-	/**
-	 * @param p
-	 */
 	private static boolean isDataProp(int p) {
 		return p == dp1 || p == dp2;
 	}
-
 	static int op1 = Grammar.objectPropID;
 	static int op2 = Grammar.transitivePropID;
 	static int op3 =
@@ -230,10 +230,6 @@ class MonontonicErrorAnalyzer implements Constants {
 				Grammar.notype,
 				Grammar.transitivePropID },
 			false);
-
-	/**
-	 * @param p
-	 */
 	private static boolean isObjectProperty(int p) {
 		return p == op1
 			|| p == op2
@@ -242,18 +238,12 @@ class MonontonicErrorAnalyzer implements Constants {
 			|| p == op5
 			|| p == op6;
 	}
-	/**
-	 * @param o
-	 */
 	private static boolean isLiteral(int o) {
 		return o == Grammar.literal
 			|| o == Grammar.liteInteger
 			|| o == Grammar.dlInteger
 			|| o == Grammar.userTypedLiteral;
 	}
-	/**
-	 * @param o
-	 */
 	private static boolean isNotLiteral(int o) {
 		return !isLiteral(o);
 	}
@@ -268,245 +258,402 @@ class MonontonicErrorAnalyzer implements Constants {
 		new int[] { Grammar.ontologyID, Grammar.unnamedOntology };
 
 	static final int owlProps[] =
-		new int[] { Grammar.transitivePropID, Grammar.objectPropID,
+		new int[] {
+			Grammar.transitivePropID,
+			Grammar.objectPropID,
 			Grammar.dataPropID };
 
-static {
-	Arrays.sort(annOrOnt);
-	Arrays.sort(indv);
-	Arrays.sort(ontos);
-	Arrays.sort(owlProps);
-}
-/**
- * @param s
- */
-private static boolean isNotIndividual(int s) {
-	int c[] = CategorySet.getSet(s);
-	return !Q.intersect(indv, c);
-}
-/**
- * @param p
- */
-private static boolean isNotAnnOrOntoProp(int p) {
-	int c[] = CategorySet.getSet(p);
-	return !Q.intersect(annOrOnt, c);
-}
-static int dbgCnt = 0;
-static boolean debug() {
-	return (dbgCnt++ % 100 == 0 && dbgCnt < 1000);
-}
-static void dumpc(String x, int c, int d) {
-	System.out.println(x + "(a)" + CategorySet.catString(c));
-	if (d!=0)
-	  System.out.println(x + "(b)" + CategorySet.catString(d));
-}
-
-private static boolean badBuiltinDomain(int p,int s){
-	switch (p){
-		// classID
-		case Grammar.rdfsrange:
-		case Grammar.rdfsdomain:
-		  return isNotClassID(s);
-		
-    // description restriction or classID
-		case Grammar.owlequivalentClass:
-		case Grammar.rdfssubClassOf:
-		case Grammar.owldisjointWith:
-		return isNotDescription(s) && isNotClassID(s)
-		   && isNotRestriction(s);
-		
-		// description or classID
-		case Grammar.owlcomplementOf:
-		case Grammar.owlintersectionOf:
-		case Grammar.owlunionOf:
-		case Grammar.owloneOf:
-		  return isNotDescription(s) && isNotClassID(s);
-		
-		// propertyID (obj, trans or data)
-		case Grammar.rdfssubPropertyOf:
-		case Grammar.owlequivalentProperty:
-		case Grammar.owlinverseOf:
-		  return isNotOWLPropertyID(s);
-		
-    // list node
-		case Grammar.rdffirst:
-		case Grammar.rdfrest:
-		  return isNotListNode(s);
-		// indivID
-		case Grammar.owldifferentFrom:
-		case Grammar.owlsameAs:
-		  return isNotIndividualID(s);
-		  
-		// alldifferent
-		case Grammar.owldistinctMembers:
-      return isNotAllDifferent(s);
-      
-		// restriction
-		case Grammar.owlhasValue:
-		case Grammar.owlmaxCardinality:
-		case Grammar.owlonProperty:
-		case Grammar.owlsomeValuesFrom:
-		  return isNotRestriction(s);
-		default:
-		  return false;
+	static {
+		Arrays.sort(annOrOnt);
+		Arrays.sort(indv);
+		Arrays.sort(ontos);
+		Arrays.sort(owlProps);
 	}
-}
-/**
- * @param s
- * @return
- */
-private static boolean isNotRestriction(int s) {
-	return look.meet(s,Grammar.restrictions)==Failure;
-}
-/**
- * @param s
- * @return
- */
-private static boolean isNotAllDifferent(int s) {
-	return !Q.member(Grammar.allDifferent,CategorySet.getSet(s));
-}
-/**
- * @param s
- * @return
- */
-private static boolean isNotIndividualID(int s) {
-	return !Q.member(Grammar.individualID,CategorySet.getSet(s));
-}
-/**
- * @param s
- * @return
- */
-private static boolean isNotListNode(int s) {
-	return look.meet(s,Grammar.lists)==Failure;
-}
-/**
- * @param s
- * @return
- */
-private static boolean isNotOWLPropertyID(int s) {
-	return !Q.intersect(owlProps, CategorySet.getSet(s));
-}
-/**
- * @param s
- * @return
- */
-private static boolean isNotDescription(int s) {
-	return look.meet(s,Grammar.descriptions)==Failure;
-}
-/**
- * @param s
- * @return
- */
-private static boolean isNotClassID(int s) {
-	return !Q.member(Grammar.classID,CategorySet.getSet(s));
-}
-/**
- * @param sx
- * @param px
- * @param ox
- * @return
- */
-private static int singleTripleError(int sx, int px, int ox) {
-	if (isBlank[px])
-	  return BLANK_PROP;
-	if (isLiteral(px))
-	  return LITERAL_PROP;
-	if (isLiteral(sx))
-	  return LITERAL_SUBJ;
+	private static boolean isNotIndividual(int s) {
+		int c[] = CategorySet.getSet(s);
+		return !Q.intersect(indv, c);
+	}
+	private static boolean isNotAnnOrOntoProp(int p) {
+		int c[] = CategorySet.getSet(p);
+		return !Q.intersect(annOrOnt, c);
+	}
+	static int dbgCnt = 0;
+	static boolean debug() {
+		return (dbgCnt++ % 5 == 0 && dbgCnt < 100);
+	}
+	static void dumpc(String x, int c, int d) {
+		System.out.println(x + "(a)" + CategorySet.catString(c));
+		if (d != 0)
+			System.out.println(x + "(b)" + CategorySet.catString(d));
+	}
+	private static int badBuiltinRange(int p, int o) {
+		switch (p) {
+			// classID
+			case Grammar.rdfsrange :
+			case Grammar.owlsomeValuesFrom :
+				return isNotClassID(o)
+					&& isNotDatatypeID(o)
+					&& o != Grammar.dataRangeID ? BAD_RANGE_CLASS_DATATYPE : 0;
 
-  if (sx==Grammar.badID
-     || px ==Grammar.badID)
-     return BADID_USE;
-  if (ox==Grammar.badID)
-     return BADID_USE;
-     
-  if (isBuiltin[sx]&&!look.canBeSubj(sx))
-    return BUILTIN_NON_SUBJ;
-  if (isBuiltin[px]&&!look.canBeProp(px))
-    return BUILTIN_NON_PRED;
-  if (isClassID(px))
-     return CLASS_AS_PROP;
-  if ( px == Grammar.dataAnnotationPropID && isNotLiteral(ox))
-     return DATA_ANN_PROP_BAD_OBJ;
-  
-	if (debug()) {
-		dumpc("DC-subj", sx, 0);
-		dumpc("DC-prop", px, 0);
-		dumpc("DC-obj", ox, 0);
+				// description restriction or classID
+			case Grammar.owlequivalentClass :
+			case Grammar.rdfssubClassOf :
+			case Grammar.owldisjointWith :
+			case Grammar.owlcomplementOf :
+			case Grammar.rdfsdomain :
+				return isNotDescription(o)
+					&& isNotClassID(o)
+					&& isNotRestriction(o) ? BAD_RANGE_GENERAL_CLASS : 0;
+
+				// description or classID
+			case Grammar.owlintersectionOf :
+			case Grammar.owlunionOf :
+				return isNotListOfDesc(o) ? BAD_RANGE_LIST_DESC : 0;
+			case Grammar.owloneOf :
+				return isNotListOfLit(o)
+					&& isNotListOfIndividual(o) ? BAD_RANGE_ONEOF : 0;
+			case Grammar.owldistinctMembers :
+				return isNotListOfIndividual(o) ? BAD_RANGE_LIST_IND : 0;
+
+				// propertyID (obj, trans or data)
+			case Grammar.owlonProperty :
+			case Grammar.rdfssubPropertyOf :
+			case Grammar.owlequivalentProperty :
+			case Grammar.owlinverseOf :
+				return isNotOWLPropertyID(o) ? BAD_RANGE_PROP : 0;
+
+				// list node
+			case Grammar.rdffirst :
+				return isNotIndividualID(o)
+					&& isNotDescription(o)
+					&& isNotClassID(o)
+					&& isNotRestriction(o) ? BAD_RANGE_FIRST : 0;
+
+			case Grammar.rdfrest :
+				return isNotListNode(o)
+					&& o != Grammar.rdfnil ? BAD_RANGE_LIST : 0;
+				// indivID
+			case Grammar.owldifferentFrom :
+			case Grammar.owlsameAs :
+				return isNotIndividualID(o) ? BAD_RANGE_INDIVIDUAL : 0;
+
+			case Grammar.owlmaxCardinality :
+				return o != Grammar.liteInteger
+					&& o != Grammar.dlInteger ? BAD_RANGE_CARDINALITY : 0;
+				// restriction
+			case Grammar.owlhasValue :
+				return isNotIndividualID(o)
+					&& isNotLiteral(o) ? BAD_RANGE_HAS_VALUE : 0;
+			case Grammar.rdftype :
+				switch (o) {
+					case Grammar.rdfProperty :
+					case Grammar.rdfsClass :
+					case Grammar.rdfsDatatype :
+					case Grammar.rdfList :
+					case Grammar.owlAllDifferent :
+					case Grammar.owlAnnotationProperty :
+					case Grammar.owlClass :
+					case Grammar.owlDataRange :
+					case Grammar.owlDatatypeProperty :
+					case Grammar.owlDeprecatedClass :
+					case Grammar.owlFunctionalProperty :
+					case Grammar.owlInverseFunctionalProperty :
+					case Grammar.owlObjectProperty :
+					case Grammar.owlOntology :
+					case Grammar.owlOntologyProperty :
+					case Grammar.owlRestriction :
+					case Grammar.owlSymmetricProperty :
+					case Grammar.owlTransitiveProperty :
+						return 0;
+				}
+				return isNotDescription(o)
+					&& isNotClassID(o)
+					&& isNotRestriction(o) ? BAD_RANGE_TYPE : 0;
+
+			default :
+				if (isOntologyProp(p))
+					return isOntologyID(o) ? 0 : BAD_RANGE_ONT_PROP;
+				return 0;
+		}
+	}
+	private static boolean isNotListOfIndividual(int o) {
+		return !Q.member(Grammar.listOfIndividualID, CategorySet.getSet(o));
+	}
+	private static boolean isNotListOfLit(int o) {
+		return !Q.member(Grammar.listOfDataLiteral, CategorySet.getSet(o));
+
+	}
+	private static boolean isNotListOfDesc(int o) {
+		return !Q.member(Grammar.listOfDescription, CategorySet.getSet(o));
+	}
+	private static boolean isNotDatatypeID(int o) {
+
+		return !Q.member(Grammar.datatypeID, CategorySet.getSet(o));
+	}
+	private static int badBuiltinDomain(int p, int s) {
+		switch (p) {
+			// description restriction or classID
+			case Grammar.owlequivalentClass :
+			case Grammar.rdfssubClassOf :
+			case Grammar.owldisjointWith :
+				return isNotDescription(s)
+					&& isNotClassID(s)
+					&& isNotRestriction(s) ? BAD_DOMAIN_GENERAL_CLASS : 0;
+
+				// description or classID
+			case Grammar.owlcomplementOf :
+			case Grammar.owlintersectionOf :
+			case Grammar.owlunionOf :
+			case Grammar.owloneOf :
+				return isNotDescription(s)
+					&& isNotClassID(s) ? BAD_DOMAIN_CLASS_DESC : 0;
+
+			case Grammar.rdftype :
+				return isUserID[s] || isBlank[s] ? 0 : BAD_DOMAIN_TYPE;
+				// propertyID (obj, trans or data)
+			case Grammar.rdfssubPropertyOf :
+			case Grammar.owlequivalentProperty :
+			case Grammar.owlinverseOf :
+			case Grammar.rdfsrange :
+			case Grammar.rdfsdomain :
+				return isNotOWLPropertyID(s) ? BAD_DOMAIN_PROP : 0;
+
+				// list node
+			case Grammar.rdffirst :
+			case Grammar.rdfrest :
+				return isNotListNode(s) ? BAD_DOMAIN_LIST : 0;
+				// indivID
+			case Grammar.owldifferentFrom :
+			case Grammar.owlsameAs :
+				return isNotIndividualID(s) ? BAD_DOMAIN_INDIVIDUAL : 0;
+
+				// alldifferent
+			case Grammar.owldistinctMembers :
+				return isNotAllDifferent(s) ? BAD_DOMAIN_ALL_DIFF : 0;
+
+				// restriction
+			case Grammar.owlhasValue :
+			case Grammar.owlmaxCardinality :
+			case Grammar.owlonProperty :
+			case Grammar.owlsomeValuesFrom :
+				return isNotRestriction(s) ? BAD_DOMAIN_REST : 0;
+			default :
+				if (isOntologyProp(p))
+					return isBlank[s]
+						|| isOntologyID(s) ? 0 : BAD_DOMAIN_ONT_PROP;
+				return 0;
+		}
 	}
 
-	// TODO fix me
-	if (isObjectProperty(px) && isLiteral(ox))
-		return OBJ_PROP_AND_LIT;
-	if (isDataProp(px) && isNotLiteral(ox))
-		return DATA_PROP_AND_NONLIT;
+	static int ont2 =
+		CategorySet.find(
+			new int[] { Grammar.notype, Grammar.ontologyID },
+			false);
+	private static boolean isOntologyID(int p) {
+		return p == Grammar.ontologyID || p == ont2;
+	}
+	private static boolean isNotRestriction(int s) {
+		return look.meet(s, Grammar.restrictions) == Failure;
+	}
+	private static boolean isNotAllDifferent(int s) {
+		return !Q.member(Grammar.allDifferent, CategorySet.getSet(s));
+	}
+	private static boolean isNotIndividualID(int s) {
+		return !Q.member(Grammar.individualID, CategorySet.getSet(s));
+	}
+	private static boolean isNotListNode(int s) {
+		return look.meet(s, Grammar.lists) == Failure;
+	}
+	private static boolean isNotOWLPropertyID(int s) {
+		return !Q.intersect(owlProps, CategorySet.getSet(s));
+	}
+	private static boolean isNotDescription(int s) {
+		return look.meet(s, Grammar.descriptions) == Failure;
+	}
+	private static boolean isNotClassID(int s) {
+		return !Q.member(Grammar.classID, CategorySet.getSet(s));
+	}
+	private static int singleTripleError(int sx, int px, int ox) {
+		if (isBlank[px])
+			return BLANK_PROP;
+		if (isLiteral(px))
+			return LITERAL_PROP;
+		if (isLiteral(sx))
+			return LITERAL_SUBJ;
 
-	return SINGLE_TRIPLE;
-}
-/**
- * @param oz
- * @param o
- * @return
- */
-private static int catMiss(int oz, int o) {
-	// TODO Auto-generated method stub
-	return GENERIC;
-}
-static int bad = 0;
-static int eCnt[] = new int[1000];
-static void allCases(int s, int p, int o) {
-	for (int i = 0; i < start[s].length; i++)
-		for (int j = 0; j < start[p].length; j++)
-			for (int k = 0; k < start[o].length; k++) {
-				bad++;
-				int e =
-					getErrorCode(
-						s,
-						p,
-						o,
-						start[s][i],
-						start[p][j],
-						start[o][k]);
-				eCnt[e]++;
+		if (sx == Grammar.badID || px == Grammar.badID)
+			return BADID_USE;
+		if (ox == Grammar.badID)
+			return BADID_USE;
+
+		if (isBuiltin[sx] && !look.canBeSubj(sx))
+			return BUILTIN_NON_SUBJ;
+		if (//isBuiltin[px]&&
+		!look.canBeProp(px))
+			return BUILTIN_NON_PRED;
+		if (isClassID(px))
+			return CLASS_AS_PROP;
+		if (px == Grammar.dataAnnotationPropID && isNotLiteral(ox))
+			return DATA_ANN_PROP_BAD_OBJ;
+
+		int x = badBuiltinDomain(px, sx);
+		if (x != 0)
+			return x;
+		x = badBuiltinRange(px, ox);
+		if (x != 0)
+			return x;
+		if (px == Grammar.rdftype) {
+
+			if (maybeBuiltinID(sx))
+				return TYPE_FOR_BUILTIN;
+			switch (ox) {
+				case Grammar.rdfsDatatype :
+				case Grammar.rdfProperty :
+				case Grammar.owlAnnotationProperty :
+				case Grammar.owlDatatypeProperty :
+				case Grammar.owlFunctionalProperty :
+				case Grammar.owlInverseFunctionalProperty :
+				case Grammar.owlObjectProperty :
+				case Grammar.owlOntologyProperty :
+				case Grammar.owlSymmetricProperty :
+				case Grammar.owlTransitiveProperty :
+				case Grammar.owlDeprecatedProperty :
+				case Grammar.owlOntology :
+					if (isClassOnly(sx))
+						return TYPE_OF_CLASS_ONLY_ID;
+					// fall through
+				case Grammar.owlDeprecatedClass :
+					if (!isUserID[sx] && ox != Grammar.owlOntology)
+						return TYPE_NEEDS_ID;
+
+				case Grammar.rdfList :
+				case Grammar.owlAllDifferent :
+				case Grammar.owlDataRange :
+				case Grammar.owlRestriction :
+					if (!isBlank[sx])
+						return TYPE_NEEDS_BLANK;
+				default :
+					if (isBlank[ox] || isClassOnly(ox)) {
+						if (isClassOnly(sx))
+							return TYPE_OF_CLASS_ONLY_ID;
+						if (isPropertyOnly(sx))
+							return TYPE_OF_PROPERTY_ONLY_ID;
+					}
+				  if (isClassOnly(sx)&&isUserID[ox])
+				     return TYPE_OF_CLASS_ONLY_ID;
 			}
-}
-public static void main(String args[]) {
+			if (isPropertyOnly(sx)) {
 
-	for (int j = 1; j < SZ; j++) {
-		if (Grammar.isPseudoCategory(j))
-			continue;
-	  if (isBlank[j])
-	    continue;
-	  if (isLiteral(j))
-	    continue;
-	for (int i = 1; i < SZ; i++) {
-		if (Grammar.isPseudoCategory(i))
-			continue;
-   if (isLiteral(i))
-     continue;
-			for (int k = 1; k < SZ; k++) {
-				if (Grammar.isPseudoCategory(k))
-					continue;
-				if (look.qrefine(i, j, k) == Failure) {
-					allCases(i, j, k);
+				switch (ox) {
+					case Grammar.rdfsDatatype :
+					case Grammar.rdfsClass :
+					case Grammar.owlClass :
+					case Grammar.owlOntology :
+					case Grammar.owlDeprecatedClass :
+						return TYPE_OF_PROPERTY_ONLY_ID;
 
 				}
+				if (isUserID[ox])
+					return TYPE_OF_PROPERTY_ONLY_ID;
 
-				// TODO meet stuff
 			}
 		}
+		if (debug()) {
+			dumpc("DC-subj", sx, 0);
+			dumpc("DC-prop", px, 0);
+			dumpc("DC-obj", ox, 0);
+		}
 
+		// TODO fix me
+		if (isObjectProperty(px) && isLiteral(ox))
+			return OBJ_PROP_AND_LIT;
+		if (isDataProp(px) && isNotLiteral(ox))
+			return DATA_PROP_AND_NONLIT;
+
+		return SINGLE_TRIPLE;
 	}
-	System.out.println(bad + " cases considered.");
-	dump("Codes:", eCnt);
-	dump("Misses", miss);
-}
-static void dump(String s, int a[]) {
-	System.out.println(s);
-	for (int i = 0; i < a.length; i++)
-		if (a[i] != 0)
-			System.out.println(i + "\t" + a[i]);
-}
+	private static boolean maybeBuiltinID(int sx) {
+		boolean builtin;
+		switch (sx) {
+			case Grammar.annotationPropID :
+			case Grammar.datatypeID :
+			case Grammar.dataRangeID :
+			case Grammar.dataAnnotationPropID :
+			case Grammar.classID :
+			case Grammar.ontologyPropertyID :
+				builtin = true;
+				break;
+			default :
+				builtin = false;
+				break;
+		}
+		return builtin;
+	}
+	private static boolean isClassOnly(int sx) {
+		return look.meet(sx, Grammar.classOnly) == sx;
+	}
+	private static boolean isPropertyOnly(int sx) {
+		return look.meet(sx, Grammar.propertyOnly) == sx;
+	}
+	private static int catMiss(int oz, int o) {
+		// TODO Auto-generated method stub
+		return GENERIC;
+	}
+	static int bad = 0;
+	static int eCnt[] = new int[1000];
+	static void allCases(int s, int p, int o) {
+		for (int i = 0; i < start[s].length; i++)
+			for (int j = 0; j < start[p].length; j++)
+				for (int k = 0; k < start[o].length; k++) {
+					bad++;
+					int e =
+						getErrorCode(
+							s,
+							p,
+							o,
+							start[s][i],
+							start[p][j],
+							start[o][k]);
+					eCnt[e]++;
+				}
+	}
+	public static void main(String args[]) {
+
+		for (int j = 1; j < SZ; j++) {
+			if (Grammar.isPseudoCategory(j))
+				continue;
+			if (isBlank[j])
+				continue;
+			if (isLiteral(j))
+				continue;
+			for (int i = 1; i < SZ; i++) {
+				if (Grammar.isPseudoCategory(i))
+					continue;
+				if (isLiteral(i))
+					continue;
+				for (int k = 1; k < SZ; k++) {
+					if (Grammar.isPseudoCategory(k))
+						continue;
+					if (look.qrefine(i, j, k) == Failure) {
+						allCases(i, j, k);
+
+					}
+
+					// TODO meet stuff
+				}
+			}
+
+		}
+		System.out.println(bad + " cases considered.");
+		dump("Codes:", eCnt);
+		dump("Misses", miss);
+	}
+	static void dump(String s, int a[]) {
+		System.out.println(s);
+		for (int i = 0; i < a.length; i++)
+			if (a[i] != 0)
+				System.out.println(i + "\t" + a[i]);
+	}
 
 }
 
