@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.34 2004-01-29 15:15:00 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.35 2004-06-17 11:02:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -94,7 +94,7 @@ public class ModelFactory extends ModelFactoryBase
         { return desc.createModel(); }
         
     /**
-        Answer a fresh Model created according to the given specifictaion and based on
+        Answer a fresh Model created according to the given specification and based on
         any underlying model with the given name.
         
      	@param desc the ModelSpec which describes the kind of model to create

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.29 2004-04-20 07:32:19 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.30 2004-06-17 11:02:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -344,7 +344,7 @@ public class TestModelSpec extends ModelTestBase
         assertIsoModels( desc, ms.getDescription( root ) );
         }
         
-    protected void writeModel( File f, Model m ) throws FileNotFoundException, IOException
+    protected static void writeModel( File f, Model m ) throws FileNotFoundException, IOException
         {
         FileOutputStream fos = new FileOutputStream( f );
         m.write( fos );

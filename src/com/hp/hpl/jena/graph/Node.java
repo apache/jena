@@ -1,20 +1,18 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.34 2004-04-23 14:32:07 chris-dollin Exp $
+  $Id: Node.java,v 1.35 2004-06-17 11:02:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
+
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.*;
+import org.apache.commons.logging.*;
 
 /**
     A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,  
