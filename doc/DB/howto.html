@@ -26,17 +26,17 @@ reloaded.</p>
 persistent models. Note that the recommended mechanism for creating and opening 
 persistent models has changed from Jena1 and also from the preliminary releases 
 of Jena2. Users are now encouraged to use the new factory mechanisms described 
-in <font size="2" face="Courier New">doc/how-to/model-factory.html</font>. 
+in <font size="2" face="Courier New"><a href="../how-to/model-factory.html">model-factory</a></font>. 
 Previous mechanisms based on ModelRDB are now deprecated. However, the factory 
 mechanism are still under development and are not yet a complete replacement for 
 ModelRDB. Consequently, the deprecated Jena2 mechanisms may also be needed and 
 are reviewed here as well.</p>
 <p>The various options for configuring and accessing persistent models are 
-described in <font face="Courier New" size="2"> <a href="options.html">doc/DB/options.html</a></font>.&nbsp; 
+described in <font face="Courier New" size="2"> <a href="options.html">Options</a></font>.&nbsp; 
 For details on installing and configuring the various database engines for use 
-with Jena2, see <font face="Courier New" size="2"> <a href="mysql-howto.html">doc/DB/mysql-howto.html</a>,
-<a href="oracle-howto.html">doc/DB/oracle-howto.html</a>,
-<a href="postgresql-howto.html">doc/DB/postgresql-howto.html</a></font>.</p>
+with Jena2, see the database engine-specific howto documents ( <font face="Courier New" size="2"><a href="mysql-howto.html">MySQL-HowTo</a>,
+<a href="oracle-howto.html">Oracle-HowTo</a>,
+<a href="postgresql-howto.html">PostgreSQL-HowTo)</a></font>.</p>
 
 <h2>Creating and Accessing Persistent Models</h2>
 
@@ -44,7 +44,7 @@ with Jena2, see <font face="Courier New" size="2"> <a href="mysql-howto.html">do
 in separate tables. Models may share database tables using the
 <font face="Courier New" size="2"> 
 <a href="options.html">StoreWithModel</a></font> option.  Currently, 
-model names may be any string however users are encouraged to use URIs for model 
+model names may be any string however users are encouraged to use URIs as model 
 names for compatibility with planned future Jena features. Note that the model 
 name &quot;DEFAULT&quot; is reserved for use by Jena (as the name of the default model) 
 and attempts to create such a named model will cause an exception.</p>
@@ -88,7 +88,7 @@ Model defModel = maker.createModel();</font></pre>
 Model nmModel = maker.createModelOver(&quot;MyNamedModel&quot;);</font></pre>
   <pre><font face="Courier New">...</font></pre>
   <pre><font face="Courier New">// open a previously created model
-Model prvModel = maker.openModelOver(&quot;AnExistingModel&quot;);</font></pre>
+Model prvModel = maker.openModel(&quot;AnExistingModel&quot;);</font></pre>
 </blockquote>
 </font>
 
@@ -102,9 +102,9 @@ provides static methods to create, extend and reopen database instances.
 For backwards-compatibility, ModelRDB supports Jena1 methods for creating and 
 opening databases (see release notes for details on changes).</p>
 
-<p>ModelRDB supports several options to alter the underlying database table 
-structure. These options must be specified before the database is formatted and 
-the methods are invoked on the underlying database driver instance for the 
+<p>ModelRDB supports several options (see <a href="howto.html">HowTol</a>). Some
+options alter the underlying database table structure and must be specified before the database is formatted.
+These methods are invoked on the underlying database driver instance for the 
 connection. Ideally, the driver class need not be exposed to Jena applications. 
 Consequently, use of the driver class to set these options should be considered 
 an interim measure until the option setting can be integrated into the factory 
@@ -138,7 +138,7 @@ Class.forName(M_DBDRIVER_CLASS);</font><font face="Courier">
 </font>ModelRDB <font face="Courier New">nmModel = ModelRDB.createModel(conn,&quot;MyModelName&quot;);</font></pre>
   <pre><font face="Courier New">...</font></pre>
   <pre><font face="Courier New">// open a previously created model
-</font>ModelRDB <font face="Courier New">prvModel = maker.open(conn,&quot;AnExistingModel&quot;);</font></pre>
+</font>ModelRDB <font face="Courier New">prvModel = maker.openModel(conn,&quot;AnExistingModel&quot;);</font></pre>
   </font>
 </blockquote>
 <code>
@@ -177,10 +177,10 @@ separate tables.  Here is an example that checks to see if a specific named mode
 <pre><font face="Courier New" size="2">Class.forName(M_DBDRIVER_CLASS);
 DBConnection dbcon = new DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);
 ModelRDB model;
-if( !dbcon.containsModel("myModelName&quot;)
-	model = ModelRDB.createModel(dbcon, "myModelName&quot;);
+if( !dbcon.containsModel(&quot;myModelName&quot;)
+	model = ModelRDB.createModel(dbcon, &quot;myModelName&quot;);
 else
-	model = ModelRDB.open(dbcon, "myModelName&quot;);</font>
+	model = ModelRDB.open(dbcon, &quot;myModelName&quot;);</font>
 </pre>
 </blockquote>
 </code>
