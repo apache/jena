@@ -1,10 +1,14 @@
 <html>
 <head>
-<title>TOITLE</title>
+<title>event handling in Jena 2</title>
 </head>
 <body>
 <h1>event handling in Jena 2</h1>
 
+<b>id</b>: $Id: event-handler.html,v 1.2 2003-07-28 15:20:59 chris-dollin Exp $
+<br><b>author</b>: Chris Dollin
+
+<h2>ModelChangedListener</h2>
 <p>
 In Jena 2 it is possible to monitor a Model for changes,
 so that code can be run after changes are applied without
@@ -13,7 +17,7 @@ We call these changes "events". (They have nothing to do
 with GUI events.)
 
 <p>To monitor a Model, you must <i>register</i> a 
-<i>ModelChangedListener</i>with that Model:
+<i>ModelChangedListener</i> with that Model:
 
 <pre>
     Model m = ModelFactory.createDefaultModel();
@@ -61,6 +65,55 @@ The listener method is called when the statement(s) have been added to
 the Model, if no exceptions have been thrown. It does not matter if the
 statement was <i>already</i> in the Model or not; it is the act of
 adding it that fires the listener. 
+
+<p> 
+There is no guarantee that the statement, array, list, or model that
+is added or removed is the same one that is passed to the appropriate
+listener method, and the <i>StmtIterator</i> will never be the same
+one. However,
+
+<ul>
+<li>a single Statement will be .equals to the original Statement</li>
+<li>a List will be .equals to the original List</li>
+<li>a Statement[] will be the same length and have .equal elements
+     in the same order
+     </li>
+<li>a StmtIterator will deliver .equal elements in the same order</li>
+<li>a Model will contain the same statements</li>
+</ul>
+
+<p>
+Further, there is no guarantee that <i>only</i> Statements etc added
+through the Model API will be presented to the listener; anything added
+to its underlying Graph will also be presented to the listener.
+
+<h2>Utility classes</h2>
+
+The full Listener API is rather chunky and it can be inconvenient to
+use, especially for the creation of inline classes. There are four
+utility classes in <i>com.hp.hpl.jena.rdf.listeners:</i>
+
+<ul>
+<li>NullListener. This class implements ModelChangedListener and
+all its methods do nothing. This is useful when you want to intercept
+only certain ways of updating a Model.
+</li>
+<li>ChangedListener. This class implements ModelChangedListener and
+records only whether some change has been made since the last inquiry
+using the method <i>hasChanged()</i>.
+</li>
+<li>StatementListener. This class translates all bulk update calls
+(ie the ones other than addedStatement() and removedStatement()) into
+a call to addedStatement()/removedStatement() for each Statement in the
+collection. This allows statements to be tracked whether they are added
+one at a time or in bulk.
+</li>
+<li>ObjectListener. This class translates all the listener calls into
+<i>added(Object)</i> or <i>removed(Object)</i> as appropriate; it
+is left to the user code to distinguish among the types of argument.
+</li>
+</ul>
+
 
 TRANSACTION ISSUES
 
