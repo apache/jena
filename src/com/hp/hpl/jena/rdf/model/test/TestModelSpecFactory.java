@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelSpecFactory;
 import com.hp.hpl.jena.shared.*;
 
@@ -128,61 +132,56 @@ public class TestModelSpecFactory extends ModelTestBase
         {
         Model m = modelWithStatements( "eh:Root rdf:type eh:MockSpec; eh:MockSpec rdfs:subClassOf jms:ModelSpec" );
         ModelSpec s = ModelSpecFactory.createSpec( ModelSpecCreatorRegistry.registryWith( resource( "eh:MockSpec" ), createMock ), m );
-        assertTrue( s instanceof MockSpec );        
+        assertTrue( s instanceof MockModelSpec );        
         }    
     
     public void testCreateCreator()
         {
         String className = "com.hp.hpl.jena.rdf.model.test.MockModelSpec";
-        ModelSpecCreator c = new ModelSpecCreatorWithClass( className );
+        ModelSpecCreator c = new ModelSpecCreatorByClassname( className );
         ModelSpec s = c.create( resource( "root" ), modelWithStatements( "" ) );
         assertEquals( className, s.getClass().getName() );
         }   
     
-    public static class ModelSpecCreatorWithClass implements ModelSpecCreator
+    /**
+        The class loading should be deferred until an instance is required.
+    */
+    public void testCreateCreatorDeferred()
+        { String className = "lets.go.gathering.nuts.in.May";
+        ModelSpecCreator c = new ModelSpecCreatorByClassname( className ); }
+    
+    public void testRegistryDetectsMissingConfig()
         {
-        public ModelSpecCreatorWithClass( String className )
-            {}
-        
-        public ModelSpec create( Resource root, Model desc )
+        try 
             {
-            return new MockModelSpec();
+            new ModelSpecCreatorRegistry( "there/is/no/such/config.file" );
+            fail( "there should be no such configuration file found" ); 
             }
+        catch (NotFoundException e)
+            { pass(); }
+        }
+    
+    public void testRegistryIgnoresMissingConfig()
+        {
+        new ModelSpecCreatorRegistry( "there/is/no/such/config.file", true );
+        }
+    
+    public void testRegistryDetectSuppliedConfig()
+        {
+        Model model = modelWithStatements( "" );
+        Resource root = model.createResource( "eh:pseudo-modelspec-type" );
+        ModelSpec s = new ModelSpecCreatorRegistry( "testing/modelspecs/modelspec-config.n3" )
+            .getCreator( resource( "eh:pseudo-modelspec-type" ) )
+            .create( root, model );
+        assertTrue( s instanceof MockModelSpec );
         }
     
     protected ModelSpecCreator createMock = new ModelSpecCreator()
         {
         public ModelSpec create( Resource root, Model desc )
-            { return new MockSpec(); }
+            { return new MockModelSpec(); }
         };
     
-    protected static class MockSpec implements ModelSpec
-        {
-        public Model getModel()
-            { return null; }
-        
-        public Model createModel()
-            { return null; }
-
-        public Model createModelOver( String name )
-            { return null; }
-
-        public Model getDescription()
-            { return null;}
-
-        public Model getDescription( Resource root )
-            { return null; }
-
-        public Model addDescription( Model m, Resource self )
-            { return null; }
-
-        public Model openModel( String name )
-            { return null; }
-
-        public Model openModelIfPresent( String name )
-            { return null; }
-        }
-
     /**
         Answer a model which is the RDFS closure of the statements encoded in
         the string <code>statements</code>.

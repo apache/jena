@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.6 2005-02-02 13:39:46 chris-dollin Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.7 2005-02-15 16:04:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -20,8 +22,19 @@ public class ModelSpecCreatorRegistry
     {
     protected Map creators = new HashMap();     
     
-    public static final ModelSpecCreatorRegistry instance = new ModelSpecCreatorRegistry();
+    public static final ModelSpecCreatorRegistry instance = 
+        new ModelSpecCreatorRegistry( "etc/modelspec-config.n3", true );
     
+    public ModelSpecCreatorRegistry()
+        {}
+    
+    public ModelSpecCreatorRegistry( String name )
+        { this( name, false ); }
+    
+    public ModelSpecCreatorRegistry( String name, boolean ignoreMissingModel )
+        { this();
+        addFromModelNamed( name, ignoreMissingModel ); }
+
     /**
         Answer a registry with a single entry, mapping <code>type</code>
         to <code>c</code>.
@@ -45,6 +58,34 @@ public class ModelSpecCreatorRegistry
     public static void register( Resource type, ModelSpecCreator c )
         { instance.registerCreator( type, c ); }
         
+    /**
+        Add registry entries (R, L) from those statements of the model
+        located by <code>name</code> which are (R, jms:typeCreatedBy, L).
+        
+        <p>if ignoreMissingModel is true, a missing model is ignored,
+        rather than raising an exception.
+    */
+    protected void addFromModelNamed( String name, boolean ignoreMissingModel )
+        { 
+        try
+            {
+            Model m = FileManager.get().loadModel( name ); 
+            StmtIterator it = m.listStatements( null, m.createProperty( JMS.baseURI + "typeCreatedBy" ), (RDFNode) null ); 
+            while (it.hasNext()) addFromStatement( it.nextStatement() );
+            }
+        catch (NotFoundException e)
+            { if (!ignoreMissingModel) throw e; }
+        }
+
+    /**
+     	Add a registery entry whose key is the resource R and whose creator
+        is the class named by L from the statement s=(R, jms.typecreatedBy, L).
+    */
+    protected void addFromStatement( Statement s )
+        {
+        registerCreator( s.getSubject(), new ModelSpecCreatorByClassname( s.getString() ) );
+        }
+    
     static class InfSpecCreator implements ModelSpecCreator
         {
         public ModelSpec create( Resource root, Model desc ) 
