@@ -1,49 +1,35 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.2 2003-04-23 09:43:40 chris-dollin Exp $
+  $Id: SimpleTransactionHandler.java,v 1.1 2003-05-28 11:13:50 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
 
-import java.util.*;
+import com.hp.hpl.jena.graph.impl.*;
 
 /**
-    A simple-minded implementation of the bulk update interface.
-    
  	@author kers
 */
-
-public class SimpleBulkUpdateHandler implements BulkUpdateHandler
+public class SimpleTransactionHandler extends TransactionHandlerBase
     {
-    private Graph graph;
-    
-    public SimpleBulkUpdateHandler( Graph graph )
-        { this.graph = graph; }
+    public SimpleTransactionHandler()
+        { super(); }
 
-    public void add( Triple [] triples )
-        { for (int i = 0; i < triples.length; i += 1) graph.add( triples[i] ); }
+    public boolean transactionsSupported()
+        { return false; }
         
-    public void add( List triples )
-        { for (int i = 0; i < triples.size(); i += 1) graph.add( (Triple) triples.get(i) ); }
+    public void begin()
+        { notSupported(); }
         
-    public void add( Iterator it )
-        { while (it.hasNext()) graph.add( (Triple) it.next() ); }
+    public void abort()
+        { notSupported(); }
         
-    public void add( Graph g )
-        { add( g.find( null, null, null ) );  }
-
-    public void delete( Triple [] triples )
-        { for (int i = 0; i < triples.length; i += 1) graph.delete( triples[i] ); }
-    
-    public void delete( List triples )
-        { for (int i = 0; i < triples.size(); i += 1) graph.delete( (Triple) triples.get(i) );}
-    
-    public void delete( Iterator it )
-        {  while (it.hasNext()) graph.delete( (Triple) it.next() ); }
-    
-    public void delete( Graph g )
-        { delete( g.find( null, null, null ) ); }
+    public void commit()
+        { notSupported(); }
+        
+    private void notSupported()
+        { throw new UnsupportedOperationException( "oops" ); }
     }
 
 

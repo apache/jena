@@ -1,11 +1,17 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ReifyingCaptureGraph.java,v 1.1 2003-04-08 14:54:14 chris-dollin Exp $
+  $Id: ReifyingCaptureGraph.java,v 1.1 2003-05-28 11:13:50 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Reifier;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**

@@ -1,10 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.13 2003-05-09 15:36:53 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.1 2003-05-28 11:13:50 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
 
 /**
 	@author kers
@@ -13,6 +13,8 @@ package com.hp.hpl.jena.graph;
     and obvious. It fails this test nowadays ...
 */
 
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Reifier.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;

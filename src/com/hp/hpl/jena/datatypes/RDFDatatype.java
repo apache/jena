@@ -5,11 +5,11 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFDatatype.java,v 1.3 2003-04-15 20:53:00 jeremy_carroll Exp $
+ * $Id: RDFDatatype.java,v 1.4 2003-05-28 11:12:31 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 /**
  * Interface on a datatype representation. An instance of this
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * and value forms. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 20:53:00 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-28 11:12:31 $
  */
 public interface RDFDatatype {
 

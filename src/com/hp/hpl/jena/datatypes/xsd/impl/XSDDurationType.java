@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDurationType.java,v 1.3 2003-04-15 21:05:56 jeremy_carroll Exp $
+ * $Id: XSDDurationType.java,v 1.4 2003-05-28 11:13:46 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 /**
  * The XSD duration type, the only job of this extra layer is to
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * since that causes allergic reactions in some we use brute force.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:05:56 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:46 $
  */
 public class XSDDurationType extends XSDDatatype {
     

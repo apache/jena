@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.5 2003-05-21 07:57:22 der Exp $
+ * $Id: Functor.java,v 1.6 2003-05-28 11:13:54 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.datatypes.*;
 import org.apache.log4j.Logger;
@@ -26,7 +27,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-21 07:57:22 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-28 11:13:54 $
  */
 public class Functor {
     /** Functor's name */

@@ -7,6 +7,7 @@ package com.hp.hpl.jena.db;
 
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.*;
@@ -47,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 

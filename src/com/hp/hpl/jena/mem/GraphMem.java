@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.10 2003-05-15 07:58:56 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.11 2003-05-28 11:13:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import java.util.*;

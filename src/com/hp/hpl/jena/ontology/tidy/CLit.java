@@ -2,6 +2,7 @@ package com.hp.hpl.jena.ontology.tidy;
 
 import java.math.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 

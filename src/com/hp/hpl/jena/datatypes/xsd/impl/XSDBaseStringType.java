@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBaseStringType.java,v 1.4 2003-05-19 16:06:00 chris-dollin Exp $
+ * $Id: XSDBaseStringType.java,v 1.5 2003-05-28 11:13:46 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 /**
  * Base implementation for all string datatypes derinved from
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-19 16:06:00 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-28 11:13:46 $
  */
 public class XSDBaseStringType extends XSDDatatype {
 

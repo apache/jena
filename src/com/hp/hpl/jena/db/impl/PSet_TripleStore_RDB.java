@@ -25,7 +25,6 @@ import java.util.zip.CRC32;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.graph.LiteralLabel;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Node_URI;
@@ -33,6 +32,7 @@ import com.hp.hpl.jena.graph.StandardTripleMatch;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.TripleMatchIterator;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.util.Log;
@@ -56,7 +56,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.17 $ on $Date: 2003-05-21 01:00:20 $
+* @version $Revision: 1.18 $ on $Date: 2003-05-28 11:13:48 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {

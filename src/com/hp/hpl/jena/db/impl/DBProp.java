@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.rmi.server.UID;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.DB;
 
@@ -27,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public abstract class DBProp {
 

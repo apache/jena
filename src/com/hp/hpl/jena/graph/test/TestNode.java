@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.14 2003-05-20 07:56:45 chris-dollin Exp $
+  $Id: TestNode.java,v 1.15 2003-05-28 11:13:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
 

@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.3 2003-05-20 11:20:45 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.4 2003-05-28 11:13:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;

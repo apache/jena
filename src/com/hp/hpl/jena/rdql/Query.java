@@ -10,6 +10,7 @@ import java.util.* ;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 
 import com.hp.hpl.jena.rdf.model.* ;
 
@@ -25,7 +26,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.5 2003-03-19 17:16:55 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.6 2003-05-28 11:13:53 chris-dollin Exp $
  */
 
 public class Query

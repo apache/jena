@@ -5,18 +5,18 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDByteType.java,v 1.3 2003-04-15 21:05:10 jeremy_carroll Exp $
+ * $Id: XSDByteType.java,v 1.4 2003-05-28 11:13:46 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 /**
  * Datatype template used to define XSD int types
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:05:10 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:46 $
  */
 public class XSDByteType extends XSDBaseNumericType {
 

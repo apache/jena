@@ -1,12 +1,16 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FragmentMap.java,v 1.1 2003-04-04 13:59:51 chris-dollin Exp $
+  $Id: FragmentMap.java,v 1.1 2003-05-28 11:13:50 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
 
 import java.util.HashMap;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.impl.*;
 
 /**
     a FragmentMap is a Map where the domain elements are Nodes

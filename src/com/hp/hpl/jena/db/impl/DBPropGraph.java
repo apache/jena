@@ -6,6 +6,7 @@
 package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.DB;
 
@@ -26,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {

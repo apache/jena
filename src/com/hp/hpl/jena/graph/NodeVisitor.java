@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NodeVisitor.java,v 1.1 2003-05-19 19:37:35 chris-dollin Exp $
+  $Id: NodeVisitor.java,v 1.2 2003-05-28 11:13:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**

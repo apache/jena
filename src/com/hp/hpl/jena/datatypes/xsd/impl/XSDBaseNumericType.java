@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.6 2003-05-19 16:06:00 chris-dollin Exp $
+ * $Id: XSDBaseNumericType.java,v 1.7 2003-05-28 11:13:46 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -14,7 +14,7 @@ import java.math.BigInteger;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 /**
  * Base implementation for all numeric datatypes derinved from
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-19 16:06:00 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-28 11:13:46 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 

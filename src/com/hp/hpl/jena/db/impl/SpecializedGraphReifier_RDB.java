@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.MapFiller;
 import com.hp.hpl.jena.util.iterator.MapMany;

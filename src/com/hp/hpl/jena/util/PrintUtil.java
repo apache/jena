@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PrintUtil.java,v 1.1 2003-04-17 15:35:19 der Exp $
+ * $Id: PrintUtil.java,v 1.2 2003-05-28 11:13:55 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.TriplePattern;
@@ -24,7 +25,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:35:19 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-28 11:13:55 $
  */
 public class PrintUtil {
 

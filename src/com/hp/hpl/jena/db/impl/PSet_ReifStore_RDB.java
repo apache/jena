@@ -9,10 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.LiteralLabel;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.Map1;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.3 $ on $Date: 2003-05-08 05:52:29 $
+* @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:48 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {

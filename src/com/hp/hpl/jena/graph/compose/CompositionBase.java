@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-04 17:54:58 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-28 11:13:49 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.graph.compose;
 // Imports
 ///////////////
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -39,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.1 2003-03-04 17:54:58 ian_dickinson Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.2 2003-05-28 11:13:49 chris-dollin Exp $
  */
 public abstract class CompositionBase
     extends GraphBase

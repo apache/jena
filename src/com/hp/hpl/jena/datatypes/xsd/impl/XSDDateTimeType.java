@@ -5,20 +5,20 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTimeType.java,v 1.3 2003-04-15 21:05:34 jeremy_carroll Exp $
+ * $Id: XSDDateTimeType.java,v 1.4 2003-05-28 11:13:46 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 /**
  * The XSD date/time type, the only job of this extra layer is to
  * wrap the return value in a more convenient accessor type. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:05:34 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:46 $
  */
 public class XSDDateTimeType extends XSDDatatype {
 

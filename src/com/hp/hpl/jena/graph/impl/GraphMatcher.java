@@ -7,9 +7,10 @@
  */
  
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
 import java.util.*;
 
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 
@@ -26,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-08 22:11:59 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2003-05-28 11:13:50 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -931,5 +932,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.2 2003-04-08 22:11:59 ian_dickinson Exp $
+ * $Id: GraphMatcher.java,v 1.1 2003-05-28 11:13:50 chris-dollin Exp $
  */

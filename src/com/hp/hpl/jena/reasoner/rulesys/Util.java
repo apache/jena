@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.3 2003-05-08 15:08:53 der Exp $
+ * $Id: Util.java,v 1.4 2003-05-28 11:13:54 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.IllegalParameterException;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -21,7 +22,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-08 15:08:53 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:54 $
  */
 public class Util {
 

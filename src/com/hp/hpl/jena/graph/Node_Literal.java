@@ -1,10 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Literal.java,v 1.3 2003-05-19 19:37:35 chris-dollin Exp $
+  $Id: Node_Literal.java,v 1.4 2003-05-28 11:13:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
+
+import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.graph.impl.*;
 
 /**
 	@author kers

@@ -8,6 +8,7 @@ package com.hp.hpl.jena.db.impl;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -25,7 +26,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DBReifierGraph implements Graph {
 

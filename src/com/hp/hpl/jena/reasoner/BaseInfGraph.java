@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.11 2003-05-12 19:41:16 der Exp $
+ * $Id: BaseInfGraph.java,v 1.12 2003-05-28 11:13:54 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.Iterator;
 
@@ -17,7 +18,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-05-12 19:41:16 $
+ * @version $Revision: 1.12 $ on $Date: 2003-05-28 11:13:54 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 

@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.10 2003-05-20 05:29:54 chris-dollin Exp $
+  $Id: Node.java,v 1.11 2003-05-28 11:13:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
 
 import org.apache.log4j.*;

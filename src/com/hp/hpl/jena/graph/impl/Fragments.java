@@ -1,12 +1,17 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fragments.java,v 1.3 2003-04-04 15:10:10 chris-dollin Exp $
+  $Id: Fragments.java,v 1.1 2003-05-28 11:13:50 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
 
 import java.util.*;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Reifier;
+import com.hp.hpl.jena.graph.Triple;
 
 /**
     A _Fragments_ object represents the reification triples that have been

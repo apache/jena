@@ -33,6 +33,7 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 
 import com.hp.hpl.jena.util.iterator.*;
@@ -53,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.38 $' Date='$Date: 2003-05-23 15:03:00 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.39 $' Date='$Date: 2003-05-28 11:13:53 $'
  */
 
 public class ModelCom 

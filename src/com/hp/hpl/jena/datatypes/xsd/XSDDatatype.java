@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.3 2003-04-15 21:02:07 jeremy_carroll Exp $
+ * $Id: XSDDatatype.java,v 1.4 2003-05-28 11:13:45 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes.xsd;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDGenericType;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDIntType;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDLongType;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDShortType;
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.impl.dv.*;
@@ -46,7 +46,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:02:07 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:45 $
  */
 public class XSDDatatype extends BaseDatatype {
 
