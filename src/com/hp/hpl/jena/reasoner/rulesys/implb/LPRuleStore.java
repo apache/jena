@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.2 2003-07-20 19:06:07 der Exp $
+ * $Id: LPRuleStore.java,v 1.3 2003-07-21 16:22:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-20 19:06:07 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-21 16:22:47 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -70,6 +70,8 @@ public class LPRuleStore extends RuleStore {
      * add better indexing for the particular cases of wildcard rules and type rules. 
      */
     protected void compileAll() {
+        isCompiled = true;
+        
         // TODO: add support for wildcard rules
         predicateToCodeMap = new HashMap();
         allRuleClauseCodes = new ArrayList();
@@ -100,7 +102,6 @@ public class LPRuleStore extends RuleStore {
             RuleClauseCode code = (RuleClauseCode)i.next();
             code.compile(this);
         }
-        isCompiled = true;
     }
     
     /**
