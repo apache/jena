@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.5 2005-02-21 12:18:56 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.6 2005-03-08 13:12:47 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -81,7 +81,7 @@ public class LocationMapper
         // Make a file manager to look for the location mapping file
         FileManager fm = new FileManager() ;
         fm.addLocatorFile() ;
-        fm.addLocatorSystemClassLoader() ;
+        fm.addLocatorClassLoader(fm.getClass().getClassLoader()) ;
         
         try {
             String uriConfig = null ; 

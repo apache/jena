@@ -17,7 +17,7 @@ import org.apache.commons.logging.*;
 /** com.hp.hpl.jena.brql.util.test.TestFileManager
  * 
  * @author Andy Seaborne
- * @version $Id: TestFileManager.java,v 1.3 2005-02-21 12:19:21 andy_seaborne Exp $
+ * @version $Id: TestFileManager.java,v 1.4 2005-03-08 13:12:47 andy_seaborne Exp $
  */
 
 public class TestFileManager extends TestCase
@@ -69,7 +69,7 @@ public class TestFileManager extends TestCase
     public void testFileManagerLocatorClassLoader()
     {
         FileManager fileManager = new FileManager() ;
-        fileManager.addLocatorSystemClassLoader() ;
+        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
         InputStream in = fileManager.open("java/lang/String.class") ;
         assertNotNull(in) ;
         closeInputStream(in) ;
@@ -78,7 +78,7 @@ public class TestFileManager extends TestCase
     public void testFileManagerLocatorClassLoaderNotFound()
     {
         FileManager fileManager = new FileManager() ;
-        fileManager.addLocatorSystemClassLoader() ;
+        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
         InputStream in = fileManager.open("not/java/lang/String.class") ;
         assertNull(in) ;
         closeInputStream(in) ;
@@ -127,7 +127,7 @@ public class TestFileManager extends TestCase
     {
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
         FileManager fileManager = new FileManager(locMap) ;
-        fileManager.addLocatorSystemClassLoader() ;
+        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
         InputStream in = fileManager.open("http://example.org/file") ;
         assertNull(in) ;
         closeInputStream(in) ;

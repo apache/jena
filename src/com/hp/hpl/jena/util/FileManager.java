@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.17 2005-02-21 12:18:54 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.18 2005-03-08 13:12:47 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -79,7 +79,7 @@ public class FileManager
         FileManager fMgr = new FileManager(LocationMapper.get()) ;
         fMgr.addLocatorFile() ;
         fMgr.addLocatorURL() ;
-        fMgr.addLocatorSystemClassLoader() ;
+        fMgr.addLocatorClassLoader(fMgr.getClass().getClassLoader()) ;
         return fMgr ;
     }
     
@@ -113,12 +113,6 @@ public class FileManager
     {
         LocatorFile fLoc = new LocatorFile(dir) ;
         addLocator(fLoc) ;
-    }
-    
-    /** Add the system class loader */ 
-    public void addLocatorSystemClassLoader()
-    {
-        addLocatorClassLoader(ClassLoader.getSystemClassLoader()) ;
     }
     
     /** Add a class loader locator */ 
