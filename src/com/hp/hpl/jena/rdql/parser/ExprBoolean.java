@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -12,7 +12,7 @@ public interface ExprBoolean extends Expr
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

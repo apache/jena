@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.3 2003-01-28 18:24:52 andy_seaborne Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.4 2003-02-20 16:48:56 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
@@ -31,7 +31,7 @@ public class N3InternalTests extends TestSuite
 		// URIs, qnames, statements, prefixes
 		addTest(new Test("a:subj a:prop a:d .")) ;
 		addTest(new Test("a: _: 1:.")) ;
-		addTest(new Test("_:a :1 :_1.")) ;	
+		addTest(new Test("_:a :1 :_1 .")) ;	
 		addTest(new Test("rdf: rdf:type :_.")) ;	
 		addTest(new Test("@prefix start: <somewhere>.")) ;
 		addTest(new Test("<http://here/subj> <http://here/prep> <http://here/obj>.")) ;		
@@ -154,9 +154,9 @@ public class N3InternalTests extends TestSuite
 		// Named things
 		addTest(new Test("_:anon :- [a:p a:v] .")) ;
 		addTest(new Test("<uri> :- [a:p [ a:p a:v] ] .")) ;		
-		// Named list: Not supported by cwm (as of 2002/09) but needed for printing shared 
+		// Named list: Not supported by cwm (as of 2001-2003/09) but needed for printing shared 
 		addTest(new Test("_:anon :- (\"1\") .")) ;
-		// Named formulae: Not supported by cwm (as of 2002/09)
+		// Named formulae: Not supported by cwm (as of 2001-2003/09)
 		addTest(new Test("_:anon :- { ?a ?b ?c } .")) ;
         
         // Datatypes
@@ -219,7 +219,7 @@ public class N3InternalTests extends TestSuite
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.4 2003-02-20 16:21:59 andy_seaborne Exp $
+ * @version  $Id: TriplePattern.java,v 1.5 2003-02-20 16:45:51 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -604,7 +604,7 @@ public class TriplePattern
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

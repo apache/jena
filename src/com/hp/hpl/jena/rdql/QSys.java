@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.util.Log ;
 /** Class to define the operating environment for RDQL.
  *  Provides some utility operations like assert and handling unexpected exceptions
  * @author		Andy Seaborne
- * @version 	$Id: QSys.java,v 1.1.1.1 2002-12-19 19:18:43 bwm Exp $
+ * @version 	$Id: QSys.java,v 1.2 2003-02-20 16:45:47 andy_seaborne Exp $
  */
 
 public class QSys
@@ -33,7 +33,7 @@ public class QSys
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

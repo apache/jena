@@ -1,7 +1,7 @@
 //-*- mode: antlr -*-
 
 /* This is part of the Jena RDF Framework.
- * (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file for details]
  */
 
@@ -539,8 +539,9 @@ NSNAME: (ALPHANUMERIC|'_'|'-')+ ;
 protected
 // Not '-' because it confuses with the name operator :-
 // Also, N3 does not allow '.' in the localname part of a qname (although
-// that is XML-legal) because N3 uses . as the end of statement separator.
-// See N3JenaWriter which avoids outputing qnames with a '.' in them.
+// that is XML-legal) because N3 uses . as the end of statement separator
+// or as a path separator.
+// See N3JenaWriter, which avoids outputing qnames with a '.' in them.
 LNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
 
 
@@ -595,7 +596,7 @@ ESC_CHAR:
 		; 
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002, 2003
+ *  (c) Copyright Hewlett-Packard Company 2002-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

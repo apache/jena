@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.rdql.* ;
  *  adding new script files.  This class need not change.
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.4 2003-02-20 16:22:43 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.5 2003-02-20 16:46:31 andy_seaborne Exp $
  */
 
 
@@ -372,7 +372,7 @@ public class QueryTestScripts extends TestSuite
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001, 2002
+ *  (c) Copyright Hewlett-Packard Company 2001-2003, 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

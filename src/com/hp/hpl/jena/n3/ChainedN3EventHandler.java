@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -9,7 +9,7 @@ import antlr.collections.AST ;
 
 /** Support for chaining handlers.  Sends the operations to a chained handler.
  * @author		Andy Seaborne
- * @version 	$Id: ChainedN3EventHandler.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
+ * @version 	$Id: ChainedN3EventHandler.java,v 1.3 2003-02-20 16:48:25 andy_seaborne Exp $
  */
 
 public class ChainedN3EventHandler implements N3ParserEventHandler
@@ -56,7 +56,7 @@ public class ChainedN3EventHandler implements N3ParserEventHandler
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

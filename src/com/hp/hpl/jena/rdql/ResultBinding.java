@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.2 2003-02-20 16:21:59 andy_seaborne Exp $
+ * @version  $Id: ResultBinding.java,v 1.3 2003-02-20 16:45:50 andy_seaborne Exp $
  */
 
 

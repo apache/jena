@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -27,7 +27,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.4 2003-02-11 15:17:15 chris-dollin Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.5 2003-02-20 16:48:29 andy_seaborne Exp $
  */
 
 
@@ -853,7 +853,7 @@ public class N3JenaWriter implements RDFWriter
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

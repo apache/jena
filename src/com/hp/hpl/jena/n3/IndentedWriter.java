@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import java.io.* ;
  *  Does not cope with tabs or newlines in output strings.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: IndentedWriter.java,v 1.1.1.1 2002-12-19 19:14:20 bwm Exp $
+ * @version 	$Id: IndentedWriter.java,v 1.2 2003-02-20 16:48:25 andy_seaborne Exp $
  */
 
 // Not robust/complete enough for public use
@@ -80,7 +80,7 @@ import java.io.* ;
 
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

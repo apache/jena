@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.tuple.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.4 2003-01-29 10:24:20 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.5 2003-02-20 16:48:56 andy_seaborne Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
@@ -99,7 +99,7 @@ public abstract class N3ExternalTestsCom extends TestSuite
 
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

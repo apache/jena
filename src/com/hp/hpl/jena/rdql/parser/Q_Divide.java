@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 
 /** 
  * @author: Automatically generated class: Operator: Divide
- * @version: $Id: Q_Divide.java,v 1.1.1.1 2002-12-19 19:19:14 bwm Exp $
+ * @version: $Id: Q_Divide.java,v 1.2 2003-02-20 16:46:26 andy_seaborne Exp $
  */
 
 class Q_Divide extends SimpleNode implements Expr, ExprNumeric
@@ -96,7 +96,7 @@ class Q_Divide extends SimpleNode implements Expr, ExprNumeric
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001, 2002
+ *  (c) Copyright Hewlett-Packard Company 2001-2003, 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

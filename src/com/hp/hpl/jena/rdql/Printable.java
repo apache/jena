@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
  */
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: Printable.java,v 1.1.1.1 2002-12-19 19:18:43 bwm Exp $
+ * @version 	$Id: Printable.java,v 1.2 2003-02-20 16:45:47 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -24,7 +24,7 @@ public interface Printable
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
