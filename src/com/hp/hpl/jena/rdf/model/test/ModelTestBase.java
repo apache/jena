@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.31 2005-02-21 12:14:59 andy_seaborne Exp $
+  $Id: ModelTestBase.java,v 1.32 2005-02-28 09:54:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -27,9 +27,11 @@ public class ModelTestBase extends GraphTestBase
     public ModelTestBase(String name)
         { super(name); }
      
-    private static Model aModel = extendedModel();
+    protected static Model aModel = extendedModel();
     
-    private static Model extendedModel()
+    protected static final Model empty = ModelFactory.createDefaultModel();
+    
+    protected static Model extendedModel()
         {
         Model result = ModelFactory.createDefaultModel();
         result.setNsPrefixes( PrefixMapping.Extended );
