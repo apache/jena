@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Triple.java,v 1.3 2003-05-19 10:26:56 chris-dollin Exp $
+  $Id: Triple.java,v 1.4 2003-06-10 08:08:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -68,6 +68,12 @@ final public class Triple {
     */    
     private boolean sameAs( Node s, Node p, Node o )
         { return subj.equals( s ) && pred.equals( p ) && obj.equals( o ); }
+        
+    public boolean matches( Triple other )
+        { return other.matchedBy( subj, pred, obj  ); }
+        
+    private boolean matchedBy( Node s, Node p, Node o )
+        { return s.matches( subj ) && p.matches( pred ) && o.matches( obj ); }
         
     /**
         The hash-code of a triple is the hash-codes of its components munged

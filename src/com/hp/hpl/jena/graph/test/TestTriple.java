@@ -1,25 +1,22 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.6 2003-05-28 11:13:51 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.7 2003-06-10 08:09:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 /**
-	@author bwm out of kers
+	@author bwm out of kers, then kers updates
 */
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
-
-public class TestTriple extends TestCase
+public class TestTriple extends GraphTestBase
     {    
         
     public TestTriple(String name)
@@ -27,12 +24,6 @@ public class TestTriple extends TestCase
     
     public static TestSuite suite()
         { return new TestSuite( TestTriple.class ); }   
-            
-    public void assertFalse( String name, boolean b )
-        { assertTrue( name, !b ); }
-    
-    private void assertDiffer( String title, Object x, Object y )
-        { assertFalse( title, x.equals( y ) ); }
                 
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
@@ -135,6 +126,47 @@ public class TestTriple extends TestCase
         Node S = Node.create( "a" ), P = Node.create( "_P" ), O = Node.create( "?c" );
         assertEquals( new Triple( S, P, O ), Triple.create( "a _P ?c") );
         }
+        
+    public void testPlainTripleMatches()
+        {
+        testMatches( "S P O" );
+        testMatches( "_S _P _O" );
+        testMatches( "1 2 3" );
+        }
+        
+    public void testAnyTripleMatches()
+        {
+        testMatches( "?? P O", "Z P O" );
+        testMatches( "S ?? O", "S Q O" );
+        testMatches( "S P ??", "S P oh" );
+        testMatches( "?? ?? ??", "X Y Z" );
+        testMatches( "?? ?? ??", "X Y 1" );
+        testMatches( "?? ?? ??", "_X Y Z" );
+        testMatches( "?? ?? ??", "X _Y Z" );
+        }
+        
+    private void testMatches( String triple )
+        { testMatches( triple, triple ); }
+        
+    private void testMatches( String pattern, String triple )
+        { assertTrue( Triple.create( pattern ).matches( Triple.create( triple ) ) ); }
+        
+    public void testPlainTripleDoesntMatch()
+        {
+        testMatchFails( "S P O", "Z P O" );
+        testMatchFails( "S P O", "S Q O" );
+        testMatchFails( "S P O", "S P oh" );
+        }
+        
+    public void testAnyTripleDoesntMatch()
+        {
+        testMatchFails( "?? P O", "S P oh" );
+        testMatchFails( "S ?? O", "Z R O" );
+        testMatchFails( "S P ??", "Z P oh" );
+        }
+        
+    public void testMatchFails( String pattern, String triple )
+        { assertFalse( Triple.create( pattern ).matches( Triple.create( triple ) ) ); }
 }
 /*
     (c) Copyright Hewlett-Packard Company 2002
