@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.16 2003-06-26 10:54:19 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.17 2003-07-15 16:08:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-06-26 10:54:19 $
+ * @version $Revision: 1.17 $ on $Date: 2003-07-15 16:08:34 $
  */
 public class ReasonerRegistry {
 
@@ -107,8 +107,8 @@ public class ReasonerRegistry {
     
     /**
      * Return information on a given Reasoner.
-     * @param the URI of the reasoner
-     * @param a Resource representing the reasoner whose properties (as obtainable
+     * @param uri the URI of the reasoner
+     * @return a Resource representing the reasoner whose properties (as obtainable
      * through listProperties etc) give a capability description of the reasoner; 
      * returns null if no such reasoner is registered.
      */
@@ -123,7 +123,7 @@ public class ReasonerRegistry {
     
     /**
      * Return the factory for the given reasoner.
-     * @param the URI of the reasoner
+     * @param uri the URI of the reasoner
      * @return the ReasonerFactory instance for this reasoner
      */
     public ReasonerFactory getFactory(String uri) {
@@ -159,7 +159,7 @@ public class ReasonerRegistry {
      * because that would be violating the web principles of namespace ownership.
      * On the other hand, this solution results in staggeringly clumsy names.</p>
      * 
-     * @param property the transitive property
+     * @param node the node representing the transitive property
      */
     public static Node makeDirect(Node node) {
         String directName = "urn:x-hp-direct-predicate:" + node.getURI().replace(':','_') ;
