@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCompareToMem.java,v 1.3 2003-05-05 21:13:00 csayers Exp $
+  $Id: TestCompareToMem.java,v 1.4 2003-05-06 17:31:07 csayers Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -146,8 +146,6 @@ public class TestCompareToMem extends TestCase
     	addRemove( modelrdf.createStatement(s,p,l));    	
     } 
     
-    // TODO add this back once datatype support added
-    /**
     public void testAddRemoveDatatype() {
     	Resource s = modelrdf.createResource("test#subject");
     	Property p = modelrdf.createProperty("test#predicate");
@@ -167,7 +165,6 @@ public class TestCompareToMem extends TestCase
     	
 		addRemove( modelrdf.createStatement(s,p,l2));    	
 	} 
-	**/
     
 	public void testAddRemoveHugeLiteral2() {
 		String base = "This is a huge string that repeats.";
