@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Fragments.java,v 1.9 2004-09-14 17:46:10 chris-dollin Exp $
+  $Id: Fragments.java,v 1.10 2004-09-15 14:03:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -29,6 +29,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class Fragments
     { 
+    
+    static class Slot { int which; Slot( int n ) { which = n; } }
+    
     /**
         a Fragments object is represented by four sets, one for each of the reification
         predicates. The slots are array elements because, sadly, it's easier to dynamically
@@ -74,14 +77,14 @@ public class Fragments
     /**
         remove the node n from the set specified by slot which.
     */
-    public void remove( int which, Node n )
-        { slots[which].remove( n ); }
+    public void remove( Slot w, Node n )
+        { slots[w.which].remove( n ); }
         
     /**
         add the node n to the slot identified by which).
    */
-    public void add( int which, Node n )
-        { slots[which].add( n ); }
+    public void add( Slot w, Node n )
+        { slots[w.which].add( n ); }
         
     /**
         include into g all of the reification components that this Fragments
@@ -100,9 +103,9 @@ public class Fragments
         o is an element of the slot <code>which</code> corresponding to
         predicate.
     */
-    private void includeInto( GraphAdd g, Node predicate, int which )
+    private void includeInto( GraphAdd g, Node predicate, Slot w )
         {
-        Iterator it = slots[which].iterator();
+        Iterator it = slots[w.which].iterator();
         while (it.hasNext())
             g.add( Triple.create( anchor, predicate, (Node) it.next() ) );
         }
@@ -115,10 +118,10 @@ public class Fragments
     */
     public Fragments addTriple( Triple t )
         {
-        slots[SUBJECTS].add( t.getSubject() );
-        slots[PREDICATES].add( t.getPredicate() );
-        slots[OBJECTS].add( t.getObject() );
-        slots[TYPES].add( RDF.Nodes.Statement );
+        slots[SUBJECTS.which].add( t.getSubject() );
+        slots[PREDICATES.which].add( t.getPredicate() );
+        slots[OBJECTS.which].add( t.getObject() );
+        slots[TYPES.which].add( RDF.Nodes.Statement );
         return this;
         }
         
@@ -129,7 +132,7 @@ public class Fragments
         isComplete() is true.    
     */        
     Triple asTriple()
-        { return Triple.create( only( slots[SUBJECTS] ), only( slots[PREDICATES] ), only( slots[OBJECTS] ) ); }
+        { return Triple.create( only( slots[SUBJECTS.which] ), only( slots[PREDICATES.which] ), only( slots[OBJECTS.which] ) ); }
                
     /**
         precondition: s.size() == 1
@@ -143,28 +146,28 @@ public class Fragments
         return a readable representation of this Fragment for debugging purposes.
     */
     public String toString()
-        { return anchor + " s:" + slots[SUBJECTS] + " p:" + slots[PREDICATES] + " o:" + slots[OBJECTS] + " t:" + slots[TYPES]; }
+        { return anchor + " s:" + slots[SUBJECTS.which] + " p:" + slots[PREDICATES.which] + " o:" + slots[OBJECTS.which] + " t:" + slots[TYPES.which]; }
        
     /**
         given a triple t, see if it's a reification triple and if so return the internal seelctor;
         oterwise return -1.
     */ 
-    public static int getFragmentSelector( Triple t )
+    public static Slot getFragmentSelector( Triple t )
         {
         Node p = t.getPredicate();
-        Integer x = (Integer) selectors.get( p );
-        if (x == null || (p.equals( RDF.Nodes.type ) && !t.getObject().equals( RDF.Nodes.Statement ) ) ) return -1;
-        return x.intValue();
+        Slot x = (Slot) selectors.get( p );
+        if (x == null || (p.equals( RDF.Nodes.type ) && !t.getObject().equals( RDF.Nodes.Statement ) ) ) return null;
+        return x;
         }
         
     /*
         the magic numbers for the slots. The order doesn't matter, but that they're
         some permutation of {0, 1, 2, 3} does. 
     */
-    private static final int TYPES = 0;
-    private static final int SUBJECTS = 1;
-    private static final int PREDICATES = 2;
-    private static final int OBJECTS = 3;
+    private static final Slot TYPES = new Slot(0);
+    private static final Slot SUBJECTS = new Slot(1);
+    private static final Slot PREDICATES = new Slot(2);
+    private static final Slot OBJECTS = new Slot(3);
 
     private static final Map selectors = makeSelectors();
           
@@ -174,10 +177,10 @@ public class Fragments
     private static Map makeSelectors()
         {
         Map result = HashUtils.createMap();
-        result.put( RDF.Nodes.subject, new Integer( Fragments.SUBJECTS ) );
-        result.put( RDF.Nodes.predicate, new Integer( Fragments.PREDICATES ) );
-        result.put( RDF.Nodes.object, new Integer( Fragments.OBJECTS ) );
-        result.put( RDF.Nodes.type, new Integer( Fragments.TYPES ) );
+        result.put( RDF.Nodes.subject, SUBJECTS );
+        result.put( RDF.Nodes.predicate, PREDICATES );
+        result.put( RDF.Nodes.object, OBJECTS );
+        result.put( RDF.Nodes.type, TYPES );
         return result;
         }
     }

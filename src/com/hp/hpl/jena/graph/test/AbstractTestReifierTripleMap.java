@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifierTripleMap.java,v 1.1 2004-09-14 12:41:30 chris-dollin Exp $
+  $Id: AbstractTestReifierTripleMap.java,v 1.2 2004-09-15 14:04:18 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -27,6 +27,7 @@ public abstract class AbstractTestReifierTripleMap extends GraphTestBase
     
     protected static final Node nodeA = node( "a" );
     protected static final Node nodeB = node( "b" );
+    protected static final Node nodeC = node( "c" );
     
     public void testEmptyMap()
         { 
@@ -67,32 +68,76 @@ public abstract class AbstractTestReifierTripleMap extends GraphTestBase
     
     public void testPutTriples_hasTriple()
         {
-        putTwoTriples();
+        put_xRy_and_aRb();
         assertEquals( true, tripleMap.hasTriple( triple_xRy ) );
         assertEquals( true, tripleMap.hasTriple( triple_aRb ) );
         }
     
     public void testPutTriples_getTriple()
         {
-        putTwoTriples();
+        put_xRy_and_aRb();
         assertEquals( triple_xRy, tripleMap.getTriple( nodeA ) );
         assertEquals( triple_aRb, tripleMap.getTriple( nodeB ) );
         }
     
     public void testPutTriples_tagIterator()
         {
-        putTwoTriples();
+        put_xRy_and_aRb();
         assertEquals( nodeSet( "a b" ), iteratorToSet( tripleMap.tagIterator() ) );
         }
     
-    protected void putTwoTriples()
+    public void testPutTriples_tagIteratorT()
+        {
+        put_xRy_and_aRb();
+        assertEquals( nodeSet( "a" ), iteratorToSet( tripleMap.tagIterator( triple_xRy ) ) );
+        assertEquals( nodeSet( "b" ), iteratorToSet( tripleMap.tagIterator( triple_aRb ) ) );
+        }
+    
+    public void testMultipleTagging()
+        {
+        tripleMap.putTriple( nodeA, triple_xRy );
+        tripleMap.putTriple( nodeB, triple_xRy );
+        assertEquals( nodeSet( "a b" ), iteratorToSet( tripleMap.tagIterator( triple_xRy ) ) );
+        }
+    
+    public void testRemoveTriplesByTag()
+        {
+        put_xRy_and_aRb();
+        tripleMap.removeTriple( nodeA );
+        assertEquals( nodeSet( "b" ), iteratorToSet( tripleMap.tagIterator() ) );
+        assertEquals( nodeSet( "b" ), iteratorToSet( tripleMap.tagIterator( triple_aRb ) ) );
+        assertEquals( nodeSet( "" ), iteratorToSet( tripleMap.tagIterator( triple_xRy ) ) );
+        }
+    
+    public void testRemoveTaggedTriple()
+        {
+        put_xRy_and_aRb();
+        tripleMap.removeTriple( nodeA, triple_xRy );
+        assertEquals( null, tripleMap.getTriple( nodeA ) );
+        assertEquals( triple_aRb, tripleMap.getTriple( nodeB ) );
+        assertEquals( nodeSet( "b" ), iteratorToSet( tripleMap.tagIterator( triple_aRb ) ) );
+        assertEquals( nodeSet( "" ), iteratorToSet( tripleMap.tagIterator( triple_xRy ) ) );
+        }
+    
+    public void testRemoveTripleDirectly()
+        {
+        put_xRy_and_aRb();
+        tripleMap.putTriple( nodeC, triple_xRy );
+        tripleMap.removeTriple( triple_xRy );
+        assertEquals( null, tripleMap.getTriple( nodeA ) );
+        assertEquals( null, tripleMap.getTriple( nodeC ) );
+        assertEquals( triple_aRb, tripleMap.getTriple( nodeB ) );
+        assertEquals( nodeSet( "b" ), iteratorToSet( tripleMap.tagIterator( triple_aRb ) ) );
+        assertEquals( nodeSet( "" ), iteratorToSet( tripleMap.tagIterator( triple_xRy ) ) );
+        }
+    
+    protected void put_xRy_and_aRb()
         {
         tripleMap.putTriple( nodeA, triple_xRy );
         tripleMap.putTriple( nodeB, triple_aRb );
         }
 
     }
-
 
 /*
     (c) Copyright 2004, Hewlett-Packard Development Company, LP

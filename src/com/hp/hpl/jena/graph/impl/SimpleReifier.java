@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.28 2004-09-07 07:36:06 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.29 2004-09-15 14:03:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -16,10 +16,7 @@ package com.hp.hpl.jena.graph.impl;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.DisjointUnion;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
-
-import java.util.*;
 
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -78,28 +75,7 @@ public class SimpleReifier implements Reifier
         
     public ExtendedIterator allNodes( Triple t )
         { return tripleMap.tagIterator( t ); }
-        
-    /**
-        Answer a filter that only accepts nodes that are bound to the given triple.
-        @param t the triple that the node must be bound to
-        @return a filter that accepts only those nodes
-    */        
-    public Filter matching( final Triple t )
-        {
-        return new Filter()
-            {
-            public boolean accept( Object o ) { return t.equals( getTriple( (Node) o ) ); }
-            };
-        }
-                
-    private Filter completeFragment = new Filter()
-        { public boolean accept( Object x ) { return isComplete( (Node) x ); } };
-        
-    protected boolean isComplete( Node n )
-        {
-        return tripleMap.getTriple( n ) != null;
-        }
-        
+
     /** 
         reifiy a triple _t_ with tag _tag_. If a different triple is already
         reified under _tag_, throw an AlreadyReifiedException.
@@ -133,7 +109,10 @@ public class SimpleReifier implements Reifier
             { tripleMap.removeTriple( n, t ); 
             if (!concealing) parentRemoveQuad( n, t ); }
         }
-        
+
+    public void remove( Triple t )
+        { tripleMap.removeTriple( t ); }
+            
     public boolean hasTriple( Triple t )
         { return tripleMap.hasTriple( t ); }
           
@@ -141,8 +120,8 @@ public class SimpleReifier implements Reifier
         {
         if (intercepting)
             {
-            int s = Fragments.getFragmentSelector( t );  
-            if (s < 0)
+            Fragments.Slot s = Fragments.getFragmentSelector( t );  
+            if (s == null)
                 return false;
             else     
                 {
@@ -164,8 +143,8 @@ public class SimpleReifier implements Reifier
         {
         if (intercepting)
             {
-            int s = Fragments.getFragmentSelector( t );  
-            if (s < 0)
+            Fragments.Slot s = Fragments.getFragmentSelector( t );  
+            if (s == null)
                 return false;
             else     
                 {
@@ -202,20 +181,6 @@ public class SimpleReifier implements Reifier
     private Fragments explode( Node s, Triple t )
         { return nodeMap.putFragments( s, new Fragments( s, t ) ); }
 
-    public void remove( Triple t )
-        {     
-        // horrid code. we don't likes it, my precious.
-        Set nodes = HashUtils.createSet();
-        Iterator it = allNodes();
-        while (it.hasNext())
-            {
-            Node n = (Node) it.next();
-            if (t.equals( getTriple( n ))) nodes.add( n );
-            }
-        Iterator them = nodes.iterator();
-        while (them.hasNext()) remove( (Node) them.next(), t );
-        }
-            
     public Graph getHiddenTriples()
         { return style == ReificationStyle.Standard ? Graph.emptyGraph : getReificationTriples(); }
     

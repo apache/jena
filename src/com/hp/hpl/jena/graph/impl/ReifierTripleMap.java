@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierTripleMap.java,v 1.1 2004-09-06 14:30:14 chris-dollin Exp $
+ $Id: ReifierTripleMap.java,v 1.2 2004-09-15 14:03:35 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -46,6 +46,11 @@ public interface ReifierTripleMap
     */
     public abstract void removeTriple( Node key, Triple value );
 
+    /**
+         Remove every binding tag -> <code>triple</code>.
+    */
+    public abstract void removeTriple( Triple triple );
+    
     /**
          Return the node-to-triple map as a read-only Graph of triples (ie as the
          corresponding reification quadlets). 

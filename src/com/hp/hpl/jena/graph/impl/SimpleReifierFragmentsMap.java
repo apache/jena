@@ -1,20 +1,16 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.3 2004-09-06 15:19:26 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.4 2004-09-15 14:03:35 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
 import java.util.Iterator;
 import java.util.Map;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.HashUtils;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     SimpleReifierFragmentsMap - a map from nodes to the incompleteb(or 
@@ -30,9 +26,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         { return (Fragments) forwardMap.get( tag ); }
     
     public void removeFragments( Node key )
-        {
-        forwardMap.remove( key );
-        }
+        { forwardMap.remove( key ); }
     
     /**
     update the map with (node -> fragment); return the fragment.
@@ -49,10 +43,10 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         Node subject = t.getSubject();
         if (subject.isConcrete())
             {
-            Object x = forwardMap.get( subject );  
+            Fragments x = (Fragments) forwardMap.get( subject );  
             return x == null
-                ? new NiceIterator()
-                : FragmentTripleIterator.toIterator( t, subject, x )
+                ? NullIterator.instance
+                : explodeFragments( t, subject, x )
                 ; 
             }
         else
@@ -62,6 +56,19 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
             }
         }
     
+    /**
+     * @param t
+     * @param subject
+     * @param x
+     * @return
+     */
+    protected ExtendedIterator explodeFragments( Triple t, Node subject, Fragments x )
+        {
+        GraphAddList L = new GraphAddList( t );
+        x.includeInto( L );
+        return WrappedIterator.create( L.iterator() );
+        }
+
     /**
         Return the fragment map as a read-only Graph of triples. We rely on the
         default code in GraphBase which allows us to only implement find(TripleMatch)

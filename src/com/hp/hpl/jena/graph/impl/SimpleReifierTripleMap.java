@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierTripleMap.java,v 1.2 2004-09-06 14:30:27 chris-dollin Exp $
+  $Id: SimpleReifierTripleMap.java,v 1.3 2004-09-15 14:03:35 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -52,6 +52,15 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
         inverseRemove( value, key );
         }
     
+    public void removeTriple( Triple t )
+        {
+        ExtendedIterator it = tagIterator( t );
+        Set nodes = HashUtils.createSet();
+        while (it.hasNext()) nodes.add( it.next() );
+        Iterator them = nodes.iterator();
+        while (them.hasNext()) removeTriple( (Node) them.next() );
+        }
+    
     protected void inverseRemove( Triple value, Node key )
         {
         Set s = (Set) inverseMap.get( value );
@@ -72,31 +81,38 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     public ExtendedIterator tagIterator( Triple t )
         { 
         Set s = (Set) inverseMap.get( t );
-        if (s == null)
-            return NullIterator.instance;
-        else
-            return WrappedIterator.create( s.iterator() );
+        return s == null
+            ? (ExtendedIterator) NullIterator.instance
+            : WrappedIterator.create( s.iterator() );
         }
 
     protected ExtendedIterator allTriples( TripleMatch tm )
         {
-        Triple t = tm.asTriple();
-        Node subject = t.getSubject();
-        if (subject.isConcrete())
+        Triple pattern = tm.asTriple();
+        Node tag = pattern.getSubject();
+        if (tag.isConcrete())
             {
-            Object x = forwardMap.get( subject );  
-            return x == null
-                ? new NiceIterator()
-                : FragmentTripleIterator.toIterator( t, subject, x )
-                ; 
+            Triple x = getTriple( tag );  
+            return x == null ? NullIterator.instance : explodeTriple( pattern, tag, x ); 
             }
         else
             {
             final Iterator it = forwardMap.entrySet().iterator();   
-            return new FragmentTripleIterator( t, it );
+            return new FragmentTripleIterator( pattern, it );
             }
         }
-        
+    
+    /**
+         Answer an interator over all of the quadlets of <code>toExplode</code> with
+         the reifying node <code>tag</code> that match <code>pattern</code>.
+    */
+    protected ExtendedIterator explodeTriple( Triple pattern, Node tag, Triple toExplode )
+        {
+        GraphAddList L = new GraphAddList( pattern );
+        SimpleReifier.graphAddQuad( L, tag, toExplode ); 
+        return WrappedIterator.create( L.iterator() );
+        }
+    
     /**
         Return the fragment map as a read-only Graph of triples. We rely on the
         default code in GraphBase which allows us to only implement find(TripleMatch)
@@ -110,7 +126,7 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     
     /**
          Answer an iterator over all the fragment tags in this map.
-     */
+    */
     public ExtendedIterator tagIterator()
         { return WrappedIterator.create( forwardMap.keySet().iterator() ); }
     }
