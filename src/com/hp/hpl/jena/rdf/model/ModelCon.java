@@ -56,8 +56,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.13 $'
-            Date='$Date: 2003-12-04 15:58:00 $'
+            Revision='$Revision: 1.14 $'
+            Date='$Date: 2003-12-08 11:56:22 $'
  */
 public interface ModelCon {
 
@@ -170,8 +170,10 @@ public interface ModelCon {
     public Resource createResource(Resource type) ;
     
 /**
-    create or find a Resource from a graph Node. This is provided for users and
-    developers operating at the API/SPI interface where Resources are
+    Create or find an RDFNode 
+    (a {@link Resource} or a {@link Literal})
+    from a graph Node. This is provided for users and
+    developers operating at the API/SPI interface, where Resources are
     constructed from Nodes. Providing this method allows each Model
     the opportunity to cache node-to-resource maps if it requires. 
     
