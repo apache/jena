@@ -636,7 +636,8 @@ public class Compiler implements Constants {
 	 * @return
 	 */
 	static private int cycles[] =
-		{ Grammar.cyclic, Grammar.cyclicRest, Grammar.cyclicFirst };
+		{ //Grammar.cyclic, 
+			Grammar.cyclicRest, Grammar.cyclicFirst };
 	private boolean isUseless(Long l) {
 		short spo[] = expand(l.longValue());
 		int cnt[] = ((int[]) count.get(l));

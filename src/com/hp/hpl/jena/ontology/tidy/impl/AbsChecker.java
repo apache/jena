@@ -8,6 +8,7 @@ package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.ontology.tidy.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import java.util.*;
 
@@ -19,6 +20,7 @@ abstract class AbsChecker implements Constants {
 	
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;
+	
 	AbsChecker(boolean lite) {
 		hasBeenChecked = Factory.createDefaultGraph(ReificationStyle.Minimal);
 		justForErrorMessages = Factory.createDefaultGraph(ReificationStyle.Minimal);
@@ -42,6 +44,23 @@ abstract class AbsChecker implements Constants {
 		return rslt;
 	}
 	abstract boolean extraInfo();
+	
+	void dump() {
+		System.err.println("AbsChecker dump.");
+		Iterator it = nodeInfo.entrySet().iterator();
+		while ( it.hasNext()) {
+			Map.Entry e = (Map.Entry)it.next();
+			Node n = (Node)e.getKey();
+			CNodeI c = (CNodeI)e.getValue();
+			System.err.println(CategorySet.catString(c.getCategories())+ " " + n.toString());
+		}
+		System.err.println("Has Been Checked:");
+		ModelFactory.createModelForGraph(hasBeenChecked).write(System.err,"N-TRIPLE");
+		if (this.justForErrorMessages!=null) {
+			System.err.println("Just for errors:");
+			ModelFactory.createModelForGraph(justForErrorMessages).write(System.err,"N-TRIPLE");
+		}
+	}
 	
 	String eMessage;
 	int eLevel;
@@ -136,7 +155,7 @@ abstract class AbsChecker implements Constants {
 					throw new BrokenException("Impossible meetcase");
 				}
 				if ( meet == Failure ) {
-					addProblem(Levels.DL, t, "Grammar Mismatch (shared node in triple)");
+					saveProblem(Levels.DL,  "Grammar Mismatch (shared node in triple)");
 					success = false;
 				} else {
 				o.setCategories(o0, false);
@@ -173,14 +192,16 @@ abstract class AbsChecker implements Constants {
 			p.setCategories(pOrig, false);
 			o.setCategories(oOrig, false);
 		}
+		
 		if ( success && p1 == Grammar.owldisjointWith) {
-			if ( s.equals(o)) {
-				// TODO Incorrect owl:disjointWith constraint.
+		
+			if ( s.equals(o) && t.getSubject().isBlank()) {
+				// TODO owl:disjointWith constraint add to compiler.
 				// correct for blank nodes not for URI nodes.
 				addProblem(Levels.DL, t, "owl:disjointWith cannot form a loop");
 				success = false;
 			}
-			else
+			else 
 			   s.addDisjoint(o);
 		}
 		int rr;

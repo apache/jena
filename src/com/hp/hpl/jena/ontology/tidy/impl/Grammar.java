@@ -1,104 +1,102 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.3 2003-12-03 10:54:21 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.4 2003-12-03 14:35:33 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 class Grammar implements Constants {
     static final int orphan = 1;
     static final int notype = 2;
-    static final int cyclic = 3;
-    static final int cyclicRest = 4;
-    static final int cyclicFirst = 5;
-    static final int badRestriction = 6;
-    static final int annotationPropID = 7;
-    static final int classID = 8;
-    static final int dataAnnotationPropID = 9;
-    static final int dataPropID = 10;
-    static final int dataRangeID = 11;
-    static final int datatypeID = 12;
-    static final int dlInteger = 13;
-    static final int individualID = 14;
-    static final int liteInteger = 15;
-    static final int literal = 16;
-    static final int objectPropID = 17;
-    static final int ontologyID = 18;
-    static final int ontologyPropertyID = 19;
-    static final int transitivePropID = 20;
-    static final int unnamedIndividual = 21;
-    static final int unnamedOntology = 22;
-    static final int userTypedLiteral = 23;
-    static final int allDifferent = 24;
-    static final int description5disjointWith = 25;
-    static final int description5equivalentClass = 26;
-    static final int description5object = 27;
-    static final int description5subClassOf = 28;
-    static final int listOfDataLiteral = 29;
-    static final int listOfDescription = 30;
-    static final int listOfIndividualID = 31;
-    static final int restriction6disjointWith = 32;
-    static final int restriction6equivalentClass = 33;
-    static final int restriction6object = 34;
-    static final int restriction6subClassOf = 35;
-    static final int restriction7disjointWith = 36;
-    static final int restriction7equivalentClass = 37;
-    static final int restriction7object = 38;
-    static final int restriction7subClassOf = 39;
-    static final int restriction8disjointWith = 40;
-    static final int restriction8equivalentClass = 41;
-    static final int restriction8object = 42;
-    static final int restriction8subClassOf = 43;
-    static final int unnamedDataRange = 44;
-    static final int owlAllDifferent = 45;
-    static final int owlAnnotationProperty = 46;
-    static final int owlClass = 47;
-    static final int owlDataRange = 48;
-    static final int owlDatatypeProperty = 49;
-    static final int owlDeprecatedClass = 50;
-    static final int owlDeprecatedProperty = 51;
-    static final int owlFunctionalProperty = 52;
-    static final int owlInverseFunctionalProperty = 53;
-    static final int owlObjectProperty = 54;
-    static final int owlOntology = 55;
-    static final int owlOntologyProperty = 56;
-    static final int owlRestriction = 57;
-    static final int owlSymmetricProperty = 58;
-    static final int owlTransitiveProperty = 59;
-    static final int owlcomplementOf = 60;
-    static final int owldifferentFrom = 61;
-    static final int owldisjointWith = 62;
-    static final int owldistinctMembers = 63;
-    static final int owlequivalentClass = 64;
-    static final int owlequivalentProperty = 65;
-    static final int owlhasValue = 66;
-    static final int owlintersectionOf = 67;
-    static final int owlinverseOf = 68;
-    static final int owlmaxCardinality = 69;
-    static final int owlonProperty = 70;
-    static final int owloneOf = 71;
-    static final int owlsameAs = 72;
-    static final int owlsomeValuesFrom = 73;
-    static final int owlunionOf = 74;
-    static final int rdfList = 75;
-    static final int rdfProperty = 76;
-    static final int rdfXMLLiteral = 77;
-    static final int rdffirst = 78;
-    static final int rdfnil = 79;
-    static final int rdfrest = 80;
-    static final int rdftype = 81;
-    static final int rdfsClass = 82;
-    static final int rdfsContainer = 83;
-    static final int rdfsContainerMembershipProperty = 84;
-    static final int rdfsDatatype = 85;
-    static final int rdfsResource = 86;
-    static final int rdfsdomain = 87;
-    static final int rdfsmember = 88;
-    static final int rdfsrange = 89;
-    static final int rdfssubClassOf = 90;
-    static final int rdfssubPropertyOf = 91;
+    static final int cyclicRest = 3;
+    static final int cyclicFirst = 4;
+    static final int badRestriction = 5;
+    static final int annotationPropID = 6;
+    static final int classID = 7;
+    static final int dataAnnotationPropID = 8;
+    static final int dataPropID = 9;
+    static final int dataRangeID = 10;
+    static final int datatypeID = 11;
+    static final int dlInteger = 12;
+    static final int individualID = 13;
+    static final int liteInteger = 14;
+    static final int literal = 15;
+    static final int objectPropID = 16;
+    static final int ontologyID = 17;
+    static final int ontologyPropertyID = 18;
+    static final int transitivePropID = 19;
+    static final int unnamedIndividual = 20;
+    static final int unnamedOntology = 21;
+    static final int userTypedLiteral = 22;
+    static final int allDifferent = 23;
+    static final int description5disjointWith = 24;
+    static final int description5equivalentClass = 25;
+    static final int description5object = 26;
+    static final int description5subClassOf = 27;
+    static final int listOfDataLiteral = 28;
+    static final int listOfDescription = 29;
+    static final int listOfIndividualID = 30;
+    static final int restriction6disjointWith = 31;
+    static final int restriction6equivalentClass = 32;
+    static final int restriction6object = 33;
+    static final int restriction6subClassOf = 34;
+    static final int restriction7disjointWith = 35;
+    static final int restriction7equivalentClass = 36;
+    static final int restriction7object = 37;
+    static final int restriction7subClassOf = 38;
+    static final int restriction8disjointWith = 39;
+    static final int restriction8equivalentClass = 40;
+    static final int restriction8object = 41;
+    static final int restriction8subClassOf = 42;
+    static final int unnamedDataRange = 43;
+    static final int owlAllDifferent = 44;
+    static final int owlAnnotationProperty = 45;
+    static final int owlClass = 46;
+    static final int owlDataRange = 47;
+    static final int owlDatatypeProperty = 48;
+    static final int owlDeprecatedClass = 49;
+    static final int owlDeprecatedProperty = 50;
+    static final int owlFunctionalProperty = 51;
+    static final int owlInverseFunctionalProperty = 52;
+    static final int owlObjectProperty = 53;
+    static final int owlOntology = 54;
+    static final int owlOntologyProperty = 55;
+    static final int owlRestriction = 56;
+    static final int owlSymmetricProperty = 57;
+    static final int owlTransitiveProperty = 58;
+    static final int owlcomplementOf = 59;
+    static final int owldifferentFrom = 60;
+    static final int owldisjointWith = 61;
+    static final int owldistinctMembers = 62;
+    static final int owlequivalentClass = 63;
+    static final int owlequivalentProperty = 64;
+    static final int owlhasValue = 65;
+    static final int owlintersectionOf = 66;
+    static final int owlinverseOf = 67;
+    static final int owlmaxCardinality = 68;
+    static final int owlonProperty = 69;
+    static final int owloneOf = 70;
+    static final int owlsameAs = 71;
+    static final int owlsomeValuesFrom = 72;
+    static final int owlunionOf = 73;
+    static final int rdfList = 74;
+    static final int rdfProperty = 75;
+    static final int rdfXMLLiteral = 76;
+    static final int rdffirst = 77;
+    static final int rdfnil = 78;
+    static final int rdfrest = 79;
+    static final int rdftype = 80;
+    static final int rdfsClass = 81;
+    static final int rdfsContainer = 82;
+    static final int rdfsContainerMembershipProperty = 83;
+    static final int rdfsDatatype = 84;
+    static final int rdfsResource = 85;
+    static final int rdfsdomain = 86;
+    static final int rdfsmember = 87;
+    static final int rdfsrange = 88;
+    static final int rdfssubClassOf = 89;
+    static final int rdfssubPropertyOf = 90;
  static String catNames[] = { "--not used--",
       "orphan",
       "notype",
-      "cyclic",
       "cyclicRest",
       "cyclicFirst",
       "badRestriction",
@@ -575,7 +573,6 @@ notype,
 };
 static final int blankX[] = new int[]{
 badRestriction,
-cyclic,
 cyclicFirst,
 cyclicRest,
 notype,
@@ -635,9 +632,9 @@ restriction6disjointWith,
 restriction7disjointWith,
 restriction8disjointWith,
 };
-static final int MAX_SINGLETON_SET = 92 + 1;
+static final int MAX_SINGLETON_SET = 91 + 1;
 static {
-for (int i=0; i<92; i++) {
+for (int i=0; i<91; i++) {
 if ( i != CategorySet.find(new int[]{i},true) )
       System.err.println("initialization problem");
 }
@@ -654,7 +651,6 @@ static final int disjointWith = CategorySet.find( disjointWithX,false);
      switch ( x ) {
       case orphan:
       case notype:
-      case cyclic:
       case cyclicRest:
       case cyclicFirst:
       case badRestriction:

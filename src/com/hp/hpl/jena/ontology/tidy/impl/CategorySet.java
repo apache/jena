@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.3 2003-12-03 10:54:21 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.4 2003-12-03 14:35:33 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -17,13 +17,13 @@ public class CategorySet implements Comparable, Serializable, Constants {
 	  static final long serialVersionUID = -1280155302467590202L;
 
     static private final int cycles[] = new int[]{
-    	Grammar.cyclic,
-    	Grammar.cyclicFirst,
-    	Grammar.cyclicRest
+    //	Grammar.cyclic,
+    	Grammar.cyclicRest,
+		  Grammar.cyclicFirst
     };
     static private final int untyped[] = new int[]{
-		Grammar.badRestriction,
-		Grammar.notype
+		Grammar.notype,
+		Grammar.badRestriction
     };
 	/**
 	 * 

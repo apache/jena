@@ -55,7 +55,7 @@ static {
 		throw new BrokenException(e);
 	}
 	CategorySet.closed = true;
-	System.err.println(CategorySet.unsorted.size()+" cats");
+	//System.err.println(CategorySet.unsorted.size()+" cats");
 }
 
 public int qrefine(int s, int p, int o) {

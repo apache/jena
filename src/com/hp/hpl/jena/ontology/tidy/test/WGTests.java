@@ -31,6 +31,7 @@
  */
 
 package com.hp.hpl.jena.ontology.tidy.test;
+import com.hp.hpl.jena.ontology.tidy.impl.*;
 
 import com.hp.hpl.jena.shared.wg.*;
 import com.hp.hpl.jena.shared.*;
@@ -82,6 +83,7 @@ public class WGTests extends java.lang.Object {
 
 	static public Test suite() {
 		TestSuite s = new TestSuite("OWL-Syntax");
+		s.addTest(Extra.suite());
 		InputStream manifest;
 		if (factory == null) {
 			if (internet) {
@@ -235,6 +237,7 @@ public class WGTests extends java.lang.Object {
 				w.write(testResults, out, BASE_RESULTS_URI);
 				out.close();
 			}
+	//		System.out.println(CheckerImpl.cyCnt + " cycle checks.");
 		}
 	}
 	static public void main(String args[]) {

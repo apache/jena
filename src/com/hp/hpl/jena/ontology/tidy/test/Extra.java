@@ -27,6 +27,12 @@ public class Extra extends TestCase {
 		return s;
    }
 
+   public void testdisjointWith001() {
+	 runTest("disjointWith001", OWLTest.Full);
+   }
+   public void testdisjointWith002() {
+	 runTest("disjointWith002", OWLTest.DL);
+   }
    public void testsameAs001() {
 	 runTest("sameAs001", OWLTest.Full);
    }
@@ -45,10 +51,26 @@ public class Extra extends TestCase {
    public void testann005() {
 	 runTest("ann005", OWLTest.Full);
    }
-   
+
+   public void testcycle001() {
+	 runTest("cycle001", OWLTest.Full);
+   }
+   public void testcycle002() {
+	 runTest("cycle002", OWLTest.DL);
+   }
+   public void testcycle003() {
+	 runTest("cycle003", OWLTest.Full);
+   }
+   public void testcycle004() {
+	 runTest("cycle004", OWLTest.Full);
+   }
+   public void testcycle005() {
+	 runTest("cycle005", OWLTest.Full);
+   }
    public void testsubClassOf001() {
    	 runTest("subClassOf001", OWLTest.Full);
    }
+   /*
    public void testsubClassOf001a() {
 	 runTest("subClassOf001", OWLTest.Full);
    }
@@ -64,6 +86,8 @@ public class Extra extends TestCase {
    public void testsubClassOf001e() {
 	 runTest("subClassOf001", OWLTest.Full);
    }
+   */
+   
    public void testsubClassOf002() {
    	runTest("subClassOf002", OWLTest.Full);
    }
@@ -90,6 +114,12 @@ public class Extra extends TestCase {
    public void testontologyProp001() {
 	runTest("ontologyProp001", OWLTest.Lite);
    }
+   /*
+   public void testI5_3_010() {
+   	for (int i=0; i<200; i++)
+   	  runWGTest("I5.3/consistent010",OWLTest.Full);
+  }
+  */
 /*
    static long t;
    
@@ -101,11 +131,17 @@ public class Extra extends TestCase {
 	  System.err.println((System.currentTimeMillis()-t)+ " ms");
 	 }
 */
-      private void runTest(String fn, Resource lvl) {
+  private void runTest(String fn, Resource lvl) {
+  	runTestFullName("testing/ontology/tidy/"+fn,lvl);
+  }
+  private void runWGTest(String fn, Resource lvl) {
+	runTestFullName("testing/wg/"+fn,lvl);
+  }
+   private void runTestFullName(String fn, Resource lvl) {
 
    	Checker chk = new Checker(lvl.equals(OWLTest.Lite));
    	Model m = ModelFactory.createDefaultModel();
-   	m.read("file:testing/ontology/tidy/"+fn+".rdf");
+   	m.read("file:"+fn+".rdf");
    	chk.addRaw(m.getGraph());
    	
    	String rslt = chk.getSubLanguage();

@@ -76,6 +76,7 @@ public class CheckerImpl extends AbsChecker {
 			}
 		}
 	}
+	//static public int cyCnt = 0;
 	private void snapCheck() {
 		if (nonMonotoneProblems == null) {
 			nonMonotoneProblems = new Vector();
@@ -156,6 +157,7 @@ public class CheckerImpl extends AbsChecker {
 			check(CategorySet.cyclicSets, new NodeAction() {
 				public void apply(Node n) {
 					// If this is a description then it's busted.
+		//			cyCnt++;
 					CNodeI cn = getCNode(n);
 					if (Q
 						.intersect(

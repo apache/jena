@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.4 2003-12-03 10:53:38 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.5 2003-12-03 14:35:15 jeremy_carroll Exp $
 */
 package owlcompiler;
 
@@ -47,10 +47,59 @@ public class SubCategorize implements Constants,Lookup {
 			|| prop == Grammar.owlequivalentClass;
 	}
 	static private boolean SPECIALSYM(int i) {
-		return i < 7;
+		return Grammar.isPseudoCategory(i);
 		// i in { orphan, notype, cycle, cyclicRest, cyclicFirst, badRestriction } 
 	}
-
+/*- Discussion of cycles:
+ * 
+ * Possible cycles that are not excluded by other aspects
+ * of grammar.
+ * 
+ * A list forming a cycle
+ *   _:b rdf:rest _:b
+ * 
+ * A class description depending on itself
+ *   _:b owl:complementof _:b
+ * 
+ * or
+ *   _:b owl:allValuesFrom _:c
+ *   _:c owl:someValueFrom _:b
+ * 
+ * A class description depending on itself via a list
+ *   _:b owl:unionOf _:y
+     _:y rdf:rest    _:x
+ *   _:x rdf:first   _:b
+ * 
+ * An unnamed individual cycle
+ *  _:a eg:foo _:b
+ *  _:b eg:bar _:a
+ * 
+ * The prop of a triple is not cyclic
+ * 
+ * The obj of a triple is not cyclic if its subj
+ * is not cylic and the prop is not a comparative.
+ * 
+ * The subj of a triple is not cyclic
+ *   if (a) the triple forces it to be unnamedontology
+ *         or an all different
+ *      (b) the prop is owl:hasValue or owl:{min,max}cardinality
+ *      (c) the prop is owl:onProperty
+ *          and the obj is a dataPropID
+ *      (d) the prop is owl:complementOf, owl:unionOf,
+ *                      owl:intersectionOf
+ *                      owl:someValuesFrom
+ *                      owl:allValuesFrom
+ *          and the obj is not cyclic
+ * 
+ * A blank node is in the pseudoCat cyclicFirst
+ * unless it is known that it is not in a cycle
+ * (excluding the case where the cycle starts with an rdf:rest edge)
+ * 
+ * A blank node is in the pseudoCat cyclicRest
+ * unless it is known that it is not in a cycle
+ * (excluding the case where the cycle starts with an rdf:first edge)
+ * 
+ */
 	static boolean pseudotriple(int subj, int prop, int obj) {
 		switch ((SPECIALSYM(subj) ? 1 : 0)
 			+ (SPECIALSYM(prop) ? 2 : 0)
@@ -61,10 +110,8 @@ public class SubCategorize implements Constants,Lookup {
 				if (subj == Grammar.orphan) {
 					if (COMPARATIVE(prop))
 					  return false;
-					if (prop==Grammar.rdftype
-					    && (obj == Grammar.owlOntology
-					    || obj == Grammar.owlAllDifferent))
-					    return false;
+					if ( isUnnamedOntologyOrAllDifferent(prop, obj))
+					   return false;
 					return true;
 				}
 				if (subj == Grammar.notype) {
@@ -112,7 +159,53 @@ public class SubCategorize implements Constants,Lookup {
 					// block comparison of restrictions
 					|| COMPARATIVE(prop))
 					return false;
+					
+				if (subj == Grammar.cyclicRest && prop == Grammar.rdfrest )
+				    return false;
 
+				if (subj == Grammar.cyclicFirst && prop == Grammar.rdffirst)
+					return false;
+				
+				if ( subj==Grammar.cyclicFirst || subj==Grammar.cyclicRest) {
+					/*
+					*   if (a) the triple forces it to be unnamedontology
+					*         or an all different
+					*/
+					if (isUnnamedOntologyOrAllDifferent(prop, obj))
+					  return false; 
+					
+					
+					/*
+					*      (b) the prop is owl:hasValue or owl:{min,max}cardinality
+					*/
+					if ( prop == Grammar.owlhasValue || prop == Grammar.owlmaxCardinality)
+					  return false;
+					
+					
+					/*      (c) the prop is owl:onProperty
+					*          and the obj is a dataPropID
+					*/
+					if ( prop == Grammar.owlonProperty && obj==Grammar.dataPropID)
+					  return false;
+					  
+					/*
+					*      (d) the prop is owl:complementOf, owl:unionOf,
+					*                      owl:intersectionOf
+					*                      owl:someValuesFrom
+					*                      owl:allValuesFrom
+					*          and the obj is not cyclic
+					* */
+					if ( prop == Grammar.owlcomplementOf
+					    || prop == Grammar.owlintersectionOf
+					    || prop == Grammar.owlunionOf
+					    || prop == Grammar.owlsomeValuesFrom)
+					  return false;  // this is dealt with under case 5:
+					
+					return true;
+				}
+					
+			 
+/* OLD
 				if (subj == Grammar.cyclicRest)
 					return prop != Grammar.rdfrest;
 
@@ -122,10 +215,15 @@ public class SubCategorize implements Constants,Lookup {
 				if (subj == Grammar.cyclic) {
 					if (prop == Grammar.rdftype && obj == Grammar.owlOntology)
 						return false;
+					if ( prop == Grammar.owldistinctMembers)
+					  return false;
+					  if ( prop == Grammar.ontologyPropertyID)
+						return false;
 					return
 					// Block list nodes - handled specially
 					prop != Grammar.rdfrest && prop != Grammar.rdffirst;
 				}
+*/
 				throw new BrokenException("Logic error - should not happen.");
 			case 2 :
 				return prop == Grammar.notype;
@@ -147,11 +245,21 @@ public class SubCategorize implements Constants,Lookup {
 					return false;
 				if (COMPARATIVE(prop))
 					return false;
-				if (obj == Grammar.cyclic)
-					return true;
+			  if ( prop == Grammar.owldistinctMembers)
+			    return false;
+				if ( prop == Grammar.ontologyPropertyID)
+				  return false;
 				return true;
 		}
 		throw new BrokenException("Logic error - unhandled case in switch.");
+	}
+
+	private static boolean isUnnamedOntologyOrAllDifferent(int prop, int obj) {
+		return (prop==Grammar.rdftype
+		    && (obj == Grammar.owlOntology
+		    || obj == Grammar.owlAllDifferent))
+		    || prop == Grammar.owldistinctMembers
+		  || prop == Grammar.ontologyPropertyID;
 	}
 
 	/**

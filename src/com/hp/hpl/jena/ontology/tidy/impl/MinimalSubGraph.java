@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.3 2003-12-02 04:58:34 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.4 2003-12-03 14:35:33 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -25,7 +25,7 @@ class MinimalSubGraph extends AbsChecker {
 	private final Map allMinInfos = new HashMap();
 	private final Set activeMinInfos = new HashSet();
 	
-	private final Graph unionHasBeen;
+//	private final Graph unionHasBeen;
 	private final Graph parentUnion;
 	
 	private int distance;
@@ -39,7 +39,8 @@ class MinimalSubGraph extends AbsChecker {
 	 */
 	MinimalSubGraph(boolean lite, Triple problem, CheckerImpl parent) {
 		super(lite);
-		unionHasBeen = new Union(hasBeenChecked,justForErrorMessages);
+		//unionHasBeen = new Union(hasBeenChecked,justForErrorMessages);
+		justForErrorMessages = hasBeenChecked;
 		parentUnion = new Union(parent.hasBeenChecked,parent.justForErrorMessages);
 		if (!add(problem, false)) {
 			// Break superclass invariant - only method that can be called is
@@ -47,7 +48,7 @@ class MinimalSubGraph extends AbsChecker {
 			hasBeenChecked.add(problem);
 		} else {
 			boolean wh = hasBeenChecked.contains(problem);
-			unionHasBeen.delete(problem);
+			hasBeenChecked.delete(problem);
 			setDistance(problem.getSubject(),0);
 			setDistance(problem.getPredicate(),0);
 			setDistance(problem.getObject(),0);
@@ -58,11 +59,11 @@ class MinimalSubGraph extends AbsChecker {
 	}
 
 	Graph getContradiction() {
-		return unionHasBeen;
+		return hasBeenChecked;
 	}
 
 	private void todo(Triple t) {
-		if ( (!unionHasBeen.contains(t)))
+		if ( (!hasBeenChecked.contains(t)))
 			todo.add(t);
 	}
 	private void todo(Node s, Node p, Node o) {
@@ -81,6 +82,7 @@ class MinimalSubGraph extends AbsChecker {
 	// pre-condition ctxt is reachable from problem
 	// post-condition hasBeenChecked is a contradiction
 	private void extend() {
+	//	boolean flag = false;
 		while (true) {
 			Triple bestTriple = null;
 			boolean bestIsTrivial = true;
@@ -99,7 +101,7 @@ class MinimalSubGraph extends AbsChecker {
 				
 				switch ( addX(tryMe, true) ) {
 					case 0:
-					  hasBeenChecked.add(tryMe);
+					 // hasBeenChecked.add(tryMe);
 					  return;
 					case 1:
 					 if (!bestIsTrivial) break;
@@ -129,10 +131,32 @@ class MinimalSubGraph extends AbsChecker {
 			}
 			
 
-			if ( bestTriple == null)
-			 throw new BrokenException("no bestTriple");
+			if ( bestTriple == null) {
+				
+				dump();
+				
+				throw new BrokenException("no bestTriple");
+			}
 			// Choose best and extend
-			addX( bestTriple, true );
+			if ( addX( bestTriple, true )==0 ) {
+				System.err.println("Non-fatal logic error");
+				dump();
+				//hasBeenChecked.add(tryMe);
+				return;
+				
+			} 
+			
+			/* else if (bestTriple.getPredicate().getURI().endsWith("p")) {
+				flag = true;
+				System.err.println("#p");
+				
+			} 
+			if ( flag ) {
+				System.err.println(bestTriple.getPredicate().getURI());
+				dump();
+				
+			}
+			*/
 			todo.remove(bestTriple);
 
 			distance = MAXDIST;
