@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.37 2003-08-13 12:11:06 chris-dollin Exp $
+  $Id: Model.java,v 1.38 2003-08-19 09:33:02 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.37 $Date: 2003/08/11 15:30:55 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.38 $Date: 2003/08/13 12:11:06 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -216,17 +216,42 @@ public interface Model
         the form is not legal this will throw an exception.
         
         @param lex the lexical form of the literal
-        @param lang the optional language tag
+        @param dtype the type of the literal, null for old style "plain" literals
+        @throws DatatypeFormatException if lex is not a legal form of dtype
+     */
+    public Literal createTypedLiteral(String lex, RDFDatatype dtype);
+    
+    /**
+     * Build a typed literal from its value form.
+     * 
+     * @param value the value of the literal
+     * @param dtype the type of the literal, null for old style "plain" literals
+     */
+    public Literal createTypedLiteral(Object value, RDFDatatype dtype);
+
+    /**
+       @deprecated as of Jena2.0, use the form without lang tag since lang tags aren't
+       relevant on typed (as opposed to plain) literals.
+        
+         Build a typed literal from its lexical form. The
+        lexical form will be parsed now and the value stored. If
+        the form is not legal this will throw an exception.
+        
+        @param lex the lexical form of the literal
+        @param lang the optional language tag, only relevant for plain literals
         @param dtype the type of the literal, null for old style "plain" literals
         @throws DatatypeFormatException if lex is not a legal form of dtype
      */
     public Literal createTypedLiteral(String lex, String lang, RDFDatatype dtype);
     
     /**
+     * @deprecated as of Jena2.0, use the form without lang tag since lang tags aren't
+     * relevant on typed (as opposed to plain) literals.
+     * 
      * Build a typed literal from its value form.
      * 
      * @param value the value of the literal
-     * @param lang the optional language tag
+     * @param lang the optional language tag, only relevant for plain literals
      * @param dtype the type of the literal, null for old style "plain" literals
      */
     public Literal createTypedLiteral(Object value, String lang, RDFDatatype dtype);
@@ -921,5 +946,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.37 2003-08-13 12:11:06 chris-dollin Exp $
+ * $Id: Model.java,v 1.38 2003-08-19 09:33:02 der Exp $
  */
