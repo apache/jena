@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.8 2003-05-19 08:25:47 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.9 2003-05-20 10:21:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-19 08:25:47 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-20 10:21:55 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph {
 
@@ -257,6 +257,17 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
      */
     public ExtendedIterator findDataMatches(TriplePattern pattern) {
         return dataFind.find(pattern);
+    }
+            
+    /**
+     * Test when the data (and TBD the deductions) contains the
+     * given triple.
+     */
+    public boolean dataContains(Triple t) {
+        ExtendedIterator i = dataFind.find(new TriplePattern(t.getSubject(), t.getPredicate(), t.getObject()));
+        boolean result = i.hasNext();
+        i.close();
+        return result;
     }
             
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalResults.java,v 1.6 2003-05-19 08:25:46 der Exp $
+ * $Id: GoalResults.java,v 1.7 2003-05-20 10:21:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * the OR graph of the evaluation trace.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-19 08:25:46 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-20 10:21:55 $
  */
 public class GoalResults {
 
@@ -178,6 +178,10 @@ public class GoalResults {
      */
     public boolean addResult(Triple result) {
         if (!isComplete && !resultSetIndex.contains(result)) {
+            // Temp ... replace when we flush results to the deductions graph
+            // TODO remove
+//            if (engine.infGraph.dataContains(result)) return false;
+            // ... end temp
             resultSet.add(result);
             resultSetIndex.add(result);
             if (isSingleton) {

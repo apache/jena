@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.10 2003-05-19 21:26:38 der Exp $
+ * $Id: RuleState.java,v 1.11 2003-05-20 10:21:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-05-19 21:26:38 $
+ * @version $Revision: 1.11 $ on $Date: 2003-05-20 10:21:55 $
  */
 public class RuleState {
 
@@ -123,7 +123,9 @@ public class RuleState {
                     for (int i = 0; i < margs.length; i++) {
                         Node match = margs[i];
                         if (match instanceof Node_RuleVariable) {
-                            if (!newenv.bind(match, args[i])) return null;
+                            Node val = args[i];
+                            if (Functor.isFunctor(val)) return null;
+                            if (!newenv.bind(match, val)) return null;
                         }
                     }
                 } else {
@@ -225,10 +227,7 @@ public class RuleState {
                 }
                 // ... end of clause reorder
                 TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
-                if (subgoal.getSubject().isLiteral() || subgoal.getPredicate().isLiteral()) {
-                    // Illegal goal, could never be satisfied
-                    return null;
-                }
+                if (!subgoal.isLegal()) return null;
                 GoalState gs = generator.getEngine().findGoal(subgoal);
                 RuleState rs = new RuleState(ri, env, gs, clauseIndex);
                 rs.initMapping(subgoal);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.8 2003-05-19 21:26:39 der Exp $
+ * $Id: BRuleEngine.java,v 1.9 2003-05-20 10:21:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-19 21:26:39 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-20 10:21:55 $
  */
 public class BRuleEngine {
 
@@ -259,7 +259,7 @@ public class BRuleEngine {
                             // found next subgoal to try
                             // Push current state onto stack 
                             TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
-                            if (subgoal.getSubject().isLiteral() || subgoal.getPredicate().isLiteral()) {
+                            if (!subgoal.isLegal()) {
                                 // branch has failed
                                 delayedRSClose = current;
                                 current = current.prev;
