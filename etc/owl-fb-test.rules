@@ -7,7 +7,9 @@
 # Warning: This version is under active development and the moment
 # and should NOT be regard as stable or usable.
 #
-# $Id: owl-fb-test.rules,v 1.2 2003-07-10 07:58:35 der Exp $
+# TODO: Replace current owl:Nothing usage by an inconsistency mechanism
+#
+# $Id: owl-fb-test.rules,v 1.3 2003-07-10 17:06:50 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -76,12 +78,6 @@
 [rdfs2-partial: (?p rdfs:domain ?c) -> (?c rdf:type rdfs:Class)]
 [rdfs3-partial: (?p rdfs:range ?c)  -> (?c rdf:type rdfs:Class)]
 
-[prototype1: (?c rdf:type owl:Class), noValue(?c, rb:prototype), makeTemp(?t)
-  	    				-> (?c rb:prototype ?t), (?t rdf:type ?c) ]
-    
-[prototype2: (?c rb:prototype ?p) ->
-                [prototype2b: (?c rdfs:subClassOf ?d) <- (?p rdf:type ?d)] ]                
-
 #------------------------------------------------------------------
 # RDFS iff extensions needed for OWL
 #------------------------------------------------------------------
@@ -130,6 +126,7 @@
 -> (owl:sameIndividualAs rdf:type owl:TransitiveProperty).
 -> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).
 -> (owl:differentFrom rdf:type owl:SymmetricProperty).
+-> (owl:disjointWith rdf:type owl:SymmetricProperty).
 
 -> (owl:intersectionOf rdfs:domain owl:Class).
 
@@ -138,7 +135,154 @@
 #------------------------------------------------------------------
 
 [thing1: (?C rdf:type owl:Class) -> (?C rdfs:subClassOf owl:Thing)]
+
+#------------------------------------------------------------------
+# Prototype rules to convert instance reasoning to class subsumption checking
+#------------------------------------------------------------------
+
+[earlyTypeProp1: (?C rdf:type owl:Restriction) -> (?C rdf:type owl:Class) ]
+
+[earlyTypeProp2: (?C owl:intersectionOf ?X) -> (?C rdf:type owl:Class) ]
+
+[prototype1: (?c rdf:type owl:Class), noValue(?c, rb:prototype), makeTemp(?t)
+  	    				-> (?c rb:prototype ?t), (?t rdf:type ?c) ]
+    
+[prototype2: (?c rb:prototype ?p) ->
+                [prototype2b: (?c rdfs:subClassOf ?d) <- (?p rdf:type ?d)] ]                
+
+#------------------------------------------------------------------
+# Identify restriction assertions
+#------------------------------------------------------------------
+
+[restriction1: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D)
+						-> (?C owl:equivalentClass some(?P, ?D))]
+		
+[restriction2: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
+						-> (?C owl:equivalentClass all(?P, ?D))]
+		
+[restriction3: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:minCardinality ?X)
+						-> (?C owl:equivalentClass min(?P, ?X))]
+		
+[restriction4: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X)
+						-> (?C owl:equivalentClass max(?P, ?X))]
+		
+[restriction5: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:cardinality ?X)
+						-> (?C owl:equivalentClass card(?P, ?X)), 
+						   (?C rdfs:subClassOf min(?P, ?X)), 
+						   (?C rdfs:subClassOf max(?P, ?X)) ]
+		
+[restriction6: (?C rdfs:subClassOf min(?P, ?X)), (?C rdfs:subClassOf max(?P, ?X)) 
+       					-> (?C rdfs:subClassOf card(?P, ?X))]
+       					
+# Needed for the case where ?R is a restriction literal 
+# and so does not appear in the subject position
+[restrictionSubclass1: (?D owl:equivalentClass ?R), isFunctor(?R) ->
+       [restrictionSubclass1b: (?X rdf:type ?D) <- (?X rdf:type ?R)] ]
+       
+[restrictionSubclass2: (?D owl:equivalentClass ?R), isFunctor(?R) ->
+       [restrictionSubclass2b: (?X rdf:type ?R) <- (?X rdf:type ?D)] ]
+       
+# Temp trial - might replace above       
+#[restrictionSubclass1: (?D owl:equivalentClass ?R), isFunctor(?R) , (?X rdf:type ?R) -> (?X rdf:type ?D)]
+#[restrictionSubclass2: (?D owl:equivalentClass ?R), isFunctor(?R) , (?X rdf:type ?D) -> (?X rdf:type ?R)]
 						
+#------------------------------------------------------------------
+# min cardinality
+#------------------------------------------------------------------
+
+[min: (?C rdfs:subClassOf min(?P, '1')) ->
+    [min1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?T)] ]
+
+[minRec: (?C owl:equivalentClass min(?P, '1')) ->
+    [min2b: (?X rdf:type ?C) <- (?X ?P ?Y)] ]
+
+[restriction-inter-MnS: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, '1')) 
+						-> (?C rdfs:subClassOf some(?P, ?D)) ]
+        
+#------------------------------------------------------------------
+# max cardinality 1
+#------------------------------------------------------------------
+
+[max1: (?C rdfs:subClassOf max(?P, '1')) ->
+    [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- bound(?Y1),   (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notEqual(?Y1, ?Y2)]
+    [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- unbound(?Y1), (?X ?P ?Y2), (?X rdf:type ?C), (?X ?P ?Y1), notEqual(?Y1, ?Y2)]
+    ]
+    
+[maxRec: (?C owl:equivalentClass max(?P, '1')), (?P rdf:type owl:FunctionalProperty) ->
+    [ (?X rdf:type ?C) <- (?X rdf:type owl:Thing)] ]
+
+#------------------------------------------------------------------
+# max cardinality 0
+#------------------------------------------------------------------
+
+[max2: (?C rdfs:subClassOf max(?P, '0')) ->
+    [max2b: (?X rdf:type owl:Nothing) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
+
+# For completeness this requires iff version of rdfs:domain working forwards which it does not just now
+[maxRec2: (?C owl:equivalentClass max(?P, '0')), (?P rdfs:domain ?D), (?E owl:disjointWith ?D)
+	-> (?E owl:equivalentClass ?C)]
+	
+[cardRec1: (?C owl:equivalentClass card(?P, '0')), (?P rdfs:domain ?D), (?E owl:disjointWith ?D)
+	-> (?E owl:equivalentClass ?C)]
+	
+[cardRec3: (?C owl:equivalentClass card(?P, '0')) ->
+	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type max(P, '0'))] ]
+
+#------------------------------------------------------------------
+# cardinality 1
+#------------------------------------------------------------------
+
+[restriction-inter-CFP: (?C owl:equivalentClass card(?P, '1')), (?P rdf:type owl:FunctionalProperty) ->
+     (?C owl:equivalentClass min(?P, '1')) ]
+
+[cardRec2: (?C owl:equivalentClass card(?P, '1')) ->
+	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type min(P, '1')), (?X rdf:type max(P, '1')) ] ]
+
+#------------------------------------------------------------------
+# someValuesFrom
+#------------------------------------------------------------------
+
+# Are all the guards still necessary?
+[some1: (?C rdfs:subClassOf some(?P, ?D)), notEqual(?P, owl:sameIndividualAs),
+					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), 
+					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
+					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass),
+   ->
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    ]
+    
+[someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) ->
+     [someRecb: (?X rdf:type ?C) <- (?X ?P ?A) ] ]
+    
+#------------------------------------------------------------------
+# allValuesFrom
+#------------------------------------------------------------------
+
+[all1: (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type), notEqual(?C, ?D) ->
+		[all1b: (?Y rdf:type ?D) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
+
+[allRec1: (?C rdfs:subClassOf max(?P, '1')), (?C rdfs:subClassOf some(?P, ?D))
+						-> (?C rdfs:subClassOf all(?P, ?D)) ]
+
+[allRec2: (?P rdf:type owl:FunctionalProperty), (?C rdfs:subClassOf some(?P, ?C))
+						 -> (?C rdfs:subClassOf all(?P, ?C)) ]
+    
+[allRec3: (?C owl:equivalentClass all(?P, ?D)), (?P rdfs:range ?D) ->
+    [ (?X rdf:type ?C) <- (?X rdf:type owl:Thing)] ]
+
+[restriction-inter-RA-T: (?P rdfs:range ?C), (?D owl:equivalentClass all(?P, ?C)) 
+						-> (owl:Thing rdfs:subClassOf ?D) ]
+						
+[restriction-inter-AT-R: (owl:Thing rdfs:subClassOf all(?P, ?C)) 
+						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty) ]
+
+# This version looks strange but we are experimenting with droping the direct
+# subclass transitive closure and inferring from prototypes and don't what to have
+# to invoke that here    
+[restriction-inter-AT-R: (owl:Thing rdfs:subClassOf ?D) (?D owl:equivalentClass all(?P, ?C)) 
+						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty) ]
+    
 #------------------------------------------------------------------
 # Disjointness
 #------------------------------------------------------------------
@@ -151,7 +295,7 @@
 [distinct2: (?w owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
 
 # Example version of validation rule, more TBD
-[validation1: (?X rdf:type owl:Nothing) <- (?X owl:differentFrom ?Y), (?X owl:sameIndividualAs ?Y)]
+[validation1: (?X rdf:type owl:Nothing) <- (?X owl:differentFrom ?Y), (?X owl:sameIndividualAs ?Y) ]
 
 #------------------------------------------------------------------
 # Class equality
@@ -191,6 +335,9 @@
 [sameIndividualAs5: (?V ?P ?Y) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?V ?P ?X)  ]
 [sameIndividualAs5: (?V ?P ?Y) <- bound(?V), unbound(?P), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?V ?P ?X)  ]
 [sameIndividualAs5: (?V ?P ?Y) <- bound(?V), bound(?P), (?V ?P ?X), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y)  ]
+
+[sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
+[sameIndividualAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 
 #------------------------------------------------------------------
 # Property rules

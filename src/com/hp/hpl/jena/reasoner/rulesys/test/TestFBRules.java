@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.14 2003-07-09 15:51:48 der Exp $
+ * $Id: TestFBRules.java,v 1.15 2003-07-10 17:06:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-07-09 15:51:48 $
+ * @version $Revision: 1.15 $ on $Date: 2003-07-10 17:06:15 $
  */
 public class TestFBRules extends TestCase {
     
@@ -542,7 +542,7 @@ public class TestFBRules extends TestCase {
     public void testDuplicatesEC4() throws IOException {
         Model premisesM = ModelLoader.loadModel("file:testing/wg/equivalentClass/premises004.rdf");
         Graph data = premisesM.getGraph();
-        Reasoner reasoner =  new OWLFBRuleReasoner();
+        Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
         InfGraph infgraph = reasoner.bind(data);
         Node rbPrototypeProp = Node.createURI(ReasonerVocabulary.RBNamespace+"prototype");
         int count = 0;
@@ -571,7 +571,7 @@ public class TestFBRules extends TestCase {
     public void temp() {
         Graph data = new GraphMem();
         Graph data2 = new GraphMem();
-        Reasoner reasoner =  new OWLFBRuleReasoner();
+        Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
         FBRuleInfGraph infgraph = (FBRuleInfGraph)reasoner.bind(data);
         FBRuleInfGraph infgraph2 = (FBRuleInfGraph)reasoner.bind(data2);
         long t1 = System.currentTimeMillis();

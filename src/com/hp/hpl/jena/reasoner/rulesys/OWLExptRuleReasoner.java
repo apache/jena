@@ -1,11 +1,11 @@
 /******************************************************************
- * File:        OWLBRuleReasoner.java
+ * File:        OWLExptRuleReasoner.java
  * Created by:  Dave Reynolds
- * Created on:  12-May-2003
+ * Created on:  10-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.8 2003-07-10 17:05:14 der Exp $
+ * $Id: OWLExptRuleReasoner.java,v 1.1 2003-07-10 17:05:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,15 +18,15 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.OWLRuleTranslationHook;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * A hybrid forward/backward implementation of the OWL closure rules.
+ * A hybrid forward/backward implementation of the OWL closure rules - experimental variant.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-07-10 17:05:14 $
+ * @version $Revision: 1.1 $ on $Date: 2003-07-10 17:05:14 $
  */
-public class OWLFBRuleReasoner extends FBRuleReasoner {
+public class OWLExptRuleReasoner extends FBRuleReasoner  {
     
     /** The location of the OWL rule definitions on the class path */
-    protected static final String RULE_FILE = "etc/owl-fb.rules";
+    protected static final String RULE_FILE = "etc/owl-fb-test.rules";
     
     /** The parsed rules */
     protected static List ruleSet;
@@ -40,7 +40,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
     /**
      * Constructor
      */
-    public OWLFBRuleReasoner(ReasonerFactory factory) {
+    public OWLExptRuleReasoner(ReasonerFactory factory) {
         super(loadRules(), factory);
         
     }
@@ -49,7 +49,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private OWLFBRuleReasoner(OWLFBRuleReasoner parent, InfGraph schemaGraph) {
+    private OWLExptRuleReasoner(OWLExptRuleReasoner parent, InfGraph schemaGraph) {
         super(parent.rules, schemaGraph, parent.factory);
     }
     
@@ -79,7 +79,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
         FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, getPreload(), tbox);
         graph.addPreprocessingHook(new OWLRuleTranslationHook());
         graph.prepare();
-        return new OWLFBRuleReasoner(this, graph);
+        return new OWLExptRuleReasoner(this, graph);
     }
         
     /**

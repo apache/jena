@@ -1,11 +1,11 @@
 /******************************************************************
- * File:        OWLBRuleReasonerFactory.java
+ * File:        OWLExptRuleReasonerFactory.java
  * Created by:  Dave Reynolds
- * Created on:  12-May-2003
+ * Created on:  10-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLFBRuleReasonerFactory.java,v 1.5 2003-07-10 17:05:14 der Exp $
+ * $Id: OWLExptRuleReasonerFactory.java,v 1.1 2003-07-10 17:05:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,6 +14,8 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
+ * Experimental change to the OWL hybrid rule reasoner.
+ * <p>
  * Factory class for creating blank instances of the OWL Reasoner.
  * <p>
  * The reasoner can be configured using three properties (set as
@@ -27,17 +29,17 @@ import com.hp.hpl.jena.vocabulary.*;
  * <li><b>ruleThreshold</b> - which limits the number of rules that can be fired on a single 
  * data processing stage to the given number (useful to limit infinite runaways). </li>
  * </ul>
- *
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-07-10 17:05:14 $
+ * @version $Revision: 1.1 $ on $Date: 2003-07-10 17:05:14 $
  */
-public class OWLFBRuleReasonerFactory implements ReasonerFactory {
+public class OWLExptRuleReasonerFactory implements ReasonerFactory {
     
     /** Single global instance of this factory */
-    private static ReasonerFactory theInstance = new OWLFBRuleReasonerFactory();
+    private static ReasonerFactory theInstance = new OWLExptRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
-    public static final String URI = "http://www.hpl.hp.com/semweb/2003/OWLBRuleReasoner";
+    public static final String URI = "http://www.hpl.hp.com/semweb/2003/OWLExptRuleReasoner";
     
     /** Cache of the capabilities description */
     protected Model capabilities;
@@ -55,7 +57,7 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
      * passed the reasoner encoded within an RDF graph
      */
     public Reasoner create(Resource configuration) {
-        OWLFBRuleReasoner reasoner = new OWLFBRuleReasoner(this);
+        OWLExptRuleReasoner reasoner = new OWLExptRuleReasoner(this);
         if (configuration != null) {
             Boolean doLog = Util.checkBinaryPredicate(ReasonerVocabulary.PROPderivationLogging, configuration);
             if (doLog != null) {
@@ -100,6 +102,7 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     }
     
 }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003
