@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-10-20 13:47:46 $
+ * Last modified on   $Date: 2004-10-20 14:08:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.28 2004-10-20 13:47:46 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.29 2004-10-20 14:08:55 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
