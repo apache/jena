@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTreeGenerator.java,v 1.4 2004-08-17 15:15:08 chris-dollin Exp $
+  $Id: RegexpTreeGenerator.java,v 1.5 2004-08-18 11:31:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -76,6 +76,12 @@ public interface RegexpTreeGenerator
          expression, and matching the empty string).
     */
     public abstract RegexpTree getNothing();
+
+    /**
+         Answer a RegexpTree that encodes a match which accepts (reject=false)
+         or rejects (reject=true) any (all) of the characters in <code>chars</code>.
+    */
+    public abstract RegexpTree getClass( String chars, boolean reject );
     }
 
 /*

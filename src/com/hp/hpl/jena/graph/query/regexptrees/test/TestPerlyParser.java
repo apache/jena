@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.7 2004-08-17 19:03:35 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.8 2004-08-18 11:32:53 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -63,10 +63,7 @@ public class TestPerlyParser extends GraphTestBase
         }
     
     public void testEmptyExpression()
-        {
-        PerlPatternParser p = new PerlPatternParser( "" );
-        assertEquals( new Nothing(), p.parseAtom() );
-        }
+        { assertEquals( new Nothing(), element( "" ) ); }
     
     public void testDotAtom()
         { testSimpleSpecialAtom( RegexpTree.ANY, "." ); }
@@ -86,43 +83,78 @@ public class TestPerlyParser extends GraphTestBase
     
     public void testTerminatorsReturnNull()
         {
-        assertEquals( new Nothing(), new PerlPatternParser( "|" ).parseAtom() );
+        assertEquals( new Nothing(), element( "|" ) );
         }
     
-    public void testBackslashedAtomsUnimplemented()
+    public void testSimpleBackslashEscapes()
         {
-        PerlPatternParser p = new PerlPatternParser( "\\" );
-        try { p.parseAtom(); fail( "should be unimplemented at the moment" ); }
-        catch (PerlPatternParser.SyntaxException e) { pass(); }
+        for (char ch = 0; ch < 256; ch += 1)
+            {
+            if ("bBAZnrtfdDwWSsxc0123456789".indexOf( ch ) < 0)
+                assertEquals( new Text( "" + ch ), new PerlPatternParser( "\\" + ch ).parseAtom() ); 
+            }    
+        }
+    
+    public void testSpecialBackslashEscapes()
+        {
+        String specials = "bBAZxc0123456789";
+        for (int i = 0; i < specials.length(); i += 1)
+            try {new PerlPatternParser( "\\" + specials.charAt(i) ).parseAtom(); fail( "backslash escape " + specials.charAt(i) ); }
+            catch (PerlPatternParser.SyntaxException e)
+                { pass(); }    
+        }
+    
+    public void testWordEscapes()
+        {
+        String letters = "abcdefghijklmnopqrstuvwxyz";
+        String wordChars = "0123456789" + letters + "_" + letters.toUpperCase();
+        assertEquals( new AnyOf( wordChars ), element( "\\w" ) );
+        assertEquals( new NoneOf( wordChars ), element( "\\W" ) );
+        }
+    
+    public void testDigitEscapes()
+        {
+        assertEquals( new AnyOf( "0123456789" ), element( "\\d" ) );
+        assertEquals( new NoneOf( "0123456789" ), element( "\\D" ) );
+        }
+    
+    public void testWhitespaceEscapes()
+        {
+        assertEquals( new Text( "\n" ), element( "\\n" ) );
+        assertEquals( new Text( "\t" ), element( "\\t" ) );
+        assertEquals( new Text( "\f" ), element( "\\f" ) );
+        assertEquals( new Text( "\r" ), element( "\\r" ) );
+        assertEquals( new AnyOf( " \r\n\t\f"), element( "\\s" ) );
+        assertEquals( new NoneOf( " \r\n\t\f" ), element( "\\S" ) );
         }
     
     public void testNoQuantifier()
         {
         RegexpTree d = RegexpTree.ANY;
-        assertSame( d, new PerlPatternParser( "" ).parseQuantifier( d ) );
-        assertSame( d, new PerlPatternParser( "x" ).parseQuantifier( d ) );
-        assertSame( d, new PerlPatternParser( "[" ).parseQuantifier( d ) );
-        assertSame( d, new PerlPatternParser( "(" ).parseQuantifier( d ) );
-        assertSame( d, new PerlPatternParser( "." ).parseQuantifier( d ) );
-        assertSame( d, new PerlPatternParser( "\\" ).parseQuantifier( d ) );
+        assertSame( d, quantifier( "", d ) );
+        assertSame( d, quantifier( "x", d ) );
+        assertSame( d, quantifier( "[", d ) );
+        assertSame( d, quantifier( "(", d ) );
+        assertSame( d, quantifier( ".", d ) );
+        assertSame( d, quantifier( "\\", d ) );
         }
     
     public void testStarQuantifier()
         {
         RegexpTree d = RegexpTree.EOL;
-        assertEquals( new ZeroOrMore( d ), new PerlPatternParser( "*" ).parseQuantifier( d ) );
+        assertEquals( new ZeroOrMore( d ), quantifier( "*", d ) );
         }
     
     public void testPlusQuantifier()
         {
         RegexpTree d = RegexpTree.SOL;
-        assertEquals( new OneOrMore( d ), new PerlPatternParser( "+" ).parseQuantifier( d ) );
+        assertEquals( new OneOrMore( d ), quantifier( "+", d ) );
         }
 
     public void testQueryQuantifier()
         {
         RegexpTree d = RegexpTree.ANY;
-        assertEquals( new Optional( d ), new PerlPatternParser( "?" ).parseQuantifier( d ) );
+        assertEquals( new Optional( d ), quantifier( "?", d ) );
         }
     
     public void testUnboundQuantifiers()
@@ -196,6 +228,12 @@ public class TestPerlyParser extends GraphTestBase
         assertEquals( wanted, p.parseAtom() );
         assertEquals( 1, p.getPointer() );
         }
+    
+    protected RegexpTree quantifier( String toParse, RegexpTree x )
+        { return new PerlPatternParser( toParse ).parseQuantifier( x ); }
+    
+    protected RegexpTree element( String toParse )
+        { return new PerlPatternParser( toParse ).parseElement(); }
     }
 
 

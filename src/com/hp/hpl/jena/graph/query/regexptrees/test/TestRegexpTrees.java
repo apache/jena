@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestRegexpTrees.java,v 1.1 2004-08-16 19:47:00 chris-dollin Exp $
+  $Id: TestRegexpTrees.java,v 1.2 2004-08-18 11:32:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees.test;
@@ -32,7 +32,11 @@ public class TestRegexpTrees extends GraphTestBase
             { new AnySingle(), "ANY" },
             { new AnySingle(), "ANY" },
             { new Text( "hello" ), "hello" },
-            { new Text( "goodbye" ), "goodbye" }
+            { new Text( "goodbye" ), "goodbye" },
+            { new AnyOf( "abcde" ), "any[abcde]" },
+            { new AnyOf( "defgh" ), "any[defgh]" },
+            { new NoneOf( "pqrst" ), "none[pqrst]" },
+            { new NoneOf( "12345" ), "none[12345]" }
         };
     
     public void testEqualities()
@@ -43,7 +47,7 @@ public class TestRegexpTrees extends GraphTestBase
                 Object [] A = equalities[i], B = equalities[j];
                 boolean equal = A[1].equals( B[1] );
                 if (A[0].equals( B[0] ) != equal )
-                    fail( A[0] + "should be " + (equal ? "equal to" : "different from") + B[0] );
+                    fail( A[0] + " should be " + (equal ? "equal to " : "different from ") + B[0] );
                 }
         }
     

@@ -1,31 +1,29 @@
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
-    [See end of file]
-    $Id: SimpleGenerator.java,v 1.5 2004-08-18 11:31:54 chris-dollin Exp $
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  [See end of file]
+  $Id: AnyOf.java,v 1.1 2004-08-18 11:31:54 chris-dollin Exp $
 */
-
 package com.hp.hpl.jena.graph.query.regexptrees;
 
-import java.util.List;
-
 /**
-     The base implementation of <code>RegexpTreeGenerator</code>
- 	@author hedgehog
+     AnyOf - a pattern that can match any of a set of specific characters
+     @author kers
 */
-public class SimpleGenerator implements RegexpTreeGenerator
+public class AnyOf extends RegexpTree
     {
-    public RegexpTree getAnySingle() { return RegexpTree.ANY; }
-    public RegexpTree getStartOfLine() { return RegexpTree.SOL; }
-    public RegexpTree getEndOfLine() { return RegexpTree.EOL; }
-    public RegexpTree getNothing() { return RegexpTree.NON; }
-    public RegexpTree getText( char ch ) { return new Text( "" + ch ); }
-    public RegexpTree getZeroOrMore( RegexpTree d ) { return new ZeroOrMore( d ); }
-    public RegexpTree getOneOrMore( RegexpTree d ) { return new OneOrMore( d ); }
-    public RegexpTree getOptional( RegexpTree d ) { return new Optional( d ); }
-    public RegexpTree getSequence( List operands ) { return Sequence.create( operands ); }
-    public RegexpTree getAlternatives( List operands ) { return Alternatives.create( operands ); }
-    public RegexpTree getClass( String chars, boolean reject ) 
-        { return reject ? (RegexpTree) new NoneOf( chars ) : new AnyOf( chars ); }
+    protected String possibles;
+    
+    public AnyOf( String possibles )
+        { this.possibles = possibles; }
+    
+    public boolean equals( Object other )
+        { return other instanceof AnyOf && possibles.equals( ((AnyOf) other).possibles ); }
+    
+    public int hashCode()
+        { return possibles.hashCode(); }
+    
+    public String toString()
+        { return "<anyof '" + possibles + "'>"; }
     }
 
 /*
