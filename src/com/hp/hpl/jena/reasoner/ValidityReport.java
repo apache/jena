@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ValidityReport.java,v 1.10 2005-02-21 12:16:17 andy_seaborne Exp $
+ * $Id: ValidityReport.java,v 1.11 2005-02-23 11:40:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,15 +17,16 @@ import java.util.Iterator;
  * each of which has a severity, a type (string) and a description (string).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-02-21 12:16:17 $
+ * @version $Revision: 1.11 $ on $Date: 2005-02-23 11:40:44 $
  */
 public interface ValidityReport {
     
     /**
-     * Returns true if no logical inconsistencies were detected (in which case
-     * there will be at least one error Report included). Warnings may still
+     * Returns true if no logical inconsistencies were detected. If it is false
+     * then ether will be at least one error Report included. If it is true
+     * then warnings may still
      * be present. As of Jena 2.2 we regard classes which can't be instantiated
-     * as warnings rather than errors. 
+     * as warnings (of type 'Inconsistent class') rather than errors. 
      */
     public boolean isValid();
     
