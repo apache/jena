@@ -14,13 +14,14 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 
 /**
+ * Transform DOM nodes of RDF.XML into Jena Models.
  * @author Jeremy J. Carroll
  *  
  */
 public class DOM2Model extends SAX2Model {
 
 	/**
-	 * Factory method to create a new SAX2RDF.
+	 * Create a new DOM2Model.
 	 * 
 	 * @param base
 	 *            The retrieval URL, or the base URI to be used while parsing.
@@ -29,7 +30,6 @@ public class DOM2Model extends SAX2Model {
 	 *            it is null, then use {@link #getHandlers}or
 	 *            {@link #setHandlersWith}to provide a {@link StatementHandler},
 	 *            and usually an {@link org.xml.sax.ErrorHandler}
-	 * @return A new SAX2RDF
 	 * @throws MalformedURIException
 	 */
 	public DOM2Model(String base, Model m) throws MalformedURIException {
@@ -37,7 +37,7 @@ public class DOM2Model extends SAX2Model {
 	}
 
 	/**
-	 * Factory method to create a new SAX2RDF. This is particularly intended for
+	 * Create a new DOM2Model. This is particularly intended for
 	 * when parsing a non-root element within an XML document. In which case the
 	 * application needs to find this value in the outer context. Optionally,
 	 * namespace prefixes can be passed from the outer context using
@@ -53,14 +53,17 @@ public class DOM2Model extends SAX2Model {
 	 * @param lang
 	 *            The current value of <code>xml:lang</code> when parsing
 	 *            starts, usually "".
-	 * @return A new SAX2RDF
 	 * @throws MalformedURIException
 	 */
 	public DOM2Model(String base, Model m, String lang)
 			throws MalformedURIException {
 		super(base, m, lang);
 	}
-
+/**
+ * Parse a DOM Node with the RDF/XML parser, loading
+ * the triples into the associated Model.
+ * @param document
+ */
 	public void load(Node document) {
 		Source input = new DOMSource(document);
 

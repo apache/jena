@@ -240,6 +240,32 @@ on your SAX source.</li>
 </ol>
 
 <h2><a name="dom">8. Using a DOM as Input</a></h2>
+<h3><a name="domJena">8.1 Using a DOM as Input to Jena</a></h3>
+<p>
+The 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/DOM2Model.html">DOM2Model</A> 
+subclass of SAX2Model, allows the parsing of a DOM using ARP.
+The procedure to follow is:
+</p>
+<ul>
+<li>Construct a DOM2Model, using a constructor,
+specifying the xml:base of the document to be loaded,
+the Model to load into, optionally the xml:lang value
+(particularly useful if using a DOM Node from within a Document).</li>
+<li>Set any properties, error handlers etc. on the DOM2Model object.</li>
+<li>
+The DOM is parsed simply by calling the
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/DOM2Model.html#load(org.w3c.dom.Node)">load(Node)</A>
+method.</li>
+</ul> 
+
+<p>This class is not supported for Java 1.3, use the approach below.</p>
+
+
+<h3><a name="domNotJena">8.2 Using a DOM as Input to ARP</a></h3>
+<p>
+The implementation with Jena is based on the following:
+</p>
 <p>
 A DOM can be transformed into a SAX stream using the
 recipe found in 
@@ -280,6 +306,9 @@ reproduced here:
 		// Use Model
 		m.write(System.out, "N-TRIPLE");
 </pre>
-
+<p>
+The same technique can be use with SAX2RDF rather than SAX2Model to 
+use a DOM as input to ARP with your own statement handler.
+</p>
  </BODY>
 </HTML>
