@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestScope.java,v 1.2 2003-12-07 10:18:44 jeremy_carroll Exp $
+  $Id: TestScope.java,v 1.3 2003-12-08 17:44:27 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
@@ -33,9 +33,12 @@ public class TestScope extends TestCase {
 		check("testing/arp/scope/test03.rdf");
 	}
 	
-	
+
 	public void test04() throws Exception {
 		check("testing/arp/scope/test04.rdf");
+	}
+	public void test05() throws Exception {
+	//	check("testing/arp/scope/test05.rdf");
 	}
 	RDFErrorHandler suppress = new RDFErrorHandler(){
 
