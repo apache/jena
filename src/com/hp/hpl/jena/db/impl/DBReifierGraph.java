@@ -25,7 +25,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -34,7 +34,9 @@ public class DBReifierGraph implements Graph {
 	
 	/**
 	 * Construct a new DBReifierGraph
-	 * @param reifier is the specialized graph which holds the reified triples.
+	 * 
+	 * @param reifiers List of SpecializedGraphReifers which holds the reified triples.  This
+	 * list may be empty and, in that case, the DBReifierGraph just appears to hold no triples.
 	 */
 	public DBReifierGraph( GraphRDB parent, List reifiers) {
 	
@@ -103,16 +105,13 @@ public class DBReifierGraph implements Graph {
 	public ExtendedIterator find(TripleMatch m) {
 		if(m_specializedGraphs == null)
 			throw new RDFRDBException("Error - attempt to call find on a Graph that has already been closed");
-		ExtendedIterator result = null;
+		ExtendedIterator result = new NiceIterator();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
 			ExtendedIterator partialResult = sg.find( m, complete);
-			if( result == null)
-				result = partialResult;
-			else
-				result = result.andThen(partialResult);
+			result = result.andThen(partialResult);
 			if( complete.isDone())
 				break;
 		}
