@@ -31,6 +31,7 @@
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.graph.FrontsNode;
 import com.hp.hpl.jena.graph.Node;
 /** An RDF Resource or an RDF Literal.
  *
@@ -39,9 +40,10 @@ import com.hp.hpl.jena.graph.Node;
  * <p>Chris added the _as_ method to allow RDFNodes to participate in polymorphic
  * conversions.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-08-27 13:05:52 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-11-20 16:53:24 $'
  */
-public interface RDFNode {
+public interface RDFNode extends FrontsNode
+{
     /** Return a String representation of the node.  The form of the string depends
      * on the type of the node.
      * @return a String representation of this object.
@@ -49,19 +51,12 @@ public interface RDFNode {
     public String toString();
     
     /**
-        a presentation-layer RDFNode is build on top of an SPI-layer Node; get it.
-    */
-    public Node asNode();
-    
-    /**
         RDFNodes can be converted to different implementation types. Convert
-        this RDFNode to a type supporting the _view_ interface. The resulting
-        RDFNode should be an instance of _view_ and should have any
-        internal invariants specified.
+        this RDFNode to a type supporting the <code>view</code>interface. The 
+        resulting RDFNode should be an instance of <code>view</code> and should 
+        have any internal invariants as specified.
     <p>
-        It is not clear what should happen if this RDFNode cannot be viewed as
-        a _view_. Should it deliver null or should it throw an exception? Or
-        deliver a half-baked instance?
+        If the RDFNode cannot be converted, an exception is thrown.
     */
     public RDFNode as( Class view );
     

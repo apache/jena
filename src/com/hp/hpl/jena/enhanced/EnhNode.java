@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.7 2003-08-27 12:59:37 andy_seaborne Exp $
+  $Id: EnhNode.java,v 1.8 2003-11-20 16:53:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -84,12 +84,10 @@ public class EnhNode
     }
        
     /**
-     * An enhanced node is equal to another node n iff:
-     * <ul>
-     * <li>n is identical to <i>this</i></li>
-     * <li>n has a facets map that is identical to the facets map on <i>this</i></li>
-     * <li>the underlying nodes are equal</li>
-     * </ul>
+     * An enhanced node is equal to another enhanced node n iff the underlying 
+     * nodes are equal. We generalise to allow the other object to be any class
+     * implementing HasNode, because we allow other implemementations of
+     * Resource than EnhNodes, at least in principle.
      * This is deemed to be a complete and correct interpretation of enhanced node
      * equality, which is why this method has been marked final.
      * 
@@ -97,7 +95,7 @@ public class EnhNode
      * @return True if o is equal to this node.
      */
     final public boolean equals( Object o )
-        { return o instanceof EnhNode && node.equals(((EnhNode) o).asNode()); }
+        { return o instanceof FrontsNode && node.equals(((FrontsNode) o).asNode()); }
     
     public boolean isValid()
         { return true; }
