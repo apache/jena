@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: ClassHierarchy.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-26 14:29:36 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2003-09-02 14:48:50 $
+ *               by   $Author: ian_dickinson $
  *
  *****************************************************************************/
 
@@ -31,12 +31,14 @@ import java.util.*;
 
 /**
  * <p>
- * Simple demonstration program to show how to list a hierarchy of classes
+ * Simple demonstration program to show how to list a hierarchy of classes. This
+ * is not a complete solution to the problem (sub-classes of restrictions, for example,
+ * are not shown).  It is inteded only to be illustrative of the general approach.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassHierarchy.java,v 1.1 2003-08-26 14:29:36 der Exp $
+ * @version CVS $Id: ClassHierarchy.java,v 1.2 2003-09-02 14:48:50 ian_dickinson Exp $
  */
 public class ClassHierarchy {
     // Constants

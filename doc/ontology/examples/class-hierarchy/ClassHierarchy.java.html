@@ -24,10 +24,10 @@
 <A NAME="7"></A> * Web                http://sourceforge.net/projects/jena/
 <A NAME="8"></A> * Created            27-Mar-2003
 <A NAME="9"></A> * Filename           $RCSfile: ClassHierarchy.java.html,v $
-<A NAME="10"></A> * Revision           $Revision: 1.1 $
+<A NAME="10"></A> * Revision           $Revision: 1.2 $
 <A NAME="11"></A> * Release status     $State: Exp $
 <A NAME="12"></A> *
-<A NAME="13"></A> * Last modified on   $Date: 2003-08-28 13:18:38 $
+<A NAME="13"></A> * Last modified on   $Date: 2003-09-02 14:48:50 $
 <A NAME="14"></A> *               by   $Author: ian_dickinson $
 <A NAME="15"></A> *
 <A NAME="16"></A> *****************************************************************************/</FONT>
@@ -48,171 +48,173 @@
 <A NAME="31"></A>
 <A NAME="32"></A><FONT ID="FormalComment">/**
 <A NAME="33"></A> * &lt;p&gt;
-<A NAME="34"></A> * Simple demonstration program to show how to list a hierarchy of classes
-<A NAME="35"></A> * &lt;/p&gt;
-<A NAME="36"></A> *
-<A NAME="37"></A> * @author Ian Dickinson, HP Labs
-<A NAME="38"></A> *         (&lt;a  href="mailto:Ian.Dickinson@hp.com" &gt;email&lt;/a&gt;)
-<A NAME="39"></A> * @version CVS $Id: ClassHierarchy.java.html,v 1.1 2003-08-28 13:18:38 ian_dickinson Exp $
-<A NAME="40"></A> */</FONT>
-<A NAME="41"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ClassHierarchy {
-<A NAME="42"></A>    <FONT ID="SingleLineComment">// Constants
-<A NAME="43"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
-<A NAME="44"></A></FONT>
-<A NAME="45"></A>    <FONT ID="SingleLineComment">// Static variables
-<A NAME="46"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
-<A NAME="47"></A></FONT>
-<A NAME="48"></A>    <FONT ID="SingleLineComment">// Instance variables
-<A NAME="49"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
-<A NAME="50"></A></FONT>
-<A NAME="51"></A>    <FONT ID="Protected">protected</FONT> OntModel m_model;
-<A NAME="52"></A>    <FONT ID="Private">private</FONT> Map m_anonIDs = <FONT ID="New">new</FONT> HashMap();
-<A NAME="53"></A>    <FONT ID="Private">private</FONT> <FONT ID="Int">int</FONT> m_anonCount = <FONT ID="IntegerLiteral">0</FONT>;
-<A NAME="54"></A>    
-<A NAME="55"></A>
-<A NAME="56"></A>
-<A NAME="57"></A>    <FONT ID="SingleLineComment">// Constructors
-<A NAME="58"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
-<A NAME="59"></A></FONT>
-<A NAME="60"></A>    <FONT ID="SingleLineComment">// External signature methods
-<A NAME="61"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
-<A NAME="62"></A></FONT>
-<A NAME="63"></A>    <FONT ID="FormalComment">/** Show the sub-class hierarchy encoded by the given model */</FONT>
-<A NAME="64"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> showHierarchy( PrintStream out, OntModel m ) {
-<A NAME="65"></A>        <FONT ID="For">for</FONT> (Iterator i = rootClasses( m );  i.hasNext();  ) {
-<A NAME="66"></A>            showClass( out, (OntClass) i.next(), <FONT ID="New">new</FONT> ArrayList(), <FONT ID="IntegerLiteral">0</FONT> );
-<A NAME="67"></A>        }
-<A NAME="68"></A>    }
-<A NAME="69"></A>
-<A NAME="70"></A>
-<A NAME="71"></A>    <FONT ID="SingleLineComment">// Internal implementation methods
-<A NAME="72"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
-<A NAME="73"></A></FONT>
-<A NAME="74"></A>    <FONT ID="FormalComment">/** Present a class, then recurse down to the sub-classes.
-<A NAME="75"></A>     *  Use occurs check to prevent getting stuck in a loop
-<A NAME="76"></A>     */</FONT>
-<A NAME="77"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> showClass( PrintStream out, OntClass cls, List occurs, <FONT ID="Int">int</FONT> depth ) {
-<A NAME="78"></A>        renderClassDescription( out, cls, depth );
-<A NAME="79"></A>        out.println();
-<A NAME="80"></A>
-<A NAME="81"></A>        <FONT ID="SingleLineComment">// recurse to the next level down
-<A NAME="82"></A></FONT>        <FONT ID="If">if</FONT> (cls.canAs( OntClass.<FONT ID="Class">class</FONT> )  &amp;&amp;  !occurs.contains( cls )) {
-<A NAME="83"></A>            <FONT ID="For">for</FONT> (Iterator i = cls.listSubClasses( <FONT ID="True">true</FONT> );  i.hasNext(); ) {
-<A NAME="84"></A>                OntClass sub = (OntClass) i.next();
-<A NAME="85"></A>
-<A NAME="86"></A>                <FONT ID="SingleLineComment">// we push this expression on the occurs list before we recurse
-<A NAME="87"></A></FONT>                occurs.add( cls );
-<A NAME="88"></A>                showClass( out, sub, occurs, depth + <FONT ID="IntegerLiteral">1</FONT> );
-<A NAME="89"></A>                occurs.remove( cls );
-<A NAME="90"></A>            }
-<A NAME="91"></A>        }
-<A NAME="92"></A>    }
-<A NAME="93"></A>
-<A NAME="94"></A>
-<A NAME="95"></A>    <FONT ID="FormalComment">/**
-<A NAME="96"></A>     * &lt;p&gt;Render a description of the given class to the given output stream.&lt;/p&gt;
-<A NAME="97"></A>     * @param out A print stream to write to
-<A NAME="98"></A>     * @param c The class to render
-<A NAME="99"></A>     */</FONT>
-<A NAME="100"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> renderClassDescription( PrintStream out, OntClass c, <FONT ID="Int">int</FONT> depth ) {
-<A NAME="101"></A>        indent( out, depth );
-<A NAME="102"></A>        
-<A NAME="103"></A>        <FONT ID="If">if</FONT> (c.isRestriction()) {
-<A NAME="104"></A>            renderRestriction( out, (Restriction) c.as( Restriction.<FONT ID="Class">class</FONT> ) );
-<A NAME="105"></A>        }
-<A NAME="106"></A>        <FONT ID="Else">else</FONT> {
-<A NAME="107"></A>            <FONT ID="If">if</FONT> (!c.isAnon()) {
-<A NAME="108"></A>                out.print( <FONT ID="StringLiteral">"Class "</FONT> );
-<A NAME="109"></A>                renderURI( out, c.getModel(), c.getURI() );
-<A NAME="110"></A>                out.print( <FONT ID="CharacerLiteral">' '</FONT> );
-<A NAME="111"></A>            }
-<A NAME="112"></A>            <FONT ID="Else">else</FONT> {
-<A NAME="113"></A>                renderAnonymous( out, c, <FONT ID="StringLiteral">"class"</FONT> );
-<A NAME="114"></A>            }
-<A NAME="115"></A>        }
-<A NAME="116"></A>    }
-<A NAME="117"></A>
-<A NAME="118"></A>    <FONT ID="FormalComment">/**
-<A NAME="119"></A>     * &lt;p&gt;Handle the case of rendering a restriction.&lt;/p&gt;
-<A NAME="120"></A>     * @param out The print stream to write to
-<A NAME="121"></A>     * @param r The restriction to render
-<A NAME="122"></A>     */</FONT>
-<A NAME="123"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderRestriction( PrintStream out, Restriction r ) {
-<A NAME="124"></A>        <FONT ID="If">if</FONT> (!r.isAnon()) {
-<A NAME="125"></A>            out.print( <FONT ID="StringLiteral">"Restriction "</FONT> );
-<A NAME="126"></A>            renderURI( out, r.getModel(), r.getURI() );
-<A NAME="127"></A>        }
-<A NAME="128"></A>        <FONT ID="Else">else</FONT> {
-<A NAME="129"></A>            renderAnonymous( out, r, <FONT ID="StringLiteral">"restriction"</FONT> );
-<A NAME="130"></A>        }
-<A NAME="131"></A>        
-<A NAME="132"></A>        out.print( <FONT ID="StringLiteral">" on property "</FONT> );
-<A NAME="133"></A>        renderURI( out, r.getModel(), r.getOnProperty().getURI() );
-<A NAME="134"></A>    }
-<A NAME="135"></A>    
-<A NAME="136"></A>    <FONT ID="FormalComment">/** Render a URI */</FONT>
-<A NAME="137"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderURI( PrintStream out, PrefixMapping prefixes, String uri ) {
-<A NAME="138"></A>        out.print( prefixes.usePrefix( uri ) );
-<A NAME="139"></A>    }
-<A NAME="140"></A>    
-<A NAME="141"></A>    <FONT ID="FormalComment">/** Render an anonymous class or restriction */</FONT>
-<A NAME="142"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderAnonymous( PrintStream out, Resource anon, String name ) {
-<A NAME="143"></A>        String anonID = (String) m_anonIDs.get( anon.getId() );
-<A NAME="144"></A>        <FONT ID="If">if</FONT> (anonID == <FONT ID="Null">null</FONT>) {
-<A NAME="145"></A>            anonID = <FONT ID="StringLiteral">"a-"</FONT> + m_anonCount++;
-<A NAME="146"></A>            m_anonIDs.put( anon.getId(), anonID );
-<A NAME="147"></A>        }
-<A NAME="148"></A>        
-<A NAME="149"></A>        out.print( <FONT ID="StringLiteral">"Anonymous "</FONT>);
-<A NAME="150"></A>        out.print( name );
-<A NAME="151"></A>        out.print( <FONT ID="StringLiteral">" with ID "</FONT> );
-<A NAME="152"></A>        out.print( anonID );
-<A NAME="153"></A>    }
-<A NAME="154"></A>    
-<A NAME="155"></A>    <FONT ID="FormalComment">/** Generate the indentation */</FONT>
-<A NAME="156"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> indent( PrintStream out, <FONT ID="Int">int</FONT> depth ) {
-<A NAME="157"></A>        <FONT ID="For">for</FONT> (<FONT ID="Int">int</FONT> i = <FONT ID="IntegerLiteral">0</FONT>;  i &lt; depth; i++) {
-<A NAME="158"></A>            out.print( <FONT ID="StringLiteral">"  "</FONT> );
-<A NAME="159"></A>        }
-<A NAME="160"></A>    }
-<A NAME="161"></A>
-<A NAME="162"></A>    <FONT ID="FormalComment">/**
-<A NAME="163"></A>     * Answer an iterator over the classes we will use as the roots of the depicted
-<A NAME="164"></A>     * hierarchy.  We use named classes that either have Thing as a direct super-class,
-<A NAME="165"></A>     * or which have no declared super-classes.  The first condition is helpful if
-<A NAME="166"></A>     * using a reasoner, the second otherwise.
-<A NAME="167"></A>     * @param m A model
-<A NAME="168"></A>     * @return An iterator over the named class hierarchy roots in m
-<A NAME="169"></A>     */</FONT>
-<A NAME="170"></A>    <FONT ID="Protected">protected</FONT> Iterator rootClasses( OntModel m ) {
-<A NAME="171"></A>        List roots = <FONT ID="New">new</FONT> ArrayList();
-<A NAME="172"></A>        
-<A NAME="173"></A>        <FONT ID="For">for</FONT> (Iterator i = m.listClasses();  i.hasNext(); ) {
-<A NAME="174"></A>            OntClass c = (OntClass) i.next();
-<A NAME="175"></A>            
-<A NAME="176"></A>            <FONT ID="SingleLineComment">// too confusing to list all the restrictions as root classes 
-<A NAME="177"></A></FONT>            <FONT ID="If">if</FONT> (c.isAnon()) {
-<A NAME="178"></A>                <FONT ID="Continue">continue</FONT>;
-<A NAME="179"></A>            }
-<A NAME="180"></A>            
-<A NAME="181"></A>            <FONT ID="If">if</FONT> (c.hasSuperClass( m.getProfile().THING(), <FONT ID="True">true</FONT> ) ) {
-<A NAME="182"></A>                <FONT ID="SingleLineComment">// this class is directly descended from Thing
-<A NAME="183"></A></FONT>                roots.add( c );
-<A NAME="184"></A>            }
-<A NAME="185"></A>            <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT> (c.getCardinality( m.getProfile().SUB_CLASS_OF() ) == <FONT ID="IntegerLiteral">0</FONT> ) {
-<A NAME="186"></A>                <FONT ID="SingleLineComment">// this class has no super-classes (can occur if we're not using the reasoner)
-<A NAME="187"></A></FONT>                roots.add( c );
-<A NAME="188"></A>            }
-<A NAME="189"></A>        }
-<A NAME="190"></A>        
-<A NAME="191"></A>        <FONT ID="Return">return</FONT> roots.iterator();
-<A NAME="192"></A>    }
-<A NAME="193"></A>
-<A NAME="194"></A>    <FONT ID="SingleLineComment">//==============================================================================
-<A NAME="195"></A></FONT>    <FONT ID="SingleLineComment">// Inner class definitions
-<A NAME="196"></A></FONT>    <FONT ID="SingleLineComment">//==============================================================================
-<A NAME="197"></A></FONT>
-<A NAME="198"></A>}
-<A NAME="199"></A></pre>
+<A NAME="34"></A> * Simple demonstration program to show how to list a hierarchy of classes. This
+<A NAME="35"></A> * is not a complete solution to the problem (sub-classes of restrictions, for example,
+<A NAME="36"></A> * are not shown).  It is inteded only to be illustrative of the general approach.
+<A NAME="37"></A> * &lt;/p&gt;
+<A NAME="38"></A> *
+<A NAME="39"></A> * @author Ian Dickinson, HP Labs
+<A NAME="40"></A> *         (&lt;a  href="mailto:Ian.Dickinson@hp.com" &gt;email&lt;/a&gt;)
+<A NAME="41"></A> * @version CVS $Id: ClassHierarchy.java.html,v 1.2 2003-09-02 14:48:50 ian_dickinson Exp $
+<A NAME="42"></A> */</FONT>
+<A NAME="43"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ClassHierarchy {
+<A NAME="44"></A>    <FONT ID="SingleLineComment">// Constants
+<A NAME="45"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="46"></A></FONT>
+<A NAME="47"></A>    <FONT ID="SingleLineComment">// Static variables
+<A NAME="48"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="49"></A></FONT>
+<A NAME="50"></A>    <FONT ID="SingleLineComment">// Instance variables
+<A NAME="51"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="52"></A></FONT>
+<A NAME="53"></A>    <FONT ID="Protected">protected</FONT> OntModel m_model;
+<A NAME="54"></A>    <FONT ID="Private">private</FONT> Map m_anonIDs = <FONT ID="New">new</FONT> HashMap();
+<A NAME="55"></A>    <FONT ID="Private">private</FONT> <FONT ID="Int">int</FONT> m_anonCount = <FONT ID="IntegerLiteral">0</FONT>;
+<A NAME="56"></A>    
+<A NAME="57"></A>
+<A NAME="58"></A>
+<A NAME="59"></A>    <FONT ID="SingleLineComment">// Constructors
+<A NAME="60"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="61"></A></FONT>
+<A NAME="62"></A>    <FONT ID="SingleLineComment">// External signature methods
+<A NAME="63"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="64"></A></FONT>
+<A NAME="65"></A>    <FONT ID="FormalComment">/** Show the sub-class hierarchy encoded by the given model */</FONT>
+<A NAME="66"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> showHierarchy( PrintStream out, OntModel m ) {
+<A NAME="67"></A>        <FONT ID="For">for</FONT> (Iterator i = rootClasses( m );  i.hasNext();  ) {
+<A NAME="68"></A>            showClass( out, (OntClass) i.next(), <FONT ID="New">new</FONT> ArrayList(), <FONT ID="IntegerLiteral">0</FONT> );
+<A NAME="69"></A>        }
+<A NAME="70"></A>    }
+<A NAME="71"></A>
+<A NAME="72"></A>
+<A NAME="73"></A>    <FONT ID="SingleLineComment">// Internal implementation methods
+<A NAME="74"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="75"></A></FONT>
+<A NAME="76"></A>    <FONT ID="FormalComment">/** Present a class, then recurse down to the sub-classes.
+<A NAME="77"></A>     *  Use occurs check to prevent getting stuck in a loop
+<A NAME="78"></A>     */</FONT>
+<A NAME="79"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> showClass( PrintStream out, OntClass cls, List occurs, <FONT ID="Int">int</FONT> depth ) {
+<A NAME="80"></A>        renderClassDescription( out, cls, depth );
+<A NAME="81"></A>        out.println();
+<A NAME="82"></A>
+<A NAME="83"></A>        <FONT ID="SingleLineComment">// recurse to the next level down
+<A NAME="84"></A></FONT>        <FONT ID="If">if</FONT> (cls.canAs( OntClass.<FONT ID="Class">class</FONT> )  &amp;&amp;  !occurs.contains( cls )) {
+<A NAME="85"></A>            <FONT ID="For">for</FONT> (Iterator i = cls.listSubClasses( <FONT ID="True">true</FONT> );  i.hasNext(); ) {
+<A NAME="86"></A>                OntClass sub = (OntClass) i.next();
+<A NAME="87"></A>
+<A NAME="88"></A>                <FONT ID="SingleLineComment">// we push this expression on the occurs list before we recurse
+<A NAME="89"></A></FONT>                occurs.add( cls );
+<A NAME="90"></A>                showClass( out, sub, occurs, depth + <FONT ID="IntegerLiteral">1</FONT> );
+<A NAME="91"></A>                occurs.remove( cls );
+<A NAME="92"></A>            }
+<A NAME="93"></A>        }
+<A NAME="94"></A>    }
+<A NAME="95"></A>
+<A NAME="96"></A>
+<A NAME="97"></A>    <FONT ID="FormalComment">/**
+<A NAME="98"></A>     * &lt;p&gt;Render a description of the given class to the given output stream.&lt;/p&gt;
+<A NAME="99"></A>     * @param out A print stream to write to
+<A NAME="100"></A>     * @param c The class to render
+<A NAME="101"></A>     */</FONT>
+<A NAME="102"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> renderClassDescription( PrintStream out, OntClass c, <FONT ID="Int">int</FONT> depth ) {
+<A NAME="103"></A>        indent( out, depth );
+<A NAME="104"></A>        
+<A NAME="105"></A>        <FONT ID="If">if</FONT> (c.isRestriction()) {
+<A NAME="106"></A>            renderRestriction( out, (Restriction) c.as( Restriction.<FONT ID="Class">class</FONT> ) );
+<A NAME="107"></A>        }
+<A NAME="108"></A>        <FONT ID="Else">else</FONT> {
+<A NAME="109"></A>            <FONT ID="If">if</FONT> (!c.isAnon()) {
+<A NAME="110"></A>                out.print( <FONT ID="StringLiteral">"Class "</FONT> );
+<A NAME="111"></A>                renderURI( out, c.getModel(), c.getURI() );
+<A NAME="112"></A>                out.print( <FONT ID="CharacerLiteral">' '</FONT> );
+<A NAME="113"></A>            }
+<A NAME="114"></A>            <FONT ID="Else">else</FONT> {
+<A NAME="115"></A>                renderAnonymous( out, c, <FONT ID="StringLiteral">"class"</FONT> );
+<A NAME="116"></A>            }
+<A NAME="117"></A>        }
+<A NAME="118"></A>    }
+<A NAME="119"></A>
+<A NAME="120"></A>    <FONT ID="FormalComment">/**
+<A NAME="121"></A>     * &lt;p&gt;Handle the case of rendering a restriction.&lt;/p&gt;
+<A NAME="122"></A>     * @param out The print stream to write to
+<A NAME="123"></A>     * @param r The restriction to render
+<A NAME="124"></A>     */</FONT>
+<A NAME="125"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderRestriction( PrintStream out, Restriction r ) {
+<A NAME="126"></A>        <FONT ID="If">if</FONT> (!r.isAnon()) {
+<A NAME="127"></A>            out.print( <FONT ID="StringLiteral">"Restriction "</FONT> );
+<A NAME="128"></A>            renderURI( out, r.getModel(), r.getURI() );
+<A NAME="129"></A>        }
+<A NAME="130"></A>        <FONT ID="Else">else</FONT> {
+<A NAME="131"></A>            renderAnonymous( out, r, <FONT ID="StringLiteral">"restriction"</FONT> );
+<A NAME="132"></A>        }
+<A NAME="133"></A>        
+<A NAME="134"></A>        out.print( <FONT ID="StringLiteral">" on property "</FONT> );
+<A NAME="135"></A>        renderURI( out, r.getModel(), r.getOnProperty().getURI() );
+<A NAME="136"></A>    }
+<A NAME="137"></A>    
+<A NAME="138"></A>    <FONT ID="FormalComment">/** Render a URI */</FONT>
+<A NAME="139"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderURI( PrintStream out, PrefixMapping prefixes, String uri ) {
+<A NAME="140"></A>        out.print( prefixes.usePrefix( uri ) );
+<A NAME="141"></A>    }
+<A NAME="142"></A>    
+<A NAME="143"></A>    <FONT ID="FormalComment">/** Render an anonymous class or restriction */</FONT>
+<A NAME="144"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderAnonymous( PrintStream out, Resource anon, String name ) {
+<A NAME="145"></A>        String anonID = (String) m_anonIDs.get( anon.getId() );
+<A NAME="146"></A>        <FONT ID="If">if</FONT> (anonID == <FONT ID="Null">null</FONT>) {
+<A NAME="147"></A>            anonID = <FONT ID="StringLiteral">"a-"</FONT> + m_anonCount++;
+<A NAME="148"></A>            m_anonIDs.put( anon.getId(), anonID );
+<A NAME="149"></A>        }
+<A NAME="150"></A>        
+<A NAME="151"></A>        out.print( <FONT ID="StringLiteral">"Anonymous "</FONT>);
+<A NAME="152"></A>        out.print( name );
+<A NAME="153"></A>        out.print( <FONT ID="StringLiteral">" with ID "</FONT> );
+<A NAME="154"></A>        out.print( anonID );
+<A NAME="155"></A>    }
+<A NAME="156"></A>    
+<A NAME="157"></A>    <FONT ID="FormalComment">/** Generate the indentation */</FONT>
+<A NAME="158"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> indent( PrintStream out, <FONT ID="Int">int</FONT> depth ) {
+<A NAME="159"></A>        <FONT ID="For">for</FONT> (<FONT ID="Int">int</FONT> i = <FONT ID="IntegerLiteral">0</FONT>;  i &lt; depth; i++) {
+<A NAME="160"></A>            out.print( <FONT ID="StringLiteral">"  "</FONT> );
+<A NAME="161"></A>        }
+<A NAME="162"></A>    }
+<A NAME="163"></A>
+<A NAME="164"></A>    <FONT ID="FormalComment">/**
+<A NAME="165"></A>     * Answer an iterator over the classes we will use as the roots of the depicted
+<A NAME="166"></A>     * hierarchy.  We use named classes that either have Thing as a direct super-class,
+<A NAME="167"></A>     * or which have no declared super-classes.  The first condition is helpful if
+<A NAME="168"></A>     * using a reasoner, the second otherwise.
+<A NAME="169"></A>     * @param m A model
+<A NAME="170"></A>     * @return An iterator over the named class hierarchy roots in m
+<A NAME="171"></A>     */</FONT>
+<A NAME="172"></A>    <FONT ID="Protected">protected</FONT> Iterator rootClasses( OntModel m ) {
+<A NAME="173"></A>        List roots = <FONT ID="New">new</FONT> ArrayList();
+<A NAME="174"></A>        
+<A NAME="175"></A>        <FONT ID="For">for</FONT> (Iterator i = m.listClasses();  i.hasNext(); ) {
+<A NAME="176"></A>            OntClass c = (OntClass) i.next();
+<A NAME="177"></A>            
+<A NAME="178"></A>            <FONT ID="SingleLineComment">// too confusing to list all the restrictions as root classes 
+<A NAME="179"></A></FONT>            <FONT ID="If">if</FONT> (c.isAnon()) {
+<A NAME="180"></A>                <FONT ID="Continue">continue</FONT>;
+<A NAME="181"></A>            }
+<A NAME="182"></A>            
+<A NAME="183"></A>            <FONT ID="If">if</FONT> (c.hasSuperClass( m.getProfile().THING(), <FONT ID="True">true</FONT> ) ) {
+<A NAME="184"></A>                <FONT ID="SingleLineComment">// this class is directly descended from Thing
+<A NAME="185"></A></FONT>                roots.add( c );
+<A NAME="186"></A>            }
+<A NAME="187"></A>            <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT> (c.getCardinality( m.getProfile().SUB_CLASS_OF() ) == <FONT ID="IntegerLiteral">0</FONT> ) {
+<A NAME="188"></A>                <FONT ID="SingleLineComment">// this class has no super-classes (can occur if we're not using the reasoner)
+<A NAME="189"></A></FONT>                roots.add( c );
+<A NAME="190"></A>            }
+<A NAME="191"></A>        }
+<A NAME="192"></A>        
+<A NAME="193"></A>        <FONT ID="Return">return</FONT> roots.iterator();
+<A NAME="194"></A>    }
+<A NAME="195"></A>
+<A NAME="196"></A>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="197"></A></FONT>    <FONT ID="SingleLineComment">// Inner class definitions
+<A NAME="198"></A></FONT>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="199"></A></FONT>
+<A NAME="200"></A>}
+<A NAME="201"></A></pre>
 </BODY>
 </HTML>
