@@ -1,12 +1,13 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NodePersonality.java,v 1.1.1.1 2002-12-19 19:13:10 bwm Exp $
+  $Id: NodePersonality.java,v 1.2 2003-08-04 14:09:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
 /**
+    Personalities for nodes.
  * @author jjc + kers
 */
 public class NodePersonality extends Personality {
@@ -15,7 +16,7 @@ public class NodePersonality extends Personality {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

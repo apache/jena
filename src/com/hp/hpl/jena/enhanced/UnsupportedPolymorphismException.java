@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: UnsupportedPolymorphismException.java,v 1.1 2003-05-19 12:21:01 chris-dollin Exp $
+  $Id: UnsupportedPolymorphismException.java,v 1.2 2003-08-04 14:09:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -9,8 +9,6 @@ package com.hp.hpl.jena.enhanced;
 import com.hp.hpl.jena.shared.JenaException;
 
 /**
- 	@author hedgehog
-
     Exception to throw if an enhanced graph does not support polymorphism
     to a specific class. The exception records the "bad" class and graph for
     later reporting.

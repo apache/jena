@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.24 2003-07-30 13:28:24 chris-dollin Exp $
+  $Id: BuiltinPersonalities.java,v 1.25 2003-08-04 14:09:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -16,6 +16,9 @@ import java.io.*;
 import java.util.*;
 
 /**
+    The personailities that are provided for the existing Jena classes. It is likely that this
+    should be factored.
+    
 	@author jjc + kers
 */
 public class BuiltinPersonalities {
@@ -96,7 +99,7 @@ public class BuiltinPersonalities {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,12 +1,13 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphPersonality.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: GraphPersonality.java,v 1.3 2003-08-04 14:09:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
 /**
+    Personalities for Graphs. Possibly premature. Or is that NodePersonality?
 	@author jjc + kers
 */
 
@@ -37,7 +38,7 @@ public class GraphPersonality extends Personality {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
