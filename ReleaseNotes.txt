@@ -11,6 +11,9 @@ Post Jena 2.1 bug fix list
       o Fixed bug in hide() table not being carried across from prebuilt 
         reasoner caches, which resulted in the prototypical instance of 
         owl:Thing being visible in listIndividuals.
+      o Fixed bug in TransitiveReasoner reported by wangxiao
+      o Changed delete for RETE reasoner to be non-incremental to work around
+        bug without demand full reference counting
       
       
 Jena 2.1 - Main changes from Jena 2.0
