@@ -127,7 +127,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.14 2003-11-11 08:45:52 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.15 2003-11-15 15:51:31 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -443,9 +443,11 @@ xobj(0^^(xsd:nonNegativeInteger),liteInteger):- !.
 xobj(1^^(xsd:nonNegativeInteger),liteInteger):- !.
 xobj(literal,dlInteger).
 xobj(literal,liteInteger).
+xobj(literal,userTypedLiteral).
 xobj(A,A).
 
 dull(_:_).
 dull(literal).
 dull(dlInteger).
 dull(liteInteger).
+dull(userTypedLiteral).

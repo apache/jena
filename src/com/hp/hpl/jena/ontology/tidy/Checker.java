@@ -82,7 +82,22 @@ public class Checker extends AbsChecker {
 			nonMonotoneLevel = Levels.Lite;
 			//Model m = ModelFactory.createModelForGraph(asGraph());
 			Checker m = this;
-
+      
+      final Set toAdd = new HashSet();
+   // Make sure there is a node for every user defined datatype.
+			check(CategorySet.userTypedLiterals, new NodeAction() {
+				public void apply(Node n) {
+					// System.err.println("Found: " + n.getLiteral().toString(true));
+					toAdd.add(Node.createURI(n.getLiteral().getDatatypeURI()) );
+				}
+			});
+	
+	// We have to separate the two phases of this (above and below)
+	// because otherwise we get a concurrent modification of nodes.		
+			Iterator it = toAdd.iterator();
+			while (it.hasNext()) {
+				getCNode( (Node)it.next() );
+			}
 			/*
 			 * Easy problems to check.
 			 */

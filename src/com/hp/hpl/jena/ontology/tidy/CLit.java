@@ -9,17 +9,67 @@ import java.math.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.vocabulary.*;
+import java.util.*;
 
 /**
  * @author jjc
  *
  */
 class CLit extends CBuiltin {
+	static private Set allSchemaTypes = new HashSet();
+	static {  
+		allSchemaTypes.add("float");
+		allSchemaTypes.add("double");
+		allSchemaTypes.add("int");
+		allSchemaTypes.add("long");
+		allSchemaTypes.add("short");
+		allSchemaTypes.add("byte");
+		allSchemaTypes.add("boolean");
+		allSchemaTypes.add("string");
+		allSchemaTypes.add("unsignedByte");
+		allSchemaTypes.add("unsignedShort");
+		allSchemaTypes.add("unsignedInt");
+		allSchemaTypes.add("unsignedLong");
+		allSchemaTypes.add("decimal");
+		allSchemaTypes.add("integer");
+		allSchemaTypes.add("nonPositiveInteger");
+		allSchemaTypes.add("nonNegativeInteger");
+		allSchemaTypes.add("positiveInteger");
+		allSchemaTypes.add("negativeInteger");
+		allSchemaTypes.add("normalizedString");
+		allSchemaTypes.add("anyURI");
+		allSchemaTypes.add("token");
+		allSchemaTypes.add("Name");
+		allSchemaTypes.add("QName");
+		allSchemaTypes.add("language");
+		allSchemaTypes.add("NMTOKEN");
+		allSchemaTypes.add("ENTITIES");
+		allSchemaTypes.add("NMTOKENS");
+		allSchemaTypes.add("ENTITY");
+		allSchemaTypes.add("ID");
+		allSchemaTypes.add("NCName");
+		allSchemaTypes.add("IDREF");
+		allSchemaTypes.add("IDREFS");
+		allSchemaTypes.add("NOTATION");
+		allSchemaTypes.add("hexBinary");
+		allSchemaTypes.add("base64Binary");
+		allSchemaTypes.add("date");
+		allSchemaTypes.add("time");
+		allSchemaTypes.add("dateTime");
+		allSchemaTypes.add("duration");
+		allSchemaTypes.add("gDay");
+		allSchemaTypes.add("gMonth");
+		allSchemaTypes.add("gYear");
+		allSchemaTypes.add("gYearMonth");
+		allSchemaTypes.add("gMonthDay");
+	}
     static final Integer zero = new Integer(0);
     static final Integer one = new Integer(1);
 	CLit(Node n, AbsChecker eg) {
 		super(n, eg, literalCategory(n));
 	}
+	static private String rdfXMLLiteral = RDF.getURI()+"XMLLiteral";
     /** 
      * Decide whether this literal node is a
      * nonNegativeInteger, (or compatible),
@@ -40,7 +90,16 @@ class CLit extends CBuiltin {
             }
             return Grammar.dlInteger;
         }
-
+        String dt = l.getDatatypeURI();
+        if ( dt != null ){
+        	if ( dt.startsWith("http://www.w3.org/2001/XMLSchema#")) {
+        		if ( allSchemaTypes.contains(dt.substring(33)))
+        		  return Grammar.literal;
+        	}
+        	if ( dt.equals( rdfXMLLiteral))
+        	  return Grammar.literal;
+        	return Grammar.userTypedLiteral;
+        }
         return Grammar.literal;
     }
 

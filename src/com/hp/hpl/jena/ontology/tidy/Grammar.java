@@ -1,6 +1,6 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.23 2003-11-11 08:46:04 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.24 2003-11-15 15:51:09 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.Arrays;
@@ -27,132 +27,133 @@ class Grammar {
     static final int transitivePropID = 20;
     static final int unnamedIndividual = 21;
     static final int unnamedOntology = 22;
-    static final int allDifferent = 23;
-    static final int description78disjointWith = 24;
-    static final int description78equivalentClass = 25;
-    static final int description78object = 26;
-    static final int description78subClassOf = 27;
-    static final int description79disjointWith = 28;
-    static final int description79equivalentClass = 29;
-    static final int description79object = 30;
-    static final int description79subClassOf = 31;
-    static final int description80disjointWith = 32;
-    static final int description80equivalentClass = 33;
-    static final int description80object = 34;
-    static final int description80subClassOf = 35;
-    static final int description81disjointWith = 36;
-    static final int description81equivalentClass = 37;
-    static final int description81object = 38;
-    static final int description81subClassOf = 39;
-    static final int listOfDataLiteral = 40;
-    static final int listOfDescription = 41;
-    static final int listOfIndividualID = 42;
-    static final int restriction53disjointWith = 43;
-    static final int restriction53equivalentClass = 44;
-    static final int restriction53object = 45;
-    static final int restriction53subClassOf = 46;
-    static final int restriction54disjointWith = 47;
-    static final int restriction54equivalentClass = 48;
-    static final int restriction54object = 49;
-    static final int restriction54subClassOf = 50;
-    static final int restriction55disjointWith = 51;
-    static final int restriction55equivalentClass = 52;
-    static final int restriction55object = 53;
-    static final int restriction55subClassOf = 54;
-    static final int restriction56disjointWith = 55;
-    static final int restriction56equivalentClass = 56;
-    static final int restriction56object = 57;
-    static final int restriction56subClassOf = 58;
-    static final int restriction57disjointWith = 59;
-    static final int restriction57equivalentClass = 60;
-    static final int restriction57object = 61;
-    static final int restriction57subClassOf = 62;
-    static final int restriction58disjointWith = 63;
-    static final int restriction58equivalentClass = 64;
-    static final int restriction58object = 65;
-    static final int restriction58subClassOf = 66;
-    static final int restriction59disjointWith = 67;
-    static final int restriction59equivalentClass = 68;
-    static final int restriction59object = 69;
-    static final int restriction59subClassOf = 70;
-    static final int restriction60disjointWith = 71;
-    static final int restriction60equivalentClass = 72;
-    static final int restriction60object = 73;
-    static final int restriction60subClassOf = 74;
-    static final int restriction61disjointWith = 75;
-    static final int restriction61equivalentClass = 76;
-    static final int restriction61object = 77;
-    static final int restriction61subClassOf = 78;
-    static final int restriction62disjointWith = 79;
-    static final int restriction62equivalentClass = 80;
-    static final int restriction62object = 81;
-    static final int restriction62subClassOf = 82;
-    static final int restriction63disjointWith = 83;
-    static final int restriction63equivalentClass = 84;
-    static final int restriction63object = 85;
-    static final int restriction63subClassOf = 86;
-    static final int restriction64disjointWith = 87;
-    static final int restriction64equivalentClass = 88;
-    static final int restriction64object = 89;
-    static final int restriction64subClassOf = 90;
-    static final int restriction65disjointWith = 91;
-    static final int restriction65equivalentClass = 92;
-    static final int restriction65object = 93;
-    static final int restriction65subClassOf = 94;
-    static final int restriction66disjointWith = 95;
-    static final int restriction66equivalentClass = 96;
-    static final int restriction66object = 97;
-    static final int restriction66subClassOf = 98;
-    static final int restriction67disjointWith = 99;
-    static final int restriction67equivalentClass = 100;
-    static final int restriction67object = 101;
-    static final int restriction67subClassOf = 102;
-    static final int unnamedDataRange = 103;
-    static final int owlAllDifferent = 104;
-    static final int owlAnnotationProperty = 105;
-    static final int owlClass = 106;
-    static final int owlDataRange = 107;
-    static final int owlDatatypeProperty = 108;
-    static final int owlDeprecatedClass = 109;
-    static final int owlDeprecatedProperty = 110;
-    static final int owlFunctionalProperty = 111;
-    static final int owlInverseFunctionalProperty = 112;
-    static final int owlObjectProperty = 113;
-    static final int owlOntology = 114;
-    static final int owlOntologyProperty = 115;
-    static final int owlRestriction = 116;
-    static final int owlSymmetricProperty = 117;
-    static final int owlTransitiveProperty = 118;
-    static final int owlallValuesFrom = 119;
-    static final int owlcardinality = 120;
-    static final int owlcomplementOf = 121;
-    static final int owldifferentFrom = 122;
-    static final int owldisjointWith = 123;
-    static final int owldistinctMembers = 124;
-    static final int owlequivalentClass = 125;
-    static final int owlequivalentProperty = 126;
-    static final int owlhasValue = 127;
-    static final int owlintersectionOf = 128;
-    static final int owlinverseOf = 129;
-    static final int owlmaxCardinality = 130;
-    static final int owlminCardinality = 131;
-    static final int owlonProperty = 132;
-    static final int owloneOf = 133;
-    static final int owlsameAs = 134;
-    static final int owlsomeValuesFrom = 135;
-    static final int owlunionOf = 136;
-    static final int rdfList = 137;
-    static final int rdfProperty = 138;
-    static final int rdffirst = 139;
-    static final int rdfnil = 140;
-    static final int rdfrest = 141;
-    static final int rdftype = 142;
-    static final int rdfsClass = 143;
-    static final int rdfsDatatype = 144;
-    static final int rdfsdomain = 145;
-    static final int rdfsrange = 146;
-    static final int rdfssubClassOf = 147;
-    static final int rdfssubPropertyOf = 148;
+    static final int userTypedLiteral = 23;
+    static final int allDifferent = 24;
+    static final int description78disjointWith = 25;
+    static final int description78equivalentClass = 26;
+    static final int description78object = 27;
+    static final int description78subClassOf = 28;
+    static final int description79disjointWith = 29;
+    static final int description79equivalentClass = 30;
+    static final int description79object = 31;
+    static final int description79subClassOf = 32;
+    static final int description80disjointWith = 33;
+    static final int description80equivalentClass = 34;
+    static final int description80object = 35;
+    static final int description80subClassOf = 36;
+    static final int description81disjointWith = 37;
+    static final int description81equivalentClass = 38;
+    static final int description81object = 39;
+    static final int description81subClassOf = 40;
+    static final int listOfDataLiteral = 41;
+    static final int listOfDescription = 42;
+    static final int listOfIndividualID = 43;
+    static final int restriction53disjointWith = 44;
+    static final int restriction53equivalentClass = 45;
+    static final int restriction53object = 46;
+    static final int restriction53subClassOf = 47;
+    static final int restriction54disjointWith = 48;
+    static final int restriction54equivalentClass = 49;
+    static final int restriction54object = 50;
+    static final int restriction54subClassOf = 51;
+    static final int restriction55disjointWith = 52;
+    static final int restriction55equivalentClass = 53;
+    static final int restriction55object = 54;
+    static final int restriction55subClassOf = 55;
+    static final int restriction56disjointWith = 56;
+    static final int restriction56equivalentClass = 57;
+    static final int restriction56object = 58;
+    static final int restriction56subClassOf = 59;
+    static final int restriction57disjointWith = 60;
+    static final int restriction57equivalentClass = 61;
+    static final int restriction57object = 62;
+    static final int restriction57subClassOf = 63;
+    static final int restriction58disjointWith = 64;
+    static final int restriction58equivalentClass = 65;
+    static final int restriction58object = 66;
+    static final int restriction58subClassOf = 67;
+    static final int restriction59disjointWith = 68;
+    static final int restriction59equivalentClass = 69;
+    static final int restriction59object = 70;
+    static final int restriction59subClassOf = 71;
+    static final int restriction60disjointWith = 72;
+    static final int restriction60equivalentClass = 73;
+    static final int restriction60object = 74;
+    static final int restriction60subClassOf = 75;
+    static final int restriction61disjointWith = 76;
+    static final int restriction61equivalentClass = 77;
+    static final int restriction61object = 78;
+    static final int restriction61subClassOf = 79;
+    static final int restriction62disjointWith = 80;
+    static final int restriction62equivalentClass = 81;
+    static final int restriction62object = 82;
+    static final int restriction62subClassOf = 83;
+    static final int restriction63disjointWith = 84;
+    static final int restriction63equivalentClass = 85;
+    static final int restriction63object = 86;
+    static final int restriction63subClassOf = 87;
+    static final int restriction64disjointWith = 88;
+    static final int restriction64equivalentClass = 89;
+    static final int restriction64object = 90;
+    static final int restriction64subClassOf = 91;
+    static final int restriction65disjointWith = 92;
+    static final int restriction65equivalentClass = 93;
+    static final int restriction65object = 94;
+    static final int restriction65subClassOf = 95;
+    static final int restriction66disjointWith = 96;
+    static final int restriction66equivalentClass = 97;
+    static final int restriction66object = 98;
+    static final int restriction66subClassOf = 99;
+    static final int restriction67disjointWith = 100;
+    static final int restriction67equivalentClass = 101;
+    static final int restriction67object = 102;
+    static final int restriction67subClassOf = 103;
+    static final int unnamedDataRange = 104;
+    static final int owlAllDifferent = 105;
+    static final int owlAnnotationProperty = 106;
+    static final int owlClass = 107;
+    static final int owlDataRange = 108;
+    static final int owlDatatypeProperty = 109;
+    static final int owlDeprecatedClass = 110;
+    static final int owlDeprecatedProperty = 111;
+    static final int owlFunctionalProperty = 112;
+    static final int owlInverseFunctionalProperty = 113;
+    static final int owlObjectProperty = 114;
+    static final int owlOntology = 115;
+    static final int owlOntologyProperty = 116;
+    static final int owlRestriction = 117;
+    static final int owlSymmetricProperty = 118;
+    static final int owlTransitiveProperty = 119;
+    static final int owlallValuesFrom = 120;
+    static final int owlcardinality = 121;
+    static final int owlcomplementOf = 122;
+    static final int owldifferentFrom = 123;
+    static final int owldisjointWith = 124;
+    static final int owldistinctMembers = 125;
+    static final int owlequivalentClass = 126;
+    static final int owlequivalentProperty = 127;
+    static final int owlhasValue = 128;
+    static final int owlintersectionOf = 129;
+    static final int owlinverseOf = 130;
+    static final int owlmaxCardinality = 131;
+    static final int owlminCardinality = 132;
+    static final int owlonProperty = 133;
+    static final int owloneOf = 134;
+    static final int owlsameAs = 135;
+    static final int owlsomeValuesFrom = 136;
+    static final int owlunionOf = 137;
+    static final int rdfList = 138;
+    static final int rdfProperty = 139;
+    static final int rdffirst = 140;
+    static final int rdfnil = 141;
+    static final int rdfrest = 142;
+    static final int rdftype = 143;
+    static final int rdfsClass = 144;
+    static final int rdfsDatatype = 145;
+    static final int rdfsdomain = 146;
+    static final int rdfsrange = 147;
+    static final int rdfssubClassOf = 148;
+    static final int rdfssubPropertyOf = 149;
     static final int FirstOfOne = 4;
     static final int FirstOfTwo = 8;
     static final int SecondOfTwo = 12;
@@ -649,9 +650,9 @@ restriction65disjointWith,
 restriction66disjointWith,
 restriction67disjointWith,
 };
-static final int MAX_SINGLETON_SET = 149 + 1;
+static final int MAX_SINGLETON_SET = 150 + 1;
 static {
-for (int i=0; i<149; i++) {
+for (int i=0; i<150; i++) {
 if ( i != CategorySet.find(new int[]{i},true) )
       System.err.println("initialization problem");
 }
@@ -716,69 +717,91 @@ SPOA( ontologyID, ontologyPropertyID, ontologyID, 0 ),
 SPOA( unnamedOntology, ontologyPropertyID, ontologyID, 0 ),
 SPOA( ontologyID, annotationPropID, dlInteger, 0 ),
 SPOA( ontologyID, annotationPropID, liteInteger, 0 ),
+SPOA( ontologyID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( ontologyID, annotationPropID, literal, 0 ),
 SPOA( unnamedOntology, annotationPropID, dlInteger, 0 ),
 SPOA( unnamedOntology, annotationPropID, liteInteger, 0 ),
+SPOA( unnamedOntology, annotationPropID, userTypedLiteral, 0 ),
 SPOA( unnamedOntology, annotationPropID, literal, 0 ),
 SPOA( individualID, annotationPropID, dlInteger, 0 ),
 SPOA( individualID, annotationPropID, liteInteger, 0 ),
+SPOA( individualID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( individualID, annotationPropID, literal, 0 ),
 SPOA( unnamedIndividual, annotationPropID, dlInteger, 0 ),
 SPOA( unnamedIndividual, annotationPropID, liteInteger, 0 ),
+SPOA( unnamedIndividual, annotationPropID, userTypedLiteral, 0 ),
 SPOA( unnamedIndividual, annotationPropID, literal, 0 ),
 SPOA( annotationPropID, annotationPropID, dlInteger, 0 ),
 SPOA( annotationPropID, annotationPropID, liteInteger, 0 ),
+SPOA( annotationPropID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( annotationPropID, annotationPropID, literal, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, dlInteger, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, liteInteger, 0 ),
+SPOA( ontologyPropertyID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( ontologyPropertyID, annotationPropID, literal, 0 ),
 SPOA( classID, annotationPropID, dlInteger, 0 ),
 SPOA( classID, annotationPropID, liteInteger, 0 ),
+SPOA( classID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( classID, annotationPropID, literal, 0 ),
 SPOA( dataPropID, annotationPropID, dlInteger, 0 ),
 SPOA( dataPropID, annotationPropID, liteInteger, 0 ),
+SPOA( dataPropID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( dataPropID, annotationPropID, literal, 0 ),
 SPOA( objectPropID, annotationPropID, dlInteger, 0 ),
 SPOA( objectPropID, annotationPropID, liteInteger, 0 ),
+SPOA( objectPropID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( objectPropID, annotationPropID, literal, 0 ),
 SPOA( transitivePropID, annotationPropID, dlInteger, 0 ),
 SPOA( transitivePropID, annotationPropID, liteInteger, 0 ),
+SPOA( transitivePropID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( transitivePropID, annotationPropID, literal, 0 ),
 SPOA( datatypeID, annotationPropID, dlInteger, 0 ),
 SPOA( datatypeID, annotationPropID, liteInteger, 0 ),
+SPOA( datatypeID, annotationPropID, userTypedLiteral, 0 ),
 SPOA( datatypeID, annotationPropID, literal, 0 ),
 SPOA( ontologyID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( ontologyID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( ontologyID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( ontologyID, dataAnnotationPropID, literal, 0 ),
 SPOA( unnamedOntology, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( unnamedOntology, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( unnamedOntology, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( unnamedOntology, dataAnnotationPropID, literal, 0 ),
 SPOA( individualID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( individualID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( individualID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( individualID, dataAnnotationPropID, literal, 0 ),
 SPOA( unnamedIndividual, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( unnamedIndividual, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( unnamedIndividual, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( unnamedIndividual, dataAnnotationPropID, literal, 0 ),
 SPOA( annotationPropID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( annotationPropID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( annotationPropID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( annotationPropID, dataAnnotationPropID, literal, 0 ),
 SPOA( ontologyPropertyID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( ontologyPropertyID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( ontologyPropertyID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( ontologyPropertyID, dataAnnotationPropID, literal, 0 ),
 SPOA( classID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( classID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( classID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( classID, dataAnnotationPropID, literal, 0 ),
 SPOA( dataPropID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( dataPropID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( dataPropID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( dataPropID, dataAnnotationPropID, literal, 0 ),
 SPOA( objectPropID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( objectPropID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( objectPropID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( objectPropID, dataAnnotationPropID, literal, 0 ),
 SPOA( transitivePropID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( transitivePropID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( transitivePropID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( transitivePropID, dataAnnotationPropID, literal, 0 ),
 SPOA( datatypeID, dataAnnotationPropID, dlInteger, 0 ),
 SPOA( datatypeID, dataAnnotationPropID, liteInteger, 0 ),
+SPOA( datatypeID, dataAnnotationPropID, userTypedLiteral, 0 ),
 SPOA( datatypeID, dataAnnotationPropID, literal, 0 ),
 SPOA( ontologyID, annotationPropID, individualID, 0 ),
 SPOA( ontologyID, annotationPropID, unnamedIndividual, ObjectAction ),
@@ -911,29 +934,35 @@ SPOA( unnamedIndividual, transitivePropID, individualID, 0 ),
 SPOA( unnamedIndividual, transitivePropID, unnamedIndividual, ObjectAction ),
 SPOA( individualID, dataPropID, dlInteger, 0 ),
 SPOA( individualID, dataPropID, liteInteger, 0 ),
+SPOA( individualID, dataPropID, userTypedLiteral, 0 ),
 SPOA( individualID, dataPropID, literal, 0 ),
 SPOA( unnamedIndividual, dataPropID, dlInteger, 0 ),
 SPOA( unnamedIndividual, dataPropID, liteInteger, 0 ),
+SPOA( unnamedIndividual, dataPropID, userTypedLiteral, 0 ),
 SPOA( unnamedIndividual, dataPropID, literal, 0 ),
 SPOA( individualID, owlsameAs, individualID, 0 ),
 SPOA( individualID, owldifferentFrom, individualID, 0 ),
 SPOA( restriction58subClassOf, owlhasValue, dlInteger, 0|DL|FirstOfTwo ),
 SPOA( restriction58subClassOf, owlhasValue, liteInteger, 0|DL|FirstOfTwo ),
+SPOA( restriction58subClassOf, owlhasValue, userTypedLiteral, 0|DL|FirstOfTwo ),
 SPOA( restriction58subClassOf, owlhasValue, literal, 0|DL|FirstOfTwo ),
 SPOA( restriction58subClassOf, owlonProperty, dataPropID, 0|SecondOfTwo ),
 SPOA( restriction58subClassOf, rdftype, owlRestriction, 0 ),
 SPOA( restriction58equivalentClass, owlhasValue, dlInteger, 0|DL|FirstOfTwo ),
 SPOA( restriction58equivalentClass, owlhasValue, liteInteger, 0|DL|FirstOfTwo ),
+SPOA( restriction58equivalentClass, owlhasValue, userTypedLiteral, 0|DL|FirstOfTwo ),
 SPOA( restriction58equivalentClass, owlhasValue, literal, 0|DL|FirstOfTwo ),
 SPOA( restriction58equivalentClass, owlonProperty, dataPropID, 0|SecondOfTwo ),
 SPOA( restriction58equivalentClass, rdftype, owlRestriction, 0 ),
 SPOA( restriction58disjointWith, owlhasValue, dlInteger, 0|DL|FirstOfTwo ),
 SPOA( restriction58disjointWith, owlhasValue, liteInteger, 0|DL|FirstOfTwo ),
+SPOA( restriction58disjointWith, owlhasValue, userTypedLiteral, 0|DL|FirstOfTwo ),
 SPOA( restriction58disjointWith, owlhasValue, literal, 0|DL|FirstOfTwo ),
 SPOA( restriction58disjointWith, owlonProperty, dataPropID, 0|SecondOfTwo ),
 SPOA( restriction58disjointWith, rdftype, owlRestriction, 0 ),
 SPOA( restriction58object, owlhasValue, dlInteger, 0|DL|FirstOfTwo ),
 SPOA( restriction58object, owlhasValue, liteInteger, 0|DL|FirstOfTwo ),
+SPOA( restriction58object, owlhasValue, userTypedLiteral, 0|DL|FirstOfTwo ),
 SPOA( restriction58object, owlhasValue, literal, 0|DL|FirstOfTwo ),
 SPOA( restriction58object, owlonProperty, dataPropID, 0|SecondOfTwo ),
 SPOA( restriction58object, rdftype, owlRestriction, 0 ),
@@ -997,6 +1026,7 @@ SPOA( unnamedDataRange, owloneOf, rdfnil, 0|DL|FirstOfOne ),
 SPOA( unnamedDataRange, rdftype, owlDataRange, 0|DL ),
 SPOA( listOfDataLiteral, rdffirst, dlInteger, 0|DL|FirstOfTwo ),
 SPOA( listOfDataLiteral, rdffirst, liteInteger, 0|DL|FirstOfTwo ),
+SPOA( listOfDataLiteral, rdffirst, userTypedLiteral, 0|DL|FirstOfTwo ),
 SPOA( listOfDataLiteral, rdffirst, literal, 0|DL|FirstOfTwo ),
 SPOA( listOfDataLiteral, rdfrest, rdfnil, 0|DL|SecondOfTwo ),
 SPOA( listOfDataLiteral, rdftype, rdfList, 0|DL ),

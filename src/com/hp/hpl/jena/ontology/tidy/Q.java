@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Q.java,v 1.4 2003-11-14 08:35:32 jeremy_carroll Exp $
+  $Id: Q.java,v 1.5 2003-11-15 15:51:09 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.rdql.*;
@@ -57,24 +57,28 @@ abstract class Q {
 	static final boolean member(int m, int a[]) {
 		return Arrays.binarySearch(a, m) >= 0;
 	}
+	/*
 	final boolean subset(int a[], int b[]) {
 		for (int i = 0; i < a.length; i++)
 			if (!member(a[i], b))
 				return false;
 		return true;
 	}
+	*/
 	static final boolean intersect(int a[], int b[]) {
 		for (int i = 0; i < a.length; i++)
 			if (member(a[i], b))
 				return true;
 		return false;
 	}
+	/*
 	final boolean anySubSet(int a[][],int b[]) {
 		for (int i=0;i<a.length;i++)
 		  if (subset(a[i],b))
 		    return true;
 		return false;
 	}
+	*/
 
 	void testAdd(int c, int cat[]) {
 		if (test(cat))

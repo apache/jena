@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.10 2003-09-29 16:14:20 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.11 2003-11-15 15:51:09 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -100,6 +100,16 @@ class CategorySet implements Comparable {
 		  && intersect(cycles,all);
 	} 
 };
+
+  static final Q userTypedLiterals = new Q() {
+  	int[] asInt() {
+  		return new int[]{Grammar.userTypedLiteral
+  		};
+  	}
+  	boolean test(int all[]) {
+  		return false;
+  	}
+  };
 
 	/**
 	 * @return the ids of all categories for which the node must be structured

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.10 2003-09-30 12:26:08 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.11 2003-11-15 15:51:09 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -143,7 +143,8 @@ class SubCategorize {
 			case 2 :
 				return prop == Grammar.notype;
 			case 4 :
-				return obj == Grammar.notype || obj == Grammar.badRestriction;
+				return ( obj == Grammar.notype && prop != Grammar.annotationPropID )
+				       || obj == Grammar.badRestriction;
 			case 3 :
 			case 6 :
 			case 7 :
