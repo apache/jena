@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.3 2003-09-09 12:18:16 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.html,v 1.4 2003-11-20 14:14:50 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -69,23 +69,30 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h3>RDF model API</h3>
 <ul>
-  <li>no entries yet</li>
+      <li><a href="#api-0">Why does the localname part of my URI look wrong?</a></li>
 </ul>
 <h3>Reasoner and inference models</h3>
 <ul>
-  <li>no entries yet</li>
+  <li><a href="#reasoner-0">I want to develop my own rules, how do I get started?</a></li>
+  <li><a href="#reasoner-1">Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
   <li><a href="#ontology-0">Why doesn't listClasses() (listProperties()/listIndividuals(),
     etc) work?</a></li>
-  <li><a href="#ontology-1">Why doesn't the ontlogy API handle <code>sub-class</code> 
-	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc) 
+  <li><a href="#ontology-1">Why doesn't the ontlogy API handle <code>sub-class</code>
+	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
   	relationships in a DAML model?</a></li>
+  <li><a href="#ontology-2">Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
+  <code>ConversionException</code> on SymmetricProperty (or other property types)?</a></li>
 </ul>
 <h3>Database and persistence</h3>
 <ul>
-  <li>no entries yet</li>
+  <li><a href="#db-0">Why do I get an exception when trying to create a new persistent model?</a></li>
+  <li><a href="#db-1">Why do I run out of memory when trying to list statements in a persistent
+  model?</a></li>
+  <li><a href="#db-2">Has Jena2 persistence been ported to other database engines and platforms
+  besides those officially supported?</a></li>
 </ul>
 <h3>XML serialisation (reading and writing)</h3>
 <ul>
@@ -107,10 +114,58 @@ Jena 2 &ndash; Frequently Asked Questions
   where $JENA refers to the directory in which you installed Jena, should be on
   your classpath. Consult the documentation for your JDK for details on setting
   the classpath for your system.</p>
+
 <h3>RDF model API</h3>
-<p>no entries yet</p>
+    <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br />
+      A: In Jena it is possible to retrieve the localname part of a Resource or Property
+      URI. Sometimes developers create Resources with a full URI reference but
+      find that the result of a getLocalName call is not quite what they expected.
+      This is usually because the URI is ill-formed or cannot be correctly split
+      in the way you expected. The only reason for separating namespace and local
+      name is to support the XML serialization in which qnames are used for properties
+      and classes. Thus the main requirement of the split is that the localname
+      component must be a legal XML NCName. This means it must start with a letter
+      or _ character and can only contain limited punctuation. In particular,
+      they can't contain spaces, but then spaces are not legal in URI references
+      anyway. In general, it is best to not use the localname split to encode
+      any information, you should only be concerned with it if you are coding
+      a parser or writer.</p>
+
 <h3>Reasoner and inference models</h3>
-<p>no entries yet</p>
+  <p id="reasoner-0"><strong>Q. I want to develop my own rules, how do I get started?</strong><br />
+    A: The GenericRuleReasoner is the place to start. You can create instances of this reasoner by
+    supplying either an explict set of Rule objects or a configuration description (as a Jena Model)
+    that points to a local rule file. See the inference documentation for more details: <br />
+    <a href="inference/index.html#rules">inference/index.html#rules</a>
+  </p>
+
+  <p id="reasoner-1"><strong>Q. Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</strong><br />
+    A: As explained in the documentation there are two rule systems available - a
+    forward chainer and a backward chainer. You can chose to use either or
+    use the two together in a hybrid mode. <br />
+
+    So if we use Ti as short hand for triple patterns like (?x rdf:type ?C),
+    and if we ignore functors and procedural call out for now, then the syntax:<br />
+    <code>&nbsp;&nbsp;&nbsp;&nbsp;    T1, T2, ... TN -> T0 .    </code> <br />
+    means that if the triple patterns T1 to TN match in the data set then
+    then the triple T0 can be deduced as a consequence. Similarly <br />
+    <code> &nbsp;&nbsp;&nbsp;&nbsp;   T0 <- T1, T2, ... TN .    </code> <br />
+    means the same thing - the consequence is always on the "pointy" end of
+    the arrow. <br />
+
+    Now if you are just using pure forward or backward rules then you could
+    chose to use either syntax interchangeably. This allows you to write a
+    rule set and use it in either mode. Though in practice "-&gt;" is the more
+    conventional direction in forward systems and "&lt;-" is the more
+    conventional one in backward systems. <br />
+
+    The hybrid configuration allows you to create new backward rules as a
+    result of forward rules firing so that the syntax: <br />
+    <code> &nbsp;&nbsp;&nbsp;&nbsp;    T1, T2 -> [T0 <- T3, T4] .     </code> <br />
+    Is saying that if both T1 and T2 match in the dataset then add the
+    backward rule "[T0 &lt;- T3, T4]" after instantiating any bound variables.
+  </p>
+
 <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
   etc) work?</strong><br />
@@ -124,24 +179,80 @@ Jena 2 &ndash; Frequently Asked Questions
   is that relative URI's change depending where you read the model from. Try adding
   an <code>xml:base</code> declaration to the document to ensure that URI's are
   correctly specified.</p>
-<p id="ontology-1"><strong>Q: Why doesn't the ontlogy API handle <code>sub-class</code> 
-	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc) 
+
+<p id="ontology-1"><strong>Q: Why doesn't the ontlogy API handle <code>sub-class</code>
+	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
   	relationships in a DAML model?</strong><br />
   	A: These relationships are handled correctly, but the results you see are dependent on the
   	model configuration.  The DAML specification includes a number of aliases for RDFS constructs to
   	copy them into the DAML+OIL namespace. This means that, for a DAML processor, <code>daml:subClassOf</code>
-  	and <code>rdfs:subClassOf</code> are equivalent.  This is declared by means of a 
+  	and <code>rdfs:subClassOf</code> are equivalent.  This is declared by means of a
   	<code>daml:samePropertyAs</code> in the daml+oil.daml specification document.  Without a reasoner
   	attached to the model, the ontology API will not recognise the equivalence with <code>rdfs:</code> properties.
-  	Thus, if you are not seeing the expected results when processing a DAML ontology, 
+  	Thus, if you are not seeing the expected results when processing a DAML ontology,
   	it is likely that your ontology file contains, for example, <br />
   	<code>&lt;daml:Class rdf:ID="A"&gt; &lt;rdfs:subClassOf rdf:resource="B" /&gt; ...</code> <br />
   	To fix this, either ensure that the ontology consistently uses <code>daml:</code> relationships,
   	or declare the ontology model with the DAML micro rule-reasoner: <br />
   	<code>OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF, null );</code>
 	</p>
+
+<p id="ontology-2">
+  <strong>Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
+  <code>ConversionException</code> on SymmetricProperty (or other property types)?</strong><br />
+  This is a slightly tricky issue.  Internally, <code>.as()</code> calls the <em>supports</em> check,
+  which tests whether the node that is being converted is a common flavour of property.
+  Strictly, the only necessary test should be '<code>has rdf:type rdf:Property</code>',
+  because that is entailed by all of the other property types.  However, that requires
+  the user to use a model with a reasoner, and some don't want to (for good reasons, e.g. building an editor).
+  The other position is to test for all the possible variants of property: object property,
+  datatype property, annotation, ontology, transitive, funcitonal, inverse functional, etc etc.
+  The problem with this is that it duplicates the work of the reasoner, and my expectation was that
+  most people would be running with a reasoner.  Thus my code would be duplicating the functionality
+  of the reasoner, which is bad design. The compromise solution was to make the supports check test
+  for the common (top level) property types.  Users who aren't using the reasoner,
+  can either test explicitly for the other property types they expect to encounter (e.g. SymmetricProperty),
+  or can turn off the supports check by setting
+  <a href="javadoc/com/hp/hpl/jena/ontology/OntModel.html#strictMode()">strict mode</a> to false on the model.
+
+</p>
+
 <h3>Database and persistence</h3>
-<p>no entries yet</p>
+<p id="db-0"><strong>Q: Why do I get an exception when trying to create a new persistent model?</strong><br>
+  A: Assuming that your program uses correct methods to create the model (see
+examples in the database <a href="../DB/howto.html">howto</a>), it may be that
+your database files are corrupted. Jena2 does <i>not</i> do a good job in
+checking the validity of the database. It makes a cursory check that some
+required tables exist but does not check that the tables contain valid data. If
+you suspect your database has been corrupted, you may invoke
+<code>cleanDB()</code> on a DBConnection object
+prior to creating your model. This removes all Jena2 tables from a database.
+Warning: this removes any other existing Jena2 models from the database so make sure
+that this is what you want to do. </p>
+  <p id="db-1"><strong>Q: Why do I run out of memory when trying to list statements in a persistent
+  model?</strong><br>
+  A: Jena2 uses the JDBC interface for accessing databases. The JDBC
+  specification has no cursors. Consequently, when a query is processed by JDBC,
+  the entire result set is returned from the database at once and the application program then iterates
+  over the in-memory result set. If the result set is large, as is often the case
+  when listing all statements of a large model, it may exceed the heap size of
+  the Java virtual machine. If you suspect this is happening, you might try to
+  increase the heap size of the Java virtual machine (<code>-vmargs
+  -Xmx500M</code> for a 500 MB heap size). If this does not help, there is no
+  other work-around and the program should be recoded.</p>
+<p id="db-2"><strong>Q: Has Jena2 persistence been ported to other database engines and platforms
+  besides those officially supported?</strong><br>
+  A: The Jena team  supports Jena2 persistence on the databases and operating
+systems listed in the <a href="../DB/index.html">Database Interface Release
+Notes</a>.
+Other users have had success porting Jena2 to other databases and platforms.
+Jena2 has been ported to IBM's DB2 database. Contact
+<a href="mailto:zhabglj@us.ibm.com">Liang-Jie Zhang</a> for details. A port to
+HSQLDB, a native-Java SQL database, has been done. Contact
+<a href="mailto:danils@home.se">Jan Danils</a> for details. On the Mac OS X
+platform, Jena2 has been successfully run using MySQL. Contact
+<a href="mailto:jnachlin@nachlin.com">Jim Nachlin</a> for details.</p>
+
 <h3>XML serialisation (reading and writing)</h3>
 <p>no entries yet</p>
 <h3>RDQL and query processing</h3>
