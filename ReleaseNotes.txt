@@ -10,22 +10,14 @@ are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
 
 This release adds a substantially revised and improved ontology API along
 with improved reasoning support for RDFS and many small improvements to 
-the graph SPI. <database?>
+the graph SPI.
 
-...  graph details ...
 
-Reasoners:
+Database:
 
-The previous default RDFS reasoner (RDFSReasoner1) has been replaced by
-a new implementation (RDFSRuleReasoner) which in turn is based on a generic
-hybrid rules engine which is included with Jena. This implementation is
-faster, more scalable and more configurable than the earlier version.
-
-The release also includes a very preliminary rule set which implements the
-OWL/Lite subset of OWL/full. This implementation is not yet stable or scalable 
-and is not recommended for non-trivial use at this stage.
-
-Some early documentation is in <Jena>/doc/user-manual/inference.
+The database layout has changed from preview 3 based on feedback and
+further experimentation.  It wil be necessary to dump a databse built with
+preview 3 and rebuild it.
 
 Ontology API:
 
@@ -45,3 +37,16 @@ Please see the documentation in
 	<Jena>/doc/user-manual/ontology
 for an explanation of how to select the reasoner and other options when
 constructing the ontology model.
+
+Reasoners:
+
+The previous default RDFS reasoner (RDFSReasoner1) has been replaced by
+a new implementation (RDFSRuleReasoner) which in turn is based on a generic
+hybrid rules engine which is included with Jena. This implementation is
+faster, more scalable and more configurable than the earlier version.
+
+The release also includes a very preliminary rule set which implements the
+OWL/Lite subset of OWL/full. This implementation is not yet stable or scalable 
+and is not recommended for non-trivial use at this stage.
+
+Some early documentation is in <Jena>/doc/user-manual/inference.
