@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.15 2003-05-15 07:58:56 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.16 2003-06-13 19:09:29 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -15,6 +15,8 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.DAMLModel;
+import com.hp.hpl.jena.ontology.daml.impl.DAMLModelImpl;
 import com.hp.hpl.jena.ontology.impl.OntModelImpl;
 
 /**
@@ -208,7 +210,7 @@ public class ModelFactory extends ModelFactoryBase
      * @see OntModelSpec
      */
     public static OntModel createOntologyModel() {
-        return createOntologyModel( OntModelSpec.OWL_MEM, null );
+        return createOntologyModel( ProfileRegistry.OWL_LANG );
     }
     
     
@@ -267,6 +269,19 @@ public class ModelFactory extends ModelFactoryBase
      */
     public static OntModel createOntologyModel( OntModelSpec spec, Model base ) {
         return new OntModelImpl( spec, base );
+    }
+    
+    
+    /**
+     * <p>Answer a model for processing DAML+OIL, using the legacy Jena1 DAML API.  Users are encouraged
+     * to switch from the DAML-specific API to the new generic ontology API 
+     * (see {@link #createOntologyModel(OntModelSpec, Model)}).  The continuation of the DAML-specific
+     * API in Jena is not assured beyond Jena version 2.</p>
+     * 
+     * @return A model for in-memory processing of DAML objects.
+     */
+    public static DAMLModel createDAMLModel() {
+        return new DAMLModelImpl( OntModelSpec.getDefaultSpec( ProfileRegistry.DAML_LANG ), null );
     }
 }
     

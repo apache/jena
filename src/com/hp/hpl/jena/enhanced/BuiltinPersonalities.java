@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.19 2003-05-23 11:13:05 ian_dickinson Exp $
+  $Id: BuiltinPersonalities.java,v 1.20 2003-06-13 19:09:29 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.ontology.daml.impl.*;
 import com.hp.hpl.jena.ontology.impl.*;
 
 import java.io.*;
@@ -58,6 +60,15 @@ public class BuiltinPersonalities {
         .add( Individual.class, IndividualImpl.factory )
         .add( AnnotationProperty.class, AnnotationPropertyImpl.factory )
         
+        // daml
+        .add( DAMLCommon.class, DAMLCommonImpl.factory )
+        .add( DAMLClass.class, DAMLClassImpl.factory )
+        .add( DAMLRestriction.class, DAMLRestrictionImpl.factory )
+        .add( DAMLProperty.class, DAMLPropertyImpl.factory )
+        .add( DAMLObjectProperty.class, DAMLObjectPropertyImpl.factory )
+        .add( DAMLDatatypeProperty.class, DAMLDatatypePropertyImpl.factory )
+        .add( DAMLOntology.class, DAMLOntologyImpl.factory )
+        .add( DAMLInstance.class, DAMLInstanceImpl.factory )
         
         // Last and least ?
         .add( RDFNode.class, ResourceImpl.rdfNodeFactory )

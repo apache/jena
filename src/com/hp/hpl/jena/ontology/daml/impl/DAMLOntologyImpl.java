@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLOntologyImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 12:23:38 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -45,14 +45,13 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
-
 import com.hp.hpl.jena.util.Log;
-import com.hp.hpl.jena.util.iterator.ConcatenatedNodeIterator;
 import com.hp.hpl.jena.shared.*;
-
 import com.hp.hpl.jena.vocabulary.*;
 
 
@@ -61,7 +60,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Encapsulates the properties known for a given source ontology.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLOntologyImpl.java,v 1.4 2003-06-10 12:23:38 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLOntologyImpl.java,v 1.5 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAMLOntologyImpl
     extends DAMLCommonImpl
@@ -74,6 +73,26 @@ public class DAMLOntologyImpl
     // Static variables
     //////////////////////////////////
 
+    /**
+     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLClassImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLOntology" );
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, DAMLOntology.class );
+        }
+    };
 
     // Instance variables
     //////////////////////////////////
@@ -87,33 +106,15 @@ public class DAMLOntologyImpl
     //////////////////////////////////
 
     /**
-     * Constructor, takes the URI for this ontology properties, and the underlying
-     * model it will be attached to.
-     *
-     * @param uri The URI of the ontology
-     * @param store The RDF store that contains the RDF statements defining the properties of the ontology
-     * @param vocabulary Reference to the DAML vocabulary used by this ontology resource.
+     * <p>
+     * Construct a DAML list represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public DAMLOntologyImpl( String uri, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( uri, store, vocabulary );
-
-        setRDFType( getVocabulary().Ontology() );
-    }
-
-
-    /**
-     * Constructor, takes the name and namespace for this ontology properties, and the underlying
-     * model it will be attached to.
-     *
-     * @param namespace The namespace the ontology inhabits, or null
-     * @param name The name of the ontology
-     * @param store The RDF store that contains the RDF statements defining the properties of the ontology
-     * @param vocabulary Reference to the DAML vocabulary used by this ontology resource.
-     */
-    public DAMLOntologyImpl( String namespace, String name, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( namespace, name, store, vocabulary );
-
-        setRDFType( getVocabulary().Ontology() );
+    public DAMLOntologyImpl( Node n, EnhGraph g ) {
+        super( n, g );
     }
 
 
@@ -143,7 +144,7 @@ public class DAMLOntologyImpl
      * @return An iterator over the resources representing imported ontologies
      */
     public NodeIterator getImportedOntologies() {
-        return getPropertyValues( DAML_OIL.imports );
+        return listPropertyValues( DAML_OIL.imports );
         //return new ConcatenatedNodeIterator( ,
         //                                     getPropertyValues( DAML_OIL_2000_12.imports ) );
     }
@@ -170,16 +171,6 @@ public class DAMLOntologyImpl
         }
     }
 
-
-    /**
-     * Answer a key that can be used to index collections of this DAML instance for
-     * easy access by iterators.  Package access only.
-     *
-     * @return a key object.
-     */
-    Object getKey() {
-        return DAML_OIL.Ontology.getURI();
-    }
 
 
 

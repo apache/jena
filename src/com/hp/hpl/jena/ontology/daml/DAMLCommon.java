@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommon.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 18:32:26 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommon.java,v 1.4 2003-06-10 18:32:26 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommon.java,v 1.5 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public interface DAMLCommon
     extends OntResource
@@ -92,105 +92,6 @@ public interface DAMLCommon
 
 
     /**
-     * <p>Answer the value of a given RDF property for this DAML value, or null
-     * if it doesn't have one.  The value is returned as an RDFNode, from which
-     * the value can be extracted for literals.  If there is more than one RDF
-     * statement with the given property for the current value, it is not defined
-     * which of the values will be returned.</p>
-     *
-     * @param property An RDF property
-     * @return An RDFNode whose value is the value, or one of the values, of the
-     *         given property. If the property is not defined, or an error occurs,
-     *         returns null.
-     */
-    public RDFNode getPropertyValue( Property property );
-
-
-    /**
-     * <p>Answer an iterator over the set of all values for a given RDF property. Each
-     * value in the iterator will be an RDFNode, representing the value (object) of
-     * each statement in the underlying model.</p>
-     *
-     * @param property The property whose values are sought
-     * @return An Iterator over the values of the property
-     */
-    public NodeIterator getPropertyValues( Property property );
-
-
-    /**
-     * <p>Set the value of the given property of this DAML value to the given
-     * value, encoded as an RDFNode.  Maintains the invariant that there is
-     * at most one value of the property for a given DAML object, so existing
-     * property values are first removed.  To add multiple properties to a
-     * given DAML object, use
-     * {@link Resource#addProperty( Property, RDFNode ) addProperty}.</p>
-     *
-     * @param property The property to update
-     * @param value The new value of the property as an RDFNode, or null to
-     *              effectively remove this property.
-     */
-    public void setPropertyValue( Property property, RDFNode value );
-
-
-    /**
-     * <p>Remove the specific property-value pair from this DAML resource.</p>
-     *
-     * @param property The property to be removed
-     * @param value The specific value of the property to be removed
-     */
-    public void removeProperty( Property property, RDFNode value );
-
-
-    /**
-     * <p>Replace the value of the named property with the given value.  Any existing
-     * values, if any, for the property are first removed.</p>
-     *
-     * @param prop The RDF property to be updated
-     * @param value The new value.
-     */
-    public void replaceProperty( Property prop, RDFNode value );
-
-
-    /**
-     * <p>Answer the number of values a given property has with this value as subject.</p>
-     *
-     * @param property The property to be tested
-     * @return The number of statements with this value as subject and the given
-     *         property as relation.
-     * @deprecated Use {@link OntResource#getCardinality} instead.
-     */
-    public int getNumPropertyValues( Property property );
-
-
-    /**
-     * <p>Answer an iterator over a set of resources that are the objects of statements
-     * with subject this DAML object and predicate the given property. This method is
-     * deprecated, since the deductive closure is now (i.e. from Jena 2 onwards) 
-     * handled by the underlying inference graph
-     *
-     * @param property The property whose values are sought
-     * @param closed Ignored.
-     * @return An iterator of resources that are the objects of statements whose
-     *         subject is this value and whose predicate
-     *         is <code>property</code>
-     * @deprecated Use {@link #getAll()} instead.
-     */
-    public Iterator getAll( Property property, boolean closed );
-
-
-    /**
-     * <p>Answer an iterator over a set of RDF nodes that are the objects of statements
-     * with subject this DAML object and predicate the given property.</p>
-     *
-     * @param property The property whose values are sought
-     * @return An iterator of resources that are the objects of statements whose
-     *         subject is this value and whose predicate
-     *         is <code>property</code>
-     */
-    public Iterator getAll( Property property );
-
-
-    /**
      * <p>Answer the DAML+OIL vocabulary that corresponds to the namespace that this value
      * was declared in.</p>
      *
@@ -223,31 +124,6 @@ public interface DAMLCommon
      */
     public Iterator getEquivalenceSet();
 
-
-    /**
-     * <p>Remove the DAML object from the model.  All of the RDF statements with this
-     * DAML value as its subject will be removed from the model, and this object will
-     * be removed from the indexes.  It will be the responsibility of client code to
-     * ensure that references to this object are removed so that the object itself
-     * can be garbage collected.</p>
-     */
-    public void remove();
-
-
-    /**
-     * <p>
-     * Answer true if this resource is a member of the class denoted by the
-     * given class resource.  Includes all available types, so is equivalent to
-     * <code><pre>
-     * hasRDF( uri, false );
-     * </pre></code>
-     * </p>
-     * 
-     * @param ontClass Denotes a class to which this value may belong
-     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
-     */
-    public boolean hasRDFType( String uri );
-    
 
     // Properties
     /////////////
@@ -291,7 +167,7 @@ public interface DAMLCommon
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright Hewlett-Packard Company 2001-2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

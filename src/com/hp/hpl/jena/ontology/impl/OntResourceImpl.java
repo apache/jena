@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 15:08:36 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -30,6 +30,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.ResourceUtils;
@@ -47,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.19 2003-06-10 15:08:36 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.20 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -665,76 +666,6 @@ public class OntResourceImpl
     }
     
     
-    /**
-     * <p>Answer the cardinality of the given property on this resource. The cardinality
-     * is the number of distinct values there are for the property.</p>
-     * @param p A property
-     * @return The cardinality for the property <code>p</code> on this resource, as an
-     * integer greater than or equal to zero.
-     */
-    public int getCardinality( Property p ) {
-        int n = 0;
-        for (Iterator i = listProperties( p );  i.hasNext(); n++) {
-            i.next(); 
-        }
-        
-        return n;
-    }
-    
-    
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the given
-     * property of any ontology value. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @param p A property
-     * @param name The name of the property, so that an appropriate message can be printed if not in the profile
-     * @return An abstract accessor for the property p
-     */
-    public PathSet accessor( Property p, String name ) {
-        return asPathSet( p, name );
-    }
-    
-    
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the given
-     * property of any ontology value. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @param p A property
-     * @return An abstract accessor for the property p
-     */
-    public PathSet accessor( Property p ) {
-        return asPathSet( p, "unknown property" );
-    }
-    
-    
-    /**
-     * <p>
-     * Set the value of the given property of this ontology resource to the given
-     * value, encoded as an RDFNode.  Maintains the invariant that there is
-     * at most one value of the property for a given resource, so existing
-     * property values are first removed.  To add multiple properties, use
-     * {@link #addProperty( Property, RDFNode ) addProperty}.
-     * </p>
-     * 
-     * @param property The property to update
-     * @param value The new value of the property as an RDFNode, or null to
-     *              effectively remove this property.
-     */
-    public void setPropertyValue( Property property, RDFNode value ) {
-        // if there is an existing property, remove it
-        removeAll( property );
-
-        // now set the new value
-        addProperty( property, value );
-    }
-
-
     // rdf:type 
     
     /**
@@ -820,6 +751,18 @@ public class OntResourceImpl
     /**
      * <p>
      * Answer true if this resource is a member of the class denoted by the
+     * given URI.</p>
+     * 
+     * @param uri Denotes the URI of a class to which this value may belong
+     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     */
+    public boolean hasRDFType( String uri ) {
+        return hasRDFType( getModel().getResource( uri ) );
+    }
+
+    /**
+     * <p>
+     * Answer true if this resource is a member of the class denoted by the
      * given class resource.  Includes all available types, so is equivalent to
      * <code><pre>
      * hasRDF( ontClass, false );
@@ -885,6 +828,109 @@ public class OntResourceImpl
         removePropertyValue( RDF.type, "rdf:type", cls );
     }
     
+    // utility methods
+    
+    /**
+     * <p>Answer the cardinality of the given property on this resource. The cardinality
+     * is the number of distinct values there are for the property.</p>
+     * @param p A property
+     * @return The cardinality for the property <code>p</code> on this resource, as an
+     * integer greater than or equal to zero.
+     */
+    public int getCardinality( Property p ) {
+        int n = 0;
+        for (Iterator i = listProperties( p );  i.hasNext(); n++) {
+            i.next(); 
+        }
+        
+        return n;
+    }
+    
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the given
+     * property of any ontology value. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @param p A property
+     * @param name The name of the property, so that an appropriate message can be printed if not in the profile
+     * @return An abstract accessor for the property p
+     */
+    public PathSet accessor( Property p, String name ) {
+        return asPathSet( p, name );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the given
+     * property of any ontology value. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @param p A property
+     * @return An abstract accessor for the property p
+     */
+    public PathSet accessor( Property p ) {
+        return asPathSet( p, "unknown property" );
+    }
+    
+    
+    /**
+     * <p>
+     * Set the value of the given property of this ontology resource to the given
+     * value, encoded as an RDFNode.  Maintains the invariant that there is
+     * at most one value of the property for a given resource, so existing
+     * property values are first removed.  To add multiple properties, use
+     * {@link #addProperty( Property, RDFNode ) addProperty}.
+     * </p>
+     * 
+     * @param property The property to update
+     * @param value The new value of the property as an RDFNode, or null to
+     *              effectively remove this property.
+     */
+    public void setPropertyValue( Property property, RDFNode value ) {
+        // if there is an existing property, remove it
+        removeAll( property );
+
+        // now set the new value
+        if (value != null) {
+            addProperty( property, value );
+        } 
+    }
+
+
+    /**
+     * <p>Answer the value of a given RDF property for this DAML value, or null
+     * if it doesn't have one.  The value is returned as an RDFNode, from which
+     * the value can be extracted for literals.  If there is more than one RDF
+     * statement with the given property for the current value, it is not defined
+     * which of the values will be returned.</p>
+     *
+     * @param property An RDF property
+     * @return An RDFNode whose value is the value, or one of the values, of the
+     *         given property. If the property is not defined, or an error occurs,
+     *         returns null.
+     */
+    public RDFNode getPropertyValue( Property property ) {
+        return getProperty( property ).getObject();
+    }
+
+
+    /**
+     * <p>Answer an iterator over the set of all values for a given RDF property. Each
+     * value in the iterator will be an RDFNode, representing the value (object) of
+     * each statement in the underlying model.</p>
+     *
+     * @param property The property whose values are sought
+     * @return An Iterator over the values of the property
+     */
+    public NodeIterator listPropertyValues( Property property ) {
+        return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectMapper() ), null );
+    }
+
 
     /**
      * <p>
@@ -917,6 +963,20 @@ public class OntResourceImpl
         for (Iterator i = stmts.iterator();  i.hasNext();  ((Statement) i.next()).remove() );
     }
     
+
+    /**
+     * <p>Remove the specific RDF property-value pair from this DAML resource.</p>
+     *
+     * @param property The property to be removed
+     * @param value The specific value of the property to be removed
+     */
+    public void removeProperty( Property property, RDFNode value ) {
+        // have to do this in two phases to avoid concurrent modification exception
+        Set s = new HashSet();
+        for (StmtIterator i = getModel().listStatements( this, property, value ); i.hasNext(); s.add( i.nextStatement() ) );
+        for (Iterator i = s.iterator(); i.hasNext(); ((Statement) i.next()).remove() );
+    }
+
 
     /** 
      * <p>Answer a view of this resource as an annotation property</p>
@@ -1227,7 +1287,7 @@ public class OntResourceImpl
         implements Map1
     {
         private Class m_as;
-        protected AsMapper( Class as ) { m_as = as; }
+        public AsMapper( Class as ) { m_as = as; }
         public Object map1( Object x ) { return (x instanceof Resource) ? ((Resource) x).as( m_as ) : x; }
     }
     
@@ -1236,7 +1296,7 @@ public class OntResourceImpl
         implements Map1
     {
         private Class m_as;
-        protected SubjectAsMapper( Class as ) { m_as = as; }
+        public SubjectAsMapper( Class as ) { m_as = as; }
         public Object map1( Object x ) { 
             if (x instanceof Statement) {
                 RDFNode subj = ((Statement) x).getSubject(); 
@@ -1253,7 +1313,7 @@ public class OntResourceImpl
         implements Map1
     {
         private Class m_as;
-        protected ObjectAsMapper( Class as ) { m_as = as; }
+        public ObjectAsMapper( Class as ) { m_as = as; }
         public Object map1( Object x ) { 
             if (x instanceof Statement) {
                 RDFNode obj = ((Statement) x).getObject(); 
@@ -1276,6 +1336,7 @@ public class OntResourceImpl
     protected class ObjectMapper
         implements Map1
     {
+        public ObjectMapper() {}
         public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getObject() : x; }
     }
     
@@ -1284,7 +1345,7 @@ public class OntResourceImpl
         implements Filter
     {
         protected String m_lang;
-        protected LangTagFilter( String lang ) { m_lang = lang; }
+        public LangTagFilter( String lang ) { m_lang = lang; }
         public boolean accept( Object x ) {
             if (x instanceof Literal) {
                 return langTagMatch( m_lang, ((Literal) x).getLanguage() );
@@ -1302,7 +1363,7 @@ public class OntResourceImpl
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright Hewlett-Packard Company 2001-2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

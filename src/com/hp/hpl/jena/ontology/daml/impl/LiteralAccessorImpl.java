@@ -6,36 +6,14 @@
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: LiteralAccessorImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 16:45:18 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
+ *               by   $Author: ian_dickinson $
  *
- * (c) Copyright Hewlett-Packard Company 2001
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
+ * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
@@ -45,25 +23,19 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.daml.LiteralAccessor;
-import com.hp.hpl.jena.ontology.daml.DAMLCommon;
-
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.shared.*;
-
-import com.hp.hpl.jena.util.Log;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.rdf.model.*;
 
 
 
 /**
- * Encapsulates the standard methods of modifying a property on a DAML object, where
+ * <p>Encapsulates the standard methods of modifying a property on a DAML object, where
  * the value of the property is an RDF literal (as opposed to another DAML value,
- * see {@link com.hp.hpl.jena.ontology.daml.PropertyAccessor PropertyAccessor}.
+ * see {@link PropertyAccessor}.<p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: LiteralAccessorImpl.java,v 1.3 2003-05-21 16:45:18 chris-dollin Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: LiteralAccessorImpl.java,v 1.4 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class LiteralAccessorImpl
     extends PropertyAccessorImpl
@@ -85,12 +57,12 @@ public class LiteralAccessorImpl
     //////////////////////////////////
 
     /**
-     * Construct a new accessor for literal values of the given property.
+     * <p>Construct a new accessor for literal values of the given property.</p>
      *
      * @param property The property that this accessor works on
      * @param val The DAML value that has this property
      */
-    public LiteralAccessorImpl( Property property, DAMLCommon val ) {
+    public LiteralAccessorImpl( Property property, OntResource val ) {
         super( property, val );
     }
 
@@ -100,129 +72,56 @@ public class LiteralAccessorImpl
     //////////////////////////////////
 
     /**
-     * Answer an iteration over the literal values that this property has in the
-     * RDF model.
-     *
-     * @return An iteration over the values of the encapsulated property. Each
-     *         member of the iteration will be an RDF literal.
-     */
-    public NodeIterator getValues() {
-        return m_val.getPropertyValues( getProperty() );
-    }
-
-
-    /**
-     * Answer the a value of the encapsulated property. If it has no values, answer
+     * <p>Answer the value of the encapsulated property. If it has no values, answer
      * null. If it has one value, answer that value. Otherwise, answer an undetermined
-     * member of the set of values.
+     * member of the set of values.<p>
      *
-     * @return A value for the encapsulated property, or null
-     *         if the property has no value.
+     * @return The literal value of the encapsulated property, or null.
      */
     public Literal getValue() {
+        NodeIterator i = null;
         try {
-            NodeIterator i = getValues();
+            i = getAll();
             return (i == null  ||  !i.hasNext()) ? null : ((Literal) i.nextNode());
         }
-        catch (JenaException e) {
-            Log.severe( "RDF exception when getting literal values: " + e, e );
-            throw new RuntimeException( "RDF exception when getting literal values: " + e );
+        finally {
+            if (i != null) {
+                i.close();
+            }
         }
     }
 
 
     /**
-     * Add a value to the encapsulated property.
+     * <p>Add a value to the encapsulated property.</p>
      *
      * @param value The value to be added, as a string.
      */
     public void addValue( String value ) {
-        try {
-            addValue( m_val.getModel().createLiteral( value ) );
-        }
-        catch (JenaException e) {
-            Log.severe( "Saw RDF Exception while creating literal: " + e, e );
-            throw new RuntimeException( "Saw RDF Exception while creating literal: " + e );
-        }
+        add( m_val.getModel().createLiteral( value ) );
     }
 
 
     /**
-     * Add a value to the encapsulated property.
-     *
-     * @param value The value to be added, as an RDF literal.
-     */
-    public void addValue( Literal value ) {
-        try {
-            m_val.addProperty( getProperty(), value );
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception " + e, e );
-        }
-    }
-
-
-    /**
-     * Remove a value from the encapsulated property.
+     * <p>Remove a value from the encapsulated property.</p>
      *
      * @param value The value to be removed, as a string.
      */
     public void removeValue( String value ) {
-        try {
-            removeValue( m_val.getModel().createLiteral( value ) );
-        }
-        catch (JenaException e) {
-            Log.severe( "Saw RDF Exception while creating literal: " + e, e );
-            throw new RuntimeException( "Saw RDF Exception while creating literal: " + e );
-        }
+        remove( m_val.getModel().createLiteral( value ) );
     }
 
 
     /**
-     * Remove a value from the encapsulated property.
+     * <p>Answer true if the encapsulated property has the given value as one of its
+     * values.</p>
      *
-     * @param value The value to be removed, as a literal.
-     */
-    public void removeValue( Literal value ) {
-        m_val.removeProperty( getProperty(), value );
-    }
-
-
-    /**
-     * Answer true if the encapsulated property has the given value as one of its
-     * values.
-     *
-     * @param value A DAML value to test for
+     * @param value A String value to test for
      * @return True if the RDF model contains a statement giving a value for
      *         the encapsulated property matching the given value.
      */
     public boolean hasValue( String value ) {
-        try {
-            return hasValue( m_val.getModel().createLiteral( value ) );
-        }
-        catch (JenaException e) {
-            Log.severe( "Saw RDF Exception while creating literal: " + e, e );
-            throw new RuntimeException( "Saw RDF Exception while creating literal: " + e );
-        }
-    }
-
-
-    /**
-     * Answer true if the encapsulated property has the given value as one of its
-     * values.
-     *
-     * @param value A DAML value to test for
-     * @return True if the RDF model contains a statement giving a value for
-     *         the encapsulated property matching the given value.
-     */
-    public boolean hasValue( Literal value ) {
-        try {
-            return m_val.hasProperty( getProperty(), value );
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF Exception " + e, e );
-            throw new RuntimeException( "RDF Exception " + e );
-        }
+        return hasValue( m_val.getModel().createLiteral( value ) );
     }
 
 
@@ -238,3 +137,34 @@ public class LiteralAccessorImpl
 
 
 }
+
+/*
+    (c) Copyright Hewlett-Packard Company 2001-2003
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.1 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 15:33:15 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-13 19:09:29 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -40,7 +40,7 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.daml.test;
+package com.hp.hpl.jena.ontology.daml.impl.test;
 
 
 // Imports
@@ -52,7 +52,6 @@ import com.hp.hpl.jena.mem.*;
 //import com.hp.hpl.jena.rdf.model.impl.*;
 
 import com.hp.hpl.jena.ontology.daml.*;
-import com.hp.hpl.jena.ontology.daml.impl.*;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -67,7 +66,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.8 2003-05-21 15:33:15 chris-dollin Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.1 2003-06-13 19:09:29 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -176,7 +175,7 @@ public class DAMLTest
     {
         Log.debug( "Starting loadOntology tests" );
 
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         // first do the model read with all options turned on
         Log.debug( "Test: loading (2000/12, import, standard block)" );
@@ -188,7 +187,7 @@ public class DAMLTest
 
         // now turn off importing - should only get the classes and properties in the source doc
         Log.debug( "Test: loading (2000/12, no import)" );
-        m = new DAMLModelImpl();
+        m = ModelFactory.createDAMLModel();
         m.getLoader().setLoadImportedOntologies( false );
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2000_12/daml+oil-ex.daml", "http://www.daml.org/2000/12/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
@@ -197,7 +196,7 @@ public class DAMLTest
 
         // try again, this time we'll block the loading of our local extension
         Log.debug( "Test: loading (2000/12, import, added to block list)" );
-        m = new DAMLModelImpl();
+        m = ModelFactory.createDAMLModel();
         m.getLoader().addImportBlock( "file:modules/rdf/regression/testDAML/daml_oil_2000_12/daml-local-ex.daml" );
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2000_12/daml+oil-ex.daml", "http://www.daml.org/2000/12/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
@@ -208,7 +207,7 @@ public class DAMLTest
 
         // first do the model read with all options turned on
         Log.debug( "Test: loading (2001/03, import, standard block)" );
-        m = new DAMLModelImpl();
+        m = ModelFactory.createDAMLModel();
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
         assertEquals( "Count of number of classes in daml store (2001/03, import)", 43, countClasses( m ) );
@@ -217,7 +216,7 @@ public class DAMLTest
 
         // now turn off importing - should only get the classes and properties in the source doc
         Log.debug( "Test: loading (2001/03, no import)" );
-        m = new DAMLModelImpl();
+        m = ModelFactory.createDAMLModel();
         m.getLoader().setLoadImportedOntologies( false );
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
@@ -227,7 +226,7 @@ public class DAMLTest
         // now we'll try to read an HTTP document, but only if the http proxy is set
         if (System.getProperty( "proxySet" ) != null  &&  System.getProperty( "proxySet" ).equals( "true" )) {
             Log.debug( "Test: loading (2001/03, http)" );
-            m = new DAMLModelImpl();
+            m = ModelFactory.createDAMLModel();
             m.read( "http://www.daml.org/2001/03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
             assertTrue( "Load success status should be true", m.getLoadSuccessful() );
             assertEquals( "Count of number of classes in daml store (2001/03, http)", 28, countClasses( m ) );
@@ -240,7 +239,7 @@ public class DAMLTest
         // also try unblocking the import list so that we load the DAML ontology by http
         if (System.getProperty( "proxySet" ) != null) {
             Log.debug( "Test: loading (2001/03, http, block removed)" );
-            m = new DAMLModelImpl();
+            m = ModelFactory.createDAMLModel();
             m.getLoader().removeImportBlock( "http://www.daml.org/2001/03/daml+oil" );
             m.read( "http://www.daml.org/2001/03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
             assertTrue( "Load success status should be true", m.getLoadSuccessful() );
@@ -253,7 +252,7 @@ public class DAMLTest
 
         // test case for bug reported by Charlie Abela: must be able to load instance files that import
         // their own class declarations
-        m = new DAMLModelImpl();
+        m = ModelFactory.createDAMLModel();
         m.read( "file:modules/rdf/regression/testDAML/test-instance-load.daml" );
         assertTrue( "Load status should be true", m.getLoadSuccessful() );
         Resource pugh = m.getResource( "http://dickinson-i-4/daml/tests/test-instance-load.daml#pugh" );
@@ -263,7 +262,7 @@ public class DAMLTest
         // test case for bug report by Michael Sintek
         // try to ascertain the most specific class we can at load time -
         // case in point is shoesize in standard example ontology
-        m = new DAMLModelImpl();
+        m = ModelFactory.createDAMLModel();
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
         DAMLProperty shoesize = (DAMLProperty) m.getProperty( "http://www.daml.org/2001/03/daml+oil-ex#shoesize" );
@@ -282,7 +281,7 @@ public class DAMLTest
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
         Log.debug( "Starting rdf:type tests" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         // don't allow any additional info to load
         m.getLoader().setLoadImportedOntologies( false );
@@ -355,7 +354,7 @@ public class DAMLTest
         throws RDFException
     {
         Log.debug( "Starting DAML class tests" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -367,7 +366,7 @@ public class DAMLTest
         assertTrue( "Person should be a named class", person.isNamedClass() );
 
         // count the super-classes of a Person
-        int sCount0 = countIteration( person.prop_subClassOf().getAll( false ), true, "super-class of Person (prop_subClassOf) " );
+        int sCount0 = countIteration( person.prop_subClassOf().getAll(  ), true, "super-class of Person (prop_subClassOf) " );
         int sCount1 = countIteration( person.getSuperClasses(), true, "super-class of Person (getSuperClasses) " );
         assertEquals( "person should have 7 super-classes (by prop_subClassOf)", 7, sCount0 );
         assertEquals( "person should have 9 super-classes (by getSuperClasses)", 9, sCount1 );
@@ -416,7 +415,7 @@ public class DAMLTest
         assertEquals( "Height should be an enumeration of 3 elements", 3, ((DAMLList) height.prop_oneOf().get()).getCount() );
 
         // daml:subClassOf is processed as rdfs:subClassOf
-        DAMLModel m0 = new DAMLModelImpl();
+        DAMLModel m0 = ModelFactory.createDAMLModel();
         m0.getLoader().setLoadImportedOntologies( false );
         m0.read( "file:modules/rdf/regression/testDAML/test-cases.daml", "http://dickinson-i-4/daml/tests/test-cases.daml", null );
         String tcNs = "http://dickinson-i-4/daml/tests/test-cases.daml#";
@@ -454,7 +453,7 @@ public class DAMLTest
         // Bug report by Thorsten Liebig
         DAMLClass tl_one = (DAMLClass) m0.getDAMLValue( tcNs + "tl_one" );
         assertNotNull( "Class tl_one should not be null", tl_one );
-        int tl_one_supers0 = countIteration( tl_one.prop_subClassOf().getAll( false ), false, null );
+        int tl_one_supers0 = countIteration( tl_one.prop_subClassOf().getAll(  ), false, null );
         int tl_one_supers1 = countIteration( tl_one.getSuperClasses( false ), false, null );
         int tl_one_supers2 = countIteration( new StatementSubjectIterator( tl_one.listProperties( RDFS.subClassOf ) ), false, null );
         assertEquals( "Should be two super-classes of tl_one by prop_subClassOf", 2, tl_one_supers0 );
@@ -478,7 +477,7 @@ public class DAMLTest
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
         Log.debug( "Starting equivalence tests" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         // don't allow any additional info to load
         m.getLoader().setLoadImportedOntologies( false );
@@ -549,7 +548,7 @@ public class DAMLTest
         throws RDFException
     {
         Log.debug( "Starting DAML property tests" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -592,14 +591,14 @@ public class DAMLTest
         DAMLProperty shoesize = (DAMLProperty) m.getDAMLValue( ns + "shoesize" );
         assertNotNull( "Property shoesize should not be null", shoesize );
         PropertyAccessor paShoesize = peter.accessProperty( shoesize );
-        Iterator iShoes = paShoesize.getAll( false );
+        Iterator iShoes = paShoesize.getAll(  );
         assertEquals( "iShoes iterator should have at least one value", true, iShoes.hasNext() );
         Object size = iShoes.next();
         assertNotNull( "size returned from property accessor iterator should not be null", size );
         assertTrue( "size object should be a literal", size instanceof Literal );
         boolean nse = false;
         try {
-            Object size1 = iShoes.next();
+            iShoes.next();
         }
         catch (NoSuchElementException ignore) {
             nse = true;
@@ -607,7 +606,7 @@ public class DAMLTest
         assertEquals( "Accessing past end of property iterator should throw no such element exception", true, nse );
 
         // try the same bug test with a multi-valued property
-        Iterator iSubClassOf = person.prop_subClassOf().getAll( false );
+        Iterator iSubClassOf = person.prop_subClassOf().getAll(  );
         assertNotNull( "Iterator over subClassOf values should not be null", iSubClassOf );
         assertTrue( "Iteration of subClassOf should have at least one value", iSubClassOf.hasNext() );
         int nSupers = countIteration( iSubClassOf, true, "direct super-class of Person = " );
@@ -629,13 +628,13 @@ public class DAMLTest
         DAMLClass subClassCheck3 = (DAMLClass) m.getDAMLValue( ns + "subClassCheck3" );
         assertNotNull( "Class subClassCheck3 should not be null", subClassCheck3 );
 
-        Iterator iSubClassOf3 = subClassCheck3.prop_subClassOf().getAll( false ); // not closed
+        Iterator iSubClassOf3 = subClassCheck3.prop_subClassOf().getAll(  ); // not closed
         assertNotNull( "Iterator over subClassOf values should not be null", iSubClassOf );
         assertTrue( "Iteration of subClassOf should have at least one value", iSubClassOf3.hasNext() );
         nSupers = countIteration( iSubClassOf3, true, "property access on subClassCheck3 with closed = false " );
         assertEquals( "Should be 1 non-closed super-classes of subClassCheck3", 1, nSupers );
 
-        iSubClassOf3 = subClassCheck3.prop_subClassOf().getAll( true ); // closed
+        iSubClassOf3 = subClassCheck3.prop_subClassOf().getAll(  ); // closed
         assertNotNull( "Iterator over subClassOf values should not be null", iSubClassOf );
         assertTrue( "Iteration of subClassOf should have at least one value", iSubClassOf3.hasNext() );
         nSupers = countIteration( iSubClassOf3, true, "property access on subClassCheck3 with closed = true " );
@@ -661,9 +660,9 @@ public class DAMLTest
         DAMLProperty tlPropTest = (DAMLObjectProperty) m.getDAMLValue( ns + "TL_PropertyTest" );
         assertNotNull( "Property should not be null", tlPropTest );
 
-        Iterator tl_domains = tlPropTest.prop_domain().getAll(false);
+        Iterator tl_domains = tlPropTest.prop_domain().getAll();
         assertEquals( "Property TL_PropertyTest should have a domain of two classes", 2, countIteration( tl_domains, false, null ) );
-        Iterator tl_ranges = tlPropTest.prop_range().getAll(false);
+        Iterator tl_ranges = tlPropTest.prop_range().getAll();
         assertEquals( "Property TL_PropertyTest should have a range of two classes", 2, countIteration( tl_ranges, false, null ) );
 
         // bug reported by Wesley Bille
@@ -686,7 +685,7 @@ public class DAMLTest
         throws RDFException
     {
         Log.debug( "Starting DAML list tests" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -737,7 +736,7 @@ public class DAMLTest
         throws RDFException
     {
         Log.debug( "Starting DAML instance tests" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -762,7 +761,7 @@ public class DAMLTest
         throws RDFException
     {
         Log.debug( "Starting DAML datatype tests" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -793,7 +792,7 @@ public class DAMLTest
         throws RDFException
     {
         Log.debug( "Starting DAML remove test" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -856,7 +855,7 @@ public class DAMLTest
     public void testCreate()
         throws RDFException
     {
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         String cURI = "http://dickinson-i-4/daml/tests/gen#A";
         DAMLClass c = m.createDAMLClass( cURI );
@@ -894,7 +893,7 @@ public class DAMLTest
         throws RDFException
     {
         Log.debug( "Starting DAML restriction tests" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:modules/rdf/regression/testDAML/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -917,7 +916,7 @@ public class DAMLTest
 
                 if (count >= 1) {
                     Object x = onPropertyAccessor.get();
-                    Object y = onPropertyAccessor.getAll( false ).next();
+                    Object y = onPropertyAccessor.getAll(  ).next();
 
                     assertNotNull( "Failed to access value of property accessor on restriction", x );
                     assertNotNull( "Failed to access value of property accessor on restriction", y );
@@ -935,12 +934,11 @@ public class DAMLTest
         throws RDFException
     {
         Log.debug( "Starting model add test" );
-        DAMLModel m = new DAMLModelImpl();
+        DAMLModel m = ModelFactory.createDAMLModel();
 
         // create a daml model
         m.read( "file:modules/rdf/regression/testDAML/test-add-0.daml" );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
-        String ns = "http://dickinson-i-4/daml/tests/test-add-0.daml#";
 
         // create a normal rdf model
         Model m0 = new ModelMem();
@@ -1015,7 +1013,7 @@ public class DAMLTest
                     return "<daml:Datatype rdf:about='http://www.w3.org/2000/10/XMLSchema#string'/>";
                 }
                 void java(DAMLModel m) {
-                    new DAMLDatatypeImpl("http://www.w3.org/2000/10/XMLSchema#","string",m,null);
+                    // TODO new DAMLDatatypeImpl("http://www.w3.org/2000/10/XMLSchema#","string",m,null);
                 }
         });
     }
@@ -1070,7 +1068,7 @@ public class DAMLTest
         throws RDFException {
 
         Log.debug( "Starting DAML equality test for " + test.toString() );
-        DAMLModel m1 = new DAMLModelImpl();
+        DAMLModel m1 = ModelFactory.createDAMLModel();
         test.java(m1);
 
         Model m2 = new ModelMem();

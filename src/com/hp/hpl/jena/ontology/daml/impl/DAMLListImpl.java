@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLListImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 12:23:37 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -45,16 +45,13 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.Resource;
-
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.Log;
-
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.DAMLList;
-import com.hp.hpl.jena.ontology.daml.DAMLCommon;
-
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.Iterator;
@@ -72,7 +69,7 @@ import java.util.Iterator;
  * in the current list interpretation.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLListImpl.java,v 1.4 2003-06-10 12:23:37 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLListImpl.java,v 1.5 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAMLListImpl
     extends DAMLCommonImpl
@@ -89,38 +86,41 @@ public class DAMLListImpl
     // Instance variables
     //////////////////////////////////
 
+    /**
+     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLClassImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLDatatype" );
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, DAMLInstance.class );
+        }
+    };
+
 
     // Constructors
     //////////////////////////////////
 
     /**
-     * Constructor, takes the URI for this list, and the underlying
-     * model it will be attached to.
-     *
-     * @param uri The URI of the list
-     * @param store The RDF store that contains the RDF statements defining the properties of the list
-     * @param vocabulary Reference to the DAML vocabulary used by this list.
+     * <p>
+     * Construct a DAML list represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public DAMLListImpl( String uri, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( uri, store, vocabulary  );
-
-        setRDFType( getVocabulary().List() );
-    }
-
-
-    /**
-     * Constructor, takes the name and namespace for this list, and the underlying
-     * model it will be attached to.
-     *
-     * @param namespace The namespace the list inhabits, or null
-     * @param name The name of the list
-     * @param store The RDF store that contains the RDF statements defining the properties of the list
-     * @param vocabulary Reference to the DAML vocabulary used by this list.
-     */
-    public DAMLListImpl( String namespace, String name, DAMLModel store, DAMLVocabulary vocabulary  ) {
-        super( namespace, name, store, vocabulary  );
-
-        setRDFType( getVocabulary().List() );
+    public DAMLListImpl( Node n, EnhGraph g ) {
+        super( n, g );
     }
 
 
@@ -335,7 +335,7 @@ public class DAMLListImpl
      */
     public DAMLList cons( DAMLCommon value ) {
         // create a new list cell
-        DAMLList l = new DAMLListImpl( null, getDAMLModel(), getVocabulary() );
+        DAMLList l = null;// TODO new DAMLListImpl( null, getDAMLModel(), getVocabulary() );
 
         // set head and tail
         l.setFirst( value );
@@ -352,7 +352,7 @@ public class DAMLListImpl
      */
     public DAMLList getNil() {
         // TODO revisit this
-        return new DAMLListImpl( getVocabulary().nil().getURI(), getDAMLModel(), getVocabulary() );
+        return null; // TODO new DAMLListImpl( getVocabulary().nil().getURI(), getDAMLModel(), getVocabulary() );
     }
 
 

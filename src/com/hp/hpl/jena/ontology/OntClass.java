@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 23:10:33 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -38,7 +38,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.11 2003-06-10 23:10:33 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.12 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -100,7 +100,14 @@ public interface OntClass
      */
     public Iterator listSuperClasses( boolean direct );
 
-
+    /**
+     * <p>Answer true if the given class is a super-class of this class.</p>
+     * @param cls A class to test.
+     * @return True if the given class is a super-class of this class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public boolean hasSuperClass( Resource cls );
+    
     /**
      * <p>Answer true if the given class is a super-class of this class.
      * See {@link #listSubClasses( boolean )} for a full explanation of the <em>direct</em>
@@ -202,7 +209,14 @@ public interface OntClass
      */
     public Iterator listSubClasses( boolean direct );
 
-
+    /**
+     * <p>Answer true if the given class is a sub-class of this class.</p>
+     * @param cls A class to test.
+     * @return True if the given class is a sub-class of this class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public boolean hasSubClass( Resource cls );
+    
     /**
      * <p>Answer true if the given class is a sub-class of this class.
      * See {@link #listSubClasses( boolean )} for a full explanation of the <em>direct</em>

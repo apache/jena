@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:52:43 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.12 2003-06-08 18:52:43 ian_dickinson Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.13 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class OntListImpl
     extends OntResourceImpl
@@ -831,10 +831,11 @@ public class OntListImpl
                                             p.toString() + 
                                             (expected == null ? "" : ( " with value " + expected )) );
         }
+        /* removed temporarily - ijd TODO 
         else if (count > 1) {
             throw new InvalidListException( "List node " + toString() + " is not valid: it has more than one value for " +
                                             p.toString() );
-        }
+        }*/
     }
     
     

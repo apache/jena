@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:07:02 $
+ * Last modified on   $Date: 2003-06-13 19:09:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -32,6 +32,8 @@ import junit.framework.*;
 
 import java.util.*;
 
+import org.apache.log4j.Logger;
+
 
 
 /**
@@ -41,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.7 2003-06-06 11:07:02 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.8 2003-06-13 19:09:29 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -565,7 +567,7 @@ public class TestListSyntaxCategories
             
             if (!exOccurred) {       
                 List expected = expected( m );
-                int actual = 0;
+                List actual = new ArrayList();
                 int extraneous = 0;
                 
                 // now we walk the iterator
@@ -573,7 +575,7 @@ public class TestListSyntaxCategories
                     Resource res = (Resource) i.next();
                     assertTrue( "Should not fail node test on " + res, test( res ));
                     
-                    actual++;
+                    actual.add( res );
                     if (expected != null) {
                         if (expected.contains( res )) {
                             expected.remove( res );
@@ -587,7 +589,16 @@ public class TestListSyntaxCategories
                     }
                 }
                 
-                assertEquals( "Wrong number of results returned", m_count, actual );
+                // debugging 
+                if (m_count != actual.size()) {
+                    Logger logger = Logger.getLogger( getClass() );
+                    logger.debug( getName() + " - expected " + m_count + " results, actual = " + actual.size() );
+                    for (Iterator j = actual.iterator(); j.hasNext(); ) {
+                        logger.debug( getName() + " - saw actual: " + j.next() );
+                    }
+                } 
+                
+                assertEquals( "Wrong number of results returned", m_count, actual.size() );
                 if (expected != null) {
                     assertTrue( "Did not find all expected resources in iterator", expected.isEmpty() );
                     assertEquals( "Found extraneous results, not in expected list", 0, extraneous );

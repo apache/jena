@@ -6,36 +6,14 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 16:45:18 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
+ *               by   $Author: ian_dickinson $
  *
- * (c) Copyright Hewlett-Packard Company 2001
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
+ * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
@@ -45,32 +23,28 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import java.util.Iterator;
+import java.util.*;
 
-import com.hp.hpl.jena.ontology.daml.DAMLClass;
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.PropertyAccessor;
-import com.hp.hpl.jena.ontology.daml.PropertyIterator;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.ontology.impl.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.util.iterator.*;
 
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
-import com.hp.hpl.jena.util.Log;
-import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
-
-import com.hp.hpl.jena.shared.*;
 
 /**
- * Java representation of a DAML ontology Class. Note that the ontology classes are
- * not the same as Java classes: think of classifications rather than active data structures.
+ * <p>Java representation of a DAML ontology Class. Note that the ontology classes are
+ * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.3 2003-05-21 16:45:18 chris-dollin Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.4 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAMLClassImpl
-    extends DAMLCommonImpl
+    extends OntClassImpl
     implements DAMLClass
 {
     // Constants
@@ -81,65 +55,77 @@ public class DAMLClassImpl
     // Static variables
     //////////////////////////////////
 
+    /**
+     * A factory for generating DAMLClass facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLClassImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLClass" );
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            // node will support being an DAMLClass facet if it has rdf:type owl:Class or equivalent
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, DAMLClass.class );
+        }
+    };
 
 
     // Instance variables
     //////////////////////////////////
 
     /** Property accessor for onProperty */
-    private PropertyAccessor m_propSubClassOf = new PropertyAccessorImpl( getVocabulary().subClassOf(), this );
+    private PropertyAccessor m_propSubClassOf = new PropertyAccessorImpl( DAML_OIL.subClassOf, this );
 
     /** Property accessor for disjointWith */
-    private PropertyAccessor m_propDisjointWith = null;
+    private PropertyAccessor m_propDisjointWith = new PropertyAccessorImpl( DAML_OIL.disjointWith, this );
 
     /** Property accessor for disjointUnionOf */
-    private PropertyAccessor m_propDisjointUnionOf = null;
+    private PropertyAccessor m_propDisjointUnionOf = new PropertyAccessorImpl( DAML_OIL.disjointUnionOf, this );
 
     /** Property accessor for sameClassAs */
-    private PropertyAccessor m_propSameClassAs = null;
+    private PropertyAccessor m_propSameClassAs = new PropertyAccessorImpl( DAML_OIL.sameClassAs, this );
 
     /** Property accessor for oneOf */
-    private PropertyAccessor m_propOneOf = null;
+    private PropertyAccessor m_propOneOf = new PropertyAccessorImpl( DAML_OIL.oneOf, this );
 
     /** Property accessor for unionOf */
-    private PropertyAccessor m_propUnionOf = null;
+    private PropertyAccessor m_propUnionOf = new PropertyAccessorImpl( DAML_OIL.unionOf, this );
 
     /** Property accessor for intersectionOf */
-    private PropertyAccessor m_propIntersectionOf = null;
+    private PropertyAccessor m_propIntersectionOf = new PropertyAccessorImpl( DAML_OIL.intersectionOf, this );
 
     /** Property accessor for complementOf */
-    private PropertyAccessor m_propComplementOf = null;
+    private PropertyAccessor m_propComplementOf = new PropertyAccessorImpl( DAML_OIL.complementOf, this );
 
-
+    /** DAML common delegate */
+    protected DAMLCommon m_common = null;
+    
+    /** Vocabulary - this is really obsoleted by the profile mechanism */
+    protected DAMLVocabulary m_vocabulary = VocabularyManager.getDefaultVocabulary();
+    
+    
     // Constructors
     //////////////////////////////////
 
     /**
-     * Constructor, takes the name and namespace for this class, and the underlying
-     * model it will be attached to.
-     *
-     * @param namespace The namespace the class inhabits, or null
-     * @param name The name of the class
-     * @param model Reference to the DAML model that will contain statements about this DAML class.
-     * @param vocabulary Reference to the DAML vocabulary used by this class.
+     * <p>
+     * Construct a DAML class represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public DAMLClassImpl( String namespace, String name, DAMLModel model, DAMLVocabulary vocabulary ) {
-        super( namespace, name, model, vocabulary );
-        setRDFType( RDFS.Class );
-    }
-
-
-    /**
-     * Constructor, takes URI for this class, and the underlying
-     * model it will be attached to.
-     *
-     * @param uri The URI of the class
-     * @param store Reference to the DAML store that will contain statements about this DAML class.
-     * @param vocabulary Reference to the DAML vocabulary used by this class.
-     */
-    public DAMLClassImpl( String uri, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( uri, store, vocabulary );
-        setRDFType( RDFS.Class );
+    public DAMLClassImpl( Node n, EnhGraph g ) {
+        super( n, g );
+        m_common = new DAMLCommonImpl( n, g );
     }
 
 
@@ -147,12 +133,23 @@ public class DAMLClassImpl
     // External signature methods
     //////////////////////////////////
 
+    // delegate to DAMLCommon what we can
+    /** @deprecated */
+    public void setRDFType( Resource rdfClass, boolean replace ) { m_common.setRDFType( rdfClass, replace ); }
+    public DAMLModel getDAMLModel()                              { return m_common.getDAMLModel(); }
+    public Iterator getRDFTypes( boolean complete )              { return m_common.getRDFTypes( complete ); }
+    public DAMLVocabulary getVocabulary()                        { return m_vocabulary; }
+    public LiteralAccessor prop_label()                          { return m_common.prop_label(); }
+    public LiteralAccessor prop_comment()                        { return m_common.prop_comment(); }
+    public PropertyAccessor prop_equivalentTo()                  { return m_common.prop_equivalentTo(); }
+    public PropertyAccessor prop_type()                          { return m_common.prop_type(); }
+    
 
     /**
-     * Property accessor for the 'subClassOf' property of a class. This
-     * denotes a class-expression that is a super-class of this class.
+     * <p>Property accessor for the <code>daml:subClassOf</code> property of a class. This
+     * denotes a class that is a super-class of this class.
      *
-     * @return Property accessor for 'onProperty'.
+     * @return Property accessor for <code>daml:subClassOf</code>.
      */
     public PropertyAccessor prop_subClassOf() {
         return m_propSubClassOf;
@@ -160,107 +157,79 @@ public class DAMLClassImpl
 
 
     /**
-     * Property accessor for the 'disjointWith' property of a class. This
-     * denotes a class-expression with which this class has no instances in common.
+     * <p>Property accessor for the <code>daml:disjointWith</code> property of a class. This
+     * denotes a class with which this class has no instances in common.</p>
      *
-     * @return Property accessor for 'disjointWith'.
+     * @return Property accessor for <code>daml:disjointWith</code>.
      */
     public PropertyAccessor prop_disjointWith() {
-        if (m_propDisjointWith == null) {
-            m_propDisjointWith = new PropertyAccessorImpl( getVocabulary().disjointWith(), this );
-        }
-
         return m_propDisjointWith;
     }
 
 
     /**
-     * Property accessor for the 'disjointUnionOf' property of a class. This
-     * denotes a list of class expressions that are each pair-wise disjoint, and whose
-     * union describes this class.
+     * <p>Property accessor for the <code>daml:disjointUnionOf</code> property of a class. This
+     * denotes a list of classes that are each pair-wise disjoint, and whose
+     * union describes this class.</p>
      *
-     * @return Property accessor for 'disjointUnionOf'.
+     * @return Property accessor for <code>daml:disjointUnionOf</code>.
      */
     public PropertyAccessor prop_disjointUnionOf() {
-        if (m_propDisjointUnionOf == null) {
-            m_propDisjointUnionOf = new PropertyAccessorImpl( getVocabulary().disjointUnionOf(), this );
-        }
-
         return m_propDisjointUnionOf;
     }
 
 
     /**
-     * Property accessor for the 'sameClassAs' property of a class. This
-     * denotes a class-expression whose instances are the same those of this class.
+     * <p>Property accessor for the <code>daml:sameClassAs</code> property of a DAML class. This
+     * denotes a class whose instances are the same those of this class.</p>
      *
-     * @return Property accessor for 'sameClassAs'.
+     * @return Property accessor for <code>daml:sameClassAs</code>.
      */
     public PropertyAccessor prop_sameClassAs() {
-        if (m_propSameClassAs == null) {
-            m_propSameClassAs = new PropertyAccessorImpl( getVocabulary().sameClassAs(), this );
-        }
-
         return m_propSameClassAs;
     }
 
 
     /**
-     * Property accessor for the property 'unionOf', which is one element of the range
-     * of boolean expressions over classes permitted by DAML.
+     * <p>Property accessor for the property <code>daml:unionOf</code>, which denotes a class
+     * expression consisting of the union (disjunction) of a list of classes.</p>
      *
-     * @return property accessor for 'unionOf'.
+     * @return Property accessor for <code>daml:unionOf</code>.
      */
     public PropertyAccessor prop_unionOf() {
-        if (m_propUnionOf == null) {
-            m_propUnionOf = new PropertyAccessorImpl( getVocabulary().unionOf(), this );
-        }
-
         return m_propUnionOf;
     }
 
 
     /**
-     * Property accessor for the property 'intersectionOf', which is one element of the range
-     * of boolean expressions over classes permitted by DAML.
+     * <p>Property accessor for the property <code>daml:intersectionOf</code>, which denotes an
+     * intersection (conjunction) of a list of classes.</p>
      *
-     * @return property accessor for 'intersectionOf'.
+     * @return Property accessor for <code>daml:intersectionOf</code>.
      */
     public PropertyAccessor prop_intersectionOf() {
-        if (m_propIntersectionOf == null) {
-            m_propIntersectionOf = new PropertyAccessorImpl( getVocabulary().intersectionOf(), this );
-        }
-
         return m_propIntersectionOf;
     }
 
 
     /**
-     * Property accessor for the property 'compelementOf', which is one element of the range
-     * of boolean expressions over classes permitted by DAML.
+     * <p>Property accessor for the property <code>daml:compelementOf</code>, which denotes the
+     * class whose members are the individuals not in the given class.</p>
      *
-     * @return property accessor for 'complementOf'.
+     * @return Property accessor for <code>daml:compelementOf</code>.
      */
     public PropertyAccessor prop_complementOf() {
-        if (m_propComplementOf == null) {
-            m_propComplementOf = new PropertyAccessorImpl( getVocabulary().complementOf(), this );
-        }
-
         return m_propComplementOf;
     }
 
 
     /**
-     * Property accessor for the 'oneOf' property, which defines a class expression
-     * denoting that the class is exactly one of the given list of class expressions.
+     * <p>Property accessor for the <code>daml:oneOf</code> property, which defines a class expression
+     * denoting that the class is exactly one of the given list of classes.</p>
      *
-     * @return property accessor for 'oneOf'
+     * @return Property accessor for <code>daml:oneOf</code>.
      */
     public PropertyAccessor prop_oneOf() {
-        if (m_propOneOf == null) {
-            m_propOneOf = new PropertyAccessorImpl( getVocabulary().oneOf(), this );
-        }
-
         return m_propOneOf;
     }
 
@@ -275,13 +244,7 @@ public class DAMLClassImpl
      * @return true if this class expression is an enumeration.
      */
     public boolean isEnumeration() {
-        try {
-            return hasProperty( getVocabulary().oneOf() );
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception " + e, e );
-            throw new RuntimeException( "RDF Exception " + e );
-        }
+        return hasProperty( getVocabulary().oneOf() );
     }
 
 
@@ -324,13 +287,7 @@ public class DAMLClassImpl
      * @return true if this class expression is an intersection.
      */
     public boolean isIntersection() {
-        try {
-            return hasProperty( getVocabulary().intersectionOf() );
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception " + e, e );
-            throw new RuntimeException( "RDF Exception " + e );
-        }
+        return hasProperty( getVocabulary().intersectionOf() );
     }
 
 
@@ -344,13 +301,7 @@ public class DAMLClassImpl
      * @return true if this class expression is a union.
      */
     public boolean isUnion() {
-        try {
-            return hasProperty( getVocabulary().unionOf() );
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception " + e, e );
-            throw new RuntimeException( "RDF Exception " + e );
-        }
+        return hasProperty( getVocabulary().unionOf() );
     }
 
 
@@ -364,13 +315,7 @@ public class DAMLClassImpl
      * @return true if this class expression is a disjoint union.
      */
     public boolean isDisjointUnion() {
-        try {
-            return hasProperty( getVocabulary().disjointUnionOf() );
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception " + e, e );
-            throw new RuntimeException( "RDF Exception " + e );
-        }
+        return hasProperty( getVocabulary().disjointUnionOf() );
     }
 
 
@@ -384,23 +329,17 @@ public class DAMLClassImpl
      * @return true if this class expression is a complement.
      */
     public boolean isComplement() {
-        try {
-            return hasProperty( getVocabulary().complementOf() );
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception " + e, e );
-            throw new RuntimeException( "RDF Exception " + e );
-        }
+        return hasProperty( getVocabulary().complementOf() );
     }
 
 
     /**
-     * Answer an iterator over the DAML classes (or, strictly, class expressions)
-     * that mention this class as one of its super-classes.   Will generate the
-     * closure of the iteration over the sub-class relationship.
-     *
-     * @return an iterator over this class's sub-classes. The members of the
-     *         iteration will be DAMLClass objects.
+     * <p>Answer an iterator over the DAML classes
+     * that mention this class as one of its super-classes.  Will return
+     * all available sub-classes (see {@link #getSubClasses(boolean)} for
+     * more details). The elements
+     * of the iterator will be {@link DAMLClass} objects.</p>
+     * @return An iterator over all available sub-classes of this class
      */
     public Iterator getSubClasses() {
         return getSubClasses( true );
@@ -408,26 +347,34 @@ public class DAMLClassImpl
 
 
     /**
-     * Answer an iterator over the DAML classes (or, strictly, class expressions)
+     * <p>Answer an iterator over the DAML classes
      * that mention this class as one of its super-classes.
-     *
-     * @param closed If true, close the iteration over the sub-class relation: i&#046;e&#046;
-     *               return the sub-classes of the sub-classes, etc.
-     * @return an iterator over this class's sub-classes. The members of the
-     *         iteration will be DAMLClass objects.
+     * The members of the iterator will be {@link DAMLClass} objects
+     * </p>
+     * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
+     * this iterator includes <em>inferred</em> sub-classes is determined
+     * not by a flag at the API level, but by the construction of the DAML
+     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * <code>closed</code> is now re-interpreted to mean the inverse of <code>
+     * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
+     * </p>
+     * 
+     * @param closed If true, return all available values; otherwise, return
+     * only local (direct) sub-classes. See note for details.
+     * @return An iterator over this class's sub-classes.
      */
     public Iterator getSubClasses( boolean closed ) {
-        return new PropertyIterator( this, null, getVocabulary().subClassOf(), closed, false );
+        return WrappedIterator.create( super.listSubClasses( !closed ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
 
     /**
-     * Answer an iterator over the DAML classes (or, strictly, class expressions)
-     * that mention this class as one of its sub-classes.  Will generate the
-     * closure of the iteration over the super-class relationship.
-     *
-     * @return an iterator over this class's super-classes. The members of the
-     *         iteration will be DAMLClass objects.
+     * <p>Answer an iterator over the DAML classes
+     * that are super-classes of this class.  Will return
+     * all available super-classes (see {@link #getSuperClasses(boolean)} for
+     * more details). The elements
+     * of the iterator will be {@link DAMLClass} objects.</p>
+     * @return An iterator over all available super-classes of this class
      */
     public Iterator getSuperClasses() {
         return getSuperClasses( true );
@@ -435,134 +382,101 @@ public class DAMLClassImpl
 
 
     /**
-     * Answer an iterator over the DAML classes (or, strictly, class expressions)
-     * that mention this class as one of its sub-classes.
-     *
-     * @param closed If true, close the iteration over the super-class relation: i&#046;e&#046;
-     *               return the super-classes of the super-classes, etc.
-     * @return an iterator over this class's sub-classes. The members of the
-     *         iteration will be DAMLClass objects.
+     * <p>Answer an iterator over the DAML classes
+     * that are super-classes of this class.
+     * The members of the iterator will be {@link DAMLClass} objects
+     * </p>
+     * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
+     * this iterator includes <em>inferred</em> super-classes is determined
+     * not by a flag at the API level, but by the construction of the DAML
+     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * <code>closed</code> is now re-interpreted to mean the inverse of <code>
+     * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
+     * </p>
+     * 
+     * @param closed If true, return all available values; otherwise, return
+     * only local (direct) super-classes. See note for details.
+     * @return an iterator over this class's super-classes.
      */
     public Iterator getSuperClasses( boolean closed ) {
-        Iterator i = new PropertyIterator( this, getVocabulary().subClassOf(), null, closed, false );
-
-        // ensure that the types always include Thing in the closure
-        if (closed) {
-            ((PropertyIterator) i).setDefaultValue( getVocabulary().Thing() );
-        }
-
-        return i;
+        return ((ExtendedIterator) super.listSuperClasses( !closed )).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
 
     /**
-     * Answer a key that can be used to index collections of this DAML class for
-     * easy access by iterators.  Package access only.
-     *
-     * @return a key object.
-     */
-    Object getKey() {
-        return DAML_OIL.Class.getURI();
-    }
-
-
-    /**
-     * Answer an iterator over all of the DAML classes that are equivalent to this
+     * <p>Answer an iterator over all of the DAML classes that are equivalent to this
      * value under the <code>daml:sameClassAs</code> relation.  Note: only considers
      * <code>daml:sameClassAs</code>, for general equivalence, see
-     * {@link #getEquivalentValues}.
+     * {@link #getEquivalentValues}.  Note also that the first member of the iteration is
+     * always the DAMLClass on which the method is invoked: trivially, a DAMLClass is
+     * a member of the set of DAMLClasses equivalent to itself.  If the caller wants
+     * the set of classes equivalent to this one, not including itself, simply ignore
+     * the first element of the iteration.</p>
      *
-     * @return an iterator ranging over every equivalent DAML class - each value of
-     *         the iteration will be a DAMLClass object.
+     * @return an iterator ranging over every equivalent DAML classes
      */
     public Iterator getSameClasses() {
-        return new PropertyIterator( this, getVocabulary().sameClassAs(), getVocabulary().sameClassAs(), true, true );
+        return ((ExtendedIterator) super.listEquivalentClasses()).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
 
 
     /**
-     * Answer an iterator over all of the DAML objects that are equivalent to this
+     * <p>Answer an iterator over all of the DAML objects that are equivalent to this
      * class, which will be the union of <code>daml:equivalentTo</code> and
-     * <code>daml:sameClassAs</code>.
+     * <code>daml:sameClassAs</code>.</p>
      *
-     * @return an iterator ranging over every equivalent DAML class - each value of
-     *         the iteration should be a DAMLClass object.
+     * @return an iterator ranging over every equivalent DAML class
      */
     public Iterator getEquivalentValues() {
         ConcatenatedIterator i = new ConcatenatedIterator(
                        // first the iterator over the equivalentTo values
-                       super.getEquivalentValues(),
+                       m_common.getEquivalentValues(),
                        // followed by the sameClassAs values
-                       new PropertyIterator( this, getVocabulary().sameClassAs(), getVocabulary().sameClassAs(), true, false, false ) );
+                       getSameClasses() );
 
-        // ensure that the iteration includes self
-        i.setDefaultValue( this );
-
-        return i;
+        return new UniqueExtendedIterator( i ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
 
     /**
-     * Answer true if the given class is a sub-class of this class, using information
-     * from the <code>rdf:subClassOf</code> or <code>daml:subClassOf</code> relation.
+     * Answer the set of equivalent values to this value, but not including the
+     * value itself.  The iterator will range over a set: each element occurs only
+     * once.
      *
-     * @param cls A DAMLClass object
-     * @return True if this class is a super-class of the given class.
+     * @return An iteration ranging over the set of values that are equivalent to this
+     *         value, but not itself.
      */
-    public boolean hasSubClass( DAMLClass cls ) {
-        for (Iterator i = getSubClasses();  i.hasNext();  ) {
-            // note that we don't need to test for class equivalence here - that is taken care
-            // of by the sub-class iterator
-            if (((DAMLClass) i.next()).equals( cls )) {
-                return true;
-            }
-        }
+    public Iterator getEquivalenceSet() {
+        Set s = new HashSet();
 
-        return false;
+        s.add( this );
+        for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
+        s.remove( this );
+        
+        return s.iterator();
     }
 
 
     /**
-     * Answer true if the given class is a super-class of this class, using information
-     * from the <code>rdf:subClassOf</code> or <code>daml:subClassOf</code> relation.
-     *
-     * @param cls A DAMLClass object
-     * @return True if this class is a sub-class of the given class.
-     */
-    public boolean hasSuperClass( DAMLClass cls ) {
-        for (Iterator i = getSuperClasses();  i.hasNext();  ) {
-            // note that we don't need to test for class equivalence here - that is taken care
-            // of by the sub-class iterator
-            if (((DAMLClass) i.next()).equals( cls )) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Answer an iterator over the instances of this class that currently exist
-     * in the model.
+     * <p>Answer an iterator over the instances of this class that currently exist
+     * in the model.<p>
      *
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      * @see com.hp.hpl.jena.ontology.daml.DAMLCommon#getRDFTypes
      */
     public Iterator getInstances() {
-        return new PropertyIterator( new ConcatenatedIterator( getSelfIterator(), getSubClasses() ),
-                                     null, RDF.type, false, false, true );
+        return ((ExtendedIterator) listInstances()).mapWith( new AsMapper( DAMLInstance.class ) );
     }
 
 
     /**
-     * Answer an iteration of the properties that may be used for
+     * <p>Answer an iteration of the properties that may be used for
      * instances of this class: i&#046;e&#046; the properties that have this class,
-     * or one of its super-classes, as domain.
+     * or one of its super-classes, as domain.<p>
      *
-     * @return An iteration of the properties that have this class as domain
+     * @return An iteration of the properties that have this class in the domain
      */
     public Iterator getDefinedProperties() {
         return getDefinedProperties( true );
@@ -570,23 +484,24 @@ public class DAMLClassImpl
 
 
     /**
-     * Answer an iteration of the properties that may be used for
+     * <p>Answer an iteration of the properties that may be used for
      * instances of this class: i&#046;e&#046; the properties that have this class,
-     * or optionally one of its super-classes, as domain.  <b>Note:</b>
-     * does not include the sub-properties of the defined properties as
-     * part of the iteration.
+     * or optionally one of its super-classes, as domain.</p>
+     * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
+     * this iterator includes the defined properties for <em>inferred</em> 
+     * super-classes is determined
+     * not by a flag at the API level, but by the construction of the DAML
+     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * <code>closed</code> is now re-interpreted to mean the inverse of <code>
+     * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
+     * </p>
      *
-     * @param closed If true, close the iteration over the super-classes
-     *               of this class.
+     * @param closed If true, use all available information from the class hierarchy;
+     * if false, only use local properties.
      * @return An iteration of the properties that have this class as domain
      */
     public Iterator getDefinedProperties( boolean closed ) {
-        // select either this class or this class and all of its superclasses
-        Iterator roots = closed ? new ConcatenatedIterator( getSelfIterator(), getSuperClasses( true ) ) :
-                                  getSelfIterator();
-
-        // now look for properties that mention the root class(es) as domain
-        return new PropertyIterator( roots, null, getVocabulary().domain(), false, false, true );
+        return ((ExtendedIterator) listDeclaredProperties( closed )).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
 
@@ -599,3 +514,34 @@ public class DAMLClassImpl
     //==============================================================================
 
 }
+
+/*
+    (c) Copyright Hewlett-Packard Company 2001-2003
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 16:45:18 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -47,21 +47,13 @@ package com.hp.hpl.jena.ontology.daml.impl;
 ///////////////
 
 import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.util.Log;
-
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.DAMLDataInstance;
-import com.hp.hpl.jena.ontology.daml.PropertyAccessor;
-import com.hp.hpl.jena.ontology.daml.PropertyIterator;
-import com.hp.hpl.jena.ontology.daml.DAMLDatatype;
-
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.Iterator;
-import com.hp.hpl.jena.shared.*;
 
 
 
@@ -70,7 +62,7 @@ import com.hp.hpl.jena.shared.*;
  * an instance of a DAML Class; Class and Datatype are disjoint).
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.3 2003-05-21 16:45:18 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.4 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAMLDataInstanceImpl
     extends DAMLCommonImpl
@@ -83,6 +75,26 @@ public class DAMLDataInstanceImpl
     // Static variables
     //////////////////////////////////
 
+    /**
+     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLClassImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLDataInstance" );
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, DAMLDataInstance.class );
+        }
+    };
 
     // Instance variables
     //////////////////////////////////
@@ -96,34 +108,16 @@ public class DAMLDataInstanceImpl
     //////////////////////////////////
 
     /**
-     * Constructor, takes the name and namespace for this instance, and the underlying
-     * model it will be attached to.  Note that it is assumed that the RDF store
-     * will contain a statement of the class to which this instance belongs.
-     *
-     * @param namespace The namespace the instance inhabits, or null
-     * @param name The name of the instance
-     * @param store The RDF store that contains the RDF statements defining the properties of the instance
-     * @param vocabulary Reference to the DAML vocabulary used by this instance.
+     * <p>
+     * Construct a DAML data instance represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public DAMLDataInstanceImpl( String namespace, String name, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( namespace, name, store, vocabulary );
+    public DAMLDataInstanceImpl( Node n, EnhGraph g ) {
+        super( n, g );
     }
-
-
-    /**
-     * Constructor, takes the URI for this instance, and the underlying
-     * model it will be attached to.  Note that it is assumed that the RDF store
-     * will contain a statement of the class to which this instance belongs.
-     *
-     * @param uri The URI of the instance
-     * @param store The RDF store that contains the RDF statements defining the properties of the instance
-     * @param vocabulary Reference to the DAML vocabulary used by this instance.
-     */
-    public DAMLDataInstanceImpl( String uri, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( uri, store, vocabulary );
-    }
-
-
 
 
     // External signature methods
@@ -186,13 +180,13 @@ public class DAMLDataInstanceImpl
             // should be a datatype
             if (r instanceof DAMLDatatype) {
                 if (i.hasNext()) {
-                    Log.warning( "DAMLInstance " + this + " has more than one rdf:type, only returning first one" );
+                    // TODO Log.warning( "DAMLInstance " + this + " has more than one rdf:type, only returning first one" );
                 }
 
                 return (DatatypeTranslator) ((DAMLDatatype) r).getTranslator();
             }
             else {
-                Log.warning( "DAMLInstance has rdf:type that is not a DAMLDatatype" );
+                // TODO Log.warning( "DAMLInstance has rdf:type that is not a DAMLDatatype" );
             }
         }
 
@@ -208,13 +202,7 @@ public class DAMLDataInstanceImpl
      *         serialised value is defined
      */
     public Object getValue() {
-        try {
-            return getTranslator().deserialize( getProperty( RDF.value ).getObject() );
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception while setting value of data instance: " + e, e );
-            return null;
-        }
+        return getTranslator().deserialize( getProperty( RDF.value ).getObject() );
     }
 
 
@@ -226,7 +214,7 @@ public class DAMLDataInstanceImpl
      *              data instance by setting the <code>rdf:value</code> relation.
      */
     public void setValue( Object value ) {
-        replaceProperty( RDF.value, getTranslator().serialize( value, getDAMLModel() ) );
+        setPropertyValue( RDF.value, getTranslator().serialize( value, getDAMLModel() ) );
     }
 
 

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDatatypeImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:10 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -46,10 +46,10 @@ package com.hp.hpl.jena.ontology.daml.impl;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.DAMLDatatype;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
 
 
 
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.ontology.daml.DAMLDatatype;
  * encoding their type using XML schema.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDatatypeImpl.java,v 1.1 2003-03-12 17:16:10 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLDatatypeImpl.java,v 1.2 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAMLDatatypeImpl
     extends DAMLCommonImpl
@@ -71,6 +71,26 @@ public class DAMLDatatypeImpl
     // Static variables
     //////////////////////////////////
 
+    /**
+     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLClassImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLDatatype" );
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, DAMLDatatype.class );
+        }
+    };
 
     // Instance variables
     //////////////////////////////////
@@ -80,31 +100,15 @@ public class DAMLDatatypeImpl
     //////////////////////////////////
 
     /**
-     * Constructor, takes the name and namespace for this datatype, and the underlying
-     * model it will be attached to.
-     *
-     * @param namespace The namespace the datatype inhabits, or null
-     * @param name The name of the datatype
-     * @param model Reference to the DAML model that will contain statements about this DAML datatype.
-     * @param vocabulary Reference to the DAML vocabulary used by this datatype.
+     * <p>
+     * Construct a DAML data instance represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public DAMLDatatypeImpl( String namespace, String name, DAMLModel model, DAMLVocabulary vocabulary ) {
-        super( namespace, name, model, vocabulary );
-        setRDFType( getVocabulary().Datatype() );
-    }
-
-
-    /**
-     * Constructor, takes URI for this datatype, and the underlying
-     * model it will be attached to.
-     *
-     * @param uri The URI of the datatype
-     * @param store Reference to the DAML store that will contain statements about this DAML datatype.
-     * @param vocabulary Reference to the DAML vocabulary used by this datatype.
-     */
-    public DAMLDatatypeImpl( String uri, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( uri, store, vocabulary );
-        setRDFType( getVocabulary().Datatype() );
+    public DAMLDatatypeImpl( Node n, EnhGraph g ) {
+        super( n, g );
     }
 
 

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLInstanceImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:14 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -45,18 +45,13 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Property;
-
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
-
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.DAMLInstance;
-import com.hp.hpl.jena.ontology.daml.PropertyAccessor;
-import com.hp.hpl.jena.ontology.daml.PropertyIterator;
-
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.Iterator;
 
@@ -66,7 +61,7 @@ import java.util.Iterator;
  * Java representation of a DAML Instance.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLInstanceImpl.java,v 1.1 2003-03-12 17:16:14 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLInstanceImpl.java,v 1.2 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAMLInstanceImpl
     extends DAMLCommonImpl
@@ -79,6 +74,26 @@ public class DAMLInstanceImpl
     // Static variables
     //////////////////////////////////
 
+    /**
+     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLClassImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLDatatype" );
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, DAMLInstance.class );
+        }
+    };
 
     // Instance variables
     //////////////////////////////////
@@ -92,31 +107,15 @@ public class DAMLInstanceImpl
     //////////////////////////////////
 
     /**
-     * Constructor, takes the name and namespace for this instance, and the underlying
-     * model it will be attached to.  Note that it is assumed that the RDF store
-     * will contain a statement of the class to which this instance belongs.
-     *
-     * @param namespace The namespace the instance inhabits, or null
-     * @param name The name of the instance
-     * @param store The RDF store that contains the RDF statements defining the properties of the instance
-     * @param vocabulary Reference to the DAML vocabulary used by this instance.
+     * <p>
+     * Construct a DAML  instance represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public DAMLInstanceImpl( String namespace, String name, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( namespace, name, store, vocabulary );
-    }
-
-
-    /**
-     * Constructor, takes the URI for this instance, and the underlying
-     * model it will be attached to.  Note that it is assumed that the RDF store
-     * will contain a statement of the class to which this instance belongs.
-     *
-     * @param uri The URI of the instance
-     * @param store The RDF store that contains the RDF statements defining the properties of the instance
-     * @param vocabulary Reference to the DAML vocabulary used by this instance.
-     */
-    public DAMLInstanceImpl( String uri, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( uri, store, vocabulary );
+    public DAMLInstanceImpl( Node n, EnhGraph g ) {
+        super( n, g );
     }
 
 

@@ -6,8 +6,8 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
- * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.5 $
+ * Filename           $RCSfile: DAMLTestBase.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-06-13 19:09:29 $
@@ -19,7 +19,7 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.impl.test;
+package com.hp.hpl.jena.ontology.daml.impl.test;
 
 
 // Imports
@@ -29,6 +29,7 @@ import java.util.*;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.*;
@@ -36,14 +37,14 @@ import junit.framework.*;
 
 /**
  * <p>
- * Generic test case for ontology unit testing
+ * Generic test case for DAML ontology unit testing
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.5 2003-06-13 19:09:29 ian_dickinson Exp $
+ * @version CVS $Id: DAMLTestBase.java,v 1.1 2003-06-13 19:09:29 ian_dickinson Exp $
  */
-public abstract class OntTestBase 
+public abstract class DAMLTestBase 
     extends TestSuite
 {
     // Constants
@@ -63,7 +64,7 @@ public abstract class OntTestBase
     // Constructors
     //////////////////////////////////
 
-    public OntTestBase( String name ) {
+    public DAMLTestBase( String name ) {
         super( name );
         TestCase[] tc = getTests();
         
@@ -92,55 +93,31 @@ public abstract class OntTestBase
     protected abstract class OntTestCase
         extends TestCase
     {
-        protected boolean m_inOWL;
-        protected boolean m_inOWLLite;
-        protected boolean m_inDAML;
         protected String m_langElement;
-        protected boolean m_owlLang = true;
-        protected boolean m_owlLiteLang = false;
 
-        public OntTestCase( String langElement, boolean inOWL, boolean inOWLLite, boolean inDAML ) {
-            super( "Ontology API test " + langElement );
+        public OntTestCase( String langElement ) {
+            super( "DAML API test " + langElement );
             m_langElement = langElement;
-            m_inOWL = inOWL;
-            m_inOWLLite = inOWLLite;
-            m_inDAML = inDAML;
         }
 
         public void runTest()
             throws Exception
         {
-            // we don't want inferencing for these unit tests
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null ), m_inOWL );
-            
-            m_owlLiteLang = true;
-            
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, null ), m_inOWLLite );
-            
-            // now DAML
-            m_owlLang = false;
-            m_owlLiteLang = false;
-            
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM, null ), m_inDAML );
-        }
-    
-        protected void runTest( OntModel m, boolean inModel )
-            throws Exception 
-        {
             boolean profileEx = false;
+            DAMLModel m = ModelFactory.createDAMLModel();
         
             try {
-                ontTest( m );
+                doTest( m );
             }
             catch (ProfileException e) {
                 profileEx = true;
             }
         
-            assertEquals( "language element " + m_langElement + " was " + (inModel ? "" : "not") + " expected in model " + m.getProfile().getLabel(), inModel, !profileEx );
+            assertTrue( "language element " + m_langElement + " was  expected in DAML model ", !profileEx );
         }
     
         /** Does the work in the test sub-class */
-        protected abstract void ontTest( OntModel m ) throws Exception;
+        protected abstract void doTest( DAMLModel m ) throws Exception;
     
         /** Test that an iterator delivers the expected values */
         protected void iteratorTest( Iterator i, Object[] expected ) {

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLDatatypePropertyImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:24 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -45,12 +45,10 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.daml.DAMLDatatypeProperty;
-import com.hp.hpl.jena.ontology.daml.LiteralAccessor;
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
 
 
 
@@ -60,7 +58,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * domains represented by XML schema expressions.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDatatypePropertyImpl.java,v 1.1 2003-03-12 17:16:24 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLDatatypePropertyImpl.java,v 1.2 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAMLDatatypePropertyImpl 
 extends DAMLPropertyImpl
@@ -72,12 +70,33 @@ implements DAMLDatatypeProperty {
     // Static variables
     //////////////////////////////////
     
+    /**
+     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLClassImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLOntology" );
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, DAMLDatatypeProperty.class );
+        }
+    };
+
     
     // Instance variables
     //////////////////////////////////
     
     /** Property accessor for range */
-    private LiteralAccessor m_propDatatypeRange = null;
+    // TODO private LiteralAccessor m_propDatatypeRange = null;
     
     
     
@@ -85,50 +104,21 @@ implements DAMLDatatypeProperty {
     //////////////////////////////////
     
     /**
-     * Constructor, takes the name and namespace for this property, and the underlying
-     * model it will be attached to.
-     *
-     * @param namespace The namespace the property inhabits, or null
-     * @param name The name of the property
-     * @param store The RDF store that contains the RDF statements defining the properties of the property
-     * @param vocabulary Reference to the DAML vocabulary used by this property.
+     * <p>
+     * Construct a DAML list represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public DAMLDatatypePropertyImpl( String namespace, String name, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( namespace, name, store, vocabulary );
-        setRDFType( getVocabulary().DatatypeProperty() );
+    public DAMLDatatypePropertyImpl( Node n, EnhGraph g ) {
+        super( n, g );
     }
-    
-    
-    /**
-     * Constructor, takes the URI for this property, and the underlying
-     * model it will be attached to.
-     *
-     * @param uri The URI of the property
-     * @param store The RDF store that contains the RDF statements defining the properties of the property
-     * @param vocabulary Reference to the DAML vocabulary used by this property.
-     */
-    public DAMLDatatypePropertyImpl( String uri, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( uri, store, vocabulary );
-        setRDFType( getVocabulary().DatatypeProperty() );
-    }
-    
     
     
     // External signature methods
     //////////////////////////////////
     
-    
-    
-    
-    /**
-     * Answer a key that can be used to index collections of this DAML property for
-     * easy access by iterators.  Package access only.
-     *
-     * @return a key object.
-     */
-    Object getKey() {
-        return DAML_OIL.Property.getURI();
-    }
     
     
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-09 16:04:22 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -45,7 +45,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.9 2003-05-09 16:04:22 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.10 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -109,6 +109,17 @@ public interface Profile
      * @return The resource that represents the concept the <i>bottom</i> class.
      */
     public Resource NOTHING();
+    
+    
+    /**
+     * <p>
+     * Answer the resource that represents the general class of properties. This will
+     * typically be <code>rdf:Property</code>.
+     * </p>
+     * 
+     * @return The resource that represents the concept of a property.
+     */
+    public Resource PROPERTY();
     
     
     /**

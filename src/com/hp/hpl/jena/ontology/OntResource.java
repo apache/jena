@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 15:09:47 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.17 2003-06-10 15:09:47 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.18 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -451,58 +451,6 @@ public interface OntResource
     public void removeComment( Literal comment );
     
 
-    /**
-     * <p>Answer the cardinality of the given property on this resource. The cardinality
-     * is the number of distinct values there are for the property.</p>
-     * @param p A property
-     * @return The cardinality for the property <code>p</code> on this resource, as an
-     * integer greater than or equal to zero.
-     */
-    public int getCardinality( Property p );
-    
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the given
-     * property of any ontology value. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @param p A property
-     * @param name A string name for the property, in case an error must be reported and the property is null
-     * @return An abstract accessor for the property p
-     */
-    public PathSet accessor( Property p, String name );
-    
-    
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the given
-     * property of any ontology value. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @param p A property
-     * @return An abstract accessor for the property p
-     */
-    public PathSet accessor( Property p );
-    
-    
-    /**
-     * <p>
-     * Set the value of the given property of this ontology resource to the given
-     * value, encoded as an RDFNode.  Maintains the invariant that there is
-     * at most one value of the property for a given resource, so existing
-     * property values are first removed.  To add multiple properties, use
-     * {@link #addProperty( Property, RDFNode ) addProperty}.
-     * </p>
-     * 
-     * @param property The property to update
-     * @param value The new value of the property as an RDFNode, or null to
-     *              effectively remove this property.
-     */
-    public void setPropertyValue( Property property, RDFNode value );
-
-
     // rdf:type 
     
     /**
@@ -595,6 +543,93 @@ public interface OntResource
      */
     public void removeRDFType( Resource cls );
     
+    /**
+     * <p>
+     * Answer true if this resource is a member of the class denoted by the
+     * given URI.</p>
+     * 
+     * @param uri Denotes the URI of a class to which this value may belong
+     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     */
+    public boolean hasRDFType( String uri );
+    
+
+
+    // other utility methods
+    
+    /**
+     * <p>Answer the cardinality of the given property on this resource. The cardinality
+     * is the number of distinct values there are for the property.</p>
+     * @param p A property
+     * @return The cardinality for the property <code>p</code> on this resource, as an
+     * integer greater than or equal to zero.
+     */
+    public int getCardinality( Property p );
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the given
+     * property of any ontology value. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @param p A property
+     * @param name A string name for the property, in case an error must be reported and the property is null
+     * @return An abstract accessor for the property p
+     */
+    public PathSet accessor( Property p, String name );
+    
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the given
+     * property of any ontology value. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @param p A property
+     * @return An abstract accessor for the property p
+     */
+    public PathSet accessor( Property p );
+    
+    
+    /**
+     * <p>
+     * Set the value of the given property of this ontology resource to the given
+     * value, encoded as an RDFNode.  Maintains the invariant that there is
+     * at most one value of the property for a given resource, so existing
+     * property values are first removed.  To add multiple properties, use
+     * {@link #addProperty( Property, RDFNode ) addProperty}.
+     * </p>
+     * 
+     * @param property The property to update
+     * @param value The new value of the property as an RDFNode, or null to
+     *              effectively remove this property.
+     */
+    public void setPropertyValue( Property property, RDFNode value );
+
+
+    /**
+     * <p>Answer the value of a given RDF property for this resource, or null
+     * if it doesn't have one.  If there is more than one RDF
+     * statement with the given property for the current value, it is not defined
+     * which of the values will be returned.</p>
+     *
+     * @param property An RDF property
+     * @return An RDFNode or null.
+     */
+    public RDFNode getPropertyValue( Property property );
+
+
+    /**
+     * <p>Answer an iterator over the values for a given RDF property. Each
+     * value in the iterator will be an {@link RDFNode}.</p>
+     *
+     * @param property The property whose values are sought
+     * @return An Iterator over the values of the property
+     */
+    public NodeIterator listPropertyValues( Property property );
+
 
     /**
      * <p>
@@ -613,6 +648,15 @@ public interface OntResource
      */
     public void remove();
     
+
+    /**
+     * <p>Remove the specific property-value pair from this resource.</p>
+     *
+     * @param property The property to be removed
+     * @param value The specific value of the property to be removed
+     */
+    public void removeProperty( Property property, RDFNode value );
+
 
     // Conversion methods
     
@@ -670,7 +714,7 @@ public interface OntResource
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright Hewlett-Packard Company 2001-2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

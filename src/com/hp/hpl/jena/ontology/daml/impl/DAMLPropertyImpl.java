@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLPropertyImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:17 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -45,22 +45,14 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFException;
-import com.hp.hpl.jena.rdf.model.Resource;
-
 import java.util.Iterator;
 
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.DAMLProperty;
-import com.hp.hpl.jena.ontology.daml.PropertyAccessor;
-import com.hp.hpl.jena.ontology.daml.PropertyIterator;
-
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
-
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.*;
 
 
 /**
@@ -68,7 +60,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * first-class values in their own right, and not just aspects of classes.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.1 2003-03-12 17:16:17 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.2 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAMLPropertyImpl
     extends DAMLCommonImpl
@@ -80,6 +72,27 @@ public class DAMLPropertyImpl
 
     // Static variables
     //////////////////////////////////
+
+    /**
+     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLClassImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLOntology" );
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, DAMLOntology.class );
+        }
+    };
 
 
     // Instance variables
@@ -103,31 +116,15 @@ public class DAMLPropertyImpl
     //////////////////////////////////
 
     /**
-     * Constructor, takes the name and namespace for this property, and the underlying
-     * model it will be attached to.
-     *
-     * @param namespace The namespace the property inhabits, or null
-     * @param name The name of the property
-     * @param store The RDF store that contains the RDF statements defining the properties of the property
-     * @param vocabulary Reference to the DAML vocabulary used by this property.
+     * <p>
+     * Construct a DAML list represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public DAMLPropertyImpl( String namespace, String name, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( namespace, name, store, vocabulary );
-        setRDFType( getVocabulary().Property() );
-    }
-
-
-    /**
-     * Constructor, takes the URI for this property, and the underlying
-     * model it will be attached to.
-     *
-     * @param uri The URI of the property
-     * @param store The RDF store that contains the RDF statements defining the properties of the property
-     * @param vocabulary Reference to the DAML vocabulary used by this property.
-     */
-    public DAMLPropertyImpl( String uri, DAMLModel store, DAMLVocabulary vocabulary ) {
-        super( uri, store, vocabulary );
-        setRDFType( getVocabulary().Property() );
+    public DAMLPropertyImpl( Node n, EnhGraph g ) {
+        super( n, g );
     }
 
 
@@ -168,7 +165,7 @@ public class DAMLPropertyImpl
     public void setIsUnique( boolean unique ) {
         if (unique) {
             // add the transitive type to this property
-            setRDFType( getVocabulary().UniqueProperty(), false );
+            setRDFType( getVocabulary().UniqueProperty() );
         }
         else {
             // remove the transitive type from this property
@@ -356,7 +353,7 @@ public class DAMLPropertyImpl
     public Iterator getDomainClasses() {
         // first we want an iteration of this property and all of its super-properties
         Iterator i = new ConcatenatedIterator(
-                             getSelfIterator(),
+                             null, // TODO getSelfIterator(),
                              getSuperProperties() );
 
         // from this starting point, get all domain values
@@ -376,7 +373,7 @@ public class DAMLPropertyImpl
     public Iterator getRangeClasses() {
         // first we want an iteration of this property and all of its super-properties
         Iterator i = new ConcatenatedIterator(
-                             getSelfIterator(),
+                             null, // TODO getSelfIterator(),
                              getSuperProperties() );
 
         // from this starting point, get all domain values
@@ -400,41 +397,6 @@ public class DAMLPropertyImpl
     }
 
 
-    /**
-     * Answer a key that can be used to index collections of this DAML property for
-     * easy access by iterators.  Package access only.
-     *
-     * @return a key object.
-     */
-    Object getKey() {
-        return DAML_OIL.Property.getURI();
-    }
-
-
-
-    /**
-     * This is a Jena internal method.  I need to override the one in ResourceImpl
-     * to prevent a ClassCastException in some circumstances.
-     *
-     * @param m The model to port to
-     * @return The ported resource
-     * @throws RDFException if an RDF processing error ocurrs.
-     */
-    public Resource port( Model m )
-        throws RDFException
-    {
-        if ( getModel() == m ) {
-            return this;
-        }
-        else {
-            if (m instanceof DAMLModel) {
-                return new DAMLPropertyImpl( getNameSpace(), getLocalName(), ((DAMLModel) m), getVocabulary() );
-            }
-            else {
-                throw new RDFException( 0, "Cannot port DAML object to non-DAML model." );
-            }
-        }
-    }
 
 
     // Internal implementation methods

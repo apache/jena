@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 12:23:37 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -26,13 +26,13 @@ package com.hp.hpl.jena.ontology.daml.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.enhanced.EnhGraph;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.ontology.impl.*;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.shared.*;
 
 
 /**
@@ -43,9 +43,9 @@ import com.hp.hpl.jena.shared.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.5 2003-06-10 12:23:37 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.6 2003-06-13 19:09:28 ian_dickinson Exp $
  */
-public abstract class DAMLCommonImpl
+public class DAMLCommonImpl
     extends OntResourceImpl
     implements DAMLCommon
 {
@@ -56,6 +56,27 @@ public abstract class DAMLCommonImpl
 
     // Static variables
     //////////////////////////////////
+
+    /**
+     * A factory for generating DAMLCommon facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new DAMLCommonImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLCommon");
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            // node will support being an OntResource facet if it is a uri or bnode
+            return node.isURI() || node.isBlank();
+        }
+    };
 
 
     // Instance variables
@@ -86,47 +107,12 @@ public abstract class DAMLCommonImpl
      * <p>Constructor, takes the URI this value, and the underlying
      * model it will be attached to.</p>
      *
-     * @param res The resource that is being presented as a DAMLCommonImpl
+     * @param n The node that is being presented as a DAMLCommonImpl
      * @param model Reference to the DAML model that will contain statements about this DAML value.
-     * @param vocabulary The vocabulary for this value (defines the namespace).  Can be null, in which
-     *                   case the vocabulary defaults to the most recent.
      */
-    public DAMLCommonImpl( Resource res, EnhGraph g, DAMLVocabulary vocabulary )
+    public DAMLCommonImpl( Node n, EnhGraph g )
     {
-        super( res.getNode(), g );
-        m_vocabulary = vocabulary;
-    }
-
-
-    /**
-     * <p>Constructor, takes the URI this value, and the underlying
-     * model it will be attached to.</p>
-     *
-     * @param uri The URI of the DAML value, or null for an anonymous node.
-     * @param model Reference to the DAML model that will contain statements about this DAML value.
-     * @param vocabulary The vocabulary for this value (defines the namespace).  Can be null, in which
-     *                   case the vocabulary defaults to the most recent.
-     */
-    public DAMLCommonImpl( String uri, DAMLModel model, DAMLVocabulary vocabulary )
-    {
-        // TODO wrong - fix
-        this( model.getResource( uri ), (EnhGraph) model.getGraph(), vocabulary );
-    }
-
-
-    /**
-     * <p>Constructor, takes the name and namespace for this value, and the underlying
-     * model it will be attached to.</p>
-     *
-     * @param namespace The namespace the class inhabits, or null
-     * @param name The name of the DAML value
-     * @param model Reference to the DAML model that will contain statements about this DAML class.
-     * @param vocabulary The vocabulary for this value (defines the namespace).  Can be null, in which
-     *                   case the vocabulary defaults to the most recent.
-     */
-    public DAMLCommonImpl( String namespace, String name, DAMLModel model, DAMLVocabulary vocabulary )
-    {
-        this( (namespace == null) ? name : (namespace + name), model, vocabulary );
+        super( n, g );
     }
 
 
@@ -186,159 +172,10 @@ public abstract class DAMLCommonImpl
 
 
     /**
-     * <p>Answer the value of a given RDF property for this DAML value, or null
-     * if it doesn't have one.  The value is returned as an RDFNode, from which
-     * the value can be extracted for literals.  If there is more than one RDF
-     * statement with the given property for the current value, it is not defined
-     * which of the values will be returned.</p>
+     * <p>Answer the DAML+OIL vocabulary that corresponds to the namespace that this value
+     * was declared in.</p>
      *
-     * @param property An RDF property
-     * @return An RDFNode whose value is the value, or one of the values, of the
-     *         given property. If the property is not defined, or an error occurs,
-     *         returns null.
-     */
-    public RDFNode getPropertyValue( Property property ) {
-        return getProperty( property ).getObject();
-    }
-
-
-    /**
-     * <p>Answer an iterator over the set of all values for a given RDF property. Each
-     * value in the iterator will be an RDFNode, representing the value (object) of
-     * each statement in the underlying model.</p>
-     *
-     * @param property The property whose values are sought
-     * @return An Iterator over the values of the property
-     */
-    public NodeIterator getPropertyValues( Property property ) {
-        // TODO
-        return null;
-        /*return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectMapper() );
-        new PropertyIterator( this, property, null, false, false ), null );*/
-    }
-
-
-    /**
-     * Set the value of the given property of this DAML value to the given
-     * value, encoded as an RDFNode.  Maintains the invariant that there is
-     * at most one value of the property for a given DAML object, so existing
-     * property values are first removed.  To add multiple properties to a
-     * given DAML object, use
-     * {@link com.hp.hpl.jena.rdf.model.Resource#addProperty( com.hp.hpl.jena.rdf.model.Property, com.hp.hpl.jena.rdf.model.RDFNode ) addProperty}.
-     *
-     * @param property The property to update
-     * @param value The new value of the property as an RDFNode, or null to
-     *              effectively remove this property.
-     */
-    public void setPropertyValue( Property property, RDFNode value ) {
-        if (value == null) {
-            removeAll( property );
-        }
-        else {
-            replaceProperty( property, value );
-        }
-    }
-
-
-    /**
-     * Remove the specific RDF property-value pair from this DAML resource.
-     *
-     * @param property The property to be removed
-     * @param value The specific value of the property to be removed
-     */
-    public void removeProperty( Property property, RDFNode value ) {
-        removeProperties( getEquivalenceClass( property ), getEquivalenceClass( value ) );
-    }
-
-
-    /**
-     * Remove all the values for a given property on this DAML resource.
-     *
-     * @param prop The RDF resource that defines the property to be removed
-     */
-    public void removeAll( Property prop ) {
-        removeAll( getEquivalenceClass( prop ) );
-    }
-
-
-    /**
-     * Replace the value of the named property with the given value.  All existing
-     * values, if any, for the property are first removed.
-     *
-     * @param prop The RDF property to be updated
-     * @param value The new value.
-     */
-    public void replaceProperty( Property prop, RDFNode value ) {
-        try {
-            // if there is an existing property, remove it
-            removeAll( prop );
-
-            // now set the new value
-            addProperty( prop, value );
-        }
-        catch (JenaException e) {
-            // TODO Log.severe( "RDF exception while replacing value of DAML property: " + e, e );
-            throw new RuntimeException( "RDF exception while replacing value of DAML property: " + e );
-        }
-    }
-
-
-    /**
-     * Answer the number of values a given property has with this value as subject.
-     *
-     * @param property The property to be tested
-     * @return The number of statements with this value as subject and the given
-     *         property as relation.
-     */
-    public int getNumPropertyValues( Property property ) {
-        try {
-            int count = 0;
-
-            // lookup the super-classes from this model
-            for (NodeIterator i = getPropertyValues( property );  i.hasNext();  i.nextNode()) {
-                count++;
-            }
-
-            return count;
-        }
-        catch (JenaException e) {
-            // TODO Log.severe( "Exception while listing values: " + e, e );
-            throw new RuntimeException( "RDF failure while listing values: " + e );
-        }
-    }
-
-
-    /**
-     * Answer an iterator over a set of resources that are the objects of statements
-     * with subject this DAML object and predicate the given property. Respects DAML
-     * semantics of equivalence, transitivity and the property hierarchy.
-     *
-     * @param property The property whose values are sought
-     * @param closed If true, and the given property is transitive, generate the
-     *               closure over the given property from this value.
-     * @return An iterator of resources that are the objects of statements whose
-     *         subject is this value (or one of its equivalents) and whose predicate
-     *         is <code>property</code> or one of its equivalents
-     */
-    public Iterator getAll( Property property, boolean closed ) {
-        // get an iterator over all of the values of this property, including equivalent values
-        PropertyIterator iter = new PropertyIterator( getEquivalentValues(), property,
-                                                      getPropertyInverse( property ), (closed && isTransitive( property )), false );
-        return iter;
-    }
-    public Iterator getAll( Property property) {
-        // get an iterator over all of the values of this property, including equivalent values
-        //TODO PropertyIterator iter = new PropertyIterator( getEquivalentValues(), property,
-                                                      //getPropertyInverse( property ), (closed && isTransitive( property )), false );
-        return null;//iter;
-    }
-
-
-    /**
-     * Answer the DAML+OIL vocabulary that corresponds to the namespace that this value
-     * was declared in.
-     *
-     * @return a vocabulary object
+     * @return A vocabulary object
      */
     public DAMLVocabulary getVocabulary() {
         if (m_vocabulary == null) {
@@ -351,46 +188,24 @@ public abstract class DAMLCommonImpl
 
 
     /**
-     * <p>
-     * Answer true if this resource is a member of the class denoted by the
-     * given class resource.  Includes all available types, so is equivalent to
-     * <code><pre>
-     * hasRDF( ontClass, false );
-     * </pre></code>
-     * </p>
-     * 
-     * @param ontClass Denotes a class to which this value may belong
-     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
-     */
-    public boolean hasRDFType( String uri ) {
-        return hasRDFType( getModel().getResource( uri ) );
-    }
-
-    /**
-     * Answer a key that can be used to index collections of this DAML value for
-     * easy access by iterators.  Package access only.
+     * <p>Answer an iterator over all of the DAML objects that are equivalent to this
+     * value under the <code>daml:equivalentTo</code> relation.
+     * Note that the first member of the iteration is
+     * always the DAML value on which the method is invoked: trivially, a value is
+     * a member of the set of values equivalent to itself.  If the caller wants
+     * the set of values equivalent to this one, not including itself, simply ignore
+     * the first element of the iteration.</p>
      *
-     * @return a key object.
-     */
-    abstract Object getKey();
-
-
-    /**
-     * Answer an iterator over all of the DAML objects that are equivalent to this
-     * value under the <code>daml:equivalentTo</code> relation.  The common method
-     * just tests this relation, <code>getEquivalentValues()</code> in sub-classes,
-     * such as {@link com.hp.hpl.jena.ontology.daml.DAMLClass}, may extend this with specific
-     * additional semantics such as <code>daml:sameClassAs</code>.
-     *
-     * @return an iterator ranging over every equivalent DAML value - each value of
-     *         the iteration will be a damlCommon object.
+     * @return An iterator ranging over every equivalent DAML value
      */
     public Iterator getEquivalentValues() {
-        // equivalentTo is transitive, and is its own inverse
-        // we also need to exploit background knowledge about the equivalence of DAML relations
-        return new ConcatenatedIterator(
-                       new PropertyIterator( this, getVocabulary().equivalentTo(), getVocabulary().equivalentTo(), true, true, false ),
-                       DAMLHierarchy.getInstance().getEquivalentValues( this ) );
+        ExtendedIterator i = (ExtendedIterator) listPropertyValues( getProfile().SAME_AS() );
+        
+        // iterator of myself
+        List me = new LinkedList();
+        me.add( this );
+        
+        return new UniqueExtendedIterator( WrappedIterator.create( me.iterator() ).andThen( i ) );
     }
 
 
@@ -403,74 +218,14 @@ public abstract class DAMLCommonImpl
      *         value, but not itself.
      */
     public Iterator getEquivalenceSet() {
-        HashSet s = new HashSet();
+        Set s = new HashSet();
 
-        // eliminate duplicates from the equivalent values iteration
-        for (Iterator i = getEquivalentValues();  i.hasNext();  ) {
-            Object o = i.next();
-
-            if (!equals( o )) {
-                s.add( o );
-            }
-        }
-
+        s.add( this );
+        for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
+        s.remove( this );
+        
         return s.iterator();
     }
-
-
-    /**
-     * Answer an iterator that contains exactly this value.  This is useful as
-     * we often use Iterators to stand for sets or collections, and two such iterators
-     * can be appended to form the union of the collections.
-     *
-     * @return an iterator whose sole value is this DAML value
-     */
-    public Iterator getSelfIterator() {
-        LinkedList l = new LinkedList();
-        l.add( this );
-        return l.iterator();
-    }
-
-
-    /**
-     * Return a readable representation of the DAML value
-     *
-     * @return a string denoting this value
-     */
-    public String toString() {
-        // get the public name for this value type (e.g. we change DAMLClassImpl -> DAMLClass)
-        String cName = getClass().getName();
-        int i = cName.indexOf( "Impl" );
-        int j = cName.lastIndexOf( "." ) + 1;
-        cName = (i > 0) ? cName.substring( j, i ) : cName.substring( j );
-
-        // now format the return string
-        return (isAnon()) ?
-                   ("<Anonymous " + getIDTranslation( getId() ) + " " + cName + "@" + Integer.toHexString( hashCode() ) + ">") :
-                   ("<" + cName + " " + getURI() + ">");
-    }
-
-
-    /**
-     * Remove the DAML object from the model.  All of the RDF statements with this
-     * DAML value as its subject will be removed from the model, and this object will
-     * be removed from the indexes.  It will be the responsibility of client code to
-     * ensure that references to this object are removed so that the object itself
-     * can be garbage collected.
-     */
-    public void remove() {
-        try {
-            // first remove all of the statements corresponding to this object
-            for (StmtIterator i = listProperties();  i.hasNext();  i.nextStatement().remove() );
-
-            // now remove this object from the DAML indexes
-            ((DAMLModelImpl) getModel()).unindex( this );
-        }
-        catch (JenaException e) {
-            //TODO Log.severe( "RDF exception while removing object from model: " + e, e );
-        }
-    }
-
 
 
     // Properties
@@ -534,153 +289,6 @@ public abstract class DAMLCommonImpl
     //////////////////////////////////
 
 
-    /**
-     * For debugging, a more concise rendering of the UID
-     */
-    protected static java.util.HashMap s_UIDs = new java.util.HashMap();
-    protected static int s_count = 0;
-    protected static String getIDTranslation( com.hp.hpl.jena.rdf.model.AnonId uid ) {
-        Integer id = (Integer) s_UIDs.get( uid );
-        if (id == null) {
-            id = new Integer( s_count++ );
-            s_UIDs.put( uid, id );
-        }
-        return id.toString();
-    }
-
-
-    /**
-     * Answer the equivalence class, as an iterator, for a given resource
-     *
-     * @param n The resource
-     * @return eClass An iteration of the resource and its equivalents
-     */
-    protected Iterator getEquivalenceClass( RDFNode n ) {
-        if (n instanceof DAMLCommon) {
-            // if it's a DAML object, we can calculate the equivalence classs
-            return ((DAMLCommon) n).getEquivalentValues();
-        }
-        else {
-            // otherwise return the singleton set
-            List single = new ArrayList();
-            single.add( n );
-            return single.iterator();
-        }
-    }
-
-
-    /**
-     * Remove the properties defined by the given equivalence classes, if they exist.
-     * Specifically, remove every statement for which the the subject is this DAML value,
-     * the predicate is one of the given properties, and the value is one of the given values.
-     *
-     * @param preds An iterator over a set of properties
-     * @param values A set of values to match against
-     */
-    protected void removeProperties( Iterator preds, Iterator values ) {
-        // we have to clone one of the sets in order to do the cross-product
-        List predSet = new ArrayList();
-        while (preds.hasNext()) {
-            predSet.add( preds.next() );
-        }
-
-        // now, go through every element of the cross-product, and remove that statement
-        while (values.hasNext()) {
-            RDFNode n = (RDFNode) values.next();
-
-            for (Iterator i = predSet.iterator();  i.hasNext(); ) {
-                Property p = (Property) i.next();
-
-                try {
-                    for (StmtIterator j = getModel().listStatements( this, p, n );  j.hasNext(); ) {
-                        j.nextStatement().remove();
-                    }
-                }
-                catch (JenaException e) {
-                    //TODO Log.severe( "Possible RDF error when zapping from model: " + e, e );
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Remove all statements whose predicate is in the given iteration, and whose
-     * subject is this resource.
-     *
-     * @param preds An iterator over a set of properties.
-     */
-    protected void removeAll( Iterator preds ) {
-        try {
-            while (preds.hasNext()) {
-                Property p = (Property) preds.next();
-
-                for (StmtIterator i = getModel().listStatements( this, p, (RDFNode) null );  i.hasNext(); ) {
-                    i.nextStatement().remove();
-                }
-            }
-        }
-        catch (JenaException e) {
-            //TODO Log.severe( "Possible RDF error when zapping from model: " + e, e );
-        }
-    }
-
-
-    /**
-     * Answer the inverse of a property, if we know what it is
-     *
-     * @param property An RDF or DAML property
-     * @return The inverse property of property, or null
-     */
-    protected Property getPropertyInverse( Property property ) {
-        // can only check the inverses of DAML object properties
-        if (property instanceof DAMLObjectProperty) {
-            // Note: we don't use the prop_inverseOf property accessor here, since that
-            // would cause infinite recursion, as the property accessor needs to know what
-            // the property inverse is
-
-            DAMLProperty dProperty = (DAMLProperty) property;
-
-            // lookup the inverse of this property, if it has one
-            try {
-                Statement inv = dProperty.getProperty( dProperty.getVocabulary().inverseOf() );
-                return (Property) inv.getObject();
-            }
-            catch (JenaException e) {
-                // can ignore - just means not present
-            }
-        }
-
-        return null;
-    }
-
-
-    /**
-     * Answer true if the given property is transitive
-     *
-     * @param property A property definition
-     * @return True if the property is defined to be transitive in the ontology,
-     *         or is known to be a transitive DAML property.
-     */
-    protected boolean isTransitive( Property property ) {
-        return DAMLHierarchy.getInstance().isTransitiveProperty( property )  ||
-               ((property instanceof DAMLObjectProperty)  &&
-                ((DAMLObjectProperty) property).isTransitive());
-    }
-
-
-    /**
-     * Answer a value that will be a default type to include in an iteration of
-     * the value's rdf types.  Typically there is no default (null), but for an
-     * instance we want to ensure that the default type is daml:Thing.
-     *
-     * @return The default type or null
-     */
-    protected Resource getDefaultType() {
-        return null;
-    }
-
-
 
     //==============================================================================
     // Inner class definitions
@@ -689,3 +297,36 @@ public abstract class DAMLCommonImpl
 
 
 }
+
+
+
+/*
+    (c) Copyright Hewlett-Packard Company 2001-2003
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+

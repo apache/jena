@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 12:24:35 $
+ * Last modified on   $Date: 2003-06-13 19:09:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.12 2003-06-10 12:24:35 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.13 2003-06-13 19:09:28 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -65,6 +65,7 @@ public class DAML_OILProfile
     private Resource m_restriction                  = m_vocabModel.createResource( DAML_OIL.Restriction.getURI()               );
     private Resource m_thing                        = m_vocabModel.createResource( DAML_OIL.Thing.getURI()                     );
     private Resource m_nothing                      = m_vocabModel.createResource( DAML_OIL.Nothing.getURI()                   );
+    private Resource m_property                     = m_vocabModel.createResource( DAML_OIL.Property.getURI()                  );
     private Resource m_objectProperty               = m_vocabModel.createResource( DAML_OIL.ObjectProperty.getURI()            );
     private Resource m_datatypeProperty             = m_vocabModel.createResource( DAML_OIL.DatatypeProperty.getURI()          );
     private Resource m_transitiveProperty           = m_vocabModel.createResource( DAML_OIL.TransitiveProperty.getURI()        );
@@ -134,6 +135,7 @@ public class DAML_OILProfile
     public Resource RESTRICTION() {                 return m_restriction; }
     public Resource THING() {                       return m_thing; }
     public Resource NOTHING() {                     return m_nothing; }
+    public Resource PROPERTY() {                    return m_property; }
     public Resource OBJECT_PROPERTY() {             return m_objectProperty; }
     public Resource DATATYPE_PROPERTY() {           return m_datatypeProperty; }
     public Resource TRANSITIVE_PROPERTY() {         return m_transitiveProperty; }
