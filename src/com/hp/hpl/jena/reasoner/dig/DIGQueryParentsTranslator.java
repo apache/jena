@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryParentsTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:59:10 $
+ * Last modified on   $Date: 2004-05-12 15:56:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryParentsTranslator.java,v 1.1 2003-12-11 22:59:10 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryParentsTranslator.java,v 1.2 2004-05-12 15:56:00 ian_dickinson Exp $)
  */
 public class DIGQueryParentsTranslator 
     extends DIGQueryAncestorsTranslator
@@ -83,11 +83,11 @@ public class DIGQueryParentsTranslator
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         
         if (m_ancestors) {
-            Element parents = da.addElement( query.getDocumentElement(), DIGProfile.PARENTS );
+            Element parents = da.createQueryElement( query, DIGProfile.PARENTS );
             da.addClassDescription( parents, pattern.getSubject() );
         }
         else {
-            Element descendants = da.addElement( query.getDocumentElement(), DIGProfile.CHILDREN );
+            Element descendants = da.createQueryElement( query, DIGProfile.CHILDREN );
             da.addClassDescription( descendants, pattern.getObject() );
         }
         

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-06 11:21:17 $
+ * Last modified on   $Date: 2004-05-12 15:56:21 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.12 2004-05-06 11:21:17 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.13 2004-05-12 15:56:21 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -527,6 +527,25 @@ public class TestDigReasoner
         
         TestUtil.assertIteratorValues( this, q0.listPropertyValues( q ), 
                                        new Resource[] {q1, q2}, 0 );
+    }
+
+    public void testDebug1() {
+        String NS = "http://example.org/foo#";
+        
+        OntModel base = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM, null );
+        Individual a = base.createIndividual( NS + "a", OWL.Thing );
+        Individual b = base.createIndividual( NS + "b", OWL.Thing );
+        OntClass A = base.createEnumeratedClass( NS + "A", base.createList( new Resource[] {a,b} ));
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, base );
+        
+        for (Iterator i = m.listClasses();  i.hasNext(); ) {
+            System.err.println( "concept " + i.next() );
+        }
     }
 
     public void xxtestDebug() {

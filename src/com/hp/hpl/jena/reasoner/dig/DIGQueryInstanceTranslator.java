@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryInstanceTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-23 22:36:28 $
+ * Last modified on   $Date: 2004-05-12 15:56:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryInstanceTranslator.java,v 1.3 2004-04-23 22:36:28 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryInstanceTranslator.java,v 1.4 2004-05-12 15:56:00 ian_dickinson Exp $)
  */
 public class DIGQueryInstanceTranslator 
     extends DIGQueryTranslator
@@ -81,7 +81,7 @@ public class DIGQueryInstanceTranslator
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        Element instance = da.addElement( query.getDocumentElement(), DIGProfile.INSTANCE );
+        Element instance = da.createQueryElement( query, DIGProfile.INSTANCE );
         da.addNamedElement( instance, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getSubject() ) );
         da.addClassDescription( instance, pattern.getObject() );
 
@@ -96,7 +96,7 @@ public class DIGQueryInstanceTranslator
     public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        Element instance = da.addElement( query.getDocumentElement(), DIGProfile.INSTANCE );
+        Element instance = da.createQueryElement( query, DIGProfile.INSTANCE );
         
         da.addNamedElement( instance, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getSubject() ) );
         

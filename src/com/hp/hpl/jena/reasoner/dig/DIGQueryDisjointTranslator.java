@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Dec-2003
  * Filename           $RCSfile: DIGQueryDisjointTranslator.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-01 16:23:37 $
+ * Last modified on   $Date: 2004-05-12 15:56:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryDisjointTranslator.java,v 1.5 2004-05-01 16:23:37 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryDisjointTranslator.java,v 1.6 2004-05-12 15:56:00 ian_dickinson Exp $
  */
 public class DIGQueryDisjointTranslator 
     extends DIGQueryTranslator
@@ -78,7 +78,7 @@ public class DIGQueryDisjointTranslator
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        Element disjoint = da.addElement( query.getDocumentElement(), DIGProfile.DISJOINT );
+        Element disjoint = da.createQueryElement( query, DIGProfile.DISJOINT );
         da.addClassDescription( disjoint, pattern.getObject() );
         da.addClassDescription( disjoint, pattern.getSubject() );
 

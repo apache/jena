@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-01 16:23:37 $
+ * Last modified on   $Date: 2004-05-12 15:56:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.6 2004-05-01 16:23:37 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.7 2004-05-12 15:56:00 ian_dickinson Exp $
  */
 public class DIGQueryEquivalentsTranslator 
     extends DIGQueryTranslator
@@ -80,7 +80,7 @@ public class DIGQueryEquivalentsTranslator
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         
-        Element equivalents = da.addElement( query.getDocumentElement(), DIGProfile.EQUIVALENTS );
+        Element equivalents = da.createQueryElement( query, DIGProfile.EQUIVALENTS );
         da.addClassDescription( equivalents, m_subjectFree ? pattern.getObject() : pattern.getSubject() );
         
         return query;

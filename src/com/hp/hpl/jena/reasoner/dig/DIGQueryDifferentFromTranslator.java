@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Dec-2003
  * Filename           $RCSfile: DIGQueryDifferentFromTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-01 16:23:38 $
+ * Last modified on   $Date: 2004-05-12 15:56:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryDifferentFromTranslator.java,v 1.1 2004-05-01 16:23:38 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryDifferentFromTranslator.java,v 1.2 2004-05-12 15:56:00 ian_dickinson Exp $
  */
 public class DIGQueryDifferentFromTranslator 
     extends DIGQueryTranslator
@@ -80,7 +80,7 @@ public class DIGQueryDifferentFromTranslator
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        Element disjoint = da.addElement( query.getDocumentElement(), DIGProfile.DISJOINT );
+        Element disjoint = da.createQueryElement( query, DIGProfile.DISJOINT );
         
         Element ind = da.addElement( disjoint, DIGProfile.ISET );
         da.addNamedElement( ind, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getSubject() ) );

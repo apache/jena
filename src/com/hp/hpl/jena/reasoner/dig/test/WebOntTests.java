@@ -7,10 +7,10 @@
  * Web site           @website@
  * Created            20-Apr-2004
  * Filename           $RCSfile: WebOntTests.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-06 11:21:17 $
+ * Last modified on   $Date: 2004-05-12 15:56:21 $
  *               by   $Author: ian_dickinson $
  *
  * @copyright@
@@ -73,29 +73,27 @@ public class WebOntTests
 
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
     public static final String[] TEST_DIRS = {
-            /* */
-            "AllDifferent", 
-            "AnnotationProperty", 
-            "DatatypeProperty",
-            "FunctionalProperty", 
-            "I3.2", 
-            "I3.4", 
-            "I4.1", 
-            "I4.5", 
-            "I4.6", 
-            "I5.1", 
-            "I5.2", 
-            "I5.21", 
-            "I5.24", 
-            "I5.26",
-            "I5.3", 
-            "I5.5", 
-            "I5.8", 
-            "InverseFunctionalProperty", 
-            "Nothing",
-            /* */
+            //"AllDifferent", 
+            //"AnnotationProperty", 
+            //"DatatypeProperty",
+            //"FunctionalProperty", 
+            //"I3.2", 
+            //"I3.4", 
+            //"I4.1", 
+            //"I4.5",
+            //"I4.6", 
+            //"I5.1",
+            //"I5.2", 
+            //"I5.21", 
+            //"I5.24", 
+            //"I5.26",
+            //"I5.3", 
+            //"I5.5", 
+            //"I5.8",
+            //"InverseFunctionalProperty", 
+            //"Nothing",
             //"Restriction", 
-            //"SymmetricProperty",
+            "SymmetricProperty",
             //"Thing", 
             //"TransitiveProperty", 
             //"Class", 
@@ -627,20 +625,24 @@ public class WebOntTests
      */
     protected void addSubGraph( Resource root, Model premises ) {
         List q = new ArrayList();
+        Set seen = new HashSet();
         q.add( root );
         
         while (!q.isEmpty()) {
             Resource r = (Resource) q.remove( 0 );
             
-            for (StmtIterator i = r.listProperties(); i.hasNext(); ) {
-                Statement s = i.nextStatement();
-                
-                if (safePremise( s.getPredicate() )) {
-                    premises.add( s );
-                    if (s.getObject() instanceof Resource) {
-                        q.add( s.getObject() );
+            if (!seen.contains( r )) {
+                for (StmtIterator i = r.listProperties(); i.hasNext(); ) {
+                    Statement s = i.nextStatement();
+                    
+                    if (safePremise( s.getPredicate() )) {
+                        premises.add( s );
+                        if (s.getObject() instanceof Resource) {
+                            q.add( s.getObject() );
+                        }
                     }
                 }
+                seen.add( r );
             }
         }
     }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-06 11:21:17 $
+ * Last modified on   $Date: 2004-05-12 15:56:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.11 2004-05-06 11:21:17 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.12 2004-05-12 15:56:00 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -95,6 +95,9 @@ public class DIGAdapter
     // Static variables
     //////////////////////////////////
 
+    /** Query ID counter */
+    private static int s_queryID = 0;
+    
     /** The table that represents the query translations we know about */
     protected static DIGQueryTranslator[] s_queryTable = {
         // subsumes when testing for subsumption between two known class expressions
@@ -586,6 +589,21 @@ public class DIGAdapter
     }
     
     
+    /**
+     * <p>Create a new element to represent a query, adding to it a unique query
+     * ID.</p>
+     * @param da The DIG adapter
+     * @param query The query document
+     * @param elemName The string name of the query element
+     * @return The new query element
+     */
+    public Element createQueryElement( Document query, String elemName ) {
+        Element qElem = addElement( query.getDocumentElement(), elemName );
+        qElem.setAttribute( DIGProfile.ID, "q" + s_queryID++ );
+        return qElem;
+    }
+
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -1313,7 +1331,7 @@ public class DIGAdapter
         
         // query the DIG ks for the currently known individuals
         Document query = getConnection().createDigVerb( DIGProfile.ASKS, getProfile() );
-        addElement( query.getDocumentElement(), queryType );
+        createQueryElement( query, queryType );
         Document response = getConnection().sendDigVerb( query, getProfile() );
 
         // build the path to extract the names        
