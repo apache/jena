@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.16 2003-12-08 10:48:28 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.17 2004-01-21 18:18:08 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -89,7 +89,7 @@ public class ModelLoader
         {
         	// @@ temporarily not supported        	
             logger.fatal("Failed to open Berkeley database") ;
-            System.exit(1) ;
+            return null ;
 /*
             // URL had better be a file!
             if ( basename != null )
@@ -257,19 +257,22 @@ public class ModelLoader
             }
         }
 
-	/** Guess the language/type of model data
-	 * <ul>
-	 * <li> If the URI of the model starts jdbc: it is assumed to be an RDB model</li>
-	 * <li> If the URI ends ".rdf", it is assumed to be RDF/XML</li>
-	 * <li> If the URI end .nt, it is assumed to be N-Triples</li>
-	 * <li> If the URI end .bdbd, it is assumed to be BerkleyDB model</li>
-	 * </ul>
-	 */
+    /** Guess the language/type of model data
+     * 
+     * <ul>
+     * <li> If the URI of the model starts jdbc: it is assumed to be an RDB model</li>
+     * <li> If the URI ends ".rdf", it is assumed to be RDF/XML</li>
+     * <li> If the URI end .nt, it is assumed to be N-Triples</li>
+     * <li> If the URI end .bdb, it is assumed to be BerkeleyDB model</li>
+     * </ul>
+     * @param urlStr    URL to base the guess on
+     * @param defaultLang Default guess
+     * @return String   Guessed syntax - or the default supplied
+     */
 
-
-    public static String guessLang(String urlStr)
+    public static String guessLang(String urlStr, String defaultLang)
     {
-        String lang = null ;
+        String lang = defaultLang ;
 
         if ( urlStr.startsWith("jdbc:") || urlStr.startsWith("JDBC:") )
             return langSQL ;
@@ -293,6 +296,23 @@ public class ModelLoader
             // else no idea.
         }
         return lang ;
+    }
+    
+	/** Guess the language/type of model data
+     * 
+	 * <ul>
+	 * <li> If the URI of the model starts jdbc: it is assumed to be an RDB model</li>
+	 * <li> If the URI ends ".rdf", it is assumed to be RDF/XML</li>
+	 * <li> If the URI end .nt, it is assumed to be N-Triples</li>
+	 * <li> If the URI end .bdb, it is assumed to be BerkeleyDB model</li>
+	 * </ul>
+     * @param urlStr    URL to base the guess on
+     * @return String   Guessed syntax - null for no guess.
+	 */
+
+    public static String guessLang(String urlStr)
+    {
+        return guessLang(urlStr, null) ;
     }
 
 	/** Sets the directory used in
