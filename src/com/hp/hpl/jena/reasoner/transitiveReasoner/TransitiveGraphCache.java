@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.5 2003-04-15 21:27:57 jeremy_carroll Exp $
+ * $Id: TransitiveGraphCache.java,v 1.6 2003-04-30 16:42:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -39,7 +39,7 @@ import java.util.*;
  * iterator machinery as separate top level classes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-04-15 21:27:57 $
+ * @version $Revision: 1.6 $ on $Date: 2003-04-30 16:42:23 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -136,29 +136,30 @@ public class TransitiveGraphCache implements Finder {
         
         if (p.isVariable() || p.equals(directPredicate) || p.equals(closedPredicate)) {
             boolean closed = !p.equals(directPredicate);
+            Node pred = p.isVariable() ? closedPredicate : p;
             if (s.isVariable()) {
                 if (o.isVariable()) {
                     // list all the graph contents
-                    Iterator i = new ListAll(nodeMap.values().iterator(), closed, p);
+                    Iterator i = new ListAll(nodeMap.values().iterator(), closed, pred);
                     return WrappedIterator.create(i);
                 } else {
                     // list all backwards from o
                     GraphNode gn_o = (GraphNode)nodeMap.get(o);
                     if (gn_o == null) return new NiceIterator();
-                    return new GraphWalker(gn_o, false, closed, p);
+                    return new GraphWalker(gn_o, false, closed, pred);
                 }
             } else {
                 GraphNode gn_s = (GraphNode)nodeMap.get(s);
                 if (gn_s == null) return new NiceIterator();
                 if (o.isVariable()) {
                     // list forward from s
-                    return new GraphWalker(gn_s, true, closed, p);
+                    return new GraphWalker(gn_s, true, closed, pred);
                 } else {
                     // Singleton test
                     GraphNode gn_o = (GraphNode)nodeMap.get(o);
                     if (gn_o == null) return new NiceIterator();
                     if (gn_s.linksTo(gn_o)) {
-                        return new SingletonIterator(new Triple(s, p, o));
+                        return new SingletonIterator(new Triple(s, pred, o));
                     } else {
                         return new NiceIterator();
                     }

@@ -77,12 +77,21 @@
     <result>transitive/result4.rdf</result>
   </Test>
 
-  <Test rdf:about="test9">
+  <Test rdf:about="test10">
     <description>Transitive reasoner: meta level usage - indirect subprop of subclass</description>
     <data>transitive/data9.rdf</data>
     <tbox>transitive/tbox7.rdf</tbox>
     <query>transitive/querysc.nt</query>
     <result>transitive/result5.rdf</result>
   </Test>
+  
+  <Test rdf:about="test11">
+    <description>Transitive reasoner: simple subclass transitive closure - wildcard query</description>
+    <data>transitive/data11.rdf</data>
+    <query>transitive/query-all.nt</query>
+    <result>transitive/result11.rdf</result>
+  </Test>
+
+
   
 </rdf:RDF>
