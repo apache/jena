@@ -12,9 +12,13 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
+    <!--
+      CVS: $Id: index.html,v 1.5 2003-08-26 17:32:46 der Exp $
+     (c) Copyright 2003, Hewlett-Packard Development Company LP
+    -->
   </head>
-  <body>
-    <h1>
+  <body id="content">
+    <h1 class="sectionHeading">
       Jena 2 Ontology API
     </h1>
     <p>
@@ -35,20 +39,20 @@
     <p>
       The section of the manual is broken into a number of sections. It is not necessary to read them in sequence, though later sections may refer to concepts and techniques introduced in earlier sections. The sections are:
     </p>
-    
+
 <ol>
   <li> Overview </li>
-  <li> <a href="#generalConcepts">General concepts</a> and ontology languages 
+  <li> <a href="#generalConcepts">General concepts</a> and ontology languages
     introduction </li>
   <li> <a href="#cameraExample">Running example: the camera ontology</a> </li>
   <li> <a href="#creatingModels">Creating ontology models</a> </li>
-  <li> <a href="#documentHandling">Handling ontology documents and imports</a> 
+  <li> <a href="#documentHandling">Handling ontology documents and imports</a>
   </li>
   <li> <a href="#ontResource">The generic ontology type: OntResource</a> </li>
-  <li> <a href="#classesBasic">Handling ontology components: basic class expressions</a> 
+  <li> <a href="#classesBasic">Handling ontology components: basic class expressions</a>
   </li>
   <li> <a href="#properties">Handling ontology components: properties</a> </li>
-  <li> <a href="#classesComplex">Handling ontology components: more complex class 
+  <li> <a href="#classesComplex">Handling ontology components: more complex class
     expressions</a> </li>
   <li> <a href="#instances">Instances (individuals)</a> </li>
   <li> <a href="#metadata">Ontology meta-data</a> </li>
@@ -1372,81 +1376,78 @@ ont.addProperty( DC.creator, "John Smith" );
     <p>
       The reasoner for an OntModel is specified via the OntModelSpec. See above for details.
     </p>
-    
+
 <h2 id="legacyDAML">Working with DAML+OIL ontologies</h2>
-<p>This section covers specific tips on working with DAML ontologies, 
+<p>This section covers specific tips on working with DAML ontologies,
   including the legacy DAML API from Jena 1.</p>
 <p>To be completed.</p>
 <h2 id="persistence">Working with persistent ontologies</h2>
-<p>A common way to work with ontology data is to load the ontology 
-  axioms and instances at run-time from a set of source documents. This is a very 
-  flexible approach, but has limitations. In particular, it requires the documents 
-  to be parsed each time the application is run. For large ontologies, this can 
-  be a source of significant overhead. Jena provides an implementation of the 
-  RDF model interface that stores the triples persistently in a database. This 
-  saves the overhead of loading the model each time, and means that RDF models 
-  significantly larger than the computer's main memory can be stored, but at the 
-  expense of a higher overhead (a database interaction) to retrieve and update 
-  RDF data from the model. This section shows how to use the ontology API with 
+<p>A common way to work with ontology data is to load the ontology
+  axioms and instances at run-time from a set of source documents. This is a very
+  flexible approach, but has limitations. In particular, it requires the documents
+  to be parsed each time the application is run. For large ontologies, this can
+  be a source of significant overhead. Jena provides an implementation of the
+  RDF model interface that stores the triples persistently in a database. This
+  saves the overhead of loading the model each time, and means that RDF models
+  significantly larger than the computer's main memory can be stored, but at the
+  expense of a higher overhead (a database interaction) to retrieve and update
+  RDF data from the model. This section shows how to use the ontology API with
   Jena's persistent database models.</p>
-<p>For information on setting-up and accessing the database models 
-  themselves, see the <a href="../DB/index.html">DB documentation</a>. We do not 
+<p>For information on setting-up and accessing the database models
+  themselves, see the <a href="../DB/index.html">DB documentation</a>. We do not
   cover this aspect in this section.</p>
-<p>There are two somewhat separate requirements for persistently 
-  storing ontology data. The first is making the main or base model itself persistent. 
-  The second is re-using or creating persistent models for the imports of an ontology. 
-  These two requirements are handled slightly differently. A simple, but complete, 
-  example of using persistent database models for storing ontologies can be found 
+<p>There are two somewhat separate requirements for persistently
+  storing ontology data. The first is making the main or base model itself persistent.
+  The second is re-using or creating persistent models for the imports of an ontology.
+  These two requirements are handled slightly differently. A simple, but complete,
+  example of using persistent database models for storing ontologies can be found
   <a href="../examples/persistent-ont-model/index.html">here</a>.</p>
-<p>To retrieve a model from the database, it has to be named. 
-  Fortunately, common practice for ontologies on the Semantic Web is that each 
-  is named with a URI. We use this URI to name the model that is stored in the 
-  database. Note carefully what is actually happening here: we are exploiting 
-  a feature of the database sub-system to make persistently stored ontologies 
-  easy to retrieve, but we are not in any sense resolving the URI of the model. 
-  Once placed into the database, the name of the model is treated as an opaque 
+<p>To retrieve a model from the database, it has to be named.
+  Fortunately, common practice for ontologies on the Semantic Web is that each
+  is named with a URI. We use this URI to name the model that is stored in the
+  database. Note carefully what is actually happening here: we are exploiting
+  a feature of the database sub-system to make persistently stored ontologies
+  easy to retrieve, but we are not in any sense resolving the URI of the model.
+  Once placed into the database, the name of the model is treated as an opaque
   string.</p>
-<p>Thus to create a persistent model for the ontology <code>http://example.org/Customers</code>, 
-  we create a model maker that will access our underlying database, and use the 
-  ontology URI as the database name. We then take the resulting persistent model, 
+<p>Thus to create a persistent model for the ontology <code>http://example.org/Customers</code>,
+  we create a model maker that will access our underlying database, and use the
+  ontology URI as the database name. We then take the resulting persistent model,
   and use it as the base model when constructing an ontology model:</p>
 <pre>Model base = getMaker().createModel( "http://example.org/Customers" );
 OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF, base );
 </pre>
 <p></p>
-<p>Here we assume that the <code>getMaker()</code> method returns a suitably initialised 
-  <code>ModelMaker</code> that will open the connection to the database. This 
-  step only creates a persistent model named with the ontology URI. To initialise 
-  the content, we must either add statements to the model using the OntModel API, 
+<p>Here we assume that the <code>getMaker()</code> method returns a suitably initialised
+  <code>ModelMaker</code> that will open the connection to the database. This
+  step only creates a persistent model named with the ontology URI. To initialise
+  the content, we must either add statements to the model using the OntModel API,
   or do a one-time read from a document:</p>
 <pre>m.read( "http://example.org/Customers" );</pre>
-<p>Once this step is completed, the model contents may be accessed in future without 
+<p>Once this step is completed, the model contents may be accessed in future without
   needing to read again.</p>
-<p>If the Customers ontology imports other ontologies, using owl:imports or daml:imports, 
-  the Jena Ontology API will build a union model containing the closure of the 
-  imports. Even if the base model is persistent, by pre-defined OntologySpec objects 
-  only specifiy memory models to contain the imported ontologies, since memory 
+<p>If the Customers ontology imports other ontologies, using owl:imports or daml:imports,
+  the Jena Ontology API will build a union model containing the closure of the
+  imports. Even if the base model is persistent, by pre-defined OntologySpec objects
+  only specifiy memory models to contain the imported ontologies, since memory
   models do not require any parameters.</p>
-<p>To specify that the imported models should stored in, and retrieved from, the 
-  database, we must update the ontology spec object to use the model maker that 
+<p>To specify that the imported models should stored in, and retrieved from, the
+  database, we must update the ontology spec object to use the model maker that
   encapsulates the database connection:</p>
 <pre>OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM_RULE_INF );
 spec.setModelMaker( getMaker() );</pre>
-<p>This new model maker will then be used to generate persistent models named 
-  with the URI of the imported ontology, if it passed instead of OntModelSpec.OWL_MEM_RULE_INF 
-  to the createOntologyModel method of the model factory. Note that once the import 
-  has been loaded once into the database, it can be re-used by other ontologies 
-  that import it. Thus a given database will only contain at most one copy of 
+<p>This new model maker will then be used to generate persistent models named
+  with the URI of the imported ontology, if it passed instead of OntModelSpec.OWL_MEM_RULE_INF
+  to the createOntologyModel method of the model factory. Note that once the import
+  has been loaded once into the database, it can be re-used by other ontologies
+  that import it. Thus a given database will only contain at most one copy of
   each imported ontology.</p>
-<p>The <a href="../examples/persistent-ont-model/index.html">sample program</a> 
-  shows both of the above steps combined, to create an ontology in which both 
+<p>The <a href="examples/persistent-ont-model/index.html">sample program</a>
+  shows both of the above steps combined, to create an ontology in which both
   base model and imports are stored in a persistent database.</p>
 <h2 id="builtinReasoners">FAQ, common problems and other tips </h2>
     <p>
       <i>To be completed.</i>
     </p>
-    <hr /> <div class="footnote">
-      CVS: $Id: index.html,v 1.4 2003-07-25 22:41:20 ian_dickinson Exp $
-    </div>
   </body>
 </html>
