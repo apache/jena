@@ -39,11 +39,11 @@ Hewlett Packard Laboratories, Bristol
 			<li>ARP parser compliant with latest working group recommendations</li>
 			<li>integrated query language (RDQL)</li>
 			<li>Support for datatype literals</li>
-			<li>An ontology API for OWL</li>
+			<li>An ontology API for OWL, DAML+OIL and RDFS</li>
 			<li>Support for inference, including a built in RDFS reasoner</li>
 		</ul>
 
-<p>Whilst the intention is maintain the present API through the migration from
+<p>While the intention is maintain the present API through the migration from
 Jena 1 to Jena 2, we are taking the opportunity to make some minor changes
 that folks have requested.  These are described in the document <a
 href="doc/migrate1-2.html">Migrating from Jena 1 to Jena2</a>. You may notice
@@ -161,6 +161,23 @@ to.</p>
       additional RDF assertions which are entailed from some base RDF together 
       with any optional ontology information and the axioms and rule. See the 
       <a href="doc/user-manual/inference/index.html">reasoner documentation</a> 
+      for more details. </dd>
+  </dl>
+  <dl> 
+    <dt><b>Ontology Subsystem</b></dt>
+    <dd>The Jena2 ontology API is intended to support programmers who are working
+    	with ontology data based on RDF. Specifically, this means support for 
+    	OWL, DAML+OIL and RDFS.  A set of Java abstractions extend the generic
+    	RDF Resource and Property classes to model more directly the class and
+    	property expressions found in ontologies using the above languages, and
+    	the relationships between these classes and properties. The ontology API
+    	works closely with the reasoning subsystem derive additional information
+    	that can be inferred from a particular ontology source. Given that ontologists
+    	typically modularise ontologies into individual, re-usable components, 
+    	and pulish these on the web, the Jena2 ontology subsystem also includes a
+    	document manager that assists with process of managing imported ontology documents.
+ 	See the 
+      <a href="doc/user-manual/ontology/index.html">reasoner documentation</a> 
       for more details. </dd>
   </dl>
 		<h2>License</h2>
