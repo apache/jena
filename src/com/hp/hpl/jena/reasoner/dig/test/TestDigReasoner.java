@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-20 10:47:35 $
+ * Last modified on   $Date: 2004-09-30 08:37:03 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.15 2004-05-20 10:47:35 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.16 2004-09-30 08:37:03 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -572,6 +572,53 @@ public class TestDigReasoner
     }
     
     
+    // User bug reports
+    
+    public void test_bug_codebaker_01() {
+        String NS = "http://www.owl-ontologies.com/pizza.owl#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+
+        m.read( "file:testing/ontology/bugs/test_codebaker_01.owl" );
+        
+        OntClass mp = m.getOntClass( NS + "MargheritaPizza" );
+        OntClass cp = m.getOntClass( NS + "CheesyPizza" );
+        
+        assertTrue( "MargheritaPizza should be cheesy", mp.hasSuperClass( cp ) );
+    }
+    
+    public void test_bug_koala_01() {
+        // set up a configuration resource to connect to the reasoner
+        // on port 2004 on the local system
+        Model cModel = ModelFactory.createDefaultModel();
+        Resource conf = cModel.createResource();
+        conf.addProperty( ReasonerVocabulary.EXT_REASONER_URL, cModel.createResource( "http://localhost:8081" ) );
+
+        // create the reasoner factory and the reasoner
+        DIGReasonerFactory drf = (DIGReasonerFactory) ReasonerRegistry.theRegistry()
+                .getFactory( DIGReasonerFactory.URI );
+        DIGReasoner r = (DIGReasoner) drf.create( conf );
+
+        // now make a model
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+
+        // load an input document
+        m.read( "http://protege.stanford.edu/plugins/owl/owl-library/koala.owl" );
+
+        // list the inconsistent classes
+        StmtIterator i = m.listStatements( null, OWL.equivalentClass, OWL.Nothing );
+        while (i.hasNext()) {
+            System.out.println( "Class " + i.nextStatement().getSubject() + " is unsatisfiable" );
+        }
+    }
+    
+    
     public void xxtestDebug1() {
         String NS = "http://example.org/foo#";
         
@@ -622,7 +669,7 @@ public class TestDigReasoner
                 i++;
             }
             
-            //s.addTest( new DigTranslationTest( testSource, testTarget, spec ) );
+            s.addTest( new DigTranslationTest( testSource, testTarget, spec ) );
         }
     }
     

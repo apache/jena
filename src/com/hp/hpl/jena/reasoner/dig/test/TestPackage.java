@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            17-Jun-2003
  * Filename           $RCSfile: TestPackage.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-19 09:40:17 $
+ * Last modified on   $Date: 2004-09-30 08:37:03 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -34,7 +34,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestPackage.java,v 1.1 2004-05-19 09:40:17 ian_dickinson Exp $
+ * @version CVS $Id: TestPackage.java,v 1.2 2004-09-30 08:37:03 ian_dickinson Exp $
  */
 public class TestPackage 
     extends TestSuite 
@@ -48,7 +48,7 @@ public class TestPackage
         super("reasoner.dig");
         addTestSuite( TestConsistency.class );
         addTestSuite( TestRacer.class );
-        addTestSuite( TestDigReasoner.class );
+        addTest( "TestDigReasoner", TestDigReasoner.suite() );
     }
 
     private void addTest(String name, TestSuite tc) {
