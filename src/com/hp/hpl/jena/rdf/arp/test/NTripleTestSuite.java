@@ -194,12 +194,12 @@ class NTripleTestSuite extends WGTestSuite {
 
 	}
 
-	Model loadRDF(InFactory in, RDFErrorHandler eh, String base)
+	Model loadRDF(InFactoryX in, RDFErrorHandler eh, String base)
 		throws IOException {
 		return loadRDFx(in, eh, base, true, 0);
 	}
 	static Model loadRDFx(
-		InFactory in,
+		InFactoryX in,
 		RDFErrorHandler eh,
 		String base,
 		boolean wantModel,

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.22 2003-12-08 20:30:43 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.23 2003-12-08 20:41:02 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -79,7 +79,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     	return ARPTests.internet;
     }
     static private boolean inDevelopment = false;
-     Model loadRDF(InFactory in, RDFErrorHandler eh, String base)
+     Model loadRDF(InFactoryX in, RDFErrorHandler eh, String base)
         throws IOException {
         Model model = ModelFactory.createDefaultModel();
         JenaReader jr = new JenaReader();
@@ -225,7 +225,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             if (in == null )
                 return null;
             in.close();
-            m = loadRDF(new InFactory(){
+            m = loadRDF(new InFactoryX(){
             	public InputStream open() throws IOException {
             		return fact.fullyOpen(file);
             } }, null, base + file);
@@ -418,7 +418,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 return loadNT(factory.open(uri),uri);
             } else if (rdfxml.equals(t)) {
                 return loadRDF(
-                new InFactory(){
+                new InFactoryX(){
 
 					public InputStream open() throws IOException {
 						return factory.open(uri);
@@ -695,7 +695,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             } else {
                 final String uri = file;
                 return loadRDF(
-                new InFactory(){
+                new InFactoryX(){
 
 					public InputStream open() throws IOException {
 						return factory.open(uri);

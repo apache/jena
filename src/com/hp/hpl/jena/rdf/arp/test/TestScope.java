@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestScope.java,v 1.4 2003-12-08 20:26:50 jeremy_carroll Exp $
+  $Id: TestScope.java,v 1.5 2003-12-08 20:41:02 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
@@ -58,7 +58,7 @@ public class TestScope extends TestCase {
 	};
 	private void check(final String fn) throws IOException {
 		
-		NTripleTestSuite.loadRDFx(new InFactory(){
+		NTripleTestSuite.loadRDFx(new InFactoryX(){
 
 			public InputStream open() throws IOException {
 				return new FileInputStream(fn);
