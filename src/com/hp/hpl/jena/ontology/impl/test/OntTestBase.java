@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 09:30:17 $
+ * Last modified on   $Date: 2004-01-29 18:45:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.8 2003-12-08 09:30:17 ian_dickinson Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.9 2004-01-29 18:45:01 ian_dickinson Exp $
  */
 public abstract class OntTestBase 
     extends TestSuite
@@ -156,6 +156,13 @@ public abstract class OntTestBase
         protected void iteratorTest( Iterator i, Object[] expected ) {
             TestUtil.assertIteratorValues( this, i, expected );
         }
+    
+        public void setUp() {
+            // ensure the ont doc manager is in a consistent state
+            OntDocumentManager.getInstance().reset( true );
+        }
+        
+        
     }
 }
 

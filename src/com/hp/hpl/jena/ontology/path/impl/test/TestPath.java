@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: TestPath.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-17 14:20:53 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-01-29 18:45:02 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestPath.java,v 1.5 2003-11-17 14:20:53 chris-dollin Exp $
+ * @version CVS $Id: TestPath.java,v 1.6 2004-01-29 18:45:02 ian_dickinson Exp $
  */
 public class TestPath 
     extends TestCase
@@ -100,6 +100,9 @@ public class TestPath
     //////////////////////////////////
 
     public void setUp() {
+        // ensure the ont doc manager is in a consistent state
+        OntDocumentManager.getInstance().reset( true );
+
         for (int i = 0; i < s_stmts.length;  i++) {
             Resource s = m_model.getResource( NS + ((String) s_stmts[i][0]) );
             Property p = m_model.getProperty( NS + ((String) s_stmts[i][1]) );

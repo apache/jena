@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.13 2004-01-27 15:45:23 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.14 2004-01-29 18:45:02 ian_dickinson Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -89,7 +89,13 @@ class SyntaxTest extends TestCase {
 		dm.add(url, new DMEntry(url, r, in0));
 	}
 
-	protected void runTest() {
+    public void setUp() {
+        // ensure the ont doc manager is in a consistent state
+        OntDocumentManager.getInstance().reset( true );
+    }
+    
+    
+    protected void runTest() {
 		Iterator i = dm.table.keySet().iterator();
 
 		while (i.hasNext()) {

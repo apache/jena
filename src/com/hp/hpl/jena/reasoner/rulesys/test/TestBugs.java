@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.14 2003-10-09 13:28:59 der Exp $
+ * $Id: TestBugs.java,v 1.15 2004-01-29 18:45:00 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-10-09 13:28:59 $
+ * @version $Revision: 1.15 $ on $Date: 2004-01-29 18:45:00 $
  */
 public class TestBugs extends TestCase {
 
@@ -52,6 +52,11 @@ public class TestBugs extends TestCase {
 //        return suite;
     }  
 
+    public void setUp() {
+        // ensure the ont doc manager is in a consistent state
+        OntDocumentManager.getInstance().reset( true );
+    }
+    
     /**
      * Report of NPE during processing on an ontology with a faulty intersection list,
      * from Hugh Winkler.
@@ -118,6 +123,7 @@ public class TestBugs extends TestCase {
      */
     public void testDAMLCCE() {
         DAMLModel m = ModelFactory.createDAMLModel();
+        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
         m.read( "file:testing/reasoners/bugs/literalLeak.daml", 
                 "http://www.daml.org/2001/03/daml+oil-ex",  null );
         ResIterator rIter = m.listSubjects();
@@ -157,6 +163,7 @@ public class TestBugs extends TestCase {
      */
     public void testSubClass() {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.DAML_MEM_RDFS_INF, null);
+        model.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
         
         String base = "http://localhost:8080/axis/daml/a.daml#";
         model.read( new ByteArrayInputStream( INPUT_SUBCLASS.getBytes() ), base );

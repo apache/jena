@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestRacer.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 10:48:26 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-29 18:45:01 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -30,6 +30,7 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.reasoner.dig.DIGAdapter;
@@ -44,7 +45,7 @@ import junit.framework.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestRacer.java,v 1.5 2003-12-08 10:48:26 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: TestRacer.java,v 1.6 2004-01-29 18:45:01 ian_dickinson Exp $)
  */
 public class TestRacer 
     extends TestCase
@@ -64,6 +65,12 @@ public class TestRacer
     // External signature methods
     //////////////////////////////////
 
+    public void setUp() {
+        // ensure the ont doc manager is in a consistent state
+        OntDocumentManager.getInstance().reset( true );
+    }
+    
+    
     public void testRacerName() {
         DIGAdapter r = new DIGAdapter( OntModelSpec.OWL_DL_MEM, ModelFactory.createOntologyModel().getGraph() );
         assertEquals( "Name should be racer", "Racer", r.getDigIdentifier().getName() );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.26 $
+ * Revision           $Revision: 1.27 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-15 17:42:37 $
+ * Last modified on   $Date: 2004-01-29 18:45:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -75,6 +75,12 @@ public class TestBugReports extends TestCase {
     // External signature methods
     //////////////////////////////////
 
+    public void setUp() {
+        // ensure the ont doc manager is in a consistent state
+        OntDocumentManager.getInstance().reset( true );
+    }
+    
+    
     /**
      * Bug report by Mariano Rico Almodóvar [Mariano.Rico@uam.es] on June 16th.
      * Said to raise exception.
@@ -118,6 +124,7 @@ public class TestBugReports extends TestCase {
         // definition
         // note OWL_MEM => no reasoner is used
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
         m.read(new ByteArrayInputStream(doc.getBytes()), base);
 
         // we need a resource corresponding to OWL Class but in m

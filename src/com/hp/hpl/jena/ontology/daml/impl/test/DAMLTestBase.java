@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: DAMLTestBase.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 10:48:24 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-29 18:44:49 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAMLTestBase.java,v 1.4 2003-12-08 10:48:24 andy_seaborne Exp $
+ * @version CVS $Id: DAMLTestBase.java,v 1.5 2004-01-29 18:44:49 ian_dickinson Exp $
  */
 public abstract class DAMLTestBase 
     extends TestSuite
@@ -101,6 +101,12 @@ public abstract class DAMLTestBase
             m_langElement = langElement;
         }
 
+        public void setUp() {
+            // ensure the ont doc manager is in a consistent state
+            OntDocumentManager.getInstance().reset( true );
+        }
+        
+        
         public void runTest()
             throws Exception
         {

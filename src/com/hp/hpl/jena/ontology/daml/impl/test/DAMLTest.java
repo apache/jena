@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-01-28 16:19:39 $
+ * Last modified on   $Date: 2004-01-29 18:44:49 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import org.apache.commons.logging.LogFactory;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.20 2004-01-28 16:19:39 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.21 2004-01-29 18:44:49 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -85,7 +85,7 @@ public class DAMLTest
      */
     public void setUp() {
         // reset default condition
-        OntDocumentManager.getInstance().setProcessImports( true );
+        OntDocumentManager.getInstance().reset( true );
     }
 
 
@@ -106,7 +106,8 @@ public class DAMLTest
         
     {
         DAMLModel m = ModelFactory.createDAMLModel();
-
+        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        
         // first do the model read with all options turned on
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
@@ -154,8 +155,8 @@ public class DAMLTest
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
         DAMLModel m = ModelFactory.createDAMLModel();
-        m.getLoader().setLoadImportedOntologies( true );
-
+        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        
         m.read( "file:testing/ontology/daml/test-cases.daml" );
 
         //dumpModel( m );
@@ -223,7 +224,8 @@ public class DAMLTest
      */
     public void testClass() {
         DAMLModel m = ModelFactory.createDAMLModel();
-
+        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
         String ns = "http://www.daml.org/2001/03/daml+oil-ex#";
@@ -411,7 +413,8 @@ public class DAMLTest
      */
     public void testProperty() {
         DAMLModel m = ModelFactory.createDAMLModel();
-
+        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
         String ns = "http://www.daml.org/2001/03/daml+oil-ex#";

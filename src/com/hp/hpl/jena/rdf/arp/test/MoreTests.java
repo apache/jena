@@ -2,13 +2,15 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.13 2003-12-15 18:39:04 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.14 2004-01-29 18:45:02 ian_dickinson Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import junit.framework.*;
+
+import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -46,7 +48,13 @@ public class MoreTests
 		return ModelFactory.createDefaultModel();
 	}
 
-	public void testWineDefaultNS() throws IOException {
+    public void setUp() {
+        // ensure the ont doc manager is in a consistent state
+        OntDocumentManager.getInstance().reset( true );
+    }
+    
+    
+    public void testWineDefaultNS() throws IOException {
 		testWineNS(createMemModel());
 		testWineNS(ModelFactory.createOntologyModel());
 	}

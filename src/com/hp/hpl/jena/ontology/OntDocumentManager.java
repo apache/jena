@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-08 15:45:15 $
+ * Last modified on   $Date: 2004-01-29 18:45:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.31 2004-01-08 15:45:15 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.32 2004-01-29 18:45:01 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -262,13 +262,12 @@ public class OntDocumentManager
     
     /**
      * <p>Reset all state in this document manager back to the default
-     * values it would have had when the object was created. This does
-     * <strong>not</strong> reload the configuration information from
-     * the search path.  Note also that the metadata search path is one
-     * of the values that is reset back to its default value.</p>
+     * values it would have had when the object was created. Optionally
+     * reload the profile metadata from the search path.</p>
+     * @param reload If true, reload the configuration file from the
+     * search path.
      */
-    public void reset() {
-        m_searchPath = DEFAULT_METADATA_PATH;
+    public void reset( boolean reload ) {
         m_altMap.clear();
         m_modelMap.clear();
         m_languageMap.clear();
@@ -277,6 +276,25 @@ public class OntDocumentManager
         m_ignoreImports.clear();
         m_prefixMap = new PrefixMappingImpl();
         m_useDeclaredPrefixes = true;
+        
+        if (reload) {
+            // reload the default values
+            setMetadataSearchPath( DEFAULT_METADATA_PATH, true );
+        }
+        else {
+            m_searchPath = DEFAULT_METADATA_PATH;
+        }
+    }
+    
+    /**
+     * <p>Reset all state in this document manager back to the default
+     * values it would have had when the object was created. This does
+     * <strong>not</strong> reload the configuration information from
+     * the search path.  Note also that the metadata search path is one
+     * of the values that is reset back to its default value.</p>
+     */
+    public void reset() {
+        reset( false );
     }
     
     
@@ -433,7 +451,7 @@ public class OntDocumentManager
      * @param model A model containing the triples from the document
      */
     public void addModel( String docURI, Model model ) {
-        if (m_cacheModels) {
+        if (m_cacheModels && !m_modelMap.containsKey( docURI )) {
             m_modelMap.put( docURI, model );
         }
     }
@@ -909,6 +927,9 @@ public class OntDocumentManager
         
                 // add to the imports union graph, but don't do the rebind yet
                 model.addSubModel( in, false );
+                
+                // we also cache the model if we haven't seen it before (and caching is on)
+                addModel( importURI, in );
             }
         }
     }
