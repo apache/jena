@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.7 2003-04-03 12:22:35 jeremy_carroll Exp $
+  $Id: Model.java,v 1.8 2003-04-04 11:31:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,7 +50,7 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $Date: 2003/04/03 11:22:52 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $Date: 2003/04/03 12:22:35 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	//    public BindingQueryPlan prepareBindings( Query q, Variable [] variables );
@@ -571,6 +571,14 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
     */
     void removeReification( ReifiedStatement rs );
 
+    /**
+        a read-only Model with all the statements of this Model and any
+        statements "hidden" by reification. That model is dynamic, ie
+        any changes this model will be reflected that one.
+        [TODO: Except this implementation delivers only a static Model]
+    */
+    Model withHiddenStatements();
+    
 	/** List the statements matching a selector.
 	 *
 	 * <p>A statment is considered to match if the <CODE>test</CODE> method
@@ -749,5 +757,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.7 2003-04-03 12:22:35 jeremy_carroll Exp $
+ * $Id: Model.java,v 1.8 2003-04-04 11:31:08 chris-dollin Exp $
  */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.5 2003-03-26 12:38:13 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.6 2003-04-04 11:30:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -27,23 +27,30 @@ public class GraphTestBase extends TestCase
     public static TestSuite suite()
         { return new TestSuite( GraphTestBase.class ); }   
 
-
+    static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    
     public static Node node( String x )
         {
-        if (x.length() > 0)
-            {
-            if (x.charAt( 0 ) == '\'')
-                return Node.createLiteral( new LiteralLabel(  x, "en-UK", false ) );
-            if (Character.isDigit( x.charAt( 0 ) )) 
-                return Node.createLiteral( new LiteralLabel( x, "nn-NN", false ) );
-            if (x.charAt( 0 ) == '_')
-                return Node.createAnon( new AnonId( x ) );
-            if (x.charAt( 0 ) == '?')
-                return Node.createVariable( x.substring( 1 ) );
-            if (x.charAt( 0 ) == '&')
-                return Node.createURI( "q:" + x.substring( 1 ) );
-            }
-        return Node.createURI( x.indexOf( ':' ) < 0 ? "eh/" + x : x );
+        if (x.equals( "" ))
+            throw new RuntimeException( "GraphTestBase::node does not accept an empty string as argument" );
+        char first = x.charAt( 0 );
+        if (first == '\'')
+            return Node.createLiteral( new LiteralLabel(  x, "en-UK", false ) );
+        if (Character.isDigit( first )) 
+            return Node.createLiteral( new LiteralLabel( x, "nn-NN", false ) );
+        if (first == '_')
+            return Node.createAnon( new AnonId( x ) );
+        if (first == '?')
+            return Node.createVariable( x.substring( 1 ) );
+        if (first == '&')
+            return Node.createURI( "q:" + x.substring( 1 ) );        
+        int colon = x.indexOf( ':' );
+        if (colon < 0)
+            return Node.createURI( "eh:" + x );
+        String prefix = x.substring( 0, colon );
+        if (prefix.equals( "rdf") )
+            return Node.createURI( RDFprefix + x.substring( colon + 1 ) );
+        return Node.createURI( x );
         }
         
     public Set iteratorToSet( ClosableIterator L )
@@ -117,7 +124,7 @@ public class GraphTestBase extends TestCase
         assertTrue( name + ": wanted " + wanted + " got " + obtained, mWanted.isIsomorphicWith( mObtained ) );
         }
     
-    public static void assertContains( String name, Graph g, String s )
+    public static void assertContains( String name, String s, Graph g )
         {
         assertTrue( name + " must contain " + s, g.contains( triple( s ) ) );
         }
@@ -125,7 +132,7 @@ public class GraphTestBase extends TestCase
     public static void assertContainsAll( String name, Graph g, String s )
         {
         StringTokenizer semis = new StringTokenizer( s, ";" );
-        while (semis.hasMoreTokens()) assertContains( name, g, semis.nextToken() );       
+        while (semis.hasMoreTokens()) assertContains( name, semis.nextToken(), g );       
         }
         
     public static void assertOmits( String name, Graph g, String s )

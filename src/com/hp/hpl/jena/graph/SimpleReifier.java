@@ -1,16 +1,16 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.6 2003-03-27 16:16:10 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.7 2003-04-04 11:30:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 /**
 	@author kers
-<br>
+<p>
     A base-level implementation of Reifier, intended to be straightforward
-    and obvious.
+    and obvious. It fails this test nowadays ...
 */
 
 import com.hp.hpl.jena.mem.*;
@@ -23,67 +23,95 @@ public class SimpleReifier implements Reifier
     {
     private Graph parent;
     private Graph triples;    
-        
-    private HashMap nodeMap;
-    
-    static final Node type = RDF.type.asNode();
-    static final Node subject = RDF.subject.asNode();
-    static final Node predicate = RDF.predicate.asNode();
-    static final Node object = RDF.object.asNode();
-    static final Node Statement = RDF.Statement.asNode();
+    private boolean passing = false;
           
+    public static class HM extends HashMap
+        {
+        public HM() { super(); }
+        
+        public Triple putTriple( Node key, Triple value )
+            {
+            put( key, value );
+            return value;
+            }
+            
+        public Fragments putFragments( Node key, Fragments value )
+            {
+            put( key, value );
+            return value;
+            }        
+        }
+        
+    public HM nodeMap;
+    
     /* construct a simple reifier that is bound to the parent graph */
     public SimpleReifier( Graph parent )
         {
         this.parent = parent;
         this.triples = new GraphMem();
-        this.nodeMap = new HashMap();
+        this.nodeMap = new HM();
         }
         
-    static class Womble
+    static final HashMap bob = makeBob();
+    
+    public Graph getHiddenTriples()
+        { // TODO: turn into a dynamic graph
+        Graph result = new GraphMem();
+        ((SimpleReifier) result.getReifier()).passing = true;
+        Iterator it = nodeMap.keySet().iterator();
+        while (it.hasNext()) include( result, (Node) it.next() );
+        return result;
+        }
+        
+    // include into g the reification triples of f
+    private void include( Graph g, Node node )
         {
-        Set types;
-        Set subjects;
-        Set predicates;
-        Set objects;
-
-        Womble() 
-            {
-            types = new HashSet();
-            subjects = new HashSet();
-            predicates = new HashSet();
-            objects = new HashSet();
-            }
-            
-        boolean isComplete()
-            { return types.size() == 1 && subjects.size() == 1 && predicates.size() == 1 && objects.size() == 1; }
-            
-        boolean isEmpty()
-            { return subjects.size() == 0 && predicates.size() == 0 && objects.size() == 0 && types.size() == 0; }
+        Object f = nodeMap.get( node );
+        if (f instanceof Triple)
+            { includeInto( g, node, (Triple) f ); }
+        else
+            { ((Fragments) f).includeInto( g ); }
         }
         
+    private void includeInto( Graph g, Node node, Triple t )
+        {
+        g.add( new Triple( node, Reifier.subject, t.getSubject() ) );
+        g.add( new Triple( node, Reifier.predicate, t.getPredicate() ) );
+        g.add( new Triple( node, Reifier.object, t.getObject() ) );
+        g.add( new Triple( node, Reifier.type, Reifier.Statement ) );
+        }
+    
+    static HashMap makeBob()
+        {
+        HashMap result = new HashMap();
+        result.put( subject, new Integer( Fragments.SUBJECTS ) );
+        result.put( predicate, new Integer( Fragments.PREDICATES ) );
+        result.put( object, new Integer( Fragments.OBJECTS ) );
+        result.put( type, new Integer( Fragments.TYPES ) );
+        return result;
+        }
+
     /** return the parent graph we are bound to */
     public Graph getParentGraph()
         { return parent; }
         
     /** return the triple bound to _n_ */
     public Triple getTriple( Node n )        
-        { return findTriple( n ); }
-
-    private Triple findTriple( Node n )
         {
-        Object map = nodeMap.get( n );
-        if (map instanceof Triple) return (Triple) map;
-        Womble w = (Womble) map;
-        if (w == null) return null;
-        if (w.types.size() != 1 || w.subjects.size() != 1 || w.predicates.size() != 1 || w.objects.size() != 1) return null;
-        Triple t = new Triple( only( w.subjects ), only( w.predicates ), only( w.objects ) );
-        nodeMap.put( n, t );
-        return t;
+        Object partial = nodeMap.get( n );
+        // System.err.println( "SR::getTriple( " + n + " = " + partial  + ")" );
+        if (partial == null)
+            return null;
+        else if (partial instanceof Triple) 
+            return (Triple) partial;
+        else
+            return getTriple( n, (Fragments) partial );
         }
         
-    private Node only( Set s )
-        { return (Node) s.iterator().next(); }
+    private Triple getTriple( Node n, Fragments w )
+        { 
+            // System.err.println( "| getTriple: " + w.isComplete() );
+            return w.isComplete() ? nodeMap.putTriple( n, w.asTriple() ) : null; }
         
     /** true iff there is a triple bound to _n_ */
     public boolean hasTriple( Node n )
@@ -101,7 +129,7 @@ public class SimpleReifier implements Reifier
     private boolean isComplete( Node n )
         {
         Object x = nodeMap.get( n );
-        return x instanceof Triple || ((Womble) x) .isComplete();
+        return x instanceof Triple || ((Fragments) x) .isComplete();
         }
         
     /** return the graph of reified triples. */
@@ -145,9 +173,7 @@ public class SimpleReifier implements Reifier
         {
         Object x = nodeMap.get( n );
         if (x instanceof Triple)
-            {
-            if (x.equals( t )) nodeMap.remove( n );
-            }
+            { if (x.equals( t )) nodeMap.remove( n ); }
         else
             {
             parent.delete( new Triple( n, type, Statement ) );
@@ -164,97 +190,50 @@ public class SimpleReifier implements Reifier
             if (getTriple( (Node) it.next() ) .equals( t )) return true;
         return false;
         }
-        
+          
     public boolean handledAdd( Triple t )
         {
-        if (special( t ))
+        int s = getSelector( t );       
+         if (passing || s < 0)
+            return false;
+        else
             {
-            burble( t );
+            getFragment( t ).add( s, t.getObject() );
             return true;
             }
-        else
-            return false;
         }
         
-    private void burble( Triple t )
+    private Fragments getFragment( Triple t )
         {
         Node s = t.getSubject();
-        Node p = t.getPredicate();
-        Node o = t.getObject();
-        Womble w = (Womble) nodeMap.get( s );
-        if (w == null) { w = new Womble(); nodeMap.put( s, w ); }
-        if (p.equals( subject )) 
-            {
-            w.subjects.add( o );
-            }
-        if (p.equals( predicate )) 
-            {
-            w.predicates.add( o );
-            }
-        if (p.equals( object )) 
-            {
-            w.objects.add( o );
-            }
-        if (p.equals( type ))            
-            {
-            w.types.add( o );
-            }
-        }
-
-    private void antiBurble( Triple t )
-        {
-        Node s = t.getSubject();
-        Node p = t.getPredicate();
-        Node o = t.getObject();
         Object x = nodeMap.get( s );
-        if (t.equals( x )) { nodeMap.remove( s ); return; }
-        if (x instanceof Triple)
-            {
-            Triple tt = (Triple) x;
-            Womble ww = new Womble();
-            if (p.equals( subject )) ww.subjects.add( tt.getSubject() );
-            if (p.equals( predicate )) ww.predicates.add( tt.getPredicate() );
-            if (p.equals( object )) ww.objects.add( tt.getObject() );
-            if (p.equals( type )) ww.types.add( Statement );
-            nodeMap.put( s, ww );
-            x = ww;
-            }
-        Womble w = (Womble) x;
-        if (w == null) return;
-        if (p.equals( subject )) 
-            {
-            w.subjects.remove( o );
-            }
-        if (p.equals( predicate )) 
-            {
-            w.predicates.remove( o );
-            }
-        if (p.equals( object )) 
-            {
-            w.objects.remove( o );
-            }
-        if (p.equals( type ))            
-            {
-            w.types.remove( o );
-            }
-        if (w.isEmpty()) nodeMap.remove( s );
+        return
+            x instanceof Triple ? explode( s, (Triple) x )
+            : x == null ? nodeMap.putFragments( s, new Fragments( s ) )
+            : (Fragments) x;
         }
-    
+        
+    private Fragments explode( Node s, Triple t )
+        { return nodeMap.putFragments( s, new Fragments( s ) .addTriple( t ) ); }
+
     public boolean handledRemove( Triple t )
         {
-        if (special( t ))
+        int s = getSelector( t );
+        if (passing || s < 0)
+            return false;
+        else
             {
-            antiBurble( t );
+            getFragment( t ).remove( s, t.getObject() );
             return true;
             }
-        else
-            return false;
         }
 
-    private boolean special( Triple t )
+    private int getSelector( Triple t )
         {
         Node p = t.getPredicate();
-        return p == subject || p == predicate || p == object || p == type && t.getObject().equals( Statement );
+        Integer x = (Integer) bob.get( p );
+        if (x == null || (p.equals( type ) && !t.getObject().equals( Statement ) ) ) return -1;
+        return x.intValue();
         }
            
     public void remove( Triple t )
@@ -271,6 +250,11 @@ public class SimpleReifier implements Reifier
             }
         Iterator them = nodes.iterator();
         while (them.hasNext()) remove( (Node) them.next(), t );
+        }
+        
+    public String toString()
+        {
+        return "<R " + nodeMap + ">";
         }
     }
     

@@ -1,13 +1,14 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: ModelReifier.java,v 1.1 2003-03-26 11:54:44 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.2 2003-04-04 11:31:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.enhanced.*;
 
@@ -18,7 +19,7 @@ public class ModelReifier
     
     /**
         DEVEL. setting this _true_ means that nodes that reify statements
-        will drag their reification quads into other modes when they are
+        will drag their reification quads into other nodes when they are
         added to them inside statements.
     */
     private static boolean copyingReifications = false;
@@ -32,6 +33,16 @@ public class ModelReifier
         this.model = model; 
         this.reifier = model.asGraph().getReifier();
         }
+        
+    /**
+        return a version of the model, but with all its reifiying statements
+        added.
+    */
+    public Model allStatements()
+        { return new ModelCom( new Union( model.getGraph(), reifier.getHiddenTriples() ) ); }
+        
+    public Model getHiddenStatements()
+        { return new ModelCom( reifier.getHiddenTriples() ); }
         
     /**
         create a fresh reification of _s_ based on a fresh bnode.

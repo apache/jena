@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.2 2003-03-26 12:38:13 chris-dollin Exp $
+  $Id: Reifier.java,v 1.3 2003-04-04 11:30:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -17,14 +17,26 @@ package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 public interface Reifier extends GetTriple
     {
+    public static final Node type = RDF.type.asNode();
+    public static final Node subject = RDF.subject.asNode();
+    public static final Node predicate = RDF.predicate.asNode();
+    public static final Node object = RDF.object.asNode();
+    public static final Node Statement = RDF.Statement.asNode();
+          
     /**
-        return an immutable Graph of the reified triples, allowing them to be
+        return a read-only Graph of the reified triples, allowing them to be
         queried using the usual Graph operations.
     */ 
     Graph getReifiedTriples();
+    
+    /**
+         return a read-only Graph of the triples used for reification.
+    */    
+    Graph getHiddenTriples();
     
     /**
         get the Graph which uses this reifier.

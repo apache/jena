@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.2 2003-01-28 16:21:42 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.3 2003-04-04 11:31:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -14,7 +14,7 @@ import junit.framework.*;
  * JUnit regression tests for output
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: TestPackage.java,v 1.2 2003-01-28 16:21:42 chris-dollin Exp $,
+ * @version CVS info: $Id: TestPackage.java,v 1.3 2003-04-04 11:31:09 chris-dollin Exp $,
  */
 public class TestPackage {
 
@@ -45,10 +45,10 @@ public class TestPackage {
         /* */
         suite.addTest(new testWriterInterface("testAnotherWriter", null));
         /* */
-        for (int i = 0; i < langs.length
-              ; i++) {
-            suite.addTest(testWriterAndReader.suite(langs[i]));
-        }
+//        for (int i = 0; i < langs.length
+//              ; i++) {
+//            suite.addTest(testWriterAndReader.suite(langs[i]));
+//        }
 
         return suite;
     }
@@ -81,5 +81,5 @@ public class TestPackage {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestPackage.java,v 1.2 2003-01-28 16:21:42 chris-dollin Exp $
+ * $Id: TestPackage.java,v 1.3 2003-04-04 11:31:09 chris-dollin Exp $
  */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.5 2003-03-31 10:05:30 der Exp $
+  $Id: Node.java,v 1.6 2003-04-04 11:30:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -155,7 +155,7 @@ public abstract class Node {
         if (caching) present.put( label, this );
         }
         
-    private static boolean caching = true;
+    static private boolean caching = true;
     
     /**
         provided only for testing purposes. _cache(false)_ switches off caching and

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFClosure.java,v 1.2 2003-03-04 17:54:59 ian_dickinson Exp $
+  $Id: RDFClosure.java,v 1.3 2003-04-04 11:31:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -42,8 +42,8 @@ public class RDFClosure extends Dyadic implements Graph
 		throw new RuntimeException( "RDFClosure::delete not implemented [yet]" );
 		}
 		
-	static Node RDFtype = Node.createURI( "rdf:type" );	
-	static Node RDFproperty = Node.createURI( "rdf:Property" );
+	static Node RDFtype = GraphTestBase.node( "rdf:type" );	
+	static Node RDFproperty = GraphTestBase.node( "rdf:Property" );
 	static Triple typeTriple = new Triple( RDFtype, RDFtype, RDFproperty );
 	
 	private boolean plausible( TripleMatch tm, Node p )

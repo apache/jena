@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.3 2003-03-26 12:18:10 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.4 2003-04-04 11:31:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -104,9 +104,9 @@ public class QueryTest extends GraphTestBase
         }
 
     public void testBinding2( )
-        { // WARNING - relies on ordering of results; this is UNSAFE
+        { // TODO - relies on ordering of results; this is UNSAFE
         Graph several = graphWith( "rice grows quickly; time isan illusion" );
-        String [][] answers = { {"rice", "grows", "quickly"}, {"time", "isan", "illusion"} };
+        String [][] answers = { {"time", "isan", "illusion"}, {"rice", "grows", "quickly"} };
         Query q = new Query();
         Node V1 = node( "?v1" ), V2 = node( "?v2" ), V3 = node( "?v3" );
         BindingQueryPlan qp = several.queryHandler().prepareBindings( q.addMatch( V1, V2, V3 ),  new Node[] {V1, V2, V3} );

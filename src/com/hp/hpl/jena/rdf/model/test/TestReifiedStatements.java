@@ -3,7 +3,7 @@ package com.hp.hpl.jena.rdf.model.test;
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.3 2003-03-26 12:39:08 chris-dollin Exp $
+  $Id: TestReifiedStatements.java,v 1.4 2003-04-04 11:31:09 chris-dollin Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -63,7 +63,7 @@ public class TestReifiedStatements extends GraphTestBase
         }
         
     /**
-        the simplist case: if we assert all the components of a reification quad,
+        the simplest case: if we assert all the components of a reification quad,
         we can get a ReifiedStatement that represents the reified statement.
     */ 
     public void testBasicReification()
@@ -77,7 +77,7 @@ public class TestReifiedStatements extends GraphTestBase
         RDFNode rs = R.as( ReifiedStatement.class );
         assertEquals( "can recover statement", red.SPO, ((ReifiedStatement) rs).getStatement() );
         }
-    
+        
     /**
         check that, from a model with any combination of the statements given,
         we can convert R into a ReifiedStatement iff the four components of the
@@ -117,11 +117,15 @@ public class TestReifiedStatements extends GraphTestBase
             {
             try
                 {
+                // System.err.println( "| hello. mask = " + mask );
                 ReifiedStatement rs = (ReifiedStatement) R.as( ReifiedStatement.class );
+                // System.err.println( "+  we constructed " + rs );
                 assertTrue( "should not reify: not all components present [" + mask + "]: " + rs, (mask & 15) == 15 );
+                // System.err.println( "+  and we passed the assertion." );
                 }
             catch (DoesNotReifyException e)
-                { assertFalse( "should reify: all components present", mask == 15 ); }
+                { // System.err.println( "+  we exploded" );
+                    assertFalse( "should reify: all components present", mask == 15 ); }
             }
         else
             {
@@ -134,8 +138,33 @@ public class TestReifiedStatements extends GraphTestBase
             m.remove( s );
             }
         }
+        
+    public void testThisWillBreak()
+        {
+        Resource R = red.model.createResource( aURI );
+        red.SPO.createReifiedStatement( aURI );
+        red.model.add(  R, RDF.subject, R );
+        }
 
-   
+    /**
+        "dirty" reifications - those with conflicting quadlets - should fail.
+    */
+    public void testDirtyReification()
+        {
+        Model m = red.model;
+        Resource R = m.createResource( aURI );
+        m.add( R, RDF.type, RDF.Statement );
+        m.add( R, RDF.subject, red.S );
+        m.add( R, RDF.subject, red.P );
+        testDoesNotReify( "boo", R );
+        }
+       
+    public void testDoesNotReify( String title, Resource r )
+        {
+        try { r.as( ReifiedStatement.class ); fail( title + " (" + r + ")" ); }
+        catch (DoesNotReifyException e) { /* that's what we expect */ }
+        }
+        
     public void testConstructionFromStatements()
         {
         testConstructionFromStatements( red );
@@ -199,13 +228,7 @@ public class TestReifiedStatements extends GraphTestBase
     public void testDoesNotReifyUnknown()
         {
         Model m = red.model;
-        try
-            {
-            m.createResource( "spoo:rubbish" ).as( ReifiedStatement.class );
-            fail( "that resource should have no reification" );
-            }
-        catch (DoesNotReifyException e)
-            { /* that's what we expect */ }
+        testDoesNotReify( "red model should not reify rubbish", red.model.createResource( "spoo:rubbish" ) );
         }
         
     public void testDoesNotReifyElsewhere()
@@ -213,14 +236,7 @@ public class TestReifiedStatements extends GraphTestBase
         final String uri = "spoo:rubbish";
         Model m1 = red.model;
         ReifiedStatement rs1 = m1.createReifiedStatement( uri, red.SPO );
-        try
-            {
-            Model m2 = blue.model;
-            m2.createResource( uri ).as( ReifiedStatement.class );
-            fail( "that resource should have no reification in the blue model" );            
-            }
-        catch (DoesNotReifyException e)
-            { /* that's what we expect */ }
+        testDoesNotReify( "blue model should not reify rubbish", blue.model.createResource( uri ) );
         }
 
     /**

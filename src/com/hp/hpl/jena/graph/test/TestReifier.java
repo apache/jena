@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.4 2003-03-26 12:16:14 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.5 2003-04-04 11:31:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -41,6 +41,34 @@ public class TestReifier extends GraphTestBase
         Graph G = graphWith( "" ), H = graphWith( "" );
         assertTrue( "correct reifier (G)", G == G.getReifier().getParentGraph() );
         assertTrue( "correct reifier (H)", H == H.getReifier().getParentGraph() );
+        }
+        
+    public void testIntercept()
+        {
+        Graph g = graphWith( "" );
+        Reifier r = g.getReifier();
+        Node S = node( "sub" ), O = node( "obj" );
+        Node RS = node( "http://example.org/type" );
+    /* */
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, Reifier.type,  RS )  ) );
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, S,  Reifier.subject )  ) );
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, S,  Reifier.type )  ) );
+    /* */
+        assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, Reifier.predicate, O ) ) );
+        assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, Reifier.type,  Reifier.Statement )  ) );
+        }
+        
+    public void testHiddenTriples()
+        {
+        Graph g = graphWith( "" );
+        Reifier r = g.getReifier();
+        Node S = node( "SSS" ), P = node( "PPP" ), O = node( "OOO " );
+        g.add( new Triple( S, Reifier.predicate, P ) );
+        assertEquals( "graph must still be empty", 0, g.size() );
+        assertEquals( "reifier must have the triple", 1, r.getHiddenTriples().size() );
+        assertContains( "xxx", "SSS rdf:predicate PPP", r.getHiddenTriples() );
+        g.add( new Triple( S, Reifier.subject, S) );
+        assertContains( "xxx", "SSS rdf:subject SSS", r.getHiddenTriples() );
         }
         
 //    public void testInsertTriples()

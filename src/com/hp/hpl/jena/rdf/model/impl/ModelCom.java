@@ -51,10 +51,10 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-03-31 10:04:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-04-04 11:31:08 $'
  */
 
-abstract public class ModelCom extends EnhGraph
+public class ModelCom extends EnhGraph
     implements Model, ModelI {
 
       private RDFReaderF readerFactory = new RDFReaderFImpl();
@@ -63,7 +63,7 @@ abstract public class ModelCom extends EnhGraph
     /**
     	make a model based on the specified graph
     */
-	private ModelCom( Graph base ) {
+	public ModelCom( Graph base ) {
 		this( base, BuiltinPersonalities.model );
 	}
 	
@@ -221,67 +221,50 @@ abstract public class ModelCom extends EnhGraph
         return writerFactory.setWriterClassName(lang, className);
     }
     
-    public Model write(Writer writer) throws RDFException {
-        try {
-            writerFactory.getWriter()
-                         .write(this, writer, "");
-            return this;
-        } catch (Exception e) {
-            throw new RDFException(e);
+    public Model write(Writer writer) 
+        {
+        writerFactory .getWriter() .write(this, writer, "");
+        return this;
         }
-    }
     
-    public Model write(Writer writer, String lang) {
-        try {
-            writerFactory.getWriter(lang)
-                         .write(this, writer, "");
-            return this;
-        } catch (Exception e) {
-            throw new RDFException(e);
+    public Model write(Writer writer, String lang) 
+        {
+        writerFactory .getWriter(lang) .write(this, writer, "");
+        return this;
         }
-    }
     
     public Model write(Writer writer, String lang, String base)
-      throws RDFException {
-        try {
-            writerFactory.getWriter(lang)
-                         .write(this, writer, base);
-            return this;
-        } catch (Exception e) {
-            throw new RDFException(e);
+        {
+        writerFactory .getWriter(lang) .write(this, writer, base);
+        return this;
         }
-    }
     
-  	public Model write(OutputStream writer) throws RDFException {
-  		try {
-  			writerFactory.getWriter()
-  						 .write(this, writer, "");
-  			return this;
-  		} catch (Exception e) {
-  			throw new RDFException(e);
-  		}
-  	}
+  	public Model write( OutputStream writer )
+        {
+        writerFactory.getWriter() .write(this, writer, "");
+  		return this;    
+        }
     
-  	public Model write(OutputStream writer, String lang) throws RDFException {
-  		try {
-  			writerFactory.getWriter(lang)
-  						 .write(this, writer, "");
-  			return this;
-  		} catch (Exception e) {
-  			throw new RDFException(e);
-  		}
-  	}
+  	public Model write(OutputStream writer, String lang) 
+        {
+  		writerFactory .getWriter(lang) .write(this, writer, "");
+  		return this;
+  	    }
     
   	public Model write(OutputStream writer, String lang, String base)
-  	  throws RDFException {
-  		try {
-  			writerFactory.getWriter(lang)
-  						 .write(this, writer, base);
-  			return this;
-  		} catch (Exception e) {
-  			throw new RDFException(e);
-  		}
-  	}
+  	    {
+        writerFactory .getWriter(lang) .write(this, writer, base);
+  		return this;
+  	    }
+        
+    /**
+        for writing out the model, we need *all* the statements, including ones
+        that the reification process may have hidden from us.
+    */
+    public Model withHiddenStatements()
+        {
+        return (ModelCom) modelReifier.allStatements();
+        }
     
     public Model remove(Statement s) throws RDFException {
         graph.delete(s.asTriple());
@@ -1240,7 +1223,16 @@ abstract public class ModelCom extends EnhGraph
         }
     }
     
-    public boolean isIsomorphicWith(Model m){
-    	return isIsomorphicWith((EnhGraph)m);
-    }
+    public Model getHiddenStatements()
+        { return modelReifier.getHiddenStatements(); }
+        
+    /**
+        TODO: consider how this might be cleaned up
+    */
+    public boolean isIsomorphicWith(Model m)
+        {
+        ModelCom L = (ModelCom) this.withHiddenStatements();            
+        EnhGraph R = (EnhGraph) m.withHiddenStatements();
+        return L.isIsomorphicWith( R );
+        }
 }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestDelta.java,v 1.1 2003-03-04 17:51:44 ian_dickinson Exp $
+  $Id: TestDelta.java,v 1.2 2003-04-04 11:31:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -26,7 +26,7 @@ public class TestDelta extends GraphTestBase
 	public void testDelta() 
 		{
 		Graph x = graphWith( "x R y" );
-		assertContains( "x", x, "x R y" );
+		assertContains( "x", "x R y", x );
 		x.delete( triple( "x R y" ) );
 		assertOmits( "x", x, "x R y" );
 	/* */	
@@ -41,9 +41,9 @@ public class TestDelta extends GraphTestBase
 	/* */
 		assertContainsAll( "changed Delta", delta, "x R y; p S q; pins pop balloons; pigs fly winglessly" );
 		assertOmits( "changed delta", delta, "I like cheese" );
-		assertContains( "delta additions", delta.getAdditions(), "pigs fly winglessly" );
+		assertContains( "delta additions", "pigs fly winglessly", delta.getAdditions() );
 		assertOmits( "delta additions", delta.getAdditions(), "I like cheese" );
-		assertContains( "delta deletions", delta.getDeletions(), "I like cheese" );
+		assertContains( "delta deletions", "I like cheese", delta.getDeletions() );
 		assertOmits( "delta deletions", delta.getDeletions(), "pigs fly winglessly" );
 		}
 	}
