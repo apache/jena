@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.30 2003-08-13 14:16:04 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.31 2003-08-22 13:45:10 der Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -471,11 +471,17 @@ public abstract class AbstractTestGraph extends GraphTestBase
         g.getBulkUpdateHandler().delete( triples );
         L.assertHas( new Object[] {"deleteGraph", triples} );
         }
-        
+    
+    /**
+     * Test nodes can be found in all triple positions.
+     * However, testing for literals in subject positions is suppressed
+     * at present to avoid problems with InfGraphs which try to prevent
+     * such constructs leaking out to the RDF layer.
+     */
     public void testContainsNode()
         {
         Graph g = getGraph();
-        graphAdd( g, "a P b; _c _Q _d; 10 11 12" );
+        graphAdd( g, "a P b; _c _Q _d; a 11 12" );
         QueryHandler qh = g.queryHandler();
         assertTrue( qh.containsNode( node( "a" ) ) );
         assertTrue( qh.containsNode( node( "P" ) ) );
@@ -483,7 +489,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertTrue( qh.containsNode( node( "_c" ) ) );
         assertTrue( qh.containsNode( node( "_Q" ) ) );
         assertTrue( qh.containsNode( node( "_d" ) ) );
-        assertTrue( qh.containsNode( node( "10" ) ) );
+//        assertTrue( qh.containsNode( node( "10" ) ) );
         assertTrue( qh.containsNode( node( "11" ) ) );
         assertTrue( qh.containsNode( node( "12" ) ) );
     /* */
