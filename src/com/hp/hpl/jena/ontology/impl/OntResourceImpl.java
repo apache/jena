@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-19 14:37:17 $
+ * Last modified on   $Date: 2003-06-19 19:25:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.28 2003-06-19 14:37:17 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.29 2003-06-19 19:25:44 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -594,7 +594,13 @@ public class OntResourceImpl
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         if (lang == null) {
             // don't care which language version we get
-            return getProperty( getProfile().COMMENT() ).getString();
+            try {
+                return getProperty( getProfile().COMMENT() ).getString();
+            }
+            catch (JenaPropertyNotFoundException ignore) {
+                // no comment :-)
+                return null;
+            }
         }
         else {
             // search for the best match for the specified language
