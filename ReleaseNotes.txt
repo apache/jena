@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+Post Jena 2.1 bug fix list
+
+  RDF API
+      o Fixed bug in typed literals support which caused isValidLiteral tests 
+        to fail on user defined types derived indirectly from simple types.
+  Reasoners
+      o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.
+      o Fixed bug in hide() table not being carried across from prebuilt 
+        reasoner caches, which resulted in the prototypical instance of 
+        owl:Thing being visible in listIndividuals.
+      
+      
 Jena 2.1 - Main changes from Jena 2.0
   Installation
       The names of some jars have changed be sure to update your classpath.
