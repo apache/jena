@@ -24,12 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBasic.java,v 1.2 2003-02-01 14:35:09 bwm Exp $
+ * $Id: TestCaseBasic.java,v 1.3 2003-04-14 14:56:55 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.regression;
 
-import com.hp.hpl.jena.regression.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.TestCase;
@@ -46,7 +45,7 @@ import junit.framework.TestCase;
  * to create models required for the tests.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-02-01 14:35:09 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-04-14 14:56:55 $
  */
 public class TestCaseBasic extends TestCase {
 
