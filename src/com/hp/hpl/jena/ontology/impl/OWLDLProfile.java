@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLDLProfile.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-30 20:53:35 $
+ * Last modified on   $Date: 2004-04-22 10:14:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLDLProfile.java,v 1.7 2004-01-30 20:53:35 ian_dickinson Exp $
+ * @version CVS $Id: OWLDLProfile.java,v 1.8 2004-04-22 10:14:28 ian_dickinson Exp $
  */
 public class OWLDLProfile
     extends OWLProfile
@@ -181,6 +181,14 @@ public class OWLDLProfile
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
                     containsSome( g,n, OWL.someValuesFrom ) &&
                     containsSome( g,n, OWL.onProperty );
+                }
+            }
+            },
+            {  HasValueRestriction.class,   new SupportsCheck() {
+                public boolean doCheck( Node n, EnhGraph g ) {
+                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
+                    containsSome( g, n, OWL.hasValue ) &&
+                    containsSome( g, n, OWL.onProperty );
                 }
             }
             },
