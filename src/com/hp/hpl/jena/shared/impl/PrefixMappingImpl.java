@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.6 2003-05-30 13:50:15 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.7 2003-05-30 14:57:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -32,7 +32,20 @@ public class PrefixMappingImpl implements PrefixMapping
         {
         checkLegal( prefix );
         if (!prefix.equals( "" )) removeExisting( uri );
+        checkProper( uri );
         map.put( prefix, uri );
+        }
+        
+    private void checkProper( String uri )
+        {
+        // if (!isNiceURI( uri )) throw new RuntimeException( "horrible " + uri );
+        }
+        
+    public static boolean isNiceURI( String uri )
+        {
+        if (uri.equals( "" )) return false;
+        char last = uri.charAt( uri.length() - 1 );
+        return last == '/' || last == '#';
         }
  
     private void removeExisting( String uri )
