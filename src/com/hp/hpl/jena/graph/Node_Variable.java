@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Variable.java,v 1.1.1.1 2002-12-19 19:13:31 bwm Exp $
+  $Id: Node_Variable.java,v 1.2 2003-04-08 12:27:39 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.graph;
 /**
 	@author kers
 <br>
-    "variable" nodes; these are outside the RDF2002 specification, but are
+    "variable" nodes; these are outside the RDF2003 specification, but are
     used internally for "placeholder" nodes where blank nodes would be
     wrong, most specifically in Query.
 */

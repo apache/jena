@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.9 2003-04-06 10:45:35 chris-dollin Exp $
+  $Id: Model.java,v 1.10 2003-04-08 12:24:48 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,7 +50,7 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $Date: 2003/04/04 11:31:08 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $Date: 2003/04/06 10:45:35 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	//    public BindingQueryPlan prepareBindings( Query q, Variable [] variables );
@@ -556,6 +556,7 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	boolean isReified( Statement s );
 
 	/**
+       Find or create a {@link ReifiedStatement} corresponding to a Statement.
         @param a Statement which may or may not already be reified
         @return a Resource [ReifiedStatement] that reifies the specified Statement.
 	*/
@@ -749,5 +750,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.9 2003-04-06 10:45:35 chris-dollin Exp $
+ * $Id: Model.java,v 1.10 2003-04-08 12:24:48 jeremy_carroll Exp $
  */

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFError.java,v 1.1.1.1 2002-12-19 19:17:50 bwm Exp $
+ * $Id: RDFError.java,v 1.2 2003-04-08 12:27:38 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.model;
 
@@ -32,9 +32,9 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
- *
+ * @deprecated No longer used.
  * @author  bwm
- * @version $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:17:50 $
+ * @version $Revision: 1.2 $ $Date: 2003-04-08 12:27:38 $
  */
 public class RDFError extends java.lang.Error {
     
