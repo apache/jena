@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.1 2003-08-21 12:04:45 der Exp $
+ * $Id: LPInterpreter.java,v 1.2 2003-08-21 22:13:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-21 22:13:22 $
  */
 public class LPInterpreter {
 
@@ -218,6 +218,14 @@ public class LPInterpreter {
         return cpFrame;
     }
     
+    /**
+     * Return the context in which this interpreter is running, that is
+     * either the Generator for a tabled goal or a top level iterator.
+     */
+    public LPInterpreterContext getContext() {
+        return iContext;
+    }
+    
     //  =======================================================================
     //  Engine implementation  
  
@@ -298,15 +306,15 @@ public class LPInterpreter {
                     logger.info("TRIPLE match (" + tmFrame.goal +") -> " + getArgTrace());
                     logger.info("RENTER " + clause);
                 }
-                     
-                if (recordDerivations) {
-                    if (envFrame instanceof EnvironmentFrameWithDerivation) {
-                        ((EnvironmentFrameWithDerivation)envFrame).noteMatch(tmFrame.goal);
-                    }
-                }
                 
                 pc = tmFrame.cpc;
                 ac = tmFrame.cac;
+                     
+                if (recordDerivations) {
+                    if (envFrame instanceof EnvironmentFrameWithDerivation) {
+                        ((EnvironmentFrameWithDerivation)envFrame).noteMatch(tmFrame.goal, pc);
+                    }
+                }
 
                 // then fall through to the execution context in which the the match was called
                 
@@ -352,15 +360,15 @@ public class LPInterpreter {
                     if (traceOn)logger.info("SUSPEND " + clause);
                     continue main;
                 }
-                
-                if (recordDerivations) {
-                    if (envFrame instanceof EnvironmentFrameWithDerivation) {
-                        ((EnvironmentFrameWithDerivation)envFrame).noteMatch(ccp.goal);
-                    }
-                }
 
                 pc = ccp.cpc;
                 ac = ccp.cac;
+                
+                if (recordDerivations) {
+                    if (envFrame instanceof EnvironmentFrameWithDerivation) {
+                        ((EnvironmentFrameWithDerivation)envFrame).noteMatch(ccp.goal, pc);
+                    }
+                }
 
                 // then fall through to the execution context in which the the match was called
                 

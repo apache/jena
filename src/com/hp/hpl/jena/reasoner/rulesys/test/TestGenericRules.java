@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.5 2003-08-21 12:04:46 der Exp $
+ * $Id: TestGenericRules.java,v 1.6 2003-08-21 22:13:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-21 22:13:44 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -152,15 +152,15 @@ public class TestGenericRules extends TestCase {
               } );
               
         // Check derivation tracing as well
-//        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
-//        assertTrue(di.hasNext());
-//        RuleDerivation d = (RuleDerivation)di.next();
+        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
+        assertTrue(di.hasNext());
+        RuleDerivation d = (RuleDerivation)di.next();
 //        java.io.PrintWriter out = new java.io.PrintWriter(System.out); 
 //        d.printTrace(out, true);
 //        out.close();
-//        assertTrue(d.getRule().getName().equals("r1b"));
-//        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
-//        assertTrue(! di.hasNext());
+        assertTrue(d.getRule().getName().equals("r1b"));
+        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
+        assertTrue(! di.hasNext());
     }
     
     /**
@@ -187,12 +187,12 @@ public class TestGenericRules extends TestCase {
               } );
               
         // Check derivation tracing as well
-//        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
-//        assertTrue(di.hasNext());
-//        RuleDerivation d = (RuleDerivation)di.next();
-//        assertTrue(d.getRule().getName().equals("r1b"));
-//        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
-//        assertTrue(! di.hasNext());
+        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
+        assertTrue(di.hasNext());
+        RuleDerivation d = (RuleDerivation)di.next();
+        assertTrue(d.getRule().getName().equals("r1b"));
+        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
+        assertTrue(! di.hasNext());
     }
 
     /**
