@@ -37,13 +37,12 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.shared.*;
 
 /**
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-21 15:33:23 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-05-21 16:45:20 $'
  */
 public class RSS extends Object {
 

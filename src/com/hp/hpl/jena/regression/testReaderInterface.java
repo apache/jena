@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testReaderInterface.java,v 1.2 2003-05-21 15:33:20 chris-dollin Exp $
+ * $Id: testReaderInterface.java,v 1.3 2003-05-21 16:45:19 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -32,7 +32,6 @@ package com.hp.hpl.jena.regression;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.shared.*;
 
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
@@ -41,7 +40,7 @@ import java.net.UnknownHostException;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class testReaderInterface extends Object {
 

@@ -9,7 +9,6 @@ import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.shared.*;
 
 /** Dublin Core version 1.0 vocabulary.

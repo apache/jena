@@ -11,13 +11,12 @@ import jena.cmdline.*;
 import java.util.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
-import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.n3.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.4 2003-05-21 15:33:25 chris-dollin Exp $
+ * @version 	$Id: n3.java,v 1.5 2003-05-21 16:45:21 chris-dollin Exp $
  */
 public class n3
 {

@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterInterface.java,v 1.3 2003-05-21 15:33:25 chris-dollin Exp $
+  $Id: testWriterInterface.java,v 1.4 2003-05-21 16:45:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -11,7 +11,6 @@ import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.xmloutput.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.shared.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +20,7 @@ import junit.framework.*;
 /**
  *
  * @author  bwm, jjc
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class testWriterInterface extends TestCase {
     private String lang;
@@ -129,5 +128,5 @@ public class testWriterInterface extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterInterface.java,v 1.3 2003-05-21 15:33:25 chris-dollin Exp $
+ * $Id: testWriterInterface.java,v 1.4 2003-05-21 16:45:21 chris-dollin Exp $
  */

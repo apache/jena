@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTransactions.java,v 1.5 2003-05-14 07:38:12 chris-dollin Exp $
+  $Id: TestTransactions.java,v 1.6 2003-05-21 16:45:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -27,8 +27,6 @@ import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.db.impl.DriverRDB;
 import com.hp.hpl.jena.db.impl.Driver_MySQL;
 import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.shared.*;
 
 public class TestTransactions extends TestCase
     {    

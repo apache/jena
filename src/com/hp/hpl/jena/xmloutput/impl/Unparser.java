@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.10 2003-05-21 15:33:24 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.11 2003-05-21 16:45:20 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -97,13 +97,12 @@ import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.arp.*;
 import org.apache.xerces.util.XMLChar;
-import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-05-21 15:33:24 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-05-21 16:45:20 $'
 
  */
 class Unparser {

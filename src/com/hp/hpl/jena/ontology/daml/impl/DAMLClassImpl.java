@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 15:33:14 $
+ * Last modified on   $Date: 2003-05-21 16:45:18 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -47,8 +47,6 @@ package com.hp.hpl.jena.ontology.daml.impl;
 ///////////////
 import java.util.Iterator;
 
-import com.hp.hpl.jena.rdf.model.RDFException;
-
 import com.hp.hpl.jena.ontology.daml.DAMLClass;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.daml.PropertyAccessor;
@@ -69,7 +67,7 @@ import com.hp.hpl.jena.shared.*;
  * not the same as Java classes: think of classifications rather than active data structures.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.2 2003-05-21 15:33:14 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.3 2003-05-21 16:45:18 chris-dollin Exp $
  */
 public class DAMLClassImpl
     extends DAMLCommonImpl

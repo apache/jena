@@ -1,13 +1,12 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: TestStatements.java,v 1.7 2003-05-20 15:15:07 chris-dollin Exp $
+	$Id: TestStatements.java,v 1.8 2003-05-21 16:45:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.graph.*;
 import junit.framework.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
