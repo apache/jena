@@ -1,0 +1,49 @@
+<rdf:RDF
+    xmlns:eg="http://jena.hpl.hp.com/eg#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:dt="http://www.daml.org/2001/03/daml+oil-ex-dt#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#">
+    
+  <rdfs:Datatype rdf:about="http://www.daml.org/2001/03/daml+oil-ex-dt#over12"/>
+  
+  <owl:Class rdf:about="http://jena.hpl.hp.com/eg#Test">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+        <owl:onProperty>
+          <owl:DatatypeProperty rdf:about="http://jena.hpl.hp.com/eg#hasValue"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </owl:equivalentClass>
+  </owl:Class>
+  
+  <owl:Class rdf:about="http://jena.hpl.hp.com/eg#Test2">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://jena.hpl.hp.com/eg#hasValue"/>
+        <owl:someValuesFrom rdf:resource="http://www.daml.org/2001/03/daml+oil-ex-dt#over12"/>
+      </owl:Restriction>
+    </owl:equivalentClass>
+  </owl:Class>
+
+  <rdf:Description rdf:about="http://jena.hpl.hp.com/eg#me2">
+    <eg:hasValue rdf:datatype="http://www.daml.org/2001/03/daml+oil-ex-dt#over12"
+    >42</eg:hasValue>
+  </rdf:Description>
+
+<!--  
+  <rdf:Description rdf:about="http://jena.hpl.hp.com/eg#me2">
+    <eg:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal"
+    >42</eg:hasValue>
+  </rdf:Description>
+-->
+  
+  <rdf:Description rdf:about="http://jena.hpl.hp.com/eg#me">
+    <eg:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal"
+    >42</eg:hasValue>
+  </rdf:Description>
+  
+</rdf:RDF>
+
