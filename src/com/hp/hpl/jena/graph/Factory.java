@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Factory.java,v 1.6 2003-05-13 19:18:55 chris-dollin Exp $
+  $Id: Factory.java,v 1.7 2003-08-06 08:54:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,9 +19,22 @@ import com.hp.hpl.jena.db.impl.*;
 
 public class Factory
     {
+    /**
+        Answer a memory-based Graph with the Standard reification style.
+    */
     public static Graph createDefaultGraph()
-        { return new GraphMem(); }
+        { return createDefaultGraph( Reifier.Standard ); }
         
+    /**
+        Answer a memory-based Graph with the given reification style.
+    */
+    public static Graph createDefaultGraph( Reifier.Style style )
+        { return new GraphMem( style ); }
+        
+    /**
+        This is unused. Why is it here?
+        TODO answer this question ...
+    */
     public static GraphMaker createRDBGraphFactory( IDBConnection c )
         { return new GraphRDBMaker( c, Reifier.Minimal ); }
               

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fragments.java,v 1.4 2003-07-25 11:41:57 chris-dollin Exp $
+  $Id: Fragments.java,v 1.5 2003-08-06 08:54:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
-    A _Fragments_ object represents the reification triples that have been
+    A <code>Fragments</code> object represents the reification triples that have been
     asserted about some node. The triples may form an incomplete or
     inconsistent reification. They may even form a complete, single
     reification. Rather than keeping the triples, we keep the subject node
@@ -72,13 +72,13 @@ public class Fragments
         { return slots[0].isEmpty() && slots[1].isEmpty() && slots[2].isEmpty() && slots[3].isEmpty(); }
         
     /**
-        remove the node _n_ from the set specified by slot _which_.
+        remove the node n from the set specified by slot which.
     */
     public void remove( int which, Node n )
         { slots[which].remove( n ); }
         
     /**
-        add the node _n_ to the slot identified by _which).
+        add the node n to the slot identified by which).
    */
     public void add( int which, Node n )
         { slots[which].add( n ); }
@@ -97,8 +97,8 @@ public class Fragments
         
     /**
         include into g all of the (n, p[which], o) triples for which
-        o is an element of the slot _which_ corresponding to
-        _predicate_.
+        o is an element of the slot <code>which</code> corresponding to
+        predicate.
     */
     private void includeInto( GraphAdd g, Node predicate, int which )
         {

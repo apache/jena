@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.10 2003-08-01 09:46:17 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.11 2003-08-06 08:54:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -111,6 +111,7 @@ public class SimpleReifier implements Reifier
             Triple t2 = getTriple( tag );
             if (t2 == null) throw new CannotReifyException( tag );
             }
+        if (concealing == false) FragmentMap.graphAddQuad( parent, tag, t );
         return tag; 
     	}
         
@@ -136,7 +137,9 @@ public class SimpleReifier implements Reifier
                 return false;
             else     
                 {
-                getFragment( t ).add( s, t.getObject() );
+                Fragments fs = getFragment( t );
+                fs.add( s, t.getObject() );
+                if (fs.isComplete()) nodeMap.putTriple( t.getSubject(), fs.asTriple() );
                 return concealing;
                 }
             }
@@ -153,7 +156,9 @@ public class SimpleReifier implements Reifier
                 return false;
             else     
                 {
-                getFragment( t ).remove( s, t.getObject() );
+                Fragments fs = getFragment( t );
+                fs.remove( s, t.getObject() );
+                if (fs.isComplete()) nodeMap.putTriple( t.getSubject(), fs.asTriple() );
                 return concealing;
                 }
             }

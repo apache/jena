@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.7 2003-08-05 14:34:08 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.8 2003-08-06 08:54:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -64,6 +64,44 @@ public abstract class AbstractTestReifier extends GraphTestBase
     /* */
         assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, RDF.Nodes.predicate, O ) ) );
         assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, RDF.Nodes.type,  RDF.Nodes.Statement )  ) );
+        }
+
+    /**
+        Check that the standard reifier will note, but not hide, reification quads.
+    */
+    public void testStandard()
+        {
+        Graph g = getGraph( Reifier.Standard );
+        assertFalse( g.getReifier().hasTriple( triple( "s p o" ) ) );
+        g.add( Triple.create( "x rdf:subject s" ) );
+        assertEquals( 1, g.size() );
+        g.add( Triple.create( "x rdf:predicate p" ) );
+        assertEquals( 2, g.size() );  
+        g.add( Triple.create( "x rdf:object o" ) );
+        assertEquals( 3, g.size() );            
+        g.add( Triple.create( "x rdf:type rdf:Statement" ) );
+        assertEquals( 4, g.size() );
+        assertTrue( g.getReifier().hasTriple( triple( "s p o" ) ) );                      
+        }
+        
+    /**
+        Test that the Standard reifier will expose implicit quads arising from reifyAs().
+    */
+    public void testStandardExplode()
+        {
+        Graph g = getGraph( Reifier.Standard );
+        g.getReifier().reifyAs( node( "a" ), triple( "p Q r" ) );
+        Graph r = Factory.createDefaultGraph( Reifier.Minimal );
+        graphAdd( r, "a rdf:type rdf:Statement; a rdf:subject p; a rdf:predicate Q; a rdf:object r" );
+        assertEquals( 4, g.size() );
+        assertEquals( "", r, g );
+        }
+        
+    public void testMinimalExplode()
+        {
+        Graph g = getGraph( Reifier.Minimal );
+        g.getReifier().reifyAs( node( "a" ), triple( "p Q r" ) );
+        assertEquals( 0, g.size() );
         }
         
     public void testHiddenTriples()
@@ -241,6 +279,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
 //        R.reifyAs( B, triple( "p S q" ) );
 //        assertEquals( "same", quads, R.getReificationQuads() );
 //        }        
+
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.16 2003-08-04 13:28:57 chris-dollin Exp $
+  $Id: Reifier.java,v 1.17 2003-08-06 08:54:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -20,7 +20,7 @@ public interface Reifier extends GetTriple
     {
     public static final Style Standard = new Style( true, false );
     public static final Style Convenient = new Style( true, true );
-    public static final Style Minimal = new Style( false, false );
+    public static final Style Minimal = new Style( false, true );
     
     /**
         Reification styles have two boolean components: whether the

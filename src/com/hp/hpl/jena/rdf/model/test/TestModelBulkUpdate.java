@@ -1,15 +1,16 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelBulkUpdate.java,v 1.4 2003-07-23 07:20:02 chris-dollin Exp $
+  $Id: TestModelBulkUpdate.java,v 1.5 2003-08-06 08:54:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.graph.*;
 
 import java.util.*;
-
 import junit.framework.*;
 
 /**
@@ -103,11 +104,12 @@ public class TestModelBulkUpdate extends ModelTestBase
         
     public void testBulkByModelReifying( boolean suppress )
         {
-        Model m = modelWithStatements( "a P b" );
+        Model m = modelWithStatements( Reifier.Minimal, "a P b" );
         addReification( m, "x", "S P O" );
         addReification( m, "a", "x R y" );
-        Model target = modelWithStatements( "" );
+        Model target = modelWithStatements( Reifier.Minimal, "" );
         target.add( m, suppress );
+        target.setNsPrefixes( PrefixMapping.Standard );
         assertIsoModels( "", (suppress ? modelWithStatements("a P b") : m), target );
         }
         
@@ -119,7 +121,7 @@ public class TestModelBulkUpdate extends ModelTestBase
         
     public void testBulkDeleteByModelReifying( boolean suppress )
         {
-        Model target = modelWithStatements( "" );
+        Model target = modelWithStatements( Reifier.Minimal, "" );
         addReification( target, "x", "S P O" );
         addReification( target, "y", "A P B" ); 
         Model remove = modelWithStatements( "" );
