@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.1 2003-09-26 11:53:51 chris-dollin Exp $
+  $Id: Expression.java,v 1.2 2003-10-03 14:04:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node_Literal;
 
 /**
 	Expression - the interface for expressions that is expected by Query for constraints.
@@ -22,10 +23,17 @@ public interface Expression
     public abstract class Base implements Expression
         {
         public Expression and( Expression e ) { return and( this, e ); }
+        
+        protected Object eval( Node x, Mapping map, Domain d )
+            {
+            if (x.isVariable()) return d.get( map.indexOf( x ) );
+            else return x;    
+            }
+                            
         public static Expression and( final Expression L, final Expression R )
             {
             return new Base()
-                {
+                {                
                 public boolean evalBool( Mapping map, Domain d )
                     { return L.evalBool( map, d ) && R.evalBool( map, d ); }    
                 };     
@@ -44,16 +52,39 @@ public interface Expression
             {
             return new Base() 
                 {
-                private Object eval( Node x, Mapping map, Domain d )
-                    {
-                    if (x.isVariable()) return d.get( map.indexOf( x ) );
-                    else return x;    
-                    }
-                    
                 public boolean evalBool( Mapping map, Domain d )
                     { return !eval( x, map, d ).equals( eval( y, map, d ) ); }
                 };    
             }    
+        
+        public static Expression EQ( final Node x, final Node y )
+            {
+            return new Base() 
+                {
+                public boolean evalBool( Mapping map, Domain d )
+                    { return eval( x, map, d ).equals( eval( y, map, d ) ); }
+                };    
+            }         
+            
+        public static Expression MATCHES( final Node x, final Node y )
+            {
+            return new Base() 
+                {
+                private String asString( Object n )
+                    {
+                    if (n instanceof Node_Literal) return ((Node) n).getLiteral().getLexicalForm();
+                    else return n.toString();    
+                    }
+            
+                public boolean matches( Object L, Object R )
+                    { String x = asString( L ), y = asString( R );
+                    return x.indexOf( y ) > -1; }       
+                             
+                public boolean evalBool( Mapping map, Domain d )
+                    { return matches( eval( x, map, d ), eval( y, map, d ) ); }
+                };    
+            } 
+
         }
     }
 

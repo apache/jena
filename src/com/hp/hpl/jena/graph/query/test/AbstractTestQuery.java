@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.14 2003-09-25 13:27:01 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.15 2003-10-03 14:04:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -27,6 +27,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
     public abstract Graph getGraph();
 
     protected Query Q;
+    protected Node O = node( "?O" );
     protected Node X = node( "?x" );
     protected Node Y = node( "?y" );
     protected Node Z = node( "?z" );
@@ -216,37 +217,6 @@ public abstract class AbstractTestQuery extends GraphTestBase
         return result;
         }
         
-    public void testGraphConstraints( String title, String constraint, String wanted )
-        { 
-        Map1 get0 = new Map1() { public Object map1( Object x ) { return ((List) x).get(0); } };
-        Node O = node( "?O" );
-        Query Q = new Query();
-        Q.addMatch( Query.ANY, Query.ANY, O );
-        Graph G = getGraphWith( "pigs fly south; dogs fly badly; plans fly flat" );
-        Q.addConstraint( getGraphWith( constraint ) );
-        Set results = iteratorToSet( G.queryHandler().prepareBindings( Q, new Node[] {O} ).executeBindings().mapWith( get0 ) );
-        assertEquals( "tgs", nodeSet( wanted ), results );
-        }
-        
-     public void testGraphConstraints()
-        {
-        testGraphConstraints( "tgs A", "", "south flat badly" );
-        testGraphConstraints( "tgs B", "?O &ne badly", "south flat" );
-        testGraphConstraints( "tgs C", "?O &ne badly; ?O &ne flat", "south" );
-        }
- 
-    public void testSeveralGraphConstraints( )
-        {
-        Map1 get0 = new Map1() { public Object map1( Object x ) { return ((List) x).get(0); } };
-        Node O = node( "?O" );
-        Query Q = new Query();
-        Q.addMatch( Query.ANY, Query.ANY, O );
-        Graph G = getGraphWith( "pigs fly south; dogs fly badly; plans fly flat" );
-        Q.addConstraint( getGraphWith( "?O &ne badly" ) );
-        Q.addConstraint( getGraphWith( "?O &ne flat" ) );
-        Set results = iteratorToSet( G.queryHandler().prepareBindings( Q, new Node[] {O} ).executeBindings().mapWith( get0 ) );
-        assertEquals( "tsgs", nodeSet( "south" ), results );
-        }
 
     public void testBindingQuery()
         {
@@ -368,8 +338,40 @@ public abstract class AbstractTestQuery extends GraphTestBase
         assertEquals( "testTwoGraphs: X = chris", d.get(0), node("chris") );
         assertEquals( "testTwoGraphs: Y = SF", d.get(1), node("SF") );     
         }
+
+    protected static Map1 getFirst = new Map1() 
+        { public Object map1( Object x ) { return ((List) x).get(0); } };        
+    
+    protected Expression notEqual( Node x, Node y )
+        { return Expression.Create.NE( x, y );  }
         
-    private void helpConstraint( String title, Graph constraints, int n )
+    protected Expression areEqual( Node x, Node y )
+        { return Expression.Create.EQ( x, y );  }
+        
+    protected Expression matches( Node x, Node y )
+        { return Expression.Create.MATCHES( x, y ); }
+                
+    public void testGraphConstraints( String title, Expression constraint, String wanted )
+        { 
+        Map1 get0 = new Map1() { public Object map1( Object x ) { return ((List) x).get(0); } };
+        Node O = node( "?O" );
+        Query Q = new Query();
+        Q.addMatch( Query.ANY, Query.ANY, O );
+        Graph G = getGraphWith( "pigs fly south; dogs fly badly; plans fly flat" );
+        Q.addConstraint( constraint );
+        Set results = iteratorToSet( G.queryHandler().prepareBindings( Q, new Node[] {O} ).executeBindings().mapWith( get0 ) );
+        assertEquals( "tgs", nodeSet( wanted ), results );
+        }
+        
+     public void testGraphConstraints()
+        {
+        Node badly = node( "badly" ), flat = node( "flat" );
+        testGraphConstraints( "tgs A", Expression.TRUE, "south flat badly" );
+        testGraphConstraints( "tgs B", notEqual( O, badly ), "south flat" );
+        testGraphConstraints( "tgs C", notEqual( O, badly ).and( notEqual( O, flat ) ), "south" );
+        }
+        
+    private void helpConstraint( String title, Expression constraints, int n )
         {
         Query q = new Query();
         Graph g = getGraphWith( "blish wrote CIF; blish wrote VOR; hambly wrote Darwath; feynman mechanicked quanta" );
@@ -381,21 +383,12 @@ public abstract class AbstractTestQuery extends GraphTestBase
         
     public void testConstraint()
         {
-        helpConstraint( "none", getGraphWith( "" ), 3 );
-        helpConstraint( "X /= blish", getGraphWith( "?x &ne blish" ), 1 ); 
-        helpConstraint( "X /= blish & X /= hambly", getGraphWith( "?x &ne blish; ?x &ne hambly" ), 0 ); 
+        helpConstraint( "none", Expression.TRUE, 3 );
+        helpConstraint( "X /= blish", notEqual( X, node( "blish" ) ), 1 ); 
+        helpConstraint( "X /= blish & X /= hambly", notEqual( X, node( "blish" ) ).and( notEqual( X, node( "hambly" ) ) ), 0 ); 
         }
-        
-    public void testConstraintTwo()
-        {
-        Graph g = getGraphWith( "blish wrote CIF; blish wrote VOR; hambly wrote Darwath; feynman mechanicked quanta" );
-        Q.addMatch( X, node( "wrote" ), Y );    
-        Q.addConstraint( getGraphWith( "?x &ne ?y" ) );
-        List bindings = iteratorToList( Q.executeBindings( g, new Node [] {X} ) );
-        assertEquals( "testConstraint " + "Two" + ": number of bindings", bindings.size(), 3 );
-        }
-        
-    private void helpConstraintThree( String title, Graph c, int n )
+
+    private void helpConstraintThree( String title, Expression c, int n )
         {           
         Query q = new Query();
         Graph g = getGraphWith( "brust wrote jhereg; hedgehog hacked code; angel age 230; brust wrote 230" );
@@ -407,19 +400,17 @@ public abstract class AbstractTestQuery extends GraphTestBase
         
     public void testConstraintThree()
         {
-        helpConstraintThree( "testConstraintThree 1:", getGraphWith( "?x &eq brust" ), 2 );
-        helpConstraintThree( "testConstraintThree 2:", getGraphWith( "?y &eq hacked" ), 1 );
-        helpConstraintThree( "testConstraintThree 3:", getGraphWith( "?z &eq 230" ), 2 );
-        helpConstraintThree( "testConstraintThree 4:", getGraphWith( "?z &eq 230" ), 2 ); 
+        helpConstraintThree( "testConstraintThree 1:", areEqual( X, node( "brust" ) ), 2 );
+        helpConstraintThree( "testConstraintThree 2:", areEqual( Y, node( "hacked" ) ), 1 );
+        helpConstraintThree( "testConstraintThree 3:", areEqual( Z, node( "230" ) ), 2 );
        }
        
    public void testConstraintFour()
         {
-        Map1 getFirst = new Map1(){ public Object map1(Object x) { return ((List) x).get(0); }};
         Query q = new Query();
         Graph g = getGraphWith( "bill pinged ben; ben pinged weed; weed pinged weed; bill ignored bill" );
         q.addMatch( X, node("pinged"), Y );
-        q.addConstraint( X, Query.NE, Y );
+        q.addConstraint( notEqual( X, Y ) );
         Set bindings = iteratorToSet( q.executeBindings( g, new Node [] {X} ).mapWith(getFirst) );
         assertEquals( setFrom( new Node[] {node("bill"), node("ben")} ), bindings );
         }
@@ -429,12 +420,10 @@ public abstract class AbstractTestQuery extends GraphTestBase
     */
    public void testMatchConstraint()
         {
-        Map1 getFirst = new Map1(){ public Object map1(Object x) { return ((List) x).get(0); }};
         Set expected = new HashSet();
         expected.add( node( "beta" ) );
         Query q = new Query()  
-            .addMatch( X, node( "ppp" ), Y )
-            .addConstraint( Y, Query.MATCHES, node( "'ell'" ) );
+            .addMatch( X, node( "ppp" ), Y ).addConstraint( matches( Y, node( "'ell'" ) ) ) 
             ;
         Graph g = getGraphWith( "alpha ppp beta; beta ppp 'hello'; gamma ppp 'goodbye'" );
         Set bindings = iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ); 
