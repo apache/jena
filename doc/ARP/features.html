@@ -11,7 +11,7 @@
     href="http://www.w3.org/TR/1999/REC-rdf-syntax-19990222">RDF</a>
   parser.</li>
   <li>Compliant with latest working group <a
-    href="http://www.w3.org/TR/2002/WD-rdf-syntax-grammar-20020325">
+    href="http://www.w3.org/TR/rdf-syntax-grammar">
     syntax</a> and <a href="http://www.w3.org/TR/rdf-testcases"> test
     cases</a> working drafts.</li>
   <li>Compliant with following standards and recommendations:
@@ -41,7 +41,7 @@
           href="http://www.w3.org/TR/REC-xml#dt-name">XML Names</a>
           specification.</dd>
       <dt><b>International URI refs</b></dt>
-        <dd>rdf:about, rdf:ID and rdf:BagID's are processed according to the
+        <dd>rdf:about and rdf:ID  are processed according to the
           <a href="http://www.w3.org/TR/charmod/#sec-URIs">Character Model
           </a> working draft.</dd>
       <dt><b>Unicode Normal Form C</b></dt>
@@ -57,8 +57,6 @@
         <dd>Namespace URI references are checked in light of the <a
           href="http://www.w3.org/2000/09/xppa">W3C XML Plenary
         decision</a>.</dd>
-      <dt><b>aboutEach</b></dt>
-        <dd>Is no longer supported, in line with working group decisions.</dd>
     </dl>
   </li>
   <li>Command-line as RDF/XML to <a
@@ -76,13 +74,13 @@
 <h3>Modular <a href="http://www.w3.org/TR/xml-infoset/">XML InfoSet</a> 
 Design</h3>
 <ul>
-  <li><a href="http://xml.apache.org/xerces-j/index.html">Xerces</a> parser
+  <li><a href="http://xml.apache.org/xerces2-j/index.html">Xerces</a> parser
     for XML.</li>
   <li><a
     href="http://xml.apache.org/xerces-j/apiDocs/org/xml/sax/package-summary.html">SAX2</a>
     to XML InfoSet tokenization.</li>
   <li><a
-    href="http://www.webgain.com/products/metamata/java_doc.html">JavaCC</a>
+    href="https://javacc.dev.java.net/">JavaCC</a>
     generated RDF co-parser with explicit RDF grammar over <a
     href="http://www.w3.org/TR/xml-infoset/">XML InfoSet</a>.</li>
 </ul>
