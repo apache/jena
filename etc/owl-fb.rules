@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.27 2003-09-18 21:16:16 der Exp $
+# $Id: owl-fb.rules,v 1.28 2003-09-22 08:12:41 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -543,7 +543,68 @@
 -> (xsd:gYear rdf:type rdfs:Datatype).
 -> (xsd:gYearMonth rdf:type rdfs:Datatype).
 -> (xsd:gMonthDay rdf:type rdfs:Datatype).
+
+-> (xsd:integer rdfs:subClassOf xsd:decimal).
+
+-> (xsd:byte rb:xsdBase xsd:decimal).
+-> (xsd:short rb:xsdBase xsd:decimal).
+-> (xsd:int rb:xsdBase xsd:decimal).
+-> (xsd:long rb:xsdBase xsd:decimal).
+-> (xsd:unsignedByte rb:xsdBase xsd:decimal).
+-> (xsd:unsignedShort rb:xsdBase xsd:decimal).
+-> (xsd:unsignedInt rb:xsdBase xsd:decimal).
+-> (xsd:unsignedLong rb:xsdBase xsd:decimal).
+-> (xsd:integer rb:xsdBase xsd:decimal).
+-> (xsd:nonNegativeInteger rb:xsdBase xsd:decimal).
+-> (xsd:nonPositiveInteger rb:xsdBase xsd:decimal).
+-> (xsd:byte rb:xsdBase xsd:decimal).
+-> (xsd:float rb:xsdBase xsd:float).
+-> (xsd:decimal rb:xsdBase xsd:decimal).
+-> (xsd:string rb:xsdBase xsd:string).
+-> (xsd:boolean rb:xsdBase xsd:boolean).
+-> (xsd:date rdf:xsdBase xsd:date).
+-> (xsd:time rdf:xsdBase xsd:time).
+-> (xsd:dateTime rdf:xsdBase dateTime).
+-> (xsd:duration rdf:duration xsd:duration).
+
+# Describe range (base type, signed, min bits)
+-> (xsd:byte    rb:xsdRange xsd(xsd:integer,1,8)).
+-> (xsd:short   rb:xsdRange xsd(xsd:integer,1,16)).
+-> (xsd:int     rb:xsdRange xsd(xsd:integer,1,32)).
+-> (xsd:long    rb:xsdRange xsd(xsd:integer,1,64)).
+-> (xsd:integer rb:xsdRange xsd(xsd:integer,1,65)).
 							
+-> (xsd:unsignedByte    rb:xsdRange xsd(xsd:integer,0,8)).
+-> (xsd:unsignedShort   rb:xsdRange xsd(xsd:integer,0,16)).
+-> (xsd:unsignedInt     rb:xsdRange xsd(xsd:integer,0,32)).
+-> (xsd:unsignedLong    rb:xsdRange xsd(xsd:integer,0,64)).
+-> (xsd:nonNegativeInteger rb:xsdRange xsd(xsd:integer,0,65)).
+
+[xsd1: (?X rdfs:subClassOf ?Y) <- 
+        (?X rb:xsdRange xsd(?B, 0, ?L)) (?Y rb:xsdRange xsd(?B, ?S, ?L2)) le(?L, ?L2)]
+
+[xsd2: (?X rdfs:subClassOf ?Y) <- 
+        (?X rb:xsdRange xsd(?B, 1, ?L)) (?Y rb:xsdRange xsd(?B, 1, ?L2)) le(?L, ?L2)]
+
+[range1: (?P rdfs:range ?C) <- 
+			(?P rdfs:range ?D), (?D rb:xsdRange xsd(?B, ?S1, ?L1)), 
+			(?P rdfs:range ?E), notEqual(?D, ?E), 
+			(?E rb:xsdRange xsd(?B, ?S2, ?L2)), 
+			min(?S1, ?S2, ?S3),
+			min(?L1, ?L2, ?L3),
+			(?C rb:xsdRange xsd(?B, ?S3, ?L3)),
+			]
+
+[range2: (?P rdfs:range xsd:byte) <- (?P rdfs:range xsd:nonNegativeInteger),
+					(?P rdfs:range xsd:nonPositiveInteger)]
+
+[range3: (?P rdfs:range owl:Nothing) <- (?P rdfs:range ?C), (?P rdfs:range ?D),
+								(?C owl:disjointWith ?D) ]
+
+[xsd3: (?C owl:disjointWith ?D) <- (?C rb:xsdBase ?BC), (?D rb:xsdBase ?BD), notEqual(?BC, ?BD) ]
+
+[range4: (?P rdfs:subPropertyOf ?Q) <- (?P rdfs:range owl:Nothing)]
+										
 #------------------------------------------------------------------
 # Validation rules. These are dormant by default but are triggered
 # by the additional of a validation control triple to the graph.
@@ -593,4 +654,7 @@
 	(?C rb:violation error('Inconsistent class', 'Class cannot be instantiated, probably subclass of a disjoint classes or of an empty restriction'))
 ]
 
+[validationRangeNothing: (?v rb:validation on()), (?P rdfs:range owl:Nothing) -> 
+	(?C rb:violation error('Inconsistent property', 'Property cannot be instantiated, probably due to multiple disjoint range declarations'))
+]
 				

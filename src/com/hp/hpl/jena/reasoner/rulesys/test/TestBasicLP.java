@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.3 2003-09-08 14:18:33 der Exp $
+ * $Id: TestBasicLP.java,v 1.4 2003-09-22 08:12:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-09-08 14:18:33 $
+ * @version $Revision: 1.4 $ on $Date: 2003-09-22 08:12:41 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1147,6 +1147,43 @@ public class TestBasicLP  extends TestCase {
 //                } );
     }
     
+    /**
+     * Test 3-arg builtins such as arithmetic.
+     */
+    public void testBuiltins() {
+        doBuiltinTest(
+            "[(a,r,0) <- (a,p,?x), (a,q,?y), lessThan(?x,?y)]" +
+            "[(a,r,1) <- (a,p,?x), (a,q,?y), ge(?x, ?y)]",
+            Util.makeIntNode(2),Util.makeIntNode(3), Util.makeIntNode(0)
+        );
+        doBuiltinTest(
+            "[(a,r,0) <- (a,p,?x), (a,q,?y), lessThan(?x,?y)]" +
+            "[(a,r,1) <- (a,p,?x), (a,q,?y), ge(?x, ?y)]",
+            Util.makeIntNode(3),Util.makeIntNode(3), Util.makeIntNode(1)
+        );
+        doBuiltinTest(
+            "[(a,r,0) <- (a,p,?x), (a,q,?y), le(?x,?y)]" +
+            "[(a,r,1) <- (a,p,?x), (a,q,?y), greaterThan(?x, ?y)]",
+            Util.makeIntNode(3),Util.makeIntNode(3), Util.makeIntNode(0)
+        );
+        doBuiltinTest(
+            "[(a,r,?z) <- (a,p,?x), (a,q,?y), min(?x,?y,?z)]",
+            Util.makeIntNode(2),Util.makeIntNode(3), Util.makeIntNode(2)
+        );
+        doBuiltinTest(
+            "[(a,r,?z) <- (a,p,?x), (a,q,?y), min(?x,?y,?z)]",
+            Util.makeIntNode(4),Util.makeIntNode(3), Util.makeIntNode(3)
+        );
+        doBuiltinTest(
+            "[(a,r,?z) <- (a,p,?x), (a,q,?y), max(?x,?y,?z)]",
+            Util.makeIntNode(2),Util.makeIntNode(3), Util.makeIntNode(3)
+        );
+        doBuiltinTest(
+            "[(a,r,?z) <- (a,p,?x), (a,q,?y), max(?x,?y,?z)]",
+            Util.makeIntNode(4),Util.makeIntNode(3), Util.makeIntNode(4)
+        );
+    }
+    
     /** 
      * Generic test operation.
      * @param ruleSrc the source of the rules
@@ -1162,7 +1199,6 @@ public class TestBasicLP  extends TestCase {
         }
         InfGraph infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
-
     }
 
     /** 
@@ -1193,6 +1229,26 @@ public class TestBasicLP  extends TestCase {
     private void doBasicTest(String ruleSrc, TripleMatch query, Object[] results) {
         doTest(ruleSrc, new Triple[]{new Triple(a,p,b)}, query, results);
     }
+    
+    /**
+     * Generic test operation.
+     * @param rule to test a simple builtin operation
+     * @param param1 value to bind to first parameter by (a,p,_)
+     * @param param2 value to bind to first parameter by (a,q,_)
+     * @param result the expected result to be found by (a,r,_)
+     */
+    private void doBuiltinTest(String ruleSrc, Node param1, Node param2, Node result) {
+        doTest(ruleSrc,
+               new Triple[] { 
+                   new Triple(a, p, param1),
+                   new Triple(a, q, param2) 
+                },
+                new Triple(a, r, Node.ANY),
+                new Triple[] {
+                    new Triple(a, r, result)
+                });
+    }
+    
 }
 
 
