@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 12:24:34 $
+ * Last modified on   $Date: 2003-06-10 15:08:36 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.18 2003-06-10 12:24:34 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.19 2003-06-10 15:08:36 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -900,6 +900,23 @@ public class OntResourceImpl
         }
     }
 
+    
+    /** 
+     * <p>Removes this resource from the ontology by deleting any statements that refer to it.
+     * If this resource is a property, this method will <strong>not</strong> remove instances
+     * of the property from the model.</p>
+     */
+    public void remove() {
+        List stmts = new ArrayList();
+        
+        // collect statements mentioning this object
+        for (StmtIterator i = listProperties();  i.hasNext();  stmts.add( i.next() ) );
+        for (StmtIterator i = getModel().listStatements( null, null, this ); i.hasNext(); stmts.add( i.next() ) );
+        
+        // and then remove them
+        for (Iterator i = stmts.iterator();  i.hasNext();  ((Statement) i.next()).remove() );
+    }
+    
 
     /** 
      * <p>Answer a view of this resource as an annotation property</p>

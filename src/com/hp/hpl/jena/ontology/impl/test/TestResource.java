@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:15 $
+ * Last modified on   $Date: 2003-06-10 15:09:31 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.4 2003-06-08 18:53:15 ian_dickinson Exp $
+ * @version CVS $Id: TestResource.java,v 1.5 2003-06-10 15:09:31 ian_dickinson Exp $
  */
 public class TestResource 
     extends OntTestBase
@@ -366,6 +366,28 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( RDF.type ) );
                 }
             },
+            new OntTestCase( "OntResource.remove", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass A = m.createClass( NS + "A" );
+                    OntClass B = m.createClass( NS + "B" );
+                    OntClass C = m.createClass( NS + "C" );
+                    OntClass D = m.createClass( NS + "D" );
+                    OntClass E = m.createClass( NS + "E" );
+                    A.addSubClass( B );
+                    A.addSubClass( C );
+                    C.addSubClass( D );
+                    C.addSubClass( E );
+                    
+                    assertTrue( "super-class of E", E.hasSuperClass( C, false ) );
+                    iteratorTest( A.listSubClasses(), new Object[] {B,C} );
+                    
+                    C.remove();
+                    
+                    assertTrue( "super-class of D", !D.hasSuperClass( C, false ) );
+                    assertTrue( "super-class of E", !E.hasSuperClass( C, false ) );
+                    iteratorTest( A.listSubClasses(), new Object[] {B} );
+                }
+            }
         };
     }
 
