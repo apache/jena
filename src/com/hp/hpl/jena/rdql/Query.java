@@ -26,7 +26,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.6 2003-05-28 11:13:53 chris-dollin Exp $
+ * @version 	$Id: Query.java,v 1.7 2003-06-13 17:06:56 andy_seaborne Exp $
  */
 
 public class Query
@@ -74,10 +74,10 @@ public class Query
         this() ;
         com.hp.hpl.jena.rdql.parser.Q_Query query = null ;
         try {
-            long initTime = 0;
+            //long initTime = 0;
             parseTime = 0;
             long startTime = 0;
-            long stopTime = 0;
+            //long stopTime = 0;
 
             ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes()) ;
 

@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.7 2003-04-28 14:24:22 andy_seaborne Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.8 2003-06-13 17:06:56 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter
@@ -176,13 +176,11 @@ public class QueryResultsFormatter
 		}
 		else
 		{
-			boolean first = true;
 			pw.println("# Variables:");
 			for (Iterator iter = queryResults.getResultVars().iterator(); iter.hasNext();)
 			{
 				String vName = (String) iter.next();
 				pw.print("?" + vName+" ");
-				first = false;
 			}
 			pw.println(".") ;
 			pw.println("# Data:");

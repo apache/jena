@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.7 2003-05-28 14:51:02 andy_seaborne Exp $
+ * @version  $Id: ResultBinding.java,v 1.8 2003-06-13 17:06:56 andy_seaborne Exp $
  */
 
 
@@ -155,7 +155,6 @@ public class ResultBinding
         {
             if ( varName.equals((String)varNames.get(i)) )
             {
-                Object tmp = values.get(i) ;
                 return values.get(i) ;
             }
         }
@@ -187,7 +186,6 @@ public class ResultBinding
         // Properties and Resources
         if ( arg instanceof Resource )
         {
-            String uri = ((Resource)arg).getURI() ;
             WorkingVar w = new WorkingVar() ;
             w.setRDFResource((Resource)arg) ;
             return w ;
