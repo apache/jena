@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.13 2004-01-10 11:26:00 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.14 2004-01-12 16:30:04 der Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -39,6 +39,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <ul>
   <li><a href="#reasoner-0">I want to develop my own rules, how do I get started?</a></li>
   <li><a href="#reasoner-1">Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</a></li>
+  <li><a href="#reasoner-2">The domain and range inferences look wrong, is that a bug?</a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
@@ -143,8 +144,45 @@ Jena 2 &ndash; Frequently Asked Questions
     Is saying that if both T1 and T2 match in the dataset then add the
     backward rule "[T0 &lt;- T3, T4]" after instantiating any bound variables.
   </p>
-
-<h3>Ontology API</h3>
+  
+  <p id="reasoner-2"><strong>Q. The domain and range inferences look wrong, is that a bug?</strong><br />
+      A: The way rdfs range and domain declarations work is completely alien to 
+      anyone who thinks of RDFS and OWL as being a bit like a type system for 
+      a programming language, especially an object oriented language. Whilst there 
+      may be bugs in the inference rule sets the most common explanation for supprising 
+      results, when listing inferred domains and ranges, is this mismatch in expectations. 
+    <p> Suppose we have three classes <code>eg:Man</code> is an <code>rdfs:subClassOf</code> 
+      <code>eg:Person</code> is an <code>rdfs:subClassOf</code> <code>eg:Animal</code>. 
+      Suppose we a property <code>eg:personalName</code> which is declared to 
+      have <code>rdfs:domain</code> <code>eg:Person</code>. Now the question is 
+      what other values can be inferred for the <code>rdfs:domain</code> of <code>eg:personalName</code>?</p>
+    <p> In pure RDFS no additional conclusions can be made. The definition of 
+      domain and range is <i>intensional</i> not <i>extensional</i>. It only works 
+      forward. Declaring <code>&lt;eg:personalName rdfs:domain eg:Person&gt;</code> 
+      means that anything to which <code>eg:personalName</code> is applied can 
+      be concluded to be of type <code>eg:Person</code>. It does not work backward 
+      - if you somehow knew that all things to which <code>eg:personalName</code> 
+      applied were also <code>Foo</code>'s you cannot conclude that <code>&lt;eg:personalName 
+      rdfs:domain Foo&gt;.</code></p>
+    <p>However, RDFS permits systems to strengthen the meaning of domain and range 
+      to be extensional, so that valid domain and range deductions can be made. 
+      OWL makes use of this option. So in OWL, then in our example we can also 
+      deduce that <code>&lt;eg:personalName rdfs:domain eg:Animal&gt;</code>. 
+      If you are used to object oriented programming this may look wrong. It is 
+      tempting, but incorrect, to think of rdfs:domain as meaning <i>this is the 
+      class of objects to which this property can be applied. </i>With that mind-set 
+      you might expect to find that <code>&lt;eg:personalName rdfs:domain eg:Man&gt;</code>, 
+      after all every <code>eg:Man</code> is an <code>eg:Person</code> so it is 
+      always &quot;legal&quot; to apply <code>eg:personalName</code> to an <code>eg:Man</code>. 
+      That is true, it is legal, any <code>eg:Man</code> is allowed to have a 
+      a <code>eg:personalName</code> but <code>rdfs:domain</code> does not describe 
+      what is legal. The statement <code>&lt;P rdfs:domain C&gt;</code> just means 
+      <i>all things to which P is applied can be inferred to have class C</i>. 
+      You can see that if we tried to infer <code>&lt;eg:personalName rdfs:domain 
+      eg:Man&gt;</code> then we would start concluding that anything with a name 
+      was a man which is not right - every Man can have a name but non-Man Persons 
+      are also allowed to have names in this example.</p>
+    <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
   etc) work?</strong><br />
   <strong>A:</strong> It does work. Extensive unit tests are used to check the correctness of Jena,
@@ -286,7 +324,7 @@ engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
   <li><strong>jakarta-commons-logging</strong> - ?</li>
   <li><strong>concurrent</strong> - ?</li>
   </ul> 
-</p>
+<p></p>
 
 <p>&nbsp;</p>
 
