@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
     <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
     <!--
-      CVS: $Id: index.html,v 1.13 2004-09-26 20:41:39 ian_dickinson Exp $
+      CVS: $Id: index.html,v 1.14 2004-10-08 08:38:10 ian_dickinson Exp $
      (c) Copyright 2003, 2004, Hewlett-Packard Development Company LP
     -->
   </head>
@@ -88,7 +88,7 @@
       </p>
     </blockquote>
     <p>
-      Roughly translated, this means that an ontology allows a programmer to specify, in an open, meaningful, way the concepts and relationships that collectively characterise some domain. Examples might be the concepts of red and white wine, grape varieties, vintage years, wineries and so forth that characterise the domain of 'wine', and relationships such as 'wineries produce wines', 'wines have a year of production'. This <i>wine ontology</i> might be developed initially for a particular application, such as a stock-control system at a wine warehouse. As such, it may be considered similar to a well-defined database schema. The advantage to an ontology is that it is an explicit, first-class description. So having been developed for one purpose, it can be published and reused for other purposes. For example, a given winery may use the wine ontology to link its production schedule to the stock system at the wine warehouse. Alternatively, a wine recommendation program may use the wine ontology, and a description (ontology) of different dishes to recommend wines for a given menu.
+      Roughly translated, this means that an ontology allows a programmer to specify, in an open, meaningful, way the concepts and relationships that collectively characterise some domain. Examples might be the concepts of red and white wine, grape varieties, vintage years, wineries and so forth that characterise the domain of 'wine', and relationships such as 'wineries produce wines', 'wines have a year of production'. This <em>wine ontology</em> might be developed initially for a particular application, such as a stock-control system at a wine warehouse. As such, it may be considered similar to a well-defined database schema. The advantage to an ontology is that it is an explicit, first-class description. So having been developed for one purpose, it can be published and reused for other purposes. For example, a given winery may use the wine ontology to link its production schedule to the stock system at the wine warehouse. Alternatively, a wine recommendation program may use the wine ontology, and a description (ontology) of different dishes to recommend wines for a given menu.
     </p>
     <p>
       There are many ways of writing down an ontology, and a variety of opinions as to what kinds of definition should go in one. In practice, the contents of an ontology are largely driven by the kinds of application it will be used to support. In Jena, we do not take a particular view on the minimal or necessary components of an ontology. Rather, we try to support a variety of common styles of use. This manual explains what is (and to some extent what isn't) possible using Jena's ontology support.
@@ -109,10 +109,10 @@
       Table 1: A simple concept hierarchy
     </p>
     <p>
-      Using RDFS, we can say that our ontology has five <i>classes</i>, and that <code>Plant</code> is a sub-class of <code>Organism</code> and so on. So every animal is also an organism. A good way to think of these classes is as describing sets of <i>individuals</i>: organism is intended to describe a set of living things, some of which are animals (i.e. a sub-set of the set of organisms is the set of animals), and some animals are fish (a subset of the set of all animals is the set of all fish).
+      Using RDFS, we can say that our ontology has five <em>classes</em>, and that <code>Plant</code> is a sub-class of <code>Organism</code> and so on. So every animal is also an organism. A good way to think of these classes is as describing sets of <em>individuals</em>: organism is intended to describe a set of living things, some of which are animals (i.e. a sub-set of the set of organisms is the set of animals), and some animals are fish (a subset of the set of all animals is the set of all fish).
     </p>
     <p>
-      To describe the attributes of these classes, we can associate <i>properties</i> with the classes. For example, animals have sensory apparatus (noses, eyes, etc.). A general property of an animal might be numSenseOrgans, to denote the number of sensory organs a particular animal has. In general, fish have eyes, so a fish might have a numEyes property. Since eyes are a type of sensory organ, we can capture this relationship between these properties by saying that <code>numEyes</code> is a sub-property-of <code>numSenseOrgans</code>. Thus if a given fish has two eyes, it also has two sense organs. (It may have more, but we know that it must have two). Associating a property with a class is achieved by stating the the property has a given class as its <i>domain</i>, or a given class as its <i>range.</i> Either or both declarations may be given for a given property. For the <code>numEyes</code> example, the domain is <code>Fish</code> and the range is <code>integer</code>.
+      To describe the attributes of these classes, we can associate <em>properties</em> with the classes. For example, animals have sensory apparatus (noses, eyes, etc.). A general property of an animal might be numSenseOrgans, to denote the number of sensory organs a particular animal has. In general, fish have eyes, so a fish might have a numEyes property. Since eyes are a type of sensory organ, we can capture this relationship between these properties by saying that <code>numEyes</code> is a sub-property-of <code>numSenseOrgans</code>. Thus if a given fish has two eyes, it also has two sense organs. (It may have more, but we know that it must have two). Associating a property with a class is achieved by stating the the property has a given class as its <em>domain</em>, or a given class as its <em>range.</em> Either or both declarations may be given for a given property. For the <code>numEyes</code> example, the domain is <code>Fish</code> and the range is <code>integer</code>.
     </p>
     <p>
       Describing this simple hierarchy is possible with RDFS. The class hierarchy is not a tree (i.e. not like Java), so a slime mold might be approximated as both a plant and an animal by having both classes among its super-classes. We cannot, in RDFS, state that a thing cannot be a plant and an animal (which is lucky for the slime molds). We can only name the classes, we cannot construct expressions to describe interesting classes. However, for many applications it is sufficient to state the basic vocabulary, and RDFS is perfectly well suited to this.
@@ -124,17 +124,23 @@
       OWL
     </h3>
     <p>
-      In general, OWL allows us to say everything that RDFS allows, and much more besides. A key part of OWL is the ability to describe classes in more interesting and complex ways. For example, in OWL we can say that Plant and Animal are <i>disjoint classes</i>: no individual can be both a plant and an animal (thus making the poor SlimeMold an empty class). Saltwater fish might be the <i>intersection</i> of Fish and the class SeaDwellers (which also includes, for example, cetaceans and sea plants).
+      In general, OWL allows us to say everything that RDFS allows, and much more besides. A key part of OWL is the ability to describe classes in more interesting and complex ways. For example, in OWL we can say that Plant and Animal are <em>disjoint classes</em>: no individual can be both a plant and an animal (thus making the poor SlimeMold an empty class). Saltwater fish might be the <em>intersection</em> of Fish and the class SeaDwellers (which also includes, for example, cetaceans and sea plants).
     </p>
     <p>
-      Suppose we have a property <code>hasCovering</code>, intended to represent the scales of a fish or the fur of a mammal. We can now refine the mammal class to be 'animals that have a covering that is hair', using a <i>property restriction</i> to express the condition that property <code>hasCovering</code> has a value from the class <code>Hair</code>. Similarly <code>TropicalFish</code> might be the intersection of the class of <code>Fish</code> and the class of things that have <code>TropicalOcean</code> as their habitat.
+      Suppose we have a property <code>hasCovering</code>, intended to represent the scales of a fish or the fur of a mammal. We can now refine the mammal class to be 'animals that have a covering that is hair', using a <em>property restriction</em> to express the condition that property <code>hasCovering</code> has a value from the class <code>Hair</code>. Similarly <code>TropicalFish</code> might be the intersection of the class of <code>Fish</code> and the class of things that have <code>TropicalOcean</code> as their habitat.
     </p>
     <p>
-      Finally (for this brief overview), we can say more about properties in OWL. In RDFS, properties can be related via a property hierarchy. OWL extends this by allowing properties to be denoted as <i>transitive</i>, <i>symmetric</i> or <i>functional</i>, and allow one property to be declared to be the <i>inverse</i> of another. OWL also makes a distinction between properties that have data-values (aka <i>literals</i> in RDF terminology) as their range, or other individuals. Since the domains of properties in RDF are always individuals (AKA<i>resources</i> in RDF terminology), this distinction is important since only individual-valued properties, called <i>object properties</i> in OWL can be transitive or symmetric.
+      Finally (for this brief overview), we can say more about properties in OWL. In RDFS, properties can be related via a property hierarchy. OWL extends this by allowing properties to be denoted as <em>transitive</em>, <em>symmetric</em> or <em>functional</em>, and allow one property to be declared to be the <em>inverse</em> of another. OWL also makes a distinction between properties that have data-values (aka <em>literals</em> in RDF terminology) as their range, or other individuals. Since the domains of properties in RDF are always individuals (AKA<em>resources</em> in RDF terminology), this distinction is important since only individual-valued properties, called <em>object properties</em> in OWL can be transitive or symmetric.
     </p>
-    <p>
-      The OWL language is divided into three syntax classes: <i>OWL Lite</i>, <i>OWL DL</i> and <i>OWL Full</i>. OWL DL does not permit some constructions allowed in OWL Full, and OWL Lite has all the constraints of OWL DL plus some additional constructions that are not permitted. The intent for OWL Full and OWL DL is to make the task of reasoning with expressions in that subset more tractable. Specifically, OWL DL is intended to be able to be processed efficiently by a <i>description logic</i> reasoner, and OWL Lite by a variety of reasonably simple inference algorithms.
-    </p>
+    <p> The OWL language is divided into three syntax classes: <em>OWL Lite</em>, 
+      <em>OWL DL</em> and <em>OWL Full</em>. OWL DL does not permit some 
+      constructions allowed in OWL Full, and OWL Lite has all the constraints 
+      of OWL DL plus some additional constructions that are not permitted. The 
+      intent for OWL Lite and OWL DL is to make the task of reasoning with 
+      expressions in that subset more tractable. Specifically, OWL DL is 
+      intended to be able to be processed efficiently by a <em>description 
+      logic</em> reasoner, and OWL Lite by a variety of reasonably simple 
+      inference algorithms. </p>
     <p>
       While the OWL standards documents note that OWL builds on top of the (revised) RDF specifications, it is possible to treat OWL as a separate language in its own right, and not something that is built on an RDF foundation. This view uses RDF as a serialisation syntax; the RDF-centric view treats RDF triples as the core of the OWL formalism. While both views are valid, in Jena we take the RDF-centric view.
     </p>
@@ -151,7 +157,7 @@
       Version 1 of Jena had a set of API classes for manipulating ontology information in DAML+OIL (OWL had not yet been invented when Jena 1 was developed). The Jena 1 DAML API (henceforth we abbreviate DAML+OIL to DAML) had very little support for reasoning with the semantics of the DAML language. For Jena 2, we wanted a more general capability that would handle a variety of similar languages (specifically, RDFS, DAML and the OWLs), and would work well with Jena 2's new inference capabilities. The ontology API in Jena is the result.
     </p>
     <p>
-      Whereas in the old DAML API, the Java classes were tightly bound to the language being processed (e.g. <code>DAMLClass</code>, <code>DAMLObjectProperty</code>, etc.), the ontology API is language-neutral (thus the classes are now <code>OntClass</code> and <code>ObjectProperty</code>). To support this, each of the languages has a <i>profile</i>, which lists the permitted constructs and the URI's of the classes and properties. Thus in the DAML profile, the URI for object property is <code>daml:ObjectProperty</code>, in the OWL profile is it <code>owl:ObjectProperty</code> and in the RDFS profile it is <code>null</code> since RDFS does not define object properties.
+      Whereas in the old DAML API, the Java classes were tightly bound to the language being processed (e.g. <code>DAMLClass</code>, <code>DAMLObjectProperty</code>, etc.), the ontology API is language-neutral (thus the classes are now <code>OntClass</code> and <code>ObjectProperty</code>). To support this, each of the languages has a <em>profile</em>, which lists the permitted constructs and the URI's of the classes and properties. Thus in the DAML profile, the URI for object property is <code>daml:ObjectProperty</code>, in the OWL profile is it <code>owl:ObjectProperty</code> and in the RDFS profile it is <code>null</code> since RDFS does not define object properties.
     </p>
     <p>
       The profile is bound to an ontology model, which is an extended version of Jena's Model class. The general Model allows access to the statements in a collection of RDF data. OntModel extends this by adding support for the kinds of objects expected to be in an ontology: classes (in a class hierarchy), properties (in a property hierarchy) and individuals. The properties defined in the ontology language map to accessor methods. For example, an <code>OntClass</code> has a method to list its super-classes, which corresponds to the values of the <code>subClassOf</code> property. This point is worth emphasizing: no information is stored in the <code>OntClass</code> object itself. When the OntClass <code>listSuperClasses()</code> method is called, the information is retrieved from the underlying RDF statements. Similarly adding a subclass to an <code>OntClass</code> asserts an additional RDF statement into the model.
@@ -166,7 +172,7 @@
       Figure 2: the statements seen by the OntModel
     </p>
     <p>
-      The asserted statements are held in the base graph. This presents a simple internal interface, <code>Graph</code>. The reasoner, or inference engine, can use the contents of the base graph and the semantic rules of the language, to show a more complete set of statements - i.e. including those that are <i>entailed</i> by the base assertions. This is also presented via the <code>Graph</code> interface, so the model works only with that interface. This allows us to build models with no reasoner, or with one of a variety of different reasoners, without changing the ontology model. It also means that the base graph can be an in-memory store, a database-backed persistent store, or some other storage structure altogether (e.g. an LDAP directory) again without affecting the ontology model.
+      The asserted statements are held in the base graph. This presents a simple internal interface, <code>Graph</code>. The reasoner, or inference engine, can use the contents of the base graph and the semantic rules of the language, to show a more complete set of statements - i.e. including those that are <em>entailed</em> by the base assertions. This is also presented via the <code>Graph</code> interface, so the model works only with that interface. This allows us to build models with no reasoner, or with one of a variety of different reasoners, without changing the ontology model. It also means that the base graph can be an in-memory store, a database-backed persistent store, or some other storage structure altogether (e.g. an LDAP directory) again without affecting the ontology model.
     </p>
     <h3 id="rdfPolymorphism">
       RDF-level polymorphism and Java
@@ -198,10 +204,10 @@
 &lt;/rdfs:Class&gt;
     </pre>
     <p>
-      That is, <code>#DigitalCamera</code> is now a class <i>and</i> a property. While this may not be a very useful operation, it illustrates a basic point that we cannot rely on a consistent or unique mapping between an RDF resource and the appropriate Java abstraction. In the Jena1 DAML API, we attempted to determine the most-specific Java class for a given DAML object, and create one an instance of that class to model the DAML resource. While having some advantages, this scheme was very brittle and it was easy to construct cases in which it failed.
+      That is, <code>#DigitalCamera</code> is now a class <em>and</em> a property. While this may not be a very useful operation, it illustrates a basic point that we cannot rely on a consistent or unique mapping between an RDF resource and the appropriate Java abstraction. In the Jena1 DAML API, we attempted to determine the most-specific Java class for a given DAML object, and create one an instance of that class to model the DAML resource. While having some advantages, this scheme was very brittle and it was easy to construct cases in which it failed.
     </p>
     <p>
-      Jena 2 accepts this basic characteristic of polymorphism at the RDF level by considering that the Java abstraction (OntClass, Restriction, DatatypeProperty, etc.) is just a view or <i>facet</i> of the resource. Given a RDF object (i.e. an instance of <code>com.hp.hpl.jena.rdf.model.RDFNode</code> or one of its many subclasses), we can get a new facet with the <code>as()</code> method. For example:
+      Jena 2 accepts this basic characteristic of polymorphism at the RDF level by considering that the Java abstraction (OntClass, Restriction, DatatypeProperty, etc.) is just a view or <em>facet</em> of the resource. Given a RDF object (i.e. an instance of <code>com.hp.hpl.jena.rdf.model.RDFNode</code> or one of its many subclasses), we can get a new facet with the <code>as()</code> method. For example:
     </p>
     <pre>
 Resource r = myModel.getResource( myNS + "DigitalCamera" );
@@ -375,7 +381,7 @@ OntModel m = ModelFactory.createOntologyModel( s, null );
       Handling ontology documents and imports
     </h2>
     
-<p> We use the term <i>document</i> to describe an ontology serialize to some 
+<p> We use the term <em>document</em> to describe an ontology serialize to some 
   transport syntax, such as RDF/XML or N3. We load an ontology document into an 
   ontology model in the same way as a normal Jena model, using the <code>read</code> 
   method. There are several variants on read, that handle differences in the source 
@@ -472,9 +478,9 @@ OntModel m = ModelFactory.createOntologyModel( s, null );
     </h3>
     
 <p> In order for the document manager to build the union of the imported documents 
-  (which we refer to as the <i>imports closure</i>), it must be able to create 
+  (which we refer to as the <em>imports closure</em>), it must be able to create 
   new graphs to store the imported ontologies. A parameter of the document manager 
-  is its <i>model maker</i>. The model maker is a simple interface that allows 
+  is its <em>model maker</em>. The model maker is a simple interface that allows 
   different kinds of models (in memory, from file, in persistent database, etc.) 
   to be built on demand. For the database case, this may include passing the database 
   user-name and password and other connection parameters. New model makers can 
@@ -767,7 +773,7 @@ m.read( "http://www.xfront.com/owl/ontologies/camera/" );
       Figure 5: asserted and inferred relationships
     </p>
     <p>
-      Figure 5.i shows a base model, containing a class hierarchy and an instance x. Figure 5.ii shows a full set of relationships that might be inferred from this base model. In Figure 5.iii, we see only the <i>direct</i> or maximally specific relationships. For example, in 5.iii x does not have <code>rdf:type A</code>, since this is an relationship that is covered by the facts that x has <code>rdf:type D</code>, and D is a subclass of A. Notice also that the <code>rdf:type B</code> link is also removed from the direct graph, for a similar reason. Thus the direct graph hides relationships from both the inferred and asserted graphs. When displaying instance x in a GUI, particularly in a tree view of some kind, the direct graph is often the most useful as it contains the useful information in the most compact form.
+      Figure 5.i shows a base model, containing a class hierarchy and an instance x. Figure 5.ii shows a full set of relationships that might be inferred from this base model. In Figure 5.iii, we see only the <em>direct</em> or maximally specific relationships. For example, in 5.iii x does not have <code>rdf:type A</code>, since this is an relationship that is covered by the facts that x has <code>rdf:type D</code>, and D is a subclass of A. Notice also that the <code>rdf:type B</code> link is also removed from the direct graph, for a similar reason. Thus the direct graph hides relationships from both the inferred and asserted graphs. When displaying instance x in a GUI, particularly in a tree view of some kind, the direct graph is often the most useful as it contains the useful information in the most compact form.
     </p>
     <p>
       To list the RDF types of a resource, use:
@@ -1010,9 +1016,9 @@ body.addRange( Body );
   will have the effect of asserting different <code>rdf:type</code> statements 
   into the underlying model. </p>
     
-<p> Both DAML+OIL and OWL permit object and datatype properties to be <i>functional</i> 
+<p> Both DAML+OIL and OWL permit object and datatype properties to be <em>functional</em> 
   - that is, for a given individual in the domain, the range value will always 
-  be the same. In DAML+OIL, this characteristic is labelled as a <i>unique</i> 
+  be the same. In DAML+OIL, this characteristic is labelled as a <em>unique</em> 
   property, but the idea is the same. A functional property also has a maximum 
   cardinality of one. Rather than represent the quality of being functional in 
   the Java class name (for example FunctionalObjectProperty), we have chosen to 
@@ -1029,8 +1035,8 @@ body.addRange( Body );
   means that if p is symmetric, and we know <code>A p B</code>, we can infer <code>B 
   p A</code>. An <code><a href="../javadoc/com/hp/hpl/jena/ontology/InverseFunctionalProperty.html">InverseFunctionalProperty</a></code> 
   means that for any given range element, the domain value is unique. (Note that 
-  in DAML+OIL, the terminology for inverse functional property is <i>unambiguous 
-  property</i>). </p>
+  in DAML+OIL, the terminology for inverse functional property is <em>unambiguous 
+  property</em>). </p>
     
 <p> Given that all properties are <code>RDFNode</code> objects, and therefore 
   support the <code>as()</code> method, we can use <code>as()</code> to change 
@@ -1063,7 +1069,7 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();
       Handling ontology components: more complex class expressions
     </h2>
     <p>
-      Previously, we introduced the handling of basic, named classes in the Jena ontology API. These are the only kind of class descriptions defined in RDFS. In DAML+OIL and OWL, however, there are a number of types of additional class expression that allow richer and more expressive descriptions of concepts. There are two main types of additional class expression: <i>restrictions</i> and <i>Boolean expressions</i>. We will examine each in turn.
+      Previously, we introduced the handling of basic, named classes in the Jena ontology API. These are the only kind of class descriptions defined in RDFS. In DAML+OIL and OWL, however, there are a number of types of additional class expression that allow richer and more expressive descriptions of concepts. There are two main types of additional class expression: <em>restrictions</em> and <em>Boolean expressions</em>. We will examine each in turn.
     </p>
     <h3>
       Restriction class expressions
@@ -1075,7 +1081,7 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();
   For example, in a simple view of animal taxonomy, we might say that mammals 
   are covered in fur, and birds in feathers. Thus the property <code>hasCovering</code> 
   is in one case restricted to have the value <code>fur</code>, in the other to 
-  have the value <code>feathers</code>. This is a <i>has value restriction</i>. 
+  have the value <code>feathers</code>. This is a <em>has value restriction</em>. 
   Six restriction types are defined by OWL and DAML+OIL in total: </p>
     <table width="445" border="1" cellspacing="1" cellpadding="1">
       <tr>
@@ -1130,7 +1136,7 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();
         </td>
         <td width="285">
           <div align="left">
-            The property has exactly <i>n</i> values, for some positive integer n.
+            The property has exactly <em>n</em> values, for some positive integer n.
           </div>
         </td>
       </tr>
@@ -1142,7 +1148,7 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();
         </td>
         <td width="285">
           <div align="left">
-            The property has at least <i>n</i> values, for some positive integer n.
+            The property has at least <em>n</em> values, for some positive integer n.
           </div>
         </td>
       </tr>
@@ -1154,13 +1160,13 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();
         </td>
         <td width="285">
           <div align="left">
-            The property has at most <i>n</i> values, for some positive integer n.
+            The property has at most <em>n</em> values, for some positive integer n.
           </div>
         </td>
       </tr>
     </table>
     <p>
-      Note that in DAML+OIL terminology, an all values from restriction is a <i>toClass</i> restriction, while a some values from restriction is a <i>hasClass</i> restriction. 
+      Note that in DAML+OIL terminology, an all values from restriction is a <em>toClass</em> restriction, while a some values from restriction is a <em>hasClass</em> restriction. 
       Note also that, at present, the Jena ontology API has only limited support for DAML's qualified cardinality restrictions (i.e. <code>cardinalityQ</code>, <code>minCardinalityQ</code> and <code>maxCardinalityQ</code>). 
       Qualified cardinality restrictions are encapsulated in the interfaces <code>CardinalityQRestriction</code>, 
       <code>MinCardinalityQRestriction</code> and <code>CardinalityQRestriction</code>. <code>OntModel</code> also provides methods for creating
@@ -1185,7 +1191,7 @@ OntClass c = m.createClass( Ns + "C" );
 AllValuesFromRestriction avf = anonR.convertToAllValuesFromRestriction( c );
     </pre>
     
-<p> For creating a particular restriction <i>ab initio</i>, we can use the creation 
+<p> For creating a particular restriction <em>ab initio</em>, we can use the creation 
   methods defined on <code>OntModel</code>. For example: </p>
     <pre>
 OntClass c = m.createClass( Ns + "C" );
@@ -1243,7 +1249,7 @@ for (Iterator i = LargeFormat.listSuperClasses( true ); i.hasNext(); ) {
       Boolean class expressions
     </h3>
     <p>
-      Most programmers are familiar with the use of Boolean operators to construct propositional expressions: conjunction (and), disjunction (or) and negation (not). OWL and DAML+OIL provide a means for construction expressions describing classes with analogous operators, by considering class descriptions in terms of the set of individuals that comprise the members of the class. Suppose we wish to say that an instance x has <code>rdf:type</code> A <b>and</b> <code>rdf:type</code> B. This means that x is both a member of the set of individuals in A, and in the set of individuals in B. Thus, x lies in the <i>intersection</i> of classes A and B. If, on the other hand, A is either has <code>rdf:type</code> A <b>or</b> B, then x must lie in the <i>union</i> of A and B. Finally, to say that x does <b>not</b> have <code>rdf:type</code> A, it must lie in the <i>complement</i> of A. These operations, union, intersection and complement are the Boolean operators for constructing class expressions. While complement takes only a single argument, union and intersection must necessarily take more than one argument. Before continuing with constructing and using Boolean class expressions, we digress briefly to discuss lists.
+      Most programmers are familiar with the use of Boolean operators to construct propositional expressions: conjunction (and), disjunction (or) and negation (not). OWL and DAML+OIL provide a means for construction expressions describing classes with analogous operators, by considering class descriptions in terms of the set of individuals that comprise the members of the class. Suppose we wish to say that an instance x has <code>rdf:type</code> A <b>and</b> <code>rdf:type</code> B. This means that x is both a member of the set of individuals in A, and in the set of individuals in B. Thus, x lies in the <em>intersection</em> of classes A and B. If, on the other hand, A is either has <code>rdf:type</code> A <b>or</b> B, then x must lie in the <em>union</em> of A and B. Finally, to say that x does <b>not</b> have <code>rdf:type</code> A, it must lie in the <em>complement</em> of A. These operations, union, intersection and complement are the Boolean operators for constructing class expressions. While complement takes only a single argument, union and intersection must necessarily take more than one argument. Before continuing with constructing and using Boolean class expressions, we digress briefly to discuss lists.
     </p>
     <h3>
       List expressions
@@ -1270,7 +1276,7 @@ for (Iterator i = LargeFormat.listSuperClasses( true ); i.hasNext(); ) {
 &lt;/p&gt;
     </pre>
     <p>
-      This structure will be familiar to anyone who has used list-valued languages, include Lisp, Prolog and SML. Following the original terminology from Lisp, it is often referred-to as a <i>cons-cell</i> list construction. Given this construction, a well formed list (one with exactly one <code>rdf:first</code> and <code>rdf:rest</code> per cons cell) has a precisely determined set of members.
+      This structure will be familiar to anyone who has used list-valued languages, include Lisp, Prolog and SML. Following the original terminology from Lisp, it is often referred-to as a <em>cons-cell</em> list construction. Given this construction, a well formed list (one with exactly one <code>rdf:first</code> and <code>rdf:rest</code> per cons cell) has a precisely determined set of members.
     </p>
     
 <p> Although lists
@@ -1353,10 +1359,10 @@ IntersectionClass SLR = m.createIntersectionClass( camNS + "SLR",
 <p> Given the commonality between union and intersection class expressions, rather 
   than separate methods to set the components of the expression, we have defined 
   a common super-class <code><a href="../javadoc/com/hp/hpl/jena/ontology/BooleanClassDescription.html">BooleanClassDescription</a></code>. 
-  This uses the terminology of <i>operands</i> to the expression. In the above 
+  This uses the terminology of <em>operands</em> to the expression. In the above 
   example, the operands are the Camera class and the has value restriction. The 
-  <code>BooleanClassDescription</code> class allows the operands to be set <i>en 
-  masse</i> by supplying the list, or to be added or deleted one at a time. </p>
+  <code>BooleanClassDescription</code> class allows the operands to be set <em>en 
+  masse</em> by supplying the list, or to be added or deleted one at a time. </p>
     <p>
       Complement class expressions are very similar in many ways. The principal difference is that they take only a single class as operand, and therefore do not accept a list of operands.
     </p>
@@ -1366,12 +1372,12 @@ IntersectionClass SLR = m.createIntersectionClass( camNS + "SLR",
     
 <p> The final type class expression introduced by OWL and DAML is the enumerated 
   class. Recall that a class is a set of individuals. Often the members of the 
-  class are defined <i>implicitly</i>: for example, "the class of intelligent 
+  class are defined <em>implicitly</em>: for example, "the class of intelligent 
   sheep". Monty Python fans will recognise that this class is non-empty, but there 
   may be other intelligent sheep and in any case we do not know Eric's URI. Sometimes 
-  it is convenient to define a class <i>explicitly</i>, by listing the individuals 
-  it contains. An <i><a href="../javadoc/com/hp/hpl/jena/ontology/EnumeratedClass.html">enumerated 
-  class</a></i> is exactly the class whose members are the given individuals. 
+  it is convenient to define a class <em>explicitly</em>, by listing the individuals 
+  it contains. An <em><a href="../javadoc/com/hp/hpl/jena/ontology/EnumeratedClass.html">enumerated 
+  class</a></em> is exactly the class whose members are the given individuals. 
   For example, we know that the class of PrimaryColours contains exactly red, 
   green and blue, and no others. </p>
     <p>
@@ -1454,7 +1460,7 @@ Individual inst = m.createIndividual( Ns + "foo", c );
 &lt;owl:Ontology rdf:about=""&gt;
 &lt;/owl:Ontology&gt;</pre>
     
-<p>Note that the construct <code>rdf:about=&quot;&quot;</code> does <i>not</i> 
+<p>Note that the construct <code>rdf:about=&quot;&quot;</code> does <em>not</em> 
   indicate a resource with no URI; it is in fact a shorthand way of referencing 
   the base URI of the document containing the ontology.</p>
 <p>Various meta-data statements are typically attached to this object, to indicate 
@@ -1575,7 +1581,7 @@ ont.addProperty( DC.creator, "John Smith" );
     <th width="344">Description</th>
   </tr>
   <tr> 
-    <td width="158"><i><code>xxx</code></i><code>_TRANS_INF</code></td>
+    <td width="158"><em><code>xxx</code></em><code>_TRANS_INF</code></td>
     <td width="344"> 
       <div align="left">Uses the transitive reasoner, a very simple inference 
         component that can produce the transitive closure of the class and property 
@@ -1583,7 +1589,7 @@ ont.addProperty( DC.creator, "John Smith" );
     </td>
   </tr>
   <tr> 
-    <td width="158"><i><code>xxx</code></i><code>_RDFS_INF</code></td>
+    <td width="158"><em><code>xxx</code></em><code>_RDFS_INF</code></td>
     <td width="344"> 
       <div align="left">Uses a rule-based reasoner with the RDFS entailment rules. 
         This includes the entailments of the transitive reasoner, with additional 
@@ -1593,7 +1599,7 @@ ont.addProperty( DC.creator, "John Smith" );
     </td>
   </tr>
   <tr> 
-    <td width="158"><i><code>xxx</code></i><code>_RULE_INF</code></td>
+    <td width="158"><em><code>xxx</code></em><code>_RULE_INF</code></td>
     <td width="344"> 
       <div align="left">Uses a rule-based reasoner with a suitable set of semantic 
         rules for the language specified in the xxx part of the name. This is 
@@ -1603,7 +1609,7 @@ ont.addProperty( DC.creator, "John Smith" );
     </td>
   </tr>
   <tr> 
-    <td width="158"><i>no inf</i></td>
+    <td width="158"><em>no inf</em></td>
     <td width="344"> 
       <div align="left">A model specification with no reasoner defined.</div>
     </td>
@@ -1622,8 +1628,8 @@ ont.addProperty( DC.creator, "John Smith" );
   behaviour should not be relied on the user.</p>
 <p>In general, inference models will add a lot of additional statements to a given 
   model, including the axioms appropriate to the ontology language. This is typically 
-  not something that should be output when the model is serialize, so <i><code>write()</code> 
-  on an ontology model will only write the asserted statements from the base model.</i> 
+  not something that should be output when the model is serialize, so <em><code>write()</code> 
+  on an ontology model will only write the asserted statements from the base model.</em> 
   This is typically the correct behaviour, but there are occasions (e.g. during 
   debugging) when we may want to write the entire model, virtual triples included. 
   The easiest way to achieve this is to construct a temporary plain model, containing 
