@@ -1,33 +1,3 @@
-/*
- *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
- *  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * StatementImpl.java
- *
- * Created on 03 August 2000, 13:58
- */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -40,17 +10,16 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.24 $ $Date: 2004-06-15 14:00:47 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.25 $ $Date: 2004-08-03 19:00:48 $
  */
-public class StatementImpl  implements Statement {
+public class StatementImpl  extends StatementBase implements Statement {
     
     protected Resource subject;
     protected Property predicate;
     protected RDFNode  object;
-    final private ModelCom model;
     
     public StatementImpl(Resource subject, Property predicate, RDFNode object) {
-        this.model = null;
+        super( null );
        
         this.subject = subject;
         this.predicate = predicate;
@@ -62,7 +31,7 @@ public class StatementImpl  implements Statement {
                          Property predicate,
                          RDFNode object,
                          ModelCom model)  {
-        this.model = model;
+        super( model );
         this.subject = (Resource) subject.inModel( model ); 
         this.predicate = (Property) predicate.inModel( model ); 
         this.object = object.inModel( model ); 
@@ -130,42 +99,7 @@ public class StatementImpl  implements Statement {
         }
     }
     
-    public boolean getBoolean()  {
-        return getLiteral().getBoolean();
-    }
-    
-    public byte getByte()  {
-        return getLiteral().getByte();
-    }
-    
-    public short getShort()  {
-        return getLiteral().getShort();
-    }
-    
-    public int getInt()  {
-        return getLiteral().getInt();
-    }
-    
-    public long getLong()  {
-        return getLiteral().getLong();
-    }
-    
-    public char getChar()  {
-        return getLiteral().getChar();
-    }
-    
-    public float getFloat()  {
-        return getLiteral().getFloat();
-    }
-    
-    public double getDouble()  {
-        return getLiteral().getDouble();
-    }
-    
-    public String getString()  {
-        return getLiteral().getLexicalForm();
-    }
-    
+
     public Object getObject(ObjectF f)  {
         try {
             return f.createObject(((Literal) object).toString());
@@ -199,75 +133,11 @@ public class StatementImpl  implements Statement {
         return getLiteral().getWellFormed();
     }      
     
-    public Statement changeObject(boolean o)  {
-        return stringReplace( String.valueOf( o ) ); 
-    }
-    
-    public Statement changeObject(long o)  {
-        return stringReplace( String.valueOf( o ) );
-    }
-    
-    public Statement changeObject(char o)  {
-        return stringReplace( String.valueOf( o ) );
-    }
-    
-    public Statement changeObject(float o)  {
-        return stringReplace( String.valueOf( o ) );
-    }
-    
-    public Statement changeObject(double o)  {
-        return stringReplace( String.valueOf( o ) );
-    }
-    
-    public Statement changeObject(String o)  {
-        return stringReplace( String.valueOf( o ) );
-    }  
-    
-    public Statement changeObject(String o, boolean wellFormed)  {
-        return stringReplace( String.valueOf( o ), "", wellFormed );
-    }  
-    
-    public Statement changeObject(String o, String l)  {
-        return stringReplace( String.valueOf( o ), l, false );
-    }    
-    
-    public Statement changeObject(String o, String l, boolean wellFormed)  {
-        return stringReplace( String.valueOf( o ), l, wellFormed );
-    }    
-    
-    public Statement changeObject(RDFNode o)  {
-        return replace(o);
-    }    
-    
-    public Statement changeObject(Object o)  {
-        return o instanceof RDFNode
-            ? replace( (RDFNode) o )
-            : stringReplace( o.toString() )
-            ;
-    }
-    
-    /** get the Model for this StatementImpl, and die if it doesn't have one */
-	protected Model mustHaveModel()
-		{
-      	if (model == null) throw new HasNoModelException( this );
-		return model; 
-		}
-        
-    /**
-        "replace" the Object of this statement with the literal string value _s_. NOTE: this is
-        a convenience function to eliminate the use of a deprecated constructor; when 
-        data-types are put properly into Jena, it will likely disappear. 
-    */
-    protected StatementImpl stringReplace( String s )
-        { return stringReplace( s, "", false ); }
-
-    protected StatementImpl stringReplace( String s, String lang, boolean wellFormed )
-        { return replace( new LiteralImpl( Node.createLiteral( s, lang, wellFormed ), model ) ); }
-            
-    /** it turns out to be handy to return this StatementImpl as the result */ 
+    /** it turns out to be handy to return the new StatementImpl as the result */ 
     protected StatementImpl replace(RDFNode n)  {
-    	mustHaveModel().remove( this ).add( subject, predicate, n );
-    	return new StatementImpl( subject, predicate, n, model );
+    	StatementImpl s = new StatementImpl( subject, predicate, n, model );
+    	mustHaveModel().remove( this ).add( s );
+        return s;
     }
         
     public String toString() 
@@ -310,18 +180,15 @@ public class StatementImpl  implements Statement {
     	return asTriple().hashCode();
     }
     
-    public Statement remove()  {
-    	mustHaveModel().remove( this );
-    	return this;
-    }
-            
-    public Model getModel() {
-    	return model;
-    }
-    
     public Resource asResource() {
     	return mustHaveModel().getAnyReifiedStatement(this);
     }    
+
+    public Statement remove()
+        {
+        mustHaveModel().remove( this );
+        return this;
+        }
     
     public void removeReification() {
     	mustHaveModel().removeAllReifications(this);
@@ -373,3 +240,34 @@ public class StatementImpl  implements Statement {
         }
     
 }
+
+/*
+ *  (c) Copyright 2000, 2001, 2004 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * StatementImpl.java
+ *
+ * Created on 03 August 2000, 13:58
+ */
