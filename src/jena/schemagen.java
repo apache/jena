@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-24 22:01:27 $
+ * Last modified on   $Date: 2004-03-10 13:22:31 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.30 2004-02-24 22:01:27 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.31 2004-03-10 13:22:31 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -1059,6 +1059,18 @@ public class schemagen {
                         // add other escape sequences above
                         break;
                 }
+            }
+            else if (c == '<') {
+                buf.append( "&lt;" );
+                pos += 4;
+            }
+            else if (c == '>') {
+                buf.append( "&gt;" );
+                pos += 4;
+            }
+            else if (c == '&') {
+                buf.append( "&amp;" );
+                pos += 5;
             }
             else {
                 // add the char
