@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.29 2003-08-08 13:03:08 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.30 2003-08-13 14:16:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -134,17 +134,6 @@ public abstract class AbstractTestGraph extends GraphTestBase
 ////        assertOmitsAll( "modified simple graph", g, "x R y; a T b" );
 //        }
                                       
-    public void testReificationControl()
-        {
-        Graph g1 = graphWith( "x rdf:subject S" );
-        Graph g2 = GraphBase.withReification( g1, Reifier.Convenient );
-        assertEquals( "should not hide reification triple", 1, g1.size() );
-        assertEquals( "should not hide reification triple", 1, g2.size() );
-        g2.add( triple( "x rdf:object O" ) );
-        assertEquals( "", 1, g1.size() );
-        assertEquals( "", 1, g2.size() );
-        }
-
     /**
         Test that Graphs have transaction support methods, and that if they fail
         on some g they fail because they do not support the operation.

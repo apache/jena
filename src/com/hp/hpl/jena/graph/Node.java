@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.19 2003-08-11 02:38:23 wkw Exp $
+  $Id: Node.java,v 1.20 2003-08-13 14:16:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -131,7 +131,7 @@ public abstract class Node {
         if (lit == null) 
             {
             // throw new SomeSuitableException( "null in createLiteral" );
-            log.warn( "null treated as empty string in createLiteral: this will become illegal." );
+            System.err.println /* log.warn */ ( "null treated as empty string in createLiteral: this will become illegal." );
             lit = "";
             } 
         return createLiteral( new LiteralLabel( lit, lang, isXml ) ); 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.4 2003-05-30 13:50:13 chris-dollin Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.5 2003-08-13 14:16:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -70,22 +70,22 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     public void testReificationCombinations()
         {
         Model m = model;
-        Resource R = m.createResource( aURI ), S = m.createResource( anotherURI );
-        Property P = (Property) R.as( Property.class );
+        Resource RR = m.createResource( aURI ), SS = m.createResource( anotherURI );
+        Property PP = (Property) RR.as( Property.class );
         Object [][] statements =
             {
-                { m.createStatement( R, RDF.type, RDF.Statement ), new Integer(1) },
-                { m.createStatement( R, RDF.subject, S ), new Integer(2) },
-                { m.createStatement( R, RDF.predicate, P ), new Integer(4) },
-                { m.createStatement( R, RDF.object, O ), new Integer(8) },
-                { m.createStatement( S, P, O ), new Integer(16) },
-                { m.createStatement( R, P, O ), new Integer(32) },
-                { m.createStatement( S, RDF.subject, S ), new Integer(64) },
-                { m.createStatement( S, RDF.predicate, P ), new Integer(128) },
-                { m.createStatement( S, RDF.object, O ), new Integer(256) },
-                { m.createStatement( S, RDF.type, RDF.Statement ), new Integer(512) }
+                { m.createStatement( RR, RDF.type, RDF.Statement ), new Integer(1) },
+                { m.createStatement( RR, RDF.subject, SS ), new Integer(2) },
+                { m.createStatement( RR, RDF.predicate, PP ), new Integer(4) },
+                { m.createStatement( RR, RDF.object, O ), new Integer(8) },
+                { m.createStatement( SS, PP, O ), new Integer(16) },
+                { m.createStatement( RR, PP, O ), new Integer(32) },
+                { m.createStatement( SS, RDF.subject, SS ), new Integer(64) },
+                { m.createStatement( SS, RDF.predicate, PP ), new Integer(128) },
+                { m.createStatement( SS, RDF.object, O ), new Integer(256) },
+                { m.createStatement( SS, RDF.type, RDF.Statement ), new Integer(512) }
             };
-        testCombinations( m, R, 0, statements, statements.length );
+        testCombinations( m, RR, 0, statements, statements.length );
         }
 
     /**
@@ -151,7 +151,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     public void testConversion()
         {
         final String uri = "spoo:handle";
-        ReifiedStatement rs = model.createReifiedStatement( uri, SPO );
+        model.createReifiedStatement( uri, SPO );
         ReifiedStatement rs2 = (ReifiedStatement) model.createResource( uri ).as( ReifiedStatement.class );
         assertEquals( "recover statement", SPO, rs2.getStatement() );
         }
@@ -236,8 +236,8 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     */
     public void testListDoesntCrash()
         {
-        ReifiedStatement rs1 = model.createReifiedStatement( SPO );
-        ReifiedStatement rs2 = model.createReifiedStatement( SPO2 );
+        model.createReifiedStatement( SPO );
+        model.createReifiedStatement( SPO2 );
         assertTrue( "should be non-empty", model.listReifiedStatements().hasNext() );
         }
         
@@ -292,7 +292,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         {
         Statement st = SPO;
         Model m = model;
-        ReifiedStatement rs = m.createReifiedStatement( aURI, st );
+        m.createReifiedStatement( aURI, st );
         assertTrue( "st is now reified", st.isReified() );
         m.removeAllReifications( st );
         assertFalse( "st is no longer reified", st.isReified() );
@@ -326,7 +326,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         {
         final String uri = "spoo:rubbish";
         Model m2 = getModel();
-        ReifiedStatement rs1 = model.createReifiedStatement( uri, SPO );
+        model.createReifiedStatement( uri, SPO );
         testDoesNotReify( "blue model should not reify rubbish", m2.createResource( uri ) );
         }                                             
 //    public void testXXX()

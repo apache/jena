@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelCom.java,v 1.70 2003-07-30 15:20:36 chris-dollin Exp $
+  $Id: ModelCom.java,v 1.71 2003-08-13 14:16:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.70 $' Date='$Date: 2003-07-30 15:20:36 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.71 $' Date='$Date: 2003-08-13 14:16:26 $'
  */
 
 public class ModelCom 

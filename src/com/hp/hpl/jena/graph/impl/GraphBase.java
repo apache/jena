@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.17 2003-08-01 13:25:41 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.18 2003-08-13 14:16:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -230,17 +230,7 @@ public abstract class GraphBase implements Graph {
 		b.append( "}" );
 		return b.toString();
 	   }
-    
-    /**
-        return a dynamic copy of G with full reification (ie captures
-        inbound reification triples)
-    */
-    public static Graph withReification( Graph g )
-        { return withReification( g, Reifier.Standard ); }
-        
-    public static Graph withReification( Graph g, Reifier.Style style )
-        { return new ReifyingCaptureGraph( g, style ); }
-        
+
 }
 
 /*
