@@ -9,7 +9,9 @@ package com.hp.hpl.jena.db.impl;
 
 import java.util.List;
 
+import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.Mapping;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -29,7 +31,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * in the list.
  *
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  */
 public interface SpecializedGraph {
@@ -126,7 +128,7 @@ public interface SpecializedGraph {
 	 * @param t is the triple to be tested
 	 * @param complete is true if the graph can guarantee that no other specialized graph 
      * could hold any matching triples.
-	 * @return boolean result to indicte if the tripple was contained
+	 * @return boolean result to indicte if the triple was contained
 	 */
     public boolean contains(Triple t, CompletionFlag complete);
             
@@ -174,6 +176,40 @@ public interface SpecializedGraph {
     	
     	public void setDone() { done = true; }   	
     }
+    
+    /**
+     * Database identifier of the GraphRDB that contains this specialized graph.
+     * @return IDBID database identifier of the GraphRDB that contains this specialized graph.
+     */
+    public int getGraphId();
+    
+    /**
+     * Return the PSet that implements this specialized graph.
+     * @return IPSet the PSet that implements this specialized graph.
+     */
+    public IPSet getPSet();
+    	
+	/**
+	 * Return the DBPropLSet for this specialized graph.
+	 * @return DBPropLSet for this specialized graph.
+	 */
+	public DBPropLSet getDBPropLSet();
+ 
+	/** 
+	 * Determine if the graph contains any triples for the pattern.
+	 * @param pattern the pattern.
+	 * @return char indicator, 'n', 's', 'a' for no, some, all triples for pattern.
+	 */
+
+
+	public char subsumes ( Triple pattern );
+ 
+	static final char noTriplesForPattern = 'n'; // graph contains no triples for pattern
+	static final char someTriplesForPattern = 's'; // graph contains some triples for pattern
+	static final char allTriplesForPattern = 'a'; // graph contains all triples for pattern
+
+    
+
 }
 
 /*
