@@ -46,7 +46,7 @@ import org.apache.log4j.*;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.17 2003-10-24 11:04:48 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.18 2003-11-27 18:06:02 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -354,7 +354,7 @@ public class rdfquery
         if ( queryFile != null )
         {
             try {
-                queryString = FileUtils.readWholeFile(queryFile) ;
+                queryString = FileUtils.readWholeFileAsUTF8(queryFile) ;
             } catch (Exception e)
             {
                 System.err.println("Error: failed to read file: "+e) ;
