@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.9 2003-09-29 14:50:56 der Exp $
+ * $Id: TestBugs.java,v 1.10 2003-09-29 20:54:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+//import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -29,7 +30,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-09-29 14:50:56 $
+ * @version $Revision: 1.10 $ on $Date: 2003-09-29 20:54:14 $
  */
 public class TestBugs extends TestCase {
 
@@ -263,13 +264,28 @@ public class TestBugs extends TestCase {
         InfModel infmodel = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
         String baseURI = "http://jena.hpl.hp.com/eg#";
         Resource C = infmodel.getResource(baseURI + "C");
+        Resource I = infmodel.getResource(baseURI + "i");
         Property R = infmodel.getProperty(baseURI, "R");
+//        ((FBRuleInfGraph)infmodel.getGraph()).setTraceOn(true);
+        System.out.println("Check that the instance does have an R property");
+        Statement s = I.getProperty(R);
+        System.out.println(" - " + s);
+        System.out.println("And that the type of the R property is C");
+        Statement s2 = ((Resource)s.getObject()).getProperty(RDF.type);
+        System.out.println(" - " + s2);
+        System.out.println("But does that have an R property?");
+        Statement s3 = ((Resource)s.getObject()).getProperty(R);
+        System.out.println(" - " + s3);
+        System.out.println("List all instances of C");
         int count = 0;
         for (Iterator i = infmodel.listStatements(null, RDF.type, C); i.hasNext(); ) {
+            Statement st = (Statement)i.next();
+            System.out.println(" - " + st);
             count++;
         }
         System.out.println("OK");
-//        assertTrue("Loop limit", count <= 1);
+//        infmodel.write(System.out);
+//        System.out.flush();
     }
     
     // debug assistant
