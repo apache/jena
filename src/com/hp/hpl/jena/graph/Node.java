@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.27 2004-03-19 16:33:35 chris-dollin Exp $
+  $Id: Node.java,v 1.28 2004-03-21 08:05:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -69,7 +69,7 @@ public abstract class Node {
     public static Node create( PrefixMapping pm, String x )
         {
         if (x.equals( "" ))
-            throw new JenaException( "GraphTestBase::node does not accept an empty string as argument" );
+            throw new JenaException( "Node.create does not accept an empty string as argument" );
         char first = x.charAt( 0 );
         if (first == '\'')
             return Node.createLiteral( newString( x ) );
