@@ -24,16 +24,8 @@
     rdfs:comment    "Class of things that represent the result set" ;
     .
 
-:ResultTable = :ResultSet ;
-    rdfs:comment    "Alternative name for :ResultSet to give table oriented naming" ;
-    .
-
 :ResultSolution rdf:type rdfs:Class ;
     rdfs:comment    "Class of things that represent a row in the result table - one solution to the query" ;
-    .
-
-:ResultRow = :ResultSolution ;
-    rdfs:comment    "Alternative name for :ResultSolution" ;
     .
 
 :ResultBinding rdf:type rdfs:Class ;
