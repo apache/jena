@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGConnection.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-24 17:27:48 $
+ * Last modified on   $Date: 2005-03-24 17:33:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -32,6 +32,7 @@ import java.util.*;
 
 import javax.xml.parsers.*;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.*;
 import org.w3c.dom.*;
@@ -45,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGConnection.java,v 1.11 2005-03-24 17:27:48 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGConnection.java,v 1.12 2005-03-24 17:33:18 ian_dickinson Exp $)
  */
 public class DIGConnection {
     // Constants
@@ -61,6 +62,9 @@ public class DIGConnection {
     // Static variables
     //////////////////////////////////
 
+    private static Log log = LogFactory.getLog( DIGConnection.class );
+    
+    
     // Instance variables
     //////////////////////////////////
 
@@ -121,11 +125,10 @@ public class DIGConnection {
             
             // send
             conn.connect();
-            // PrintStream ps = new PrintStream( conn.getOutputStream() );
-            PrintWriter ps = FileUtils.asPrintWriterUTF8( conn.getOutputStream() );
-            ps.print( out.getBuffer() );
-            ps.flush();
-            ps.close();
+            PrintWriter pw = FileUtils.asPrintWriterUTF8( conn.getOutputStream() );
+            pw.print( out.getBuffer() );
+            pw.flush();
+            pw.close();
             
             // and receive
             Document response = getDigResponse( conn );
@@ -175,7 +178,7 @@ public class DIGConnection {
             errorCheck( response );
 
             if (warningCheck(response)) {
-                LogFactory.getLog(getClass()).warn( "DIG reasoner warning: " + getWarnings().next() );
+                log.warn( "DIG reasoner warning: " + getWarnings().next() );
             }
             m_kbURI = null;
         }
@@ -320,7 +323,7 @@ public class DIGConnection {
                 ch = in.read();
             }
             
-            LogFactory.getLog( getClass() ).debug( "Response buffer = " + buf.toString() );
+            // TODO remove LogFactory.getLog( getClass() ).debug( "Response buffer = " + buf.toString() );
             // now parse into a document
             DocumentBuilder builder = m_factory.newDocumentBuilder();
             return builder.parse( new ByteArrayInputStream( buf.toString().getBytes() ) );
@@ -392,8 +395,10 @@ public class DIGConnection {
             StringWriter out = new StringWriter();
             serialiseDocument( msg, out );
             
-            LogFactory.getLog( getClass() ).debug( outgoing ? "Sending to DIG reasoner ..." : "Received from DIG reasoner ..." );
-            LogFactory.getLog( getClass() ).debug( out );
+            if (log.isDebugEnabled()) {
+                log.debug( outgoing ? "Sending to DIG reasoner ..." : "Received from DIG reasoner ..." );
+                log.debug( out );
+            }
         }
     }
 
