@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:38 $
+ * Last modified on   $Date: 2003-07-24 15:30:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.10 2003-06-21 12:35:38 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.11 2003-07-24 15:30:37 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -251,6 +251,20 @@ public class DAMLModelImpl
      */
     public DAMLRestriction createDAMLRestriction( String uri ) {
         return (DAMLRestriction) createOntResource( DAMLRestriction.class, getProfile().RESTRICTION(), uri );
+    }
+
+
+    /**
+     * <p>Create a DAML Datatype representing values from some concrete domain.</p>
+     *
+     * @param uri The URI that is both the URI of this datatype value, and the identifier
+     *             of the concrete domain type (e.g. as an XSD datatype).
+     * @return A new DAMLDatatype object.
+     */
+    public DAMLDatatype createDAMLDatatype( String uri ) {
+        Resource dt = getResource( uri );
+        dt.addProperty( RDF.type, DAML_OIL.Datatype );
+        return (DAMLDatatype) dt.as( DAMLDatatype.class );
     }
 
 

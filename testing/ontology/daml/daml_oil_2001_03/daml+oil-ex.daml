@@ -1,19 +1,20 @@
-<!-- $Revision: 1.1 $ of $Date: 2003-06-18 12:59:57 $ -->
+<!-- $Revision: 1.2 $ of $Date: 2003-07-24 15:30:37 $ -->
 <!-- Note: this is just http://www.daml.org/2001/03/daml+oil-ex.daml, modified  -->
 <!-- to make all names absolute with rdf:about rather than relative with rdf:ID -->
+<!-- also fixed the XSD namespace -->
 
 <rdf:RDF
   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
-  xmlns:xsd ="http://www.w3.org/2000/10/XMLSchema#"
+  xmlns:xsd ="http://www.w3.org/2001/XMLSchema#"
   xmlns:dex ="http://www.daml.org/2001/03/daml+oil-ex#"
   xmlns:exd ="http://www.daml.org/2001/03/daml+oil-ex-dt#"
   xmlns     ="http://www.daml.org/2001/03/daml+oil-ex#"
 >
 
 <daml:Ontology rdf:about="">
-  <daml:versionInfo>$Id: daml+oil-ex.daml,v 1.1 2003-06-18 12:59:57 ian_dickinson Exp $</daml:versionInfo>
+  <daml:versionInfo>$Id: daml+oil-ex.daml,v 1.2 2003-07-24 15:30:37 ian_dickinson Exp $</daml:versionInfo>
   <rdfs:comment>
     An example ontology, with data types taken from XML Schema
   </rdfs:comment>
@@ -128,6 +129,7 @@
 <daml:UniqueProperty rdf:about="http://www.daml.org/2001/03/daml+oil-ex#hasMother">
   <rdfs:subPropertyOf rdf:resource="http://www.daml.org/2001/03/daml+oil-ex#hasParent"/>
   <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil-ex#Female"/>
+  <daml:domain rdf:resource="http://www.daml.org/2001/03/daml+oil-ex#Person"/>
 </daml:UniqueProperty>
 
 <daml:ObjectProperty rdf:about="http://www.daml.org/2001/03/daml+oil-ex#hasChild">

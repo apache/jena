@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            3 August 2001
  * Filename           $RCSfile: VocabularyManager.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
+ * Last modified on   $Date: 2003-07-24 15:30:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
  * with managing the different versions of the namespace.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: VocabularyManager.java,v 1.3 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: VocabularyManager.java,v 1.4 2003-07-24 15:30:37 ian_dickinson Exp $
  */
 public class VocabularyManager
 {
@@ -66,7 +66,7 @@ public class VocabularyManager
      * @return a DAML vocabulary object for the namespace
      */
     public static DAMLVocabulary getVocabulary( Resource resource ) {
-        return getVocabulary( resource.getURI() );
+        return getDefaultVocabulary();
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.22 2003-06-17 13:47:43 ian_dickinson Exp $
+  $Id: BuiltinPersonalities.java,v 1.23 2003-07-24 15:30:38 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -70,6 +70,8 @@ public class BuiltinPersonalities {
         .add( DAMLOntology.class, DAMLOntologyImpl.factory )
         .add( DAMLInstance.class, DAMLInstanceImpl.factory )
         .add( DAMLList.class, DAMLListImpl.factory )
+        .add( DAMLDataInstance.class, DAMLDataInstanceImpl.factory )
+        .add( DAMLDatatype.class, DAMLDatatypeImpl.factory )
         
         // Last and least ?
         .add( RDFNode.class, ResourceImpl.rdfNodeFactory )

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 22:30:45 $
+ * Last modified on   $Date: 2003-07-24 15:30:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  * information from all loaded ontologies.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.7 2003-06-18 22:30:45 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.8 2003-07-24 15:30:37 ian_dickinson Exp $
  */
 public interface DAMLModel
     extends OntModel
@@ -163,6 +163,16 @@ public interface DAMLModel
      * @return A new DAMLRestriction object.
      */
     public DAMLRestriction createDAMLRestriction( String uri );
+
+
+    /**
+     * <p>Create a DAML Datatype representing values from some concrete domain.</p>
+     *
+     * @param uri The URI that is both the URI of this datatype value, and the identifier
+     *             of the concrete domain type (e.g. as an XSD datatype).
+     * @return A new DAMLDatatype object.
+     */
+    public DAMLDatatype createDAMLDatatype( String uri );
 
 
     /**

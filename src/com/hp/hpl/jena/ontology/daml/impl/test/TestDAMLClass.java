@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 10:41:38 $
+ * Last modified on   $Date: 2003-07-24 15:30:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.5 2003-06-21 10:41:38 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.6 2003-07-24 15:30:37 ian_dickinson Exp $
  */
 public class TestDAMLClass 
     extends DAMLTestBase
@@ -81,16 +81,17 @@ public class TestDAMLClass
                     
                     assertEquals( "sub-class cardinality", 0, A.prop_subClassOf().count() );
                     A.prop_subClassOf().add( B );
-                    assertEquals( "sub-class cardinality", 1, A.prop_subClassOf().count() );
-                    A.prop_subClassOf().add( C );
+                    iteratorTest( A.prop_subClassOf().getAll(), new Object[] {A,B} );
                     assertEquals( "sub-class cardinality", 2, A.prop_subClassOf().count() );
+                    A.prop_subClassOf().add( C );
+                    assertEquals( "sub-class cardinality", 3, A.prop_subClassOf().count() );
                     
-                    iteratorTest( A.prop_subClassOf().getAll(), new Object[] {B,C} );
+                    iteratorTest( A.prop_subClassOf().getAll(), new Object[] {A,B,C} );
                     
                     A.prop_subClassOf().remove( C );
-                    assertEquals( "sub-class cardinality", 1, A.prop_subClassOf().count() );
+                    assertEquals( "sub-class cardinality", 2, A.prop_subClassOf().count() );
                     
-                    iteratorTest( A.prop_subClassOf().getAll(), new Object[] {B} );
+                    iteratorTest( A.prop_subClassOf().getAll(), new Object[] {A,B} );
                     
                     assertTrue( "getDAMLValue instanceOf DAMLCommon", A.prop_subClassOf().getDAMLValue() instanceof DAMLCommon );
                     assertTrue( "hasValue", A.prop_subClassOf().hasValue( B ) );
@@ -186,13 +187,6 @@ public class TestDAMLClass
                     
                     assertEquals( "subClassOf A", B, A.getSubClass() );
                     
-                    // no inference
-                    iteratorTest( A.getSubClasses(), new Object[] {B} );
-                    iteratorTest( A.getSubClasses( false ), new Object[] {B} );
-                    iteratorTest( A.getSubClasses( true ), new Object[] {B} );
-                    
-                    C.prop_subClassOf().add( A );   // could be inferred
-                    
                     iteratorTest( A.getSubClasses(), new Object[] {B,C} );
                     iteratorTest( A.getSubClasses( false ), new Object[] {B} );
                     iteratorTest( A.getSubClasses( true ), new Object[] {B,C} );
@@ -208,13 +202,6 @@ public class TestDAMLClass
                     B.prop_subClassOf().add( C );
                     
                     assertEquals( "subClassOf A", B, A.getSuperClass() );
-                    
-                    // no inference
-                    iteratorTest( A.getSuperClasses(), new Object[] {B} );
-                    iteratorTest( A.getSuperClasses( false ), new Object[] {B} );
-                    iteratorTest( A.getSuperClasses( true ), new Object[] {B} );
-                    
-                    A.prop_subClassOf().add( C );   // could be inferred
                     
                     iteratorTest( A.getSuperClasses(), new Object[] {B,C} );
                     iteratorTest( A.getSuperClasses( false ), new Object[] {B} );

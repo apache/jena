@@ -2,11 +2,11 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian.Dickinson@hp.com
+ * Author email       Ian_Dickinson@hp.com
  * Package            Jena
  * Created            17 Sept 2001
- * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Filename           $RCSfile: DAMLDatatypeImpl.java,v $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
  * Last modified on   $Date: 2003-07-24 15:30:37 $
@@ -24,31 +24,26 @@ package com.hp.hpl.jena.ontology.daml.impl;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.*;
+
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.daml.*;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.vocabulary.*;
-
-import java.util.Iterator;
-
-import org.apache.log4j.Logger;
 
 
 
 /**
- * <p>A data instance is a specific type of DAML object that represents the instantiation
- * of a DAML datatype. The instance is a resource whose <code>rdf:value</code> is a typed literal.</p>
+ * Encapsulates a DAML dataype, that represents values from a concrete domain by
+ * encoding their type using XML schema.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.8 2003-07-24 15:30:37 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLDatatypeImpl.java,v 1.4 2003-07-24 15:30:37 ian_dickinson Exp $
  */
-public class DAMLDataInstanceImpl
-    extends DAMLInstanceImpl
-    implements DAMLDataInstance
+public class DAMLDatatypeImpl
+    extends DAMLCommonImpl
+    implements DAMLDatatype
 {
     // Constants
     //////////////////////////////////
@@ -58,24 +53,27 @@ public class DAMLDataInstanceImpl
     //////////////////////////////////
 
     /**
-     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * A factory for generating DAMLClass facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
-                return new DAMLDataInstanceImpl( n, eg );
+                return new DAMLDatatypeImpl( n, eg );
             }
             else {
-                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLDataInstance" );
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLDatatype" );
             } 
         }
             
         public boolean canWrap( Node node, EnhGraph eg ) {
-            return eg.asGraph().contains( node, RDF.type.asNode(), Node.ANY );
+            // node will support being an DAMLDataype facet if it has rdf:type daml:Datatype
+            return eg.asGraph().contains( node, RDF.type.asNode(), DAML_OIL.Datatype.asNode() );
         }
     };
+
+
 
     // Instance variables
     //////////////////////////////////
@@ -86,82 +84,29 @@ public class DAMLDataInstanceImpl
 
     /**
      * <p>
-     * Construct a DAML data instance represented by the given node in the given graph.
+     * Construct a DAML class represented by the given node in the given graph.
      * </p>
      * 
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
-    public DAMLDataInstanceImpl( Node n, EnhGraph g ) {
+    public DAMLDatatypeImpl( Node n, EnhGraph g ) {
         super( n, g );
     }
+
 
 
     // External signature methods
     //////////////////////////////////
 
-
     /**
-     * <p>Answer the typed value translator for values encoded by the datatype of this
-     * instance.</p>
+     * <p>Answer the traslator that can map between Java values and the serialised
+     * form that represents the value in the RDF graph.</p>
      *
-     * @return The datatype translator defined for the <code>rdf:type</code> of this instance
+     * @return a datatype translator.
      */
-    public RDFDatatype getDatatype() {
-        // search for an RDF type that we have a translator for
-        for (Iterator i = listRDFTypes( true ); i.hasNext(); ) {
-            Resource rType = (Resource) i.next();
-            if (rType.isAnon()) {
-                continue;
-            }
-            
-            RDFDatatype dt = TypeMapper.getInstance().getTypeByName( rType.getURI() );
-            
-            if (dt != null) {
-                // found a candidate datatype
-                if (i instanceof ClosableIterator) {
-                    ((ClosableIterator) i).close();
-                }
-                
-                return dt;
-            }
-        }
-        
-        return null;
-    }
-
-
-    /**
-     * <p>Answer the value of this instance as a Java object, translated from the
-     * serialised RDF representation by the Dataype's type mapper.</p>
-     *
-     * @return The value of this instance, or null if either the translator or the
-     *         serialised value is defined
-     */
-    public Object getValue() {
-        if (hasProperty( RDF.value )) {
-            RDFDatatype dType = getDatatype();
-            
-            if (dType == null) {
-                Logger.getLogger( getClass() ).warn( "No RDFDatatype defined for DAML data instance " + this );
-            }
-            else {
-                return dType.parse( getRequiredProperty( RDF.value ).getString() );
-            }
-        }
-        
-        return null;
-    }
-
-
-    /**
-     * <p>Set the value of this instance to the given Java value, which will be
-     * serialised into the RDF graph by the datatype's translator.</p>
-     * 
-     * @param value The value to be encoded as a typed literal
-     */
-    public void setValue( Object value ) {
-        setPropertyValue( RDF.value, "", getModel().createTypedLiteral( value, null, getDatatype() ) );
+    public RDFDatatype getTranslator() {
+        return TypeMapper.getInstance().getTypeByName( getURI() );
     }
 
 
@@ -174,8 +119,9 @@ public class DAMLDataInstanceImpl
     // Inner class definitions
     //==============================================================================
 
-
 }
+
+
 
 
 /*
