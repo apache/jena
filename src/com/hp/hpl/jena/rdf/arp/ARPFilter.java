@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: ARPFilter.java,v 1.19 2003-12-13 21:10:58 jeremy_carroll Exp $
+ * $Id: ARPFilter.java,v 1.20 2004-01-27 17:34:08 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -146,6 +146,14 @@ class ARPFilter
 	static private class MySAXParser extends SAXParser {
 		MySAXParser(StandardParserConfiguration c) {
 			super(c);
+			try {
+			setFeature("http://xml.org/sax/features/string-interning",false);
+			}
+			catch (SAXException e){
+				// Not supported - aggh
+				// TODO ask on xerces list why not?
+			//	e.printStackTrace();
+			}
 		}
 		ARPFilter a;
 		public void xmlDecl(
