@@ -16,7 +16,7 @@ import com.hp.hpl.jena.n3.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.2 2003-01-28 18:25:22 andy_seaborne Exp $
+ * @version 	$Id: n3.java,v 1.3 2003-01-31 10:59:19 andy_seaborne Exp $
  */
 public class n3
 {
@@ -57,6 +57,7 @@ public class n3
     	ArgDecl rdfRDFN3Decl      = new ArgDecl(false, "--rdf-n3") ;
     	ArgDecl rdfRDFXMLDecl     = new ArgDecl(false, "--rdf-xml") ;
     	ArgDecl rdfRDFNTDecl      = new ArgDecl(false, "--rdf-nt") ;
+        ArgDecl rdfRDFFormat      = new ArgDecl(true, "--format", "--fmt") ;
     	ArgDecl debugDecl         = new ArgDecl(false, "-debug") ;
     	ArgDecl baseDecl          = new ArgDecl(true, "-base") ;
     	//ArgDecl outputDecl        = new ArgDecl(true, "-output", "-o") ;
@@ -68,6 +69,7 @@ public class n3
 		cmd.add(rdfRDFN3Decl) ;
 		cmd.add(rdfRDFXMLDecl) ;
 		cmd.add(rdfRDFNTDecl) ;
+        cmd.add(rdfRDFFormat) ;
 		cmd.add(debugDecl) ;
 		cmd.add(baseDecl) ;
 		cmd.add(checkDecl) ;
@@ -85,6 +87,7 @@ public class n3
     		System.out.println("    --rdf-n3        Read into an RDF and print in N3") ;
     		System.out.println("    --rdf-xml       Read into an RDF and print in XML") ;
     		System.out.println("    --rdf-nt        Read into an RDF and print in N-Triples") ;
+            System.out.println("    --format FMT    Read into an RDF and print in given format") ;
     		System.out.println("    --check | -n    Just check: no output") ;
     		System.out.println("    --base URI      Set the base URI") ;
     		System.exit(0) ;
@@ -123,6 +126,14 @@ public class n3
     		printN3 = false ;
     	}
     	
+        if ( cmd.contains(rdfRDFFormat))
+        {
+            doRDF = true ;
+            printRDF = true ;
+            outputLang = cmd.getArg(rdfRDFFormat).getValue() ;
+            printN3 = false ;
+        }
+        
     	if ( cmd.contains(debugDecl) )
     	{
     		debug = true ;
@@ -238,8 +249,11 @@ public class n3
             else
             {
                 Exception ex = rdfEx.getNestedException() ;
-                if ( n3Ex == null && ex instanceof N3Exception )
+                if ( n3Ex == null && ex!= null && ex instanceof N3Exception )
                     n3Ex = (N3Exception)ex ;
+                else
+                    if (ex != null && ex instanceof RDFException) 
+                        rdfEx = (RDFException)ex ;
             }
             
             if ( n3Ex != null )
