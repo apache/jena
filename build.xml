@@ -33,6 +33,7 @@
     <property name="javadoc.dir"     value="doc/javadoc"/>
     <property name="etc.dir"         value="etc"/>
     <property name="test.dir"        value="testing"/>
+    <property name="tools.dir"        value="tools"/>
 
     <property name="jarfile"         value="${name}.jar"/>
     <property name="srczipfile"      value="${name}-src.zip"/>
@@ -387,6 +388,10 @@
 
         <copy todir="${dist.dir}/${test.dir}">
             <fileset dir="${test.dir}" includes="**"/>
+        </copy>
+
+        <copy todir="${dist.dir}/${tools.dir}">
+            <fileset dir="${tools.dir}" includes="**"/>
         </copy>
 
         <!-- Junk that creeps in -->
