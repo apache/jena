@@ -54,12 +54,18 @@ must be reloaded. Little performance tuning has been done.</p>
 
 
 
-<p>The jena/db module provides persistence for asserted and reified statements. 
-It uses a different layout than Jena1 that enables faster insertion and 
-retrieval but uses more storage than Jena1. It is largely backwards-compatible 
-for Jena1 applications with the exception of some database configuration 
-options. The persistence subsystem supports a Fastpath capability for RDQL 
-queries. This dynamically generates SQL queries to perform as much of the RDQL 
+<p>The Jena2 persistence subsystem implements an extension to the Jena Model 
+class that provides persistence for  models through use of a back-end 
+database engine. Jena2 is largely backwards-compatible for Jena1 applications 
+with the exception of some database configuration options. The default Jena2 
+database layout uses a denormalized schema in which literals and resource URIs 
+are stored directly in statement tables. This differs from Jena1 in which all 
+literals and resources were stored in a common table that was referenced by 
+statements. The Jena2 layout  enables faster insertion and 
+retrieval but uses more storage than Jena1. Options are available that give 
+Jena2 users some control over the degree of normalization in order to reduce 
+storage consumption. The persistence subsystem supports a Fastpath capability for RDQL 
+queries that dynamically generates SQL queries to perform as much of the RDQL 
 query as possible within the database engine. For an overview of creating and 
 accessing persistent Jena models, see <a href="howto.html">howto.html</a>. A 
 summary of the various configuration options available is given in
