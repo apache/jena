@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.16 2004-03-05 15:52:21 chris-dollin Exp $
+  $Id: Expression.java,v 1.17 2004-03-16 13:26:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -35,7 +35,7 @@ public interface Expression
         
     	@param vv the mapping from variable[ name]s to their values
     */
-    public boolean evalBool( VariableValues vv );
+    // public boolean evalBool( VariableValues vv );
     
     /**
         Answer a Valuator which does the same evaluation as this Expression when
@@ -118,7 +118,6 @@ public interface Expression
         public int argCount() { return 0; }
         public String getFun() { return null; }
         public Expression getArg( int i ) { return null; }
-        public Valuator prepare( VariableIndexes vi ) { return Util.prepare( this, vi ); }
         }
     
     /**
@@ -178,24 +177,24 @@ public interface Expression
             return s;
             }           
         
-        /**
-            Answer a Valuator v such that <code>v.evalBool(IndexValues iv)</code>
-            will return
-        <br>
-            <code>
-            e.evalBool( vv ) where vv.get(name) = iv.get(vi.indexOf(name))
-            </code>
-         */
-        public static Valuator prepare( final Expression e, VariableIndexes vi )
-            {
-            final Valof valof = new Valof( vi );
-            return new Valuator()
-                {
-                public boolean evalBool( IndexValues iv )
-                    { return e.evalBool( valof.setDomain( iv ) ); }
-                };
-            }
-        }
+//        /**
+//            Answer a Valuator v such that <code>v.evalBool(IndexValues iv)</code>
+//            will return
+//        <br>
+//            <code>
+//            e.evalBool( vv ) where vv.get(name) = iv.get(vi.indexOf(name))
+//            </code>
+//         */
+//        public static Valuator prepare( final Expression e, VariableIndexes vi )
+//            {
+//            final Valof valof = new Valof( vi );
+//            return new Valuator()
+//                {
+//                public boolean evalBool( IndexValues iv )
+//                    { return e.evalBool( valof.setDomain( iv ) ); }
+//                };
+//            }
+       }
      
     /**
     	Valof provides an implementation of VariableValues which composes the

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.8 2003-10-15 10:56:05 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.9 2004-03-16 13:26:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -30,7 +30,8 @@ public class ExampleCreate
         {
         ObjectValuator L;
         ObjectValuator R;
-        DyadicValuator( ObjectValuator L, ObjectValuator R ) { this.L = L; this.R = R; }    
+        DyadicValuator( ObjectValuator L, ObjectValuator R ) 
+            { this.L = L; this.R = R; }    
         public Object eval( IndexValues iv )
             { return Boolean.valueOf( evalBool( iv ) ); }
         }
@@ -114,10 +115,7 @@ public class ExampleCreate
     public static BaseExampleExpression NE( final Node x, final Node y )
         {
         return new Dyadic( x, y ) 
-            {
-            public boolean evalBool( VariableValues vv )
-                { return !L.eval( vv ).equals( R.eval( vv ) ); }
-            
+            {            
             public String getFun()
                 { return "http://jena.hpl.hp.com/constraints/NE"; }
                 
@@ -135,10 +133,7 @@ public class ExampleCreate
     public static BaseExampleExpression EQ( Node x, Node y )
         {
         return new Dyadic( x, y ) 
-            {
-            public boolean evalBool( VariableValues vv )
-                { return L.eval( vv ).equals( R.eval( vv ) ); }
-            
+            {            
             public String getFun()
                 { return "http://jena.hpl.hp.com/constraints/EQ"; }
                 
@@ -170,9 +165,6 @@ public class ExampleCreate
                 { String x = asString( L ), y = asString( R );
                 return x.indexOf( y ) > -1; }       
                          
-            public boolean evalBool( VariableValues vv )
-                { return matches( L.eval( vv ), R.eval( vv ) ); }
-                
             public Valuator prepare( VariableIndexes vi )
                 {
                 return new DyadicValuator( (ObjectValuator) L.prepare( vi ), (ObjectValuator) R.prepare( vi ) )

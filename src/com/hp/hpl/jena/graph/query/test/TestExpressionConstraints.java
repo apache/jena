@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.10 2003-10-16 09:45:57 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.11 2004-03-16 13:26:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -37,6 +37,12 @@ public class TestExpressionConstraints extends GraphTestBase
     protected static final Expression eTRUE = Expression.TRUE;
     protected static final Expression eFALSE = Expression.FALSE;
 
+    protected VariableIndexes emptyVI = new VariableIndexes()
+        { public int indexOf(String name) { return -1; } };
+        
+    protected IndexValues emptyIV = new IndexValues()
+        { public Object get( int index ) { return null; } };
+    
     protected static final Map1 getFirst = new Map1()
         { public Object map1(Object x) { return ((List) x).get(0); }};        
         
@@ -120,39 +126,50 @@ public class TestExpressionConstraints extends GraphTestBase
         assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
         }
         
-    public static class VV implements VariableValues
+    public static class VI implements VariableIndexes
         {
         private Map values = new HashMap();
         
-        public VV set( String x, String s ) { values.put( x, s ); return this; }    
+        public VI set( String x, int i ) { values.put( x, new Integer( i ) ); return this; }    
         
-        public Object get( String name ) { return values.get( name ); }
+        public int indexOf( String name ) { return ((Integer) values.get( name )).intValue(); }
+        }
+    
+    public static class IV implements IndexValues
+        {
+        private Map values = new HashMap();
+        
+        public IV set( int i, Object x ) { values.put( new Integer( i ), x ); return this; }    
+        
+        public Object get( int i ) { return values.get( new Integer( i ) ); }
         }
         
-    public void testVV()
+    public void testVI()
         {
-        VV varValues = new VV() .set( "X", "1" ).set( "Y", "2" ).set( "Z", "3" );
-        assertEquals( "1", varValues.get( "X" ) );
-        assertEquals( "2", varValues.get( "Y" ) );
-        assertEquals( "3", varValues.get( "Z" ) );
+        VI varValues = new VI() .set( "X", 1 ).set( "Y", 2 ).set( "Z", 3 );
+        assertEquals( 1, varValues.indexOf( "X" ) );
+        assertEquals( 2, varValues.indexOf( "Y" ) );
+        assertEquals( 3, varValues.indexOf( "Z" ) );
         }    
         
     public void testNE()
         {
         Expression e = areEqual( X, Y );
-        VV varValues = new VV() .set( "X", "1" ).set( "Y", "2" );
-        assertEquals( false, e.evalBool( varValues ) );    
+        VariableIndexes vi = new VI().set( "X", 1 ).set( "Y", 2 );
+        IndexValues iv = new IV().set( 1, "something" ).set( 2, "else" );
+        assertEquals( false, e.prepare( vi ).evalBool( iv ) );    
         }
         
-   public void testVVTrue()
-        { assertEquals( true, Expression.TRUE.evalBool( new VV() ) ); }
+	public void testVVTrue()
+        { assertEquals( true, Expression.TRUE.prepare( emptyVI ).evalBool( emptyIV ) ); }
         
-   public void testVVFalse()
-        { assertEquals( false, Expression.FALSE.evalBool( new VV() ) ); }
+    public void testVVFalse()
+        { assertEquals( false, Expression.FALSE.prepare( emptyVI ).evalBool( emptyIV ) ); }
 
     public void testVVMatches()
-        { VariableValues vv = new VV().set( "X", "hello" ).set( "Y", "ell" );
-        assertEquals( true, matches( X, Y ).evalBool( vv ) );  }
+        { VariableIndexes vi = new VI().set( "X", 0 ).set( "Y", 1 );
+        IndexValues iv = new IV().set( 0, "hello" ).set( 1, "ell" );
+        assertEquals( true, matches( X, Y ).prepare( vi ).evalBool( iv ) );  }
         
     public void testPrepareTRUE()
         {
