@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JenaAltHasNoDefaultException.java,v 1.1 2003-06-13 15:30:25 chris-dollin Exp $
+  $Id: JenaAltHasNoDefaultException.java,v 1.1 2003-06-16 10:56:30 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.shared;
-
-import com.hp.hpl.jena.rdf.model.*;
+package com.hp.hpl.jena.rdf.model;
 
 /**
     Exception thrown if an Alt has no default statement.
