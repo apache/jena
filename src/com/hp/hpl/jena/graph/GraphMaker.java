@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMaker.java,v 1.3 2003-08-15 10:37:32 chris-dollin Exp $
+  $Id: GraphMaker.java,v 1.4 2003-08-15 10:40:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -16,11 +16,11 @@ public interface GraphMaker
 {
 
     /**
-        Answer a graph who's name isn't interesting. 
-        TODO resolve the issue of whether it may be some other graph, or a different
-        one each time.
+        Answer the default graph of this ModelMaker. The same graph is returned on
+        each call. It may only be constructed on the first call of getGraph(), or at any
+        previous time.
         
-        @return a new or existing graph.
+        @return the same default graph each time
      */
     public Graph getGraph();
     
@@ -101,7 +101,7 @@ public interface GraphMaker
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  *
- * Last modified on   $Date: 2003-08-15 10:37:32 $
+ * Last modified on   $Date: 2003-08-15 10:40:28 $
  *               by   $Author: chris-dollin $
 
  *****************************************************************************/
