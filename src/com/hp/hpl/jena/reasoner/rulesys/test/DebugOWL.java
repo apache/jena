@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.18 2003-08-21 12:04:46 der Exp $
+ * $Id: DebugOWL.java,v 1.19 2003-08-21 22:14:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.19 $ on $Date: 2003-08-21 22:14:11 $
  */
 public class DebugOWL {
 
@@ -301,7 +301,7 @@ public class DebugOWL {
         runVolz(3,5,10, false);
         runVolz(3,5,10, false);
         runVolz(4,5,10, false);
-//        runVolz(5,5,10, false);
+        runVolz(5,5,10, false);
         
 //        runVolz(3,5,30, false);
 //        runVolz(4,5,30, false);
@@ -343,12 +343,14 @@ public class DebugOWL {
             // Test volz examples on RDFS config
             System.out.println("Volz tests on normal RDFS, tgc + type rules");
             new DebugOWL(RDFSFinal).runVolz();
-            System.out.println("Volz tests on normal OWL-FB");
-            new DebugOWL(OWLFB).runVolz();
+//            System.out.println("Volz tests on normal RDFS fb rules");
+//            new DebugOWL(RDFSFB).runVolz();
             System.out.println("Volz tests on lp + expt RDFS rules");
             new DebugOWL(RDFSLPExpt).runVolz();
-            System.out.println("Volz tests on lp + expt owl rules");
-            new DebugOWL(OWLExpt).runVolz();
+//            System.out.println("Volz tests on lp + expt owl rules");
+//            new DebugOWL(OWLExpt).runVolz();
+//            System.out.println("Volz tests on normal OWL-FB");
+//            new DebugOWL(OWLFB).runVolz();
                         
 //            DebugOWL tester = new DebugOWL(OWLFB);
 //            tester.load(dataFile2);
