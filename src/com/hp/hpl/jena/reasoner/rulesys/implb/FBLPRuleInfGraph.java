@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBLPRuleInfGraph.java,v 1.5 2003-08-15 16:10:30 der Exp $
+ * $Id: FBLPRuleInfGraph.java,v 1.6 2003-08-18 21:12:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  * and this one will disappear
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-15 16:10:30 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-18 21:12:19 $
  */
 public class FBLPRuleInfGraph  extends FBRuleInfGraph {
     
@@ -98,14 +98,7 @@ public class FBLPRuleInfGraph  extends FBRuleInfGraph {
      * @return true if the predicate succeeds
      */
     public boolean processBuiltin(Object clause, Rule rule, BindingEnvironment env) {
-        // TODO fix up or delete, should not be needed by LP engine
-        if (clause instanceof Functor) {
-            context.setEnv(env);
-            context.setRule(rule);
-            return((Functor)clause).evalAsBodyClause(context);
-        } else {
-            throw new ReasonerException("Illegal builtin predicate: " + clause + " in rule " + rule);
-        }
+        throw new ReasonerException("Internal error in FBLP rule engine, incorrect invocation of building in rule " + rule); 
     }
     
     /**
@@ -218,8 +211,7 @@ public class FBLPRuleInfGraph  extends FBRuleInfGraph {
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
 //        System.out.println("FBLP find called on: " + pattern); 
         if (!isPrepared) prepare();
-        ExtendedIterator result = lpbEngine.find(pattern);
-        // TODO: Check if we need a UniqueExtendedIterator wrapper in here
+        ExtendedIterator result = new UniqueExtendedIterator(lpbEngine.find(pattern));
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
         }

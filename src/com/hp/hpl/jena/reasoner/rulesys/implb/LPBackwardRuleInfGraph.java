@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.4 2003-08-14 07:51:10 der Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.5 2003-08-18 21:12:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-14 07:51:10 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-18 21:12:19 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -46,9 +46,6 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      
     /** A finder that searches across the data, schema and axioms */
     protected Finder dataFind;
-    
-    /** Single context for the reasoner, used when passing information to builtins */
-    protected BBRuleContext context; // TODO: change or remove
     
     /** Cache of temporary property values inferred through getTemp calls */
     protected TempNodeCache tempNodecache;
@@ -104,8 +101,6 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
             if (fschema != null) {
                 dataFind = FinderUtil.cascade(dataFind, fschema);
             }
-            
-            context = new BBRuleContext(this);
         }
         
         isPrepared = true;
@@ -272,13 +267,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * @return true if the predicate succeeds
      */
     public boolean processBuiltin(Object clause, Rule rule, BindingEnvironment env) {
-        if (clause instanceof Functor) {
-            context.setEnv(env);
-            context.setRule(rule);
-            return((Functor)clause).evalAsBodyClause(context);
-        } else {
-            throw new ReasonerException("Illegal builtin predicate: " + clause + " in rule " + rule);
-        }
+        throw new ReasonerException("Internal error in FBLP rule engine, incorrect invocation of building in rule " + rule); 
     }
     
     /**
