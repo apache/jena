@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.11 2003-06-02 16:52:30 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.12 2003-06-02 22:20:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-02 16:52:30 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-02 22:20:39 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -135,12 +135,14 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * fire any rules but provide additional axioms that might enable future rule
      * firing when real data is added. Used to implement bindSchema processing
      * in the parent Reasoner.
+     * @return return true if the rule set has also been loaded, will always be false for this case but subclasses do more
      */
-    public void preloadDeductions(Graph preload) {
+    public boolean preloadDeductions(Graph preload) {
         Graph d = fdeductions.getGraph();
         for (Iterator i = preload.find(null, null, null); i.hasNext(); ) {
             d.add((Triple)i.next());
         }
+        return false;
     }
    
     /**

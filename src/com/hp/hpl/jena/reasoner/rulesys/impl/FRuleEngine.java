@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.4 2003-06-02 16:53:46 der Exp $
+ * $Id: FRuleEngine.java,v 1.5 2003-06-02 22:19:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-02 16:53:46 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-02 22:19:13 $
  */
 public class FRuleEngine {
     
@@ -85,6 +85,15 @@ public class FRuleEngine {
         findAndProcessAxioms();
         nAxiomRulesFired = nRulesFired;
         logger.debug("Axioms fired " + nAxiomRulesFired + " rules");
+        fastInit();
+    }
+    
+    /**
+     * Process all available data. This version expects that all the axioms 
+     * have already be preprocessed and the clause index already exists.
+     */
+    public void fastInit() {
+        if (infGraph.getRawGraph() == null) return; 
         // Create the reasoning context
         BFRuleContext context = new BFRuleContext(infGraph);
         // Insert the data
@@ -127,6 +136,21 @@ public class FRuleEngine {
      */
     public void setDerivationLogging(boolean recordDerivations) {
         this.recordDerivations = recordDerivations;
+    }
+    
+    /**
+     * Access the precomputed internal rule form. Used when precomputing the
+     * internal axiom closures.
+     */
+    public Object getRuleStore() {
+        return clauseIndex;
+    }
+    
+    /**
+     * Set the internal rule from from a precomputed state.
+     */
+    public void setRuleStore(Object ruleStore) {
+        clauseIndex = (OneToManyMap)ruleStore;
     }
     
 //  =======================================================================
@@ -173,20 +197,22 @@ public class FRuleEngine {
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
      */
     protected void buildClauseIndex(boolean ignoreBrules) {
-        clauseIndex = new OneToManyMap();
-        
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
-            if (ignoreBrules && r.isBackward()) continue;
-            Object[] body = r.getBody();
-            for (int j = 0; j < body.length; j++) {
-                if (body[j] instanceof TriplePattern) {
-                    Node predicate = ((TriplePattern) body[j]).getPredicate();
-                    ClausePointer cp = new ClausePointer(r, j);
-                    if (predicate instanceof Node_ANY || predicate instanceof Node_RuleVariable) {
-                        clauseIndex.put(Node.ANY, cp);
-                    } else {
-                        clauseIndex.put(predicate, cp);
+        if (clauseIndex == null) {
+            clauseIndex = new OneToManyMap();
+            
+            for (Iterator i = rules.iterator(); i.hasNext(); ) {
+                Rule r = (Rule)i.next();
+                if (ignoreBrules && r.isBackward()) continue;
+                Object[] body = r.getBody();
+                for (int j = 0; j < body.length; j++) {
+                    if (body[j] instanceof TriplePattern) {
+                        Node predicate = ((TriplePattern) body[j]).getPredicate();
+                        ClausePointer cp = new ClausePointer(r, j);
+                        if (predicate instanceof Node_ANY || predicate instanceof Node_RuleVariable) {
+                            clauseIndex.put(Node.ANY, cp);
+                        } else {
+                            clauseIndex.put(predicate, cp);
+                        }
                     }
                 }
             }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.4 2003-06-02 16:53:46 der Exp $
+ * $Id: TestFBRules.java,v 1.5 2003-06-02 22:20:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-02 16:53:46 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-02 22:20:39 $
  */
 public class TestFBRules extends TestCase {
     // Useful constants
@@ -183,7 +183,8 @@ public class TestFBRules extends TestCase {
     public void testSchemaBinding() {
         String rules = "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
-                       "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]";
+                       "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
+                       "[testBRule4: (n3 p ?a) <- (n1, p, ?a)]";
         List ruleList = Rule.parseRules(rules);
         Graph schema = new GraphMem();
         schema.add(new Triple(n1, p, n3));
@@ -199,6 +200,7 @@ public class TestFBRules extends TestCase {
             new Triple[] {
                 new Triple(n1, p, n3),
                 new Triple(n2, p, n3),
+                new Triple(n3, p, n3),
                 new Triple(n1, q, n4),
                 new Triple(n2, q, n4),
                 new Triple(n1, q, n3),
@@ -515,6 +517,7 @@ public class TestFBRules extends TestCase {
 //            System.out.println(" - " + PrintUtil.print(t));
             count++;
         }
+        
         assertTrue(count == 7);
     }
     

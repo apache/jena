@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.4 2003-06-02 16:52:31 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.5 2003-06-02 22:20:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-02 16:52:31 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-02 22:20:39 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -77,7 +77,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph(Reasoner reasoner, List rules, Graph schema, Graph data) {
         super(reasoner, rules, schema, data);
-        this.rules = rules;        bEngine = new BRuleEngine(this);
+        this.rules = rules;        
+        bEngine = new BRuleEngine(this);
     }
     
 //  =======================================================================
@@ -142,10 +143,18 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     }
     
     /**
-     * Return an ordered list of all registered rules.
+     * Return an ordered list of all registered backward rules.
      */
-    public List getAllRules() {
+    public List getAllBRules() {
         return bEngine.getAllRules();
+    }
+    
+    /**
+     * Return a compiled representation of all the registered
+     * forward rules.
+     */
+    public Object getForwardRuleStore() {
+        return engine.getRuleStore();
     }
     
     /**
@@ -193,18 +202,24 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             isPrepared = true;
             // initilize the deductions graph
             fdeductions = new FGraph( new GraphMem() );
-            dataFind = (fdata == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
+            dataFind = (fdata == null || fdata.getGraph() == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
+            boolean rulesLoaded = false;
             if (schemaGraph != null) {
-                preloadDeductions(schemaGraph);
                 dataFind = FinderUtil.cascade(dataFind, new FGraph(schemaGraph));
+                rulesLoaded = preloadDeductions(schemaGraph);
             }
-            extractPureBackwardRules();
-            // Run the forward rules
-            engine.init(true);
+            if (rulesLoaded) {
+                engine.fastInit(); 
+            } else {
+                // No preload so do the rule separation
+                extractPureBackwardRules();
+                engine.init(true);
+            }
             // Prepare the context for builtins run in backwards engine
             context = new BBRuleContext(this, dataFind);
             // Process any scheduled prototype checks
-            processPrototypeChecks();
+            // Prototype processing is currently disabled until we can support concurrently updatable graphs
+            // processPrototypeChecks();
         }
     }
     
@@ -301,16 +316,25 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * fire any rules but provide additional axioms that might enable future rule
      * firing when real data is added. Used to implement bindSchema processing
      * in the parent Reasoner.
+     * @return true if the preload was able to load rules as well
      */
-    public void preloadDeductions(Graph preloadIn) {
+    public boolean preloadDeductions(Graph preloadIn) {
         Graph d = fdeductions.getGraph();
         FBRuleInfGraph preload = (FBRuleInfGraph)preloadIn;
         // Load raw deductions
         for (Iterator i = preload.getDeductionsGraph().find(null, null, null); i.hasNext(); ) {
             d.add((Triple)i.next());
         }
-        // Load rules
-        addBRules(preload.getAllRules());
+        // If the rule set is the same we can reuse those as well
+        if (preload.rules == rules) {
+            // Load backward rules
+            addBRules(preload.getAllBRules());
+            // Load forward rules
+            engine.setRuleStore(preload.getForwardRuleStore());
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
