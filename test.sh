@@ -15,7 +15,7 @@ junit.jar
 log4j-1.2.7.jar
 rdf-api-2001-01-19.jar
 xercesImpl.jar
-xmlParserAPIs.jar
+xml-apis.jar
 EOF
 )"
 
