@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestWrappedIterator.java,v 1.4 2004-12-03 14:56:43 chris-dollin Exp $
+  $Id: TestWrappedIterator.java,v 1.5 2004-12-03 15:01:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -11,6 +11,7 @@ package com.hp.hpl.jena.util.iterator.test;
     some fake base iterator to do the checking, and _close_, ditto.
 */
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
@@ -35,6 +36,12 @@ public class TestWrappedIterator extends GraphTestBase
         assertTrue( "wrapper has at least three elements", e.hasNext() );
         assertEquals( "", "ben", e.next() );
         assertFalse( "wrapper is now empty", e.hasNext() );
+        }
+    
+    public void testUnwrapExtendedIterator()
+        {
+        ExtendedIterator i = graphWith( "a R b" ).find( Triple.ANY );
+        assertSame( i, WrappedIterator.create( i ) );
         }
     
     public void testWrappedNoRemove()
