@@ -264,7 +264,7 @@ public class BoundRDFSReasoner implements Reasoner {
      * 
      * @param tbox schema containing the property and class declarations
      */
-    public Reasoner bindRuleset(Graph tbox) throws ReasonerException {
+    public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         throw new ReasonerException("Attempt to bind multiple rulesets - disallowed for now");
     }
      

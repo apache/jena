@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.1 2003-01-30 18:30:37 der Exp $
+ * $Id: Reasoner.java,v 1.2 2003-01-31 08:50:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:30:37 $
+ * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:50:14 $
  */
 public interface Reasoner extends Finder {
     
@@ -47,7 +47,7 @@ public interface Reasoner extends Finder {
      * can only accept a single rule set in this way and one rule set has
      * already been bound in of if the ruleset is illformed.
      */
-    public Reasoner bindRuleset(Graph tbox) throws ReasonerException;
+    public Reasoner bindSchema(Graph tbox) throws ReasonerException;
     
     /**
      * Attach the reasoner to a set of RDF ddata to process.

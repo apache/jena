@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.1 2003-01-30 18:31:10 der Exp $
+ * $Id: RDFSReasoner.java,v 1.2 2003-01-31 08:49:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:10 $
+ * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:49:35 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -59,8 +59,8 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
      * subClassOf is discovered.
      * @param tbox schema containing the property and class declarations
      */
-    public Reasoner bindRuleset(Graph tbox) throws ReasonerException {
-        super.bindRuleset(tbox);
+    public Reasoner bindSchema(Graph tbox) throws ReasonerException {
+        super.bindSchema(tbox);
         subPropertyCache.setCaching(true);
         
         // TODO: Extract tbox induced rules

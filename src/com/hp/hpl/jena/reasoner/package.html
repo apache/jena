@@ -37,7 +37,13 @@ result   of such binding is an <a href="InfGraph.html">InfGraph</a>
 <p>For example, all of the steps involved in generated an RDFS closure of 
  a graph are:<br>
 </p>
-<pre>  ReasonerFactory rf = RDFSReasonerFactory.theInstance();<br>  Reasoner reasoner  = reasonerF.create(null);<br>  InfGraph graph     = reasoner.bindRuleset(tbox)<br>                               .bind(data);<br>  Model model        = new ModelMem(graph);<br></pre>
+<pre>
+  ReasonerFactory rf = RDFSReasonerFactory.theInstance();
+  Reasoner reasoner  = reasonerF.create(null);
+  InfGraph graph     = reasoner.bindSchema(tbox)
+                               .bind(data);
+  Model model        = new ModelMem(graph);
+</pre>
 <p>If the resulting <i>graph</i> or <i>model</i> are queried using find/listStatements 
 they contain the sum of all the assertions in the tbox graph, the data graph 
 and the triples entailed from them via RDF+RDFS entailment.<br>

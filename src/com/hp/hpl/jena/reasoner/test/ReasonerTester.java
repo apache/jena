@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.1 2003-01-30 18:31:11 der Exp $
+ * $Id: ReasonerTester.java,v 1.2 2003-01-31 08:49:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -43,7 +43,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:11 $
+ * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:49:35 $
  */
 public class ReasonerTester {
 
@@ -208,7 +208,7 @@ public class ReasonerTester {
         Graph tbox = loadTestFile(test, tboxP);
         Graph data = loadTestFile(test, dataP);
         Reasoner reasoner = reasonerF.create(null);
-        InfGraph graph = reasoner.bindRuleset(tbox).bind(data);
+        InfGraph graph = reasoner.bindSchema(tbox).bind(data);
         
         // Run each query triple and accumulate the results
         Graph queryG = loadTestFile(test, queryP);
