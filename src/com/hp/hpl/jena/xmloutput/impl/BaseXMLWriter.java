@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.42 2005-04-03 20:28:04 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.43 2005-04-03 20:35:36 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.42 $' Date='$Date: 2005-04-03 20:28:04 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.43 $' Date='$Date: 2005-04-03 20:35:36 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -472,11 +472,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
 				//		System.out.println(javaEnc);
 				String xEnc = EncodingMap.getJava2IANAMapping(javaEnc);
-				String yEnc = Charset.forName(javaEnc).name();
-				if (xEnc != null && !yEnc.equalsIgnoreCase(xEnc)) {
-				    logger.warn("xEnc: "+xEnc+ " yEnc: "+ yEnc );
+				String ianaEnc = Charset.forName(javaEnc).name();
+				if (xEnc != null && !ianaEnc.equalsIgnoreCase(xEnc)) {
+				    logger.warn("xEnc: "+xEnc+ " IanaEnc: "+ ianaEnc );
 				}
-				decl = "<?xml version="+q("1.0")+" encoding=" + q(yEnc) + "?>";
+				decl = "<?xml version="+q("1.0")+" encoding=" + q(ianaEnc) + "?>";
 			}
 		}
 		if (decl == null && showXmlDeclaration != null)
