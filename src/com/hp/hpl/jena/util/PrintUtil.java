@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PrintUtil.java,v 1.4 2003-06-13 16:31:47 der Exp $
+ * $Id: PrintUtil.java,v 1.5 2003-06-24 16:55:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-13 16:31:47 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-24 16:55:45 $
  */
 public class PrintUtil {
 
@@ -46,6 +46,7 @@ public class PrintUtil {
     public static void init() {
         registerPrefix("rdf", RDF.getURI());
         registerPrefix("rdfs", RDFS.getURI());
+        registerPrefix("drdfs", "urn:x-hp-direct-predicate:http_//www.w3.org/2000/01/rdf-schema#");
         registerPrefix("owl", OWL.NAMESPACE);
         registerPrefix("daml", DAML_OIL.NAMESPACE_DAML.getURI());
         registerPrefix("jr", ReasonerVocabulary.getJenaReasonerNS());
