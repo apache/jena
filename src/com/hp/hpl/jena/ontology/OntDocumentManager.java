@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.38 $
+ * Revision           $Revision: 1.39 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-11 22:29:04 $
+ * Last modified on   $Date: 2004-08-12 11:33:32 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.38 2004-08-11 22:29:04 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.39 2004-08-12 11:33:32 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -382,6 +382,7 @@ public class OntDocumentManager
      *
      * @param uri The ontology document to lookup
      * @return The model for the document, or null if the model is not known.
+     * @see #getOntology
      */
     public Model getModel( String uri ) {
         return (Model) m_modelMap.get( uri );
@@ -507,13 +508,9 @@ public class OntDocumentManager
      * @param uri Identifies the model to load.
      * @param spec Specifies the structure of the ontology model to create
      * @return An ontology model containing the statements from the ontology document.
+     * @see #getModel
      */
-    public Model getOntology( String uri, OntModelSpec spec ) {
-        // cached already?
-        if (m_modelMap.containsKey( uri )) {
-            return (Model) m_modelMap.get( uri );
-        }
-
+    public OntModel getOntology( String uri, OntModelSpec spec ) {
         // ensure consistency of document managers (to allow access to cached documents)
         OntModelSpec _spec = spec;
         if (_spec.getDocumentManager() != this) {
@@ -521,7 +518,18 @@ public class OntDocumentManager
             _spec.setDocumentManager( this );
         }
 
-        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        // cached already?
+        if (m_modelMap.containsKey( uri )) {
+            Model cached = (Model) m_modelMap.get( uri );
+            if (cached instanceof OntModel) {
+                return (OntModel) cached;
+            }
+            else {
+                return ModelFactory.createOntologyModel( _spec, cached );
+            }
+        }
+
+        OntModel m = ModelFactory.createOntologyModel( _spec, null );
         read( m, uri, true );
 
         return m;
