@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.17 2003-11-04 09:54:41 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.18 2003-11-06 17:28:32 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -157,7 +157,7 @@ public interface PrefixMapping
         .setNsPrefix( "rss", RSS.getURI() )
         .setNsPrefix( "daml", DAMLVocabulary.NAMESPACE_DAML_2001_03_URI )
         .setNsPrefix( "vcard", VCARD.getURI() )
-        .setNsPrefix( "owl", OWL.NAMESPACE )
+        .setNsPrefix( "owl", OWL.getURI() )
         .setNsPrefix( "jms", JMS.getURI() )
         .lock()
         ;   

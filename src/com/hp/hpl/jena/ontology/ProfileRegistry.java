@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: ProfileRegistry.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-11-06 17:24:19 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,14 +38,14 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ProfileRegistry.java,v 1.5 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS $Id: ProfileRegistry.java,v 1.6 2003-11-06 17:24:19 ian_dickinson Exp $
  */
 public class ProfileRegistry {
     // Constants
     //////////////////////////////////
 
     /** The URI that maps to the language profile for OWL (full) */
-    public static final String OWL_LANG = OWL.NAMESPACE;
+    public static final String OWL_LANG = OWL.getURI();
     
     /** The URI that maps to the language profile for OWL (DL) */
     public static final String OWL_DL_LANG = "http://www.w3.org/TR/owl-features/#term_OWLDL";
