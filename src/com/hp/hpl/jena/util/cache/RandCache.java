@@ -41,7 +41,7 @@ public class RandCache implements Cache, CacheControl {
         collection = map.values();
     }
 
-    public Object get(Object key) {
+    public synchronized Object get(Object key) {
         if (enabled) {
             if (gets == Long.MAX_VALUE) {
                 forgetStats();
@@ -57,7 +57,7 @@ public class RandCache implements Cache, CacheControl {
         }
     }
 
-    public void put(Object key, Object value) {
+    public synchronized void put(Object key, Object value) {
 
         // don't allow null values
         if (value == null) {
@@ -91,29 +91,29 @@ public class RandCache implements Cache, CacheControl {
         }
     }
 
-    public boolean getEnabled() {
+    public synchronized boolean getEnabled() {
         return enabled;
     }
 
-    public boolean setEnabled(boolean enabled) {
+    public synchronized boolean setEnabled(boolean enabled) {
         boolean result = enabled;
         this.enabled = enabled;
         return result;
     }
 
-    public void clear() {
+    public synchronized void clear() {
         map.clear();
     }
 
-    public long getHits() {
+    public synchronized long getHits() {
         return hits;
     }
 
-    public long getGets() {
+    public synchronized long getGets() {
         return gets;
     }
 
-    public long getPuts() {
+    public synchronized long getPuts() {
         return puts;
     }
 
@@ -152,5 +152,5 @@ public class RandCache implements Cache, CacheControl {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandCache.java,v 1.4 2003-08-27 13:07:54 andy_seaborne Exp $
+ * $Id: RandCache.java,v 1.5 2004-03-22 14:30:56 andy_seaborne Exp $
  */
