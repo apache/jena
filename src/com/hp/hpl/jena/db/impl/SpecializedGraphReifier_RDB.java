@@ -412,7 +412,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 */
 	public ExtendedIterator find(TripleMatch t, CompletionFlag complete) {
 		
-		Node stmtURI = t.getSubject();	// note: can be null
+		Node stmtURI = t.getMatchSubject();	// note: can be null
 
 		ResultSetIterator it = m_reif.findReifStmt(stmtURI, false, my_GID, true);
 //		ExtendedIterator nodes = m_reif.findReifNodes(stmtURI, my_GID);

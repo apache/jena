@@ -21,11 +21,27 @@
 		</ul>
 		<h3>new model factory:</h3>
 		<ul>
-			<li>Models in Jena 1 were created using new on the model class.  With Jena 2 there is factory for creating new models com.hp.hpl.jena.rdf.model.ModelFactory.  Use that instead of new.  If for some reason you don't want to do that, the memory model class has moved to com.hp.hpl.jena.mem.</li>
+			<li>Models in Jena 1 were created using new on the model class.
+			With Jena 2 there is factory for creating new models
+			com.hp.hpl.jena.rdf.model.ModelFactory. Use that instead of new.
+			If for some reason you don't want to do that, the memory model
+			class has moved to com.hp.hpl.jena.mem.</li>
 		</ul>
 		<h3>iterators now implement java.util.iterator</h3>
 		<ul>
-			<li>which means the .next() method returns an Object rather than a typed object.  You need to either cast the return from the .next() method to the appropriate type or use the .next<i>Type</i>() (where <i>Type</i> is Resource, Literal, Ns, RDFNode or Statement depending on the iterator) to avoid casting.</li>
+			<li>which means the .next() method returns an Object rather than a typed object.
+			You need to either cast the return from the .next() method to the
+			appropriate type or use the .next<i>Type</i>() (where <i>Type</i>
+			is Resource, Literal, Ns, RDFNode or Statement depending on the
+			iterator) to avoid casting.</li>
+		</ul>
+		<h3>DAMLSelector has gone</h3>
+		<ul>
+		<li>
+			DAMLSelector has been eliminated; SimpleSelector on a DAML (or
+			OWL) model will do an almost equivalent job, because those
+			models infer the necessary transitive triples.
+		</li>
 		</ul>
 		<h3>I/O bug fix</h3>
 		<ul>
@@ -36,7 +52,8 @@
                 character encoding problems related to use of java.io.FileReader
                 are reported. Changes in the RDF/XML output means that the
                 not-so-very-portable character encoding used in a java.io.FileWriter
-                is explicit in the XML document. See <a href="IO/iohowto.html#rush">the IO mini HowTo</a>
+                is explicit in the XML document. See
+				<a href="IO/iohowto.html#rush">the IO mini HowTo</a>
                 for more explanation.</p>
 
 		<h3>reification changes</h3>
@@ -57,11 +74,24 @@
 		<h2>What Should be Changed</h2>
 		<h3>new SimpleSelector</h3>
 		<ul>
-			<li>SelectorImpl was the only case (other than creating models - see above) where applications had to use a specific implementation class rather than a class defined in the API.  A new SimpleSelector class has been added into the API package.  This is a clone of the old SelectorImpl class.  The old class still exists in the com.hp.hpl.jena.rdf.model.impl package so existing code won't break with the right import, but moving to the new class is encouraged.  The old one will eventually be deprecated.</li>
+			<li>SelectorImpl was the only case (other than creating models - see above)
+			where applications had to use a specific implementation class
+			rather than a class defined in the API.  A new SimpleSelector
+			class has been added into the API package.  This is a clone of the
+			old SelectorImpl class. The old class still exists in the
+			com.hp.hpl.jena.rdf.model.impl package so existing code won't
+			break with the right import, but moving to the new class is
+			encouraged.  The old one will eventually be deprecated.</li>
 		</ul>
 		<h3>*Impl classes</h3>
 		<ul>
-			<li>Some folks have used  some of the implementation classes directly instead of using the factory methods provided in, e.g. Model.  We are tidying up the javadoc so that the implementation classes are no longer so visible.  Rather than renaming the import, it would be better to switch to using the factory methods.  However, the *Impl classes still exist, and if you need a quick fix, many of them can be found in com.hp.hpl.jena.rdf.model.impl.</li></ul>
+			<li>Some folks have used  some of the implementation classes directly
+			instead of using the factory methods provided in, e.g. Model.  We
+			are tidying up the javadoc so that the implementation classes are
+			no longer so visible.  Rather than renaming the import, it would
+			be better to switch to using the factory methods.  However, the
+			*Impl classes still exist, and if you need a quick fix, many of
+			them can be found in com.hp.hpl.jena.rdf.model.impl.</li></ul>
 		
 	</body>
 </html>

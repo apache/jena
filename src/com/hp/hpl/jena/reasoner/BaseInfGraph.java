@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.14 2003-06-10 10:46:20 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.15 2003-06-11 12:49:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -18,7 +18,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-10 10:46:20 $
+ * @version $Revision: 1.15 $ on $Date: 2003-06-11 12:49:43 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -167,7 +167,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * Returns an iterator over Triples.
      */
     public ExtendedIterator find(TripleMatch m) {
-        return find(m.getSubject(), m.getPredicate(), m.getObject())
+        return find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject())
              .filterKeep(new TripleMatchFilter(m.asTriple()));
     }
       

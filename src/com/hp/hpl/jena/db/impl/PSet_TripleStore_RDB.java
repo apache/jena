@@ -56,7 +56,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.19 $ on $Date: 2003-06-10 10:46:19 $
+* @version $Revision: 1.20 $ on $Date: 2003-06-11 12:49:21 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -1247,9 +1247,9 @@ public void deleteTripleAR(
 	 */
 	public ExtendedIterator find(TripleMatch t, IDBID graphID) {
 	   String astName = getASTname();
-	   Node subj =  t.getSubject();
-	   Node pred =  t.getPredicate();
-	   Node obj_node = t.getObject();
+	   Node subj =  t.getMatchSubject();
+	   Node pred =  t.getMatchPredicate();
+	   Node obj_node = t.getMatchObject();
 	   Node_Literal objLit;
 	   String gid = graphID.getID().toString();
 	   ResultSetTripleIterator result= new ResultSetTripleIterator(this, graphID);

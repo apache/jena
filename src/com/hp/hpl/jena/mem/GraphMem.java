@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.12 2003-06-10 10:46:21 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.13 2003-06-11 12:49:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -76,9 +76,9 @@ public class GraphMem extends GraphBase implements Graph {
     /** Returns an iterator over Triple.
      */
     public ExtendedIterator find(TripleMatch m) {
-        Node s = m.getSubject();
-        Node p = m.getPredicate();
-        Node o = m.getObject();
+        Node s = m.getMatchSubject();
+        Node p = m.getMatchPredicate();
+        Node o = m.getMatchObject();
         Triple tm = m.asTriple();
         // @@ some redundant compares in this code which could be improved
         if (s != null) {

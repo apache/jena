@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: StandardTripleMatch.java,v 1.4 2003-06-10 10:46:19 chris-dollin Exp $
+  $Id: StandardTripleMatch.java,v 1.5 2003-06-11 12:49:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -41,17 +41,17 @@ public final class StandardTripleMatch implements TripleMatch {
         
         /** If it is known that all triples selected by this match will
          * have a common object, return that node, otherwise return null  */
-        public Node getObject() 
+        public Node getMatchObject() 
             { return anyToNull( object ); }
         
         /** If it is known that all triples selected by this match will
          * have a common predicate, return that node, otherwise return null  */
-        public Node getPredicate() 
+        public Node getMatchPredicate() 
             { return anyToNull( predicate ); }
         
         /** If it is known that all triples selected by this filter will
          * have a common subject, return that node, otherwise return null  */
-        public Node getSubject() 
+        public Node getMatchSubject() 
             { return anyToNull( subject ); }
         
         /**
