@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: MegaTestSuite.java,v 1.9 2003-09-10 14:00:00 chris-dollin Exp $
+ * $Id: MegaTestSuite.java,v 1.10 2003-09-29 14:08:51 chris-dollin Exp $
  */
 
 /*
@@ -52,7 +52,7 @@ public class MegaTestSuite extends TestSuite {
     }
     private MegaTestSuite() {
         super( "Jena");
-        addTest( "Memory Model", com.hp.hpl.jena.mem.TestSuiteRegression.suite() );
+        addTest( "Memory Model", com.hp.hpl.jena.mem.test.TestSuiteRegression.suite() );
     }
 
     private void addTest(String name, TestSuite tc) {

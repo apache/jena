@@ -1,4 +1,34 @@
 /*
+    (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+    [See end of file]
+    $Id: TestCaseBasic.java,v 1.1 2003-09-29 14:08:52 chris-dollin Exp $
+*/
+ 
+package com.hp.hpl.jena.mem.test;
+
+import com.hp.hpl.jena.mem.ModelMem;
+
+/**
+ *
+ * @author  bwm
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2003-09-29 14:08:52 $
+ */
+
+public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
+
+    public TestCaseBasic(String name) {
+        super(name);
+    }
+    
+    public void setUp() {
+        m1 = new ModelMem();
+        m2 = new ModelMem();
+        m3 = new ModelMem();
+        m4 = new ModelMem();
+    }
+}
+
+/*
  *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
@@ -24,57 +54,5 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBugs.java,v 1.4 2003-08-27 13:01:27 andy_seaborne Exp $
+ * $Id: TestCaseBasic.java,v 1.1 2003-09-29 14:08:52 chris-dollin Exp $
  */
-
-package com.hp.hpl.jena.mem;
-
-import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.rdf.model.*;
-
-
-/**
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-08-27 13:01:27 $
- */
-public class TestCaseBugs 
-            extends TestCaseBasic {
-                
-    Model model = null;
-
-    public TestCaseBugs(String name) {
-        super(name);
-    }
-    
-    public void setUp() {
-        model = new ModelMem();
-    }
-    
-    public void bug36() {
-        try {
-            Resource r    = model.createResource();
-            Object   oc   = RDFS.Class;
-            Object   op   = RDF.Property;
-            
-            Statement s = model.createStatement(r, RDF.type, oc);
-            assertTrue(s.getObject() instanceof Resource);
-            
-            s.changeObject(op);
-            assertTrue(s.getObject() instanceof Resource);
-            
-            model.add(r, RDF.type, oc);
-            RDFNode n = model.listStatements()
-                             .nextStatement()
-                             .getObject();
-            assertTrue(n instanceof Resource);
-            
-            assertTrue(model.listSubjectsWithProperty(RDF.type, oc).hasNext());
-            
-            assertTrue(model.contains(r, RDF.type, oc));  
-        } catch (Exception e) {
-            System.out.println(e);
-            assertTrue(false);
-        }
-    }
-}

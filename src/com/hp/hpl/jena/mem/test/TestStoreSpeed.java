@@ -1,10 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestStoreSpeed.java,v 1.4 2003-08-27 13:01:27 andy_seaborne Exp $
+  $Id: TestStoreSpeed.java,v 1.1 2003-09-29 14:08:52 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.mem;
+package com.hp.hpl.jena.mem.test;
 
 /**
 	@author kers
@@ -12,6 +12,7 @@ package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class TestStoreSpeed extends GraphTestBase

@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.2 2003-08-27 13:01:27 andy_seaborne Exp $
+  $Id: TestGraphMem.java,v 1.1 2003-09-29 14:08:52 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.mem;
+package com.hp.hpl.jena.mem.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.mem.GraphMem;
+
 import junit.framework.*;
 
 /**
