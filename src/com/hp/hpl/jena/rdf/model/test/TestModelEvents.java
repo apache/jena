@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.10 2003-07-28 13:07:47 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.11 2003-07-28 13:08:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -231,7 +231,7 @@ public class TestModelEvents extends ModelTestBase
         
     public void testChangeListener()
         {
-        ModelChangedListener CL = new ChangeListener
+        ModelChangedListener CL = null;
         }
  
  public static class TripleListener implements ModelChangedListener
