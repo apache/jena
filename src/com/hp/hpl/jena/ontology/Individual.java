@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Individual.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-11-06 17:34:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Individual.java,v 1.9 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS $Id: Individual.java,v 1.10 2003-11-06 17:34:27 ian_dickinson Exp $
  */
 public interface Individual
     extends OntResource
@@ -59,6 +59,7 @@ public interface Individual
      * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
      * @param res The resource that declared to be the same as this individual
      * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     * @deprecated WebOnt have removed <code>owl:sameIndividualAs</code>. Use {@link OntResource#setSameAs} instead.
      */ 
     public void setSameIndividualAs( Resource res );
 
@@ -67,6 +68,7 @@ public interface Individual
      * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
      * @param res A resource that declared to be the same as this individual
      * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     * @deprecated WebOnt have removed <code>owl:sameIndividualAs</code>. Use {@link OntResource#addSameAs} instead.
      */ 
     public void addSameIndividualAs( Resource res );
 
@@ -76,6 +78,7 @@ public interface Individual
      * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
      * @return res An ont resource that declared to be the same as this individual
      * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     * @deprecated WebOnt have removed <code>owl:sameIndividualAs</code>. Use {@link OntResource#getSameAs} instead.
      */ 
     public OntResource getSameIndividualAs();
 
@@ -85,6 +88,7 @@ public interface Individual
      * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
      * @return An iterator over the resources equivalent to this individual.
      * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     * @deprecated WebOnt have removed <code>owl:sameIndividualAs</code>. Use {@link OntResource#listSameAs} instead.
      */ 
     public ExtendedIterator listSameIndividualAs();
 
@@ -92,6 +96,7 @@ public interface Individual
      * <p>Answer true if this individual is the same as the given resource.</p>
      * @param res A resource to test against
      * @return True if the resources are declared the same via a <code>sameIndividualAs</code> statement.
+     * @deprecated WebOnt have removed <code>owl:sameIndividualAs</code>. Use {@link OntResource#isSameAs} instead.
      */
     public boolean isSameIndividualAs( Resource res );
     
@@ -99,6 +104,7 @@ public interface Individual
      * <p>Remove the statement that this individual is the same as the given individual.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that may be declared to be the sameIndividualAs this resource
+     * @deprecated WebOnt have removed <code>owl:sameIndividualAs</code>. Use {@link OntResource#removeSameAs} instead.
      */
     public void removeSameIndividualAs( Resource res );
     
