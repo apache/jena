@@ -7,5 +7,6 @@ package com.hp.hpl.jena.ontology.tidy;
 interface CNodeI {
     int getCategories();
     void setCategories(int c);
+    void incrObjectCount(int i);
 
 }
