@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalResults.java,v 1.2 2003-05-05 21:52:42 der Exp $
+ * $Id: GoalResults.java,v 1.3 2003-05-08 15:09:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * the OR graph of the evaluation trace.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-08 15:09:24 $
  */
 public class GoalResults {
 
@@ -147,7 +147,7 @@ public class GoalResults {
                 return result;
             }
         }
-        // If we get here there are not results available at present
+        // If we get here there are no results available at present
         if (ruleInstances.size() == 0) setComplete();
         return isComplete ? StateFlag.FAIL : StateFlag.SUSPEND;
     }
