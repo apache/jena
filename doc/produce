@@ -29,3 +29,7 @@ do
   html="${f%$MARK}".html
   merge $f > $html
   done
+
+# One special:
+
+merge FAQ/jena-faq.content.html > jena-faq.html

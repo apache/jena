@@ -2,8 +2,14 @@
 
 <HTML>
   <HEAD>
-    <TITLE>Jena I/O Mini HowTo</TITLE>
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../javadoc/stylesheet.css" TITLE="Style">
+  <TITLE>Jena I/O Mini HowTo</TITLE>
+
+ <LINK REL ="stylesheet" TYPE="text/css" 
+	HREF="../javadoc/stylesheet.css" TITLE="Style">
+ <link rel="stylesheet" type="text/css" href="../styles/usermanual.css" />
+<style>
+td { text-align:left; } 
+</style>
   </HEAD>
   <BODY>
   <h1>Jena I/O Mini HowTo</h1>
@@ -204,8 +210,9 @@ values are strings; they may be interpreted as interger, boolean or string as
 defined below.</p>
   <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0">
   <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-  <TD COLSPAN=4><FONT SIZE="+2">
-  <B>Properties to Control N3 Output</B></FONT></TD>
+  <TD COLSPAN=4 style="text-align: center">
+    <B>Properties to Control N3 Output</B>
+  </TD>
   </TR>
   <tr BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
   <th>Property Name</th>
@@ -603,8 +610,9 @@ An ARP property is
  </p>
  <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0">
  <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
- <TD COLSPAN=4><FONT SIZE="+2">
- <B>ARP Properties</B></FONT></TD>
+ <TD COLSPAN=4  style="text-align: center">
+    <B>ARP Properties</B>
+ </TD>
  </TR>
  <tr BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
  <th>Property Name</th>
@@ -727,8 +735,9 @@ changes the properties for writing RDF/XML.
 </p>
   <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0">
   <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-  <TD COLSPAN=4><FONT SIZE="+2">
-  <B>Properties to Control RDF/XML Output</B></FONT></TD>
+  <TD COLSPAN=4 style="text-align: center">
+	<B>Properties to Control RDF/XML Output</B>
+   </TD>
   </TR>
   <tr BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
   <th>Property Name</th>
@@ -785,11 +794,10 @@ changes the properties for writing RDF/XML.
   and only if the option has been specified.
  </td>
  <td>String</td>
- <td></td>
+ <td>&nbsp;</td>
  </tr>
    <tr BGCOLOR="white" CLASS="TableRowColor">
   <td>showXmlDeclaration</td>
-  <dd>can be true, false or "default" (null)
   <td>If true, an XML Declaration is included in the output, if false
    no XML declaration is included.
    The default behaviour only gives an XML Declaration when
@@ -804,6 +812,7 @@ changes the properties for writing RDF/XML.
  <code><b>write(Model,OutputStream,String)</b></code>.
  </td>
  <td>true, "true", false, "false" or "default"</td>
+  <td>can be true, false or "default" (null)</td>
  </tr>
    <tr BGCOLOR="white" CLASS="TableRowColor">
   <td>tab</td>
@@ -851,7 +860,7 @@ changes the properties for writing RDF/XML.
   For the basic writer (RDF/XML) only
   <a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeLiteralPropertyElt">parseTypeLiteralPropertyElt</a>
   has any affect, since none of the other rules are implemented by that writer.
- </td><td>Resource[] or String</td><td></td>
+ </td><td>Resource[] or String</td><td>&nbsp;</td>
 
   <tr BGCOLOR="white" CLASS="TableRowColor">
   <td>prettyTypes</td>
@@ -875,7 +884,7 @@ changes the properties for writing RDF/XML.
                 DAML_OIL.UniqueProperty,
                 });
    </pre>
-   </td><td>Resource[]</td><td></td>
+   </td><td>Resource[]</td><td>&nbsp;</td>
  </tr>
  </table>
 

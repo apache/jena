@@ -53,7 +53,7 @@ th {
 .box { /*margin-left : 5% ;
        margin-right : 7% ;*/
        border: solid ;
-       border-width: thin; 
+       border-width: 1; 
        background-color: #F0F0F0; 
        padding: 10;
        page-break-inside: avoid ;
