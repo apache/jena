@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.5 2004-08-17 14:57:57 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.6 2004-08-17 15:15:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -62,6 +62,12 @@ public class TestPerlyParser extends GraphTestBase
                 }
         }
     
+    public void testEmptyExpression()
+        {
+        PerlPatternParser p = new PerlPatternParser( "" );
+        assertEquals( new Nothing(), p.parseAtom() );
+        }
+    
     public void testDotAtom()
         { testSimpleSpecialAtom( RegexpTree.ANY, "." ); }
     
@@ -80,9 +86,9 @@ public class TestPerlyParser extends GraphTestBase
     
     public void testTerminatorsReturnNull()
         {
-        assertEquals( null, new PerlPatternParser( "|" ).parseAtom() );
-        assertEquals( null, new PerlPatternParser( ")" ).parseAtom() );
-        assertEquals( null, new PerlPatternParser( "]" ).parseAtom() );
+        assertEquals( new Nothing(), new PerlPatternParser( "|" ).parseAtom() );
+        assertEquals( new Nothing(), new PerlPatternParser( ")" ).parseAtom() );
+        assertEquals( new Nothing(), new PerlPatternParser( "]" ).parseAtom() );
         }
     
     public void testBackslashedAtomsUnimplemented()
@@ -162,7 +168,7 @@ public class TestPerlyParser extends GraphTestBase
         assertEquals( 4, p.getPointer() );
         assertEquals( new Text( "o" ), p.parseAtom() );
         assertEquals( 5, p.getPointer() );
-        assertEquals( null, p.parseAtom() );
+        assertEquals( new Nothing(), p.parseAtom() );
         }
     
     public void testSimpleSpecialAtom( Object wanted, String toParse )
@@ -171,9 +177,6 @@ public class TestPerlyParser extends GraphTestBase
         assertEquals( wanted, p.parseAtom() );
         assertEquals( 1, p.getPointer() );
         }
-    
-    
-    
     }
 
 

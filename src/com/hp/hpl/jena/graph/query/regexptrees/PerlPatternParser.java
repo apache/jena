@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PerlPatternParser.java,v 1.5 2004-08-17 14:56:52 chris-dollin Exp $
+  $Id: PerlPatternParser.java,v 1.6 2004-08-17 15:15:08 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -38,13 +38,13 @@ public class PerlPatternParser
             else if (ch == '$')
                 return gen.getEndOfLine();
             else if (ch == '|' || ch == ')' || ch == ']')
-                { pointer -= 1; return null; }
+                { pointer -= 1; return gen.getNothing(); }
             else if (notSpecial( ch ))
                 return gen.getText( ch );
             else
                 throw new RegexpTree.UnsupportedException();
             }
-        return null;
+        return gen.getNothing();
         }
     
     public static boolean notSpecial( char ch )
@@ -92,7 +92,7 @@ public class PerlPatternParser
                     return gen.getOptional( d );
                     
                 case '{':
-                    return null;
+                    throw new RegexpTree.UnsupportedException();
                     
                 default:
                     return d;
@@ -111,7 +111,7 @@ public class PerlPatternParser
         while (true)
             {
             RegexpTree next = parseElement();
-            if (next == null) break;
+            if (next.equals( gen.getNothing() ) ) break;
             operands.add( next );
             }
         return gen.getSequence( operands );

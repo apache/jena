@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTreeGenerator.java,v 1.3 2004-08-17 14:56:52 chris-dollin Exp $
+  $Id: RegexpTreeGenerator.java,v 1.4 2004-08-17 15:15:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -70,6 +70,12 @@ public interface RegexpTreeGenerator
          returned.
     */
     public abstract RegexpTree getAlternatives( List operands );
+
+    /**
+         Answer an empty RegexpTree (corresponding to nothing in a parsed
+         expression, and matching the empty string).
+    */
+    public abstract RegexpTree getNothing();
     }
 
 /*

@@ -1,30 +1,27 @@
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
-    [See end of file]
-    $Id: SimpleGenerator.java,v 1.4 2004-08-17 15:15:08 chris-dollin Exp $
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  [See end of file]
+  $Id: Nothing.java,v 1.1 2004-08-17 15:15:08 chris-dollin Exp $
 */
-
 package com.hp.hpl.jena.graph.query.regexptrees;
 
-import java.util.List;
 
 /**
-     The base implementation of <code>RegexpTreeGenerator</code>
- 	@author hedgehog
+     Nothing - the empty pattern (which matches the empty string)
+     @author kers
 */
-public class SimpleGenerator implements RegexpTreeGenerator
+public class Nothing extends RegexpTree
     {
-    public RegexpTree getAnySingle() { return RegexpTree.ANY; }
-    public RegexpTree getStartOfLine() { return RegexpTree.SOL; }
-    public RegexpTree getEndOfLine() { return RegexpTree.EOL; }
-    public RegexpTree getNothing() { return RegexpTree.NON; }
-    public RegexpTree getText( char ch ) { return new Text( "" + ch ); }
-    public RegexpTree getZeroOrMore( RegexpTree d ) { return new ZeroOrMore( d ); }
-    public RegexpTree getOneOrMore( RegexpTree d ) { return new OneOrMore( d ); }
-    public RegexpTree getOptional( RegexpTree d ) { return new Optional( d ); }
-    public RegexpTree getSequence( List operands ) { return Sequence.create( operands ); }
-    public RegexpTree getAlternatives( List operands ) { return Alternatives.create( operands ); }
+    public boolean equals( Object other )
+        { return other instanceof Nothing; }
+
+    public int hashCode()
+        { return 0; }
+
+    public String toString()
+        { return "<nothing>"; }
     }
+
 
 /*
     (c) Copyright 2004, Hewlett-Packard Development Company, LP
