@@ -5,7 +5,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.6 2003-02-21 18:17:56 andy_seaborne Exp $
+ * @version  $Id: TriplePattern.java,v 1.7 2003-03-10 09:49:07 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -16,9 +16,12 @@ import org.apache.log4j.Logger ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
+import com.hp.hpl.jena.rdf.model.RDFException;
 
 public class TriplePattern
 {
+    static final boolean DEBUG = false ;
+    
     boolean initialized = false ;
 
     Slot subjectSlot ;
@@ -108,8 +111,7 @@ public class TriplePattern
 					{
 						if ( rdfEx.getErrorCode() != RDFException.INVALIDPROPERTYURI )
 							throw rdfEx ;
-						System.err.println("Illegal property URI: "+((Resource)tmp).getURI()) ;
-						return null ;
+                        throw new RDFException("Illegal property URI: "+((Resource)tmp).getURI()) ;
 					}
 				else if (tmp instanceof Value)
 					// Should not happen
@@ -190,11 +192,11 @@ public class TriplePattern
             if ( objectSlot.isValue() )
                 fixed_o = valueToRDFNode(m, objectSlot.getValue()) ;
 
-            if ( objectSlot.isResource() )
-                fixed_o = objectSlot.getResource() ;
-
-            if ( objectSlot.isProperty() )
+            else if ( objectSlot.isProperty() )
                 fixed_o = objectSlot.getProperty() ;
+
+            else if ( objectSlot.isResource() )
+                fixed_o = objectSlot.getResource() ;
 
             // --------
 
@@ -300,38 +302,40 @@ public class TriplePattern
                 }
             }
 
-            // And do ...
-            if ( log != null )
+            // Debugging
+            if ( DEBUG )
             {
-                log.debug("Match ... ");
+                System.err.println("Matching ... ");
 
-                log.debug("    Subject:  Slot:   "+subjectSlot) ;
-                log.debug("              Select: "+(s==null? subjectSlot.getVar().toString() : s.toString())) ;
+                System.err.println("    Subject:  Slot:   "+subjectSlot) ;
+                System.err.println("              Select: "+(s==null? subjectSlot.getVar().toString() : s.toString())) ;
 
-                log.debug("    Property: Slot:   "+predicateSlot) ;
-                log.debug("              Select: "+(p==null? predicateSlot.getVar().toString() : p.toString())) ;
+                System.err.println("    Property: Slot:   "+predicateSlot) ;
+                System.err.println("              Select: "+(p==null? predicateSlot.getVar().toString() : p.toString())) ;
 
-                log.debug("    RDFNode:  Slot:   "+objectSlot) ;
-                log.debug("              Select: "+(o==null? objectSlot.getVar().toString() : o.toString())) ;
-            }
-
-            // Development debugging - remove.
-//            if ( o != null )
-//            {
-//                if ( o instanceof Literal )
-//                {
-//                    String tmp = "\""+((Literal)o).toString()+"\"" ;
-//                    if ( ! ((Literal)o).getLanguage().equals(""))
-//                        tmp = tmp+"@"+((Literal)o).getLanguage() ;
-//                    String dt = ((Literal)o).getDatatypeURI() ;
-//                    if ( ((Literal)o).getDatatypeURI() != null )
-//                        tmp = tmp+"^^<"+((Literal)o).getDatatypeURI()+">" ;
-//                    System.err.println("Object:" +tmp) ;//                } 
-//                else
-//                    System.err.println("Object: <"+o.toString()+">") ;
-//            }
-//            else
-//                System.err.println("Object is null") ;
+                System.err.println("    RDFNode:  Slot:   "+objectSlot) ;
+                System.err.print  ("              Select: ") ;
+                if ( o == null )
+                    System.err.println(objectSlot.getVar().toString()) ;
+                else
+                {
+                                        if ( ! ( o instanceof Literal ) )
+                    {
+                        System.err.println(o.toString()) ;
+                    }
+                    else
+                    {
+                        String tmp = "\""+((Literal)o).toString()+"\"" ;
+                        if ( ! ((Literal)o).getLanguage().equals(""))
+                            tmp = tmp+"@"+((Literal)o).getLanguage() ;
+                        String dt = ((Literal)o).getDatatypeURI() ;
+                        if ( ((Literal)o).getDatatypeURI() != null )
+                            tmp = tmp+"^^<"+((Literal)o).getDatatypeURI()+">" ;
+                        System.err.println(tmp) ;
+                    }                }
+            } 
+            // ----
+                
             return new BindingIterator(log, m, s, p, o, env) ;
         }
         catch (EvalFailureException evalEx) { return null ; }
@@ -446,8 +450,8 @@ public class TriplePattern
                     }
 
                     Statement stmt = sIter.nextStatement() ;
-                    if ( log != null  )
-                        log.debug("Triple: "+stmt) ;
+                    if ( DEBUG )
+                        System.err.println("Statement: "+stmt) ;
 
                     String sName = null ;
                     String pName = null ;

@@ -11,7 +11,7 @@ import com.hp.hpl.jena.util.Log ;
 
 /**
  * @author  Andy Seaborne
- * @version $Id: TupleSet.java,v 1.1.1.1 2002-12-19 19:21:28 bwm Exp $
+ * @version $Id: TupleSet.java,v 1.2 2003-03-10 09:50:43 andy_seaborne Exp $
  */
 
 public class TupleSet implements Iterator
@@ -93,7 +93,8 @@ public class TupleSet implements Iterator
             int jStart = -2 ;       // Points to the item without quotes
             int iFinish = -2 ;      // Points after the end of the item as found
             int jFinish = -2 ;      // Points after the end of the item without quotes
-
+            int dtStart = -2 ;      // Points to start of datatype (after < quote)
+            int dtFinish = -2 ;     // Points to end of datatype
             int type = TupleItem.UNKNOWN;
 
             switch (line.charAt(i))
@@ -104,23 +105,14 @@ public class TupleSet implements Iterator
                     type = TupleItem.URI ;
                     iStart = i ;
                     jStart = i+1 ;
-                    for ( j = i+1 ; j < line.length() ; j++ )
+                    int newPosn = parseURI(i, line) ;
+                    if (newPosn < 0)
                     {
-                        char ch = line.charAt(j) ;
-                        if ( ch == '>' )
-                            break ;
-                        if ( ch == '\n' || ch == '\r' )
-                        {
-                            errorFound = true ;
-                            break tupleLoop;
-                        }
-                    }
-                    // Malformed
-                    if ( j == line.length() )
-                    {
-                        errorFound = true ;
+                        errorFound = true;
                         break tupleLoop;
                     }
+                    j = newPosn ;
+                    
                     iFinish = j+1 ;
                     jFinish = j ;
                     break ;
@@ -151,14 +143,35 @@ public class TupleSet implements Iterator
                             
                         }
                     }
+                    
                     // Malformed
                     if ( j == line.length() )
                     {
                         errorFound = true ;
                         break tupleLoop;
                     }
+                    
                     iFinish = j+1 ;
                     jFinish = j ;
+                    // RDF literals may be followed by their type.
+                         
+                    if ( j < line.length()-3 
+                         && line.charAt(j+1) == '^'
+                         && line.charAt(j+2) == '^'
+                         && line.charAt(j+3) == '<' )
+                    {
+                        dtFinish = parseURI(j+3, line) ;
+                        dtStart = j+4 ;
+                        if (dtFinish < 0)
+                        {
+                            errorFound = true;
+                            break tupleLoop;
+                        }
+                        j = dtFinish+1 ;
+                        //String dt = line.substring(dtStart, dtFinish) ;
+                        //System.out.println("I see a datatype:"+dt) ;
+                    }
+                    
                     break ;
                 case '_':
                     type = TupleItem.ANON ;
@@ -210,7 +223,11 @@ public class TupleSet implements Iterator
             }
             String item = line.substring(jStart, jFinish) ;
             String literal = line.substring(iStart, iFinish) ;
-            tuple.add(new TupleItem(item, literal, type)) ;
+            String dt = null ;
+            if ( dtStart > 0 )
+                dt = line.substring(dtStart, dtFinish) ;
+            
+            tuple.add(new TupleItem(item, literal, type, dt)) ;
             j++ ;
             // End of item.
         }
@@ -250,6 +267,22 @@ public class TupleSet implements Iterator
         return -1 ;
     }
 
+    private int parseURI(int i, String line)
+    {
+        int j;
+        for (j = i + 1; j < line.length(); j++)
+        {
+            char ch = line.charAt(j);
+            if (ch == '>')
+                break;
+            if (ch == '\n' || ch == '\r')
+                return -1;
+        }
+        // Malformed
+        if (j == line.length())
+            return -2;
+        return j ;
+    }
 }
 
 /*

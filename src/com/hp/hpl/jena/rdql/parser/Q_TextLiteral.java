@@ -52,16 +52,24 @@ class Q_TextLiteral extends ParsedLiteral {
   
     public void fixup(Q_Query qnode)
     {
-        // Must wait until tany QName is resolved.
-        String tmp = null ;
+        // Must wait until any QName is resolved.
+        String tmp_datatype = null ;
         if ( datatype != null )
         {
             if ( ! datatype.isSet )
                 datatype.fixup(qnode) ;
-            tmp = datatype.valueString() ;
+            tmp_datatype = datatype.valueString() ;
         }
                  
-        Literal l = model.createTypedLiteral(super.getString(), langTag, tmp) ;
+        Literal l = null ;
+        String tmp_langTag = langTag ;
+        
+        if ( langTag == null )
+            tmp_langTag = "" ;
+        if ( tmp_datatype == null )
+            l = model.createLiteral(super.getString(), tmp_langTag) ;
+        else 
+            l = model.createTypedLiteral(super.getString(), tmp_langTag, tmp_datatype) ;
         super.setRDFLiteral(l) ; 
     }
   

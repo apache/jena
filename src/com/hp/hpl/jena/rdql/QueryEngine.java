@@ -24,7 +24,7 @@ import EDU.oswego.cs.dl.util.concurrent.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: QueryEngine.java,v 1.3 2003-02-20 16:45:48 andy_seaborne Exp $
+ * @version 	$Id: QueryEngine.java,v 1.4 2003-03-10 09:49:07 andy_seaborne Exp $
  */
 
 
@@ -210,8 +210,6 @@ public class QueryEngine implements QueryExecution
 
         TriplePattern tp = (TriplePattern)query.triplePatterns.get(index) ;
 
-        // Would like stop the triple matcher mid-flow as well.
-        // Null return means nothing will match (unusual occurence but possible).
         Iterator iter = tp.match((query.loggingOn ? query.log : null), this, query.source, env ) ;
 
         if ( iter != null )

@@ -6,9 +6,9 @@ package com.hp.hpl.jena.util.tuple;
 
 /**
  * The unit found in a line of a tuple.
- * Can be a string or a URI.
+ * Can be a string (quoted, possibly with the datatype, or unquoted) or a URI.
  * @author   Andy Seaborne
- * @version  $Id: TupleItem.java,v 1.1.1.1 2002-12-19 19:21:27 bwm Exp $
+ * @version  $Id: TupleItem.java,v 1.2 2003-03-10 09:50:43 andy_seaborne Exp $
  */
 public class TupleItem
 {
@@ -19,14 +19,16 @@ public class TupleItem
     public static final int ANON     = 4 ;
 
     String rep ;
+    String datatype ;
     String asFound ;
     int itemType ;
 
-    TupleItem(String value, String valAsFound, int type)
+    TupleItem(String value, String valAsFound, int type, String dt)
     {
         rep = value ;
         asFound = valAsFound ;
         itemType = type ;
+        datatype = dt ;
     }
 
     public int getType() { return itemType ; }
@@ -38,6 +40,8 @@ public class TupleItem
     public boolean isAnon()      { return itemType == ANON ; }
 
     public String get() { return rep ; }
+    public String getDT() { return datatype ;
+    }
     public String asQuotedString() { return asFound ; }
     public String toString() { return rep ; }
 }

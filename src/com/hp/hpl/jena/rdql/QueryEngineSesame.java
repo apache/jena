@@ -12,9 +12,6 @@ import java.io.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.mem.*;
 
-import com.hp.hpl.jena.rdql.*;
-
-
 import EDU.oswego.cs.dl.util.concurrent.*;
 
 // Sesame
@@ -30,7 +27,7 @@ import EDU.oswego.cs.dl.util.concurrent.*;
  *  and presents the Jena interface to queries.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: QueryEngineSesame.java,v 1.3 2003-02-20 16:45:48 andy_seaborne Exp $
+ * @version 	$Id: QueryEngineSesame.java,v 1.4 2003-03-10 09:49:07 andy_seaborne Exp $
  */
 
 
