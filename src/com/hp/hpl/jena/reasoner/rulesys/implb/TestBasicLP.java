@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.10 2003-08-07 17:02:30 der Exp $
+ * $Id: TestBasicLP.java,v 1.11 2003-08-07 21:06:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-07 17:02:30 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-07 21:06:20 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -64,7 +64,7 @@ public class TestBasicLP  extends TestCase {
 //        return new TestSuite( TestBasicLP.class );
         
         TestSuite suite = new TestSuite();
-        suite.addTest(new TestBasicLP( "testTabled1" ));
+        suite.addTest(new TestBasicLP( "testTabled2" ));
         return suite;
     }  
    
@@ -661,16 +661,34 @@ public class TestBasicLP  extends TestCase {
     }
     
     /**
-     * Test tabled predicates. Simple transitive closure case.
+     * Test tabled predicates. Simple chain call case.
      */
     public void testTabled1() {
-        doTest("[r1: (?a p ?c) <- (?a p ?b)(?a p ?c)]",
+        doTest("[r1: (?a q ?b) <- (?a p ?b)]" +
+               "[r2: (?x r ?y) <- (?x q ?y)]",
+                new Node[] { q },
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(b, p, c),
+                },
+                new Triple(Node.ANY, r, Node.ANY),
+                new Object[] {
+                    new Triple(a, r, b),
+                    new Triple(b, r, c)
+                } );
+    }
+    
+    /**
+     * Test tabled predicates. Simple transitive closure case.
+     */
+    public void testTabled2() {
+        doTest("[r1: (?a p ?c) <- (?a p ?b)(?b p ?c)]",
                 new Node[] { p },
                 new Triple[] {
                     new Triple(a, p, b),
                     new Triple(b, p, c),
                 },
-                new Triple(a, p, Node.ANY),
+                new Triple(Node.ANY, p, Node.ANY),
                 new Object[] {
                     new Triple(a, p, b),
                     new Triple(b, p, c),
