@@ -1,64 +1,53 @@
 /******************************************************************
- * File:        LPEnvironment.java
+ * File:        ChoicePointFrame.java
  * Created by:  Dave Reynolds
  * Created on:  22-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPEnvironment.java,v 1.1 2003-07-22 16:41:42 der Exp $
+ * $Id: ChoicePointFrame.java,v 1.1 2003-07-22 21:44:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
 import com.hp.hpl.jena.graph.Node;
+import java.util.*;
 
 /**
- * Represents a single frame in the LP interpreter's environment stack. The
- * environment stack represents the AND part of the search tree - it is a sequence
- * of nested predicate calls.
+ * Represents a single frame in the LP interpreter's choice pointt stack,
+ * represents the OR part of the search tree.
  * <p>
  * This is used in the inner loop of the interpreter and so is a pure data structure
  * not an abstract data type.
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-22 16:41:42 $
+ * @version $Revision: 1.1 $ on $Date: 2003-07-22 21:44:19 $
  */
-public class LPEnvironment extends FrameObject {
+public class ChoicePointFrame extends FrameObject {
 
-    /** The set of permanent variables Yi) in use by this frame.  */
-    Node[] pVars;
+    /** The environment frame describing the state of the AND tree at this choice point */
+    EnvironmentFrame envFrame;
     
-    /** The code the the clause currently being processed */
-    RuleClauseCode clause;
+    /** The top of the trail stack at the time of the call */
+    int trailIndex;
     
-    /** The program counter offet in the clause's byte code */
-    int pc;
+    /** The set of argument variables for the call */
+    Node[] argVars;
     
-    /** The argument counter offset in the clause's arg stream */
-    int ac;
+    /** The list of clause code objects comprising the set of choices */
+    List clauses;
     
-    /** 
-     * Constructor 
-     * @param factory The parent factory to which free frames can be returned
-     */
-    public LPEnvironment(LPEnvironmentFactory factory) {
-        super(factory);
-    }
+    /** The current position in the clause list */
+    int clauseIndex;
     
     /**
-     * Initialize a starting frame.
-     * @param clause the compiled code being interpreted by this env frame 
+     * Constructor.
      */
-    public void init(RuleClauseCode clause) { 
-        this.clause = clause;
-        pc = 0;
-        // Note that the current fixed-frame implementation is just a short cut 
-        // the first implementation and will get relaced by a
-        // dynamic (and possibly trimmable) implementation in the future
-        pVars = new Node[RuleClauseCode.MAX_PERMANENT_VARS];
+    public ChoicePointFrame(ChoicePointFactory factory) {
+        super(factory);
     }
-    
 }
+
 
 
 /*

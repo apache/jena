@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.2 2003-07-22 16:41:42 der Exp $
+ * $Id: LPInterpreter.java,v 1.3 2003-07-22 21:44:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-22 16:41:42 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-22 21:44:19 $
  */
 public class LPInterpreter {
 
@@ -49,8 +49,14 @@ public class LPInterpreter {
         new Node[RuleClauseCode.MAX_TEMPORARY_VARS];
 
     /** The current environment frame */
-    protected LPEnvironment envFrame;
+    protected EnvironmentFrame envFrame;
 
+    /** The current choice point frame */
+    protected FrameObject cpFrame;
+    
+    /** The trail of variable bindings that have to be unwound on backtrack */
+    protected ArrayList trail = new ArrayList();
+    
     /** TEMP: The singleton result triple */
     protected Object answer;
 
@@ -215,7 +221,7 @@ public class LPInterpreter {
                     envFrame.ac = ac;
                     envFrame.pc = pc;
                     // Create the new state
-                    LPEnvironment newframe = LPEnvironmentFactory.createEnvironment();
+                    EnvironmentFrame newframe = LPEnvironmentFactory.createEnvironment();
                     newframe.init(clause);
                     newframe.linkTo(envFrame);
                     envFrame = newframe;
@@ -269,7 +275,7 @@ public class LPInterpreter {
                     break;
                     
                 case RuleClauseCode.PROCEED:
-                    envFrame = (LPEnvironment) envFrame.link;
+                    envFrame = (EnvironmentFrame) envFrame.link;
                     if (envFrame != null) {
                         pc = envFrame.pc;
                         ac = envFrame.ac;
@@ -324,7 +330,18 @@ public class LPInterpreter {
      */
     public void bind(Node var, Node val) {
         ((Node_RuleVariable)var).simpleBind(val);
-        // TODO: trail
+        trail.add(var);
+    }
+    
+    /**
+     * Unwind the trail to given low water mark
+     */
+    public void unwindTrail(int mark) {
+        for (int i = trail.size()-1; i >= mark; i--) {
+            Node_RuleVariable var = (Node_RuleVariable)trail.get(i);
+            var.unbind();
+            trail.remove(i);
+        }
     }
     
     /**

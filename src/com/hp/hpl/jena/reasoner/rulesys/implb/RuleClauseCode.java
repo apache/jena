@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.4 2003-07-22 16:41:42 der Exp $
+ * $Id: RuleClauseCode.java,v 1.5 2003-07-22 21:44:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-07-22 16:41:42 $
+ * @version $Revision: 1.5 $ on $Date: 2003-07-22 21:44:19 $
  */
 public class RuleClauseCode {
     
@@ -103,8 +103,12 @@ public class RuleClauseCode {
     // current next = 0x14
     
     /** The maximum number of permanent variables allowed in a single rule clause. 
-     *   Future refactorings will remove this restriction because it is wasteful of space. */
+     *   Future refactorings will remove this restriction. */
     public static final int MAX_PERMANENT_VARS = 6;
+    
+    /** The maximum number of argument variables allowed in a single goal 
+     *   Future refactorings will remove this restriction. */
+    public static final int MAX_ARGUMENT_VARS = 6;
     
     /** The maximum number of temporary variables allowed in a single rule clause. */
     public static final int MAX_TEMPORARY_VARS = 10;

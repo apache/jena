@@ -1,11 +1,11 @@
 /******************************************************************
- * File:        LPEnvironmentFactory.java
+ * File:        ChoicePointFactory.java
  * Created by:  Dave Reynolds
  * Created on:  22-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPEnvironmentFactory.java,v 1.2 2003-07-22 21:44:19 der Exp $
+ * $Id: ChoicePointFactory.java,v 1.1 2003-07-22 21:44:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -13,30 +13,30 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * Factory for Environment frames. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-22 21:44:19 $
+ * @version $Revision: 1.1 $ on $Date: 2003-07-22 21:44:19 $
  */
-public class LPEnvironmentFactory extends FrameObjectFactory {
+public class ChoicePointFactory extends FrameObjectFactory {
 
     /** The single instance of the factory */
-    protected static final LPEnvironmentFactory theFactory = new LPEnvironmentFactory();
+    protected static final ChoicePointFactory theFactory = new ChoicePointFactory();
     
     /** Private factory constructor */
-    private LPEnvironmentFactory() {}
+    private ChoicePointFactory() {}
     
     /**
      * Return a newly constructed or cached environment frame.
      */
-    public static EnvironmentFrame createEnvironment() {
+    public static ChoicePointFrame createEnvironment() {
         return theFactory.getFrame();
     }
     
     /**
      * Find or allocate a new frame.
      */
-    private EnvironmentFrame getFrame() {
-        EnvironmentFrame env = (EnvironmentFrame)getFree();
+    private ChoicePointFrame getFrame() {
+        ChoicePointFrame env = (ChoicePointFrame)getFree();
         if (env == null) {
-            env = new EnvironmentFrame(this);
+            env = new ChoicePointFrame(this);
         } else {
             env.fastLinkTo(null);
         }
@@ -44,7 +44,6 @@ public class LPEnvironmentFactory extends FrameObjectFactory {
     }
     
 }
-
 
 /*
     (c) Copyright Hewlett-Packard Company 2003
