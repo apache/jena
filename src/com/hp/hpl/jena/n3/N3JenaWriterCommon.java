@@ -21,7 +21,7 @@ import java.io.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.19 2003-12-23 17:16:58 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.20 2004-01-16 16:40:32 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -318,7 +318,7 @@ public class N3JenaWriterCommon implements RDFWriter
     
     protected void writeHeader(Model model)
     {
-        if (baseURIref != null)
+        if (baseURIref != null && !baseURIref.equals("") )
             out.println("# Base: " + baseURIref);
     }
     
