@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: HasValueRestrictionImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-30 09:45:28 $
+ * Last modified on   $Date: 2004-05-06 11:03:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: HasValueRestrictionImpl.java,v 1.8 2004-01-30 09:45:28 ian_dickinson Exp $
+ * @version CVS $Id: HasValueRestrictionImpl.java,v 1.9 2004-05-06 11:03:45 ian_dickinson Exp $
  */
 public class HasValueRestrictionImpl
     extends RestrictionImpl
@@ -121,7 +121,7 @@ public class HasValueRestrictionImpl
         RDFNode n = getPropertyValue( getProfile().HAS_VALUE() );
         
         // map to an individual in the case of a resource value 
-        if (n.canAs( Individual.class )) {
+        if (!(n instanceof Literal) && n.canAs( Individual.class )) {
             n = n.as( Individual.class );
         }
         
