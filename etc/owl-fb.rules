@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.51 2005-02-20 11:48:28 der Exp $
+# $Id: owl-fb.rules,v 1.52 2005-02-20 14:30:52 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -163,6 +163,8 @@
 
 -> (owl:incompatibleWith rdfs:domain owl:Ontology).
 -> (owl:incompatibleWith rdfs:range  owl:Ontology).
+
+-> (owl:versionInfo rdf:type owl:AnnotationProperty).
 
 # These properties are derivable from the definitions
 #-> (owl:equivalentProperty rdf:type owl:SymmetricProperty).
@@ -529,6 +531,11 @@
 			[transitiveProperty1b:  (?A ?P ?C) <- unbound (?C), (?A ?P ?B) (?B ?P ?C)] 
 			]
 
+# Object properties 
+
+[objectProperty: (?P rdf:type owl:ObjectProperty) ->
+						(?P rdfs:domain owl:Thing) (?P rdfs:range owl:Thing) ]
+						
 #------------------------------------------------------------------
 # Restricted support for hasValue, even though that is beyond OWL/lite
 #------------------------------------------------------------------
