@@ -1,30 +1,33 @@
 /******************************************************************
- * File:        RDFSBRuleReasonerFactory.java
+ * File:        RDFSExptRuleReasonerFactory.java
  * Created by:  Dave Reynolds
- * Created on:  12-May-2003
+ * Created on:  16-Jun-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSFBRuleReasonerFactory.java,v 1.3 2003-06-16 17:01:57 der Exp $
+ * $Id: RDFSExptRuleReasonerFactory.java,v 1.1 2003-06-16 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
+
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
- * Factory class for creating blank instances of the hybrid rule RDFS reasoner. 
+ * Factory class for creating blank instances of the hybrid rule RDFS reasoner 
+ * with TGC support.
+ *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-16 17:01:57 $
+ * @version $Revision: 1.1 $ on $Date: 2003-06-16 17:01:57 $
  */
-public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
+public class RDFSExptRuleReasonerFactory implements ReasonerFactory {
     
     /** Single global instance of this factory */
-    private static ReasonerFactory theInstance = new RDFSFBRuleReasonerFactory();
+    private static ReasonerFactory theInstance = new RDFSExptRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
-    public static final String URI = "http://www.hpl.hp.com/semweb/2003/RDFSFBRuleReasoner";
+    public static final String URI = "http://www.hpl.hp.com/semweb/2003/RDFSExptRuleReasoner";
     
     /** Cache of the capabilities description */
     protected Model capabilities;
@@ -43,7 +46,7 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
      * is not configurable and will ignore this parameter.
      */
     public Reasoner create(Model configuration) {
-        return new RDFSFBRuleReasoner(this);
+        return new RDFSExptRuleReasoner(this);
     }
    
     /**
@@ -55,7 +58,7 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
             Resource base = capabilities.createResource(getURI());
-            base.addProperty(ReasonerVocabulary.nameP, "RDFS FB Rule Reasoner")
+            base.addProperty(ReasonerVocabulary.nameP, "RDFS FB-TGC Rule Reasoner")
                 .addProperty(ReasonerVocabulary.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
                                             + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.subClassOf)

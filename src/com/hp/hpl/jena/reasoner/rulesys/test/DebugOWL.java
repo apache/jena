@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.4 2003-06-16 08:21:35 der Exp $
+ * $Id: DebugOWL.java,v 1.5 2003-06-16 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
-//import com.hp.hpl.jena.graph.compose.Union;
+import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.mem.GraphMem;
 //import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.ModelLoader;
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-16 08:21:35 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-16 17:01:57 $
  */
 public class DebugOWL {
 
@@ -101,7 +101,7 @@ public class DebugOWL {
             
             case OWL:
                 reasoner = OWLRuleReasonerFactory.theInstance().create(null);
-                ((OWLRuleReasoner)reasoner).setTraceOn(true);
+//                ((OWLRuleReasoner)reasoner).setTraceOn(true);
                 break;
             
             case RDFSFB:
@@ -192,8 +192,8 @@ public class DebugOWL {
         if (schema == null) {
             infgraph = reasoner.bind(testdata);
         } else {
-            infgraph = reasoner.bindSchema(schema).bind(testdata);
-//            infgraph = reasoner.bind(new Union(schema, testdata));
+//            infgraph = reasoner.bindSchema(schema).bind(testdata);
+            infgraph = reasoner.bind(new Union(schema, testdata));
         }
     }
     
@@ -263,15 +263,20 @@ public class DebugOWL {
 //            new DebugOWL(OWL).run(dataFile);
             
             // owl.owl goes into meltdown with even the forward rules
-            new DebugOWL(OWL).run(schemaFile);
+            new DebugOWL(OWLFB).run(schemaFile);
+//            new DebugOWL(OWL).run("file:temp/owl-subset.owl");
+            
+            // Test volz examples on OWL config
+//            new DebugOWL(OWLFB).run();
             
             // Test volz examples on RDFS config
 //            new DebugOWL(RDFSFB).run();
                         
-//            tester = new DebugOWL(schemaFile, dataFile);
-//            System.out.println("Test schema + data  started ...");
-//            t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
-//            System.out.println("Took " + t + "ms");
+            DebugOWL tester = new DebugOWL(OWLFB);
+            tester.load(schemaFile, dataFile);
+            System.out.println("Test schema + data  started ...");
+            long t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
+            System.out.println("Took " + t + "ms");
 
         } catch (Exception e) {
             System.out.println("Problem: " + e);

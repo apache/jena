@@ -5,12 +5,15 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.11 2003-06-16 08:21:35 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.12 2003-06-16 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCache;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
@@ -18,6 +21,8 @@ import java.util.*;
 //import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
 import org.apache.log4j.Logger;
 
@@ -30,7 +35,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-16 08:21:35 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-16 17:01:57 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -48,6 +53,15 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     
     /** Static switch from Basic to RETE implementation of the forward component */
     public static final boolean useRETE = true;
+
+    /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs */
+    protected boolean useTGCCaching = false;
+    
+    /** Optional precomputed cache of the subClass graph */
+    protected TransitiveGraphCache subClassCache;
+    
+    /** Optional precomputed cache of the subProperty graph */
+    protected TransitiveGraphCache subPropertyCache;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(FBRuleInfGraph.class);
@@ -108,6 +122,23 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             } else {
                 engine = new FRuleEngine(this);
             }
+        }
+    }
+    
+    /**
+     * Instantiate the optional caches for the subclass/suproperty lattices.
+     * Unless this call is made the TGC caching will not be used.
+     */
+    public void setUseTGCCache() {
+        useTGCCaching = true;
+        if (schemaGraph != null) {
+            subClassCache = ((FBRuleInfGraph)schemaGraph).subClassCache.deepCopy();
+            subPropertyCache = ((FBRuleInfGraph)schemaGraph).subPropertyCache.deepCopy();
+        } else {
+            subClassCache = new TransitiveGraphCache(ReasonerVocabulary.directSubClassOf.asNode(),
+                                                      RDFS.subClassOf.asNode());
+            subPropertyCache = new TransitiveGraphCache(ReasonerVocabulary.directSubPropertyOf.asNode(),
+                                                      RDFS.subPropertyOf.asNode());
         }
     }
     
@@ -210,9 +241,43 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void prepare() {
         if (!isPrepared) {
             isPrepared = true;
+            
+            // Is there any data to bind in yet?
+            Graph data = null;
+            if (fdata != null) data = fdata.getGraph();
+            
             // initilize the deductions graph
             fdeductions = new FGraph( new GraphMem() );
-            dataFind = (fdata == null || fdata.getGraph() == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
+            dataFind = (data == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
+            
+            // Initialize the optional TGC caches
+            if (useTGCCaching) {
+                if (schemaGraph != null) {
+                    // Check if we can just reuse the copy of the raw 
+                    if (
+                        (RDFSReasoner.checkOccurance(RDFSReasoner.subPropertyOf, data, subPropertyCache) ||
+                         RDFSReasoner.checkOccurance(RDFSReasoner.subClassOf, data, subPropertyCache) ||
+                         RDFSReasoner.checkOccurance(RDFSReasoner.domainP, data, subPropertyCache) ||
+                         RDFSReasoner.checkOccurance(RDFSReasoner.rangeP, data, subPropertyCache) )) {
+                
+                        // The data graph contains some ontology knowledge so split the caches
+                        // now and rebuild them using merged data
+                        Finder tempTbox = schemaGraph == null ? fdata : FinderUtil.cascade(new FGraph(schemaGraph), fdata);
+    
+                        TransitiveReasoner.cacheSubProp(tempTbox, subPropertyCache);
+                        TransitiveReasoner.cacheSubClass(tempTbox, subPropertyCache, subClassCache);
+                    }     
+                } else {
+                    if (fdata != null) {
+                        TransitiveReasoner.cacheSubProp(fdata, subPropertyCache);
+                        TransitiveReasoner.cacheSubClass(fdata, subPropertyCache, subClassCache);
+                    }
+                }
+                subPropertyCache.setCaching(true);
+                subClassCache.setCaching(true);
+                dataFind = FinderUtil.cascade(subClassCache, subPropertyCache, dataFind);
+            }
+
             boolean rulesLoaded = false;
             if (schemaGraph != null) {
                 Graph rawPreload = ((InfGraph)schemaGraph).getRawGraph();
@@ -231,12 +296,6 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             // Prepare the context for builtins run in backwards engine
             context = new BBRuleContext(this, dataFind);
             
-            // Temp ...
-//            List l = bEngine.rulesFor(new TriplePattern(null, com.hp.hpl.jena.vocabulary.RDF.type.asNode(), null));
-//            for (Iterator i = l.iterator(); i.hasNext(); ) {
-//                System.out.println("type rule: " + i.next());
-//            }
-            // ... end temp
         }
     }
     

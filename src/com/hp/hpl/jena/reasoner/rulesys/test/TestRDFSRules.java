@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.12 2003-06-08 17:49:51 der Exp $
+ * $Id: TestRDFSRules.java,v 1.13 2003-06-16 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.12 $ on $Date: 2003-06-08 17:49:51 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.13 $ on $Date: 2003-06-16 17:01:57 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -48,6 +48,9 @@ public class TestRDFSRules extends TestCase {
      */
     public static TestSuite suite() {
         return new TestSuite(TestRDFSRules.class);
+//        TestSuite suite = new TestSuite();
+//        suite.addTest(new TestRDFSRules( "testRDFSExptReasoner" ));
+//        return suite;
     }  
 
     /**
@@ -77,6 +80,15 @@ public class TestRDFSRules extends TestCase {
         ReasonerFactory rf = RDFSFBRuleReasonerFactory.theInstance();
         assertTrue("RDFS hybrid reasoner tests", tester.runTests(rf, this, null));
     }
+
+    /**
+     * Test the basic functioning of the hybrid RDFS rule reasoner with TGC cache
+     */
+//    public void testRDFSExptReasoner() throws IOException {
+//        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect-noresource.rdf");
+//        ReasonerFactory rf = RDFSExptRuleReasonerFactory.theInstance();
+//        assertTrue("RDFS experimental (hybrid+tgc) reasoner tests", tester.runTests(rf, this, null));
+//    }
 
     /**
      * Test the capabilities description.

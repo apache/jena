@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.3 2003-06-12 14:13:39 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.4 2003-06-16 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,18 +27,21 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-12 14:13:39 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-16 17:01:57 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
-    /** Flag, if true we cache the closure of the pure rule set with its axioms */
-    protected static final boolean cachePreload = true;
-    
     /** Prepared set of rules used for Backward-only mode */
     protected RuleStore bRuleStore;
     
     /** the current rule mode */
     protected RuleMode mode = HYBRID;
+    
+    /** Flag, if true we cache the closure of the pure rule set with its axioms */
+    protected static final boolean cachePreload = true;
+    
+    /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs */
+    protected boolean enableTGCCaching = false;
     
     /** Flag, if true then rules will be augmented by OWL translations of the schema */
     protected boolean enableOWLTranslation = false;
@@ -147,6 +150,17 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     }
     
     /**
+     * Set to true to enable caching of subclass/subproperty lattices in a
+     * specialized cache rather than using the rule systems. This has substantially
+     * higher performance but it is done as a separate initialization pass and so
+     * can only work correct with some rule sets. This is only guaranteed to be implemented
+     * for the HYBRID mode.
+     */
+    public void setTransitiveClosureCaching(boolean enableTGCCaching) {
+        this.enableTGCCaching = enableTGCCaching;
+    }
+    
+    /**
      * Set a configuration paramter for the reasoner. The supported parameters
      * are:
      * <ul>
@@ -238,6 +252,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
                 ruleSet = OWLFBRuleReasoner.augmentRules(ruleSet, tbox);
             }
             graph = new FBRuleInfGraph(this, ruleSet, getPreload(), tbox);
+            if (enableTGCCaching) ((FBRuleInfGraph)graph).setUseTGCCache();
             ((FBRuleInfGraph)graph).prepare();
         }
         GenericRuleReasoner grr = new GenericRuleReasoner(rules, graph, factory, mode);
@@ -275,6 +290,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
                 ruleSet = OWLFBRuleReasoner.augmentRules(ruleSet, data);
             }
             graph = new FBRuleInfGraph(this, ruleSet, schemaArg);
+            if (enableTGCCaching) ((FBRuleInfGraph)graph).setUseTGCCache();
             ((FBRuleInfGraph)graph).setTraceOn(traceOn);
         }
         graph.setDerivationLogging(recordDerivations);
@@ -289,6 +305,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         if (cachePreload && preload == null && mode == HYBRID) {
             if (mode == HYBRID) {
                 preload = new FBRuleInfGraph(this, rules, null);
+                if (enableTGCCaching) ((FBRuleInfGraph)preload).setUseTGCCache();
             } else if (mode == FORWARD) {
                 preload = new BasicForwardRuleInfGraph(this, rules, null);
             } else if (mode == FORWARD_RETE) {

@@ -1,11 +1,11 @@
 /******************************************************************
- * File:        RDFSRuleReasoner.java
+ * File:        RDFSExptRuleReasoner.java
  * Created by:  Dave Reynolds
- * Created on:  06-Apr-03
+ * Created on:  16-Jun-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.6 2003-06-16 17:01:57 der Exp $
+ * $Id: RDFSExptRuleReasoner.java,v 1.1 2003-06-16 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,17 +14,22 @@ import java.util.*;
 
 import com.hp.hpl.jena.reasoner.ReasonerException;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
-/** * An pure forward chaining implementation of the RDFS closure rules
+
+/**
+ * An pure forward chaining implementation of the RDFS closure rules
  * based upon the basic forward rule interpreter. The normal mixed
  * forward/backward implementation is generally preferred but this has 
  * two possible uses. First, it is a test and demonstration of the forward
  * chainer. Second, if you want all the RDFS entailments for an entire 
  * dataset the forward chainer will be more efficient.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.6 $ on $Date: 2003-06-16 17:01:57 $ */
-public class RDFSRuleReasoner extends GenericRuleReasoner {    
+ * 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
+ * @version $Revision: 1.1 $ on $Date: 2003-06-16 17:01:57 $
+ */
+public class RDFSExptRuleReasoner extends GenericRuleReasoner {
+    
     /** The location of the OWL rule definitions on the class path */
-    public static final String RULE_FILE = "etc/rdfs.rules";
-//    public static final String RULE_FILE = "etc/rdfs-noresource.rules";
+    public static final String RULE_FILE = "etc/rdfs-fb-tgc.rules";
     
     /** The parsed rules */
     protected static List ruleSet;
@@ -32,10 +37,10 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     /**
      * Constructor
      */
-    public RDFSRuleReasoner(ReasonerFactory parent) {
+    public RDFSExptRuleReasoner(ReasonerFactory parent) {
         super(loadRules(), parent);
-//        setMode(FORWARD_RETE);
-        setMode(FORWARD);
+        setMode(HYBRID);
+        setTransitiveClosureCaching(true);
     }
     
     /**

@@ -2,7 +2,7 @@
 # OWL rule set v0.2
 # This rule set is design to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining).
-# $Id: owl-fb.rules,v 1.7 2003-06-16 08:20:41 der Exp $
+# $Id: owl-fb.rules,v 1.8 2003-06-16 17:00:47 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -220,7 +220,10 @@
 #           ]
            
 [restrictionS-in: (?D rdfs:subClassOf some(?P,?C)) (?X rdf:type ?D), noValue(?X, ?P), notEqual(?P, owl:sameIndividualAs),
-					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), makeTemp(?T)
+					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), 
+					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
+					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass), 
+					makeTemp(?T)
    	  						-> (?X ?P ?T), (?T rdf:type ?C)]
 
 #------------------------------------------------------------------

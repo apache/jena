@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.16 2003-05-27 15:50:25 der Exp $
+ * $Id: TestReasoners.java,v 1.17 2003-06-16 17:01:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-05-27 15:50:25 $
+ * @version $Revision: 1.17 $ on $Date: 2003-06-16 17:01:57 $
  */
 public class TestReasoners extends TestCase {
     
@@ -138,7 +138,7 @@ public class TestReasoners extends TestCase {
         ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
         assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
-        // Test effect of switching of property scan - should break container property test case
+        // Test effect of switching off property scan - should break container property test case
         Model configuration = new ModelMem();
         configuration.createResource(RDFSReasonerFactory.URI)
                      .addProperty(RDFSReasonerFactory.scanProperties, "false");
