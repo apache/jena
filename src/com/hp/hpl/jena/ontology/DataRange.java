@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            19-Aug-2003
  * Filename           $RCSfile: DataRange.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:10 $
+ * Last modified on   $Date: 2004-12-13 14:25:00 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DataRange.java,v 1.4 2004-12-06 13:50:10 andy_seaborne Exp $
+ * @version CVS $Id: DataRange.java,v 1.5 2004-12-13 14:25:00 andy_seaborne Exp $
  */
 public interface DataRange 
     extends OntResource
@@ -56,7 +56,7 @@ public interface DataRange
     /**
      * <p>Assert that this data range is exactly the enumeration of the given individuals. Any existing 
      * statements for <code>oneOf</code> will be removed.</p>
-     * @param enum A list of literals that defines the permissible values for this datarange
+     * @param en A list of literals that defines the permissible values for this datarange
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public void setOneOf( RDFList en );
