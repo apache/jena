@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.3 $ on $Date: 2003-04-30 23:55:37 $
+* @version $Revision: 1.4 $ on $Date: 2003-05-01 23:59:15 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -505,6 +505,44 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public void formatDB() throws RDFRDBException {
 	}
+
+	/**
+	 * Throws an UnsupportedOperation exception.
+	 * 
+	 * @param opName name of the operation that's not supported.
+	 */
+	private void notSupported(String opName)
+		{ throw new UnsupportedOperationException(opName); }
+		
+	/**
+	 * If underlying database connection supports transactions, call abort()
+	 * on the connection, then turn autocommit on.
+	 */
+	public void abort()
+		{ notSupported("abort transaction"); }
+        
+	/**
+	 * If the underlying database connection supports transactions,
+	 * turn autocommit off, then begin a new transaction.
+	 */
+	public void begin()
+		{ notSupported("begin transaction"); }
+        
+	/**
+	 * If the underlying database connection supports transactions,
+	 * call commit(), then turn autocommit on.
+	 */
+	public void commit()
+		{ notSupported("commit transaction"); }
+        
+	/**
+	 * Returns true if the underlying database supports transactions.
+	 */
+	public boolean transactionsSupported()
+		{ return false; }
+        
+
+
 
     //--------------------------------------------------jena 1 backward compatability
 
