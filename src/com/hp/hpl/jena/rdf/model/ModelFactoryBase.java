@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactoryBase.java,v 1.1 2003-05-09 13:29:49 chris-dollin Exp $
+  $Id: ModelFactoryBase.java,v 1.2 2003-07-14 14:40:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -16,31 +16,34 @@ import com.hp.hpl.jena.shared.*;
 */
 public class ModelFactoryBase
     {
-    protected static String guessDBURL()
+    public static String guessDBURL()
         { return gp( "db.url" ); }
     
-    protected static String guessDBUser()
+    public static String guessDBUser()
         { return gp( "db.user", "test" ); }
     
-    protected static String guessDBPassword()
+    public static String guessDBPassword()
         { return gp( "db.password", "" ); }
     
-    protected static String guessDBType()
+    public static String guessDBType()
         { 
         String possible = gp( "db.type", null );
         if (possible == null) possible = extractType( guessDBURL() );    
         if (possible == null) throw new JenaException( "cannot guess database type" );
         return possible;
         }
+        
+    public static String guessDBDriver()
+        { return gp( "db.driver", null ); }
     
     /**
         Guess the database type as the string between the first and second colons of the
-        URL.
+        URL. This method is public so that it may be invoked from test packages.
     
         @param dbURL a string of the form nocolons:somename:somestuff
         @return somename
     */
-    protected static String extractType( String dbURL )
+    public static String extractType( String dbURL )
         {
         int a = dbURL.indexOf( ':' );
         int b = dbURL.indexOf( ':', a + 1 );

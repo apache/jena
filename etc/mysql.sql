@@ -13,51 +13,51 @@
 #     else MyISAM
 # c - index key length, set to DBIndexKeyLen, default 250
 #
-# Note that the tables JENA_LONG_LIT, JENA_LONG_URI, JENA_PREFIX
+# Note that the tables jena_long_lit, jena_long_uri, jena_prefix
 # all have the same structure. These are used to store long objects.
 # Tthere chould (should) be a separate operation to create
 # these tables to ensure they have an identical structure.
 # This is not urgent - left for future work.
 #
 initDBtables
-DROP TABLE IF EXISTS JENA_SYS_STMT;;
-CREATE TABLE JENA_SYS_STMT (
+DROP TABLE IF EXISTS jena_sys_stmt;;
+CREATE TABLE jena_sys_stmt (
  Subj       ${a} NOT NULL,
  Prop       ${a} NOT NULL,
  Obj        ${a} NOT NULL,
  GraphID    INTEGER
 ) Type = ${b};;
-DROP TABLE IF EXISTS JENA_LONG_LIT;;
-CREATE TABLE JENA_LONG_LIT (
+DROP TABLE IF EXISTS jena_long_lit;;
+CREATE TABLE jena_long_lit (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${a} NOT NULL,
  ChkSum		BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
-DROP TABLE IF EXISTS JENA_LONG_URI;;
-CREATE TABLE JENA_LONG_URI (
+DROP TABLE IF EXISTS jena_long_uri;;
+CREATE TABLE jena_long_uri (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${a} NOT NULL,
  ChkSum 	BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
-DROP TABLE IF EXISTS JENA_PREFIX;;
-CREATE TABLE JENA_PREFIX (
+DROP TABLE IF EXISTS jena_prefix;;
+CREATE TABLE jena_prefix (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${a} NOT NULL,
  ChkSum		BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
-DROP TABLE IF EXISTS JENA_GRAPH;;
-CREATE TABLE JENA_GRAPH (
+DROP TABLE IF EXISTS jena_graph;;
+CREATE TABLE jena_graph (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Name    TINYBLOB
 ) Type = ${b};;
-CREATE UNIQUE INDEX JENA_IXLIT ON JENA_LONG_LIT(Head(${c}),ChkSum);;
-CREATE UNIQUE INDEX JENA_IXURI ON JENA_LONG_URI(Head(${c}),ChkSum);;
-CREATE UNIQUE INDEX JENA_IXBND ON JENA_PREFIX(Head(${c}),ChkSum);;
-CREATE INDEX JENA_IXSP ON JENA_SYS_STMT(Subj(${c}), Prop(${c}));;
-CREATE INDEX JENA_IXO ON JENA_SYS_STMT(Obj(${c}));;
+CREATE UNIQUE INDEX JENA_IXLIT ON jena_long_lit(Head(${c}),ChkSum);;
+CREATE UNIQUE INDEX JENA_IXURI ON jena_long_uri(Head(${c}),ChkSum);;
+CREATE UNIQUE INDEX JENA_IXBND ON jena_prefix(Head(${c}),ChkSum);;
+CREATE INDEX JENA_IXSP ON jena_sys_stmt(Subj(${c}), Prop(${c}));;
+CREATE INDEX JENA_IXO ON jena_sys_stmt(Obj(${c}));;
 
 #-------------------------------------------------------------------
 # Create a blank statement table - and indexes
@@ -118,12 +118,12 @@ DELETE FROM ${a} WHERE (GraphID = ?)
 #-------------------------------------------------------------------
 # Store the name of a new graph and create a unique identifier for it.
 insertGraph
-INSERT INTO JENA_GRAPH (Name) VALUES (?)
+INSERT INTO jena_graph (Name) VALUES (?)
 
 #-------------------------------------------------------------------
 # Remove the name of a graph.
 deleteGraph
-Update JENA_GRAPH SET NAME=null where ID = ?
+Update jena_graph SET NAME=null where ID = ?
 
 #-------------------------------------------------------------------
 # Delete a triple

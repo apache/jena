@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.33 2003-07-11 19:18:20 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.34 2003-07-14 14:40:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.33 $ on $Date: 2003-07-11 19:18:20 $
+* @version $Revision: 1.34 $ on $Date: 2003-07-14 14:40:06 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -640,6 +640,7 @@ public void deleteTripleAR(
 					"SQLException caught during insert"
 						+ e1.getErrorCode(),
 						e1);
+                throw new JenaException( e1 );
 			}
 		}
 	}
