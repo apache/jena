@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.12 2003-12-11 11:10:33 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.13 2003-12-15 18:39:04 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -171,34 +171,32 @@ public class MoreTests
 		InputStream in;
 		long start = System.currentTimeMillis();
 		in = new FileInputStream("testing/wg/miscellaneous/consistent001.rdf");
-		a.load(in);
-		in.close();
-		final long tim = (System.currentTimeMillis() - start) / 3;
-		if (tim < 5) {
-			logger.warn("Jena is too quick on this machine for this test");
-			return;
-		}
-		final Thread arpt = Thread.currentThread();
-		Thread killt = new Thread(new Runnable() {
+		a.setStatementHandler(new StatementHandler() {
+			int countDown = 10;
+			public void statement(
+				AResource subj,
+				AResource pred,
+				AResource obj) {
+				if (countDown-- == 0)
+					Thread.currentThread().interrupt();
 
-			public void run() {
-				try {
-					Thread.sleep(tim);
-				} catch (InterruptedException e) {
-				}
-				arpt.interrupt();
-				//	System.err.println("Interrupted");
+			}
+
+			public void statement(
+				AResource subj,
+				AResource pred,
+				ALiteral lit) {
+				// TODO Auto-generated method stub
+
 			}
 		});
 		try {
-			killt.start();
-			in =
-				new FileInputStream("testing/wg/miscellaneous/consistent001.rdf");
 			a.load(in);
-			in.close();
 			fail("Thread was not interrupted.");
 		} catch (InterruptedIOException e) {
 		} catch (SAXParseException e) {
+		} finally {
+			in.close();
 		}
 		// System.err.println("Finished "+Thread.interrupted());
 
