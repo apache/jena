@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Migrating to Jena 2</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+
+<body xml:lang="en" lang="en" bgcolor="#FFFFFF">
+		<h1 style="text-align: center; line-height: 18pt">Migrating to Jena 2</h1>
+		<p>Jena 2 supports the Jena 1 API.  However a number of changes have been made that will cause existing code not to run out of the box.   The Jena team expect that there will be tools to help with the migration of Jena 1 code, but they don't exist yet.</p>
+		<p>The changes are conceptually minor, mostly just renaming things into a more sensible pattern.</p>
+		<h2>What Must be changed:</h2>
+		<h3>package renaming:</h3>
+		<ul>
+			<li>com.hp.hpl.mesa.rdf.jena.model -&gt; com.hp.hpl.jena.rdf.model</li>
+			<li>com.hp.hpl.mesa.rdf.jena.vocabulary -&gt; com.hp.hpl.jena.vocabulary</li>
+		</ul>
+		<h3>new model factory:</h3>
+		<ul>
+			<li>Models in Jena 1 were created using new on the model class.  With Jena 2 there is factory for creating new models com.hp.hpl.jena.rdf.model.ModelFactory.  Use that instead of new.  If for some reason you don't want to do that, the memory model class has moved to com.hp.hpl.jena.mem.</li>
+		</ul>
+		<h3>iterators now implement java.util.iterator</h3>
+		<ul>
+			<li>which means the .next() method returns an Object rather than a typed object.  You need to either cast the return from the .next() method to the appropriate type or use the .next<i>Type</i>() (where <i>Type</i> is Resource, Literal, Ns, RDFNode or Statement depending on the iterator) to avoid casting.</li>
+		</ul>
+		<h2>What Should be Changed</h2>
+		<h3>new SimpleSelector</h3>
+		<ul>
+			<li>SelectorImpl was the only case (other than creating models - see above) where applications had to use a specific implementation class rather than a class defined in the API.  A new SimpleSelector class has been added into the API package.  This is a clone of the old SelectorImpl class.  The old class still exists in the com.hp.hpl.jena.rdf.model.impl package so existing code won't break with the right import, but moving to the new class is encouraged.  The old one will eventually be deprecated.</li></ul>
+		
+	</body>
+</html>
