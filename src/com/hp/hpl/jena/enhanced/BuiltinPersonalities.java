@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.7 2003-03-31 11:11:44 ian_dickinson Exp $
+  $Id: BuiltinPersonalities.java,v 1.8 2003-03-31 14:33:16 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -35,6 +35,7 @@ public class BuiltinPersonalities {
         .add( ClassDescription.class, ClassDescriptionImpl.factory )
         .add( OntClass.class, OntClassImpl.factory )
         .add( EnumeratedClass.class, EnumeratedClassImpl.factory )
+        .add( Restriction.class, RestrictionImpl.factory )
         ;	
         
         

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+
+<owl:Restriction rdf:ID="ClassA">
+	<owl:onProperty rdf:resource="#p" />
+	<owl:allValuesFrom rdf:resource="#ClassB" />
+</owl:Restriction>
+
+<owl:Restriction rdf:ID="ClassB">
+	<owl:onProperty rdf:resource="#p" />
+	<owl:someValuesFrom rdf:resource="#ClassC" />
+</owl:Restriction>
+
+<owl:Restriction rdf:ID="ClassC">
+	<owl:onProperty rdf:resource="#q" />
+	<owl:hasValue rdf:datatype="&xsd;int">42</owl:hasValue>
+</owl:Restriction>
+
+<owl:Restriction rdf:ID="ClassD">
+	<owl:onProperty rdf:resource="#p" />
+	<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+</owl:Restriction>
+
+<owl:Restriction rdf:ID="ClassE">
+	<owl:onProperty rdf:resource="#p" />
+	<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">2</owl:maxCardinality>
+</owl:Restriction>
+
+<owl:Restriction rdf:ID="ClassF">
+	<owl:onProperty rdf:resource="#p" />
+	<owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">0</owl:cardinality>
+</owl:Restriction>
+
+</rdf:RDF>

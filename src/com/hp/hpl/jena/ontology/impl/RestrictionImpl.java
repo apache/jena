@@ -5,44 +5,78 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: Restriction.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            31-Mar-2003
+ * Filename           $RCSfile: RestrictionImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-31 14:33:19 $
+ * Last modified on   $Date: 2003-03-31 14:32:18 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
+ * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
- * ****************************************************************************/
+ *****************************************************************************/
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.impl;
 
 
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.path.PathSet;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.*;
 
 
 /**
  * <p>
- * Interface that encapsulates a class description formed by restricting one or
- * more properties to have constrained values and/or cardinalities.
+ * Implementation of the ontology abstraction representing restrictions.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Restriction.java,v 1.2 2003-03-31 14:33:19 ian_dickinson Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.1 2003-03-31 14:32:18 ian_dickinson Exp $
  */
-public interface Restriction
-    extends ClassDescription
+public class RestrictionImpl 
+    extends ClassDescriptionImpl
+    implements Restriction 
 {
     // Constants
     //////////////////////////////////
+
+    // Static variables
+    //////////////////////////////////
+
+    /**
+     * A factory for generating Restriction facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { return new RestrictionImpl( n, eg ); }
+    };
+
+
+    // Instance variables
+    //////////////////////////////////
+
+    // Constructors
+    //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct an ontology class node represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
+     */
+    public RestrictionImpl( Node n, EnhGraph g ) {
+        super( n, g );
+    }
 
 
     // External signature methods
@@ -58,7 +92,9 @@ public interface Restriction
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_onProperty();
+    public PathSet p_onProperty() {
+        return asPathSet( getProfile().ON_PROPERTY() );
+    }
     
 
     /**
@@ -71,7 +107,9 @@ public interface Restriction
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_allValuesFrom();
+    public PathSet p_allValuesFrom() {
+        return asPathSet( getProfile().ALL_VALUES_FROM() );
+    }
     
 
     /**
@@ -84,7 +122,9 @@ public interface Restriction
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_someValuesFrom();
+    public PathSet p_someValuesFrom() {
+        return asPathSet( getProfile().SOME_VALUES_FROM() );
+    }
     
 
     /**
@@ -97,7 +137,9 @@ public interface Restriction
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_hasValue();
+    public PathSet p_hasValue() {
+        return asPathSet( getProfile().HAS_VALUE() );
+    }
     
 
     /**
@@ -110,7 +152,9 @@ public interface Restriction
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_cardinality();
+    public PathSet p_cardinality() {
+        return asPathSet( getProfile().CARDINALITY() );
+    }
     
 
     /**
@@ -123,7 +167,9 @@ public interface Restriction
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_minCardinality();
+    public PathSet p_minCardinality() {
+        return asPathSet( getProfile().MIN_CARDINALITY() );
+    }
     
 
     /**
@@ -136,9 +182,17 @@ public interface Restriction
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_maxCardinality();
+    public PathSet p_maxCardinality() {
+        return asPathSet( getProfile().MAX_CARDINALITY() );
+    }
     
 
+    // Internal implementation methods
+    //////////////////////////////////
+
+    //==============================================================================
+    // Inner class definitions
+    //==============================================================================
 
 }
 
@@ -172,4 +226,5 @@ public interface Restriction
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 

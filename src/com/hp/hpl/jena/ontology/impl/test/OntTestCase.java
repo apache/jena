@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: OntTestCase.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:47 $
+ * Last modified on   $Date: 2003-03-31 14:33:19 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestCase.java,v 1.1 2003-03-27 16:28:47 ian_dickinson Exp $
+ * @version CVS $Id: OntTestCase.java,v 1.2 2003-03-31 14:33:19 ian_dickinson Exp $
  */
 public abstract class OntTestCase 
     extends TestCase
@@ -190,7 +190,7 @@ public abstract class OntTestCase
                     // a literal value 
                     RDFNode v = ps.getValue();
                     assertTrue( "Property value for " + m_property + " should be a literal", v instanceof Literal );
-                    assertEquals( "Property value for " + m_property + " not correct", m_literalVal, ((Literal) v).getValue() );
+                    assertTrue( "Property value for " + m_property + " failed equality test", ((Literal) v).getValue().equals( m_literalVal ) );
                 }
             }
         }
