@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.25 2004-03-17 10:15:34 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.26 2004-06-18 14:18:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
@@ -36,25 +37,28 @@ public abstract class ModelSpecImpl implements ModelSpec
     private static Map values = new HashMap();
     
     /**
-        Initialise this ModelSpec with the supplied ModeMaker; if it is null, fabricate a
-        MemModelMaker anyway.
+        Initialise this ModelSpec with the supplied non-nullModeMaker.
         
         @param maker the ModelMaker to use, or null to create a fresh one
     */
     public ModelSpecImpl( ModelMaker maker )
-        { this.maker = this.maker = maker == null ? ModelFactory.createMemModelMaker(): maker; }
-        
-    /**
-        Initialise this ModelSpec from the supplied description, which is used to construct
-        a ModelMaker. 
-        
-        @param description an RDF description including that of the necessary ModelMaker
-    */
-    public ModelSpecImpl( Model description )
-        { this( createMaker( description ) ); }
+        {
+        if (maker == null) throw new RuntimeException( "null maker not allowed" );
+        this.maker = maker; 
+        }
         
     public ModelSpecImpl( Resource root, Model description )
-        { this( createMaker( root, description ) ); }
+        { 
+        this( createMaker( getMaker( root, description ), description ) );
+        this.root = root;
+        this.description = description; 
+        }
+    
+    protected static final Model emptyModel = ModelFactory.createDefaultModel();
+    
+    protected Model description = emptyModel;
+    
+    protected Resource root = ResourceFactory.createResource( "" );
         
     /**
         Answer a Model created according to this ModelSpec; left abstract for subclasses
@@ -265,9 +269,16 @@ public abstract class ModelSpecImpl implements ModelSpec
     public static Model readModel( Resource source )
         {
         String uri = source.getURI();
-        return ModelLoader.loadModel( uri );
+        return FileUtils.loadModel( uri );
         }
-        
+
+    protected Model loadFiles(Model m)
+        {
+        StmtIterator it = description.listStatements( root, JMS.loadWith, (RDFNode) null );
+        while (it.hasNext()) FileUtils.loadModel( m, it.nextStatement().getResource().getURI() );
+        return m;
+        }
+                
     }
 
 /*

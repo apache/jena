@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.19 2004-04-30 13:22:39 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.20 2004-06-18 14:18:46 chris-dollin Exp $
  */
 
 public class ModelLoader
@@ -291,7 +291,7 @@ public class ModelLoader
      * @return String   Guessed syntax - or the default supplied
      */
 
-    public static String guessLang(String urlStr, String defaultLang)
+    public static String guessLang( String urlStr, String defaultLang )
     {
         if ( urlStr.startsWith("jdbc:") || urlStr.startsWith("JDBC:") )
             return langSQL ;

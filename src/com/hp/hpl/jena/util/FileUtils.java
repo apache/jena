@@ -7,6 +7,9 @@ package com.hp.hpl.jena.util;
 
 import java.io.*;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -16,8 +19,21 @@ public class FileUtils {
     public static final String langXMLAbbrev = "RDF/XML-ABBREV" ;
     public static final String langNTriple = "N-TRIPLE" ;
     public static final String langN3 = "N3" ;
+
+    public static Model loadModel( String url )
+        { return FileUtils.loadModel( ModelFactory.createDefaultModel(), url );  }
+
+    public static Model loadModel( Model m, String url )
+        { return m.read( url, guessLang( url ) ); }
+
+    public static Model loadModels( String [] names )
+        {
+        Model result = ModelFactory.createDefaultModel();
+        for (int i = 0; i < names.length; i += 1) loadModel( result, names[i] );
+        return result;
+        }
     
-        /**
+    /**
         Guess the language of the specified file [or URL] by looking at the suffix.
         If it ends in .n3, assume N3; if it ends in .nt, assume N-TRIPLE;
         otherwise assume RDF/XML.
@@ -153,7 +169,7 @@ public class FileUtils {
     	}
     	return is;
     }
-                 
+
 }
 
 /*

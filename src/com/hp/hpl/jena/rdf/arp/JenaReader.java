@@ -103,6 +103,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 	}
 	private ARPFilter arpf;
 	private Model model;
+	
 	public void read(Model model, String url) throws JenaException {
 
 		try {
@@ -115,6 +116,8 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 					model,
 					new InputStreamReader(conn.getInputStream(), encoding),
 					url);
+		} catch (FileNotFoundException e) {
+		    throw new DoesNotExistException( url );
 		} catch (IOException e) {
 			throw new JenaException(e);
 		}
@@ -639,7 +642,7 @@ read(model.getGraph(), inputS, xmlBase);
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.21 2004-04-22 12:42:28 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.22 2004-06-18 14:18:43 chris-dollin Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */

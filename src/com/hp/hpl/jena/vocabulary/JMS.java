@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.17 2004-04-06 20:43:25 chris-dollin Exp $
+  $Id: JMS.java,v 1.18 2004-06-18 14:18:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -32,6 +32,12 @@ public class JMS
      */
     public static String getURI()
         { return baseURI; }
+    
+    /**
+     	The property of a ModelSpec that specifies the URI(s) from which it is
+     	to be loaded when it has been created.
+    */
+    public static final Property loadWith = property( "loadWith" );
     
     /** 
         The property of an OntModelSpec that gives the language URI string.

@@ -7,6 +7,7 @@ package com.hp.hpl.jena.rdf.model.test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.hp.hpl.jena.graph.impl.*;
@@ -32,65 +33,36 @@ public class TestModelSpecMore extends ModelTestBase
     public static TestSuite suite()
         { return new TestSuite( TestModelSpecMore.class ); }    
     
-    public void xtestCreateFromResource() throws FileNotFoundException, IOException
-	    {
-	    File temp = FileUtils.tempFileName( "pre", ".rdf" );   
-	    Model desc = TestModelSpec.createPlainModelDesc();
-	    desc.write( System.out, "N3" );
-	    TestModelSpec.writeModel( temp, desc );
-	    ModelSpec ms = ModelSpecImpl.create( resource( "file:" + temp ) );
-	    assertIsoModels( desc, ms.getDescription() );
-	    }
-    
-    public void xtestCreateMemModelMaker()
+    public void testLoadWorks() throws Exception
         {
-        Resource mem = JMS.MemMakerSpec;
-        testCreateModelMaker( JMS.rsStandard, mem, SimpleGraphMaker.class );
-        testCreateModelMaker( JMS.rsMinimal, mem, SimpleGraphMaker.class );
-        testCreateModelMaker( JMS.rsConvenient, mem, SimpleGraphMaker.class );
-        }
-
-    protected static Resource resource()
-        { return ResourceFactory.createResource(); }
-    
-    public void testCreateModelMaker( Resource style, Resource cl, Class required )
-        {
-        Resource me = resource();
-        ReificationStyle wanted = JMS.findStyle( style );
-        Model spec = modelWithStatements( "" )
-            .add( me, RDF.type, cl )
-            .add( me, JMS.reificationMode, style );
-        ModelMaker maker = ModelSpecImpl.createMaker( spec );
-        assertTrue( required.isInstance( maker.getGraphMaker() ) );
-        assertEquals( wanted, maker.getGraphMaker().getReificationStyle() );
-        }
-    
-    public void testCreatePlainMemModel()
-        {
-        Resource me = resource();
-        Resource maker = resource();
-        Model spec = TestModelSpec.createPlainModelDesc( me, maker );
-        PlainModelSpec pms = new PlainModelSpec( maker, spec );
-        ModelMaker mm = pms.getModelMaker();
-        Model desc = mm.getDescription( me );
-        spec.write( System.out, "N3-TRIPLES" );
-        desc.write( System.out, "N3-TRIPLES" );
-        assertTrue( desc.contains( me, RDF.type, JMS.MemMakerSpec ) );
-        assertTrue( desc.contains( null, JMS.reificationMode, JMS.rsMinimal ) );
-        assertTrue( mm.getGraphMaker() instanceof SimpleGraphMaker );
-        assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
-        }
-        
-
-                    
-    public void xtestA()
-        {
-        String url = "file:/tmp/some.rdf";
-        Model wanted = ModelLoader.loadModel( url );
-        Model spec = modelWithStatements( "_root rdf:type jms:PlainModelSpec; _root jms:maker jms:MemMaker; _junk jms:loadWith error; _root jms:loadWith " + url );
+        String url = makeModel( "a bb c" );
+        Model wanted = FileUtils.loadModel( url );
+        Model spec = modelWithStatements( "_root rdf:type jms:PlainModelSpec; _root jms:maker jms:MemMaker; _root jms:loadWith " + url );
         ModelSpec ms = ModelFactory.createSpec( spec );
         Model m = ModelFactory.createModel( ms );
         assertIsoModels( wanted, m );
+        }
+    
+    public void testLoadMultiWorks() throws Exception
+	    {
+        String url1 = makeModel( "dogs may bark" ), url2 = makeModel( "pigs might fly" );
+	    Model wanted = FileUtils.loadModels( new String[] {url1, url2} );
+	    Model spec = modelWithStatements( "_root rdf:type jms:PlainModelSpec; _root jms:maker jms:MemMaker" );
+	    modelAdd( spec, "_root jms:loadWith " + url1 );
+	    modelAdd( spec, "_root jms:loadWith " + url2 );
+	    ModelSpec ms = ModelFactory.createSpec( spec );
+	    Model m = ModelFactory.createModel( ms );
+	    assertIsoModels( wanted, m );
+	    }
+    
+    protected String makeModel( String statements ) throws FileNotFoundException, IOException
+        {
+	    String name = FileUtils.tempFileName( "test-load-with-", ".rdf" ).getAbsolutePath();
+        Model m = modelWithStatements( statements );
+        FileOutputStream fos = new FileOutputStream( name );
+        m.write( fos, FileUtils.guessLang( name ) ); 
+        fos.close();
+	    return "file://" + name;
         }
     }
 

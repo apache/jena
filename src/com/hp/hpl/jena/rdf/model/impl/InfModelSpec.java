@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.5 2003-09-11 14:09:35 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.6 2004-06-18 14:18:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -31,7 +31,7 @@ public class InfModelSpec extends ModelSpecImpl
     */
     public InfModelSpec( Resource root, Model description )
         {
-        super( getMaker( root, description ), description );
+        super( root, description );
         Statement st = description.getRequiredProperty( null, JMS.reasoner );
         reasonerResource = st.getResource();
         }   

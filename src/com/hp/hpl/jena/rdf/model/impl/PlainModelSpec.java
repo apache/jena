@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.6 2003-09-11 14:09:35 chris-dollin Exp $
+  $Id: PlainModelSpec.java,v 1.7 2004-06-18 14:18:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -33,15 +34,16 @@ public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
         @param description the RDF who's JMS.maker describes the ModelMaker
     */
     public PlainModelSpec( Resource root, Model description )
-        { super( getMaker( root, description ), description ); }
-
+        { super( root, description );
+        this.root = root; this.description = description; }
+    
     /**
         Answer a Model that satisfies the description that this ModelSpec was constructed
         with.
     */
     public Model createModel()
-        { return maker.createModel(); }
-        
+        { return loadFiles( maker.createModel() ); }
+    
     /**
         Answer the Model obtained from the underlying ModelMaker with the given name. 
         
