@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleInfGraph.java,v 1.3 2003-10-09 13:29:21 der Exp $
+ * $Id: RDFSRuleInfGraph.java,v 1.4 2003-11-08 17:56:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * the validation support.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-10-09 13:29:21 $
+ * @version $Revision: 1.4 $ on $Date: 2003-11-08 17:56:30 $
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {
 
@@ -58,7 +58,9 @@ public class RDFSRuleInfGraph extends FBRuleInfGraph {
      * @return a ValidityReport structure
      */
     public ValidityReport validate() {
-        StandardValidityReport report = new StandardValidityReport();
+        // The full configuration uses validation rules so check for these
+        StandardValidityReport report = (StandardValidityReport)super.validate();
+        // Also do a hardwired check to handle the simpler configurations
         HashMap dtRange = getDTRange();
         for (Iterator props = dtRange.keySet().iterator(); props.hasNext(); ) {
             Node prop = (Node)props.next();
