@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:37 $
+ * Last modified on   $Date: 2003-12-08 09:31:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -27,10 +27,11 @@ package com.hp.hpl.jena.reasoner.dig.test;
 ///////////////
 import org.w3c.dom.*;
 
-import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.dig.*;
+import com.hp.hpl.jena.reasoner.test.TestUtil;
 
 import junit.framework.*;
 
@@ -47,7 +48,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.4 2003-12-04 16:38:37 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.5 2003-12-08 09:31:40 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -78,11 +79,33 @@ public class TestDigReasoner
     public static TestSuite suite() {
         TestSuite s = new TestSuite( "TestDigReasoner" );
         
-        //buildConceptLangSuite( "testing/ontology/dig/owl/cl", OntModelSpec.OWL_MEM, s );
+        buildConceptLangSuite( "testing/ontology/dig/owl/cl", OntModelSpec.OWL_MEM, s );
         buildBasicQuerySuite( "testing/ontology/dig/owl/basicq", OntModelSpec.OWL_MEM, s );
 
+        // add the standard tests from this class
+        s.addTestSuite( TestDigReasoner.class );
         return s;
     }
+
+    
+    public void testQueryAllConcepts() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        TestUtil.assertIteratorValues( this, m.listClasses(), 
+                                       new Resource[] {m.getResource( NS + "A" ), m.getResource( NS + "B" )} );
+    }
+    
+    
+    
+    // Internal implementation methods
+    //////////////////////////////////
 
     private static void buildConceptLangSuite( String root, OntModelSpec spec, TestSuite s ) {
         int i = 0;
@@ -120,9 +143,6 @@ public class TestDigReasoner
     }
     
     
-    // Internal implementation methods
-    //////////////////////////////////
-
     
     //==============================================================================
     // Inner class definitions

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGReasoner.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:21 $
+ * Last modified on   $Date: 2003-12-08 09:31:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGReasoner.java,v 1.1 2003-12-04 16:38:21 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGReasoner.java,v 1.2 2003-12-08 09:31:39 ian_dickinson Exp $)
  */
 public class DIGReasoner 
     implements Reasoner
@@ -75,6 +75,16 @@ public class DIGReasoner
     // Constructors
     //////////////////////////////////
 
+    /**
+     * <p>Construct a DIG reasoner, that can generate inference graphs binding
+     * an external DIG inference engine (e.g. Racer) to a given source graph.<p>
+     * @param tbox Optional schema to bind to this reasoner instance.  Unlike other Jena
+     * reasoners, pre-binding a tbox to a DIG reasoner does not allow any 
+     * efficiencies to be exploited.
+     * @param factory The reasoner factory that created this reasoner
+     * @param configuraton Optional resource to which is attached configuration
+     * parameters for this reasoner
+     */
     public DIGReasoner( Graph tbox, ReasonerFactory factory, Resource configuration ) {
         m_tbox = tbox;
         m_factory = factory;
@@ -121,7 +131,7 @@ public class DIGReasoner
      * of the tbox and data graphs.
      */
     public InfGraph bind( Graph data ) {
-        return new DIGInfGraph( m_tbox, this );
+        return new DIGInfGraph( data, this );
     }
 
 

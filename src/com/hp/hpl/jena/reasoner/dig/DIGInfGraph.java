@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGInfGraph.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:21 $
+ * Last modified on   $Date: 2003-12-08 09:31:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGInfGraph.java,v 1.2 2003-12-04 16:38:21 ian_dickinson Exp $
+ * @version CVS $Id: DIGInfGraph.java,v 1.3 2003-12-08 09:31:39 ian_dickinson Exp $
  */
 public class DIGInfGraph
     extends BaseInfGraph
@@ -95,8 +95,11 @@ public class DIGInfGraph
      * this prepration is done.
      */
     public void prepare() {
-        m_adapter.resetKB();
-        isPrepared = true;
+        if (!isPrepared) {
+            m_adapter.resetKB();
+            m_adapter.uploadKB();
+            isPrepared = true;
+        }
     }
     
     /**
@@ -111,9 +114,11 @@ public class DIGInfGraph
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
-        // TODO
-        return null;
+        prepare();
+        ExtendedIterator i = m_adapter.find( pattern );
+        return (continuation == null) ? i : i.andThen( continuation.find( pattern ) ); 
     }
+
    
     /**
      * Return the schema graph, if any, bound into this inference graph.

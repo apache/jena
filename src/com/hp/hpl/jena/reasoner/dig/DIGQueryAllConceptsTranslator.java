@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryAllConceptsTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:21 $
+ * Last modified on   $Date: 2003-12-08 09:31:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -33,11 +33,15 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPath;
 
 /**
  * <p>
- * Translator that generates DIG allconcepts queries
+ * Translator that generates DIG allconcepts queries in response to a find query:
+ * <pre>
+ * * rdf:type owl:Class
+ * </pre>
+ * or similar.
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryAllConceptsTranslator.java,v 1.1 2003-12-04 16:38:21 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryAllConceptsTranslator.java,v 1.2 2003-12-08 09:31:39 ian_dickinson Exp $)
  */
 public class DIGQueryAllConceptsTranslator 
     extends DIGQueryTranslator
@@ -59,7 +63,6 @@ public class DIGQueryAllConceptsTranslator
      * <p>Construct a translator for the DIG query all concepts.</p>
      * @param predicate The predicate URI to trigger on
      * @param object The object URI to trigger on
-     * @param ontLang Profile denoting the language we're dealing with
      */
     public DIGQueryAllConceptsTranslator( String predicate, String object ) {
         super( ALL, predicate, object );
@@ -73,8 +76,11 @@ public class DIGQueryAllConceptsTranslator
     /**
      * <p>Answer a query that will list all concept names</p>
      */
-    public Document translatePattern( TriplePattern query, DIGAdapter da ) {
-        return da.getConnection().createDigVerb( DIGProfile.ALL_CONCEPT_NAMES, da.getProfile() );
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
+        DIGConnection dc = da.getConnection();
+        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
+        da.addElement( query.getDocumentElement(), DIGProfile.ALL_CONCEPT_NAMES );
+        return query;
     }
 
 
@@ -84,7 +90,6 @@ public class DIGQueryAllConceptsTranslator
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
         // evaluate a path through the return value to give us an iterator over catom names
         ExtendedIterator catomNames = new SimpleXMLPath( true )
-                                          .appendElementPath( DIGProfile.RESPONSE )
                                           .appendElementPath( DIGProfile.CONCEPT_SET )
                                           .appendElementPath( DIGProfile.SYNONYMS )
                                           .appendElementPath( DIGProfile.CATOM )

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGProfile.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:21 $
+ * Last modified on   $Date: 2003-12-08 09:31:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -33,7 +33,7 @@ package com.hp.hpl.jena.reasoner.dig;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGProfile.java,v 1.4 2003-12-04 16:38:21 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGProfile.java,v 1.5 2003-12-08 09:31:39 ian_dickinson Exp $)
  */
 public interface DIGProfile 
 {
@@ -68,7 +68,7 @@ public interface DIGProfile
     public static final String ASKS             = "asks";
     public static final String NEWKB            = "newKB";
     public static final String RELEASEKB        = "releaseKB";
-    public static final String RESPONSE         = "response";
+    public static final String RESPONSE         = "responses";      // TODO Racer bug - returns <responses> not <response>
     
     // responses
     public static final String OK               = "ok";

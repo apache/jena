@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:21 $
+ * Last modified on   $Date: 2003-12-08 09:31:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -25,7 +25,6 @@ package com.hp.hpl.jena.reasoner.dig;
 
 // Imports
 ///////////////
-import java.io.PrintWriter;
 import java.util.*;
 
 import com.hp.hpl.jena.datatypes.*;
@@ -48,7 +47,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.2 2003-12-04 16:38:21 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.3 2003-12-08 09:31:39 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -102,11 +101,28 @@ public class DIGAdapter
     // Constructors
     //////////////////////////////////
 
+    /**
+     * <p>Construct a DIG adapter for the given source data graph, which is encoding an
+     * ontology in a language represented by the given model spec. Allocates a new 
+     * DIG connection using the default connection URL (<code>http://localhost:8081</code>).</p>
+     * @param spec An ont model spec encoding the ontology language of the source graph
+     * @param source The graph that contains the source data on which the DIG reasoner 
+     * will operate
+     */
     public DIGAdapter( OntModelSpec spec, Graph source ) {
         this( spec, source, DIGConnectionPool.getInstance().allocate() );
     }
     
     
+    /**
+     * <p>Construct a DIG adapter for the given source data graph, which is encoding an
+     * ontology in a language represented by the given model spec.</p>
+     * @param spec An ont model spec encoding the ontology language of the source graph
+     * @param source The graph that contains the source data on which the DIG reasoner 
+     * will operate
+     * @param connection A pre-configured DIG connection to use to communicate with the 
+     * external reasoner
+     */
     public DIGAdapter( OntModelSpec spec, Graph source, DIGConnection connection ) {
         m_connection = connection;
         
@@ -122,20 +138,6 @@ public class DIGAdapter
     //////////////////////////////////
 
     /**
-     * Set a configuration parameter for the reasoner. Parameters can identified
-     * by URI and can also be set when the Reasoner instance is created by specifying a
-     * configuration in RDF.
-     * 
-     * @param parameterUri the property identifying the parameter to be changed
-     * @param value the new value for the parameter, typically this is a wrapped
-     * java object like Boolean or Integer.
-     */
-    public void setParameter(Property parameterUri, Object value) {
-        // no parameters
-    }
-
-
-    /**
      * <p>Answer the DIG profile for the DIG interface this reasoner is attached to.</p>
      * @return A profile detailing the parameters of the DIG variant this reasoner is interacting with.
      */
@@ -143,9 +145,19 @@ public class DIGAdapter
         return m_profile;
     }
     
+
+    /**
+     * <p>Set the profile specifying the variable parts of the DIG profile that are being
+     * used in this instance.</p>
+     * @param profile The new DIG profile
+     */
+    public void setProfile( DIGProfile profile ) {
+        m_profile = profile;
+    }
+    
     
     /**
-     * <p>Answer the ontology language profile we're assuming in this reasoner.
+     * <p>Answer the ontology language profile we're assuming in this reasoner.</p>
      * @return The ontology language via the language profile
      */
     public Profile getOntLanguage() {
@@ -178,12 +190,6 @@ public class DIGAdapter
         
         // now tell the existing KB contents
         Document kbDIG = translateKbToDig();
-        if (true) { // TODO remove debug
-            System.err.println( "Sending");
-            getConnection().serialiseDocument( kbDIG, new PrintWriter( System.err ) );
-            System.err.println();
-            System.err.println( " .. sent");
-        }
                 
         Document response = getConnection().sendDigVerb( kbDIG, getProfile() );
         return !getConnection().warningCheck( response );
@@ -220,7 +226,8 @@ public class DIGAdapter
     
     /**
      * <p>Answer this adapter's connection to the database.</p>
-     * @return The DIG connector this adapter is using
+     * @return The DIG connector this adapter is using, or null if the connection has 
+     * been closed.
      */
     public DIGConnection getConnection() {
         return m_connection;
@@ -237,7 +244,10 @@ public class DIGAdapter
     
     
     /**
-     * Basic pattern lookup interface.
+     * <p>Basic pattern lookup interface - answer an iterator over the triples
+     * matching the givenpattern.  Where possible, this query will first be
+     * given to the external reasoner, with the local graph used to generate
+     * supplemental bindings.</p> 
      * @param pattern a TriplePattern to be matched against the data
      * @return An ExtendedIterator over all Triples in the data set
      *  that match the pattern
@@ -282,7 +292,38 @@ public class DIGAdapter
     public Graph getGraph() {
         return m_sourceData.getGraph();
     }
+
     
+    /** 
+     * <p>Answer an identifier for a resource, named or bNode</p>
+     * @param r A resource
+     * @return A unique identifier for the resource as a string, which will either
+     * be the resource URI for named resources, or a unique ID string for bNodes
+     */
+    public String getResourceID( Resource r ) {
+        return getNodeID( r.asNode() );
+    }
+
+
+    /** 
+     * <p>Answer an identifier for a node, named or anon</p>
+     * @param r An RDF node
+     * @return A unique identifier for the node as a string, which will either
+     * be the resource URI for named nodes, or a unique ID string for bNodes
+     */
+    public String getNodeID( com.hp.hpl.jena.graph.Node n ) {
+        if (n.isBlank()) {
+            return ANON_MARKER + n.getBlankNodeId().toString();
+        }
+        else {
+            return n.getURI();
+        }
+    }
+
+
+    public void addClassIdentifier( Element elem, com.hp.hpl.jena.graph.Node node ) {
+        // TODO
+    }
 
     // Internal implementation methods
     //////////////////////////////////
@@ -292,6 +333,8 @@ public class DIGAdapter
      * <p>In Dig, defXXX elements are required to introduce all named entities,
      * such as concepts and roles.  This method collects such definitions and
      * adds the defXXX elements as children of the tell element.</p>
+     * @param tell The XML element, typically &lt;tells&gt;, to which to attach the 
+     * declarations
      */
     protected void addNamedEntities( Element tell ) {
         // first we collect the named entities
@@ -367,6 +410,13 @@ public class DIGAdapter
     }
     
     
+    /**
+     * <p>Translate all of the classes in the current KB into descriptions
+     * using the DIG concept language, and attach the axioms generated
+     * to the given element.</p>
+     * @param tell The XML element, typically &lt;tells&gt;, to which
+     * to attach the generated translations.
+     */
     protected void translateClasses( Element tell ) {
         translateSubClassAxioms( tell );
         translateClassEquivalences( tell );
@@ -439,6 +489,12 @@ public class DIGAdapter
     }
     
     
+    /**
+     * <p>Translate any statements from the KB that indicates disjointness between
+     * two classes.</p>
+     * @param tell The XML element representing the tell verb we will attach the
+     * translations to.
+     */
     protected void translateClassDisjointAxioms( Element tell ) {
         StmtIterator i = m_sourceData.listStatements( null, m_sourceData.getProfile().DISJOINT_WITH(), (RDFNode) null ); 
         while (i.hasNext()) {
@@ -669,7 +725,7 @@ public class DIGAdapter
         for (Iterator i = ind.listRDFTypes( true );  i.hasNext(); ) {
             Resource type = (Resource) i.next();
             Element inst = addElement( expr, DIGProfile.INSTANCEOF );
-            addNamedElement( inst, DIGProfile.INDIVIDUAL, getIndividualID( ind ) );
+            addNamedElement( inst, DIGProfile.INDIVIDUAL, getResourceID( ind ) );
             addNamedElement( inst, DIGProfile.CATOM, type.getURI() );
         }
     }
@@ -678,16 +734,16 @@ public class DIGAdapter
     /** Translate an object property into a DIG related element */
     protected void translateInstanceRole( Element expr, Individual ind, OntProperty p, Individual obj) {
         Element related = addElement( expr, DIGProfile.RELATED );
-        addNamedElement( related, DIGProfile.INDIVIDUAL, getIndividualID( ind ) );
+        addNamedElement( related, DIGProfile.INDIVIDUAL, getResourceID( ind ) );
         addNamedElement( related, DIGProfile.RATOM, p.getURI() );
-        addNamedElement( related, DIGProfile.INDIVIDUAL, getIndividualID( obj ) );
+        addNamedElement( related, DIGProfile.INDIVIDUAL, getResourceID( obj ) );
     }
 
 
     /** Translate a datatype property into a DIG value element */
     protected void translateInstanceAttrib( Element expr, Individual ind, OntProperty p, Literal obj ) {
         Element related = addElement( expr, DIGProfile.VALUE );
-        addNamedElement( related, DIGProfile.INDIVIDUAL, getIndividualID( ind ) );
+        addNamedElement( related, DIGProfile.INDIVIDUAL, getResourceID( ind ) );
         addNamedElement( related, DIGProfile.ATTRIBUTE, p.getURI() );
         
         if (isIntegerType( obj.getDatatype() )) {
@@ -704,9 +760,9 @@ public class DIGAdapter
     protected void translateDifferentIndividuals( Element expr, Individual ind, Individual other ) {
         Element disjoint = addElement( expr, DIGProfile.DISJOINT );
         Element iset0 = addElement( disjoint, DIGProfile.ISET );
-        addNamedElement( iset0, DIGProfile.INDIVIDUAL, getIndividualID( ind ) );
+        addNamedElement( iset0, DIGProfile.INDIVIDUAL, getResourceID( ind ) );
         Element iset1 = addElement( disjoint, DIGProfile.ISET );
-        addNamedElement( iset1, DIGProfile.INDIVIDUAL, getIndividualID( other ) );
+        addNamedElement( iset1, DIGProfile.INDIVIDUAL, getResourceID( other ) );
     }
     
     
@@ -714,9 +770,9 @@ public class DIGAdapter
     protected void translateSameIndividuals( Element expr, Individual ind, Individual other ) {
         Element disjoint = addElement( expr, DIGProfile.EQUALC );
         Element iset0 = addElement( disjoint, DIGProfile.ISET );
-        addNamedElement( iset0, DIGProfile.INDIVIDUAL, getIndividualID( ind ) );
+        addNamedElement( iset0, DIGProfile.INDIVIDUAL, getResourceID( ind ) );
         Element iset1 = addElement( disjoint, DIGProfile.ISET );
-        addNamedElement( iset1, DIGProfile.INDIVIDUAL, getIndividualID( other ) );
+        addNamedElement( iset1, DIGProfile.INDIVIDUAL, getResourceID( other ) );
     }
     
     
@@ -884,15 +940,6 @@ public class DIGAdapter
     }
     
     
-    /** Answer an identifier for an individual, named or bNode */
-    private String getIndividualID( Individual ind ) {
-        if (ind.isAnon()) {
-            return ANON_MARKER + ind.getId().toString();
-        }
-        else {
-            return ind.getURI();
-        }
-    }
     
     
     //==============================================================================

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGConnection.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:21 $
+ * Last modified on   $Date: 2003-12-08 09:31:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import org.w3c.dom.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGConnection.java,v 1.3 2003-12-04 16:38:21 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGConnection.java,v 1.4 2003-12-08 09:31:39 ian_dickinson Exp $)
  */
 public class DIGConnection {
     // Constants
@@ -259,10 +259,19 @@ public class DIGConnection {
     }
     
     
+    /** 
+     * <p>Answer the URL of the external reasoner this connection is bound to.</p>
+     * @return The current external reasoner URL
+     */
     public String getReasonerURL() {
         return m_extReasonerURL;
     }
     
+    
+    /**
+     * <p>Set the URL of the external reasoner with which this connection communicates.</p>
+     * @param url The URL of the new external reasoner connection point
+     */
     public void setReasonerURL( String url ) {
         m_extReasonerURL = url;
         m_kbURI = null;

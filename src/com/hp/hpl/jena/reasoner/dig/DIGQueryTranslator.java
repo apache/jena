@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:21 $
+ * Last modified on   $Date: 2003-12-08 09:31:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -31,6 +31,7 @@ import org.w3c.dom.Document;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
@@ -40,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.1 2003-12-04 16:38:21 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.2 2003-12-08 09:31:39 ian_dickinson Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -165,12 +166,17 @@ public abstract class DIGQueryTranslator {
     // Internal implementation methods
     //////////////////////////////////
 
+    /**
+     * <p>Answer a node corresponding to the given URI.</p>
+     * @param uri A node URI, or the special string *, or null.
+     * @return A Jena Node corresponding to the given URI
+     */
     protected Node mapNode( String uri ) {
         if (uri == null) {
             return null;
         }
         else {
-            return (uri.equals( ALL )) ? Node.ANY : Node.createURI( uri );
+            return (uri.equals( ALL )) ? Node_RuleVariable.WILD : Node.createURI( uri );
         }
     }
 
@@ -184,6 +190,12 @@ public abstract class DIGQueryTranslator {
      */
     protected boolean trigger( Node lhs, Node rhs ) {
         return (lhs == null) || lhs.equals( rhs );
+    }
+    
+    
+    protected boolean isTrue( Document response ) {
+        // TODO
+        return false;
     }
     
     

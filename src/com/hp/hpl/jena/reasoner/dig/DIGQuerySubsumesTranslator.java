@@ -6,8 +6,8 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
- * Filename           $RCSfile: DIGReasonerFactory.java,v $
- * Revision           $Revision: 1.2 $
+ * Filename           $RCSfile: DIGQuerySubsumesTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-08 09:31:39 $
@@ -22,106 +22,85 @@
 package com.hp.hpl.jena.reasoner.dig;
 
 
-
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
+import org.w3c.dom.*;
 
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
+import java.util.*;
 
 
 /**
  * <p>
- * Factory class for generating instances of DIG reasoners.  Implements singleton pattern.
+ * Translator that generates DIG allconcepts queries in response to a find query:
+ * <pre>
+ * * rdf:type owl:Class
+ * </pre>
+ * or similar.
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGReasonerFactory.java,v 1.2 2003-12-08 09:31:39 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQuerySubsumesTranslator.java,v 1.1 2003-12-08 09:31:39 ian_dickinson Exp $)
  */
-public class DIGReasonerFactory 
-    implements ReasonerFactory
+public class DIGQuerySubsumesTranslator 
+    extends DIGQueryTranslator
 {
 
     // Constants
     //////////////////////////////////
 
-    /** Static URI for this reasoner type */
-    public static final String URI = "http://jena.hpl.hp.com/2003/DIGReasoner";
-    
-
     // Static variables
     //////////////////////////////////
 
-    /** The singleton instance */
-    private static DIGReasonerFactory s_instance = new DIGReasonerFactory();
-    
-    
     // Instance variables
     //////////////////////////////////
 
-    /** A model denoting the standard capabilities of a DIG reasoner */
-    private Model m_capabilities = null;
-    
-    
     // Constructors
     //////////////////////////////////
 
-    /** Private constructor to enforce singleton pattern */
-    private DIGReasonerFactory() {}
+    /**
+     * <p>Construct a translator for the DIG query 'subsumes'.</p>
+     * @param predicate The predicate URI to trigger on
+     */
+    public DIGQuerySubsumesTranslator( String predicate ) {
+        super( ALL, predicate, ALL );
+    }
     
-    
+
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * <p>Answer the singleton instance of the factory.</p>
-     */
-    public static DIGReasonerFactory theInstance() {
-        return s_instance;
-    }
-    
-    
-    /**
-     * <p>Answer a new DIG reasoner instance, optionally configured with the given
-     * configuration resource.</p>
-     * @param configuration A resource whose properties denote the configuration of
-     * the reasoner instance, or null to rely on the default configuration.
-     */
-    public Reasoner create( Resource configuration ) {
-        return new DIGReasoner( null, this, configuration );
-    }
-    
 
-    /* (non-Javadoc)
-     * @see com.hp.hpl.jena.reasoner.ReasonerFactory#getCapabilities()
+    /**
+     * <p>Answer a query that will test subsumption between two classes</p>
      */
-    public Model getCapabilities() {
-        if (m_capabilities == null) {
-            m_capabilities = ModelFactory.createDefaultModel();
-            Resource base = m_capabilities.createResource(getURI());
-            base.addProperty(ReasonerVocabulary.nameP, "DIG external Reasoner")
-                .addProperty(ReasonerVocabulary.descriptionP, "Adapter for external (i.e. non-Jena) DIG reasoner." )
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.subClassOf)
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.subPropertyOf)
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
-                // TODO - add OWL elements supported
-                .addProperty(ReasonerVocabulary.versionP, "0.1");
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
+        DIGConnection dc = da.getConnection();
+        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
+        Element subsumes = da.addElement( query.getDocumentElement(), DIGProfile.SUBSUMES );
+        da.addClassIdentifier( subsumes, pattern.getObject() );
+        da.addClassIdentifier( subsumes, pattern.getSubject() );
+
+        return query;
+    }
+
+
+    /**
+     * <p>Answer an iterator of triples that match the original find query.</p>
+     */
+    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+        List answer = new ArrayList();
+        if (isTrue( response )) {
+            // if response is true, the subsumption relationship holds
+            answer.add( query.asTriple() );
         }
         
-        return m_capabilities;
+        return WrappedIterator.create( answer.iterator() );
     }
-
-    /**
-     * <p>Answer the URI of this reasoner factory</p>
-     */
-    public String getURI() {
-        return URI;
-    }
-
+    
 
     // Internal implementation methods
     //////////////////////////////////
@@ -131,6 +110,7 @@ public class DIGReasonerFactory
     //==============================================================================
 
 }
+
 
 /*
  *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
