@@ -66,15 +66,16 @@ literals and resources were stored in  two separate tables that were referenced 
 the statements table. The Jena2 layout  enables faster insertion and 
 retrieval but uses more storage than Jena1. However, configuration options are available that give 
 Jena2 users some control over the degree of denormalization in order to reduce 
-storage consumption. The persistence subsystem supports a Fastpath capability for RDQL 
+storage consumption. The persistence subsystem supports a <a href="fastpath.html">Fastpath</a>
+capability for RDQL 
 queries that dynamically generates SQL queries to perform as much of the RDQL 
 query as possible within the database engine. For an overview of creating and 
-accessing persistent Jena models, see <a href="howto.html">howto.html</a>. A 
+accessing persistent Jena models, see the <a href="howto.html">HowTo</a>. A 
 summary of the various configuration options available is given in
-<a href="options.html">options.html</a>. Known issues and open problems are 
+<a href="options.html">Options</a>. Known issues and open problems are 
 summarized in&nbsp;
-  <a href="issues.html">issues.html</a>. Some performance notes and observations 
-are given in <a href="perfNotes.html">perfNotes.html</a>.</p>
+  <a href="issues.html">Issues</a>. Some performance notes and observations 
+are given in <a href="perfNotes.html">PerfNotes</a>.</p>
 
 
 
@@ -106,9 +107,9 @@ are given in <a href="perfNotes.html">perfNotes.html</a>.</p>
 
 
 
-  <p>The following table lists the platforms, database engines and JDBC drivers 
+<p>The following table lists the platforms, database engines and JDBC drivers 
   currently supported for Jena2 persistence. Older and newer versions may work 
-  but have not been tested. See the howto documents for more details (<a href="mysql-howto.html">MySQL</a>,
+  but have not been tested. See the database engine-specific howto documents for more details (<a href="mysql-howto.html">MySQL</a>,
   <a href="oracle-howto.html">Oracle</a>,
   <a href="postgresql-howto.html">PostgreSQL</a>).</p>
 
@@ -169,8 +170,7 @@ are given in <a href="perfNotes.html">perfNotes.html</a>.</p>
 
   <p>There are some changes to the API. <font face="Courier New" size="2">The ModelRDB</font> 
   constructors are deprecated and applications should consider migrating to new factory 
-  methods for creating and opening persistent models (see
-  <a href="#migrating">below</a>). The <font face="Courier New" size="2">ModelRDB</font> 
+  methods for creating and opening persistent models (see the <a href="howto.html">HowTo</a>). The <font face="Courier New" size="2">ModelRDB</font> 
   package name has changed. Jena1 applications that directly reference the 
   package name jena.rdb must be modified to reference the package name
   <font face="Courier New" size="2">jena.db</font>. Jena2 does not support the <font face="Courier New" size="2">StoreRDB</font> 
@@ -185,7 +185,7 @@ are given in <a href="perfNotes.html">perfNotes.html</a>.</p>
   or Berkeley DB will not work. The driver 
   configuration files (e.g., Mysql.config) are no longer used. Instead, 
   get/set methods on the driver and modelRDB classes are used for configuration 
-  parameters (see <a href="options.html">options</a>).</p>
+  parameters (see <a href="options.html">Options</a>).</p>
 
 
 
@@ -198,7 +198,7 @@ are given in <a href="perfNotes.html">perfNotes.html</a>.</p>
 
   <p>Performance of Jena2 
   persistent models is no worse than Jena1 and often better. However, Jena2 
-  persistent models may consume more database space. See the <a href="#notes">Performance Notes</a>.</p>
+  persistent models may consume more database space. See the performance notes (<a href="perfNotes.html">PerfNotes</a>).</p>
 
 
 
@@ -207,13 +207,13 @@ are given in <a href="perfNotes.html">perfNotes.html</a>.</p>
 
 
 
-  <p>As mentioned <a href="#compatibility">above</a>, most Jena1 persistent 
+  <p>As mentioned above, most Jena1 persistent 
   applications should run with little or no modification under Jena2. However, 
   the <font face="Courier New" size="2">ModelRDB</font> class constructors are deprecated. In 
   Jena2, persistent models should be created using a factory method. In some 
   situations, the ModelRDB class constructors are still required because the 
   factory methods do not yet support all the ModelRDB functionality (see
-  <a href="howto.html">howto</a>).</p>
+  <a href="howto.html">HowTo</a>).</p>
 
 
 
