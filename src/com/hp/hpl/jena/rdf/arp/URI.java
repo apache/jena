@@ -96,7 +96,7 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.2 2003-03-29 09:42:00 jeremy_carroll Exp $
+* @version  $Id: URI.java,v 1.3 2003-03-31 20:17:21 jeremy_carroll Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -1478,7 +1478,7 @@ public class URI implements Serializable {
 		return abs;
 	}
     static private String getLastSlash(String s) {
-        int ix = s.lastIndexOf('/',s.length()-1);
+        int ix = s.lastIndexOf('/',s.length()-2);
         return s.substring(0,ix+1);
     }
     static public String flags2str(int f) {
