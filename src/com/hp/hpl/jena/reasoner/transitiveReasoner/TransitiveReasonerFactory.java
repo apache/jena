@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasonerFactory.java,v 1.5 2003-05-27 15:50:24 der Exp $
+ * $Id: TransitiveReasonerFactory.java,v 1.6 2003-06-06 10:20:58 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.*;
  * Factory class for creating blank instances of the transitive reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-27 15:50:24 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-06 10:20:58 $
  */
 public class TransitiveReasonerFactory implements ReasonerFactory {
     
@@ -60,8 +60,8 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerRegistry.descriptionP, "Provides reflexive-transitive closure of subClassOf and subPropertyOf")
                 .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
                 .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
-                .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubClassOf)
-                .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubPropertyOf)
+                .addProperty(ReasonerRegistry.supportsP, ReasonerVocabulary.directSubClassOf)
+                .addProperty(ReasonerRegistry.supportsP, ReasonerVocabulary.directSubPropertyOf)
                 .addProperty(ReasonerRegistry.versionP, "0.1");
         }
         return capabilities;
