@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.1.1.1 2002-12-19 19:20:54 bwm Exp $
+  $Id: TestPackage.java,v 1.2 2003-01-28 13:09:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -29,6 +29,8 @@ public class TestPackage extends TestSuite {
         addTest("Util", com.hp.hpl.jena.util.test.TestPackage.suite());
         addTest(com.hp.hpl.jena.enhanced.test.TestPackage.suite());
         addTest("Output", com.hp.hpl.jena.xmloutput.test.TestPackage.suite());
+        addTest("RDQL", com.hp.hpl.jena.rdql.test.RDQLTestSuite.suite());
+        addTest("N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
         addTest("Mega", com.hp.hpl.jena.regression.MegaTestSuite.suite());
         addTest(com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
     }
