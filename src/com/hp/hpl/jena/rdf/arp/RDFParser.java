@@ -5,26 +5,37 @@ import java.util.*;
 import org.xml.sax.SAXException;
 
 class RDFParser implements ARPErrorNumbers, RDFParserConstants {
-//    private static  URIReference RDFList = null;
-    private static URIReference RDFfirst = null;
-    private static URIReference RDFrest = null;
-    private static URIReference RDFnil = null;
+/*
+ *  (c) Copyright Hewlett-Packard Development Company, LP 
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ * * $Id: RDFParser.java,v 1.7 2003-10-10 11:19:39 jeremy_carroll Exp $
+   
+   AUTHOR:  Jeremy J. Carroll
+*/
 
-
-    static {
-        try {
-   //         RDFList     = new URIReference(ARPFilter.rdfns+"List");
-            RDFnil        = new URIReference(ARPFilter.rdfns+"nil");
-
-            RDFfirst = new URIReference(ARPFilter.rdfns+"first");
-            RDFrest       = new URIReference(ARPFilter.rdfns+"rest");
-        }
-        catch (MalformedURIException e) {
-            System.err.println("Internal error: " + e.toString());
-            e.printStackTrace();
-        }
-    }
 
 
   static {
@@ -627,7 +638,7 @@ E_END.
                                          Token parseType;
                                          String parseTypeVal;
                                          ARPResource ptr;
-                                         AResource daml;
+                                         AResource daml[];
                                          ARPString dtLex;
                                          URIReference dtURI;
                                          Location wh;
@@ -661,6 +672,7 @@ E_END.
     } else if (jj_2_2(2)) {
       jj_consume_token(A_PARSETYPE);
       jj_consume_token(AV_DAMLCOLLECTION);
+                                           daml = new AResource[1];
       label_15:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -674,11 +686,13 @@ E_END.
         warning();
       }
       white();
-      daml = damlCollection(ctxt);
-                                          {if (true) return daml;}
+      collection(ctxt,
+                X.damlCollectionAction(daml));
+                                           {if (true) return daml[0];}
     } else if (jj_2_3(2)) {
       jj_consume_token(A_PARSETYPE);
       jj_consume_token(AV_COLLECTION);
+                                          daml = new AResource[1];
       label_16:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -692,8 +706,9 @@ E_END.
         warning();
       }
       white();
-      daml = collection(ctxt);
-                                          {if (true) return daml;}
+      collection(ctxt,
+              X.collectionAction(daml));
+                                          {if (true) return daml[0];}
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_DATATYPE:
@@ -816,59 +831,30 @@ E_END.
     throw new Error("Missing return statement in function");
   }
 
-  final public AResource damlCollection(XMLContext ctxt) throws ParseException {
-                                         ARPResource cell, head;
-                                         AResource tail;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case E_DESCRIPTION:
-    case E_OTHER:
-    case E_LI:
-    case E_RDF_N:
-                                         cell= new ARPResource(arp);
-      head = obj(ctxt);
-      white();
-      tail = damlCollection(ctxt);
-                                         cell.setPredicateObject( DAML.first,
-                                                                  head,
-                                                                  null );
-                                         cell.setPredicateObject( DAML.rest,
-                                                                  tail,
-                                                                  null );
-                                         cell.setType(DAML.List);
-                                         {if (true) return cell;}
-      break;
-    default:
-      jj_la1[34] = jj_gen;
-                                        {if (true) return DAML.nil;}
+  final public void collection(XMLContext ctxt, CollectionAction act) throws ParseException {
+    label_22:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case E_DESCRIPTION:
+      case E_OTHER:
+      case E_LI:
+      case E_RDF_N:
+        ;
+        break;
+      default:
+        jj_la1[34] = jj_gen;
+        break label_22;
+      }
+      act = objInCollection(ctxt,act);
     }
-    throw new Error("Missing return statement in function");
+                                         act.terminate();
   }
 
-  final public AResource collection(XMLContext ctxt) throws ParseException {
-                                         ARPResource cell, head;
-                                         AResource tail;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case E_DESCRIPTION:
-    case E_OTHER:
-    case E_LI:
-    case E_RDF_N:
-                                         cell= new ARPResource(arp);
-      head = obj(ctxt);
-      white();
-      tail = collection(ctxt);
-                                        cell.setPredicateObject( RDFfirst,
-                                                                  head,
-                                                                  null );
-                                         cell.setPredicateObject( RDFrest,
-                                                                  tail,
-                                                                  null );
-                               //          cell.setType(RDFList);
-                                         {if (true) return cell;}
-      break;
-    default:
-      jj_la1[35] = jj_gen;
-                                        {if (true) return RDFnil;}
-    }
+  final public CollectionAction objInCollection(XMLContext ctxt, CollectionAction act) throws ParseException {
+                                         ARPResource head;
+    head = obj(ctxt);
+    white();
+                                       {if (true) return act.next( head );}
     throw new Error("Missing return statement in function");
   }
 
@@ -892,7 +878,7 @@ E_END.
       idAboutAttr(ctxt,r);
       break;
     default:
-      jj_la1[36] = jj_gen;
+      jj_la1[35] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -900,13 +886,13 @@ E_END.
       bagIdAttr(ctxt,r);
       break;
     default:
-      jj_la1[37] = jj_gen;
+      jj_la1[36] = jj_gen;
       ;
     }
                                          r.setType(
                                                ((ARPQname)type)
                                                    .asURIReference(arp));
-    label_22:
+    label_23:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_OTHER:
@@ -915,13 +901,13 @@ E_END.
         ;
         break;
       default:
-        jj_la1[38] = jj_gen;
-        break label_22;
+        jj_la1[37] = jj_gen;
+        break label_23;
       }
       propAttr(ctxt,r);
     }
     white();
-    label_23:
+    label_24:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case E_OTHER:
@@ -930,8 +916,8 @@ E_END.
         ;
         break;
       default:
-        jj_la1[39] = jj_gen;
-        break label_23;
+        jj_la1[38] = jj_gen;
+        break label_24;
       }
       propertyElt(ctxt,r);
       white();
@@ -969,7 +955,7 @@ E_END.
                                          {if (true) return rslt;}
       break;
     default:
-      jj_la1[40] = jj_gen;
+      jj_la1[39] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1011,7 +997,7 @@ E_END.
                                          {if (true) return rslt;}
         break;
       default:
-        jj_la1[41] = jj_gen;
+        jj_la1[40] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1026,15 +1012,15 @@ E_END.
                                          URIReference u;
     jj_consume_token(A_RESOURCE);
     u = uriReference(ctxt);
-    label_24:
+    label_25:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[42] = jj_gen;
-        break label_24;
+        jj_la1[41] = jj_gen;
+        break label_25;
       }
       warning();
     }
@@ -1048,15 +1034,15 @@ E_END.
                                          URIReference u;
     jj_consume_token(A_DATATYPE);
     u = uriReference(ctxt);
-    label_25:
+    label_26:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[43] = jj_gen;
-        break label_25;
+        jj_la1[42] = jj_gen;
+        break label_26;
       }
       warning();
     }
@@ -1073,7 +1059,7 @@ E_END.
       nodeIdAttr(ctxt,r);
       break;
     default:
-      jj_la1[44] = jj_gen;
+      jj_la1[43] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1116,7 +1102,7 @@ Notice the action within the kleene star.
   final public ARPString string(XMLContext ctxt) throws ParseException {
                                          Vector pieces = new Vector();
                                          Token tok = null;
-    label_26:
+    label_27:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CD_STRING:
@@ -1126,8 +1112,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[45] = jj_gen;
-        break label_26;
+        jj_la1[44] = jj_gen;
+        break label_27;
       }
       tok = string1(pieces);
     }
@@ -1161,7 +1147,7 @@ Notice the action within the kleene star.
                                          {if (true) return rslt;}
       break;
     default:
-      jj_la1[46] = jj_gen;
+      jj_la1[45] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1174,7 +1160,7 @@ Notice the action within the kleene star.
 */
   final public XMLContext xmlAttrs(XMLContext ctxt) throws ParseException {
                                          startAttr = getToken(1);
-    label_27:
+    label_28:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_XMLNS:
@@ -1182,8 +1168,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[47] = jj_gen;
-        break label_27;
+        jj_la1[46] = jj_gen;
+        break label_28;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
@@ -1193,7 +1179,7 @@ Notice the action within the kleene star.
         ctxt = xmlns(ctxt);
         break;
       default:
-        jj_la1[48] = jj_gen;
+        jj_la1[47] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1201,26 +1187,6 @@ Notice the action within the kleene star.
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case A_XMLBASE:
       ctxt = xmlBase(ctxt);
-      label_28:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case X_WARNING:
-          ;
-          break;
-        default:
-          jj_la1[49] = jj_gen;
-          break label_28;
-        }
-        warning();
-      }
-      break;
-    default:
-      jj_la1[50] = jj_gen;
-      ;
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case A_XMLLANG:
-      ctxt = xmlLang(ctxt);
       label_29:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1228,20 +1194,19 @@ Notice the action within the kleene star.
           ;
           break;
         default:
-          jj_la1[51] = jj_gen;
+          jj_la1[48] = jj_gen;
           break label_29;
         }
         warning();
       }
       break;
     default:
-      jj_la1[52] = jj_gen;
+      jj_la1[49] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case A_XMLSPACE:
-      jj_consume_token(A_XMLSPACE);
-      jj_consume_token(AV_STRING);
+    case A_XMLLANG:
+      ctxt = xmlLang(ctxt);
       label_30:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1249,14 +1214,35 @@ Notice the action within the kleene star.
           ;
           break;
         default:
-          jj_la1[53] = jj_gen;
+          jj_la1[50] = jj_gen;
           break label_30;
         }
         warning();
       }
       break;
     default:
-      jj_la1[54] = jj_gen;
+      jj_la1[51] = jj_gen;
+      ;
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case A_XMLSPACE:
+      jj_consume_token(A_XMLSPACE);
+      jj_consume_token(AV_STRING);
+      label_31:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case X_WARNING:
+          ;
+          break;
+        default:
+          jj_la1[52] = jj_gen;
+          break label_31;
+        }
+        warning();
+      }
+      break;
+    default:
+      jj_la1[53] = jj_gen;
       ;
     }
                                          {if (true) return ctxt;}
@@ -1321,7 +1307,7 @@ Notice the action within the kleene star.
       element(ctxt);
       break;
     default:
-      jj_la1[55] = jj_gen;
+      jj_la1[54] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1330,20 +1316,20 @@ Notice the action within the kleene star.
 // For parsing before we find an rdf:RDF element.
   final public void element(XMLContext ctxt) throws ParseException {
     startElement();
-    label_31:
+    label_32:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[56] = jj_gen;
-        break label_31;
+        jj_la1[55] = jj_gen;
+        break label_32;
       }
       nowarning();
     }
     ctxt = xmlAttrsNoWarnings(ctxt);
-    label_32:
+    label_33:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_ID:
@@ -1360,12 +1346,12 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[57] = jj_gen;
-        break label_32;
+        jj_la1[56] = jj_gen;
+        break label_33;
       }
       attr();
     }
-    label_33:
+    label_34:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CD_STRING:
@@ -1380,8 +1366,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[58] = jj_gen;
-        break label_33;
+        jj_la1[57] = jj_gen;
+        break label_34;
       }
       content(ctxt);
     }
@@ -1391,15 +1377,15 @@ Notice the action within the kleene star.
   final public void attr() throws ParseException {
     attrName();
     attrValue();
-    label_34:
+    label_35:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[59] = jj_gen;
-        break label_34;
+        jj_la1[58] = jj_gen;
+        break label_35;
       }
       nowarning();
     }
@@ -1412,7 +1398,7 @@ Notice the action within the kleene star.
 
   final public XMLContext xmlAttrsNoWarnings(XMLContext ctxt) throws ParseException {
                                          startAttr = getToken(1);
-    label_35:
+    label_36:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_XMLNS:
@@ -1420,8 +1406,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[60] = jj_gen;
-        break label_35;
+        jj_la1[59] = jj_gen;
+        break label_36;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
@@ -1431,7 +1417,7 @@ Notice the action within the kleene star.
         ctxt = xmlns(ctxt);
         break;
       default:
-        jj_la1[61] = jj_gen;
+        jj_la1[60] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1439,26 +1425,6 @@ Notice the action within the kleene star.
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case A_XMLBASE:
       ctxt = xmlBase(ctxt);
-      label_36:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case X_WARNING:
-          ;
-          break;
-        default:
-          jj_la1[62] = jj_gen;
-          break label_36;
-        }
-        nowarning();
-      }
-      break;
-    default:
-      jj_la1[63] = jj_gen;
-      ;
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case A_XMLLANG:
-      ctxt = xmlLang(ctxt);
       label_37:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1466,14 +1432,34 @@ Notice the action within the kleene star.
           ;
           break;
         default:
-          jj_la1[64] = jj_gen;
+          jj_la1[61] = jj_gen;
           break label_37;
         }
         nowarning();
       }
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[62] = jj_gen;
+      ;
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case A_XMLLANG:
+      ctxt = xmlLang(ctxt);
+      label_38:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case X_WARNING:
+          ;
+          break;
+        default:
+          jj_la1[63] = jj_gen;
+          break label_38;
+        }
+        nowarning();
+      }
+      break;
+    default:
+      jj_la1[64] = jj_gen;
       ;
     }
                                          {if (true) return ctxt;}
@@ -1504,7 +1490,7 @@ Notice the action within the kleene star.
       saxEx();
       break;
     default:
-      jj_la1[66] = jj_gen;
+      jj_la1[65] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1525,7 +1511,7 @@ Notice the action within the kleene star.
       jj_consume_token(E_RDF_N);
       break;
     default:
-      jj_la1[67] = jj_gen;
+      jj_la1[66] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1557,7 +1543,7 @@ Notice the action within the kleene star.
                                          {if (true) return t;}
       break;
     default:
-      jj_la1[68] = jj_gen;
+      jj_la1[67] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1625,7 +1611,7 @@ Notice the action within the kleene star.
                                          {if (true) return t;}
       break;
     default:
-      jj_la1[69] = jj_gen;
+      jj_la1[68] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1668,7 +1654,7 @@ Notice the action within the kleene star.
       jj_consume_token(A_DATATYPE);
       break;
     default:
-      jj_la1[70] = jj_gen;
+      jj_la1[69] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1695,7 +1681,7 @@ Notice the action within the kleene star.
                                          {if (true) return t;}
       break;
     default:
-      jj_la1[71] = jj_gen;
+      jj_la1[70] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1717,31 +1703,31 @@ Notice the action within the kleene star.
                                          t = (Token)t.clone();
                                          t.next = null;
                                          startAttr = getToken(1);
-    label_38:
+    label_39:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[72] = jj_gen;
-        break label_38;
+        jj_la1[71] = jj_gen;
+        break label_39;
       }
       nowarning();
     }
-    label_39:
+    label_40:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_XMLNS:
         ;
         break;
       default:
-        jj_la1[73] = jj_gen;
-        break label_39;
+        jj_la1[72] = jj_gen;
+        break label_40;
       }
       allNs = litXmlns(allNs, visiblyUsed);
     }
-    label_40:
+    label_41:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_ID:
@@ -1761,14 +1747,14 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[74] = jj_gen;
-        break label_40;
+        jj_la1[73] = jj_gen;
+        break label_41;
       }
       litAttr(attrs,visiblyUsed);
     }
                                           ns=X.litAttributes(val,attrs,visiblyUsed,ns,allNs,t);
                                           val.append('>');
-    label_41:
+    label_42:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CD_STRING:
@@ -1783,8 +1769,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[75] = jj_gen;
-        break label_41;
+        jj_la1[74] = jj_gen;
+        break label_42;
       }
       litContent(val,allNs,ns);
     }
@@ -1796,15 +1782,15 @@ Notice the action within the kleene star.
                                          Token prefix, uri;
     prefix = jj_consume_token(A_XMLNS);
     uri = jj_consume_token(AV_STRING);
-    label_42:
+    label_43:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[76] = jj_gen;
-        break label_42;
+        jj_la1[75] = jj_gen;
+        break label_43;
       }
       nowarning();
     }
@@ -1819,15 +1805,15 @@ Notice the action within the kleene star.
                                                 visiblyUsed);
     val = attrValue();
                                          attrs.put(key,X.litAttribute(attr,val));
-    label_43:
+    label_44:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[77] = jj_gen;
-        break label_43;
+        jj_la1[76] = jj_gen;
+        break label_44;
       }
       nowarning();
     }
@@ -1865,7 +1851,7 @@ Notice the action within the kleene star.
       saxEx();
       break;
     default:
-      jj_la1[78] = jj_gen;
+      jj_la1[77] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1873,7 +1859,7 @@ Notice the action within the kleene star.
 
   final public String litValue(Map allNs, Location wh) throws ParseException {
                                            StringBuffer buf = new StringBuffer();
-    label_44:
+    label_45:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CD_STRING:
@@ -1888,8 +1874,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[79] = jj_gen;
-        break label_44;
+        jj_la1[78] = jj_gen;
+        break label_45;
       }
       litContent(buf,allNs,ParserSupport.xmlNameSpace());
     }
@@ -1935,94 +1921,51 @@ Notice the action within the kleene star.
 
   final private boolean jj_2_1(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
-    boolean retval = !jj_3_1();
-    jj_save(0, xla);
-    return retval;
+    try { return !jj_3_1(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(0, xla); }
   }
 
   final private boolean jj_2_2(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
-    boolean retval = !jj_3_2();
-    jj_save(1, xla);
-    return retval;
+    try { return !jj_3_2(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(1, xla); }
   }
 
   final private boolean jj_2_3(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
-    boolean retval = !jj_3_3();
-    jj_save(2, xla);
-    return retval;
+    try { return !jj_3_3(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(2, xla); }
   }
 
   final private boolean jj_2_4(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
-    boolean retval = !jj_3_4();
-    jj_save(3, xla);
-    return retval;
-  }
-
-  final private boolean jj_3R_47() {
-    if (jj_scan_token(COMMENT)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3_3() {
-    if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_scan_token(AV_COLLECTION)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
+    try { return !jj_3_4(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(3, xla); }
   }
 
   final private boolean jj_3_1() {
     if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     if (jj_scan_token(AV_LITERAL)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3R_49() {
-    if (jj_scan_token(X_SAX_EX)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3R_48() {
-    if (jj_scan_token(PROCESSING_INSTRUCTION)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3_2() {
-    if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3R_45() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_46()) {
-    jj_scanpos = xsp;
-    if (jj_3R_47()) {
-    jj_scanpos = xsp;
-    if (jj_3R_48()) {
-    jj_scanpos = xsp;
-    if (jj_3R_49()) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    } else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    } else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    } else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
   final private boolean jj_3R_46() {
-    if (jj_scan_token(CD_STRING)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(1)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(2)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(4)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(3)) return true;
+    }
+    }
+    }
     return false;
   }
 
@@ -2030,11 +1973,21 @@ Notice the action within the kleene star.
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_45()) { jj_scanpos = xsp; break; }
-      if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+      if (jj_3R_46()) { jj_scanpos = xsp; break; }
     }
     if (jj_scan_token(E_END)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3_2() {
+    if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_3() {
+    if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_scan_token(AV_COLLECTION)) return true;
     return false;
   }
 
@@ -2046,8 +1999,14 @@ Notice the action within the kleene star.
   public boolean lookingAhead = false;
   private boolean jj_semLA;
   private int jj_gen;
-  final private int[] jj_la1 = new int[80];
-  final private int[] jj_la1_0 = {0x700a0,0x1e,0x4000001e,0x4000001e,0x1e,0x14,0x14,0x70080,0x700,0x1000,0xe000,0x70000,0x70080,0x700,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0xe000,0x40000000,0x70000,0x100,0x40000000,0x40000000,0x40000000,0x40000000,0x70000,0x1000,0xe000,0xe000,0xe000,0x308f400,0x70080,0x70080,0x700,0x1000,0xe000,0x70000,0x70000,0x7009e,0x40000000,0x40000000,0x1000400,0x1e,0x1e,0x48000000,0x48000000,0x40000000,0x10000000,0x40000000,0x20000000,0x40000000,0x4000000,0x700a0,0x40000000,0x8308f700,0x700be,0x40000000,0x48000000,0x48000000,0x40000000,0x10000000,0x40000000,0x20000000,0x700be,0x70080,0x700a0,0xb708f700,0x8308f700,0xb00800,0x40000000,0x8000000,0xb708f700,0x700be,0x40000000,0x40000000,0x700be,0x700be,};
+  final private int[] jj_la1 = new int[79];
+  static private int[] jj_la1_0;
+  static {
+      jj_la1_0();
+   }
+   private static void jj_la1_0() {
+      jj_la1_0 = new int[] {0x700a0,0x1e,0x4000001e,0x4000001e,0x1e,0x14,0x14,0x70080,0x700,0x1000,0xe000,0x70000,0x70080,0x700,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0xe000,0x40000000,0x70000,0x100,0x40000000,0x40000000,0x40000000,0x40000000,0x70000,0x1000,0xe000,0xe000,0xe000,0x308f400,0x70080,0x700,0x1000,0xe000,0x70000,0x70000,0x7009e,0x40000000,0x40000000,0x1000400,0x1e,0x1e,0x48000000,0x48000000,0x40000000,0x10000000,0x40000000,0x20000000,0x40000000,0x4000000,0x700a0,0x40000000,0x8308f700,0x700be,0x40000000,0x48000000,0x48000000,0x40000000,0x10000000,0x40000000,0x20000000,0x700be,0x70080,0x700a0,0xb708f700,0x8308f700,0xb00800,0x40000000,0x8000000,0xb708f700,0x700be,0x40000000,0x40000000,0x700be,0x700be,};
+   }
   final private JJCalls[] jj_2_rtns = new JJCalls[4];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
@@ -2058,7 +2017,7 @@ Notice the action within the kleene star.
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 80; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 79; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2067,7 +2026,7 @@ Notice the action within the kleene star.
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 80; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 79; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2095,6 +2054,8 @@ Notice the action within the kleene star.
     throw generateParseException();
   }
 
+  static private final class LookaheadSuccess extends java.lang.Error { }
+  final private LookaheadSuccess jj_ls = new LookaheadSuccess();
   final private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {
       jj_la--;
@@ -2111,7 +2072,9 @@ Notice the action within the kleene star.
       while (tok != null && tok != jj_scanpos) { i++; tok = tok.next; }
       if (tok != null) jj_add_error_token(kind, i);
     }
-    return (jj_scanpos.kind != kind);
+    if (jj_scanpos.kind != kind) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) throw jj_ls;
+    return false;
   }
 
   final public Token getNextToken() {
@@ -2154,8 +2117,8 @@ Notice the action within the kleene star.
         jj_expentry[i] = jj_lasttokens[i];
       }
       boolean exists = false;
-      for (java.util.Enumeration enum = jj_expentries.elements(); enum.hasMoreElements();) {
-        int[] oldentry = (int[])(enum.nextElement());
+      for (java.util.Enumeration e = jj_expentries.elements(); e.hasMoreElements();) {
+        int[] oldentry = (int[])(e.nextElement());
         if (oldentry.length == jj_expentry.length) {
           exists = true;
           for (int i = 0; i < jj_expentry.length; i++) {
@@ -2172,7 +2135,7 @@ Notice the action within the kleene star.
     }
   }
 
-  final public ParseException generateParseException() {
+  public ParseException generateParseException() {
     jj_expentries.removeAllElements();
     boolean[] la1tokens = new boolean[32];
     for (int i = 0; i < 32; i++) {
@@ -2182,7 +2145,7 @@ Notice the action within the kleene star.
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 80; i++) {
+    for (int i = 0; i < 79; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

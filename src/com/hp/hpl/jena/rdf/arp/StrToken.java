@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: StrToken.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: StrToken.java,v 1.3 2003-10-10 11:19:39 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -46,7 +46,7 @@ class StrToken extends Token {
     StrToken(int kind,Location where,String v) {
         super(kind,where);
         value = v;
-    }
+    } 
     public String toString() {
         return "\"" + value + "\"";
     }

@@ -1,5 +1,24 @@
+/*(c) Copyright Hewlett-Packard Development Company, LP 
+ *  All rights reserved.
+ * see 20 lines below.
+*/
+
+options {
+  STATIC=false;
+  USER_TOKEN_MANAGER=true;
+  DEBUG_LOOKAHEAD=false;
+}
+
+PARSER_BEGIN(RDFParser)
+
+package com.hp.hpl.jena.rdf.arp;
+
+import java.util.*;
+import org.xml.sax.SAXException;
+
+class RDFParser implements ARPErrorNumbers {
 /*
- *  (c) Copyright Hewlett-Packard Company 2001 
+ *  (c) Copyright Hewlett-Packard Development Company, LP 
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,45 +43,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.6 2003-06-25 07:23:06 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.7 2003-10-10 11:19:39 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
 
-options {
-  STATIC=false;
-  USER_TOKEN_MANAGER=true;
-  DEBUG_LOOKAHEAD=false;
-}
-
-PARSER_BEGIN(RDFParser)
-
-package com.hp.hpl.jena.rdf.arp;
-
-import java.util.*;
-import org.xml.sax.SAXException;
-
-class RDFParser implements ARPErrorNumbers {
-//    private static  URIReference RDFList = null;
-    private static URIReference RDFfirst = null;
-    private static URIReference RDFrest = null;
-    private static URIReference RDFnil = null;
-    
-    
-    
-    static {
-        try {
-   //         RDFList     = new URIReference(ARPFilter.rdfns+"List");
-            RDFnil        = new URIReference(ARPFilter.rdfns+"nil");
-            
-            RDFfirst = new URIReference(ARPFilter.rdfns+"first");
-            RDFrest       = new URIReference(ARPFilter.rdfns+"rest");
-        }
-        catch (MalformedURIException e) {
-            System.err.println("Internal error: " + e.toString());
-            e.printStackTrace();
-        }
-    }
 
 
   static {
@@ -389,7 +374,7 @@ Object propEltValue(XMLContext ctxt) : { String xml;
                                          Token parseType; 
                                          String parseTypeVal;
                                          ARPResource ptr; 
-                                         AResource daml;
+                                         AResource daml[];
                                          ARPString dtLex;
                                          URIReference dtURI;
                                          Location wh;
@@ -415,18 +400,20 @@ Object propEltValue(XMLContext ctxt) : { String xml;
  | // OR
                              LOOKAHEAD(2) 
    <A_PARSETYPE> 
-   <AV_DAMLCOLLECTION> 
+   <AV_DAMLCOLLECTION>                   { daml = new AResource[1]; }
    ( warning() ) * 
    white() 
-   daml=damlCollection(ctxt)            { return daml; }
+   collection(ctxt, 
+          X.damlCollectionAction(daml) ) { return daml[0]; }
 
  | // OR
                              LOOKAHEAD(2) 
    <A_PARSETYPE> 
-   <AV_COLLECTION> 
+   <AV_COLLECTION>                      { daml = new AResource[1]; }
    ( warning() ) * 
    white() 
-   daml=collection(ctxt)                { return daml; }
+   collection(ctxt, 
+        X.collectionAction(daml) )      { return daml[0]; }
 
  | // OR
    dtURI = datatypeAttr(ctxt)        
@@ -463,44 +450,19 @@ Object propEltValue(XMLContext ctxt) : { String xml;
 }
 
 
-AResource damlCollection(XMLContext ctxt) 
-                                     : { ARPResource cell, head;
-                                         AResource tail;
+
+void collection(XMLContext ctxt, CollectionAction act) 
+                                     : {}
+{                                      
+   ( act=objInCollection(ctxt,act) ) * { act.terminate(); 
                                        }
-{                                      { cell= new ARPResource(arp); }
-   head=obj(ctxt) 
-   white() 
-   tail=damlCollection(ctxt)           { cell.setPredicateObject( DAML.first, 
-                                                                  head, 
-                                                                  null );
-                                         cell.setPredicateObject( DAML.rest, 
-                                                                  tail, 
-                                                                  null );
-                                         cell.setType(DAML.List);
-                                         return cell;
-                                      }
- | // OR empty exansion.
-                                      { return DAML.nil; }
 }
 
-AResource collection(XMLContext ctxt) 
-                                     : { ARPResource cell, head;
-                                         AResource tail;
+CollectionAction objInCollection(XMLContext ctxt, CollectionAction act )
+                                     : { ARPResource head;
                                        }
-{                                      { cell= new ARPResource(arp); }
-   head=obj(ctxt) 
-   white() 
-   tail=collection(ctxt)              { cell.setPredicateObject( RDFfirst, 
-                                                                  head, 
-                                                                  null );
-                                         cell.setPredicateObject( RDFrest, 
-                                                                  tail, 
-                                                                  null );
-                               //          cell.setType(RDFList);
-                                         return cell;
-                                      }
- | // OR empty exansion.
-                                      { return RDFnil; }
+{  head=obj(ctxt) 
+   white()                           { return act.next( head ); }
 }
 /*
  [6.13] typedNode      ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>'

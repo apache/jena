@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001-2003  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.8 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: ParserSupport.java,v 1.9 2003-10-10 11:19:39 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -173,6 +173,12 @@ class ParserSupport
 	void saxException(Token t) throws ParseException {
 		SaxExceptionToken sax = (SaxExceptionToken) t;
 		arp.parseWarning(sax.errorCode, t.location, sax.toString());
+	}
+	CollectionAction collectionAction(AResource rslt[]){
+		return new RDFCollection(this,rslt);
+	}
+	CollectionAction damlCollectionAction(AResource rslt[]){
+		return new DAMLCollection(this,rslt);
 	}
 	void checkXMLLang(StrToken s) throws ParseException {
 		String lang = s.value;
