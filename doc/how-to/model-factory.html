@@ -11,6 +11,8 @@
 Jena has become a moderately complicated system, with several different kinds
 of <code>Model</code> and ways of constructing them. This note describes the
 Jena 2 <code>ModelFactory</code>, your one-stop shop for creating Jena models.
+<code>ModelFactory</code> lives in <code>com.hp.hpl.jena.rdf.model</code>,
+which you will import anyway to do anything with models.
 
 <p>Most of <code>ModelFactory</code> methods have been around for a while now,
 but Jena 2.0 contains the first versions of the <code>ModelSpec</code>
@@ -24,11 +26,78 @@ consult the Javadoc for details of the methods and classes to use.
 
 <h1>simple model creation</h1>
 
+The simplest way to create a model (if not the shortest) is to call
+<code>ModelFactory.createDefaultModel()</code>. This [by default] delivers a
+plain RDF model, stored in-memory, that does no inference and has no special
+ontology.
+
+<blockquote>
+    Jena 1 users used to <code>new ModelMem()</code> for creating models
+    should switch to using <code>createDefaultModel()</code>.
+</blockquote>
+
+<h1>ModelMakers</h1>
+
+Plain models can be given names which allows them "saved" and looked up by
+name later. This is handled by implementations of the interface
+<code>ModelMaker</code>; each <code>ModelMaker</code> produces Models of the
+same kind. The simplest kind of <code>ModelMaker</code> is a memory model
+maker, which you get by calling
+<code>ModelFactory.createMemModelMaker()</code>. The methods you'd want to use
+to start with on a ModelMaker are:
+
+<ul>
+
+<li><code>createModel(String)</code>: create a model with the given name in
+the ModelMaker. If a model with that name already exists, then that model iis
+used instead.
+
+<li><code>openModel(String)</code>: open an existing model with the given
+name. If no such model exists, create a new empty one and give it that name.
+
+[createModel(String) and openModel(String) behave in the same way, but each
+has a two-argument form for which the behaviour is different. Use whichever
+one best fits your intention.]
+
+<li><code>createModel()</code>: create a fresh anonymous model.
+
+<li><code>getModel()</code>: each <code>ModelMaker</code> has a <i>default
+model</i>; this method returns that model.
+
+</ul>
+
+There are other methods, for removing models, additional control over create
+<i>vs</i> open, closing the maker, and looking names up; for those consult the
+<a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelMaker.html">ModelMaker
+javadoc</a>.
+
+<h2>file-based models</h2>
+
+The method <code>ModelFactory.createFileModelMaker(String)</code> returns a
+<code>ModelMaker</code> which attaches models to filing-system files. The
+<code>String</code> argument is the <i>fileBase</i>. When a file-ModelMaker
+opens a file, it reads it from a file in the directory named by the fileBase;
+when the model is closed (and <i>only</i> then, in the current
+implementation), the contents of the model are written back to the file.
+
+<p>Because the names of models in a modelMaker can be arbitrary character
+strings, in particular URIs, they are translated slightly to avoid confusion
+with significant characters of common filing systems. In the current
+implementation,
+
+<ul>
+<li> colon : is converted to _C
+<li> slash / is converted to _S
+<li> underbar _ is converted to _U
+</ul>
+
+<h1>reification styles</code>
+
+<h1>database model creation</code>
+
 <h1>inference model creation</h1>
 
 <h1>ontology model creation</h1>
-
-<h1>ModelMakers</h1>
 
 <h1>ModelSpecs</h1>
 

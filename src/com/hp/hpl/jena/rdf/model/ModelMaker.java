@@ -1,17 +1,21 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelMaker.java,v 1.4 2003-08-18 15:26:50 chris-dollin Exp $
+  $Id: ModelMaker.java,v 1.5 2003-08-21 20:24:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.graph.*;
+
 /**
-    The interface for things that operate on named collections of Models.
+    A ModelMaker contains a collection of named models, methods for creating
+    new models [both named and anonymous] and opening previously-named
+    models, removing models, and accessing a single "default" Model for this
+    Maker.
+    
  	@author kers
 */
-
-import com.hp.hpl.jena.graph.*;
 
 public interface ModelMaker extends ModelSpec
     {
