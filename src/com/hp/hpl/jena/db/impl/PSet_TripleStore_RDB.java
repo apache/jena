@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.38 2003-08-27 12:56:40 andy_seaborne Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.39 2003-11-26 03:14:32 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -42,7 +43,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.38 $ on $Date: 2003-08-27 12:56:40 $
+* @version $Revision: 1.39 $ on $Date: 2003-11-26 03:14:32 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -342,6 +343,7 @@ public void deleteTripleAR(
 		if (isReif) {
 			String stmtURI = m_driver.nodeToRDBString(reifNode,false);
 			ps.setString(argc++, stmtURI);
+			ps.setString(argc++,"T");
 		}
 	} catch (SQLException e1) {
 		logger.debug("(in delete) SQLException caught ", e1);
@@ -728,6 +730,7 @@ public void deleteTripleAR(
 		String pred = null;
 		String obj = null;
 		String op = "selectStatement";
+		String qual = "";
 		int args = 1;
 
 		if (subj_node != null) {
@@ -735,24 +738,39 @@ public void deleteTripleAR(
 			if (subj == null)
 				notFound = true;
 			else
-				op += "S";
+				qual += "S";
 		}
 		if (pred_node != null) {
 			pred = m_driver.nodeToRDBString(pred_node, false);
 			if (pred == null)
 				notFound = true;
 			else
-				op += "P";
+				qual += "P";
 		}
 		if (obj_node != null) {
 			obj = m_driver.nodeToRDBString(obj_node, false);
 			if (obj == null)
 				notFound = true;
 			else
-				op += "O";
+				qual += "O";
 		}
 		if (notFound == false)
 			try {
+				op += qual;
+				/*
+				ps = m_sql.getPreparedSQLStatement(op, getTblName());
+				if ( qual.equals("") ) {
+					ps = m_sql.getPreparedSQLStatement(op+"Limit", getTblName(),Integer.toString(gid));
+				
+					// Statement stmt = m_driver.getConnection().getConnection().createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					//			  java.sql.ResultSet.CONCUR_READ_ONLY);
+					// stmt.setFetchSize(10);
+					// String qry = "SELECT S.Subj, S.Prop, S.Obj FROM " + getTblName() + " S WHERE S.GraphID = "
+					// 	+ gid;
+					// ResultSet res = stmt.executeQuery(qry);
+					result = new ResultSetLimitTripleIter(this, graphID);
+				} else {
+				//*/
 				ps = m_sql.getPreparedSQLStatement(op, getTblName());
 				if (obj != null)
 					ps.setString(args++, obj);
@@ -762,7 +780,9 @@ public void deleteTripleAR(
 					ps.setString(args++, pred);
 
 				ps.setInt(args++, gid);
+				//*/ }
 				m_sql.executeSQL(ps, op, result);
+
 				//m_sql.returnPreparedSQLStatement(ps,op);
 			} catch (Exception e) {
 				notFound = true;
