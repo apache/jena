@@ -35,7 +35,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.6 $ on $Date: 2003-05-02 22:39:19 $
+* @version $Revision: 1.7 $ on $Date: 2003-05-03 01:00:25 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -192,7 +192,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		IPSet pSet = createIPSetInstanceFromName(m_psetClassName);
 		pSet.setASTname(SYSTEM_PROP_TNAME);
 		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet);
-		
+		m_dbProps = new DBPropDatabase(m_sysProperties);
 		return m_sysProperties;		
 	}
 	
