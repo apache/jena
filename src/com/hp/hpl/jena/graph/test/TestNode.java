@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.7 2003-05-15 15:31:15 chris-dollin Exp $
+  $Id: TestNode.java,v 1.8 2003-05-16 11:12:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -266,6 +266,26 @@ public class TestNode extends GraphTestBase
         Node v = Node.create( "?" + V );
         assertTrue( "must be a variable", v.isVariable() );
         assertEquals( "name must be correct", V, v.getName() );
+        }
+        
+    public void testCreateURI()
+        {
+        String uri = "http://www.electric-hedgehog.net/";
+        testCreateURI( uri );
+        testCreateURI( "rdf:trinket", "http://www.w3.org/1999/02/22-rdf-syntax-ns#trinket" );
+        }
+        
+    private void testCreateURI( String inOut )
+        { testCreateURI( inOut, inOut ); }
+        
+    private void testCreateURI( String in, String wanted )
+        {
+        String got = Node.create( in ).getURI();
+        if (!wanted.equals( got ))
+            {
+            if (in.equals( wanted )) fail( "should preserve " + in );
+            else fail( "should translate " + in + " to " + wanted + " not " + got );
+            }
         }
     }
 

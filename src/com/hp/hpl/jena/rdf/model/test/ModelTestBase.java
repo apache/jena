@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelTestBase.java,v 1.4 2003-05-01 15:39:13 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.5 2003-05-16 11:12:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.test.JenaTestBase;
 
 import java.util.*;
@@ -33,11 +35,26 @@ public class ModelTestBase extends JenaTestBase
     public static Statement statement( Model m, String fact )
          {
          StringTokenizer st = new StringTokenizer( fact );
-         Resource sub = m.createResource( st.nextToken() );
-         Property pred = m.createProperty( st.nextToken() );
-         RDFNode obj = m.createResource( st.nextToken() );
+         Resource sub = resource( m, st.nextToken() );
+         Property pred = property( m, st.nextToken() );
+         RDFNode obj = rdfNode( m, st.nextToken() ); // m.createResource( st.nextToken() );
          return m.createStatement( sub, pred, obj );    
          }    
+         
+     public static RDFNode rdfNode( Model m, String s )
+        { return rdfNode( m, s, Resource.class ); }
+        
+    public static Resource resource( Model m, String s )
+        { return (Resource) rdfNode( m, s ); }
+        
+    public static Property property( Model m, String s )
+        { return (Property) rdfNode( m, s, Property.class ); }
+        
+    public static RDFNode rdfNode( Model m, String s, Class c )
+        {
+        Node n = Node.create( s );
+        return (RDFNode) ((ModelCom) m).getNodeAs( n, c );
+        }
          
      /**
         Create an array of Statements parsed from a semi-separated string.

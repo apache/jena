@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestContains.java,v 1.3 2003-04-15 21:56:08 jeremy_carroll Exp $
+  $Id: TestContains.java,v 1.4 2003-05-16 11:12:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -24,7 +24,7 @@ public class TestContains extends ModelTestBase
     public void testContains( boolean yes, String facts, String resource )
         {
         Model m = modelWithStatements( facts );
-        RDFNode r = m.createResource( resource );
+        RDFNode r = rdfNode( m, resource );
         if (modelWithStatements( facts ).containsResource( r ) != yes)
             fail( "[" + facts + "] should" + (yes ? "" : " not") + " contain " + resource );
         }

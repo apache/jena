@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.6 2003-05-15 12:48:32 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.7 2003-05-16 11:12:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -114,13 +114,49 @@ public class FileGraph extends GraphMem
             FileOutputStream out = new FileOutputStream( intermediate );
             model.write( out, lang ); 
             out.close();
-            if (intermediate.renameTo( name ) == false)
-                throw new JenaException( "rename to " + intermediate + " failed" );
+            updateFrom( intermediate );
             super.close();
             }
         catch (IOException e) 
             { throw new JenaException( e ); }
         }
+        
+    /**
+        The file intermediate has the new file contents. We want to move
+        them to the current file. renameTo doesn't have a powerful enough
+        semantics, so we anticipate failure and attempt to bypass it ...
+    <p>
+        If the rename works, that's fine. If it fails, we attempt to rename the
+        current file to name.old, rename name.new to name, and then
+        delete name.old; if bits of that don't work, we throw an exception.
+    */
+    private void updateFrom( File intermediate )
+        {
+        if (intermediate.renameTo( name ) == false)
+            {
+            File old = new File( name.getPath() + ".old" );
+            if (name.renameTo( old ))
+                {
+                mustRename( intermediate, name );
+                mustDelete( old );
+                }
+            else
+                {
+                mustDelete( name );
+                mustRename( intermediate, name );
+                }
+            }
+        }    
+        
+    private void mustDelete( File f )
+        { if (f.delete() == false) throw new JenaException( "could not delete " + f ); }
+        
+    private void mustRename( File from, File to )
+        { 
+        if (from.renameTo( to ) == false) 
+            throw new JenaException( "could not rename " + from + " to " + to ); 
+        }
+        
     }
 
 /*
