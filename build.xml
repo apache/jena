@@ -248,6 +248,7 @@
                 <package name="com.hp.hpl.jena.reasoner.rulesys"/>
                 <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
+                <package name="com.hp.hpl.jena.reasoner.dig"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.shared"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
@@ -274,6 +275,7 @@
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.reasoner.rulesys"/>
                 <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
+                <package name="com.hp.hpl.jena.reasoner.dig"/>
             </group>
 
             <group title="SPI - System Programming Interface">
