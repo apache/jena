@@ -92,7 +92,7 @@ public class TestInputStreamFactory {
 	 * A lazy open. The I/O only starts, and resources
 	 * are only allocated on first read.
 	 * @param uri to be opened.
-	 * @return
+	 * @return the opened stream
 	 */
 	public InputStream open(URI uri) {
 		return (InputStream) open(uri, true);

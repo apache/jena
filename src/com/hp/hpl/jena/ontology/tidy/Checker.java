@@ -287,7 +287,7 @@ public class Checker extends AbsChecker {
 	}
 	/**
 	 * Construct a syntax checker.
-	 * If Lite is true, {@link Checker.getProblems()} will
+	 * If Lite is true, {@link Checker#getProblems} will
 	 * explain why the graph is in DL rather than Lite.
 	 * @param lite
 	 */
