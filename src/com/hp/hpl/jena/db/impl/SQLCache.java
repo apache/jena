@@ -45,7 +45,7 @@ import org.apache.commons.logging.LogFactory;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.10 $ on $Date: 2003-12-08 10:47:59 $
+* @version $Revision: 1.11 $ on $Date: 2004-03-11 21:46:08 $
 */
 
 public class SQLCache {
@@ -59,6 +59,10 @@ public class SQLCache {
     /** Cache of prepared versions of the statements. Each map entry is a list
      *  of copies of the prepared statement for multi-threaded apps. */
     protected HashMap m_preparedStatements = new HashMap();
+
+	/** Track which cached, prepared statements are in use and the corresponding
+	 *  list to which the statement should be returned. */
+	protected HashMap m_cachedStmtInUse = new HashMap();
 
     /** the packaged jdbc connection to the database itself. */
     protected IDBConnection m_connection;
@@ -119,6 +123,7 @@ public class SQLCache {
             throw new RDFRDBException("Problem flushing PS cache", e);
         } finally {
             m_preparedStatements = new HashMap();
+			m_cachedStmtInUse = new HashMap();
         }
     }
     /**
@@ -234,6 +239,7 @@ public class SQLCache {
 		/* TODO extended calling format or statement format to support different
 		 * result sets and conconcurrency modes.
 		 */
+		PreparedStatement ps;
 		if (m_connection == null || opname == null) return null;
 		int attrCnt = (attr == null) ? 0 : attr.length;
 		String aop = opname;
@@ -248,11 +254,16 @@ public class SQLCache {
 			if (sql == null) {
 				throw new SQLException("No SQL defined for operation: " + opname);
 			}
-			if (psl == null && CACHE_PREPARED_STATEMENTS) m_preparedStatements.put(aop, new LinkedList());
-			return doPrepareSQLStatement(sql);
+			if (psl == null && CACHE_PREPARED_STATEMENTS) {
+				psl = new LinkedList();
+				m_preparedStatements.put(aop, psl);
+			} 
+			ps = doPrepareSQLStatement(sql);
 		} else {
-			return (PreparedStatement) psl.remove(0);
+			ps = (PreparedStatement) psl.remove(0);
 		}
+		if ( CACHE_PREPARED_STATEMENTS ) m_cachedStmtInUse.put(ps,psl);
+		return ps;
 	}
 	
 	/**
@@ -310,11 +321,11 @@ public class SQLCache {
     
     /**
      * Return a prepared statement to the statement pool for reuse by
-     * another caller. Files the returned statement under the given operation name.
-     * Any close problems logged rather than raising exception so that iterator
-     * close() operations can be silent so that they can meet the ClosableIterator signature.
+     * another caller. Any close problems logged rather than raising exception
+     * so that iterator close() operations can be silent so that they can meet
+     * the ClosableIterator signature.
      */
-    public synchronized void returnPreparedSQLStatement(PreparedStatement ps, String opname) {
+    public synchronized void returnPreparedSQLStatement(PreparedStatement ps) {
         if (!CACHE_PREPARED_STATEMENTS) {
             try {
                 ps.close();
@@ -323,19 +334,20 @@ public class SQLCache {
             }
             return;
         }
-        List psl = (List) m_preparedStatements.get(opname);
-        if (psl == null) {
-            psl = new LinkedList();
-            m_preparedStatements.put(opname, psl);
-        }
-        if (psl.size() >= MAX_PS_CACHE) {
-            try {
-                ps.close();
-            } catch (SQLException e) {
-                logger.warn("Problem discarded prepared statement", e);
-            }
+        List psl = (List) m_cachedStmtInUse.get(ps);
+        if (psl != null) {
+        	if (psl.size() >= MAX_PS_CACHE) {
+           		try {
+               		ps.close();
+            	} catch (SQLException e) {
+                	logger.warn("Problem discarded prepared statement", e);
+            	}
+        	} else {
+            	psl.add(ps);
+        	}
+        	m_cachedStmtInUse.remove(ps);
         } else {
-            psl.add(ps);
+        	throw new JenaException("Attempt to return unused prepared statement");
         }
     }
 
@@ -408,7 +420,7 @@ public class SQLCache {
             }
         }
         int result = ps.executeUpdate();
-        returnPreparedSQLStatement(ps, opname);
+        returnPreparedSQLStatement(ps);
         return result;
     }
 
@@ -425,7 +437,7 @@ public class SQLCache {
             }
         }
         int result = ps.executeUpdate();
-        returnPreparedSQLStatement(ps, aop);
+        returnPreparedSQLStatement(ps);
         return result;
     }
 
@@ -442,7 +454,7 @@ public class SQLCache {
             }
         }
         int result = ps.executeUpdate();
-        returnPreparedSQLStatement(ps, aop);
+        returnPreparedSQLStatement(ps);
         return result;
     }
 
@@ -605,6 +617,10 @@ public class SQLCache {
             }
             it.remove();
         }
+		it = m_cachedStmtInUse.values().iterator();
+		while (it.hasNext()) {
+			it.remove();
+		}
     }
 
     /**
@@ -698,7 +714,7 @@ public class SQLCache {
             iterator.reset(rs, ps, this, opname);
             return iterator;
         } else {
-            returnPreparedSQLStatement(ps, opname);
+            returnPreparedSQLStatement(ps);
             return null;
         }
     }
