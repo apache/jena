@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-14 14:58:30 $
+ * Last modified on   $Date: 2003-05-16 13:14:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.17 2003-05-14 14:58:30 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.18 2003-05-16 13:14:06 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -861,6 +861,162 @@ public class OntModelImpl
     public Restriction createRestriction( String uri ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         return (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+    }
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have the given
+     * resource as the value of the given property</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param value The value of the property, as a resource or RDF literal
+     * @return A new resource representing a has-value restriction
+     */
+    public HasValueRestriction createHasValueRestriction( String uri, Property prop, RDFNode value ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        
+        if (prop == null || value == null) {
+            throw new IllegalArgumentException( "Cannot create hasValueRestriction with a null property or value" );
+        }
+        
+        checkProfileEntry( getProfile().HAS_VALUE(), "HAS_VALUE" );
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().HAS_VALUE(), value );
+        
+        return (HasValueRestriction) r.as( HasValueRestriction.class );
+    }
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at least
+     * one property with a value belonging to the given class</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cls The class to which at least one value of the property belongs
+     * @return A new resource representing a some-values-from restriction
+     */
+    public SomeValuesFromRestriction createSomeValuesFromRestriction( String uri, Property prop, Resource cls ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+            
+        if (prop == null || cls == null) {
+            throw new IllegalArgumentException( "Cannot create someValuesFromRestriction with a null property or class" );
+        }
+            
+        checkProfileEntry( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().SOME_VALUES_FROM(), cls );
+            
+        return (SomeValuesFromRestriction) r.as( SomeValuesFromRestriction.class );
+    }
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals for which all values
+     * of the given property belong to the given class</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cls The class to which any value of the property belongs
+     * @return A new resource representing an all-values-from restriction
+     */
+    public AllValuesFromRestriction createAllValuesFromRestriction( String uri, Property prop, Resource cls ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+                
+        if (prop == null || cls == null) {
+            throw new IllegalArgumentException( "Cannot create allValuesFromRestriction with a null property or class" );
+        }
+                
+        checkProfileEntry( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().ALL_VALUES_FROM(), cls );
+                
+        return (AllValuesFromRestriction) r.as( AllValuesFromRestriction.class );
+    }
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have exactly
+     * the given number of values for the given property.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The exact cardinality of the property
+     * @return A new resource representing a has-value restriction
+     */
+    public CardinalityRestriction createCardinalityRestriction( String uri, Property prop, int cardinality ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+                
+        if (prop == null) {
+            throw new IllegalArgumentException( "Cannot create cardinalityRestriction with a null property" );
+        }
+                
+        checkProfileEntry( getProfile().CARDINALITY(), "CARDINALITY" );
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().CARDINALITY(), cardinality );
+                
+        return (CardinalityRestriction) r.as( CardinalityRestriction.class );
+    }
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at least
+     * the given number of values for the given property.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The minimum cardinality of the property
+     * @return A new resource representing a min-cardinality restriction
+     */
+    public MinCardinalityRestriction createMinCardinalityRestriction( String uri, Property prop, int cardinality ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+                    
+        if (prop == null) {
+            throw new IllegalArgumentException( "Cannot create minCardinalityRestriction with a null property" );
+        }
+                    
+        checkProfileEntry( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY" );
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().MIN_CARDINALITY(), cardinality );
+                    
+        return (MinCardinalityRestriction) r.as( MinCardinalityRestriction.class );
+    }
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at most
+     * the given number of values for the given property.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The maximum cardinality of the property
+     * @return A new resource representing a mas-cardinality restriction
+     */
+    public MaxCardinalityRestriction createMaxCardinalityRestriction( String uri, Property prop, int cardinality ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+                        
+        if (prop == null) {
+            throw new IllegalArgumentException( "Cannot create maxCardinalityRestriction with a null property" );
+        }
+                        
+        checkProfileEntry( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY" );
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().MAX_CARDINALITY(), cardinality );
+                        
+        return (MaxCardinalityRestriction) r.as( MaxCardinalityRestriction.class );
     }
     
    
