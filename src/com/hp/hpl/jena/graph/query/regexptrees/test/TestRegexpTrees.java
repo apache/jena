@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestRegexpTrees.java,v 1.5 2004-09-02 13:46:27 chris-dollin Exp $
+  $Id: TestRegexpTrees.java,v 1.6 2004-09-02 14:36:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees.test;
@@ -33,8 +33,8 @@ public class TestRegexpTrees extends GraphTestBase
             { new AnySingle(), "ANY" },
             { new Paren( new AnySingle() ), "(ANY)" },
             { new Paren( new EndOfLine() ), "(EOL)" },
-            { new Text( "hello" ), "hello" },
-            { new Text( "goodbye" ), "goodbye" },
+            { Text.create( "hello" ), "hello" },
+            { Text.create( "goodbye" ), "goodbye" },
             { new AnyOf( "abcde" ), "any[abcde]" },
             { new AnyOf( "defgh" ), "any[defgh]" },
             { new NoneOf( "pqrst" ), "none[pqrst]" },
@@ -84,7 +84,7 @@ public class TestRegexpTrees extends GraphTestBase
         }
     
     public void testLiteralContents()
-        { assertEquals( "hello", new Text( "hello" ).getString() ); }
+        { assertEquals( "hello", Text.create( "hello" ).getString() ); }
     
     public void testParenOperand()
         { assertSame( RegexpTree.EOL, new Paren( RegexpTree.EOL ).getOperand() );  }

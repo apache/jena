@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.11 2004-09-02 13:46:27 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.12 2004-09-02 14:36:14 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -40,9 +40,9 @@ public class TestPerlyParser extends GraphTestBase
     
     public void testLit()
         {
-        assertEquals( new Text( "a" ), new Text( "a" ) );
-        assertDiffer( new Text( "a" ), new Text( "b" ) );
-        assertEquals( new Text( "aga" ).hashCode(), new Text( "aga" ).hashCode() );
+        assertEquals( Text.create( "a" ), Text.create( "a" ) );
+        assertDiffer( Text.create( "a" ), Text.create( "b" ) );
+        assertEquals( Text.create( "aga" ).hashCode(), Text.create( "aga" ).hashCode() );
         }
     
     public void testInitialParserState()
@@ -57,7 +57,7 @@ public class TestPerlyParser extends GraphTestBase
             if (Character.isLetter( ch ))
                 {
                 PerlPatternParser p = new PerlPatternParser( "" + ch );
-                assertEquals( new Text( "" + ch ), p.parseAtom() );
+                assertEquals( Text.create( ch ), p.parseAtom() );
                 assertEquals( 1, p.getPointer() );
                 }
         }
@@ -84,7 +84,7 @@ public class TestPerlyParser extends GraphTestBase
         for (char ch = 0; ch < 256; ch += 1)
             {
             if ("bBAZnrtfdDwWSsxc0123456789".indexOf( ch ) < 0)
-                assertEquals( new Text( "" + ch ), new PerlPatternParser( "\\" + ch ).parseAtom() ); 
+                assertEquals( Text.create( ch ), new PerlPatternParser( "\\" + ch ).parseAtom() ); 
             }    
         }
     
@@ -113,26 +113,26 @@ public class TestPerlyParser extends GraphTestBase
     
     public void testWhitespaceEscapes()
         {
-        assertEquals( new Text( "\n" ), element( "\\n" ) );
-        assertEquals( new Text( "\t" ), element( "\\t" ) );
-        assertEquals( new Text( "\f" ), element( "\\f" ) );
-        assertEquals( new Text( "\r" ), element( "\\r" ) );
+        assertEquals( Text.create( "\n" ), element( "\\n" ) );
+        assertEquals( Text.create( "\t" ), element( "\\t" ) );
+        assertEquals( Text.create( "\f" ), element( "\\f" ) );
+        assertEquals( Text.create( "\r" ), element( "\\r" ) );
         assertEquals( new AnyOf( " \r\n\t\f"), element( "\\s" ) );
         assertEquals( new NoneOf( " \r\n\t\f" ), element( "\\S" ) );
         }
     
     public void testHexEscapes()
         {
-        assertParse( new Text( "\u00ac" ), "\\xac" );
-        assertParse( new Text( "\u00ff" ), "\\xff" );
-        assertParse( new Text( "\u0012" ), "\\x12" );
-        assertParse( new Text( "\u00af" ), "\\xAF" );
+        assertParse( Text.create( "\u00ac" ), "\\xac" );
+        assertParse( Text.create( "\u00ff" ), "\\xff" );
+        assertParse( Text.create( "\u0012" ), "\\x12" );
+        assertParse( Text.create( "\u00af" ), "\\xAF" );
         }
     
     public void testControlEscapes()
         {
-        assertParse( new Text( "\u0001" ), "\\cA" );
-        assertParse( new Text( "\u001a" ), "\\cZ" );
+        assertParse( Text.create( "\u0001" ), "\\cA" );
+        assertParse( Text.create( "\u001a" ), "\\cZ" );
         }
     
     public void testNoQuantifier()
@@ -182,7 +182,7 @@ public class TestPerlyParser extends GraphTestBase
     public void testUnitSeq()
         {
         PerlPatternParser p = new PerlPatternParser( "x" );
-        assertEquals( new Text( "x" ), p.parseSeq() );
+        assertEquals( Text.create( "x" ), p.parseSeq() );
         }
     
     public void testSeq()
@@ -192,12 +192,12 @@ public class TestPerlyParser extends GraphTestBase
         }
     
     public void testBracketConstruction()
-        { assertParse( new Paren( new Text( "x" ) ), "(x)" ); }
+        { assertParse( new Paren( Text.create( "x" ) ), "(x)" ); }
     
     public void testBracketClosure()
         {
         PerlPatternParser p = new PerlPatternParser( "()y" );
-        assertEquals( seq2( new Paren( new Nothing() ), new Text( "y" ) ), p.parseAlts() );
+        assertEquals( seq2( new Paren( new Nothing() ), Text.create( "y" ) ), p.parseAlts() );
         }
     
     public void testDetectsMissingClosingBracket()
@@ -240,10 +240,10 @@ public class TestPerlyParser extends GraphTestBase
         { assertParse( new AnyOf( "]" ), "[\\]]" ); }
     
     public void testBackReference()
-        { assertParse( seq2( new Paren( new Text( "x" ) ), new BackReference( 1 ) ), "(x)\\1" ); }
+        { assertParse( seq2( new Paren( Text.create( "x" ) ), new BackReference( 1 ) ), "(x)\\1" ); }
 
     public void testOctalNonBackReference()
-        { assertParse( seq2( new Paren( new Text( "x" ) ), new Text( "\10" ) ), "(x)\\10" ); }
+        { assertParse( seq2( new Paren( Text.create( "x" ) ), Text.create( "\10" ) ), "(x)\\10" ); }
     
     protected RegexpTree seq2( RegexpTree a, RegexpTree b )
         {
@@ -267,15 +267,15 @@ public class TestPerlyParser extends GraphTestBase
     public void testOldSeq()
         {
         PerlPatternParser p = new PerlPatternParser( "hello" );
-        assertEquals( new Text( "h" ), p.parseAtom() );
+        assertEquals( Text.create( "h" ), p.parseAtom() );
         assertEquals( 1, p.getPointer() );
-        assertEquals( new Text( "e" ), p.parseAtom() );
+        assertEquals( Text.create( "e" ), p.parseAtom() );
         assertEquals( 2, p.getPointer() );
-        assertEquals( new Text( "l" ), p.parseAtom() );
+        assertEquals( Text.create( "l" ), p.parseAtom() );
         assertEquals( 3, p.getPointer() );
-        assertEquals( new Text( "l" ), p.parseAtom() );
+        assertEquals( Text.create( "l" ), p.parseAtom() );
         assertEquals( 4, p.getPointer() );
-        assertEquals( new Text( "o" ), p.parseAtom() );
+        assertEquals( Text.create( "o" ), p.parseAtom() );
         assertEquals( 5, p.getPointer() );
         assertEquals( new Nothing(), p.parseAtom() );
         }

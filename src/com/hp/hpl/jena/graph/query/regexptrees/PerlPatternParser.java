@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PerlPatternParser.java,v 1.11 2004-09-02 13:46:14 chris-dollin Exp $
+  $Id: PerlPatternParser.java,v 1.12 2004-09-02 14:35:29 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -41,10 +41,15 @@ public class PerlPatternParser
     protected int matchPointsSeen;
     
     /**
+         The digits, in order.
+    */
+    public static final String digits = "0123456789";
+    
+    /**
          The characters that are (non-)matchable by \w[W].
     */
     public static final String wordChars =
-        "0123456789"
+        digits
         + "abcdefghijklmnopqrstuvwxyz"
         + "_"
         + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -179,7 +184,6 @@ public class PerlPatternParser
         if (ch == '\\')
             {
             RegexpTree t = parseAtom();
-            System.err.println( ">> " + t );
             if (t instanceof Text) return -((Text) t).getString().charAt( 0 );
             throw new SyntaxException( "not allowed in class" );
             }
@@ -231,9 +235,9 @@ public class PerlPatternParser
         else if (ch == 'S') 
             return generator.getClass( " \r\n\t\f", true );
         else if (ch == 'd')
-            return generator.getClass( "0123456789", false );
+            return generator.getClass( digits, false );
         else if (ch == 'D')
-            return generator.getClass( "0123456789", true );
+            return generator.getClass( digits, true );
         else if (ch == 'w')
             return generator.getClass( wordChars, false );
         else if (ch == 'W')
@@ -249,25 +253,24 @@ public class PerlPatternParser
         }
     
     /**
-     * @param c
-     * @return
-     */
+         Answer a RegexpTree representing the single character which is CTRL-ch.
+    */
     protected RegexpTree control( char ch )
-        { return new Text( "" + (char) (ch - 'A' + 1) ); }
+        { return Text.create( (char) (ch - 'A' + 1) ); }
 
     /**
-     * @return
-     */
+        Answer a RegexpTree representing the single character whose value is
+        given by the next two hexadecimal digits.
+    */
     protected RegexpTree hexEscape()
         {
         char hi = nextChar(), lo = nextChar();
-        return new Text( "" + (char) (deHex( hi ) * 16 + deHex( lo )) );
+        return Text.create( (char) (deHex( hi ) * 16 + deHex( lo )) );
         }
 
     /**
-     * @param lo
-     * @return
-     */
+         Answer the integer value corresponding to the hex digit <code>ch</code>.
+    */
     private int deHex( char ch )
         {
         if (Character.isDigit( ch )) return ch - '0';
