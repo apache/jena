@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -36,6 +36,7 @@ public class DBPropDatabase extends DBProp {
 	 */
 
 	public static final Node_URI dbEngineType = (Node_URI)DB.engineType.getNode();
+	public static final Node_URI dbLayoutVersion = (Node_URI)DB.layoutVersion.getNode();
 	public static final Node_URI dbDriverVersion = (Node_URI)DB.driverVersion.getNode();
 	public static final Node_URI dbFormatDate = (Node_URI)DB.formatDate.getNode();
 	public static final Node_URI dbGraph = (Node_URI)DB.graph.getNode();
@@ -57,6 +58,7 @@ public class DBPropDatabase extends DBProp {
 		String today = dateFormat.format( new Date());
 		if( engineType != null ) putPropString(dbEngineType, engineType);
 		if( driverVersion != null ) putPropString(dbDriverVersion, driverVersion);
+		putPropString(dbLayoutVersion, "2.0");
 		if( maxLiteral != null ) putPropString(dbMaxLiteral, maxLiteral);
 		putPropString(dbFormatDate, today);
 		
