@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.7 2005-03-18 18:56:38 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.8 2005-03-18 21:34:50 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -185,12 +185,12 @@ public class LocationMapper
     {
         altPrefixes.remove(uriPrefix) ;
     }
-    public String getAltEntry(String uri, String alt)
+    public String getAltEntry(String uri)
     {
         return (String)altLocations.get(uri) ;
     }
 
-    public String getAltPrefix(String uriPrefix, String altPrefix) 
+    public String getAltPrefix(String uriPrefix) 
     {
         return (String)altPrefixes.get(uriPrefix) ;
     }
