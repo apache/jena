@@ -3,7 +3,7 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="j2p1-rc2"/>
+    <property name="version"         value="j2p1"/>
 
     <property name="dist.name"       value="${name}-${version}"/>
 
@@ -207,9 +207,6 @@
             depends="bin,javadoc,distribution-init,copy,zip"/>
 
     <target name="distribution-init">
-        <delete includeEmptyDirs="true">
-            <fileset dir="${dist.dir}"/>
-        </delete>
         <mkdir dir="${dist.dir}"/>
     </target>
 
@@ -309,7 +306,7 @@
     
     <target name="test">
         <echo>install test</echo>
-        <junit fork="yes">
+        <junit fork="yes" printsummary="yes">
         <classpath>
             <fileset dir="${lib.dir}" includes="*.jar"/>
         </classpath>  
@@ -320,7 +317,7 @@
  <!-- uses the latest built jena code - not the jar in the lib -->   
     <target name="dev-test">
         <echo>developer test</echo>
-        <junit fork="yes">
+        <junit fork="yes" printsummary="yes">
         <classpath>
             <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
             <pathelement location="${classes.dir}"/>
@@ -329,11 +326,11 @@
       </junit>    
     </target>
 
-<!--
+
     <target name="clean">
         <delete includeEmptyDirs="true">
-            <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+            <fileset dir="${dist.dir}"/>
         </delete>
     </target>
--->
+
 </project>
