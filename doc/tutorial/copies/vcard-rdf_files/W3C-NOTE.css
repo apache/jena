@@ -1,0 +1,140 @@
+BODY {
+	BACKGROUND: white fixed no-repeat left top; COLOR: black; FONT-FAMILY: sans-serif; MARGIN: 2em 1em 2em 70px
+}
+:link {
+	BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #00c
+}
+:visited {
+	BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #609
+}
+:active {
+	BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #c00
+}
+TH {
+	FONT-FAMILY: sans-serif
+}
+TD {
+	FONT-FAMILY: sans-serif
+}
+H1 {
+	TEXT-ALIGN: left
+}
+H2 {
+	TEXT-ALIGN: left
+}
+H3 {
+	TEXT-ALIGN: left
+}
+H4 {
+	TEXT-ALIGN: left
+}
+H5 {
+	TEXT-ALIGN: left
+}
+H6 {
+	TEXT-ALIGN: left
+}
+H1 {
+	BACKGROUND: white; COLOR: #005a9c
+}
+H2 {
+	BACKGROUND: white; COLOR: #005a9c
+}
+H3 {
+	BACKGROUND: white; COLOR: #005a9c
+}
+H1 {
+	FONT: 170% sans-serif
+}
+H2 {
+	FONT: 140% sans-serif
+}
+H3 {
+	FONT: 120% sans-serif
+}
+H4 {
+	FONT: bold 100% sans-serif
+}
+H5 {
+	FONT: italic 100% sans-serif
+}
+H6 {
+	FONT: small-caps 100% sans-serif
+}
+.hide {
+	DISPLAY: none
+}
+DIV.head {
+	MARGIN-BOTTOM: 1em
+}
+DIV.head H1 {
+	CLEAR: both; MARGIN-TOP: 2em
+}
+DIV.head TABLE {
+	MARGIN-LEFT: 2em; MARGIN-TOP: 2em
+}
+DIV.head IMG {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BORDER-RIGHT: medium none; BORDER-TOP: medium none; COLOR: white
+}
+P.copyright {
+	FONT-SIZE: small
+}
+P.copyright SMALL {
+	FONT-SIZE: small
+}
+
+@media Screen    
+{
+ahref:hover {
+	BACKGROUND: #ffa
+}
+    }
+PRE {
+	MARGIN-LEFT: 2em
+}
+DT {
+	MARGIN-BOTTOM: 0px; MARGIN-TOP: 0px
+}
+DD {
+	MARGIN-BOTTOM: 0px; MARGIN-TOP: 0px
+}
+DT {
+	FONT-WEIGHT: bold
+}
+PRE {
+	FONT-FAMILY: monospace
+}
+CODE {
+	FONT-FAMILY: monospace
+}
+UL.toc {
+	LIST-STYLE: none
+}
+
+@media Aural    
+{
+H1 {
+	stress: 20; richness: 90
+}
+H2 {
+	stress: 20; richness: 90
+}
+H3 {
+	stress: 20; richness: 90
+}
+.hide {
+	speak: none
+}
+P.copyright {
+	volume: x-soft; speech-rate: x-fast
+}
+DT {
+	pause-before: 20%
+}
+PRE {
+	speak-punctuation: code
+}
+    }
+BODY {
+	BACKGROUND-IMAGE: url(http://www.w3.org/StyleSheets/TR/logo-NOTE)
+}

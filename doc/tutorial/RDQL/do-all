@@ -1,0 +1,21 @@
+#!/bin/bash 
+
+A="-v" 
+
+rdql $A --query vc-q1 --data vc-db-1.rdf 
+
+rdql $A --query vc-q2 --data vc-db-1.rdf 
+
+rdql $A --query vc-q3 --data vc-db-1.rdf 
+
+rdql $A --query vc-q4 --data vc-db-1.rdf 
+
+rdql $A --query vc-q5 --data vc-db-1.rdf 
+
+rdql $A --query vc-q6 --data vc-db-2.rdf 
+
+rdql $A --query vc-q7 --data vc-db-2.rdf 
+
+rdql $A --query vc-ex-1 --data vc-db-3.rdf 
+
+rdql $A --query vc-ex-2 --data vc-db-2.rdf 

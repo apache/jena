@@ -1,0 +1,529 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0030)http://www.w3.org/TR/vcard-rdf -->
+<HTML lang=en><HEAD><TITLE>Representing vCard Objects in RDF/XML</TITLE>
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type><LINK 
+href="vcard-rdf_files/W3C-NOTE.css" rel=stylesheet type=text/css>
+<META content="MSHTML 5.00.3103.1000" name=GENERATOR></HEAD>
+<BODY>
+<DIV class=head><A href="http://www.w3.org/"><IMG alt=W3C height=48 
+src="vcard-rdf_files/w3c_home" width=72></A> 
+<H1>Representing vCard Objects in RDF/XML</H1>
+<H2>W3C Note 22 February 2001</H2>
+<DL>
+  <DT>This version: 
+  <DD><A 
+  href="http://www.w3.org/TR/2001/NOTE-vcard-rdf-20010222">http://www.w3.org/TR/2001/NOTE-vcard-rdf-20010222</A> 
+
+  <DT>Latest version: 
+  <DD><A 
+  href="http://www.w3.org/TR/vcard-rdf">http://www.w3.org/TR/vcard-rdf</A> 
+  <DT>Author: 
+  <DD><A href="mailto:renato@iprsystems.com">Renato Iannella</A>, IPR Systems 
+  </DD></DL>
+<P class=copyright>Copyright <A href="http://www.iprsystems.com/">IPR 
+Systems</A> 2001. Distribution policies are governed by the W3C intellectual 
+property <A 
+href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">terms</A>. </P>
+<HR title="Separator from Header">
+</DIV>
+<H2><A name=abstract>Abstract</A></H2>
+<P>This note specifies a Resource Description Framework (RDF) encoding of the 
+vCard profile defined by RFC 2426 and to provide equivalent functionality to its 
+standard format. The motivation is to enable the common and consistent 
+description of persons (using the existing semantics of vCard) and to encode 
+these in RDF/XML. </P>
+<H2><A name=status>Status of this document</A></H2>
+<P>This document is a submission to the World Wide Web Consortium from IPR 
+Systems Pty Ltd (see <A href="http://www.w3.org/Submission/2001/04/">Submission 
+Request</A>, <A href="http://www.w3.org/Submission/2001/04/Comment">W3C Staff 
+Comment</A>). For a full list of all acknowledged Submissions, please see <A 
+href="http://www.w3.org/Submission/">Acknowledged Submissions to W3C</A>.</P>
+<P>This document is a NOTE made available by the W3C for discussion only. 
+Publication of this Note by W3C indicates no endorsement by W3C or the W3C Team, 
+or any W3C Members. W3C has had no editorial control over the preparation of 
+this Note. This document is a work in progress and may be updated, replaced, or 
+rendered obsolete by other documents at any time.</P>
+<P>Comments on this document may be sent to the author or to the publicly 
+archived <A href="http://www.w3.org/RDF/Interest/">RDF Interest Group</A> 
+distribution list, <A 
+href="mailto:www-rdf-interest@w3.org">www-rdf-interest@w3.org</A> [<A 
+href="http://lists.w3.org/Archives/Public/www-rdf-interest/">archive</A>]. </P>
+<P>A list of current W3C technical documents can be found at the <A 
+href="http://www.w3.org/TR">Technical Reports</A> page.</P>
+<H2><A name=contents>Table of contents</A></H2>
+<OL>
+  <LI><A href="http://www.w3.org/TR/vcard-rdf#1">Introduction</A> 
+  <LI><A href="http://www.w3.org/TR/vcard-rdf#2">RDF vCard Namespace</A> 
+  <LI><A href="http://www.w3.org/TR/vcard-rdf#3">RDF vCard Specification</A> 
+  <LI><A href="http://www.w3.org/TR/vcard-rdf#4">RDF vCard Language</A> 
+  <LI><A href="http://www.w3.org/TR/vcard-rdf#5">RDF vCard Examples</A> 
+  <LI><A href="http://www.w3.org/TR/vcard-rdf#6">vCard in XML</A> 
+  <LI><A href="http://www.w3.org/TR/vcard-rdf#7">Acknowledgements</A> 
+  <LI><A href="http://www.w3.org/TR/vcard-rdf#8">References</A> </LI></OL>
+<H2><A name=1></A>1. Introduction </H2>
+<P>This note specifies a Resource Description Framework (RDF) <A 
+href="http://www.w3.org/TR/vcard-rdf#RDF">[RDF]</A> expression that corresponds 
+to the vCard electronic business card profile defined by RFC 2426 <A 
+href="http://www.w3.org/TR/vcard-rdf#VCARD">[VCARD]</A>. This specification 
+provides equivalent functionality to the standard format defined by <A 
+href="http://www.w3.org/TR/vcard-rdf#VCARD">[VCARD]</A> Version 3.0. RDF is an 
+application of the Extensible Markup Language <A 
+href="http://www.w3.org/TR/vcard-rdf#XML">[XML]</A>. Documents structured in 
+accordance with this RDF/XML encoding may also be known as 'RDF vCard' 
+documents. </P>
+<P>This specification is in no way intended to create a separate definition for 
+the vCard schema. The sole purpose for this note is to define an alternative 
+RDF/XML encoding for the format defined by <A 
+href="http://www.w3.org/TR/vcard-rdf#VCARD">[VCARD]</A>. </P>
+<P>The RDF vCard does not introduce any capability not expressible in the format 
+defined by <A href="http://www.w3.org/TR/vcard-rdf#VCARD">[VCARD]</A>. However, 
+an attempt has been made to leverage the capabilities of the XML and RDF syntax 
+to better articulate the original intent of the vCard authors. </P>
+<H2><A name=2></A>2. RDF vCard Namespace </H2>
+<P>RDF uses the XML Namespace <A 
+href="http://www.w3.org/TR/vcard-rdf#XMLNS">[XMLNS]</A> to uniquely identify the 
+metadata schema and version. For vCard, the following URI <A 
+href="http://www.w3.org/TR/vcard-rdf#URI">[URI]</A> is defined to be vCard 
+Namespace: </P>
+<DL>
+  <DD>http://www.w3.org/2001/vcard-rdf/3.0# </DD></DL>
+<P>The explicit use of this XML Namespace in RDF means that there is no need to 
+support the VCARD Profile and VERSION type. </P>
+<P>This namespace name (URI) will only be used to refer to this version of this 
+specification: different URIs will be used for any and all new versions of the 
+specification except as follows.</P>
+<OL>
+  <LI>This namespace name may be reused in any update of the specification which 
+  is made for the purpose of clarification or bug fixes. These changes will be 
+  minor in that they do not (a) change the meaning or validity of existing 
+  documents written using the namespace, or (b) affect the operation of existing 
+  software written to process such documents. </LI></OL>
+<P>Examples used in this note will use "vCard" as the prefix for the vCard XML 
+Namespace and "rdf" for the RDF XML Namespace. </P>
+<H2><A name=3></A>3. RDF vCard Specification</H2>
+<H3>3.1 Basic Properties</H3>
+<P>The RDF vCard equally promotes all vCard types into RDF property types. Some 
+of the vCard types, for example BEGIN, END, PROFILE, and VERSION, are not 
+required to be expressed as these are implicitly provided by RDF. </P>
+<P>With RDF, statements are made about a resource. The resource in question is 
+identified with a URI. This has similar semantics to the vCard UID type. Hence, 
+RDF descriptions should use the vCard UID as the RDF "about" value when the UID 
+is expressed as a machine-resolvable URI. </P>
+<P>The majority of the vCard property types have strings as their values 
+(objects of statements) and are simply represented by their property type name 
+and value as specified in the vCard specification <A 
+href="http://www.w3.org/TR/vcard-rdf#VCARD">[VCARD]</A>. These include: </P>
+<DL>
+  <DD>FN 
+  <DD>NICKNAME 
+  <DD>BDAY 
+  <DD>MAILER 
+  <DD>GEO 
+  <DD>TITLE 
+  <DD>ROLE 
+  <DD>CATEGORIES 
+  <DD>NAME 
+  <DD>SOURCE 
+  <DD>NOTE 
+  <DD>PRODID 
+  <DD>REV 
+  <DD>SORT-STRING 
+  <DD>CLASS </DD></DL>
+<P>For example, the following shows sample RDF vCard encodings: </P><PRE>      &lt;vCard:FN&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:BDAY&gt; 1980-01-01 &lt;/vCard:BDAY&gt;
+      &lt;vCard:TITLE&gt; Computer Officer Class 3 &lt;/vCard:TITLE&gt;
+      &lt;vCard:ROLE&gt; Programmer &lt;/vCard:ROLE&gt;
+</PRE>
+<P>There are special cases to be noted for the SOURCE and NAME property types. 
+SOURCE maps to the RDF "about" URI and should be used to indicate the unique 
+identifier for the person object. NAME is a human-displayable text about the 
+vCard record itself (not the person). If NAME is required, then it should be 
+represented as a Statement about Statements (see Section 4 of the RDF Syntax 
+specification <A href="http://www.w3.org/TR/vcard-rdf#RDF">[RDF]</A>.) </P>
+<H3><A name="3.2"></A>3.2 Grouping and Ordering</H3>
+<P>To have multiple values of a vCard property type, RDF provides three 
+mechanisms; Bags, Sequences, and Alternatives. </P>
+<P>An RDF Bag is used when there is more than one value and the order is not 
+important. For example: </P><PRE>      &lt;vCard:ROLE&gt;          &lt;rdf:bag&gt;
+            &lt;rdf:li&gt; Programmer &lt;/rdf:li&gt;
+            &lt;rdf:li&gt; Fire Warden &lt;/rdf:li&gt;
+         &lt;/rdf:bag&gt;
+     &lt;/vCard:ROLE&gt;
+</PRE>
+<P>If order is important, then an RDF Sequence can be used. For example: </P><PRE>      &lt;vCard:TITLE&gt;          &lt;rdf:seq&gt;
+            &lt;rdf:li&gt; Principal Research Scientist &lt;/rdf:li&gt;
+            &lt;rdf:li&gt; Visiting Professor &lt;/rdf:li&gt;
+         &lt;/rdf:seq&gt;
+     &lt;/vCard:TITLE&gt;
+</PRE>
+<P>An RDF Alternative is used when there is a choice of values available for a 
+property, with each value being valid but dependent on some other externally 
+defined factor. The first value is the default. For example, a vCard resource 
+may have a number of aliases for their email address. In essence, these are all 
+different representations of the same email addresses. This would be encoded as: 
+</P><PRE>     &lt;vCard:EMAIL&gt;          &lt;rdf:alt&gt;
+            &lt;rdf:li&gt; corky@qqqfoo.com &lt;/rdf:li&gt;
+            &lt;rdf:li&gt; info@qqqfoo.com &lt;/rdf:li&gt;
+            &lt;rdf:li&gt; corky2000cool@hotmail.com &lt;/rdf:li&gt;
+         &lt;/rdf:alt&gt;
+     &lt;/vCard:EMAIL&gt;
+</PRE>
+<P>The vCard specification also allows properties to be arbitrarily grouped. For 
+RDF to support this, we need to define a new vCard property to capture this. We 
+call this new vCard property "GROUP". </P>
+<P>For example, to group two NICKNAME and NOTE properties: </P><PRE>   &lt;vCard:GROUP&gt;
+     &lt;rdf:bag&gt;
+       &lt;rdf:li rdf:parseType="Resource"&gt;
+         &lt;vCard:NICKNAME&gt; Corky Porky &lt;/vCard:NICKNAME&gt;
+         &lt;vCard:NOTE&gt; Only used by close friends &lt;/vCard:NOTE&gt;
+       &lt;/rdf:li&gt;        &lt;rdf:li rdf:parseType="Resource"&gt;
+         &lt;vCard:NICKNAME&gt; Princess Corky &lt;/vCard:NICKNAME&gt;
+         &lt;vCard:NOTE&gt; Only used by my Mother &lt;/vCard:NOTE&gt;
+       &lt;/rdf:li&gt;
+     &lt;/rdf:bag&gt;
+   &lt;/vCard:GROUP&gt;
+</PRE>
+<P>Note: The "rdf:parseType=Resource" indicates that the &lt;rdf:li&gt; content 
+should be treated as if it were the content of an &lt;rdf:Description&gt; 
+element. </P>
+<P>Some of these grouping and ordering features are unique to RDF, so it is 
+important to realise that the conversion from RDF to native vCard format may 
+result in some loss of information. However, it should not be a critical loss of 
+semantics. </P>
+<H3><A name="3.3"></A>3.3 Properties with Attributes</H3>
+<P>A number of vCard properties include the ability to indicate one or more 
+"type parameters" of a value. For example, to indicate that a Telephone number 
+is a Fax number, or that a particular email address is the preferred value. </P>
+<P>To represent this in RDF, we utilise the &lt;rdf:type&gt; property which 
+allows us to specify the type of a resource by indicating a URI that represents 
+this type. The URI will be: </P>
+<DL>
+  <DD>http://www.w3.org/2001/vcard-rdf/3.0#<I>&lt;type&gt; </I></DD></DL>
+<P>where <I>&lt;type&gt;</I> will be one of the officially defined vCard type 
+parameters. </P>
+<P>Also, the property value must now be given by using the &lt;rdf:value&gt; 
+property. For example: 
+<P><PRE>   &lt;vCard:TEL rdf:parseType="Resource"&gt;
+    &lt;rdf:value&gt; +61 7 555 5555 &lt;/rdf:value&gt;
+    &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#work"/&gt;
+    &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#voice"/&gt;
+   &lt;/vCard:TEL&gt;
+</PRE>
+<P>Note: The "rdf:parseType=Resource" simply indicates properties within the two 
+&lt;vCard:Tel&gt; tags, should be considered as the entire value for the 
+&lt;vCard:Tel&gt; property. </P>
+<P>The vCard properties that have a type parameter are listed here with their 
+possible values: </P><PRE>      vCard Property  Type Parameter Values
+   --------------  -----------------------------------------------
+<A name="TEL"></A>    TEL            home, msg, work, pref, voice, fax, cell, video,
+                   pager, bbs, modem, car, isdn, pcs
+<A name="EMAIL"></A>    EMAIL          internet, x400, pref
+<A name="ADR"></A>    ADR            dom, intl, postal, parcel, home, work, pref
+<A name="LABEL"></A>    LABEL          dom, intl, postal, parcel, home, work, pref
+    TZ             text
+</PRE>
+<P>In cases where the type parameter has been defined by an external body (ie: 
+not defined by the vCard specification), we must use a "vCard:TYPE" attribute in 
+the property since we have no control over the potential size of this list. </P>
+<P>For example, to indicate that the value for the UID property is of type 
+"United States Social Security Number": </P><PRE>      &lt;vCard:UID vCard:TYPE="US-SSN"&gt;
+       987-65-4320
+    &lt;/vCard:UID&gt;
+</PRE>
+<P>The vCard properties that have uncontrolled type parameters are listed here: 
+</P><PRE>   vCard Property  Type Parameter Values
+   --------------  -----------------------------------------------
+    UID            Any IANA registered or non-standard identifier formats
+    LOGO           Any IANA registered or non-standard image formats
+    PHOTO          Any IANA registered or non-standard image formats
+    SOUND          Any IANA registered or non-standard audio formats
+</PRE>
+<P>There are two special cases to be noted: </P>
+<OL>
+  <LI>The URL property can only have a valid URI as its value. RDF provides a 
+  short-hand mechanism to encode this with the "rdf:resource" attribute. For 
+  example: <PRE>   &lt;vCard:URL rdf:resource="http://qqqfoo.com/me.html"/&gt;
+</PRE>
+  <LI>The LABEL property has a value that is formatted text which may include 
+  XML statements. To indicate that the value should not be interpreted, we use 
+  the "rdf:parseType" attribute set to "Literal". For example: <PRE>  &lt;vCard:LABEL rdf:parseType="Resource"&gt;
+    &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#postal"/&gt;
+    &lt;rdf:value rdf:parseType="Literal"&gt;
+      Corky Crystal&lt;br/&gt;
+      &lt;b&gt;qqqfoo.com Pty Ltd&lt;/b&gt;&lt;br/&gt;
+      PO Box 555&lt;br/&gt;
+      Coolville, AUSTRALIA
+    &lt;/rdf:value&gt;
+  &lt;/vCard:LABEL&gt;
+</PRE></LI></OL>
+<H3>3.4 Structured Properties</H3>
+<P>A number of vCard properties define sub-structure. For example, the N 
+property has Family Name, Given Names, and Honorific. It is important to 
+preserve and express this structure and it is fully-supported in the RDF model. 
+For example: </P><PRE>     &lt;vCard:N rdf:parseType="Resource"&gt;
+        &lt;vCard:Family&gt; Crystal &lt;/vCard:Family&gt;
+        &lt;vCard:Given&gt;  Corky &lt;/vCard:Given&gt;
+        &lt;vCard:Other&gt;  Jacky &lt;/vCard:Other&gt;
+        &lt;vCard:Prefix&gt; Dr &lt;/vCard:Prefix&gt;
+        &lt;vCard:Suffix&gt; III &lt;/vCard:Suffix&gt;
+     &lt;/vCard:N&gt;
+</PRE>
+<P>The properties that have defined sub-structure are listed here with the names 
+of the property types. </P><PRE>    vCard Property  Substructure Name      Property Type Name
+    --------------  --------------------   ------------------
+     N              Family Name            Family
+                    Given Name             Given
+                    Additional Names       Other
+                    Honorific Prefixes     Prefix
+                    Honorific Suffixes     Suffix
+        ADR            Post Office Box        Pobox
+                    Extended Address       Extadd
+                    Street Address         Street
+                    Locality               Locality
+                    Region                 Region
+                    Postal Code            Pcode
+                    Country                Country
+
+     ORG            Organisation Name      Orgname
+                    Organisation Unit      Orgunit
+</PRE>
+<P>There are two special cases to be noted: </P>
+<OL>
+  <LI>Even though the LABEL property has the same substructure defined by N and 
+  ADR, we do not use them in specifying its value. This is because the value of 
+  LABEL is formatted text that is not intended to be interpreted. 
+  <LI>There is an implied ordering for Organisational Units (higher to lower). 
+  This can be supported by using the &lt;rdf:seq&gt; mechanism. An example is 
+  given in Section 5. </LI></OL>
+<H3>3.5 Binary Values</H3>
+<P>A number of vCard properties allow for inline binary values (encoded in 
+BASE64) or external references via a URI. These include: </P>
+<DL>
+  <DD>PHOTO 
+  <DD>LOGO 
+  <DD>SOUND 
+  <DD>KEY </DD></DL>
+<P>In the case of binary values, we can represent the property with a 
+"vCard:ENCODING" attribute indicating the content value ("b"). For example: </P><PRE>     &lt;vCard:PHOTO vCard:ENCODING="b" vCard:TYPE="image/jpeg"&gt;
+          MSJD9s99DS(S@W99329(#9....
+     &lt;/vCard:PHOTO&gt;
+</PRE>
+<P>In the case of an external reference, RDF provides a convenient encoding with 
+the "rdf:resource" construct. For example: </P><PRE>     &lt;vCard:PHOTO vCard:TYPE="image/gif"
+                  rdf:resource="http://qqqfoo.com/me.gif"/&gt;
+</PRE>
+<H3>3.6 Agent Property</H3>
+<P>The Agent property allows the specification or identification of another 
+vCard resource. RDF allows for the Agent vCard resource to be inline with an 
+existing vCard resource. For example: </P><PRE>      &lt;vCard:FN&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:TITLE&gt; Research Director &lt;/vCard:TITLE&gt;
+      &lt;vCard:AGENT rdf:parseType="Resource"&gt;
+         &lt;vCard:FN&gt;    John Mutton &lt;/vCard:FN&gt;
+         &lt;vCard:TITLE&gt; Personal Assistant &lt;/vCard:TITLE&gt;
+         &lt;vCard:EMAIL&gt; john@qqqfoo.com &lt;/vCard:EMAIL&gt;
+      &lt;/vCard:AGENT&gt;
+ </PRE>
+<P>To refer to an external identifiers (via a URI) of the Agent resource, RDF 
+supports encoding with the "rdf:resource" construct. For example: </P><PRE>      &lt;vCard:FN&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:TITLE&gt; Research Director &lt;/vCard:TITLE&gt;
+      &lt;vCard:AGENT rdf:resource="http://qqqfoo.com/staff/mutton/"/&gt;
+</PRE>
+<H2><A name=4></A>4. RDF vCard Language</H2>
+<P>To express the human language encoding of vCard property values, XML provides 
+a convenient "xml:lang" attribute. The values are defined in RFC 1766. For 
+example: 
+<P><PRE>      &lt;vCard:FN xml:lang="en"&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:TITLE xml:lang="en"&gt; Computer Officer Class 3 &lt;/vCard:TITLE&gt;
+      &lt;vCard:ROLE xml:lang="en"&gt; Programmer &lt;/vCard:ROLE&gt;
+</PRE>
+<P>In cases where a single vCard property is expressed with multiple language 
+values, the RDF Alternative construct should be used. For example: </P><PRE>     &lt;vCard:ROLE&gt;          &lt;rdf:alt&gt;
+            &lt;rdf:li xml:lang="en"&gt; Programmer &lt;/rdf:li&gt;
+            &lt;rdf:li xml:lang="fr"&gt; Programmeur &lt;/rdf:li&gt;
+            &lt;rdf:li xml:lang="it"&gt; Programmatore &lt;/rdf:li&gt;
+         &lt;/rdf:alt&gt;
+     &lt;/vCard:ROLE&gt;
+</PRE>
+<H2><A name=5></A>5. RDF vCard Examples</H2>
+<P>It is important to note that since XML is case-sensitive, the property and 
+attribute names used in this specification and the below examples, should be 
+taken literally. </P>
+<P>The following is a complete example of an RDF encoded vCard: </P><PRE>  &lt;?xml version="1.0"?&gt;
+  &lt;rdf:RDF xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:vCard = "http://www.w3.org/2001/vcard-rdf/3.0#"&gt;
+
+    &lt;rdf:Description rdf:about = "http://qqqfoo.com/staff/corky" &gt;
+      &lt;vCard:FN&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:N rdf:parseType="Resource"&gt;
+        &lt;vCard:Family&gt; Crystal &lt;/vCard:Family&gt;
+        &lt;vCard:Given&gt;  Corky &lt;/vCard:Given&gt;
+        &lt;vCard:Other&gt;  Jacky &lt;/vCard:Other&gt;
+        &lt;vCard:Prefix&gt; Dr &lt;/vCard:Prefix&gt;
+      &lt;/vCard:N&gt;
+      &lt;vCard:BDAY&gt; 1980-01-01 &lt;/vCard:BDAY&gt;
+      &lt;vCard:TITLE&gt; Computer Officer Class 3 &lt;/vCard:TITLE&gt;
+      &lt;vCard:ROLE&gt; Programmer &lt;/vCard:ROLE&gt;
+      &lt;vCard:TEL rdf:parseType="Resource"&gt;
+        &lt;rdf:value&gt; +61 7 555 5555 &lt;/rdf:value&gt;
+        &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#work"/&gt;
+        &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#voice"/&gt;
+      &lt;/vCard:TEL&gt;
+      &lt;vCard:EMAIL rdf:parseType="Resource"&gt;
+        &lt;rdf:value&gt; corky@qqqfoo.com &lt;/rdf:value&gt;
+        &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#internet"/&gt;
+      &lt;/vCard:EMAIL&gt;
+      &lt;vCard:ADR rdf:parseType="Resource"&gt;
+        &lt;vCard:Street&gt;   111 Lake Drive &lt;/vCard:Street&gt;
+        &lt;vCard:Locality&gt; WonderCity &lt;/vCard:Locality&gt;
+        &lt;vCard:Pcode&gt;    5555 &lt;/vCard:Pcode&gt;
+        &lt;vCard:Country&gt;  Australia &lt;/vCard:Country&gt;
+      &lt;/vCard:ADR&gt;
+    &lt;/rdf:Description&gt;
+  &lt;/rdf:RDF&gt;
+</PRE>
+<P>The following is an example of an RDF vCard that includes a photo element as 
+inline binary content. </P><PRE>  &lt;?xml version="1.0"?&gt;
+  &lt;rdf:RDF xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:vCard = "http://www.w3.org/2001/vcard-rdf/3.0#" &gt;
+
+    &lt;rdf:Description rdf:about = "http://qqqfoo.com/staff/corky"&gt;
+      &lt;vCard:FN&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:N rdf:parseType="Resource"&gt;
+        &lt;vCard:Family&gt; Crystal &lt;/vCard:Family&gt;
+        &lt;vCard:Given&gt;  Corky &lt;/vCard:Given&gt;
+      &lt;/vCard:N&gt;
+      &lt;vCard:EMAIL rdf:parseType="Resource"&gt;
+        &lt;rdf:value&gt; corky@qqqfoo.com &lt;/rdf:value&gt;
+        &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#internet"/&gt;
+      &lt;/vCard:EMAIL&gt;
+      &lt;vCard:URL rdf:resource="http://qqqfoo.com/staff/corky-home.html"/&gt;
+      &lt;vCard:PHOTO vCard:ENCODING="b" vCard:TYPE="image/jpeg"&gt;
+        MIICajCCAdOgAwIBAgICBEUwDQEEBQAwdzELMAkGA1UEBhMCVVMxLDA
+        qBgNVBAoTI05ldHNjYXBlIENvbW11bmljYXRpb25z.....W992WW329
+      &lt;/vCard:PHOTO&gt;
+    &lt;/rdf:Description&gt;
+  &lt;/rdf:RDF&gt;
+</PRE>
+<P>This example shows how an RDF vCard objects can be integrated with other 
+metadata standards and encoded with RDF. In this example, the Dublin Core 
+Metadata Element Set <A href="http://www.w3.org/TR/vcard-rdf#DCMES">[DCMES]</A> 
+standard is used. (Please refer to [DCMES] for namespace and encoding 
+recommendations.) </P><PRE>  &lt;?xml version="1.0"?&gt;
+  &lt;rdf:RDF xmlns:rdf   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:DC   = "http://purl.org/dc/elements/1.1/"
+           xmlns:vCard = "http://www.w3.org/2001/vcard-rdf/3.0#" &gt;
+
+   &lt;rdf:Description rdf:about = "http://qqqfoo.com/annual-report.html" &gt;
+    &lt;DC:title&gt; Annual Report 1999/2000 &lt;/DC:title&gt;
+    &lt;DC:creator rdf:parseType="Resource"&gt;
+      &lt;vCard:FN&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:N rdf:parseType="Resource"&gt;
+        &lt;vCard:Family&gt; Crystal &lt;/vCard:Family&gt;
+        &lt;vCard:Given&gt;  Corky &lt;/vCard:Given&gt;
+      &lt;/vCard:N&gt;
+      &lt;vCard:EMAIL rdf:parseType="Resource"&gt;
+        &lt;rdf:value&gt; corky@qqqfoo.com &lt;/rdf:value&gt;
+        &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#internet"/&gt;
+      &lt;/vCard:EMAIL&gt;
+    &lt;/DC:creator&gt;
+    &lt;DC:date&gt; 2000-10-01 &lt;/DC:date&gt;
+    &lt;DC:subject&gt; Company Report, Outcomes, Objectives &lt;/DC:subject&gt;
+    &lt;DC:publisher&gt; qqqfoo.com Pty Ltd &lt;/DC:publisher&gt;
+    &lt;DC:rights&gt; Copyright 2000 &lt;/DC:rights&gt;
+   &lt;/rdf:Description&gt;
+  &lt;/rdf:RDF&gt;
+</PRE>
+<P>The following is an example of an RDF vCard that includes structured 
+Organisation information: </P><PRE>  &lt;?xml version="1.0"?&gt;
+  &lt;rdf:RDF xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:vCard = "http://www.w3.org/2001/vcard-rdf/3.0#" &gt;
+
+    &lt;rdf:Description rdf:about = "http://qqqfoo.com/staff/corky"&gt;
+      &lt;vCard:FN&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:N rdf:parseType="Resource"&gt;
+        &lt;vCard:Family&gt; Crystal &lt;/vCard:Family&gt;
+        &lt;vCard:Given&gt;  Corky &lt;/vCard:Given&gt;
+      &lt;/vCard:N&gt;
+      &lt;vCard:EMAIL rdf:parseType="Resource"&gt;
+        &lt;rdf:value&gt; corky@qqqfoo.com &lt;/rdf:value&gt;
+        &lt;rdf:type rdf:resource="http://www.w3.org/2001/vcard-rdf/3.0#internet"/&gt;
+      &lt;/vCard:EMAIL&gt;
+      &lt;vCard:ORG rdf:parseType="Resource"&gt;
+        &lt;vCard:Orgname&gt; qqqfoo.com Pty Ltd &lt;/vCard:Orgname&gt;
+        &lt;vCard:Orgunit&gt;
+          &lt;rdf:seq&gt;
+                   &lt;rdf:li&gt; Commercialisation Division &lt;/rdf:li&gt;
+                   &lt;rdf:li&gt; Engineering Office &lt;/rdf:li&gt;
+                   &lt;rdf:li&gt; Java Unit &lt;/rdf:li&gt;
+          &lt;/rdf:seq&gt;
+       &lt;/vCard:Orgunit&gt;
+      &lt;/vCard:ORG&gt;
+    &lt;/rdf:Description&gt;
+  &lt;/rdf:RDF&gt;
+</PRE>
+<H2><A name=6></A>6. vCard in XML</H2>
+<P>It is also possible to encode vCard in XML without the RDF expressions 
+(although this is <I>out of scope</I> for this note). This would enable XML 
+expressions to be generated without the need to support RDF. However, there will 
+be some features then lacking and unable to be represented in standard XML. </P>
+<P>For example, the following is a standard XML expression of last example in 
+the previous section: </P><PRE>  &lt;?xml version="1.0"?&gt;
+  &lt;myns:myElement xmlns:myns = "http://www.qqqfoo.com/my-namespace#"
+           xmlns:vCard = "http://www.w3.org/2001/vcard-rdf/3.0#" &gt;
+
+      &lt;vCard:FN&gt; Corky Crystal &lt;/vCard:FN&gt;
+      &lt;vCard:N&gt;
+        &lt;vCard:Family&gt; Crystal &lt;/vCard:Family&gt;
+        &lt;vCard:Given&gt;  Corky &lt;/vCard:Given&gt;
+      &lt;/vCard:N&gt;
+      &lt;vCard:EMAIL vcard:TYPE="http://www.w3.org/2001/vcard-rdf/3.0#internet"&gt;
+           corky@qqqfoo.com       &lt;/vCard:EMAIL&gt;
+      &lt;vCard:ORG&gt;
+        &lt;vCard:Orgname&gt; qqqfoo.com Pty Ltd &lt;/vCard:Orgname&gt;
+        &lt;vCard:Orgunit&gt; Commercialisation Division &lt;/vCard:Orgunit&gt;   
+        &lt;vCard:Orgunit&gt; Engineering Office &lt;/vCard:Orgunit&gt;
+        &lt;vCard:Orgunit&gt; Java Unit &lt;/vCard:Orgunit&gt;
+      &lt;/vCard:ORG&gt;
+  &lt;/myns:myElement &gt;
+</PRE>
+<P>Note that all of the RDF grouping mechanisms and attributes can no longer be 
+used. The vCard:TYPE attribute (only one) can be used for all vCard 
+attributes/types. </P>
+<H2><A name=7></A>7. Acknowledgments</H2>
+<P>Thanks to Dave Beckett (Uni Kent), Roland Schwaenzl (Uni Osnabrueck), Ron 
+Daniel (DATAFUSION), Eric Miller (OCLC), and Hoylen Sue (DSTC) for their 
+valuable feedback and comments on drafts of this document. </P>
+<P>Early versions of the work reported in this paper has been funded in part by 
+the Cooperative Research Centres Program through the Department of the Prime 
+Minister and Cabinet of Australia, whilst the Author was an employee of DSTC. 
+</P>
+<H2><A name=8></A>8. References</H2>
+<DL>
+  <DT><A name=DCMES></A>[DCMES] 
+  <DD>Dublin Core Metadata Element Set, Version 1.1. <A 
+  href="http://purl.org/DC/documents/rec-dces-19990702.htm">&lt;http://purl.org/DC/documents/rec-dces-19990702.htm&gt; 
+  </A>
+  <DT><A name=XMLNS></A>[XMLNS] 
+  <DD>Namespaces in XML, World Wide Web Consortium, January 1999. <A 
+  href="http://www.w3.org/TR/REC-xml-names">&lt;http://www.w3.org/TR/REC-xml-names 
+  &gt; </A>
+  <DT><A name=RDF></A>[RDF] 
+  <DD>Resource Description Framework (RDF) Model and Syntax Specification World 
+  Wide Web Consortium, February 1999. <A 
+  href="http://www.w3.org/TR/REC-rdf-syntax/">&lt;http://www.w3.org/TR/REC-rdf-syntax/&gt; 
+  </A>
+  <DT><A name=URI></A>[URI] 
+  <DD>Uniform Resource Identifiers (URI): Generic Syntax, Berners-Lee, Fielding, 
+  Masinter, Internet Draft Standard, August 1998. <A 
+  href="ftp://ftp.isi.edu/in-notes/rfc2396.txt">&lt;ftp://ftp.isi.edu/in-notes/rfc2396.txt&gt; 
+  </A>
+  <DT><A name=VCARD></A>[VCARD] 
+  <DD>vCard MIME Directory Profile, F. Dawson and T. Howes, Internet RFC 2426, 
+  September 1998. <A 
+  href="ftp://ftp.isi.edu/in-notes/rfc2426.txt">&lt;ftp://ftp.isi.edu/in-notes/rfc2426.txt&gt;</A> 
+
+  <DT><A name=XML></A>[XML] 
+  <DD>Extensible Markup Language (XML) 1.0, World Wide Web Consortium, February 
+  1998. <A 
+  href="http://www.w3.org/TR/REC-xml">&lt;http://www.w3.org/TR/REC-xml&gt;</A> 
+  </DD></DL></BODY></HTML>

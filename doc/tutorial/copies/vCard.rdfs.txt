@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xml:base="http://www.w3.org/2001/vcard-rdf/3.0#">
+
+	<rdf:Property rdf:ID="FN">
+		<rdfs:label>Formatted Name</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="NICKNAME">
+		<rdfs:label>Nickname</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="BDAY">
+		<rdfs:label>Birthday</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="MAILER">
+		<rdfs:label>EMail Program</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="GEO">
+		<rdfs:label>Geographical Information</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="TITLE">
+		<rdfs:label>Position Title</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="ROLE">
+		<rdfs:label>Position Role</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="CATEGORIES">
+		<rdfs:label>Categories</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="NAME">
+		<rdfs:label>vCard Name</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="SOURCE">
+		<rdfs:label>Source</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="NOTE">
+		<rdfs:label>Notes</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="PRODID">
+		<rdfs:label>Product ID</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="REV">
+		<rdfs:label>Revision</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="SORT-STRING">
+		<rdfs:label>Sort String</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="CLASS">
+		<rdfs:label>Class</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="URL">
+		<rdfs:label>URL</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="GROUP">
+		<rdfs:label>Group vCard Properties</rdfs:label>
+	</rdf:Property>
+	<rdfs:Class rdf:ID="ADRTYPES"/>
+	<rdfs:Class rdf:ID="ADRPROPERTIES">
+		<rdfs:subClassOf rdf:resource="#ADRTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="TELTYPES"/>
+	<rdfs:Class rdf:ID="EMAILTYPES"/>
+	<rdfs:Class rdf:ID="TZTYPES"/>
+	<rdfs:Class rdf:ID="home">
+		<rdfs:label>home adress or phone number</rdfs:label>
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+		<rdfs:subClassOf rdf:resource="#ADRTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="msg">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="work">
+		<rdfs:subClassOf rdf:resource="#ADRTYPES"/>
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="fax">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="cell">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="video">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="pager">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="bbs">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="voice">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="modem">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="car">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="isdn">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="pcs">
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="internet">
+		<rdfs:label>Internet email address</rdfs:label>
+		<rdfs:subClassOf rdf:resource="#EMAILTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="x400">
+		<rdfs:label>X.400 email address</rdfs:label>
+		<rdfs:subClassOf rdf:resource="#EMAILTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="pref">
+		<rdfs:label>preferred-use address, email address, or phone number</rdfs:label>
+		<rdfs:subClassOf rdf:resource="#TELTYPES"/>
+		<rdfs:subClassOf rdf:resource="#ADRTYPES"/>
+		<rdfs:subClassOf rdf:resource="#EMAILTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="dom">
+		<rdfs:subClassOf rdf:resource="#ADRTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="intl">
+		<rdfs:subClassOf rdf:resource="#ADRTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="postal">
+		<rdfs:subClassOf rdf:resource="#ADRTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="parcel">
+		<rdfs:subClassOf rdf:resource="#ADRTYPES"/>
+	</rdfs:Class>
+	<rdfs:Class rdf:ID="text">
+		<rdfs:subClassOf rdf:resource="#TZTYPES"/>
+	</rdfs:Class>
+	<rdf:Property rdf:ID="TEL">
+		<rdfs:label>Telephone</rdfs:label>
+		<rdfs:range rdf:resource="#TELTYPES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="EMAIL">
+		<rdfs:label>Email Address</rdfs:label>
+		<rdfs:range rdf:resource="#EMAILTYPES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="ADR">
+		<rdfs:label>Address</rdfs:label>
+		<rdfs:range rdf:resource="#ADRTYPES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="LABEL">
+		<rdfs:label>Address Label</rdfs:label>
+		<rdfs:range rdf:resource="#ADRTYPES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Pobox">
+		<rdfs:label>Post Office Box</rdfs:label>
+		<rdfs:domain rdf:resource="#ADRPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Extadd">
+		<rdfs:label>Extended Address</rdfs:label>
+		<rdfs:domain rdf:resource="#ADRPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Street">
+		<rdfs:label>Street</rdfs:label>
+		<rdfs:domain rdf:resource="#ADRPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Locality">
+		<rdfs:label>Locality/Suburb</rdfs:label>
+		<rdfs:domain rdf:resource="#ADRPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Region">
+		<rdfs:label>Region/State</rdfs:label>
+		<rdfs:domain rdf:resource="#ADRPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Pcode">
+		<rdfs:label>Postal Code</rdfs:label>
+		<rdfs:domain rdf:resource="#ADRPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Country">
+		<rdfs:label>Country</rdfs:label>
+		<rdfs:domain rdf:resource="#ADRPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="TZ">
+		<rdfs:label>Timezone</rdfs:label>
+		<rdfs:range rdf:resource="#TZTYPES"/>
+	</rdf:Property>
+	<rdfs:Class rdf:ID="NPROPERTIES"/>
+	<rdf:Property rdf:ID="N">
+		<rdfs:label>Name</rdfs:label>
+		<rdfs:range rdf:resource="#NPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Family">
+		<rdfs:label>Family Name</rdfs:label>
+		<rdfs:domain rdf:resource="#NPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Given">
+		<rdfs:label>Given Name</rdfs:label>
+		<rdfs:domain rdf:resource="#NPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Other">
+		<rdfs:label>Other Names</rdfs:label>
+		<rdfs:domain rdf:resource="#NPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Prefix">
+		<rdfs:label>Prefix Name</rdfs:label>
+		<rdfs:domain rdf:resource="#NPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Suffix">
+		<rdfs:label>Suffix Name</rdfs:label>
+		<rdfs:domain rdf:resource="#NPROPERTIES"/>
+	</rdf:Property>
+	<rdfs:Class rdf:ID="ORGPROPERTIES"/>
+	<rdf:Property rdf:ID="ORG">
+		<rdfs:label>Organisation</rdfs:label>
+		<rdfs:range rdf:resource="#ORGPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Orgname">
+		<rdfs:label>Organisation Name</rdfs:label>
+		<rdfs:domain rdf:resource="#ORGPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Orgunit">
+		<rdfs:label>Organisation Unit</rdfs:label>
+		<rdfs:domain rdf:resource="#ORGPROPERTIES"/>
+	</rdf:Property>
+	<rdfs:Class rdf:ID="UIDPROPERTIES"/>
+	<rdfs:Class rdf:ID="PHOTOPROPERTIES"/>
+	<rdf:Property rdf:ID="PHOTO">
+		<rdfs:label>Photograph</rdfs:label>
+		<rdfs:range rdf:resource="#PHOTOPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="ENCODING">
+		<rdfs:domain rdf:resource="#PHOTOPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="TYPE">
+		<rdfs:domain rdf:resource="#PHOTOPROPERTIES"/>
+		<rdfs:domain rdf:resource="#UIDPROPERTIES"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="LOGO">
+		<rdfs:label>Logo Image</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="SOUND">
+		<rdfs:label>Audio Sound</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="KEY">
+		<rdfs:label>Public Key</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="AGENT">
+		<rdfs:label>Agent</rdfs:label>
+	</rdf:Property>
+	<rdf:Property rdf:ID="UID">
+		<rdfs:label>Unique ID</rdfs:label>
+		<rdfs:range rdf:resource="#UIDPROPERTIES"/>
+	</rdf:Property>
+</rdf:RDF>
