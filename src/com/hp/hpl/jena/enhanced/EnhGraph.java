@@ -1,15 +1,13 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.9 2003-04-24 10:45:45 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.10 2003-04-29 17:56:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.cache.*;
-
-import java.util.*;
 
 /**
  * <p>
