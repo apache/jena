@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.11 2003-12-02 04:58:34 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.12 2004-01-11 21:20:15 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
 import junit.framework.TestCase;
 import com.hp.hpl.jena.ontology.tidy.*;
-//import com.hp.hpl.jena.ontology.tidy.impl.*;
+import com.hp.hpl.jena.ontology.tidy.impl.*;
 import com.hp.hpl.jena.ontology.*;
 import java.util.*;
 import java.io.*;
@@ -20,6 +20,10 @@ import com.hp.hpl.jena.shared.wg.*;
 *
 */
 class SyntaxTest extends TestCase {
+	static public boolean HP = true;
+	static public Vector cnts = new Vector();
+	static public Vector files = new Vector();
+	static public Vector first = new Vector();
 
 	/**
 	 * @param arg0
@@ -30,17 +34,16 @@ class SyntaxTest extends TestCase {
 		return testURI.substring(penUltimateSl + 1, lastSl) + "-" + nm;
 	}
 	//System.err.println(lastSl + " " + penUltimateSl + " " + hash);
-	
+
 	public SyntaxTest(String nm, TestInputStreamFactory factory, String u) {
-		super(name(u,nm));
+		super(name(u, nm));
 		dm = new DocMan(factory);
 		uri = u;
 	}
 
-	
 	final DocMan dm;
 	final String uri;
-	
+
 	static private class DMEntry {
 		Model mdl;
 		final String url;
@@ -48,14 +51,15 @@ class SyntaxTest extends TestCase {
 		final Resource lvl;
 		DMEntry(String u, Resource l, InputStream i) {
 			mdl = null;
-		  url = u;
-		  lvl = l;
-		  in = i;
+			url = u;
+			lvl = l;
+			in = i;
 		}
 		void init() {
-			if (mdl==null){
+			if (mdl == null) {
 				mdl = ModelFactory.createDefaultModel();
-				mdl.read(in,url);
+				mdl.read(in, url);
+				//	System.err.println("NO!!");
 			}
 		}
 	}
@@ -64,48 +68,64 @@ class SyntaxTest extends TestCase {
 			super("");
 			fact = f;
 		}
-	  protected boolean read( Model model, String uri, boolean warn ){
-	  	DMEntry entry = (DMEntry)table.get(uri);
-	  	if (entry == null) {
-	  		model.read(fact.open(uri),uri);
-	  	} else {
-			entry.init();
-			model.add(entry.mdl);
-	  	}
-	  	return  true;
-	  }
-	  final Map table = new HashMap();
-	  final TestInputStreamFactory fact;
-	  void add(String url, DMEntry e) {
-	  	table.put(url,e);
-	  }
+		protected boolean read(Model model, String uri, boolean warn) {
+			DMEntry entry = (DMEntry) table.get(uri);
+			if (entry == null) {
+				model.read(fact.open(uri), uri);
+			} else {
+				entry.init();
+				model.add(entry.mdl);
+			}
+			return true;
+		}
+		final Map table = new HashMap();
+		final TestInputStreamFactory fact;
+		void add(String url, DMEntry e) {
+			table.put(url, e);
+		}
 	}
 
 	void add(InputStream in0, Resource r, String url) {
-		dm.add(url, new DMEntry(url,r,in0));
+		dm.add(url, new DMEntry(url, r, in0));
 	}
 
 	protected void runTest() {
 		Iterator i = dm.table.keySet().iterator();
 
 		while (i.hasNext()) {
-			String url = (String)i.next();
-			DMEntry ent = (DMEntry)dm.table.get(url);
+			String url = (String) i.next();
+			DMEntry ent = (DMEntry) dm.table.get(url);
 			Resource level = ent.lvl;
-			
-		//	if (!url.equals("http://www.w3.org/2002/03owlt/Restriction/conclusions006"))
-		//	  continue;
-			Checker chk = new Checker(ent.lvl.equals(OWLTest.Lite));
-			ent.init();
-			OntModel om = ModelFactory.createOntologyModel( 
-			new OntModelSpec(null,dm,null,ProfileRegistry.OWL_LANG)  ,
-			ent.mdl);
-		//	if (true)
-		//	  return;
-			//(InputStream) inI.next(),
-			//om.read()
-			chk.addRaw(om.getGraph());
-			
+
+			CheckerImpl chk;
+			if (HP) {
+				HPChecker hpchk = new HPChecker(ent.lvl.equals(OWLTest.Lite));
+				hpchk.getRedirect().add(
+					"http://www.w3.org/2002/03owlt",
+					"file:testing/wg");
+				hpchk.load(url);
+				chk = hpchk;
+				cnts.add(new Integer(hpchk.getTripleCount()));
+				first.add(hpchk.getRedirect().redirect(url));
+				files.add(hpchk.getLoaded());
+			} else {
+				chk = new Checker(ent.lvl.equals(OWLTest.Lite));
+				ent.init();
+				OntModel om =
+					ModelFactory.createOntologyModel(
+						new OntModelSpec(
+							null,
+							dm,
+							null,
+							ProfileRegistry.OWL_LANG),
+						ent.mdl);
+				//	if (true)
+				//	  return;
+				//(InputStream) inI.next(),
+				//om.read()
+				chk.addRaw(om.getGraph());
+			}
+
 			String rslt = chk.getSubLanguage();
 			if (!level.getURI().endsWith(rslt)) {
 				if (level.equals(OWLTest.Lite) || rslt.equals("Full")) {
@@ -124,11 +144,11 @@ class SyntaxTest extends TestCase {
 						+ " not "
 						+ level.getURI().substring(hash + 1);
 				System.err.println(msg);
-				WGTests.logResult(uri,false);
+				WGTests.logResult(uri, false);
 				fail(msg);
 			}
 		}
-		WGTests.logResult(uri,true);
+		WGTests.logResult(uri, true);
 	}
 
 }

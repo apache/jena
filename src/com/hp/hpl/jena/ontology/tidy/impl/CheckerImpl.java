@@ -65,7 +65,43 @@ public class CheckerImpl extends AbsChecker {
 	public Iterator getProblems() {
 		return new ConcatenatedIterator(getErrors(), warnings.iterator());
 	}
+	protected void endBNode(Node n) {
+    if (!useRemove)
+      return;
+		CNodeI info = getCNode(n);
+		int c = info.getCategories();
+		int f = CategorySet.flags[c];
 
+		if (f != 0) {
+			if ((f & CategorySet.STRUCT1) != 0) {
+				if (getCNode(n).asOne().incompleteOne())
+					bnProblem(
+						"Incomplete blank owl:Class or owl:AllDifferent",
+						n);
+			}
+			if ((f & CategorySet.STRUCT2) != 0) {
+				if (getCNode(n).asTwo().incompleteTwo())
+					bnProblem("Incomplete rdf:List or owl:Restriction", n);
+			}
+			if ((f & ~(CategorySet.STRUCT1 | CategorySet.STRUCT2)) != 0) {
+				if ((f & CategorySet.UNTYPED) != 0) {
+					bnProblem("Untyped node", n);
+				}
+				if ((f & CategorySet.ORPHAN) != 0) {
+					bnProblem("Orphaned rdf:List node", n);
+				}
+				if ((f & CategorySet.DLORPHAN) != 0) {
+					bnProblem(
+						"Orphaned blank owl:Class or owl:Restriction is in OWL DL",
+						n,
+						Levels.Lite);
+				}
+			}
+			info.asBlank().strip(
+				Q.member(Grammar.unnamedIndividual, CategorySet.getSet(c)));
+			// TODO more of this optimization			
+		}
+	}
 	//static public int cyCnt = 0;
 	synchronized private void snapCheck() {
 		if (nonMonotoneProblems == null) {
@@ -82,37 +118,43 @@ public class CheckerImpl extends AbsChecker {
 				CNodeI info = (CNodeI) ent.getValue();
 				int c = info.getCategories();
 				int f = CategorySet.flags[c];
+				boolean stripped = false;
 
 				if (f == 0)
 					continue;
 
-				if ((f & CategorySet.STRUCT1) != 0) {
-					if (getCNode(n).asOne().incompleteOne())
+				if (n.isBlank())
+					stripped = info.asBlank().stripped();
+
+				if (!stripped) {
+
+					if ((f & CategorySet.STRUCT1) != 0) {
+						if (getCNode(n).asOne().incompleteOne())
+							nonMonProblem(
+								"Incomplete blank owl:Class or owl:AllDifferent",
+								n);
+					}
+					if ((f & CategorySet.STRUCT2) != 0) {
+						if (getCNode(n).asTwo().incompleteTwo())
+							nonMonProblem(
+								"Incomplete rdf:List or owl:Restriction",
+								n);
+					}
+					if ((f & ~(CategorySet.STRUCT1 | CategorySet.STRUCT2))
+						== 0)
+						continue;
+					if ((f & CategorySet.UNTYPED) != 0) {
+						nonMonProblem("Untyped node", n);
+					}
+					if ((f & CategorySet.ORPHAN) != 0) {
+						nonMonProblem("Orphaned rdf:List node", n);
+					}
+					if ((f & CategorySet.DLORPHAN) != 0) {
 						nonMonProblem(
-							"Incomplete blank owl:Class or owl:AllDifferent",
-							n);
-				}
-				if ((f & CategorySet.STRUCT2) != 0) {
-					if (getCNode(n).asTwo().incompleteTwo())
-						nonMonProblem(
-							"Incomplete rdf:List or owl:Restriction",
-							n);
-				}
-				if ((f & ~(CategorySet.STRUCT1 | CategorySet.STRUCT2)) == 0)
-					continue;
-				if ((f & CategorySet.UNTYPED) != 0) {
-					nonMonProblem("Untyped node", n);
-				}
-				if ((f & CategorySet.ORPHAN) != 0) {
-					nonMonProblem(
-						"Orphaned rdf:List or owl:OntologyProperty node",
-						n);
-				}
-				if ((f & CategorySet.DLORPHAN) != 0) {
-					nonMonProblem(
-						"Orphaned blank owl:Class or owl:Restriction is in OWL DL",
-						n,
-						Levels.Lite);
+							"Orphaned blank owl:Class or owl:Restriction is in OWL DL",
+							n,
+							Levels.Lite);
+					}
 				}
 				if ((f & CategorySet.CYCLIC) != 0) {
 					if (Q
@@ -145,10 +187,8 @@ public class CheckerImpl extends AbsChecker {
 
 			}
 
-
-
 			clearCyclicState();
-			
+
 			checkDisjoint();
 
 		}
@@ -160,7 +200,7 @@ public class CheckerImpl extends AbsChecker {
 			Node b = (Node) i.next();
 			if (!b.isBlank())
 				continue;
-		
+
 			Iterator j = ((Set) disjoints.get(b)).iterator();
 			while (j.hasNext()) {
 				Node a = (Node) j.next();
@@ -209,7 +249,7 @@ public class CheckerImpl extends AbsChecker {
 			((OneTwoImpl) it.next()).setCyclicState(OneTwoImpl.Undefined);
 		}
 	}
-  private void nonMonProblem(String shortD, Node n) {
+	private void nonMonProblem(String shortD, Node n) {
 		nonMonProblem(shortD, n, Levels.DL);
 	}
 	private void nonMonProblem(String shortD, Node n, int lvl) {
@@ -227,6 +267,23 @@ public class CheckerImpl extends AbsChecker {
 			mg.add((Triple) it.next());
 
 		this.nonMonotoneProblems.add(new SyntaxProblemImpl(shortD, enh, lvl));
+	}
+	private void bnProblem(String shortD, Node n) {
+		bnProblem(shortD, n, Levels.DL);
+	}
+	private void bnProblem(String shortD, Node n, int lvl) {
+		Model m = ModelFactory.createDefaultModel();
+		Graph mg = m.getGraph();
+		setMonotoneLevel(lvl + 1);
+
+		if (lvl == Levels.Lite && !wantLite)
+			return;
+
+		EnhNode enh = ((EnhGraph) m).getNodeAs(n, RDFNode.class);
+		Iterator it = this.hasBeenChecked.find(n, null, null);
+		while (it.hasNext())
+			mg.add((Triple) it.next());
+		addProblem(new SyntaxProblemImpl(shortD, enh, lvl));
 	}
 
 	/**

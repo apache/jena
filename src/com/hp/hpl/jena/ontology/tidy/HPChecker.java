@@ -1,28 +1,28 @@
 /*
    (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Checker.java,v 1.45 2004-01-11 21:20:29 jeremy_carroll Exp $
+  $Id: HPChecker.java,v 1.1 2004-01-11 21:20:29 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
+import com.hp.hpl.jena.rdf.arp.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.tidy.impl.CheckerImpl;
-
+import com.hp.hpl.jena.datatypes.*;
+import java.util.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
+import org.xml.sax.*;
+import java.io.*;
+import java.net.URL;
 
 /**
  * 
- * This class implements the OWL Syntax Checker,
- * and is integrated with Jena Models, OntModels, and Graphs.
- * The basic mode of use, is to create a Checker
- * and to add one or more Models, OntModels or Graphs.
- * It tries to do the right thing, vis-a-vis
- * imports, without duplicating imports processing 
- * already performed by an OntModel.
+ * This class is a high performance streaming
+ * implementation of the OWL Syntax Checker.
+ * 
  * The three methods {@link #getProblems()}
  * {@link #getErrors()} and {@link #getSubLanguage()}
  * can all be used repeatedly and at any point. They
@@ -40,7 +40,27 @@ import com.hp.hpl.jena.ontology.tidy.impl.CheckerImpl;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-public class Checker extends CheckerImpl {
+public class HPChecker extends CheckerImpl {
+	
+	public String[] getLoaded() {
+		String rslt[] = new String[imported.size()];
+		int i = 0;
+		Iterator it = imported.iterator();
+		while (it.hasNext()) {
+			rslt[i] = r.redirect((String)it.next());
+			i++;
+		}
+		return rslt;
+	}
+	public int getTripleCount() {
+		int x = cnt;
+		return tripleCnt;
+	}
+	private Redirect r = new Redirect();
+	public Redirect getRedirect() {
+		return r;
+	}
+	private static String OWLIMPORTS = OWL.imports.getURI();
 
 
 /**
@@ -51,8 +71,9 @@ public class Checker extends CheckerImpl {
  *     {@link #getErrors()} and 
  *     {@link #getProblems()} will indicate any OWL DL or OWL Full construction.
  */
-	public Checker(boolean liteFlag) {
+	public HPChecker(boolean liteFlag) {
 		super(liteFlag);
+		this.setOptimizeMemory(true);
 	}
 	/**
 	 * Answer an Iterator over {@link SyntaxProblem}'s which
@@ -72,25 +93,105 @@ public class Checker extends CheckerImpl {
 	public Iterator getProblems() {
 		return super.getProblems();
 	}
-	/**
-* Adds the graph, and definitely not its imports, to the syntax check.
-	 * Many graphs can be checked together.
-	 * Does not process imports,
-	 * and does not attempt to be clever at all (e.g. 
-	no special treatment for inferred graphs, 
-	it just processes the inferred triples as normal).
-	 * @param g The graph to be added.
-	 */
-	public void addRaw(Graph g) {
-		super.addRaw(g);
-	}
+	
+	private Set imported;
 	/**
 	 * Include an ontology and its imports
 	 * in the check.
 	 * @param url Load the ontology from this URL.
 	 */
-	public void load(String url) {
-		super.load(url);
+	synchronized public void load(String url) {
+		load(url,true);
+	}
+	static	Node convert(ALiteral lit)  {
+			String dtURI = lit.getDatatypeURI();
+			if (dtURI == null)
+				return Node.createLiteral(lit.toString(), lit.getLang(), false);
+			else {
+				if (lit.isWellFormedXML()) {
+					return Node.createLiteral(lit.toString(),null, true);
+				} else {
+					RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
+        
+					return Node.createLiteral(lit.toString(),null,dt);
+				}
+			}
+		}
+    static int cnt = 0;
+		static Node convert(AResource r){
+			if (r.isAnonymous()) {
+				String id = r.getAnonymousID();
+				Node rr = (Node) r.getUserData();
+				if (rr == null) {
+					rr = Node.createAnon(new AnonId(""+cnt++));
+					r.setUserData(rr);
+				}
+				return rr;
+			} else {
+				return Node.createURI(r.getURI());
+			}
+		}
+		static Triple convert(AResource s,AResource p, AResource o){
+			return new Triple(convert(s),convert(p),convert(o));
+		}
+		static Triple convert(AResource s,AResource p, ALiteral o){
+			return new Triple(convert(s),convert(p),convert(o));
+		}
+	private StatementHandler sh = new StatementHandler(){
+
+		public void statement(AResource subj, AResource pred, AResource obj) {
+			tripleCnt++;
+			add(convert(subj,pred,obj));
+			if ( pred.getURI().equals(OWLIMPORTS))
+			   load(obj.getURI(),false);
+		}
+
+		public void statement(AResource subj, AResource pred, ALiteral lit) {
+			tripleCnt++;
+			add(convert(subj,pred,lit));
+		}
+		
+	};
+
+	private ExtendedHandler eh = new ExtendedHandler(){
+
+		public void endBNodeScope(AResource bnode) {
+		 endBNode((Node)bnode.getUserData());
+			
+		}
+
+		public boolean discardNodesWithNodeID() {
+			return false;
+		}
+
+		public void startRDF() {
+		}
+
+		public void endRDF() {
+		}
+		
+	};
+	
+	private void load(String url, boolean top) {
+			ARP arp = new ARP();
+			if (top)
+			  imported = new HashSet();
+			if (imported.contains(url))
+			  return;
+		  imported.add(url);
+		  String loadURL = r.redirect(url);
+		  arp.setStatementHandler(sh);
+		  
+		  arp.setExtendedHandler(eh);
+		  try {
+		  arp.load(new URL(loadURL).openStream(),url);
+
+		  }
+		  catch (Exception e) {
+		  	e.printStackTrace();
+		  	System.err.println("Exception: "+ e.getMessage());
+		  	System.err.println("Exception handling not yet implemented");
+		  }
 	}
 	/**
 	 * Which subLanguage is this document in.
@@ -101,56 +202,7 @@ public class Checker extends CheckerImpl {
 	}
 
 	/**
-	 * Adds the graph to the syntax check.
-	 * Only considers the base triples of an inferred graph
-	 * (if recognised as such), processes imports (guessing
-	 * that any {@link MultiUnion} has in fact been created by 
-	 * {@link com.hp.hpl.jena.ontology.OntModel}
-	 * and contains the imports closure).
-	 * @param g The Graph to be added.
-	 */
-	public void add(Graph g) {
-		while (g instanceof InfGraph)
-			g = ((InfGraph) g).getRawGraph();
-		if (g instanceof MultiUnion) {
-			// We guess that this is imports closed already.	
-			addRaw(g);
-		} else {
-			addGraphAndImports(g);
-		}
-	}
-
-/**
-* Adds the graph, and definitely its imports, to the syntax check.
-* If g is an inferred graph, the inferred triples are added (which is
-* probably not what was desired).
- * @param g The Graph to be added.
- */
-  public void addGraphAndImports(Graph g) {
-  	addRaw(importsClosure(g));
-  }
-	/**
-	 * Adds the model to the syntax check.
-	 * Only considers the base triples of an inferred model
-	 * (if recognised as such), along with any imports.
-	 * <p>
-	 * If the <code>Model</code> is an 
-	 * {@link OntModel} created with the {@link ModelFactory}
- then the base graph with its imports (which have already
- been collected) are added. Import processing is not redone
- at this stage.
- <p>
- The behaviour is identical to that of {@link #add(Graph)};
- better control,if needed, is achieved through the use of 
- {@link #addGraphAndImports} and {@link #addRaw}.
-	 * @param m The Model to be added.
-	 */
-	public void add(Model m) {
-		add(m.getGraph());
-	}
-
-	/**
-	 * If set, the syntax checker will conserve space
+	 * If set, (the default) the syntax checker will conserve space
 	 * at the expense of the quality of the
 	 * {@link SyntaxProblem#longDescription} of errors.
 	 * @param big
@@ -159,6 +211,7 @@ public class Checker extends CheckerImpl {
 		super.setOptimizeMemory(big);
 		
 	}
+	private int tripleCnt = 0;
 }
 /*
    (c) Copyright 2003 Hewlett-Packard Development Company, LP

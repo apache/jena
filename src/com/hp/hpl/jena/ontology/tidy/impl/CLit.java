@@ -99,6 +99,7 @@ class CLit extends CBuiltin {
         	if ( dt.equals( rdfXMLLiteral))
         	  return Grammar.literal;
         	eg.getCNode(Node.createURI(n.getLiteral().getDatatypeURI()));
+        	// TODO this must be a datatypeID
         	return Grammar.userTypedLiteral;
         }
         return Grammar.literal;

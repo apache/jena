@@ -1,25 +1,43 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Blank.java,v 1.2 2004-01-11 21:20:29 jeremy_carroll Exp $
+  $Id: Redirect.java,v 1.1 2004-01-11 21:20:29 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy.impl;
-import com.hp.hpl.jena.graph.*;
-
+package com.hp.hpl.jena.ontology.tidy;
+import java.util.*;
 /**
+ * This is a simple tility class for permitting local copies
+ * of websites to be used instead of remote access.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-interface Blank extends CNodeI {
-  void addObjectTriple(Triple t);
-  void strip(boolean isIndiv);
-
-boolean stripped();
+public class Redirect {
+      private Vector remoteURL = new Vector();
+      private Vector localURL = new Vector();
+      synchronized public void add(String remote, String local){
+      	remoteURL.add(remote);
+      	localURL.add(local);
+      }
+      
+      synchronized public String redirect(String rem) {
+      	for (int i=0; i<remoteURL.size();i++){
+      		if (rem.startsWith((String)remoteURL.get(i))) {
+      		   String rslt = localURL.get(i) + rem.substring(((String)remoteURL.get(i)).length());
+      		   if (rslt.endsWith(".rdf"))
+      		      return rslt;
+      		   else
+      		      return rslt+".rdf";
+      		}
+      	}
+      	return rem;
+      }
+      
+      
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
-	All rights reserved.
+  (c) Copyright 2004 Hewlett-Packard Development Company, LP
+  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions

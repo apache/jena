@@ -15,7 +15,24 @@ import java.util.*;
 
 abstract class AbsChecker implements Constants {
 	//Lookup look = new owlcompiler.SubCategorize();
+	boolean useRemove = true;
 	
+	int maxSz = 0;
+	
+	private void highTide() {
+		int sz = hasBeenChecked.size();
+		if ( sz > maxSz)
+		  maxSz = sz;
+	}
+	
+	public int getHighTide() {
+		highTide();
+		return maxSz;
+	}
+	
+	public void noremove() {
+		useRemove = false;
+	}
 	Lookup look = LookupTable.get();
 	
 	final boolean wantLite;
@@ -32,6 +49,10 @@ abstract class AbsChecker implements Constants {
 
 	final boolean add(Triple t, boolean topLevelCall) {
 		return addX(t, topLevelCall) != 0;
+	}
+	
+	final protected void add(Triple t) {
+		add(t,true);
 	}
 
 	Map nodeInfo = new HashMap();
@@ -113,7 +134,8 @@ abstract class AbsChecker implements Constants {
 			              " o:" + o0 + " -> " + o1); */
 //			key = SubCategorize.refineTriple(s0, p0, o0);
       if (key!=Failure) {
-      	if ( look.removeTriple(key)) {
+      	if ( useRemove && look.removeTriple(key)) {
+      		highTide();
       		break;
       	}
 		    look.done(key);
@@ -173,9 +195,11 @@ abstract class AbsChecker implements Constants {
 			o1 = o.getCategories();
 		}
 		if (success) {
-			if (!look.removeTriple(key)) 
-			     hasBeenChecked.add(t);
-			else {
+			if (!(useRemove && look.removeTriple(key)))  {
+				hasBeenChecked.add(t);
+			}
+			else if ( justForErrorMessages != null){
+				highTide();
 				justForErrorMessages.add(t);
 //				System.err.println("D" + dCnt++);
 //				dump(s0,p0,o0);
