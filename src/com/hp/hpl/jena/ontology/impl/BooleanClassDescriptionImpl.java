@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            28-Apr-2003
- * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Created            28-May-2003
+ * Filename           $RCSfile: BooleanClassDescriptionImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-05-28 16:20:42 $
@@ -22,28 +22,30 @@
 package com.hp.hpl.jena.ontology.impl;
 
 
+
 // Imports
 ///////////////
 import java.util.Iterator;
 
-import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 
+
 /**
  * <p>
- * Implementation of a node representing a complement class description.
+ * Shared implementation for implementations of Boolean clas expressions.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.4 2003-05-28 16:20:42 ian_dickinson Exp $
+ * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.1 2003-05-28 16:20:42 ian_dickinson Exp $
  */
-public class ComplementClassImpl 
+public abstract class BooleanClassDescriptionImpl 
     extends OntClassImpl
-    implements ComplementClass
+    implements BooleanClassDescription 
 {
     // Constants
     //////////////////////////////////
@@ -51,51 +53,23 @@ public class ComplementClassImpl
     // Static variables
     //////////////////////////////////
 
-    /**
-     * A factory for generating ComplementClass facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
-     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
-     */
-    public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
-            if (canWrap( n, eg )) {
-                return new ComplementClassImpl( n, eg );
-            }
-            else {
-                throw new ConversionException( "Cannot convert node " + n + " to ComplementClass");
-            } 
-        }
-            
-        public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an ComplementClass facet if it has rdf:type owl:Class and an owl:complementOf statement (or equivalents) 
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            Property comp = (profile == null) ? null : profile.COMPLEMENT_OF();
-
-            return (profile != null)  &&  
-                   profile.isSupported( node, eg, OntClass.class )  &&
-                   comp != null && 
-                   eg.asGraph().contains( node, comp.asNode(), null );
-        }
-    };
-
-
     // Instance variables
     //////////////////////////////////
 
     // Constructors
     //////////////////////////////////
-
-    /**
-     * <p>
-     * Construct a complement class node represented by the given node in the given graph.
-     * </p>
-     * 
-     * @param n The node that represents the resource
-     * @param g The enh graph that contains n
-     */
-    public ComplementClassImpl( Node n, EnhGraph g ) {
-        super( n, g );
-    }
+    
+	/**
+	 * <p>
+	 * Construct an boolean class description represented by the given node in the given graph.
+	 * </p>
+	 * 
+	 * @param n The node that represents the resource
+	 * @param g The enh graph that contains n
+	 */
+	public BooleanClassDescriptionImpl( Node n, EnhGraph g ) {
+		super( n, g );
+	}
 
 
     // External signature methods
@@ -108,42 +82,30 @@ public class ComplementClassImpl
 	 * in the given list. Any existing 
 	 * statements for the operator will be removed.</p>
 	 * @param operands The list of operands to this expression.
-	 * @exception Always throws UnsupportedOperationException since a complement expression takes only
-	 * a single argument.    
+	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
 	public void setOperands( OntList operands ) {
-		throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
-	}
-	
-	
-	/**
-	 * <p>Set the class that the class represented by this class expression is
-	 * a complement of. Any existing value for <code>complementOf</code> will
-	 * be replaced.</p>
-	 * @return The class that this class is a complement of.
-	 */
-	public void setOperand( Resource cls ) {
-		setPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
+		setPropertyValue( operator(), getOperatorName(), operands );
 	}
 
 	/**
 	 * <p>Add a class the operands of this boolean expression.</p>
 	 * @param cls A class that will be added to the operands of this Boolean expression
-	 * @exception Always throws UnsupportedOperationException since a complement expression takes only
-	 * a single argument.    
+	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
 	public void addOperand( Resource cls ) {
-		throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
+		addListPropertyValue( operator(), getOperatorName(), cls );
 	}
 
 	/**
 	 * <p>Add all of the classes from the given iterator to the operands of this boolean expression.</p>
 	 * @param cls A iterator over classes that will be added to the operands of this Boolean expression
-	 * @exception Always throws UnsupportedOperationException since a complement expression takes only
-	 * a single argument.    
+	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
 	public void addOperands( Iterator classes ) {
-		throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
+		while (classes.hasNext()) {
+			addOperand( (Resource) classes.next() );
+		}
 	}
 
 	/**
@@ -152,7 +114,7 @@ public class ComplementClassImpl
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
 	public OntList getOperands() {
-		throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
+		return (OntList) objectAs( operator(), getOperatorName(), OntList.class );
 	}
 
 	/**
@@ -162,7 +124,7 @@ public class ComplementClassImpl
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
 	public Iterator listOperands() {
-		return listAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
+		return getOperands().iterator();
 	}
 
 	/**
@@ -172,32 +134,26 @@ public class ComplementClassImpl
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */
 	public boolean hasOperand( Resource cls ) {
-		return hasPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
+		return getOperands().contains( cls );
 	}
     
-	/**
-	 * <p>Answer the class that the class described by this class description
-	 * is a complement of.</p>
-	 * @return The class that this class is a complement of.
-	 */
-	public OntClass getOperand() {
-		return (OntClass) objectAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
-	}
     
 	/**
 	 * <p>Answer the property that is used to construct this boolean expression, for example
 	 * {@link Profile#UNION_OF()}.</p>
-	 * @return {@link Profile#COMPLEMENT_OF()}
+	 * @return The property used to construct this Boolean class expression.
 	 */
-	public Property operator() {
-		return getProfile().COMPLEMENT_OF();
-	}
+	public abstract Property operator();
 
-
+	
 
     // Internal implementation methods
     //////////////////////////////////
 
+	/** Answer the name of the operator, so that we can give informative error messages */
+	protected abstract String getOperatorName();
+	
+	
     //==============================================================================
     // Inner class definitions
     //==============================================================================

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 22:26:38 $
+ * Last modified on   $Date: 2003-05-28 16:20:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.21 2003-05-27 22:26:38 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.22 2003-05-28 16:20:42 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -775,8 +775,9 @@ public class OntModelImpl
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
         
-        checkProfileEntry( getProfile().COMMENT(), "COMPLEMENT_OF" );
-        c.addProperty( getProfile().COMPLEMENT_OF(), cls );
+        checkProfileEntry( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
+        // if the class that this class is a complement of is not specified, use owl:nothing or daml:nothing
+        c.addProperty( getProfile().COMPLEMENT_OF(), (cls == null) ? getProfile().NOTHING() : cls );
         
         return (ComplementClass) c.as( ComplementClass.class );
     }
@@ -810,7 +811,7 @@ public class OntModelImpl
         OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
         
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
-        c.addProperty( getProfile().UNION_OF(), members );
+        c.addProperty( getProfile().UNION_OF(), (members == null) ? createList() : members );
         
         return (UnionClass) c.as( UnionClass.class );
     }
@@ -827,7 +828,7 @@ public class OntModelImpl
         OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
         
         checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
-        c.addProperty( getProfile().INTERSECTION_OF(), members );
+        c.addProperty( getProfile().INTERSECTION_OF(), (members == null) ? createList() : members );
         
         return (IntersectionClass) c.as( IntersectionClass.class );
     }

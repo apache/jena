@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: UnionClassImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:12:51 $
+ * Last modified on   $Date: 2003-05-28 16:20:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -27,7 +27,6 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.PathSet;
 import com.hp.hpl.jena.rdf.model.Property;
 
 
@@ -38,10 +37,10 @@ import com.hp.hpl.jena.rdf.model.Property;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: UnionClassImpl.java,v 1.3 2003-05-23 11:12:51 ian_dickinson Exp $
+ * @version CVS $Id: UnionClassImpl.java,v 1.4 2003-05-28 16:20:42 ian_dickinson Exp $
  */
 public class UnionClassImpl 
-    extends OntClassImpl
+    extends BooleanClassDescriptionImpl
     implements UnionClass
 {
     // Constants
@@ -100,20 +99,8 @@ public class UnionClassImpl
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>unionOf</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the union class description
-     */
-    public PathSet p_unionOf() {
-        return asPathSet( getProfile().UNION_OF(), "UNION_OF" );
-    }
-
+	public Property operator() {return getProfile().UNION_OF();}
+	public String getOperatorName() {return "UNION_OF";}
 
 
     // Internal implementation methods
