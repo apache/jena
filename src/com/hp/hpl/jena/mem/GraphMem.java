@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.39 2004-07-27 11:12:19 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.40 2004-07-27 15:32:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -107,10 +107,10 @@ public class GraphMem extends GraphMemBase implements Graph
         Node sm = tm.getSubject();
         if (sm.isConcrete())
             return new Removable( subjects.iterator( sm , tm ), predicates, objects );
-        else if (pm.isConcrete())
-            return new Removable( predicates.iterator( pm, tm ), subjects, objects );
         else if (om.isConcrete() && !om.isLiteral())
             return new Removable( objects.iterator( om, tm ), subjects, predicates );
+        else if (pm.isConcrete())
+            return new Removable( predicates.iterator( pm, tm ), subjects, objects );
         else
             return new Removable( subjects.iterator( tm ), predicates, objects );
         }
