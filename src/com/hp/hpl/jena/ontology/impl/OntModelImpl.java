@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.60 $
+ * Revision           $Revision: 1.61 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-22 22:50:20 $
+ * Last modified on   $Date: 2004-03-01 11:48:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.60 2004-02-22 22:50:20 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.61 2004-03-01 11:48:38 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2096,7 +2096,14 @@ public class OntModelImpl
      * may be an expensive operation) 
      */
     public void removeSubModel( Model model, boolean rebind ) {
-        getUnionGraph().removeGraph( model.getGraph() );
+        Graph subG = model.getGraph();
+        
+        if (subG instanceof MultiUnion) {
+            // we need to get the base graph when removing a ontmodel
+            subG = ((MultiUnion) subG).getBaseGraph();
+        }
+
+        getUnionGraph().removeGraph( subG );
         if (rebind) {
             rebind();
         }
