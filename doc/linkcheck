@@ -1,0 +1,38 @@
+#!/bin/perl
+# Link checker for relative links.
+
+# Slurp whole files
+undef $/ ;
+while(defined($file=shift @ARGV))
+{
+    ( $dir = $file ) =~ s![^/]*$!! ;
+    $dir =~ s!/$!! ;
+
+    open(FILE, $file) || die "Can't open '$file': $!\n";
+    $_ = <FILE> ;
+
+    @a = /<a[^>]*href="([^"]*)"[^>]*>/gis ; #"
+    map(&checkIt, @a) ;
+
+    @a = /<img\s+[^>]*src="([^"]*)"[^>]*>/gis ; #"
+    map(&checkIt, @a) ;
+}
+
+
+
+
+sub checkIt
+{
+    # Absolute URI?
+    # http:, ftp:, mailto:
+    return if ( m!^[^/]*:! ) ;
+
+    # Remove fragid
+    ( $link = $_ ) =~ s/\#[^\#]*$// ;
+    $link = $dir.'/'.$link if ( $dir ne '' && ($link !~ m!^/! ) ) ;
+    $link =~ s/%20/ /g ;
+
+
+    print "Missing ($file): $link", "\n" if ( ! -e $link ) ;
+
+}
