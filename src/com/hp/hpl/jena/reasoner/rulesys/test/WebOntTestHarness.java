@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.20 2003-12-04 14:07:31 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.21 2003-12-06 11:59:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-12-04 14:07:31 $
+ * @version $Revision: 1.21 $ on $Date: 2003-12-06 11:59:53 $
  */
 public class WebOntTestHarness {
 
@@ -151,6 +151,7 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest206#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest207#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest208#test",
+
         "http://www.w3.org/2002/03owlt/description-logic/Manifest209#test",
         
         "http://www.w3.org/2002/03owlt/miscellaneous/Manifest010#test",
@@ -171,8 +172,10 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest623#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest626#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest627#test",
-        "http://www.w3.org/2002/03owlt/description-logic/Manifest630#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest630#test",        
         "http://www.w3.org/2002/03owlt/description-logic/Manifest668#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest668#test",
+
     };
             
     /** The list of status values to include. If approvedOnly then only the first
