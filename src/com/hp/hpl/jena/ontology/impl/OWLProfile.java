@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-07 09:34:37 $
+ * Last modified on   $Date: 2003-04-28 15:44:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.7 2003-04-07 09:34:37 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.8 2003-04-28 15:44:10 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -245,7 +245,7 @@ public class OWLProfile
                                             }
                                         }
         },
-        {  ClassDescription.class,      new SupportsCheck() {
+        {  OntClass.class,              new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() );
@@ -283,22 +283,10 @@ public class OWLProfile
                                             }
                                         }
         },
-        {  OntClass.class,              new SupportsCheck() {
-                                            public boolean doCheck( Node n, EnhGraph g ) {
-                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() );
-                                            }
-                                        }
-        },
         {  OntList.class,               new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return n.equals( RDF.nil.asNode() )  ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), RDF.List.asNode() );
-                                            }
-                                        }
-        },
-        {  Ontology.class,              new SupportsCheck() {
-                                            public boolean doCheck( Node n, EnhGraph g ) {
-                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.Ontology.asNode() );
                                             }
                                         }
         },
@@ -308,6 +296,12 @@ public class OWLProfile
                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  Ontology.class,              new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.Ontology.asNode() );
                                             }
                                         }
         },

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-18 10:42:58 $
- *               by   $Author: jeremy_carroll $
+ * Last modified on   $Date: 2003-04-28 15:44:12 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.10 2003-04-18 10:42:58 jeremy_carroll Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.11 2003-04-28 15:44:12 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -336,7 +336,7 @@ public class OntModelImpl
      * @return An iterator over class description resources. 
      */
     public Iterator listClasses() {
-        return findByTypeAs( getProfile().getClassDescriptionTypes(), ClassDescription.class );
+        return findByTypeAs( getProfile().getClassDescriptionTypes(), OntClass.class );
     }
     
 
@@ -356,7 +356,7 @@ public class OntModelImpl
      * @see Profile#ONE_OF
      */
     public Iterator listEnumeratedClasses()  {
-        return findByDefiningPropertyAs( getProfile().ONE_OF(), ClassDescription.class );
+        return findByDefiningPropertyAs( getProfile().ONE_OF(), EnumeratedClass.class );
     }
     
 
@@ -376,7 +376,7 @@ public class OntModelImpl
      * @see Profile#UNION_OF
      */
     public Iterator listUnionClasses() {
-        return findByDefiningPropertyAs( getProfile().UNION_OF(), ClassDescription.class );
+        return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class );
     }
     
 
@@ -396,7 +396,7 @@ public class OntModelImpl
      * @see Profile#COMPLEMENT_OF
      */
     public Iterator listComplementClasses() {
-        return findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ClassDescription.class );
+        return findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ComplementClass.class );
     }
     
 
@@ -416,7 +416,7 @@ public class OntModelImpl
      * @see Profile#INTERSECTION_OF
      */
     public Iterator listIntersectionClasses() {
-        return findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), ClassDescription.class );
+        return findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), IntersectionClass.class );
     }
     
 

@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            31-Mar-2003
- * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Created            28-Apr-2003
+ * Filename           $RCSfile: EnumeratedClassImpl.java,v $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:44:10 $
+ * Last modified on   $Date: 2003-04-28 15:44:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -22,27 +22,26 @@
 package com.hp.hpl.jena.ontology.impl;
 
 
-
 // Imports
 ///////////////
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.*;
+import com.hp.hpl.jena.ontology.path.PathSet;
 
 
 /**
  * <p>
- * Implementation of the ontology abstraction representing restrictions.
+ * Implementation of a node representing an enumerated class description.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.4 2003-04-28 15:44:10 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClassImpl.java,v 1.3 2003-04-28 15:44:11 ian_dickinson Exp $
  */
-public class RestrictionImpl 
+public class EnumeratedClassImpl 
     extends OntClassImpl
-    implements Restriction 
+    implements EnumeratedClass
 {
     // Constants
     //////////////////////////////////
@@ -51,24 +50,26 @@ public class RestrictionImpl
     //////////////////////////////////
 
     /**
-     * A factory for generating Restriction facets from nodes in enhanced graphs.
+     * A factory for generating EnumeratedClass facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
-                return new RestrictionImpl( n, eg );
+                return new EnumeratedClassImpl( n, eg );
             }
             else {
-                throw new OntologyException( "Cannot convert node " + n + " to Restriction");
+                throw new OntologyException( "Cannot convert node " + n + " to EnumeratedClass");
             } 
         }
             
         public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an Restriction facet if it has rdf:type owl:Restriction or equivalent
+            // node will support being an EnumeratedClass facet if it has rdf:type owl:Class and an owl:oneOf statement (or equivalents) 
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, Restriction.class );
+            return (profile != null)  &&  
+                   profile.isSupported( node, eg, OntClass.class )  &&
+                   eg.asGraph().contains( node, profile.ONE_OF().asNode(), null );
         }
     };
 
@@ -81,13 +82,13 @@ public class RestrictionImpl
 
     /**
      * <p>
-     * Construct an ontology class node represented by the given node in the given graph.
+     * Construct an enumerated class node represented by the given node in the given graph.
      * </p>
      * 
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
-    public RestrictionImpl( Node n, EnhGraph g ) {
+    public EnumeratedClassImpl( Node n, EnhGraph g ) {
         super( n, g );
     }
 
@@ -98,105 +99,15 @@ public class RestrictionImpl
     /**
      * <p>
      * Answer an {@link PathSet accessor} for the 
-     * <code>onProperty</code>
-     * property of a restriction. The accessor
+     * <code>oneOf</code>
+     * property of an enumerated class. The accessor
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_onProperty() {
-        return asPathSet( getProfile().ON_PROPERTY() );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>allValuesFrom</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_allValuesFrom() {
-        return asPathSet( getProfile().ALL_VALUES_FROM() );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>someValuesFrom</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_someValuesFrom() {
-        return asPathSet( getProfile().SOME_VALUES_FROM() );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>hasValue</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_hasValue() {
-        return asPathSet( getProfile().HAS_VALUE() );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>cardinality</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_cardinality() {
-        return asPathSet( getProfile().CARDINALITY() );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>minCardinality</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_minCardinality() {
-        return asPathSet( getProfile().MIN_CARDINALITY() );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>maxCardinality</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_maxCardinality() {
-        return asPathSet( getProfile().MAX_CARDINALITY() );
+    public PathSet p_oneOf() {
+        return asPathSet( getProfile().ONE_OF() );
     }
     
 

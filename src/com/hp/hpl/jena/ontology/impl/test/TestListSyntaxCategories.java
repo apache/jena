@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 14:28:24 $
+ * Last modified on   $Date: 2003-04-28 15:45:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.3 2003-04-08 14:28:24 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.4 2003-04-28 15:45:05 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -196,7 +196,7 @@ public class TestListSyntaxCategories
                 return m.listClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL list named classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  10,  
@@ -206,7 +206,7 @@ public class TestListSyntaxCategories
                 return m.listNamedClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL list intersection classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
@@ -216,7 +216,7 @@ public class TestListSyntaxCategories
                 return m.listIntersectionClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL list union classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
@@ -226,7 +226,7 @@ public class TestListSyntaxCategories
                 return m.listUnionClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL list complement classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
@@ -236,7 +236,7 @@ public class TestListSyntaxCategories
                 return m.listComplementClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL list enumerated classes",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
@@ -246,7 +246,7 @@ public class TestListSyntaxCategories
                 return m.listEnumeratedClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL list restrictions",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
@@ -266,7 +266,7 @@ public class TestListSyntaxCategories
                 return m.listClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "DAML list named classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  10,  
@@ -276,7 +276,7 @@ public class TestListSyntaxCategories
                 return m.listNamedClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "DAML list intersection classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
@@ -286,7 +286,7 @@ public class TestListSyntaxCategories
                 return m.listIntersectionClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "DAML list union classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
@@ -296,7 +296,7 @@ public class TestListSyntaxCategories
                 return m.listUnionClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "DAML list complement classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
@@ -306,7 +306,7 @@ public class TestListSyntaxCategories
                 return m.listComplementClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "DAML list enumerated classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
@@ -316,7 +316,7 @@ public class TestListSyntaxCategories
                 return m.listEnumeratedClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "DAML list restrictions",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
@@ -422,7 +422,7 @@ public class TestListSyntaxCategories
                 return m.listClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL+import list named classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  12,  
@@ -433,7 +433,7 @@ public class TestListSyntaxCategories
                 return m.listNamedClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL+import list intersection classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
@@ -443,7 +443,7 @@ public class TestListSyntaxCategories
                 return m.listIntersectionClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL+import list union classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  2,  
@@ -453,7 +453,7 @@ public class TestListSyntaxCategories
                 return m.listUnionClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL+import list complement classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  3,  
@@ -463,7 +463,7 @@ public class TestListSyntaxCategories
                 return m.listComplementClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL+import list enumerated classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
@@ -473,7 +473,7 @@ public class TestListSyntaxCategories
                 return m.listEnumeratedClasses();
             }
             public boolean test( Resource r ) {
-                return r instanceof ClassDescription;
+                return r instanceof OntClass;
             }
         },
         new DoListTest( "OWL+import list restrictions",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  

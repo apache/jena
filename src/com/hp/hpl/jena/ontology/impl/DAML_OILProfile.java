@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-07 09:34:38 $
+ * Last modified on   $Date: 2003-04-28 15:44:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.6 2003-04-07 09:34:38 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.7 2003-04-28 15:44:13 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -300,7 +300,7 @@ public class DAML_OILProfile
     
     private static Object[][] s_supportsCheckTable = new Object[][] {
         // Resource (key),              check method
-        {  ClassDescription.class,      new SupportsCheck() {
+        {  OntClass.class,              new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Class.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() );
@@ -336,12 +336,6 @@ public class DAML_OILProfile
         {  ObjectProperty.class,        new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.ObjectProperty.asNode() );
-                                            }
-                                        }
-        },
-        {  OntClass.class,              new SupportsCheck() {
-                                            public boolean doCheck( Node n, EnhGraph g ) {
-                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Class.asNode() );
                                             }
                                         }
         },

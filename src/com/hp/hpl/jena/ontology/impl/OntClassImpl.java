@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:57 $
+ * Last modified on   $Date: 2003-04-28 15:44:08 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,9 +26,14 @@ package com.hp.hpl.jena.ontology.impl;
 // Imports
 ///////////////
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.PathSet;
+import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.*;
+
+import java.util.Iterator;
 
 
 /**
@@ -38,10 +43,10 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.6 2003-04-08 22:11:57 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.7 2003-04-28 15:44:08 ian_dickinson Exp $
  */
 public class OntClassImpl
-    extends ClassDescriptionImpl
+    extends OntResourceImpl
     implements OntClass 
 {
     // Constants
@@ -61,7 +66,7 @@ public class OntClassImpl
                 return new OntClassImpl( n, eg );
             }
             else {
-                throw new OntologyException( "Cannot convert node " + n + " to OntClass");
+                throw new OntologyException( "Cannot convert node " + n.toString() + " to OntClass");
             } 
         }
             
@@ -96,70 +101,188 @@ public class OntClassImpl
     // External signature methods
     //////////////////////////////////
 
-    // Boolean class expressions
-    
     /**
      * <p>
      * Answer an {@link PathSet accessor} for the 
-     * <code>intersectionOf</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the intersection class description
-     */
-    public PathSet p_intersectionOf() {
-        return asPathSet( getProfile().INTERSECTION_OF() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>unionOf</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the union class description
-     */
-    public PathSet p_unionOf() {
-        return asPathSet( getProfile().UNION_OF() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>complementOf</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the complement class description
-     */
-    public PathSet p_complementOf() {
-        return asPathSet( getProfile().COMPLEMENT_OF() );
-    }
-
-
-    // Enumerated class constructor
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>oneOf</code>
-     * property of an enumerated class. The accessor
+     * <code>subClassOf</code>
+     * property of a class description. The accessor
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_oneOf() {
-        return asPathSet( getProfile().ONE_OF() );
+    public PathSet p_subClassOf() {
+        return asPathSet( getProfile().SUB_CLASS_OF() );
     }
     
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>equivalentClass</code>
+     * property of a class description. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     */
+    public PathSet p_equivalentClass() {
+        return asPathSet( getProfile().EQUIVALENT_CLASS() );
+    }
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>disjointWith</code>
+     * property of a class description. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     */
+    public PathSet p_disjointWith() {
+        return asPathSet( getProfile().DISJOINT_WITH() );
+    }
+     
+    /**
+     * <p>
+     * Answer an iterator over the class descriptions
+     * that mention this class as one of its super-classes.
+     * </p>
+     * <p>
+     * TODO: the closed parameter is ignored at the current time
+     * </p>
+     * 
+     * @param closed If true, close the iteration over the sub-class relation: i&#046;e&#046;
+     *               return the sub-classes of the sub-classes, etc.
+     * @return an iterator over the resources representing this class's sub-classes
+     */
+    public Iterator getSubClasses( boolean closed ) {
+        // ensure we have an extended iterator of statements  _x rdfs:subClassOf this
+        Iterator i = getModel().listStatements( null, RDFS.subClassOf, this );
+        ExtendedIterator ei = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
+        
+        // alias defined?
+        if (getProfile().hasAliasFor( RDFS.subClassOf )) {
+            ei = ei.andThen( WrappedIterator.create( getModel().listStatements( null, (Property) getProfile().getAliasFor( RDFS.subClassOf ), this ) ) );
+        }
+        
+        // we only want the subjects of the statements
+        return ei.mapWith( new Map1() { public Object map1( Object x ) { return ((Statement) x).getSubject().as( OntClass.class ); } } );
+    }
 
+
+    /**
+     * <p>
+     * Answer an iterator over the class descriptions
+     * for which this class is a sub-class. Will generate the
+     * closure of the iteration over the super-class relationship.
+     * <p>
+     * 
+     * @return an iterator over the resources representing this class's super-classes.
+     */
+    public Iterator getSuperClasses() {
+        return getSuperClasses( true );
+    }
+
+
+    /**
+     * <p>
+     * Answer an iterator over the class descriptions
+     * that mention this class as one of its super-classes.  Will iterate over the
+     * closure of the sub-class relationship.
+     * </p>
+     * 
+     * @return an iterator over the resources representing this class's sub-classes.
+     */
+    public Iterator getSubClasses() {
+        return getSubClasses( true );
+    }
+
+
+    /**
+     * <p>
+     * Answer an iterator over the class descriptions
+     * for which this class is a sub-class. 
+     * </p>
+     * <p>
+     * TODO: the closed parameter is ignored at the current time
+     * </p>
+     * 
+     * @param closed If true, close the iteration over the super-class relation: i&#046;e&#046;
+     *               return the super-classes of the super-classes, etc.
+     * @return an iterator over the resources representing this class's sub-classes.
+     */
+    public Iterator getSuperClasses( boolean closed ) {
+        // ensure we have an extended iterator of statements  this rdfs:subClassOf _x
+        Iterator i = getModel().listStatements( this, RDFS.subClassOf, (RDFNode) null );
+        ExtendedIterator ei = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
+        
+        // alias defined?
+        if (getProfile().hasAliasFor( RDFS.subClassOf )) {
+            ei = ei.andThen( WrappedIterator.create( getModel().listStatements( this, (Property) getProfile().getAliasFor( RDFS.subClassOf ), (RDFNode) null ) ) );
+        }
+        
+        // we only want the subjects of the statements
+        return ei.mapWith( new Map1() { public Object map1( Object x ) { return ((Statement) x).getSubject().as( OntClass.class ); } } );
+    }
+
+
+    /**
+     * <p>
+     * Answer true if the given class is a sub-class of this class.
+     * </p>
+     * 
+     * @param cls A resource representing a class
+     * @return True if this class is a super-class of the given class <code>cls</code>.
+     */
+    public boolean hasSubClass( Resource cls ) {
+        boolean found = false;
+        Iterator i = null;
+        
+        try {
+            i = getSubClasses();
+            while (!found && i.hasNext()) {
+                found = cls.equals( i.next() );           
+            }
+        }
+        finally {
+            if (i instanceof ClosableIterator) {
+                ((ClosableIterator) i).close();
+            }
+        }
+        
+        return found;
+    }
+
+
+    /**
+     * <p>
+     * Answer true if the given class is a super-class of this class.
+     * </p>
+     * 
+     * @param cls A resource representing a class
+     * @return True if this class is a sub-class of the given class <code>cls</code>.
+     */
+    public boolean hasSuperClass( Resource cls ) {
+        boolean found = false;
+        Iterator i = null;
+        
+        try {
+            i = getSuperClasses();
+            while (!found && i.hasNext()) {
+                found = cls.equals( i.next() );           
+            }
+        }
+        finally {
+            if (i instanceof ClosableIterator) {
+                ((ClosableIterator) i).close();
+            }
+        }
+        
+        return found;
+    }
+    
+    
      
 
     // Internal implementation methods
