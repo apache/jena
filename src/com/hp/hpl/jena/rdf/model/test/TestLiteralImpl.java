@@ -1,29 +1,50 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ResourceRequiredException.java,v 1.3 2003-09-08 15:05:44 chris-dollin Exp $
+  $Id: TestLiteralImpl.java,v 1.1 2003-09-08 15:05:23 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model;
+package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import junit.framework.*;
 
 /**
-    Exception to throw when an RDFNode required to be a Resource isn't, or when a Node
-    supposed to be a resource isn't.
- 	@author kers
+	TestLiteralImpl - minimal, this is the first time an extra test has been needed above
+    the regression testing.
+
+	@author kers
 */
-public class ResourceRequiredException extends RDFException
+public class TestLiteralImpl extends ModelTestBase 
     {
-    public ResourceRequiredException( RDFNode n )
-        { super( OBJECTNOTRESOURCE, n.toString() ); }
+    public TestLiteralImpl( String name )
+        { super( name ); }
         
-    public ResourceRequiredException( Node n )
-        { super( OBJECTNOTRESOURCE, n.toString() ); }
+    public static TestSuite suite()
+        { return new TestSuite( TestLiteralImpl.class ); }
+
+    /**
+        Test that a non-literal node cannot be as'ed into a literal
+    */
+    public void testCannotAsNonLiteral()
+        { Model m = ModelFactory.createDefaultModel();  
+        try
+            { resource( m, "plumPie" ).as( Literal.class ); 
+            fail( "non-literal cannot be converted to literal" ); }
+        catch (LiteralRequiredException l)
+            { pass(); } }
+    
+    /**
+        Test that a literal node can be as'ed into a literal.
+    */    
+    public void testAsLiteral()
+        { Model m = ModelFactory.createDefaultModel();  
+        literal( m, "17" ).as( Literal.class );  }
     }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

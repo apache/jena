@@ -1,29 +1,50 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ResourceRequiredException.java,v 1.3 2003-09-08 15:05:44 chris-dollin Exp $
+  $Id: TestResourceImpl.java,v 1.1 2003-09-08 15:05:24 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model;
+package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import junit.framework.*;
 
 /**
-    Exception to throw when an RDFNode required to be a Resource isn't, or when a Node
-    supposed to be a resource isn't.
- 	@author kers
+	TestResourceImpl - fresh tests, make sure as-ing works a bit.
+
+	@author kers
 */
-public class ResourceRequiredException extends RDFException
+public class TestResourceImpl extends ModelTestBase 
     {
-    public ResourceRequiredException( RDFNode n )
-        { super( OBJECTNOTRESOURCE, n.toString() ); }
-        
-    public ResourceRequiredException( Node n )
-        { super( OBJECTNOTRESOURCE, n.toString() ); }
-    }
+	public TestResourceImpl( String name ) 
+        { super(name); }
+
+    public static TestSuite suite()
+        { return new TestSuite( TestResourceImpl.class ); }
+
+    /**
+        Test that a non-literal node can be as'ed into a resource
+    */
+    public void testCannotAsNonLiteral()
+        { Model m = ModelFactory.createDefaultModel();  
+        resource( m, "plumPie" ).as( Resource.class ); }
+    
+    /**
+        Test that a literal node cannot be as'ed into a resource.
+    */    
+    public void testAsLiteral()
+        { Model m = ModelFactory.createDefaultModel();  
+        try 
+            { literal( m, "17" ).as( Resource.class );  
+            fail( "literals cannot be resources"); }
+        catch (ResourceRequiredException e)
+            { pass(); }}
+    }    
+
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

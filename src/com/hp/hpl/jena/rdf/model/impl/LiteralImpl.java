@@ -42,7 +42,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-08-27 13:05:53 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-09-08 15:05:44 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
 //    private Node node;
@@ -54,8 +54,10 @@ public class LiteralImpl extends EnhNode implements Literal {
   
     final static public Implementation factory = new Implementation() {
         public boolean canWrap( Node n, EnhGraph eg )
-            { return true; }
-        public EnhNode wrap(Node n,EnhGraph eg) {
+            { return n.isLiteral(); }
+            
+        public EnhNode wrap(Node n, EnhGraph eg) {
+            if (!n.isLiteral()) throw new LiteralRequiredException( n );
             return new LiteralImpl(n,eg);
         }
     };          

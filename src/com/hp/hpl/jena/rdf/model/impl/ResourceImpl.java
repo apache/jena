@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.21 2003-08-27 15:06:49 ian_dickinson Exp $
+  $Id: ResourceImpl.java,v 1.22 2003-09-08 15:05:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -16,15 +16,16 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2003-08-27 15:06:49 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2003-09-08 15:05:44 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
     
     final static public Implementation factory = new Implementation() {
         public boolean canWrap( Node n, EnhGraph eg )
-            { return true; }
+            { return !n.isLiteral(); }
         public EnhNode wrap(Node n,EnhGraph eg) {
+            if (n.isLiteral()) throw new ResourceRequiredException( n );
             return new ResourceImpl(n,eg);
         }
     };

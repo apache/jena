@@ -3,10 +3,9 @@ package com.hp.hpl.jena.rdf.model.test;
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.11 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: TestReifiedStatements.java,v 1.12 2003-09-08 15:05:24 chris-dollin Exp $
 */
 
-import com.hp.hpl.jena.graph.Reifier;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 
