@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BulkUpdateHandler.java,v 1.5 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: BulkUpdateHandler.java,v 1.6 2003-09-16 13:13:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -43,7 +43,7 @@ public interface BulkUpdateHandler
     
     /**
         Add all the triples of the given graph into the graph this is handler for.
-        Optionall add g's reified triples.
+        Optionally add g's reified triples.
         @param g a Graph whose triples are to be added
         @param withReifications if true, the reified triples of g are added as well
     */

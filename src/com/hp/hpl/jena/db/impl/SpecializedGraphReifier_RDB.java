@@ -601,7 +601,7 @@ public class SpecializedGraphReifier_RDB
 		
 			StmtMask ( Triple t ) {
 				mask = HasNada;
-				Node_URI p = (Node_URI) t.getPredicate();
+				Node p = t.getPredicate();
 				if ( p != null ) {
 					if ( p.equals(RDF.Nodes.subject) ) mask = HasSubj;
 					else if ( p.equals(RDF.Nodes.predicate) ) mask = HasPred; 

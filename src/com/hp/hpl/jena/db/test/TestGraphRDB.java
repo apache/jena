@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDB.java,v 1.7 2003-08-27 12:56:20 andy_seaborne Exp $
+  $Id: TestGraphRDB.java,v 1.8 2003-09-16 13:13:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
 
+import java.sql.SQLException;
+
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
+import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -16,39 +18,33 @@ import junit.framework.*;
 /**
  	@author kers
 */
-public class TestGraphRDB extends AbstractTestGraph
+public class TestGraphRDB extends MetaTestGraph
     {
-    public TestGraphRDB(String name)
-        { super(name); }
-
+    public TestGraphRDB( String name )
+        { super( name ); }
+    
+    public TestGraphRDB( Class graphClass, String name, ReificationStyle style ) 
+        { super( graphClass, name, style ); }
+        
     public static TestSuite suite()
-        { return new TestSuite( TestGraphRDB.class ); }
+        { return MetaTestGraph.suite( TestGraphRDB.class, LocalGraphRDB.class ); }
 
-    private IDBConnection theConnection;
+    private IDBConnection con;
     private int count = 0;
+    private Graph properties;
     
     public void setUp()
-        {
-        theConnection = TestConnection.makeAndCleanTestConnection();
-        }
+        { con = TestConnection.makeAndCleanTestConnection();
+        properties = con.getDefaultModelProperties().getGraph(); }
         
-    public void tearDown()
-        {
-        try { theConnection.close(); }
-        catch (Exception e) { throw new JenaException( e ); }
-        }
+    public void tearDown() throws SQLException
+        { con.close(); }
         
-    public Graph getGraph()
-        { 
-        return new GraphRDB
-            (
-            theConnection,
-            "testGraph-" + count ++, 
-            theConnection.getDefaultModelProperties().getGraph(), 
-            GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS, 
-            true
-            );
-        }
+    public class LocalGraphRDB extends GraphRDB
+        {
+        public LocalGraphRDB( ReificationStyle style )
+            { super( con, "testGraph-" + count ++, properties, styleRDB( style ), true ); }   
+        } 
     }
 
 

@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -421,7 +421,7 @@ public class GraphRDB extends GraphBase implements Graph {
 				|| m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS) {
 				m_reifier = new DBReifier(this, m_specializedGraphReifiers, m_specializedGraphReifiers);
 			} else {
-				m_reifier = new DBReifier(this, m_specializedGraphReifiers, new ArrayList());
+				m_reifier = new DBReifier(this, m_specializedGraphReifiers, m_specializedGraphReifiers);
 			}
 		}
 		return m_reifier;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.11 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.12 2003-09-16 13:13:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -84,6 +84,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         while (it.hasNext())
             {
             Node node = (Node) it.next();
+            // System.err.println( ">> node= " + node + " & triple=" + r.getTriple( node ) );
             ours.getReifier().reifyAs( node, r.getTriple( node ) );
             }
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: MetaTestGraph.java,v 1.1 2003-09-12 15:05:17 chris-dollin Exp $
+  $Id: MetaTestGraph.java,v 1.2 2003-09-16 13:13:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -29,32 +29,54 @@ public class MetaTestGraph extends AbstractTestGraph
 		super( name );
         this.graphClass = graphClass;
         this.style = style;
-	   }
-
-    static final Method [] methods = AbstractTestGraph.class.getDeclaredMethods();
-    
-    public static TestSuite suite( Class graphClass )
+        }
+        
+    public MetaTestGraph( String name )
+        { super( name ); graphClass = null; style = null; }
+     
+    public static TestSuite suite()
+        { return suite( MetaTestGraph.class, GraphMem.class, ReificationStyle.Minimal ); }
+            
+    public static TestSuite suite( Class testClass, Class graphClass )
         {
         TestSuite result = new TestSuite();
-        result.addTest( suite( graphClass, ReificationStyle.Minimal ) ); 
-        result.addTest( suite( graphClass, ReificationStyle.Standard ) ); 
-        result.addTest( suite( graphClass, ReificationStyle.Convenient ) ); 
+        result.addTest( suite( testClass, graphClass, ReificationStyle.Minimal ) ); 
+        result.addTest( suite( testClass, graphClass, ReificationStyle.Standard ) ); 
+        result.addTest( suite( testClass, graphClass, ReificationStyle.Convenient ) ); 
         return result;    
         }
         
-    public static TestSuite suite( Class graphClass, ReificationStyle style )
+    public static TestSuite suite( Class testClass, Class graphClass, ReificationStyle style )
         {
         TestSuite result = new TestSuite();
-		addTestMethods( result, methods, graphClass, style );   
+        for (Class c = testClass; Test.class.isAssignableFrom( c ); c = c.getSuperclass())
+            {
+            Method [] methods = c.getDeclaredMethods();
+            addTestMethods( result, testClass, methods, graphClass, style );  
+            }
         return result;    
         }
         
     public static void addTestMethods
-        ( TestSuite result, Method [] methods, Class graphClass, ReificationStyle style  )
+        ( TestSuite result, Class testClass, Method [] methods, Class graphClass, ReificationStyle style  )
         {
         for (int i = 0; i < methods.length; i += 1)
             if (isPublicTestMethod( methods[i] )) 
-                result.addTest( new MetaTestGraph( graphClass, methods[i].getName(), style ) );  
+                result.addTest( makeTest( testClass, graphClass, methods[i].getName(), style ) );  
+        }
+        
+    public static TestCase makeTest( Class testClass, Class graphClass, String name, ReificationStyle style )
+        {
+        Constructor cons = getConstructor( testClass, new Class[] {Class.class, String.class, ReificationStyle.class} );
+        if (cons == null) throw new JenaException( "cannot find MetaTestGraph constructor" );
+        try { return (TestCase) cons.newInstance( new Object [] {graphClass, name, style} ); }
+        catch (Exception e) { throw new JenaException( e ); }
+        }
+        
+    public static Constructor getConstructor( Class c, Class [] args )
+        {
+        try { return c.getConstructor( args ); }
+        catch (NoSuchMethodException e) { return null; }
         }
 
     public static boolean isPublicTestMethod(Method m) {
@@ -67,17 +89,19 @@ public class MetaTestGraph extends AbstractTestGraph
         Class returnType= m.getReturnType();
         return parameters.length == 0 && name.startsWith("test") && returnType.equals(Void.TYPE);
      }
-             
-    public static TestSuite suite()
-        { return suite( GraphMem.class, ReificationStyle.Minimal ); }
         
 	public Graph getGraph() 
         {
         try
             {
-            Constructor cons = graphClass.getConstructor( new Class[] { ReificationStyle.class } );
-            return (Graph) cons.newInstance( new Object[] { style } );
+            Constructor cons = getConstructor( graphClass, new Class[] {ReificationStyle.class} );
+            if (cons != null) return (Graph) cons.newInstance( new Object[] { style } );
+            Constructor cons2 = getConstructor( graphClass, new Class [] {this.getClass(), ReificationStyle.class} );
+            if (cons2 != null) return (Graph) cons2.newInstance( new Object[] { this, style } );
+            throw new JenaException( "no suitable graph constructor found for " + graphClass );
             }
+        catch (RuntimeException e)
+            { throw e; }
         catch (Exception e)
             { throw new JenaException( e ); }
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.16 2003-09-12 15:05:17 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.17 2003-09-16 13:13:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -15,7 +15,6 @@ package com.hp.hpl.jena.graph.test;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-// import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
 
@@ -28,10 +27,7 @@ public class TestGraph extends GraphTestBase
         { 
         TestSuite result = new TestSuite();
         result.addTest( TestDefaultGraph.suite() );
-        result.addTest( MetaTestGraph.suite( GraphMem.class ) );
-//        result.addTest( TestStandardGraph.suite() );
-//        result.addTest( TestMinimalGraph.suite() );
-//        result.addTest( TestConvenientGraph.suite() );
+        result.addTest( MetaTestGraph.suite( MetaTestGraph.class, GraphMem.class ) );
         result.addTest( TestWrappedGraph.suite() );
         return result;
         }
@@ -58,29 +54,7 @@ public class TestGraph extends GraphTestBase
         public TestDefaultGraph( String name ) { super( name ); }
         public static TestSuite suite() { return new TestSuite( TestDefaultGraph.class ); }
         public Graph getGraph() { return new GraphMem(); }
-        }
-        
-//    public static class TestStandardGraph extends AbstractTestGraph
-//        {
-//        public TestStandardGraph( String name ) { super( name ); }
-//        public static TestSuite suite() { return new TestSuite( TestStandardGraph.class ); }
-//        public Graph getGraph() { return new GraphMem( ReificationStyle.Standard ); }
-//        }
-//        
-//    public static class TestMinimalGraph extends AbstractTestGraph
-//        {
-//        public TestMinimalGraph( String name ) { super( name ); }
-//        public static TestSuite suite() { return new TestSuite( TestMinimalGraph.class ); }
-//        public Graph getGraph() { return new GraphMem( ReificationStyle.Minimal ); }
-//        }
-//        
-//    public static class TestConvenientGraph extends AbstractTestGraph
-//        {
-//        public TestConvenientGraph( String name ) { super( name ); }
-//        public static TestSuite suite() { return new TestSuite( TestConvenientGraph.class ); }
-//        public Graph getGraph() { return new GraphMem( ReificationStyle.Convenient ); }
-//        }
-                
+        }       
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.34 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: AbstractTestGraph.java,v 1.35 2003-09-16 13:13:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -239,8 +239,15 @@ public abstract class AbstractTestGraph extends GraphTestBase
         
     public void testBulkAddWithReification()
         {        
+        // testBulkAddWithReification( false );
         testBulkAddWithReification( true );
-        testBulkAddWithReification( false );
+        }
+        
+    public void testBulkAddWithReificationPreamble()
+        {
+        Graph g = getGraph();
+        xSPO( g.getReifier() );
+        assertFalse( g.getReifier().getHiddenTriples().isEmpty() );    
         }
         
     public void testBulkAddWithReification( boolean withReifications )
