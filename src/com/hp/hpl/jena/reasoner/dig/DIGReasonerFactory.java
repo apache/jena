@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGReasonerFactory.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:59:10 $
+ * Last modified on   $Date: 2004-05-06 11:21:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -27,6 +27,7 @@ package com.hp.hpl.jena.reasoner.dig;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.util.ResourceUtils;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGReasonerFactory.java,v 1.3 2003-12-11 22:59:10 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGReasonerFactory.java,v 1.4 2004-05-06 11:21:17 ian_dickinson Exp $)
  */
 public class DIGReasonerFactory 
     implements ReasonerFactory
@@ -50,7 +51,13 @@ public class DIGReasonerFactory
     /** Static URI for this reasoner type */
     public static final String URI = "http://jena.hpl.hp.com/2003/DIGReasoner";
     
-
+    /** Default axioms location for the OWL variant DIG reasoner */
+    public static final String DEFAULT_OWL_AXIOMS = "file:etc/dig-owl-axioms.rdf";
+    
+    /** Default axioms location for the DAML variant DIG reasoner */
+    public static final String DEFAULT_DAML_AXIOMS = "file:etc/dig-daml-axioms.rdf";
+    
+    
     // Static variables
     //////////////////////////////////
 
@@ -91,6 +98,60 @@ public class DIGReasonerFactory
      */
     public Reasoner create( Resource configuration ) {
         return new DIGReasoner( null, this, configuration );
+    }
+    
+
+    /**
+     * <p>Answer a new DIG reasoner instance (optionally configured with the given
+     * configuration resource) that is pre-loaded with the axioms pertaining to
+     * the DAML language.</p>
+     * @param configuration A resource whose properties denote the configuration of
+     * the reasoner instance, or null to rely on the default configuration.
+     */
+    public Reasoner createWithDAMLAxioms( Resource configuration ) {
+        return create( OWL.NAMESPACE, DEFAULT_DAML_AXIOMS, configuration );
+    }
+    
+
+    /**
+     * <p>Answer a new DIG reasoner instance (optionally configured with the given
+     * configuration resource) that is pre-loaded with the axioms pertaining to
+     * the OWL language.</p>
+     * @param configuration A resource whose properties denote the configuration of
+     * the reasoner instance, or null to rely on the default configuration.
+     */
+    public Reasoner createWithOWLAxioms( Resource configuration ) {
+        return create( OWL.NAMESPACE, DEFAULT_OWL_AXIOMS, configuration );
+    }
+    
+
+    /**
+     * <p>Create a DIG reasoner with the given ontology language, axioms and configuration.</p>
+     * @param language The URI of the ontology lanuage (owl or daml), or null
+     * @param axiomsURL The URL of the axioms to load, or null
+     * @param configuration The root of the configuration options for the model, or null
+     * @return A new DIG reasoner object
+     */
+    public DIGReasoner create( Resource language, String axiomsURL, Resource configuration ) {
+        Model config = ModelFactory.createDefaultModel();
+        Resource root;
+        
+        if (configuration != null) {
+            config.add( ResourceUtils.reachableClosure( configuration ) );
+            root = (Resource) config.getRDFNode( configuration.getNode() );
+        }
+        else {
+            root = config.createResource();
+        }
+        
+        if (axiomsURL != null && !root.hasProperty( ReasonerVocabulary.EXT_REASONER_AXIOMS )) {
+            config.add( root, ReasonerVocabulary.EXT_REASONER_AXIOMS, config.getResource( axiomsURL ) );
+        }
+        if (language != null && !root.hasProperty( ReasonerVocabulary.EXT_REASONER_ONT_LANG )) {
+            config.add( root, ReasonerVocabulary.EXT_REASONER_ONT_LANG, language );
+        }
+        
+        return (DIGReasoner) create( root );
     }
     
 

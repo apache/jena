@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGInfGraph.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-23 22:36:28 $
+ * Last modified on   $Date: 2004-05-06 11:21:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGInfGraph.java,v 1.5 2004-04-23 22:36:28 ian_dickinson Exp $
+ * @version CVS $Id: DIGInfGraph.java,v 1.6 2004-05-06 11:21:17 ian_dickinson Exp $
  */
 public class DIGInfGraph
     extends BaseInfGraph
@@ -81,7 +81,7 @@ public class DIGInfGraph
         
         // create or re-use a free connector
         DIGConnection conn = DIGConnectionPool.getInstance().allocate( reasoner.getReasonerURL() );
-        m_adapter = new DIGAdapter( reasoner.getOntLangModelSpec(), fdata.getGraph(), conn );
+        m_adapter = new DIGAdapter( reasoner.getOntLangModelSpec(), fdata.getGraph(), conn, reasoner.getAxioms() );
     }
         
 

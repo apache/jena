@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryIsEquivalentTranslator.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-01 16:23:37 $
+ * Last modified on   $Date: 2004-05-06 11:21:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.5 2004-05-01 16:23:37 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.6 2004-05-06 11:21:17 ian_dickinson Exp $
  */
 public class DIGQueryIsEquivalentTranslator 
     extends DIGQueryTranslator
@@ -156,15 +156,20 @@ public class DIGQueryIsEquivalentTranslator
         Node subject = pattern.getSubject();
         Node pred = pattern.getPredicate();
         
-        boolean pass = (object.isBlank() || da.isConcept( object, premises )) &&
-                       (subject.isBlank()) || da.isConcept( subject, premises ) &&
-                       (!subject.isBlank() || !object.isBlank());
+        // ignore patterns with vars
+        boolean pass = subject.isConcrete() && object.isConcrete() && pred.isConcrete();
         
+        // at least one of subject and object is a concept
+        pass = pass && ((object.isBlank() || da.isConcept( object, premises )) &&
+                        (subject.isBlank()) || da.isConcept( subject, premises ) &&
+                        (!subject.isBlank() || !object.isBlank()));
+        
+        // appropriate predicate
         pass = pass &&
-                pred.getURI().equals( m_predicate ) ||
-                pred.getURI().equals( da.getOntLanguage().UNION_OF().getURI() ) ||
-                pred.getURI().equals( da.getOntLanguage().INTERSECTION_OF().getURI() ) ||
-                pred.getURI().equals( da.getOntLanguage().COMPLEMENT_OF().getURI() );
+                (pred.getURI().equals( m_predicate ) ||
+                 pred.getURI().equals( da.getOntLanguage().UNION_OF().getURI() ) ||
+                 pred.getURI().equals( da.getOntLanguage().INTERSECTION_OF().getURI() ) ||
+                 pred.getURI().equals( da.getOntLanguage().COMPLEMENT_OF().getURI() ));
         
         return pass;
     }

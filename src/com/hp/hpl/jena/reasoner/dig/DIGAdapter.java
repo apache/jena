@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-01 16:23:37 $
+ * Last modified on   $Date: 2004-05-06 11:21:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.10 2004-05-01 16:23:37 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.11 2004-05-06 11:21:17 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -77,6 +77,20 @@ public class DIGAdapter
     public static final List KNOWN_CONCEPTS = Arrays.asList( new Object[] {OWL.Thing.getURI(), OWL.Nothing.getURI(), 
                                                                            DAML_OIL.Thing.getURI(), DAML_OIL.Thing.getURI() } );
 
+    /** Well known integer type URI's, these we will translate into DIG integer attributes */
+    public static final List XSD_INT_TYPES = Arrays.asList( new Object[] {
+            XSDDatatype.XSDint.getURI(),
+            XSDDatatype.XSDinteger.getURI(),
+            XSDDatatype.XSDnonNegativeInteger.getURI(),
+            XSDDatatype.XSDbyte.getURI(),
+            XSDDatatype.XSDshort.getURI(),
+            XSDDatatype.XSDlong.getURI(),
+            XSDDatatype.XSDunsignedByte.getURI(),
+            XSDDatatype.XSDunsignedLong.getURI(),
+            XSDDatatype.XSDunsignedInt.getURI(),
+            XSDDatatype.XSDunsignedShort.getURI(),
+    } );
+    
     
     // Static variables
     //////////////////////////////////
@@ -146,9 +160,6 @@ public class DIGAdapter
         new DIGQueryIsConceptTranslator(),
         new DIGQueryIsRoleTranslator(),
         new DIGQueryIsIndividualTranslator(),
-        
-        // built-in knowledge
-        new DIGQueryBuiltins(),
     };
     
     
@@ -185,6 +196,9 @@ public class DIGAdapter
     /** Flag that is set to true once we have asked the remote reasoner for its list of role names */
     protected boolean m_roleNamesAsked = false;
     
+    /** Model containing axiom statements */
+    protected Model m_axioms = null;
+    
     
     // Constructors
     //////////////////////////////////
@@ -198,7 +212,7 @@ public class DIGAdapter
      * will operate
      */
     public DIGAdapter( OntModelSpec spec, Graph source ) {
-        this( spec, source, DIGConnectionPool.getInstance().allocate() );
+        this( spec, source, DIGConnectionPool.getInstance().allocate(), null );
     }
     
     
@@ -210,9 +224,12 @@ public class DIGAdapter
      * will operate
      * @param connection A pre-configured DIG connection to use to communicate with the 
      * external reasoner
+     * @param axioms A model containing axioms appropriate to the ontology language
+     * this adapter is processing. May be null.
      */
-    public DIGAdapter( OntModelSpec spec, Graph source, DIGConnection connection ) {
+    public DIGAdapter( OntModelSpec spec, Graph source, DIGConnection connection, Model axioms ) {
         m_connection = connection;
+        m_axioms = axioms;
         
         // we wrap the given graph in a suitable ontology model
         m_sourceData = ModelFactory.createOntologyModel( spec, ModelFactory.createModelForGraph( source ) );
@@ -359,6 +376,9 @@ public class DIGAdapter
         // if we have a remote iterator, prepend to the local one and drop duplicates
         ExtendedIterator i = (remote == null) ? local : remote.andThen( local );
         
+        // add the axioms if specified 
+        i = (m_axioms == null) ? i : i.andThen( m_axioms.getGraph().find( pattern.asTripleMatch() ) );
+        
         // make sure we don't have duplicates
         return UniqueExtendedIterator.create( i );
     }
@@ -391,6 +411,9 @@ public class DIGAdapter
         
         // if we have a remote iterator, prepend to the local one and drop duplicates
         ExtendedIterator i = (remote == null) ? local : remote.andThen( local );
+        
+        // add the axioms if specified 
+        i = (m_axioms == null) ? i : i.andThen( m_axioms.getGraph().find( pattern.asTripleMatch() ) );
         
         // make sure we don't have duplicates
         return UniqueExtendedIterator.create( i );
@@ -479,7 +502,8 @@ public class DIGAdapter
      * resource
      */
     public void addClassDescription( Element elem, com.hp.hpl.jena.graph.Node node, Model sourceData ) {
-        addClassDescription( elem, (Resource) sourceData.getRDFNode( node ), sourceData );
+        Model m = (sourceData == null) ? m_sourceData : sourceData;
+        addClassDescription( elem, (Resource) m.getRDFNode( node ), m );
     }
     
     
@@ -496,13 +520,13 @@ public class DIGAdapter
         // ensure we have a resource from the source data model
         Resource cls = (res.getModel() != sourceData) ? sourceData.getResource( res.getURI() ) : res;
         
-        if (cls.isAnon()) {
-            // an anon-node will be a class expression
-            translateClassDescription( elem, (OntClass) cls.as( OntClass.class ), sourceData );
+        if (!cls.isAnon() || m_conceptNames.contains( getNodeID( cls.getNode() ))) {
+            // a named class, or an already known bNode
+            translateClassIdentifier( elem, cls );
         }
         else {
-            // a named class
-            translateClassIdentifier( elem, cls );
+            // a new bNode introducing a class expression
+            translateClassDescription( elem, (OntClass) cls.as( OntClass.class ), sourceData );
         }
     }
     
@@ -516,7 +540,7 @@ public class DIGAdapter
      * @return True if <code>node</code> is a known individual
      */
     public boolean isIndividual( com.hp.hpl.jena.graph.Node node ) {
-        return getKnownIndividuals().contains( getNodeID( node ) );
+        return node.isConcrete() && getKnownIndividuals().contains( getNodeID( node ) );
     }    
 
 
@@ -529,9 +553,10 @@ public class DIGAdapter
      * @return True if <code>node</code> is a known role
      */
     public boolean isRole( com.hp.hpl.jena.graph.Node node, Model premises ) {
-        return getKnownRoles().contains( getNodeID( node ) ) ||
-            ((premises != null) &&
-                isPremisesRole( node, premises ));
+        return node.isConcrete() && 
+               (getKnownRoles().contains( getNodeID( node ) ) ||
+                ((premises != null) &&
+                isPremisesRole( node, premises )) );
     }    
 
 
@@ -544,9 +569,10 @@ public class DIGAdapter
      * @return True if <code>node</code> is a known concept
      */
     public boolean isConcept( com.hp.hpl.jena.graph.Node node, Model premises ) {
-        return getKnownConcepts().contains( getNodeID( node ) ) ||
-               ((premises != null) && isPremisesClass( node, premises )) ||
-               KNOWN_CONCEPTS.contains( getNodeID( node ) );
+        return node.isConcrete() && 
+               (getKnownConcepts().contains( getNodeID( node ) ) ||
+                ((premises != null) && isPremisesClass( node, premises )) ||
+                KNOWN_CONCEPTS.contains( getNodeID( node ) ));
     }
     
     
@@ -585,10 +611,10 @@ public class DIGAdapter
         collectRoleProperties( roles );
         
         // collect the DIG definitions at the beginning of the document
-        addNamedDefs( tell, concepts.iterator(), DIGProfile.DEFCONCEPT );
-        addNamedDefs( tell, roles.iterator(), DIGProfile.DEFROLE );
-        addNamedDefs( tell, attributes.iterator(), DIGProfile.DEFATTRIBUTE);
-        addNamedDefs( tell, individuals.iterator(), DIGProfile.DEFINDIVIDUAL );
+        addNamedDefs( tell, concepts.iterator(), DIGProfile.DEFCONCEPT, m_conceptNames );
+        addNamedDefs( tell, roles.iterator(), DIGProfile.DEFROLE, m_roleNames );
+        addNamedDefs( tell, attributes.iterator(), DIGProfile.DEFATTRIBUTE, null);
+        addNamedDefs( tell, individuals.iterator(), DIGProfile.DEFINDIVIDUAL, m_indNames );
     }
     
 
@@ -596,8 +622,12 @@ public class DIGAdapter
     protected void collectRoleProperties( Collection roles ) {
         addAll( m_sourceData.listObjectProperties(), roles );
         addAll( m_sourceData.listInverseFunctionalProperties(), roles );
-        addAll( m_sourceData.listSymmetricProperties(), roles );
         addAll( m_sourceData.listTransitiveProperties(), roles );
+        
+        // not present in DAML
+        if (m_sourceData.getProfile().SYMMETRIC_PROPERTY() != null) {
+            addAll( m_sourceData.listSymmetricProperties(), roles );
+        }
     }
 
 
@@ -606,12 +636,19 @@ public class DIGAdapter
      * @param tell The document being built
      * @param i An iterator over resources
      * @param defType The type of DIG element we want to build
+     * @param nameCollection Optional set of names of this type of entity to collect
      */
-    protected void addNamedDefs( Element tell, Iterator i, String defType ) {
+    protected void addNamedDefs( Element tell, Iterator i, String defType, Set nameCollection ) {
         while (i.hasNext()) {
             RDFNode n = (Resource) i.next();
             if (n instanceof Resource) {
+                String id = getNodeID( n.asNode() );
                 addNamedElement( tell, defType, getNodeID( n.asNode() ) );
+                
+                // a named concept, role, etc is being defined
+                if (nameCollection != null) {
+                    nameCollection.add( id );
+                }
             }
         }
     }
@@ -628,6 +665,7 @@ public class DIGAdapter
     protected Element addNamedElement( Element parent, String elemName, String uri ) {
         Element elem = addElement( parent, elemName );
         elem.setAttribute( DIGProfile.NAME, uri );
+
         return elem;
     }
     
@@ -692,9 +730,9 @@ public class DIGAdapter
         StmtIterator i = m_sourceData.listStatements( null, getOntLanguage().EQUIVALENT_CLASS(), (RDFNode) null ); 
         while (i.hasNext()) {
             Statement sc = i.nextStatement();
-            Element impliesc = addElement( tell, DIGProfile.EQUALC );
-            addClassDescription( impliesc, sc.getSubject(), m_sourceData );
-            addClassDescription( impliesc, sc.getResource(), m_sourceData );
+            Element equalc = addElement( tell, DIGProfile.EQUALC );
+            addClassDescription( equalc, sc.getSubject(), m_sourceData );
+            addClassDescription( equalc, sc.getResource(), m_sourceData );
         }
     }
     
@@ -815,9 +853,6 @@ public class DIGAdapter
             Element catom = addElement( expr, DIGProfile.CATOM );
             String digConceptName = getNodeID( c.asNode() );
             catom.setAttribute( DIGProfile.NAME, digConceptName );
-            
-            // we know that the given name is, as far as dig is concerned, a concept
-            m_conceptNames.add( digConceptName );
         }
     }
     
@@ -1181,9 +1216,11 @@ public class DIGAdapter
     
     /** Translate all of the AllDifferent axioms in the KB */
     protected void translateAllDifferentAxioms( Element expr ) {
-        for (Iterator i = m_sourceData.listAllDifferent(); i.hasNext(); ) {
-            AllDifferent ad = (AllDifferent) ((Resource) i.next()).as( AllDifferent.class );
-            translateAllDifferent( expr, ad.getDistinctMembers() );
+        if (m_sourceData.getProfile().ALL_DIFFERENT() != null) {
+            for (Iterator i = m_sourceData.listAllDifferent(); i.hasNext(); ) {
+                AllDifferent ad = (AllDifferent) ((Resource) i.next()).as( AllDifferent.class );
+                translateAllDifferent( expr, ad.getDistinctMembers() );
+            }
         }
     }
     
@@ -1208,12 +1245,9 @@ public class DIGAdapter
      */
     private boolean isIntegerType( RDFDatatype type ) {
         String typeURI = (type != null) ? type.getURI() : null;
-        
-        return  typeURI != null &&
-                (typeURI.equals( XSDDatatype.XSDint.getURI() ) ||
-                 typeURI.equals( XSDDatatype.XSDinteger.getURI() ) ||
-                 typeURI.equals( XSDDatatype.XSDnonNegativeInteger.getURI() ));
+        return  typeURI != null && XSD_INT_TYPES.contains( typeURI );
     }
+
     
     /** Answer a skolem constant, using the given name as a root */
     private String getSkolemName( String root ) {
@@ -1244,7 +1278,7 @@ public class DIGAdapter
      */
     protected Set getKnownConcepts() {
         if (!m_conceptNamesAsked) {
-            m_conceptNames.add( collectNamedTerms( DIGProfile.ALL_CONCEPT_NAMES,
+            m_conceptNames.addAll( collectNamedTerms( DIGProfile.ALL_CONCEPT_NAMES,
                                                 new String[] {DIGProfile.CONCEPT_SET, DIGProfile.SYNONYMS, DIGProfile.CATOM} ) );
             m_conceptNamesAsked = true;
         }
@@ -1259,7 +1293,7 @@ public class DIGAdapter
      */
     protected Set getKnownRoles() {
         if (!m_roleNamesAsked) {
-            m_roleNames.add( collectNamedTerms( DIGProfile.ALL_ROLE_NAMES,
+            m_roleNames.addAll( collectNamedTerms( DIGProfile.ALL_ROLE_NAMES,
                                              new String[] {DIGProfile.ROLE_SET, DIGProfile.SYNONYMS, DIGProfile.RATOM} ) );
             m_roleNamesAsked = true;
         }
@@ -1307,6 +1341,7 @@ public class DIGAdapter
             
             return 
                 ((oProf.CLASS() != null)            && premises.contains( r, RDF.type, oProf.CLASS())       ) ||
+                ((oProf.RESTRICTION() != null)      && premises.contains( r, RDF.type, oProf.RESTRICTION()) ) ||
                 ((oProf.SUB_CLASS_OF() != null)     && premises.contains( r, oProf.SUB_CLASS_OF(), any )    ) ||
                 ((oProf.SUB_CLASS_OF() != null)     && premises.contains( any, oProf.SUB_CLASS_OF(), r )    ) ||
                 ((oProf.UNION_OF() != null)         && premises.contains( r, oProf.SUB_CLASS_OF(), any )    ) ||
