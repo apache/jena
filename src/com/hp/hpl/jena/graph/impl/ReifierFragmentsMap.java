@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierFragmentsMap.java,v 1.2 2004-09-17 15:00:39 chris-dollin Exp $
+ $Id: ReifierFragmentsMap.java,v 1.3 2004-09-17 15:23:35 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -53,6 +53,14 @@ public interface ReifierFragmentsMap
          Answer a Slot which can handle this fragment, or null if it isn't a quadlet.
     */
     public abstract Slot getFragmentSelector( Triple fragment );
+
+    /**
+     * @param s
+     * @param tag
+     * @param object
+     * @param reified
+     */
+    public abstract void putAugmentedTriple( Slot s, Node tag, Node object, Triple reified );
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.5 2004-09-17 15:00:39 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.6 2004-09-17 15:23:35 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -93,6 +93,13 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         Fragments.Slot x = (Fragments.Slot) Fragments.selectors.get( p );
         if (x == null || (p.equals( RDF.Nodes.type ) && !t.getObject().equals( RDF.Nodes.Statement ) ) ) return null;
         return x;
+        }
+
+    public void putAugmentedTriple( Slot s, Node tag, Node object, Triple reified )
+        {
+        Fragments partial = new Fragments( tag, reified );
+        partial.add( s, object );
+        putFragments( tag, partial );
         }
     
     }

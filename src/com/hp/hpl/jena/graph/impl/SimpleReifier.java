@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.32 2004-09-17 15:00:39 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.33 2004-09-17 15:23:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -141,13 +141,13 @@ public class SimpleReifier implements Reifier
      */
     protected void addFragment( Fragments.Slot s, Triple fragment )
         {
-        Node tag = fragment.getSubject();
+        Node tag = fragment.getSubject(), object = fragment.getObject();
         Triple reified = tripleMap.getTriple( tag );
         if (reified == null)
             {
             Fragments partial = fragmentsMap.getFragments( tag );
             if (partial == null) fragmentsMap.putFragments( tag, partial = new Fragments( tag ) );
-            partial.add( s, fragment.getObject() );
+            partial.add( s, object );
             if (partial.isComplete())
                 {
                 tripleMap.putTriple( fragment.getSubject(), partial.asTriple() );
@@ -156,12 +156,10 @@ public class SimpleReifier implements Reifier
             }
         else
             {
-            if (s.clashesWith( fragment.getObject(), reified ))
+            if (s.clashesWith( object, reified ))
                 {
-                Fragments partial = new Fragments( tag, reified );
-                partial.add( s, fragment.getObject() );
-                fragmentsMap.putFragments( tag, partial );
                 tripleMap.removeTriple( tag, reified );
+                fragmentsMap.putAugmentedTriple( s, tag, object, reified );
                 }
             }
         }
