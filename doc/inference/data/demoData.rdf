@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY demo 'http://jena.hpl.hp.com/demo#'>
+]>
+
+<rdf:RDF xmlns:rdf="&rdf;" 
+         xmlns:rdfs="&rdfs;" 
+         xmlns:demo="&demo;"
+         xmlns="&demo;"
+         >
+
+    <demo:TransProp rdf:about="&demo;p" />
+    
+    <rdf:Description rdf:about="&demo;a">
+        <p rdf:resource="&demo;b" />
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&demo;c">
+        <p rdf:resource="&demo;a" />
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&demo;b">
+        <p rdf:resource="&demo;d" />
+    </rdf:Description>
+
+</rdf:RDF>

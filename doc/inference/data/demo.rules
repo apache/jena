@@ -1,0 +1,36 @@
+# Example rule set showing how to implement just symmetric and
+# transitive properties.
+
+
+###############################################################              
+# This version defines a specific property to be transitive
+# and symmetric.
+# It computes the property closure in forward mode - so everything
+# is caculated when the graph is prepared - whether it is needed or not
+
+[transitiveRule: (?A demo:p ?B), (?B demo:p ?C) -> (?A demo:p ?C) ]
+              
+[symmetricRule: (?Y demo:p ?X) -> (?X demo:p ?Y) ]
+
+###############################################################              
+# This approach allows a property to be declared symmetric transitive
+# and computes the property closure in forward mode - so everything
+# is caculated when the graph is prepared - whether it is needed or not
+
+#[transitiveRule: (?P rdf:type demo:TransProp) 
+#              (?A ?P ?B), (?B ?P ?C) -> (?A ?P ?C) ]
+#              
+#[symmetricRule: (?P rdf:type demo:TransProp) 
+#              (?Y ?P ?X) -> (?X ?P ?Y) ]
+                            
+###############################################################              
+# This appoach allows a property to be declared symmetric transitive
+# and uses the hybrid rules to minimise overheads and only caculate
+# the transitive closure on demand
+
+#-> tableAll().
+#
+#[rule1: (?P rdf:type demo:TransProp) ->
+#			[ (?X ?P ?Y) <- (?Y ?P ?X) ]
+#			[ (?A ?P ?C) <- (?A ?P ?B), (?B ?P ?C) ] 
+#]			

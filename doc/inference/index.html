@@ -1098,7 +1098,7 @@ class B = cardinality(P,1)</pre>
   ways leading to serious performance overheads for complex ontologies. Characterising 
   the sorts of ontologies and inference problems that are well tackled by this 
   sort of implementation and those best handled by plugging a Description Logic 
-  engine, or a saturation theorem prove,r into Jena is a topic for future work.</p>
+  engine, or a saturation theorem prover, into Jena is a topic for future work.</p>
 <p>One random hint: explicitly importing the owl.owl definitions causes much duplication 
   of rule use and a substantial slow down - the OWL axioms that the reasoner can 
   handle are already built in and don't need to be redeclared.</p>
@@ -1278,7 +1278,7 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple p
   efficient in some circumstances but has identical external semantics. This alternative 
   engine is likely to be eliminated in a future release once more tuning has been 
   done to the default RETE engine.</p>
-<h2>&nbsp; </h2>
+
 <p>[<a href="#rules">Rule index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="RULEbackward"></a>Backward chaining engine</h2>
@@ -1566,10 +1566,11 @@ Reasoner reasoner = new GenericRuleReasoner(rules);</pre>
     </td>
   </tr>
   <tr> 
-    <td width="41%">noValue(?x, ?p)</td>
+    <td width="41%">noValue(?x, ?p)<br>
+      noValue(?x ?p ?v)</td>
     <td width="59%"> 
-      <div align="left">True if there is no known value for property p on resource 
-        x in the set of statements known to the model.</div>
+      <div align="left">True if there is no known triple (x, p, *) or (x, p, v) 
+        in the model or the explicit forward deductions so far. </div>
     </td>
   </tr>
   <tr> 
@@ -1634,8 +1635,73 @@ while (list.hasNext()) {
 <pre><i>A * * =>
  - [urn:x-hp:eg/A, urn:x-hp:eg/p, urn:x-hp:eg/B]
  - [urn:x-hp:eg/A, urn:x-hp:eg/r, urn:x-hp:eg/C]</i></pre>
+<h3>Example 2</h3>
+<p>As a second example, we'll look at ways to define a property as being both 
+  symmetric and transitive. Of course, this can be done directly in OWL but there 
+  are times when one might wish to do this outside of the full OWL rule set and, 
+  in any case, it makes for a compact illustration.</p>
+<p>This time we'll put the rules in a separate file to simplify editing them and 
+  we'll use the machinery for configuring a reasoner using an RDF specification. 
+  The code then looks something like this:</p>
+<pre>// Register a namespace for use in the demo
+String demoURI = "http://jena.hpl.hp.com/demo#";
+PrintUtil.registerPrefix("demo", demoURI);
+
+// Create an (RDF) specification of a hybrid reasoner which
+// loads its data from an external file.
+Model m = ModelFactory.createDefaultModel();
+Resource configuration =  m.createResource();
+configuration.addProperty(ReasonerVocabulary.PROPruleMode, "hybrid");
+configuration.addProperty(ReasonerVocabulary.PROPruleSet,  "data/demo.rules");
+
+// Create an instance of such a reasoner
+Reasoner reasoner = GenericRuleReasonerFactory.theInstance().create(configuration);
+
+// Load test data
+Model data = ModelLoader.loadModel("file:data/demoData.rdf");
+InfModel infmodel = ModelFactory.createInfModel(reasoner, data);
+ 
+// Query for all things related to "a" by "p"
+Property p = data.getProperty(demoURI, "p");
+Resource a = data.getResource(demoURI + "a");
+StmtIterator i = infmodel.listStatements(a, p, (RDFNode)null);
+while (i.hasNext()) {
+    System.out.println(" - " + PrintUtil.print(i.nextStatement()));
+}</pre>
+<p>Here is file <code>data/demo.rules</code> which defines property <code>demo:p</code> 
+  as being both symmetric and transitive using pure forward rules:</p>
+<pre>[transitiveRule: (?A demo:p ?B), (?B demo:p ?C) -> (?A > demo:p ?C) ]
+[symmetricRule: (?Y demo:p ?X) -> (?X demo:p ?Y) ] </pre>
+<p> Running this on <a href="data/demoData.rdf">data/demoData.rdf</a> gives the 
+  correct output:</p>
+<pre>- (demo:a demo:p demo:c)
+- (demo:a demo:p demo:a)
+- (demo:a demo:p demo:d)
+- (demo:a demo:p demo:b)</pre>
+<p>However, those example rules are overly specialized. It would be better to 
+  define a new class of property to indicate symmetric-transitive properties and 
+  and make <code>demo:p</code> a member of that class. We can generalize the rules 
+  to support this:</p>
+<pre>[transitiveRule: (?P rdf:type demo:TransProp)(?A ?P ?B), (?B ?P ?C) 
+                     -> (?A ?P ?C) ]            
+[symmetricRule: (?P rdf:type demo:TransProp)(?Y ?P ?X) 
+                     -> (?X ?P ?Y) ]</pre>
+<p> These rules work but they compute the complete symmetric-transitive closure 
+  of p when the graph is first prepared. Suppose we have a lot of p values but 
+  only want to query some of them it would be better to compute the closure on 
+  demand using backward rules. We could do this using the same rules run in pure 
+  backward mode but then the rules would fire lots of times as they checked every 
+  property at query time to see if it has been declared as a <code>demo:TransProp</code>. 
+  The hybrid rule system allows us to get round this by using forward rules to 
+  recognize any <code>demo:TransProp</code> declarations once and to generate 
+  the appropriate backward rules:</p>
+<pre>-> tableAll().
+
+[rule1: (?P rdf:type demo:TransProp) ->
+			[ (?X ?P ?Y) <- (?Y ?P ?X) ]
+			[ (?A ?P ?C) <- (?A ?P ?B), (?B ?P ?C) ] 
+] </pre>
 <p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
-<h2></h2>
 <h2><a name="RULEnotes"></a>Notes</h2>
 <p>One final aspect of the general rule engine to mention is that of validation 
   rules. We described earlier how reasoners can implement a <code>validate</code> 
@@ -1734,7 +1800,7 @@ while (list.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.13 2003-09-25 11:23:40 der Exp $</i>
+  Last modification: $Id: index.html,v 1.14 2003-09-29 20:49:11 der Exp $</i>
 </p>
 </body>
 </html>
