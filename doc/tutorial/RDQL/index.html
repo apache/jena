@@ -37,8 +37,9 @@
 <h1 class="title">Jena Tutorial</h1>
 
 <h1 class="title">A Programmer's Introduction to RDQL</h1>
-<p>Andy Seaborne &lt;<a href="mailto:andy_seaborne@hp.com">andy_seaborne@hp.com</a>&gt;</p>
-<p>April 2002</p>
+<p>Andy Seaborne &lt;<a href="mailto:andy.seaborne@hp.com">andy.seaborne@hp.com</a>&gt;</p>
+<p>April 2002<br>
+Updated February 2004</p>
 
 <h1><a name="RDQL Introduction">RDQL Introduction</a></h1>
 <p>RDQL is a query language for RDF in Jena models.&nbsp; The idea is to provide a data-oriented query model so that
@@ -279,6 +280,22 @@ yields one match for Rebecca Smith.&nbsp; Nothing about the Jones's.</p>
 
 <p>The database contains no information about the Jones: there are no <font face="monospace"> info:age</font> properties on
 these vCards.</p>
+
+<p>Filters expressions can also include regular expressions (provided by the
+<a href="http://jakarta.apache.org/oro/">Jakarta ORO</a> package):</p>
+
+<pre class="box">SELECT ?person
+WHERE  (?person vCard:FN ?fullName)
+AND    ?fullName =~ /Smith/i
+USING  vCard FOR &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+</pre>
+
+
+<p>which searches for people with a formatted name containing &quot;smith&quot; (case 
+insentive).&nbsp; It would be less efficient than looking for the 
+vCard:familyName property with value &quot;Smith&quot;. The &quot;does not match&quot; operator is 
+&quot;!~&quot;.</p>
+
 
 <h2><a name="Mixing it">Mixing it</a></h2>
 

@@ -35,6 +35,12 @@ AND ! ( ?x eq rdf:type &amp;&amp; ?y eq rdf:Bag)
 FROM&nbsp;&nbsp; &lt;http://somewhere/model1.rdf&gt;
 WHERE&nbsp; (?a, &lt;http://somewhere/pred1&gt;, ?b)
 AND&nbsp;&nbsp;&nbsp; ?b &lt; 5</pre>
+<p>Query example 6: regular expression matching</p>
+<pre class="box">SELECT ?a, ?v
+FROM&nbsp;&nbsp; &lt;http://somewhere/model1.rdf&gt;
+WHERE&nbsp; (?a, dc:title ?v)
+AND&nbsp;&nbsp;&nbsp; ?v =~ /Blake/
+USING  dc FOR &lt;http://purl.org/dc/elements/1.1/&gt;</pre>
   <h1>Usage</h1>
   <p>There are two ways to use RDQL : from the command line and in Java programs.</p>
   <h2><b>Command Line</b></h2>
