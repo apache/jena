@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.11 2003-08-27 13:07:30 andy_seaborne Exp $
+  $Id: PrefixMappingImpl.java,v 1.12 2003-11-04 09:54:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -40,6 +40,13 @@ public class PrefixMappingImpl implements PrefixMapping
         if (!prefix.equals( "" )) removeExisting( uri );
         checkProper( uri );
         map.put( prefix, uri );
+        return this;
+        }
+    
+    public PrefixMapping removeNsPrefix( String prefix )
+        {
+        checkUnlocked();
+        map.remove( prefix );
         return this;
         }
         

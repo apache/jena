@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.24 2003-09-29 14:54:01 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.25 2003-11-04 09:54:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -226,6 +226,74 @@ public class TestModelSpec extends ModelTestBase
         OntModelSpec ms = new OntModelSpec( spec );
         assertEquals( lang, ms.getLanguage() );
         assertEquals( factory.getURI(), ms.getReasonerFactory().getURI() );
+        assertIsoModels( modelMaker, ms.getModelMaker().getDescription() );
+        assertSame( odm, ms.getDocumentManager() );
+        }
+    
+    public void testCreateOntSpecWithoutMaker()
+        {
+        OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
+        Model spec = ModelFactory.createDefaultModel();
+        String lang = oms.getLanguage();
+        Resource me = resource();
+        Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
+        spec.add( me, JMS.ontLanguage, lang );
+        Resource r = spec.createResource();
+        spec.add( r, JMS.reasoner, factory );
+        spec.add( me, JMS.reasonsWith, r );
+        OntDocumentManager odm = oms.getDocumentManager();
+        Resource dm = ModelSpecImpl.createValue( odm );
+        spec.add( me, JMS.docManager, dm );
+    /* */
+        OntModelSpec ms = new OntModelSpec( spec );
+        assertEquals( lang, ms.getLanguage() );
+        assertEquals( factory.getURI(), ms.getReasonerFactory().getURI() );
+        assertSame( odm, ms.getDocumentManager() );
+        }
+    
+    public void testCreateOntSpecWithoutDocmanager()
+        {
+        OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
+        Model spec = ModelFactory.createDefaultModel();
+        String lang = oms.getLanguage();
+        Resource me = resource();
+        Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
+        spec.add( me, JMS.ontLanguage, lang );
+        Resource r = spec.createResource();
+        spec.add( r, JMS.reasoner, factory );
+        spec.add( me, JMS.reasonsWith, r );
+        Resource m = spec.createResource();
+        Model modelMaker = ModelFactory.createDefaultModel();
+        modelMaker.add( m, RDF.type, JMS.MemMakerSpec );
+        modelMaker.add( m, JMS.reificationMode, JMS.rsStandard );
+        spec.add( me, JMS.importMaker, m );
+        spec.add( modelMaker );
+    /* */
+        OntModelSpec ms = new OntModelSpec( spec );
+        assertEquals( lang, ms.getLanguage() );
+        assertEquals( factory.getURI(), ms.getReasonerFactory().getURI() );
+        assertIsoModels( modelMaker, ms.getModelMaker().getDescription() );
+        }
+    
+    public void testCreateOntSpecWithoutReasoner()
+        {
+        OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
+        Model spec = ModelFactory.createDefaultModel();
+        String lang = oms.getLanguage();
+        Resource me = resource();
+        spec.add( me, JMS.ontLanguage, lang );
+        Resource m = spec.createResource();
+        Model modelMaker = ModelFactory.createDefaultModel();
+        modelMaker.add( m, RDF.type, JMS.MemMakerSpec );
+        modelMaker.add( m, JMS.reificationMode, JMS.rsStandard );
+        spec.add( me, JMS.importMaker, m );
+        spec.add( modelMaker );
+        OntDocumentManager odm = oms.getDocumentManager();
+        Resource dm = ModelSpecImpl.createValue( odm );
+        spec.add( me, JMS.docManager, dm );
+    /* */
+        OntModelSpec ms = new OntModelSpec( spec );
+        assertEquals( lang, ms.getLanguage() );
         assertIsoModels( modelMaker, ms.getModelMaker().getDescription() );
         assertSame( odm, ms.getDocumentManager() );
         }

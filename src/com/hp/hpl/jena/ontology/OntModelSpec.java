@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-11 14:09:55 $
+ * Last modified on   $Date: 2003-11-04 09:54:20 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.22 2003-09-11 14:09:55 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.23 2003-11-04 09:54:20 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -191,10 +191,11 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @param root the root of the sub-graph to use for the specification
     */    
     public OntModelSpec( Resource root, Model description )  { 
-        this( createMaker( description ), getDocumentManager( description, root ),
+        this( getImportMaker( description, root ), getDocumentManager( description, root ),
             getReasonerFactory( description, root ), getLanguage( description, root )  );
+        
     }
-    
+
     // External signature methods
     //////////////////////////////////
 
@@ -363,11 +364,27 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     }
     
     /**
-        Answer the URI string of the ontology language in this description
+    	Answer the ModelMaker to be used to construct models that are used for
+        the imports of an OntModel. The ModelMaker is specified by the properties of
+        the resource which is the object of the root's JMS.importMaker property.
+        If no importMaker is specified, a MemModelMaker is constructed and used.
+        
+     	@param description the description model for [at least] this OntModel
+     	@param root the root of the description for the OntModel
+     	@return a ModelMaker fitting the importMaker description
+     */
+    public static ModelMaker getImportMaker( Model description, Resource root ) {
+        Statement mStatement = description.getProperty( root, JMS.importMaker );
+        return mStatement == null
+            ? ModelFactory.createMemModelMaker()
+            : createMaker( mStatement.getResource(), description ); 
+    }
+        
+    /**
+        Answer the URI string of the ontology language in this description.
      
         @param description the Model from which to extract the description
         @return the language string
-        @exception NullPointerException if there's no ontLanguage property
         @exception something if the value isn't a URI resource
     */
     public static String getLanguage( Model description, Resource root ) {
@@ -406,6 +423,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     */
     public static ReasonerFactory getReasonerFactory( Model description, Resource root ) {
         Statement factStatement = description.getProperty( root, JMS.reasonsWith );
+        if (factStatement == null) return null;
         Statement reStatement = description.getProperty( factStatement.getResource(), JMS.reasoner );
         String factoryURI = reStatement.getResource().getURI();
         return ReasonerRegistry.theRegistry().getFactory( factoryURI );

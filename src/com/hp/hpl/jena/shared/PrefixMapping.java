@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.16 2003-09-23 13:03:00 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.17 2003-11-04 09:54:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -38,6 +38,18 @@ public interface PrefixMapping
         @return this PrefixMapping
     */
     PrefixMapping setNsPrefix( String prefix, String uri );
+    
+    /**
+        Remove any existing maplet with the given prefix name and answer this
+        mapping. If the prefix is the empty string, then this removes the default
+        namespace. If the prefix is not a legal prefix string, or is not present in
+        the mapping, nothing happens.
+        
+     	@param prefix the prefix string to remove
+     	@return this PrefixMapping
+     */
+    
+    PrefixMapping removeNsPrefix( String prefix );
     
     /**
         Copies the prefixes from other into this. Any existing binding of the

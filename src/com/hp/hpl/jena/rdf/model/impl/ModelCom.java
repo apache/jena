@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.80 2003-10-22 09:33:46 ian_dickinson Exp $
+    $Id: ModelCom.java,v 1.81 2003-11-04 09:54:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,7 +29,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.80 $' Date='$Date: 2003-10-22 09:33:46 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.81 $' Date='$Date: 2003-11-04 09:54:40 $'
  */
 
 public class ModelCom 
@@ -812,6 +812,12 @@ implements Model, PrefixMapping, ModelLock
         return this;
         }
         
+    public PrefixMapping removeNsPrefix( String prefix )
+        {
+        getPrefixMapping().removeNsPrefix( prefix );
+        return this;
+        }
+    
     public PrefixMapping setNsPrefixes( PrefixMapping pm )
         { 
         getPrefixMapping().setNsPrefixes( pm );
