@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.30 2003-09-09 14:47:49 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.31 2003-12-04 11:10:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -32,7 +32,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2003-09-09 14:47:49 $
+ * @version $Revision: 1.31 $ on $Date: 2003-12-04 11:10:58 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -211,6 +211,7 @@ public class TestTypedLiterals extends TestCase {
         
         // Minimal check on unsigned normal types
         checkLegalLiteral("12345", XSDDatatype.XSDunsignedLong, Long.class, new Long(12345));
+        checkLegalLiteral("+12345", XSDDatatype.XSDunsignedLong, Long.class, new Long(12345));
         checkLegalLiteral("9223372036854775808", XSDDatatype.XSDunsignedLong, BigInteger.class, new BigInteger("9223372036854775808"));
         checkIllegalLiteral("-12345", XSDDatatype.XSDunsignedLong);
         
@@ -340,12 +341,12 @@ public class TestTypedLiterals extends TestCase {
 
         // Check the numeric restriction
         RDFDatatype over12Type = tm.getSafeTypeByName(uri + "#over12");
-        checkLegalLiteral("15", over12Type, Integer.class, new Integer(15));
+        checkLegalLiteral("15", over12Type, Long.class, new Long(15));
         checkIllegalLiteral("12", over12Type);
         
         // Check the union type
         RDFDatatype clothingsize = tm.getSafeTypeByName(uri + "#clothingsize");
-        checkLegalLiteral("42", clothingsize, Integer.class, new Integer(42));
+        checkLegalLiteral("42", clothingsize, Long.class, new Long(42));
         checkLegalLiteral("short", clothingsize, String.class, "short");
         
     }

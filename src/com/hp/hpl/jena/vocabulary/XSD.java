@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSD.java,v 1.5 2003-08-27 13:08:11 andy_seaborne Exp $
+ * $Id: XSD.java,v 1.6 2003-12-04 11:09:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
  * the XSD primitive datatypes which are known to Jena. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:08:11 $
+ * @version $Revision: 1.6 $ on $Date: 2003-12-04 11:09:42 $
  */
 public class XSD {
     /** Resource URI for xsd:float */
@@ -180,13 +180,10 @@ public class XSD {
         QName = ResourceFactory.createResource(XSDDatatype.XSDQName.getURI());
         language = ResourceFactory.createResource(XSDDatatype.XSDlanguage.getURI());
         NMTOKEN = ResourceFactory.createResource(XSDDatatype.XSDNMTOKEN.getURI());
-        ENTITIES = ResourceFactory.createResource(XSDDatatype.XSDENTITIES.getURI());
-        NMTOKENS = ResourceFactory.createResource(XSDDatatype.XSDNMTOKENS.getURI());
         ENTITY = ResourceFactory.createResource(XSDDatatype.XSDENTITY.getURI());
         ID = ResourceFactory.createResource(XSDDatatype.XSDID.getURI());
         NCName = ResourceFactory.createResource(XSDDatatype.XSDNCName.getURI());
         IDREF = ResourceFactory.createResource(XSDDatatype.XSDIDREF.getURI());
-        IDREFS = ResourceFactory.createResource(XSDDatatype.XSDIDREFS.getURI());
         NOTATION = ResourceFactory.createResource(XSDDatatype.XSDNOTATION.getURI());
         hexBinary = ResourceFactory.createResource(XSDDatatype.XSDhexBinary.getURI());
         base64Binary = ResourceFactory.createResource(XSDDatatype.XSDbase64Binary.getURI());
@@ -199,6 +196,9 @@ public class XSD {
         gYear = ResourceFactory.createResource(XSDDatatype.XSDgYear.getURI());
         gYearMonth = ResourceFactory.createResource(XSDDatatype.XSDgYearMonth.getURI());
         gMonthDay = ResourceFactory.createResource(XSDDatatype.XSDgMonthDay.getURI());
+//        ENTITIES = ResourceFactory.createResource(XSDDatatype.XSDENTITIES.getURI());
+//        NMTOKENS = ResourceFactory.createResource(XSDDatatype.XSDNMTOKENS.getURI());
+//        IDREFS = ResourceFactory.createResource(XSDDatatype.XSDIDREFS.getURI());
     }
 }
 
