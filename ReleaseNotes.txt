@@ -40,8 +40,18 @@ Jena 2.1 - Main changes from Jena 2.0
       Now requires Xerces 2.6.0 or better. The included jars are Xerces 2.6.1.
 
   Ontology API
-      Bug fixes and improvements based on jena-dev feedback.
-
+      General bug fixes and improvements based on jena-dev feedback.
+      
+      The default document manager policy (etc/ont-policy.rdf) no longer
+      re-directs imports of owl.owl and daml+oil.daml to a cached copy in
+      the 'vocabulary' directory. This is becuase the vocabulary directory
+      is not included in jena.jar, and this default re-direction was causing
+      problems in some applet or web service environments. The Jena 2.0 
+      behaviour can be restored by replacing ont-policy.rdf with ont-policy-test.rdf.
+      
+      Instance detection has been improved, with the side-effect that DAML
+      ontologies using the DAML micro rule reasoner may now report that
+      instances have rdf:type daml:Thing in addition to other types.
       	 
 Jena 2.1 changes from Jena 2.1-dev-3
   Minor bug fixes in OWL Syntax Checker.
