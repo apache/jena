@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: InvalidListException.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.1 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:38 $
+ * Last modified on   $Date: 2003-06-16 13:40:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -19,7 +19,9 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.shared;
+
+import com.hp.hpl.jena.ontology.OntologyException;
 
 
 // Imports
@@ -34,7 +36,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release ($Id: InvalidListException.java,v 1.2 2003-03-12 17:16:38 ian_dickinson Exp $)
+ * @version Release ($Id: InvalidListException.java,v 1.1 2003-06-16 13:40:12 ian_dickinson Exp $)
  */
 public class InvalidListException
     extends OntologyException

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClass.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -27,6 +27,7 @@ package com.hp.hpl.jena.ontology;
 ///////////////
 import java.util.Iterator;
 
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 
@@ -37,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClass.java,v 1.7 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClass.java,v 1.8 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public interface EnumeratedClass 
     extends OntClass
@@ -58,7 +59,7 @@ public interface EnumeratedClass
      * @param A list of individuals that defines the class extension for this class
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
-    public void setOneOf( OntList enum );
+    public void setOneOf( RDFList enum );
 
     /**
      * <p>Add an individual to the enumeration that defines the class extension of this class.</p>
@@ -80,7 +81,7 @@ public interface EnumeratedClass
      * @return A list of individuals that is the class extension
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
-    public OntList getOneOf();
+    public RDFList getOneOf();
 
     /**
      * <p>Answer an iterator over all of the individuals that are declared to be the class extension for

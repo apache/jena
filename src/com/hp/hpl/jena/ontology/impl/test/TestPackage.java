@@ -1,10 +1,11 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.11 2003-06-06 11:07:02 ian_dickinson Exp $
+  $Id: TestPackage.java,v 1.12 2003-06-16 13:40:14 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.ontology.impl.test;
+
 
 import junit.framework.*;
 
@@ -25,7 +26,6 @@ public class TestPackage extends TestSuite {
         addTest( "TestResource", TestResource.suite() );
         addTest( "TestAxioms", TestAxioms.suite() );
         addTest( "TestClassExpression", TestClassExpression.suite() );
-        addTest( "TestList", TestList.suite() );
         addTest( "TestOntDocumentManager", TestOntDocumentManager.suite() );
         addTest( "TestOntology", TestOntology.suite() );
         addTest( "TestProperty", TestProperty.suite() );

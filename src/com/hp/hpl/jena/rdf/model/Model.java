@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.20 2003-05-23 15:02:59 chris-dollin Exp $
+  $Id: Model.java,v 1.21 2003-06-16 13:40:13 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.20 $Date: 2003/05/20 11:20:45 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.21 $Date: 2003/05/23 15:02:59 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -238,6 +238,30 @@ public interface Model
 	public Statement createStatement(Resource s, Property p, RDFNode o)
 		throws RDFException;
 
+    /**
+     * <p>Answer a new empty list. This is equivalent to a list consisting only 
+     * of <code>rdf:nil</code>.</p>
+     * @return An RDF-encoded list of no elements
+     */
+    public RDFList createList();
+    
+    
+    /**
+     * <p>Answer a new list containing the resources from the given iterator, in order.</p>
+     * @param members An iterator, each value of which is expected to be an RDFNode
+     * @return An RDF-encoded list of the elements of the iterator
+     */
+    public RDFList createList( Iterator members );
+    
+    
+    /**
+     * <p>Answer a new list containing the nodes from the given array, in order</p>
+     * @param members An array of RDF nodes that will be the members of the list
+     * @return An RDF-encoded list 
+     */
+    public RDFList createList( RDFNode[] members );
+    
+    
 	/** Add a statement to this model.
 	 * @return This model.
 	 * @param s The statement to be added.
@@ -837,5 +861,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.20 2003-05-23 15:02:59 chris-dollin Exp $
+ * $Id: Model.java,v 1.21 2003-06-16 13:40:13 ian_dickinson Exp $
  */

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:15 $
+ * Last modified on   $Date: 2003-06-16 13:39:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -19,7 +19,7 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.impl.test;
+package com.hp.hpl.jena.rdf.model.test;
 
 
 // Imports
@@ -29,20 +29,20 @@ import java.util.Arrays;
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 
 
 /**
  * <p>
- * A collection of unit tests for the standard implementation of {@link
- * OntList}.
+ * A collection of unit tests for the standard implementation of 
+ * {@link RDFList}.
  * </p>
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.11 2003-06-08 18:53:15 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.1 2003-06-16 13:39:59 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase
@@ -113,21 +113,21 @@ public class TestList
     protected static class ListTest extends TestCase {
         public ListTest( String n ) {super(n);}
         
-        protected  void checkValid( String testName, OntList l, boolean validExpected ) {
+        protected  void checkValid( String testName, RDFList l, boolean validExpected ) {
             l.setStrict( true );
             boolean valid = l.isValid();
             // for debugging ... String s = l.getValidityErrorMessage();
             assertEquals( "Validity test " + testName + " returned wrong isValid() result", validExpected, valid );
         }
 
-        protected OntList getListRoot( Model m ) {
+        protected RDFList getListRoot( Model m ) {
             Resource root = m.getResource( NS + "root" );
             assertNotNull( "Root resource should not be null", root );
         
             Resource listHead = root.getProperty( m.getProperty( NS + "p" ) ).getResource();
         
-            OntList l = (OntList) listHead.as( OntList.class );
-            assertNotNull( "as(OntList) should not return null for root", l );
+            RDFList l = (RDFList) listHead.as( RDFList.class );
+            assertNotNull( "as(RDFList) should not return null for root", l );
         
             return l;
         }
@@ -142,10 +142,10 @@ public class TestList
         }
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list" + i + ".rdf" );
         
-            OntList l0 = getListRoot( m );
+            RDFList l0 = getListRoot( m );
             assertEquals( "List size should be " + i, i, l0.size() );
         }
 
@@ -158,7 +158,7 @@ public class TestList
         }
         
         public void runTest() {
-            OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
@@ -166,22 +166,19 @@ public class TestList
             // a list of the nil object, but not typed
             Resource nil = RDF.nil;
             m.add( root, p, nil );
-            OntList l0 = getListRoot( m );
+            RDFList l0 = getListRoot( m );
             checkValid( "valid1", l0, true );
             
             // add another node to the head of the list
             Resource badList = m.createResource();
             m.getProperty( root, p ).remove();
             m.add( root, p, badList );
+            m.add( badList, RDF.type, RDF.List );
             
-            // need to turn off strict checking otherwise the as() fails
-            m.setStrictMode( false );
-            
-            OntList l1 = getListRoot( m );
+            RDFList l1 = getListRoot( m );
             checkValid( "valid2", l1, false );
             
-            m.add( badList, RDF.type, RDF.List );
-            checkValid( "valid3", l1, false );
+            //checkValid( "valid3", l1, false );
             
             m.add( badList, RDF.first, "fred" );
             checkValid( "valid4", l1, false );
@@ -197,10 +194,10 @@ public class TestList
         public HeadTest() {super( "HeadTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
         
-            OntList l0 = getListRoot( m );
+            RDFList l0 = getListRoot( m );
             
             String[] names = {"a", "b", "c", "d", "e"};
             for (int i = 0;  i < names.length;  i++) {
@@ -220,10 +217,10 @@ public class TestList
         }
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list" + i + ".rdf" );
         
-            OntList l0 = getListRoot( m );
+            RDFList l0 = getListRoot( m );
             
             // get the tail n times, should be nil at the end
             for (int j = 0;  j < i;  j++) {
@@ -239,7 +236,7 @@ public class TestList
         public SetHeadTest() {super( "SetHeadTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
@@ -254,7 +251,7 @@ public class TestList
             m.add( list, RDF.rest, nil );
             
             m.add( root, p, list );
-            OntList l1 = getListRoot( m );
+            RDFList l1 = getListRoot( m );
             checkValid( "sethead1", l1, true );
             
             assertEquals( "List head should be 'fred'", "fred", ((Literal) l1.getHead()).getString() );
@@ -271,7 +268,7 @@ public class TestList
         public SetTailTest() {super( "SetTailTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
@@ -285,7 +282,7 @@ public class TestList
             m.add( list0, RDF.rest, nil );
             
             m.add( root, p, list0 );
-            OntList l1 = getListRoot( m );
+            RDFList l1 = getListRoot( m );
             checkValid( "settail1", l1, true );
             
             Resource list1 = m.createResource();
@@ -293,8 +290,8 @@ public class TestList
             m.add( list1, RDF.first, "george" );
             m.add( list1, RDF.rest, nil );
             
-            OntList l2 = (OntList) list1.as( OntList.class );
-            assertNotNull( "as(OntList) should not return null for root", l2 );
+            RDFList l2 = (RDFList) list1.as( RDFList.class );
+            assertNotNull( "as(RDFList) should not return null for root", l2 );
             checkValid( "settail2", l2, true );
             
             assertEquals( "l1 should have length 1", 1, l1.size() );
@@ -317,13 +314,13 @@ public class TestList
         public ConsTest() {super( "ConsTest" );}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
             
             Resource nil = m.getResource( RDF.nil.getURI() );
-            OntList list = (OntList) nil.as( OntList.class );
+            RDFList list = (RDFList) nil.as( RDFList.class );
             
             Resource[] toAdd = new Resource[] {
                                     m.createResource( NS + "e" ),
@@ -335,7 +332,7 @@ public class TestList
             
             // cons each of these resources onto the front of the list
             for (int i = 0;  i < toAdd.length;  i++) {
-                OntList list0 = list.cons( toAdd[i] );
+                RDFList list0 = list.cons( toAdd[i] );
                 
                 checkValid( "constest1", list0, true );
                 assertTrue( "cons'ed lists should not be equal", !list0.equals( list ) );
@@ -347,7 +344,7 @@ public class TestList
             m.add( root, p, list );
 
             // should be isomorphic with list 5
-            Model m0 = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m0 = ModelFactory.createDefaultModel();
             m0.read( "file:testing/ontology/list5.rdf" );
             
             assertTrue( "Cons'ed and read models should be the same", m0.isIsomorphicWith( m ) );   
@@ -359,13 +356,13 @@ public class TestList
         public AddTest() {super( "AddTest" );}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
             
             Resource nil = m.getResource( RDF.nil.getURI() );
-            OntList list = (OntList) nil.as( OntList.class );
+            RDFList list = (RDFList) nil.as( RDFList.class );
             
             Resource[] toAdd = new Resource[] {
                                     m.createResource( NS + "a" ),
@@ -375,9 +372,9 @@ public class TestList
                                     m.createResource( NS + "e" ),
                                };
             
-            // cons each of these resources onto the front of the list
+            // add each of these resources onto the end of the list
             for (int i = 0;  i < toAdd.length;  i++) {
-                OntList list0 = list.add( toAdd[i] );
+                RDFList list0 = list.with( toAdd[i] );
                 
                 checkValid( "addTest0", list0, true );
                 assertTrue( "added'ed lists should be equal", list.equals( nil ) || list0.equals( list ) );
@@ -389,7 +386,7 @@ public class TestList
             m.add( root, p, list );
 
             // should be isomorphic with list 5
-            Model m0 = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m0 = ModelFactory.createDefaultModel();
             m0.read( "file:testing/ontology/list5.rdf" );
             
             assertTrue( "Add'ed and read models should be the same", m0.isIsomorphicWith( m ) );   
@@ -401,7 +398,7 @@ public class TestList
         public TestListGet() {super("TestListGet");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
             
             Resource[] toGet = new Resource[] {
@@ -412,7 +409,7 @@ public class TestList
                                     m.createResource( NS + "e" ),
                                };
             
-            OntList l1 = getListRoot( m );
+            RDFList l1 = getListRoot( m );
 
             // test normal gets
             for (int i = 0;  i < toGet.length;  i++) {
@@ -437,7 +434,7 @@ public class TestList
         public ReplaceTest() {super("ReplaceTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
             
             Literal[] toSet = new Literal[] {
@@ -448,7 +445,7 @@ public class TestList
                                     m.createLiteral( "e" ),
                                };
             
-            OntList l1 = getListRoot( m );
+            RDFList l1 = getListRoot( m );
 
             // change all the values 
             for (int i = 0;  i < toSet.length;  i++) {
@@ -478,7 +475,7 @@ public class TestList
         public IndexTest1() {super("IndexTest1");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
             
             Resource[] toGet = new Resource[] {
@@ -489,7 +486,7 @@ public class TestList
                                     m.createResource( NS + "e" ),
                                };
             
-            OntList l1 = getListRoot( m );
+            RDFList l1 = getListRoot( m );
 
             // check the indexes are correct
             for (int i = 0;  i < toGet.length;  i++) {
@@ -504,10 +501,10 @@ public class TestList
         public IndexTest2() {super("IndexTest2");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             
             Resource nil = m.getResource( RDF.nil.getURI() );
-            OntList list = (OntList) nil.as( OntList.class );
+            RDFList list = (RDFList) nil.as( RDFList.class );
             
             Resource r = m.createResource( NS + "a" );
             
@@ -528,11 +525,11 @@ public class TestList
         public AppendTest() {super("AppendTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( RDF.nil.getURI() );
-            OntList list = (OntList) nil.as( OntList.class );
+            RDFList list = (RDFList) nil.as( RDFList.class );
             
             Resource r = m.createResource( NS + "foo" );
             
@@ -544,9 +541,9 @@ public class TestList
             int listLen = list.size();
             
             // now append foos to the root list
-            OntList root = getListRoot( m );
+            RDFList root = getListRoot( m );
             int rootLen = root.size();
-            OntList appended = root.append( list );
+            RDFList appended = root.append( list );
             
             // original list should be unchanged
             checkValid( "appendTest0", root, true );
@@ -566,11 +563,11 @@ public class TestList
         public ConcatenateTest() {super("ConcatenateTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( RDF.nil.getURI() );
-            OntList list = (OntList) nil.as( OntList.class );
+            RDFList list = (RDFList) nil.as( RDFList.class );
             
             Resource r = m.createResource( NS + "foo" );
             
@@ -582,9 +579,9 @@ public class TestList
             int listLen = list.size();
             
             // now append foos to the root list
-            OntList root = getListRoot( m );
+            RDFList root = getListRoot( m );
             int rootLen = root.size();
-            OntList concatted = root.concatenate( list );
+            root.concatenate( list );
             
             // original list should be unchanged
             checkValid( "concatTest0", list, true );
@@ -593,13 +590,6 @@ public class TestList
             // but lhs list has changed
             checkValid( "concatTest1", root, true );
             assertEquals( "Root list should be new length", rootLen + listLen, root.size() );
-            
-            // new list should be length of combined 
-            checkValid( "appendTest2", concatted, true );
-            assertEquals( "Concatted list not correct length", rootLen + listLen, concatted.size() );
-            
-            // concat and lhs list are the same
-            assertEquals( "Result list and subject list should be the same", root, concatted );
        }
     }
     
@@ -608,27 +598,28 @@ public class TestList
         public ConcatenateTest2() {super("ConcatenateTest2");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
            
-            Resource nil = m.getResource( RDF.nil.getURI() );
-            OntList nilList = (OntList) nil.as( OntList.class );
-            
+            Resource a = m.createResource( NS + "a" );
+                        
             // create a list of foos
             Resource[] rs = new Resource[] {
-                m.createResource( NS + "a" ),
                 m.createResource( NS + "b" ),
                 m.createResource( NS + "c" ),
                 m.createResource( NS + "d" ),
                 m.createResource( NS + "e" )
             };
             
+            RDFList aList = m.createList().cons( a );
+            RDFList rsList = m.createList( rs );
+
             // concatenate the above resources onto the empty list
-            OntList list = nilList.concatenate( Arrays.asList( rs ).iterator() );
-            checkValid( "concatTest3", list, true );
+            aList.concatenate( rsList );
+            checkValid( "concatTest3", aList, true );
             
-            OntList root = getListRoot( m );
-            assertTrue( "Constructed and loaded lists should be the same", list.sameListAs( root ) );
+            RDFList root = getListRoot( m );
+            assertTrue( "Constructed and loaded lists should be the same", aList.sameListAs( root ) );
        }
     }
     
@@ -637,12 +628,12 @@ public class TestList
         public ApplyTest() {super("ApplyTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
            
-            OntList root = getListRoot( m );
+            RDFList root = getListRoot( m );
             
-            class MyApply implements OntList.ApplyFn {
+            class MyApply implements RDFList.ApplyFn {
                String collect = "";
                public void apply( RDFNode n ) {
                    collect = collect + ((Resource) n).getLocalName();  
@@ -661,12 +652,12 @@ public class TestList
         public ReduceTest() {super("ReduceTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
            
-            OntList root = getListRoot( m );
+            RDFList root = getListRoot( m );
             
-            OntList.ReduceFn f = new OntList.ReduceFn() {
+            RDFList.ReduceFn f = new RDFList.ReduceFn() {
                public Object reduce( RDFNode n, Object acc ) {
                    return ((String) acc) + ((Resource) n).getLocalName();  
                } 
@@ -681,11 +672,11 @@ public class TestList
         public RemoveTest() {super( "RemoveTest" );}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
             
             Resource nil = m.getResource( RDF.nil.getURI() );
-            OntList list0 = (OntList) nil.as( OntList.class );
-            OntList list1 = (OntList) nil.as( OntList.class );
+            RDFList list0 = (RDFList) nil.as( RDFList.class );
+            RDFList list1 = (RDFList) nil.as( RDFList.class );
             
             Resource r0 = m.createResource( NS + "x" );
             Resource r1 = m.createResource( NS + "y" );
@@ -710,7 +701,7 @@ public class TestList
             assertEquals( "Model should be empty after deleting two lists", 0, m.size() );
             
             // selective remove
-            OntList list2 = ((OntList) nil.as( OntList.class ))
+            RDFList list2 = ((RDFList) nil.as( RDFList.class ))
                             .cons( r2 )
                             .cons( r1 )
                             .cons( r0 );
@@ -742,10 +733,10 @@ public class TestList
         public ListEqualsTest() {super("ListEqualsTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
+            Model m = ModelFactory.createDefaultModel();
            
             Resource nil = m.getResource( RDF.nil.getURI() );
-            OntList nilList = (OntList) nil.as( OntList.class );
+            RDFList nilList = (RDFList) nil.as( RDFList.class );
             
             // create a list of foos
             Resource[] r0 = new Resource[] {
@@ -796,8 +787,8 @@ public class TestList
             };
             
             for (int i = 0;  i < testSpec.length;  i++) {
-                OntList l0 = nilList.concatenate( Arrays.asList( (Object[]) testSpec[i][0] ).iterator() );
-                OntList l1 = nilList.concatenate( Arrays.asList( (Object[]) testSpec[i][1] ).iterator() );
+                RDFList l0 = nilList.append( Arrays.asList( (Object[]) testSpec[i][0] ).iterator() );
+                RDFList l1 = nilList.append( Arrays.asList( (Object[]) testSpec[i][1] ).iterator() );
                 boolean expected = ((Boolean) testSpec[i][2]).booleanValue();
                 
                 assertEquals( "sameListAs testSpec[" + i + "] incorrect", expected, l0.sameListAs( l1 ) );
@@ -806,7 +797,62 @@ public class TestList
        }
     }
     
-    
+    /*
+        // Lists
+        new CreateTestCase( "OWL empty list", ProfileRegistry.OWL_LANG, OWL.nil.getURI() ) {
+            public OntResource doCreate( Model m )   { return m.createList(); }
+            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 0;}
+        },
+        new CreateTestCase( "OWL list from iterator", ProfileRegistry.OWL_LANG, null ) {
+            public OntResource doCreate( Model m )   {
+                OntClass a = m.createClass( NS + "A" ); 
+                OntClass b = m.createClass( NS + "B" ); 
+                OntClass c = m.createClass( NS + "C" );
+                List l = new ArrayList();
+                l.add( a );  l.add( b );  l.add( c );
+                
+                return m.createList( l.iterator() ); 
+            }
+            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 3;}
+        },
+        new CreateTestCase( "OWL list from array", ProfileRegistry.OWL_LANG, null ) {
+            public OntResource doCreate( Model m )   {
+                OntClass a = m.createClass( NS + "A" ); 
+                OntClass b = m.createClass( NS + "B" ); 
+                OntClass c = m.createClass( NS + "C" );
+                
+                return m.createList( new Resource[] {a, b, c} ); 
+            }
+            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 3;}
+        },
+        
+        new CreateTestCase( "DAML empty list", ProfileRegistry.DAML_LANG, DAML_OIL.nil.getURI() ) {
+            public OntResource doCreate( Model m )   { return m.createList(); }
+            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 0;}
+        },
+        new CreateTestCase( "DAML list from iterator", ProfileRegistry.DAML_LANG, null ) {
+            public OntResource doCreate( Model m )   {
+                OntClass a = m.createClass( NS + "A" ); 
+                OntClass b = m.createClass( NS + "B" ); 
+                OntClass c = m.createClass( NS + "C" );
+                List l = new ArrayList();
+                l.add( a );  l.add( b );  l.add( c );
+                
+                return m.createList( l.iterator() ); 
+            }
+            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 3;}
+        },
+        new CreateTestCase( "DAML list from array", ProfileRegistry.DAML_LANG, null ) {
+            public OntResource doCreate( Model m )   {
+                OntClass a = m.createClass( NS + "A" ); 
+                OntClass b = m.createClass( NS + "B" ); 
+                OntClass c = m.createClass( NS + "C" );
+                
+                return m.createList( new Resource[] {a, b, c} ); 
+            }
+            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 3;}
+        }
+     */
 }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -27,6 +27,7 @@ package com.hp.hpl.jena.ontology;
 ///////////////
 import java.util.Iterator;
 
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 
@@ -44,7 +45,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.8 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.9 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public interface AllDifferent
     extends OntResource
@@ -63,7 +64,7 @@ public interface AllDifferent
      * @param members A list of the members that are declared to be distinct.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
-    public void setDistinct( OntList members );
+    public void setDistinct( RDFList members );
 
     /**
      * <p>Add the given individual to the list of distinct members of this AllDifferent declaration.</p>
@@ -84,7 +85,7 @@ public interface AllDifferent
      * @return The list of individuals declared distinct by this AllDifferent declaration.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
-    public OntList getDistinct();
+    public RDFList getDistinct();
 
     /**
      * <p>Answer an iterator over all of the individuals that are declared to be distinct by

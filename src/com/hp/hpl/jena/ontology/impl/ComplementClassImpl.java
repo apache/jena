@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:44 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.6 2003-06-08 21:29:44 ian_dickinson Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.7 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public class ComplementClassImpl 
     extends OntClassImpl
@@ -111,7 +111,7 @@ public class ComplementClassImpl
 	 * @exception Always throws UnsupportedOperationException since a complement expression takes only
 	 * a single argument.    
 	 */ 
-	public void setOperands( OntList operands ) {
+	public void setOperands( RDFList operands ) {
 		throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
 	}
 	
@@ -151,7 +151,7 @@ public class ComplementClassImpl
 	 * @return A list of the operands of this expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
-	public OntList getOperands() {
+	public RDFList getOperands() {
 		throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
 	}
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: BooleanClassDescription.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: BooleanClassDescription.java,v 1.4 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: BooleanClassDescription.java,v 1.5 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public interface BooleanClassDescription 
     extends OntClass
@@ -60,7 +60,7 @@ public interface BooleanClassDescription
 	 * @param operands The list of operands to this expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
-	public void setOperands( OntList operands );
+	public void setOperands( RDFList operands );
 
 	/**
 	 * <p>Add a class the operands of this boolean expression.</p>
@@ -81,7 +81,7 @@ public interface BooleanClassDescription
 	 * @return A list of the operands of this expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
-	public OntList getOperands();
+	public RDFList getOperands();
 
 	/**
 	 * <p>Answer an iterator over all of the clases that are the operands of this 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-May-2003
  * Filename           $RCSfile: BooleanClassDescriptionImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:44 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.3 2003-06-08 21:29:44 ian_dickinson Exp $
+ * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.4 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public abstract class BooleanClassDescriptionImpl 
     extends OntClassImpl
@@ -84,7 +84,7 @@ public abstract class BooleanClassDescriptionImpl
 	 * @param operands The list of operands to this expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
-	public void setOperands( OntList operands ) {
+	public void setOperands( RDFList operands ) {
 		setPropertyValue( operator(), getOperatorName(), operands );
 	}
 
@@ -113,8 +113,8 @@ public abstract class BooleanClassDescriptionImpl
 	 * @return A list of the operands of this expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
-	public OntList getOperands() {
-		return (OntList) objectAs( operator(), getOperatorName(), OntList.class );
+	public RDFList getOperands() {
+		return (RDFList) objectAs( operator(), getOperatorName(), RDFList.class );
 	}
 
 	/**

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 20:45:58 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.21 2003-06-13 20:45:58 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.22 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -989,11 +989,11 @@ public class OntResourceImpl
     
     /** 
      * <p>Answer a view of this resource as a list </p>
-     * @return This resource, but viewed as an OntList
+     * @return This resource, but viewed as an RDFList
      * @exception ConversionException if the resource cannot be converted to a list
      */
-    public OntList asList() {
-        return (OntList) as( OntList.class );
+    public RDFList asList() {
+        return (RDFList) as( RDFList.class );
     }
     
     /** 
@@ -1179,16 +1179,16 @@ public class OntResourceImpl
         // get the list value
         if (hasProperty( p )) {
             RDFNode cur = getProperty( p ).getObject();
-            if (!cur.canAs( OntList.class )) {
+            if (!cur.canAs( RDFList.class )) {
                 throw new OntologyException( "Tried to add a value to a list-valued property " + p + 
                                              " but the current value is not a list: " + cur ); 
             }
             
-            OntList values = (OntList) cur.as( OntList.class );
+            RDFList values = (RDFList) cur.as( RDFList.class );
         
             // now add our value to the list
             if (!values.contains( value )){
-                OntList newValues = values.add( value );
+                RDFList newValues = values.with( value );
                 
                 // if the previous values was nil, the return value will be a new list
                 if (newValues != values) {

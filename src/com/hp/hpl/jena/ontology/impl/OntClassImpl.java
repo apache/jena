@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-16 13:40:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.18 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.19 2003-06-16 13:40:12 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -648,7 +648,7 @@ public class OntClassImpl
      * class converted to an enumeration
      * @return This ontology class, converted to an enumeration of the given individuals 
      */
-    public EnumeratedClass convertToEnumeratedClass( OntList individuals ) {
+    public EnumeratedClass convertToEnumeratedClass( RDFList individuals ) {
         setPropertyValue( getProfile().ONE_OF(), "ONE_OF", individuals );
         return (EnumeratedClass) as( EnumeratedClass.class );
     }
@@ -658,7 +658,7 @@ public class OntClassImpl
      * @param classes A list of the classes that will comprise the operands of the intersection
      * @return This ontology class, converted to an intersection of the given classes 
      */
-    public IntersectionClass convertToIntersectionClass( OntList classes ) {
+    public IntersectionClass convertToIntersectionClass( RDFList classes ) {
         setPropertyValue( getProfile().INTERSECTION_OF(), "INTERSECTION_OF", classes );
         return (IntersectionClass) as( IntersectionClass.class );
     }
@@ -668,7 +668,7 @@ public class OntClassImpl
      * @param classes A list of the classes that will comprise the operands of the union
      * @return This ontology class, converted to an union of the given classes 
      */
-    public UnionClass convertToUnionClass( OntList classes ) {
+    public UnionClass convertToUnionClass( RDFList classes ) {
         setPropertyValue( getProfile().UNION_OF(), "UNION_OF", classes );
         return (UnionClass) as( UnionClass.class );
     }

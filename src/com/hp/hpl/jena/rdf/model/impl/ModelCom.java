@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date: 2003-06-16 09:16:58 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date: 2003-06-16 13:40:13 $'
  */
 
 public class ModelCom 
@@ -732,6 +732,44 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return createSeq(null);
     }
     
+    /**
+     * <p>Answer a new empty list</p>
+     * @return An RDF-encoded list of no elements
+     */
+    public RDFList createList() {
+        Resource list = getResource( RDFListImpl.listNil().getURI() );
+        list.addProperty( RDF.type, RDFListImpl.listType() );
+        
+        return (RDFList) list.as( RDFList.class );
+    }
+    
+    
+    /**
+     * <p>Answer a new list containing the resources from the given iterator, in order.</p>
+     * @param members An iterator, each value of which is expected to be an RDFNode.
+     * @return An RDF-encoded list of the elements of the iterator
+     */
+    public RDFList createList( Iterator members ) {
+        RDFList list = createList();
+        
+        while (members != null && members.hasNext()) {
+            list = list.with( (RDFNode) members.next() );
+        }
+        
+        return list;
+    }
+    
+    
+    /**
+     * <p>Answer a new list containing the RDF nodes from the given array, in order</p>
+     * @param members An array of RDFNodes that will be the members of the list
+     * @return An RDF-encoded list 
+     */
+    public RDFList createList( RDFNode[] members ) {
+        return createList( Arrays.asList( members ).iterator() );
+    }
+    
+    
     public Resource getResource(String uri)  {
         return IteratorFactory.asResource(makeURI(uri),this);
     }
@@ -1167,7 +1205,6 @@ implements Model, ModelI, PrefixMapping, ModelLock
                                                    {
         Iterator iter = listBySubject(cont);
         Statement    stmt;
-        String       rdfURI = RDF.getURI();
         Vector       result = new Vector();
         int          maxOrdinal = 0;
         int          ordinal;
@@ -1196,7 +1233,6 @@ implements Model, ModelI, PrefixMapping, ModelLock
         Iterator iter = listBySubject(cont);
         Property     predicate;
         Statement    stmt;
-        String       rdfURI = RDF.getURI();
         while (iter.hasNext()) {
             stmt = (Statement) iter.next();
             predicate = stmt.getPredicate();
@@ -1214,7 +1250,6 @@ implements Model, ModelI, PrefixMapping, ModelLock
         { return StatementImpl.toStatement( t, this ); }
         
 	private Iterator asStatements( final Iterator it ) {
-		final ModelCom self = this;
 		return new Iterator() {
 			public boolean hasNext() { return it.hasNext(); }
 			public Object next() { return asStatement( (Triple) it.next() ); } 
@@ -1231,7 +1266,6 @@ implements Model, ModelI, PrefixMapping, ModelLock
         Iterator iter = listBySubject(cont);
         Property     predicate;
         Statement    stmt;
-        String       rdfURI = RDF.getURI();
         while (iter.hasNext()) {
             stmt = (Statement) iter.next();
             predicate = stmt.getPredicate();

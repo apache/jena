@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -38,7 +38,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.12 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.13 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -458,21 +458,21 @@ public interface OntClass
      * class converted to an enumeration
      * @return This ontology class, converted to an enumeration of the given individuals 
      */
-    public EnumeratedClass convertToEnumeratedClass( OntList individuals );
+    public EnumeratedClass convertToEnumeratedClass( RDFList individuals );
 
     /** 
      * <p>Answer a view of this class as an intersection of the given classes.</p>
      * @param classes A list of the classes that will comprise the operands of the intersection
      * @return This ontology class, converted to an intersection of the given classes 
      */
-    public IntersectionClass convertToIntersectionClass( OntList classes );
+    public IntersectionClass convertToIntersectionClass( RDFList classes );
 
     /** 
      * <p>Answer a view of this class as a union of the given classes.</p>
      * @param classes A list of the classes that will comprise the operands of the union
      * @return This ontology class, converted to an union of the given classes 
      */
-    public UnionClass convertToUnionClass( OntList classes );
+    public UnionClass convertToUnionClass( RDFList classes );
 
     /** 
      * <p>Answer a view of this class as an complement of the given class.</p>

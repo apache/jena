@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.20 2003-06-13 19:09:29 ian_dickinson Exp $
+  $Id: BuiltinPersonalities.java,v 1.21 2003-06-16 13:40:14 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -30,10 +30,10 @@ public class BuiltinPersonalities {
         .add( Bag.class, BagImpl.factory )
         .add( Seq.class, SeqImpl.factory )
         .add( ReifiedStatement.class, ReifiedStatementImpl.factory )
+        .add( RDFList.class, RDFListImpl.factory )
         
         // ontology additions
         .add( OntResource.class, OntResourceImpl.factory )
-        .add( OntList.class, OntListImpl.factory )
         .add( Ontology.class, OntologyImpl.factory )
         .add( OntClass.class, OntClassImpl.factory )
         .add( EnumeratedClass.class, EnumeratedClassImpl.factory )

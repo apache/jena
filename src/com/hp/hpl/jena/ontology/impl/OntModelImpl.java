@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 23:11:11 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.28 2003-06-10 23:11:11 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.29 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -777,7 +777,7 @@ public class OntModelImpl
      * @param members An optional list of resources denoting the individuals in the enumeration
      * @return An enumeration class
      */
-    public EnumeratedClass createEnumeratedClass( String uri, OntList members ) {
+    public EnumeratedClass createEnumeratedClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
         
@@ -794,7 +794,7 @@ public class OntModelImpl
      * @param members A list of resources denoting the classes that comprise the union
      * @return A union class description
      */
-    public UnionClass createUnionClass( String uri, OntList members ) {
+    public UnionClass createUnionClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
         
@@ -811,7 +811,7 @@ public class OntModelImpl
      * @param members A list of resources denoting the classes that comprise the intersection
      * @return An intersection class description
      */
-    public IntersectionClass createIntersectionClass( String uri, OntList members ) {
+    public IntersectionClass createIntersectionClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
         
@@ -1046,7 +1046,7 @@ public class OntModelImpl
      * @param differentMembers A list of the class expressions that denote a set of mutually disjoint classes
      * @return A new AllDifferent resource
      */
-    public AllDifferent createAllDifferent( OntList differentMembers ) {
+    public AllDifferent createAllDifferent( RDFList differentMembers ) {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
         AllDifferent ad = (AllDifferent) createOntResource( AllDifferent.class, getProfile().ALL_DIFFERENT(), null );
         
@@ -1055,44 +1055,6 @@ public class OntModelImpl
         }
         
         return ad;
-    }
-    
-    
-    /**
-     * <p>Answer a new empty list</p>
-     * @return An RDF-encoded list of no elements
-     */
-    public OntList createList() {
-        Resource list = getResource( getProfile().NIL().getURI() );
-        list.addProperty( RDF.type, getProfile().LIST() );
-        
-        return (OntList) list.as( OntList.class );
-    }
-    
-    
-    /**
-     * <p>Answer a new list containing the resources from the given iterator, in order.</p>
-     * @param members An iterator, each value of which is expected to be an RDFNode.
-     * @return An RDF-encoded list of the elements of the iterator
-     */
-    public OntList createList( Iterator members ) {
-        OntList list = createList();
-        
-        while (members != null && members.hasNext()) {
-            list = list.add( (RDFNode) members.next() );
-        }
-        
-        return list;
-    }
-    
-    
-    /**
-     * <p>Answer a new list containing the RDF nodes from the given array, in order</p>
-     * @param members An array of RDFNodes that will be the members of the list
-     * @return An RDF-encoded list 
-     */
-    public OntList createList( RDFNode[] members ) {
-        return createList( Arrays.asList( members ).iterator() );
     }
     
     
@@ -1651,7 +1613,7 @@ public class OntModelImpl
      * @param rdfType The rdf:type value to check for
      * @exception LanguageConsistencyException if any member of the list does not have <code>rdf:type <i>rdfType</i></code>
      */
-    protected void checkListMembersRdfType( OntList list, Resource rdfType ) {
+    protected void checkListMembersRdfType( RDFList list, Resource rdfType ) {
         if (strictMode() && ! ((Boolean) list.reduce( new RdfTypeTestFn( rdfType), Boolean.TRUE )).booleanValue()) {
             // not all of the members of the list are of the given type
             throw new LanguageConsistencyException( "The members of the given list are expected to be of rdf:type " + rdfType.toString() );
@@ -1690,7 +1652,7 @@ public class OntModelImpl
     }
     
     /** Function to test the rdf type of a list */
-    protected class RdfTypeTestFn implements OntList.ReduceFn
+    protected class RdfTypeTestFn implements RDFList.ReduceFn
     {
         protected Resource m_type;
         protected RdfTypeTestFn( Resource type ) { m_type = type; }

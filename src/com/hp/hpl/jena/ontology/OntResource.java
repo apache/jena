@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-16 13:40:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.18 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.19 2003-06-16 13:40:13 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -669,10 +669,10 @@ public interface OntResource
     
     /** 
      * <p>Answer a view of this resource as a list </p>
-     * @return This resource, but viewed as an OntList
+     * @return This resource, but viewed as an RDFList
      * @exception ConversionException if the resource cannot be converted to a list
      */
-    public OntList asList();
+    public RDFList asList();
     
     /** 
      * <p>Answer a view of this resource as a property</p>
