@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.2 2004-12-01 07:22:22 chris-dollin Exp $
+  $Id: TestModelRead.java,v 1.3 2004-12-01 15:35:07 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -37,6 +37,11 @@ public class TestModelRead extends ModelTestBase
         assertIsoModels( expected, m );
         }    
     
+    /*
+         Suppressed, since the other Model::read(String url) operations apparently
+         don't retry failing URLs as filenames. But the code text remains, so that
+         when-and-if, we have a basis.
+     */
     public void testLoadsSimpleModelWithoutProtocol()
         {
 //        Model expected = ModelFactory.createDefaultModel();
