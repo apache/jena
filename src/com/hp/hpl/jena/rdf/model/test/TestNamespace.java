@@ -1,15 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNamespace.java,v 1.4 2003-04-28 11:26:15 chris-dollin Exp $
+  $Id: TestNamespace.java,v 1.5 2003-05-03 07:44:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.shared.impl.*;
 import com.hp.hpl.jena.shared.test.*;
 
 import java.util.*;

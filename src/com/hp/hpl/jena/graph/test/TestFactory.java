@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFactory.java,v 1.4 2003-05-02 15:30:36 chris-dollin Exp $
+  $Id: TestFactory.java,v 1.5 2003-05-03 07:44:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -15,11 +15,8 @@ import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.db.test.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.*;
 
 import java.util.*;
-
-import java.sql.SQLException;
 
 import junit.framework.*;
 

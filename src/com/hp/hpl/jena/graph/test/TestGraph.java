@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraph.java,v 1.9 2003-04-28 15:21:39 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.10 2003-05-03 07:44:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -13,10 +13,7 @@ package com.hp.hpl.jena.graph.test;
 */
 
 import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
-
-import java.util.*;
 
 import junit.framework.*;
 

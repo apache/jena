@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Factory.java,v 1.3 2003-05-02 15:29:47 chris-dollin Exp $
+  $Id: Factory.java,v 1.4 2003-05-03 07:43:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.db.test.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
 

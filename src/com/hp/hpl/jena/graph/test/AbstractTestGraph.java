@@ -1,18 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.1 2003-04-28 15:21:39 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.2 2003-05-03 07:44:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 
 import java.util.*;
-
-import junit.framework.*;
 
 /**
     AbstractTestGraph provides a bunch of basic tests for something that
