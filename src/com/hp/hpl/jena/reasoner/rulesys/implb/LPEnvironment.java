@@ -1,37 +1,63 @@
 /******************************************************************
- * File:        FrameObjectFactory.java
+ * File:        LPEnvironment.java
  * Created by:  Dave Reynolds
- * Created on:  18-Jul-2003
+ * Created on:  22-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FrameObjectFactory.java,v 1.2 2003-07-22 16:41:42 der Exp $
+ * $Id: LPEnvironment.java,v 1.1 2003-07-22 16:41:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
+import com.hp.hpl.jena.graph.Node;
+
 /**
- * Base class for factories that create stack frames. This is 
- * pointless at the moment but in the future would be the basis for
- * a shared pool of reusable frames.
+ * Represents a single frame in the LP interpreter's environment stack. The
+ * environment stack represents the AND part of the search tree - it is a sequence
+ * of nested predicate calls.
+ * <p>
+ * This is used in the inner loop of the interpreter and so is a pure data structure
+ * not an abstract data type.
+ * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-22 16:41:42 $
+ * @version $Revision: 1.1 $ on $Date: 2003-07-22 16:41:42 $
  */
-public class FrameObjectFactory {
+public class LPEnvironment extends FrameObject {
 
-    /**
-     * Return a free frame object if there is one in the pool, otherwise null.
+    /** The set of permanent variables Yi) in use by this frame.  */
+    Node[] pVars;
+    
+    /** The code the the clause currently being processed */
+    RuleClauseCode clause;
+    
+    /** The program counter offet in the clause's byte code */
+    int pc;
+    
+    /** The argument counter offset in the clause's arg stream */
+    int ac;
+    
+    /** 
+     * Constructor 
+     * @param factory The parent factory to which free frames can be returned
      */
-    public FrameObject getFree() {
-        return null;
+    public LPEnvironment(LPEnvironmentFactory factory) {
+        super(factory);
     }
     
     /**
-     * Return a frame to the pool.
-     * Not implemented.
+     * Initialize a starting frame.
+     * @param clause the compiled code being interpreted by this env frame 
      */
-    public void returnFreeFrame(FrameObject frame) {
+    public void init(RuleClauseCode clause) { 
+        this.clause = clause;
+        pc = 0;
+        // Note that the current fixed-frame implementation is just a short cut 
+        // the first implementation and will get relaced by a
+        // dynamic (and possibly trimmable) implementation in the future
+        pVars = new Node[RuleClauseCode.MAX_PERMANENT_VARS];
     }
+    
 }
 
 

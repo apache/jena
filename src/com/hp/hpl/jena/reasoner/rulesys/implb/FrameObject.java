@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FrameObject.java,v 1.1 2003-07-18 16:20:08 der Exp $
+ * $Id: FrameObject.java,v 1.2 2003-07-22 16:41:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -14,12 +14,23 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * we might want to allocate from a pool in the future.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-18 16:20:08 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-22 16:41:42 $
  */
 public class FrameObject {
 
     /** Used to link the frame to the prior frame in the (tree) stack or the pool */
     protected FrameObject link;
+    
+    /** The parent factory to which free frames can be returned */
+    protected FrameObjectFactory factory;
+    
+    /** 
+     * Constructor The parent factory to which free frames can be returned
+     * @param factory 
+     */
+    public FrameObject(FrameObjectFactory factory) {
+        this.factory = factory;
+    }
     
     /**
      * Link this frame to an existing frame. In the future this might do some ref count
@@ -41,6 +52,7 @@ public class FrameObject {
      * reclaimed by garbage collection anyway. Not implemented.
      */
     public void free() {
+        factory.returnFreeFrame(this);
     }
     
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.3 2003-07-21 16:22:47 der Exp $
+ * $Id: RuleClauseCode.java,v 1.4 2003-07-22 16:41:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-21 16:22:47 $
+ * @version $Revision: 1.4 $ on $Date: 2003-07-22 16:41:42 $
  */
 public class RuleClauseCode {
     
@@ -38,8 +38,7 @@ public class RuleClauseCode {
     protected byte[] code;
     
     /** Any Object argements needed by the byte codes */
-    protected Object[] args;
-    
+    protected Object[] args;    
     
 //  =======================================================================
 //  Instruction set constants
@@ -80,6 +79,9 @@ public class RuleClauseCode {
     /** call a pure triple match (predicate) */
     public static final byte CALL_TRIPLE_MATCH = 0x11;
     
+    /** variant on CALL_PREDICATE using the last call optimization, only current used in chain rules */
+    public static final byte LAST_CALL_PREDICATE = 0x13;
+    
     /** return from a call, proceeed along AND tree */
     public static final byte PROCEED = 0xb;
     
@@ -98,7 +100,14 @@ public class RuleClauseCode {
     /** reset an argument to an unbound variable (Ai) */
     public static final byte CLEAR_ARG = 0x10;
     
-    // current next = 0x13
+    // current next = 0x14
+    
+    /** The maximum number of permanent variables allowed in a single rule clause. 
+     *   Future refactorings will remove this restriction because it is wasteful of space. */
+    public static final int MAX_PERMANENT_VARS = 6;
+    
+    /** The maximum number of temporary variables allowed in a single rule clause. */
+    public static final int MAX_TEMPORARY_VARS = 10;
     
 //  =======================================================================
 //  Methods and constructors
@@ -109,6 +118,20 @@ public class RuleClauseCode {
      */
     public RuleClauseCode(Rule rule) {
         this.rule = rule;
+    }
+    
+    /**
+     * Return the byte code vector for this clause.
+     */
+    public byte[] getCode() {
+        return code;
+    }
+    
+    /**
+     * Return the argument vector associated with this clauses' byte codes.
+     */
+    public Object[] getArgs() {
+        return args;
     }
     
     /**
@@ -146,6 +169,36 @@ public class RuleClauseCode {
         args = state.getFinalArgs();
     }
     
+    /**
+     * Construct a dummy code sequence for a top level goal.
+     * The current version assumes the top level caller arranges the argument registers correctly,
+     * so in fact the call sequence is trivial.
+     */
+    public static RuleClauseCode createGoalCode(TriplePattern goal, List predicateCode) {
+        byte[] code = new byte[3];
+        int p = 0;
+        Object[] args = new Object[1];
+        int a = 0;
+        
+        Node predicate = goal.getPredicate();
+        if (predicateCode == null || predicateCode.size() == 0) {
+            code[p++] = CALL_TRIPLE_MATCH;
+            args[a++] = predicate;
+        } else {
+            if (predicate.isVariable()) {
+                code[p++] = CALL_WILD_PREDICATE;
+            } else {
+                code[p++] = CALL_PREDICATE;
+            }
+            args[a++] = predicateCode;
+        }
+        code[p++] = PROCEED;
+        RuleClauseCode clause = new RuleClauseCode(null);
+        clause.args = args;
+        clause.code = code;
+        return clause;
+    }
+        
     /**
      * Debug helper - list the code to a stream
      */
@@ -186,6 +239,9 @@ public class RuleClauseCode {
                     break;
                 case CALL_PREDICATE:
                     out.println("CALL_PREDICATE " + args[argi++]);
+                    break;
+                case LAST_CALL_PREDICATE:
+                    out.println("LAST_CALL_PREDICATE " + args[argi++]);
                     break;
                 case CALL_TRIPLE_MATCH:
                         out.println("CALL_TRIPLE_MATCH (A0, " + args[argi++] +", A2)");
@@ -315,9 +371,9 @@ public class RuleClauseCode {
                 if (goal.getPredicate().isVariable()) {
                     code[p++] = CALL_WILD_PREDICATE;
                 } else {
-                    code[p++] = CALL_PREDICATE;
+                    code[p++] = (permanentVars.size() == 0) ? LAST_CALL_PREDICATE : CALL_PREDICATE;
                 }
-                args.add(store.codeFor(goal));
+                args.add(predicateCode);
             }
         }
         
@@ -447,6 +503,18 @@ public class RuleClauseCode {
                     }
                 }
                  
+            }
+            
+            if (permanentVars.size() > MAX_PERMANENT_VARS) {
+                throw new ReasonerException("Rule too complex for current implementation\n" 
+                            + "Rule clauses are limited to " + MAX_PERMANENT_VARS + "permanent variables\n" 
+                            + "\nIn rule " + rule.toShortString());
+            }
+            
+            if (tempVars.size() > MAX_TEMPORARY_VARS) {
+                throw new ReasonerException("Rule too complex for current implementation\n" 
+                            + "Rule clauses are limited to " + MAX_TEMPORARY_VARS + "temporary variables\n" 
+                            + "\nIn rule " + rule.toShortString());
             }
             
             // Renumber the vars
