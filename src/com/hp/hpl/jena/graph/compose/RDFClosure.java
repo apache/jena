@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFClosure.java,v 1.6 2003-06-11 15:01:41 chris-dollin Exp $
+  $Id: RDFClosure.java,v 1.7 2003-06-23 14:59:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -30,7 +30,7 @@ public class RDFClosure extends Dyadic implements Graph
 	
 	public RDFClosure( Graph base )
 		{
-		super( base, null );
+		super( base, base );
 		}
 		
 	public void add( Triple t )

@@ -1,58 +1,56 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Dyadic.java,v 1.4 2003-06-23 14:59:20 chris-dollin Exp $
+  $Id: TestHiddenStatements.java,v 1.1 2003-06-23 14:59:44 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.compose;
+package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.shared.*;
+import junit.framework.*;
 
 /**
-    @author kers
-    @author Ian Dickinson - refactored most of the content to {@link CompositionBase}.
+ 	@author kers
 */
+public class TestHiddenStatements extends ModelTestBase
+    {
+    public TestHiddenStatements(String name)
+        { super(name); }
 
-public abstract class Dyadic extends CompositionBase
-	{
-	public int capabilities() 
-		{ return ADD | DELETE | SIZE;  }
-
-	protected Graph L;
-	protected Graph R;
-	
-    /**
-        When the graph is constructed, copy the prefix mappings of both components
-        into this prefix mapping.
-    */
-	public Dyadic( Graph L, Graph R )
-		{
-		this.L = L;
-		this.R = R;
-        getPrefixMapping()
-            .setNsPrefixes( L.getPrefixMapping() )
-            .setNsPrefixes( R.getPrefixMapping() )
-            ;
-		}
-
-    public void close()
-    	{
-    	L.close();
-    	R.close();
+    public static TestSuite suite()
+        { return new TestSuite( TestHiddenStatements.class ); }
+    
+    public void assertSameMapping( PrefixMapping L, PrefixMapping R )
+        {
+        if (sameMapping( L, R ) == false)
+            fail( "wanted " + L + " but got " + R );
         }
         
-    public boolean dependsOn( Graph other )
+    public boolean sameMapping( PrefixMapping L, PrefixMapping R )
         {
-        return other == this || L.dependsOn( other ) || R.dependsOn( other );
+//        System.err.println( ">> " + L.getNsPrefixMap() );
+//        System.err.println( ">> " + R.getNsPrefixMap() );
+        return L.getNsPrefixMap().equals( R.getNsPrefixMap() );
         }
- 				
-    public Union union( Graph X )
-        { return new Union( this, X ); }
-    
+        
+    /**
+        Test that withHiddenStatements copies the prefix mapping
+        TODO add some extra prefixs for checking; should check for non-
+        default models. 
+    */
+    public void testPrefixCopied()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        m.setNsPrefixes( PrefixMapping.Standard );
+        assertSameMapping( PrefixMapping.Standard, ModelReifier.withHiddenStatements( m ) );
+        }
     }
 
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
