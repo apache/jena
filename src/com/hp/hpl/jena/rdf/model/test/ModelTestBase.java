@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.16 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.17 2003-09-09 10:59:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -126,7 +126,16 @@ public class ModelTestBase extends GraphTestBase
     */        
     public static Model modelWithStatements( ReificationStyle style, String facts )
         { return modelAdd( ModelFactory.createDefaultModel( style ), facts ); }
-         
+        
+    /**
+        Answer a default model; it exists merely to abbreviate the rather long explicit
+        invocation.
+        
+     	@return a new default [aka memory-based] model
+    */ 
+    public static Model createMemModel()
+        { return ModelFactory.createDefaultModel(); }
+        
      /**
         test that two models are isomorphic and fail if they are not.
         

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
-  [See end of file]
-  $Id: ModelCom.java,v 1.78 2003-09-08 11:28:22 chris-dollin Exp $
+    (c) Copyright 2003, Hewlett-Packard Development Company, LP
+    [See end of file]
+    $Id: ModelCom.java,v 1.79 2003-09-09 10:59:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -17,7 +17,6 @@ import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.mem.*;
 
 import java.io.*;
 import java.util.*;
@@ -30,7 +29,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.78 $' Date='$Date: 2003-09-08 11:28:22 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.79 $' Date='$Date: 2003-09-09 10:59:09 $'
  */
 
 public class ModelCom 
@@ -42,7 +41,6 @@ implements Model, PrefixMapping, ModelLock
       private RDFWriterF writerFactory = new RDFWriterFImpl();
       private ModelLock modelLock = null ;
       
-    // next free error code = 3
     /**
     	make a model based on the specified graph
     */
@@ -59,6 +57,9 @@ implements Model, PrefixMapping, ModelLock
     public Graph getGraph()
         { return graph; }
                
+    protected static Model createWorkModel()
+        { return ModelFactory.createDefaultModel(); }
+
     /**
         the ModelReifier does everything to do with reification.
     */
@@ -97,11 +98,10 @@ implements Model, PrefixMapping, ModelLock
     }
     
     public Model add(Resource s, Property p, String o, boolean wellFormed)
-       {
-           add(s, p, literal(o, "", wellFormed));
-           return this;
-//        return add( s, p, o, "", wellFormed );
-    }
+        {
+        add(s, p, literal(o, "", wellFormed));
+        return this;
+        }
     
     public Model add(Resource s, Property p, String o, String lang,
       boolean wellFormed)  {
@@ -113,9 +113,7 @@ implements Model, PrefixMapping, ModelLock
         { return new LiteralImpl( Node.createLiteral( s, lang, wellFormed), (Model) this ); }
     
     public Model add(Resource s, Property p, String o, String l)
-        {
-        return add( s, p, o, l, false );
-    }
+        { return add( s, p, o, l, false ); }
     
     /**
         ensure that an object is an RDFNode. If it isn't, fabricate a literal
@@ -135,7 +133,8 @@ implements Model, PrefixMapping, ModelLock
     }
     
     public Model add( StmtIterator iter )  {
-        getBulkUpdateHandler().add( asTriples( iter ) );
+        try { getBulkUpdateHandler().add( asTriples( iter ) ); }
+        finally { iter.close(); }
         return this;
     }
     
@@ -1177,70 +1176,73 @@ implements Model, PrefixMapping, ModelLock
     public Model asModel( Graph g )
         { return new ModelCom( g ); }
         
-	public StmtIterator asStatements( final Iterator it ) {
-        return new StmtIteratorImpl( new Map1Iterator( mapAsStatement, it ) );
-	}
+	public StmtIterator asStatements( final Iterator it ) 
+        { return new StmtIteratorImpl( new Map1Iterator( mapAsStatement, it ) ); }
     
     protected Map1 mapAsStatement = new Map1()
         { public Object map1( Object t ) { return asStatement( (Triple) t ); } };
 	
-	public StmtIterator listBySubject( Container cont ) {
-		return listStatements( cont, null, (RDFNode) null ); // return asStatements( graph.find( cont.asNode(), null, null ) );
-	}
+	public StmtIterator listBySubject( Container cont )
+        { return listStatements( cont, null, (RDFNode) null ); }
 
-    public void close() {
-        graph.close();
-    }
+    public void close() 
+        { graph.close(); }
     
-    public boolean supportsSetOperations() {return true;}
+    public boolean supportsSetOperations() 
+        {return true;}
     
-    public Model query(Selector selector)  {
-        ModelMem model = new ModelMem();
-        StmtIterator iter = null;
-        try {
-            iter = listStatements(selector);
-            while (iter.hasNext()) {
-                model.add(iter.nextStatement());
-            }
-            return model;
-        } finally {
-            if (iter != null) {
-                iter.close();
-            }
+    public Model query( Selector selector )  
+        { return createWorkModel() .add( listStatements( selector ) ); }
+    
+    public Model union( Model model )  
+        { return createWorkModel() .add(this) .add( model ); }
+    
+    /**
+        Intersect this with another model. As an attempt at optimisation, we try and ensure
+        we iterate over the smaller model first. Nowadays it's not clear that this is a good
+        idea, since <code>size()</code> can be expensive on database and inference
+        models.
+        
+     	@see com.hp.hpl.jena.rdf.model.Model#intersection(com.hp.hpl.jena.rdf.model.Model)
+    */
+    public Model intersection( Model other )
+        { return this.size() < other.size() ? intersect( this, other ) : intersect( other, this ); }
+        
+    /**
+        Answer a Model that is the intersection of the two argument models. The first
+        argument is the model iterated over, and the second argument is the one used
+        to check for membership. [So the first one should be "small" and the second one
+        "membership cheap".]
+     */
+    public static Model intersect( Model smaller, Model larger )
+        {
+        Model result = createWorkModel();
+        StmtIterator it = smaller.listStatements();
+        try { return addCommon( result, it, larger ); }
+        finally { it.close(); }
         }
-    }
-    
-    public Model union(Model model)  {
-        return (new ModelMem()).add(this)
-                               .add(model);
-    }
-    
-    public Model intersection(Model model)  {
-        Model largerModel = this;
-        Model smallerModel  = model;
-        ModelMem resultModel = new ModelMem();
-        StmtIterator iter = null;
-        Statement stmt;
-        if (model.size() > this.size()) {
-            largerModel = model;
-            smallerModel = this;
-        }
-        try {
-            iter = smallerModel.listStatements();
-            while (iter.hasNext()) {
-                stmt = iter.nextStatement();
-                if (largerModel.contains(stmt)) {
-                    resultModel.add(stmt);
-                }
+        
+    /**
+        Answer the argument result with all the statements from the statement iterator that
+        are in the other model added to it.
+        
+     	@param result the Model to add statements to and return
+     	@param it an iterator over the candidate statements
+     	@param other the model that must contain the statements to be added
+     	@return result, after the suitable statements have been added to it
+     */
+    protected static Model addCommon( Model result, StmtIterator it, Model other )
+        {
+        while (it.hasNext())
+            {
+            Statement s = it.nextStatement();
+            if (other.contains( s )) result.add( s );    
             }
-            return resultModel;
-        } finally {
-            iter.close();
+        return result;
         }
-    }
-    
+
     public Model difference(Model model)  {
-        ModelMem resultModel = new ModelMem();
+        Model resultModel = createWorkModel();
         StmtIterator iter = null;
         Statement stmt;
         try {
@@ -1267,7 +1269,6 @@ implements Model, PrefixMapping, ModelLock
 		a read-only Model with all the statements of this Model and any
 		statements "hidden" by reification. That model is dynamic, ie
 		any changes this model will be reflected that one.
-		[TODO: Except this implementation delivers only a static Model]
 	*/    
     public Model getHiddenStatements()
         { return modelReifier.getHiddenStatements(); }

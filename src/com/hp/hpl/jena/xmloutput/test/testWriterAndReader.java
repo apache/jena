@@ -2,22 +2,20 @@
     (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.18 2003-08-27 13:11:17 andy_seaborne Exp $
+    $Id: testWriterAndReader.java,v 1.19 2003-09-09 10:58:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
 import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.shared.*;
-
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
 import java.io.*;
-
 import java.util.*;
+
 import junit.framework.*;
 import org.apache.log4j.Logger;
 
@@ -28,9 +26,10 @@ import org.apache.log4j.Logger;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2003-08-27 13:11:17 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2003-09-09 10:58:59 $'
  */
-public class testWriterAndReader extends TestCase implements RDFErrorHandler {
+public class testWriterAndReader 
+    extends ModelTestBase implements RDFErrorHandler {
 	static private boolean showProgress = false;
 	static private boolean keepFiles = false;
 	static private boolean errorDetail = false;
@@ -64,12 +63,15 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 			+ "000.rdf"
 			+ (options != 0 ? ("[" + options + "]") : "");
 	}
+    
 	static Test suite(String lang) {
 		return suite(lang, false);
 	}
+    
 	static public Test suite() {
 		return suite("special");
 	}
+    
 	static private boolean nBits(int i, int ok[]) {
 		int cnt = 0;
 		while (i > 0) {
@@ -82,6 +84,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 				return true;
 		return false;
 	}
+    
 	static Test suite(String lang, boolean lots) {
 		TestSuite langsuite = new TestSuite();
 		langsuite.setName(lang);
@@ -250,9 +253,11 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 		}, new Object[] {
 		});
 	}
+    
 	public void testLongId() throws IOException {
 		doTest(new String[] { "longId" }, new Object[] { new Boolean(true)});
 	}
+    
 	static Resource blockRules[] =
 		{
 			RDFSyntax.parseTypeLiteralPropertyElt,
@@ -272,10 +277,10 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 		v.copyInto(blocked);
 		doTest(new String[] { "blockRules" }, new Object[] { blocked });
 	}
+    
 	public void doTest(String[] propNames, Object[] propVals)
 		throws IOException {
 		test(lang, 35, 1, propNames, propVals);
-
 	}
 
 	static final String baseUris[] =
@@ -284,6 +289,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 			"http://foo.com/Hello",
 			"http://daml.umbc.edu/ontologies/calendar-ont",
 			"http://www.daml.org/2001/03/daml+oil-ex" };
+            
 	/**
 	 * 
 	 * @param rwLang Use Writer for this lang
@@ -300,10 +306,10 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 		Object[] wopVal)
 		throws IOException {
 
-		Model m1 = new ModelMem();
-		Model m2 = new ModelMem();
-		//  Model m3 = new ModelMem();
-		//  Model m4 = new ModelMem();
+		Model m1 = createMemModel();
+		Model m2 = createMemModel();
+		//  Model m3 = createMemModel();
+		//  Model m4 = createMemModel();
 		test = "testWriterAndReader lang=" + rwLang + " seed=" + seed;
 		String filebase = "modules/rdf/regression/testWriterAndReader/";
 		if (showProgress)
@@ -326,7 +332,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 		for (int jjj = 0; jjj < jjjMax; jjj++) {
 			//  System.out.println(tmpFile1.toString());
 			String fileName = "t" + (fileNumber * 1000) + ".rdf";
-			m1 = new ModelMem();
+			m1 = createMemModel();
 			String baseUriRead;
 			if (fileNumber < baseUris.length)
 				baseUriRead = baseUris[fileNumber];
@@ -355,7 +361,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 				OutputStream pw = new FileOutputStream(tmpFile1);
 				rdfWtr.write(m1, pw, baseUriWrite);
 				pw.close();
-				m2 = new ModelMem();
+				m2 = createMemModel();
 				//empty(m2);
 				InputStream in = new FileInputStream(tmpFile1);
 				rdfRdr.read(m2, in, baseUriWrite);
@@ -390,6 +396,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 		if (showProgress)
 			System.out.println("End of " + test);
 	}
+    
 	/**Deletes cnt edges from m chosen by random.
 	 * @param cnt The number of statements to delete.
 	 * @param m A model with more than cnt statements.
@@ -414,6 +421,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 			m.remove(die[i]);
 		//    System.out.println("Reduced to " + (int)m.size()  );
 	}
+    
 	/**
 	 *  Adds cnt edges to m chosen by random.
 	 *
@@ -471,6 +479,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 		logger.warn( toString() + " " + e.getMessage(), e );
 		throw new JenaException( e );
 	}
+    
 	public void error(Exception e) {
 		fail(e.getMessage());
 	}
@@ -483,6 +492,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 		error(e);
 		throw new JenaException(e);
 	}
+    
 	/*
 	static public void empty(Model m)  {
 	    StmtIterator iter = m.listStatements();
@@ -521,5 +531,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.18 2003-08-27 13:11:17 andy_seaborne Exp $
+ * $Id: testWriterAndReader.java,v 1.19 2003-09-09 10:58:59 chris-dollin Exp $
  */
