@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.33 2004-09-17 15:23:35 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.34 2004-09-20 07:10:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -156,11 +156,13 @@ public class SimpleReifier implements Reifier
             }
         else
             {
-            if (s.clashesWith( object, reified ))
-                {
+            if (s.clashedWith( fragmentsMap, object, reified )) 
                 tripleMap.removeTriple( tag, reified );
-                fragmentsMap.putAugmentedTriple( s, tag, object, reified );
-                }
+//            if (s.clashesWith( fragmentsMap, object, reified ))
+//                {
+//                tripleMap.removeTriple( tag, reified );
+//                fragmentsMap.putAugmentedTriple( s, tag, object, reified );
+//                }
             }
         }
 

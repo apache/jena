@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Fragments.java,v 1.12 2004-09-17 15:00:39 chris-dollin Exp $
+  $Id: Fragments.java,v 1.13 2004-09-20 07:10:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -36,7 +36,18 @@ public class Fragments
         Slot( int n ) 
             { which = n; }
         
-        public abstract boolean clashesWith( Node n, Triple reified );
+        public abstract boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified );
+        
+        public boolean clashedWith( ReifierFragmentsMap map, Node n, Triple reified )
+            {
+            if (clashesWith( map, n, reified ))
+                {
+                map.putAugmentedTriple( this, reified.getSubject(), n, reified );
+                return true;
+                }
+            else
+                return false;
+            }
         }
     
     /**
@@ -159,10 +170,10 @@ public class Fragments
         the magic numbers for the slots. The order doesn't matter, but that they're
         some permutation of {0, 1, 2, 3} does. 
     */
-    private static final Slot TYPES = new Slot(0) { public boolean clashesWith( Node n, Triple reified ) { return false; } };
-    private static final Slot SUBJECTS = new Slot(1) { public boolean clashesWith( Node n, Triple reified ) { return !n.equals( reified.getSubject() ); } };
-    private static final Slot PREDICATES = new Slot(2) { public boolean clashesWith( Node n, Triple reified ) { return !n.equals( reified.getPredicate() ); } };
-    private static final Slot OBJECTS = new Slot(3) { public boolean clashesWith( Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
+    private static final Slot TYPES = new Slot(0) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return false; } };
+    private static final Slot SUBJECTS = new Slot(1) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getSubject() ); } };
+    private static final Slot PREDICATES = new Slot(2) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getPredicate() ); } };
+    private static final Slot OBJECTS = new Slot(3) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
 
     public static final Map selectors = makeSelectors();
           
