@@ -1,30 +1,40 @@
 Release Notes
 =============
 
-Jena2-pre4 (June 2003)
+Jena2-beta1 (July 2003)
 
 Fourth preview release of Jena2.
 
-It is a preview release, not intended for serious development.  Developers
-are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
+This is Jena 2.0 beta1 - it begins the process of releasing Jena 2.0. This
+version follows on from preview4 and includes support for PostreSQL and
+Oracle as database-nbacked persistent RDF stores.
 
-This release adds a substantially revised and improved ontology API along
-with improved reasoning support for RDFS and many small improvements to 
-the graph SPI.
+Most functionality from Jena1 (core RDF API, readers and writers for
+RDF/XML, N-Triples and N3,together with RDQL) is stable in Jena2 although
+no BerkeleyDB persistence is currently provided.  Jena2 adds new
+functionality with an ontology API, including OWL, a reasoner plug-in
+architecture together with rule-based reasoners for RDFS and OWL.
 
+Database:
 
-Ontology API:
+The database layout has changed from preview 3 based on feedback and
+further experimentation. The new layout supports long URIs and enables
+models to share database tables. See <Jena>/doc/DB/index.html for more
+information. Note that existing Jena databases (including preview 3)
+cannot be accessed by preview 4. It will be necessary to dump and
+rebuild them.
 
-The Jena2 ontology API has now stabilised into something close to its
-final form.  The main package in com.hp.hpl.jena.ontology is mostly 
-complete, except for Java classes to directly represent an axiom-centric
-view of the ontology rather than an object-centric view.  The Jena1 DAML
-API has been migrated to the new ontology API structure, and appears as
-com.hp.hpl.jena.ontology.daml. Some migration steps of the old API remain 
-to be completed, so the DAML subsystem should used with care. Note that
-the main ontology API will also handle DAML+OIL ontologies; the legacy API
-is included to assist Jena1 DAML users to adapt their code to Jena2. New
-users are recommended to use the main ontology API exclusively.
+Ontology:
+
+The main package in com.hp.hpl.jena.ontology is mostly complete, except for
+Java classes to directly represent an axiom-centric view of the ontology
+rather than an object-centric view.  The Jena1 DAML API has been migrated
+to the new ontology API structure, and appears as
+com.hp.hpl.jena.ontology.daml. Some migration steps of the old API remain
+to be completed, so the DAML subsystem should used with care. Note that the
+main ontology API will also handle DAML+OIL ontologies; the legacy API is
+included to assist Jena1 DAML users to adapt their code to Jena2. New users
+are recommended to use the main ontology API exclusively.
 
 The default reasoner for all ontology models is currently the RDFS reasoner.
 Please see the documentation in
@@ -44,12 +54,3 @@ OWL/Lite subset of OWL/full. This implementation is not yet stable or scalable
 and is not recommended for non-trivial use at this stage.
 
 Some early documentation is in <Jena>/doc/user-manual/inference.
-
-Database:
-
-The database layout has changed from preview 3 based on feedback and
-further experimentation. The new layout supports long URIs and enables
-models to share database tables. See <Jena>/doc/DB/index.html for more
-information. Note that existing Jena databases (including preview 3)
-cannot be accessed by preview 4. It will be necessary to dump and
-rebuild them.
