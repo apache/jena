@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: TestAxioms.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 17:34:21 $
+ * Last modified on   $Date: 2003-05-30 14:16:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -36,10 +36,10 @@ import junit.framework.TestSuite;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAxioms.java,v 1.3 2003-05-27 17:34:21 ian_dickinson Exp $
+ * @version CVS $Id: TestAxioms.java,v 1.4 2003-05-30 14:16:45 ian_dickinson Exp $
  */
 public class TestAxioms
-    extends PathTestCase 
+    extends OntTestBase 
 {
     // Constants
     //////////////////////////////////
@@ -65,47 +65,14 @@ public class TestAxioms
     }
     
     public static TestSuite suite() {
-        return new TestAxioms( "TestAxioms" ).getSuite();
+        return new TestAxioms( "TestAxioms" );
     }
     
     
-    /** Fields are testID, pathset, property, profileURI, sourceData, expected, count, valueURI, rdfTypeURI, valueLit */
-    protected Object[][] psTestData() {
-        return new Object[][] {
-/*            {   
-                "OWL AllDifferent.distinctMembers",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        Resource r = m.listSubjectsWithProperty( RDF.type, m.getProfile().ALL_DIFFERENT() ).nextResource();
-                        return ((AllDifferent) r.as( AllDifferent.class )).p_distinctMembers(); } 
-                },
-                OWL.distinctMembers,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Axioms/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                OWL.List,
-                null
-            },
-            {   
-                "DAML AllDifferent.distinctMembers",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        Resource r = m.createResource();  // there's no resource of rdf:type AllDifferent in the test file
-                        return ((AllDifferent) r.as( AllDifferent.class )).p_distinctMembers(); } 
-                },
-                OWL.distinctMembers,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Axioms/test.rdf",
-                F,
-                null,
-                null,
-                null,
-                null
-            },*/
+    public OntTestCase[] getTests() {
+        return new OntTestCase[] {
         };
-    }
+    }    
     
     
     // Internal implementation methods

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-28 16:26:21 $
+ * Last modified on   $Date: 2003-05-30 14:16:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.12 2003-05-28 16:26:21 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.13 2003-05-30 14:16:45 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -227,36 +227,164 @@ public class TestClassExpression
 					assertTrue( "A should not have B in the union", !A.hasOperand( B ) );
 				}
 			},
-			new OntTestCase( "ComplementClass.complementOf", true, false, true ) {
-				public void ontTest( OntModel m ) throws Exception {
-					Profile prof = m.getProfile();
-					ComplementClass A = m.createComplementClass( NS + "A", null );
-					OntClass B = m.createClass( NS + "B" );
-					OntClass C = m.createClass( NS + "C" );
-					boolean ex = false;
+            new OntTestCase( "ComplementClass.complementOf", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    ComplementClass A = m.createComplementClass( NS + "A", null );
+                    OntClass B = m.createClass( NS + "B" );
+                    OntClass C = m.createClass( NS + "C" );
+                    boolean ex = false;
                     
-					try { A.addOperand( B ); } catch (UnsupportedOperationException e) {ex = true;}
-					assertTrue( "Should fail to add to a complement", ex );
+                    try { A.addOperand( B ); } catch (UnsupportedOperationException e) {ex = true;}
+                    assertTrue( "Should fail to add to a complement", ex );
                     
-					ex = false;
-					try { A.addOperands( new ArrayList().iterator() ); } catch (UnsupportedOperationException e) {ex = true;}
-					assertTrue( "Should fail to add to a complement", ex );
+                    ex = false;
+                    try { A.addOperands( new ArrayList().iterator() ); } catch (UnsupportedOperationException e) {ex = true;}
+                    assertTrue( "Should fail to add to a complement", ex );
                     
-					ex = false;
-					try { A.setOperands( m.createList( new RDFNode[] {C} ) ); } catch (UnsupportedOperationException e) {ex = true;}
-					assertTrue( "Should fail to set a list to a complement", ex );
+                    ex = false;
+                    try { A.setOperands( m.createList( new RDFNode[] {C} ) ); } catch (UnsupportedOperationException e) {ex = true;}
+                    assertTrue( "Should fail to set a list to a complement", ex );
                     
-					A.setOperand( B );
-					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
-					assertEquals( "Complement should be B", B, A.getOperand() );
-					iteratorTest( A.listOperands(), new Object[] {B} );
+                    A.setOperand( B );
+                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
+                    assertEquals( "Complement should be B", B, A.getOperand() );
+                    iteratorTest( A.listOperands(), new Object[] {B} );
                     
-					A.setOperand( C );
-					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
-					assertTrue( "A should have C in the complement", A.hasOperand( C ) );
-					assertTrue( "A should not have B in the complement", !A.hasOperand( B ) );
-				}
-			},
+                    A.setOperand( C );
+                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
+                    assertTrue( "A should have C in the complement", A.hasOperand( C ) );
+                    assertTrue( "A should not have B in the complement", !A.hasOperand( B ) );
+                }
+            },
+            new OntTestCase( "Restriction.onProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntProperty q = m.createObjectProperty( NS + "q" );
+                    OntClass B = m.createClass( NS + "B" );
+
+                    Restriction A = m.createAllValuesFromRestriction( NS + "A", p, B  );
+                    
+                    assertEquals( "Restriction should be on property p", p, A.getOnProperty() );
+                    assertTrue( "Restriction should be on property p", A.onProperty( p ) );
+                    assertTrue( "Restriction should not be on property q", !A.onProperty( q ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ON_PROPERTY() ));
+                    
+                    A.setOnProperty( q );
+
+                    assertEquals( "Restriction should be on property q", q, A.getOnProperty() );
+                    assertTrue( "Restriction should not be on property p", !A.onProperty( p ) );
+                    assertTrue( "Restriction should not on property q", A.onProperty( q ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ON_PROPERTY() ));
+                }
+            },
+            new OntTestCase( "AllValuesFromRestriction.allValuesFrom", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntClass B = m.createClass( NS + "B" );
+                    OntClass C = m.createClass( NS + "C" );
+
+                    AllValuesFromRestriction A = m.createAllValuesFromRestriction( NS + "A", p, B  );
+                    
+                    assertEquals( "Restriction should be all values from B", B, A.getAllValuesFrom() );
+                    assertTrue( "Restriction should be all values from B", A.hasAllValuesFrom( B ) );
+                    assertTrue( "Restriction should not be all values from C", !A.hasAllValuesFrom( C ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    
+                    A.setAllValuesFrom( C );
+
+                    assertEquals( "Restriction should be all values from C", C, A.getAllValuesFrom() );
+                    assertTrue( "Restriction should not be all values from B", !A.hasAllValuesFrom( B ) );
+                    assertTrue( "Restriction should be all values from C", A.hasAllValuesFrom( C ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    
+                }
+            },
+            new OntTestCase( "SomeValuesFromRestriction.someValuesFrom", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntClass B = m.createClass( NS + "B" );
+                    OntClass C = m.createClass( NS + "C" );
+
+                    SomeValuesFromRestriction A = m.createSomeValuesFromRestriction( NS + "A", p, B  );
+                    
+                    assertEquals( "Restriction should be some values from B", B, A.getSomeValuesFrom() );
+                    assertTrue( "Restriction should be some values from B", A.hasSomeValuesFrom( B ) );
+                    assertTrue( "Restriction should not be some values from C", !A.hasSomeValuesFrom( C ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    
+                    A.setSomeValuesFrom( C );
+
+                    assertEquals( "Restriction should be some values from C", C, A.getSomeValuesFrom() );
+                    assertTrue( "Restriction should not be some values from B", !A.hasSomeValuesFrom( B ) );
+                    assertTrue( "Restriction should be some values from C", A.hasSomeValuesFrom( C ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    
+                }
+            },
+            new OntTestCase( "CardinalityRestriction.cardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+
+                    CardinalityRestriction A = m.createCardinalityRestriction( NS + "A", p, 3  );
+                    
+                    assertEquals( "Restriction should be cardinality 3", 3, A.getCardinality() );
+                    assertTrue( "Restriction should be cardinality 3", A.hasCardinality( 3 ) );
+                    assertTrue( "Restriction should not be cardinality 2", !A.hasCardinality( 2 ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.CARDINALITY() ));
+                    
+                    A.setCardinality( 2 );
+
+                    assertEquals( "Restriction should be cardinality 2", 2, A.getCardinality() );
+                    assertTrue( "Restriction should not be cardinality 3", !A.hasCardinality( 3 ) );
+                    assertTrue( "Restriction should be cardinality 2", A.hasCardinality( 2 ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.CARDINALITY() ));
+                }
+            },
+            new OntTestCase( "MinCardinalityRestriction.minCardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+
+                    MinCardinalityRestriction A = m.createMinCardinalityRestriction( NS + "A", p, 3  );
+                    
+                    assertEquals( "Restriction should be min cardinality 3", 3, A.getMinCardinality() );
+                    assertTrue( "Restriction should be min cardinality 3", A.hasMinCardinality( 3 ) );
+                    assertTrue( "Restriction should not be min cardinality 2", !A.hasMinCardinality( 2 ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MIN_CARDINALITY() ));
+                    
+                    A.setMinCardinality( 2 );
+
+                    assertEquals( "Restriction should be min cardinality 2", 2, A.getMinCardinality() );
+                    assertTrue( "Restriction should not be min cardinality 3", !A.hasMinCardinality( 3 ) );
+                    assertTrue( "Restriction should be min cardinality 2", A.hasMinCardinality( 2 ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MIN_CARDINALITY() ));
+                }
+            },
+            new OntTestCase( "MaxCardinalityRestriction.maxCardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+
+                    MaxCardinalityRestriction A = m.createMaxCardinalityRestriction( NS + "A", p, 3  );
+                    
+                    assertEquals( "Restriction should be max cardinality 3", 3, A.getMaxCardinality() );
+                    assertTrue( "Restriction should be max cardinality 3", A.hasMaxCardinality( 3 ) );
+                    assertTrue( "Restriction should not be max cardinality 2", !A.hasMaxCardinality( 2 ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MAX_CARDINALITY() ));
+                    
+                    A.setMaxCardinality( 2 );
+
+                    assertEquals( "Restriction should be max cardinality 2", 2, A.getMaxCardinality() );
+                    assertTrue( "Restriction should not be max cardinality 3", !A.hasMaxCardinality( 3 ) );
+                    assertTrue( "Restriction should be max cardinality 2", A.hasMaxCardinality( 2 ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MAX_CARDINALITY() ));
+                }
+            },
             
             // from file
             new OntTestCase( "OntClass.subclass.fromFile", true, true, true ) {
