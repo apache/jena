@@ -58,7 +58,14 @@ must be reloaded. Little performance tuning has been done.</p>
 It uses a different layout than Jena1 that enables faster insertion and 
 retrieval but uses more storage than Jena1. It is largely backwards-compatible 
 for Jena1 applications with the exception of some database configuration 
-options.</p>
+options. The persistence subsystem supports a Fastpath capability for RDQL 
+queries. This dynamically generates SQL queries to perform as much of the RDQL 
+query as possible within the database engine. For an overview of creating and 
+accessing persistent Jena models, see <a href="howto.html">howto.html</a>. A 
+summary of the various configuration options available is given in
+<a href="options.html">options.html</a>. Known issues and open problems are 
+summarized in&nbsp;
+  <a href="issues.html">issues.html</a>.</p>
 
 
 
@@ -83,11 +90,6 @@ options.</p>
     reification with a property-class table but this capability should be 
     generalized to support user-defined property and property class tables.</li>
 </ul>
-
-
-
-  <p>A list of open issues and known problems with the current release is in
-  <a href="issues.html">issues.html</a>.</p>
 
 
 
@@ -156,7 +158,7 @@ options.</p>
 
 
 
-  <p>There are some changes to the API. <font face="Courier New" size="2">Some ModelRDB</font> 
+  <p>There are some changes to the API. <font face="Courier New" size="2">The ModelRDB</font> 
   constructors are deprecated and applications should consider migrating to new factory 
   methods for creating and opening persistent models (see
   <a href="#migrating">below</a>). The <font face="Courier New" size="2">ModelRDB</font> 
@@ -260,7 +262,10 @@ options.</p>
   <a href="options.html">DoDuplicateCheck</a> &nbsp;may be used to disable checking for duplicate statements on 
   insertion. Another option is to manually delete the database indexes and then 
   recreate them after the loading has completed. Unfortunately, Jena2 does not 
-  currently support a utility to do this on behalf of users.</p>
+  currently support a utility to do this on behalf of users. We cannot provide 
+  any guidance on the benefit of deleting and recreating the indexes and mention 
+  it only as an option users may wish to try if load performance cannot be 
+  improved with other techniques.</p>
 
 
 
