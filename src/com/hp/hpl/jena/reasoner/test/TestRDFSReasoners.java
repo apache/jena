@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  19-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.12 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: TestRDFSReasoners.java,v 1.13 2004-12-07 09:56:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-12-08 10:48:27 $
+ * @version $Revision: 1.13 $ on $Date: 2004-12-07 09:56:37 $
  */
 public class TestRDFSReasoners extends ReasonerTestBase {
     
@@ -286,7 +286,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

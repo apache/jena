@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AddOne.java,v 1.5 2003-10-05 15:35:49 der Exp $
+ * $Id: AddOne.java,v 1.6 2004-12-07 09:53:54 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Bind the second argument to 1+ the first argument. Just used for testing builtins.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-10-05 15:35:49 $
+ * @version $Revision: 1.6 $ on $Date: 2004-12-07 09:53:54 $
  */
 public class AddOne extends BaseBuiltin {
 
@@ -64,7 +64,7 @@ public class AddOne extends BaseBuiltin {
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  05-May-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BBRuleContext.java,v 1.8 2003-08-27 13:09:19 andy_seaborne Exp $
+ * $Id: BBRuleContext.java,v 1.9 2004-12-07 09:56:32 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * interpret variable bindings to access the static triple data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-27 13:09:19 $
+ * @version $Revision: 1.9 $ on $Date: 2004-12-07 09:56:32 $
  */
 public class BBRuleContext implements RuleContext {
     
@@ -142,7 +142,7 @@ public class BBRuleContext implements RuleContext {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  16-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleReasonerFactory.java,v 1.10 2004-11-30 16:10:15 chris-dollin Exp $
+ * $Id: RDFSRuleReasonerFactory.java,v 1.11 2004-12-07 09:56:29 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * with TGC support.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2004-11-30 16:10:15 $
+ * @version $Revision: 1.11 $ on $Date: 2004-12-07 09:56:29 $
  */
 public class RDFSRuleReasonerFactory implements ReasonerFactory {
     
@@ -79,7 +79,7 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

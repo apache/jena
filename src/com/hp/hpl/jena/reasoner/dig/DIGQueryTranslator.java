@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-01 15:22:07 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-12-07 09:56:36 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  * ****************************************************************************/
 
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPathElement;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.13 2004-11-01 15:22:07 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.14 2004-12-07 09:56:36 andy_seaborne Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -434,7 +434,7 @@ public abstract class DIGQueryTranslator {
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  11-May-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Bound.java,v 1.5 2003-10-05 15:35:49 der Exp $
+ * $Id: Bound.java,v 1.6 2004-12-07 09:53:54 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Predicate used to check if a variable has been bound.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-10-05 15:35:49 $
+ * @version $Revision: 1.6 $ on $Date: 2004-12-07 09:53:54 $
  */
 public class Bound extends BaseBuiltin  {
 
@@ -51,7 +51,7 @@ public class Bound extends BaseBuiltin  {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

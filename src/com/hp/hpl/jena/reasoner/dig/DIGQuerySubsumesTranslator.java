@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQuerySubsumesTranslator.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-12 15:56:00 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-12-07 09:56:36 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  * ****************************************************************************/
 
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQuerySubsumesTranslator.java,v 1.7 2004-05-12 15:56:00 ian_dickinson Exp $
+ * @version CVS $Id: DIGQuerySubsumesTranslator.java,v 1.8 2004-12-07 09:56:36 andy_seaborne Exp $
  */
 public class DIGQuerySubsumesTranslator 
     extends DIGQueryTranslator
@@ -146,7 +146,7 @@ public class DIGQuerySubsumesTranslator
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

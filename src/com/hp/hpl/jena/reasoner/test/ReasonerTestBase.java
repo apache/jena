@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ReasonerTestBase.java,v 1.1 2003-09-09 14:24:43 chris-dollin Exp $
+  $Id: ReasonerTestBase.java,v 1.2 2004-12-07 09:56:37 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.reasoner.test;
@@ -31,7 +31,7 @@ public class ReasonerTestBase extends ModelTestBase
     }
 
 /*
-    (c) Copyright 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

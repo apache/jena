@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETESinkNode.java,v 1.3 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RETESinkNode.java,v 1.4 2004-12-07 09:56:32 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -15,7 +15,7 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * if we don't overlap the networks for different rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.4 $ on $Date: 2004-12-07 09:56:32 $
  */
 public interface RETESinkNode extends RETENode {
 
@@ -31,7 +31,7 @@ public interface RETESinkNode extends RETENode {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

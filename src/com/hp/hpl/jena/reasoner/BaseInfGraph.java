@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  18-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.38 2004-11-29 16:31:15 der Exp $
+ * $Id: BaseInfGraph.java,v 1.39 2004-12-07 09:56:29 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.38 $ on $Date: 2004-11-29 16:31:15 $
+ * @version $Revision: 1.39 $ on $Date: 2004-12-07 09:56:29 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -412,7 +412,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

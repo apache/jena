@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  23-Sep-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: ListContains.java,v 1.3 2003-12-04 14:08:21 der Exp $
+ * $Id: ListContains.java,v 1.4 2004-12-07 09:53:54 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * Can't be used as a generator.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-12-04 14:08:21 $
+ * @version $Revision: 1.4 $ on $Date: 2004-12-07 09:53:54 $
  */
 public class ListContains extends BaseBuiltin {
 

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  06-Apr-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSForwardRuleReasoner.java,v 1.4 2004-11-29 16:39:01 der Exp $
+ * $Id: RDFSForwardRuleReasoner.java,v 1.5 2004-12-07 09:56:28 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * chainer. Second, if you want all the RDFS entailments for an entire 
  * dataset the forward chainer will be more efficient.
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> 
- * @version $Revision: 1.4 $ on $Date: 2004-11-29 16:39:01 $ */
+ * @version $Revision: 1.5 $ on $Date: 2004-12-07 09:56:28 $ */
 
 public class RDFSForwardRuleReasoner extends GenericRuleReasoner {    
     /** The location of the OWL rule definitions on the class path */
@@ -64,7 +64,7 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

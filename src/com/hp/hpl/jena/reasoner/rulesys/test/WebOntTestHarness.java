@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-Sep-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.21 2003-12-06 11:59:53 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.22 2004-12-07 09:56:35 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-12-06 11:59:53 $
+ * @version $Revision: 1.22 $ on $Date: 2004-12-07 09:56:35 $
  */
 public class WebOntTestHarness {
 

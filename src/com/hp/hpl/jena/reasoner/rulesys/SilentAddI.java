@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  02-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: SilentAddI.java,v 1.2 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: SilentAddI.java,v 1.3 2004-12-07 09:56:29 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.Triple;
  * any processing machinery.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.3 $ on $Date: 2004-12-07 09:56:29 $
  */
 public interface SilentAddI {
     
@@ -30,7 +30,7 @@ public interface SilentAddI {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

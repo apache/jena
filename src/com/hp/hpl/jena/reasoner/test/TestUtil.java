@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  14-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.14 2004-11-25 17:32:36 der Exp $
+ * $Id: TestUtil.java,v 1.15 2004-12-07 09:56:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2004-11-25 17:32:36 $
+ * @version $Revision: 1.15 $ on $Date: 2004-12-07 09:56:37 $
  */
 public class TestUtil {
     
@@ -143,7 +143,7 @@ public class TestUtil {
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

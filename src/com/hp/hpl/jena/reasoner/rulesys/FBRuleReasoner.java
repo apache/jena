@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  29-May-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.16 2004-11-29 16:39:00 der Exp $
+ * $Id: FBRuleReasoner.java,v 1.17 2004-12-07 09:56:28 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2004-11-29 16:39:00 $
+ * @version $Revision: 1.17 $ on $Date: 2004-12-07 09:56:28 $
  */
 public class FBRuleReasoner implements RuleReasoner {
     
@@ -389,7 +389,7 @@ public class FBRuleReasoner implements RuleReasoner {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Jul-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTrialOWLRules.java,v 1.8 2003-08-27 13:11:16 andy_seaborne Exp $
+ * $Id: TestTrialOWLRules.java,v 1.9 2004-12-07 09:56:35 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * included in the master regression test suite.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-27 13:11:16 $
+ * @version $Revision: 1.9 $ on $Date: 2004-12-07 09:56:35 $
  */
 public class TestTrialOWLRules extends TestCase {
 
@@ -217,7 +217,7 @@ public class TestTrialOWLRules extends TestCase {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

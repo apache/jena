@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  16-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.18 2004-11-29 16:39:00 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.19 2004-12-07 09:56:38 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * in any query. Any of tbox or data graph are allowed to be null.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2004-11-29 16:39:00 $
+ * @version $Revision: 1.19 $ on $Date: 2004-12-07 09:56:38 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -241,7 +241,7 @@ public class TransitiveReasoner implements Reasoner {
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

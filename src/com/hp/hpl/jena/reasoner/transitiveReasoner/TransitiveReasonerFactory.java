@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  19-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveReasonerFactory.java,v 1.11 2003-09-09 14:41:08 chris-dollin Exp $
+ * $Id: TransitiveReasonerFactory.java,v 1.12 2004-12-07 09:56:38 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.reasoner.*;
  * Factory class for creating blank instances of the transitive reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-09-09 14:41:08 $
+ * @version $Revision: 1.12 $ on $Date: 2004-12-07 09:56:38 $
  */
 public class TransitiveReasonerFactory implements ReasonerFactory {
     
@@ -77,7 +77,7 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

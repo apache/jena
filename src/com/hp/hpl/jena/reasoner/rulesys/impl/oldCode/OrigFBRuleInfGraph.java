@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-May-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OrigFBRuleInfGraph.java,v 1.4 2004-11-01 16:38:29 chris-dollin Exp $
+ * $Id: OrigFBRuleInfGraph.java,v 1.5 2004-12-07 09:56:31 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2004-11-01 16:38:29 $
+ * @version $Revision: 1.5 $ on $Date: 2004-12-07 09:56:31 $
  */
 public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -668,7 +668,7 @@ public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements Bac
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

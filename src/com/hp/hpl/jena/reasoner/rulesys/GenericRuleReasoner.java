@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.20 2004-12-01 12:16:06 chris-dollin Exp $
+ * $Id: GenericRuleReasoner.java,v 1.21 2004-12-07 09:56:28 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2004-12-01 12:16:06 $
+ * @version $Revision: 1.21 $ on $Date: 2004-12-07 09:56:28 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -403,7 +403,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
