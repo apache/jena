@@ -8,7 +8,7 @@ import com.hp.hpl.jena.graph.*;
 /**
     RDFS vocabulary items
     @author  bwm, updated by kers/daniel/christopher
-    @version $Id: RDFS.java,v 1.10 2003-08-27 13:08:11 andy_seaborne Exp $
+    @version $Id: RDFS.java,v 1.11 2005-02-18 15:43:58 chris-dollin Exp $
  */
 public class RDFS {
 
@@ -41,7 +41,7 @@ public class RDFS {
     public static final Property member  = property( "member");
 
     /**
-        The RDFS vocabulary, expressed for the SPI layer in terms of .grap.Nodes.
+        The RDFS vocabulary, expressed for the SPI layer in terms of .graph Nodes.
     */
     public static class Nodes
         {
