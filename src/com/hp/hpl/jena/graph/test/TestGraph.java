@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.20 2004-03-24 09:37:05 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.21 2004-06-30 12:57:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -15,6 +15,7 @@ package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
@@ -80,7 +81,7 @@ public class TestGraph extends GraphTestBase
             };
         
         ExtendedIterator subjects = g.queryHandler().subjectsFor( null, null );
-        Set s = new HashSet();
+        Set s = HashUtils.createSet();
         while (subjects.hasNext()) s.add( subjects.next() );
         assertFalse( "find should not have been called", called[0] );
         }   
@@ -96,7 +97,7 @@ public class TestGraph extends GraphTestBase
             };
         
         ExtendedIterator subjects = g.queryHandler().objectsFor( null, null );
-        Set s = new HashSet();
+        Set s = HashUtils.createSet();
         while (subjects.hasNext()) s.add( subjects.next() );
         assertFalse( "find should not have been called", called[0] );
         }   

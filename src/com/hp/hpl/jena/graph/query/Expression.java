@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.20 2004-03-25 13:29:20 chris-dollin Exp $
+  $Id: Expression.java,v 1.21 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import java.util.*;
+
+import com.hp.hpl.jena.util.HashUtils;
 
 /**
 	Expression - the interface for expressions that is expected by Query for 
@@ -150,7 +152,7 @@ public interface Expression
             <code>e</code>.
         */
         public static Set variablesOf( Expression e )
-            { return addVariablesOf( new HashSet(), e ); }
+            { return addVariablesOf( HashUtils.createSet(), e ); }
         
         /**
             Add all the variables of <code>e</code> to <code>s</code>, and answer

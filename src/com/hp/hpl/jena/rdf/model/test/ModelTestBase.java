@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.24 2004-06-23 15:23:00 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.25 2004-06-30 12:58:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -11,6 +11,7 @@ import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.HashUtils;
 
 import java.util.*;
 
@@ -173,7 +174,7 @@ public class ModelTestBase extends GraphTestBase
         {
         if (wanted.isIsomorphicWith( got ) == false)
             {
-            Map map = new HashMap();
+            Map map = HashUtils.createMap();
             fail( title + ": expected " + nice( wanted.getGraph(), map ) + "\n but had " + nice( got.getGraph(), map ) );
             }
         }        

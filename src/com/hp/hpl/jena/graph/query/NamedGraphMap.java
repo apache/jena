@@ -1,14 +1,15 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NamedGraphMap.java,v 1.1 2003-10-07 06:27:02 chris-dollin Exp $
+  $Id: NamedGraphMap.java,v 1.2 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
-import java.util.HashMap;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.util.HashUtils;
 
 /**
     a mapping from from names to Graphs.
@@ -17,7 +18,7 @@ public class NamedGraphMap
     {
     NamedGraphMap() {}      
     
-    private HashMap map = new HashMap();    
+    private Map map = HashUtils.createMap();    
     
     /**
         Add a named graph to the map and return this map.

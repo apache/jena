@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Union.java,v 1.4 2003-08-27 13:01:01 andy_seaborne Exp $
+  $Id: Union.java,v 1.5 2004-06-30 12:57:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -48,7 +49,7 @@ public class Union extends Dyadic implements Graph
     */
 	public ExtendedIterator find( final TripleMatch t ) 
 	    {
-	    HashSet seen = new HashSet();
+	    Set seen = HashUtils.createSet();
 	    return recording( L.find( t ), seen ).andThen( rejecting( R.find( t ), seen ) ); 
 		}
 	}

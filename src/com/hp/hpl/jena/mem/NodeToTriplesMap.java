@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.5 2004-03-18 15:36:21 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.6 2004-06-30 12:58:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,27 +9,28 @@ package com.hp.hpl.jena.mem;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 
 /**
 	NodeToTriplesMap: a map from nodes to sets of triples.
 	@author kers
 */
-public class NodeToTriplesMap 
+public final class NodeToTriplesMap 
     {
-    HashMap map = new HashMap();
+    private Map map = HashUtils.createMap();
     
     public Iterator domain()
         { return map.keySet().iterator(); }
     
     public void add( Node o, Triple t ) {
-        HashSet s = (HashSet) map.get( o );
-        if (s == null) map.put( o, s = new HashSet() );
+        Set s = (Set) map.get( o );
+        if (s == null) map.put( o, s = HashUtils.createSet() );
         s.add( t ); 
     }
 
     public void remove(Node o, Triple t ) {
-        HashSet s = (HashSet) map.get( o );
+        Set s = (Set) map.get( o );
         if (s != null) {
             s.remove( t );
             if (s.isEmpty()) map.put( o, null );
@@ -37,7 +38,7 @@ public class NodeToTriplesMap
     }
 
     public Iterator iterator(Node o) {
-        HashSet s = (HashSet) map.get( o );
+        Set s = (Set) map.get( o );
         return s == null ? NullIterator.instance :  s.iterator();
         }
     }

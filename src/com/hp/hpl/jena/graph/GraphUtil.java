@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphUtil.java,v 1.5 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: GraphUtil.java,v 1.6 2004-06-30 12:57:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
@@ -39,7 +40,7 @@ public class GraphUtil
     */
     public static Set iteratorToSet( Iterator i )
         {
-        Set result = new HashSet();
+        Set result = HashUtils.createSet();
         while (i.hasNext()) result.add( i.next() );
         return result;
         }

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleTreeQueryPlan.java,v 1.5 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: SimpleTreeQueryPlan.java,v 1.6 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.mem.*;
 import java.util.*;
@@ -28,8 +29,8 @@ public class SimpleTreeQueryPlan implements TreeQueryPlan
 	public Graph executeTree() 
 		{ 
 		Graph result = new GraphMem();
-		HashSet roots = getRoots( pattern );
-		for (Iterator it = roots.iterator(); it.hasNext(); handleRoot( result, (Node) it.next(), new HashSet())) {}
+		Set roots = getRoots( pattern );
+		for (Iterator it = roots.iterator(); it.hasNext(); handleRoot( result, (Node) it.next(), HashUtils.createSet())) {}
 		return result;
 		}
 		
@@ -41,7 +42,7 @@ public class SimpleTreeQueryPlan implements TreeQueryPlan
 	private Node asPattern( Node x )
 		{ return x.isBlank() ? null : x; }
 		
-	private void handleRoot( Graph result, Node root, HashSet pending )
+	private void handleRoot( Graph result, Node root, Set pending )
 		{
 		ClosableIterator it = pattern.find( root, null, null );
 		if (!it.hasNext())
@@ -62,15 +63,15 @@ public class SimpleTreeQueryPlan implements TreeQueryPlan
 			}
 		}
 		
-	private void absorb( Graph result, HashSet triples )
+	private void absorb( Graph result, Set triples )
 		{
 		for (Iterator it = triples.iterator(); it.hasNext(); result.add( (Triple) it.next())) {}
 		triples.clear(); 
 		}
 		
-	public static HashSet getRoots( Graph pattern )
+	public static Set getRoots( Graph pattern )
 		{
-		HashSet roots = new HashSet();
+		Set roots = HashUtils.createSet();
 		ClosableIterator sub = GraphUtil.findAll( pattern );
 		while (sub.hasNext()) roots.add( ((Triple) sub.next()).getSubject() );
 		ClosableIterator obj = GraphUtil.findAll( pattern );

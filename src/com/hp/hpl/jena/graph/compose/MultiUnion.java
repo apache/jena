@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-28 14:43:15 $
+ * Last modified on   $Date: 2004-06-30 12:57:57 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.graph.compose;
 ///////////////
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -39,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.12 2004-06-28 14:43:15 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.13 2004-06-30 12:57:57 chris-dollin Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -178,7 +179,7 @@ public class MultiUnion
         }
         else {
             // start building the iterator chain
-            Set seen = new HashSet();
+            Set seen = HashUtils.createSet();
             ExtendedIterator i = null;
             
             // now add the rest of the chain

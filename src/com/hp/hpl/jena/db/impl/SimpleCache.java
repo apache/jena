@@ -14,6 +14,8 @@ package com.hp.hpl.jena.db.impl;
 // Imports
 import java.util.*;
 
+import com.hp.hpl.jena.util.HashUtils;
+
 
 //=======================================================================
 /**
@@ -22,13 +24,13 @@ import java.util.*;
 * when the threshold limit is exceeded.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.2 $ on $Date: 2003-08-27 12:56:40 $
+* @version $Revision: 1.3 $ on $Date: 2004-06-30 12:56:57 $
 */
 
 public class SimpleCache implements ICache {
 
     /** The cache itself */
-    protected Map cache = new HashMap();
+    protected Map cache = HashUtils.createMap();
 
     /** The current size limit */
     protected int threshold;
@@ -54,7 +56,7 @@ public class SimpleCache implements ICache {
     public void put(IDBID id, Object val) {
         if (threshold == 0) return;
         if (threshold > 0 && count >= threshold) {
-            cache = new HashMap();
+            cache = HashUtils.createMap();
             count = 0;
         }
         count++;
@@ -81,7 +83,7 @@ public class SimpleCache implements ICache {
     public void setLimit(int threshold) {
         this.threshold = threshold;
         if (threshold >= 0 && count > threshold) {
-            cache = new HashMap();
+            cache = HashUtils.createMap();
             count = 0;
         }
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Fragments.java,v 1.7 2004-04-22 12:42:27 chris-dollin Exp $
+  $Id: Fragments.java,v 1.8 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -35,7 +36,8 @@ public class Fragments
         predicates. The slots are array elements because, sadly, it's easier to dynamically
         choose a slot by number than any other way I could think of.
     */
-    private final Set [] slots = {new HashSet(), new HashSet(), new HashSet(), new HashSet()};
+    private final Set [] slots = 
+        {HashUtils.createSet(), HashUtils.createSet(), HashUtils.createSet(), HashUtils.createSet()};
     
     /**
         the Node the fragments are about. 
@@ -166,14 +168,14 @@ public class Fragments
     private static final int PREDICATES = 2;
     private static final int OBJECTS = 3;
 
-    private static final HashMap selectors = makeSelectors();
+    private static final Map selectors = makeSelectors();
           
     /**
         make the selector mapping.
     */
-    private static HashMap makeSelectors()
+    private static Map makeSelectors()
         {
-        HashMap result = new HashMap();
+        Map result = HashUtils.createMap();
         result.put( RDF.Nodes.subject, new Integer( Fragments.SUBJECTS ) );
         result.put( RDF.Nodes.predicate, new Integer( Fragments.PREDICATES ) );
         result.put( RDF.Nodes.object, new Integer( Fragments.OBJECTS ) );

@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentMap.java,v 1.6 2004-04-22 12:42:27 chris-dollin Exp $
+  $Id: FragmentMap.java,v 1.7 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
-
-import java.util.HashMap;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;

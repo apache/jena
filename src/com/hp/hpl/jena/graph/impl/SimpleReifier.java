@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.19 2004-04-22 12:42:27 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.20 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -15,6 +15,7 @@ package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
@@ -191,7 +192,7 @@ public class SimpleReifier implements Reifier
     public void remove( Triple t )
         {     
         // horrid code. we don't likes it, my precious.
-        Set nodes = new HashSet();
+        Set nodes = HashUtils.createSet();
         Iterator it = allNodes();
         while (it.hasNext())
             {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNamespace.java,v 1.7 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: TestNamespace.java,v 1.8 2004-06-30 12:58:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.shared.test.*;
+import com.hp.hpl.jena.util.HashUtils;
 
 import java.util.*;
 import java.io.*;
@@ -94,7 +95,7 @@ public class TestNamespace extends ModelTestBase
     */
     private Set set( String element )
         {
-        Set s = new HashSet();
+        Set s = HashUtils.createSet();
         s.add( element );
         return s;
         }

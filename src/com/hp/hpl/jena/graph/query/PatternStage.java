@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.18 2004-03-25 13:29:20 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.19 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.Expression;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -43,7 +44,7 @@ public class PatternStage extends Stage
         {
         int length = triples.length;
     	Set [] result = new Set[length];
-        Set prev = new HashSet();
+        Set prev = HashUtils.createSet();
         for (int i = 0; i < length; i += 1) 
             prev = result[i] = Util.union( prev, Util.variablesOf( triples[i] ) );
         return result;

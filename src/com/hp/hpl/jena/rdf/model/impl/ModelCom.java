@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.92 2004-06-25 06:13:42 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.93 2004-06-30 12:58:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.datatypes.*;
@@ -803,7 +804,7 @@ public class ModelCom
     public boolean isEmpty()
         { return graph.isEmpty(); }
         
-    private void updateNamespace( HashSet set, Iterator it )
+    private void updateNamespace( Set set, Iterator it )
         {
         while (it.hasNext())
             {
@@ -820,7 +821,7 @@ public class ModelCom
         
     private Iterator listPredicates()
         {
-        HashSet predicates = new HashSet();
+        Set predicates = HashUtils.createSet();
         ClosableIterator it = graph.find( null, null, null );
         while (it.hasNext()) predicates.add( ((Triple) it.next()).getPredicate() );
         return predicates.iterator();
@@ -828,14 +829,14 @@ public class ModelCom
      
     private Iterator listTypes()
         {
-        HashSet types = new HashSet();
+        Set types = HashUtils.createSet();
         ClosableIterator it = graph.find( null, RDF.type.asNode(), null );
         while (it.hasNext()) types.add( ((Triple) it.next()).getObject() );
         return types.iterator();
         }
      
     public NsIterator listNameSpaces()  {
-        HashSet nameSpaces = new HashSet();
+        Set nameSpaces = HashUtils.createSet();
         updateNamespace( nameSpaces, listPredicates() );
         updateNamespace( nameSpaces, listTypes() );
         return new NsIteratorImpl(nameSpaces.iterator(), nameSpaces);
@@ -887,7 +888,7 @@ public class ModelCom
         { return getPrefixMapping().expandPrefix( prefixed ); }
         
     public String usePrefix( String uri )
-        { return getPrefixMapping().usePrefix( uri ); }
+        { return getPrefixMapping().shortForm( uri ); }
     
     public String qnameFor( String uri )
         { return getPrefixMapping().qnameFor( uri ); }
@@ -913,7 +914,7 @@ public class ModelCom
             Map.Entry e = (Map.Entry) it.next();
             String key = (String) e.getKey();
             Set  values = (Set) e.getValue();
-            Set niceValues = new HashSet();
+            Set niceValues = HashUtils.createSet();
             Iterator them = values.iterator();
             while (them.hasNext())
                 {

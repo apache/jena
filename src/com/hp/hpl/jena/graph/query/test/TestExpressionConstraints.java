@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.13 2004-03-25 13:29:34 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.14 2004-06-30 12:57:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -11,6 +11,7 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.query.Expression.Util;
 import com.hp.hpl.jena.graph.test.*;
 
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.Map1;
 
 import junit.framework.*;
@@ -83,7 +84,7 @@ public class TestExpressionConstraints extends GraphTestBase
             .addMatch( X, ANY, Y )
             .addConstraint( notEqual( X, Y ) )
             ;
-        Set expected = new HashSet();
+        Set expected = HashUtils.createSet();
         expected.add( node( "x" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
         }        
@@ -96,7 +97,7 @@ public class TestExpressionConstraints extends GraphTestBase
             .addMatch( X, ANY, Y )
             .addConstraint( notEqual( X, Y ) )
             ;
-        Set expected = new HashSet();
+        Set expected = HashUtils.createSet();
         expected.add( node( "x" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
         }
@@ -108,7 +109,7 @@ public class TestExpressionConstraints extends GraphTestBase
             .addMatch( X, ANY, ANY )
             .addConstraint( notEqual( X, node( "y" ) ) )
             ;
-        Set expected = new HashSet();
+        Set expected = HashUtils.createSet();
         expected.add( node( "x" ) );
         expected.add( node( "z" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
@@ -122,14 +123,14 @@ public class TestExpressionConstraints extends GraphTestBase
             .addConstraint( notEqual( X, node( "y" ) ) )
             .addConstraint( notEqual( X, node( "x" ) ) )
             ;
-        Set expected = new HashSet();
+        Set expected = HashUtils.createSet();
         expected.add( node( "z" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
         }
         
     public static class VI implements VariableIndexes
         {
-        private Map values = new HashMap();
+        private Map values = HashUtils.createMap();
         
         public VI set( String x, int i ) { values.put( x, new Integer( i ) ); return this; }    
         
@@ -138,7 +139,7 @@ public class TestExpressionConstraints extends GraphTestBase
     
     public static class IV implements IndexValues
         {
-        private Map values = new HashMap();
+        private Map values = HashUtils.createMap();
         
         public IV set( int i, Object x ) { values.put( new Integer( i ), x ); return this; }    
         
@@ -215,7 +216,7 @@ public class TestExpressionConstraints extends GraphTestBase
         {
         BaseExampleExpression e1 = notEqual( X, Y ), e2 = notEqual( X, Z );
         Query q = new Query().addConstraint( e1.and( e2 ) );
-        Set eBoth = new HashSet(); eBoth.add( e1 ); eBoth.add( e2 );
+        Set eBoth = HashUtils.createSet(); eBoth.add( e1 ); eBoth.add( e2 );
         Set s = iteratorToSet( q.getConstraints().iterator() );
         assertEquals( eBoth, s );
         }
@@ -231,7 +232,7 @@ public class TestExpressionConstraints extends GraphTestBase
             { public Valuator prepare(VariableIndexes vi) 
                 { return null; }
             };
-        assertFalse( Util.containsAllVariablesOf( new HashSet(), eOpaque ) );
+        assertFalse( Util.containsAllVariablesOf( HashUtils.createSet(), eOpaque ) );
         }
     }
 

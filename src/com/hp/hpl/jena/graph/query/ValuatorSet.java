@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ValuatorSet.java,v 1.1 2003-10-16 15:30:41 chris-dollin Exp $
+  $Id: ValuatorSet.java,v 1.2 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import java.util.*;
+
+import com.hp.hpl.jena.util.HashUtils;
 
 /**
 	ValuatorSet - a set of Valuators, which can be added to and evaluated [only].
@@ -15,7 +17,7 @@ import java.util.*;
 */
 public class ValuatorSet 
     {
-    private Set valuators = new HashSet();
+    private Set valuators = HashUtils.createSet();
     
     public ValuatorSet() 
         {}

@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Mapping.java,v 1.11 2003-10-09 15:23:55 chris-dollin Exp $
+  $Id: Mapping.java,v 1.12 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.HashUtils;
+
 import java.util.*;
 
 /**
@@ -17,7 +19,7 @@ import java.util.*;
 
 public class Mapping implements VariableIndexes
 	{
-	private HashMap map;
+	private Map map;
 	
 	private int index = 0;
     private int preIndex = 0;
@@ -30,7 +32,7 @@ public class Mapping implements VariableIndexes
     */    
     public Mapping( Node [] preDeclare )
         {
-        this.map = new HashMap();
+        this.map = HashUtils.createMap();
         index = preDeclare.length;    
         for (int i = 0; i < preDeclare.length; i += 1) preDeclare( preDeclare[i] );
         }

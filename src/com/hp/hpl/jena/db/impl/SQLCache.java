@@ -16,6 +16,7 @@ import java.io.*;
 
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.HashUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.11 $ on $Date: 2004-03-11 21:46:08 $
+* @version $Revision: 1.12 $ on $Date: 2004-06-30 12:56:57 $
 */
 
 public class SQLCache {
@@ -58,11 +59,11 @@ public class SQLCache {
 
     /** Cache of prepared versions of the statements. Each map entry is a list
      *  of copies of the prepared statement for multi-threaded apps. */
-    protected HashMap m_preparedStatements = new HashMap();
+    protected Map m_preparedStatements = HashUtils.createMap();
 
 	/** Track which cached, prepared statements are in use and the corresponding
 	 *  list to which the statement should be returned. */
-	protected HashMap m_cachedStmtInUse = new HashMap();
+	protected Map m_cachedStmtInUse = HashUtils.createMap();
 
     /** the packaged jdbc connection to the database itself. */
     protected IDBConnection m_connection;
@@ -122,8 +123,8 @@ public class SQLCache {
         } catch (SQLException e) {
             throw new RDFRDBException("Problem flushing PS cache", e);
         } finally {
-            m_preparedStatements = new HashMap();
-			m_cachedStmtInUse = new HashMap();
+            m_preparedStatements = HashUtils.createMap();
+			m_cachedStmtInUse = HashUtils.createMap();
         }
     }
     /**

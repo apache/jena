@@ -11,6 +11,7 @@ package com.hp.hpl.jena.graph.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -25,7 +26,7 @@ import com.hp.hpl.jena.shared.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-08-27 13:00:58 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2004-06-30 12:57:58 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -126,8 +127,8 @@ public class GraphMatcher extends java.lang.Object {
     // As the algorithm proceeds we move resources
     // from one to the other.
     // At completion unBoundAnonResources is empty.
-    private Set unboundAnonResources = new HashSet();
-    private Set boundAnonResources = new HashSet();
+    private Set unboundAnonResources = HashUtils.createSet();
+    private Set boundAnonResources = HashUtils.createSet();
     
     
     
@@ -200,7 +201,7 @@ public class GraphMatcher extends java.lang.Object {
     private Set obligBindings() {
         int hashLevel = 0;
         boolean newBinding;
-        Set rslt = new HashSet();
+        Set rslt = HashUtils.createSet();
         check(HASH_OK|HASH_BAD);
         do {
             if ( rehash(hashLevel) != other.rehash(hashLevel) ){
@@ -344,7 +345,7 @@ public class GraphMatcher extends java.lang.Object {
         
     private int rehash0( int level ) {
         in(REHASHING);
-        this.table = new HashMap();
+        this.table = HashUtils.createMap();
         // Set a global to define the hash of an AnonResource
         // level = 0 ==> AnonResource.myHashCode() = 0
         // level = n+1 ==> AnonResource.myHashCode() = hash[n]
@@ -590,7 +591,7 @@ public class GraphMatcher extends java.lang.Object {
         SomeResource obj;
         int pattern;
         AnonStatement(Triple s) {
-            Map bag = new HashMap();
+            Map bag = HashUtils.createMap();
             pattern = NOVARS;
             subj = convert(s.getSubject());
             pred = convert(s.getPredicate());
@@ -679,7 +680,7 @@ public class GraphMatcher extends java.lang.Object {
     // we are iterating over it's members while the rest of the
     // algorithm is proceeding.
     private class Bucket {
-        Set anonRes = new HashSet();
+        Set anonRes = HashUtils.createSet();
         int hash[] = new int[MAX_HASH_DEPTH];
         boolean bind(Bucket singleton) {
             return bind(aMember(),singleton,singleton.aMember());
@@ -709,10 +710,10 @@ public class GraphMatcher extends java.lang.Object {
     private class AnonResource  implements SomeResource {
         AnonResource bound;
         Node r;
-        Set occursIn = new HashSet(); // The AnonStatements containing me.
+        Set occursIn = HashUtils.createSet(); // The AnonStatements containing me.
         int hash[] = new int[MAX_HASH_DEPTH];
         int boundHash;
-        Set friends = new HashSet(); // Other vars in AnonStatements containing me.
+        Set friends = HashUtils.createSet(); // Other vars in AnonStatements containing me.
         int myHash;
         
         public String toString() {
@@ -812,7 +813,7 @@ public class GraphMatcher extends java.lang.Object {
                 // That is OK as long as myHashLevel is 0
                 myHashLevel = 0;
             }
-            Set statements = new HashSet();
+            Set statements = HashUtils.createSet();
             // Add all our statements to the set.
             Iterator it = occursIn.iterator();
             while ( it.hasNext() )
@@ -855,7 +856,7 @@ public class GraphMatcher extends java.lang.Object {
             }
         }
     }
-    private Map anonLookup = new HashMap();
+    private Map anonLookup = HashUtils.createMap();
     private SomeResource convert(Node n) {
         if ( n.isBlank() ) {
             SomeResource anon = (SomeResource)anonLookup.get(n);
@@ -938,5 +939,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.5 2003-08-27 13:00:58 andy_seaborne Exp $
+ * $Id: GraphMatcher.java,v 1.6 2004-06-30 12:57:58 chris-dollin Exp $
  */

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.15 2003-10-06 05:37:40 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.16 2004-06-30 12:57:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -38,7 +39,7 @@ public class SimpleQueryHandler implements QueryHandler
     	
 	public ExtendedIterator objectsFor( Node s, Node p )
 		{ 
-        HashSet objects = new HashSet();
+        Set objects = HashUtils.createSet();
         ClosableIterator it = graph.find( s, p, null );
         while (it.hasNext()) objects.add( ((Triple) it.next()).getObject() );
 		return WrappedIterator.create( objects.iterator() );
@@ -46,7 +47,7 @@ public class SimpleQueryHandler implements QueryHandler
 		
 	public ExtendedIterator subjectsFor( Node p, Node o )
 		{ 
-        HashSet objects = new HashSet();
+        Set objects = HashUtils.createSet();
         ClosableIterator it = graph.find( null, p, o );
         while (it.hasNext()) objects.add( ((Triple) it.next()).getSubject() );
 		return WrappedIterator.create( objects.iterator() );

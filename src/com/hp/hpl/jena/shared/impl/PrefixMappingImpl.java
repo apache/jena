@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.14 2004-04-23 10:33:43 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.15 2004-06-30 12:58:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
 
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.HashUtils;
 
 import java.util.*;
 import org.apache.xerces.util.XMLChar;
@@ -26,7 +27,7 @@ public class PrefixMappingImpl implements PrefixMapping
     private boolean locked;
     
     public PrefixMappingImpl()
-        { map = new HashMap(); }
+        { map = HashUtils.createMap(); }
            
     public PrefixMapping lock()
         { 
@@ -123,7 +124,7 @@ public class PrefixMappingImpl implements PrefixMapping
         { return (String) map.get( prefix ); }
         
     public Map getNsPrefixMap()
-        { return new HashMap( map ); }
+        { return HashUtils.createMap( map ); }
         
     public String getNsURIPrefix( String uri )
         {

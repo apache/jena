@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.47 2004-06-29 09:43:21 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.48 2004-06-30 12:57:59 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
 
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
@@ -185,7 +186,7 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
     static final Triple [] setTriples = tripleArray
         ( "scissors cut paper; paper wraps stone; stone breaks scissors" );
         
-    static final Set tripleSet = new HashSet( Arrays.asList( setTriples ) );
+    static final Set tripleSet = HashUtils.createSet( Arrays.asList( setTriples ) );
                 
     public void testBulkUpdate()
         {

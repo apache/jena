@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.29 2004-03-18 15:36:21 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.30 2004-06-30 12:58:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
@@ -28,7 +29,7 @@ import java.util.*;
 public class GraphMem extends GraphBase implements Graph 
     {
     /** the set storing all the triples in this GraphMem */
-    Set triples = new HashSet();
+    Set triples = HashUtils.createSet();
 
     NodeToTriplesMap subjects = new NodeToTriplesMap();
     NodeToTriplesMap predicates = new NodeToTriplesMap();
