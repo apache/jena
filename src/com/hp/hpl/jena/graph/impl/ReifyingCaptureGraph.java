@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ReifyingCaptureGraph.java,v 1.3 2003-06-19 08:47:08 chris-dollin Exp $
+  $Id: ReifyingCaptureGraph.java,v 1.4 2003-07-17 09:10:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -39,10 +39,10 @@ public class ReifyingCaptureGraph extends GraphBase
     public boolean contains( Node s, Node p, Node o )
         { return under.contains( s, p, o ); }
         
-    public void add( Triple t )
+    public void performAdd( Triple t )
         { if (getReifier().handledAdd( t ) == false) under.add( t ); }
         
-    public void delete( Triple t )
+    public void performDelete( Triple t )
         { if (getReifier().handledRemove( t ) == false) under.delete( t ); }
         
     public int size()

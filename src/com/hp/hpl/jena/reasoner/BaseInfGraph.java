@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.16 2003-06-24 15:46:59 der Exp $
+ * $Id: BaseInfGraph.java,v 1.17 2003-07-17 09:10:40 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-06-24 15:46:59 $
+ * @version $Revision: 1.17 $ on $Date: 2003-07-17 09:10:40 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -259,7 +259,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
-    public synchronized void add(Triple t) {
+    public synchronized void performAdd(Triple t) {
         if (!isPrepared) prepare();
         fdata.getGraph().add(t);
     }
@@ -278,7 +278,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
-    public void delete(Triple t) {
+    public void performDelete(Triple t) {
         if (!isPrepared) prepare();
         fdata.getGraph().delete(t);
     }

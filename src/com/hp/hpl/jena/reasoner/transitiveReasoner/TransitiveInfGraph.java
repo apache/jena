@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.13 2003-06-24 15:47:04 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.14 2003-07-17 09:10:40 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-24 15:47:04 $
+ * @version $Revision: 1.14 $ on $Date: 2003-07-17 09:10:40 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -122,7 +122,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
-    public synchronized void add(Triple t) {
+    public synchronized void performAdd(Triple t) {
         if (!isPrepared) prepare();
         fdata.getGraph().add(t);
         transitiveEngine.add(t);
@@ -142,7 +142,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph.
      */   
-    public void delete(Triple t) {
+    public void performDelete(Triple t) {
         fdata.getGraph().delete(t);
         if (isPrepared) {
             transitiveEngine.delete(t);

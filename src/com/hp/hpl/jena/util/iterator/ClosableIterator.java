@@ -1,5 +1,41 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001 
+  (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: ClosableIterator.java,v 1.5 2003-07-17 09:10:41 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.util.iterator;
+
+import java.util.Iterator;
+
+/** 
+    An iterator which should be closed after use. Some iterators take up resources which 
+    should be free'd as soon as possible, eg large structures which can be discarded
+    early, or external resources such as database cursors.
+<p>
+    Users of ClosableIterators (and thus of ExtendedIterator) should close the iterator
+    when they are done with it, whether because they have found a desired element
+    or because they have reached the end. If they do not, resources may leak or be
+    reclaimed unpredictably or much later than convenient.
+<p>
+    Implementors are encouraged to dispose of resources as soon as is convenient.
+ 
+    @author bwm
+    @version $Id: ClosableIterator.java,v 1.5 2003-07-17 09:10:41 chris-dollin Exp $
+ */
+
+public interface ClosableIterator extends Iterator 
+    {
+    /** 
+        Close the iterator. Other oeprations on this iterator may now throw an exception. A
+        ClosableIterator may be closed as many times as desired - the subsequent
+        calls do nothing.
+    */
+    public void close();
+    }
+
+/*
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,35 +64,3 @@
  *
  * Created on 28 July 2000, 13:44
  */
-
-package com.hp.hpl.jena.util.iterator;
-
-/**
- *
- * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-11 11:09:30 $'
- */
-
-import java.util.Iterator;
-
-
-/** An iterator which should be closed after use
- * <p>Some iterators take up resources which should be free'd as soon as
- * possible, i.e. without waiting for the garbage collector to call the
- * the finalizer.</p>
- *
- * <p>Implementors of this interface are expected to close automatically if
- * if the iterator iterates to completion, i.e. more() will return false.</p>
- *
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-11 11:09:30 $'
- */
-
-public interface ClosableIterator extends Iterator {
-    
-    /** Close the iterator
-     */
-    public void close();
-    
- 
-}

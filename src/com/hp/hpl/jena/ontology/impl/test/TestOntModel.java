@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-26 22:26:28 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-17 09:10:40 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.3 2003-06-26 22:26:28 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.4 2003-07-17 09:10:40 chris-dollin Exp $
  */
 public class TestOntModel 
     extends TestCase
@@ -413,8 +413,20 @@ public class TestOntModel
         assertNull( "result of get r", m.getMaxCardinalityRestriction( NS+"r"));
     }
 
-
-
+    /**
+        Added by kers to ensure that bulk update works; should really be a test
+        of the ontology Graph using AbstractTestGraph, but that fails because there
+        are too many things that don't pass those tests.
+    <p>
+        <b>Yet</b>.
+    */
+    public void testBulkAddWorks()
+        {
+        OntModel om1= ModelFactory.createOntologyModel();
+        OntModel om2 = ModelFactory.createOntologyModel();
+        om1.add( om2 );
+        }
+        
     // Internal implementation methods
     //////////////////////////////////
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Delta.java,v 1.3 2003-06-06 09:15:48 chris-dollin Exp $
+  $Id: Delta.java,v 1.4 2003-07-17 09:09:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -39,13 +39,13 @@ public class Delta extends Dyadic implements Graph
 		return R;
 		}
 		
-	public void add( Triple t )
+	public void performAdd( Triple t )
 		{
 		L.add( t );
 		R.delete( t );
 		}
 
-	public void delete( Triple t )
+	public void performDelete( Triple t )
 		{
 		L.delete( t );
 		R.add( t );
