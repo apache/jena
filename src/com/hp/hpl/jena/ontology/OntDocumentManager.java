@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 15:21:50 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-18 15:57:31 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.17 2003-06-17 15:21:50 chris-dollin Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.18 2003-06-18 15:57:31 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -621,6 +621,8 @@ public class OntDocumentManager
      * @param readState Cumulate read state for this operation
      */
     protected void loadImport( OntModel model, String importURI, List readQueue ) {
+        Logger.getLogger( getClass() ).debug( "OntDocumentManager loading " + importURI );
+        
         // add this model to occurs check list
         model.addLoadedImport( importURI );
 

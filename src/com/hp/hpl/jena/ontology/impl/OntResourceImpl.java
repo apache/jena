@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 16:09:02 $
+ * Last modified on   $Date: 2003-06-18 15:57:32 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.25 2003-06-17 16:09:02 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.26 2003-06-18 15:57:32 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -155,7 +155,7 @@ public class OntResourceImpl
      * @return An iterator over the resources equivalent to this resource.
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSameAs() {
+    public ExtendedIterator listSameAs() {
         return listAs( getProfile().SAME_AS(), "SAME_AS", OntResource.class );
     }
 
@@ -214,7 +214,7 @@ public class OntResourceImpl
      * @return An iterator over the resources different from this resource.
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
      */ 
-    public Iterator listDifferentFrom() {
+    public ExtendedIterator listDifferentFrom() {
         return listAs( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", OntResource.class );
     }
 
@@ -272,7 +272,7 @@ public class OntResourceImpl
      * @return An iterator over the resources providing additional definition on this resource.
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSeeAlso() {
+    public ExtendedIterator listSeeAlso() {
         checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
         return WrappedIterator.create( listProperties( getProfile().SEE_ALSO() ) )
                .mapWith( new ObjectMapper() );
@@ -334,7 +334,7 @@ public class OntResourceImpl
      * @return An iterator over the resources defining this resource.
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
      */ 
-    public Iterator listIsDefinedBy() {
+    public ExtendedIterator listIsDefinedBy() {
         checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
         return WrappedIterator.create( listProperties( getProfile().IS_DEFINED_BY() ) )
                .mapWith( new ObjectMapper() );
@@ -399,7 +399,7 @@ public class OntResourceImpl
      * @return An iterator over the version info strings for this resource.
      * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.   
      */ 
-    public Iterator listVersionInfo() {
+    public ExtendedIterator listVersionInfo() {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         return WrappedIterator.create( listProperties( getProfile().VERSION_INFO() ) )
                .mapWith( new ObjectAsStringMapper() );
@@ -492,7 +492,7 @@ public class OntResourceImpl
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
      */ 
-    public Iterator listLabels( String lang ) {
+    public ExtendedIterator listLabels( String lang ) {
         checkProfile( getProfile().LABEL(), "LABEL" );
         return WrappedIterator.create( listProperties( getProfile().LABEL() ) )
                .filterKeep( new LangTagFilter( lang ) )
@@ -517,14 +517,12 @@ public class OntResourceImpl
     public boolean hasLabel( Literal label ) {
         boolean found = false;
         
-        Iterator i = listLabels( label.getLanguage() );
+        ExtendedIterator i = listLabels( label.getLanguage() );
         while (!found && i.hasNext()) {
             found = label.equals( i.next() );
         }
         
-        if (i instanceof ClosableIterator) {
-            ((ClosableIterator) i).close();
-        } 
+        i.close();
         return found;
     }
     
@@ -609,7 +607,7 @@ public class OntResourceImpl
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
      */ 
-    public Iterator listComments( String lang ) {
+    public ExtendedIterator listComments( String lang ) {
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         return WrappedIterator.create( listProperties( getProfile().COMMENT() ) )
                .filterKeep( new LangTagFilter( lang ) )
@@ -634,14 +632,12 @@ public class OntResourceImpl
     public boolean hasComment( Literal comment ) {
         boolean found = false;
         
-        Iterator i = listComments( comment.getLanguage() );
+        ExtendedIterator i = listComments( comment.getLanguage() );
         while (!found && i.hasNext()) {
             found = comment.equals( i.next() );
         }
         
-        if (i instanceof ClosableIterator) {
-            ((ClosableIterator) i).close();
-        } 
+        i.close();
         return found;
     }
     
@@ -719,15 +715,13 @@ public class OntResourceImpl
      * more than one is defined.
      */
     public Resource getRDFType( boolean direct ) {
-        Iterator i = null;
+        ExtendedIterator i = null;
         try {
             i = listRDFTypes( direct );
             return i.hasNext() ? (Resource) i.next(): null;
         }
         finally {
-            if (i instanceof ClosableIterator) {
-                ((ClosableIterator) i).close();
-            }
+            i.close();
         }
     }
 
@@ -741,9 +735,9 @@ public class OntResourceImpl
      * @return An iterator over the set of this resource's classes, each of which
      * will be a {@link Resource}.
      */
-    public Iterator listRDFTypes( boolean direct ) {
+    public ExtendedIterator listRDFTypes( boolean direct ) {
         Iterator i = listDirectPropertyValues( RDF.type, "rdf:type", null, getProfile().SUB_CLASS_OF(), direct, false );
-        ExtendedIterator j = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
+        ExtendedIterator j = WrappedIterator.create( i );
         
         // we only want each result once
         return new UniqueExtendedIterator( j );
@@ -801,7 +795,7 @@ public class OntResourceImpl
         }
         else {
             // need the direct version - not so efficient
-            Iterator i = null;
+            ExtendedIterator i = null;
             try {
                 i = listRDFTypes( true );
                 while (i.hasNext()) {
@@ -813,9 +807,7 @@ public class OntResourceImpl
                 return false;
             }
             finally {
-                if (i instanceof ClosableIterator) {
-                    ((ClosableIterator) i).close();
-                }
+                i.close();
             }
         }
     }
@@ -1148,7 +1140,7 @@ public class OntResourceImpl
 
     
     /** Answer an iterator for the given property, whose values are .as() some class */
-    protected Iterator listAs( Property p, String name, Class cls ) {
+    protected ExtendedIterator listAs( Property p, String name, Class cls ) {
         checkProfile( p, name );
         return WrappedIterator.create( listProperties( p ) ).mapWith( new ObjectAsMapper( cls ) );
     }
@@ -1218,7 +1210,7 @@ public class OntResourceImpl
     }
     
     /** Return an iterator of values, respecting the 'direct' modifier */
-    protected Iterator listDirectPropertyValues( Property p, String name, Class cls, Property orderRel, boolean direct, boolean inverse ) {
+    protected ExtendedIterator listDirectPropertyValues( Property p, String name, Class cls, Property orderRel, boolean direct, boolean inverse ) {
         ExtendedIterator i = null;
         checkProfile( p, name );
         
@@ -1248,7 +1240,7 @@ public class OntResourceImpl
             i = getModel().listStatements( subject, sc, object );
     
             // we only want the subjects or objects of the statements
-            return i.mapWith( mapper );
+            return new UniqueExtendedIterator( i ).mapWith( mapper );
         }
         else {
             // graph does not support direct directly
@@ -1269,7 +1261,7 @@ public class OntResourceImpl
                 s.add( this );
             }
             
-            return s.iterator();
+            return new UniqueExtendedIterator( s.iterator() );
         }
     }
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
+ * Last modified on   $Date: 2003-06-18 15:57:32 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.14 2003-06-16 13:40:13 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.15 2003-06-18 15:57:32 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -310,7 +310,8 @@ public class DAML_OILProfile
         {  OntClass.class,              new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Class.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() );
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) || 
+                                                       g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() );
                                             }
                                         }
         },

@@ -1,4 +1,4 @@
-<!-- $Id: test-cases.daml,v 1.1 2003-06-18 12:59:57 ian_dickinson Exp $ -->
+<!-- $Id: test-cases.daml,v 1.2 2003-06-18 15:57:32 ian_dickinson Exp $ -->
 
 <rdf:RDF
   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -8,10 +8,11 @@
 >
 
 <daml:Ontology rdf:about="">
-  <daml:versionInfo>$Id: test-cases.daml,v 1.1 2003-06-18 12:59:57 ian_dickinson Exp $</daml:versionInfo>
+  <daml:versionInfo>$Id: test-cases.daml,v 1.2 2003-06-18 15:57:32 ian_dickinson Exp $</daml:versionInfo>
   <rdfs:comment>
     An ontology that will allow me to test the rdf:type code in the DAML API
   </rdfs:comment>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
 </daml:Ontology>
 
 <daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#Animal">
@@ -153,11 +154,11 @@
 </daml:Class>
 
 <daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp1">
-    <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp0" />
+    <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp0" />
 </daml:Class>
 
 <daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp2">
-    <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp1" />
+    <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp1" />
 </daml:Class>
 
 <daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#prop0">

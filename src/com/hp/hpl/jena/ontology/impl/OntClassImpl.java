@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:12 $
+ * Last modified on   $Date: 2003-06-18 15:57:32 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -32,6 +32,7 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.ResourceUtils;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -44,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.19 2003-06-16 13:40:12 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.20 2003-06-18 15:57:32 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -161,7 +162,7 @@ public class OntClassImpl
      * @return An iterator over the super-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSuperClasses() {
+    public ExtendedIterator listSuperClasses() {
         return listSuperClasses( false );
     }
      
@@ -178,7 +179,7 @@ public class OntClassImpl
      * @return an iterator over the resources representing this class's sub-classes.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
-    public Iterator listSuperClasses( boolean direct ) {
+    public ExtendedIterator listSuperClasses( boolean direct ) {
         return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false );
     }
 
@@ -279,7 +280,7 @@ public class OntClassImpl
      * @return An iterator over the sub-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSubClasses() {
+    public ExtendedIterator listSubClasses() {
         return listSubClasses( false );
     }
 
@@ -327,7 +328,7 @@ public class OntClassImpl
      * @return an iterator over the resources representing this class's sub-classes
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
-    public Iterator listSubClasses( boolean direct ) {
+    public ExtendedIterator listSubClasses( boolean direct ) {
         return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true );
     }
 
@@ -405,7 +406,7 @@ public class OntClassImpl
      * @return An iterator over the classes equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
      */ 
-    public Iterator listEquivalentClasses() {
+    public ExtendedIterator listEquivalentClasses() {
         return listAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class );
     }
 
@@ -467,7 +468,7 @@ public class OntClassImpl
      * @return An iterator over the classes disjoint with this class.
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
      */ 
-    public Iterator listDisjointWith() {
+    public ExtendedIterator listDisjointWith() {
         return listAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class );
     }
 
@@ -502,7 +503,7 @@ public class OntClassImpl
      *
      * @return An iteration of the properties that have this class in the domain
      */
-    public Iterator listDeclaredProperties() {
+    public ExtendedIterator listDeclaredProperties() {
         return listDeclaredProperties( true );
     }
 
@@ -516,7 +517,7 @@ public class OntClassImpl
      * if false, only use properties defined for this class alone.
      * @return An iteration of the properties that have this class as domain
      */
-    public Iterator listDeclaredProperties( boolean all ) {
+    public ExtendedIterator listDeclaredProperties( boolean all ) {
         // TODO: how to use all?
         List altQuery = null;
         if (m_restrictionPropQuery != null) {
@@ -524,7 +525,7 @@ public class OntClassImpl
             altQuery.add( m_restrictionPropQuery );
         }
         
-        return ((OntModel) getModel()).queryFor( m_domainQuery, altQuery, OntProperty.class );
+        return new UniqueExtendedIterator( ((OntModel) getModel()).queryFor( m_domainQuery, altQuery, OntProperty.class ) );
     }
 
 
@@ -535,7 +536,7 @@ public class OntClassImpl
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
-    public Iterator listInstances() {
+    public ExtendedIterator listInstances() {
         return getModel().listStatements( null, RDF.type, this ).mapWith( new SubjectAsMapper( null ) );
     }
 

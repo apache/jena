@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
+ * Last modified on   $Date: 2003-06-18 15:57:31 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -27,6 +27,7 @@ package com.hp.hpl.jena.ontology;
 // Imports
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import java.util.Iterator;
 
@@ -38,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.13 2003-06-16 13:40:13 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.14 2003-06-18 15:57:31 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -83,7 +84,7 @@ public interface OntClass
      * @return An iterator over the super-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSuperClasses();
+    public ExtendedIterator listSuperClasses();
 
     /**
      * <p>Answer an iterator over all of the classes that are declared to be super-classes of
@@ -98,7 +99,7 @@ public interface OntClass
      * @return an iterator over the resources representing this class's sub-classes.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
-    public Iterator listSuperClasses( boolean direct );
+    public ExtendedIterator listSuperClasses( boolean direct );
 
     /**
      * <p>Answer true if the given class is a super-class of this class.</p>
@@ -159,7 +160,7 @@ public interface OntClass
      * @return An iterator over the sub-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSubClasses();
+    public ExtendedIterator listSubClasses();
 
     /**
      * <p>
@@ -207,7 +208,7 @@ public interface OntClass
      * @return an iterator over the resources representing this class's sub-classes
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
-    public Iterator listSubClasses( boolean direct );
+    public ExtendedIterator listSubClasses( boolean direct );
 
     /**
      * <p>Answer true if the given class is a sub-class of this class.</p>
@@ -270,7 +271,7 @@ public interface OntClass
      * @return An iterator over the classes equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
      */ 
-    public Iterator listEquivalentClasses();
+    public ExtendedIterator listEquivalentClasses();
 
     /**
      * <p>Answer true if the given class is equivalent to this class.</p>
@@ -321,7 +322,7 @@ public interface OntClass
      * @return An iterator over the classes disjoint with this class.
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
      */ 
-    public Iterator listDisjointWith();
+    public ExtendedIterator listDisjointWith();
 
     /**
      * <p>Answer true if this class is disjoint with the given class.</p>
@@ -350,7 +351,7 @@ public interface OntClass
      *
      * @return An iteration of the properties that have this class in the domain
      */
-    public Iterator listDeclaredProperties();
+    public ExtendedIterator listDeclaredProperties();
 
 
     /**
@@ -362,7 +363,7 @@ public interface OntClass
      * if false, only use properties defined for this class alone.
      * @return An iteration of the properties that have this class as domain
      */
-    public Iterator listDeclaredProperties( boolean all );
+    public ExtendedIterator listDeclaredProperties( boolean all );
 
 
     /**
@@ -372,7 +373,7 @@ public interface OntClass
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
-    public Iterator listInstances();
+    public ExtendedIterator listInstances();
 
 
     // access to facets
