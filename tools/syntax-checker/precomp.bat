@@ -1,1 +1,0 @@
-precompute.exe < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl
