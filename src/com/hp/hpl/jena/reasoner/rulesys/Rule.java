@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.9 2003-06-08 17:49:17 der Exp $
+ * $Id: Rule.java,v 1.10 2003-06-18 16:43:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -53,17 +53,17 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.9 $ on $Date: 2003-06-08 17:49:17 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.10 $ on $Date: 2003-06-18 16:43:49 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
 // variables
 
     /** Rule body */
-    protected Object[] body;
+    protected ClauseEntry[] body;
     
     /** Rule head or set of heads */
-    protected Object[] head;
+    protected ClauseEntry[] head;
     
     /** Optional name for the rule */
     protected String name;
@@ -91,8 +91,8 @@ public class Rule implements ClauseEntry {
      */
     public Rule(String name, List head, List body) {
         this.name = name;
-        this.head = head.toArray();
-        this.body = body.toArray();
+        this.head = (ClauseEntry[]) head.toArray(new ClauseEntry[head.size()]);
+        this.body = (ClauseEntry[]) body.toArray(new ClauseEntry[body.size()]);
     }
     
     /**
@@ -101,7 +101,7 @@ public class Rule implements ClauseEntry {
      * @param body an array of TriplePatterns or Functors.
      * @param head an array of TriplePatterns, Functors or rules
      */
-    public Rule(String name, Object[] head, Object[] body) {
+    public Rule(String name, ClauseEntry[] head, ClauseEntry[] body) {
         this.name = name;
         this.head = head;
         this.body = body;
@@ -120,14 +120,14 @@ public class Rule implements ClauseEntry {
     /**
      * Return the n'th body element
      */
-    public Object getBodyElement(int n) {
+    public ClauseEntry getBodyElement(int n) {
         return body[n];
     }
     
     /**
      * return the entire rule body as an array of objects
      */
-    public Object[] getBody() {
+    public ClauseEntry[] getBody() {
         return body;
     }
         
@@ -142,14 +142,14 @@ public class Rule implements ClauseEntry {
     /**
      * Return the n'th head element
      */
-    public Object getHeadElement(int n) {
+    public ClauseEntry getHeadElement(int n) {
         return head[n];
     }
     
     /**
      * return the entire rule head as an array of objects
      */
-    public Object[] getHead() {
+    public ClauseEntry[] getHead() {
         return head;
     }
     
@@ -278,8 +278,8 @@ public class Rule implements ClauseEntry {
     /**
      * Clone a clause array.
      */
-    private Object[] cloneClauseArray(Object[] clauses, Map vmap, BindingEnvironment env) {
-        Object[] cClauses = new Object[clauses.length];
+    private ClauseEntry[] cloneClauseArray(ClauseEntry[] clauses, Map vmap, BindingEnvironment env) {
+        ClauseEntry[] cClauses = new ClauseEntry[clauses.length];
         for (int i = 0; i < clauses.length; i++ ) {
             cClauses[i] = cloneClause(clauses[i], vmap, env);
         }
@@ -289,7 +289,7 @@ public class Rule implements ClauseEntry {
     /**
      * Clone a clause, cloning any embedded variables.
      */
-    private Object cloneClause(Object clause, Map vmap, BindingEnvironment env) {
+    private ClauseEntry cloneClause(ClauseEntry clause, Map vmap, BindingEnvironment env) {
         if (clause instanceof TriplePattern) {
             TriplePattern tp = (TriplePattern)clause;
             return new TriplePattern (

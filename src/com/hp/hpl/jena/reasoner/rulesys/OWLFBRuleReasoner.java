@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.5 2003-06-08 17:49:17 der Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.6 2003-06-18 16:43:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-08 17:49:17 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-18 16:43:49 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -157,9 +157,9 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
         for (Iterator i = elements.iterator(); i.hasNext(); ) {
             Node description = (Node)i.next();
             // Implication rule
-            Rule ir = new Rule("intersectionImplication", new Object[] {
+            Rule ir = new Rule("intersectionImplication", new ClauseEntry[] {
                                 new TriplePattern(className, RDFS.subClassOf.asNode(), description)
-                                }, new Object[0]);
+                                }, new ClauseEntry[0]);
             ir.setBackward(false);
            rules.add(ir);
 //           System.out.println("Adding rule: " + ir.toString());
