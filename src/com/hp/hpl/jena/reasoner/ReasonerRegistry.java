@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.19 2003-08-22 09:48:39 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.20 2003-08-25 20:58:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,6 @@ import com.hp.hpl.jena.reasoner.rulesys.DAMLMicroReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.OWLFBRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
-import com.hp.hpl.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 import java.util.*;
@@ -34,7 +33,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-08-22 09:48:39 $
+ * @version $Revision: 1.20 $ on $Date: 2003-08-25 20:58:34 $
  */
 public class ReasonerRegistry {
 
@@ -55,7 +54,6 @@ public class ReasonerRegistry {
         // Preload the known Jena reasoers
         register(TransitiveReasonerFactory.theInstance());
         register(RDFSRuleReasonerFactory.theInstance());
-        register(RDFSFBRuleReasonerFactory.theInstance());
         register(OWLFBRuleReasonerFactory.theInstance());
         register(GenericRuleReasonerFactory.theInstance());
         register(DAMLMicroReasonerFactory.theInstance());
