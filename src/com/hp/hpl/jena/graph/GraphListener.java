@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphListener.java,v 1.5 2003-07-09 15:27:02 chris-dollin Exp $
+  $Id: GraphListener.java,v 1.6 2003-07-10 12:53:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
+
+import java.util.*;
 
 /**
     Interface for listening to graph-level update events.
@@ -23,9 +25,19 @@ public interface GraphListener
     void notifyAdd( Triple [] triples );
     
     /**
+        Method called when a list [of triples] has been added to the graph.
+    */
+    void notifyAdd( List triples );
+    
+    /**
         Method called when a single triple has been deleted from the graph.
     */
     void notifyDelete( Triple t );
+    
+    /**
+        Method called when a list [of triples] has been deleted from the graph.
+    */
+    void notifyDelete( List L );
     
     /**
         Method called when an array of triples has been deleted from the graph.

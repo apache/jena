@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelChangedListener.java,v 1.4 2003-07-10 10:56:33 chris-dollin Exp $
+  $Id: ModelChangedListener.java,v 1.5 2003-07-10 12:53:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -18,6 +18,12 @@ public interface ModelChangedListener
     */
     void addedStatement( Statement s );
     
+    /**
+        Method to call when an array of statements has been added to the attached model.
+        NOTE. This array need not be == to the array added using Model::add(Statement[]).
+        
+        @param statements the array of added statements
+    */
     void addedStatements( Statement [] statements );
     
     /**
@@ -26,6 +32,13 @@ public interface ModelChangedListener
     */
     void removedStatement( Statement s );
     
+    /**
+        Method to call when an array of statements has been removed from the attached 
+        model. NOTE. This array need not be == to the array added using 
+        Model::remove(Statement[]).
+        
+        @param statements the array of removed statements
+    */    
     void removedStatements( Statement [] statements );
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.16 2003-07-10 09:35:39 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.17 2003-07-10 12:53:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -333,6 +333,14 @@ public abstract class AbstractTestGraph extends GraphTestBase
         g.getBulkUpdateHandler().add( triples );
         L.assertHas( new Object[] {"add[]", triples} );
         }
+        
+    public void testBulkAddList()
+        {
+        Graph g = getAndRegister( L );
+        List elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
+        g.getBulkUpdateHandler().add( elems );
+        L.assertHas( new Object[] {"addList", elems} );
+        }
     
     public void testBulkDeleteArray()
         {
@@ -342,6 +350,14 @@ public abstract class AbstractTestGraph extends GraphTestBase
         L.assertHas( new Object[] {"delete[]", triples} );
         }
         
+    public void testBulkDeleteList()
+        {
+        Graph g = getAndRegister( L );
+        List elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
+        g.getBulkUpdateHandler().delete( elems );
+        L.assertHas( new Object[] {"deleteList", elems} );
+        }
+    
     public void testContainsNode()
         {
         Graph g = getGraph();

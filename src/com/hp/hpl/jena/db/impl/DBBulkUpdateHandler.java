@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.3 2003-07-09 15:47:15 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.4 2003-07-10 12:53:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.db.*;
     An implementation of the bulk update interface.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.3 $
+ 	@version $Revision: 1.4 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -31,12 +31,16 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 	}
 
 	public void add(Triple[] triples) {
-		add(Arrays.asList(triples));
+		add( Arrays.asList(triples), false );
         manager.notifyAdd( triples );
 	}
 
-	public void add(List triples) {
+	public void add( List triples ) 
+        { add( triples, true ); }
+        
+    protected void add( List triples, boolean notify ) {
 		graph.add(triples);
+        if (notify) manager.notifyAdd( triples );
 	}
 
 	public void add(Iterator it) {
@@ -56,13 +60,17 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		triplesToAdd.close();
 	}
 
-	public void delete(Triple[] triples) {
-		delete(Arrays.asList(triples));
+	public void delete( Triple[] triples ) {
+		delete( Arrays.asList(triples), false );
         manager.notifyDelete( triples );
 	}
 
-	public void delete(List triples) {
-		graph.delete(triples);
+    public void delete( List triples )
+        { delete( triples, true ); }
+        
+	protected void delete(List triples, boolean notify ) {
+		graph.delete( triples );
+        if (notify) manager.notifyDelete( triples );
 	}
 
 	public void delete(Iterator it) {

@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphEventManager.java,v 1.5 2003-07-09 15:27:02 chris-dollin Exp $
+  $Id: GraphEventManager.java,v 1.6 2003-07-10 12:53:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
+
+import java.util.*;
 
 /**
     The component of a graph responsible for managing events and listeners.
@@ -42,13 +44,25 @@ public interface GraphEventManager
         Notify all attached listeners that the triple array <code>triples</code> has
         been added, by calling their <code>notifyAdd(Triple [])</code> methods.
     */
-    void notifyAdd( Triple [] ts );
+    void notifyAdd( Triple [] triples );
+    
+    /**
+        Notify all attached listeners that the list [of triples] <code>triples</code> has been
+        added to the graph, by calling their <code>notifyAdd(List)</code> methods.
+    */
+    void notifyAdd( List triples );
     
     /**
         Notify all attached listeners that the triple <code>t</code> has been removed,
         by calling their <code>notifyDelete(Triple)</code> methods.
     */
     void notifyDelete( Triple t );
+    
+    /**
+        Notify all attached listeners that the list [of triples] <code>triples</code> has been 
+        removed from the graph by calling their <code>notifyDelete(List)<code> methods.
+    */
+    void notifyDelete( List triples );
     
     /**
         Notify all attached listeners that the triple array <code>triples</code> has
