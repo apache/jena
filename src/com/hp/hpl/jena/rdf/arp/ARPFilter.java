@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   *$Id: ARPFilter.java,v 1.1.1.1 2002-12-19 19:16:04 bwm Exp $
+   *$Id: ARPFilter.java,v 1.2 2003-01-13 18:22:49 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -101,7 +101,6 @@ class ARPFilter
         return new ARPFilter(new SAXParser(c), c);
     }
 
-
     private Map nodeIdUserData;
 
     private boolean embedding = true;
@@ -136,6 +135,9 @@ class ARPFilter
             return false;
         }
     }
+    Locator getLocator() {
+        return pipe == null ? null : pipe.getLocator();
+    }
     synchronized public void parse(InputSource input)
         throws IOException, SAXException {
         // Make sure we have a sane state for
@@ -154,13 +156,13 @@ class ARPFilter
         pipe = new TokenPipe(this);
         pullParser.setInputSource(convert(input));
         saxParser.setFeature("http://xml.org/sax/features/namespaces", true);
-                    saxParser.setFeature(
-                        "http://xml.org/sax/features/namespace-prefixes",
-                        true);
+        saxParser.setFeature(
+            "http://xml.org/sax/features/namespace-prefixes",
+            true);
         saxParser.setProperty(
             "http://xml.org/sax/properties/lexical-handler",
             this);
-            saxParser.reset();
+        saxParser.reset();
 
         try {
             RDFParser p = new RDFParser(pipe, ARPFilter.this);
@@ -172,7 +174,7 @@ class ARPFilter
             wrapped.throwMe();
         } catch (ParseException parse) {
             throw parse.rootCause();
-        } 
+        }
 
     }
 
@@ -331,7 +333,7 @@ class ARPFilter
         setErrorMode(WARN_DEPRECATED_XMLLANG, warning);
         //       setErrorMode(WARN_EMPTY_ABOUT_EACH,nonErrorMode);
         setErrorMode(WARN_UNKNOWN_PARSETYPE, warning);
-  //     setErrorMode(WARN_BAD_XML, nonErrorMode);
+        //     setErrorMode(WARN_BAD_XML, nonErrorMode);
         setErrorMode(WARN_PROCESSING_INSTRUCTION_IN_RDF, nonErrorMode);
         setErrorMode(WARN_LEGAL_REUSE_OF_ID, nonErrorMode);
         setErrorMode(WARN_RDF_NN_AS_TYPE, nonErrorMode);
@@ -339,7 +341,7 @@ class ARPFilter
         setErrorMode(WARN_UNKNOWN_RDF_ATTRIBUTE, warning);
         setErrorMode(WARN_UNKNOWN_XML_ATTRIBUTE, nonErrorMode);
         setErrorMode(WARN_QNAME_AS_ID, warning);
-  //      setErrorMode(WARN_BAD_XML, error);
+        //      setErrorMode(WARN_BAD_XML, error);
         setErrorMode(WARN_SAX_WARNING, warning);
     }
     int setErrorMode(int errno, int mode) {
@@ -471,9 +473,24 @@ class ARPFilter
 
                 attsDone.set(i);
                 pipe.putNextToken(new StrToken(A_XMLNS, where, prefix));
-                pipe.putNextToken(
-                    new StrToken(AV_STRING, where, atts.getValue(i)));
+                String nsuri = atts.getValue(i);
+                pipe.putNextToken(new StrToken(AV_STRING, where, nsuri));
                 // System.err.println(prefix + " => " + atts.getValue(i));
+                if (nsuri.startsWith(rdfns) && !nsuri.equals(rdfns) )
+                    putWarning(
+                        WARN_BAD_RDF_NAMESPACE_URI,
+                        where,
+                        "Namespace URI ref "
+                            + nsuri
+                            + " may not be used in RDF/XML.");
+                if (nsuri.startsWith(xmlns) && !nsuri.equals(xmlns) )
+                             putWarning(
+                                 WARN_BAD_XML_NAMESPACE_URI,
+                                 where,
+                                 "Namespace URI ref "
+                                     + nsuri
+                                     + " may not be used in RDF/XML.");
+
             }
         }
         for (int i = 0; i < specialAtts.length; i++) {
@@ -694,15 +711,16 @@ class ARPFilter
         saxError(ERR_SAX_FATAL_ERROR, e);
         throw new DontDieYetException();
     }
-    private void saxError(int i,SAXParseException e){
-        Location where = new Location(e.getSystemId(),e.getLineNumber(),e.getColumnNumber());
-        
-        pipe.putNextToken(
-            new SaxExceptionToken(
-                i,
-                where,
-                e));
-        
+    private void saxError(int i, SAXParseException e) {
+        Location where =
+            new Location(
+                e.getSystemId(),
+                e.getLineNumber(),
+                e.getColumnNumber());
+
+        pipe.putNextToken(new SaxExceptionToken(i, where, e));
+
     }
-    private static class DontDieYetException extends RuntimeException {}
+    private static class DontDieYetException extends RuntimeException {
+    }
 }

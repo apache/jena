@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Location.java,v 1.1.1.1 2002-12-19 19:16:13 bwm Exp $
+ * * $Id: Location.java,v 1.2 2003-01-13 18:22:52 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -42,23 +42,39 @@ import org.xml.sax.Locator;
  * @author  jjc
  * 
  */
-class Location extends java.lang.Object {
+class Location implements Locator {
     final String inputName;
+    final String publicId;
     final int endLine;
     final int endColumn;
     Location(Locator locator) {
         inputName = locator.getSystemId();
         endLine = locator.getLineNumber();
         endColumn = locator.getColumnNumber();
+        publicId = locator.getPublicId();
     }
     Location(String sysId,int line,int col) {
         inputName = sysId;
         endLine = line;
         endColumn = col;
+        publicId = null;
     }
     public String toString() {
         return //"before column " + endColumn +
         "line " + endLine + " in '"
         + inputName + "'";
     }
+    public String getSystemId() {
+        return inputName;
+    }
+    public int getLineNumber() {
+        return endLine;
+    }
+    public int getColumnNumber() {
+        return endColumn;
+    }
+    public String getPublicId() {
+        return publicId;
+    }
+    
 }

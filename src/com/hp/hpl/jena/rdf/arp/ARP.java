@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.1.1.1 2002-12-19 19:15:58 bwm Exp $
+   $Id: ARP.java,v 1.2 2003-01-13 18:22:45 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -46,6 +46,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import java.io.IOException;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import java.io.InputStream;
 import java.io.Reader;
 
@@ -77,6 +78,17 @@ public class ARP implements ARPErrorNumbers {
  */    
     public ARP()  {
         arpf =  ARPFilter.create();
+    }
+    
+/**
+ * When parsing a file, this returns a Locator giving the
+ * position of the last XML event processed by ARP.
+ * This may return null or misleading results before any
+ * tokens have been processed.
+ * @return Locator
+ */
+    public Locator getLocator() {
+        return arpf.getLocator();
     }
     
 /** Sets the StatementHandler that provides the callback mechanism

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: TokenPipe.java,v 1.1.1.1 2002-12-19 19:16:42 bwm Exp $
+ * * $Id: TokenPipe.java,v 1.2 2003-01-13 18:22:46 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -36,6 +36,7 @@
 
 package com.hp.hpl.jena.rdf.arp;
 import java.util.*;
+import org.xml.sax.Locator;
 
 /**
  *
@@ -55,6 +56,7 @@ class TokenPipe implements TokenManager {
 	final List pipe = new ArrayList();
 	private int position = 0;
 	final ARPFilter arp;
+    private Token last;
 	/** Creates new TokenPipe */
 	TokenPipe(ARPFilter arp) {
 		this.arp = arp;
@@ -72,6 +74,8 @@ class TokenPipe implements TokenManager {
 			if (atEOF)
 				return new Token(RDFParserConstants.EOF, null);
 			position = 0;
+            if ( pipe.size() > 0 )
+                last = (Token)pipe.get(pipe.size()-1);
 			pipe.clear();
 			while (pipe.size() == 0)
 				if (!arp.parseSome()) {
@@ -80,4 +84,12 @@ class TokenPipe implements TokenManager {
 				}
 		}
 	}
+    Locator getLocator() {
+        if ( pipe.size() > 0 ) {
+            return ((Token)pipe.get(position-1)).location;
+        } else if ( last != null )
+          return  last.location;
+        else 
+          return null;
+    }
 }
