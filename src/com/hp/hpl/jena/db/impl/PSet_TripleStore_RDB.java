@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.44 2004-07-24 20:07:37 der Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.45 2004-11-04 22:05:52 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
 import java.sql.BatchUpdateException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.db.RDFRDBException;
+import com.hp.hpl.jena.db.impl.DriverRDB;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.44 $ on $Date: 2004-07-24 20:07:37 $
+* @version $Revision: 1.45 $ on $Date: 2004-11-04 22:05:52 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -551,149 +551,159 @@ public void deleteTripleAR(
 		}
 	}
 	
-	/** 
+	/**
 	 * Attempt to add a list of triples to the specialized graph.
 	 * 
-	 * As each triple is successfully added it is removed from the List.
-	 * If complete is true then the entire List was added and the List will 
-	 * be empty upon return.  if complete is false, then at least one triple 
-	 * remains in the List.
+	 * As each triple is successfully added it is removed from the List. If
+	 * complete is true then the entire List was added and the List will be
+	 * empty upon return. if complete is false, then at least one triple remains
+	 * in the List.
 	 * 
 	 * If a triple can't be stored for any reason other than incompatability
-	 * (for example, a lack of disk space) then the implemenation should throw
-	 * a runtime exception.
+	 * (for example, a lack of disk space) then the implemenation should throw a
+	 * runtime exception.
 	 * 
-	 * @param triples List of triples to be added.  This is modified by the call.
-	 * @param my_GID  ID of the graph.
+	 * @param triples
+	 *            List of triples to be added. This is modified by the call.
+	 * @param my_GID
+	 *            ID of the graph.
 	 */
-		public void storeTripleList(List triples, IDBID my_GID) {
-			// for relational dbs, there are two styles for bulk inserts.
-			// JDBC 2.0 supports batched updates.
-			// MySQL also supports a multiple-row insert.
-			// For now, we support only jdbc 2.0 batched updates
-			/** Set of PreparedStatements that need executeBatch() **/
-			Hashtable batchedPreparedStatements = new Hashtable();
-			Triple t;
-			String cmd;
-			try {
-				Connection con = m_sql.getConnection();
-				boolean autoState = con.getAutoCommit();
-				if (autoState) 
-					con.setAutoCommit(false);
-				
-				Iterator it = triples.iterator();
-				
-				while (it.hasNext()) {
-					t = (Triple) it.next(); 
-					storeTriple(t, my_GID, true, batchedPreparedStatements);	
-				}
-				
-				Enumeration enum = batchedPreparedStatements.keys() ; 
-				while (enum.hasMoreElements()) {
-					String op = (String) enum.nextElement();
-					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
-					p.executeBatch();
-					m_sql.returnPreparedSQLStatement(p);
-				}
+	public void storeTripleList(List triples, IDBID my_GID) {
+		// for relational dbs, there are two styles for bulk inserts.
+		// JDBC 2.0 supports batched updates.
+		// MySQL also supports a multiple-row insert.
+		// For now, we support only jdbc 2.0 batched updates
+		/** Set of PreparedStatements that need executeBatch() * */
+		Hashtable batchedPreparedStatements = new Hashtable();
+		Triple t;
+		String cmd;
+		boolean autoState = false;
+		DriverRDB drvr = (DriverRDB) m_driver;
+		try {
+			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
 
-				
-				if (autoState) {
-					m_sql.getConnection().commit();
-					con.setAutoCommit(autoState);
-				}
-				batchedPreparedStatements = new Hashtable();
-				ArrayList c = new ArrayList(triples);
-				triples.removeAll(c);						
-		} catch(BatchUpdateException b) {
-					System.err.println("SQLException: " + b.getMessage());
-					System.err.println("SQLState: " + b.getSQLState());
-					System.err.println("Message: " + b.getMessage());
-					System.err.println("Vendor: " + b.getErrorCode());
-					System.err.print("Update counts: ");
-					int [] updateCounts = b.getUpdateCounts();
-					for (int i = 0; i < updateCounts.length; i++) {
-						System.err.print(updateCounts[i] + " ");
-					}
-				} catch(SQLException ex) {
-					System.err.println("SQLException: " + ex.getMessage());
-					System.err.println("SQLState: " + ex.getSQLState());
-					System.err.println("Message: " + ex.getMessage());
-					System.err.println("Vendor: " + ex.getErrorCode());
-				}
+			Iterator it = triples.iterator();
+
+			while (it.hasNext()) {
+				t = (Triple) it.next();
+				storeTriple(t, my_GID, true, batchedPreparedStatements);
+			}
+
+			Enumeration enum = batchedPreparedStatements.keys();
+			while (enum.hasMoreElements()) {
+				String op = (String) enum.nextElement();
+				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
+						.get(op);
+				p.executeBatch();
+				m_sql.returnPreparedSQLStatement(p);
+			}
+
+			if (autoState)
+				drvr.xactOp(DriverRDB.xactCommit);
+
+			batchedPreparedStatements = new Hashtable();
+			ArrayList c = new ArrayList(triples);
+			triples.removeAll(c);
+		
+		// WARNING: caught exceptions should drop through to return.
+		// if not, be sure to reset autocommit before exiting.
+		} catch (BatchUpdateException b) {
+			System.err.println("SQLException: " + b.getMessage());
+			System.err.println("SQLState: " + b.getSQLState());
+			System.err.println("Message: " + b.getMessage());
+			System.err.println("Vendor: " + b.getErrorCode());
+			System.err.print("Update counts: ");
+			int[] updateCounts = b.getUpdateCounts();
+			for (int i = 0; i < updateCounts.length; i++) {
+				System.err.print(updateCounts[i] + " ");
+			}
+		} catch (SQLException ex) {
+			System.err.println("SQLException: " + ex.getMessage());
+			System.err.println("SQLState: " + ex.getSQLState());
+			System.err.println("Message: " + ex.getMessage());
+			System.err.println("Vendor: " + ex.getErrorCode());
 		}
+		if (autoState)
+			drvr.xactOp(DriverRDB.xactAutoOn);
+	}
 
-	/** 
+	/**
 	 * Attempt to remove a list of triples from the specialized graph.
 	 * 
-	 * As each triple is successfully deleted it is removed from the List.
-	 * If complete is true then the entire List was added and the List will 
-	 * be empty upon return.  if complete is false, then at least one triple 
-	 * remains in the List.
+	 * As each triple is successfully deleted it is removed from the List. If
+	 * complete is true then the entire List was added and the List will be
+	 * empty upon return. if complete is false, then at least one triple remains
+	 * in the List.
 	 * 
 	 * If a triple can't be stored for any reason other than incompatability
-	 * (for example, a lack of disk space) then the implemenation should throw
-	 * a runtime exception.
+	 * (for example, a lack of disk space) then the implemenation should throw a
+	 * runtime exception.
 	 * 
-	 * @param triples List of triples to be added.  This is modified by the call.
-	 * @param my_GID  ID of the graph.
+	 * @param triples
+	 *            List of triples to be added. This is modified by the call.
+	 * @param my_GID
+	 *            ID of the graph.
 	 */
-		public void deleteTripleList(List triples, IDBID my_GID) {
-			// for relational dbs, there are two styles for bulk operations.
-			// JDBC 2.0 supports batched updates.
-			// MySQL also supports a multiple-row update.
-			// For now, we support only jdbc 2.0 batched updates
-			
-			/** Set of PreparedStatements that need executeBatch() **/
-			Hashtable batchedPreparedStatements = new Hashtable();
-			Triple t;
-			String cmd;
-			try {
-				 Connection con = m_sql.getConnection();
-				 boolean autoCommitState = con.getAutoCommit();
-				 if (autoCommitState)
-				 	con.setAutoCommit(false);
-				Iterator it = triples.iterator();
-				
-				while (it.hasNext()) {
-					t = (Triple) it.next(); 
-					deleteTriple(t, my_GID, true, batchedPreparedStatements);	
-				}
-				
-				Enumeration enum = batchedPreparedStatements.keys() ; 
-				while (enum.hasMoreElements()) {
-					String op = (String) enum.nextElement();
-					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
-					p.executeBatch();
-				//	m_sql.returnPreparedSQLStatement(p,op);
-				} 
-				
-				if (autoCommitState) {
-					m_sql.getConnection().commit();
-					m_sql.getConnection().setAutoCommit(autoCommitState);
-				}
-				
-				batchedPreparedStatements = new Hashtable();
-				ArrayList c = new ArrayList(triples);
-				triples.removeAll(c);						
-		} catch(BatchUpdateException b) {
-					System.err.println("SQLException: " + b.getMessage());
-					System.err.println("SQLState: " + b.getSQLState());
-					System.err.println("Message: " + b.getMessage());
-					System.err.println("Vendor: " + b.getErrorCode());
-					System.err.print("Update counts: ");
-					int [] updateCounts = b.getUpdateCounts();
-					for (int i = 0; i < updateCounts.length; i++) {
-						System.err.print(updateCounts[i] + " ");
-					}
-				} catch(SQLException ex) {
-					System.err.println("SQLException: " + ex.getMessage());
-					System.err.println("SQLState: " + ex.getSQLState());
-					System.err.println("Message: " + ex.getMessage());
-					System.err.println("Vendor: " + ex.getErrorCode());
-				}
-		}
+	public void deleteTripleList(List triples, IDBID my_GID) {
+		// for relational dbs, there are two styles for bulk operations.
+		// JDBC 2.0 supports batched updates.
+		// MySQL also supports a multiple-row update.
+		// For now, we support only jdbc 2.0 batched updates
 
-	/** 
+		/** Set of PreparedStatements that need executeBatch() * */
+		Hashtable batchedPreparedStatements = new Hashtable();
+		Triple t;
+		String cmd;
+		boolean autoState = false;
+		DriverRDB drvr = (DriverRDB) m_driver;
+		try {
+			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
+			Iterator it = triples.iterator();
+
+			while (it.hasNext()) {
+				t = (Triple) it.next();
+				deleteTriple(t, my_GID, true, batchedPreparedStatements);
+			}
+
+			Enumeration enum = batchedPreparedStatements.keys();
+			while (enum.hasMoreElements()) {
+				String op = (String) enum.nextElement();
+				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
+						.get(op);
+				p.executeBatch();
+				//	m_sql.returnPreparedSQLStatement(p,op);
+			}
+
+			if (autoState)
+				drvr.xactOp(DriverRDB.xactCommit);
+
+			batchedPreparedStatements = new Hashtable();
+			ArrayList c = new ArrayList(triples);
+			triples.removeAll(c);
+			
+		// WARNING: caught exceptions should drop through to return.
+		// if not, be sure to reset autocommit before exiting.
+		} catch (BatchUpdateException b) {
+			System.err.println("SQLException: " + b.getMessage());
+			System.err.println("SQLState: " + b.getSQLState());
+			System.err.println("Message: " + b.getMessage());
+			System.err.println("Vendor: " + b.getErrorCode());
+			System.err.print("Update counts: ");
+			int[] updateCounts = b.getUpdateCounts();
+			for (int i = 0; i < updateCounts.length; i++) {
+				System.err.print(updateCounts[i] + " ");
+			}
+		} catch (SQLException ex) {
+			System.err.println("SQLException: " + ex.getMessage());
+			System.err.println("SQLState: " + ex.getSQLState());
+			System.err.println("Message: " + ex.getMessage());
+			System.err.println("Vendor: " + ex.getErrorCode());
+		}
+		if (autoState)
+			drvr.xactOp(DriverRDB.xactAutoOn);
+	}
+
+	/**
 	 * Compute the number of unique triples added to the Specialized Graph.
 	 * 
 	 * @return int count.
