@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.40 2005-02-21 12:16:54 andy_seaborne Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.41 2005-03-23 13:58:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.graph.*;
+
 import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
@@ -31,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.40 $ on $Date: 2005-02-21 12:16:54 $
+ * @version $Revision: 1.41 $ on $Date: 2005-03-23 13:58:14 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -338,6 +339,14 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      */
     public Graph getDeductionsGraph() {
         prepare();
+        return fdeductions.getGraph();
+    }
+    
+    /**
+     * Return the Graph containing all the static deductions available so far.
+     * Does not trigger a prepare action.
+     */
+    public Graph getCurrentDeductionsGraph() {
         return fdeductions.getGraph();
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.50 2005-02-23 11:42:00 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.51 2005-03-23 13:58:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.50 $ on $Date: 2005-02-23 11:42:00 $
+ * @version $Revision: 1.51 $ on $Date: 2005-03-23 13:58:14 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -296,7 +296,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Add a new deduction to the deductions graph.
      */
     public void addDeduction(Triple t) {
-        getDeductionsGraph().add(t);
+        getCurrentDeductionsGraph().add(t);
         if (useTGCCaching) {
             transitiveEngine.add(t);
         }

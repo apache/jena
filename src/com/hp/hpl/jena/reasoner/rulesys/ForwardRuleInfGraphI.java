@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ForwardRuleInfGraphI.java,v 1.10 2005-02-21 12:16:59 andy_seaborne Exp $
+ * $Id: ForwardRuleInfGraphI.java,v 1.11 2005-03-23 13:58:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * are needed to support the forward rule engine. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-02-21 12:16:59 $
+ * @version $Revision: 1.11 $ on $Date: 2005-03-23 13:58:14 $
  */
 public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
     
@@ -42,8 +42,15 @@ public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
     
     /**
      * Return the Graph containing all the static deductions available so far.
+     * Triggers a prepare if the graph has not been prepared already.
      */
     public Graph getDeductionsGraph();
+    
+    /**
+     * Return the Graph containing all the static deductions available so far.
+     * Does not trigger a prepare action.
+     */
+    public Graph getCurrentDeductionsGraph();
     
     /**
      * Add a new deduction to the deductions graph.
