@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.5 2004-01-29 12:34:03 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.6 2004-09-06 15:19:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -17,7 +17,7 @@ import junit.framework.TestSuite;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2004-01-29 12:34:03 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2004-09-06 15:19:25 $
  */
 public class TestPackage extends Object {
     
@@ -29,6 +29,7 @@ public class TestPackage extends Object {
     /* */
         result.addTest( TestDelta.suite() );
         result.addTest( TestUnion.suite() );
+        result.addTest( TestDisjointUnion.suite() );
         result.addTest( TestDifference.suite() );
         result.addTest( TestIntersection.suite() );
         result.addTest( TestMultiUnion.suite() );

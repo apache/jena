@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.2 2004-09-06 14:30:27 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.3 2004-09-06 15:19:26 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -22,12 +22,12 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
     
     @author kers
 */
-public class SimpleReifierFragmentsMap 
+public class SimpleReifierFragmentsMap implements ReifierFragmentsMap 
     {
     protected Map forwardMap = HashUtils.createMap();
     
-    public Object get( Node tag )
-        { return forwardMap.get( tag ); }
+    public Fragments getFragments( Node tag )
+        { return (Fragments) forwardMap.get( tag ); }
     
     public void removeFragments( Node key )
         {
