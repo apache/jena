@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.12 2003-12-04 12:03:21 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.13 2003-12-05 16:14:34 andy_seaborne Exp $
  */
 
 
@@ -339,13 +339,11 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
     protected void writeObjectList(Resource resource, Property property)
     {
-        //boolean doItSimply = false ;
-
-        if ( ! doObjectListsAsLists )
-        {
-            super.writeObjectList(resource, property) ;
-            return ;
-        }
+//        if ( ! doObjectListsAsLists )
+//        {
+//            super.writeObjectList(resource, property) ;
+//            return ;
+//        }
 
         String propStr = formatProperty(property);
         
@@ -375,25 +373,52 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             if (propStr.length() < widePropertyLen)
                 padSp = pad(calcPropertyPadding(propStr)) ;
             
-            out.incIndent(indentObject) ; 
-            out.print(propStr);
-
-            if ( padSp != null )
-                out.print(padSp) ;
-            else
-                out.println() ;
-            
-            for (Iterator iter = simple.iterator(); iter.hasNext();)
+            if ( doObjectListsAsLists )
             {
-                RDFNode n = (RDFNode) iter.next();
-                writeObject(n);
-                
-                // As an object list
-                if (iter.hasNext())
-                    out.print(objectListSep);
-            }
+                // Write all simple objects as one list. 
+                out.print(propStr);
+                out.incIndent(indentObject) ; 
             
-            out.decIndent(indentObject) ;
+                if ( padSp != null )
+                    out.print(padSp) ;
+                else
+                    out.println() ;
+            
+                for (Iterator iter = simple.iterator(); iter.hasNext();)
+                {
+                    RDFNode n = (RDFNode) iter.next();
+                    writeObject(n);
+                    
+                    // As an object list
+                    if (iter.hasNext())
+                        out.print(objectListSep);
+                }
+                
+                out.decIndent(indentObject) ;
+            }
+            else
+            {
+                for (Iterator iter = simple.iterator(); iter.hasNext();)
+                {
+                    // This is also the same as the complex case 
+                    // except the width the property can go in is different.
+                    out.print(propStr);
+                    out.incIndent(indentObject) ; 
+                    if ( padSp != null )
+                        out.print(padSp) ;
+                    else
+                        out.println() ;
+                    
+                    RDFNode n = (RDFNode) iter.next();
+                    writeObject(n);
+                    out.decIndent(indentObject) ;
+                    
+                    // As an object list
+                    if (iter.hasNext())
+                        out.println(" ;");
+                   }
+                
+            }
         }        
         // Now do complex objects.
         // Write property each time for a complex object.
