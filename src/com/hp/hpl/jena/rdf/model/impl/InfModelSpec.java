@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: InfModelSpec.java,v 1.1 2003-08-21 17:28:37 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.2 2003-08-25 10:26:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
     A ModelSpec for InfModels. The description of an InfModel is the description of a 
-    ModelMaker [for the base graph] plus the JMS.reasoner property to give the
+    ModelMaker [for the base graph] plus the JMS.reasonsWith property to give the
     Resource who's URI identifies the reasoner to use [as per the ReasonerRegistry].
     
  	@author kers
@@ -69,7 +69,9 @@ public class InfModelSpec extends ModelSpecImpl
     public Model addDescription( Model desc, Resource self )
         {
         super.addDescription( desc, self );
-        desc.add( self, JMS.reasoner, reasonerResource );
+        Resource r = desc.createResource();
+        desc.add( self, JMS.reasonsWith, r );
+        desc.add( r, JMS.reasoner, reasonerResource );
         return desc;    
         }
     }

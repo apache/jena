@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.14 2003-08-22 14:34:01 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.15 2003-08-25 10:26:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -26,12 +26,12 @@ import junit.framework.*;
 
 public class TestModelFactory extends ModelTestBase
     {
+    public TestModelFactory(String name)
+        { super(name); }
+        
     public static TestSuite suite()
         { return new TestSuite( TestModelFactory.class ); }   
         
-    public TestModelFactory(String name)
-        { super(name); }
-
     /**
         Test that ModelFactory.createDefaultModel() exists. [Should check that the Model
         is truly a "default" model.]
@@ -86,7 +86,8 @@ public class TestModelFactory extends ModelTestBase
         Resource reasoner = ResourceFactory.createResource();
         Resource reasonerURI = ResourceFactory.createResource( DAMLMicroReasonerFactory.URI );
         Model desc = ModelFactory.createDefaultModel()
-            .add( root, JMS.reasoner, reasonerURI )
+            .add( root, JMS.reasonsWith, reasoner )
+            .add( reasoner, JMS.reasoner, reasonerURI )
             .add( root, JMS.maker, maker )
             .add( maker, RDF.type, JMS.MemMakerSpec )
             .add( maker, JMS.reificationMode, JMS.rsMinimal )

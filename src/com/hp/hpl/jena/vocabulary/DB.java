@@ -10,7 +10,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Vocabulary for Database properties.
  *
  * @author csayers
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class DB {
 
@@ -29,6 +29,12 @@ public class DB {
     public static final Property driverVersion = ResourceFactory.createProperty(uri + "DriverVersion" );
     public static final Property formatDate = ResourceFactory.createProperty(uri + "FormatDate" );
     public static final Property graph = ResourceFactory.createProperty(uri + "Graph" );
+    
+    /**
+        obsolete - but it hasn't been removed from the tests, so things break.
+    */
+    public static final Property maxLiteral = ResourceFactory.createProperty(uri + "MaxLiteral" );
+    
 	public static final Property longObjectLength = ResourceFactory.createProperty(uri + "LongObjectLength" );
 	public static final Property indexKeyLength = ResourceFactory.createProperty(uri + "IndexKeyLength" );
 	public static final Property isTransactionDb = ResourceFactory.createProperty(uri + "IsTransactionDb" );
