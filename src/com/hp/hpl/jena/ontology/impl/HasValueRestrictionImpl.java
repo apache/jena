@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: HasValueRestrictionImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:52:43 $
+ * Last modified on   $Date: 2003-06-10 22:58:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: HasValueRestrictionImpl.java,v 1.4 2003-06-08 18:52:43 ian_dickinson Exp $
+ * @version CVS $Id: HasValueRestrictionImpl.java,v 1.5 2003-06-10 22:58:58 ian_dickinson Exp $
  */
 public class HasValueRestrictionImpl
     extends RestrictionImpl
@@ -106,8 +106,8 @@ public class HasValueRestrictionImpl
      * class defined by this restriction.
      * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
      */ 
-    public void setHasValue( Resource cls ) {
-        setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", cls );
+    public void setHasValue( Resource individual ) {
+        setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", individual );
     }
 
     /**

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: HasValueRestriction.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:29 $
+ * Last modified on   $Date: 2003-06-10 22:58:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -29,13 +29,13 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * <p>
- * A property restriction that requires the named property to have a given instance as
+ * A property restriction that requires the named property to have a given individual as
  * its value. 
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: HasValueRestriction.java,v 1.3 2003-06-08 18:53:29 ian_dickinson Exp $
+ * @version CVS $Id: HasValueRestriction.java,v 1.4 2003-06-10 22:58:18 ian_dickinson Exp $
  */
 public interface HasValueRestriction
     extends Restriction 
@@ -56,7 +56,7 @@ public interface HasValueRestriction
      * class defined by this restriction.
      * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
      */ 
-    public void setHasValue( Resource cls );
+    public void setHasValue( Resource individual );
 
     /**
      * <p>Answer the individual that all values of the restricted property must be equal to.</p>
@@ -78,9 +78,9 @@ public interface HasValueRestriction
      * <p>Remove the statement that this restriction requires the restricted property to have
      * the given value.  If this statement
      * is not true of the current model, nothing happens.</p>
-     * @param res A resource that is to be removed as the required value for the restricted property
+     * @param individual A resource that is to be removed as the required value for the restricted property
      */
-    public void removeHasValue( Resource res );
+    public void removeHasValue( Resource individual );
     
 
 }
