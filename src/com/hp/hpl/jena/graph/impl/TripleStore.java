@@ -1,13 +1,13 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: TripleStore.java,v 1.2 2004-09-13 15:19:25 chris-dollin Exp $
+ $Id: TripleStore.java,v 1.3 2004-09-14 17:10:29 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
      TripleStore - interface for bulk storage of triples used in composed graphs.

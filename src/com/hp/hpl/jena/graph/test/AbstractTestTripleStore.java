@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: AbstractTestTripleStore.java,v 1.3 2004-09-13 15:21:04 chris-dollin Exp $
+  $Id: AbstractTestTripleStore.java,v 1.4 2004-09-14 17:11:35 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -82,6 +82,17 @@ public abstract class AbstractTestTripleStore extends GraphTestBase
         assertEquals( tripleSet( "x P y; x R y" ), iteratorToSet( store.find( triple( "x ?? y" ) ) ) );
         assertEquals( tripleSet( "_z Q _j" ), iteratorToSet( store.find( triple( "?? ?? _j" ) ) ) );
         assertEquals( tripleSet( "q R 17" ), iteratorToSet( store.find( triple( "?? ?? 17" ) ) ) );
+        }
+    
+    public void testRemove()
+        {
+        store.add( triple( "nothing before ace" ) );
+        store.add( triple( "ace before king" ) );
+        store.add( triple( "king before queen" ) );
+        store.delete( triple( "ace before king" ) );
+        assertEquals( tripleSet( "king before queen; nothing before ace" ), iteratorToSet( store.find( triple( "?? ?? ??" ) ) ) );
+        store.delete( triple( "king before queen" ) );
+        assertEquals( tripleSet( "nothing before ace" ), iteratorToSet( store.find( triple( "?? ?? ??" ) ) ) );
         }
     
     public void someStatements( TripleStore ts )
