@@ -5,26 +5,37 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Node_RuleVariable.java,v 1.4 2003-05-09 08:08:37 der Exp $
+ * $Id: Node_RuleVariable.java,v 1.5 2003-05-13 21:34:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Variable;
 
 /**
- * A variation on the normal Node_Variable which includes an
- * index value (an offset into a binding table). 
+ * A variation on the normal Node_Variable which support for value bindings.
+ * Currently the forward rule system stores the values externally but requires
+ * variables to have an offset index in the rule environment vector. The
+ * variables can also suport prolog-like reference chains and trails but these
+ * are not yet used.
  * <p>
  * Note that this should not be used in a real Triple, in particular
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-09 08:08:37 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-13 21:34:43 $
  */
 public class Node_RuleVariable extends Node_Variable {
-    /** The offset of this variable in the rule's binding table */
+    /** The offset of this variable in the Frule's binding table */
     protected int index;
 
+    /** The value to which this variable is bound, can be another variable,
+     *  itself (meaning unbound) or an actual value */
+    protected Node value;
+    
+    /** A flag to indicate the the value is reference (pointer to a var) */
+    protected boolean isRef = true;
+    
     /** A static wildcard - like Node.ANY but tests equl to other Node_RuleVariables */
     public static final Node_RuleVariable WILD = new Node_RuleVariable("*", 0);
          
@@ -36,14 +47,59 @@ public class Node_RuleVariable extends Node_Variable {
     public Node_RuleVariable(String label, int index) {
         super(new VarLabel(label));
         this.index = index;
+        this.value = this;
     }
     
     /**
-     * Returns the index.
+     * Returns the varibles index in an frule binding vector.
      * @return int
      */
     public int getIndex() {
         return index;
+    }
+    
+    /**
+     * Binds a value to the brule version of the variable 
+     * @param node a concrete Node value or another Node_RuleVariable
+     * to alias to
+     * @return the dereferenced variable which was bound or null if the
+     * variable was already bound
+     */
+    public Node bind(Node node) {
+        Node_RuleVariable var = this;
+        while (var.isRef) {
+            if (var.value == var) {
+                var.value = node;
+                var.isRef = node instanceof Node_RuleVariable;
+                return var;
+            }
+            var = (Node_RuleVariable)var.value;
+        }
+        return null;
+    }
+    
+    /**
+     * Dereference a variable by following the reference chain.
+     * @return either a concrete node value or the last variable
+     * in the reference chain.
+     */
+    public Node deref() {
+        Node_RuleVariable var = this;
+        while (var.isRef) {
+            if (var.value == var) {
+                return var;
+            }
+            var = (Node_RuleVariable)var.value;
+        }
+        return var.value;
+    }
+    
+    /**
+     * Set the variable to be unbound (in the brule sense)
+     */
+    public void unbind() {
+        isRef = true;
+        value = this;
     }
     
     /** printable form */        

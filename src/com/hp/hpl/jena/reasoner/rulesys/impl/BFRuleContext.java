@@ -5,13 +5,16 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.2 2003-05-05 15:16:00 der Exp $
+ * $Id: BFRuleContext.java,v 1.1 2003-05-13 21:36:08 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.BindingStack;
+import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
+import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
+import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.graph.*;
@@ -24,7 +27,7 @@ import org.apache.log4j.Logger;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 15:16:00 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-13 21:36:08 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -106,7 +109,7 @@ public class BFRuleContext implements RuleContext {
      * Add a triple to the stack of triples to waiting to be processed by the rule engine.
      */
     public void addTriple(Triple t) {
-        if (graph.traceOn && graph.processedAxioms) {
+        if (graph.shouldTrace()) {
             if (rule != null) {
                 logger.debug("Adding to stack (" + rule.toShortString() + "): " + PrintUtil.print(t));
             } else {
@@ -123,7 +126,7 @@ public class BFRuleContext implements RuleContext {
      * the deductions for matches to a given rule.
      */
     public void addPending(Triple t) {
-        if (graph.traceOn && graph.processedAxioms) {
+        if (graph.shouldTrace()) {
             if (rule != null) {
                 logger.debug("Adding to pending (" + rule.toShortString() + "): " + PrintUtil.print(t));
             } else {

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingEnvironment.java,v 1.2 2003-04-28 20:17:54 der Exp $
+ * $Id: BindingEnvironment.java,v 1.3 2003-05-13 21:34:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -13,32 +13,21 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Interface through which the current bound values of variables
- * can be found.
+ * can be found. Many of the details vary between the forward and
+ * backward chaining system - this interface is the minimal one needed
+ * by most builtins the specific implementations offer richer functionality.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:17:54 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-13 21:34:43 $
  */
 public interface BindingEnvironment {
-    
-    /**
-     * If the node is a variable then return the current binding 
-     * (null if not bound) otherwise return the node itself.
-     */
-    public Node getBinding(Node node);
-    
+        
     /**
      * Return the most ground version of the node. If the node is not a variable
      * just return it, if it is a varible bound in this environment return the binding,
      * if it is an unbound variable return the variable.
      */
     public Node getGroundVersion(Node node);
-    
-    /**
-     * Bind the ith variable in the current envionment to the given value.
-     * Checks that the new binding is compatible with any current binding.
-     * @return false if the binding fails
-     */
-    public boolean bind(int i, Node value);
     
     /**
      * Bind a variable in the current envionment to the given value.
@@ -48,15 +37,7 @@ public interface BindingEnvironment {
      * @return false if the binding fails
      */
     public boolean bind(Node var, Node value);
-    
-    /**
-     * Bind a variable in the current envionment to the given value.
-     * Overrides and ignores any current binding.
-     * @param var a Node_RuleVariable defining the variable to bind
-     * @param value the value to bind
-     */
-    public void bindNoCheck(Node_RuleVariable var, Node value);
-    
+        
 }
 
 /*

@@ -5,19 +5,20 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Remove.java,v 1.1 2003-05-05 15:15:58 der Exp $
+ * $Id: Remove.java,v 1.2 2003-05-13 21:36:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
  * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-13 21:36:08 $
  */
 public class Remove implements Builtin {
 
@@ -58,7 +59,9 @@ public class Remove implements Builtin {
                 int clauseIndex = Util.getIntValue(clauseN);
                 Object clause = context.getRule().getBodyElement(clauseIndex);
                 if (clause instanceof TriplePattern) {
-                    Triple t = BasicForwardRuleInfGraph.instantiate((TriplePattern)clause, context.getEnv());
+                    Triple t = BasicForwardRuleInfGraph.instantiate(
+                                        (TriplePattern)clause, 
+                                        ((BFRuleContext)context).getEnvStack() );
                     context.getGraph().delete(t);
                 } else {
                     throw new BuiltinException(this, context, "illegal triple to remove non-triple clause");

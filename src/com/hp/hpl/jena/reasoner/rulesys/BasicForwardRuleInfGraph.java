@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.6 2003-05-12 19:42:20 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.7 2003-05-13 21:34:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-12 19:42:20 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-13 21:34:43 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph {
 
@@ -308,6 +308,14 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
         traceOn = state;
     }
     
+    /**
+     * Return true if tracing should be acted on - i.e. if traceOn is true
+     * and we are past the bootstrap phase.
+     */
+    public boolean shouldTrace() {
+        return traceOn && processedAxioms;
+    }
+    
 //=======================================================================
 // Rule engine
 
@@ -435,7 +443,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
             int best = -1;
             for (int i = 0; i < len; i++) {
                 if (i == trigger) continue; // Skip the clause already processed
-                BindingEnvironment env = context.getEnv();
+                BindingStack env = context.getEnvStack();
                 if (body[i] instanceof TriplePattern) {
                     TriplePattern clause = (TriplePattern) body[i];
                     int score = scoreNodeBoundness(clause.getSubject(), env) * 3 +
@@ -564,7 +572,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * Treats a variable as better than a wildcard because it constrains
      * later clauses.
      */
-    private static int scoreNodeBoundness(Node n, BindingEnvironment env) {
+    private static int scoreNodeBoundness(Node n, BindingStack env) {
         if (n instanceof Node_ANY) {
             return 0;
         } else if (n instanceof Node_RuleVariable) {
@@ -585,7 +593,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * @param env the current binding environment
      * @return a new, instantiated triple
      */
-    public static Triple instantiate(TriplePattern pattern, BindingEnvironment env) {
+    public static Triple instantiate(TriplePattern pattern, BindingStack env) {
         Node s = env.getBinding(pattern.getSubject());
         if (s == null) s = Node.createAnon();
         Node p = env.getBinding(pattern.getPredicate());
