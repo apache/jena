@@ -12,7 +12,7 @@ import junit.framework.* ;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.15 $
+ * @version 	$Revision: 1.16 $
  */
 public class TestPackage extends TestSuite
 {
@@ -61,6 +61,7 @@ public class TestPackage extends TestSuite
 		addTest( "TestCompareToMem", TestCompareToMem.suite() );
 		addTest( "TestGraphRDB", TestGraphRDB.suite());
 		addTest( "TestGraphRDBMaker", TestGraphRDB.suite());
+		addTest( "TestMultiModel", TestMultiModel.suite());
 		addTest( "TestNsPrefix", TestNsPrefix.suite());
 		addTest( "TestPrefixMapping", TestPrefixMapping.suite());
 		addTest( "TestTransactions", TestTransactions.suite() );
