@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.1 2003-05-07 23:28:00 csayers Exp $
+  $Id: TestReifier.java,v 1.2 2003-05-07 23:55:29 csayers Exp $
 */
 
 package com.hp.hpl.jena.db.test;
+
+import java.util.ArrayList;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
@@ -15,35 +17,36 @@ import junit.framework.*;
 	@author kers, modified to work with GraphRDB by csayers.
 */
 
-public class TestReifier extends GraphTestBase
-    {
-		private ModelRDB theModel;
-		private Graph theGraph;
-		private IDBConnection theConnection;
+public class TestReifier extends GraphTestBase {
+	private ArrayList theModels = new ArrayList();
+	private IDBConnection theConnection;
 
-    public TestReifier( String name )
-        { super( name ); }
+	public TestReifier(String name) {
+		super(name);
+	}
 
-    public static TestSuite suite()
-        { return new TestSuite( TestReifier.class ); }   
-                
-		public void setUp()
-			{
-			theConnection = TestConnection.makeAndCleanTestConnection();
-			theModel = ModelRDB.createModel( theConnection );
-			theGraph = theModel.getGraph();
-			}
-        
-		public void tearDown()
-			{ 
-			theModel.close();
-			try { theConnection.close(); }
-			catch (Exception e) { throw new RuntimeException( e ); }
-			}
-        
-		public Graph getGraph()
-			{ return theGraph; }
+	public static TestSuite suite() {
+		return new TestSuite(TestReifier.class);
+	}
 
+	public void setUp() {
+		theConnection = TestConnection.makeAndCleanTestConnection();
+	}
+
+	public void tearDown() {
+		try {
+			theConnection.cleanDB();
+			theModels.clear();
+			theConnection.close();
+		} catch (Exception e) { throw new RuntimeException(e);}
+	}
+
+	public Graph getGraph() {
+		ModelRDB m = ModelRDB.createModel(theConnection, "name"+theModels.size());
+		theModels.add(m);
+		return m.getGraph();		
+	}
+	
     public void testEmptyReifiers()
         {
         assertEquals( "no reified triples", 0, graphWith( "x R y" ).getReifier().getHiddenTriples().size() );
