@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /** An internal interface not normally of interest to application developers.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:19 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-14 10:57:26 $'
  */
 public interface ModelI {
     
@@ -75,25 +75,5 @@ public interface ModelI {
  */
     public boolean containerContains(Container cont, RDFNode n) 
                                         throws RDFException;
-    
-/**
- * @param r
- * @throws RDFException
- * @return the converted resource
- */
-    public Resource convert(Resource r) throws RDFException;
-/**
- * @param p
- * @throws RDFException
- * @return the converted property
- */
-    public Property convert(Property p) throws RDFException;
-/**
- * @param n
- * @throws RDFException
- * @return the converted node
- */
-    public RDFNode convert(RDFNode n) throws RDFException;
-
 
 }

@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: TestStatements.java,v 1.4 2003-04-11 01:51:04 jeremy_carroll Exp $
+	$Id: TestStatements.java,v 1.5 2003-04-14 10:57:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -85,6 +85,16 @@ public class TestStatements extends GraphTestBase
         h.put( S2, "pontisbright" );
         S2.set( S );
         // System.err.println( h.get( S2 ) );
+        }
+        
+    public void testPortingBlankNodes()
+        {
+        Model A = ModelFactory.createDefaultModel();
+        Model B = ModelFactory.createDefaultModel();
+        Resource anon = A.createResource();
+        Resource bAnon = (Resource) anon.inModel( B );
+        assertTrue( "moved resource should still be blank", bAnon.isAnon() );
+        assertEquals( "move resource should equal original", anon, bAnon );
         }
     }
 

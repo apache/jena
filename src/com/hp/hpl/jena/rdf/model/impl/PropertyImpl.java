@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-19 10:53:39 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-14 10:57:26 $'
  */
 
 // next free error code = 2
@@ -63,7 +63,10 @@ public class PropertyImpl extends ResourceImpl implements Property {
         checkLocalName();
         checkOrdinal();
     }
-    
+
+    public RDFNode inModel( Model m )
+        { return getModel() == m ? this : m.createProperty( getURI() ); }
+          
     private void checkLocalName()
         {
         String localName = getLocalName();

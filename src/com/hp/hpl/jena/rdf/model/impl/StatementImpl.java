@@ -39,10 +39,9 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-04-11 10:37:32 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-04-14 10:57:27 $
  */
-public class StatementImpl //extends ResourceImpl 
-          implements Statement {
+public class StatementImpl  implements Statement {
     
     protected Resource subject;
     protected Property predicate;
@@ -63,9 +62,9 @@ public class StatementImpl //extends ResourceImpl
                          RDFNode object,
                          Model model) throws RDFException {
         this.model = model;
-        this.subject=((ModelI)model).convert(subject);
-        this.predicate = ((ModelI)model).convert(predicate);
-        this.object = ((ModelI)model).convert(object);
+        this.subject = (Resource) subject.inModel( model ); 
+        this.predicate = (Property) predicate.inModel( model ); 
+        this.object = object.inModel( model ); 
     }    
     
     public Resource getSubject() {
@@ -84,14 +83,23 @@ public class StatementImpl //extends ResourceImpl
         return asResource().getProperty(p);
     }
     
-    public Resource getResource() throws RDFException {
-        if (object instanceof Resource) {
-            return (Resource) object;
-        } else {
+    /**
+        utility: check that node is a Resource, throw otherwise
+    */
+    private Resource mustBeResource( RDFNode n )
+        {
+        if (n instanceof Resource)
+            return (Resource) n;
+        else
             throw new RDFException(RDFException.OBJECTNOTRESOURCE);
-        }
-    }
-
+         }
+        
+    public Resource getResource()
+        { return mustBeResource( object ); }
+    
+    public Resource getResource( ResourceF f )
+        { return f.createResource( getResource() ); }
+    
     public Statement getProperty(Property p) throws RDFException {
         return getResource().getProperty( p );
     }    
@@ -142,19 +150,6 @@ public class StatementImpl //extends ResourceImpl
     
     public String getString() throws RDFException {
         return getLiteral().toString();
-    }
-    
-    public Resource getResource(ResourceF f) throws RDFException {
-        if (object instanceof Resource) {
-            try {
-                return
-                    f.createResource(((ResourceI)object).getEmbeddedResource());
-            } catch (Exception e) {
-                throw new RDFException(e);
-            }
-        } else {
-            throw new RDFException(RDFException.OBJECTNOTRESOURCE);
-        }
     }
     
     public Object getObject(ObjectF f) throws RDFException {

@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-04-11 10:37:32 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2003-04-14 10:57:26 $'
  */
 
 public class ModelCom extends EnhGraph
@@ -490,6 +490,9 @@ public class ModelCom extends EnhGraph
         return createResource(null, f);
     }
     
+    public Resource createResource( AnonId id )
+        { return new ResourceImpl( id ); }
+        
     public Resource createResource(String uri, ResourceF f) throws RDFException {
         try {
             return f.createResource(createResource(uri));
@@ -1130,24 +1133,6 @@ public class ModelCom extends EnhGraph
    public boolean containerContains(Container cont, RDFNode n)
     throws RDFException {
         return containerIndexOf(cont, n) != 0;
-    }
-    
-    public Resource convert(Resource r) throws RDFException {
-            return ((ResourceI)r).port(this);
-    }
-    
-    public Property convert(Property p) throws RDFException {
-            return (Property) ((ResourceI)p).port(this);
-    }
-    
-    public RDFNode convert(RDFNode n) throws RDFException {
-        if (n instanceof Property) {
-            return convert((Property) n);
-        } else if (n instanceof Resource) {
-            return convert((Resource) n);
-        } else {
-            return n;
-        }
     }
     
     public void close() {

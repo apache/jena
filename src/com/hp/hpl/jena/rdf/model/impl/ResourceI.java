@@ -37,13 +37,8 @@ import com.hp.hpl.jena.rdf.model.*;
  *  and should not be called by clients.
  *
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:31 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-14 10:57:27 $'
  */
 public interface ResourceI {
-    /** For internal use only
-     */
-    public Resource port(Model m)                       throws RDFException;
-    /** For internal use only
-     */
-    public Resource getEmbeddedResource();
+ 
 }

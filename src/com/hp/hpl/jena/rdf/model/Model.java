@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.11 2003-04-11 10:36:43 chris-dollin Exp $
+  $Id: Model.java,v 1.12 2003-04-14 10:56:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,7 +50,7 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.11 $Date: 2003/04/08 12:24:48 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.12 $Date: 2003/04/11 10:36:43 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 
@@ -133,6 +133,14 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	public Resource createResource() throws RDFException;
 
+    /**
+        create a blank node resource with a specified identifier/
+        
+        @param id the identifier to use for this blank node
+        @return a blank node with that identifier
+    */
+    public Resource createResource( AnonId id );
+    
 	/** Create a new resource.
 	 *
 	 * <p> Subsequent operations on the returned resource may modify this model.
@@ -744,5 +752,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.11 2003-04-11 10:36:43 chris-dollin Exp $
+ * $Id: Model.java,v 1.12 2003-04-14 10:56:10 chris-dollin Exp $
  */
