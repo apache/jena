@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-20 11:38:44 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 18:33:43 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.11 2003-08-20 11:38:44 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.12 2003-08-26 18:33:43 der Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -200,7 +200,22 @@ public class TestBugReports
         assertTrue( "Transaction committed", ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_committed);
     }
     
-    
+    /**
+     * Bug report by Christoph Kunz, 26/Aug/03. CCE when creating a statement from
+     * a vocabulary
+     *
+     */
+    public void test_ck_02() {
+        OntModel vocabModel = ModelFactory.createOntologyModel();
+        ObjectProperty p = vocabModel.createObjectProperty("p");
+        OntClass A = vocabModel.createClass( "A");
+        
+        OntModel workModel = ModelFactory.createOntologyModel();
+        Individual sub = workModel.createIndividual("uri1", A);
+        Individual obj = workModel.createIndividual("uri2", A);
+        workModel.createStatement(sub, p, obj);
+    }
+
     /**
      * Bug report by sjooseng [sjooseng@hotmail.com].  CCE in listOneOf in Enumerated
      * Class with DAML profile.
