@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SubCategorize.java,v 1.3 2003-04-17 20:16:24 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.4 2003-04-18 20:35:58 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -81,7 +81,7 @@ class SubCategorize {
 					return true;
 				if (subj == Grammar.notype) {
 					if (prop != Grammar.rdftype)
-						return false;
+						return true;
 					for (int i = 0; i < notType.length; i++)
 						if (obj == notType[i])
 							return true;

@@ -163,6 +163,9 @@ public class Checker extends AbsChecker {
 		super(lite, gf);
 		this.gf = gf;
 	}
+	public Checker() {
+		this(false);
+	}
 	public Checker(boolean lite) {
 		this(lite, new DefaultGraphFactory());
 	}
@@ -179,6 +182,19 @@ public class Checker extends AbsChecker {
 				it.close();
 		}
 	}
+	
+	public void load(String url){
+		OntDocumentManager dm = new OntDocumentManager();
+		dm.setProcessImports(true);
+		OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, 
+		ModelFactory.createDefaultModel()
+		, dm);
+	
+		m.read(url);
+		Graph g = ((OntModelImpl)m).getUnionGraph();
+		add(g);
+		
+	}
 	//private boolean wantLite = true;
 
 	void addProblem(int lvl, Triple t) {
@@ -193,6 +209,7 @@ public class Checker extends AbsChecker {
 				lvl));
 	}
 	void addProblem(SyntaxProblem sp) {
+		setMonotoneLevel(sp.level+1);
 		switch ( sp.level ) {
 			case Levels.Warning:
 			warnings.add(sp);
