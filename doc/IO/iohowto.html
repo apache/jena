@@ -185,8 +185,18 @@ configurable, see below,
 <p>The N3 readers and writers implement
 <a href=
 "http://www.w3.org/2000/10/swap/Primer.html">Tim Berners-Lee's N3</a> language.
-They are not configurable.
 </p>
+<p>There are actually 4 writers:</p>
+  <ul>
+    <li>N3: The stabdard writer that choose one of the other 3.</li>
+    <li>N3-PP: The full N3 pretty writer</li>
+    <li>N3-PLAIN: An N3 writer that does not nest bNode strutures but does write 
+    record-like groups of all properties for a subject</li>
+    <li>N3-TRIPLE: Writer one statement per line, like N-TRIPLES, but also does 
+    qname conversion of URIrefs.</li>
+  </ul>
+<p>The standard Jena writer &quot;N3&quot; chooses which writer to use based on the system 
+property <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code>.</p>
 <h3><a name="ntriple">1.3 N-TRIPLE</a></h3>
 <p>The N-TRIPLE readers and writers implement
 <a href=
@@ -410,8 +420,7 @@ on system initialization, to set the appropriate properties
 so that it behaves exactly as required in your system, and
 then to do all subsequent I/O through it.
 </p>
-<pre>
-    Model m = Modelfactory.createDefaultModel();
+<pre>    Model m = Modelfactory.createDefaultModel();
     RDFWriter writer = m.getRDFWriter();
     m = null; // m is no longer needed.
     writer.setErrorHandler(myErrorHandler);
@@ -593,8 +602,7 @@ uses unqualified RDF attributes such as "about" instead of "rdf:about", then
 the following code is appropriate:
 </p>
 
-<pre>
-    Model m = Modelfactory.createDefaultModel();
+<pre>    Model m = Modelfactory.createDefaultModel();
     RDFReader arp = m.getRDFReader();
     m = null; // m is no longer needed.
     // initialize arp
@@ -610,16 +618,14 @@ the following code is appropriate:
 but allow <code>"daml:collection"</code>, the following works:
 </p>
 
-<pre>
-     &hellip;
+<pre>     &hellip;
      arp.setProperty("error-mode", "strict" );
      arp.setProperty("IGN_DAML_COLLECTION","EM_IGNORE");
      &hellip;
 </pre>
 <p>The other way round does not work.
 </p>
-<pre>
-     &hellip;
+<pre>     &hellip;
      arp.setProperty("IGN_DAML_COLLECTION","EM_IGNORE");
      arp.setProperty("error-mode", "strict" );
      &hellip;
@@ -788,8 +794,7 @@ changes the properties for writing RDF/XML.
    top level.
   <br />
   Example usage showing the default value:
-   <pre>
-  w.setProperty("prettyTypes",
+   <pre>  w.setProperty("prettyTypes",
            new Resource[]{
                 DAML_OIL.Ontology,
                 DAML_OIL.Class,
@@ -809,8 +814,7 @@ changes the properties for writing RDF/XML.
 <p>
 As an example,
 </p>
-<pre>
-     RDFWriter w = m.getWriter("RDF/XML-ABBREV");
+<pre>     RDFWriter w = m.getWriter("RDF/XML-ABBREV");
      w.setProperty("attribtueQuoteChar","'");
      w.setProperty("showXMLDeclaration","true");
      w.setProperty("tab","1");
@@ -843,8 +847,7 @@ This non-conformant behaviour can be switched off using the
 "blockRules" property.</p>
 <p>To create such conformant readers and writers use the following:
 </p>
-<pre>
-   Model m;
+<pre>   Model m;
    &hellip;
    RDFReader conformantParser = m.getReader();
    conformantParser.setProperty("error-mode","strict");
@@ -868,8 +871,7 @@ the short IDs have to be generated on the fly and a table maintained
 during writing. The longer IDs are long, and hence take longer to write.
 The following creates a faster writer:
 </p>
-<pre>
-   Model m;
+<pre>   Model m;
    &hellip;
    &hellip;
    RDFWriter fasterWriter = m.getWriter("RDF/XML");
