@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpec.java,v 1.3 2003-08-18 15:26:50 chris-dollin Exp $
+  $Id: ModelSpec.java,v 1.4 2003-08-20 13:02:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -19,9 +19,26 @@ public interface ModelSpec
     Model createModel();
     
     /**
-        Answer an RDF description of this Model using the JMS vocabulary.
+        Answer an RDF description of this Model using the JMS vocabulary. 
     */
     Model getDescription();
+    
+    /**
+        Answer an RDF description of this ModelSpec using the JMS vocabulary, with
+        the given Resource as root.
+        
+        @param root the resource to be used for all the top-level properties
+        @return a description of this ModelSpec
+    */
+    Model getDescription( Resource root );
+    
+    /**
+        Add this ModelSpec's description to a given model, under the given resource
+        @param m the model to which the description is to be added
+        @param self the resource to which the properties are to be added
+        @return the model m (for cascading and convenience)
+    */
+    Model addDescription( Model m, Resource self );
     }
 
 

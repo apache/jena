@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.11 2003-07-24 15:29:30 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.12 2003-08-20 13:02:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -80,8 +80,7 @@ public class FileGraph extends GraphMem
         { this( new File( s ), create, true ); }
         
     public static FileGraph create()
-        { return new FileGraph( GraphTestBase.tempFileName( "xxx", ".rdf" ), true, true );
-        }
+        { return new FileGraph( GraphTestBase.tempFileName( "xxx", ".rdf" ), true, true ); }
         
     /**
         Guess the language of the specified file by looking at the suffix.

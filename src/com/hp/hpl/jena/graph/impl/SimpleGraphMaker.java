@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.5 2003-08-19 15:13:07 chris-dollin Exp $
+  $Id: SimpleGraphMaker.java,v 1.6 2003-08-20 13:02:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -22,16 +22,35 @@ import java.util.*;
 
 public class SimpleGraphMaker extends BaseGraphMaker
 	{
-        
+    /**
+        Initialise a SimpleGraphMaker with the given style.
+        @param style the reification style of all the graphs we create
+    */
     public SimpleGraphMaker( Reifier.Style style )
         { super( style ); }
-        
+       
+    /**
+        Initialise a SimpleGraphMaker with reification style Minimal
+    */ 
     public SimpleGraphMaker()
         { this( Reifier.Minimal ); }
-        
+       
+    /**
+        Answer the RDFS class of this Maker
+        @return JMS.MemMakerClass [as node]
+    */ 
     public Node getMakerClass()
         { return JMS.MemMakerClass.asNode(); }
-        
+       
+    /**
+        Augment the general description of a GraphMaker with any Simple triples [ie none]
+    */ 
+    protected void augmentDescription( Graph d, Node self )
+        {}
+    
+    /**
+        The mapping from the names of graphs to the Graphs themselves.
+    */    
     private Map graphs = new HashMap();
     
     public Graph create()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.6 2003-08-19 15:13:07 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.7 2003-08-20 13:02:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -65,6 +65,7 @@ public abstract class BaseGraphMaker implements GraphMaker
      */
     public Graph openGraph( String name )
         { return openGraph( name, false ); }
+
         
     /**
         Answer an RDF specification of this GraphMaker, adequate to constructing one
@@ -73,14 +74,30 @@ public abstract class BaseGraphMaker implements GraphMaker
         @return a Graph describing the Maker using the JMS vocabulary.
     */
     public Graph getDescription()
+        { return getDescription( Node.createAnon() ); }
+        
+    public Graph getDescription( Node root )
         {
         Graph result = new GraphMem();
-        Node self = Node.createAnon();
-        Node mode = JMS.rsStandard.asNode();
-        result.add( Triple.create( self, JMS.reificationMode.asNode(), mode ) );
-        result.add( Triple.create( self, RDF.type.asNode(), getMakerClass() ) );
-        return result;    
+        addDescription( result, root );
+        return result;     
         }
+                
+    public Graph addDescription( Graph desc, Node self )
+        {
+        Node mode = JMS.rsStandard.asNode();
+        desc.add( Triple.create( self, JMS.reificationMode.asNode(), mode ) );
+        desc.add( Triple.create( self, RDF.type.asNode(), getMakerClass() ) );
+        augmentDescription( desc, self );    
+        return desc;
+        }
+
+    /**
+        Update the graph g with any other descriptive information for this GraphMaker.
+        @param d the description to be augmented
+        @param self the node that represents this GraphMaker
+    */
+    protected abstract void augmentDescription( Graph d, Node self );
         
     /**
         Answer the Class node for this GraphMaker's description.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.9 2003-08-19 15:13:07 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.10 2003-08-20 13:02:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
-    A FileGraph factory, makeing FileGraphs based round some supplied
+    A FileGraph factory, making FileGraphs based round some supplied
     directory. We have to keep track of created files ourselves, because a
     FileGraph that has been created but not closed is not visible in the
     filing system. (This might count as a bug at some point.)
@@ -61,12 +61,27 @@ public class FileGraphMaker extends BaseGraphMaker
         this.deleteOnClose = deleteOnClose;       
         }
 
+    /**
+        Answer the RDFS class of a FileGraphMaker
+        @return JMS.FileMakerClass [node version]
+    */
     public Node getMakerClass()
         { return JMS.FileMakerClass.asNode(); }
 
+    /**
+        Answer the fileBase of all the graphs created by this FileGraphMaker.
+        @return the fileBase of this Maker
+    */
     public String getFileBase()
         { return fileBase; }
+        
+    protected void augmentDescription( Graph g, Node self )
+        { g.add( Triple.create( self, JMS.fileBase.asNode(), Node.createLiteral( fileBase, "", false ) ) ); }
                 
+    /**
+        Answer a new, anonynous FileGraph. See FileGraph.create().
+        @return a new anonymous FileGraph
+    */
     public Graph createGraph()
         { return FileGraph.create(); }
         

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-19 15:13:07 $
+ * Last modified on   $Date: 2003-08-20 13:02:12 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.14 2003-08-19 15:13:07 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.15 2003-08-20 13:02:12 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -175,14 +175,28 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     
     /**
         Initialise an OntModelSpec from an RDF description using the JMS vocabulary. See
-        (insert reference here) for the descritpion of the OntModel used.
+        (insert reference here) for the description of the OntModel used. The root of the
+        description is the unique resource with type JMS:OntMakerClass.
+        
         @param description an RDF model using the JMS vocabulary
     */
     public OntModelSpec( Model description )  { 
-        this( createMaker( description ), getDocumentManager( description ),
-            getReasonerFactory( description ), getLanguage( description)  );
+        this( description, findRootByType( description, JMS.OntMakerClass ) );
     }
-    
+
+    /**
+        Initialise an OntModelSpec from an RDF description using the JMS vocabulary. See
+        (insert reference here) for the description of the OntModel used. The root of the
+        description is supplied as a parameter (so the description may describe several
+        different OntModels).
+        
+        @param description an RDF model using the JMS vocabulary
+        @param root the root of the sub-graph to use for the specification
+    */    
+    public OntModelSpec( Model description, Resource root )  { 
+        this( createMaker( description ), getDocumentManager( description, root ),
+            getReasonerFactory( description, root ), getLanguage( description, root )  );
+    }
     
     // External signature methods
     //////////////////////////////////
@@ -351,6 +365,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     /**
         Satisfy the ModelSpec interface: create an [Ont]Model according to the specification.
         The base model comes from the underlying ModelMaker.
+        @return an OntModel satisfying this specification
     */
     public Model createModel() {
         return new OntModelImpl( this, m_maker.createModel() );
@@ -364,57 +379,101 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @exception NullPointerException if there's no ontLanguage property
         @exception something if the value isn't a URI resource
     */
-    public static String getLanguage( Model description ) {
-        Statement langStatement = description.getProperty( JMS.current, JMS.ontLanguage );
+    public static String getLanguage( Model description, Resource root ) {
+        Statement langStatement = description.getRequiredProperty( root, JMS.ontLanguage );
         return langStatement.getResource().getURI();
     }
     
-    public static OntDocumentManager getDocumentManager ( Model description ) {
-        Statement docStatement = description.getProperty( JMS.current, JMS.docManager );
-        Literal lit = docStatement.getLiteral();
-        return (OntDocumentManager) lit.getObject( null );
-    }
-    
-    public static ReasonerFactory getReasonerFactory( Model description ) {
-        Statement factStatement = description.getProperty( JMS.current, JMS.reasonsWith );
-        Statement reStatement = description.getProperty( factStatement.getResource(), JMS.reasoner );
-        String factoryURI = reStatement.getResource().getURI();
-        ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( factoryURI );
-        return rf;
+    /**
+        Answer an OntDocumentManager satisfying the docManager part of this description.
+        Currently restricted to one where the object of JMS.docManager is registered with
+        the value table held in ModelSpecImpl.
+        
+         @param description the description of the OntModel
+         @param root the root of the description
+         @return the OntDocumentManager of root's JMS.docManager 
+    */
+    public static OntDocumentManager getDocumentManager( Model description, 
+        Resource root ) {
+        Statement docStatement = description.getProperty( root, JMS.docManager );
+        return (OntDocumentManager) getValue( docStatement.getObject() );
     }
 
     /**
-        Answer an RDF description of this OntModelSpec, faking a few things for the 
-        moment (MakerSpecs).
+        Answer a ReasonerFactory as described by the reasonsWith part of this discription.
+        
+        @param description the description of this OntModel
+        @param root the root of this OntModel's description
+        @return  a ReasonerFactory with URI given by root's reasonsWith's reasoner.
     */
-    public Model getDescription() {
-        Model d = ModelFactory.createDefaultModel();
-        d.add
-            ( JMS.current, JMS.ontLanguage, d.createLiteral( m_languageURI ) );
-        d.add
-            (
-            JMS.current,
-            JMS.docManager,
-            d.createTypedLiteral( getDocumentManager(), "jms:types/DocumentManager" )
-            );
-        Model makerSpec = m_maker.getDescription();
-        d.add( JMS.current, JMS.importMaker, subject( makerSpec ) );
-        d.add( makerSpec );
-        Resource r = d.createResource();
-        d.add
-            (
-            JMS.current,
-            JMS.reasonsWith,
-            r
-            );
-        d.add
-            (
-            r,
-            JMS.reasoner,
-            d.createResource( getReasonerFactory().getURI() )
-            );
+    public static ReasonerFactory getReasonerFactory( Model description, Resource root ) {
+        Statement factStatement = description.getProperty( root, JMS.reasonsWith );
+        Statement reStatement = description.getProperty( factStatement.getResource(), JMS.reasoner );
+        String factoryURI = reStatement.getResource().getURI();
+        return ReasonerRegistry.theRegistry().getFactory( factoryURI );
+    }
+
+ 
+    /**
+        Add the description of this OntModelSpec to the given model under the given 
+        resource. This same description can be used to create an equivalent OntModelSpec.
+        Serialising the description will lose the DocumentManager description.
+        
+        TODO allow the DocumentManager to be [de]serialised 
+    */
+    public Model addDescription( Model d, Resource self )  {
+        addLanguageDescription( d, self, m_languageURI );
+        addManagerDescription( d, self, getDocumentManager() );
+        addMakerDescription( d, self, m_maker );
+        addReasonerDescription( d, self, getReasonerFactory() );
         return d;
     }
+    
+    /**
+        Augment the description with that of our language
+        @param d the description to augment
+        @param me the resource to use to represent this OntModelSpec
+        @param langURI the language URI 
+    */
+    protected void addLanguageDescription( Model d, Resource me, String langURI ) {
+        d.add( me, JMS.ontLanguage, d.createLiteral( langURI ) );
+    }
+    
+    /**
+        Augment the description with that of our document manager [as a Java value]
+        @param d the description to augment
+        @param me the resource to use to represent this OntModelSpec
+        @param man the document manager
+    */
+    protected  void addManagerDescription( Model d, Resource me, 
+        OntDocumentManager man ) {
+        d.add( me, JMS.docManager, createValue( man ) );    
+    }
+    
+    /**
+        Augment the description with that of our model maker
+        @param d the description to augment
+        @param me the resource to use to represent this OntModelSpec
+        @param maker the ModelMaker to describe
+    */        
+    protected void addMakerDescription( Model d, Resource me, ModelMaker maker )  {
+        Resource makerSelf = d.createResource();
+        maker.addDescription( d, makerSelf );
+        d.add( me, JMS.importMaker, makerSelf );    
+    }
+        
+    /**
+        Augment the description with that of our reasoner factory
+        @param d the description to augment
+        @param me the resource to use to represent this OntModelSpec
+        @param the reasoner factory to describe 
+    */        
+    protected void addReasonerDescription( Model d, Resource me, ReasonerFactory rf )
+        {
+        Resource reasonerSelf = d.createResource();
+        d.add( me, JMS.reasonsWith, reasonerSelf );  
+        d.add( reasonerSelf, JMS.reasoner, d.createResource( rf.getURI() ) );  
+        }
     
     // Internal implementation methods
     //////////////////////////////////

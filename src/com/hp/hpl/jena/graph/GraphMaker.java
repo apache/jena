@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMaker.java,v 1.6 2003-08-19 15:13:07 chris-dollin Exp $
+  $Id: GraphMaker.java,v 1.7 2003-08-20 13:02:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -100,6 +100,17 @@ public interface GraphMaker
         @return a Graph describing this Maker.
     */
     public Graph getDescription();
+    
+    public Graph getDescription( Node root );
+    
+    /**
+        Add the description of this GraphMaker to the description graph desc, under the
+        name self.
+        @param desc the graph to which to add the description
+        @param self the root resource to use for the description
+    */
+    public Graph addDescription( Graph desc, Node self );
+    
     /**
         Close the factory - no more requests need be honoured, and any clean-up
         can be done.
@@ -115,7 +126,7 @@ public interface GraphMaker
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  *
- * Last modified on   $Date: 2003-08-19 15:13:07 $
+ * Last modified on   $Date: 2003-08-20 13:02:12 $
  *               by   $Author: chris-dollin $
 
  *****************************************************************************/
