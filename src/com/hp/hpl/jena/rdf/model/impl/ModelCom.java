@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.88 2004-04-23 10:33:43 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.89 2004-06-07 14:02:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -1311,10 +1311,10 @@ implements Model, PrefixMapping, ModelLock
         Answer whether or not these two graphs are isomorphic, taking the
         hidden (reification) statements into account.
     */
-    public boolean isIsomorphicWith(Model m)
+    public boolean isIsomorphicWith( Model m )
         {
-        ModelCom L = (ModelCom) ModelFactory.withHiddenStatements( this );            
-        EnhGraph R = (EnhGraph) ModelFactory.withHiddenStatements( m );
+        Graph L = ModelFactory.withHiddenStatements( this ).getGraph();            
+        Graph R = ModelFactory.withHiddenStatements( m ).getGraph();
         return L.isIsomorphicWith( R );
         }
         
