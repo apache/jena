@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 17:49:47 $
+ * Last modified on   $Date: 2003-07-31 20:52:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.13 2003-07-31 17:49:47 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.14 2003-07-31 20:52:07 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -165,7 +165,8 @@ public class DAMLTest
         Resource pugh = m.getResource( "http://dickinson-i-4/daml/tests/test-instance-load.daml#pugh" );
         assertNotNull( "Resource for officer Pugh should not be null", pugh );
         DAMLInstance pughInst = (DAMLInstance) pugh.as( DAMLInstance.class );
-
+        assertNotNull( pughInst );
+        
         // test case for bug report by Michael Sintek
         // try to ascertain the most specific class we can at load time -
         // case in point is shoesize in standard example ontology
