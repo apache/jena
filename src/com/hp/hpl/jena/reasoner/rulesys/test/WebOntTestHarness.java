@@ -5,12 +5,15 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.2 2003-09-15 14:58:12 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.3 2003-09-16 08:06:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-//import java.io.*;
-//import java.util.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * Test harness for running the WebOnt working group tests relevant 
@@ -18,29 +21,131 @@ package com.hp.hpl.jena.reasoner.rulesys.test;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-09-15 14:58:12 $
+ * @version $Revision: 1.3 $ on $Date: 2003-09-16 08:06:49 $
  */
 public class WebOntTestHarness {
 
+//  =======================================================================
+//  Variables to control the test operations
+
+    /** Set to true to include modified test versions */
+    public static boolean includeModified = false;
+    
+    /** Set to true to use approved tests only */
+    public static boolean approvedOnly = true;
+    
+//  =======================================================================
+//  Internal state
+
+    /** The total set of known tests */
+    public Model testDefinitions;
+    
+//  =======================================================================
+//  Internal constants
+
     /** The base directory for the working group test files to use */
-    public static final String baseTestDir = "testing/wg";
+    public static final String BASE_TESTDIR = "testing/wg/";
     
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
-    public static String[] testDirs= {"AllDifferent", "AllDistinct", 
+    public static final String[] TEST_DIRS= {"AllDifferent", "AllDistinct", 
             "AnnotationProperty", "DatatypeProperty", "FunctionalProperty",
             "I3.2", "I3.4", "I4.1", "I4.5", "I4.6", "I5.1", "I5.2", "I5.21", "I5.24",
             "I5.26", "I5.3", "I5.5", "I5.8", "InverseFunctionalProperty", "Nothing", 
             "Restriction", "SymmetricProperty", "Thing", "TransitiveProperty", 
             "allValuesFrom", "amp-in-url", "cardinality", "complementOf", "datatypes", 
             "description-logic", "differentFrom", "disjointWith", "distinctMembers", 
-            "equivalentClass", "equivalentProperty", "extra-credit", "imports", 
+            "equivalentClass", "equivalentProperty", "imports", 
             "intersectionOf", "inverseOf", "localtests", "maxCardinality", "miscellaneous",
             "oneOf", "oneOfDistinct", "sameAs", "sameClassAs", "sameIndividualAs", 
             "samePropertyAs", "someValuesFrom", "statement-entailment", "unionOf", 
-            "unrecognised-xml-attributes", "xmlbase"};
+            "xmlbase",
+//            "extra-credit", 
+        };
             
-     
+    /** The list of status values to include. If approvedOnly then only the first
+     *  entry is allowed */
+    public static final String[] STATUS_FLAGS = { "APPROVED", "PROPOSED" };
+    
+//  =======================================================================
+//  Constructor and associated support
+    
+    public WebOntTestHarness() {
+        testDefinitions = loadAllTestDefinitions();
+    }
 
+    /** Load all of the known manifest files into a single model */
+    public static Model loadAllTestDefinitions() {
+        System.out.print("Loading "); System.out.flush();
+        Model testDefs = ModelFactory.createDefaultModel();
+        int count = 0;
+        for (int idir = 0; idir < TEST_DIRS.length; idir++) {
+            File dir = new File(BASE_TESTDIR + TEST_DIRS[idir]);
+            String[] manifests = dir.list(new FilenameFilter() {
+                    public boolean accept(File df, String name) {
+                        if (name.startsWith("Manifest") && name.endsWith(".rdf")) {
+                            return includeModified || ! name.endsWith("-mod.rdf");
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            for (int im = 0; im < manifests.length; im++) {
+                String manifest = manifests[im];
+                File mf = new File(dir, manifest);
+                try {
+                    testDefs.read(new FileInputStream(mf), "file:" + mf);
+                    count ++;
+                    if (count % 8 == 0) {
+                        System.out.print("."); System.out.flush();
+                    }
+                } catch (FileNotFoundException e) {
+                    System.out.println("File not readable - " + e);
+                }
+            }
+        }
+        System.out.println("loaded");
+        return testDefs;
+    }
+    
+//  =======================================================================
+//  Main control methods
+    
+    public static void main(String[] args) {
+        WebOntTestHarness harness = new WebOntTestHarness();
+        List l = harness.findTestsOfType(OWLTest.PositiveEntailmentTest);
+    }
+    
+//  =======================================================================
+//  Internal helper functions
+    
+    /** Return a list of all tests of the given type, according to the current filters */
+    public List findTestsOfType(Resource testType) {
+        ArrayList result = new ArrayList();
+        StmtIterator si = testDefinitions.listStatements(null, RDF.type, testType);
+        while (si.hasNext()) {
+            Resource test = si.nextStatement().getSubject();
+            boolean accept = true;
+            // Check test status
+            Literal status = (Literal) test.getProperty(RDFTest.status).getObject();
+            if (approvedOnly) {
+                accept = status.getString().equals(STATUS_FLAGS[0]);
+            } else {
+                accept = false;
+                for (int i = 0; i < STATUS_FLAGS.length; i++) {
+                    if (status.getString().equals(STATUS_FLAGS[i])) {
+                        accept = true;
+                        break;
+                    }
+                }
+            }
+            // End of filter tests
+            if (accept) {
+                System.out.println(" - " + test + " status = " + status + " " + status.getClass()); 
+                result.add(test);
+            }
+        }
+        return result;
+    }
 }
 
 
