@@ -207,6 +207,12 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
 <p>Jena stores all models in a single database using whatever database (name) specified on the database connection. See the <a href="index.html">Jena Database Release Notes</a> for 
 details on the physical layout.</p>
 
+<h2>Known Bugs</h2>
+<p>There are known problems with Jena2's 
+support for BLOBs when using an Oracle database running on the Linux 
+operating system, so Jena2 does not support huge objects (e.g., huge literals)
+for Oracle running on Linux at this time.
+
 <h4>Oracle Utility Commands</h4>
 
 <p>Some Jena users may wish to occasionally access the Oracle database directly 

@@ -141,7 +141,10 @@ release or in the final, full featured Jena2 release.</p>
   <tr>
     <td>&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
     <td>&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
-    <td>&nbsp;&nbsp; Oracle oci8 JDBC driver (thick client)&nbsp;</td>
+    <td>&nbsp;&nbsp; Oracle thin JDBC driver (thin client)&nbsp;<br>
+        NOTE: Jena2's treatment of Blobs with Oracle on Linux does not work at this time,<br>
+        so huge Literals are currently not supported with Oracle on Linux. 
+    </td>
   </tr>
 </table>
 
