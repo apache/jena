@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:19:22 $
+ * Last modified on   $Date: 2003-03-31 20:37:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -23,8 +23,10 @@ package com.hp.hpl.jena.ontology;
 
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.path.PathSet;
 
 
 /**
@@ -34,7 +36,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.2 2003-03-28 22:19:22 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.3 2003-03-31 20:37:25 ian_dickinson Exp $
  */
 public interface OntClass
     extends ClassDescription
@@ -46,6 +48,62 @@ public interface OntClass
     // External signature methods
     //////////////////////////////////
 
+    // Boolean class expressions
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>intersectionOf</code>
+     * property of a class or class description. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the intersection class description
+     */
+    public PathSet p_intersectionOf();
+
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>unionOf</code>
+     * property of a class or class description. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the union class description
+     */
+    public PathSet p_unionOf();
+
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>complementOf</code>
+     * property of a class or class description. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the complement class description
+     */
+    public PathSet p_complementOf();
+
+
+    // Enumerated class constructor
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>oneOf</code>
+     * property of an enumerated class. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the enumerated class constructor
+     */
+    public PathSet p_oneOf();
+    
+         
 }
 
 

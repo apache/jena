@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: ClassDescription.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-31 11:11:45 $
+ * Last modified on   $Date: 2003-03-31 20:37:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassDescription.java,v 1.3 2003-03-31 11:11:45 ian_dickinson Exp $
+ * @version CVS $Id: ClassDescription.java,v 1.4 2003-03-31 20:37:29 ian_dickinson Exp $
  */
 public interface ClassDescription
     extends OntResource
@@ -67,7 +67,7 @@ public interface ClassDescription
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
-     * @return An abstract accessor for the imports of an ontology element
+     * @return An abstract accessor for the sub-class class axiom
      */
     public PathSet p_subClassOf();
     
@@ -79,7 +79,7 @@ public interface ClassDescription
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
-     * @return An abstract accessor for the imports of an ontology element
+     * @return An abstract accessor for the class equivalance class axiom
      */
     public PathSet p_equivalentClass();
     
@@ -91,11 +91,11 @@ public interface ClassDescription
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
-     * @return An abstract accessor for the imports of an ontology element
+     * @return An abstract accessor for the disjoint-with class axiom
      */
     public PathSet p_disjointWith();
 
-     
+
 
     // Internal implementation methods
     //////////////////////////////////

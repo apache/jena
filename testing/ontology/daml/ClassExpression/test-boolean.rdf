@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+
+<daml:Class rdf:ID="ClassA">
+	<daml:intersectionOf rdf:parseType="daml:collection">
+		<daml:Class rdf:ID="ClassX0" />
+		<daml:Class rdf:ID="ClassX1" />
+	</daml:intersectionOf>
+</daml:Class>
+
+<daml:Class rdf:ID="ClassB">
+	<daml:unionOf rdf:parseType="daml:collection">
+		<daml:Class rdf:ID="ClassY0" />
+		<daml:Class rdf:ID="ClassY1" />
+	</daml:unionOf>
+</daml:Class>
+
+<daml:Class rdf:ID="ClassC">
+	<daml:complementOf>
+		<daml:Class rdf:ID="ClassZ" />
+	</daml:complementOf>
+</daml:Class>
+
+
+</rdf:RDF>

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: ClassDescriptionImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-31 11:11:44 $
+ * Last modified on   $Date: 2003-03-31 20:37:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,11 +37,11 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassDescriptionImpl.java,v 1.1 2003-03-31 11:11:44 ian_dickinson Exp $
+ * @version CVS $Id: ClassDescriptionImpl.java,v 1.2 2003-03-31 20:37:30 ian_dickinson Exp $
  */
 public class ClassDescriptionImpl
     extends OntResourceImpl
-    implements OntClass 
+    implements ClassDescription 
 {
     // Constants
     //////////////////////////////////
@@ -124,7 +124,6 @@ public class ClassDescriptionImpl
         return asPathSet( getProfile().DISJOINT_WITH() );
     }
      
-
     // Internal implementation methods
     //////////////////////////////////
 

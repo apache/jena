@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-31 14:33:19 $
+ * Last modified on   $Date: 2003-03-31 20:37:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.3 2003-03-31 14:33:19 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.4 2003-03-31 20:37:33 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestCase 
@@ -221,11 +221,11 @@ public class TestClassExpression
             
             // Enumerated class
             {   
-                "OWL EnumeratedClass.oneOf",
+                "OWL ClassDescription.oneOf",
                 new PS() { 
                     public PathSet ps( OntModel m ) {
-                        return ((EnumeratedClass) m.getResource( NS + "ClassA" )
-                               .as( EnumeratedClass.class )).p_oneOf(); 
+                        return ((OntClass) m.getResource( NS + "ClassA" )
+                               .as( OntClass.class )).p_oneOf(); 
                     } 
                 },
                 OWL.oneOf,
@@ -238,11 +238,11 @@ public class TestClassExpression
                 null
             },
             {   
-                "DAML EnumeratedClass.oneOf",
+                "DAML ClassDescription.oneOf",
                 new PS() { 
                     public PathSet ps( OntModel m ) {
-                        return ((EnumeratedClass) m.getResource( NS + "ClassA" )
-                               .as( EnumeratedClass.class )).p_oneOf(); 
+                        return ((OntClass) m.getResource( NS + "ClassA" )
+                               .as( OntClass.class )).p_oneOf(); 
                     } 
                 },
                 DAML_OIL.oneOf,
@@ -494,6 +494,162 @@ public class TestClassExpression
                 null,
                 new Long( 0 )
             },
+            
+            // Boolean class expressions
+            {   
+                "OWL ClassDescription.intersectionOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassA" )
+                               .as( OntClass.class )).p_intersectionOf(); 
+                    } 
+                },
+                OWL.intersectionOf,
+                ProfileRegistry.OWL_LANG,
+                "file:testing/ontology/owl/ClassExpression/test-boolean.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                RDF.List,
+                null
+            },
+            {   
+                "OWL ClassDescription.unionOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassB" )
+                               .as( OntClass.class )).p_unionOf(); 
+                    } 
+                },
+                OWL.unionOf,
+                ProfileRegistry.OWL_LANG,
+                "file:testing/ontology/owl/ClassExpression/test-boolean.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                RDF.List,
+                null
+            },
+            {   
+                "OWL ClassDescription.complementOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassC" )
+                               .as( OntClass.class )).p_complementOf(); 
+                    } 
+                },
+                OWL.complementOf,
+                ProfileRegistry.OWL_LANG,
+                "file:testing/ontology/owl/ClassExpression/test-boolean.rdf",
+                T,
+                new Integer( 1 ),
+                NS + "ClassZ",
+                null,
+                null
+            },
+            {   
+                "OWL Lite ClassDescription.intersectionOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassA" )
+                               .as( OntClass.class )).p_intersectionOf(); 
+                    } 
+                },
+                OWL.intersectionOf,
+                ProfileRegistry.OWL_LITE_LANG,
+                "file:testing/ontology/owl/ClassExpression/test-boolean.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                RDF.List,
+                null
+            },
+            {   
+                "OWL Lite ClassDescription.unionOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassB" )
+                               .as( OntClass.class )).p_unionOf(); 
+                    } 
+                },
+                OWL.unionOf,
+                ProfileRegistry.OWL_LITE_LANG,
+                "file:testing/ontology/owl/ClassExpression/test-boolean.rdf",
+                F,
+                null,
+                null,
+                null,
+                null
+            },
+            {   
+                "OWL Lite ClassDescription.complementOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassC" )
+                               .as( OntClass.class )).p_complementOf(); 
+                    } 
+                },
+                OWL.complementOf,
+                ProfileRegistry.OWL_LITE_LANG,
+                "file:testing/ontology/owl/ClassExpression/test-boolean.rdf",
+                F,
+                null,
+                null,
+                null,
+                null
+            },
+            {   
+                "DAML ClassDescription.intersectionOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassA" )
+                               .as( OntClass.class )).p_intersectionOf(); 
+                    } 
+                },
+                DAML_OIL.intersectionOf,
+                ProfileRegistry.DAML_LANG,
+                "file:testing/ontology/daml/ClassExpression/test-boolean.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                DAML_OIL.List,
+                null
+            },
+            {   
+                "DAML ClassDescription.unionOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassB" )
+                               .as( OntClass.class )).p_unionOf(); 
+                    } 
+                },
+                DAML_OIL.unionOf,
+                ProfileRegistry.DAML_LANG,
+                "file:testing/ontology/daml/ClassExpression/test-boolean.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                DAML_OIL.List,
+                null
+            },
+            {   
+                "DAML ClassDescription.complementOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((OntClass) m.getResource( NS + "ClassC" )
+                               .as( OntClass.class )).p_complementOf(); 
+                    } 
+                },
+                DAML_OIL.complementOf,
+                ProfileRegistry.DAML_LANG,
+                "file:testing/ontology/daml/ClassExpression/test-boolean.rdf",
+                T,
+                new Integer( 1 ),
+                NS + "ClassZ",
+                null,
+                null
+            },
+            
       };
     }
     
