@@ -1,6 +1,17 @@
 Release Notes
 =============
 
+Post jena 2.0 changes:
+
+RDF API:
+o Bug fixes:
+  - fixed issue with typed literals sometimes treating lexically different, 
+    sameValueAs resources as equals.
+    
+Reasoner subsystem:
+o various bug fixes in OWL rules (maxCardinality bug, hasValue in intersection 
+  lists fixed, bug in someValuesFrom fixed).
+  
 Jena 2.0 (August 2003)
 
 This is Jena 2.0.  This version follows on from preview and beta releases
@@ -12,7 +23,8 @@ no BerkeleyDB persistence is currently provided.  Jena2 adds new
 functionality with an ontology API, including OWL, a reasoner plug-in
 architecture together with rule-based reasoners for RDFS and OWL.
 
-
+Release Notes
+=============
 
 Changes from Jena2-beta1:
 
