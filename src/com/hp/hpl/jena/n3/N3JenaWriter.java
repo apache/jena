@@ -22,6 +22,7 @@
 package com.hp.hpl.jena.n3;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom ;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.vocabulary.OWL ;
@@ -34,7 +35,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.7 2003-03-28 18:11:12 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.8 2003-04-08 16:43:38 andy_seaborne Exp $
  */
 
 
@@ -135,8 +136,10 @@ public class N3JenaWriter implements RDFWriter
 	 * </pre>
 	 */
 	
-    public void write(Model model, Writer _out, String base) throws RDFException
+    public void write(Model baseModel, Writer _out, String base) throws RDFException
     {
+        Model model = ModelCom.withHiddenStatements( baseModel );
+
         Object obj = writerPropertyMap.get(propWriteSimple);
 
         try {
