@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.BatchUpdateException;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -55,7 +56,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.10 $ on $Date: 2003-05-06 05:07:13 $
+* @version $Revision: 1.11 $ on $Date: 2003-05-06 09:42:28 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -342,23 +343,25 @@ public  class PSet_TripleStore_RDB implements IPSet {
             		
             		// insert a placeholder with an empty blob
             		ps.executeUpdate();
-					m_sql.returnPreparedSQLStatement(ps, opname);
+			//		m_sql.returnPreparedSQLStatement(ps, opname);
             		
             		// lock the new row for update
             		PreparedStatement ops = m_sql.getPreparedSQLStatement("lockLiteralwithIdBlob");
             		ops.setObject(1,id.getID());
 					ResultSet rs = ops.executeQuery();
 					rs.next();
+					IDBBlob dbBlob = DBBlob.getDBBlob(rs.getBlob(1),"Oracle");
+					
 					// oracle.sql.BLOB dbBlob = (oracle.sql.BLOB)rs.getBlob(1);
-					m_sql.returnPreparedSQLStatement(ops,"lockLiteralwithIdBlob");
+				//	m_sql.returnPreparedSQLStatement(ops,"lockLiteralwithIdBlob");
 					
 					ops = dbcon.prepareStatement("updateBlobForLiteralID");
-					//dbBlob.putBytes(1,litData);
+					dbBlob.putBytes(1,litData);
 					ops.setObject(2,id.getID());
-					//ops.setBlob(1,dbBlob);
+					ops.setBlob(1,(Blob)dbBlob.getBlob());
 					dbcon.commit();
 					dbcon.setAutoCommit(saved);
-					m_sql.returnPreparedSQLStatement(ops, "updateBlobForLiteralID");
+			//		m_sql.returnPreparedSQLStatement(ops, "updateBlobForLiteralID");
 					return(id);
 				} else {
 					ps.setBinaryStream(argi++, new ByteArrayInputStream(litData), litData.length);
@@ -381,7 +384,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
                     id = wrapDBID(it.getSingleton());
             } else {
 				  ps.executeUpdate();
-                  m_sql.returnPreparedSQLStatement(ps, opname);
+        //          m_sql.returnPreparedSQLStatement(ps, opname);
             }
             if (id == null)
                 id = getLiteralID(l);
@@ -527,11 +530,11 @@ public  class PSet_TripleStore_RDB implements IPSet {
 				ps.setObject(1, id.getID());
 				ResultSet rs = ps.executeQuery();
 				if (!rs.next()) {
-					m_sql.returnPreparedSQLStatement(ps, "getLiteral");
+			//		m_sql.returnPreparedSQLStatement(ps, "getLiteral");
 					return null;
 				}
 				lit = extractLiteralFromRow(rs);
-				m_sql.returnPreparedSQLStatement(ps, "getLiteral");
+	//			m_sql.returnPreparedSQLStatement(ps, "getLiteral");
 				literalCache.put(id, lit);
 				return lit;
 			} catch (Exception e) {
@@ -553,7 +556,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	     while ( rs.next() ) {
 		  result = rs.getInt("COUNT(*)");
 	     } 
-		m_sql.returnPreparedSQLStatement(ps, "getRowCount");
+	//	m_sql.returnPreparedSQLStatement(ps, "getRowCount");
 	} catch (SQLException e) {
 	 		Log.debug("tried to count rows in " + tName);
 		   	Log.debug("Caught exception: " + e);
@@ -592,7 +595,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
             if (rs.next()) {
                 result = wrapDBID(rs.getObject(1));
             };
-            m_sql.returnPreparedSQLStatement(ps, opName);
+         //   m_sql.returnPreparedSQLStatement(ps, opName);
             return result;
         } catch (SQLException e1) {
             // /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
@@ -761,39 +764,29 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	Node obj_node = t.getObject();
 	String gid = graphID.getID().toString();
    	   
-   PreparedStatement ps;
+   PreparedStatement ps = null;
    String stmtStr;
 
    if ( obj_node.isURI() || obj_node.isBlank() ) {
 	 objURI = nodeToRDBString(obj_node);
 	 try {
 		stmtStr = isReif ? "deleteReifStatementObjectURI" : "deleteStatementObjectURI";
-
-		  ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
-	  	  ps.clearParameters();	
-	
-	      ps.setString(1,subjURI);
-	      ps.setString(2,predURI);
-	      ps.setString(3,objURI);
-	      ps.setString(4,gid);
-		  if ( isReif ) {
-		    String stmtURI = nodeToRDBString(reifNode);
-		    ps.setString(5,stmtURI);
-		  }
-	
-		if (isBatch) {
-			  ps.addBatch();
-			  batchedPreparedStatements.put(stmtStr,ps);
-		  } else {
-			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps, stmtStr);
-		  }
-	 } catch(SQLException e1) {
-		Log.debug("(in delete) SQLException caught " + e1);
-	 }
-	  
-	} else if (obj_node.isLiteral()) {
+	 	ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
 		
+		ps.clearParameters();	
+	     ps.setString(1,subjURI);
+	     ps.setString(2,predURI);
+	     ps.setString(3,objURI);
+	     ps.setString(4,gid);
+	     
+		if ( isReif ) {
+				String stmtURI = nodeToRDBString(reifNode);
+				ps.setString(5,stmtURI);
+		 }
+	 } catch(SQLException e1) {
+		Log.debug("(deleteStatementObjectURI) SQLException caught " + e1);
+	 }
+	} else if (obj_node.isLiteral()) {
 	  Node_Literal litNode = (Node_Literal)obj_node;
 	  LiteralLabel ll = litNode.getLiteral();
 	  String lval = (String)ll.getValue();
@@ -803,29 +796,18 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	  	// object literal can fit in statement table
 		try {
 			stmtStr = isReif ? "deleteReifStatementLiteralVal" : "deleteStatementLiteralVal";
-		ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
-		if (ps == null) {
-			Log.severe("prepared statement not found for deleteStatementLiteralVal");
-		}
-	
-		ps.setString(1,subjURI);
-		ps.setString(2,predURI);
-		ps.setString(3, lval);
-		ps.setString(4,gid);
-		if ( isReif ) {
-		  String stmtURI = nodeToRDBString(reifNode);
-		  ps.setString(5,stmtURI);
-		}
-
-		if (isBatch) {
-			  ps.addBatch();
-			  batchedPreparedStatements.put(stmtStr,ps);
-		  } else {
-			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps, stmtStr);
-		  }
+			ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
+			ps.clearParameters();
+			ps.setString(1,subjURI);
+			ps.setString(2,predURI);
+			ps.setString(3, lval);
+			ps.setString(4,gid);
+			if ( isReif ) {
+				  String stmtURI = nodeToRDBString(reifNode);
+				  ps.setString(5,stmtURI);
+			}
 	   } catch(SQLException e1) {
-		Log.debug("(in delete) SQLException caught " + e1);
+		Log.debug("(deleteStatementObjectURI) SQLException caught " + e1);
 	   }
 	  } else {
 	  	 // belongs in literal table
@@ -836,31 +818,34 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		  return;
 		}
 		try {
-		stmtStr = isReif ? "deleteReifStatementLiteralRef" : "deleteStatementLiteralRef";
-		ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
-		ps.clearParameters();	
-	
-		ps.setString(1,subjURI);
-		ps.setString(2,predURI);
-		ps.setString(3,lid.getID().toString());
-		ps.setString(4,gid);
-		if ( isReif ) {
-		  String stmtURI = nodeToRDBString(reifNode);
-		  ps.setString(5,stmtURI);
-		}
-	
-		if (isBatch) {
-			  ps.addBatch();
-			  batchedPreparedStatements.put(stmtStr,ps);
-		  } else {
-			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps, stmtStr);
-		  }
+			stmtStr = isReif ? "deleteReifStatementLiteralRef" : "deleteStatementLiteralRef";
+			ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
+		
+			ps.clearParameters();	
+			ps.setString(1,subjURI);
+			ps.setString(2,predURI);
+			ps.setString(3,lid.getID().toString());
+			ps.setString(4,gid);
+			
+			if ( isReif ) {
+				 String stmtURI = nodeToRDBString(reifNode);
+				 ps.setString(5,stmtURI);
+			}
 	   } catch(SQLException e1) {
 	  	Log.debug("(in delete) SQLException caught " + e1);
 	   }
 	  }
-   }
+     }
+	  
+	 try {
+		if (isBatch) {
+			ps.addBatch();
+		} else {
+			ps.executeUpdate();
+		}
+	  } catch (SQLException e1) {
+	  	Log.severe("Exception executing delete: " + e1);
+	  }
 }
 
 		/**
@@ -876,6 +861,39 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		 **/
 	  public void storeTriple(Triple t, IDBID graphID) {
 	  	storeTriple(t,graphID,false, new Hashtable());
+	  }
+	  
+	  /**
+	   * Given an operation name, a table name, whether or not this operation is part of a batched update, and
+	   * a table of batched prepared statements, find or create an appropriate PreparedStatement.
+	   * 
+	   * @param op
+	   * @param tableName
+	   * @param isBatch
+	   * @param batchedPreparedStatements
+	   * @return
+	   * @throws SQLException
+	   */
+	  public PreparedStatement getPreparedStatement(String op, 
+	  				String tableName, 
+	  				boolean isBatch, 
+	  				Hashtable batchedPreparedStatements) throws SQLException {
+	  	PreparedStatement ps = null;
+		String opname = SQLCache.concatOpName(op,tableName);
+		if (isBatch) {
+			ps = (PreparedStatement) batchedPreparedStatements.get(opname);
+			if (ps == null) {
+				ps = m_sql.getPreparedSQLStatement(op,tableName);
+				batchedPreparedStatements.put(opname,ps);
+			}
+		} else {
+			ps = m_sql.getPreparedSQLStatement(op,tableName);
+		}
+	 	 
+		if (ps == null) {
+			Log.severe("prepared statement not found for insertStatementObjectURI");
+		}
+		return ps;
 	  }
 
 
@@ -936,39 +954,30 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		String gid = graphID.getID().toString();
 		String	stmtStr;
 	   	   
-	   PreparedStatement ps;
+	   PreparedStatement ps = null;
 	
 	   if ( obj_node.isURI() || obj_node.isBlank() ) {
 		 objURI = nodeToRDBString(obj_node);
-		 try { 	  	
-			  stmtStr = isReif ? "insertReifStatementObjectURI" : "insertStatementObjectURI";
-			  ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
-		  	  ps.clearParameters();	
-		
-		      ps.setString(1,subjURI);
-		      ps.setString(2,predURI);
-		      ps.setString(3,objURI);
-		      ps.setString(4,gid);
-		      if ( isReif ) {
+		 try {
+				stmtStr = isReif ? "insertReifStatementObjectURI" : "insertStatementObjectURI";
+		 	    ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
+		 	
+		  	  	ps.clearParameters();	
+		      	ps.setString(1,subjURI);
+		      	ps.setString(2,predURI);
+		      	ps.setString(3,objURI);
+		      	ps.setString(4,gid);
+		      	
+			if ( isReif ) {
 				String stmtURI = nodeToRDBString(reifNode);
-		      	ps.setString(5,stmtURI);
-		      	if ( hasType == true)
-		      		ps.setInt(6,1);
-		     	 else
-		      		ps.setNull(6,java.sql.Types.INTEGER);
-		      }
-		
-			if (isBatch) {
-				ps.addBatch();
-				batchedPreparedStatements.put(stmtStr, ps);
-			} else {
-		      ps.executeUpdate();
-			  m_sql.returnPreparedSQLStatement(ps, stmtStr);
+				ps.setString(5,stmtURI);
+				if ( hasType == true)
+					ps.setInt(6,1);
+				else
+					ps.setNull(6,java.sql.Types.INTEGER);
 			}
 		 } catch(SQLException e1) {
-			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
 				Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
-			}
 		 }
 		  
 		} else if (obj_node.isLiteral()) {
@@ -982,35 +991,24 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		  	// object literal can fit in statement table
 			try {
 				stmtStr = isReif ? "insertReifStatementLiteralVal" : "insertStatementLiteralVal";
-				ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
-				if (ps == null) {
-				Log.severe("prepared statement not found for insertStatementLiteralVal");
-			}
-		
-			ps.setString(1,subjURI);
-			ps.setString(2,predURI);
-			ps.setString(3, lval);
-			ps.setString(4,gid);
-			if ( isReif ) {
-			  String stmtURI = nodeToRDBString(reifNode);
-			  ps.setString(5,stmtURI);
-			  if ( hasType == true)
-				  ps.setInt(6,1);
-			   else
-				  ps.setNull(6,java.sql.Types.INTEGER);
-			}
-
-			if (isBatch) {
-				ps.addBatch();
-				batchedPreparedStatements.put(stmtStr,ps);
-			} else {
-			  ps.executeUpdate();
-			  m_sql.returnPreparedSQLStatement(ps, stmtStr);
-			}
-		   } catch(SQLException e1) {
-			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
-				  Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+				ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
+				
+				ps.clearParameters();
+				ps.setString(1,subjURI);
+				ps.setString(2,predURI);
+				ps.setString(3, lval);
+				ps.setString(4,gid);
+				
+				if ( isReif ) {
+					String stmtURI = nodeToRDBString(reifNode);
+					ps.setString(5,stmtURI);
+					if ( hasType == true)
+							ps.setInt(6,1);
+						else
+							ps.setNull(6,java.sql.Types.INTEGER);
 				}
+		   	} catch(SQLException e1) {
+			  Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
 		   }
 		  } else {
 		  	 // belongs in literal table
@@ -1020,39 +1018,41 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			  lid = addLiteral(litNode);
 			}
 			try {
-			stmtStr = isReif ? "insertReifStatementLiteralRef" : "insertStatementLiteralRef";
-			ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
-			ps.clearParameters();	
-		
-			ps.setString(1,subjURI);
-			ps.setString(2,predURI);
-			ps.setString(3, lid.getID().toString());
-			ps.setString(4, litIdx); // TODO should this be here?  Seems redundant to store litIdx?
-			ps.setString(5,gid);
-			if ( isReif ) {
-			  String stmtURI = nodeToRDBString(reifNode);
-			  ps.setString(6,stmtURI);
-			  if ( hasType == true)
-				  ps.setInt(7,1);
-			   else
-				  ps.setNull(7,java.sql.Types.INTEGER);
-			}
-	
-			if (isBatch) {
-				ps.addBatch();
-				batchedPreparedStatements.put(stmtStr,ps);
-			} else {
-			  ps.executeUpdate();
-			  m_sql.returnPreparedSQLStatement(ps, stmtStr);
-			}
+				stmtStr = isReif ? "insertReifStatementLiteralRef" : "insertStatementLiteralRef";
+				ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
+				ps.clearParameters();	
+				ps.setString(1,subjURI);
+				ps.setString(2,predURI);
+				ps.setString(3, lid.getID().toString());
+				ps.setString(4, litIdx); // TODO should this be here?  Seems redundant to store litIdx?
+				ps.setString(5,gid);
+				
+				if ( isReif ) {
+					 String stmtURI = nodeToRDBString(reifNode);
+					  ps.setString(6,stmtURI);
+					  if ( hasType == true)
+							  ps.setInt(7,1);
+						 else
+							 ps.setNull(7,java.sql.Types.INTEGER);
+				}
 		   } catch(SQLException e1) {
-			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
-				  Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
-			}
+			Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
 		   }
 		  }
 	
 	   }
+	   try {
+		 if (isBatch) {
+			 ps.addBatch();
+		 } else {
+		  	ps.executeUpdate();
+		 }
+	 } catch (SQLException e1) {
+	 	// we let Oracle handle duplicate checking
+		if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
+			Log.severe("SQLException caught during insert" + e1.getErrorCode() + ": " + e1);
+		}
+	 }
 	}
 	
 	/** 
@@ -1094,9 +1094,10 @@ public  class PSet_TripleStore_RDB implements IPSet {
 					String op = (String) enum.nextElement();
 					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
 					p.executeBatch();
-					m_sql.returnPreparedSQLStatement(p,op);
+				//	m_sql.returnPreparedSQLStatement(p,op);
 				}
 
+				m_sql.getConnection().commit();
 				m_sql.getConnection().setAutoCommit(true);
 				batchedPreparedStatements = new Hashtable();
 				ArrayList c = new ArrayList(triples);
@@ -1135,10 +1136,11 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * @param my_GID  ID of the graph.
 	 */
 		public void deleteTripleList(List triples, IDBID my_GID) {
-			// for relational dbs, there are two styles for bulk inserts.
+			// for relational dbs, there are two styles for bulk operations.
 			// JDBC 2.0 supports batched updates.
-			// MySQL also supports a multiple-row insert.
+			// MySQL also supports a multiple-row update.
 			// For now, we support only jdbc 2.0 batched updates
+			
 			/** Set of PreparedStatements that need executeBatch() **/
 			Hashtable batchedPreparedStatements = new Hashtable();
 			Triple t;
@@ -1158,9 +1160,9 @@ public  class PSet_TripleStore_RDB implements IPSet {
 					String op = (String) enum.nextElement();
 					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
 					p.executeBatch();
-					m_sql.returnPreparedSQLStatement(p,op);
+				//	m_sql.returnPreparedSQLStatement(p,op);
 				}
-				
+				m_sql.getConnection().commit();
 				m_sql.getConnection().setAutoCommit(true);
 				batchedPreparedStatements = new Hashtable();
 				ArrayList c = new ArrayList(triples);
