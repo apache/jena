@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-30 19:17:21 $
+ * Last modified on   $Date: 2003-07-31 08:28:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -29,7 +29,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import org.apache.log4j.*;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.ModelLoader;
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.23 2003-07-30 19:17:21 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.24 2003-07-31 08:28:39 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -266,7 +266,7 @@ public class OntDocumentManager
      *          given document's namespace, or null if not known
      */
     public String getPrefixForURI( String uri ) {
-        return m_prefixMap.usePrefix( uri );
+        return m_prefixMap.getNsURIPrefix( uri );
     }
 
 
@@ -700,7 +700,7 @@ public class OntDocumentManager
                     
                     // if the namespace doesn't end with a suitable split point character, add a #
                     boolean endWithNCNameCh = XMLChar.isNCName( publicURI.charAt( publicURI.length() - 1 ) );
-                    String prefixExpansion = endWithNCNameCh ? (publicURI + "ANCHOR") : publicURI;
+                    String prefixExpansion = endWithNCNameCh ? (publicURI + ANCHOR) : publicURI;
                     
                     addPrefixMapping( prefixExpansion, s.getString() );
                 } catch (JenaException ignore) {}
