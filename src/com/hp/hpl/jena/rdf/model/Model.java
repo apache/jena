@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.29 2003-07-09 13:10:56 chris-dollin Exp $
+  $Id: Model.java,v 1.30 2003-07-15 14:44:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.29 $Date: 2003/07/08 13:15:55 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.30 $Date: 2003/07/09 13:10:56 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -538,29 +538,24 @@ public interface Model
 	 * @return an iterator over the subjects
 	 * @param p The predicate sought
 	 * @param o The value sought
-	 
 	 */
 	ResIterator listSubjectsWithProperty(Property p, RDFNode o)
 		;
 
 	/** List all objects in a model.
 	 * @return an iterator over the objects
-	 * @param p The predicate sought
-	 
 	 */
 	NodeIterator listObjects() ;
 
 	/** List all objects of a given property.
 	 * @return an iterator over the objects
 	 * @param p The predicate sought
-	 
 	 */
 	NodeIterator listObjectsOfProperty(Property p) ;
 
 	/** List the values of a property of a resource.
 	 * @return an iterator over the objects
 	 * @param p The predicate sought
-	 
 	 */
 	NodeIterator listObjectsOfProperty(Resource s, Property p)
 		;
@@ -649,7 +644,7 @@ public interface Model
 
 	/**
        Find or create a {@link ReifiedStatement} corresponding to a Statement.
-        @param a Statement which may or may not already be reified
+        @param s Statement which may or may not already be reified
         @return a Resource [ReifiedStatement] that reifies the specified Statement.
 	*/
 	Resource getAnyReifiedStatement( Statement s );
@@ -689,10 +684,9 @@ public interface Model
      *  and whose object matches the <code>object</code> argument.
      *  If an argument is <code>null</code> it matches anything.</p>
      * @return an iterator over the subjects
-     * @param subject   The subject sought
-     * @param predicate The predicate sought
-     * @param object    The value sought
-     
+     * @param s   The subject sought
+     * @param p The predicate sought
+     * @param o    The value sought
      */ 
     
     StmtIterator listStatements( Resource s, Property p, RDFNode o );
@@ -904,5 +898,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.29 2003-07-09 13:10:56 chris-dollin Exp $
+ * $Id: Model.java,v 1.30 2003-07-15 14:44:17 chris-dollin Exp $
  */

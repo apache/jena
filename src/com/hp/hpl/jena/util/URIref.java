@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIref.java,v 1.1.1.1 2002-12-19 19:21:07 bwm Exp $
+ * * $Id: URIref.java,v 1.2 2003-07-15 14:48:08 chris-dollin Exp $
    
    AUTHOR:  Jeremy J. Carroll
 *//*
@@ -50,7 +50,7 @@ public class URIref extends Object {
      * using %NN escape mechanism as appropriate.
      * The '%' character is assumed to already indicated an escape byte.
      * The '%' character must be followed by two hexadecimal digits.
-     * @param uri The uri, in characters specified by RFC 2396 + '#'
+     * @param unicode The uri, in characters specified by RFC 2396 + '#'
      * @return The corresponding Unicode String
      */ 
     static public String encode(String unicode) {

@@ -49,7 +49,7 @@ import com.hp.hpl.jena.graph.Triple;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-06-18 22:30:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-07-15 14:44:17 $
  */
 public interface Statement 
 {
@@ -361,8 +361,6 @@ public interface Statement
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set
-     * @param wellFormed true if o is well formed XML
-     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(RDFNode o) ;
@@ -388,13 +386,11 @@ public interface Statement
      */
     public Statement remove() ;
     
-/** Determine if this statement is the subject of any statements its associated
- *  model.
- * @param s The statement tested.
- 
- * @return true if the statement s is the subject of a statement in the model,
-             false otherwise
-*/ 
+    /** 
+        Determine if this statement is the subject of any statements its associated
+        model.
+        @return true iff this statement is the subject of a statement in the model.
+    */ 
     boolean isReified();
     
     /**

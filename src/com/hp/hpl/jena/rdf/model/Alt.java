@@ -60,7 +60,7 @@ package com.hp.hpl.jena.rdf.model;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-17 12:25:04 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-07-15 14:44:17 $'
  */
 
 
@@ -68,133 +68,110 @@ public interface Alt extends Container {
         
     /** Set the default value of this container.
      * @param o The value to be set.
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(RDFNode o);
     /** Set the default value of this container.
      * @param o The value to be set.
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(boolean o);
     /** Set the default value of this container.
      * @param o The value to be set.
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(long o);
     /** Set the default value of this container.
      * @param o The value to be set.
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(char o);
     /** Set the default value of this container.
      * @param o The value to be set.
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(float o);
     /** Set the default value of this container.
      * @param o The value to be set.
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(double o);
     /** Set the default value of this container.
      * @param o The value to be set.
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(String o); 
     /** Set the default value of this container.
      * @param o The value to be set.
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(String o, String l);
     /** Set the default value of this container.
      * @param o The value to be set.
-     * @param l The language of the value to be set
-     
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(Object o);
 
     /** Return the default value for this resource.
-     
      * @return the default value for this resource.
      */
     public RDFNode getDefault();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public Resource getDefaultResource();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public Literal getDefaultLiteral();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public boolean getDefaultBoolean();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public byte getDefaultByte();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public short getDefaultShort();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public int getDefaultInt();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public long getDefaultLong();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public char getDefaultChar();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public float getDefaultFloat();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public double getDefaultDouble();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public String getDefaultString();
     /** Return the language of the default value for this resource.
-     
      * @return the language of the default value for this resource
      */
     public String getDefaultLanguage();
@@ -221,32 +198,27 @@ public interface Alt extends Container {
      */
     public Object getDefaultObject(ObjectF f);
     /** Return the default value for this resource. 
-     
      * @return the default value for this resource interpreted as the return
      *         type.
      */
     public Alt getDefaultAlt();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public Bag getDefaultBag();
     /** Return the default value for this resource.
-     
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public Seq getDefaultSeq();
         
     /** Remove a value from the container.
-     *
      * <p>The predicate of the statement <CODE>s</CODE> identifies the
      * ordinal of the value to be removed.  Once removed, the values in the
      * container with a higher ordinal value are renumbered.  The renumbering
      * algorithm is implementation dependent.<p>
      * @param s The statement to be removed from the model.
-     
      * @return this container to enable cascading calls.
      */
     public Container remove(Statement s);

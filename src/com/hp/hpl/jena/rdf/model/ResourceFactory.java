@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ResourceFactory.java,v 1.4 2003-04-15 21:13:51 jeremy_carroll Exp $
+  $Id: ResourceFactory.java,v 1.5 2003-07-15 14:44:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -87,7 +87,7 @@ public class ResourceFactory {
      * <p>Uses the current factory object to create a new property.</p>
      * 
      * @param namespace URIREF of the namespace of the property
-     * @param localname localname of the property
+     * @param localName localname of the property
      * @return a new property
      */
     public static Property createProperty(String namespace, String localName) {
@@ -95,10 +95,11 @@ public class ResourceFactory {
     }
 
     /** create a new statement.
+     * Uses the current factory object to create a new statement.</p>
      * 
-     * <p>Uses the current factory object to create a new statement.</p>
-     * 
-     * @param uri of the URI of the resource
+     * @param subject the subject of the new statement
+     * @param predicate the predicate of the new statement
+     * @param object the objectof the new statement
      * @return a new resource
      */
     public static Statement createStatement(

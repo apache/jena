@@ -54,8 +54,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.6 $'
-            Date='$Date: 2003-06-20 15:18:06 $'
+            Revision='$Revision: 1.7 $'
+            Date='$Date: 2003-07-15 14:44:17 $'
  */
 public interface ModelCon {
 
@@ -164,9 +164,7 @@ public interface ModelCon {
  * to specify its type. </p>
  * @param type the type of the resource to be created.
  * @return a new anonymous resource linked to this model.
- * @param type A resource representing the RDF type of the new resource.
- 
- */
+  */
     public Resource createResource(Resource type) ;
     
 /**
@@ -175,7 +173,7 @@ public interface ModelCon {
     constructed from Nodes. Providing this method allows each Model
     the opportunity to cache node-to-resource maps if it requires. 
     
-    @param the graph.Node on which to base the Model.RDFNode
+    @param n the graph.Node on which to base the Model.RDFNode
     @return a suitable RDFNode 
 */
     public RDFNode getRDFNode( Node n );
@@ -189,9 +187,7 @@ public interface ModelCon {
  * @param type the type of the resource to be created.
  * @return a new resource linked to this model.
  * @param uri The URI of the new resource.
- * @param type A resource representing the RDF type of the new resource.
- .
- */
+  */
     public Resource createResource(String uri, Resource type);
 
 /** Create a new anonymous resource using the supplied factory.

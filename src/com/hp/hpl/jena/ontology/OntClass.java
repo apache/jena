@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:17:25 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-15 14:44:11 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
  * (see footer for full conditions)
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.16 2003-06-22 19:17:25 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.17 2003-07-15 14:44:11 chris-dollin Exp $
  */
 public interface OntClass
     extends OntResource
@@ -273,7 +273,7 @@ public interface OntClass
 
     /**
      * <p>Answer true if the given class is equivalent to this class.</p>
-     * @param class A class to test for
+     * @param cls A class to test for
      * @return True if the given property is equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
      */
