@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Checker.java,v 1.48 2004-12-01 14:20:29 jeremy_carroll Exp $
+  $Id: Checker.java,v 1.49 2004-12-14 13:30:38 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -13,6 +13,8 @@ import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.ontology.tidy.impl.CheckerImpl;
 
+import com.hp.hpl.jena.ontology.*;
+
 
 /**
  * 
@@ -22,7 +24,14 @@ import com.hp.hpl.jena.ontology.tidy.impl.CheckerImpl;
  * and to add one or more Models, OntModels or Graphs.
  * It tries to do the right thing, vis-a-vis
  * imports, without duplicating imports processing 
- * already performed by an OntModel.
+ * already performed by an {@link OntModel};
+ * in particular, to use a specific 
+ * {@link OntDocumentManager}
+ * create an {@link OntModel} using that document
+ * manager. Any imports that are processed by
+ * this class, a private document manager is used,
+ * constructed from the default profile
+ * (with imports processing explicitly on).
  * The three methods {@link #getProblems()}
  * {@link #getErrors()} and {@link #getSubLanguage()}
  * can all be used repeatedly and at any point. They
