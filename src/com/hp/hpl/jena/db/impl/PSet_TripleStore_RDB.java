@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.49 2005-02-21 12:03:07 andy_seaborne Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.50 2005-03-11 02:47:01 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.49 $ on $Date: 2005-02-21 12:03:07 $
+* @version $Revision: 1.50 $ on $Date: 2005-03-11 02:47:01 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -530,7 +530,7 @@ public void deleteTripleAR(
 				ps.addBatch();
 			} else {
 				ps.executeUpdate();
-				ps.close();
+				m_sql.returnPreparedSQLStatement(ps);
 			}
 			//ps.close();
 		} catch (SQLException e1) {
