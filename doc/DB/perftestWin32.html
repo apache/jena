@@ -4,64 +4,62 @@
 </head>
 <body>
   <h2>Jena 1 vs Jena 2 performance comparison results</h2>
-  <p>The test was begun at Wed Apr 23 20:43:20 2003</p>
+  <p>The test was begun at Fri May  9 23:39:16 2003</p>
   <table border='1' width='600' rules='rows'>
     <tr align='right'><th>Model/Size</th><th>Jena 1</th><th>Jena 2</th><th>Speed-up<br>(Slow-down)</th></tr>
+<tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Write a model containing 'size' subjects - each with two properties - in RDF/XML</td></tr>
+<tr align='right'><td>Memory / 10</td><td>4.69 ms</td><td>7.05 ms</td><td>(1.5)</td></tr>
+<tr align='right'><td>Memory / 100</td><td>10.55 ms</td><td>75.00 ms</td><td>(7.1)</td></tr>
+<tr align='right'><td>Memory / 1000</td><td>90.80 ms</td><td>190.80 ms</td><td>(2.1)</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>(2.6)<br>(2.5)</td></tr>
+<tr align='right'><td>MySQL / 10</td><td>25.00 ms</td><td>65.60 ms</td><td>(2.6)</td></tr>
+<tr align='right'><td>MySQL / 100</td><td>171.80 ms</td><td>262.40 ms</td><td>(1.5)</td></tr>
+<tr align='right'><td>MySQL / 1000</td><td>1206.40 ms</td><td>1665.80 ms</td><td>(1.4)</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>(1.4)<br>(2.0)</td></tr>
 <tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Use RDQL to query for 'size' resources with a given rdf:type</td></tr>
-<tr align='right'><td>Memory / 10</td><td>1.56 ms</td><td>1.76 ms</td><td>(1.1)</td></tr>
-<tr align='right'><td>Memory / 100</td><td>4.49 ms</td><td>5.26 ms</td><td>(1.2)</td></tr>
-<tr align='right'><td>Memory / 1000</td><td>87.40 ms</td><td>78.00 ms</td><td>1.1</td></tr>
-<tr align='right'><td>Memory / 10000</td><td>378.20 ms</td><td>350.00 ms</td><td>1.1</td></tr>
-<tr align='right'><td>Memory / 100000</td><td>34987.40 ms</td><td>3078.20 ms</td><td>11.4</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>10.1<br>1.8</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>5.08 ms</td><td>4.10 ms</td><td>1.2</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>11.73 ms</td><td>9.38 ms</td><td>1.3</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td>159.40 ms</td><td>118.80 ms</td><td>1.3</td></tr>
-<tr align='right'><td>MySQL / 10000</td><td>996.80 ms</td><td>659.40 ms</td><td>1.5</td></tr>
-<tr align='right'><td>MySQL / 100000</td><td>9009.40 ms</td><td>5328.20 ms</td><td>1.7</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.7<br>1.3</td></tr>
+<tr align='right'><td>Memory / 10</td><td>1.76 ms</td><td>1.76 ms</td><td>1.0</td></tr>
+<tr align='right'><td>Memory / 100</td><td>4.50 ms</td><td>5.28 ms</td><td>(1.2)</td></tr>
+<tr align='right'><td>Memory / 1000</td><td>90.80 ms</td><td>81.20 ms</td><td>1.1</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.1<br>1.0</td></tr>
+<tr align='right'><td>MySQL / 10</td><td>5.09 ms</td><td>4.10 ms</td><td>1.2</td></tr>
+<tr align='right'><td>MySQL / 100</td><td>12.10 ms</td><td>9.38 ms</td><td>1.3</td></tr>
+<tr align='right'><td>MySQL / 1000</td><td>159.40 ms</td><td>121.80 ms</td><td>1.3</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.3<br>1.3</td></tr>
 <tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Simple ARP throughput - read 'size' lines of DMOZ input</td></tr>
 <tr align='right'><td>Memory / 10</td><td>115.60 ms</td><td>112.60 ms</td><td>1.0</td></tr>
-<tr align='right'><td>Memory / 100</td><td>150.00 ms</td><td>137.60 ms</td><td>1.1</td></tr>
-<tr align='right'><td>Memory / 1000</td><td>340.60 ms</td><td>237.40 ms</td><td>1.4</td></tr>
-<tr align='right'><td>Memory / 10000</td><td>947.00 ms</td><td>706.20 ms</td><td>1.3</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.3<br>1.0</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>125.00 ms</td><td>100.00 ms</td><td>1.3</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>447.00 ms</td><td>215.60 ms</td><td>2.1</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td>2575.00 ms</td><td>1093.80 ms</td><td>2.4</td></tr>
-<tr align='right'><td>MySQL / 10000</td><td>22837.60 ms</td><td>8475.60 ms</td><td>2.7</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>2.6<br>1.5</td></tr>
+<tr align='right'><td>Memory / 100</td><td>150.20 ms</td><td>140.80 ms</td><td>1.1</td></tr>
+<tr align='right'><td>Memory / 1000</td><td>322.00 ms</td><td>237.60 ms</td><td>1.4</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.2<br>1.0</td></tr>
+<tr align='right'><td>MySQL / 10</td><td>121.80 ms</td><td>171.80 ms</td><td>(1.4)</td></tr>
+<tr align='right'><td>MySQL / 100</td><td>456.40 ms</td><td>303.20 ms</td><td>1.5</td></tr>
+<tr align='right'><td>MySQL / 1000</td><td>2613.00 ms</td><td>1144.00 ms</td><td>2.3</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>2.0<br>(1.1)</td></tr>
 <tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Create a model and add 'size' subjects - each with two properties</td></tr>
-<tr align='right'><td>Memory / 10</td><td>0.78 ms</td><td>0.46 ms</td><td>1.7</td></tr>
-<tr align='right'><td>Memory / 100</td><td>7.80 ms</td><td>4.89 ms</td><td>1.6</td></tr>
-<tr align='right'><td>Memory / 1000</td><td>90.60 ms</td><td>78.20 ms</td><td>1.2</td></tr>
-<tr align='right'><td>Memory / 10000</td><td>703.20 ms</td><td>490.80 ms</td><td>1.4</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.4<br>1.4</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>112.60 ms</td><td>29.70 ms</td><td>3.8</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>775.00 ms</td><td>293.80 ms</td><td>2.6</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td>6910.00 ms</td><td>2256.60 ms</td><td>3.1</td></tr>
-<tr align='right'><td>MySQL / 10000</td><td>75760.80 ms</td><td>22746.00 ms</td><td>3.3</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>3.3<br>3.2</td></tr>
+<tr align='right'><td>Memory / 10</td><td>0.78 ms</td><td>0.54 ms</td><td>1.5</td></tr>
+<tr align='right'><td>Memory / 100</td><td>7.80 ms</td><td>5.08 ms</td><td>1.5</td></tr>
+<tr align='right'><td>Memory / 1000</td><td>90.60 ms</td><td>78.00 ms</td><td>1.2</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.2<br>1.4</td></tr>
+<tr align='right'><td>MySQL / 10</td><td>112.40 ms</td><td>31.30 ms</td><td>3.6</td></tr>
+<tr align='right'><td>MySQL / 100</td><td>781.40 ms</td><td>281.20 ms</td><td>2.8</td></tr>
+<tr align='right'><td>MySQL / 1000</td><td>7010.40 ms</td><td>2141.00 ms</td><td>3.3</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>3.2<br>3.2</td></tr>
 <tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Walk a chain of 'size' linked statements from beginning to end</td></tr>
-<tr align='right'><td>Memory / 10</td><td>0.01 ms</td><td>0.04 ms</td><td>(2.9)</td></tr>
+<tr align='right'><td>Memory / 10</td><td>0.01 ms</td><td>0.04 ms</td><td>(3.1)</td></tr>
 <tr align='right'><td>Memory / 100</td><td>0.14 ms</td><td>0.44 ms</td><td>(3.1)</td></tr>
-<tr align='right'><td>Memory / 1000</td><td>1.76 ms</td><td>7.05 ms</td><td>(4.0)</td></tr>
-<tr align='right'><td>Memory / 10000</td><td>20.30 ms</td><td>84.40 ms</td><td>(4.2)</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>(4.1)<br>(3.6)</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>8.20 ms</td><td>7.83 ms</td><td>1.0</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>112.60 ms</td><td>87.60 ms</td><td>1.3</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td>1009.60 ms</td><td>631.20 ms</td><td>1.6</td></tr>
-<tr align='right'><td>MySQL / 10000</td><td>9866.80 ms</td><td>6078.80 ms</td><td>1.6</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.6<br>1.4</td></tr>
+<tr align='right'><td>Memory / 1000</td><td>1.76 ms</td><td>5.46 ms</td><td>(3.1)</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>(3.1)<br>(3.1)</td></tr>
+<tr align='right'><td>MySQL / 10</td><td>8.60 ms</td><td>8.20 ms</td><td>1.0</td></tr>
+<tr align='right'><td>MySQL / 100</td><td>115.60 ms</td><td>90.80 ms</td><td>1.3</td></tr>
+<tr align='right'><td>MySQL / 1000</td><td>1025.20 ms</td><td>647.00 ms</td><td>1.6</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>1.5<br>1.3</td></tr>
 <tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Dave's performance test - listStatements() in a model with 'size' statements</td></tr>
-<tr align='right'><td>Memory / 10</td><td>0.02 ms</td><td>0.18 ms</td><td>(11.1)</td></tr>
-<tr align='right'><td>Memory / 100</td><td>1.37 ms</td><td>17.20 ms</td><td>(12.6)</td></tr>
-<tr align='right'><td>Memory / 1000</td><td>159.40 ms</td><td>2712.80 ms</td><td>(17.0)</td></tr>
-<tr align='right'><td>Memory / 10000</td><td>30737.40 ms</td><td>518875.00 ms</td><td>(16.9)</td></tr>
-<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>(16.9)<br>(16.9)</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>10.18 ms</td><td>7.03 ms</td><td>1.4</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>525.00 ms</td><td>237.40 ms</td><td>2.2</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td>393462.00 ms</td><td>27322.40 ms</td><td>14.4</td></tr>
-</table>
+<tr align='right'><td>Memory / 10</td><td>0.02 ms</td><td>0.18 ms</td><td>(11.0)</td></tr>
+<tr align='right'><td>Memory / 100</td><td>1.42 ms</td><td>18.00 ms</td><td>(12.7)</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>(12.7)<br>(12.5)</td></tr>
+<tr align='right'><td>MySQL / 10</td><td>9.78 ms</td><td>7.40 ms</td><td>1.3</td></tr>
+<tr align='right'><td>MySQL / 100</td><td>519.00 ms</td><td>253.20 ms</td><td>2.0</td></tr>
+<tr align='right'><td colspan='3'>Average:<br>Weighted average:</td><td>2.0<br>1.9</td></tr>
+  </table>
+  <p>The test ended at Fri May  9 23:43:33 2003</p>
 </body>
 </html>

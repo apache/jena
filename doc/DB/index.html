@@ -14,20 +14,19 @@
 
 
 
-<h3>24 April, 2003</h3>
+<h3>10 May, 2003</h3>
 
 
 
-<p>The jena/db module provides an implementation of the jena <code>model</code> 
+<p>The jena/db module provides an implementation of the Jena <code>model</code> 
 
 
 
   interface but with the ability to store and retrieve RDF statements using a database. A preliminary 
 release is currently available for experimentation and feedback. However, it is 
 missing some features and should not be considered stable. Databases created 
-with one preliminary release may not be accessible in a later preliminary 
-release. A full-featured, stable implementation will be available with the Jena2 
-preview3 release, scheduled for mid-May, 2003.</p>
+with this preliminary release may not be accessible in a later preliminary 
+release or in the final, full featured Jena2 release.</p>
 
 
 
@@ -60,8 +59,7 @@ preview3 release, scheduled for mid-May, 2003.</p>
   different layout than Jena1 that enables faster insertion and retrieval but 
   uses more storage than Jena1. It is largely backwards-compatible for Jena1 
   applications with the exception of some database configuration options. This 
-  preliminary release does not yet support persistence for datatypes or for 
-  reified statements and only runs on MySQL.</p>
+  preliminary release only runs on MySQL.</p>
 
 
 
@@ -70,44 +68,33 @@ preview3 release, scheduled for mid-May, 2003.</p>
 
 
   <p>The following work, with the possible exception of application-specific 
-  layouts, will be completed for the Jena2 preview3 release. In the meantime, 
-  the code base and schema for persistence should be considered unstable.</p>
+  layouts, will be completed for the final Jena2  release. In the meantime, 
+  the code base for persistence is a&nbsp; work-in-progress and liable to 
+  change. However, experimentation and feedback is encouraged and welcome.</p>
 
 
 
   <ul>
-    <li><i>Reification</i> is not yet supported.</li>
-    <li> <i>Datatypes</i> are not persistent 
-  - RDF literals with datatypes may be added but the datatype will be missing 
-  upon retrieval.</li>
     <li><i>Oracle, Postgresql</i> and <i>
-  BerkeleyDB</i> <font face="Times New Roman">are not yet supported.</font><font face="Courier New" size="2"> ModelDB</font> only works 
+  BerkeleyDB</i> <font face="Times New Roman">are not yet supported.</font><font face="Courier New" size="2"> ModelRDB</font> only works 
   with one database engine, MySQL.</li>
-    <li><i>ModelRDB</i> <i>class</i> will be deprecated and new factory methods 
-    provided for creating and opening persistent models.</li>
-    <li><i>Transaction Begin, Commit, Abort</i> - are currently not supported. 
-    Each Jena add/remove/list operation is a separate transaction.</li>
-    <li><i>Bulk update</i>, through use of the batch update capability in JDBC 
-    2.1, will be added for improved load performance.</li>
+    <li><i>Namespace compression</i>, an internal optimization to reduce disk 
+    space usage will be added. Jena2 persistence optimizes storage and retrieval speed at the expense of 
+  disk space (see <a href="#notes">below</a>).</li>
     <li>A<i>pplication-specific database layouts</i>, through use of a 
     generalized implementation of the attribute tables studied in Jena1 (see 
     &quot;Jena relational database interface - performance notes&quot; in the Jena1 
-    release), will be added.</li>
-    <li><i>Namespace compression</i>, an internal optimization to reduce disk 
-    space usage will be added. Jena2 persistence optimizes storage and retrieval speed at the expense of 
-  disk space (see <a href="#notes">below</a>). </li>
+    release), may be added.</li>
 </ul>
 
 
 
   <p>Note that significant code restructuring is 
   anticipated to support these new capabilities. These changes should be 
-  transparent to applications with the following caveats. First, new factory 
-  methods for creating persistent models will be introduced; existing methods 
-  will be deprecated. Second, the database layouts (the schema) should not be 
+  transparent to applications with the following caveat. The database layouts (the schema) should not be 
   considered stable. Databases created with one preliminary release of
-  <font face="monospace" size="2">jena.db.ModelDB </font>may not be accessible 
-  with a later preliminary release. </p>
+  <font face="monospace" size="2">jena.db.ModelRDB </font>may not be accessible 
+  with a later  release. </p>
 
 
 
@@ -123,19 +110,19 @@ preview3 release, scheduled for mid-May, 2003.</p>
 
 <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1">
   <tr>
-    <td><b>Platform&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
-    <td><b>Database Engine&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
-    <td><b>JDBC Driver</b></td>
+    <td><b>&nbsp;&nbsp; Platform&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
+    <td><b>&nbsp;&nbsp; Database Engine&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
+    <td><b>&nbsp;&nbsp; JDBC Driver</b></td>
   </tr>
   <tr>
-    <td>Windows 2000&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td>MySQL 4.0.12</td>
-    <td>mysql-connector-java-3.0.7-stable.jar</td>
+    <td>&nbsp;&nbsp; Windows 2000&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td>&nbsp;&nbsp; MySQL 4.0.12</td>
+    <td>&nbsp;&nbsp; mysql-connector-java-3.0.7-stable.jar&nbsp;&nbsp;&nbsp;&nbsp; </td>
   </tr>
   <tr>
-    <td>Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td>MySQL 4.0.12</td>
-    <td>mysql-connector-java-3.0.7-stable.jar</td>
+    <td>&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td>&nbsp;&nbsp; MySQL 4.0.12</td>
+    <td>&nbsp;&nbsp; mysql-connector-java-3.0.7-stable.jar</td>
   </tr>
 </table>
 
@@ -190,15 +177,12 @@ preview3 release, scheduled for mid-May, 2003.</p>
   <p>As mentioned <a href="#compatibility">above</a>, most Jena1 persistent 
   applications should run with little or no modification under Jena2. However, 
   some <font face="Courier New" size="2">ModelRDB</font> class constructors are deprecated. In 
-  Jena2, persistent models will be 
-  created using a factory method.&nbsp;However, this preliminary release does not yet 
-  support the factory method so a create methods are provided as in Jena1. This is 
-  temporary until the factory methods are available. </p>
+  Jena2, persistent models should be created using a factory method.</p>
 
 
 
   <p>The Jena2 
-  persistence architecture and layout are very different from Jena1. However, 
+  persistence architecture and layout are  different from Jena1. However, 
   these differences are largely transparent to applications and only affect code 
   that creates new persistent models. In particular, the way in which database 
   configuration options are specified is changed. In Jena2, configuration options are specified as statements in an RDF 
@@ -215,9 +199,10 @@ preview3 release, scheduled for mid-May, 2003.</p>
   <font face="Courier New" size="2">jena.vocabulary.DB</font><font face="Times New Roman">. 
   This preliminary release does not support setting configuration properties 
   however a future preliminary release will support it. The current default 
-  configuration properties should suffice for experimentation. For example of 
-  retrieving configuration properties, see the the function getMaxLiteral in the 
-  test program TestBasicOperations.java.</font></p>
+  configuration properties should suffice for experimentation. Note that only a 
+  few configuration parameters are defined in the default configuration property 
+  model provided in this release. This was done for experimentation. A complete 
+  set of configuration properties will be provided in the final release.</font></p>
 
 
 
@@ -241,11 +226,14 @@ preview3 release, scheduled for mid-May, 2003.</p>
   experiments performed using the jena-perf benchmark (available as a package 
   from <a href="http://sourceforge.net/projects/jena/">
   http://sourceforge.net/projects/jena/</a>) show Jena2 to be up to three times 
-  faster than Jena1 (see <a href="perftestWin32.html">perftest.html</a>). However, 
-  Jena2 models may consume more disk space than Jena1 models (see <a href="perftestSpaceWin32.html">perftestSpace.html</a>).
+  faster than Jena1 (see <a href="perftestWin32.html">perftest.html</a>). 
+  However, Jena2 models may consume more disk space than Jena1 models.
   Future preliminary releases will provide more guidance on the space differences.
-  In the meantime, do not be surprised to find significant differences between
-  Jena1 and Jena2.</p>
+  In the meantime, do not be surprised to find significant size differences between
+  Jena1 and Jena2. Our goal is that that Jena2 performance be comparable to 
+  Jena1. The jena-perf results given here are primarily intended for comparing 
+  different Jena configurations and releases. These results should not be 
+  considered indicative of real Jena applications.</p>
 
 
 
@@ -263,7 +251,7 @@ preview3 release, scheduled for mid-May, 2003.</p>
   language tag, no datatype and are not large. Non-plain literals are stored in 
   a literals table. Consequently, Jena2 requires fewer join operations than 
   Jena1 at the expense of more memory since a resource or literal may be stored 
-  multiple times. For the preview 3 release, Jena2 will support namespace 
+  multiple times. For the final release, Jena2 will support namespace 
   compression for the statement table which should  reduce space 
   consumption.</p>
 
