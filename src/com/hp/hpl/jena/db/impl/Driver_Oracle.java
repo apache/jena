@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Driver_Oracle.java,v 1.7 2003-07-01 12:48:12 chris-dollin Exp $
+  $Id: Driver_Oracle.java,v 1.8 2003-07-11 19:22:17 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -45,7 +45,7 @@ public abstract class Driver_Oracle extends DriverRDB {
 		INSERT_BY_PROCEDURE = false;
 		INDEX_KEY_LENGTH = 250;
 		LONG_OBJECT_LENGTH = 250;
-		SKIP_ALLOCATE_ID = false;
+		PRE_ALLOCATE_ID = true;
 		SKIP_DUPLICATE_CHECK = true;
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		SQL_FILE = "etc/oracle.sql";
