@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.6 2003-04-01 10:44:11 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.7 2003-04-01 14:28:45 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
@@ -53,14 +53,14 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-04-01 10:44:11 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-04-01 14:28:45 $'
  */
 abstract public class BaseXMLWriter implements RDFWriter {
 	/** log4j logger */
 	protected static Logger logger = Logger.getLogger(BaseXMLWriter.class);
-    static {
-      ARP.initEncoding();
-    }
+	static {
+		ARP.initEncoding();
+	}
 
 	private Relation nameSpaces = new Relation();
 	private Map ns;
@@ -91,6 +91,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 
 	String xmlBase = null;
 	boolean longId = false;
+    boolean allowBadURIs = false;
+    
 	HashMap anonMap = new HashMap();
 	int anonCount = 0;
 	static private RDFDefaultErrorHandler defaultErrorHandler =
@@ -219,6 +221,13 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			rslt.append("\n    xmlns");
 			String prefix = (String) ent.getValue();
 			String uri = (String) ent.getKey();
+            if (!allowBadURIs)
+              try {
+                new URI(uri);
+              }
+              catch (MalformedURIException e) {
+                throw new RDFException(e);
+              }
 			if (prefix.length() > 0) {
 				rslt.append(":" + prefix);
 			}
@@ -274,7 +283,10 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			type,
 			true);
 	}
+	static public boolean dbg = false;
 	String tag(String uri, String local, int type, boolean localIsQname) {
+		if (dbg)
+			System.err.println(uri + " - " + local);
 		String prefix = (String) ns.get(uri);
 		if (type != FAST && type != FASTATTR) {
 			if ((!localIsQname) && !XMLChar.isValidNCName(local))
@@ -282,18 +294,28 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			if (uri.equals(RDFNS)) {
 				// Description, ID, nodeID, about, aboutEach, aboutEachPrefix, li
 				// bagID parseType resource datatype RDF
-				if (badRDF.contains(local))
-					return tag(
-						uri + local.substring(0, 1),
-						local.substring(1),
-						type,
-						true);
+				if (badRDF.contains(local)) {
+					logger.warn(
+						"The URI rdf:"
+							+ local
+							+ " cannot be serialized in RDF/XML.");
+					throw new RDFException(RDFException.INVALIDPROPERTYURI);
+				}
 			}
 		}
 		boolean cookUp = false;
 		if (prefix == null) {
+            if (!allowBadURIs)
+              try {
+                new URI(uri);
+              }
+              catch (MalformedURIException e) {
+                throw new RDFException(e);
+              }
 			logger.warn(
-				"Internal error using j.cook.up code: <" + uri + ">",
+				"Internal error: unexpected QName URI: <"
+					+ uri
+					+ ">.  Fixing up with j.cook.up code.",
 				new RuntimeException());
 			cookUp = true;
 		} else if (prefix.length() == 0) {
@@ -441,8 +463,15 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	}
 
 	String relativize(String uri) {
+        try {
 		if (relativeFlags != 0 && baseURI != null)
 			return baseURI.relativize(uri, relativeFlags);
+        else if ( !allowBadURIs)
+            new URI(uri);
+        }
+        catch (MalformedURIException e) {
+            throw new RDFException(e);
+        }
 		return uri;
 	}
 
@@ -521,6 +550,10 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	 * <dd> (true or false) Whether to use long or short id's for anon
 	 * resources. Short id's are easier to read and are the default, but can run
 	 * out of memory on very large models.
+	 * <dt>allowBadURIs
+	 * <dd> (true or false) (default false) Whether to use long or short id's
+	 * for anon resources. Short id's are easier to read and are the default,
+	 * but can run out of memory on very large models.
 	 * <dt>relativeURIs
 	 * <dd>A comma separate list of options:
 	 *    <dl>
@@ -620,7 +653,11 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			return result;
 		} else if (propName.equalsIgnoreCase("longid")) {
 			Boolean result = new Boolean(longId);
-			longId = ((Boolean) propValue).booleanValue();
+			longId = toboolean(propValue);
+			return result;
+		} else if (propName.equalsIgnoreCase("allowBadURIs")) {
+			Boolean result = new Boolean(allowBadURIs);
+			allowBadURIs = toboolean(propValue);
 			return result;
 		} else if (propName.equalsIgnoreCase("prettyTypes")) {
 			return setTypes((Resource[]) propValue);
@@ -632,6 +669,12 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			logger.warn("Unsupported property: " + propName);
 			return null;
 		}
+	}
+	static private boolean toboolean(Object o) {
+		if (o instanceof Boolean)
+			return ((Boolean) o).booleanValue();
+		else
+			return Boolean.valueOf((String) o).booleanValue();
 	}
 
 	Resource[] setTypes(Resource x[]) {

@@ -96,7 +96,7 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.4 2003-04-01 12:10:29 jeremy_carroll Exp $
+* @version  $Id: URI.java,v 1.5 2003-04-01 14:27:00 jeremy_carroll Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -1408,14 +1408,9 @@ public class URI implements Serializable {
     };
     static String exact[] = { ".", "..", "../.." };
     static String sub[] = { "", "../", "../../" };
-	public String relativize(String abs, int flags) {
+	public String relativize(String abs, int flags) throws MalformedURIException {
 		URI r;
-		try {
 			r = new URI(abs);
-		} catch (MalformedURIException e) {
-			logger.error("<" + abs + "> " + e.getMessage(), e);
-			return abs;
-		}
        // logger.info("<"+Util.substituteStandardEntities(abs)+">");
        // logger.info("<"+Util.substituteStandardEntities(r.m_path)+">");
 		if (r.isGenericURI()) {
