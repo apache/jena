@@ -1,6 +1,8 @@
-// $ANTLR : "n3.g" -> "N3AntlrParser.java"$
+// $ANTLR 2.7.2: "n3.g" -> "N3AntlrParser.java"$
 
 package com.hp.hpl.jena.n3 ;
+import java.io.* ;
+import antlr.TokenStreamRecognitionException ;
 
 public interface N3AntlrParserTokenTypes {
 	int EOF = 1;
@@ -47,32 +49,34 @@ public interface N3AntlrParserTokenTypes {
 	int URI_OR_IMPLIES = 43;
 	int URICHAR = 44;
 	int AT_WORD = 45;
-	int NSNAME = 46;
-	int LNAME = 47;
-	int SEP_OR_PATH = 48;
-	int DOT = 49;
-	int AT = 50;
-	int LANGLE = 51;
-	int RANGLE = 52;
-	int NAME_IT = 53;
-	int QUESTION = 54;
-	int ARROW_MEANS = 55;
-	int COLON = 56;
-	int SL_COMMENT = 57;
-	int NL1 = 58;
-	int NL2 = 59;
-	int NL3 = 60;
-	int NL = 61;
-	int WS = 62;
-	int NWS = 63;
-	int ALPHA = 64;
-	int NUMERIC = 65;
-	int ALPHANUMERIC = 66;
-	int NON_ANC = 67;
-	int STRING1 = 68;
-	int STRING2 = 69;
-	int QUOTE3S = 70;
-	int QUOTE3D = 71;
-	int ESCAPE = 72;
-	int ESC_CHAR = 73;
+	int XNAMECHAR = 46;
+	int XNAME = 47;
+	int NSNAME = 48;
+	int LNAME = 49;
+	int SEP_OR_PATH = 50;
+	int DOT = 51;
+	int AT = 52;
+	int LANGLE = 53;
+	int RANGLE = 54;
+	int NAME_IT = 55;
+	int QUESTION = 56;
+	int ARROW_MEANS = 57;
+	int COLON = 58;
+	int SL_COMMENT = 59;
+	int NL1 = 60;
+	int NL2 = 61;
+	int NL3 = 62;
+	int NL = 63;
+	int WS = 64;
+	int NWS = 65;
+	int ALPHA = 66;
+	int NUMERIC = 67;
+	int ALPHANUMERIC = 68;
+	int NON_ANC = 69;
+	int STRING1 = 70;
+	int STRING2 = 71;
+	int QUOTE3S = 72;
+	int QUOTE3D = 73;
+	int ESCAPE = 74;
+	int ESC_CHAR = 75;
 }

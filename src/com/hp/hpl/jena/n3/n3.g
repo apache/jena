@@ -383,8 +383,6 @@ options {
 	// UTF-8 expanded to Java chars
 	// NB: antlr 2.7.1 \uFFFF is the EOF char
 	// Not fixed in antlr 2.7.2
-	// N3 Comments cause OutOfMemoryError if FFFF used.
-	// It does make for rather large tables
 	charVocabulary= '\u0000'..'\uFFFE' ;
 }
 
@@ -460,7 +458,6 @@ AT_WORD
 		{ $setType(AT_LANG) ; }
 	;
 
-// To Do:
 // Align with XML 1.1 -- http://www.w3.org/TR/xml11/
 // NameStartChar 
 // NameChar
@@ -477,10 +474,33 @@ AT_WORD
 // Prefix           ::=    NCName (does not start with numbers)
 // LocalPart        ::=    NCName (does not start with numbers) 
 
+//     NameChar and NameSartChar defined in XML 1.1
+//     NameStartChar := ":" | [A-Z] | "_" | [a-z] |
+//                      [#xC0-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] |
+//                      [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] |
+//                      [#x3001-#xD7FF] | [#xF900-#xEFFFF]
+//     NameChar      := NameStartChar | "-" | "." | [0-9] | #xB7 |
+//                         [#x0300-#x036F] | [#x203F-#x2040]
+
+
+// This is NameChar except:
+//   No dot - path separator.
+//   Only up to FFFE, not EFFFF.
+protected
+XNAMECHAR: ( ('A'..'Z') | '_' | '-' | ('a'..'z') |
+           ('\u00C0'..'\u02FF') | ('\u0370'..'\u037D') | ('\u037F'..'\u1FFF') |
+           ('\u200C'..'\u200D') | ('\u2070'..'\u218F') | ('\u2C00'..'\u2FEF') |
+           ('0'..'9') | ('\u0300'..'\u036F') | ('\u203F'..'\u2040') |
+           '\u00B7'   | ('\u3001'..'\uD7FF') | ('\uF900'..'\uFFFE')
+			) ;
+
+protected
+XNAME: (XNAMECHAR)* ;
 
 // Namespace prefix name: include bNode ids.
 protected // Prefix
-NSNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
+//NSNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
+NSNAME: XNAME ;
 
 // LNAME does not allow a start of '-' because it confuses with
 // the name operator :-
@@ -490,7 +510,8 @@ NSNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
 // See N3JenaWriter, which avoids outputing qnames with a '.' in them.
 
 protected // LocalPart
-LNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
+//LNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
+LNAME: XNAME ;
 
 // Use lookahead as the DOT character is also the statement separator/terminator
 // protected so parser uses THING to get these items, having checked that
