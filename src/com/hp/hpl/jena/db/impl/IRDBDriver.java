@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Graph;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.4 $
+* @version $Revision: 1.5 $
 */
 
 public interface IRDBDriver {
@@ -106,6 +106,12 @@ public interface IRDBDriver {
 	 * @return DBPropGraph containg the default properties for a new model
 	 */
 	DBPropGraph getDefaultModelProperties();
+	
+	/**
+	 * Return a string identifying underlying database type.
+	 *
+	 */
+	String getDatabaseType();
 
     /**
      * Remove all RDF information from a database.
