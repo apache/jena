@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.8 2003-09-10 16:33:02 der Exp $
+ * $Id: TestBugs.java,v 1.9 2003-09-29 14:50:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
@@ -22,13 +23,13 @@ import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-//import java.util.*;
+import java.util.*;
 
 /**
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-09-10 16:33:02 $
+ * @version $Revision: 1.9 $ on $Date: 2003-09-29 14:50:56 $
  */
 public class TestBugs extends TestCase {
 
@@ -254,13 +255,35 @@ public class TestBugs extends TestCase {
         assertTrue("property class axioms", infmodel.contains(sp, RDF.type,  OWL.ObjectProperty));
     }
     
+    /**
+     * Test looping on recursive someValuesFrom.
+     */
+    public void hiddenTestOWLLoop() {
+        Model data = ModelLoader.loadModel("file:testing/reasoners/bugs/loop.owl");
+        InfModel infmodel = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
+        String baseURI = "http://jena.hpl.hp.com/eg#";
+        Resource C = infmodel.getResource(baseURI + "C");
+        Property R = infmodel.getProperty(baseURI, "R");
+        int count = 0;
+        for (Iterator i = infmodel.listStatements(null, RDF.type, C); i.hasNext(); ) {
+            count++;
+        }
+        System.out.println("OK");
+//        assertTrue("Loop limit", count <= 1);
+    }
+    
     // debug assistant
     private void tempList(Model m, Resource s, Property p, RDFNode o) {
         System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));
         for (StmtIterator i = m.listStatements(s, p, o); i.hasNext(); ) {
             System.out.println(" - " + i.next());
         }
-    }    
+    }   
+    
+    public static void main(String[] args) {
+        TestBugs test = new TestBugs("test");
+        test.hiddenTestOWLLoop();
+    } 
 }
 
 /*
