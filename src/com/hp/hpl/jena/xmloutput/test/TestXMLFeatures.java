@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.21 2003-06-12 15:10:31 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.22 2003-06-13 08:47:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.21 $ $Date: 2003-06-12 15:10:31 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.22 $ $Date: 2003-06-13 08:47:41 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -678,6 +678,9 @@ public class TestXMLFeatures extends TestCase {
 					break;
 
 			}
+        } catch (JenaBadURIException e) {
+            if (behaviour == BadURI) return;
+            throw e;
 		} catch (RDFException e) {
             switch (behaviour)
             { case BadPropURI:
@@ -1065,5 +1068,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.21 2003-06-12 15:10:31 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.22 2003-06-13 08:47:41 chris-dollin Exp $
  */

@@ -9,11 +9,12 @@ import java.io.* ;
 import java.util.* ;
 import junit.framework.* ;
 
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.tuple.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.6 2003-03-28 18:10:23 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.7 2003-06-13 08:47:40 chris-dollin Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
@@ -33,7 +34,7 @@ public abstract class N3ExternalTestsCom extends TestSuite
 		super(testName) ;
 		testFile = findFile(filename) ;
 		if ( testFile == null )
-			throw new RuntimeException("No such file: "+filename) ;
+			throw new JenaException("No such file: "+filename) ;
 		TupleSet tests = null ;
 		try {
 			Reader r = new BufferedReader(new FileReader(testFile)) ;

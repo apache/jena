@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.4 2003-05-13 19:17:43 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.5 2003-06-13 08:47:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 
@@ -48,7 +49,7 @@ public class GraphRDBMaker extends BaseGraphMaker
             return GraphRDB.OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS;
         if (style == Reifier.Minimal)
             return GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING;
-        throw new RuntimeException( "unsupported reification style" );
+        throw new JenaException( "unsupported reification style" );
         }
         
     /**

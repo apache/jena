@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.7 2003-06-06 09:27:34 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.8 2003-06-13 08:47:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
 
@@ -41,7 +42,7 @@ public class TestReifier extends GraphTestBase {
 			theConnection.cleanDB();
 			theGraphs.clear();
 			theConnection.close();
-		} catch (Exception e) { throw new RuntimeException(e.toString());}
+		} catch (Exception e) { throw new JenaException( e );}
 	}
 
 	public Graph getGraph() {

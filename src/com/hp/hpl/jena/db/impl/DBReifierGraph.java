@@ -6,7 +6,6 @@
 package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.db.GraphRDB;
-import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
@@ -25,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -56,7 +55,7 @@ public class DBReifierGraph implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#delete(com.hp.hpl.jena.graph.Triple)
 	 */
 	public void delete(Triple t) {
-		throw new JenaDeleteDeniedException( "cannot delete from a BD reifier", t );
+		throw new JenaDeleteDeniedException( "cannot delete from a DB reifier", t );
 	}
 
 	/* (non-Javadoc)

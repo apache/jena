@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.13 2003-06-12 15:10:31 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.14 2003-06-13 08:47:41 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-06-12 15:10:31 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-06-13 08:47:41 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -240,7 +240,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				try {
 					new URI(uri);
 				} catch (MalformedURIException e) {
-					throw new RDFException(e);
+					throw new JenaBadURIException( "", e );
 				}
 			if (prefix.length() > 0) {
 				rslt.append(":" + prefix);
@@ -471,7 +471,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				writeBody(model, pw, xmlBase, true);
 			}
 		} catch (MalformedURIException e) {
-			throw new RDFException(e);
+			throw new JenaBadURIException( "", e);
 		}
 		pw.flush();
 	}

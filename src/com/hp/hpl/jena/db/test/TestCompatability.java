@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCompatability.java,v 1.2 2003-05-04 17:36:13 hkuno Exp $
+  $Id: TestCompatability.java,v 1.3 2003-06-13 08:47:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,16 +24,16 @@ package com.hp.hpl.jena.db.test;
  * in the cleanup code (it was calling getStore()).
  *
  * @author csayers
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.regression.*;
+import com.hp.hpl.jena.shared.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 
 public class TestCompatability extends TestCase {    
@@ -131,7 +131,7 @@ public class TestCompatability extends TestCase {
 			try {
 				Class.forName(TestPackage.M_DBDRIVER_CLASS); // ADDED  	
 			} catch (Exception e) {
-				throw new RuntimeException("Unable to instantiate  driver: " + TestPackage.M_DBDRIVER_CLASS);
+				throw new JenaException("Unable to instantiate  driver: " + TestPackage.M_DBDRIVER_CLASS);
 			}
 
 			try { 

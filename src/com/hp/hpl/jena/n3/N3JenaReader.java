@@ -14,7 +14,7 @@ import com.hp.hpl.jena.shared.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReader.java,v 1.7 2003-05-21 15:28:42 chris-dollin Exp $
+ * @version 	$Id: N3JenaReader.java,v 1.8 2003-06-13 08:47:40 chris-dollin Exp $
  */
 
 
@@ -51,7 +51,7 @@ public class N3JenaReader implements RDFReader
         }
         catch (Exception ex)
         {
-            if ( errorHandler == null ) throw new RDFException(ex) ;
+            if ( errorHandler == null ) throw new JenaException(ex) ;
             errorHandler.error(ex) ;
         }
 	}
@@ -74,7 +74,7 @@ public class N3JenaReader implements RDFReader
         }
         catch (Exception ex)
         {
-            if ( errorHandler == null ) throw new RDFException(ex) ;
+            if ( errorHandler == null ) throw new JenaException(ex) ;
             errorHandler.error(ex) ;
         }
 	}
@@ -101,7 +101,7 @@ public class N3JenaReader implements RDFReader
         }
         catch (Exception ex)
 		{
-			if ( errorHandler == null ) throw new RDFException(ex) ;
+			if ( errorHandler == null ) throw new JenaException(ex) ;
 			errorHandler.error(ex) ;
 		}
 	}
