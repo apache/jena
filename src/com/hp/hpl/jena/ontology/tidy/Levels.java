@@ -1,24 +1,46 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Levels.java,v 1.4 2003-11-30 21:13:19 jeremy_carroll Exp $
+  $Id: Levels.java,v 1.5 2003-12-02 04:58:34 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
 /**
+ * The return values of {@link SyntaxProblem#getLevel}.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
 public class Levels {
+	/**
+	 * The associated SyntaxProblem is a warning.
+	 * Examples include bad names from the OWL, RDF and XSD namespaces.
+	 */
 	static public final int Warning = 0;   
+	/**
+	 * The associated SyntaxProblem is not legel in OWL Lite.
+	 */
   static public final int Lite = 1;
+  /**
+   * The associated SyntaxProblem is not legal in OWL DL.
+   */
   static public final int DL = 2;
+  /**
+   * Currently unused.
+   */
   static public final int Full = 3;
+  /**
+   * Currently unused.
+   */
   static public final int Other = 4; // Bad RDF doc
   static private String desc[] = {
   	"Warning", "Lite", "DL", "Full", "Other"
   	
   };
+  /**
+   * Gives a readable form of one of the Levels.
+   * @param i Must be {@link #Warning}, {@link #Lite}, {@link #DL}, {@link #Full} or {@link #Other}.
+   * @return The name of the level.
+   */
   static public String toString(int i) {
   	return desc[i];
   }

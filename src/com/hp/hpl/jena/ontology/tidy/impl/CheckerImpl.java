@@ -6,13 +6,12 @@
 package com.hp.hpl.jena.ontology.tidy.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.tidy.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 
@@ -315,15 +314,7 @@ public class CheckerImpl extends AbsChecker {
 
 		this.nonMonotoneProblems.add(new SyntaxProblemImpl(shortD, enh, lvl));
 	}
-/**
- * Build a syntax checker with custom GraphMaker
- * @param lite True if the checker should indicate why this is not lite.
- * @param gf  The GraphMaker to use for the SyntaxChecker internal scratch area.
- */
-	public CheckerImpl(boolean lite, GraphMaker gf) {
-		super(lite, gf);
-		//this.gf = gf;
-	}
+
 	
 	/**
 	 * Construct a syntax checker.
@@ -339,7 +330,7 @@ public class CheckerImpl extends AbsChecker {
 	 * @param lite
 	 */
 	public CheckerImpl(boolean lite) {
-		this(lite, new SimpleGraphMaker());
+		super(lite);
 	}
 	/**
 	 * Include this graph in the check.
@@ -347,7 +338,7 @@ public class CheckerImpl extends AbsChecker {
 	 * Does not process imports.
 	 * @param g A graph to include in the check.
 	 */
-	public void rawAdd(Graph g) {
+	public void addRaw(Graph g) {
 		// Add every triple
 		ClosableIterator it = null;
 		try {
@@ -381,7 +372,7 @@ public class CheckerImpl extends AbsChecker {
 		m.read(url);
 
 		// since we specified the null reasoner, the graph of the model is the union graph
-		rawAdd(m.getGraph());
+		addRaw(m.getGraph());
 	}
 	//private boolean wantLite = true;
 
@@ -390,8 +381,14 @@ public class CheckerImpl extends AbsChecker {
 		if (lvl == Levels.Lite && !wantLite)
 			return;
 			
-		Graph min =
-			new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
+		Graph min;
+		
+		if ( justForErrorMessages == null ) {
+		  min = Factory.createDefaultGraph(ReificationStyle.Minimal);
+		  min.add(t);	
+		} else {
+			min = new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
+		}
 		addProblem(
 			new SyntaxProblemImpl(
 				msg+" Not a " + Levels.toString(lvl) + " subgraph",

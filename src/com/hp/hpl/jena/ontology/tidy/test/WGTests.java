@@ -268,4 +268,25 @@ public class WGTests extends java.lang.Object {
 
 	}
 
+	/**
+	 * @param text        Use textui
+	 * @param manifest URI of manifest file
+	 */
+	public static void test(boolean text, String manifest) {
+		internet = true;
+		manifestInFactory = manifest.equals("file:testing/wg/OWLManifest.rdf");
+		
+		manifestURI = manifest; 
+		
+		if ( !text ) {	
+			junit.swingui.TestRunner.main(new String[] { "-noloading", WGTests.class.getName()});
+
+		} else {	
+			junit.textui.TestRunner.main(new String[] { "-noloading", WGTests.class.getName()});
+
+		}
+		
+		
+	}
+
 }

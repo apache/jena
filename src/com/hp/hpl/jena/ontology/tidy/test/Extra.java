@@ -26,6 +26,9 @@ public class Extra extends TestCase {
 		return s;
    }
 
+   public void testsameAs001() {
+	 runTest("sameAs001", OWLTest.Full);
+   }
    public void testann001() {
 	 runTest("ann001", OWLTest.Lite);
    }
@@ -72,7 +75,7 @@ public class Extra extends TestCase {
    	Checker chk = new Checker(lvl.equals(OWLTest.Lite));
    	Model m = ModelFactory.createDefaultModel();
    	m.read("file:testing/ontology/tidy/"+fn+".rdf");
-   	chk.rawAdd(m.getGraph());
+   	chk.addRaw(m.getGraph());
    	
    	String rslt = chk.getSubLanguage();
    	assertTrue(lvl.getURI().endsWith(rslt));

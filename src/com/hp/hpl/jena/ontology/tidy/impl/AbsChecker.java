@@ -5,14 +5,12 @@
  
 package com.hp.hpl.jena.ontology.tidy.impl;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.ontology.tidy.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.*;
 import java.util.*;
+
 
 abstract class AbsChecker implements Constants {
 	//Lookup look = new owlcompiler.SubCategorize();
@@ -21,12 +19,12 @@ abstract class AbsChecker implements Constants {
 	
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;
-	AbsChecker(boolean lite, GraphMaker gf) {
-	//	super(gf.createGraph(), personality);
-		hasBeenChecked = gf.getGraph();
+	AbsChecker(boolean lite) {
+		hasBeenChecked = Factory.createDefaultGraph(ReificationStyle.Minimal);
+		justForErrorMessages = Factory.createDefaultGraph(ReificationStyle.Minimal);
 		wantLite = lite;
 	}
-
+  Graph justForErrorMessages;
 	Graph hasBeenChecked; // This is a subgraph of the input triples
 	// it can be extended to an OWL Lite/DL graph.
 
@@ -152,6 +150,7 @@ abstract class AbsChecker implements Constants {
 			if (!look.removeTriple(key)) 
 			     hasBeenChecked.add(t);
 			else {
+				justForErrorMessages.add(t);
 //				System.err.println("D" + dCnt++);
 //				dump(s0,p0,o0);
 //				dump(t);
@@ -257,7 +256,13 @@ abstract class AbsChecker implements Constants {
 		// do nothing
 		
 	}
-
+	public void setOptimizeMemory(boolean big) {
+			if ( big )
+			  justForErrorMessages = null;
+			else if ( justForErrorMessages == null )
+			  justForErrorMessages = Factory.createDefaultGraph(ReificationStyle.Minimal);
+		
+	}
 }
 
 

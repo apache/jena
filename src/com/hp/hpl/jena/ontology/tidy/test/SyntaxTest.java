@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.10 2003-11-30 21:13:19 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.11 2003-12-02 04:58:34 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -104,7 +104,7 @@ class SyntaxTest extends TestCase {
 		//	  return;
 			//(InputStream) inI.next(),
 			//om.read()
-			chk.rawAdd(om.getGraph());
+			chk.addRaw(om.getGraph());
 			
 			String rslt = chk.getSubLanguage();
 			if (!level.getURI().endsWith(rslt)) {

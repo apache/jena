@@ -1,12 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.2 2003-11-30 21:12:58 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.3 2003-12-02 04:58:34 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.graph.compose.*;
 import java.util.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -19,11 +19,14 @@ import com.hp.hpl.jena.shared.*;
  */
 class MinimalSubGraph extends AbsChecker {
 	static final int MAXDIST = 10000;
-	private final CheckerImpl parent;
+	//private final CheckerImpl parent;
 	private final Set todo = new HashSet();
 	//private final Set done = new HashSet();
 	private final Map allMinInfos = new HashMap();
 	private final Set activeMinInfos = new HashSet();
+	
+	private final Graph unionHasBeen;
+	private final Graph parentUnion;
 	
 	private int distance;
 	void add(MinimalityInfo x) {
@@ -35,35 +38,35 @@ class MinimalSubGraph extends AbsChecker {
 	 * @param lite
 	 */
 	MinimalSubGraph(boolean lite, Triple problem, CheckerImpl parent) {
-		super(lite, new SimpleGraphMaker());
-		this.parent = parent;
+		super(lite);
+		unionHasBeen = new Union(hasBeenChecked,justForErrorMessages);
+		parentUnion = new Union(parent.hasBeenChecked,parent.justForErrorMessages);
 		if (!add(problem, false)) {
 			// Break superclass invariant - only method that can be called is
 			// getContradicition()
 			hasBeenChecked.add(problem);
 		} else {
-			if ( true ) 
-			  return;
-			hasBeenChecked.delete(problem);
+			boolean wh = hasBeenChecked.contains(problem);
+			unionHasBeen.delete(problem);
 			setDistance(problem.getSubject(),0);
 			setDistance(problem.getPredicate(),0);
 			setDistance(problem.getObject(),0);
 			todo(problem);
-			hasBeenChecked.add(problem);
+			(wh?hasBeenChecked:justForErrorMessages).add(problem);
 			extend();
 		}
 	}
 
 	Graph getContradiction() {
-		return hasBeenChecked;
+		return unionHasBeen;
 	}
 
 	private void todo(Triple t) {
-		if (!hasBeenChecked.contains(t))
+		if ( (!unionHasBeen.contains(t)))
 			todo.add(t);
 	}
 	private void todo(Node s, Node p, Node o) {
-		Iterator it = parent.hasBeenChecked.find(s,p,o);
+		Iterator it = parentUnion.find(s,p,o);
 		while ( it.hasNext() ) {
 			Triple t = (Triple)it.next();
 			todo(t);

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxProblem.java,v 1.9 2003-11-30 21:13:19 jeremy_carroll Exp $
+  $Id: SyntaxProblem.java,v 1.10 2003-12-02 04:58:34 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -14,7 +14,7 @@ import java.util.*;
 import java.io.*;
 
 /**
- * This class encapsulates some problem during syntax checking.
+ * This class encapsulates some problem found during syntax checking.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
@@ -165,7 +165,7 @@ public class SyntaxProblem {
 		return pnode;
 	}
 	/**
-	 * A few words characterising this 
+	 * A line or two characterising this 
 	 * problem.
 	 * @return A short description of the problem.
 	 */
@@ -173,8 +173,9 @@ public class SyntaxProblem {
 		return shortDescription;
 	}
 	/**
-	 * A minimal subgraph exhbiting the problem.
-	 * At least one of probelmSubGraph() and problemNode()
+	 * A (hopefully small) subgraph exhibiting the problem.
+	 * At least one of problemSubGraph and 
+	 * {@link #problemNode}
 	 * is non-null. If both are non-null then the problemSubGraph()
 	 * is the graph underlying the problemNode().
 	 * @return the problem sub-graph
@@ -183,7 +184,7 @@ public class SyntaxProblem {
 		return pgraph;
 	}
 	/** The level associated with this problem.
-	* @return
+	* @return One of the values in {@link Levels}.
 	*/
 	public int getLevel() {
 		return level;
