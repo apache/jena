@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 15:57:31 $
+ * Last modified on   $Date: 2003-06-22 19:24:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.18 2003-06-18 15:57:31 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.19 2003-06-22 19:24:00 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -89,6 +89,9 @@ public class OntDocumentManager
     /** Defines boolean policy choice of loading the imports closure */
     public static final Property PROCESS_IMPORTS = vocab.createProperty( NS, "processImports" );
 
+    /** Specifies the URI of an ontology that we do not want to import, even if processImports is true. */
+    public static final Property IGNORE_IMPORT = vocab.createProperty( NS, "ignoreImport" );
+
     /** Default document manager instance */
     private static OntDocumentManager s_instance = new OntDocumentManager();
 
@@ -101,12 +104,6 @@ public class OntDocumentManager
 
     /** Mapping from public URI to local cache (typically file) URL's for efficiently loading models */
     protected Map m_altMap = new HashMap();
-
-    /** Mapping of public URI's to prefixes */
-    protected Map m_prefixMap = new HashMap();
-
-    /** Mapping of prefixes to public URI's (inverse of m_prefixMap) */
-    protected Map m_uriMap = new HashMap();
 
     /** Mapping of public URI's to loaded models */
     protected Map m_modelMap = new HashMap();
@@ -123,6 +120,8 @@ public class OntDocumentManager
     /** Flag: process the imports closure */
     protected boolean m_processImports = true;
 
+    /** List of URI's that will be ignored when doing imports processing */
+    protected Set m_ignoreImports = new HashSet();
 
 
     // Constructors
@@ -253,7 +252,7 @@ public class OntDocumentManager
      *          given document's namespace, or null if not known
      */
     public String getPrefixForURI( String uri ) {
-        return (String) m_prefixMap.get( uri );
+        return PrefixMapping.Standard.usePrefix( uri );
     }
 
 
@@ -266,7 +265,7 @@ public class OntDocumentManager
      * @return The basename that the prefix expands to, or null
      */
     public String getURIForPrefix( String prefix ) {
-        return (String) m_uriMap.get( prefix );
+        return PrefixMapping.Standard.getNsPrefixURI( prefix );
     }
 
 
@@ -293,8 +292,7 @@ public class OntDocumentManager
      * @param prefix A qname prefix
      */
     public void addPrefixMapping( String uri, String prefix ) {
-        m_uriMap.put( prefix, uri );
-        m_prefixMap.put( uri, prefix );
+        PrefixMapping.Standard.setNsPrefix( prefix, uri );
     }
 
 
@@ -345,15 +343,14 @@ public class OntDocumentManager
 
     /**
      * <p>
-     * Remove all managed entries for the given document.
+     * Remove all managed entries for the given document.  Note does not side-effect
+     * the prefixes table: this will have to be done separately.
      * </p>
      *
      * @param docURI The public URI for an ontology document
      */
     public void forget( String docURI ) {
         m_altMap.remove( docURI );
-        m_uriMap.remove( docURI );
-        m_prefixMap.remove( docURI );
         m_modelMap.remove( docURI );
         m_languageMap.remove( docURI );
     }
@@ -444,7 +441,39 @@ public class OntDocumentManager
         m_cacheModels = cacheModels;
     }
 
+    /**
+     * <p>Add the given URI to the set of URI's we ignore in imports statements</p>
+     * @param uri A URI to ignore when importing
+     */
+    public void addIgnoreImport( String uri ) {
+        m_ignoreImports.add( uri );
+    }
+    
+    /**
+     * <p>Remove the given URI from the set of URI's we ignore in imports statements</p>
+     * @param uri A URI to ignore no longer when importing
+     */
+    public void removeIgnoreImport( String uri ) {
+        m_ignoreImports.remove( uri );
+    }
 
+    /** 
+     * <p>Answer an iterator over the set of URI's we're ignoring</p>
+     * @return An iterator over ignored imports
+     */
+    public Iterator listIgnoredImports() {
+        return m_ignoreImports.iterator();
+    }
+    
+    /**
+     * <p>Answer true if the given URI is one that will be ignored during imports </p>
+     * @param uri A URI to test
+     * @return True if uri will be ignored as an import
+     */
+    public boolean ignoringImport( String uri ) {
+        return m_ignoreImports.contains( uri );
+    }
+    
     /**
      * <p>
      * Remove all entries from the model cache
@@ -478,7 +507,7 @@ public class OntDocumentManager
                 // we process the import statements as a FIFO queue
                 String importURI = (String) readQueue.remove( 0 );
 
-                if (!model.hasLoadedImport( importURI )) {
+                if (!model.hasLoadedImport( importURI )  &&  !ignoringImport( importURI )) {
                     // this file has not been processed yet
                     loadImport( model, importURI, readQueue );
                 }
@@ -528,7 +557,6 @@ public class OntDocumentManager
         // first clear out any old mappings if necessary
         if (replace) {
             m_altMap.clear();
-            m_prefixMap.clear();
             m_modelMap.clear();
         }
 
@@ -576,6 +604,28 @@ public class OntDocumentManager
      * @param metadata A model containing metadata about ontologies.
      */
     protected void loadMetadata( Model metadata ) {
+        // first we process the general policy statements for this document manager
+        for (ResIterator i = metadata.listSubjectsWithProperty( RDF.type, DOC_MGR_POLICY ); i.hasNext(); ) {
+            Resource policy = i.nextResource();
+            
+            // iterate over each policy statement
+            for (StmtIterator j = policy.listProperties();  j.hasNext(); ) {
+                Statement s = j.nextStatement();
+                Property pred = s.getPredicate();
+                
+                if (pred.equals( CACHE_MODELS )) {
+                    setCacheModels( s.getBoolean() );
+                }
+                else if (pred.equals( PROCESS_IMPORTS )) {
+                    setProcessImports( s.getBoolean() );
+                }
+                else if (pred.equals( IGNORE_IMPORT )) {
+                    addIgnoreImport( s.getResource().getURI() );
+                }
+            }
+        }
+        
+        // then we look up individual meta-data for particular ontologies
         for (ResIterator i = metadata.listSubjectsWithProperty( RDF.type, ONTOLOGY_SPEC ); i.hasNext(); ) {
             Resource root = i.nextResource();
 
