@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.10 2003-06-30 16:50:12 der Exp $
+ * $Id: DebugOWL.java,v 1.11 2003-07-06 12:10:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-30 16:50:12 $
+ * @version $Revision: 1.11 $ on $Date: 2003-07-06 12:10:38 $
  */
 public class DebugOWL {
 
@@ -94,8 +94,8 @@ public class DebugOWL {
                 System.out.println("Failed to open rules file: " + e);
                 System.exit(1);
             }
-            grr.setTransitiveClosureCaching(true);
-            grr.setOWLTranslation(true);
+//            grr.setTransitiveClosureCaching(true);
+//            grr.setOWLTranslation(true);
 //            grr.setTraceOn(true);
             break;
             
@@ -259,7 +259,7 @@ public class DebugOWL {
     /**
      * Create and run a volz test.
      */
-    public void run(int depth, int NS, int NI, boolean withProps) {
+    public void runVolz(int depth, int NS, int NI, boolean withProps) {
         createTest(depth, NS, NI, withProps);
         long t = listC0(false);
         System.out.println("Took " + t + "ms");
@@ -268,17 +268,17 @@ public class DebugOWL {
     /**
      * Run a standard test squence based on Volz et al sets
      */
-    public void run() {
-        run(3,5,10, false);
-        run(3,5,10, false);
-        run(4,5,10, false);
-        run(5,5,10, false);
-        run(3,5,30, false);
-        run(4,5,30, false);
-        run(5,5,30, false);
-        run(3,5,10, true);
-        run(4,5,10, true);
-        run(5,5,10, true);
+    public void runVolz() {
+        runVolz(3,5,10, false);
+        runVolz(3,5,10, false);
+        runVolz(4,5,10, false);
+        runVolz(5,5,10, false);
+        runVolz(3,5,30, false);
+        runVolz(4,5,30, false);
+        runVolz(5,5,30, false);
+//        run(3,5,10, true);
+//        run(4,5,10, true);
+//        run(5,5,10, true);
     }
     
     /**
@@ -297,9 +297,10 @@ public class DebugOWL {
             String schemaFile = "file:vocabularies/owl.owl";
             String schemaFile2 = "file:testing/reasoners/bugs/owl-partial.owl";
             String dataFile2 = "file:testing/reasoners/bugs/test.owl";
+            String food = "file:testing/reasoners/bugs/food.owl";
 
             // Example from ontology development which takes s rather than ms            
-//            new DebugOWL(OWL).run(dataFile);
+            new DebugOWL(OWLFB).listClassesOn(dataFile2);
             
             // owl.owl goes into meltdown with even the forward rules
 //            new DebugOWL(OWLFB).run(schemaFile);
@@ -309,8 +310,10 @@ public class DebugOWL {
 //            new DebugOWL(OWLFB).run();
             
             // Test volz examples on RDFS config
-//            new DebugOWL(RDFSFB).run();
-//            new DebugOWL(RDFSExpt).run();
+//            System.out.println("Volz tests on RDFSRule");
+//            new DebugOWL(RDFSExpt).runVolz();
+//            System.out.println("Volz tests on expt, not tgc just type rules");
+//            new DebugOWL(EXPT).runVolz();
                         
 //            DebugOWL tester = new DebugOWL(OWLFB);
 //            tester.load(dataFile2);
@@ -318,13 +321,13 @@ public class DebugOWL {
 //            long t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
 //            System.out.println("Took " + t + "ms");
 
-            DebugOWL tester = new DebugOWL(EXPT);
-            tester.runListClassesTest(1,4,10,false);
-            tester.runListClassesTest(1,4,10,false);
-            tester.runListClassesTest(2,4,10,false);
-            tester.runListClassesTest(3,4,10,false);
-            tester.runListClassesTest(3,5,10,false);
-            tester.runListClassesTest(3,6,10,false);
+//            DebugOWL tester = new DebugOWL(EXPT);
+//            tester.runListClassesTest(1,4,10,false);
+//            tester.runListClassesTest(1,4,10,false);
+//            tester.runListClassesTest(2,4,10,false);
+//            tester.runListClassesTest(3,4,10,false);
+//            tester.runListClassesTest(3,5,10,false);
+//            tester.runListClassesTest(3,6,10,false);
 
         } catch (Exception e) {
             System.out.println("Problem: " + e);
