@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.2 2005-01-02 19:25:29 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.3 2005-01-02 20:30:51 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -118,6 +118,8 @@ class MonotonicErrorAnalyzer implements Constants {
 	final static int TYPE_NEEDS_BLANK = 181;
 
 	final static int DIFFERENT_CATS = 200;
+	
+	// begin unused
 
 	final static int DIFFERENT_DESCRIPTIONS = 201;
 
@@ -143,6 +145,7 @@ class MonotonicErrorAnalyzer implements Constants {
 
 	final static int ONTO_PROP_ON_INDIVIDUAL = 212;
 
+	// These next three not used.
 	// Difficult cases ...
 
 	final static int LIST_MISMATCH = 220;
@@ -150,6 +153,8 @@ class MonotonicErrorAnalyzer implements Constants {
 	final static int TRANS_PROP_MISMATCH = 221;
 
 	final static int DATAPROP_OBJPROP_MISMATCH = 222;
+	
+	// end unused
 	
 	final static int DC_DOM_RANGE = 223;
 
@@ -698,7 +703,37 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.restriction8object,
 							Grammar.restriction8subClassOf },
 					"a property restriction" },
-
+					{
+						new int[] { Grammar.description5disjointWith,
+								Grammar.description5equivalentClass,
+								Grammar.description5object,
+								Grammar.description5subClassOf,
+								Grammar.unnamedDataRange},
+						"a class description or a datarange" },
+					{
+						 new int[] {
+						 Grammar.description5disjointWith, Grammar.description5equivalentClass,
+						Grammar.description5object, Grammar.description5subClassOf,
+						Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
+						 Grammar.restriction6object, Grammar.restriction6subClassOf,
+						Grammar.restriction7disjointWith, Grammar.restriction7equivalentClass,
+						 Grammar.restriction7object, Grammar.restriction7subClassOf,
+						Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
+						 Grammar.restriction8object, Grammar.restriction8subClassOf },
+						 "a class description or a property restriction" },
+							{
+							 new int[] {
+							 Grammar.description5disjointWith, Grammar.description5equivalentClass,
+							Grammar.description5object, Grammar.description5subClassOf,
+							Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
+							 Grammar.restriction6object, Grammar.restriction6subClassOf,
+							Grammar.restriction7disjointWith, Grammar.restriction7equivalentClass,
+							 Grammar.restriction7object, Grammar.restriction7subClassOf,
+							Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
+							 Grammar.restriction8object, Grammar.restriction8subClassOf,
+							 Grammar.unnamedDataRange},
+							 "a class description or a property restriction or a datarange" },
+						 
 					 { new int[] {
 					  Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
 					  Grammar.restriction6object, Grammar.restriction6subClassOf, },
@@ -732,19 +767,78 @@ Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
 Grammar.restriction8object, Grammar.restriction8subClassOf },
 "a restriction on a transitive object property" },
 
-{
- new int[] {
- Grammar.description5disjointWith, Grammar.description5equivalentClass,
-Grammar.description5object, Grammar.description5subClassOf,
-Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
- Grammar.restriction6object, Grammar.restriction6subClassOf,
-Grammar.restriction7disjointWith, Grammar.restriction7equivalentClass,
- Grammar.restriction7object, Grammar.restriction7subClassOf,
-Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
- Grammar.restriction8object, Grammar.restriction8subClassOf },
- "a class description or a property restriction" },
- 
-					 
+
+{ new int[]{ Grammar.description5object},
+	 "a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith",
+	},
+	{ new int[]{ Grammar.unnamedDataRange, Grammar.description5object},
+		 "a datarange or a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith",
+		},
+	{ new int[]{ Grammar.restriction6object,
+	 Grammar.restriction7object,
+	 Grammar.restriction8object,
+	},
+	 "a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith",
+	},
+	{ new int[]{ Grammar.description5object, Grammar.restriction6object,
+	 Grammar.restriction7object,
+	 Grammar.restriction8object,
+	},
+	 "a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith",
+	},
+	{ new int[]{ Grammar.description5object, Grammar.restriction6object,
+			 Grammar.restriction7object,
+			 Grammar.restriction8object,
+			 Grammar.unnamedDataRange,
+			},
+			 "a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith",
+			},
+	{ new int[]{ Grammar.description5disjointWith},
+	 "a class description participating in an owl:disjointWith construct",
+	},
+	{ new int[]{ Grammar.restriction6disjointWith,
+	 Grammar.restriction7disjointWith,
+	 Grammar.restriction8disjointWith,
+	},
+	 "a restriction participating in an owl:disjointWith construct",
+	},
+	{ new int[]{ Grammar.description5disjointWith, Grammar.restriction6disjointWith,
+	 Grammar.restriction7disjointWith,
+	 Grammar.restriction8disjointWith,
+	},
+	 "a description or a restriction participating in an owl:disjointWith construct",
+	},
+	{ new int[]{ Grammar.description5equivalentClass},
+	 "a class description participating in an owl:equivalentClass construct",
+	},
+	{ new int[]{ Grammar.restriction6equivalentClass,
+	 Grammar.restriction7equivalentClass,
+	 Grammar.restriction8equivalentClass,
+	},
+	 "a restriction participating in an owl:equivalentClass construct",
+	},
+	{ new int[]{ Grammar.description5equivalentClass, Grammar.restriction6equivalentClass,
+	 Grammar.restriction7equivalentClass,
+	 Grammar.restriction8equivalentClass,
+	},
+	 "a description or a restriction participating in an owl:equivalentClass construct",
+	},
+	{ new int[]{ Grammar.description5subClassOf},
+	 "a class description participating in an rdfs:subClassOf construct",
+	},
+	{ new int[]{ Grammar.restriction6subClassOf,
+	 Grammar.restriction7subClassOf,
+	 Grammar.restriction8subClassOf,
+	},
+	 "a restriction participating in an rdfs:subClassOf construct",
+	},
+	{ new int[]{ Grammar.description5subClassOf, Grammar.restriction6subClassOf,
+	 Grammar.restriction7subClassOf,
+	 Grammar.restriction8subClassOf,
+	},
+	 "a description or a restriction participating in an rdfs:subClassOf construct",
+	},
+
 					 
 					 { new int[] { Grammar.annotationPropID }, "an annotation property" },
 			{ new int[] { Grammar.classID }, "a named class" },
@@ -781,10 +875,26 @@ Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
 					Grammar.transitivePropID },
 					"an annotation property or an object property"
 			},
+			{ new int[]	{Grammar.annotationPropID ,
+					Grammar.dataPropID ,
+					Grammar.objectPropID ,
+					
+					Grammar.ontologyPropertyID ,
+					Grammar.transitivePropID },
+					"a property of some sort"
+			},
+			
 			{ new int[] { Grammar.annotationPropID ,
 					Grammar.objectPropID ,Grammar.ontologyPropertyID ,
 					Grammar.transitivePropID },
 					"an annotation property, an object property or an ontology property"
+			},
+
+			{ new int[] { Grammar.annotationPropID ,
+					Grammar.objectPropID ,
+					Grammar.dataPropID,
+					Grammar.transitivePropID },
+					"an annotation property, a datatype property or an object property"
 			},
 			{ new int[] { Grammar.annotationPropID ,
 					Grammar.dataPropID },
@@ -1021,7 +1131,7 @@ static Vector doneNames = new Vector();
 					Q.subset(a[1],out))
 				return -1;
 		}
-		System.err.println("nameCatSet(" +
+		System.err.println(doneNames.size()+" nameCatSet(" +
 		CategorySet.catString(in) + ","
 		+ CategorySet.catString(out) );
 		doneNames.add(new int[][]{in,out});
@@ -1626,8 +1736,18 @@ static Vector doneNames = new Vector();
 		int a[] = nonPseudoCats(oz);
 		int b[] = nonPseudoCats(o);
 
+		int given = nameCatSet(a,b);
+		int wanted = nameCatSet(b,a);
+		
+		if (given != -1 && wanted != -1 && given != wanted)
+			return DIFFERENT_CATS;
+		
+		System.err.println("Code not reached.");
+		
 		int scA = simpleClassify(oz, a);
 		int scB = simpleClassify(o, b);
+		
+		
 
 		if (!maybeSame(isBlank[oz], scA, scB))
 			return DIFFERENT_CATS;
@@ -1740,8 +1860,32 @@ static Vector doneNames = new Vector();
 				}
 	}
 
+	public static void foo(String tag,String desc) {
+		System.err.println("{ new int[]{ Grammar.description5"+tag+ "},");
+	    System.err.println(" \"a class description participating "+desc+"\",");
+		System.err.println("},");
+		System.err.println("{ new int[]{ Grammar.restriction6"+tag+ ",");
+		System.err.println(" Grammar.restriction7"+tag+ ",");
+		System.err.println(" Grammar.restriction8"+tag+ ",");
+		System.err.println(		"},");
+	    System.err.println(" \"a restriction participating "+desc+"\",");
+		System.err.println("},");
+		System.err.println("{ new int[]{ Grammar.description5"+tag+", Grammar.restriction6"+tag+ ",");
+		System.err.println(" Grammar.restriction7"+tag+ ",");
+		System.err.println(" Grammar.restriction8"+tag+ ",");
+		System.err.println(		"},");
+	    System.err.println(" \"a description or a restriction participating "+desc+"\",");
+		System.err.println("},");
+		
+	}
 	public static void main(String args[]) {
 
+	/*	
+		foo("object","as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith");
+		foo("disjointWith","in an owl:disjointWith construct");
+		foo("equivalentClass","in an owl:equivalentClass construct");
+		foo("subClassOf","in an rdfs:subClassOf construct");
+		*/
 		for (int j = 1; j < SZ; j++) {
 			if (Grammar.isPseudoCategory(j))
 				continue;
