@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.5 2003-04-04 11:31:08 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.6 2003-04-04 14:00:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -24,8 +24,8 @@ public class TestReifier extends GraphTestBase
                 
     public void testEmptyReifiers()
         {
-        assertEquals( "no reified triples", 0, graphWith( "x R y" ).getReifier().getReifiedTriples().size() );
-        assertEquals( "no reified triples", 0, graphWith( "x R y; p S q" ).getReifier().getReifiedTriples().size() );
+        assertEquals( "no reified triples", 0, graphWith( "x R y" ).getReifier().getHiddenTriples().size() );
+        assertEquals( "no reified triples", 0, graphWith( "x R y; p S q" ).getReifier().getHiddenTriples().size() );
         }
         
     public void testSameReifier()
@@ -110,7 +110,8 @@ public class TestReifier extends GraphTestBase
         Graph G = graphWith( "" );
         Reifier R = G.getReifier();
         Triple T = triple( "x R y" ), T2 = triple( "y R x" );
-        Node N = R.reify( T );
+        Node N = node( "someNode" );
+        R.reifyAs( N, T );
         assertTrue( "R must have T", R.hasTriple( T ) );
         assertFalse( "R must not have T2", R.hasTriple( T2 ) );
         }   

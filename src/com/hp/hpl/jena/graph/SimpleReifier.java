@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.7 2003-04-04 11:30:40 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.8 2003-04-04 13:59:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -25,35 +25,16 @@ public class SimpleReifier implements Reifier
     private Graph triples;    
     private boolean passing = false;
           
-    public static class HM extends HashMap
-        {
-        public HM() { super(); }
-        
-        public Triple putTriple( Node key, Triple value )
-            {
-            put( key, value );
-            return value;
-            }
-            
-        public Fragments putFragments( Node key, Fragments value )
-            {
-            put( key, value );
-            return value;
-            }        
-        }
-        
-    public HM nodeMap;
+    public FragmentMap nodeMap;
     
     /* construct a simple reifier that is bound to the parent graph */
     public SimpleReifier( Graph parent )
         {
         this.parent = parent;
         this.triples = new GraphMem();
-        this.nodeMap = new HM();
+        this.nodeMap = new FragmentMap();
         }
-        
-    static final HashMap bob = makeBob();
-    
+            
     public Graph getHiddenTriples()
         { // TODO: turn into a dynamic graph
         Graph result = new GraphMem();
@@ -80,17 +61,7 @@ public class SimpleReifier implements Reifier
         g.add( new Triple( node, Reifier.object, t.getObject() ) );
         g.add( new Triple( node, Reifier.type, Reifier.Statement ) );
         }
-    
-    static HashMap makeBob()
-        {
-        HashMap result = new HashMap();
-        result.put( subject, new Integer( Fragments.SUBJECTS ) );
-        result.put( predicate, new Integer( Fragments.PREDICATES ) );
-        result.put( object, new Integer( Fragments.OBJECTS ) );
-        result.put( type, new Integer( Fragments.TYPES ) );
-        return result;
-        }
-
+        
     /** return the parent graph we are bound to */
     public Graph getParentGraph()
         { return parent; }
@@ -131,14 +102,6 @@ public class SimpleReifier implements Reifier
         Object x = nodeMap.get( n );
         return x instanceof Triple || ((Fragments) x) .isComplete();
         }
-        
-    /** return the graph of reified triples. */
-    public Graph getReifiedTriples()
-        { return triples; }
-        
-    /** reify a triple _t_, allocating a new blank node to represent it */
-    public Node reify( Triple t )
-        { return reifyAs( Node.createAnon(), t ); }        
         
     /** 
         reifiy a triple _t_ with tag _tag_. If a different triple is already
@@ -193,7 +156,7 @@ public class SimpleReifier implements Reifier
           
     public boolean handledAdd( Triple t )
         {
-        int s = getSelector( t );       
+        int s = Fragments.getFragmentSelector( t );       
          if (passing || s < 0)
             return false;
         else
@@ -218,7 +181,7 @@ public class SimpleReifier implements Reifier
 
     public boolean handledRemove( Triple t )
         {
-        int s = getSelector( t );
+        int s = Fragments.getFragmentSelector( t );
         if (passing || s < 0)
             return false;
         else
@@ -228,13 +191,6 @@ public class SimpleReifier implements Reifier
             }
         }
 
-    private int getSelector( Triple t )
-        {
-        Node p = t.getPredicate();
-        Integer x = (Integer) bob.get( p );
-        if (x == null || (p.equals( type ) && !t.getObject().equals( Statement ) ) ) return -1;
-        return x.intValue();
-        }
            
     public void remove( Triple t )
         {
@@ -259,7 +215,7 @@ public class SimpleReifier implements Reifier
     }
     
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 200, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

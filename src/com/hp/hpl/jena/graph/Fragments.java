@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fragments.java,v 1.1 2003-04-04 11:44:44 chris-dollin Exp $
+  $Id: Fragments.java,v 1.2 2003-04-04 13:59:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -28,20 +28,19 @@ import java.util.*;
 */
 
 public class Fragments
-    {
-        
-    static final int TYPES = 0;
-    static final int SUBJECTS = 1;
-    static final int PREDICATES = 2;
-    static final int OBJECTS = 3;
- 
-    final Set [] slots = {new HashSet(), new HashSet(), new HashSet(), new HashSet()};
+    { 
+    /**
+        a Fragments object is represented by four sets, one for each of the reification
+        predicates. The slots are array elements because, sadly, it's easier to dynamically
+        choose a slot by number than any other way I could think of.
+    */
+    private final Set [] slots = {new HashSet(), new HashSet(), new HashSet(), new HashSet()};
     
     /**
         the Node the fragments are about. It is not used internally; 
         it is included for completeness and diagnostics. 
     */
-    Node n;
+    private Node n;
     
     /**
         a fresh Fragments object remembers the node n and starts
@@ -49,38 +48,40 @@ public class Fragments
         then immediately be updated - otherwise there was no reason
         to create the Fragments in the first place ...)
     */
-    Fragments( Node n ) 
-        {
-        this.n = n;
-        }
+    public Fragments( Node n ) 
+        { this.n = n; }
         
     /**
         true iff this is a complete fragment; every component is present with exactly
         one value, so n unambiguously reifies (subject, predicate, object).
     */
-    boolean isComplete()
+    public boolean isComplete()
         { return slots[0].size() == 1 && slots[1].size() == 1 && slots[2].size() == 1 && slots[3].size() == 1; }
         
     /**
         true iff this is an empty fragment; no reificational assertions have been made
         about n. (Hence, in use, the Fragments object can be discarded.)
     */
-    boolean isEmpty()
+    public boolean isEmpty()
         { return slots[0].isEmpty() && slots[1].isEmpty() && slots[2].isEmpty() && slots[3].isEmpty(); }
         
     /**
         remove the node _n_ from the set specified by slot _which_.
     */
-    void remove( int which, Node n )
+    public void remove( int which, Node n )
         { slots[which].remove( n ); }
         
     /**
         add the node _n_ to the slot identified by _which).
    */
-    void add( int which, Node n )
+    public void add( int which, Node n )
         { slots[which].add( n ); }
         
-    void includeInto( Graph g )
+    /**
+        include into g all of the reification components that this Fragments
+        represents.
+    */
+    public void includeInto( Graph g )
         {
         includeInto( g, Reifier.subject, SUBJECTS );
         includeInto( g, Reifier.predicate, PREDICATES );
@@ -88,14 +89,25 @@ public class Fragments
         includeInto( g, Reifier.type, TYPES );
         }
         
-    void includeInto( Graph g, Node predicate, int which )
+    /**
+        include into g all of the (n, p[which], o) triples for which
+        o is an element of the slot _which_ corresponding to
+        _predicate_.
+    */
+    private void includeInto( Graph g, Node predicate, int which )
         {
         Iterator it = slots[which].iterator();
         while (it.hasNext())
             g.add( new Triple( n, predicate, (Node) it.next() ) );
         }
         
-    Fragments addTriple( Triple t )
+    /**
+        add to this Fragments the entire reification quad needed to
+        reify the triple t.
+        @param t: Triple the (S, P, O) triple to reify
+        @return this with the quad for (S, P, O) added
+    */
+    public Fragments addTriple( Triple t )
         {
         slots[SUBJECTS].add( t.getSubject() );
         slots[PREDICATES].add( t.getPredicate() );
@@ -121,8 +133,47 @@ public class Fragments
     private Node only( Set s )
         { return (Node) s.iterator().next(); }
         
+    /**
+        return a readable representation of this Fragment for debugging purposes.
+    */
     public String toString()
         { return n + " s:" + slots[SUBJECTS] + " p:" + slots[PREDICATES] + " o:" + slots[OBJECTS] + " t:" + slots[TYPES]; }
+       
+    /**
+        given a triple t, see if it's a reification triple and if so return the internal seelctor;
+        oterwise return -1.
+    */ 
+    public static int getFragmentSelector( Triple t )
+        {
+        Node p = t.getPredicate();
+        Integer x = (Integer) selectors.get( p );
+        if (x == null || (p.equals( Reifier.type ) && !t.getObject().equals( Reifier.Statement ) ) ) return -1;
+        return x.intValue();
+        }
+        
+    /*
+        the magic numbers for the slots. The order doesn't matter, but that they're
+        some permutation of {0, 1, 2, 3} does. 
+    */
+    private static final int TYPES = 0;
+    private static final int SUBJECTS = 1;
+    private static final int PREDICATES = 2;
+    private static final int OBJECTS = 3;
+
+    private static final HashMap selectors = makeSelectors();
+          
+    /**
+        make the selector mapping.
+    */
+    private static HashMap makeSelectors()
+        {
+        HashMap result = new HashMap();
+        result.put( Reifier.subject, new Integer( Fragments.SUBJECTS ) );
+        result.put( Reifier.predicate, new Integer( Fragments.PREDICATES ) );
+        result.put( Reifier.object, new Integer( Fragments.OBJECTS ) );
+        result.put( Reifier.type, new Integer( Fragments.TYPES ) );
+        return result;
+        }
     }
     
 /*
