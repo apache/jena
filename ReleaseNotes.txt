@@ -100,6 +100,12 @@ Post Jena 2.1 change list
         on the iterator from find() generated a notifyDeleteTriple event.
 
   Reasoners
+      o Changed validation report of instantiatable classes to be warnings rather 
+        than errors, all of name "Inconsistent class"
+      o During validation the culprit resource is now made available via the error 
+        report's getExtension method
+      o Fixed bug in backward reasoner which caused it to ovccasionally miss 
+        some results in non-deterministic ways
       o Fixed performance problem with listing all triples in a transitive reasoner
       o Fixed bug 927644, mishandling of cycles in transitive reasoner
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.

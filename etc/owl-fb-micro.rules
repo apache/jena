@@ -360,6 +360,11 @@
 
 # Note could also add relation between two unionOf's if we add a listSubsumes primitive
 
+#------------------------------------------------------------------
+# Intersection of (instance reasoning is done by the translation hook)
+#------------------------------------------------------------------
+
+[intersectionOf1:  (?C owl:intersectionOf ?L) -> listMapAsObject(?C rdfs:subClassOf ?L) ]
 
 #------------------------------------------------------------------
 # someValuesFrom - recognition direction only
@@ -495,9 +500,13 @@
 	[validationIndiv: (?I rb:violation error('conflict', 'Individual a member of Nothing', ?I)) 
 				<- (?I rdf:type owl:Nothing) ] ]
 
-[validationDisjoint: (?v rb:validation on())  ->
-	[validationIndiv: (?X rb:violation error('disjoint', 'Two classes related by both subclass and disjoint relations', ?Y)) 
+[validationDisjoint: (?v rb:validation on()) (?X owl:disjointWith ?Y)  ->
+	[validationIndiv: (?X rb:violation warn('Inconsistent class', 'Two classes related by both subclass and disjoint relations', ?Y)) 
 				<- (?X owl:disjointWith ?Y), (?X rdfs:subClassOf ?Y) ] ]
+
+[validationDisjoint2: (?v rb:validation on()) (?X owl:disjointWith ?Y) ->
+	[validationIndiv: (?C rb:violation warn('Inconsistent class', 'subclass of two disjoint classes', ?X, ?Y)) 
+				<- (?X owl:disjointWith ?Y), (?C rdfs:subClassOf ?X) (?C rdfs:subClassOf ?Y) notEqual(?C, owl:Nothing) ] ]
 
 [validationDTP: (?v rb:validation on()), (?P rdf:type owl:DatatypeProperty) ->
 	[validationDTP: (?X rb:violation error('range check', 'Object value for datatype property (prop, value)', ?P, ?V))
@@ -525,11 +534,11 @@
 				 ] ]
 
 [validationNothing: (?v rb:validation on()), (?C owl:equivalentClass owl:Nothing) notEqual(?C, owl:Nothing) -> 
-	(?C rb:violation error('Inconsistent class', 'Class cannot be instantiated, probably subclass of a disjoint classes or of an empty restriction'))
+	(?C rb:violation warn('Inconsistent class', 'Class cannot be instantiated, probably subclass of a disjoint classes or of an empty restriction'))
 ]
 
 [validationRangeNothing: (?v rb:validation on()), (?P rdfs:range owl:Nothing) -> 
-	(?C rb:violation error('Inconsistent property', 'Property cannot be instantiated, probably due to multiple disjoint range declarations'))
+	(?C rb:violation warn('Inconsistent property', 'Property cannot be instantiated, probably due to multiple disjoint range declarations'))
 ]
 
 [validationOneOf: (?v rb:validation on()) (?C owl:oneOf ?L) ->

@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.49 2005-02-15 16:27:46 der Exp $
+# $Id: owl-fb.rules,v 1.50 2005-02-18 15:33:35 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -353,6 +353,14 @@
 # done backwards for forwards subclass relationships are handled as special cases
 #[restriction-inter-AT-R: (owl:Thing rdfs:subClassOf ?D) (?D owl:equivalentClass all(?P, ?C)) 
 #						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty) ]
+
+#------------------------------------------------------------------
+# One direction of unionOf
+#------------------------------------------------------------------
+
+[unionOf1:  (?C owl:unionOf ?L) -> listMapAsSubject(?L, rdfs:subClassOf ?C) ]
+
+# Note could also add relation between two unionOf's if we add a listSubsumes primitive
     
 #------------------------------------------------------------------
 # Nothing
@@ -653,6 +661,7 @@
 
 [range4: (?P rdfs:subPropertyOf ?Q) <- (?P rdfs:range owl:Nothing) (?Q rdf:type rdf:Property)]
 										
+
 #------------------------------------------------------------------
 # Validation rules. These are dormant by default but are triggered
 # by the additional of a validation control triple to the graph.
@@ -672,19 +681,23 @@
 
 [validationIndiv: (?v rb:validation on())  ->
 	[validationIndiv: (?X rb:violation error('conflict', 'Two individuals both same and different, may be due to disjoint classes or functional properties', ?Y)) 
-				<- (?X owl:differentFrom ?Y), (?X owl:sameAs ?Y) ] ]
-
+				<- (?X owl:differentFrom ?Y), (?X owl:sameAs ?Y), noValue(?T, rb:prototype ?X) ] ]
+				
 [validationIndiv2: (?v rb:validation on()) (?X owl:disjointWith ?Y) -> 
 	[validationIndiv: (?I rb:violation error('conflict', 'Individual a member of disjoint classes', ?X, ?Y)) 
-				<- (?I rdf:type ?X), (?I rdf:type ?Y)] ]
+				<- (?I rdf:type ?X), (?I rdf:type ?Y) noValue(?T rb:prototype ?I)] ]
 
 [validationIndiv3: (?v rb:validation on()) ->
 	[validationIndiv: (?I rb:violation error('conflict', 'Individual a member of Nothing', ?I)) 
-				<- (?I rdf:type owl:Nothing) ] ]
+				<- (?I rdf:type owl:Nothing) noValue(?T rb:prototype ?I) ] ]
 
-[validationDisjoint: (?v rb:validation on())  ->
-	[validationIndiv: (?X rb:violation error('disjoint', 'Two classes related by both subclass and disjoint relations', ?Y)) 
+[validationDisjoint: (?v rb:validation on()) (?X owl:disjointWith ?Y)  ->
+	[validationIndiv: (?X rb:violation warn('Inconsistent class', 'Two classes related by both subclass and disjoint relations', ?Y)) 
 				<- (?X owl:disjointWith ?Y), (?X rdfs:subClassOf ?Y) ] ]
+
+[validationDisjoint2: (?v rb:validation on()) (?X owl:disjointWith ?Y) ->
+	[validationIndiv: (?C rb:violation warn('Inconsistent class', 'subclass of two disjoint classes', ?X, ?Y)) 
+				<- (?X owl:disjointWith ?Y), (?C rdfs:subClassOf ?X) (?C rdfs:subClassOf ?Y) notEqual(?C, owl:Nothing) ] ]
 
 [validationDTP: (?v rb:validation on()), (?P rdf:type owl:DatatypeProperty) ->
 	[validationDTP: (?X rb:violation error('range check', 'Object value for datatype property (prop, value)', ?P, ?V))
@@ -712,15 +725,13 @@
 				 ] ]
 
 [validationNothing: (?v rb:validation on()), (?C owl:equivalentClass owl:Nothing) notEqual(?C, owl:Nothing) -> 
-	(?C rb:violation error('Inconsistent class', 'Class cannot be instantiated, probably subclass of a disjoint classes or of an empty restriction'))
+	(?C rb:violation warn('Inconsistent class', 'Class cannot be instantiated, probably subclass of a disjoint classes or of an empty restriction'))
 ]
 
 [validationRangeNothing: (?v rb:validation on()), (?P rdfs:range owl:Nothing) -> 
-	(?C rb:violation error('Inconsistent property', 'Property cannot be instantiated, probably due to multiple disjoint range declarations'))
+	(?C rb:violation warn('Inconsistent property', 'Property cannot be instantiated, probably due to multiple disjoint range declarations'))
 ]
 
 [validationOneOf: (?v rb:validation on()) (?C owl:oneOf ?L) ->
 	[validationIndiv: (?X rb:violation warn('possible oneof violation', 'Culprit is deduced to be of enumerated type (implicicated class) but is not one of the enumerations\n This may be due to aliasing.', ?Y)) 
 				<- (?X rdf:type ?C), notBNode(?X), listNotContains(?L, ?X) ] ]
-
-

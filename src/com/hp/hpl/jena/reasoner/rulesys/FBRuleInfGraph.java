@@ -5,11 +5,13 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.47 2004-12-17 11:29:26 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.48 2005-02-18 15:33:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -36,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.47 $ on $Date: 2004-12-17 11:29:26 $
+ * @version $Revision: 1.48 $ on $Date: 2005-02-18 15:33:35 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -682,7 +684,12 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                     for (int j = 2; j < rFunc.getArgLength(); j++) {
                         description.append( "Implicated node: " + PrintUtil.print(rFunc.getArgs()[j]) + "\n");
                     }
-                    report.add(nature.equalsIgnoreCase("error"), type, description.toString());
+                    Node culpritN = t.getSubject();
+                    RDFNode culprit = null;
+                    if (culpritN.isURI()) {
+                        culprit = ResourceFactory.createResource(culpritN.getURI());
+                    }
+                    report.add(nature.equalsIgnoreCase("error"), type, description.toString(), culprit);
                 }
             }
         }

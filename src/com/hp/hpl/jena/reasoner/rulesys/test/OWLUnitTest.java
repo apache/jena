@@ -5,10 +5,12 @@
  * 
  * (c) Copyright 2004 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.6 2005-02-15 16:28:04 der Exp $
+ * $Id: OWLUnitTest.java,v 1.7 2005-02-18 15:33:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
+import com.hp.hpl.jena.rdf.model.ResourceF;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.test.OWLWGTester;
@@ -22,7 +24,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-02-15 16:28:04 $
+ * @version $Revision: 1.7 $ on $Date: 2005-02-18 15:33:34 $
  */
 public class OWLUnitTest extends TestCase {
     
@@ -71,7 +73,7 @@ public class OWLUnitTest extends TestCase {
         new TestDef("localtests/Manifest002.rdf", FB | MICRO | MINI),
 
         // unionOf
-        new TestDef("unionOf/Manifest001.rdf", MICRO | MINI ),
+        new TestDef("unionOf/Manifest001.rdf", FB | MICRO | MINI ),
         
         // This could be supported but isn't at the moment
         // new TestDef("unionOf/Manifest002.rdf", FB | MICRO | MINI),
@@ -143,8 +145,9 @@ public class OWLUnitTest extends TestCase {
         // Consistency tests
         // clean case
         new TestDef(new OWLConsistencyTest("tbox.owl", "consistentData.rdf", CLEAN, null), FB | MICRO | MINI),
-        // Disjoint classes
-//        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent1.rdf", INCONSISTENT, null), FB | MICRO |  MINI),
+        // Instance of disjoint classes
+        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent1.rdf", INCONSISTENT, 
+                ResourceFactory.createResource("http://jena.hpl.hp.com/testing/reasoners/owl#ia")), FB | MICRO |  MINI),
         // Type violation
         new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent2.rdf", INCONSISTENT, null), FB | MICRO | MINI),
         // Count violation
@@ -153,7 +156,12 @@ public class OWLUnitTest extends TestCase {
         new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent4.rdf", INCONSISTENT, null), FB |  MINI),
         // Type clash - allValuesFrom rdfs:Literal
         new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent5.rdf", INCONSISTENT, null), FB | MICRO | MINI),
-                                     
+        // Intersection of disjoint classes                                     
+        new TestDef(new OWLConsistencyTest("tbox.owl", "emptyClass1.rdf", WARNINGS, null), FB | MICRO | MINI),
+        // Equivalent to Nothing
+        new TestDef(new OWLConsistencyTest("tbox.owl", "emptyClass2.rdf", WARNINGS, null), FB | MICRO | MINI),
+        // disjoint with Thing
+        new TestDef(new OWLConsistencyTest("tbox.owl", "emptyClass3.rdf", WARNINGS, null), FB | MICRO | MINI),
     };
 
 //  --------------  instance variables for a single test ----------------------    

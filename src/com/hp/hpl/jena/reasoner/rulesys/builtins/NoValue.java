@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NoValue.java,v 1.7 2004-12-07 09:53:54 andy_seaborne Exp $
+ * $Id: NoValue.java,v 1.8 2005-02-18 15:33:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * for (X, P, *).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2004-12-07 09:53:54 $
+ * @version $Revision: 1.8 $ on $Date: 2005-02-18 15:33:36 $
  */
 public class NoValue extends BaseBuiltin {
 
@@ -50,7 +50,14 @@ public class NoValue extends BaseBuiltin {
             obj = getArg(2, args, context);
         }
         Node subj = getArg(0, args, context);
+        // Allow variables in subject position to correspond to wild cards
+        if (subj.isVariable()) {
+            subj = null;
+        }
         Node pred = getArg(1, args, context);
+        if (pred.isVariable()) {
+            pred = null;
+        }
         return !context.contains(subj, pred, obj);
     }
     
