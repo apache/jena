@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.41 $
+ * Revision           $Revision: 1.42 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:11 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 19:47:36 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -70,7 +70,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.41 2004-12-06 13:50:11 andy_seaborne Exp $
+ * @version CVS $Id: OntModel.java,v 1.42 2004-12-07 19:47:36 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -416,6 +416,14 @@ public interface OntModel
     public ExtendedIterator listAllDifferent();
     
    
+    /**
+     * <p>Answer an iterator over the DataRange objects in this ontology, if there
+     * are any.</p>
+     * @return An iterator, whose values are {@link DataRange} objects.
+     */
+    public ExtendedIterator listDataRanges();
+    
+    
     /**
      * <p>
      * Answer a resource that represents an ontology description node in this model. If a resource

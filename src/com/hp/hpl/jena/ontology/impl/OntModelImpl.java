@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.76 $
+ * Revision           $Revision: 1.77 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 11:47:56 $
+ * Last modified on   $Date: 2004-12-07 19:44:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.76 2004-12-07 11:47:56 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.77 2004-12-07 19:44:50 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -596,7 +596,18 @@ public class OntModelImpl
             findByTypeAs( getProfile().ALL_DIFFERENT(), AllDifferent.class ) );
     }
     
-   
+    /**
+     * <p>Answer an iterator over the DataRange objects in this ontology, if there
+     * are any.</p>
+     * @return An iterator, whose values are {@link DataRange} objects.
+     */
+    public ExtendedIterator listDataRanges() {
+        checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
+        return UniqueExtendedIterator.create( 
+                findByTypeAs( getProfile().DATARANGE(), DataRange.class ) );
+    }
+    
+
     /**
      * <p>
      * Answer an iterator that ranges over the properties in this model that are declared

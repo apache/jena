@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 11:48:29 $
+ * Last modified on   $Date: 2004-12-07 19:47:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.15 2004-12-07 11:48:29 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.16 2004-12-07 19:47:39 ian_dickinson Exp $
  */
 public class TestOntModel 
     extends ModelTestBase
@@ -723,6 +723,42 @@ public class TestOntModel
         assertNull( "Should not be a class ns0:A", m.getOntClass( ns0 + "A" ) );
         assertNotNull( "Should be a class ns1:A", m.getOntClass( ns1 + "A" ) );
     }
+    
+    public void testListDataRange() {
+        String base = "http://jena.hpl.hp.com/test#";
+        String doc =
+                 "<?xml version='1.0'?>" 
+                + "<!DOCTYPE owl [" 
+                + "      <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#' >" 
+                + "      <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#' >" 
+                + "      <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#' >" 
+                + "      <!ENTITY owl  'http://www.w3.org/2002/07/owl#' >" 
+                + "      <!ENTITY dc   'http://purl.org/dc/elements/1.1/' >" 
+                + "      <!ENTITY base  'http://jena.hpl.hp.com/test' >" 
+                + "    ]>" 
+                + "<rdf:RDF"
+                + "   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'"
+                + "   xmlns:owl='http://www.w3.org/2002/07/owl#'>"
+                + "  <owl:DataRange>"
+                + "    <owl:oneOf>"
+                + "      <rdf:List>"
+                + "        <rdf:first rdf:datatype='&xsd;integer'>0</rdf:first>"
+                + "        <rdf:rest rdf:resource='&rdf;nil' />"
+                + "      </rdf:List>"
+                + "    </owl:oneOf>"
+                + "  </owl:DataRange>"
+                + "</rdf:RDF>";
+
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+        m.read(new StringReader(doc), base);
+
+        Iterator i = m.listDataRanges();
+        assertTrue( "Should be at least one DataRange", i.hasNext() );
+        Object dr = i.next();
+        assertTrue( dr instanceof DataRange );
+        assertFalse( "Should no more DataRange", i.hasNext() );
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////
