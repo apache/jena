@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.35 $
+ * Revision           $Revision: 1.36 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-04 14:13:33 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-29 09:50:42 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.35 2003-07-04 14:13:33 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.36 2003-07-29 09:50:42 chris-dollin Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1610,7 +1610,9 @@ public class OntModelImpl
      * @return The base model for this ontology model
      */
     public Model getBaseModel() {
-        return ModelFactory.createModelForGraph( getBaseGraph() );
+        Model result = ModelFactory.createModelForGraph( getBaseGraph() );
+        result.setNsPrefixes( this );
+        return result;
     }
     
     

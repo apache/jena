@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-17 09:10:40 $
+ * Last modified on   $Date: 2003-07-29 09:50:43 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.4 2003-07-17 09:10:40 chris-dollin Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.5 2003-07-29 09:50:43 chris-dollin Exp $
  */
 public class TestOntModel 
     extends TestCase
@@ -130,6 +130,14 @@ public class TestOntModel
         assertTrue( "InputStream write/read cycle failed (2)", mIn2.isIsomorphicWith( m.getBaseModel() ) );
     }
     
+    public void testGetBaseModelPrefixes()
+        {
+        OntModel om = ModelFactory.createOntologyModel();
+        om.setNsPrefix( "bill", "http://bill.and.ben/flowerpot#" );
+        om.setNsPrefix( "grue", "ftp://grue.and.bleen/2000#" );
+        assertEquals( om.getNsPrefixMap(), om.getBaseModel().getNsPrefixMap() );    
+        }
+        
     /** Test writing the base model to an output stream */
     public void testWriteWriter() {
         OntModel m = ModelFactory.createOntologyModel();
