@@ -6,13 +6,17 @@ pre {
     background-color: #eee;
     margin-top: 2mm;
     margin-bottom: 2mm;
-    margin-left: 0;
+    margin-left: 5mm;
+	margin-right: 5mm
     }
 <link href="../styles/doc.css" rel="stylesheet" type="text/css">
 </style>
 </head>
 <body>
 <h1>ModelSpec howto - describing Jena 2.2 models in RDF</h1>
+
+<i>draft for discussion 13th August 2004</i>
+<br><i>version 0.2</i>
 
 <h1>introduction</h1>
 
@@ -57,14 +61,13 @@ an RDF description. There are four variants of <code>createSpec</code>:
 	<code>jms:ModelSpec</code>.
 
 <li>createSpec( Resource r ). This abbreviates 
-    <code>createSpec( r, r.getModel() )</code> and replaces the
-	earlier use where the model was obtained from <code>r</code>'s
-	URI.
-
-<li>createSpec( String uri ). Load the model identified by <code>uri</code>
-    and create the specification from that model.
+    <code>createSpec( r, r.getModel() )</code>.
 
 </ul>
+
+All ModelSpecs are interpreted using RDFS inference with respect to the
+JMS schema found at <b>reference</b> and also in the JMS vocabulary
+class <b>full name</b>.
 
 <h1>using a ModelSpec</h1>
 
@@ -114,35 +117,70 @@ root resource of the description "_:this", and make heavy use of
 bnodes. Your own descriptions can use whatever mixtures of bnodes
 and URIs you like.
  
-<hr>
-Unmodified original from here .....
-
 <h2>PlainModelSpec, no frills</h2>
 
-A <code>PlainModelSpec</code> is described by a ModelMaker specification.
-For a memory-based model, that just describes a reification mode.
+A ModelSpec for plain [non-reasoning], default models can be as 
+simple as
 
 <pre>
-    _this jms:maker _A
-    _A jms:reificationMode jms:rsMinimal
+_:this rdf:type jms:DefaultModelSpec .
 </pre>
 
-The ModelSpec construction uses RDFS reasoning over the supplied model,
-so that using <code>jms:maker</code> is sufficient to say that
-<code>_this</code> is a <code>jms:ModelSpec</code>.
+This will construct a default model (ie the same kind of
+Model that <code>ModelFactory.createDefaultModel()</code>
+will construct). If anything more complicated that this is
+required, then a <i>model maker</i> must be specified. 
+
+<pre>
+_:this jms:maker _:maker .
+</pre>
+
+It happens that this specificiation, where a model maker is
+identified but not further described, also produces a ModelSpec
+that makes default models. Pick whichever you find most pleasing.
+
+<p>If you wish to create models with different <i>reification styles</i>,
+then the maker can specify the style explicitly.
+
+<pre>
+_:this jms:maker _:maker .
+_:maker jms:reificationStyle jms:rsMinimal .
+</pre>
+
+This will produce models which have the <i>minimal</i> reification
+style. (For an explanation of the different styles, see <b>THAT DOCUMENT</b>.
+[This fragment may disappear if we can eliminate reification styles
+completely.])
 
 <h2>PlainModelSpec, file-based</h2>
 
-A FileModelMaker needs a fileBase to be specified as well.
+You can specify a model that is loaded from, and written back
+to, some file using a FileModelMaker. The model is loaded from
+the file when it is created, and written back when it is
+closed. The <code>fileBase</code>, the directory in which the
+file is found, has to be specified.
 
 <pre>
-    _this jms:maker _A
-    _A jms:reificationMode jms:rsConvenient
-    _A jms:fileBase "/tmp"
+_:this jms:maker _:maker .
+_:maker jms:fileBase "/tmp" .
 </pre>
 
-The resulting <code>PlainModelSpec</code> makes models backed by
-files found in "/tmp" (file-system names are implementation-specific).
+Filing-system names are of course implementation-specific,
+so if you expect to move <code>fileBase</code>-using ModelSpecs
+between systems, take care.
+
+<p>A file-based ModelSpec can use <code>createModelOver(String s)</code>
+to create models loaded from the file whose name is <code>s</code>
+within the <code>fileBase</code>. If the file does not exist, the
+model will initially be empty, but will be written back when closed.
+
+<p>Of course, a refication style can be specified as well as a
+filebase. There is no need for a file-based model to be opened
+with the same style each time it is used - the reification style 
+is not preserved.
+
+<hr>
+Unmodified original from here .....
 
 <h2>PlainModelSpec from a database</h2>
 

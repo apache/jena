@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.38 2004-08-05 15:04:02 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.39 2004-08-13 08:42:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -149,7 +149,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         {
         Resource type = findSpecificType( fullDesc, root, JMS.ModelSpec );
         ModelSpecCreator sc = ModelSpecCreatorRegistry.findCreator( type );
-        if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", fullDesc );
+        if (sc == null) throw new BadDescriptionException( "no model-spec creator found", fullDesc );
         return sc.create( root, fullDesc );    
         }
         
@@ -159,7 +159,12 @@ public abstract class ModelSpecImpl implements ModelSpec
         if (it.hasNext())
         	return it.nextStatement().getResource();
         else 
-            throw new BadDescriptionException( "no jms:maker for " + root, desc );
+            {
+            Resource r = desc.createResource();
+            desc.add( root, JMS.maker, r );
+            return r;
+            // throw new BadDescriptionException( "no jms:maker for " + root, desc );
+            }
         }
         
     /**
