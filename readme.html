@@ -5,22 +5,31 @@
 <head>
   <title>Jena README</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link href="doc/styles/usermanual.css" rel="stylesheet" type="text/css">
 </head>
 
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
 
-<h1 style="text-align: center; line-height: 18pt">Jena 2 Beta Release</h1>
+<h1>Jena 2<br/>A Semantic Web Framework</h1>
 
-<h1 style="text-align: center; line-height: 18pt">Jena: A Java API for Semantic Web Applications</h1>
+<p align="center">
+<b><a href="http://jena.sourceforge.net/">http://jena.sourceforge.net/</a></b>
+</p>
 
-<p style="text-align: center; line-height: 18pt; font-style: italic">
+<p align="center">
 <span style="font-style: italic">
 Hewlett Packard Laboratories, Bristol
-</span></p>
+</span>
+</p>
 
 <h2>Overview</h2>
 
-<p>Jena is a java API for manipulating RDF graphs. Its features include:</p>
+<p>Jena is a Java framework for writing Semantic Web applications.&nbsp; It 
+features:</p>
+
+<dl>
+<dt>An RDF API</dt>
+<dd>
 <ul>
   <li>statement centric methods for manipulating an RDF model as a set of RDF
     triples</li>
@@ -30,45 +39,76 @@ Hewlett Packard Laboratories, Bristol
   <li>built in support for RDF containers - bag, alt and seq</li>
   <li>enhanced resources - the application can extend the behaviour of
     resources</li>
-  <li>integrated parsers and writers for RDF/XML (ARP), N3 and N-TRIPLES</li>
-</ul>
+  <li>integrated parsers and writers for RDF/XML (ARP), N3 and N-TRIPLES<br>
+&nbsp;</li>
+</ul></dd>
 
-<p>This jena toolkit includes a number of components:</p>
-		<ul>
-			<li>RDF Model API</li>
-			<li>ARP parser compliant with latest working group recommendations</li>
-			<li>integrated query language (RDQL)</li>
-			<li>Support for datatype literals</li>
-			<li>An ontology API for OWL, DAML+OIL and RDFS</li>
-			<li>Support for inference, including a built in RDFS reasoner</li>
-		</ul>
+  <dt>Persistence</dt>
+  <dd>The Jena2 persistence subsystem implements an extension to the Jena Model 
+  class that provides persistence for models through use of a back-end database 
+  engine. Jena2 is largely backwards-compatible for Jena1 applications with the 
+  exception of some database configuration options. The default Jena2 database 
+  layout uses a denormalized schema in which literals and resource URIs are 
+  stored directly in statement tables. This differs from Jena1 in which all 
+  literals and resources were stored in common tables that were referenced by 
+  statements. Thus, the Jena2 layout enables faster insertion and retrieval but 
+  uses more storage than Jena1. Configuration options are available that give 
+  Jena2 users some control over the degree of denormalization in order to reduce 
+  storage consumption.<br>
+  <br>
+  The persistence subsystem supports a Fastpath capability for RDQL queries that 
+  dynamically generates SQL queries to perform as much of the RDQL query as 
+  possible within an SQL database engine. Currently, Jena2 can use three SQL 
+  database engines, MySQL, Oracle and PostgreSQL. These are supported on Linux 
+  and WindowsXP. As with Jena1, the persistence subsystem is designed to be 
+  portable to other SQL database engines.<br>
+&nbsp;</dd>
+    <dt><b>Reasoning Subsystem</b></dt>
+    <dd>The Jena2 reasoner subsystem is designed to allow a range of inference 
+      engines to be plugged into Jena. Such reasoners are primarily used to derive 
+      additional RDF assertions which are entailed from some base RDF together 
+      with any optional ontology information and the axioms and rule. See the
+    <a href="doc/inference/index.html">reasoner documentation</a> 
+      for more details. </dd>
+  <dt>&nbsp;</dt>
+    <dt><b>Ontology Subsystem</b></dt>
+    <dd>The Jena2 ontology API is intended to support programmers who are working
+    	with ontology data based on RDF. Specifically, this means support for 
+    	OWL, DAML+OIL and RDFS.  A set of Java abstractions extend the generic
+    	RDF Resource and Property classes to model more directly the class and
+    	property expressions found in ontologies using the above languages, and
+    	the relationships between these classes and properties. The ontology API
+    	works closely with the reasoning subsystem derive additional information
+    	that can be inferred from a particular ontology source. Given that ontologists
+    	typically modularise ontologies into individual, re-usable components, 
+    	and pulish these on the web, the Jena2 ontology subsystem also includes a
+    	document manager that assists with process of managing imported ontology documents.
+ 	See the <a href="doc/ontology/index.html">ontology documentation</a> 
+      for more details.<p>&nbsp;</p></dd>
+  <dt><b>RDQL query language</b></dt>
+	<dd>RDQL is a query language for RDF data. The implementation 
+        in Jena is coupled to relational database storage so that optimized 
+        query is performed over data held in a Jena relational persistene 
+        store. </dd>
+   <dd>See <a href="doc/tutorial/RDQL/index.html">RDQL Tutorial</a>.&nbsp; 
+   Also see <a href="doc/RDQL/RDQL_Usage.html">RDQL_Usage.html</a>, 
+   <a href="doc/RDQL/RDQL_Examples.html">RDQL_Examples.html</a> and
+   <a href="doc/RDQL/rdql_grammar.html">rdql_grammar.html</a> for condensed
+      documentation.</dd>
+</dl>
 
-<p>While the intention is maintain the present API through the migration from
-Jena 1 to Jena 2, we are taking the opportunity to make some minor changes
-that folks have requested.  These are described in the document <a
-href="doc/migrate1-2.html">Migrating from Jena 1 to Jena2</a>. You may notice
-the javadoc is a lot smaller. This is largely because we are trying to not
-include classes which are internal to the operation of Jena. </p>
-
-<p> A key feature of the new architecture is making a clear distinction
-between the Application Programming Interface (API), the System Programming
-Interface (SPI) and the implementation.  The API is intended for use in
-building applications that use Jena; this is where Model, Resource, etc live.
-The SPI is entended for use in extending Jena, <i>eg</i> integrating new
-persistent stores and reasoners: this is where the new Graph interface lives.
-This release contains preliminary versions of SPI interfaces for integrating
-new reasoners, and for "fast path" query which will allow us to pass complex
-queries on to database engines.
-
-<p>Earlier and more recent versions may be available from the Jena SourceForge web site -
-<a href="http://sourceforge.net/projects/jena">http://sourceforge.net/projects/jena</a>.</p>
+<h2>Documentation</h2>
+<p>Documentation is to be found in the <a href="doc/index.html">doc/ directory</a> 
+of the Jena download.</p>
+<p>The latest documentation is available at
+<a href="http://jena.sourceforge.net/">http://jena.sourceforge.net/</a>.</p>
 
 <h2>Installation</h2>
 
 <ul>
   <li>unzip the distribution file into a convenient directory, JENAROOT.</li>
-  <li>set the class path to include:
-<pre>  JENAROOT/lib/jena.jar
+  <li>set the Java classpath to include all the JAR files in the JENAROOT/lib/ 
+  directory<pre>  JENAROOT/lib/jena.jar
   JENAROOT/lib/xercesImpl.jar
   JENAROOT/lib/xmlParserAPIs.jar
   JENAROOT/lib/icu4j.jar
@@ -132,53 +172,6 @@ line:</p>
 
 <pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
 
-<h2>Getting started with jena</h2>
-
-<p>For the core java RDF API the key package to look at is
-com.hp.hpl.rdf..model. This package defines all of the key interfaces which
-the different implementations (jena.mem, jena.bdb, jena.common) conform
-to.</p>
-
-<p>The jena subsystems</p>
-
-<dl>
-  <dt><b>ARP parser</b></dt>
-    <dd>ARP is a new RDF parser designed to be compliant with the latest working group recommendations. ARP is the default parser for jena. It can also be run standalone.  For more information on ARP see the documentation in <a
-      href="doc/ARP/index.html">doc/ARP</a>.</dd>
-  <dt><b>RDQL query language</b></dt>
-			<dd>RDQL is a query engine for Jena. It provides the SquishQL language (see the grammar file for exact details).  See <a href="doc/RDQL/README-RDQL.txt">README_RDQL</a>, <a
-      href="doc/RDQL/RDQL_Usage.html">RDQL_Usage.html</a>, <a
-      href="doc/RDQL/RDQL_Examples.html">RDQL_Examples.html</a> and <a
-      href="doc/RDQL/rdql_grammar.html">rdql_grammar.html</a>, for condensed
-      documentation.</dd>
-		</dl>
-		
-  <dl> 
-    <dt><b>Reasoning Subsystem</b></dt>
-    <dd>The Jena2 reasoner subsystem is designed to allow a range of inference 
-      engines to be plugged into Jena. Such reasoners are primarily used to derive 
-      additional RDF assertions which are entailed from some base RDF together 
-      with any optional ontology information and the axioms and rule. See the 
-      <a href="doc/user-manual/inference/index.html">reasoner documentation</a> 
-      for more details. </dd>
-  </dl>
-  <dl> 
-    <dt><b>Ontology Subsystem</b></dt>
-    <dd>The Jena2 ontology API is intended to support programmers who are working
-    	with ontology data based on RDF. Specifically, this means support for 
-    	OWL, DAML+OIL and RDFS.  A set of Java abstractions extend the generic
-    	RDF Resource and Property classes to model more directly the class and
-    	property expressions found in ontologies using the above languages, and
-    	the relationships between these classes and properties. The ontology API
-    	works closely with the reasoning subsystem derive additional information
-    	that can be inferred from a particular ontology source. Given that ontologists
-    	typically modularise ontologies into individual, re-usable components, 
-    	and pulish these on the web, the Jena2 ontology subsystem also includes a
-    	document manager that assists with process of managing imported ontology documents.
- 	See the 
-      <a href="doc/user-manual/ontology/index.html">reasoner documentation</a> 
-      for more details. </dd>
-  </dl>
 		<h2>License</h2>
 		<p>Jena is distributed under a BSD style open source <a
 href="copyright.txt">license</a>.</p>
