@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?> 
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
-xmlns:tp="http://example.org/"> 
+xmlns:tp="http://example.org/" xml:lang="it"> 
 <rdf:Description> 
 <tp:representacionXul rdf:parseType="Literal"> 
 <?xml-stylesheet href="/sistema-acceso/css/bindings.css"  type="text/css"?> 
@@ -14,6 +14,7 @@ xmlns:c4d="http://www.isegware.com/rdfs/au/c4d.rdfs">
 A comment.
 -->
 </tp:representacionXul> 
+<tp:foo xml:lang="" >bar</tp:foo>
 </rdf:Description> 
 </rdf:RDF>
 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.5 2003-04-05 09:45:43 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.6 2003-06-19 15:46:25 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -176,6 +176,8 @@ class ParserSupport
 	}
 	void checkXMLLang(StrToken s) throws ParseException {
 		String lang = s.value;
+		if ( lang.equals(""))
+		  return;
 		try {
 			LanguageTag tag = new LanguageTag(lang);
 			int tagType = tag.tagType();
