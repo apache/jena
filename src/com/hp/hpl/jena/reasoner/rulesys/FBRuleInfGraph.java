@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.37 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.38 2003-10-03 13:18:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.37 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.38 $ on $Date: 2003-10-03 13:18:57 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -563,6 +563,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
     public void performDelete(Triple t) {
+        boolean removeIsFromBase = fdata.getGraph().contains(t);
         fdata.getGraph().delete(t);
         if (useTGCCaching) {
             if (transitiveEngine.delete(t)) {
@@ -574,7 +575,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         } 
         if (isPrepared) {
             getDeductionsGraph().delete(t);
-            engine.delete(t);
+            if (removeIsFromBase) engine.delete(t);
         }
         bEngine.reset();
     }
