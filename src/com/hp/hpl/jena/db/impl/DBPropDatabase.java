@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -102,10 +102,11 @@ public class DBPropDatabase extends DBProp {
 
 	public void removeGraph( DBPropGraph g ) {
 		SpecializedGraph.CompletionFlag complete = newComplete();
-		Iterator matches = graph.find( self, dbGraph, g.getNode(), complete);
+		ClosableIterator matches = graph.find( self, dbGraph, g.getNode(), complete);
 		if( matches.hasNext() ) {
 			graph.delete( (Triple)(matches.next()), complete );
 			g.remove();
+            matches.close();
 		}
 	}
 	
@@ -130,8 +131,10 @@ public class DBPropDatabase extends DBProp {
 	}
     
 	static Node findDBPropNode( SpecializedGraph g) {
-		Iterator matches = g.find( null, dbEngineType, null, newComplete() );
-		if( matches.hasNext()) return ((Triple) matches.next()).getSubject();
+		ClosableIterator matches = g.find( null, dbEngineType, null, newComplete() );
+		if( matches.hasNext()) 
+            try { return ((Triple) matches.next()).getSubject(); }
+            finally { matches.close(); }
 		return null;		
 	}
 }
