@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Node;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-07-18 12:50:46 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-07-21 10:54:10 $'
  */
 public interface Resource extends RDFNode {
       
@@ -127,7 +127,7 @@ public interface Resource extends RDFNode {
      * be returned.  If no such statements are found, an exception is thrown.</p>
      * @param p The property sought.
      * @return some (this, p, ?O) statement if one exists
-     * @throws JenaPropertyNotFoundException if no such statement found
+     * @throws PropertyNotFoundException if no such statement found
      */
     public Statement  getRequiredProperty(Property p) ;
     

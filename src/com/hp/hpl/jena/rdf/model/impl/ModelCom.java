@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.65 $' Date='$Date: 2003-07-18 12:50:48 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.66 $' Date='$Date: 2003-07-21 10:54:06 $'
  */
 
 public class ModelCom 
@@ -745,7 +745,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     
     public Property getProperty(String uri)  {
         if ( uri == null )
-             throw new JenaInvalidPropertyURIException( null );
+             throw new InvalidPropertyURIException( null );
         return IteratorFactory.asProperty(makeURI(uri),this);
     }
     
@@ -1064,7 +1064,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     public Statement getRequiredProperty( Resource s, Property p )  
         {
         Statement st = getProperty( s, p );
-        if (st == null) throw new JenaPropertyNotFoundException( p );
+        if (st == null) throw new PropertyNotFoundException( p );
         return st;
         }
     

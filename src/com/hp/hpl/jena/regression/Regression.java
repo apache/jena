@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
     [See end of file]
-    $Id: Regression.java,v 1.12 2003-07-18 12:50:50 chris-dollin Exp $
+    $Id: Regression.java,v 1.13 2003-07-21 10:54:11 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-07-18 12:50:50 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-07-21 10:54:11 $'
  */
 public class Regression extends Object {
 
@@ -461,7 +461,7 @@ public class Regression extends Object {
 
                 try {
                     n++; p = m.createProperty(null); error(test, n);
-                } catch (JenaInvalidPropertyURIException jx) {
+                } catch (InvalidPropertyURIException jx) {
                     // as expected.
 
                 }
@@ -1404,7 +1404,7 @@ public class Regression extends Object {
 
             n++; try {
                 stmt = m.getRequiredProperty(subject[1], RDF.value); error(test,n);
-            } catch (JenaPropertyNotFoundException jx) {
+            } catch (PropertyNotFoundException jx) {
                 // as required
             }
 
@@ -2564,7 +2564,7 @@ public class Regression extends Object {
                        error(test,n);
             n++; try {
                      r.getRequiredProperty(RDF.type); error(test, n);
-                } catch (JenaPropertyNotFoundException e) { // as expected
+                } catch (PropertyNotFoundException e) { // as expected
                 }
             n++; iter = r.listProperties(RDF.value);
                  int count = 0;
@@ -3987,7 +3987,7 @@ public class Regression extends Object {
             n++;Property p = m.createProperty("foo/", "bar");
                 try {
                      r.getRequiredProperty(p); error(test, n);
-                } catch (JenaPropertyNotFoundException e) {
+                } catch (PropertyNotFoundException e) {
                     // as required
                 }
             n++; iter = r.listProperties(RDF.value);
@@ -4878,5 +4878,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.12 2003-07-18 12:50:50 chris-dollin Exp $
+ * $Id: Regression.java,v 1.13 2003-07-21 10:54:11 chris-dollin Exp $
  */

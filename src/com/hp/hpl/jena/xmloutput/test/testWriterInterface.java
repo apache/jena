@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterInterface.java,v 1.5 2003-06-16 15:15:24 chris-dollin Exp $
+  $Id: testWriterInterface.java,v 1.6 2003-07-21 10:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -21,7 +21,7 @@ import junit.framework.*;
 /**
  *
  * @author  bwm, jjc
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class testWriterInterface extends TestCase {
     private String lang;
@@ -64,7 +64,7 @@ public class testWriterInterface extends TestCase {
             m1.setWriterClassName("foobar", "");
             m1.getWriter("foobar");
             fail("Missing Writer undetected.");
-        } catch (JenaNoWriterForLangException jx) {
+        } catch (NoWriterForLangException jx) {
             // that's what we expected
         }
     }
@@ -126,5 +126,5 @@ public class testWriterInterface extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterInterface.java,v 1.5 2003-06-16 15:15:24 chris-dollin Exp $
+ * $Id: testWriterInterface.java,v 1.6 2003-07-21 10:54:11 chris-dollin Exp $
  */

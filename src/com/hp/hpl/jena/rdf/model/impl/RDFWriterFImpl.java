@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterFImpl.java,v 1.5 2003-06-13 15:28:37 chris-dollin Exp $
+ * $Id: RDFWriterFImpl.java,v 1.6 2003-07-21 10:54:06 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.n3.N3JenaWriter;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.5 $ $Date: 2003-06-13 15:28:37 $
+ * @version $Revision: 1.6 $ $Date: 2003-07-21 10:54:06 $
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
 
@@ -102,7 +102,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
 
         String className = langToClassName.getProperty(lang);
         if (className == null || className.equals("")) {
-            throw new JenaNoWriterForLangException( lang );
+            throw new NoWriterForLangException( lang );
         }
         try {
             return (RDFWriter) Class.forName(className).newInstance();

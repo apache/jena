@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-18 12:50:44 $
+ * Last modified on   $Date: 2003-07-21 10:54:10 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.34 2003-07-18 12:50:44 chris-dollin Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.35 2003-07-21 10:54:10 chris-dollin Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -394,7 +394,7 @@ public class OntResourceImpl
         try {
             return getRequiredProperty( getProfile().VERSION_INFO() ).getString();
         }
-        catch (JenaPropertyNotFoundException ignore) {
+        catch (PropertyNotFoundException ignore) {
             return null;
         }
     }
@@ -486,7 +486,7 @@ public class OntResourceImpl
             try {
                 return getRequiredProperty( getProfile().LABEL() ).getString();
             }
-            catch (JenaPropertyNotFoundException ignore) {
+            catch (PropertyNotFoundException ignore) {
                 return null;
             }
         }
@@ -607,7 +607,7 @@ public class OntResourceImpl
             try {
                 return getRequiredProperty( getProfile().COMMENT() ).getString();
             }
-            catch (JenaPropertyNotFoundException ignore) {
+            catch (PropertyNotFoundException ignore) {
                 // no comment :-)
                 return null;
             }
@@ -927,7 +927,7 @@ public class OntResourceImpl
         try {
             return getRequiredProperty( property ).getObject();
         }
-        catch (JenaPropertyNotFoundException ignore) {
+        catch (PropertyNotFoundException ignore) {
             return null;
         }
     }
@@ -1118,7 +1118,7 @@ public class OntResourceImpl
         try {
             return getRequiredProperty( p ).getObject().as( asClass );
         }
-        catch (JenaPropertyNotFoundException e) {
+        catch (PropertyNotFoundException e) {
             return null;
         }
     }

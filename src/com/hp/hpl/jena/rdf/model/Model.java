@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.33 2003-07-21 08:27:08 chris-dollin Exp $
+  $Id: Model.java,v 1.34 2003-07-21 10:54:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.33 $Date: 2003/07/18 12:50:45 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.34 $Date: 2003/07/21 08:27:08 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -532,7 +532,7 @@ public interface Model
 	 * @return A statement from the model with the given subject and property.
 	 * @param s The subject of the statement to be returned.
 	 * @param p The property of the statement to be returned.
-	 * @throws JenaPropertyNotFoundException
+	 * @throws PropertyNotFoundException
 	 */
 	Statement getRequiredProperty(Resource s, Property p) ;
     
@@ -916,5 +916,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.33 2003-07-21 08:27:08 chris-dollin Exp $
+ * $Id: Model.java,v 1.34 2003-07-21 10:54:10 chris-dollin Exp $
  */

@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.19 2003-07-21 10:32:46 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.20 2003-07-21 10:54:10 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2003-07-21 10:32:46 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2003-07-21 10:54:10 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -290,7 +290,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	String splitTag(String uriref, int type) {
 		int split = Util.splitNamespace(uriref);
 		if (split == uriref.length())
-			throw new JenaInvalidPropertyURIException( uriref );
+			throw new InvalidPropertyURIException( uriref );
 		return tag(
 			uriref.substring(0, split),
 			uriref.substring(split),
@@ -314,7 +314,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 						"The URI rdf:"
 							+ local
 							+ " cannot be serialized in RDF/XML.");
-					throw new JenaInvalidPropertyURIException( "rdf:" + local );
+					throw new InvalidPropertyURIException( "rdf:" + local );
 				}
 			}
 		}

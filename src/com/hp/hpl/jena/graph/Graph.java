@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.15 2003-07-21 09:04:48 chris-dollin Exp $
+  $Id: Graph.java,v 1.16 2003-07-21 10:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -74,9 +74,9 @@ public interface Graph  {
         Remove the triple t (if possible) from the set belonging to this graph 
     
         @param  t the triple to add to the graph
-        @throws JenaDeleteDeniedException if the triple cannot be removed  
+        @throws DeleteDeniedException if the triple cannot be removed  
     */   
-	void delete(Triple t) throws JenaDeleteDeniedException;
+	void delete(Triple t) throws DeleteDeniedException;
       
     /** 
         Returns an iterator over all the Triples that match the triple pattern.

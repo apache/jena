@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-07-01 09:06:48 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-07-21 10:54:06 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property {
@@ -72,7 +72,7 @@ public class PropertyImpl extends ResourceImpl implements Property {
         {
         String localName = getLocalName();
         if (localName == null || localName.equals( "" )) 
-            throw new JenaInvalidPropertyURIException( getURI() );
+            throw new InvalidPropertyURIException( getURI() );
         }
 
     public PropertyImpl(String nameSpace, String localName)

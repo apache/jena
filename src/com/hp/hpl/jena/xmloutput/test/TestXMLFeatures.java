@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.27 2003-07-21 10:32:46 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.28 2003-07-21 10:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -29,7 +29,7 @@ import org.apache.log4j.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.27 $ $Date: 2003-07-21 10:32:46 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.28 $ $Date: 2003-07-21 10:54:11 $
  */
 
 public class TestXMLFeatures extends TestCase {
@@ -222,7 +222,7 @@ public class TestXMLFeatures extends TestCase {
 			m.write(fwriter, lang);
 			fwriter.close();
 			fail("Writer did not detect bad property URI");
-        } catch (JenaInvalidPropertyURIException je) {
+        } catch (InvalidPropertyURIException je) {
                 // as required, so nowt to do.
 		}
 		file.delete();
@@ -675,7 +675,7 @@ public class TestXMLFeatures extends TestCase {
         } catch (BadURIException e) {
             if (behaviour == BadURI) return;
             throw e;
-        } catch (JenaInvalidPropertyURIException je) {
+        } catch (InvalidPropertyURIException je) {
             if (behaviour == BadPropURI) return;
             throw je;
         } catch (JenaException e) {
@@ -1065,5 +1065,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.27 2003-07-21 10:32:46 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.28 2003-07-21 10:54:11 chris-dollin Exp $
  */

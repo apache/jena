@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -55,7 +55,7 @@ public class DBReifierGraph implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#delete(com.hp.hpl.jena.graph.Triple)
 	 */
 	public void delete(Triple t) {
-		throw new JenaDeleteDeniedException( "cannot delete from a DB reifier", t );
+		throw new DeleteDeniedException( "cannot delete from a DB reifier", t );
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +75,7 @@ public class DBReifierGraph implements Graph {
     private void checkUnclosed()
         {
         if (m_specializedGraphs == null)
-            throw new JenaClosedException( "this DB Reifier has been closed", this );
+            throw new ClosedException( "this DB Reifier has been closed", this );
         }
         
 	/* (non-Javadoc)
