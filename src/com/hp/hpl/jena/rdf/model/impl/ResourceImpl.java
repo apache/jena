@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.26 2004-03-16 15:00:33 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.27 2004-03-24 16:02:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2004-03-16 15:00:33 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2004-03-24 16:02:58 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -38,17 +38,17 @@ public class ResourceImpl extends EnhNode implements Resource {
 		return null;
 	}
 };
-    private int splitHere = 0;
+    private int splitHere = -1;
         
     /**
         the master constructor: make a new Resource in the given model,
-        rooted in the given node, with a namespace splitpoint at _split_.
+        rooted in the given node.
+    
+        NOT FOR PUBLIC USE - used in ModelCom [and ContainerImpl]
     */
-    private ResourceImpl( Node n, int split, Model m )
-        {
-        super( n, (ModelCom)m );
-        this.splitHere = split; // whereToSplit( n.toString() );
-        }
+     public ResourceImpl( Node n, Model m ) {
+        super( n, (ModelCom) m );
+    }
 
     /** Creates new ResourceImpl */
 
@@ -57,25 +57,20 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public ResourceImpl( Model m ) {
-        this( fresh( null ), 0, m );
+        this( fresh( null ), m );
     }
 
-    /**
-        NOT FOR PUBLIC USE - used in PersonalityCore.
-    */
-     public ResourceImpl( Node n, Model m ) {
-        this( n, (n.isURI() ? whereToSplit( n.toString() ) : 0), m );
-    }
+     
     public ResourceImpl( Node n, EnhGraph m ) {
-        this( n, (Model)m );
+        super( n, m );
     }
 
     public ResourceImpl( String uri ) {
-        this( fresh( uri ), whereToSplit( uri ), null );
+        super( fresh( uri ), null );
     }
 
     public ResourceImpl(String nameSpace, String localName) {
-        this( Node.createURI( nameSpace + localName ), nameSpace.length(), null );
+        super( Node.createURI( nameSpace + localName ), null );
     }
 
     public ResourceImpl(AnonId id) {
@@ -83,11 +78,11 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public ResourceImpl(AnonId id, Model m) {
-        this( Node.createAnon( id ), 0, m );
+        this( Node.createAnon( id ), m );
     }
 
     public ResourceImpl(String uri, Model m) {
-       this( fresh( uri ), whereToSplit( uri ), m );
+       this( fresh( uri ), m );
     }
     
     public ResourceImpl( Resource r, Model m ) {
@@ -95,7 +90,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
     
     public ResourceImpl(String nameSpace, String localName, Model m) {
-        this( Node.createURI( nameSpace + localName ), nameSpace.length(), m );
+        this( Node.createURI( nameSpace + localName ), m );
     }
 
     public Object visitWith( RDFVisitor rv )
@@ -110,13 +105,6 @@ public class ResourceImpl extends EnhNode implements Resource {
             : m.createResource( getURI() ); 
         }
     
-    private static int whereToSplit( String s )
-        {
-        if (s == null) return 0;
-        int where = Util.splitNamespace( s );
-        return where == 0 ? s.length() : where;
-        }
-
     private static Node fresh( String uri )
         { return uri == null ? Node.createAnon( new AnonId() ) : Node.createURI( uri ); }
 
@@ -131,12 +119,24 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public String getNameSpace() {
-        return isAnon() ? null : getURI().substring( 0, splitHere );
+        return isAnon() ? null : getURI().substring( 0, getSplit() );
     }
 
-    public String getLocalName() {
-        return isAnon() ? null : getURI().substring( splitHere );
+    private int getSplit() {
+		if (splitHere < 0) splitHere = whereToSplit( getURI() );
+        return splitHere;
+	}
+
+	public String getLocalName() {
+        return isAnon() ? null : getURI().substring( getSplit() );
     }
+    
+    private static int whereToSplit( String s )
+        {
+        if (s == null) return 0;
+        int where = Util.splitNamespace( s );
+        return where == 0 ? s.length() : where;
+        }
 
     public String  toString() {
     	return asNode().toString();

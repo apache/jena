@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.20 2003-12-10 16:34:02 jeremy_carroll Exp $
+  $Id: PrefixMapping.java,v 1.21 2004-03-24 16:02:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -116,9 +116,13 @@ public interface PrefixMapping
         prefix mapping Name -> URIStart, and uri is URIStart+Tail, return Name:Tail;
         otherwise return uri unchanged. If there are multiple applicable mappings
         available, which one is chosen is unspecified at the time of writing.
+    <p>    
+        The result is primarily intended for human convenience: it is <i>not</i> 
+        necessarily a legal QName, as Tail need not be a legal NCName; and there's
+        no way to tell a shortened name from a URI with an unusual scheme.
         
         @param uri the URI string to try and prefix-compress
-        @return the QName form if possible, otherwise the unchanged argument
+        @return the shortened form if possible, otherwise the unchanged argument
     */
     String usePrefix( String uri );
     
