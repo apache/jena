@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.6 2003-09-10 15:23:30 chris-dollin Exp $
+  $Id: TestFileGraphMaker.java,v 1.7 2003-09-10 15:31:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -12,6 +12,9 @@ import com.hp.hpl.jena.shared.*;
 import junit.framework.*;
 
 /**
+    Test a FileGraphMaker; use the abstract tests, plus specialised ones for the name
+    conversion routines.
+    
  	@author hedgehog
 */
 public class TestFileGraphMaker extends AbstractTestGraphMaker

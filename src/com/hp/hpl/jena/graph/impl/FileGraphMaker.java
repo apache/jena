@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.15 2003-09-10 15:23:20 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.16 2003-09-10 15:31:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -114,7 +114,7 @@ public class FileGraphMaker extends BaseGraphMaker
         { return new File( fileBase, toFilename( name ) ); }
         
     /**
-        Make <code>name</name> safe for use as a filename. "safe" is a bit weak
+        Make <code>name</name> into a "safe" filename. "safe" is a bit weak
         here; we want to allow URIs as graph names and assume that our filing
         systems will be reasonably liberal. We'll see ...
         
@@ -146,6 +146,13 @@ public class FileGraphMaker extends BaseGraphMaker
         return result.toString();
         }
 
+    /**
+        Answer the graphname corresponding to the given filename, undoing the 
+        conversion done by toFilename.
+        
+     	@param fileName a filename, possible containing _U, _C, and _S escapes
+     	@return the unescaped name
+     */
     public static String toGraphname( String fileName )
         { 
         StringBuffer result = new StringBuffer( fileName.length() );
@@ -200,6 +207,9 @@ public class FileGraphMaker extends BaseGraphMaker
             }
         }
         
+    /**
+        A Map1 that will convert filename strings to the corresponding graphname strings.
+    */
     private static Map1 unconvert = new Map1()
         { public Object map1( Object x )
             { return toGraphname( (String) x ); }

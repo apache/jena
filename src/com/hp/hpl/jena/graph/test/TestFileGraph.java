@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraph.java,v 1.7 2003-09-10 15:23:30 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.8 2003-09-10 15:31:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -72,7 +72,7 @@ public class TestFileGraph extends GraphTestBase
         assertTrue( FileGraph.isPlausibleGraphName( "hedgehog.spine.end.RDF" ) );        
         }
         
-    public void testImisPlausibleGraphName()
+    public void testImPlausibleGraphName()
         {
         assertFalse( FileGraph.isPlausibleGraphName( "undecorated" ) );    
         assertFalse( FileGraph.isPlausibleGraphName( "danger.exe" ) );    

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.12 2003-09-10 15:23:30 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.13 2003-09-10 15:31:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -205,9 +205,17 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         y.close();
         }
         
+    /**
+        Test that a maker with no graphs lists no names.
+    */
     public void testListNoGraphs()
         { assertFalse( gf.listGraphs().hasNext() ); }
-        
+    
+    /**
+        Test that a maker with three graphs inserted lists those three grapsh; we don't
+        ind what order they appear in. We also use funny names to ensure that the spelling
+        that goes in is the one that comes out [should really be in a separate test]. 
+    */    
     public void testListThreeGraphs()
         { String x = "x", y = "y/sub", z = "z:boo";
         gf.createGraph( x ).close();
@@ -219,6 +227,10 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         assertTrue( s.contains( y ) );
         assertTrue( s.contains( z ) ); }
         
+    /**
+        Test that a maker with some things put in and then some removed gets the right
+        things listed. 
+    */
     public void testListAfterDelete()
         { String x = "x_y", y = "y//zub", z = "a:b/c";
         gf.createGraph( x ).close();
