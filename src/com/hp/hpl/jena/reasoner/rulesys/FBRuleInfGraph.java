@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.29 2003-08-19 12:58:48 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.30 2003-08-19 20:10:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2003-08-19 12:58:48 $
+ * @version $Revision: 1.30 $ on $Date: 2003-08-19 20:10:01 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -477,6 +477,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        checkOpen();
         if (!isPrepared) prepare();
         
         ExtendedIterator result = null;

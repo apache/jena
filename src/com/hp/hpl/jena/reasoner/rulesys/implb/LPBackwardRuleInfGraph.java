@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.5 2003-08-18 21:12:19 der Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.6 2003-08-19 20:10:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-18 21:12:19 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-19 20:10:01 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -151,6 +151,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * may not have completely satisfied the query.
      */
     public synchronized ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        checkOpen();
         if (!isPrepared) prepare();
         ExtendedIterator result = engine.find(pattern);
         if (continuation != null) {

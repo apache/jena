@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBLPRuleInfGraph.java,v 1.6 2003-08-18 21:12:19 der Exp $
+ * $Id: FBLPRuleInfGraph.java,v 1.7 2003-08-19 20:10:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  * and this one will disappear
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-18 21:12:19 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-19 20:10:01 $
  */
 public class FBLPRuleInfGraph  extends FBRuleInfGraph {
     
@@ -209,6 +209,7 @@ public class FBLPRuleInfGraph  extends FBRuleInfGraph {
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        checkOpen();
 //        System.out.println("FBLP find called on: " + pattern); 
         if (!isPrepared) prepare();
         ExtendedIterator result = new UniqueExtendedIterator(lpbEngine.find(pattern));

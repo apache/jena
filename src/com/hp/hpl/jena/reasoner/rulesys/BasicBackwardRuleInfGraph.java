@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.23 2003-08-14 07:51:10 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.24 2003-08-19 20:10:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-08-14 07:51:10 $
+ * @version $Revision: 1.24 $ on $Date: 2003-08-19 20:10:01 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -167,6 +167,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        checkOpen();
         if (!isPrepared) prepare();
         ExtendedIterator result = null;
         if (continuation == null) {

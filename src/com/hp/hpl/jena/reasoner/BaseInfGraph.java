@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.17 2003-07-17 09:10:40 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.18 2003-08-19 20:10:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-07-17 09:10:40 $
+ * @version $Revision: 1.18 $ on $Date: 2003-08-19 20:10:01 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -143,6 +143,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @return a ValidityReport structure
      */
     public ValidityReport validate() {
+        checkOpen();
         return new StandardValidityReport();
     }
     
@@ -191,6 +192,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * will have also consulted the raw data.
      */
     public ExtendedIterator find(Node subject, Node property, Node object) {
+        checkOpen();
         return findWithContinuation(new TriplePattern(subject, property, object), fdata);
     }
 
@@ -203,6 +205,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      *  that match the pattern
      */
     public ExtendedIterator find(TriplePattern pattern) {
+        checkOpen();
         return findWithContinuation(pattern, fdata);
     }
     
@@ -212,6 +215,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * equivalance.
      */
     public boolean contains(Triple t) {
+        checkOpen();
         ClosableIterator i = find(t.getSubject(), t.getPredicate(), t.getObject());
         boolean contained =  i.hasNext();
         i.close();
@@ -224,6 +228,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * equivalance.
      */
     public boolean contains(Node s, Node p, Node o) {
+        checkOpen();
         ClosableIterator i = find(s, p, o);
         boolean contained =  i.hasNext();
         i.close();
@@ -252,6 +257,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * Return the number of triples in the just the base graph
      */
     public int size() {
+        checkOpen();
         return fdata.getGraph().size();
     }
         

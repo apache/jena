@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.14 2003-07-17 09:10:40 chris-dollin Exp $
+ * $Id: TransitiveInfGraph.java,v 1.15 2003-08-19 20:10:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-07-17 09:10:40 $
+ * @version $Revision: 1.15 $ on $Date: 2003-08-19 20:10:01 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -96,6 +96,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        checkOpen();
         if (!isPrepared) prepare();
         Finder cascade = transitiveEngine.getFinder(pattern, FinderUtil.cascade(tbox, continuation));
         return new UniqueExtendedIterator(cascade.find(pattern));
