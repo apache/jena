@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.5 2003-11-20 15:05:37 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.html,v 1.6 2003-12-15 15:08:00 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -93,6 +93,8 @@ Jena 2 &ndash; Frequently Asked Questions
   model?</a></li>
   <li><a href="#db-2">Has Jena2 persistence been ported to other database engines and platforms
   besides those officially supported?</a></li>
+  <li><a href="#db-3">Is there a limit on the number of models in a 
+  database?</a></li>
 </ul>
 <h3>XML serialisation (reading and writing)</h3>
 <ul>
@@ -229,6 +231,7 @@ you suspect your database has been corrupted, you may invoke
 prior to creating your model. This removes all Jena2 tables from a database.
 Warning: this removes any other existing Jena2 models from the database so make sure
 that this is what you want to do. </p>
+
   <p id="db-1"><strong>Q: Why do I run out of memory when trying to list statements in a persistent
   model?</strong><br>
   A: Jena2 uses the JDBC interface for accessing databases. The JDBC
@@ -240,6 +243,7 @@ that this is what you want to do. </p>
   increase the heap size of the Java virtual machine (<code>-vmargs
   -Xmx500M</code> for a 500 MB heap size). If this does not help, there is no
   other work-around and the program should be recoded.</p>
+  
 <p id="db-2"><strong>Q: Has Jena2 persistence been ported to other database engines and platforms
   besides those officially supported?</strong><br>
   A: The Jena team  supports Jena2 persistence on the databases and operating
@@ -251,7 +255,23 @@ Jena2 has been ported to IBM's DB2 database. Contact
 HSQLDB, a native-Java SQL database, has been done. Contact
 <a href="mailto:danils@home.se">Jan Danils</a> for details. On the Mac OS X
 platform, Jena2 has been successfully run using MySQL. Contact
-<a href="mailto:jnachlin@nachlin.com">Jim Nachlin</a> for details.</p>
+<a href="mailto:jnachlin@nachlin.com">Jim Nachlin</a> for details. A Jena2 
+driver for Microsoft SQL Server has been written and tested with MsSQL 2000. The 
+source is available at <a href="http://www.ur.se/jena/Jena2MsSql.zip">
+http://www.ur.se/jena/Jena2MsSql.zip</a>. Contact <a href="mailto:eba@ur.se">
+Erik Barke</a> for more information.</p>
+
+<p id="db-3"><strong>Q: </strong><b>Is there a limit on 
+the number of models in a database?</b><br>
+  A:&nbsp; The limit depends on the Jena database (schema) configuration and the 
+database engine (MySQL, PostgreSQL, Oracle, etc). Recall that a Jena model may 
+either be stored separately in its own database tables (the default) or, 
+alternatively, in tables that are shared with other models (see <i>
+StoreWithModel</i> in the <a href="../DB/options.html">options</a> for 
+persistent models). Also, a Jena model is identified internally by a 32 bit 
+integer. Consequently the maximum number of models is limited either by the 
+maximum number of tables allowed in a database (which depends on the database 
+engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
 
 <h3>XML serialisation (reading and writing)</h3>
 <p>no entries yet</p>
