@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 20:53:09 $
+ * Last modified on   $Date: 2003-08-19 16:50:41 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -68,7 +68,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.28 2003-07-31 20:53:09 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.29 2003-08-19 16:50:41 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -943,6 +943,17 @@ public interface OntModel
      * @return A new resource representing a mas-cardinality restriction
      */
     public MaxCardinalityRestriction createMaxCardinalityRestriction( String uri, Property prop, int cardinality );
+
+
+    /**
+     * <p>Answer a data range defined as the given set of concrete data values.  DataRange resources
+     * are necessarily bNodes.</p>
+     * 
+     * @param literals A list of literals that will be the members of the data range, 
+     *                 or null to define an empty data range
+     * @return A new data range containing the given literals as permissible values
+     */
+    public DataRange createDataRange( RDFList literals );
 
 
     /**

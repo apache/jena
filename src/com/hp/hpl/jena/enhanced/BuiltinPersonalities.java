@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.25 2003-08-04 14:09:02 chris-dollin Exp $
+  $Id: BuiltinPersonalities.java,v 1.26 2003-08-19 16:50:42 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -43,6 +43,7 @@ public class BuiltinPersonalities {
         .add( IntersectionClass.class, IntersectionClassImpl.factory )
         .add( UnionClass.class, UnionClassImpl.factory )
         .add( ComplementClass.class, ComplementClassImpl.factory )
+        .add( DataRange.class, DataRangeImpl.factory )
         
         .add( Restriction.class, RestrictionImpl.factory )
         .add( HasValueRestriction.class, HasValueRestrictionImpl.factory )

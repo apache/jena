@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: AllValuesFromRestrictionImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:52:43 $
+ * Last modified on   $Date: 2003-08-19 16:50:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllValuesFromRestrictionImpl.java,v 1.4 2003-06-08 18:52:43 ian_dickinson Exp $
+ * @version CVS $Id: AllValuesFromRestrictionImpl.java,v 1.5 2003-08-19 16:50:30 ian_dickinson Exp $
  */
 public class AllValuesFromRestrictionImpl
     extends RestrictionImpl
@@ -110,12 +110,28 @@ public class AllValuesFromRestrictionImpl
     }
 
     /**
-     * <p>Answer the class that all values of the restricted property must belong to.</p>
-     * @return A class that all values from the restricted property must belong to
+     * <p>Answer the resource characterising the constraint on all values of the restricted property. This may be
+     * a class, the URI of a concrete datatype, a DataRange object or the URI rdfs:Literal.</p>
+     * @return A resource, which will have been pre-converted to the appropriate Java value type
+     *        ({@link OntClass} or {@link DataRange}) if appropriate.
      * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
      */ 
-    public OntClass getAllValuesFrom() {
-        return (OntClass) objectAs( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM", OntClass.class );
+    public Resource getAllValuesFrom() {
+        checkProfile( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
+        Resource r = (Resource) getRequiredProperty( getProfile().ALL_VALUES_FROM() ).getObject();
+        
+        if (r.canAs( OntClass.class )) {
+            // all values from a class
+            return (Resource) r.as( OntClass.class );
+        }
+        else if (r.canAs( DataRange.class )) {
+            // all values from a given data range
+            return (Resource) r.as( DataRange.class );
+        }
+        else {
+            // must be a datatype ID or rdfs:Literal
+            return r;
+        }
     }
 
     /**

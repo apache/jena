@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: AllValuesFromRestriction.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:28 $
+ * Last modified on   $Date: 2003-08-19 16:50:41 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllValuesFromRestriction.java,v 1.3 2003-06-08 18:53:28 ian_dickinson Exp $
+ * @version CVS $Id: AllValuesFromRestriction.java,v 1.4 2003-08-19 16:50:41 ian_dickinson Exp $
  */
 public interface AllValuesFromRestriction
     extends Restriction 
@@ -60,11 +60,13 @@ public interface AllValuesFromRestriction
     public void setAllValuesFrom( Resource cls );
 
     /**
-     * <p>Answer the class that all values of the restricted property must belong to.</p>
-     * @return A class that all values from the restricted property must belong to
+     * <p>Answer the resource characterising the constraint on all values of the restricted property. This may be
+     * a class, the URI of a concrete datatype, a DataRange object or the URI rdfs:Literal.</p>
+     * @return A resource, which will have been pre-converted to the appropriate Java value type
+     *        ({@link OntClass} or {@link DataRange}) if appropriate.
      * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
      */ 
-    public OntClass getAllValuesFrom();
+    public Resource getAllValuesFrom();
 
     /**
      * <p>Answer true if this property restriction has the given class as the class to which all 

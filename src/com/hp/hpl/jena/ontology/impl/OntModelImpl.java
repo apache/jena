@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.39 $
+ * Revision           $Revision: 1.40 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-18 17:16:56 $
+ * Last modified on   $Date: 2003-08-19 16:50:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.39 2003-08-18 17:16:56 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.40 2003-08-19 16:50:30 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1316,6 +1316,25 @@ public class OntModelImpl
     }
     
    
+    /**
+     * <p>Answer a data range defined as the given set of concrete data values.  DataRange resources
+     * are necessarily bNodes.</p>
+     * 
+     * @param literals An iterator over a set of literals that will be the members of the data range, 
+     *                 or null to define an empty data range
+     * @return A new data range containing the given literals as permissible values
+     */
+    public DataRange createDataRange( RDFList literals ) {
+        checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
+        DataRange d = (DataRange) createOntResource( DataRange.class, getProfile().DATARANGE(), null );
+        
+        checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
+        d.addProperty( getProfile().ONE_OF(), (literals == null) ? createList() : literals );
+        
+        return d;
+    }
+
+
     /**
      * <p>
      * Answer a new, anonymous node representing the fact that a given set of classes are all

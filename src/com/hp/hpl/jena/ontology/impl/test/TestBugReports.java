@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-18 17:16:50 $
+ * Last modified on   $Date: 2003-08-19 16:50:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -44,7 +44,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.6 2003-08-18 17:16:50 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.7 2003-08-19 16:50:42 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -211,7 +211,7 @@ public class TestBugReports
               Restriction r = oc.asRestriction();
               if ( r.isSomeValuesFromRestriction() ) {
                  SomeValuesFromRestriction sr = r.asSomeValuesFromRestriction();
-                 OntClass sc = sr.getSomeValuesFrom();
+                 OntClass sc = (OntClass) sr.getSomeValuesFrom();
                     if ( sc.isEnumeratedClass() ) {
                        EnumeratedClass ec = sc.asEnumeratedClass();
                        assertEquals( "Enumeration size should be 2", 2, ec.getOneOf().size() );

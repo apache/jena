@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 21:07:31 $
+ * Last modified on   $Date: 2003-08-19 16:50:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.18 2003-07-31 21:07:31 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.19 2003-08-19 16:50:30 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -81,6 +81,7 @@ public class OWLProfile
     public Resource ANNOTATION_PROPERTY() {         return OWL.AnnotationProperty; }
     public Resource LIST() {                        return RDF.List; }
     public Resource NIL() {                         return RDF.nil; }
+    public Resource DATARANGE() {                   return OWL.DataRange; }
     
 
     public Property EQUIVALENT_PROPERTY() {         return OWL.equivalentProperty; }
@@ -377,6 +378,13 @@ public class OWLProfile
         {  Individual.class,    new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return n instanceof Node_URI || n instanceof Node_Blank;
+                                            }
+                                        }
+        },
+        {  DataRange.class,    new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return n instanceof Node_Blank  &&
+                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.DataRange.asNode() );
                                             }
                                         }
         },

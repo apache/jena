@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-24 15:28:05 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-19 16:50:30 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.17 2003-06-24 15:28:05 chris-dollin Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.18 2003-08-19 16:50:30 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -79,6 +79,7 @@ public class DAML_OILProfile
     private Resource m_annotationProperty           = null;
     private Resource m_list                         = m_vocabModel.createResource( DAML_OIL.List.getURI()                      );                     
     private Resource m_nil                          = m_vocabModel.createResource( DAML_OIL.nil.getURI()                       );
+    private Resource m_datarange                    = null;
     
     private Property m_equivalentProperty           = m_vocabModel.createProperty( DAML_OIL.samePropertyAs.getNameSpace(),          DAML_OIL.samePropertyAs.getLocalName() );
     private Property m_equivalentClass              = m_vocabModel.createProperty( DAML_OIL.sameClassAs.getNameSpace(),             DAML_OIL.sameClassAs.getLocalName() );
@@ -149,6 +150,7 @@ public class DAML_OILProfile
     public Resource ANNOTATION_PROPERTY() {         return m_annotationProperty; }
     public Resource LIST() {                        return m_list; }
     public Resource NIL() {                         return m_nil; }
+    public Resource DATARANGE() {                   return m_datarange; }
     
     public Property EQUIVALENT_PROPERTY() {         return m_equivalentProperty; }
     public Property EQUIVALENT_CLASS() {            return m_equivalentClass; }
