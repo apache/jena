@@ -18,6 +18,8 @@ import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.util.Log;
 
+import com.hp.hpl.jena.shared.*;
+
 //=======================================================================
 /**
 * Base database driver for implementing SpecializedGraphs.
@@ -32,7 +34,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.13 $ on $Date: 2003-05-11 00:35:46 $
+* @version $Revision: 1.14 $ on $Date: 2003-05-14 07:36:47 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -523,7 +525,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				  inTransaction = false;
 				}
 			} catch (SQLException e) {
-				throw new RDFRDBException("Transaction support failed: ", e);
+				throw new JenaException("Transaction support failed: ", e);
 			}
 		} else {
 		}

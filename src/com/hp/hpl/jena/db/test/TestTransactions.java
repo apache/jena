@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTransactions.java,v 1.4 2003-05-05 21:15:45 csayers Exp $
+  $Id: TestTransactions.java,v 1.5 2003-05-14 07:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -20,20 +20,15 @@ package com.hp.hpl.jena.db.test;
  * @author hkuno
 */
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.db.impl.DriverRDB;
 import com.hp.hpl.jena.db.impl.Driver_MySQL;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.*;
 
-
+import com.hp.hpl.jena.shared.*;
 
 public class TestTransactions extends TestCase
     {    
@@ -76,13 +71,13 @@ public class TestTransactions extends TestCase
     
 	private void addAbort(Statement stmt) {
 			model.remove(stmt);
-			try {	
+			// try {	
 				model.begin();
 				model.add(stmt);
 				model.abort();			
-			} catch(Exception e) {
-				System.out.println("addAbort caught exception: " + e);
-			}
+			// } catch(Exception e) {
+				// throw new JenaException( e ); // System.out.println("addAbort caught exception: " + e);
+			// }
 			assertTrue(!model.contains(stmt) );
 		}
 		
