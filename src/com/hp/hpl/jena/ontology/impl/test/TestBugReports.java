@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-10-22 10:41:26 $
+ * Last modified on   $Date: 2003-11-13 12:11:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -34,6 +34,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.OWL;
 
 import junit.framework.*;
@@ -46,7 +47,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.19 2003-10-22 10:41:26 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.20 2003-11-13 12:11:24 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -181,6 +182,28 @@ public class TestBugReports
         assertEquals("Before and after statement counts are different", oldCount, getStatementCount( ontModel ));
     }
     
+    /** Bug report from Holger Knublach: moving between ontology models - comes down to a test for a resource being in the base model */
+    public void test_hk_06()
+        throws Exception 
+    {
+        OntModel ontModel = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
+        ontModel.read( "file:testing/ontology/bugs/test_hk_06/a.owl" );
+
+        String NSa = "http://jena.hpl.hp.com/2003/03/testont/a#";
+        String NSb = "http://jena.hpl.hp.com/2003/03/testont/b#";
+
+        OntClass A = ontModel.getOntClass(NSa+"A");
+        assertTrue( "class A should be in the base model", ontModel.isInBaseModel( A ));
+        
+        OntClass B = ontModel.getOntClass(NSb+"B");
+        assertFalse( "class B should not be in the base model", ontModel.isInBaseModel( B ));
+        
+        assertTrue( "A rdf:type owl:Class should be in the base model", 
+                    ontModel.isInBaseModel( ontModel.createStatement( A, RDF.type, OWL.Class ) ) );
+        assertFalse( "B rdf:type owl:Class should not be in the base model", 
+                    ontModel.isInBaseModel( ontModel.createStatement( B, RDF.type, OWL.Class ) ) );
+    }
+
     /**
      * Bug report by federico.carbone@bt.com, 30-July-2003.   A literal can be
      * turned into an individual.

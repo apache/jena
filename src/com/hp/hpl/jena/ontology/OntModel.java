@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-06 17:36:38 $
+ * Last modified on   $Date: 2003-11-13 12:11:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -70,7 +70,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.34 2003-11-06 17:36:38 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.35 2003-11-13 12:11:37 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1254,6 +1254,28 @@ public interface OntModel
      */
     public void removeSubModel( Model model, boolean rebind );
     
+    
+    /**
+     * <p>Answer true if the given node is a member of the base model of this ontology model.
+     * This is an important distiction, because only the base model receives updates when the
+     * ontology model is updated. Thus, removing properties of a resource that is not in the base
+     * model will not actually side-effect the overall model.</p>
+     * @param node An RDF node (Resource, Property or Literal) to test
+     * @return True if the given node is from the base model
+     */
+    public boolean isInBaseModel( RDFNode node );
+    
+    
+    /**
+     * <p>Answer true if the given statement is defined in the base model of this ontology model.
+     * This is an important distiction, because only the base model receives updates when the
+     * ontology model is updated. Thus, removing a statement that is not in the base
+     * model will not actually side-effect the overall model.</p>
+     * @param stmt A statement to test
+     * @return True if the given statement is from the base model
+     */
+    public boolean isInBaseModel( Statement stmt );
+
     
     /**
      * <p>
