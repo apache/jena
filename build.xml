@@ -2,7 +2,7 @@
 
   <property name="Name"            value="Jena"/>
   <property name="name"            value="jena"/>
-  
+
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="2"/>
   <property name="version-minor"   value="2"/>
@@ -13,9 +13,9 @@
 
   <property name="dist.name"       value="${Name}-${version}"/>
   <property name="dist.zip.name"   value="${name}-${version}.zip"/>
-  
+
   <property name="web.site"        value="http://jena.sourceforge.net/" />
-  
+
   <property name="java.debug"      value="true"/>
   <property name="java.debuglevel" value="source,lines"/>
   <property name="java.deprecation"   value="false"/>
@@ -87,7 +87,7 @@
 
   <target name="bin" depends="compile,make-jar"/>
 
-  <target name="grammars" depends="rdql-grammar,arp-grammar"/>
+  <target name="grammars" depends="arp-grammar"/>
 
   <!--
   <target name="rdql-grammar">
@@ -200,19 +200,25 @@
     </jar>
   </target>
 
-  <!-- copy
-       + rdb configuration files
-       + all data files
-       into class path prior to jar step -->
-  <target name="copy-etc">
-    <copy todir="${classes.dir}/${etc.dir}">
-      <fileset dir="${etc.dir}" includes="**"/>
-    </copy>
-    <copy todir="${classes.dir}">
-      <fileset dir="${src.dir}" includes="**/data/**"/>
-    </copy>
-  </target>
-  
+    <!-- copy
+          + rdb configuration files
+          + all data files
+         into class path prior to jar step -->
+    <target name="copy-etc">
+        <copy todir="${classes.dir}/${etc.dir}">
+            <fileset dir="${etc.dir}" includes="**"/>
+        </copy>
+        <copy todir="${classes.dir}">
+            <fileset dir="${src.dir}" includes="**/data/**"/>
+        </copy>
+        <copy todir="${classes.dir}/${vocab.dir}">
+            <fileset dir="${vocab.dir}" includes="jena-model-spec.n3"/>
+            <fileset dir="${vocab.dir}" includes="daml+oil.daml"/>
+            <fileset dir="${vocab.dir}" includes="rdf-schema.rdf"/>
+            <fileset dir="${vocab.dir}" includes="owl.owl"/>
+        </copy>
+    </target>
+
   <!-- Section: Javadoc -->
 
   <target name="javadoc" depends="build-src" description="Make the javadoc">
@@ -296,7 +302,7 @@
 	<package name="com.hp.hpl.jena.util"/>
 	<package name="com.hp.hpl.jena.util.iterator"/>
       </group>
-      
+
       <group title="Command line tools">
 	<package name="jena" />
       </group>
@@ -482,10 +488,10 @@
   <!-- Using schemagen to produce vocabularies -->
 
   <target name="vocabs" depends="ont-events, owl-vocab, ontdoc-vocab" />
-  
+
   <target name="check.ont-events">
-    <uptodate property="ont-events.build.notreq" 
-	      srcFile="${vocab.dir}/ont-event.rdf" 
+    <uptodate property="ont-events.build.notreq"
+	      srcFile="${vocab.dir}/ont-event.rdf"
 	      targetFile="${vocab.java}/OntEventsVocab.java" />
   </target>
 
@@ -502,8 +508,8 @@
   </target>
 
   <target name="check.owl-vocab">
-    <uptodate property="owl-vocab.build.notreq" 
-	      srcFile="${vocab.dir}/owl.owl" 
+    <uptodate property="owl-vocab.build.notreq"
+	      srcFile="${vocab.dir}/owl.owl"
 	      targetFile="${vocab.java}/OWL.java" />
   </target>
 
@@ -519,8 +525,8 @@
   </target>
 
   <target name="check.ontdoc-vocab">
-    <uptodate property="ontdoc-vocab.build.notreq" 
-	      srcFile="${vocab.dir}/ont-manager.rdf" 
+    <uptodate property="ontdoc-vocab.build.notreq"
+	      srcFile="${vocab.dir}/ont-manager.rdf"
 	      targetFile="${vocab.java}/OntDocManagerVocab.java" />
   </target>
 

@@ -18,6 +18,8 @@ Post Jena 2.1 change list
   Database
       o Fixed user-reported problem where removeNsPrefix() wasn't persistent
       o handles some constraints internally
+      o A minor change to the DBPrefixMappingImpl has improved the speed
+        with which DB models with several prefixes are opened.
 
   GraphBase and Reification SPI
       o Reifier::getHiddenTriples() and getReificationTriples() REMOVED and
@@ -122,6 +124,19 @@ Post Jena 2.1 change list
         specify multiple rulesets by URL or by literal strings. Schemas
         may also be specified by URL. 
 
+      o Internal refactoring has cleaned up the API somewhat, and there
+        is, optionally, config information read from
+
+            etc/modelspec-config.n3
+
+        At the moment, this only allows the Java class that implements
+        a given jms:ModelSpec type to be specified.
+
+      o The JMS (Java Model Spec) vocabulary class has had its schema 
+        extracted - it is now loaded from vocabularies/jena-model-spec.n3.
+        That vocabulary element is now added to jena.jar (as are some other
+        vocabulary elements used by the system).
+
   PrefixMappings
       o Standard no longer contains vcard, jms, or rss.
       o Extended introduced = Standard + vcard, jms, rss.
@@ -129,6 +144,8 @@ Post Jena 2.1 change list
       o qnameFor added; result is legal qname or null.
       o w.withDefaultMapping(x) added, which adds mappings from x which
         don't clash with those already in w.
+      o the restriction that namespaces must not end with name characters
+        has been removed.
 
   Exceptions
       o added WrappedException extends JenaException for wrapped exceptions
