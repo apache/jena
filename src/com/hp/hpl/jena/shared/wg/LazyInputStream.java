@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,29 +30,44 @@
  * Created on November 28, 2001, 11:38 AM
  */
 
-package com.hp.hpl.jena.rdf.arp.test;
+package com.hp.hpl.jena.shared.wg;
 
 
 import java.io.*;
 
 /**
- *
- * In test cases we cannot open all the input files
+ *In test cases we cannot open all the input files
  * while creating the test suite, but must defer the
  * opening until the test is actually run.
  * @author  jjc
  */
-class LazyFileInputStream extends LazyInputStream {
+abstract class LazyInputStream extends InputStream {
 
-    private String name;
-    /** Creates new LazyZipEntryInputStream */
-    LazyFileInputStream(String name) {
-      //  System.err.println(name);
-        this.name = name;
+    private InputStream underlying;
+    abstract InputStream open() throws IOException;
+    
+    boolean connect() throws IOException {
+    	if ( underlying != null )
+    	  return true;
+    	else {
+            underlying = open();
+    	}
+    	return underlying != null;
+    		
     }
     
-    InputStream open() throws IOException {
-    	return new FileInputStream(name);
+    
+    public int read() throws IOException {
+        if (underlying == null)
+            underlying = open();
+        return underlying.read();
+    }
+    
+    public void close() throws IOException {
+        if (underlying != null) {
+            underlying.close();
+            underlying = null;
+        }
     }
     
     

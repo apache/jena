@@ -30,20 +30,21 @@
  * Created on September 18, 2001, 7:50 PM
  */
 
-package com.hp.hpl.jena.rdf.arp.test;
+package com.hp.hpl.jena.ontology.tidy.test;
+
+import com.hp.hpl.jena.shared.wg.URI;
+
 import junit.framework.TestSuite;
 import junit.framework.Test;
 import java.io.*;
-import java.util.*;
-
-import com.hp.hpl.jena.shared.wg.*;
+//import java.util.*;
 /**
  * The JUnit test suite for ARP.
  *
  * @author  jjc
 
  */
-public class ARPTests extends java.lang.Object {
+public class WGTests extends java.lang.Object {
 	/**
 	 * Setting this field to true uses the tests found
 	 * on the W3C web site.
@@ -52,12 +53,10 @@ public class ARPTests extends java.lang.Object {
 	 */
 	static public boolean internet = false;
 	static private URI wgTestDir =
-		URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/");
-	static private URI arpTestDir =
-		URI.create("http://jcarroll.hpl.hp.com/arp-tests/");
-	/** Creates new ARPTests */
+		URI.create("http://www.w3.org/2002/03owlt/");
 	static public Test suite() {
-		TestSuite s = new TestSuite("ARP");
+		TestSuite s = new TestSuite("OWL-Syntax");
+		/*
 		if (internet) {
 			s.addTest(NTripleTestSuite.suite(wgTestDir, wgTestDir, "WG Parser Tests"));
 		} else {
@@ -74,8 +73,10 @@ public class ARPTests extends java.lang.Object {
 			//    "file://src/com/hp/hpl/jena/rdf/arp/test/data/wg/"),
 			"NTriple WG Tests"));
 		}
+		*/
 		return s;
 	}
+	/*
     static int cnt = 0;
     static String toJava(Test s,PrintWriter pw, String wgparent) {
         String name = "test"+cnt++;
@@ -109,6 +110,7 @@ public class ARPTests extends java.lang.Object {
            
         return name;
     }
+    */
 	static public void main(String args[]) throws IOException {
 		Test ts = suite();
         PrintWriter pw = new PrintWriter(new FileWriter("src/com/hp/hpl/jena/rdf/arp/test/TestPackage.java"));
@@ -145,8 +147,8 @@ public class ARPTests extends java.lang.Object {
         pw.println("import junit.framework.Test;");
         pw.println("public class TestPackage{");
         pw.println("static public Test suite() {");
-        String tsname = toJava(ts, pw, "xx");
-        pw.println("return " + tsname+ ";");
+   //     String tsname = toJava(ts, pw, "xx");
+   //    pw.println("return " + tsname+ ";");
         pw.println("} }");
         pw.println("");
         pw.flush();

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.15 2003-09-17 10:12:04 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.16 2003-09-17 12:41:05 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -16,6 +16,8 @@ import java.util.*;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.wg.*;
+import com.hp.hpl.jena.shared.wg.URI;
 
 import org.xml.sax.*;
 /**
@@ -26,28 +28,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     static public boolean checkMessages = false;
     static private boolean inDevelopment = false;
     static Reader getReader(String prop) throws IOException {
-        return new InputStreamReader(getInputStream(prop), "utf-8");
-    }
-    static InputStream getInputStream(String prop) {
-        // System.err.println(prop);
-        ClassLoader loader = WGTestSuite.class.getClassLoader();
-        if (loader == null)
-            throw new SecurityException("Cannot access class loader");
-        InputStream in =
-            // loader.getResourceAsStream("com/hp/hpl/jena/rdf/arp/test/data/" + prop);
-    loader.getResourceAsStream("testing/" + prop);
-        //	System.out.println(prop);
-        if (in == null) {
-            try {
-                in = new FileInputStream("testing/" + prop);
-            } catch (IOException e) {
-            }
-            if (in == null)
-                throw new IllegalArgumentException(
-                    "Resource: " + prop + " not found on class path.");
-        }
-
-        return in;
+        return new InputStreamReader(TestInputStreamFactory.getInputStream(prop), "utf-8");
     }
     Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
         throws IOException {
@@ -101,7 +82,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
     };
     
-    ARPTestInputStreamFactory factory;
+    TestInputStreamFactory factory;
     
     static private Collection misc =
         Arrays.asList(
@@ -148,16 +129,15 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         });
     }
 
-    private Model loadRDF(ARPTestInputStreamFactory fact, String file) {
+    private Model loadRDF(TestInputStreamFactory fact, String file) {
         Model m = null;
         String base = fact.getBase().toString();
         if (!base.endsWith("/"))
             base = base + "/";
 
         try {
-            InputStream in = fact.open(file);
-            if (in instanceof LazyInputStream
-                && !((LazyInputStream) in).connect())
+            InputStream in = fact.fullyOpen(file);
+            if (in == null )
                 return null;
             m = loadRDF(in, null, base + file);
         } catch (JenaException e) {
@@ -179,7 +159,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
      */
     String createMe;
     
-    WGTestSuite(ARPTestInputStreamFactory fact, String name, boolean dynamic) {
+    WGTestSuite(TestInputStreamFactory fact, String name, boolean dynamic) {
         super(name);
         factory = fact;
         testDir = fact.getBase();
@@ -189,7 +169,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                     "new "
                         + this.getClass().getName()
                         + "("
-                        + fact.createMe
+                        + fact.getCreationJava()
                         + ", \""
                         + name
                         + "\", false )";
@@ -235,14 +215,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     
     static TestSuite suite(URI testDir, String d, String nm) {
         return new WGTestSuite(
-            new ARPTestInputStreamFactory(testDir, d),
+            new TestInputStreamFactory(testDir, d),
             nm,
             true);
     }
 
     static TestSuite suite(URI testDir, URI d, String nm) {
         return new WGTestSuite(
-            new ARPTestInputStreamFactory(testDir, d),
+            new TestInputStreamFactory(testDir, d),
             nm,
             true);
     }

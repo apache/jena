@@ -30,33 +30,35 @@
  * Created on November 28, 2001, 11:38 AM
  */
 
-package com.hp.hpl.jena.rdf.arp.test;
+package com.hp.hpl.jena.shared.wg;
 
 
 import java.io.*;
-import java.net.*;
+import java.util.zip.*;
 
 /**
- *
- * In test cases we cannot open all the input files
+ *In test cases we cannot open all the input files
  * while creating the test suite, but must defer the
  * opening until the test is actually run.
  * @author  jjc
  */
-class LazyURLInputStream extends LazyInputStream {
+class LazyZipEntryInputStream extends LazyInputStream {
 
-    private URL url;
+    private ZipEntry entry;
+    private ZipFile  zip;
     /** Creates new LazyZipEntryInputStream */
-    LazyURLInputStream(URL url) {
+    LazyZipEntryInputStream(ZipFile zip,String name) {
       //  System.err.println(name);
-        this.url = url;
+        entry = new ZipEntry(name);
+        this.zip = zip;
     }
     
+    
     InputStream open() throws IOException {
-    	URLConnection conn = url.openConnection();
-    //	System.err.println(conn.getClass().getName());
-    	
-    	return conn.getInputStream();
+    	InputStream rslt = zip.getInputStream(entry);
+    	if ( rslt == null )
+    	  throw new IllegalArgumentException(entry.getName()+ " cannot be opened.");
+    	return rslt;
     }
     
     

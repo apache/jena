@@ -3,8 +3,9 @@
  *  (c) Copyright 2002  Hewlett-Packard Development Company, LP
  * See end of file.
  */
-package com.hp.hpl.jena.rdf.arp.test;
+package com.hp.hpl.jena.shared.wg;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -22,18 +23,18 @@ import com.hp.hpl.jena.shared.*;
  *
  * 
  */
-class ARPTestInputStreamFactory {
+public class TestInputStreamFactory {
 
 	final private URI base;
 	final private URI mapBase;
 	final private ZipFile zip;
 	final private String property;
-    String createMe = "error";
+    private String createMe = "error";
 
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param getBaseDir Replace the baseDir into getBaseDir before opening any URL.
 	 */
-	ARPTestInputStreamFactory(URI baseDir, URI getBaseDir) {
+	public TestInputStreamFactory(URI baseDir, URI getBaseDir) {
 		base = baseDir;
 		mapBase = getBaseDir;
 		zip = null;
@@ -42,7 +43,7 @@ class ARPTestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
 	 */
-	ARPTestInputStreamFactory(URI baseDir, ZipFile zip) {
+	public TestInputStreamFactory(URI baseDir, ZipFile zip) {
 		base = baseDir;
 		mapBase = null;
 		this.zip = zip;
@@ -52,7 +53,7 @@ class ARPTestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
 	 */
-	ARPTestInputStreamFactory(URI baseDir, String propDir) {
+	public TestInputStreamFactory(URI baseDir, String propDir) {
         createMe = "new ARPTestInputStreamFactory(URI.create(\""
         +baseDir.toString()
         +"\"),\""+propDir+"\")";
@@ -62,26 +63,54 @@ class ARPTestInputStreamFactory {
 		property = propDir.endsWith("/") ? propDir : propDir + "/";
 	}
 
-	URI getBase() {
+	public URI getBase() {
 		return base;
 	}
-	InputStream open(String str) {
+	/**
+	 * A lazy open. The I/O only starts, and resources
+	 * are only allocated on first read.
+	 * @param str The URI to open
+	 */
+	public InputStream open(String str) {
 		return open(URI.create(str));
 	}
-	InputStream open(URI uri) {
+	/**
+	 * opens the file, and really does it - not a delayed
+	 * lazy opening.
+	 * @param str the URI to open
+	 * @return null on some failures
+	 * @throws IOException
+	 */
+	public InputStream fullyOpen(String str) throws IOException {
+		InputStream in = open(URI.create(str));
+		if (in instanceof LazyInputStream
+						&& !((LazyInputStream) in).connect())
+						return null;
+		return in;
+	}
+	/**
+	 * A lazy open. The I/O only starts, and resources
+	 * are only allocated on first read.
+	 * @param uri to be opened.
+	 * @return
+	 */
+	public InputStream open(URI uri) {
 		return (InputStream) open(uri, true);
 
 	}
-	boolean savable() {
+	public boolean savable() {
 		return mapBase != null && mapBase.getScheme().equalsIgnoreCase("file");
 
 	}
-	OutputStream openOutput(String str) {
+	public OutputStream openOutput(String str) {
 		OutputStream foo = (OutputStream) open(URI.create(str), false);
 	//	System.out.println(foo.toString());
 		return foo;
 	}
 
+    public String getCreationJava() {
+    	return createMe;
+    }
 	private Object open(URI uri, boolean in) {
 		URI relative = uri.isAbsolute() ? base.relativize(uri) : uri;
 		if (relative.isAbsolute())
@@ -110,8 +139,30 @@ class ARPTestInputStreamFactory {
 		if (zip != null)
 			return new LazyZipEntryInputStream(zip, relative.toString());
 		else
-			return WGTestSuite.getInputStream(property + relative.toString());
+			return TestInputStreamFactory.getInputStream(property + relative.toString());
 
+	}
+
+	public static InputStream getInputStream(String prop) {
+	    // System.err.println(prop);
+	    ClassLoader loader = TestInputStreamFactory.class.getClassLoader();
+	    if (loader == null)
+	        throw new SecurityException("Cannot access class loader");
+	    InputStream in =
+	        // loader.getResourceAsStream("com/hp/hpl/jena/rdf/arp/test/data/" + prop);
+	loader.getResourceAsStream("testing/" + prop);
+	    //	System.out.println(prop);
+	    if (in == null) {
+	        try {
+	            in = new FileInputStream("testing/" + prop);
+	        } catch (IOException e) {
+	        }
+	        if (in == null)
+	            throw new IllegalArgumentException(
+	                "Resource: " + prop + " not found on class path.");
+	    }
+	
+	    return in;
 	}
 
 }

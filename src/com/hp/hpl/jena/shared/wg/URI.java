@@ -4,7 +4,7 @@
  *  (c) Copyright 2002  Hewlett-Packard Development Company, LP
  * See end of file.
  */
-package com.hp.hpl.jena.rdf.arp.test;
+package com.hp.hpl.jena.shared.wg;
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 
 /**
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.arp.MalformedURIException;
  */
 public class URI extends com.hp.hpl.jena.rdf.arp.URI {
 	private String relative;
-	static URI create(String s) {
+	public static URI create(String s) {
 		try {
 		    return new URI(s);
 		}
@@ -43,10 +43,10 @@ public class URI extends com.hp.hpl.jena.rdf.arp.URI {
 	private URI(URI x, URI y) throws MalformedURIException {
 		super(x, y.toString());
 	}
-	boolean isAbsolute() {
+	public boolean isAbsolute() {
 		return relative == null;
 	}
-	URI resolve(URI rel) {
+	public URI resolve(URI rel) {
 		try {
 		return new URI(this,rel);
 		}
@@ -55,11 +55,11 @@ public class URI extends com.hp.hpl.jena.rdf.arp.URI {
 		}
 	}
 	
-	java.net.URL toURL() throws java.net.MalformedURLException {
+	public java.net.URL toURL() throws java.net.MalformedURLException {
 		return new java.net.URL(getURIString());
 	}
 		
-	URI relativize(URI x) {
+	public URI relativize(URI x) {
 		String me = toString();
 		String xx = x.toString();
 		if ( !xx.startsWith(me) ) {

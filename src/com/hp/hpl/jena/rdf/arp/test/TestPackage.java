@@ -26,12 +26,14 @@
  *
  */
 package com.hp.hpl.jena.rdf.arp.test;
+import com.hp.hpl.jena.shared.wg.*;
+
 import junit.framework.TestSuite;
 import junit.framework.Test;
 public class TestPackage{
 static public Test suite() {
 TestSuite test0 = new TestSuite("ARP");
-WGTestSuite test1 = new com.hp.hpl.jena.rdf.arp.test.WGTestSuite(new ARPTestInputStreamFactory(URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/"),"wg"), "WG Parser Tests", false );
+WGTestSuite test1 = new com.hp.hpl.jena.rdf.arp.test.WGTestSuite(new TestInputStreamFactory(URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/"),"wg"), "WG Parser Tests", false );
 TestSuite test2 = new TestSuite("NOT_APPROVED");
 Test test3 = test1.createWarningTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-literal-is-xml-structure/Manifest.rdf#test005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-literal-is-xml-structure/test005.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-literal-is-xml-structure/test005.nt",false,new int[]{106, });
 test2.addTest(test3);
@@ -403,7 +405,7 @@ Test test186 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdf
 test158.addTest(test186);
 test1.addTest(test158);
 test0.addTest(test1);
-WGTestSuite test187 = new com.hp.hpl.jena.rdf.arp.test.WGTestSuite(new ARPTestInputStreamFactory(URI.create("http://jcarroll.hpl.hp.com/arp-tests/"),"arp"), "ARP Tests", false );
+WGTestSuite test187 = new com.hp.hpl.jena.rdf.arp.test.WGTestSuite(new TestInputStreamFactory(URI.create("http://jcarroll.hpl.hp.com/arp-tests/"),"arp"), "ARP Tests", false );
 TestSuite test188 = new TestSuite("ARP");
 Test test189 = test187.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1","http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1.nt",false);
 test188.addTest(test189);
@@ -475,7 +477,7 @@ Test test222 = test187.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/
 test188.addTest(test222);
 test187.addTest(test188);
 test0.addTest(test187);
-WGTestSuite test223 = new com.hp.hpl.jena.rdf.arp.test.NTripleTestSuite(new ARPTestInputStreamFactory(URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/"),"wg"), "NTriple WG Tests", false );
+WGTestSuite test223 = new com.hp.hpl.jena.rdf.arp.test.NTripleTestSuite(new TestInputStreamFactory(URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/"),"wg"), "NTriple WG Tests", false );
 TestSuite test224 = new TestSuite("NOT_APPROVED");
 Test test225 = test223.createWarningTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-literal-is-xml-structure/Manifest.rdf#test005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-literal-is-xml-structure/test005.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-literal-is-xml-structure/test005.nt",false,new int[]{106, });
 test224.addTest(test225);

@@ -9,6 +9,8 @@ import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.arp.*;
+import com.hp.hpl.jena.shared.wg.*;
+import com.hp.hpl.jena.shared.wg.URI;
 
 /**
  * A version of the test suite which uses the
@@ -19,16 +21,16 @@ import com.hp.hpl.jena.rdf.arp.*;
  * 
  */
 class NTripleTestSuite extends WGTestSuite {
-	NTripleTestSuite(ARPTestInputStreamFactory fact, String name,boolean b) {
+	NTripleTestSuite(TestInputStreamFactory fact, String name,boolean b) {
 		super(fact, name, b);
 	}
 
 	static  TestSuite suite(URI testDir, String d, String nm) {
-	   return new NTripleTestSuite(new ARPTestInputStreamFactory(testDir, d), nm, true);
+	   return new NTripleTestSuite(new TestInputStreamFactory(testDir, d), nm, true);
 	}
 
 	static  TestSuite suite(URI testDir, URI d, String nm) {
-		return new NTripleTestSuite(new ARPTestInputStreamFactory(testDir, d), nm, true);
+		return new NTripleTestSuite(new TestInputStreamFactory(testDir, d), nm, true);
 	}
     
 	Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
