@@ -1,72 +1,27 @@
 
-/* This Prolog program has to be loaded with the Prolog
-   available at:
-   http://www.w3.org/2001/sw/WebOnt/syntaxTF/prolog/
-start at
-   http://www.w3.org/2001/sw/WebOnt/syntaxTF/prolog/load.pl
-to work out all the links :(
-*/
-
-
-
-isQname(_:_).
-isNode(NN) :-
-  typedTriple(t(NN,_,_),_,_).
-
-isNode(NN) :-
-  typedTriple(t(_,NN,_),_,_).
-
-isNode(NN) :-
-  typedTriple(t(_,_,NN),_,_).
-
-allQnames(S) :-
-  setof(X,(isNode(X),isQname(X)),S).
-
-allURIrefs(U) :-
-  allQnames(S),
-  maplist(expandQname,S,U).
-
-expandQname(Q:N,URIref+QN) :-
-  namespace(Q,U),
-  !,
-  atom_concat(U,N,URIref),
-  atom_concat(Q,N,QN).
-expandQname(X,X).
-
 
 namespace(rdf,'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
 namespace(rdfs,'http://www.w3.org/2000/01/rdf-schema#').
 namespace(owl,'http://www.w3.org/2002/07/owl#').
 namespace(xsd,'http://www.w3.org/2001/XMLSchema#').
 
-grouping(
-[annotationPropID, classID, dataPropID, 
-datatypeID, individualID,  
-objectPropID, ontologyID, transitivePropID,notype
-],userID).
+grouping([annotationPropID, classID, dataPropID, datatypeID, individualID,
+  objectPropID, ontologyID, transitivePropID, notype],userID).
 
-grouping(
-[annotationPropID, dataPropID, 
-objectPropID, transitivePropID,notype
-],propertyOnly).
+grouping( [annotationPropID, dataPropID, objectPropID, 
+           transitivePropID,notype],propertyOnly).
 
-grouping(
-[classID,notype],classOnly).
+grouping([classID,notype],classOnly).
 
 grouping([orphan, ontologyPropertyID], ontologyPropertyHack ).
 grouping([allDifferent, description, listOfDataLiteral, listOfDescription, 
-listOfIndividualID, orphan, unnamedOntology,cyclic,
-restriction, unnamedDataRange, unnamedIndividual,notype
-],blank).
+listOfIndividualID, orphan, unnamedOntology,cyclic, 
+cyclicFirst, cyclicRest, restriction, unnamedDataRange, 
+unnamedIndividual,notype ],blank).
 
 grouping([restriction],restrictions).
 grouping([description],descriptions).
-grouping([listOfDataLiteral, listOfDescription, 
-listOfIndividualID],lists).
-
-
-
-%grouping(H) :- grouping(H,_).
+grouping([listOfDataLiteral, listOfDescription, listOfIndividualID],lists).
 
 
 % allBuiltins(Q,N,T,F) :-
@@ -78,34 +33,32 @@ allBuiltins(Q,N,[T],0) :-
 allBuiltins(Q,N,[T],bad) :-
   badbuiltin(Q,N,T).
 
-allBuiltins(Q,N,[classID],notQuite) :-
+allBuiltins(Q,N,[classOnly],notQuite) :-
   classOnly(Q,N).
 
-allBuiltins(Q,N,P,notQuite) :-
-  grouping(P,propertyOnly),
+allBuiltins(Q,N,[propertyOnly],notQuite) :-
   propertyOnly(Q,N).
 
 allBuiltins(Q,N,[Q:N],0) :-
   builtiny(Q,N).
 
-%% map get ressurrected - currently dead.
-gogo_old :-
-   buildChecker,
-   gname,
-   classfile.
-
 :-dynamic tt/4.
-:- dynamic g/1.
-%:- dynamic x/7.
-%:- dynamic finished/0.
-:- dynamic gn/2.
-:-dynamic width/1.
-:-dynamic gn2/2.
 :-dynamic m/2.
 :-dynamic m/1.
-:- dynamic h/1.
 :-dynamic expg/2.
 
+wTripleTable :-
+  wlist(['static final int triples[] = new int[]{};',nl]).
+
+category(orphan).
+category(notype).
+category(cyclic).
+category(cyclicRest).
+category(cyclicFirst).
+category(X) :-
+   setof(Z,isTTnode(Z),S),
+   member(Z,S),
+   gname([Z],X).
 propertyNumber(owl:intersectionOf, 1):-!.
 propertyNumber(owl:complementOf, 1):-!.
 propertyNumber(owl:distinctMembers, 1):-!.
@@ -135,7 +88,55 @@ uncan(N,Can) :-
   fail.
 uncan(_,_).
   
+copyrightHead :-
+     write('/* (c) Copyright '),
+     wDate,
+     wlist([' Hewlett-Packard Company, all rights reserved.',nl,
+              '  [See end of file]',nl,
+              '  $Id: checker.pl,v 1.9 2003-04-15 19:47:15 jeremy_carroll Exp $',nl,
+              '*/',nl]).
 
+wDate :-
+   date(date(2003,_,_)),
+   write(2003),
+   !.
+wDate :-
+   date(date(D,_,_)),
+   wlist([2003,'-',D]).
+   
+copyrightTail :- wlist([
+' /*',nl,
+'	(c) Copyright Hewlett-Packard Company ']),
+wDate,
+wlist([
+nl,
+'	All rights reserved.',nl,
+' ',nl,
+'	Redistribution and use in source and binary forms, with or without',nl,
+'	modification, are permitted provided that the following conditions',nl,
+'	are met:',nl,
+' ',nl,
+'	1. Redistributions of source code must retain the above copyright',nl,
+'	   notice, this list of conditions and the following disclaimer.',nl,
+' ',nl,
+'	2. Redistributions in binary form must reproduce the above copyright',nl,
+'	   notice, this list of conditions and the following disclaimer in the',nl,
+'	   documentation and/or other materials provided with the distribution.',nl,
+' ',nl,
+'	3. The name of the author may not be used to endorse or promote products',nl,
+'	   derived from this software without specific prior written permission.',nl,
+' ',nl,
+'	THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR',nl,
+'	IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES',nl,
+'	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.',nl,
+'	IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,',nl,
+'	INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT',nl,
+'	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,',nl,
+'	DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY',nl,
+'	THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT',nl,
+'	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF',nl,
+'	THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.',nl,
+'*/  ',nl]).
 gogo :-
   compMapping,
   buildChecker,
@@ -143,7 +144,7 @@ gogo :-
   jfile('Grammar',JF),
   tell(JF),
   copyrightHead,
-  wlist(['import java.util.Arrays;',nl,
+  wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,
          'class Grammar {',nl]),
   flag(catID,_,1),
   category(C),
@@ -154,11 +155,21 @@ gogo :-
 gogo :-
   wActions,
   wGetBuiltinID,
+  wInitSingletons,
   wTripleTable,
   wGroups,
   wlist(['}',nl]),
   copyrightTail,
   told.
+  
+wInitSingletons :-
+  countx(category(_),N),
+  wlist(['static {',nl,
+  'for (int i=0; i<=',N,'; i++) {',nl,
+   'if ( i != CategorySet.find(new int[]{i},true) )',nl,
+   '      System.err.println("initialization problem");',nl,
+   '}',nl,
+   '};',nl]).
   
 
 
@@ -212,100 +223,28 @@ buildChecker :-
 
    
 buildChecker :-
-  retractall(g(_)),
+  retractall(expg(_,_)),
   grouping(G,N),
   expandGrouping(G,G1),
   assert(expg(G1,N)),
-  assert(g(G1)),
   fail.
   
-buildChecker.
+buildChecker :-
+  setof(D-N*disjointWith,isTTnode(D-N*disjointWith),S),
+  assert(expg(S,disjointWith)).
+  
 
-buildChecker_old :-
-  setof(N,isTTnode(N),S),
-  member(X,S),
-  assert(g([X])),
+wGroups :-
+  expg(S,N),
+  wlist(['static final int ',N,'X[] = new int[]{',nl]),
+  (member(M,S),
+     gname([M],MM),
+     wlist([MM,',',nl]),
+     fail;
+   wlist(['};',nl,
+    'static final int ',N,' = CategorySet.find( ',N,'X,false);',nl])),
   fail.
-
-/*
-buildChecker :-
-  retractall(x(_,_,_,_,_,_,_)),
-  retractall(finished),
-  repeat,
-  (asserta(finished),
-  g(A),g(B),g(C),
-  switch(A,B,C,AA,BB,CC,DL),
-  \+x(A,B,C,AA,BB,CC,DL),
-  assert(x(A,B,C,AA,BB,CC,DL)),
-  assertOnce(g(AA)),
-  assertOnce(g(BB)),
-  assertOnce(g(CC)),
-  retract(finished),
-  fail;
-  finished,!).
-buildChecker :-
-  retractall(x(_,_,_,_,_,_,_)),
-  retractall(finished),
-  countx(tt(_,_,_,_),N),
-  wuser(['tt has ',N,' entries.',nl]),
-  repeat,
-  (asserta(finished),
-  g(X),
-  \+ h(X),
-  show_stats,
-  choose(X,A,B,C),
-  switch(A,B,C,AA,BB,CC,DL),
-  \+x(A,B,C,AA,BB,CC,DL),
-  assert(x(A,B,C,AA,BB,CC,DL)),
-  assertOnce(g(AA)),
-  assertOnce(g(BB)),
-  assertOnce(g(CC)),
-  retract(finished),
-  fail;
-  finished,!).
-
-*/
-
-buildChecker_old :-
-   tell('tmpSubCategorizationInput'),
-   /*
-   wlist([orphan,nl]),
-   wlist([notype,nl]),
-   wlist([cyclic,nl]),
-   */
-   g([A]),
-   writeq(A),nl,
-   fail.
-buildChecker_old :-
-   write('%%'),nl,
-   tt(S,P,O,_),
-   writeq(S),write(' '),
-   writeq(P),write(' '),
-   writeq(O),nl,
-   fail.
-buildChecker_old :-
-   write('%%'),nl,
-   g([A,B|T]),
-   (member(X,[A,B|T]),
-   writeq(X),put(" "),
-   fail;nl),fail.
-buildChecker_old :-
-  write('%%'),nl,told,
-  (
-  shell(echo) ->
-   shell('./precompute < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl');
-  shell('precomp.bat')),
-  [tmpSubCategorizationOutput].
-
-/*
-choose(X,X,B,C) :- h(X,B),h(X,C).
-choose(X,A,X,C) :- h(A),h(X,C).
-choose(X,A,B,X) :- h(A),h(B).
-choose(X,_,_,_) :- assertz(h(X)),fail.
-
-h(A,A).
-h(_,A) :- h(A).
-*/
+wGroups.
 
 countx(G,_) :-
   flag(count,_,0),
@@ -314,22 +253,6 @@ countx(G,_) :-
   fail.
 countx(_,N) :-
   flag(count,N,N).
-/*
-show_stats :-
-  telling(X),
-  tell(user),
-  stats1,
-  tell(X).
-
-stats1 :-
-  countx(g(_),GN),
-  countx(h(_),HN),
-  statistics(runtime,[_,RT]),
-  statistics(inferences,II),
-  flag(inferences,OLD,II),
-  I is II - OLD,
-  writef('%5r %5r %8r %8r\n',[GN,HN,RT,I]).
-  */
 
 expandGrouping(In,Out) :-
   setof(X,expandIn(X,In),Out).
@@ -342,13 +265,7 @@ expand2(X,XX) :-
    m(X,XX).
 expand2(X,X) :- \+ m(X,_).
 
-gname :-
-  retractall(gn(_,_)),
-  subCategory(G),
-  gname(G,GN),
-  assert(gn(G,GN)),
-  fail.
-gname.
+
 
 bits(N,NB) :-
   member(_,L),
@@ -356,39 +273,18 @@ bits(N,NB) :-
   N < 1<<NB,
   !.
 
-gname(L,N) :- expg(L1,N),sort(L,L2),sort(L1,L2), !.
 gname([(Q:N)],QN) :- atom_concat(Q,N,QN),!.
+gname([D-_],D) :- countx(m(D,_),1),!.
 gname([D-N*S],QN) :- concat_atom([D,N,S],QN),!.
 gname([D-N],QN) :- concat_atom([D,N],QN),!.
 gname([X],X) :- !.
-gname([],'Empty') :- !.
-gname(L,N) :-
-   maplist(gn1,L,L1),
-   concat_atom(L1,'_',N).
 
 gn1(X,XX) :-
   gname([X],XX).
 
 
 
-
-classfile :-
-  telling(Tell),
-  ignore((
-  jfile('Grammar',G),
-  tell(G),
-  wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,nl]),
-  wlist(['/** automatically generated. */',nl]),
-  wlist(['class Grammar {',nl]),
-  wCategories,
-  wGetBuiltinID,
-  wActions,
-  wAddTriple )),
-  %wlist(['}',nl]) )),
-  tell(Tell).
-
 wGetBuiltinID :-
-  %wsfi('NotQuiteBuiltin','1<<W'),
   wsfi('BadXSD','1<<W'),
   wsfi('BadOWL','2<<W'),
   wsfi('BadRDF','3<<W'),
@@ -413,7 +309,7 @@ getBuiltins(Q) :-
          '       if (false) {',nl]),
   allBuiltins(Q,Nm,P,Special),
   wlist(['       } else if ( uri.equals("',Nm,'") ) {',nl]),
-  (P=[ontologyPropertyID]->Gp=ontologyPropertyHack;gn(P,Gp)),
+  (P=[ontologyPropertyID]->Gp=ontologyPropertyHack;gname(P,Gp)),
   specialBuiltin(Special,SpCode),
   wlist(['          return ',Gp,SpCode,';',nl]),
   fail.
@@ -449,111 +345,13 @@ wActions :-
   wsfi('SecondOfTwo',12),
   wsfi('ObjectAction',2),
   wsfi('DL',1),
-  wsfi('ActionShift',4).
-
-wCategories :-
-  retractall(width(_)),
-  retractall(gn2(_,_)),
-  setof(G,subCategory(G),L),
-  length(L,N),
-  bits(N,NB),
-  wsfi('CategoryShift',NB),
-  assert(width(NB)),
-  nth1(Ix,L,G),
-  gn(G,Name),
-  wsfi(Name,Ix),
-  assert(gn2(G,Ix)),
-  fail.
-wCategories :-
+  wsfi('ActionShift',4),
+  wsfi('CategoryShift',9),
   wlist(['    static private final int W = CategoryShift;',nl]).
-
+  
 wsfi(Name,Val) :-
   wlist(['    static final int ',Name,' = ',Val,';',nl]).
 
-:-dynamic sw/2.
-computeSwitch :-
-   retractall(sw(_,_)),
-   refineSubCat(S,P,O,SS,PP,OO),
-   spo(S,P,O,N),
-   spo(SS,PP,OO,M1),
-   extra(SS,PP,OO,M2),
-   M is M1 \/ M2,
-   assert(sw(N,M)),
-   fail.
-computeSwitch.
-  
-split(Split) :-
-   setof(A=B,sw(A,B),L),
-   length(L,N),
-   NSplits is N // 5000 + 1,
-   SLength is N // NSplits + 1,
-   split(L,SLength,Split).
-   
-split(L,SLength,[L]) :-
-  length(L,N),
-  N =< SLength,
-  !.
-split(L,SLength,[H|T]) :-
-  length(H,SLength),
-  append(H,LL,L),
-  split(LL,SLength,T).
-
-wAddTripleMain(Split) :-
-  wlist(['/','** Given some knowledge about the categorization',nl,
-         'of a triple, return a refinement of that knowledge,',nl,
-         'or {@link #Failure} if no refinement exists.',nl,
-         '@param triple Shows the prior categorization of subject,',nl,
-          'predicate and object in the triple.',nl,
-         '@return Shows the possible legal matching categorizations of subject,',nl,
-          'predicate and object in the triple. Higher bits give additional information.',nl,
-         '*/',nl]),
-   wlist(['    static int addTriple(int triple) {',nl]),
-   wlist(['      if ( false )',nl,
-          '          return 0;',nl]),
-   nth0(Ix,Split,[F=_|_]),
-   Ix > 0,
-   wlist(['     else if ( triple < ',F,' )',nl,
-          '          return Sub',Ix,'.addTriple( triple );',nl]),
-   fail.
-wAddTripleMain(Split) :-
-   length(Split,Ix),
-   wlist(['     else return Sub',Ix,'.addTriple( triple );',nl,'   }',nl,'}',nl]),
-   told.
-   
-   
-   
-wAddTriple :-
-  computeSwitch,
-  wsfi('DL','1'),
-  split(Split),
-  wAddTripleMain(Split),
-  nth1(Ix,Split,Pairs),
-  wAddTriple(Ix,Pairs),
-  fail.
-wAddTriple.
-   
-wAddTriple(Ix,Pairs) :-
-  atom_concat('Sub',Ix,SubIx),
-  jfile(SubIx,SSF),
-  tell(SSF),
-  wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,
-         'class Sub',Ix,' {',nl]),
-  wlist(['   static final int addTriple( int triple ) {',nl]),
-  wlist(['       switch (triple) {',nl]),
-  wlist(['case -1:',nl]),
-  sublist(call,Pairs,Equals),
-  member(Eq=_,Equals),
-  wlist(['case ',Eq,':',nl]),
-  fail.
-wAddTriple(_Ix,Pairs) :-
-  wlist(['            return triple;']),
-  sublist(\+,Pairs,NotEqual),
-  member(A=B,NotEqual),
-  wlist(['case ',A,':return ',B,';',nl]),
-  fail.
-wAddTriple(_Ix,_Pairs) :-
-   wlist(['      default: return Grammar.Failure;',nl,'   }',nl,
-         '}',nl,'}',nl]), told.
 
 extra(SS,PP,OO,XX) :-
   setof(D,[S,P,O]^(member(S,SS),member(P,PP),member(O,OO),tt(S,P,O,D)),DD),

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: CategorySet.java,v 1.4 2003-04-15 16:20:07 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.5 2003-04-15 19:48:17 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -45,7 +45,7 @@ class CategorySet implements Comparable {
 	static final Q disjointWithSets= new Q() {
 		boolean test(int all[]){
 			return all[0] != Grammar.orphan &&
-			  intersect(Grammar.disjointWithNodes,all);
+			  intersect(Grammar.disjointWithX,all);
 		}
 	};
 
@@ -72,8 +72,8 @@ class CategorySet implements Comparable {
 	static final Q dlOrphanSets = new Q() {
 	boolean test(int all[]){
 		return all[0]==Grammar.orphan
-		  && ( intersect(Grammar.restrictions,all)
-		  || intersect(Grammar.descriptions,all) );
+		  && ( intersect(Grammar.restrictionsX,all)
+		  || intersect(Grammar.descriptionsX,all) );
 	} 
 };
 	/**
@@ -96,9 +96,9 @@ class CategorySet implements Comparable {
 	 */
 	static final Q structuredOne = new Q() {
 	boolean test(int all[]){
-		return member(Grammar.allDifferent72,all)
-          || member(Grammar.unnamedDataRange80,all)
-		  || intersect(Grammar.descriptions,all);
+		return member(Grammar.allDifferent,all)
+          || member(Grammar.unnamedDataRange,all)
+		  || intersect(Grammar.descriptionsX,all);
 	} 
 };
 	/**
@@ -107,8 +107,8 @@ class CategorySet implements Comparable {
 		 */
 	static final Q structuredTwo= new Q() {
 	boolean test(int all[]){
-		return  intersect(Grammar.lists,all)
-		  || intersect(Grammar.restrictions,all);
+		return  intersect(Grammar.listsX,all)
+		  || intersect(Grammar.restrictionsX,all);
 	} 
 };
    static private Q various[] = new Q[]{
