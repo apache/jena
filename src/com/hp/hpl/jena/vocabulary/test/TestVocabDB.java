@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestVocabDB.java,v 1.1 2003-06-30 14:56:33 chris-dollin Exp $
+  $Id: TestVocabDB.java,v 1.2 2003-08-25 16:39:41 wkw Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
@@ -29,7 +29,7 @@ public class TestVocabDB extends VocabTestBase
         assertProperty( ns + "DriverVersion", DB.driverVersion );
         assertProperty( ns + "FormatDate", DB.formatDate );
         assertProperty( ns + "Graph", DB.graph );
-        assertProperty( ns + "MaxLiteral", DB.maxLiteral );
+        // assertProperty( ns + "MaxLiteral", DB.maxLiteral );
     /* */
         assertProperty( ns + "GraphName", DB.graphName );
         assertProperty( ns + "GraphType", DB.graphType );
