@@ -5,10 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.1 2003-07-21 20:41:18 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.2 2003-08-06 17:00:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -24,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-21 20:41:18 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-06 17:00:22 $
  */
 public class LPBRuleEngine {
     
@@ -45,6 +46,16 @@ public class LPBRuleEngine {
         
     /** List of engine instances which are still processing queries */
     protected List activeInterpreters = new ArrayList();
+    
+    /** Table mapping tabled goals to generators for those goals.
+     *  This is here so that partial goal state can be shared across multiple queries. */
+    protected HashMap tabledGoals = new HashMap();
+        
+    /** Set of predicates which should be tabled */
+    protected HashSet tabledPredicates = new HashSet();
+    
+    /** Set of generators waiting to be run */
+    protected LinkedList agenda = new LinkedList();
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPBRuleEngine.class);
@@ -90,7 +101,8 @@ public class LPBRuleEngine {
      */
     public synchronized void reset() {
         checkSafeToUpdate();
-        // Todo: reset any tabled results
+        tabledGoals = new HashMap();
+        agenda.clear();
     }
     
     /**
@@ -186,7 +198,54 @@ public class LPBRuleEngine {
             throw new ConcurrentModificationException("Backward query engine is active during attempt to update graph data");
         }
     }
+    
+    
+//  =======================================================================
+//  Interface for tabled operations
 
+    /**
+     * Register an RDF predicate as one whose presence in a goal should force
+     * the goal to be tabled.
+     */
+    public synchronized void tablePredicate(Node predicate) {
+        tabledPredicates.add(predicate);
+    }
+    
+    /**
+     * Return a generator for the given goal (assumes that the caller knows that
+     * the goal should be tabled).
+     */
+    public synchronized Generator generatorFor(TriplePattern goal) {
+        Generator generator = (Generator) tabledGoals.get(goal);
+        if (generator == null) {
+            LPInterpreter interpreter = new LPInterpreter(this, goal);
+            activeInterpreters.add(interpreter);
+            generator = new Generator(interpreter);
+            schedule(generator);
+            tabledGoals.put(goal, generator);
+        }
+        return generator;
+    }
+    
+    /**
+     * Register that a generator is now ready to run.
+     */
+    public void schedule(Generator gen) {
+        agenda.add(gen);
+    }
+    
+    /**
+     * Run the scheduled generators until the given generator is ready to run or until
+     * all generators are exhaused. 
+     */
+    public synchronized void pump(Generator gen) {
+        while(!gen.isReady) {
+            if (agenda.isEmpty()) return;
+            Generator g = (Generator)agenda.removeFirst();
+            g.pump();
+        }
+    }
+ 
 }
 
 

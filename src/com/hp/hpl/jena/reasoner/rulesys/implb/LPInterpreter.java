@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.11 2003-08-05 11:31:36 der Exp $
+ * $Id: LPInterpreter.java,v 1.12 2003-08-06 17:00:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-05 11:31:36 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-06 17:00:22 $
  */
 public class LPInterpreter {
 
@@ -60,6 +60,9 @@ public class LPInterpreter {
     /** The execution context description to be passed to builtins */
     protected RuleContext context;
         
+    /** The tabled generator that this interpreter is currently blocked on, if any */
+    protected Generator blockedOn;
+    
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPInterpreter.class);
 
@@ -138,6 +141,21 @@ public class LPInterpreter {
         }
     }
 
+    /**
+     * Return the generator that this interpreter is currently blocked on, otherwise null
+     * if it is not blocked.
+     */
+    public Generator getBlockingGenerator() {
+        return blockedOn;
+    }
+    
+    /**
+     * Return the engine which owns this interpreter.
+     */
+    public LPBRuleEngine getEngine() {
+        return engine;
+    }
+    
     //  =======================================================================
     //  Engine implementation  
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.2 2003-07-23 16:24:17 der Exp $
+ * $Id: LPTopGoalIterator.java,v 1.3 2003-08-06 17:00:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -20,14 +20,14 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * inference graph if the iterator hits the end of the result set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-23 16:24:17 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-06 17:00:22 $
  */
 public class LPTopGoalIterator implements ClosableIterator {
     /** The next result to be returned, or null if we have finished */
     Object lookAhead;
     
     /** The parent backward chaining engine */
-    LPInterpreter engine;
+    LPInterpreter interpreter;
     
     /** True if the iteration has started */
     boolean started = false;
@@ -36,7 +36,7 @@ public class LPTopGoalIterator implements ClosableIterator {
      * Constructor. Wraps a top level goal state as an iterator
      */
     public LPTopGoalIterator(LPInterpreter engine) {
-        this.engine = engine;
+        this.interpreter = engine;
     }
     
     /**
@@ -44,11 +44,13 @@ public class LPTopGoalIterator implements ClosableIterator {
      * lookahead buffer.
      */
     private void moveForward() {
-        lookAhead = engine.next();
-        if (lookAhead instanceof StateFlag) {
-            lookAhead = null;
+        lookAhead = interpreter.next();
+        if (lookAhead == StateFlag.FAIL) {
+            close();
+        } else if (lookAhead == StateFlag.SUSPEND) {
+            interpreter.getEngine().pump(interpreter.getBlockingGenerator());
+            moveForward();
         }
-        if (lookAhead == null) close();
         started = true;
     }
     
@@ -57,7 +59,7 @@ public class LPTopGoalIterator implements ClosableIterator {
      */
     public void close() {
         lookAhead = null;
-        engine.close();
+        interpreter.close();
     }
 
     /**

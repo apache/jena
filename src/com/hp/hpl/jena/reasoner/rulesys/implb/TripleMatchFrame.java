@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TripleMatchFrame.java,v 1.5 2003-08-05 11:31:36 der Exp $
+ * $Id: TripleMatchFrame.java,v 1.6 2003-08-06 17:00:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * graph triple match.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-05 11:31:36 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-06 17:00:22 $
  */
 public class TripleMatchFrame extends FrameObject {
     
@@ -127,7 +127,7 @@ public class TripleMatchFrame extends FrameObject {
             objectFunctor = null;
             query = new TriplePattern(s, p, o);
         }
-        this.matchIterator = interpreter.engine.getInfGraph().findDataMatches(query);
+        this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(query);
     }
 
     /**
