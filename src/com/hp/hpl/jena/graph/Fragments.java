@@ -1,0 +1,156 @@
+/*
+  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: Fragments.java,v 1.1 2003-04-04 11:44:44 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.graph;
+
+import java.util.*;
+
+/**
+    A _Fragments_ object represents the reification triples that have been
+    asserted about some node. The triples may form an incomplete or
+    inconsistent reification. They may even form a complete, single
+    reification. Rather than keeping the triples, we keep the subject node
+    (the one that has ref:subject etc properties) and sets of objects for
+    each of the four relevant properties.
+<p>
+    See SimpleReifier for the use of Fragments. A longer and more
+    explanatory name was considered for Fragments, but the effect of
+    picking one of those seemed to make the code that *uses* them
+    excessively verbose. 
+<p>
+    TODO: consider splitting .graph up to use sub-packages to
+    express the structure more clearly.
+<p>
+    @author kers 
+*/
+
+public class Fragments
+    {
+        
+    static final int TYPES = 0;
+    static final int SUBJECTS = 1;
+    static final int PREDICATES = 2;
+    static final int OBJECTS = 3;
+ 
+    final Set [] slots = {new HashSet(), new HashSet(), new HashSet(), new HashSet()};
+    
+    /**
+        the Node the fragments are about. It is not used internally; 
+        it is included for completeness and diagnostics. 
+    */
+    Node n;
+    
+    /**
+        a fresh Fragments object remembers the node n and starts
+        off with all sets empty. (In use, at least one of the slots will
+        then immediately be updated - otherwise there was no reason
+        to create the Fragments in the first place ...)
+    */
+    Fragments( Node n ) 
+        {
+        this.n = n;
+        }
+        
+    /**
+        true iff this is a complete fragment; every component is present with exactly
+        one value, so n unambiguously reifies (subject, predicate, object).
+    */
+    boolean isComplete()
+        { return slots[0].size() == 1 && slots[1].size() == 1 && slots[2].size() == 1 && slots[3].size() == 1; }
+        
+    /**
+        true iff this is an empty fragment; no reificational assertions have been made
+        about n. (Hence, in use, the Fragments object can be discarded.)
+    */
+    boolean isEmpty()
+        { return slots[0].isEmpty() && slots[1].isEmpty() && slots[2].isEmpty() && slots[3].isEmpty(); }
+        
+    /**
+        remove the node _n_ from the set specified by slot _which_.
+    */
+    void remove( int which, Node n )
+        { slots[which].remove( n ); }
+        
+    /**
+        add the node _n_ to the slot identified by _which).
+   */
+    void add( int which, Node n )
+        { slots[which].add( n ); }
+        
+    void includeInto( Graph g )
+        {
+        includeInto( g, Reifier.subject, SUBJECTS );
+        includeInto( g, Reifier.predicate, PREDICATES );
+        includeInto( g, Reifier.object, OBJECTS );
+        includeInto( g, Reifier.type, TYPES );
+        }
+        
+    void includeInto( Graph g, Node predicate, int which )
+        {
+        Iterator it = slots[which].iterator();
+        while (it.hasNext())
+            g.add( new Triple( n, predicate, (Node) it.next() ) );
+        }
+        
+    Fragments addTriple( Triple t )
+        {
+        slots[SUBJECTS].add( t.getSubject() );
+        slots[PREDICATES].add( t.getPredicate() );
+        slots[OBJECTS].add( t.getObject() );
+        slots[TYPES].add( Reifier.Statement );
+        return this;
+        }
+        
+    /** 
+        precondition: isComplete() 
+    <p>
+        return the single Triple that this Fragments represents; only legal if
+        isComplete() is true.    
+    */        
+    Triple asTriple()
+        { return new Triple( only( slots[SUBJECTS] ), only( slots[PREDICATES] ), only( slots[OBJECTS] ) ); }
+               
+    /**
+        precondition: s.size() == 1
+    <p>
+        utiltity method to return the only element of a singleton set.
+    */
+    private Node only( Set s )
+        { return (Node) s.iterator().next(); }
+        
+    public String toString()
+        { return n + " s:" + slots[SUBJECTS] + " p:" + slots[PREDICATES] + " o:" + slots[OBJECTS] + " t:" + slots[TYPES]; }
+    }
+    
+/*
+    (c) Copyright Hewlett-Packard Company 2002
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
