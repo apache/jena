@@ -1,17 +1,17 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Relation.java,v 1.1.1.1 2002-12-19 19:14:01 bwm Exp $
+  $Id: Relation.java,v 1.2 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-	@author kers
-<br>
     A Relation is a predicate that relates two Valuators; the abstract
-    class captures the commonality of "has two operands" and
+    class captures the commonality of <i>has two operands</i> and
     methods for evaluating them.
+    
+    @author kers
 */
 
 import com.hp.hpl.jena.graph.*;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Bind.java,v 1.1.1.1 2002-12-19 19:13:50 bwm Exp $
+  $Id: Bind.java,v 1.2 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,12 +9,23 @@ package com.hp.hpl.jena.graph.query;
 import com.hp.hpl.jena.graph.*;
 
 /**
+    A binding instance of a variable. It accepts any node and records it in the supplied
+    Domain at the index allocated to it when it is created.
+    
 	@author hedgehog
 */
 public class Bind extends Element 
 	{	
+    /**
+        Initialise a Bind element: remember the index <code>n</code> which is the
+        place in Domain's where it may store its value.
+    */
 	public Bind( int n ) { super( n ); }
 	
+    /**
+        accept any node, rememver its value by storing it in d[index].
+        @return true
+    */
 	public boolean accepts( Domain d, Node x )
 		{
 		d.setElement( index, x );

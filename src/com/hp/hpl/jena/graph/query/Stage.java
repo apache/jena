@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Stage.java,v 1.4 2003-07-17 14:56:40 chris-dollin Exp $
+  $Id: Stage.java,v 1.5 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -11,7 +11,7 @@ package com.hp.hpl.jena.graph.query;
 	gets connected to its predecessor in the pipeline, and
 	mangles the contents before handing them on to the next
 	stage.
-<br>
+
 	@author hedgehog
 */
 

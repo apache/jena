@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: InitialStage.java,v 1.4 2003-07-17 14:56:40 chris-dollin Exp $
+  $Id: InitialStage.java,v 1.5 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,13 +9,16 @@ package com.hp.hpl.jena.graph.query;
 import com.hp.hpl.jena.graph.*;
 
 /**
+    The initial stage of a query, responsible for dropping the no-variables-bound seed
+    binding domain into the remaining stages of the query pipeline.
+    
 	@author kers
 */
 public class InitialStage extends Stage
     {
     /**
         The value passed in is the computed width of the result array(s); this
-        is ued to allocate the seeding node array.
+        is used to allocate the seeding node array.
         
      	@param count the width of the result binding array
      */
@@ -27,6 +30,11 @@ public class InitialStage extends Stage
     public void close()
         { markClosed(); }
 
+    /**
+        To deliver value into the Pipe result, we drop in a binding array of the correct
+        width in which all the elements are null, then we close the pipe. Everything else
+        is spawned by the following stages.
+    */
     public Pipe deliver( Pipe result )
         {
         result.put( new Domain( new Node[count]  ) );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.15 2003-07-23 07:34:49 chris-dollin Exp $
+  $Id: Query.java,v 1.16 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -96,8 +96,8 @@ public class Query
         @param O the node to match the object
         @return this Query, for cascading
     */
-    public Query addMatch( Node S, Node P, Node O )
-        { return addNamedMatch( anon, S, P, O ); }     
+    public Query addMatch( Node s, Node p, Node o )
+        { return addNamedMatch( anon, s, p, o ); }     
         
     /**
         Add a triple to thw query's collection of match triples. Return this query
@@ -117,8 +117,8 @@ public class Query
         @param O the node to match the object
         @return this Query, for cascading.
     */
-    public Query addMatch( String name, Node S, Node P, Node O )
-        { return addNamedMatch( name, S, P, O ); }   
+    public Query addMatch( String name, Node s, Node p, Node o )
+        { return addNamedMatch( name, s, p, o ); }   
    
     /**
         Add a constraint (S, P, O) to the query constraints. <code>S</code> and
@@ -131,9 +131,9 @@ public class Query
         @param O the node representing the right operand of the predicate
         @return this query, for cascading
     */
-    public Query addConstraint( Node S, Node P, Node O )
+    public Query addConstraint( Node s, Node p, Node o )
         {
-        constraintGraph.add( new Triple( S, P, O ) ); 
+        constraintGraph.add( new Triple( s, p, o ) ); 
         return this;
         }
         
@@ -215,7 +215,7 @@ public class Query
             };
         }
         
-    private Domain filter( int [] indexes, Domain complete )
+    protected Domain filter( int [] indexes, Domain complete )
         {
         Domain d = new Domain( new Object[indexes.length] );
         for (int i = 0; i < indexes.length; i += 1) 
@@ -254,9 +254,9 @@ public class Query
         static int size( Cons L ) { int n = 0; while (L != null) { n += 1; L = L.tail; } return n; }
         }
         
-    private Query addNamedMatch( String name, Node S, Node P, Node O )
+    private Query addNamedMatch( String name, Node s, Node p, Node o )
         {
-        return addNamedMatch( name, new Triple( S, P, O ) );
+        return addNamedMatch( name, new Triple( s, p, o ) );
         }
         
     private Query addNamedMatch( String name, Triple pattern )
@@ -272,14 +272,14 @@ public class Query
             {
             Map.Entry e = (Map.Entry) it2.next();
             String name = (String) e.getKey();
-            Cons triples = (Cons) e.getValue();
+            Cons nodeTriples = (Cons) e.getValue();
             Graph g = arguments.get( name );
-            int nBlocks = Cons.size( triples ), i = nBlocks;
+            int nBlocks = Cons.size( nodeTriples ), i = nBlocks;
             Triple [] nodes = new Triple[nBlocks];
-            while (triples != null)
+            while (nodeTriples != null)
                 {
-                nodes[--i] = triples.head;
-                triples = triples.tail;
+                nodes[--i] = nodeTriples.head;
+                nodeTriples = nodeTriples.tail;
                 }
             Stage next = g.queryHandler().patternStage( map, constraintGraph, nodes );
             stages.add( next );

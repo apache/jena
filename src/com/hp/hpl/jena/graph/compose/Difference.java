@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Difference.java,v 1.2 2003-07-11 10:16:10 chris-dollin Exp $
+  $Id: Difference.java,v 1.3 2003-08-04 13:28:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -10,36 +10,42 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
+    Class representing the dynamic set difference L - R of two graphs. This is updatable;
+    the updates are written through to one or other of the base graphs.
 	@author hedgehog
 */
 
 public class Difference extends Dyadic implements Graph 
 	{
+    /**
+        Initialise a graph representing the difference L - R.
+    */
 	public Difference( Graph L, Graph R )
-		{
-		super( L, R );
-		}
+		{ super( L, R ); }
 		
+    /**
+        Add a triple to the difference: add it to the left operand, and remove it from the 
+        right operand.
+    */
 	public void performAdd( Triple t )
 		{
 		L.add( t );
 		R.delete( t );
 		}
 
+    /**
+        Remove a triple from the difference: remove it from the left operand. [It could
+        be added to the right operand instead, but somehow that feels less satisfactory.]
+    */
 	public void performDelete( Triple t )
-		{
-		L.delete( t );
-		// R.add( t ) means the same, but is probably not so good
-		}
+		{ L.delete( t ); }
 
 	public ExtendedIterator find( TripleMatch t ) 
-		{
-        return L.find( t ). filterDrop ( ifIn( R ) );
-		}
+		{ return L.find( t ). filterDrop ( ifIn( R ) ); }
 	}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

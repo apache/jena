@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryPlan.java,v 1.3 2003-01-28 10:39:26 chris-dollin Exp $
+  $Id: SimpleQueryPlan.java,v 1.4 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -10,6 +10,9 @@ import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
+    SimpleQueryPlan is an implementation of QueryPlan which uses the engine defined
+    in Query to do the work.
+    
 	@author kers
 */
 public class SimpleQueryPlan implements BindingQueryPlan
@@ -26,9 +29,7 @@ public class SimpleQueryPlan implements BindingQueryPlan
         }
         
     public ExtendedIterator executeBindings()
-        {
-        return query.executeBindings( graph, variables );
-        }
+        { return query.executeBindings( graph, variables ); }
     }
 
 /*

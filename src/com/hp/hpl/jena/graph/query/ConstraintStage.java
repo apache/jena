@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ConstraintStage.java,v 1.3 2003-06-06 09:15:48 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.4 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -12,13 +12,13 @@ import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
 /**
-	@author kers
-<br>
     A ConstraintStage implements the constraint evaluation part of a
     query. The constraint, expressed as a graph in which each triple
     SPO constrains the value denoted by S and O to be related by
     P, is compiled into Predicate objects. The meaning of each P is
     given by a mapping from predicate URIs to PredicateFactories.
+    
+    @author kers
 */
 
 public class ConstraintStage extends Stage

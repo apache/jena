@@ -1,18 +1,18 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Domain.java,v 1.1.1.1 2002-12-19 19:13:52 bwm Exp $
+  $Id: Domain.java,v 1.2 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-	@author hedgehog
-<br>
     A Domain is an answer to a Binding query. It satisfies the List
     interface so that casual users don't have to worry about its special
     features - for them, it is immutable (they only ever get to see Domains
     that have emerged from the query process).
+    
+    @author kers
 */
 
 import java.util.*;
@@ -58,7 +58,7 @@ public class Domain extends AbstractList
 	}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

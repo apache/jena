@@ -1,26 +1,33 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Bound.java,v 1.2 2003-02-10 09:57:37 der Exp $
+  $Id: Bound.java,v 1.3 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 import com.hp.hpl.jena.graph.*;
 
 /**
+    An element which represents an already-bound variable.
+    
 	@author hedgehog
 */
 
 public class Bound extends Element
 	{
+    /**
+        Initialise a Bound element: remember <code>n</code> as it is the index into the
+        Domain at which its value is stored.
+    */
 	public Bound( int n ) { super( n ); }
 	
+    /**
+        Answer true iff the node <code>x</code> matches the previously-seen value at
+        Donain[index]. The matching uses datatype-value semantics, implemented by
+        <code>Node::sameValueAs()</code>.
+    */
 	public boolean accepts( Domain d, Node x )
-	//	{ return d.get( index ).equals( x ); }
-        // Modified by der to move to value semantics
-        {
-            return x.sameValueAs(d.get( index ) );
-        }
+        { return x.sameValueAs(d.get( index ) ); }
         
     public Node asNode( Domain d ) 
         { return (Node) d.get( index ); }

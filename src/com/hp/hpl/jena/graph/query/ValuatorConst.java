@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ValuatorConst.java,v 1.1.1.1 2002-12-19 19:14:05 bwm Exp $
+  $Id: ValuatorConst.java,v 1.2 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,8 +9,6 @@ package com.hp.hpl.jena.graph.query;
 import com.hp.hpl.jena.graph.Node;
 
 /**
-	@author kers
-<br>
     A Valuator that returns the same Node every time, as specified
     in its constructor.
 */

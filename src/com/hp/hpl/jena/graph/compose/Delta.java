@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Delta.java,v 1.4 2003-07-17 09:09:22 chris-dollin Exp $
+  $Id: Delta.java,v 1.5 2003-08-04 13:28:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -13,10 +13,11 @@ import com.hp.hpl.jena.mem.*;
 
 
 /**
+    Graph operation for wrapping a base graph and leaving it unchanged while recording
+    all the attempted updates for later access.
+<p>    
+    TODO review in the light of GraphWrapper
 	@author hedgehog
-	L is the collection of things added,
-	R is the collection of things removed,
-	base is the original graph (which is not mutated)
 */
 
 public class Delta extends Dyadic implements Graph 
@@ -29,28 +30,40 @@ public class Delta extends Dyadic implements Graph
 		this.base = base;
 		}
 		
+    /**
+        Answer the graph of all triples added
+    */
 	public Graph getAdditions()
-		{
-		return L;
-		}
+		{ return L; }
 		
+    /**
+        Answer the graph of all triples removed
+    */
 	public Graph getDeletions()
-		{
-		return R;
-		}
+		{ return R; }
 		
+    /**
+        Add the triple to the graph, ie add it to the additions, remove it from the removals.
+    */
 	public void performAdd( Triple t )
 		{
 		L.add( t );
 		R.delete( t );
 		}
 
+    /**
+        Remove the triple, ie, remove it from the adds, add it to the removals.
+    */
 	public void performDelete( Triple t )
 		{
 		L.delete( t );
 		R.add( t );
 		}
 		 
+    /**
+        Find all the base triples matching tm, exclude the ones that are deleted, add the ones
+        that  have been added.
+    */
 	public ExtendedIterator find( TripleMatch tm ) 
 		{
         return base.find( tm ) .filterDrop( ifIn( GraphUtil.findAll( R ) ) ) .andThen( L.find( tm ) );
@@ -63,9 +76,7 @@ public class Delta extends Dyadic implements Graph
 		}
 
 	public int size()
-		{
-		return base.size() + L.size() - R.size();
-		}
+		{ return base.size() + L.size() - R.size(); }
 	}
 
 /*

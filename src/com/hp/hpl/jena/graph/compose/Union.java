@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Union.java,v 1.2 2003-07-11 10:16:10 chris-dollin Exp $
+  $Id: Union.java,v 1.3 2003-08-04 13:28:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -12,10 +12,10 @@ import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
 /**
+    A class representing the dynamic union of two graphs. Addition only affects the left 
+    operand, deletion affects both. 
+    @see MultiUnion
 	@author hedgehog
-<br>
-    dynamic union of two graphs. Addition only affects the left operand,
-    deletion affects both.
 */
 
 public class Union extends Dyadic implements Graph 
@@ -23,9 +23,15 @@ public class Union extends Dyadic implements Graph
 	public Union( Graph L, Graph R )
 		{ super( L, R ); }
 		
+    /**
+        To add a triple to the union, add it to the left operand; this is asymmetric.
+    */
 	public void performAdd( Triple t )
 		{ L.add( t ); }
 
+    /**
+        To remove a triple, remove it from <i>both</i> operands.
+    */
 	public void performDelete( Triple t )
 		{
 		L.delete( t );
@@ -35,6 +41,11 @@ public class Union extends Dyadic implements Graph
     public boolean contains( Triple t )
         { return L.contains( t ) || R.contains( t ); }
         
+    /**
+        To find in the union, find in the components, concatenate the results, and omit
+        duplicates. That last is a performance penalty, but I see no way to remove it
+        unless we know the graphs do not overlap.
+    */
 	public ExtendedIterator find( final TripleMatch t ) 
 	    {
 	    HashSet seen = new HashSet();
@@ -43,7 +54,7 @@ public class Union extends Dyadic implements Graph
 	}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

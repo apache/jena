@@ -1,13 +1,13 @@
 package com.hp.hpl.jena.graph.query;
 
 /**
-	@author kers
-<br>
     PredicateBase provides a base class for implementations of Predicate.
-    _evaluateBool_ is left abstract - who knows what the core meaning of
-    a predicate is - but a default implementation of _and_ is supplied which
-    does the "obvious thing": it's _evaluateBool_ is the && of the two
-    component Predicate's _evaluateBool_s.
+    <code>evaluateBool</code> is left abstract - who knows what the core meaning of
+    a predicate is - but a default implementation of <code>and</code> is supplied which
+    does the "obvious thing": it's <code>evaluateBool</code> is the &amp;&amp; of the two
+    component Predicate's <code>evaluateBool</code>s.
+    
+    @author kers
 */
 
 public abstract class PredicateBase implements Predicate

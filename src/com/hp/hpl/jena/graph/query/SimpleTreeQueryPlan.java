@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleTreeQueryPlan.java,v 1.2 2003-06-06 09:15:48 chris-dollin Exp $
+  $Id: SimpleTreeQueryPlan.java,v 1.3 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -11,6 +11,9 @@ import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.mem.*;
 import java.util.*;
 
+/**
+    Incomplete class. Do not use.
+*/
 public class SimpleTreeQueryPlan implements TreeQueryPlan
 	{
 	private Graph pattern;

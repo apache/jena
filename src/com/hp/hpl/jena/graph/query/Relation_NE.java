@@ -1,14 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Relation_NE.java,v 1.1.1.1 2002-12-19 19:14:02 bwm Exp $
+  $Id: Relation_NE.java,v 1.2 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-	@author kers
-<br>
     Encodes the unequal (Node) relation.
 */
 public class Relation_NE extends Relation

@@ -3,18 +3,6 @@
  * [See end of file]
  */
 
-/** Wrapper class for handling models containg a test manifest according to the
- *  vocabulary <code>http://jena.hpl.hp.com/2003/03/test-manifest#</code>.
- *  
- * The test manifest framework takes a description file or model and provides a
- * set of convenience operations on the manifest.  Entries are in order they are
- * in the lists in the manifest but if the manifest model conatins multiple lists,
- * i.e. theer are muitple manifest objects or a manifest object has mutiple lists,
- * then the order between the lists is not determined.  
- *  
- * @author      Andy Seaborne
- * @version     $Id: TestManifestList.java,v 1.2 2003-07-18 12:50:51 chris-dollin Exp $
- */
  
 package com.hp.hpl.jena.util;
 
@@ -26,6 +14,18 @@ import com.hp.hpl.jena.vocabulary.TestManifest ;
 import junit.framework.* ;
 
 
+/** Wrapper class for handling models containg a test manifest according to the
+    vocabulary <code>http://jena.hpl.hp.com/2003/03/test-manifest#</code>.
+  
+    The test manifest framework takes a description file or model and provides a
+    set of convenience operations on the manifest.  Entries are in order they are
+    in the lists in the manifest but if the manifest model conatins multiple lists,
+    i.e. theer are muitple manifest objects or a manifest object has mutiple lists,
+    then the order between the lists is not determined.  
+  
+    @author      Andy Seaborne
+    @version     $Id: TestManifestList.java,v 1.3 2003-08-04 13:28:57 chris-dollin Exp $
+*/
 public class TestManifestList
 {
     

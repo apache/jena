@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternStage.java,v 1.4 2003-07-17 14:56:40 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.5 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -10,6 +10,9 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
+    A PatternStage is a Stage that handles some bunch of related patterns; those patterns
+    are encoed as Triples.
+    
     @author hedgehog
 */
 
@@ -27,9 +30,9 @@ public class PatternStage extends Stage
     protected Pattern [] compile( Mapping map, Triple [] triples )
         { return compile( compiler, map, triples ); }
         
-    protected Pattern [] compile( PatternCompiler compiler, Mapping map, Triple [] source )
+    protected Pattern [] compile( PatternCompiler pc, Mapping map, Triple [] source )
         {
-        return PatternStageCompiler.compile( compiler, map, source );
+        return PatternStageCompiler.compile( pc, map, source );
         }
         
     private static final PatternCompiler compiler = new PatternStageCompiler();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Pattern.java,v 1.3 2003-06-13 10:12:16 chris-dollin Exp $
+  $Id: Pattern.java,v 1.4 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,6 +9,8 @@ package com.hp.hpl.jena.graph.query;
 import com.hp.hpl.jena.graph.*;
 
 /**
+    A Pattern represents a matching triple; it is composed of S, P, and O Elements.
+    
 	@author hedgehog
 */
 
@@ -24,12 +26,19 @@ public class Pattern
 		this.P = P; 
 		this.O = O;
 		}
-		
+	
+    /**
+        Convert a Pattern into a TripleMatch by makign a Triple who's Nodes are the
+        conversions of the constituent elements.
+    */	
     public TripleMatch asTripleMatch( Domain d )
         { return Triple.createMatch( S.asNode( d ), P.asNode( d ), O.asNode( d ) ); }
           
     public Element [] getParts() { return new Element[] {S, P, O}; }
     
+    /**
+        A Pattern matches iff its components accept the corresponding triple elements.
+    */
 	public boolean matches( Domain d, Triple t )
 		{
 		return 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Element.java,v 1.1.1.1 2002-12-19 19:13:52 bwm Exp $
+  $Id: Element.java,v 1.2 2003-08-04 13:28:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,6 +9,10 @@ package com.hp.hpl.jena.graph.query;
 import com.hp.hpl.jena.graph.*;
 
 /**
+    An Element of a matching triple. Elements have associated indexes, their place
+    in the Domain storing the matching values. Subclasses represent constants,
+    binding occurances of variables, and bound instances of variables.
+    
 	@author hedgehog
 */
 
@@ -16,15 +20,27 @@ public class Element
 	{
 	protected int index;
 	
+    /**
+        Answer this Element's index in the Domains it is compiled for.
+    */
 	public int getIndex()
 		{ return index; }
 		
+    /**
+        Initialise this Element with its allocated index.
+    */
 	protected Element( int index )
 		{ this.index = index; }
 		
+    /**
+        Initialiser invoked by sub-classes which need no index.
+    */
 	protected Element() 
 		{ this( 0 ); }
 		
+    /**
+        The constant ANY matches anything and binds nothing
+    */
 	public static final Element ANY = new Element()
         {
         public boolean accepts( Domain d, Node n ) { return true; }
@@ -37,6 +53,10 @@ public class Element
 	public void matched( Domain d, Object x ) 
 		{}
         
+    /**
+        Answer the Node value that this Element represents in the Domain d; over-ridden
+        in sub-classes.
+    */
     public Node asNode( Domain d )
         { return null; }
         

@@ -1,17 +1,17 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Blank.java,v 1.4 2003-07-18 15:14:00 chris-dollin Exp $
+  $Id: Node_Blank.java,v 1.5 2003-08-04 13:28:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
+
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
     RDF blank nodes, ie nodes with identity but without URIs.
 	@author kers
 */
-
-import com.hp.hpl.jena.rdf.model.*;
 
 public class Node_Blank extends Node_Concrete
     {    

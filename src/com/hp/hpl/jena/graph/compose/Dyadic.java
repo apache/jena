@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Dyadic.java,v 1.4 2003-06-23 14:59:20 chris-dollin Exp $
+  $Id: Dyadic.java,v 1.5 2003-08-04 13:28:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.compose;
 import com.hp.hpl.jena.graph.*;
 
 /**
+    Base class for the two-operand composition operations; has two graphs L and R
     @author kers
     @author Ian Dickinson - refactored most of the content to {@link CompositionBase}.
 */
@@ -23,7 +24,8 @@ public abstract class Dyadic extends CompositionBase
 	
     /**
         When the graph is constructed, copy the prefix mappings of both components
-        into this prefix mapping.
+        into this prefix mapping. The prefix mapping doesn't change afterwards with the
+        components, which might be regarded as a bug.
     */
 	public Dyadic( Graph L, Graph R )
 		{
@@ -41,18 +43,18 @@ public abstract class Dyadic extends CompositionBase
     	R.close();
         }
         
+    /**
+        Generic dependsOn, true iff it depends on either of the subgraphs.
+    */
     public boolean dependsOn( Graph other )
-        {
-        return other == this || L.dependsOn( other ) || R.dependsOn( other );
-        }
+        { return other == this || L.dependsOn( other ) || R.dependsOn( other ); }
  				
     public Union union( Graph X )
-        { return new Union( this, X ); }
-    
+        { return new Union( this, X ); }    
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,18 +1,20 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.15 2003-07-29 14:37:51 chris-dollin Exp $
+  $Id: Reifier.java,v 1.16 2003-08-04 13:28:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+
+import com.hp.hpl.jena.util.iterator.*;
+
 /**
     This interface represents the type of things that can hold reified triples
     for a Jena Graph.
+    
     @author kers
 */
-
-import com.hp.hpl.jena.util.iterator.*;
 
 public interface Reifier extends GetTriple
     {
@@ -105,7 +107,7 @@ public interface Reifier extends GetTriple
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
