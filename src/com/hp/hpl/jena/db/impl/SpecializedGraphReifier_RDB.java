@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
@@ -677,9 +678,11 @@ public class SpecializedGraphReifier_RDB
 		return m_dbPropLSet;
 	}
 	
-	public char subsumes ( Triple pattern ) {
-		Node pred = pattern.getPredicate();
+	public char subsumes ( Triple pattern, int reifBehavior ) {
 		char res = noTriplesForPattern;
+		if ( reifBehavior != GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING )
+			return res;
+		Node pred = pattern.getPredicate();
 		if ( pred.isConcrete() ) {
 			if ( pred.equals(RDF.Nodes.subject) ||
 				pred.equals(RDF.Nodes.predicate) ||

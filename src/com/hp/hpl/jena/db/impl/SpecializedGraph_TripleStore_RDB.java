@@ -7,6 +7,7 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.JenaException;
@@ -33,14 +34,15 @@ public class SpecializedGraph_TripleStore_RDB extends SpecializedGraph_TripleSto
 		super(pSet, dbGraphId);
 	}
 	
-	public char subsumes ( Triple pattern ) {
+	public char subsumes ( Triple pattern, int reifBehavior ) {
 			Node pred = pattern.getPredicate();
 			char res = noTriplesForPattern;
 			if ( pred.isConcrete() ) {
 				// assumes that other sg's have been called first
 				res = allTriplesForPattern;
 			} else if ( (pred.isVariable()) || pred.equals(Node.ANY) ) {
-				res = someTriplesForPattern;
+				return reifBehavior == GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING ?
+					someTriplesForPattern : allTriplesForPattern;
 			} else
 				throw new JenaException("Unexpected predicate: " + pred.toString());
 			return res;

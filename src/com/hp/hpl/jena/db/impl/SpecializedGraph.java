@@ -9,9 +9,7 @@ package com.hp.hpl.jena.db.impl;
 
 import java.util.List;
 
-import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.Mapping;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -31,7 +29,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * in the list.
  *
  * @author csayers
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  */
 public interface SpecializedGraph {
@@ -202,7 +200,7 @@ public interface SpecializedGraph {
 	 */
 
 
-	public char subsumes ( Triple pattern );
+	public char subsumes ( Triple pattern, int reificationBehavior );
  
 	static final char noTriplesForPattern = 'n'; // graph contains no triples for pattern
 	static final char someTriplesForPattern = 's'; // graph contains some triples for pattern
