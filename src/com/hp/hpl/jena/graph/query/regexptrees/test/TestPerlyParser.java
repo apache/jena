@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.10 2004-09-02 11:34:45 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.11 2004-09-02 13:46:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -90,7 +90,7 @@ public class TestPerlyParser extends GraphTestBase
     
     public void testSpecialBackslashEscapes()
         {
-        String specials = "bBAZxc0123456789";
+        String specials = "bBAZ";
         for (int i = 0; i < specials.length(); i += 1)
             try {new PerlPatternParser( "\\" + specials.charAt(i) ).parseAtom(); fail( "backslash escape " + specials.charAt(i) ); }
             catch (PerlPatternParser.SyntaxException e)
@@ -119,6 +119,20 @@ public class TestPerlyParser extends GraphTestBase
         assertEquals( new Text( "\r" ), element( "\\r" ) );
         assertEquals( new AnyOf( " \r\n\t\f"), element( "\\s" ) );
         assertEquals( new NoneOf( " \r\n\t\f" ), element( "\\S" ) );
+        }
+    
+    public void testHexEscapes()
+        {
+        assertParse( new Text( "\u00ac" ), "\\xac" );
+        assertParse( new Text( "\u00ff" ), "\\xff" );
+        assertParse( new Text( "\u0012" ), "\\x12" );
+        assertParse( new Text( "\u00af" ), "\\xAF" );
+        }
+    
+    public void testControlEscapes()
+        {
+        assertParse( new Text( "\u0001" ), "\\cA" );
+        assertParse( new Text( "\u001a" ), "\\cZ" );
         }
     
     public void testNoQuantifier()
@@ -224,6 +238,12 @@ public class TestPerlyParser extends GraphTestBase
     
     public void testClassBackslash()
         { assertParse( new AnyOf( "]" ), "[\\]]" ); }
+    
+    public void testBackReference()
+        { assertParse( seq2( new Paren( new Text( "x" ) ), new BackReference( 1 ) ), "(x)\\1" ); }
+
+    public void testOctalNonBackReference()
+        { assertParse( seq2( new Paren( new Text( "x" ) ), new Text( "\10" ) ), "(x)\\10" ); }
     
     protected RegexpTree seq2( RegexpTree a, RegexpTree b )
         {

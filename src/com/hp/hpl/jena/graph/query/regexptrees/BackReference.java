@@ -1,39 +1,34 @@
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
-    [See end of file]
-    $Id: SimpleGenerator.java,v 1.7 2004-09-02 13:46:14 chris-dollin Exp $
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  [See end of file]
+  $Id: BackReference.java,v 1.1 2004-09-02 13:46:14 chris-dollin Exp $
 */
-
 package com.hp.hpl.jena.graph.query.regexptrees;
 
-import java.util.List;
-
 /**
-     The base implementation of <code>RegexpTreeGenerator</code>
- 	@author hedgehog
+     BackReference - class describing back-references in regular expressions.
+     @author kers
 */
-public class SimpleGenerator implements RegexpTreeGenerator
+public class BackReference extends RegexpTree
     {
-    public RegexpTree getAnySingle() { return RegexpTree.ANY; }
-    public RegexpTree getStartOfLine() { return RegexpTree.SOL; }
-    public RegexpTree getEndOfLine() { return RegexpTree.EOL; }
-    public RegexpTree getNothing() { return RegexpTree.NON; }
+    protected int index;
     
-    public RegexpTree getText( char ch ) { return new Text( "" + ch ); }
+    public BackReference( int n )
+        { this.index = n; }
     
-    public RegexpTree getZeroOrMore( RegexpTree d ) { return new ZeroOrMore( d ); }
-    public RegexpTree getOneOrMore( RegexpTree d ) { return new OneOrMore( d ); }
-    public RegexpTree getOptional( RegexpTree d ) { return new Optional( d ); }
-    
-    public RegexpTree getSequence( List operands ) { return Sequence.create( operands ); }
-    public RegexpTree getAlternatives( List operands ) { return Alternatives.create( operands ); }
-    
-    public RegexpTree getBackReference( int n ) { return new BackReference( n ); }
-    public RegexpTree getClass( String chars, boolean reject ) 
-        { return reject ? (RegexpTree) new NoneOf( chars ) : new AnyOf( chars ); }
-    public RegexpTree getParen( RegexpTree operand, int index ) 
-        { return new Paren( operand, index ); }
+    public int getIndex()
+        { return index; }
+
+    public boolean equals( Object other )
+        { return other instanceof BackReference && index == ((BackReference) other).index; }
+
+    public int hashCode()
+        { return index; }
+
+    public String toString()
+        { return "<back " + index + ">"; }
     }
+
 
 /*
     (c) Copyright 2004, Hewlett-Packard Development Company, LP

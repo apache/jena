@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PerlPatternParser.java,v 1.10 2004-09-02 11:34:17 chris-dollin Exp $
+  $Id: PerlPatternParser.java,v 1.11 2004-09-02 13:46:14 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -34,6 +34,11 @@ public class PerlPatternParser
          The generator for the RegexpTree nodes to be used in the parse.
     */
     protected RegexpTreeGenerator generator;
+    
+    /**
+        Count of how many back-references match-points seen so far.
+    */
+    protected int matchPointsSeen;
     
     /**
          The characters that are (non-)matchable by \w[W].
@@ -200,7 +205,8 @@ public class PerlPatternParser
         RegexpTree operand = parseAlts();
         if (pointer < limit && toParse.charAt( pointer ) == ')') pointer += 1;
         else throw new SyntaxException( "missing closing bracket" );
-        return generator.getParen( operand );
+        matchPointsSeen += 1;
+        return generator.getParen( operand, matchPointsSeen );
         }
 
     /**
@@ -232,10 +238,74 @@ public class PerlPatternParser
             return generator.getClass( wordChars, false );
         else if (ch == 'W')
             return generator.getClass( wordChars, true );
+        else if ('0' <= ch && ch <= '9')
+            return backReferenceOrOctalChar( ch );
+        else if (ch == 'x')
+            return hexEscape();
+        else if (ch == 'c')
+            return control( nextChar() );
         else    
             throw new PerlPatternParser.SyntaxException( "can't do \\" + ch + " yet" );
         }
     
+    /**
+     * @param c
+     * @return
+     */
+    protected RegexpTree control( char ch )
+        { return new Text( "" + (char) (ch - 'A' + 1) ); }
+
+    /**
+     * @return
+     */
+    protected RegexpTree hexEscape()
+        {
+        char hi = nextChar(), lo = nextChar();
+        return new Text( "" + (char) (deHex( hi ) * 16 + deHex( lo )) );
+        }
+
+    /**
+     * @param lo
+     * @return
+     */
+    private int deHex( char ch )
+        {
+        if (Character.isDigit( ch )) return ch - '0';
+        if ('a' <= ch && ch <= 'f') return 10 + ch - 'a';
+        if ('A' <= ch && ch <= 'F') return 10 + ch - 'A';
+        throw new SyntaxException( "'" + ch + "' is not a hex digit" );
+        }
+
+    /**
+        Answer the backreference or octal character described by \nnnn sequences.
+    */
+    protected RegexpTree backReferenceOrOctalChar( char ch )
+        {
+        char [] chars = new char[20];
+        int index = 0;
+        chars[index++] = ch;
+        while (pointer < limit)
+            {
+            ch = nextChar();
+            if (!Character.isDigit( ch )) break;
+            chars[index++] = ch;
+            }
+        int n = numeric( chars, 10, index );
+        return 0 < n && n <= matchPointsSeen
+            ? generator.getBackReference( n )
+            : generator.getText( numeric( chars, 8, index ) );
+        }
+
+    /**
+         Answer the numeric value represented by chars[0..limit-1] in the given base.
+    */
+    protected char numeric( char [] chars, int base, int limit )
+        {
+        int result = 0;
+        for (int i = 0; i < limit; i += 1) result = result * base + (chars[i] - '0');
+        return (char) result;
+        }
+
     /**
          Parse any quantifier and answer the quantified version of the argument
          tree <code>d</code>. TODO: handle non-greedy quantifiers. (These will

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestRegexpTrees.java,v 1.4 2004-09-02 11:34:45 chris-dollin Exp $
+  $Id: TestRegexpTrees.java,v 1.5 2004-09-02 13:46:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees.test;
@@ -38,7 +38,9 @@ public class TestRegexpTrees extends GraphTestBase
             { new AnyOf( "abcde" ), "any[abcde]" },
             { new AnyOf( "defgh" ), "any[defgh]" },
             { new NoneOf( "pqrst" ), "none[pqrst]" },
-            { new NoneOf( "12345" ), "none[12345]" }
+            { new NoneOf( "12345" ), "none[12345]" },
+            { new BackReference( 1 ), "back(1)" },
+            { new BackReference( 2 ), "back(2)" }
         };
     
     public void testEqualities()
@@ -83,6 +85,17 @@ public class TestRegexpTrees extends GraphTestBase
     
     public void testLiteralContents()
         { assertEquals( "hello", new Text( "hello" ).getString() ); }
+    
+    public void testParenOperand()
+        { assertSame( RegexpTree.EOL, new Paren( RegexpTree.EOL ).getOperand() );  }
+    
+    public void testParenIndex()
+        { assertEquals( 0, new Paren( RegexpTree.EOL ).getIndex() ); 
+        assertEquals( 1, new Paren( RegexpTree.EOL, 1 ).getIndex() );  
+        assertEquals( 17, new Paren( RegexpTree.NON, 17 ).getIndex() ); }
+    
+    public void testBackReference()
+        { assertEquals( 2, new BackReference( 2 ).getIndex() ); }
 
     protected void testExtractFromOneOrMore( RegexpTree operand )
         { assertSame( operand, new OneOrMore( operand ).getOperand() ); }

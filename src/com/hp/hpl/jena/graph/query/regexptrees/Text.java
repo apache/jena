@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Text.java,v 1.2 2004-09-02 11:34:17 chris-dollin Exp $
+  $Id: Text.java,v 1.3 2004-09-02 13:46:14 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -28,7 +28,7 @@ public class Text extends RegexpTree
         { return literal; }
     
     public String toString()
-        { return "<lit '" + literal + "'>"; }
+        { return "<text '" + literal + "'>"; }
     }
 
 /*

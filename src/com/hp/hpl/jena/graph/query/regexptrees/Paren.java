@@ -1,22 +1,35 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Paren.java,v 1.1 2004-09-01 19:18:18 chris-dollin Exp $
+  $Id: Paren.java,v 1.2 2004-09-02 13:46:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
 
 
 /**
-     Class which represents parenthesised [group-capturing] regular expressions.
+     Class which represents parenthesised regular expressions. Any parenthesised
+     expression may have a non-zero label, meaning that it may be referred back
+     to by BakReference expressions.
+     
      @author hedgehog
 */
 public class Paren extends RegexpTree
     {
     protected RegexpTree operand;
-    
+    protected int index;
+
     public Paren( RegexpTree tree ) 
-        { this.operand = tree; }
+        { this( tree, 0 ); }
+    
+    public Paren( RegexpTree tree, int index ) 
+        { this.operand = tree; this.index = index; }
+    
+    public RegexpTree getOperand()
+        { return operand; }
+    
+    public int getIndex()
+        { return index; };
 
     public boolean equals( Object other )
         { return other instanceof Paren && operand.equals( ((Paren) other).operand ); }
