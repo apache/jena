@@ -10,7 +10,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb.rules,v 1.15 2003-08-22 16:05:11 der Exp $
+# $Id: owl-fb.rules,v 1.16 2003-08-22 16:31:01 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -372,14 +372,14 @@
 
 # sameIndividualAs recognition rules - forward version
 
-[fp1: (?P rdf:type owl:FunctionalProperty), (?A ?P ?B), (?A ?P ?C) 
+[fp1: (?P rdf:type owl:FunctionalProperty), (?A ?P ?B), notLiteral(?B), (?A ?P ?C), notLiteral(?C)
 					notEqual(?B, ?C) -> (?B owl:sameIndividualAs ?C) ]
 
 [ifp1: (?P rdf:type owl:InverseFunctionalProperty), (?A ?P ?B), (?C ?P ?B) 
 					notEqual(?A, ?C) -> (?A owl:sameIndividualAs ?C) ]
 
 # This rule is not sufficient if the type inference is being done backwards
-[max1: (?C rdfs:subClassOf max(?P, 1)), (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), 
+[max1: (?C rdfs:subClassOf max(?P, 1)), (?X ?P ?Y1), notLiteral(?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notLiteral(?Y2),
 					notEqual(?Y1, ?Y2) -> (?Y1 owl:sameIndividualAs ?Y2) ]
 					
 # sameIndividualAs propagation rules - forward version
