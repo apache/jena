@@ -69,17 +69,18 @@ public class DBPattern  {
 	public boolean isSingleSource() { return source.size() == 1; }
 	public SpecializedGraph singleSource() { return (SpecializedGraph) source.get(0); }
 
-	protected void getFree ( List freeVar ) {
-		if ( S instanceof Free )
-			addFree(freeVar,(Free)S);
-		if ( P instanceof Free )
-			addFree(freeVar,(Free)P);
-		if ( O instanceof Free )
-			addFree(freeVar,(Free)O);
+	protected void getFree(List freeVar) {
+		if (freeVarCnt > 0) {
+			if (S instanceof Free)
+				addFree(freeVar, (Free) S);
+			if (P instanceof Free)
+				addFree(freeVar, (Free) P);
+			if (O instanceof Free)
+				addFree(freeVar, (Free) O);
+		}
 	}
 	
-	
-	protected int findFree ( List freeVar, Node_Variable var ) {
+	private int findFree ( List freeVar, Node_Variable var ) {
 		int i;
 		for ( i=0; i<freeVar.size(); i++ ) {
 			if ( var.equals((Node_Variable) freeVar.get(i)) )
@@ -88,11 +89,11 @@ public class DBPattern  {
 		return -1;		
 	}
 
-	protected boolean isFree ( List freeVar, Node_Variable var ) {
+	private boolean isFree ( List freeVar, Node_Variable var ) {
 		return findFree(freeVar,var) >= 0;		
 	}
 	
-	protected void addFree ( List freeVar, Free var ) {
+	private void addFree ( List freeVar, Free var ) {
 		int i = findFree(freeVar,var.var());
 		if ( i < 0 ) {
 			i = freeVar.size();
@@ -101,7 +102,7 @@ public class DBPattern  {
 		var.bind(i);
 	}
 	
-	protected boolean joinCheck ( List freeVar ) {
+	private boolean joinCheck ( List freeVar ) {
 		if ( !(P instanceof Fixed) ) return false;
 		if ( S instanceof Free ) return isFree(freeVar, ((Free)S).var());
 		if ( O instanceof Free ) return isFree(freeVar, ((Free)O).var());
@@ -136,7 +137,7 @@ public class DBPattern  {
 		return costCur;
 	}
 	
-	static final int costMax = 10;
+	static final int costMax = 100;
 	static final int costMin = 1;
 	int costCur;
 	
@@ -148,20 +149,50 @@ public class DBPattern  {
 		if ((S instanceof Free)&& map.hasBound(((Free)S).var())) {
 				S = new Bound (map.indexOf(((Free)S).var()));
 				anyBound = true;
+				freeVarCnt--;
 		}
 		if ((P instanceof Free)&& map.hasBound(((Free)P).var())) {
 				S = new Bound (map.indexOf(((Free)P).var()));
 				anyBound = true;
+				freeVarCnt--;
 		}
 		if ((O instanceof Free)&& map.hasBound(((Free)O).var())) {
 				S = new Bound (map.indexOf(((Free)O).var()));
 				anyBound = true;
+				freeVarCnt--;
 		}
 		return anyBound;
 	}
+	
+	
+	private int boundCost = 0;
+	private int unboundCost = 1;
+	private int unboundPredFactor = 4;
 
-	protected int costCalc() {
-			return costMax;
+	private int elementCost(Element x) {
+		if ( (x instanceof Fixed) || (x instanceof Bound) )
+			return boundCost;
+		else
+			return unboundCost;
+
+	}
+
+	/*
+	 * compute the "estimated cost" to evaluate the pattern. in fact,
+	 * it is just a relative ranking that favors patterns with bound
+	 * nodes (FIXED or bound variables) over unbound nodes (unbound
+	 * variables and ANY). also, patterns with FIXED predicates that
+	 * are ranked lower (lower cost) than patterns with variable or
+	 * ANY predicates (because fastpath currently does not support
+	 * such patterns).
+	 * @return int The estimated cost in the range [costmin,costMax).
+	 */
+	 
+	private int costCalc() {
+		int c = elementCost(S);
+		c += ((elementCost(P) * unboundPredFactor));
+		c += elementCost(O);
+		return c;
 	}
 
 }
