@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.22 2004-03-14 18:58:08 der Exp $
+ * $Id: TestBugs.java,v 1.23 2004-04-22 11:04:02 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2004-03-14 18:58:08 $
+ * @version $Revision: 1.23 $ on $Date: 2004-04-22 11:04:02 $
  */
 public class TestBugs extends TestCase {
 
@@ -480,6 +480,16 @@ public class TestBugs extends TestCase {
         assertTrue("somevalues inf for datatypes", inf.contains(me2R, RDF.type, Test2R));
         assertTrue("somevalues inf for user datatypes", inf.contains(meR, RDF.type, Test2R));
     }
+    
+    /* Report on jena-dev that DAMLMicroReasoner infmodels don't support daml:subClassOf, etc */
+    public void testDAMLMicroReasonerSupports() {
+        Reasoner r = DAMLMicroReasonerFactory.theInstance().create( null );
+        assertTrue( "Should support daml:subClassOf", r.supportsProperty( DAML_OIL.subClassOf ));
+        assertTrue( "Should support daml:subPropertyOf", r.supportsProperty( DAML_OIL.subPropertyOf));
+        assertTrue( "Should support daml:domain", r.supportsProperty( DAML_OIL.domain ));
+        assertTrue( "Should support daml:range", r.supportsProperty( DAML_OIL.range ));
+    }
+    
     
     // debug assistant
     private void tempList(Model m, Resource s, Property p, RDFNode o) {

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DAMLMicroReasonerFactory.java,v 1.3 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: DAMLMicroReasonerFactory.java,v 1.4 2004-04-22 11:04:50 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * that correspond roughly to what was there in Jena1. We hope.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.4 $ on $Date: 2004-04-22 11:04:50 $
  */
 public class DAMLMicroReasonerFactory implements ReasonerFactory {
    
@@ -65,6 +65,10 @@ public class DAMLMicroReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
+                .addProperty(ReasonerVocabulary.supportsP, DAML_OIL.subClassOf)
+                .addProperty(ReasonerVocabulary.supportsP, DAML_OIL.subPropertyOf)
+                .addProperty(ReasonerVocabulary.supportsP, DAML_OIL.range)
+                .addProperty(ReasonerVocabulary.supportsP, DAML_OIL.domain)
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
