@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:35:33 $
+ * Last modified on   $Date: 2003-05-30 17:17:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.11 2003-05-30 14:35:33 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.12 2003-05-30 17:17:42 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -683,12 +683,12 @@ public class OntResourceImpl
 
     /**
      * <p>
-     * Answer true if this DAML value is a member of the class denoted by the given URI.
+     * Answer true if this resource is a member of the class denoted by the given URI.
      * </p>
      *
      * @param classURI String denoting the URI of the class to test against
-     * @return True if it can be shown that this DAML value is a member of the class, via
-     *         <code>rdf:type</code>.
+     * @return True if it can be shown that this ontology resource has an
+     *         <code>rdf:type</code> of the given URI.
      */
     public boolean hasRDFType( String classURI ) {
         return hasRDFType( getModel().getResource( classURI ) );
@@ -697,18 +697,56 @@ public class OntResourceImpl
 
     /**
      * <p>
-     * Answer true if this ontology value is a member of the class denoted by the
+     * Answer true if this resource is a member of the class denoted by the
      * given class resource.
      * </p>
      * 
      * @param ontClass Denotes a class to which this value may belong
      * @return True if <code><i>this</i> rdf:type <i>ontClass</i></code> is
-     * a valid entailment in the model.
+     * true of the current model.
      */
     public boolean hasRDFType( Resource ontClass ) {
-        return getModel().listStatements( this, RDF.type, ontClass ).hasNext() ||
-               (getProfile().hasAliasFor( RDF.type ) && 
-                getModel().listStatements( this, (Property) getProfile().getAliasFor( RDF.type), ontClass ).hasNext() );
+        return hasRDFType( ontClass, "UNSPECIFIED" );
+    }
+    
+    /**
+     * <p>
+     * Answer true if this resource is a member of the class denoted by the
+     * given class resource.
+     * </p>
+     * 
+     * @param ontClass Denotes a class to which this value may belong
+     * @param name The name of the class, which will be used to give a more meaningful
+     * error message if the ontClass is null (indicating that it lies outside the current
+     * ontology profile).
+     * @return True if <code><i>this</i> rdf:type <i>ontClass</i></code> is
+     * true of the current model.
+     * @exception ProfileException if the class is null, indicating that it is not in the current profile
+     */
+    protected boolean hasRDFType( Resource ontClass, String name ) {
+        checkProfile( ontClass, name );
+        
+        ClosableIterator i = null;
+        try {
+            i = getModel().listStatements( this, RDF.type, ontClass );
+            if (i.hasNext()) {
+                // rdf:type ontClass  is true for this resource
+                return true;
+            }
+            
+            // try aliases for rdf:type
+            if (getProfile().hasAliasFor( RDF.type )) {
+                i.close();
+                i = getModel().listStatements( this, (Property) getProfile().getAliasFor( RDF.type), ontClass ); 
+                return i.hasNext();
+            }
+            else {
+                return false;
+            }
+        }
+        finally {
+            i.close();
+        }
     }
 
 
@@ -954,6 +992,19 @@ public class OntResourceImpl
             // create a new list to hold the only value we know so far
             addProperty( p, ((OntModel) getModel()).createList( new RDFNode[] {value} ) );
         }
+    }
+    
+    /** Convert this resource to the facet denoted by cls, by adding rdf:type type if necessary */
+    protected RDFNode convertToType( Resource type, String name, Class cls ) {
+        checkProfile( type, name );
+        if (canAs( cls )) {
+            // don't need to update the model, we already can do the given facet
+            return as( cls );
+        }
+        
+        // we're told that adding this rdf:type will make the as() possible - let's see
+        addProperty( RDF.type, type );
+        return as( cls );
     }
     
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 21:11:19 $
+ * Last modified on   $Date: 2003-05-30 17:13:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -27,6 +27,8 @@ package com.hp.hpl.jena.ontology.impl.test;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 
 
@@ -37,7 +39,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.5 2003-05-23 21:11:19 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.6 2003-05-30 17:13:37 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestBase 
@@ -246,6 +248,244 @@ public class TestProperty
                     OntProperty s = (OntProperty) m.getProperty( NS, "s" ).as( OntProperty.class );
                     
                     assertTrue( "p should have inv prop s", p.isInverseOf( s ) );
+                }
+            },
+            
+            // type tests
+            new OntTestCase( "OntProperty.isFunctionalProperty dt", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntProperty p = m.createDatatypeProperty( NS + "p", true );
+                
+                    assertTrue( "isFunctionalProperty not correct",         p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {
+                        assertTrue( "isSymmetricProperty not correct",      !p.isSymmetricProperty() );
+                    } 
+                }
+            },
+            new OntTestCase( "OntProperty.isFunctionalProperty object", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntProperty p = m.createObjectProperty( NS + "p", true );
+                
+                    assertTrue( "isFunctionalProperty not correct",         p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {
+                        assertTrue( "isSymmetricProperty not correct",      !p.isSymmetricProperty() );
+                    } 
+                }
+            },
+            new OntTestCase( "OntProperty.isDatatypeProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntProperty p = m.createDatatypeProperty( NS + "p", false );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {
+                        assertTrue( "isSymmetricProperty not correct",      !p.isSymmetricProperty() );
+                    } 
+                }
+            },
+            new OntTestCase( "OntProperty.isObjectProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntProperty p = m.createObjectProperty( NS + "p", false );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {
+                        assertTrue( "isSymmetricProperty not correct",      !p.isSymmetricProperty() );
+                    } 
+                }
+            },
+            new OntTestCase( "OntProperty.isTransitiveProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntProperty p = m.createTransitiveProperty( NS + "p" );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );    // this should be true by entailment, but we have reasoning switched off
+                    assertTrue( "isTransitiveProperty not correct",         p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {
+                        assertTrue( "isSymmetricProperty not correct",      !p.isSymmetricProperty() );
+                    } 
+                }
+            },
+            new OntTestCase( "OntProperty.isInverseFunctionalProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntProperty p = m.createInverseFunctionalProperty( NS + "p" );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );    // this should be true by entailment, but we have reasoning switched off
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {
+                        assertTrue( "isSymmetricProperty not correct",      !p.isSymmetricProperty() );
+                    } 
+                }
+            },
+            new OntTestCase( "OntProperty.isSymmetricProperty", true, true, false ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntProperty p = m.createSymmetricProperty( NS + "p" );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );    // this should be true by entailment, but we have reasoning switched off
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {
+                        assertTrue( "isSymmetricProperty not correct",      p.isSymmetricProperty() );
+                    } 
+                }
+            },
+            new OntTestCase( "OntProperty.convertToFunctionalProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Property pSimple = m.createProperty( NS, "p" );
+                    pSimple.addProperty( RDF.type, RDF.Property );
+                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                
+                    p = p.convertToFunctionalProperty();
+                    
+                    assertTrue( "isFunctionalProperty not correct",         p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                }
+            },
+            new OntTestCase( "OntProperty.convertToDatatypeProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Property pSimple = m.createProperty( NS, "p" );
+                    pSimple.addProperty( RDF.type, RDF.Property );
+                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                
+                    p = p.convertToDatatypeProperty();
+                    
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                }
+            },
+            new OntTestCase( "OntProperty.convertToObjectProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Property pSimple = m.createProperty( NS, "p" );
+                    pSimple.addProperty( RDF.type, RDF.Property );
+                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                
+                    p = p.convertToObjectProperty();
+                    
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                }
+            },
+            new OntTestCase( "OntProperty.convertToTransitiveProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Property pSimple = m.createProperty( NS, "p" );
+                    pSimple.addProperty( RDF.type, RDF.Property );
+                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                
+                    p = p.convertToTransitiveProperty();
+                    
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                }
+            },
+            new OntTestCase( "OntProperty.convertToInverseFunctionalProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Property pSimple = m.createProperty( NS, "p" );
+                    pSimple.addProperty( RDF.type, RDF.Property );
+                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                
+                    p = p.convertToInverseFunctionalProperty();
+                    
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                }
+            },
+            new OntTestCase( "OntProperty.convertToSymmetricProperty", true, true, false ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Property pSimple = m.createProperty( NS, "p" );
+                    pSimple.addProperty( RDF.type, RDF.Property );
+                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
+                
+                    p = p.convertToSymmetricProperty();
+                    
+                    assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
+                    assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
+                    assertTrue( "isObjectProperty not correct",             !p.isObjectProperty() );
+                    assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
+                    assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
+                    if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", p.isSymmetricProperty() ); } 
                 }
             },
         };

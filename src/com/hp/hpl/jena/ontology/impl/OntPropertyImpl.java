@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 20:20:00 $
+ * Last modified on   $Date: 2003-05-30 17:17:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.8 2003-05-23 20:20:00 ian_dickinson Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.9 2003-05-30 17:17:42 ian_dickinson Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -492,6 +492,107 @@ public class OntPropertyImpl
      */
     public SymmetricProperty asSymmetricProperty() {
         return (SymmetricProperty) as( SymmetricProperty.class );
+    }
+
+    // conversion functions
+    
+    /** 
+     * <p>Answer a facet of this property as a functional property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to a FunctionalProperty facet
+     */
+    public FunctionalProperty convertToFunctionalProperty() {
+        return (FunctionalProperty) convertToType( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY", FunctionalProperty.class );
+    }
+
+    /** 
+     * <p>Answer a facet of this property as a datatype property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to a DatatypeProperty facet
+     */
+    public DatatypeProperty convertToDatatypeProperty() {
+        return (DatatypeProperty) convertToType( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY", DatatypeProperty.class );
+    }
+
+    /** 
+     * <p>Answer a facet of this property as an object property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to an ObjectProperty facet
+     */
+    public ObjectProperty convertToObjectProperty() {
+        return (ObjectProperty) convertToType( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY", ObjectProperty.class );
+    }
+    
+    /** 
+     * <p>Answer a facet of this property as a transitive property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to a TransitiveProperty facet
+     */
+    public TransitiveProperty convertToTransitiveProperty() {
+        return (TransitiveProperty) convertToType( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY", TransitiveProperty.class );
+    }
+    
+    /** 
+     * <p>Answer a facet of this property as an inverse functional property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to an InverseFunctionalProperty facet
+     */
+    public InverseFunctionalProperty convertToInverseFunctionalProperty() {
+        return (InverseFunctionalProperty) convertToType( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY", InverseFunctionalProperty.class );
+    }
+    
+    /** 
+     * <p>Answer a facet of this property as a symmetric property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to a SymmetricProperty facet
+     */
+    public SymmetricProperty convertToSymmetricProperty() {
+        return (SymmetricProperty) convertToType( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY", SymmetricProperty.class );
+    }
+    
+    
+    // tests on property sub-types
+    
+    /** 
+     * <p>Answer true if this property is a functional property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as a functional property.
+     */
+    public boolean isFunctionalProperty() {
+        return hasRDFType( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
+    }
+
+    /** 
+     * <p>Answer true if this property is a datatype property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as a datatype property.
+     */
+    public boolean isDatatypeProperty() {
+        return hasRDFType( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
+    }
+
+    /** 
+     * <p>Answer true if this property is an object property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as an object property.
+     */
+    public boolean isObjectProperty() {
+        return hasRDFType( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
+    }
+    
+    /** 
+     * <p>Answer true if this property is a transitive property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as a transitive property.
+     */
+    public boolean isTransitiveProperty() {
+        return hasRDFType( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
+    }
+    
+    /** 
+     * <p>Answer true if this property is an inverse functional property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as an inverse functional property.
+     */
+    public boolean isInverseFunctionalProperty() {
+        return hasRDFType( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
+    }
+    
+    /** 
+     * <p>Answer true if this property is a symmetric property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as a symmetric property.
+     */
+    public boolean isSymmetricProperty() {
+        return hasRDFType( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
     }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 20:46:50 $
+ * Last modified on   $Date: 2003-05-30 17:17:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.5 2003-05-27 20:46:50 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.6 2003-05-30 17:17:24 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -297,7 +297,8 @@ public interface OntProperty
      */
     public boolean isInverseOf( Property prop );
     
-
+    // view conversion functions
+    
     /** 
      * <p>Answer a view of this property as a functional property</p>
      * @return This property, but viewed as a FunctionalProperty node
@@ -345,6 +346,84 @@ public interface OntProperty
      * given the lanuage profile and the current state of the underlying model.
      */
     public SymmetricProperty asSymmetricProperty();
+    
+    // conversion functions
+    
+    /** 
+     * <p>Answer a facet of this property as a functional property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to a FunctionalProperty facet
+     */
+    public FunctionalProperty convertToFunctionalProperty();
+
+    /** 
+     * <p>Answer a facet of this property as a datatype property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to a DatatypeProperty facet
+     */
+    public DatatypeProperty convertToDatatypeProperty();
+
+    /** 
+     * <p>Answer a facet of this property as an object property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to an ObjectProperty facet
+     */
+    public ObjectProperty convertToObjectProperty();
+    
+    /** 
+     * <p>Answer a facet of this property as a transitive property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to a TransitiveProperty facet
+     */
+    public TransitiveProperty convertToTransitiveProperty();
+    
+    /** 
+     * <p>Answer a facet of this property as an inverse functional property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to an InverseFunctionalProperty facet
+     */
+    public InverseFunctionalProperty convertToInverseFunctionalProperty();
+    
+    /** 
+     * <p>Answer a facet of this property as a symmetric property, adding additional information to the model if necessary.</p>
+     * @return This property, but converted to a SymmetricProperty facet
+     */
+    public SymmetricProperty convertToSymmetricProperty();
+    
+    
+    // tests on property sub-types
+    
+    /** 
+     * <p>Answer true if this property is a functional property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as a functional property.
+     */
+    public boolean isFunctionalProperty();
+
+    /** 
+     * <p>Answer true if this property is a datatype property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as a datatype property.
+     */
+    public boolean isDatatypeProperty();
+
+    /** 
+     * <p>Answer true if this property is an object property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as an object property.
+     */
+    public boolean isObjectProperty();
+    
+    /** 
+     * <p>Answer true if this property is a transitive property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as a transitive property.
+     */
+    public boolean isTransitiveProperty();
+    
+    /** 
+     * <p>Answer true if this property is an inverse functional property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as an inverse functional property.
+     */
+    public boolean isInverseFunctionalProperty();
+    
+    /** 
+     * <p>Answer true if this property is a symmetric property</p>
+     * @return True if this this property has an <code>rdf:type</code> that defines it as a symmetric property.
+     */
+    public boolean isSymmetricProperty();
+
 }
 
 

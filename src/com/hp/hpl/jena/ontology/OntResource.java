@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-28 16:25:50 $
+ * Last modified on   $Date: 2003-05-30 17:17:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.10 2003-05-28 16:25:50 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.11 2003-05-30 17:17:24 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -460,25 +460,25 @@ public interface OntResource
 
     /**
      * <p>
-     * Answer true if this DAML value is a member of the class denoted by the given URI.
+     * Answer true if this resource is a member of the class denoted by the given URI.
      * </p>
      *
      * @param classURI String denoting the URI of the class to test against
-     * @return True if it can be shown that this DAML value is a member of the class, via
-     *         <code>rdf:type</code>.
+     * @return True if it can be shown that this ontology resource has an
+     *         <code>rdf:type</code> of the given URI.
      */
     public boolean hasRDFType( String classURI );
 
 
     /**
      * <p>
-     * Answer true if this ontology value is a member of the class denoted by the
+     * Answer true if this resource is a member of the class denoted by the
      * given class resource.
      * </p>
      * 
      * @param ontClass Denotes a class to which this value may belong
      * @return True if <code><i>this</i> rdf:type <i>ontClass</i></code> is
-     * a valid entailment in the model.
+     * true of the current model.
      */
     public boolean hasRDFType( Resource ontClass );
 
