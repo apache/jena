@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-26 19:26:44 $
+ * Last modified on   $Date: 2003-06-26 22:26:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.2 2003-06-26 19:26:44 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.3 2003-06-26 22:26:28 ian_dickinson Exp $
  */
 public class TestOntModel 
     extends TestCase
@@ -270,7 +270,8 @@ public class TestOntModel
     public void testGetOntClass() {
         OntModel m = ModelFactory.createOntologyModel();
         Resource r = m.getResource( NS + "r" );
-        m.add( r, RDF.type, r );
+        Resource r0 = m.getResource( NS + "r0" );
+        m.add( r, RDF.type, r0 );
         Resource s = m.createClass( NS + "s" );
         assertEquals( "Result of get s", s, m.getOntClass( NS + "s" ) );
         assertNull( "result of get q", m.getOntClass( NS+"q") );

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-24 15:28:05 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-26 22:26:41 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.15 2003-06-24 15:28:05 chris-dollin Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.16 2003-06-26 22:26:41 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -262,7 +262,8 @@ public class OWLProfile
         {  OntClass.class,              new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() );
+                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) || 
+                                                       g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() );
                                             }
                                         }
         },
