@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.16 2003-06-17 12:25:07 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.17 2003-06-19 15:22:37 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-06-17 12:25:07 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-06-19 15:22:37 $'
 
  */
 class Unparser {
@@ -578,7 +578,8 @@ class Unparser {
 		for (int i = 0; i < list.length; i++) {
 			done(list[i][0]);
 			done(list[i][1]);
-			done(list[i][2]);
+			if ( daml )
+			   done(list[i][2]);
 		}
 		tab();
 		print("<");
@@ -1356,7 +1357,7 @@ class Unparser {
 	private Statement[][] getRDFList(RDFNode r) {
 		return prettyWriter.sParseTypeCollectionPropertyElt
 			? null
-			: getList(r, RDF.List, RDF.first, RDF.rest, RDF.nil);
+			: getList(r, null, RDF.first, RDF.rest, RDF.nil);
 	}
 
 	private Statement[][] getList(
@@ -1370,7 +1371,7 @@ class Unparser {
 		RDFNode next = r;
 		// We walk down the list and check each member.
 		while (!next.equals(nil)) {
-			Statement elt[] = new Statement[3];
+			Statement elt[] = new Statement[list==null?2:3];
 			if (next instanceof Literal)
 				return null;
 			Resource res = (Resource) next;
@@ -1414,7 +1415,7 @@ class Unparser {
 			} finally {
 				ss.close();
 			}
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < elt.length; i++)
 				if (elt[i] == null) // didn't have the three required elements.
 					return null;
 			rslt.add(elt);
