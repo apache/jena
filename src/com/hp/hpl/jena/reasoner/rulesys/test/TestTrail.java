@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTrail.java,v 1.1 2003-05-20 17:30:47 der Exp $
+ * $Id: TestTrail.java,v 1.2 2003-05-21 07:58:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,19 +21,16 @@ import junit.framework.TestSuite;
  *  Test harness for the prototype binding trail implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-20 17:30:47 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-21 07:58:22 $
  */
 public class TestTrail extends TestCase {
 
-    // Useful constants
-    Node r = Node.createURI("r");
-    Node s = Node.createURI("s");
-    Node t = Node.createURI("t");
-    Node d = Node.createURI("d");
-    Node C1 = Node.createURI("C1");
-    Node C2 = Node.createURI("C2");
-    Node C3 = Node.createURI("C3");
-     
+    Node a = Node.createURI("a");
+    Node b = Node.createURI("b");
+    Node c = Node.createURI("c");
+    Node p = Node.createURI("p");
+    Node q = Node.createURI("q");
+    
     /**
      * Boilerplate for junit
      */ 
@@ -53,15 +50,10 @@ public class TestTrail extends TestCase {
      * Test unification support.
      */
     public void testUnify() {
-        Node a = Node.createURI("a");
-        Node b = Node.createURI("b");
-        Node c = Node.createURI("c");
-        Node p = Node.createURI("p");
-        Node q = Node.createURI("q");
         Node_RuleVariable X = new Node_RuleVariable("x", 0);
         Node_RuleVariable Y = new Node_RuleVariable("y", 1);
         Node_RuleVariable Z = new Node_RuleVariable("z", 2);
-
+ 
         Trail trail = new Trail();
         assertTrue(trail.unify(new TriplePattern(X, p, Y), new TriplePattern(a, p, b)));
         assertEquals(X.deref(), a);
@@ -99,6 +91,36 @@ public class TestTrail extends TestCase {
         assertEquals(X.deref(), b);
         assertEquals(Y.deref(), b);
         trail.unwindAndClear();
+        
+    }
+    
+    /**
+     * Check a few triple pattern invariants. These are not directly
+     * part of the trail system but the trail machinery depends on them.
+     */
+    public void testMatching() {
+        Node_RuleVariable X = new Node_RuleVariable("x", 0);
+        Node_RuleVariable Y = new Node_RuleVariable("y", 1);
+        Node_RuleVariable Z = new Node_RuleVariable("z", 2);
+        Node_RuleVariable X1 = new Node_RuleVariable("x1", 0);
+        Node_RuleVariable Y1 = new Node_RuleVariable("y1", 1);
+        Node_RuleVariable Z1 = new Node_RuleVariable("z1", 2);
+ 
+        assertTrue(X.sameValueAs(Y));
+        TriplePattern f1 = new TriplePattern(X, p, 
+                                Functor.makeFunctorNode("f", new Node[]{X, b}));
+        TriplePattern f2 = new TriplePattern(Y, p, 
+                                Functor.makeFunctorNode("f", new Node[]{Z, b}));
+        TriplePattern f3 = new TriplePattern(Y1, p, 
+                                Functor.makeFunctorNode("f", new Node[]{Y1, b}));
+        TriplePattern f4 = new TriplePattern(X1, p, 
+                                Functor.makeFunctorNode("f", new Node[]{Z1, b}));
+        assertEquals(f1, f2);
+        assertEquals(f1.hashCode(), f2.hashCode());
+        assertTrue(f1.variantOf(f3));
+        assertTrue(f2.variantOf(f4));
+        assertTrue( ! f1.variantOf(f2));
+        assertTrue( ! f3.variantOf(f4));
     }
     
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalTable.java,v 1.6 2003-05-19 21:26:38 der Exp $
+ * $Id: GoalTable.java,v 1.7 2003-05-21 07:58:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -16,10 +16,12 @@ import org.apache.log4j.Logger;
 
 /**
  *  Part of the backwared chaining rule interpreter. The goal table
- *  is a table of partially evaluated goals.
+ *  is a table of partially evaluated goals. This could be done by
+ *  variant-based or sumsumption-based tabling. We currently use variant-based.
+ *  TODO Investigate performance impact of switching to subsumption-based.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-19 21:26:38 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-21 07:58:22 $
  */
 public class GoalTable {
 
@@ -54,7 +56,7 @@ public class GoalTable {
 //            logger.debug("findGoal on " + goal.toString());
 //        }
         GoalResults results = (GoalResults) table.get(goal);
-        if (results == null) {
+        if (results == null || !goal.variantOf(results.goal)) {
             results = new GoalResults(goal, ruleEngine);
             table.put(goal, results);
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.12 2003-05-20 17:31:37 der Exp $
+ * $Id: RuleState.java,v 1.13 2003-05-21 07:58:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-05-20 17:31:37 $
+ * @version $Revision: 1.13 $ on $Date: 2003-05-21 07:58:22 $
  */
 public class RuleState {
     
@@ -99,10 +99,12 @@ public class RuleState {
     }
         
     /**
-     * Return the final goal result.
+     * Return the final goal result. Returns null if this is not a legal result shape.
      */
     public Triple getResult() {
-        return trail.instantiate(ruleInstance.head);
+        Triple t = trail.instantiate(ruleInstance.head);
+        if (t.getSubject().isLiteral() || t.getPredicate().isLiteral()) return null;
+        return t;
     }
     
     /**
@@ -140,10 +142,21 @@ public class RuleState {
         trail.unwindBindings();
     }
     
+    
+    /**
+     * Unwind all of the bindings associated with this rule state and all its parents.
+     * Used when context switching to a completely different goal tree. 
+     */
+    public void unwindAllBindings() {
+        if (prev != null) prev.unwindAllBindings();
+        trail.unwindBindings();
+    }
+    
     /**
      * Restore all the bindings associated with this rule state.
      */
     public void restoreBindings() {
+        if (prev != null) prev.restoreBindings();
         trail.activate();
     }
     
@@ -210,12 +223,16 @@ public class RuleState {
                 }
                 // ... end of clause reorder
                 TriplePattern subgoal = trail.partInstantiate((TriplePattern)clause);
-                if (!subgoal.isLegal()) return null;
+                if (!subgoal.isLegal()) {
+                    trail.unwindBindings();
+                    return null;
+                }
                 GoalState gs = generator.getEngine().findGoal(subgoal);
                 RuleState rs = new RuleState(ri, trail, gs, clauseIndex);
                 return rs;
             } else {
                 if (!generator.getEngine().processBuiltin(clause, rule, trail)) {
+                    trail.unwindBindings();
                     return null;
                 }
             }

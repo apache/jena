@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Trail.java,v 1.1 2003-05-20 17:31:37 der Exp $
+ * $Id: Trail.java,v 1.2 2003-05-21 07:58:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * own trail segment which is an instance of this class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-20 17:31:37 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-21 07:58:22 $
  */
 public class Trail implements BindingEnvironment {
     
@@ -210,9 +210,9 @@ public class Trail implements BindingEnvironment {
      */
     public TriplePattern partInstantiate(TriplePattern goal) {
         return new TriplePattern(
-                getGroundVersion(goal.getSubject()),
-                getGroundVersion(goal.getPredicate()),
-                getGroundVersion(goal.getObject())
+            getMostGroundVersion(goal.getSubject()),
+            getMostGroundVersion(goal.getPredicate()),
+            getMostGroundVersion(goal.getObject())
         );
     }
     

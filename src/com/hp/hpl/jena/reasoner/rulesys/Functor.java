@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.4 2003-05-20 17:31:36 der Exp $
+ * $Id: Functor.java,v 1.5 2003-05-21 07:57:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-20 17:31:36 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-21 07:57:22 $
  */
 public class Functor {
     /** Functor's name */
@@ -191,6 +191,11 @@ public class Functor {
             }
         }
         return false;
+    }
+    
+    /** hash function override */
+    public int hashCode() {
+        return (name.hashCode()) ^ (args.length << 2);
     }
     
     /**

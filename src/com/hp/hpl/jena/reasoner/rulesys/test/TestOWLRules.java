@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.6 2003-05-20 10:21:53 der Exp $
+ * $Id: TestOWLRules.java,v 1.7 2003-05-21 07:58:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -19,7 +19,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-20 10:21:53 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-21 07:58:22 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -145,8 +145,8 @@ public class TestOWLRules extends TestCase {
     protected void runTest() throws IOException {
 //        OWLWGTester tester = new OWLWGTester(OWLRuleReasonerFactory.theInstance(), this, null);
         OWLWGTester tester = new OWLWGTester(OWLBRuleReasonerFactory.theInstance(), this, null);
-        tester.runTests(manifest, true);
-//        tester.runTests(manifest, false);    // No tracing/derivation logging
+//        tester.runTests(manifest, true);
+        tester.runTests(manifest, false);    // No tracing/derivation logging
 //        OWLRuleReasoner.printStats();
     }
 

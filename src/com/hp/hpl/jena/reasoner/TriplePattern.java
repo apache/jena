@@ -5,9 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TriplePattern.java,v 1.8 2003-05-20 17:31:37 der Exp $
+ * $Id: TriplePattern.java,v 1.9 2003-05-21 07:58:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.rulesys.Functor;
@@ -27,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-20 17:31:37 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-21 07:58:22 $
  */
 public class TriplePattern {
 
@@ -138,6 +141,55 @@ public class TriplePattern {
         } else {
             return object.sameValueAs(pattern.object);
         } 
+    }
+    
+    /**
+     * Test if a pattern is just a variant of this pattern. I.e. it is the same
+     * up to variable renaming. This takes into account multiple occurances
+     * of the same variable.
+     */
+    public boolean variantOf(TriplePattern pattern) {
+        HashMap vmap = new HashMap();
+        if ( ! variantOf(subject, pattern.subject, vmap) ) return false;
+        if ( ! variantOf(predicate, pattern.predicate, vmap) ) return false;
+        if (Functor.isFunctor(object) && Functor.isFunctor(pattern.object)) {
+            Functor functor = (Functor)object.getLiteral().getValue();
+            Functor pFunctor = (Functor)pattern.object.getLiteral().getValue();
+            if ( ! functor.getName().equals(pFunctor.getName()) ) return false;
+            Node[] args = functor.getArgs();
+            Node[] pargs = pFunctor.getArgs();
+            if ( args.length != pargs.length ) return false;
+            for (int i = 0; i < args.length; i++) {
+                if ( ! variantOf(args[i], pargs[i], vmap) ) return false;
+            }
+            return true; 
+        } else {
+            return variantOf(object, pattern.object, vmap);
+        } 
+    }
+    
+    /**
+     * Test if one node is a variant of another give a table of variable matches.
+     */
+    private boolean variantOf(Node n, Node p, Map vmap) {
+        if (n instanceof Node_RuleVariable) {
+            if (p instanceof Node_RuleVariable) {
+                Object nRep = ((Node_RuleVariable)n).getRepresentative();
+                Object pRep = ((Node_RuleVariable)p).getRepresentative();
+                Object nMatch = vmap.get(nRep);
+                if (nMatch == null) {
+                    // First match of these pairs
+                    vmap.put(nRep, pRep);
+                    return true;
+                } else {
+                    return nMatch == pRep;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return n.sameValueAs(p);
+        }
     }
     
     /**
