@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ReificationStyle.java,v 1.1 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: ReificationStyle.java,v 1.2 2003-09-08 13:43:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -37,7 +37,7 @@ public class ReificationStyle
         { return "<style int=" + intercept + ", con=" + conceal + ">"; }
     }
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003, Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
