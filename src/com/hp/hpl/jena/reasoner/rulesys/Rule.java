@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.23 2004-03-22 17:10:12 der Exp $
+ * $Id: Rule.java,v 1.24 2004-07-08 14:55:03 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -56,7 +56,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.23 $ on $Date: 2004-03-22 17:10:12 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.24 $ on $Date: 2004-07-08 14:55:03 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -578,7 +578,8 @@ public class Rule implements ClauseEntry {
                 // Skip the trailing quote
                 nextToken();
                 return Node.createLiteral(lit, "", false);
-            } else if ( Character.isDigit(token.charAt(0)) ) {
+            } else  if ( Character.isDigit(token.charAt(0)) || 
+                         (token.charAt(0) == '-' && token.length() > 1 && Character.isDigit(token.charAt(1))) ) {
                 // A number literal
                return parseNumber(token);
             } else {
@@ -592,7 +593,8 @@ public class Rule implements ClauseEntry {
          * @return the constructed literal node
          */
         Node parseNumber(String lit) {
-            if ( Character.isDigit(lit.charAt(0)) ) {
+            if ( Character.isDigit(lit.charAt(0)) || 
+                (lit.charAt(0) == '-' && lit.length() > 1 && Character.isDigit(lit.charAt(1))) ) {
                 if (lit.indexOf(".") != -1) {
                     // Float?
                     if (XSDDatatype.XSDfloat.isValid(lit)) {
