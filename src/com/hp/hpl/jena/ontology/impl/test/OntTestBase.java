@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-12-08 09:30:17 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -26,10 +26,9 @@ package com.hp.hpl.jena.ontology.impl.test;
 ///////////////
 import java.util.*;
 
-import org.apache.log4j.Logger;
-
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.test.TestUtil;
 
 import junit.framework.*;
 
@@ -41,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.7 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.8 2003-12-08 09:30:17 ian_dickinson Exp $
  */
 public abstract class OntTestBase 
     extends TestSuite
@@ -155,31 +154,7 @@ public abstract class OntTestBase
     
         /** Test that an iterator delivers the expected values */
         protected void iteratorTest( Iterator i, Object[] expected ) {
-            Logger logger = Logger.getLogger( getClass() );
-            List expList = new ArrayList();
-            for (int j = 0; j < expected.length; j++) {
-                expList.add( expected[j] );
-            }
-        
-            while (i.hasNext()) {
-                Object next = i.next();
-                
-                // debugging
-                if (!expList.contains( next )) {
-                    logger.debug( getName() + " - Unexpected iterator result: " + next );
-                }
-                
-                assertTrue( "Value " + next + " was not expected as a result from this iterator ", expList.contains( next ) );
-                assertTrue( "Value " + next + " was not removed from the list ", expList.remove( next ) );
-            }
-        
-            if (!(expList.size() == 0)) {
-                logger.debug( getName() + "Expected iterator results not found" );
-                for (Iterator j = expList.iterator(); j.hasNext(); ) {
-                    logger.debug( getName() + " - missing: " + j.next() );
-                }
-            }
-            assertEquals( "There were expected elements from the iterator that were not found", 0, expList.size() );
+            TestUtil.assertIteratorValues( this, i, expected );
         }
     }
 }
