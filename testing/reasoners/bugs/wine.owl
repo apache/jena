@@ -3,21 +3,24 @@
      <!ENTITY vin  "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#" >
      <!ENTITY food "http://www.w3.org/2001/sw/WebOnt/guide-src/food#" >
      <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
-     <!ENTITY xsd  "http://www.w3.org/2000/10/XMLSchema#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
    ]>
 
 <rdf:RDF
   xmlns     = "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#"
   xmlns:vin = "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#"
+  xml:base  = "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#"
   xmlns:food= "http://www.w3.org/2001/sw/WebOnt/guide-src/food#"
   xmlns:owl = "http://www.w3.org/2002/07/owl#"
   xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs= "http://www.w3.org/2000/01/rdf-schema#"
-  xmlns:xsd = "http://www.w3.org/2000/10/XMLSchema#">
+  xmlns:xsd = "http://www.w3.org/2001/XMLSchema#">
 
   <owl:Ontology rdf:about="">
     <rdfs:comment>An example OWL ontology</rdfs:comment>
-    <owl:priorVersion rdf:resource="http://www.example.org/wine-020303.owl"/>
+    <owl:priorVersion>
+      <owl:Ontology rdf:about="http://www.example.org/wine-020303"/>
+    </owl:priorVersion>
     <owl:imports rdf:resource="http://www.w3.org/2001/sw/WebOnt/guide-src/food.owl"/>
     <rdfs:comment>Derived from the DAML Wine ontology at 
       http://ontolingua.stanford.edu/doc/chimaera/ontologies/wines.daml
@@ -72,14 +75,8 @@
     </rdfs:subClassOf>
     <rdfs:subClassOf>
       <owl:Restriction>
-        <owl:onProperty rdf:resource="#hasMaker" />
-	<owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
-      </owl:Restriction>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf>
-      <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn"/> 
-        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:someValuesFrom rdf:resource="&vin;Region"/>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:label xml:lang="en">wine</rdfs:label>
@@ -237,6 +234,7 @@
   </owl:ObjectProperty>
   
   <owl:ObjectProperty rdf:ID="madeFromGrape">
+    <rdfs:subPropertyOf rdf:resource="&food;madeFromFruit" />
     <rdfs:domain rdf:resource="#Wine" />
     <rdfs:range rdf:resource="#WineGrape" />
   </owl:ObjectProperty>
@@ -2364,17 +2362,14 @@
       <vin:Winery rdf:about="#ChateauLafiteRothschild" />
       <vin:Winery rdf:about="#ChateauMargauxWinery" />
       <vin:Winery rdf:about="#ChateauMorgon" />
-      <vin:Winery rdf:about="#McGuinnesso" />
       <vin:Winery rdf:about="#ClosDeLaPoussie" />
       <vin:Winery rdf:about="#ClosDeVougeot" />
       <vin:Winery rdf:about="#CongressSprings" />
       <vin:Winery rdf:about="#Corbans" />
-      <vin:Winery rdf:about="#Corbans" />
-      <vin:Winery rdf:about="#Corbans" />
       <vin:Winery rdf:about="#CortonMontrachet" />
       <vin:Winery rdf:about="#Cotturi" />
+      <vin:Winery rdf:about="#DAnjou" />
       <vin:Winery rdf:about="#Elyse" />
-      <vin:Winery rdf:about="#Forman" />
       <vin:Winery rdf:about="#Forman" />
       <vin:Winery rdf:about="#Foxen" />
       <vin:Winery rdf:about="#GaryFarrell" />
@@ -2383,28 +2378,20 @@
       <vin:Winery rdf:about="#LaneTanner" />
       <vin:Winery rdf:about="#Longridge" />
       <vin:Winery rdf:about="#Marietta" />
-      <vin:Winery rdf:about="#Marietta" />
-      <vin:Winery rdf:about="#Marietta" />
-      <vin:Winery rdf:about="#Marietta" />
+      <vin:Winery rdf:about="#McGuinnesso" />
       <vin:Winery rdf:about="#MountEdenVineyard" />
-      <vin:Winery rdf:about="#MountEdenVineyard" />
-      <vin:Winery rdf:about="#Mountadam" />
-      <vin:Winery rdf:about="#Mountadam" />
       <vin:Winery rdf:about="#Mountadam" />
       <vin:Winery rdf:about="#PageMillWinery" />
       <vin:Winery rdf:about="#PeterMccoy" />
       <vin:Winery rdf:about="#PulignyMontrachet" />
-      <vin:Winery rdf:about="#DAnjou" />
       <vin:Winery rdf:about="#SantaCruzMountainVineyard" />
-      <vin:Winery rdf:about="#StGenevieve" />
-      <vin:Winery rdf:about="#SaucelitoCanyon" />
       <vin:Winery rdf:about="#SaucelitoCanyon" />
       <vin:Winery rdf:about="#SchlossRothermel" />
       <vin:Winery rdf:about="#SchlossVolrad" />
       <vin:Winery rdf:about="#SeanThackrey" />
       <vin:Winery rdf:about="#Selaks" />
-      <vin:Winery rdf:about="#Selaks" />
       <vin:Winery rdf:about="#SevreEtMaine" />
+      <vin:Winery rdf:about="#StGenevieve" />
       <vin:Winery rdf:about="#Stonleigh" />
       <vin:Winery rdf:about="#Taylor" />
       <vin:Winery rdf:about="#Ventana" />

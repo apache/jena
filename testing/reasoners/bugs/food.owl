@@ -2,12 +2,13 @@
 <!DOCTYPE owl [
      <!ENTITY vin  "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#" >
      <!ENTITY food "http://www.w3.org/2001/sw/WebOnt/guide-src/food#" >
-     <!ENTITY xsd  "http://www.w3.org/2000/10/XMLSchema#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
    ]>
 
 <rdf:RDF
   xmlns     = "http://www.w3.org/2001/sw/WebOnt/guide-src/food#"
   xmlns:food= "http://www.w3.org/2001/sw/WebOnt/guide-src/food#"
+  xml:base  = "http://www.w3.org/2001/sw/WebOnt/guide-src/food#"
   xmlns:vin = "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#"
   xmlns:owl = "http://www.w3.org/2002/07/owl#"
   xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -40,9 +41,24 @@
     <owl:equivalentClass rdf:resource="&vin;Wine"/>
   </owl:Class>
 
+  <owl:ObjectProperty rdf:ID="madeFromFruit">
+    <rdfs:domain rdf:resource="#ConsumableThing" />
+    <rdfs:range rdf:resource="#Fruit" />
+  </owl:ObjectProperty>
+
+  <owl:Class rdf:ID="Juice">
+    <rdfs:subClassOf rdf:resource="#PotableLiquid" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#madeFromFruit" />
+ 	<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
   <owl:ObjectProperty rdf:ID="hasDrink">
     <rdfs:domain rdf:resource="#MealCourse" />
-    <rdfs:range rdf:resource="#Wine" />
+    <rdfs:range rdf:resource="#PotableLiquid" />
   </owl:ObjectProperty>
   
   <owl:Thing rdf:ID="White">
@@ -566,14 +582,14 @@
         <owl:allValuesFrom>
           <owl:Restriction>
             <owl:onProperty rdf:resource="&vin;hasFlavor" />
-            <owl:hasClass>
+            <owl:allValuesFrom>
               <owl:Class>
                 <owl:oneOf rdf:parseType="Collection">
                   <owl:Thing rdf:about="#Strong" />
                   <owl:Thing rdf:about="#Moderate" />
                 </owl:oneOf>
               </owl:Class>
-            </owl:hasClass>
+            </owl:allValuesFrom>
           </owl:Restriction>
         </owl:allValuesFrom>
       </owl:Restriction>
@@ -709,12 +725,6 @@
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasFood" />
         <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
-      </owl:Restriction>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf>
-      <owl:Restriction>
-        <owl:onProperty rdf:resource="#hasFood" />
-        <owl:allValuesFrom rdf:resource="#EdibleThing" />
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -1091,8 +1101,8 @@
   </owl:Class>
   
   <owl:ObjectProperty rdf:ID="hasFood">
-    <rdfs:range rdf:resource="#EdibleThing" />
     <rdfs:domain rdf:resource="#MealCourse" />
+    <rdfs:range rdf:resource="#EdibleThing" />
   </owl:ObjectProperty>
   
   <owl:Class rdf:ID="Fish">
@@ -1118,14 +1128,14 @@
         <owl:allValuesFrom>
           <owl:Restriction>
             <owl:onProperty rdf:resource="&vin;hasFlavor" />
-            <owl:hasClass>
+            <owl:allValuesFrom>
               <owl:Class>
                 <owl:oneOf rdf:parseType="Collection">
                   <owl:Thing rdf:about="#Moderate" />
                   <owl:Thing rdf:about="#Strong" />
                 </owl:oneOf>
               </owl:Class>
-            </owl:hasClass>
+            </owl:allValuesFrom>
           </owl:Restriction>
         </owl:allValuesFrom>
       </owl:Restriction>
