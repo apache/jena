@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.5 2003-05-19 08:24:26 der Exp $
+ * $Id: OWLWGTester.java,v 1.6 2003-06-02 09:04:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -14,6 +14,7 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
+//import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
@@ -32,7 +33,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-19 08:24:26 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-02 09:04:31 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -178,26 +179,15 @@ public class OWLWGTester {
         long t2 = System.currentTimeMillis();
         logger.info("Time=" + (t2-t1) + "ms for " + test.getURI());
         //logger.debug("Fired " + ((BasicForwardRuleInfGraph)graph).getNRulesFired() +" rules");
-        // Temp ...
-        //((BasicBackwardRuleInfGraph) graph).dump();
-        // ... end temp
-        // Debug output on failure
+        
         if (!correct) {
-            // Temp
-            if (log) {
-                PrintUtil.registerPrefix("prem", "http://www.w3.org/2002/03owlt/equivalentClass/premises005#");
-                for (Iterator i = conclusions.getGraph().find(null, null, null); i.hasNext(); ) {
-                    Triple t = (Triple)i.next();
-                    StringWriter sw = new StringWriter(4000);
-                    PrintWriter out = new PrintWriter( sw );
-                    logger.debug("Derivation of " + PrintUtil.print(t));
-                    Iterator derivations = graph.getDerivation(t);
-                    while (derivations.hasNext()) {
-                        Derivation deriv = (Derivation)derivations.next();
-                        deriv.printTrace(out, true);
-                    }
-                    out.close();
-                    logger.debug(sw.getBuffer().toString() );
+            // List all the forward deductions for debugging
+            if (graph instanceof FBRuleInfGraph) {
+                System.out.println("Error: deductions graph was ...");
+                FBRuleInfGraph fbGraph = (FBRuleInfGraph)graph;
+                Graph deductions = fbGraph.getDeductionsGraph();
+                for (Iterator i = deductions.find(null,null,null); i.hasNext();) {
+                    logger.info(" - " + PrintUtil.print(i.next()));
                 }
             }
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BuiltinRegistry.java,v 1.4 2003-05-15 17:01:57 der Exp $
+ * $Id: BuiltinRegistry.java,v 1.5 2003-06-02 09:03:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.
  * 
- * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-05-15 17:01:57 $ */
+ * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.5 $ on $Date: 2003-06-02 09:03:50 $ */
 public class BuiltinRegistry {
 
     /** The single global static registry */
@@ -46,6 +46,7 @@ public class BuiltinRegistry {
         theRegistry.register(new Unbound());
         theRegistry.register(new IsLiteral());
         theRegistry.register(new NotLiteral());
+        theRegistry.register(new SchedulePrototypeCheck());
     }
     
     /**

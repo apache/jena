@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.7 2003-05-30 16:26:12 der Exp $
+ * $Id: Rule.java,v 1.8 2003-06-02 09:03:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -53,8 +53,8 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.7 $ on $Date: 2003-05-30 16:26:12 $ */
-public class Rule {
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.8 $ on $Date: 2003-06-02 09:03:50 $ */
+public class Rule implements ClauseEntry {
     
 //=======================================================================
 // variables
@@ -72,7 +72,7 @@ public class Rule {
     protected int numVars = -1;
     
     /** Flags whether the rule was written as a forward or backward rule */
-    protected boolean isBackward;
+    protected boolean isBackward = false;
     
     /** A namespace used for Rubic specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubik/";
@@ -161,6 +161,14 @@ public class Rule {
      */
     public boolean isBackward() {
         return isBackward;
+    }
+    
+    /**
+     * Set the rule to be run backwards.
+     * @param flag if true the rule should run backwards.
+     */
+    public void setBackward(boolean flag) {
+        isBackward = flag;
     }
     
     /**
@@ -343,14 +351,26 @@ public class Rule {
             buff.append(name);
             buff.append(": ");
         }
-        for (int i = 0; i < body.length; i++) {
-            buff.append(PrintUtil.print(body[i]));
-            buff.append(" ");
-        }
-        buff.append("-> ");
-        for (int i = 0; i < head.length; i++) {
-            buff.append(PrintUtil.print(head[i]));
-            buff.append(" ");
+        if (isBackward) { 
+            for (int i = 0; i < head.length; i++) {
+                buff.append(PrintUtil.print(head[i]));
+                buff.append(" ");
+            }
+            buff.append("<- ");
+            for (int i = 0; i < body.length; i++) {
+                buff.append(PrintUtil.print(body[i]));
+                buff.append(" ");
+            }
+        } else {
+            for (int i = 0; i < body.length; i++) {
+                buff.append(PrintUtil.print(body[i]));
+                buff.append(" ");
+            }
+            buff.append("-> ");
+            for (int i = 0; i < head.length; i++) {
+                buff.append(PrintUtil.print(head[i]));
+                buff.append(" ");
+            }
         }
         buff.append("]");
         return buff.toString();
@@ -657,6 +677,43 @@ public class Rule {
             }
         }
 
+    }
+   
+    /** Equality override */
+    public boolean equals(Object o) {
+        // Pass 1 - just check basic shape
+        if (! (o instanceof Rule) ) return false;
+        Rule other = (Rule) o;
+        if (other.head.length != head.length) return false;
+        if (other.body.length != body.length) return false;
+        // Pass 2 - check clause by clause matching
+        for (int i = 0; i < body.length; i++) {
+            if (! ((ClauseEntry)body[i]).sameAs((ClauseEntry)other.body[i]) ) return false;
+        }
+        for (int i = 0; i < head.length; i++) {
+            if (! ((ClauseEntry)head[i]).sameAs((ClauseEntry)other.head[i]) ) return false;
+        }
+        return true;
+    }
+        
+    /** hash function override */
+    public int hashCode() {
+        int hash = 0;
+        for (int i = 0; i < body.length; i++) {
+            hash = (hash << 1) ^ body[i].hashCode();
+        }
+        for (int i = 0; i < head.length; i++) {
+            hash = (hash << 1) ^ head[i].hashCode();
+        }
+        return hash;
+    }
+    
+    /**
+     * Compare clause entries, taking into account variable indices.
+     * The equality function ignores differences between variables.
+     */
+    public boolean sameAs(Object o) {
+        return equals(o);
     }
     
 //=======================================================================

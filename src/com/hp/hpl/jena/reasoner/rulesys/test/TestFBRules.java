@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.2 2003-05-30 16:26:15 der Exp $
+ * $Id: TestFBRules.java,v 1.3 2003-06-02 09:04:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:15 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-02 09:04:31 $
  */
 public class TestFBRules extends TestCase {
     // Useful constants
@@ -427,6 +427,27 @@ public class TestFBRules extends TestCase {
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, null), new Object[] {
+                  new Triple(b, ty, C1)
+              } );
+    }
+    
+    /**
+     * Test example hybrid rules for rdfs.
+     */
+    public void testHybridRDFS2() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, p, b));
+        data.add(new Triple(p, sP, r));
+        data.add(new Triple(r, RDFS.range.asNode(), C1));
+        List rules = Rule.parseRules(
+    "[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]" + 
+    "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]" + 
+                          "" );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+//        ((FBRuleInfGraph)infgraph).setTraceOn(true);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(b, ty, C1), new Object[] {
                   new Triple(b, ty, C1)
               } );
     }

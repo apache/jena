@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleStore.java,v 1.6 2003-05-30 16:26:14 der Exp $
+ * $Id: RuleStore.java,v 1.7 2003-06-02 09:04:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-30 16:26:14 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-02 09:04:33 $
  */
 public class RuleStore {
 
@@ -36,10 +36,14 @@ public class RuleStore {
     /** The list of all rules in the store */
     protected List allRules;
     
+    /** Index of the rules, used to block multiple entries */
+    protected Set ruleIndex = new HashSet();
+    
     /**
      * Constructor. Create an empty rule store.
      */
     public RuleStore() {
+        allRules = new ArrayList();
     };
     
     /**
@@ -68,7 +72,6 @@ public class RuleStore {
         } else {
             doAddRule(rule);
         }
-        if (allRules != null) allRules.add(rule);
     }
     
     /**
@@ -76,6 +79,9 @@ public class RuleStore {
      * has a single head element.
      */
     private void doAddRule(Rule rule) {
+        if (ruleIndex.contains(rule)) return;
+        ruleIndex.add(rule);
+        if (allRules != null) allRules.add(rule);
         Object headClause = rule.getHeadElement(0);
         if (headClause instanceof TriplePattern) {
             TriplePattern headpattern = (TriplePattern)headClause;
@@ -101,6 +107,13 @@ public class RuleStore {
             checkAll(goalMap.getAll(Node.ANY), goal, rules);
         }
         return rules;
+    }
+    
+    /**
+     * Return an ordered list of all registered rules.
+     */
+    public List getAllRules() {
+        return allRules;
     }
     
     /**

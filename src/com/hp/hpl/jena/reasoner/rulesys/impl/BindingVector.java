@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.12 2003-05-28 11:13:55 chris-dollin Exp $
+ * $Id: BindingVector.java,v 1.13 2003-06-02 09:04:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-05-28 11:13:55 $
+ * @version $Revision: 1.13 $ on $Date: 2003-06-02 09:04:33 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -190,9 +190,7 @@ public class BindingVector implements BindingEnvironment {
     }
     
     /**
-     * Unify a goal with the head of a rule. This is a poor-man's unification,
-     * we should try swtiching to a more conventional global-variables-with-trail
-     * implementation in the future.
+     * Unify a goal with the head of a rule. 
      * @param goal the goal pattern which it being matched to a rule
      * @param head the head pattern of the rule which is being instantiated
      * @return An initialized binding environment for the rule variables

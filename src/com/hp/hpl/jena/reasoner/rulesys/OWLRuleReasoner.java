@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLRuleReasoner.java,v 1.7 2003-05-30 16:26:13 der Exp $
+ * $Id: OWLRuleReasoner.java,v 1.8 2003-06-02 09:03:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-30 16:26:13 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-02 09:03:50 $
  */
 public class OWLRuleReasoner extends BasicForwardRuleReasoner {
     
@@ -79,7 +79,7 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
     
     /**
      * Precompute the implications of a schema graph.
-     * The practicality benefit of this has not yet been fully checked out.
+     * The practical benefit of this has not yet been fully checked out.
      */
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         InfGraph graph = new BasicForwardRuleInfGraph(this, rules, tbox);

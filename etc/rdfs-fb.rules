@@ -55,8 +55,12 @@
 [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
 [rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
 [rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
-[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] 
+[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] 
 [rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
 [rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
 [rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
 [rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 
+
+[rdfs2-partial: (?p rdfs:domain ?c) -> (?c rdf:type rdfs:Class)]
+[rdfs3-partial: (?p rdfs:range ?c)  -> (?c rdf:type rdfs:Class)]
+

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.1 2003-05-29 16:44:57 der Exp $
+ * $Id: FBRuleReasoner.java,v 1.2 2003-06-02 09:03:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-29 16:44:57 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-02 09:03:50 $
  */
 public class FBRuleReasoner implements Reasoner {
     
@@ -42,6 +42,7 @@ public class FBRuleReasoner implements Reasoner {
 
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     boolean traceOn = false;
+//    boolean traceOn = true;
     
     /** Base URI used for configuration properties for rule reasoners */
     static final String URI = "http://www.hpl.hp.com/semweb/2003/RuleReasoner";
@@ -81,7 +82,7 @@ public class FBRuleReasoner implements Reasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private FBRuleReasoner(List rules, InfGraph schemaGraph, ReasonerFactory factory) {
+    protected FBRuleReasoner(List rules, InfGraph schemaGraph, ReasonerFactory factory) {
         this.rules = rules;
         this.schemaGraph = schemaGraph;
         this.factory = factory;
@@ -145,7 +146,7 @@ public class FBRuleReasoner implements Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        BasicForwardRuleInfGraph graph = new FBRuleInfGraph(this, rules, schemaGraph);
+        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, schemaGraph);
         graph.setDerivationLogging(recordDerivations);
         graph.setRuleThreshold(nRulesThreshold);
         graph.setTraceOn(traceOn);

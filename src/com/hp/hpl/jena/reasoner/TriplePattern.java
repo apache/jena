@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TriplePattern.java,v 1.9 2003-05-21 07:58:22 der Exp $
+ * $Id: TriplePattern.java,v 1.10 2003-06-02 09:04:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.rulesys.ClauseEntry;
 import com.hp.hpl.jena.reasoner.rulesys.Functor;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -30,9 +31,9 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-21 07:58:22 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-02 09:04:35 $
  */
-public class TriplePattern {
+public class TriplePattern implements ClauseEntry {
 
     /** The subject element of the pattern */
     protected Node subject;
@@ -288,6 +289,16 @@ public class TriplePattern {
     /** hash function override */
     public int hashCode() {
         return (subject.hashCode() >> 1) ^ predicate.hashCode() ^ (object.hashCode() << 1);
+    }
+    
+    /**
+     * Compare triple patterns, taking into account variable indices.
+     * The equality function ignores differences between variables.
+     */
+    public boolean sameAs(Object o) {
+        if (! (o instanceof TriplePattern) ) return false;
+        TriplePattern other = (TriplePattern) o;
+        return Node_RuleVariable.sameNodeAs(subject, other.subject) && Node_RuleVariable.sameNodeAs(predicate, other.predicate) && Node_RuleVariable.sameNodeAs(object, other.object);
     }
     
 }

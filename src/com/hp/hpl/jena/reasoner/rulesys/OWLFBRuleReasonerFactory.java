@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLBRuleReasonerFactory.java,v 1.2 2003-05-27 15:50:23 der Exp $
+ * $Id: OWLFBRuleReasonerFactory.java,v 1.1 2003-06-02 09:03:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,12 +29,12 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-27 15:50:23 $
+ * @version $Revision: 1.1 $ on $Date: 2003-06-02 09:03:49 $
  */
-public class OWLBRuleReasonerFactory implements ReasonerFactory {
+public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     
     /** Single global instance of this factory */
-    private static ReasonerFactory theInstance = new OWLBRuleReasonerFactory();
+    private static ReasonerFactory theInstance = new OWLFBRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
     public static final String URI = "http://www.hpl.hp.com/semweb/2003/OWLBRuleReasoner";
@@ -55,7 +55,7 @@ public class OWLBRuleReasonerFactory implements ReasonerFactory {
      * passed the reasoner encoded within an RDF graph
      */
     public Reasoner create(Model configuration) {
-        OWLBRuleReasoner reasoner = new OWLBRuleReasoner();
+        OWLFBRuleReasoner reasoner = new OWLFBRuleReasoner();
         if (configuration != null) {
             Boolean doLog = Util.checkBinaryPredicate(URI, BasicForwardRuleReasoner.PROPderivationLogging, configuration);
             if (doLog != null) {

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.2 2003-05-30 16:26:14 der Exp $
+ * $Id: FRuleEngine.java,v 1.3 2003-06-02 09:04:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:14 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-02 09:04:33 $
  */
 public class FRuleEngine {
     
@@ -155,7 +155,7 @@ public class FRuleEngine {
      * process the stack of additions firing any relevant rules.
      * @param context a context containing a set of new triples to be added
      */
-    protected void addSet(BFRuleContext context) {
+    public void addSet(BFRuleContext context) {
         long cutoff = nRulesFired + nRulesThreshold;
         Triple t;
         while ((t = context.getNextTriple()) != null) {

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLBRuleReasoner.java,v 1.6 2003-05-30 16:26:12 der Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.1 2003-06-02 09:03:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -13,9 +13,7 @@ import java.util.*;
 import java.io.*;
 import org.apache.log4j.Logger;
 
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
 
@@ -26,13 +24,12 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-30 16:26:12 $
+ * @version $Revision: 1.1 $ on $Date: 2003-06-02 09:03:50 $
  */
-public class OWLBRuleReasoner extends BasicBackwardRuleReasoner {
+public class OWLFBRuleReasoner extends FBRuleReasoner {
     
     /** The location of the OWL rule definitions on the class path */
-    protected static final String RULE_FILE = "etc/owl-b.rules";
-//    protected static final String RULE_FILE = "etc/owl-b-debug.rules";
+    protected static final String RULE_FILE = "etc/owl-fb.rules";
     
     /** The parsed rules */
     protected static List ruleSet;
@@ -40,17 +37,11 @@ public class OWLBRuleReasoner extends BasicBackwardRuleReasoner {
     /** log4j logger */
     protected static Logger logger = Logger.getLogger(OWLRuleReasoner.class);
     
-    /** Performance statistics - the total number of rule firings used during data bind operations so far. */
-    protected static long nRulesFired = 0;
-    
-    /** Performance statistics - the total elapsed time spent during data bind operations so far, in ms. */
-    protected static long timeCost = 0;
-    
     /**
      * Constructor
      */
-    public OWLBRuleReasoner() {
-        super(loadRules(), OWLBRuleReasonerFactory.theInstance());
+    public OWLFBRuleReasoner() {
+        super(loadRules(), OWLFBRuleReasonerFactory.theInstance());
         
     }
     
@@ -58,8 +49,8 @@ public class OWLBRuleReasoner extends BasicBackwardRuleReasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private OWLBRuleReasoner(BasicBackwardRuleReasoner parent, Graph schemaGraph) {
-        super(parent, schemaGraph);
+    private OWLFBRuleReasoner(OWLFBRuleReasoner parent, InfGraph schemaGraph) {
+        super(parent.rules, schemaGraph, parent.factory);
     }
     
     /**
@@ -76,20 +67,15 @@ public class OWLBRuleReasoner extends BasicBackwardRuleReasoner {
         return ruleSet;
     }
     
-    /**
-     * Precompute the implications of a schema graph.
-     * The practicality benefit of this has not yet been fully checked out.
-     */
-    public Reasoner bindSchema(Graph tbox) throws ReasonerException {
-        return new OWLBRuleReasoner(this, tbox);
-    }
     
     /**
-     * Precompute the implications of a schema Model. The statements in the graph
+     * Precompute the implications of a schema graph. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
      */
-    public Reasoner bindSchema(Model tbox) throws ReasonerException {
-        return new OWLBRuleReasoner(this, tbox.getGraph());
+    public Reasoner bindSchema(Graph tbox) throws ReasonerException {
+        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, null, tbox);
+        graph.prepare();
+        return new OWLFBRuleReasoner(this, graph);
     }
         
     /**
@@ -104,39 +90,27 @@ public class OWLBRuleReasoner extends BasicBackwardRuleReasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        // First process the  data looking for any intersection declarations
+        FBRuleInfGraph graph =  null;
+        
+        // Process the  data looking for any intersection declarations
         // that we translate into addtiional rules procedurally (for now at least)
-        long startTime = System.currentTimeMillis();
         Iterator i = data.find(null, OWL.intersectionOf.asNode(), null); 
-        ArrayList rules = (ArrayList) ruleSet;
         if (i.hasNext()) {
-            rules = (ArrayList) rules.clone();
+            List newrules = (List) ((ArrayList) rules).clone();
             while(i.hasNext()) {
-                translateIntersectionOf((Triple)i.next(), rules, data);
+                translateIntersectionOf((Triple)i.next(), newrules, data);
             }
+            graph = new FBRuleInfGraph(this, newrules, schemaGraph);
+        } else {
+            graph = new FBRuleInfGraph(this, rules, schemaGraph);
         }
-        ruleStore = new RuleStore(rules);
-
-        // Now create the inference graph        
-        BasicBackwardRuleInfGraph graph = new BasicBackwardRuleInfGraph(this, data, ruleStore);
+        
         graph.setDerivationLogging(recordDerivations);
         graph.setRuleThreshold(nRulesThreshold);
         graph.setTraceOn(traceOn);
-        long endTime = System.currentTimeMillis();
-        timeCost += (double)(endTime - startTime);
-        //nRulesFired += graph.getNRulesFired();
-        
+        graph.rebind(data);
+                
         return graph;
-    }
-    
-    /**
-     * Print (to the default logging channel at Info level) a summary of the 
-     * total number of rules fired and the time taken by 
-     * the reasoner instances created thus far.
-     */
-    public static void printStats() {
-        logger.info("Fired " + nRulesFired + " over " + (timeCost/1000.0) + " s = " 
-                     + (nRulesFired*1000/timeCost) + " r/s");
     }
     
     /**
@@ -160,15 +134,17 @@ public class OWLBRuleReasoner extends BasicBackwardRuleReasoner {
             Rule ir = new Rule("intersectionImplication", new Object[] {
                                 new TriplePattern(className, RDFS.subClassOf.asNode(), description)
                                 }, new Object[0]);
+            ir.setBackward(false);
            rules.add(ir);
-           //System.out.println("Adding rule: " + ir.toString());
+//           System.out.println("Adding rule: " + ir.toString());
            // Recognition rule elements
            recognitionBody.add(new TriplePattern(var, RDF.type.asNode(), description));
         }
         List recognitionHead = new ArrayList(1);
         recognitionHead.add(new TriplePattern(var, RDF.type.asNode(), className));
         Rule rr = new Rule("intersectionRecognition", recognitionHead, recognitionBody);
-        //System.out.println("Adding rule: " + rr.toString());
+        rr.setBackward(true);
+//        System.out.println("Adding rule: " + rr.toString());
         rules.add(rr);
     }
     

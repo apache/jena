@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.15 2003-05-30 16:26:14 der Exp $
+ * $Id: BRuleEngine.java,v 1.16 2003-06-02 09:04:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-05-30 16:26:14 $
+ * @version $Revision: 1.16 $ on $Date: 2003-06-02 09:04:33 $
  */
 public class BRuleEngine {
 
@@ -95,6 +95,13 @@ public class BRuleEngine {
         ruleStore.addRule(rule);
     }
     
+    /**
+     * Return an ordered list of all registered rules.
+     */
+    public List getAllRules() {
+        return ruleStore.getAllRules();
+    }
+        
     /**
      * Stop the current work. This is called if the top level results iterator has
      * either finished or the calling application has had enough. We leave any completed 

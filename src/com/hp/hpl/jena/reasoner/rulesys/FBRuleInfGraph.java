@@ -5,17 +5,21 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.2 2003-05-30 16:26:13 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.3 2003-06-02 09:03:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
+//import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -27,7 +31,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:13 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-02 09:03:50 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -42,6 +46,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     
     /** The original rule set as supplied */
     protected List rules;
+    
+    /** A temporary list of prototypes that should be checked during f->b transistion */
+    protected List prototypes = new ArrayList();
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(FBRuleInfGraph.class);
@@ -113,13 +120,61 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     }
     
     /**
-     * Adds a new Backward rule as a rules of a forward rule process. Only some
+     * Adds a new Backward rule as a rusult of a forward rule process. Only some
      * infgraphs support this.
      */
     public void addBRule(Rule brule) {
         logger.debug("Adding rule " + brule);
         bEngine.addRule(brule);
         bEngine.reset();
+    }
+    
+    /**
+     * Adds a set of new Backward rules
+     */
+    public void addBRules(List rules) {
+        for (Iterator i = rules.iterator(); i.hasNext(); ) {
+            Rule rule = (Rule)i.next();
+            logger.debug("Adding rule " + rule);
+            bEngine.addRule(rule);
+        }
+        bEngine.reset();
+    }
+    
+    /**
+     * Return an ordered list of all registered rules.
+     */
+    public List getAllRules() {
+        return bEngine.getAllRules();
+    }
+    
+    /**
+     * Record a class prototype which should be checked for subtypes
+     * during the f->b transition phase.
+     */
+    public void schedulePrototypeCheck(Node[] prototypeSpec) {
+//        System.out.println("Scheduling prototype check on " + PrintUtil.print(prototypeSpec[1]));
+        prototypes.add(prototypeSpec);
+    }
+    
+    /**
+     * Execute the prototype checks.
+     */
+    public void processPrototypeChecks() {
+        BFRuleContext context = new BFRuleContext(this);
+        for (Iterator i = prototypes.iterator(); i.hasNext(); ) {
+            Node[] prototypeSpec = (Node[])i.next();
+            Node prototype = prototypeSpec[0];
+            Node type = prototypeSpec[1];
+            for (Iterator tyi = find(prototype, RDF.type.asNode(), null); tyi.hasNext(); ) {
+                Node newTy = ((Triple)tyi.next()).getObject();
+                Triple sct = new Triple(type, TransitiveReasoner.subClassOf, newTy);
+//                System.out.println("Adding prototype derivation: " + PrintUtil.print(sct));
+                context.addTriple(sct);
+            }
+        }
+        engine.addSet(context);
+        prototypes.clear();
     }
     
 //  =======================================================================
@@ -141,10 +196,15 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             dataFind = (fdata == null) ? deductions :  FinderUtil.cascade(deductions, fdata);
             if (schemaGraph != null) {
                 preloadDeductions(schemaGraph);
+                dataFind = FinderUtil.cascade(dataFind, new FGraph(schemaGraph));
             }
             extractPureBackwardRules();
+            // Run the forward rules
             engine.init(true);
+            // Prepare the context for builtins run in backwards engine
             context = new BBRuleContext(this, dataFind);
+            // Process any scheduled prototype checks
+            processPrototypeChecks();
         }
     }
     
@@ -220,6 +280,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         isPrepared = false;
     }
 
+//  =======================================================================
+//  Helper methods
+
     /**
      * Scan the initial rule set and pick out all the backward-only rules with non-null bodies,
      * and transfer these rules to the backward engine. 
@@ -232,7 +295,24 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             }
         }
     }
-    
+
+    /**
+     * Adds a set of precomputed triples to the deductions store. These do not, themselves,
+     * fire any rules but provide additional axioms that might enable future rule
+     * firing when real data is added. Used to implement bindSchema processing
+     * in the parent Reasoner.
+     */
+    public void preloadDeductions(Graph preloadIn) {
+        Graph d = deductions.getGraph();
+        FBRuleInfGraph preload = (FBRuleInfGraph)preloadIn;
+        // Load raw deductions
+        for (Iterator i = preload.getDeductionsGraph().find(null, null, null); i.hasNext(); ) {
+            d.add((Triple)i.next());
+        }
+        // Load rules
+        addBRules(preload.getAllRules());
+    }
+
 }
 
 

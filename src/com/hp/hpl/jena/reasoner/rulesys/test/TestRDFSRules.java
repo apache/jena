@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.10 2003-05-30 16:26:15 der Exp $
+ * $Id: TestRDFSRules.java,v 1.11 2003-06-02 09:04:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.10 $ on $Date: 2003-05-30 16:26:15 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.11 $ on $Date: 2003-06-02 09:04:30 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -64,9 +64,9 @@ public class TestRDFSRules extends TestCase {
 //     */
 //    public void testRDFSReasonerDebug() throws IOException {
 //        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect-noresource.rdf");
-//        ReasonerFactory rf = RDFSRuleReasonerFactory.theInstance();
+//        ReasonerFactory rf = RDFSFBRuleReasonerFactory.theInstance();
 //        
-//        assertTrue("RDFS forward reasoner test", tester.runTest("http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/test20", rf, this, null));
+//        assertTrue("RDFS forward reasoner test", tester.runTest("http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/test6", rf, this, null));
 //    }
 
     /**
@@ -92,16 +92,19 @@ public class TestRDFSRules extends TestCase {
     /**
      * Time a trial list of results from an inf graph.
      */
-    private static void doTiming(Reasoner r, Model tbox, Model data, String name) {
+    private static void doTiming(Reasoner r, Model tbox, Model data, String name, int loop) {
         Resource C1 = ResourceFactory.createResource("http://www.hpl.hp.com/semweb/2003/eg#C1");
         Resource C2 = ResourceFactory.createResource("http://www.hpl.hp.com/semweb/2003/eg#C2");
         
         long t1 = System.currentTimeMillis();
-        Model m = ModelFactory.createModelForGraph(r.bindSchema(tbox.getGraph()).bind(data.getGraph()));
         int count = 0;
-        for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
+        for (int lp = 0; lp < loop; lp++) {
+            Model m = ModelFactory.createModelForGraph(r.bindSchema(tbox.getGraph()).bind(data.getGraph()));
+            count = 0;
+            for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
+        }
         long t2 = System.currentTimeMillis();
-        System.out.println(name + ": " + count +" results in " + (t2-t1) +"ms");
+        System.out.println(name + ": " + count +" results in " + (t2-t1)/loop +"ms");
 //        t1 = System.currentTimeMillis();
 //        for (int j = 0; j < 10; j++) {
 //            count = 0;
@@ -124,15 +127,15 @@ public class TestRDFSRules extends TestCase {
             Model tbox = ModelLoader.loadModel("testing/reasoners/rdfs/timing-tbox.rdf");
             Model data = ModelLoader.loadModel("testing/reasoners/rdfs/timing-data.rdf");
             Reasoner rdfsRule = RDFSRuleReasonerFactory.theInstance().create(null);
-            Reasoner rdfsBRule = RDFSFBRuleReasonerFactory.theInstance().create(null);
+            Reasoner rdfsFBRule = RDFSFBRuleReasonerFactory.theInstance().create(null);
             Reasoner rdfs1    = RDFSReasonerFactory.theInstance().create(null);
         
-            doTiming(rdfs1, tbox, data, "RDFS1");    
-            doTiming(rdfsRule, tbox, data, "RDFS F rule");    
-            doTiming(rdfsBRule, tbox, data, "RDFS B rule");    
-            doTiming(rdfs1, tbox, data, "RDFS1");    
-            doTiming(rdfsRule, tbox, data, "RDFS F rule");    
-            doTiming(rdfsBRule, tbox, data, "RDFS B rule");    
+            doTiming(rdfs1, tbox, data, "RDFS1", 1);    
+            doTiming(rdfsRule, tbox, data, "RDFS F rule", 1);    
+            doTiming(rdfsFBRule, tbox, data, "RDFS FB rule", 1);    
+            doTiming(rdfs1, tbox, data, "RDFS1", 10);    
+            doTiming(rdfsRule, tbox, data, "RDFS F rule", 10);    
+            doTiming(rdfsFBRule, tbox, data, "RDFS FB rule", 10);    
  
         } catch (Exception e) {
             System.out.println("Problem: " + e.toString());

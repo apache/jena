@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.6 2003-05-28 11:13:54 chris-dollin Exp $
+ * $Id: Functor.java,v 1.7 2003-06-02 09:03:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,9 +27,9 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-28 11:13:54 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-02 09:03:50 $
  */
-public class Functor {
+public class Functor implements ClauseEntry {
     /** Functor's name */
     protected String name;
     
@@ -184,7 +184,7 @@ public class Functor {
     public boolean equals(Object obj) {
         if (obj instanceof Functor) {
             Functor f2 = (Functor)obj;
-            if (name.equals(f2.name)) {
+            if (name.equals(f2.name) && args.length == f2.args.length) {
                 for (int i = 0; i < args.length; i++) {
                     if (!args[i].sameValueAs(f2.args[i])) return false;
                 }
@@ -197,6 +197,23 @@ public class Functor {
     /** hash function override */
     public int hashCode() {
         return (name.hashCode()) ^ (args.length << 2);
+    }
+    
+    /**
+     * Compare Functors, taking into account variable indices.
+     * The equality function ignores differences between variables.
+     */
+    public boolean sameAs(Object o) {
+        if (o instanceof Functor) {
+            Functor f2 = (Functor)o;
+            if (name.equals(f2.name) && args.length == f2.args.length) {
+                for (int i = 0; i < args.length; i++) {
+                    if (! Node_RuleVariable.sameNodeAs(args[i], f2.args[i])) return false;
+                }
+                return true;
+            }
+        }
+        return false;
     }
     
     /**

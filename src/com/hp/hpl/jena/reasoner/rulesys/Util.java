@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.4 2003-05-28 11:13:54 chris-dollin Exp $
+ * $Id: Util.java,v 1.5 2003-06-02 09:03:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:54 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-02 09:03:50 $
  */
 public class Util {
 
@@ -118,6 +118,7 @@ public class Util {
         String line;
         while ((line = src.readLine()) != null) {
             if (line.startsWith("#")) continue;     // Skip comment lines
+            if (line.startsWith("//")) continue;     // Skip comment lines
             result.append(line);
             result.append("\n");
         }

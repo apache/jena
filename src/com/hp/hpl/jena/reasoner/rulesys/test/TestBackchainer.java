@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.20 2003-05-21 16:52:36 der Exp $
+ * $Id: TestBackchainer.java,v 1.21 2003-06-02 09:04:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -20,6 +20,7 @@ import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.RDF;
 
+import java.io.IOException;
 import java.util.*;
 
 import junit.framework.TestCase;
@@ -29,7 +30,7 @@ import junit.framework.TestSuite;
  * Test harness for the backward chainer. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-05-21 16:52:36 $
+ * @version $Revision: 1.21 $ on $Date: 2003-06-02 09:04:32 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -77,6 +78,9 @@ public class TestBackchainer extends TestCase {
      */
     public static TestSuite suite() {
         return new TestSuite( TestBackchainer.class ); 
+//        TestSuite suite = new TestSuite();
+//        suite.addTest(new TestBackchainer( "testBug1" ));
+//        return suite;
     }  
 
     /**
@@ -85,10 +89,10 @@ public class TestBackchainer extends TestCase {
     public void testParse() {
         List rules = Rule.parseRules(testRules1);
         assertEquals("BRule parsing", 
-                        "[ (?p rdfs:subPropertyOf ?q) (?x ?p ?y) -> (?x ?q ?y) ]", 
+                        "[ (?x ?q ?y) <- (?p rdfs:subPropertyOf ?q) (?x ?p ?y) ]", 
                         rules.get(0).toString());
         assertEquals("BRule parsing", 
-                        "[ (?a rdfs:subPropertyOf ?b) (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c) ]", 
+                        "[ (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b) (?b rdfs:subPropertyOf ?c) ]", 
                         rules.get(1).toString());
     }
     
@@ -884,6 +888,26 @@ public class TestBackchainer extends TestCase {
             } );
     }
 
+    /**
+     * Test problematic rdfs case
+     */
+    public void testBug1() throws IOException {
+        Graph data = new GraphMem();
+        Node p = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#p");
+        Node r = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#r");
+        Node C1 = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#C1");
+        data.add(new Triple(a, p, b));
+        List rules = Rule.parseRules(Util.loadResourceFile("testing/reasoners/bugs/rdfs-error1.brules"));
+        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(b, ty, C1), 
+            new Object[] {
+                new Triple(b, ty, C1)
+            } );
+        
+    }
     
 }
 
