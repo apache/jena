@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQueryStage.java,v 1.1 2003-08-11 02:41:52 wkw Exp $
+  $Id: DBQueryStage.java,v 1.2 2003-08-12 02:38:32 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
+import java.io.PrintStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -61,6 +62,7 @@ public class DBQueryStage extends Stage
 			useme = current.copy();
 			try {
 				ps = conn.getConnection().prepareStatement(compiled.stmt);
+// System.out.println(compiled.stmt);
 				setArgs(useme, ps);
 			} catch (Exception e) {
 				throw new JenaException("Query prepare failed: " + e);
@@ -80,8 +82,8 @@ public class DBQueryStage extends Stage
 						Node n = compiled.driver.RDBStringToNode(o);
 						useme.setElement(j,n);
 					}
+					sink.put(useme);
 				}
-				sink.put(useme);
 			} catch (Exception e) {
 				throw new JenaException("Query execute failed: " + e);
 			}
