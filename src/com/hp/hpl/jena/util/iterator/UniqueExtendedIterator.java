@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: UniqueExtendedIterator.java,v 1.7 2003-08-27 13:07:54 andy_seaborne Exp $
+ * $Id: UniqueExtendedIterator.java,v 1.8 2003-12-11 22:57:37 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.iterator;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * to be returned by the iterator. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-27 13:07:54 $
+ * @version $Revision: 1.8 $ on $Date: 2003-12-11 22:57:37 $
  */
 public class UniqueExtendedIterator extends WrappedIterator {
 
@@ -28,16 +28,28 @@ public class UniqueExtendedIterator extends WrappedIterator {
     /** One level lookahead */
     protected Object next = null;
     
-    /** constructor */
+    /**
+     * Constructor. Note the use of {@link #create} as reliable means of
+     * creating a unique iterator without double-wrapping iterators that 
+     * are already unique iterators.
+     */
     public UniqueExtendedIterator(Iterator underlying) {
         super(underlying);
     }
+    
     /**
-        factory method for creating a wrapper around _it_. We reserve
-        the right to deliver the argument if it's already an extended iterator.
-    */
-    public static WrappedIterator create( Iterator it )
-        { return new UniqueExtendedIterator( it ); }
+     * Factory method for generating an iterator that is guaranteed
+     * only to return one instance of every result from the wrapped
+     * iterator <code>it</code>.
+     * @param it An iterator to wrap
+     * @return A iterator that returns the elements of the wrapped
+     * iterator exactly once.  If <code>it</code> is already a unique
+     * extended iteator, it is not further wrapped.
+     */
+    public static WrappedIterator create( Iterator it ) {
+        return (it instanceof UniqueExtendedIterator) ? 
+                    ((UniqueExtendedIterator) it) : new UniqueExtendedIterator( it );
+    }
     
     /**
      * Fetch the next object to be returned, only if not already seen.
