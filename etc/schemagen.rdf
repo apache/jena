@@ -15,8 +15,8 @@
   xmlns:rdf   ="&rdf;"
   xmlns:rdfs  ="&rdfs;"
   xmlns:owl   ="&owl;"
-  xmlns:vocab ="&vocab;"
-  xmlns       ="&vocab;"
+  xmlns:sgen  ="&sgen;"
+  xmlns       ="&sgen;"
   xml:base    ="&base;"
 >
 
@@ -25,7 +25,7 @@
     Not all possible options are used in this example, see Javadoc and Howto for full details.
     
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS:    $Id: schemagen.rdf,v 1.1 2003-05-02 11:52:36 ian_dickinson Exp $
+	CVS:    $Id: schemagen.rdf,v 1.2 2004-01-28 10:52:01 ian_dickinson Exp $
 -->
 
 <sgen:Config>
@@ -57,10 +57,10 @@
  * Web site           @website@
  * Created            %date%
  * Filename           $RCSfile: schemagen.rdf,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-05-02 11:52:36 $
+ * Last modified on   $Date: 2004-01-28 10:52:01 $
  *               by   $Author: ian_dickinson $
  *
  * @copyright@
