@@ -468,19 +468,162 @@ looks like:</p>
 
 <h2><a name="ch-Prefixes">Controlling Prefixes</h2>
 
+<h3>explicit prefix definitions</h3>
+
 In the previous section, we saw that the output XML declared a namespace
 prefix <code>vcard</code> and used that prefix to abbreviate URIs. While RDF
 uses only the full URIs, and not this shortened form, Jena provides was
 of controlling the namespaces used on output with its <i>prefix mappings</i>.
+Here's a simple example.
 
 <blockquote>
 <pre>
 <code>
-	CODE
+ Model m = ModelFactory.createDefaultModel();
+ String nsA = "http://somewhere/else#";
+ String nsB = "http://nowhere/else#";
+ Resource root = m.createResource( nsA + "root" );
+ Property P = m.createProperty( nsA + "P" );
+ Property Q = m.createProperty( nsB + "Q" );
+ Resource x = m.createResource( nsA + "x" );
+ Resource y = m.createResource( nsA + "y" );
+ Resource z = m.createResource( nsA + "z" );
+ m.add( root, P, x ).add( root, P, y ).add( y, Q, z );
+ System.out.println( "# -- no special prefixes defined" );
+ m.write( System.out );
+ System.out.println( "# -- nsA defined" );
+ m.setNsPrefix( "nsA", nsA );
+ m.write( System.out );
+ System.out.println( "# -- nsA and cat defined" );
+ m.setNsPrefix( "cat", nsB );
+ m.write( System.out );
 </code>
 </pre>
 </blockquote>
 
+The output from this fragment is three lots of RDF/XML, with
+three different prefix mappings. First the default, with no
+prefixes other than the standard ones:
+
+<blockquote>
+<pre>
+<code>
+# -- no special prefixes defined
+
+&lt;rdf:RDF
+    xmlns:j.0="http://nowhere/else#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:j.1="http://somewhere/else#" >
+  &lt;rdf:Description rdf:about="http://somewhere/else#root">
+    &lt;j.1:P rdf:resource="http://somewhere/else#x"/>
+    &lt;j.1:P rdf:resource="http://somewhere/else#y"/>
+  &lt;/rdf:Description>
+  &lt;rdf:Description rdf:about="http://somewhere/else#y">
+    &lt;j.0:Q rdf:resource="http://somewhere/else#z"/>
+  &lt;/rdf:Description>
+&lt;/rdf:RDF>
+</code>
+</pre>
+</blockquote>
+
+We see that the rdf namespace is declared automatically, since it
+is required for tags such as <code>&lt;RDF:rdf></code> and
+<code>&lt;rdf:resource></code>. Namespace declarations are also
+needed for using the two properties P and Q, but since their
+namespaces have not been introduced to the model, they get invented
+namespace names: <code>j.0</code> and <code>j.1</code>.
+
+<p>The method <code>setNsPrefix(String prefix, String URI)</code>
+declares that the namespace <code>URI</code> may be abbreviated
+by <code>prefix</code>. Jena requires that <code>prefix</code> be
+a legal XML namespace name, and that <code>URI</code> ends with a
+non-name character. The RDF/XML writer will turn these prefix
+declarations into XML namespace declarations and use them in its
+output:
+
+
+<blockquote>
+<pre>
+<code>
+# -- nsA defined
+
+&lt;rdf:RDF
+    xmlns:j.0="http://nowhere/else#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:nsA="http://somewhere/else#" >
+  &lt;rdf:Description rdf:about="http://somewhere/else#root">
+    &lt;nsA:P rdf:resource="http://somewhere/else#x"/>
+    &lt;nsA:P rdf:resource="http://somewhere/else#y"/>
+  &lt;/rdf:Description>
+  &lt;rdf:Description rdf:about="http://somewhere/else#y">
+    &lt;j.0:Q rdf:resource="http://somewhere/else#z"/>
+  &lt;/rdf:Description>
+&lt;/rdf:RDF>
+</code>
+</pre>
+</blockquote>
+
+The other namespace still gets the constructed name, but the nsA name
+is now used in the property tags. There's no need for the prefix name
+to have anything to do with the variables in the Jena code:
+
+<blockquote>
+<pre>
+<code>
+# -- nsA and cat defined
+
+&lt;rdf:RDF
+    xmlns:cat="http://nowhere/else#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:nsA="http://somewhere/else#" >
+  &lt;rdf:Description rdf:about="http://somewhere/else#root">
+    &lt;nsA:P rdf:resource="http://somewhere/else#x"/>
+    &lt;nsA:P rdf:resource="http://somewhere/else#y"/>
+  &lt;/rdf:Description>
+  &lt;rdf:Description rdf:about="http://somewhere/else#y">
+    &lt;cat:Q rdf:resource="http://somewhere/else#z"/>
+  &lt;/rdf:Description>
+&lt;/rdf:RDF>
+</code>
+</pre>
+</blockquote>
+
+Both prefixes are used for output, and no generated prefixes are needed.
+
+<h3>implicit prefix definitions</h3>
+
+As well as prefix declarations provided by calls to <code>setNsPrefix</code>,
+Jena will remember the prefixes that were used in input to
+<code>model.read()</code>.
+
+<p>Take the output produced by the previous fragment, and paste it into
+some file, with URL <b>file:/tmp/fragment.rdf</b> say. Then run the
+code:
+
+<blockquote>
+<pre>
+<code>
+Model m2 = ModelFactory.createDefaultModel();
+m2.read( "file:/tmp/fragment.rdf" );
+m2.write( System.out );
+</code>
+</pre>
+</blockquote>
+
+You'll see that the prefixes from the input are preserved in the output.
+All the prefixes are written, even if they're not used anywhere. You can
+remove a prefix with <code>removeNsPrefix(String prefix)</code> if you
+don't want it in the output.
+
+<p>Since NTriples doesn't have any short way of writing URIs, it takes
+no notice of prefixes on output and doesn't provide any on input. The
+notation <b>N3</b>, also supported by Jena, does have short prefixed names,
+and records them on input and uses them on output.
+
+<p>Jena has further operations on the prefix mappings that a model holds,
+such as extracting a Java <code>Map</code> of the exiting mappings, or
+adding a whole group of mappings at once; see the documentation for
+<code>PrefixMapping</code> for details.
 
 <hr>
 
@@ -1137,4 +1280,4 @@ Another term for a statement.
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
 <br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>
-<br> $Id: index.html,v 1.12 2004-07-02 07:39:26 chris-dollin Exp $</small></i></body></html>
+<br> $Id: index.html,v 1.13 2004-07-05 16:56:36 chris-dollin Exp $</small></i></body></html>
