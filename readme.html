@@ -9,11 +9,9 @@
 
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
 
-<h1 style="text-align: center; line-height: 18pt">Jena 2 Preview 3 Release</h1>
+<h1 style="text-align: center; line-height: 18pt">Jena 2 Preview Release</h1>
 
 <h1 style="text-align: center; line-height: 18pt">Jena: A Java API for Semantic Web Applications</h1>
-
-<h3 style="text-align: center; line-height: 18pt">Readme for version j2p2</h3>
 
 <p style="text-align: center; line-height: 18pt; font-style: italic">
 <span style="font-style: italic">
@@ -54,19 +52,6 @@ a preview of the proposed support for RDFS inference, plus revised suport for
 reification in line with the WG specification. The Jena team intend to
 restore the missing functionality as soon as possible. </p>
 
-<blockquote>
-	<strong>changes since preview 1</strong> [see also ReleaseNotes.txt]
-	<ul>
-	<li>a new interface for <strong>reified statements</strong> has been
-	added.	
-	<li>RDQL has support for typed values and built-in standard namespaces,
-	and uses the fast-path query interface.
-	<li>N3 has support for typed literal syntax.
-	<li>IO has many bug-fixes and conformance with latest WG decisions.
-	<li>Ontology API first release
-	</ul>
-</blockquote>
-
 <p>The Jena team do not recommend migrating from Jena 1 to Jena 2 at this
 time. However, we do encourage folks to try out Jena 2 and provide feedback on
 ease of migrating existing code and experience, especially with the new
@@ -102,7 +87,7 @@ queries on to database engines.
   JENAROOT/lib/xmlParserAPIs.jar
   JENAROOT/lib/icu4j.jar
   JENAROOT/lib/concurrent.jar
-  JENAROOT/lib/jakarta-oro-2.0.5.jar  // if using RDQL query support
+  JENAROOT/lib/jakarta-oro-2.0.5.jar
   // Not yet in Jena2 : JENAROOT/lib/db3-3-11.jar           // if using Berkeley DB interface
   JENAROOT/lib/antlr.debug.jar
   JENAROOT/lib/sesame-client.jar      // if using Jena-Sesame query engine
@@ -113,12 +98,11 @@ queries on to database engines.
 	
 	<li>Test the distribution by running the regression tests, either:
 			
-	<pre>
-	ant test          // if you have ant configured to run junit
+	<pre>	ant test          // if you have ant configured to run junit
 	test.bat          // on windows
 	. test.sh         // on unix
 	</pre>
-	The (approximately 1400) tests should all pass. If you are
+	The  tests should all pass. If you are
 	behind a firewall, you may have to configure a proxy for some
 	of the tests - see below for the appropriate properties.
 	</li>
@@ -148,7 +132,8 @@ parser.</p>
 
 <p><code>jena.n3</code> is a command line interfacec to Jena's N3 parser.</p>
 
-<p><code>jena.schemagen</code> takes and RDF Schema and generates the java
+<p><code>jena.schemagen</code> takes and RDF Schema or OWL ontologies and generates 
+Java
 source code for a constant class containing constants for all the classes and
 properties defined in that schema.</p>
 
