@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.10 2003-08-22 12:51:12 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.11 2003-08-24 21:20:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-22 12:51:12 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-24 21:20:19 $
  */
 public class ReasonerVocabulary {
     
@@ -95,7 +95,13 @@ public class ReasonerVocabulary {
     
     /** A namespace used for Rubric specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubrik/";
-            
+
+    /** Property used to switch on validation in owl ruleset */
+    public static final Property RB_VALIDATION = ResourceFactory.createProperty(RBNamespace, "validation");
+
+    /** Property used for validation reports in owl ruleset */
+    public static final Property RB_VALIDATION_REPORT = ResourceFactory.createProperty(RBNamespace, "violation");
+                
 //  --------------------------------------------------------------------
 // Method versions of key namespaces which are more initializer friendly
 
