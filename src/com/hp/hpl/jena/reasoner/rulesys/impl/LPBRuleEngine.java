@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.6 2005-02-21 12:17:41 andy_seaborne Exp $
+ * $Id: LPBRuleEngine.java,v 1.7 2005-02-23 11:41:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-02-21 12:17:41 $
+ * @version $Revision: 1.7 $ on $Date: 2005-02-23 11:41:57 $
  */
 public class LPBRuleEngine {
     
@@ -151,7 +151,9 @@ public class LPBRuleEngine {
      * Stop the current work. Forcibly stop all current query instances over this engine.
      */
     public synchronized void halt() {
-        for (Iterator i = activeInterpreters.iterator(); i.hasNext(); ) {
+        ArrayList copy = new ArrayList(activeInterpreters);  
+        // Copy because closing the LPInterpreter will detach it from this engine which affects activeInterpreters
+        for (Iterator i = copy.iterator(); i.hasNext(); ) {
             ((LPInterpreter)i.next()).close();
         }
     }

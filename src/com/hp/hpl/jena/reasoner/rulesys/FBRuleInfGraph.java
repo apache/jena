@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.49 2005-02-21 12:16:58 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.50 2005-02-23 11:42:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.49 $ on $Date: 2005-02-21 12:16:58 $
+ * @version $Revision: 1.50 $ on $Date: 2005-02-23 11:42:00 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -227,7 +227,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * infgraphs support this.
      */
     public void addBRule(Rule brule) {
-        logger.debug("Adding rule " + brule);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Adding rule " + brule);
+        }
         bEngine.addRule(brule);
         bEngine.reset();
     }
@@ -237,7 +239,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * infgraphs support this.
      */
     public void deleteBRule(Rule brule) {
-        logger.debug("Deleting rule " + brule);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Deleting rule " + brule);
+        }
         bEngine.deleteRule(brule);
         bEngine.reset();
     }
