@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.3 2003-04-04 15:23:30 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.4 2003-04-06 10:45:59 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -10,6 +10,7 @@ package com.hp.hpl.jena.xmloutput.impl;
 import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import org.apache.xerces.util.XMLChar;
 import com.hp.hpl.jena.rdf.model.*;
@@ -57,7 +58,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-04 15:23:30 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-06 10:45:59 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -398,10 +399,10 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * null</code> means use only absolute URI's.
 	 * @throws RDFException Generic RDF exception.
 	 */
-	final synchronized public void write(Model model, Writer out, String base)
+	final synchronized public void write(Model baseModel, Writer out, String base)
 		throws RDFException {
 		//ns = new HashMap();
-        model = model.withHiddenStatements();
+        Model model = ModelCom.withHiddenStatements( baseModel );
 		this.namespacesNeeded = new HashSet();
 		ns = null;
 		count = 0;
