@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AddDeniedException.java,v 1.3 2003-08-27 13:07:30 andy_seaborne Exp $
+  $Id: AddDeniedException.java,v 1.4 2004-12-06 13:50:10 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -23,7 +23,7 @@ public class AddDeniedException extends UpdateDeniedException
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

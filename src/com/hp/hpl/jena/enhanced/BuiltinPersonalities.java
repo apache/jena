@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.28 2003-09-08 16:18:11 ian_dickinson Exp $
+  $Id: BuiltinPersonalities.java,v 1.29 2004-12-06 13:50:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -104,7 +104,7 @@ public class BuiltinPersonalities {
 }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ErrorPrinter.java,v 1.6 2004-07-06 13:36:58 andy_seaborne Exp $
+ * @version 	$Id: N3ErrorPrinter.java,v 1.7 2004-12-06 13:50:12 andy_seaborne Exp $
  */
 public class N3ErrorPrinter extends NullN3EventHandler
 {
@@ -42,7 +42,7 @@ public class N3ErrorPrinter extends NullN3EventHandler
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

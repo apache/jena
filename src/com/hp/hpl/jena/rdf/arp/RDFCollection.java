@@ -1,8 +1,8 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: RDFCollection.java,v 1.5 2004-10-11 11:54:35 jeremy_carroll Exp $
+  $Id: RDFCollection.java,v 1.6 2004-12-06 13:50:16 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -72,7 +72,7 @@ class RDFCollection extends CollectionAction {
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Dec-2003
  * Filename           $RCSfile: SimpleXMLPathAttr.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 09:28:14 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-12-06 13:50:26 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -35,7 +35,7 @@ import org.w3c.dom.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SimpleXMLPathAttr.java,v 1.2 2003-12-08 09:28:14 ian_dickinson Exp $
+ * @version CVS $Id: SimpleXMLPathAttr.java,v 1.3 2004-12-06 13:50:26 andy_seaborne Exp $
  */
 public class SimpleXMLPathAttr 
     implements SimpleXMLPathComponent
@@ -111,7 +111,7 @@ public class SimpleXMLPathAttr
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

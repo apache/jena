@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDBSpec.java,v 1.3 2004-06-23 15:22:28 chris-dollin Exp $
+  $Id: TestDBSpec.java,v 1.4 2004-12-06 13:50:09 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.16 2003-08-27 13:04:46 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.17 2004-12-06 13:50:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.ontology.impl.test;

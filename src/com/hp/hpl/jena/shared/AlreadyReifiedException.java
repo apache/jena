@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AlreadyReifiedException.java,v 1.2 2003-08-27 13:07:30 andy_seaborne Exp $
+  $Id: AlreadyReifiedException.java,v 1.3 2004-12-06 13:50:10 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -17,7 +17,7 @@ public class AlreadyReifiedException extends CannotReifyException
     { public AlreadyReifiedException( Node n ) { super( n ); } }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

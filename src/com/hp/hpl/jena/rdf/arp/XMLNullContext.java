@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: XMLNullContext.java,v 1.3 2004-10-11 11:54:37 jeremy_carroll Exp $
+  $Id: XMLNullContext.java,v 1.4 2004-12-06 13:50:16 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 import java.util.Map;
@@ -63,7 +63,7 @@ class XMLNullContext extends XMLContext implements ARPErrorNumbers {
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

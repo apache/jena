@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphPrefixMapping.java,v 1.4 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: TestGraphPrefixMapping.java,v 1.5 2004-12-06 13:50:09 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -40,7 +40,7 @@ public class TestGraphPrefixMapping extends GraphTestBase
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

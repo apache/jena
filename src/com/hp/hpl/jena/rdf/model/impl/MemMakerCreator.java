@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MemMakerCreator.java,v 1.2 2003-08-27 13:05:53 andy_seaborne Exp $
+  $Id: MemMakerCreator.java,v 1.3 2004-12-06 13:50:17 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -26,7 +26,7 @@ public class MemMakerCreator extends MakerCreator implements ModelMakerCreator
     }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

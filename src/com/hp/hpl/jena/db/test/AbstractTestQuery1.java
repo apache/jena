@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery1.java,v 1.4 2003-09-10 10:02:26 chris-dollin Exp $
+  $Id: AbstractTestQuery1.java,v 1.5 2004-12-06 13:50:09 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -28,7 +28,7 @@ import java.io.*;
     Lite but a URI is used as an individual in the first
     and a class in the second then a Full reasoner is needed.
  * @author		Jeremy Carroll
- * @version 	$Id: owlsyntax.java,v 1.3 2004-12-01 14:27:03 jeremy_carroll Exp $
+ * @version 	$Id: owlsyntax.java,v 1.4 2004-12-06 13:50:20 andy_seaborne Exp $
  */
 public class owlsyntax {
 	private owlsyntax(){
@@ -300,7 +300,7 @@ If no files are specified then standard input is used,
 }
 
 /*
- *  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import antlr.collections.*;
 /** Miscellaneous things in support of Antlr-derived parsers
  * 
  * @author		Andy Seaborne
- * @version 	$Id: AntlrUtils.java,v 1.5 2003-08-27 13:01:45 andy_seaborne Exp $
+ * @version 	$Id: AntlrUtils.java,v 1.6 2004-12-06 13:50:12 andy_seaborne Exp $
  */
 
 public class AntlrUtils
@@ -57,7 +57,7 @@ public class AntlrUtils
 	}
 }
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

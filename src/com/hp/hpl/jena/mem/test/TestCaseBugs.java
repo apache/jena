@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBugs.java,v 1.2 2003-09-30 15:34:03 chris-dollin Exp $
+ * $Id: TestCaseBugs.java,v 1.3 2004-12-06 13:50:28 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.mem.test;
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-09-30 15:34:03 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2004-12-06 13:50:28 $
  */
 public class TestCaseBugs 
             extends TestCaseBasic {

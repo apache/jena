@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Capabilities.java,v 1.6 2004-11-22 14:40:22 chris-dollin Exp $
+  $Id: Capabilities.java,v 1.7 2004-12-06 13:50:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -61,7 +61,7 @@ public interface Capabilities
     }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,8 +1,8 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: DAMLCollection.java,v 1.4 2003-12-08 20:21:30 jeremy_carroll Exp $
+  $Id: DAMLCollection.java,v 1.5 2004-12-06 13:50:16 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -78,7 +78,7 @@ class DAMLCollection extends CollectionAction {
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

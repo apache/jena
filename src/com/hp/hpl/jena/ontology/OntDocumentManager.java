@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.40 $
+ * Revision           $Revision: 1.41 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-31 09:49:51 $
+ * Last modified on   $Date: 2004-12-06 13:50:11 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  * ****************************************************************************/
 
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.40 2004-08-31 09:49:51 andy_seaborne Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.41 2004-12-06 13:50:11 andy_seaborne Exp $
  */
 public class OntDocumentManager
 {
@@ -1043,7 +1043,7 @@ public class OntDocumentManager
 
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.23 2004-12-02 16:13:08 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.24 2004-12-06 13:50:10 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -165,7 +165,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

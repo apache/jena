@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: NamedUnitPathExpr.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
+ * Last modified on   $Date: 2004-12-06 13:49:41 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.path.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: NamedUnitPathExpr.java,v 1.3 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: NamedUnitPathExpr.java,v 1.4 2004-12-06 13:49:41 andy_seaborne Exp $
  */
 public class NamedUnitPathExpr
     extends AnyUnitPathExpr 
@@ -124,7 +124,7 @@ public class NamedUnitPathExpr
 
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

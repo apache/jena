@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDQLMatch.java,v 1.1 2004-09-17 21:45:17 wkw Exp $
+  $Id: TestRDQLMatch.java,v 1.2 2004-12-06 13:50:09 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -278,7 +278,7 @@ public class TestRDQLMatch extends TestCase {
     	
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002, 2003
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClass.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
+ * Last modified on   $Date: 2004-12-06 13:50:18 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
   *****************************************************************************/
 
@@ -33,7 +33,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClass.java,v 1.9 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLClass.java,v 1.10 2004-12-06 13:50:18 andy_seaborne Exp $
  */
 public interface DAMLClass
     extends DAMLCommon, OntClass
@@ -336,7 +336,7 @@ public interface DAMLClass
 
 
 /*
-    (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

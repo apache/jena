@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLRestrictionImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
+ * Last modified on   $Date: 2004-12-06 13:50:18 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * <p>Java encapsulation of a DAML Restriction.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLRestrictionImpl.java,v 1.5 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLRestrictionImpl.java,v 1.6 2004-12-06 13:50:18 andy_seaborne Exp $
  */
 public class DAMLRestrictionImpl
     extends DAMLClassImpl
@@ -167,7 +167,7 @@ public class DAMLRestrictionImpl
 
 
 /*
-    (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

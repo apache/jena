@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Blank.java,v 1.2 2004-01-11 21:20:29 jeremy_carroll Exp $
+  $Id: Blank.java,v 1.3 2004-12-06 13:50:13 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.graph.*;
@@ -18,7 +18,7 @@ boolean stripped();
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

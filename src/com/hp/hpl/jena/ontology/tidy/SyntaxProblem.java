@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxProblem.java,v 1.10 2003-12-02 04:58:34 jeremy_carroll Exp $
+  $Id: SyntaxProblem.java,v 1.11 2004-12-06 13:50:15 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -194,7 +194,7 @@ public class SyntaxProblem {
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

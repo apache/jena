@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  24-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTokenizer.java,v 1.2 2003-08-27 13:07:55 andy_seaborne Exp $
+ * $Id: TestTokenizer.java,v 1.3 2004-12-06 13:50:31 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.test;
 
@@ -18,7 +18,7 @@ import junit.framework.TestSuite;
  * Test for the trivial tokenizer utility.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:07:55 $
+ * @version $Revision: 1.3 $ on $Date: 2004-12-06 13:50:31 $
  */
 public class TestTokenizer extends TestCase {
          
@@ -75,7 +75,7 @@ public class TestTokenizer extends TestCase {
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

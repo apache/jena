@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.7 2003-12-05 08:15:14 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.8 2004-12-06 13:50:14 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -164,7 +164,7 @@ public class CategorySet implements Comparable, Serializable, Constants {
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

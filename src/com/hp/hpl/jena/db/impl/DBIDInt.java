@@ -1,8 +1,7 @@
 /*
- *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
- *
- *
+ *  [See end of file]
  */
 
 //=======================================================================
@@ -25,7 +24,7 @@ package com.hp.hpl.jena.db.impl;
 * This would be sufficient for databases up to 4x10^9 statements.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.2 $ on $Date: 2003-08-27 12:56:39 $
+* @version $Revision: 1.3 $ on $Date: 2004-12-06 13:50:19 $
 */
 
 public class DBIDInt implements IDBID {
@@ -69,7 +68,7 @@ public class DBIDInt implements IDBID {
 }
 
 /*
- *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: StatementListener.java,v 1.4 2004-03-23 13:47:41 chris-dollin Exp $
+  $Id: StatementListener.java,v 1.5 2004-12-06 13:50:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
@@ -48,7 +48,7 @@ public class StatementListener implements ModelChangedListener
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

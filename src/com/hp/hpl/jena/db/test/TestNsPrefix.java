@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNsPrefix.java,v 1.6 2004-07-16 15:52:09 chris-dollin Exp $
+  $Id: TestNsPrefix.java,v 1.7 2004-12-06 13:50:09 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;

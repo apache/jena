@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphPersonality.java,v 1.4 2003-08-27 12:59:37 andy_seaborne Exp $
+  $Id: GraphPersonality.java,v 1.5 2004-12-06 13:50:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -38,7 +38,7 @@ public class GraphPersonality extends Personality {
 }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelQueryUtil.java,v 1.5 2004-08-03 11:21:00 chris-dollin Exp $
+  $Id: ModelQueryUtil.java,v 1.6 2004-12-06 13:50:24 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util;
@@ -54,7 +54,7 @@ public class ModelQueryUtil
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

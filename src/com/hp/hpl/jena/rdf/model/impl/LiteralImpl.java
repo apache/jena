@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2004-11-19 14:38:13 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2004-12-06 13:50:16 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
   

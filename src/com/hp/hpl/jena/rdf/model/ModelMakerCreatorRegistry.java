@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerCreatorRegistry.java,v 1.4 2004-03-16 15:00:33 chris-dollin Exp $
+  $Id: ModelMakerCreatorRegistry.java,v 1.5 2004-12-06 13:50:12 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -76,7 +76,7 @@ public class ModelMakerCreatorRegistry
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

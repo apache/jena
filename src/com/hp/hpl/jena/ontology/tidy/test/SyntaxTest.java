@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.14 2004-01-29 18:45:02 ian_dickinson Exp $
+  $Id: SyntaxTest.java,v 1.15 2004-12-06 13:50:22 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -160,7 +160,7 @@ class SyntaxTest extends TestCase {
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

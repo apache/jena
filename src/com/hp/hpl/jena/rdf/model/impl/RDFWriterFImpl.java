@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterFImpl.java,v 1.10 2004-11-04 16:59:41 andy_seaborne Exp $
+ * $Id: RDFWriterFImpl.java,v 1.11 2004-12-06 13:50:17 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.JenaRuntime ;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.10 $ $Date: 2004-11-04 16:59:41 $
+ * @version $Revision: 1.11 $ $Date: 2004-12-06 13:50:17 $
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
 

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RandomOrderGraph.java,v 1.1 2003-12-04 17:26:44 jeremy_carroll Exp $
+  $Id: RandomOrderGraph.java,v 1.2 2004-12-06 13:50:10 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.shared;
 
@@ -51,7 +51,7 @@ public class RandomOrderGraph extends WrappedGraph {
 }
 
 /*
- (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without

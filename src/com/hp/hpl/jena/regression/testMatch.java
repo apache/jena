@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: testMatch.java,v 1.6 2003-12-04 17:26:05 jeremy_carroll Exp $
+    $Id: testMatch.java,v 1.7 2004-12-06 13:50:22 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.regression;
 
@@ -11,7 +11,7 @@ import java.util.Random;
 /**
  *
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-12-04 17:26:05 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2004-12-06 13:50:22 $' 
  */
 
 public class testMatch extends java.lang.Object {
@@ -256,7 +256,7 @@ public class testMatch extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testMatch.java,v 1.6 2003-12-04 17:26:05 jeremy_carroll Exp $
+ * $Id: testMatch.java,v 1.7 2004-12-06 13:50:22 andy_seaborne Exp $
  *
  * testMatch.java
  *

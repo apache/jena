@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: testModelEquals.java,v 1.10 2003-12-08 10:48:28 andy_seaborne Exp $
+    $Id: testModelEquals.java,v 1.11 2004-12-06 13:50:22 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.regression;
 
@@ -103,5 +103,5 @@ public class testModelEquals extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.10 2003-12-08 10:48:28 andy_seaborne Exp $
+ * $Id: testModelEquals.java,v 1.11 2004-12-06 13:50:22 andy_seaborne Exp $
  */

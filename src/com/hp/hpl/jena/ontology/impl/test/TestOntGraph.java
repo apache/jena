@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestOntGraph.java,v 1.2 2003-08-27 13:04:46 andy_seaborne Exp $
+  $Id: TestOntGraph.java,v 1.3 2004-12-06 13:50:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.ontology.impl.test;
@@ -33,7 +33,7 @@ public class TestOntGraph extends AbstractTestGraph
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: TestAnonID.java,v 1.2 2004-03-19 07:40:30 chris-dollin Exp $
+ * $Id: TestAnonID.java,v 1.3 2004-12-06 13:50:25 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -20,7 +20,7 @@ import junit.framework.TestSuite;
  * that switches off anonID generation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2004-03-19 07:40:30 $
+ * @version $Revision: 1.3 $ on $Date: 2004-12-06 13:50:25 $
  */
 public class TestAnonID extends TestCase {
     
@@ -75,7 +75,7 @@ public class TestAnonID extends TestCase {
 
 
 /*
-    (c) Copyright Hewlett-Packard Development Company, LP 2004
+    (c) Copyright 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

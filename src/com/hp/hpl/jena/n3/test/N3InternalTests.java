@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.11 2004-07-31 13:42:37 andy_seaborne Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.12 2004-12-06 13:50:26 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
@@ -302,7 +302,7 @@ public class N3InternalTests extends TestSuite
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

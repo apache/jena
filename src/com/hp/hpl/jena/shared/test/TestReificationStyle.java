@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReificationStyle.java,v 1.2 2004-04-06 20:43:25 chris-dollin Exp $
+  $Id: TestReificationStyle.java,v 1.3 2004-12-06 13:50:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -53,7 +53,7 @@ public class TestReificationStyle extends ModelTestBase
     }
 
 /*
-    (c) Copyright 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-	(c) Copyright 2003, Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ReifiedStatement.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
+	$Id: ReifiedStatement.java,v 1.3 2004-12-06 13:50:12 andy_seaborne Exp $
 */
 
 
@@ -22,7 +22,7 @@ public interface ReifiedStatement extends Resource
     }
     
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

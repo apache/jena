@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  29-Mar-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.13 2004-03-18 11:24:37 chris-dollin Exp $
+ * $Id: PrintUtil.java,v 1.14 2004-12-06 13:50:24 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * specialised tables.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2004-03-18 11:24:37 $
+ * @version $Revision: 1.14 $ on $Date: 2004-12-06 13:50:24 $
  */
 public class PrintUtil {
     
@@ -168,7 +168,7 @@ public class PrintUtil {
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

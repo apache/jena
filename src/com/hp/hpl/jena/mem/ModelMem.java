@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMem.java,v 1.5 2003-08-27 13:01:27 andy_seaborne Exp $
+  $Id: ModelMem.java,v 1.6 2004-12-06 13:50:24 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -25,7 +25,7 @@ public class ModelMem extends ModelCom implements Model
     }
 
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

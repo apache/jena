@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Free.java,v 1.3 2003-08-27 12:56:40 andy_seaborne Exp $
+  $Id: Free.java,v 1.4 2004-12-06 13:50:20 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;

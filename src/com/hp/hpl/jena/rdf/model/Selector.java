@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Selector.java,v 1.4 2003-08-27 13:05:52 andy_seaborne Exp $ 
+  $Id: Selector.java,v 1.5 2004-12-06 13:50:12 andy_seaborne Exp $ 
 */
 package com.hp.hpl.jena.rdf.model;
 
@@ -12,7 +12,7 @@ package com.hp.hpl.jena.rdf.model;
  * of such selector objects.
  * 
  * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-08-27 13:05:52 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2004-12-06 13:50:12 $'
 */
 
 public interface Selector {

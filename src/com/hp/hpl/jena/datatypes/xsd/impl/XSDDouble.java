@@ -3,9 +3,10 @@
  * Created by:  Dave Reynolds
  * Created on:  03-Dec-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
- * $Id: XSDDouble.java,v 1.3 2004-05-04 08:11:57 der Exp $
+ * $Id: XSDDouble.java,v 1.4 2004-12-06 13:50:31 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +21,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * XSDDatatype because the equality function needs overriding.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2004-05-04 08:11:57 $
+ * @version $Revision: 1.4 $ on $Date: 2004-12-06 13:50:31 $
  */
 public class XSDDouble extends XSDDatatype {
     /**
@@ -114,7 +115,7 @@ public class XSDDouble extends XSDDatatype {
 
 
 /*
-    (c) Copyright Hewlett-Packard Development Company, LP 2003
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

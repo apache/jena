@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BulkUpdateHandler.java,v 1.9 2004-06-25 06:13:41 chris-dollin Exp $
+  $Id: BulkUpdateHandler.java,v 1.10 2004-12-06 13:50:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -108,7 +108,7 @@ public interface BulkUpdateHandler
     }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

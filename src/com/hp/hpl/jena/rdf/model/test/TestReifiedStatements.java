@@ -1,9 +1,9 @@
 package com.hp.hpl.jena.rdf.model.test;
 
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.12 2003-09-08 15:05:24 chris-dollin Exp $
+  $Id: TestReifiedStatements.java,v 1.13 2004-12-06 13:50:25 andy_seaborne Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -56,7 +56,7 @@ public class TestReifiedStatements extends ModelTestBase
     }
     
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

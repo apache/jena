@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: RandomizedTestCaseBasic.java,v 1.1 2003-12-04 17:26:44 jeremy_carroll Exp $
+    $Id: RandomizedTestCaseBasic.java,v 1.2 2004-12-06 13:50:28 andy_seaborne Exp $
 */
  
 package com.hp.hpl.jena.shared.test;
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.shared.RandomOrderGraph;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2003-12-04 17:26:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2004-12-06 13:50:28 $
  */
 
 public class RandomizedTestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
@@ -35,7 +35,7 @@ public class RandomizedTestCaseBasic extends com.hp.hpl.jena.regression.TestCase
 }
 
 /*
- *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,5 +60,5 @@ public class RandomizedTestCaseBasic extends com.hp.hpl.jena.regression.TestCase
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandomizedTestCaseBasic.java,v 1.1 2003-12-04 17:26:44 jeremy_carroll Exp $
+ * $Id: RandomizedTestCaseBasic.java,v 1.2 2004-12-06 13:50:28 andy_seaborne Exp $
  */

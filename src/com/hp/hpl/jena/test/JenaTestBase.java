@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.13 2004-11-19 14:38:14 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.14 2004-12-06 13:50:23 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -116,7 +116,7 @@ public class JenaTestBase extends TestCase
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -27,7 +27,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class DBPropLSet extends DBProp {
 

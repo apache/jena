@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.13 2004-11-04 16:06:21 chris-dollin Exp $
+  $Id: DBQueryHandler.java,v 1.14 2004-12-06 13:50:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;

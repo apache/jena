@@ -1,5 +1,5 @@
 /*
- (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  [See end of file]
  */
 
@@ -613,7 +613,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: JenaReader.java,v 1.27 2004-10-19 14:46:29 jeremy_carroll Exp $
+ *  * $Id: JenaReader.java,v 1.28 2004-12-06 13:50:16 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */

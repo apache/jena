@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBBlob.java,v 1.4 2003-08-27 12:56:39 andy_seaborne Exp $
+  $Id: DBBlob.java,v 1.5 2004-12-06 13:50:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;

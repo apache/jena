@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.* ;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbcreate.java,v 1.3 2004-01-23 16:52:02 andy_seaborne Exp $
+  * @version $Id: dbcreate.java,v 1.4 2004-12-06 13:50:20 andy_seaborne Exp $
   */ 
  
 public class dbcreate extends DBcmd
@@ -70,7 +70,7 @@ public class dbcreate extends DBcmd
 
 
 /*
- * (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CheckerResults.java,v 1.1 2004-01-27 15:45:24 jeremy_carroll Exp $
+  $Id: CheckerResults.java,v 1.2 2004-12-06 13:50:15 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -47,7 +47,7 @@ public interface CheckerResults {
 	public abstract void setOptimizeMemory(boolean big);
 }
 /*
- (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without

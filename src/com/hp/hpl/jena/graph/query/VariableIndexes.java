@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: VariableIndexes.java,v 1.2 2003-10-16 09:45:08 chris-dollin Exp $
+  $Id: VariableIndexes.java,v 1.3 2004-12-06 13:50:13 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -22,7 +22,7 @@ public interface VariableIndexes
     }
 
 /*
-    (c) Copyright 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

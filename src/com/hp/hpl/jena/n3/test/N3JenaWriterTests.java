@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTests.java,v 1.10 2003-09-09 12:14:26 chris-dollin Exp $
+ * @version 	$Id: N3JenaWriterTests.java,v 1.11 2004-12-06 13:50:26 andy_seaborne Exp $
  */
 public class N3JenaWriterTests extends N3ExternalTestsCom
 {
@@ -114,7 +114,7 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Fixed.java,v 1.6 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: Fixed.java,v 1.7 2004-12-06 13:50:13 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -45,7 +45,7 @@ public class Fixed extends Element
 	}
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

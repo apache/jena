@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestVocabularies.java,v 1.5 2003-08-27 13:08:12 andy_seaborne Exp $
+  $Id: TestVocabularies.java,v 1.6 2004-12-06 13:50:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
@@ -35,7 +35,7 @@ public class TestVocabularies extends TestCase
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
