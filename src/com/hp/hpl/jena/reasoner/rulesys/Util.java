@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.1 2003-04-17 15:24:26 der Exp $
+ * $Id: Util.java,v 1.2 2003-04-22 14:20:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:26 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-22 14:20:07 $
  */
 public class Util {
 
@@ -59,7 +59,6 @@ public class Util {
     /**
      * Helper - returns the (singleton) value for the given property on the given
      * root node in the data graph.
-     * Temporary hack for context usage - TODO: replace.
      */
     public static Node getPropValue(Node root, Node prop, RuleContext context) {
         Iterator i = context.find(root, prop, null);
@@ -72,7 +71,6 @@ public class Util {
     
     /**
      * Convert an (assumed well formed) RDF list to a java list of Nodes
-     * Temporary hack for context usage - TODO: replace.
      * @param root the root node of the list
      * @param graph the graph containing the list assertions
      */
@@ -82,7 +80,6 @@ public class Util {
     
     /**
      * Convert an (assumed well formed) RDF list to a java list of Nodes
-     * Temporary hack for context usage - TODO: replace.
      */
     private static List convertList(Node node, RuleContext context, List sofar) {
         if (node == null || node.equals(RDF.nil.asNode())) return sofar;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.7 2003-04-17 15:59:23 der Exp $
+ * $Id: ReasonerTester.java,v 1.8 2003-04-22 14:20:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -43,7 +43,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-04-17 15:59:23 $
+ * @version $Revision: 1.8 $ on $Date: 2003-04-22 14:20:09 $
  */
 public class ReasonerTester {
 
@@ -252,7 +252,7 @@ public class ReasonerTester {
         */
         // ... end of debugging hack
         if (testcase != null) {
-            testcase.assertTrue(description, correct);
+            TestCase.assertTrue(description, correct);
         }
         return correct;
     }

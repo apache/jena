@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.3 2003-04-15 21:28:17 jeremy_carroll Exp $
+ * $Id: TransitiveInfGraph.java,v 1.4 2003-04-22 14:20:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -29,7 +29,7 @@ import java.util.HashSet;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:28:17 $
+ * @version $Revision: 1.4 $ on $Date: 2003-04-22 14:20:08 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -57,10 +57,10 @@ public class TransitiveInfGraph extends BaseInfGraph {
         
         // Initialize the predicate switch table.
         specialPredicates = new HashSet();
-        specialPredicates.add(reasoner.directSubClassOf);
-        specialPredicates.add(reasoner.directSubPropertyOf);
-        specialPredicates.add(reasoner.subPropertyOf);
-        specialPredicates.add(reasoner.subClassOf);
+        specialPredicates.add(TransitiveReasoner.directSubClassOf);
+        specialPredicates.add(TransitiveReasoner.directSubPropertyOf);
+        specialPredicates.add(TransitiveReasoner.subPropertyOf);
+        specialPredicates.add(TransitiveReasoner.subClassOf);
         
         // Initially just point to the reasoner's precached information
         this.subClassCache = reasoner.subClassCache;
@@ -69,8 +69,8 @@ public class TransitiveInfGraph extends BaseInfGraph {
 
         // But need to check if the data graph defines schema data as well
         if (data != null && 
-            (reasoner.checkOccurance(reasoner.subPropertyOf, data, subPropertyCache) ||
-             reasoner.checkOccurance(reasoner.subClassOf, data, subPropertyCache))) {
+            (TransitiveReasoner.checkOccurance(TransitiveReasoner.subPropertyOf, data, subPropertyCache) ||
+             TransitiveReasoner.checkOccurance(TransitiveReasoner.subClassOf, data, subPropertyCache))) {
             // Need to include data in the tbox so create a new reasoner which
             // become the parent of this InfGraph
             if (tbox != null) {
