@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.20 $ on $Date: 2003-07-11 19:21:19 $
+* @version $Revision: 1.21 $ on $Date: 2003-07-12 00:07:34 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -562,10 +562,21 @@ public abstract class DriverRDB implements IRDBDriver {
 			while (it.hasNext()) {
 				m_sql.runSQLGroup("dropTable", (String) it.next());
 			}
+			if (PRE_ALLOCATE_ID) {
+				clearSequences();
+			}
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver", e1);
 		}
 	}
+	
+	/**
+	 * Drop all Jena-related sequences from database, if necessary.
+	 * Override in subclass if sequences must be explicitly deleted.
+	 */
+	public void clearSequences() {
+	}
+
 	
 	/**
 	 * Removes named sequence from the database, if it exists.
