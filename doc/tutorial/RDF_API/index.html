@@ -1,4 +1,4 @@
-<!DOCTYPE public "-//w3c//dtd html 4.01 transitional//en" 
+<!DOCTYPE public "-//w3c//dtd html 4.01 transitional//en"
 		"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -48,6 +48,7 @@ href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb/</a>.</p>
   <li><a href="#ch-Statements">Statements</a></li>
   <li><a href="#ch-Writing RDF">Writing RDF</a></li>
   <li><a href="#ch-Reading RDF">Reading RDF</a></li>
+  <li><a href="#ch-Prefixes">Controlling Prefixes</a></li>
   <li><a href="#ch-Jena RDF Packages">Jena RDF Packages</a></li>
   <li><a href="#ch-Navigating a Model">Navigating a Model</a></li>
   <li><a href="#ch-Querying a Model">Querying a Model</a></li>
@@ -463,6 +464,24 @@ looks like:</p>
   &lt;/rdf:Description&gt;
 &lt;/rdf:RDF&gt;</code></pre>
 </blockquote>
+<hr>
+
+<h2><a name="ch-Prefixes">Controlling Prefixes</h2>
+
+In the previous section, we saw that the output XML declared a namespace
+prefix <code>vcard</code> and used that prefix to abbreviate URIs. While RDF
+uses only the full URIs, and not this shortened form, Jena provides was
+of controlling the namespaces used on output with its <i>prefix mappings</i>.
+
+<blockquote>
+<pre>
+<code>
+	CODE
+</code>
+</pre>
+</blockquote>
+
+
 <hr>
 
 <h2><a name="ch-Jena RDF Packages">Jena RDF Packages</a></h2>
@@ -1118,4 +1137,4 @@ Another term for a statement.
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
 <br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>
-<br> $Id: index.html,v 1.11 2004-01-09 17:16:06 andy_seaborne Exp $</small></i></body></html>
+<br> $Id: index.html,v 1.12 2004-07-02 07:39:26 chris-dollin Exp $</small></i></body></html>
