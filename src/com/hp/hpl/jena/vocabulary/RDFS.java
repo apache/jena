@@ -1,17 +1,18 @@
 /*
   (c) Copyright 2000, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFS.java,v 1.7 2003-07-18 09:33:32 chris-dollin Exp $
+  $Id: RDFS.java,v 1.8 2003-07-18 10:32:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.graph.*;
 
 /**
     RDFS vocabulary items
     @author  bwm, updated by kers/daniel/christopher
-    @version $Id: RDFS.java,v 1.7 2003-07-18 09:33:32 chris-dollin Exp $
+    @version $Id: RDFS.java,v 1.8 2003-07-18 10:32:30 chris-dollin Exp $
  */
 public class RDFS {
 
@@ -22,7 +23,7 @@ public class RDFS {
 
     protected static final Property property( String local )
         { return ResourceFactory.createProperty( uri, local ); }
-            
+
     public static final Resource Class = resource( "Class");
     public static final Resource Datatype = resource( "Datatype");
     public static final Resource ConstraintProperty  =  resource( "ConstraintProperty");
@@ -32,21 +33,42 @@ public class RDFS {
     public static final Resource ConstraintResource  = resource( "ConstraintResource");
     public static final Resource Literal = resource( "Literal");
     public static final Resource Resource = resource( "Resource");
-    
-    public static final Property comment = property(  "comment");
-    public static final Property domain = property(  "domain");
-    public static final Property label = property(  "label");
-    public static final Property isDefinedBy = property(  "isDefinedBy");
-    public static final Property range = property(  "range");
-    public static final Property seeAlso = property(  "seeAlso");
-    public static final Property subClassOf  = property(  "subClassOf");
-    public static final Property subPropertyOf  = property(  "subPropertyOf");
-    public static final Property member  = property(  "member"); 
 
-    /** 
+    public static final Property comment = property( "comment");
+    public static final Property domain = property( "domain");
+    public static final Property label = property( "label");
+    public static final Property isDefinedBy = property( "isDefinedBy");
+    public static final Property range = property( "range");
+    public static final Property seeAlso = property( "seeAlso");
+    public static final Property subClassOf  = property( "subClassOf");
+    public static final Property subPropertyOf  = property( "subPropertyOf");
+    public static final Property member  = property( "member");
+
+    public static class Nodes
+        {
+        public static final Node Class = RDFS.Class.getNode();
+        public static final Node Datatype = RDFS.Datatype.getNode();
+        public static final Node ConstraintProperty  = RDFS. ConstraintProperty.getNode();
+        public static final Node Container  = RDFS.Container.getNode();
+        public static final Node ContainerMembershipProperty
+                                                         = RDFS.ContainerMembershipProperty.getNode();
+        public static final Node Literal = RDFS.Literal.getNode();
+        public static final Node Resource = RDFS.Resource.getNode();
+        public static final Node comment = RDFS.comment.getNode();
+        public static final Node domain = RDFS.domain.getNode();
+        public static final Node label = RDFS.label.getNode();
+        public static final Node isDefinedBy = RDFS.isDefinedBy.getNode();
+        public static final Node range = RDFS.range.getNode();
+        public static final Node seeAlso = RDFS.seeAlso.getNode();
+        public static final Node subClassOf  = RDFS.subClassOf.getNode();
+        public static final Node subPropertyOf  = RDFS.subPropertyOf.getNode();
+        public static final Node member  = RDFS.member.getNode();
+        }
+
+    /**
         returns the URI for this schema
         @return the URI for this schema
-    */    
+    */
     public static String getURI() {
         return uri;
     }
