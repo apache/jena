@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.54 $' Date='$Date: 2003-07-08 07:38:38 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.55 $' Date='$Date: 2003-07-08 09:15:43 $'
  */
 
 public class ModelCom 
@@ -826,6 +826,9 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return graph.size();
     }
 
+    public boolean isEmpty()
+        { return graph.queryHandler().isEmpty(); }
+        
     private void updateNamespace( HashSet set, Iterator it )
         {
         while (it.hasNext())

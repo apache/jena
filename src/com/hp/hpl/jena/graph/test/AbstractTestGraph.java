@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.7 2003-06-24 15:28:04 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.8 2003-07-08 09:15:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.test;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
@@ -188,6 +189,26 @@ public abstract class AbstractTestGraph extends GraphTestBase
         graphAdd( g, "S P O" );
         assertTrue( g.find( Node.ANY, null, null ).hasNext() );
         assertTrue( g.find( null, Node.ANY, null ).hasNext() );
+        }
+        
+    /**
+        test the isEmpty component of a query handler.
+    */
+    public void testIsEmpty()
+        {
+        Graph g = getGraph();
+        QueryHandler q = g.queryHandler();
+        assertTrue( q.isEmpty() );
+        g.add( Triple.create( "S P O" ) );
+        assertFalse( q.isEmpty() );
+        g.add( Triple.create( "A B C" ) );
+        assertFalse( q.isEmpty() );
+        g.add( Triple.create( "S P O" ) );
+        assertFalse( q.isEmpty() );
+        g.delete( Triple.create( "S P O" ) );
+        assertFalse( q.isEmpty() );
+        g.delete( Triple.create( "A B C" ) );
+        assertTrue( q.isEmpty() );
         }
     }
 

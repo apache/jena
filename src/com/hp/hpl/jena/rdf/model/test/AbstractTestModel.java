@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.2 2003-06-20 15:18:51 chris-dollin Exp $
+  $Id: AbstractTestModel.java,v 1.3 2003-07-08 09:15:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -57,6 +57,21 @@ public abstract class AbstractTestModel extends ModelTestBase
         RDFNode S = model.getRDFNode( Node.create( "_Blank" ) ); 
         assertTrue( S instanceof Resource );
         assertEquals( new AnonId( "_Blank" ), ((Resource) S).getId() );
+        }
+        
+    public void testIsEmpty()
+        {
+        Statement S1 = statement( model, "model rdf:type nonEmpty" );
+        Statement S2 = statement( model, "pinky rdf:type Pig" );
+        assertTrue( model.isEmpty() );
+        model.add( S1 );
+        assertFalse( model.isEmpty() );
+        model.add( S2 );
+        assertFalse( model.isEmpty() );
+        model.remove( S1 );
+        assertFalse( model.isEmpty() );
+        model.remove( S2 );
+        assertTrue( model.isEmpty() );
         }
     }
 

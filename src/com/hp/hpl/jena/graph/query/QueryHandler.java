@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryHandler.java,v 1.4 2003-04-15 11:30:05 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.5 2003-07-08 09:15:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -58,6 +58,11 @@ public interface QueryHandler
         true iff the graph contains a triple in which n appears somewhere.
     */
     public boolean containsNode( Node n );
+    
+    /**
+        Answer true iff the graph contains no explicit triples.
+    */
+    public boolean isEmpty();
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.26 2003-06-25 14:20:10 jeremy_carroll Exp $
+  $Id: Model.java,v 1.27 2003-07-08 09:15:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.26 $Date: 2003/06/24 10:34:25 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.27 $Date: 2003/06/25 14:20:10 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -72,6 +72,14 @@ public interface Model
 	 */
 	long size() ;
 
+    /**
+        Answer true iff the model contains no explicit statements (ie it's size is zero,
+        listStatements() would deliver the empty iterator).
+        
+        @return true iff the model contains no explicit statements.
+    */
+    boolean isEmpty();
+    
 	// @deprecated Too difficult to implement scalably.
 	/** List all resources which are subjects of statements.
 	 *
@@ -873,5 +881,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.26 2003-06-25 14:20:10 jeremy_carroll Exp $
+ * $Id: Model.java,v 1.27 2003-07-08 09:15:43 chris-dollin Exp $
  */
