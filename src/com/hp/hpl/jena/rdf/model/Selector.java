@@ -36,13 +36,39 @@ package com.hp.hpl.jena.rdf.model;
  * <p>Model includes list and query methods which will return all the
  * statements which are selected by a selector object.  This is the interface
  * of such selector objects.</p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:17:58 $'
- */
+ * @author bwm, kers
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-04 15:14:25 $'
+*/
+
 public interface Selector {
     /** Determine whether a Statement should be selected.
      * @param s The statement to be considered.
      * @return true if the statement has been selected.
      */
-  boolean test(Statement s);
+    boolean test(Statement s);
+  
+    /**
+        Answer the only subject Resource that this Selector will match, or null if it
+        can match more that a single resource.
+    */
+    Resource getSubject();
+    
+    /**
+        Answer the only predicate Property that this Selector will match, or null
+        if it can match more than a single property.
+    */
+    Property getPredicate();
+    
+    /**
+        Answer the only RDFNode object that this Selector will match, or null if
+        it can match more than a single node. 
+    */
+    RDFNode getObject();
+    
+    /**
+        Answer true iff this Selector is completely characterised by its subject,
+        predicate, and object fields.
+    */
+    boolean isSimple();
+    
 }

@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.41 $' Date='$Date: 2003-05-30 14:56:04 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.42 $' Date='$Date: 2003-06-04 15:15:54 $'
  */
 
 public class ModelCom 
@@ -1026,7 +1026,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         }
     }
     
-    public Node asNode( RDFNode x )
+    public static Node asNode( RDFNode x )
         { return x == null ? null : x.asNode(); }
         
     private NodeIterator listObjectsFor( RDFNode s, RDFNode p )
@@ -1069,20 +1069,39 @@ implements Model, ModelI, PrefixMapping, ModelLock
     }
             
     public StmtIterator listStatements(final Selector selector)
-      throws RDFException {
-        Iterator iter;
-        if (selector instanceof SimpleSelector) {
-            SimpleSelector s = (SimpleSelector) selector;
-            iter = graph.find(s.asTripleMatch(this));
-        } else {
-            iter = graph.find(new StandardTripleMatch(null,null,null){
-            	public boolean triple( Triple t ) {
-            		return selector.test( asStatement( t ) );
-            	}
-            });
+        {
+        StmtIterator sts = IteratorFactory.asStmtIterator( findTriplesFrom( selector ), this );
+        return selector.isSimple() 
+            ? sts 
+            : new StmtIteratorImpl( sts .filterKeep ( asFilter( selector ) ) )
+            ;
         }
-        return IteratorFactory.asStmtIterator(iter,this);
-    }
+    
+    /**
+        Answer a Filter that filters exactly those things the Selector selects.
+        
+        @param s a Selector on statements
+        @return a Filter that accepts statements that s passes tests on
+   */
+    public Filter asFilter( final Selector s )
+        { return new Filter()
+                { public boolean accept( Object x ) { return s.test( (Statement) x ); } };
+        }
+        
+    
+    /**
+        Answer an [extended] iterator which returns the triples in this graph which
+        are selected by the (S, P, O) triple in the selector, ignoring any special
+        tests it may do.
+        
+        @param s a Selector used to supply subject, predicate, and object
+        @return an extended iterator over the matching (S, P, O) triples
+    */
+    public ExtendedIterator findTriplesFrom( Selector s )
+        {
+        return graph.find
+            ( asNode( s.getSubject() ), asNode( s.getPredicate() ), asNode( s.getObject() ) );    
+        }
 
     public boolean supportsTransactions() 
         { return getGraph().getTransactionHandler().transactionsSupported(); }

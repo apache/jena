@@ -1,55 +1,48 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.17 2003-06-04 15:15:55 chris-dollin Exp $
+  $Id: TestSelectors.java,v 1.1 2003-06-04 15:15:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.rdf.model.*;
 import junit.framework.*;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
+ 	@author kers
 */
+public class TestSelectors extends ModelTestBase
+    {
+    public TestSelectors( String name )
+        { super( name ); }
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("Model");
-        addTest( "TestModel", TestModelFactory.suite() );
-        addTest( "TestModelFactory", TestModelFactory.suite() );
-        addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
-        addTest( "TestModelPolymorphism", TestModelPolymorphism.suite() );
-        addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
-        addTest( "TestStatements", TestStatements.suite() );
-        addTest( "TestRDFNodes", TestRDFNodes.suite() );
-        addTest( "TestReifiedStatements", TestReifiedStatements.suite() );
-        addTest( "TestIterators", TestIterators.suite() );
-        addTest( "TestContains", TestContains.suite() );
-        addTest( "TestNamespace", TestNamespace.suite() );
-        addTest( "TestModelBulkUpdate", TestModelBulkUpdate.suite() );
-        addTest( "TestConcurrency", TestConcurrency.suite() ) ;
-        addTest( "TestModelMakerImpl", TestModelMakerImpl.suite() );
-        addTest( "TestStandardModels", TestStandardModels.suite() );
-        addTest( "TestQuery", TestQuery.suite() );
-        addTest( "TestSelectors", TestSelectors.suite() );
+    public static TestSuite suite()
+        { return new TestSuite( TestSelectors.class ); }
+        
+     public void testSelectors()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        check( null, null, null );
+        check( resource( m, "A" ), null, null );
+        check( null, property( m, "B" ), null );
+        check( null, null, resource( m, "10" ) );
+        check( resource( m, "C" ), property( m, "D" ), resource( m, "_E" ) );
         }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+        
+    public void check( Resource S, Property P, RDFNode O )
+        {
+        Selector s = new SimpleSelector( S, P, O );
+        assertTrue( s.isSimple() );
+        assertEquals( S, s.getSubject() );
+        assertEquals( P, s.getPredicate() );
+        assertEquals( O, s.getObject() );
+        }   
     }
 
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

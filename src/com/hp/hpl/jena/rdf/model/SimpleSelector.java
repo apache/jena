@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleSelector.java,v 1.5 2003-04-15 21:14:14 jeremy_carroll Exp $
+  $Id: SimpleSelector.java,v 1.6 2003-06-04 15:14:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.graph.*;
  * selects</CODE> method to test for any application supplied constraint.  The
  * default <CODE>selects</CODE> method simply returns true.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-04-15 21:14:14 $
+ * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-06-04 15:14:26 $
  */
 public class SimpleSelector extends Object implements Selector {
 
@@ -222,6 +222,16 @@ public class SimpleSelector extends Object implements Selector {
      */
     public RDFNode  getObject() { return object; }
     
+    /**
+        Answer true iff this Selector is completely characterised by its
+        S/P/O triple. Subclasses that implement more complex tests *must*
+        over-ride this to return false.
+        
+        @return true iff this selector only depends on S/P/O identity.
+    */
+    public boolean isSimple()
+        { return true; }
+        
     /** Test whether a statement should be included in a selection.  This method
      * tests whether the supplied statement satisfies the subject, predicate and
      * object constraints of the selector and then tests whether it matches the
@@ -247,7 +257,7 @@ public class SimpleSelector extends Object implements Selector {
     }
     
     /**
-     * 
+        TODO unused - eliminate?
      */
     public TripleMatch asTripleMatch(final ModelCom model) {
     	return new StandardTripleMatch(
