@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.7 2004-08-13 17:11:56 chris-dollin Exp $
+  $Id: Rewrite.java,v 1.8 2004-08-13 19:23:00 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -39,24 +39,49 @@ public class Rewrite
         return null;
         }
 
+    /*
+         This following code for the evaluators is horrid - there's too much uncaptured
+         variation. Perhaps it will all go away when I understand how to use the
+         regex package (note, not the Java 1.4 package, because we still support
+         Java 1.3; the ORO package that RDQL uses).
+         
+         TODO clean this up. 
+         
+     	@author hedgehog
+    */
+    public static abstract class DyadicLiteral extends Dyadic
+        {
+        public DyadicLiteral( Expression L, String F, String R )
+            { super( L, F, new Expression.Fixed( R ) ); }
+        
+        public boolean evalBool( Object l, Object r )
+            { return evalBool( l.toString(), r.toString() ); }
+        
+        protected abstract boolean evalBool( String l, String r );
+        }
+    
+    public static abstract class DyadicLower extends DyadicLiteral
+        {
+        public DyadicLower( Expression L, String F, String R )
+            { super( L, F, R.toLowerCase() ); }
+        }
+    
     public static Expression endsWith( Expression L, String content, String modifiers )
         {
         if (modifiers.equals( "i" ))
             {
-            final Expression R = new Expression.Fixed( content.toLowerCase() );
-            return new Dyadic( L, ExpressionFunctionURIs.J_endsWithInsensitive, R )
+            return new DyadicLower( L, ExpressionFunctionURIs.J_endsWithInsensitive, content )
                 {            
-                public boolean evalBool( Object l, Object r )
-                    { return l.toString().toLowerCase().endsWith( r.toString() ); }
+                public boolean evalBool( String l, String r )
+                    { return l.toLowerCase().endsWith( r ); }
                 };
             }
         else
             {
-            final Expression R = new Expression.Fixed( content );
-            return new Dyadic( L, ExpressionFunctionURIs.J_EndsWith, R )
+            return new DyadicLiteral( L, ExpressionFunctionURIs.J_EndsWith, content )
                 {            
-                public boolean evalBool( Object l, Object r )
-                    { return l.toString().endsWith( r.toString() ); }
+                public boolean evalBool( String l, String r )
+                    { return l.endsWith( r ); }
                 };    
             }
         }
@@ -64,21 +89,19 @@ public class Rewrite
     public static Expression startsWith( Expression L, String content, String modifiers )
         {
         if (modifiers.equals( "i" ))
-            {
-            final Expression R = new Expression.Fixed( content.toLowerCase() );        
-            return new Dyadic( L, ExpressionFunctionURIs.J_startsWithInsensitive, R )
+            {      
+            return new DyadicLower( L, ExpressionFunctionURIs.J_startsWithInsensitive, content )
                 { 
-                public boolean evalBool( Object l, Object r )
-                    { return l.toString().toLowerCase().startsWith( r.toString() ); }
+                public boolean evalBool( String l, String r )
+                    { return l.toLowerCase().startsWith( r ); }
                 };  
             }
         else
-            {            
-            final Expression R = new Expression.Fixed( content );        
-            return new Dyadic( L, ExpressionFunctionURIs.J_startsWith, R )
+            {                
+            return new DyadicLiteral( L, ExpressionFunctionURIs.J_startsWith, content )
                 { 
-                public boolean evalBool( Object l, Object r )
-                    { return l.toString().startsWith( r.toString() ); }
+                public boolean evalBool( String l, String r )
+                    { return l.startsWith( r ); }
                 };  
             }          
         }
@@ -87,20 +110,18 @@ public class Rewrite
         {
         if (modifiers.equals( "i" ))
             {
-            final Expression R = new Expression.Fixed( content.toLowerCase() );
-            return new Dyadic( L, ExpressionFunctionURIs.J_containsInsensitive, R )
+            return new DyadicLower( L, ExpressionFunctionURIs.J_containsInsensitive, content )
                 { 
-                public boolean evalBool( Object l, Object r )
-                    { return l.toString().toLowerCase().indexOf( r.toString() ) > -1; }
+                public boolean evalBool( String l, String r )
+                    { return l.toLowerCase().indexOf( r ) > -1; }
                 };      
             }
         else
             {
-            final Expression R = new Expression.Fixed( content );
-            return new Dyadic( L, ExpressionFunctionURIs.J_contains, R )
+            return new DyadicLiteral( L, ExpressionFunctionURIs.J_contains, content )
                 { 
-                public boolean evalBool( Object l, Object r )
-                    { return l.toString().indexOf( r.toString() ) > -1; }
+                public boolean evalBool( String l, String r )
+                    { return l.indexOf( r ) > -1; }
                 };     
             }
         }
