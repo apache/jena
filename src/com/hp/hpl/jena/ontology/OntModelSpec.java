@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 12:59:57 $
+ * Last modified on   $Date: 2003-06-22 19:24:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.5 2003-06-18 12:59:57 ian_dickinson Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.6 2003-06-22 19:24:25 ian_dickinson Exp $
  */
 public class OntModelSpec {
     // Constants
@@ -92,6 +92,15 @@ public class OntModelSpec {
     
     /** A specification for DAML models that are stored in memory and use the RDFS inferencer for additional entailments */
     public static final OntModelSpec DAML_MEM_RDFS_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, RDFSFBRuleReasonerFactory.theInstance(), ProfileRegistry.DAML_LANG );
+    
+    /** A specification for RDFS ontology models that are stored in memory and do no additional entailment reasoning */
+    public static final OntModelSpec RDFS_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, null, ProfileRegistry.RDFS_LANG );
+    
+    /** A specification for RDFS ontology models that are stored in memory and use the transitive reasoner for entailments */
+    public static final OntModelSpec RDFS_MEM_TRANS_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, TransitiveReasonerFactory.theInstance(), ProfileRegistry.RDFS_LANG );
+    
+    /** A specification for RDFS ontology models that are stored in memory and use the RDFS inferencer for additional entailments */
+    public static final OntModelSpec RDFS_MEM_RDFS_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, RDFSFBRuleReasonerFactory.theInstance(), ProfileRegistry.RDFS_LANG );
     
     
     // Instance variables
@@ -185,6 +194,9 @@ public class OntModelSpec {
         }
         else if (languageURI.equals( ProfileRegistry.DAML_LANG )) {
             return DAML_MEM_RDFS_INF;
+        }
+        else if (languageURI.equals( ProfileRegistry.RDFS_LANG )) {
+            return RDFS_MEM_RDFS_INF;
         }
         else {
             throw new OntologyException( "Did not recognise this language URI, so cannot determine default model spec: " + languageURI );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: ProfileRegistry.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:19:27 $
+ * Last modified on   $Date: 2003-06-22 19:24:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ProfileRegistry.java,v 1.3 2003-03-28 22:19:27 ian_dickinson Exp $
+ * @version CVS $Id: ProfileRegistry.java,v 1.4 2003-06-22 19:24:25 ian_dickinson Exp $
  */
 public class ProfileRegistry {
     // Constants
@@ -67,7 +67,8 @@ public class ProfileRegistry {
         {OWL_LANG,      new OWLProfile()},
         {OWL_DL_LANG,   new OWLDLProfile()},
         {OWL_LITE_LANG, new OWLLiteProfile()},
-        {DAML_LANG,     new DAML_OILProfile()}
+        {DAML_LANG,     new DAML_OILProfile()},
+        {RDFS_LANG,     new RDFSProfile()}
     };
     
     
