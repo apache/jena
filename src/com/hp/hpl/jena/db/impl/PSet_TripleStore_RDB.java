@@ -53,7 +53,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.4 $ on $Date: 2003-05-01 18:02:46 $
+* @version $Revision: 1.5 $ on $Date: 2003-05-01 18:05:06 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -566,26 +566,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
         }
     }
     
-    /**
-     * Lookup Literal in Literals table, and insert it if it is not there.
-     * 
-     * @param rs
-     * @return
-     * @throws SQLException
-     * @throws IOException
-     * @throws RDFException
-     * @throws UnsupportedEncodingException
-     */
-    IDBID lookupOrInsertLiteral(Node_Literal litNode) {
-		IDBID result = getLiteralID(litNode);
-		if (result == null) {
-			  result = addLiteral(litNode);
-		}
-		return (result);
-    }
-			
-
-
 	/**
 	 * Convert the current row of a result set from a ResultSet
 	 * to a literal.
