@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.11 2003-07-28 13:08:52 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.12 2003-07-28 14:51:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -229,38 +229,136 @@ public class TestModelEvents extends ModelTestBase
         model.remove( Arrays.asList( statements( model, "aa VV rr" ) ) );
         }
         
-    public void testChangeListener()
+    public void testChangedListener()
         {
-        ModelChangedListener CL = null;
+        ChangedListener CL = new ChangedListener();
+        model.register( CL );
+        assertFalse( CL.hasChanged() );
+        model.add( statement( model, "S P O" ) );
+        assertTrue( CL.hasChanged() );
+        assertFalse( CL.hasChanged() );
+        model.remove( statement( model, "ab CD ef" ) );
+        assertTrue( CL.hasChanged() );
+        model.add( statements( model, "gh IJ kl" ) );
+        assertTrue( CL.hasChanged() );
+        model.remove( statements( model, "mn OP qr" ) );
+        assertTrue( CL.hasChanged() );
+        model.add( asIterator( statements( model, "st UV wx" ) ) );
+        assertTrue( CL.hasChanged() );
+        assertFalse( CL.hasChanged() );
+        model.remove( asIterator( statements( model, "yz AB cd" ) ) );
+        assertTrue( CL.hasChanged() );
+        model.add( modelWithStatements( "ef GH ij" ) );
+        assertTrue( CL.hasChanged() );
+        model.remove( modelWithStatements( "kl MN op" ) );
+        assertTrue( CL.hasChanged() );
+        model.add( Arrays.asList( statements( model, "rs TU vw" ) ) );
+        assertTrue( CL.hasChanged() );
+        model.remove( Arrays.asList( statements( model, "xy wh q" ) ) );
+        assertTrue( CL.hasChanged() );
         }
- 
- public static class TripleListener implements ModelChangedListener
-    {
-    public void addedStatement( Statement s ) {}
-    public void addedStatements( Statement [] statements ) {}
-    public void addedStatements( List statements ) {}
-    public void addedStatements( StmtIterator statements ) {}
-    public void addedStatements( Model m ) {}
-    public void removedStatement( Statement s ) {}   
-    public void removedStatements( Statement [] statements ) {}
-    public void removedStatements( List statements ) {}
-    public void removedStatements( StmtIterator statements ) {}
-    public void removedStatements( Model m ) {}           
-    }
 
-public static class WatchTripleListener extends TripleListener
-    {
-    public void addedStatement( Statement s )
-        {}
+    /**
+        Local test class to see that a StatementListener funnels all the changes through
+        add/remove a single statement
+    */
+    public static class WatchStatementListener extends StatementListener
+        {
+        List statements = new ArrayList();
+        String addOrRem = "<unset>";
         
-    public void removedStatement( Statement s )
-        {}
-    }
+        public List contents()
+            { try { return statements; } finally { statements = new ArrayList(); } }
+        
+        public String getAddOrRem()
+            { return addOrRem; }
+                
+        public void addedStatement( Statement s )
+            { statements.add( s ); addOrRem = "add"; }
+            
+        public void removedStatement( Statement s )
+            { statements.add( s ); addOrRem = "rem"; }
+        }
                
+    public void testGot( WatchStatementListener sl, String how, String template )
+        {
+        assertEquals( Arrays.asList( statements( model, template ) ), sl.contents() );
+        assertEquals( how, sl.getAddOrRem() );
+        assertTrue( sl.contents().size() == 0 );
+        }
+        
     public void testTripleListener()
         {
-        ModelChangedListener TL = new TripleListener();    
+        WatchStatementListener sl = new WatchStatementListener();    
+        model.register( sl );
+        model.add( statement( model, "b C d" ) );
+        testGot( sl, "add", "b C d" );
+        model.remove( statement( model, "e F g" ) );
+        testGot( sl, "rem", "e F g" );
+        model.add( statements( model, "h I j; k L m" ) );
+        testGot( sl, "add", "h I j; k L m" );
+        model.remove( statements( model, "n O p; q R s" ) );
+        testGot( sl, "rem", "n O p; q R s" );
+        model.add( Arrays.asList( statements( model, "t U v; w X y" ) ) );
+        testGot( sl, "add", "t U v; w X y" );
+        model.remove( Arrays.asList( statements( model, "z A b; c D e" ) ) );
+        testGot( sl, "rem", "z A b; c D e" );
+        model.add( asIterator( statements( model, "f G h; i J k" ) ) );
+        testGot( sl, "add", "f G h; i J k" );
+        model.remove( asIterator( statements( model, "l M n; o P q" ) ) );
+        testGot( sl, "rem", "l M n; o P q" );
+        // TODO get these right [ordering issues in testGot]
+//        model.add( modelWithStatements( "r S t; u V w; x Y z" ) );
+//        testGot( sl, "add", "r S t; u V w; x Y z" );
+//        model.remove( modelWithStatements( "a E i; o U y" ) );
+//        testGot( sl, "add", "a E i; o U y" );
+        }
         
+    static class ObjectListener implements ModelChangedListener
+        {
+        public void added( Object x ) {}
+        public void removed( Object x ) {}
+    /* */
+        public void addedStatement( Statement s ) { added( s ); }
+        public void addedStatements( Statement [] statements ) {}
+        public void addedStatements( List statements ) {}
+        public void addedStatements( StmtIterator statements ) {}
+        public void addedStatements( Model m ) {}
+        public void removedStatement( Statement s ) { removed( s ); }   
+        public void removedStatements( Statement [] statements ) {}
+        public void removedStatements( List statements ) {}
+        public void removedStatements( StmtIterator statements ) {}
+        public void removedStatements( Model m ) {}               
+        }
+        
+    static class OL extends ObjectListener
+        {
+        private Object recorded;
+        private String how;
+        
+        public void added( Object x )
+            { recorded = x; how = "add"; }
+            
+        public void removed( Object x )
+            { recorded = x; how = "rem"; }
+            
+        public void recent( String wantHow, Object value ) 
+            { 
+            assertEquals( value, recorded ); 
+            assertEquals( wantHow, how );
+            value = how = null;
+            }
+        }
+        
+    public void testLumpListener()
+        {
+        OL ll = new OL();
+        model.register( ll );
+        Statement s = statement( model, "aa BB cc" ), s2 = statement( model, "dd EE ff" );
+        model.add( s );
+        ll.recent( "add", s );
+        model.remove( s2 );
+        ll.recent( "rem", s2 );
         }
     }
 
