@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.6 $
+* @version $Revision: 1.7 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -177,27 +177,30 @@ public class DBConnection implements IDBConnection {
 	/** 
 	 * Set the database-specific properties.
 	 * 
+	 * <p>
 	 * This call is only valid before the first Model is stored in the
 	 * database.  After that point, the database structure is frozen.
-	 * 
+	 * </p>
+	 * <p>
 	 * Use the properties to optionally customize the database - this
-	 * won't change the results you see when using the graph interface,
+	 * won't change the results you see when using the Graph or Model interfaces,
 	 * but it may alter the speed with which you get them or the space
 	 * required by the database.
-	 *
+	 * </p>
+	 * <p>
 	 * The properties must form a complete and consistent set.
 	 * The easist way to get a complete and consistent set is to call
-	 * getDBProperties(), modify it, and then use that as an argument
-	 * in the call to format().
-	 * 
-	 * Note that some implementations may choose to delay actually peforming
-	 * the formatting operation until at least one Graph is constructed in
-	 * the database.
-	 * 
-	 * Throws an exception if the database cannot be suitably formatted.
-	 * A database may only be formatted once.  Attempting to reformat a
-	 * database causes an exception (use isFormatOK() if you need to
-	 * test).
+	 * <code>getDatabaseProperties()</code>, modify it, and then use that as an argument
+	 * in the call to <code>setDatbaseProperties()</code>.  Remember that most properties
+	 * can only have a single value, so to change values you'll need to replace the
+	 * appropriate statements (rather than just adding additional ones).
+	 * </p>
+	 * <p>
+	 * May throw an exception if the database cannot be suitably formatted with
+	 * the new parameters.  Note that some implementations may delay processing the parameters until
+	 * the first Model is constructed.  Thus a successful return from this
+	 * call does not guarantee the properties are correct and consistent.
+	 * </p>
 	 * 
 	 * @param dbProperties is a Jena Model describing the database parameters
 	 * @since Jena 2.0
@@ -218,7 +221,8 @@ public class DBConnection implements IDBConnection {
 	 * are returned.
 	 * 
 	 * The returned Model is a copy, modifying it will have no
-	 * immediate effect on the database.
+	 * immediate effect on the database.  To change the database
+	 * use <code>setDatabaseProperties</code>.
 	 * 
 	 * 
 	 * @since Jena 2.0
@@ -239,7 +243,6 @@ public class DBConnection implements IDBConnection {
 	 * The returned default set of properties is suitable for use in a call to
 	 * ModelRDB.create(..., modelProperties);
 	 * 
-	 * TODO this could be more efficient!  (assuming we know the URI for the default).
      * @return Model containing default properties
      */
 	
