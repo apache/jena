@@ -1,39 +1,62 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
-  [See end of file]
-  $Id: Driver_Oracle.java,v 1.8 2003-07-11 19:22:17 wkw Exp $
-*/
+ *  (c) Copyright Hewlett-Packard Company 2003
+ *  All rights reserved.
+ *
+ *
+ */
 
 package com.hp.hpl.jena.db.impl;
 
-import java.sql.Connection;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringBufferInputStream;
+import java.io.UnsupportedEncodingException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Iterator;
 import java.util.Properties;
 
-import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.db.RDFRDBException;
+
+/* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE IMPORT STATEMENTS)  -------
+import oracle.jdbc.OracleResultSet;
+import oracle.sql.BLOB;
+/*--------------------------------------------------------------------*/
 
 /**
  * @author hkuno based on code by Dave Reynolds
  *
  * Extends DriverRDB with Oracle-specific parameters.
+ * Note: To use this class with Oracle:
+ *       1. Uncomment out the Oracle-specific
+ *           import statements above this comment block.
+ *       2. Comment out the interface stubs below.
  */
-public abstract class Driver_Oracle extends DriverRDB {
+   public class Driver_Oracle extends DriverRDB {
+
+//* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
+	public interface BLOB extends java.sql.Blob {
+		OutputStream getBinaryOutputStream();
+		int getBufferSize();
+		boolean isOpen();
+		void close();
+	}
 	
-	public int MAX_DB_IDENTIFIER_LENGTH = 30;
-	public int m_tablecounter;
+	private interface OracleResultSet extends ResultSet {
+			BLOB getBLOB(int i);		
+	}
+	/*--------------------------------------------------------------------*/
+	
+	/** The name of the database type this driver supports */
 	
 	/** 
 	 * Constructor
 	 */
-	public Driver_Oracle() {
-		
+	public Driver_Oracle(){
 		super();
-		
-		//	Oracle not supported at this time
-	    if (true) {
-	    	throw(new RDFRDBException("Oracle is not yet supported for Jena."));
-	    }
-		
 
 		String myPackageName = this.getClass().getPackage().getName();
 		
@@ -43,10 +66,11 @@ public abstract class Driver_Oracle extends DriverRDB {
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		ID_SQL_TYPE = "INTEGER";
 		INSERT_BY_PROCEDURE = false;
-		INDEX_KEY_LENGTH = 250;
+		INDEX_KEY_LENGTH = 4000;
 		LONG_OBJECT_LENGTH = 250;
+		HAS_XACTS = true;
 		PRE_ALLOCATE_ID = true;
-		SKIP_DUPLICATE_CHECK = true;
+		SKIP_DUPLICATE_CHECK = false;
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		SQL_FILE = "etc/oracle.sql";
 		
@@ -56,7 +80,10 @@ public abstract class Driver_Oracle extends DriverRDB {
 		m_lsetClassName = myPackageName + ".SpecializedGraph_TripleStore_RDB";						
 		m_lsetReifierClassName = myPackageName + ".SpecializedGraphReifier_RDB";	
 		
-		m_tablecounter = 1;											
+		
+		QUOTE_CHAR = '\'';
+		
+		DB_NAMES_TO_UPPER = true;
 	}
 	
 	/**
@@ -75,30 +102,252 @@ public abstract class Driver_Oracle extends DriverRDB {
 	}
 	
 	/**
-	 * If the underlying database connection supports transactions,
-	 * call commit(), then turn autocommit on.
+	 * Allocate an identifier for a new graph.
+	 *
 	 */
-	public void commit() throws RDFRDBException{
-		if (transactionsSupported()) {
-			try {
-				  if (inTransaction) {
-					Connection c = m_sql.getConnection();
-					c.commit();
-					c.setAutoCommit(true);
-					c.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-					inTransaction =  false;
-				   }
-				} catch (SQLException e) {
-						throw new RDFRDBException("Transaction support failed: ", e);
-				}
-		} 
+	public int graphIdAlloc ( String graphName ) {
+		DBIDInt result = null;
+		int dbid = 0;
+		try {
+			String op = "insertGraph";
+			dbid = getInsertID(GRAPH_TABLE);
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(op);
+			ps.setInt(1,dbid);
+			ps.setString(2,graphName);
+			ps.executeUpdate();
+			m_sql.returnPreparedSQLStatement(ps,op);
+		} catch (SQLException e) {
+			throw new RDFRDBException("Failed to get last inserted ID: " + e);
+		}
+		return dbid;
 	}
-        
+	
+	/**
+	 * Dellocate an identifier for a graph.
+	 *
+	 */
+	public void graphIdDealloc ( int graphId ) {
+		DBIDInt result = null;
+		try {
+			String op = "deleteGraph";
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(op);
+			ps.setInt(1,graphId);
+			ps.executeUpdate();
+			m_sql.returnPreparedSQLStatement(ps,op);
+		} catch (SQLException e) {
+			throw new RDFRDBException("Failed to delete graph ID: " + e);
+		}
+		return;
+	}
+
+	public int getInsertID ( String tableName ) {
+		DBIDInt result = null;
+		try {
+			String op = "getInsertID";
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,tableName);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				result = wrapDBID(rs.getObject(1));
+			} else
+				throw new RDFRDBException("No insert ID");
+			m_sql.returnPreparedSQLStatement(ps,op);
+		} catch (SQLException e) {
+			throw new RDFRDBException("Failed to insert ID: " + e);
+		}
+		return result.getIntID();
+	}
+
+	
+	/**
+	 * Return the parameters for table creation.
+	 * 1) column type for subj, prop, obj.
+	 * @param param array to hold table creation parameters. 
+	 */
+	protected void getTblParams ( String [] param ) {
+		String objColType;
+		
+		// length of varchar columns in statement tables
+		if ( LONG_OBJECT_LENGTH > 4000 )
+			throw new RDFRDBException("Long object length specified (" + LONG_OBJECT_LENGTH +
+					") exceeds maximum sane length of 4000.");
+
+		objColType = "VARCHAR2(" + LONG_OBJECT_LENGTH + ")";
+		STRINGS_TRIMMED = false;
+		param[0] = objColType;
+		
+		// length of head column in literal tables 
+		String headColType = "VARCHAR2(" + INDEX_KEY_LENGTH + ")";
+		param[1] = headColType;
+	}
+	/**
+	* 
+	* Return the parameters for table creation.
+	* Generate the table name by counting the number of existing
+	* tables for the graph. This is not reliable if another client
+	* is concurrently trying to create a table so, if failure, we
+	* make several attempts to create the table.
+	*/	
+
+	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
+		String [] parms = new String[2];
+		String [] res = new String[2];
+				
+		getTblParams (parms);
+		int tblCnt = getTableCount(graphId);
+		String tblName = TABLE_BASE_NAME + 
+					"g" + Integer.toString(graphId) +
+					"t" + Integer.toString(tblCnt) +
+					(isReif ? "_reif" : "_stmt");	
+		tblName = stringToDBname(tblName);	
+		res[0] = tblName;
+		res[1] = parms[0];
+		return res;
+	}
+	
+	/**
+	 * Return the parameters for database initialization.
+	 */
+	protected String[] getDbInitTablesParams() {
+		String [] res = new String[2];
+		
+		getTblParams (res);
+		EOS_LEN = EOS.length();
+
+		return res;
+	}
+	
+	/**
+	 * Insert a long object into the database.  
+	 * This assumes the object is not already in the database.
+	 * @return the db index of the added literal 
+	 */
+	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
+		DBIDInt longObjID = null;
+		try {
+			int argi = 1;
+			boolean save = m_dbcon.getConnection().getAutoCommit();
+			
+			String opname = (lobj.tail.length() > 0) ? "insertLongObjectEmptyTail" : "insertLongObject";    			
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, table);
+			int dbid = 0; // init only needed to satisy java compiler
+			if ( PRE_ALLOCATE_ID ) {
+				dbid = getInsertID(table);
+				ps.setInt(argi++,dbid);
+				longObjID = wrapDBID(new Integer(dbid));
+			} 
+			 ps.setString(argi++, lobj.head);
+			 if ( lobj.tail.length() > 0 ) {
+				ps.setLong(argi++, lobj.hash);
+			 } else {
+				ps.setNull(argi++,java.sql.Types.BIGINT);    
+			 }
+			ps.executeUpdate();
+			m_sql.returnPreparedSQLStatement(ps, opname);
+			
+			if ( lobj.tail.length() > 0) {
+				if (! inTransaction) {
+				  m_dbcon.getConnection().setAutoCommit(false);				
+				}
+				opname = "getEmptyBLOB";
+				String cmd = m_sql.getSQLStatement(opname, table, longObjID.getID().toString());
+				Statement lobStmt = m_sql.getConnection().createStatement();
+				ResultSet lrs = lobStmt.executeQuery(cmd);
+				lrs.next();
+		
+				BLOB blob = ((OracleResultSet) lrs).getBLOB(1);
+				OutputStream outstream = blob.getBinaryOutputStream();
+				int size = blob.getBufferSize();
+	
+				int length = -1;
+				InputStream instream = new StringBufferInputStream(lobj.tail);
+		
+				//		Buffer to hold chunks of data to being written to the Blob.        
+				byte[] buffer = new byte[size];
+		
+				while ((length = instream.read(buffer)) != -1)
+					outstream.write(buffer,0,length);
+		
+				if (blob.isOpen())
+				blob.close();
+				instream.close();
+				outstream.close();
+				lobStmt.close();
+				if (! inTransaction) {
+			  		m_dbcon.getConnection().setAutoCommit(save);				
+				}
+			}
+
+			if ( !PRE_ALLOCATE_ID ) {
+				dbid = getInsertID(table); 
+				longObjID = wrapDBID(new Integer(dbid));
+			}
+		} catch (Exception e1) {
+			/* DEBUG */ System.out.println("Problem on long object (l=" + lobj.head + ") " + e1 );
+			// System.out.println("ID is: " + id);
+			throw new RDFRDBException("Failed to add long object ", e1);
+		}
+		return longObjID;
+	}
+	
+
+
+/**
+ * Retrieve LongObject from database.
+ */
+protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
+	RDBLongObject	res = null;
+	try {
+				String opName = "getLongObject";
+				PreparedStatement ps = m_sql.getPreparedSQLStatement(opName, table); 
+				ps.setInt(1,dbid);
+				OracleResultSet rs = (OracleResultSet) ps.executeQuery();
+				if (rs.next()) {
+				   res = new RDBLongObject();
+				   res.head = rs.getString(1);
+				   BLOB blob = rs.getBLOB(2);
+					
+				   if (blob != null) {
+					InputStream blobin = null;
+					int len =  (int)blob.length();
+					byte[] data = blob.getBytes(1,len);
+					res.tail = new String(data, "UTF-8");
+				   } else {
+				   	res.tail = "";
+				   }
+				}
+				rs.close();
+				m_sql.returnPreparedSQLStatement(ps,opName);
+			
+	} catch (SQLException e1) {
+		// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
+		throw new RDFRDBException("Failed to retrieve long object (SQL Exception): ", e1);
+	} catch (UnsupportedEncodingException e2) {
+		throw new RDFRDBException("Failed to retrieve long object (UnsupportedEncoding): ", e2);
+	}
+	return res;	
+}
+	
+/**
+ * Drop all Jena-related sequences from database, if necessary.
+ * Override in subclass if sequences must be explicitly deleted.
+ */
+public void clearSequences() {
+	Iterator seqIt = getSequences().iterator();
+	while (seqIt.hasNext()) {
+		removeSequence((String)seqIt.next());
+	}
+}
+	
 
 
 
 
 
+	
+	
+	
+
+		
 }
 
 /*
