@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.16 2003-09-17 12:14:04 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.17 2003-09-22 12:48:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
-
-import java.util.ArrayList;
 
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.graph.*;
@@ -22,39 +20,47 @@ import junit.framework.*;
 */
 
 public class TestReifier extends AbstractTestReifier  {
-	private ArrayList theGraphs = new ArrayList();
-	private IDBConnection theConnection;
+    
+    private int count;
+    private Graph properties;
+	private IDBConnection con;
 
-	public TestReifier(String name) {
-		super(name);
-	}
+	public TestReifier( String name ) 
+        { super(name); }
 
+    /** 
+        Initialiser required for MetaTestGraph interface.
+     */
+    public TestReifier( Class graphClass, String name, ReificationStyle style ) 
+        { super( name ); }
+        
 	public static TestSuite suite() {
-		return new TestSuite(TestReifier.class);
+		return MetaTestGraph.suite( TestReifier.class, LocalGraphRDB.class );
 	}
-
+        
+    /**
+        LocalGraphRDB - an extension of GraphRDB that fixes the connection to 
+        TestReifier's connection, passes in the appropriate reification style, uses the
+        default properties of the connection, and gives each graph a new name
+        exploiting the count.
+    
+    	@author kers
+     */
+    public class LocalGraphRDB extends GraphRDB
+        {
+        public LocalGraphRDB( ReificationStyle style )
+            { super( con, "testGraph-" + count ++, properties, styleRDB( style ), true ); }   
+        } 
+        
 	public void setUp() 
-        { theConnection = TestConnection.makeAndCleanTestConnection(); }
+        { con = TestConnection.makeAndCleanTestConnection(); 
+        properties = con.getDefaultModelProperties().getGraph(); }
 
 	public void tearDown() throws Exception 
-        {
-		theConnection.cleanDB();
-		theGraphs.clear();
-		theConnection.close();
-        }
+        { con.close(); }
 
-	public Graph getGraph( ReificationStyle style ) {
-		GraphRDB g = new GraphRDB
-            (
-            theConnection, 
-            "name" + theGraphs.size(), 
-            theConnection.getDefaultModelProperties().getGraph(), 
-            GraphRDB.styleRDB( style ), 
-            true 
-            );
-		theGraphs.add( g );
-		return g;		
-	   }
+    public Graph getGraph( ReificationStyle style )
+        { return new LocalGraphRDB( style ); }
         
     }
 
