@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -388,14 +388,6 @@ public class GraphRDB extends GraphBase implements Graph {
 		}
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.hp.hpl.jena.graph.Graph#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
-	 */
-	public boolean contains(Node s, Node p, Node o) {
-		return contains( Triple.create(s, p, o) );
-	} 
-			
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)

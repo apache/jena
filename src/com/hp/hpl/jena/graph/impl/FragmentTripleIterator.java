@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.7 2004-09-24 11:01:12 chris-dollin Exp $
+  $Id: FragmentTripleIterator.java,v 1.8 2004-11-01 14:20:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -51,7 +51,7 @@ public abstract class FragmentTripleIterator extends NiceIterator
     */
     public Object next()
         {
-        if (!hasNext()) throw new NoSuchElementException();
+        ensureHasNext();
         return pending.remove( pending.size() - 1 );
         }
         

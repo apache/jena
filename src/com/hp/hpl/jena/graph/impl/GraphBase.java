@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.30 2004-09-10 09:47:55 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.31 2004-11-01 14:20:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -149,8 +149,19 @@ public abstract class GraphBase implements GraphWithPerform
 	 */
 	public abstract ExtendedIterator find( TripleMatch m );
 
+
+    /**
+     * @see com.hp.hpl.jena.graph.Graph#find(Node, Node, Node)
+     */
+    public ExtendedIterator find(Node s, Node p, Node o) {
+        checkOpen();
+        return find( Triple.createMatch( s, p, o ) );
+    }
+    
 	/**
-		contains( t ) - return true iff the triple t is in this graph
+		Answer <code>true</code> iff <code>t</code> is in the graph as reveal by 
+        <code>find(t)</code> being non-empty. <code>t</code> may contain ANY
+        wildcards. Sub-classes may over-ride for efficiency.
 	*/
 	public boolean contains( Triple t ) {
         checkOpen();
@@ -158,13 +169,12 @@ public abstract class GraphBase implements GraphWithPerform
 	}
 
 	/**
-		contains( s, p, o ) - returns true iff the triple (s, p, o) is in this graph. 
-	    s/p/o may be concrete or fluid. default implementation used the
-        containsByFind utility.
+         Answer <code>true</code> if this graph contains <code>(s, p, o)</code>;
+         this canonical implementation cannot be over-ridden. 
 	*/
-	public boolean contains( Node s, Node p, Node o ) {
+	public final boolean contains( Node s, Node p, Node o ) {
         checkOpen();
-		return containsByFind( Triple.create( s, p, o ) );
+		return contains( Triple.create( s, p, o ) );
 	}
     
     /**
@@ -179,14 +189,6 @@ public abstract class GraphBase implements GraphWithPerform
         ClosableIterator it = find( t );
         try { return it.hasNext(); } finally { it.close(); }
         }
-
-	/**
-	 * @see com.hp.hpl.jena.graph.Graph#find(Node, Node, Node)
-	 */
-	public ExtendedIterator find(Node s, Node p, Node o) {
-        checkOpen();
-		return find( Triple.createMatch( s, p, o ) );
-	}
 
 	protected Reifier reifier = null;
 	

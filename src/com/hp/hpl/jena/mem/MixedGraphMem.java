@@ -1,7 +1,7 @@
 /*
   (c) Copyright Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.2 2004-07-19 18:46:17 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.3 2004-11-01 14:20:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -118,7 +118,7 @@ public class MixedGraphMem extends GraphMemBase implements Graph
                 
                 public Object next()
                     {
-                    if (hasNext() == false) throw new NoSuchElementException();
+                    ensureHasNext();
                     try { return remember = triple; } finally { triple = null; }
                     }
                 

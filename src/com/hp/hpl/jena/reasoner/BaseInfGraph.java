@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.33 2004-07-09 11:02:44 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.34 2004-11-01 14:20:27 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.33 $ on $Date: 2004-07-09 11:02:44 $
+ * @version $Revision: 1.34 $ on $Date: 2004-11-01 14:20:27 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -305,32 +305,6 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     public ExtendedIterator find(TriplePattern pattern) {
         checkOpen();
         return findWithContinuation(pattern, fdata);
-    }
-    
-    /**
-     * Test if the graph contains the given triple.
-     * Overridden in order to implement semantic instead of syntactic
-     * equivalance.
-     */
-    public boolean contains(Triple t) {
-        checkOpen();
-        ClosableIterator i = find(t.getSubject(), t.getPredicate(), t.getObject());
-        boolean contained =  i.hasNext();
-        i.close();
-        return contained;
-    }
-    
-    /**
-     * Test if the graph contains the given triple.
-     * Overridden in order to implement semantic instead of syntactic
-     * equivalance.
-     */
-    public boolean contains(Node s, Node p, Node o) {
-        checkOpen();
-        ClosableIterator i = find(s, p, o);
-        boolean contained =  i.hasNext();
-        i.close();
-        return contained;
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.8 2004-07-08 15:33:00 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.9 2004-11-01 14:20:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -33,6 +33,9 @@ public class NiceIterator implements ExtendedIterator
     public boolean hasNext()
         {  return false; }
 
+    protected void ensureHasNext()
+        { if (hasNext() == false) throw new NoSuchElementException(); }
+    
     /**
         default next: throw an exception.
     */
