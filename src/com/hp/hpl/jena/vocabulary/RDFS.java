@@ -1,8 +1,4 @@
-/*
-  (c) Copyright 2000, 2003, Hewlett-Packard Company, all rights reserved.
-  [See end of file]
-  $Id: RDFS.java,v 1.8 2003-07-18 10:32:30 chris-dollin Exp $
-*/
+
 
 package com.hp.hpl.jena.vocabulary;
 
@@ -12,7 +8,7 @@ import com.hp.hpl.jena.graph.*;
 /**
     RDFS vocabulary items
     @author  bwm, updated by kers/daniel/christopher
-    @version $Id: RDFS.java,v 1.8 2003-07-18 10:32:30 chris-dollin Exp $
+    @version $Id: RDFS.java,v 1.9 2003-08-04 10:53:03 chris-dollin Exp $
  */
 public class RDFS {
 
@@ -44,6 +40,9 @@ public class RDFS {
     public static final Property subPropertyOf  = property( "subPropertyOf");
     public static final Property member  = property( "member");
 
+    /**
+        The RDFS vocabulary, expressed for the SPI layer in terms of .grap.Nodes.
+    */
     public static class Nodes
         {
         public static final Node Class = RDFS.Class.getNode();
