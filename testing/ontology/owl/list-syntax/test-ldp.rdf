@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+<owl:Class rdf:ID="A">
+</owl:Class>
+
+<owl:Class rdf:ID="B">
+  <rdfs:subClassOf rdf:resource="#A" />
+</owl:Class>
+
+<owl:Class rdf:ID="C">
+  <rdfs:subClassOf rdf:resource="#B" />
+</owl:Class>
+
+<owl:ObjectProperty rdf:ID="pA">
+  <rdfs:domain rdf:resource="#A"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="pB">
+  <rdfs:domain rdf:resource="#B"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="pC">
+  <rdfs:domain rdf:resource="#C"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="qA">
+  <rdfs:domain rdf:resource="#A" />
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="qB">
+  <rdfs:subPropertyOf rdf:resource="#qA" />
+</owl:ObjectProperty>
+
+</rdf:RDF>
