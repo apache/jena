@@ -1,46 +1,49 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.7 2003-04-10 10:09:45 chris-dollin Exp $
+  $Id: TestIterators.java,v 1.1 2003-04-10 10:09:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import junit.framework.TestSuite;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
+ 	@author kers
 */
+public class TestIterators extends GraphTestBase
+    {
+    public static TestSuite suite()
+        { return new TestSuite( TestIterators.class ); }   
+        
+    public TestIterators(String name)
+        { super(name); }
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("Model");
-        addTest( "TestModel", TestModelFactory.suite() );
-        addTest( "TestModelFactory", TestModelFactory.suite() );
-        addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
-        addTest( "TestModelPolymorphism", TestModelPolymorphism.suite() );
-        addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
-        addTest( "TestStatements", TestReifiedStatements.suite() );
-        addTest( "TestReifiedStatements", TestReifiedStatements.suite() );
-        addTest( "TestIterators", TestIterators.suite() );
+    /**
+        bug detected in StatementIteratorImpl - next does not
+        advance current, so remove doesn't work with next;
+        this test should expose the bug.
+    */
+    public void testIterators()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource S = m.createResource( "S" );
+        Property P = m.createProperty( "P" );
+        RDFNode O = m.createResource( "O " );
+        m.add( S, P, O );
+        StmtIterator it = m.listStatements();
+        it.next();
+        it.remove();
+        assertEquals( "", 0, m.size() );
         }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
     }
 
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            13 Sept 2001
  * Filename           $RCSfile: ResIteratorWrapper.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-01 14:35:31 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-04-10 10:11:01 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -56,11 +56,14 @@ import java.util.Iterator;
 
 
 /**
+ * OBSOLETE, since ResIterators are now subclasses of Iterator.
+ * 
  * A wrapper for ResIterator that turns it into a standard Java iterator.  Clumsy name,
  * and anyway the need for it may go away in a future version of Jena.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ResIteratorWrapper.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
+ * @version CVS info: $Id: ResIteratorWrapper.java,v 1.3 2003-04-10 10:11:01 chris-dollin Exp $
+ * @deprecated
  */
 public class ResIteratorWrapper
     implements Iterator
