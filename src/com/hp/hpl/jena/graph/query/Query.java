@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.9 2003-07-17 14:56:40 chris-dollin Exp $
+  $Id: Query.java,v 1.10 2003-07-17 14:58:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -123,7 +123,7 @@ public class Query
                 { 
                 int count = 0; 
                 while (hasNext()) { count += 1; next(); }
-                System.err.println( ">> pulled " + count + " values" );
+                // System.err.println( ">> pulled " + count + " values" );
                 }
             };
         }
