@@ -134,7 +134,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				startDocument() ;
 			}
 			{
-			_loop353:
+			_loop178:
 			do {
 				switch ( LA(1)) {
 				case AT_PREFIX:
@@ -156,7 +156,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop353;
+					break _loop178;
 				}
 				}
 			} while (true);
@@ -461,7 +461,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		n_AST = (AST)returnAST;
 		astFactory.addASTChild(currentAST, returnAST);
 		{
-		_loop371:
+		_loop196:
 		do {
 			switch ( LA(1)) {
 			case PATH:
@@ -496,7 +496,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 			}
 			default:
 			{
-				break _loop371;
+				break _loop196;
 			}
 			}
 		} while (true);
@@ -1152,10 +1152,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 		AST literalModifier1_AST = null;
 		AST dt_AST = null;
 		
-		boolean synPredMatched387 = false;
+		boolean synPredMatched212 = false;
 		if (((LA(1)==AT_LANG))) {
-			int _m387 = mark();
-			synPredMatched387 = true;
+			int _m212 = mark();
+			synPredMatched212 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1163,12 +1163,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched387 = false;
+				synPredMatched212 = false;
 			}
-			rewind(_m387);
+			rewind(_m212);
 			inputState.guessing--;
 		}
-		if ( synPredMatched387 ) {
+		if ( synPredMatched212 ) {
 			AST tmp30_AST = null;
 			tmp30_AST = (AST)astFactory.create(LT(1));
 			astFactory.addASTChild(currentAST, tmp30_AST);
@@ -1176,10 +1176,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 			literalModifier1_AST = (AST)currentAST.root;
 		}
 		else {
-			boolean synPredMatched389 = false;
+			boolean synPredMatched214 = false;
 			if (((LA(1)==DATATYPE))) {
-				int _m389 = mark();
-				synPredMatched389 = true;
+				int _m214 = mark();
+				synPredMatched214 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -1187,12 +1187,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched389 = false;
+					synPredMatched214 = false;
 				}
-				rewind(_m389);
+				rewind(_m214);
 				inputState.guessing--;
 			}
-			if ( synPredMatched389 ) {
+			if ( synPredMatched214 ) {
 				AST tmp31_AST = null;
 				tmp31_AST = (AST)astFactory.create(LT(1));
 				astFactory.addASTChild(currentAST, tmp31_AST);
