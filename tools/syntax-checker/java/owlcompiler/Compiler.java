@@ -1,8 +1,8 @@
 
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Compiler.java,v 1.8 2003-12-13 21:14:33 jeremy_carroll Exp $
+  $Id: Compiler.java,v 1.9 2005-01-03 08:17:48 jeremy_carroll Exp $
 */
 /*
  * Created on 22-Nov-2003
@@ -23,49 +23,15 @@ package owlcompiler;
 import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
 import com.hp.hpl.jena.ontology.tidy.impl.LookupTable;
 import com.hp.hpl.jena.ontology.tidy.impl.LookupLimits;
-//import com.hp.hpl.jena.ontology.tidy.impl.Grammar;
-//import com.hp.hpl.jena.ontology.tidy.impl.Q;
 import com.hp.hpl.jena.shared.*;
 import java.util.*;
-//import java.io.*;
 /**
  * @author jjc
  * 
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
  */
 public class Compiler implements Constants, LookupLimits {
 
-//	final private String SAVEFILE = "tmp/huge.ser";
 	static private long lookup[][];
-/*
-	boolean validate() {
-		if (prop(qrefine(14, 80, 89)) != 80) {
-			System.err.println("gggg");
-			return false;
-		}
-		Iterator it = huge.keySet().iterator();
-		while (it.hasNext()) {
-			Long l = (Long) it.next();
-			long ll = l.longValue();
-			int s = subject(ll);
-			int p = prop(ll);
-			int o = object(ll);
-			long lk = qrefine(s, p, o);
-			int ik = LookupTable.qrefine(s, p, o);
-			if (subject(lk) != LookupTable.subject(ik))
-				return false;
-
-			if (prop(lk) != LookupTable.prop(ik))
-				return false;
-			if (object(lk) != LookupTable.object(ik))
-				return false;
-			if (allActions(lk) != LookupTable.allActions(ik))
-				return false;
-		}
-		return true;
-	}
-	*/
 	private void saveResults() {
 		final int NCATS = CategorySet.unsorted.size();
 		byte propId[] = new byte[NCATS];
@@ -140,7 +106,9 @@ public class Compiler implements Constants, LookupLimits {
 		keysByObjectAndPropertyIndex,
 		refinedSubject,
 		refinedProperty,
-		refinedObject).save();
+		refinedObject,
+		domain,
+		range).save();
 		
 		System.err.println(internedCalled + " calls to intern.");
 		System.err.println(internedCalledLength + " total array length.");
@@ -173,17 +141,6 @@ public class Compiler implements Constants, LookupLimits {
 			return 0;
 		};
 	};
-	/*
-	static {
-		Compiler c = new Compiler();
-		c.restore();
-		c.initLookup();
-		for (int i = 1; i < lookup.length; i++)
-			if (comp.compare(lookup[i - 1], lookup[i]) >= 0) {
-				throw new BrokenException("lookup init");
-			}
-	}
-	*/
 	static long qrefine(int s, int p, int o) {
 		long key[] = { SubCategorize.toLong(s, p, o), 0 };
 		int rslt = Arrays.binarySearch(lookup, key, comp);
@@ -192,42 +149,6 @@ public class Compiler implements Constants, LookupLimits {
 		else
 			return lookup[rslt][1];
 	}
-/*
-	private boolean restore() {
-		try {
-			FileInputStream istream = new FileInputStream(SAVEFILE);
-			ObjectInputStream p = new ObjectInputStream(istream);
-			huge = (SortedMap) p.readObject();
-			possible = (SortedSet) p.readObject();
-			Vector v = (Vector) p.readObject();
-			Iterator it = v.iterator();
-			while (it.hasNext()) {
-				((CategorySet) it.next()).restore();
-			}
-			istream.close();
-		} catch (FileNotFoundException ee) {
-			return false;
-		} catch (IOException e) {
-			throw new BrokenException(e);
-		} catch (ClassNotFoundException e) {
-			throw new BrokenException(e);
-		}
-		return true;
-	}
-	private void save() {
-		try {
-			FileOutputStream ostream = new FileOutputStream(SAVEFILE);
-			ObjectOutputStream p = new ObjectOutputStream(ostream);
-			p.writeObject(huge);
-			p.writeObject(possible);
-			p.writeObject(CategorySet.unsorted);
-			p.flush();
-			ostream.close();
-		} catch (IOException e) {
-			throw new BrokenException(e);
-		}
-	}
-	*/
 	class Info {
 		final String name;
 		Info(String n) {
@@ -419,40 +340,21 @@ public class Compiler implements Constants, LookupLimits {
 			Long rold = toLong(s1, p1, o1);
 			Long old = (Long) huge.get(rold);
 			if (old == null) {
-				//				if (Grammar.Failure != r) {
-				//					if (Grammar.Failure != r)
-				//						System.err.println("E2");
-				//					System.err.println(
-				//						CategorySet.toString(toLong(s1, p1, o1)));
-				//					System.err.println(CategorySet.toString(toLong(s, p, o)));
-				//					System.err.println(CategorySet.toString(r));
-				//				}
 				return;
 			}
 			long r0 = old.longValue();
-			//			if ( SubCategorize.spo(r0)==rold.longValue()) 
-			//			  r1 = r0;
-			//			else
 			r1 =
 				SubCategorize.refineTriple(
 					sOld ? s : subject(r0),
 					pOld ? p : prop(r0),
 					oOld ? o : object(r0));
-			//			if (r1 != r) {
-			//				System.err.println(CategorySet.toString(toLong(s0, p0, o0)));
-			//				System.err.println(CategorySet.toString(toLong(s, p, o)));
-			//				System.err.println(CategorySet.toString(r0));
-			//				System.err.println(CategorySet.toString(r));
-			//				System.err.println(CategorySet.toString(r1));
-			//
-			//			}
 
 		} else {
 			r1 = SubCategorize.refineTriple(s, p, o);
 			;
 		}
 
-		if (r1 != Failure //	 && !SubCategorize.dl(r)
+		if (r1 != Failure 
 		) {
 			huge.put(toLong(s, p, o), new Long(r1));
 			add(subjInfo, subject(r1), s);
@@ -531,49 +433,18 @@ public class Compiler implements Constants, LookupLimits {
 		propInfo.dump();
 		objInfo.dump();
 	}
-	/*
-	private void go2() {
-		if (restore())
-			System.err.println("Restore successful");
-		else {
-			System.err.println("Restore unsuccessful: recomputing");
-			compute();
-		}
-		System.err.println(validate() ? "Good" : "Bad");
-	}
-	*/
+	
 	private void go() {
-	//	if (restore())
-	//		System.err.println("Restore successful");
-	//	else {
-	//		System.err.println("Restore unsuccessful: recomputing");
+		System.err.println("Domain and range");
+		domainRange();
+		System.err.println("Computing");
 			compute();
-	//	}
 		log("GX", 0);
 		makeLessThan();
-		//	roy();
-		//makeMeet();
-		//makeJoin();
-		//	pairs();
-		//	System.err.println("XXX=" + evalPairs());
 		findUseless();
 		System.err.println("Saving results");
 		saveResults();
-	//	System.err.println("Saving data");
-	//	save();
 	}
-/*
-	static final int[] intersection(int a[], int b[]) {
-		int rslt0[] = new int[a.length];
-		int k = 0;
-		for (int i = 0; i < a.length; i++)
-			if (Q.member(a[i], b))
-				rslt0[k++] = a[i];
-		int rslt1[] = new int[k];
-		System.arraycopy(rslt0, 0, rslt1, 0, k);
-		return rslt1;
-	}
-	*/
 	private Integer compare(int i, int j) {
 		return compare(new Pair(i, j));
 	}
@@ -584,13 +455,7 @@ public class Compiler implements Constants, LookupLimits {
 		return compare(i.intValue(), j.intValue());
 	}
 
-	/*
-	 * from *>* to;  where *>* is the partial order
-	 * defined by category sets.   
-	 */
 	private void makeLessThan(int from, int to) {
-		//if (from == to)
-		//		return;
 		Pair p = new Pair(from, to);
 		if (!comparablePairs.containsKey(p)) {
 			comparablePairs.put(p, new Integer(to));
@@ -608,23 +473,6 @@ public class Compiler implements Constants, LookupLimits {
 			s.add(new Integer(from));
 		}
 	}
-	/*
-	void lessThan() {
-		int i = 0;
-		Iterator it = huge.entrySet().iterator();
-		Map.Entry ent;
-		while (it.hasNext()) {
-			if (i++ % 200000 == 0)
-				log("LT", i);
-			ent = (Map.Entry) it.next();
-			long k = ((Long) ent.getKey()).longValue();
-			long v = ((Long) ent.getValue()).longValue();
-			lessThan(SubCategorize.subject(k), SubCategorize.subject(v));
-			lessThan(SubCategorize.prop(k), SubCategorize.prop(v));
-			lessThan(SubCategorize.object(k), SubCategorize.object(v));
-		}
-	}
-	*/
 	private void makeLessThan() {
 		Iterator it1 = possible.iterator();
 		int c = 0;
@@ -633,7 +481,6 @@ public class Compiler implements Constants, LookupLimits {
 			int i1 = ni1.intValue();
 			int c1[] = CategorySet.getSet(i1);
 			Iterator it2 = possible.iterator();
-			//		it2.next();
 			while (it2.hasNext()) {
 				if (c++ % 200000 == 0)
 					log("LT", c);
@@ -685,17 +532,6 @@ public class Compiler implements Constants, LookupLimits {
 				+ "/"
 				+ comparablePairs.size()
 				+ "/"
-		/*
-		+ meet.size()
-		+ "/"
-		+ join.size()
-		+ "{"
-		+ pairs[0].size()
-		+ ","
-		+ pairs[1].size()
-		+ ","
-		+ pairs[2].size()
-		+ "}" */
 		+ (System.currentTimeMillis() - start) / 1000);
 	}
 	private Iterator supers(int x) {
@@ -787,15 +623,6 @@ public class Compiler implements Constants, LookupLimits {
 		short spo[] = expand(l.longValue());
 		int cnt[] = ((int[]) count.get(l));
 		return cnt != null && cnt[0] == nLessThan(spo[0]) * nLessThan(spo[1]) * nLessThan(spo[2]);
-		/*
-		if (cnt != nLessThan(spo[0]) * nLessThan(spo[1]) * nLessThan(spo[2]))
-			return false;
-		spo = expand(((Long) huge.get(l)).longValue());
-		if (Q.intersect(CategorySet.getSet(spo[0]), cycles))
-			return false;
-		if (Q.intersect(CategorySet.getSet(spo[2]), cycles))
-			return false;
-		return true; */
 	}
 
 	/**
@@ -816,6 +643,55 @@ public class Compiler implements Constants, LookupLimits {
 	public static void main(String[] args) {
 		Compiler c = new Compiler();
 		c.go();
+	}
+	private int domain[][];
+	private int range[][];
+	private void domainRange() {
+		int sz =
+		Grammar.MAX_SINGLETON_SET;
+
+		int MM = (1<<WW)-1;
+		System.err.println("MM "+MM+ " WW "+WW);
+		Set sdomain[] = new Set[sz];
+		Set srange[] = new Set[sz];
+		for (int i=0; i<sz;i++) {
+			sdomain[i] = new HashSet();
+			srange[i] = new HashSet();
+		}
+		for (int i=0; i<Grammar.triples.length;i++) {
+			int t = Grammar.triples[i]>>ActionShift;
+			int s = (t>>(2*WW))&MM;
+			int p = (t>>WW)&MM;
+			int o = t&MM;
+			sdomain[p].add(new Integer(s));
+			srange[p].add(new Integer(o));
+		}
+		domain = new int[sz][];
+		range = new int[sz][];
+		for (int i=0;i<sz;i++){
+			
+				domain[i] = sortAndInternInts( sdomain[i]);
+				if (domain[i].length != 0) {
+					System.err.println("D: "+CategorySet.catString(i)+ " = "
+							+ CategorySet.catString(domain[i]));
+				}
+			range[i] = sortAndInternInts(srange[i]);
+			if (range[i].length != 0) {
+				System.err.println("R: "+CategorySet.catString(i)+ " = "
+						+ CategorySet.catString(range[i]));
+			}
+		}
+		
+	}
+
+	private int[] sortAndInternInts( Set set) {
+		int[] rslt = new int[set.size()];
+		Iterator it = set.iterator();
+		int j = 0;
+		while (it.hasNext())
+			rslt[j++] = ((Integer)it.next()).intValue();
+		Arrays.sort(rslt);
+		return intern(rslt);
 	}
 
 	private static short allActions(long k) {
@@ -897,7 +773,7 @@ public class Compiler implements Constants, LookupLimits {
 	}
 }
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

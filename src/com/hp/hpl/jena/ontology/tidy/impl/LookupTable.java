@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LookupTable.java,v 1.9 2003-12-13 21:10:50 jeremy_carroll Exp $
+  $Id: LookupTable.java,v 1.10 2005-01-03 08:18:25 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
@@ -17,8 +17,9 @@ import java.io.*;
 public class LookupTable
 	extends AbsLookup
 	implements LookupLimits, Serializable {
-		static final long serialVersionUID = -6759062485496972733L;
 
+	//	static final long serialVersionUID = -6759062485496972733L;
+	static final long serialVersionUID = 5174033150030288717L;
 
 	/**
 	 * To be called by the OWL syntax compiler only,
@@ -44,6 +45,10 @@ public class LookupTable
 	 *   This table gives a refined category set, indexed by old category set
 	 *  and the new subject field from any entry in the keysByObjectAndPropertyIndex
 	 *  table.
+	 * @param domain For each simple category as predicate gives null or a non-empty array 
+	 * of categories that might be subject.
+	 * @param range For each simple category as predicate  gives null or a non-empty array 
+	 * of categories that might be object.
 	 */
 	public LookupTable(
 		byte propId[],
@@ -51,13 +56,17 @@ public class LookupTable
 		int keysByObjectAndPropertyIndex[][][],
 		int refinedSubject[][],
 		int refinedProperty[][],
-		int refinedObject[][]) {
+		int refinedObject[][],
+		int domain[][],
+		int range[][]) {
 		this.propId = propId;
 		this.propertiesUsedWithObject = propertiesUsedWithObject;
 		this.keysByObjectAndPropertyIndex = keysByObjectAndPropertyIndex;
 		this.refinedSubject = refinedSubject;
 		this.refinedProperty = refinedProperty;
 		this.refinedObject = refinedObject;
+		this.domain = domain;
+		this.range = range;
 	}
 
 	/* (non-Javadoc)
@@ -74,6 +83,8 @@ public class LookupTable
 	final private int refinedProperty[][];
 	final private int refinedObject[][];
 
+	final private int domain[][];
+	final private int range[][];
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#qrefine(int, int, int)
 	 */
@@ -218,6 +229,20 @@ public class LookupTable
 	boolean canBeProp(int c){
 		return refinedProperty[c]!=null && refinedProperty[c].length>0;
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#domain(int)
+	 */
+	public int[] domain(int p) {
+		return domain[p];
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#range(int)
+	 */
+	public int[] range(int p) {
+		return range[p];
 	}
 
 }

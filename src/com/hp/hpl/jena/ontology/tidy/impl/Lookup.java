@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Lookup.java,v 1.5 2003-12-15 09:15:04 jeremy_carroll Exp $
+  $Id: Lookup.java,v 1.6 2005-01-03 08:18:25 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -72,6 +72,19 @@ public interface Lookup {
 	 * @return
 	 */
 	public int meet(int c0, int c1);
+	
+	/**
+	 * Return the cats that can appear as subject of p.
+	 * @param p A basic category
+	 *
+	 */
+	public int[] domain(int p);
+	/**
+	 * Return the cats that can appear as object of p.
+	 * @param p A basic category
+	 *
+	 */
+	public int[] range(int p);
 }
 /*
    (c) Copyright 2003 Hewlett-Packard Development Company, LP

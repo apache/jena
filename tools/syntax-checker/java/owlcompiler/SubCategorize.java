@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.7 2003-12-04 10:49:14 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.8 2005-01-03 08:17:49 jeremy_carroll Exp $
 */
 package owlcompiler;
 
@@ -488,6 +488,20 @@ public class SubCategorize extends AbsLookup implements Constants  {
 		if ( allPseudo )
 		  return Failure;
 		return CategorySet.find(xx,true);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#domain(int)
+	 */
+	public int[] domain(int p) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#range(int)
+	 */
+	public int[] range(int p) {
+		throw new UnsupportedOperationException();
 	}
 
 }
