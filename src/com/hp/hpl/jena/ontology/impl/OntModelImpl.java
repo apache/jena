@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.38 $
+ * Revision           $Revision: 1.39 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 21:07:31 $
+ * Last modified on   $Date: 2003-08-18 17:16:56 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.38 2003-07-31 21:07:31 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.39 2003-08-18 17:16:56 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1378,6 +1378,19 @@ public class OntModelImpl
      */
     public OntResource createOntResource( Class javaClass, Resource rdfType, String uri ) {
         return (OntResource) getResourceWithType( uri, rdfType ).as( javaClass );
+    }
+    
+    
+    /**
+     * <p>Answer a new empty list.  This method overrides the list create method in ModelCom,
+     * to allow both DAML and RDFS lists to be created.</p>
+     * @return An RDF-encoded list of no elements, using the current language profile
+     */
+    public RDFList createList() {
+        Resource list = getResource( getProfile().NIL().getURI() );
+        list.addProperty( RDF.type, getProfile().LIST() );
+        
+        return (RDFList) list.as( RDFList.class );
     }
     
     

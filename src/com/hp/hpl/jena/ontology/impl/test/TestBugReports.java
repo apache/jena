@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-18 14:30:21 $
+ * Last modified on   $Date: 2003-08-18 17:16:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.ontology.impl.test;
 // Imports
 ///////////////
 import java.io.*;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
@@ -43,7 +44,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.5 2003-08-18 14:30:21 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.6 2003-08-18 17:16:50 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -165,6 +166,64 @@ public class TestBugReports
         assertFalse( "Transaction committed", ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_inTransaction );
         assertTrue( "Transaction committed", ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_committed);
     }
+    
+    
+    /**
+     * Bug report by sjooseng [sjooseng@hotmail.com].  CCE in listOneOf in Enumerated
+     * Class with DAML profile.
+     */
+    public void test_sjooseng_01() {
+        String source = 
+        "<rdf:RDF xmlns:daml='http://www.daml.org/2001/03/daml+oil#'" +
+        "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+        "    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#' >" +
+        "    <daml:Class rdf:about='http://localhost:8080/kc2c#C1'>" +
+        "        <daml:subClassOf>" +
+        "            <daml:Restriction>" +
+        "                <daml:onProperty rdf:resource='http://localhost:8080/kc2c#p1'/>" +
+        "                <daml:hasClass>" +
+        "                    <daml:Class>" +
+        "                        <daml:oneOf rdf:parseType=\"daml:collection\">" +
+        "                            <daml:Thing rdf:about='http://localhost:8080/kc2c#i1'/>" +
+        "                            <daml:Thing rdf:about='http://localhost:8080/kc2c#i2'/>" +
+        "                        </daml:oneOf>" +
+        "                    </daml:Class>" +
+        "                </daml:hasClass>" +
+        "            </daml:Restriction>" +
+        "        </daml:subClassOf>" +
+        "    </daml:Class>" +
+        "    <daml:ObjectProperty rdf:about='http://localhost:8080/kc2c#p1'>" +
+        "        <rdfs:label>p1</rdfs:label>" +
+        "    </daml:ObjectProperty>" +
+        "</rdf:RDF>" ;
+        
+        OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.DAML_LANG );
+        m.read( new ByteArrayInputStream( source.getBytes() ), "http://localhost:8080/kc2c" );
+        
+        OntClass kc1 = m.getOntClass( "http://localhost:8080/kc2c#C1" );
+        
+        boolean found = false;
+        
+        Iterator it = kc1.listSuperClasses( false );
+        while ( it.hasNext() ) {
+           OntClass oc = (OntClass)it.next();
+           if ( oc.isRestriction() ) {
+              Restriction r = oc.asRestriction();
+              if ( r.isSomeValuesFromRestriction() ) {
+                 SomeValuesFromRestriction sr = r.asSomeValuesFromRestriction();
+                 OntClass sc = sr.getSomeValuesFrom();
+                    if ( sc.isEnumeratedClass() ) {
+                       EnumeratedClass ec = sc.asEnumeratedClass();
+                       assertEquals( "Enumeration size should be 2", 2, ec.getOneOf().size() );
+                       found = true;
+                    }
+              }
+           }
+        }
+        
+        assertTrue( found );
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////

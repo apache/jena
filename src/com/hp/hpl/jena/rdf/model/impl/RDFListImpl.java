@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFListImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-18 12:50:49 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-18 17:16:56 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -24,6 +24,7 @@ package com.hp.hpl.jena.rdf.model.impl;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -42,7 +43,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.8 2003-07-18 12:50:49 chris-dollin Exp $
+ * @version CVS $Id: RDFListImpl.java,v 1.9 2003-08-18 17:16:56 ian_dickinson Exp $
  */
 public class RDFListImpl
     extends ResourceImpl
@@ -61,7 +62,18 @@ public class RDFListImpl
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
-                return new RDFListImpl( n, eg );
+                RDFListImpl impl = new RDFListImpl( n, eg );
+                
+                // pass on the vocabulary terms, if available
+                if (eg instanceof OntModel) {
+                    Profile prof = ((OntModel) eg).getProfile();
+                    impl.m_listFirst = prof.FIRST();
+                    impl.m_listRest = prof.REST();
+                    impl.m_listNil = prof.NIL();
+                    impl.m_listType = prof.LIST();
+                }
+                
+                return impl;
             }
             else {
                 throw new JenaException( "Cannot convert node " + n + " to RDFList");
@@ -71,10 +83,22 @@ public class RDFListImpl
         public boolean canWrap( Node node, EnhGraph eg ) {
             Graph g = eg.asGraph();
             
+            // if we are using a language profile, get the first, rest and next resources from there
+            Resource first = RDF.first;
+            Resource rest = RDF.rest;
+            Resource nil = RDF.nil;
+            
+            if (eg instanceof OntModel) {
+                Profile prof = ((OntModel) eg).getProfile();
+                first = prof.FIRST();
+                rest = prof.REST();
+                nil = prof.NIL();
+            }
+            
             // node will support being an RDFList facet if it has rdf:type rdf:List, is nil, or is in the domain of a list property
-            return  node.equals( RDF.nil.asNode() ) || 
-                    g.find( node, RDF.first.asNode(), Node.ANY ).hasNext() ||
-                    g.find( node, RDF.rest.asNode(), Node.ANY ).hasNext() ||
+            return  node.equals( nil.asNode() ) || 
+                    g.find( node, first.asNode(), Node.ANY ).hasNext() ||
+                    g.find( node, rest.asNode(), Node.ANY ).hasNext() ||
                     g.find( node, RDF.type.asNode(), RDF.List.asNode() ).hasNext();
         }
     };
@@ -92,6 +116,18 @@ public class RDFListImpl
     
     /** Pointer to the node that is the tail of the list */
     protected RDFList m_tail = null;
+    
+    /** The URI for the 'first' property in this list */
+    protected Property m_listFirst = RDF.first;
+    
+    /** The URI for the 'rest' property in this list */
+    protected Property m_listRest = RDF.rest;
+    
+    /** The URI for the 'nil' Resource in this list */
+    protected Resource m_listNil = RDF.nil;
+    
+    /** The URI for the rdf:type of this list */
+    protected Resource m_listType = RDF.List;
     
     
     
@@ -116,10 +152,10 @@ public class RDFListImpl
     //////////////////////////////////
 
     // vocabulary terms
-    public Resource listType()          { return RDF.List; }
-    public Resource listNil()           { return RDF.nil; }
-    public Property listFirst()         { return RDF.first; }
-    public Property listRest()          { return RDF.rest; }
+    public Resource listType()          { return m_listType; }
+    public Resource listNil()           { return m_listNil; }
+    public Property listFirst()         { return m_listFirst; }
+    public Property listRest()          { return m_listRest; }
     public Class listAbstractionClass() { return RDFList.class; }
     
     
