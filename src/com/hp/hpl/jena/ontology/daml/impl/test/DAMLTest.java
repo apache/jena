@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-07-18 12:50:44 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-07-22 16:00:55 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * TODO: these tests are not yet fully migrated to Jena2.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.10 2003-07-18 12:50:44 chris-dollin Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.11 2003-07-22 16:00:55 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -273,11 +273,11 @@ public class DAMLTest
         // count the super-classes of a Person
         int sCount0 = countIteration( person.prop_subClassOf().getAll(  ), true, "super-class of Person (prop_subClassOf) " );
         int sCount1 = countIteration( person.getSuperClasses(), true, "super-class of Person (getSuperClasses) " );
-        assertEquals( "person should have 7 super-classes (by prop_subClassOf)", 10, sCount0 );
-        assertEquals( "person should have 9 super-classes (by getSuperClasses)", 10, sCount1 );
+        assertEquals( "person should have 10 super-classes (by prop_subClassOf)", 10, sCount0 );
+        assertEquals( "person should have 9 super-classes (by getSuperClasses)", 9, sCount1 );
 
         // count the number of sub-classes of a Person
-        assertEquals( "person should have 4 sub-classes", 4,
+        assertEquals( "person should have 3 sub-classes", 3,
                       countIteration( person.getSubClasses(), true, "Person super-class of: " ) );
 
         // person is a disjoint union of Man and Woman
@@ -363,13 +363,13 @@ public class DAMLTest
         int tl_one_supers0 = countIteration( tl_one.prop_subClassOf().getAll(  ), true, "prop_subClassOf " );
         int tl_one_supers1 = countIteration( tl_one.getSuperClasses( false ), true, "getSuperClasses ");
         assertEquals( "Should be two super-classes of tl_one by prop_subClassOf", 3, tl_one_supers0 );
-        assertEquals( "Should be two super-classes of tl_one by getSuperClasses", 3, tl_one_supers1 );
+        assertEquals( "Should be two super-classes of tl_one by getSuperClasses", 2, tl_one_supers1 );
 
         // Bug report by Andrei S. Lopatenko
         DAMLClass researcher = m0.getDAMLClass( tcNs + "Researcher" );
         assertNotNull( "Class Researcher should not be null", researcher );
         int researcherSupers = countIteration( researcher.getSuperClasses( false ), true, "Super-class of researcher" );
-        assertEquals( "Should be 2 super-classes of researcher", 3, researcherSupers );
+        assertEquals( "Should be 2 super-classes of researcher", 2, researcherSupers );
     }
 
 

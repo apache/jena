@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: TestOntReasoning.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 10:41:45 $
+ * Last modified on   $Date: 2003-07-22 16:01:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.4 2003-06-21 10:41:45 ian_dickinson Exp $
+ * @version CVS $Id: TestOntReasoning.java,v 1.5 2003-07-22 16:01:05 ian_dickinson Exp $
  */
 public class TestOntReasoning 
     extends TestCase
@@ -85,8 +85,8 @@ public class TestOntReasoning
         A.addSubClass( C );
         C.addSubClass( D );
         
-        iteratorTest( A.listSubClasses(), new Object[] {A, B, C, D} );
-        iteratorTest( A.listSubClasses( true ), new Object[] {B, C, A} );
+        iteratorTest( A.listSubClasses(), new Object[] {B, C, D} );
+        iteratorTest( A.listSubClasses( true ), new Object[] {B, C} );
     }
     
     public void testSubClassDirectTransInf1b() {
@@ -102,8 +102,8 @@ public class TestOntReasoning
         C.addSubClass( D );
         A.addSubClass( D );     // directly asserts a link that could be inferred
         
-        iteratorTest( A.listSubClasses(), new Object[] {A, B, C, D} );
-        iteratorTest( A.listSubClasses( true ), new Object[] {B, C, A} );
+        iteratorTest( A.listSubClasses(), new Object[] {B, C, D} );
+        iteratorTest( A.listSubClasses( true ), new Object[] {B, C} );
     }
     
     public void testSubClassDirectTransInf2a() {

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-08 22:51:13 $
+ * Last modified on   $Date: 2003-07-22 16:01:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.24 2003-07-08 22:51:13 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.25 2003-07-22 16:01:05 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -180,7 +180,8 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
     public ExtendedIterator listSuperClasses( boolean direct ) {
-        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false );
+        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
+               .filterDrop( new SingleEqualityFilter( this ) );
     }
 
     /**
@@ -329,7 +330,8 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
     public ExtendedIterator listSubClasses( boolean direct ) {
-        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true );
+        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
+               .filterDrop( new SingleEqualityFilter( this ) );
     }
 
 
