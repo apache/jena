@@ -1,5 +1,3 @@
-# Numbers
-
 @prefix : <#> .
 @prefix x: <http://example.org/x#> .
 @prefix e: <http://example.org/e-actute-\u00E9#> .

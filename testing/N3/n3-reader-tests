@@ -31,10 +31,8 @@
 <rdf-test-26.n3>    <rdf-result-26.nt> .
 
 <rdf-test-27.n3>    <rdf-result-27.nt> .
+<rdf-test-28.n3>    <rdf-result-28.nt> .
 
 ## ?? Need a test with \u escapes in a qname.
 ## Currently does not work. Parser doesn't check for \u escapes in URIs.
 
-## <rdf-test-28.n3>    <rdf-result-28.nt> .
-## <rdf-test-29.n3>    <rdf-result-29.nt> .
-## <rdf-test-30.n3>    <rdf-result-30.nt> .
