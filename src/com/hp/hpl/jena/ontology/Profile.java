@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-08 16:18:01 $
+ * Last modified on   $Date: 2003-11-06 17:21:03 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -45,7 +45,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.13 2003-09-08 16:18:01 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.14 2003-11-06 17:21:03 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -242,6 +242,15 @@ public interface Profile
      * @return The AnnotationProperty class
      */
     public Resource ANNOTATION_PROPERTY();
+    
+    /**
+     * <p>
+     * Answer the class that denotes an ontology property
+     * </p>
+     * 
+     * @return The OntologyProperty class
+     */
+    public Resource ONTOLOGY_PROPERTY();
     
     /**
      * <p>

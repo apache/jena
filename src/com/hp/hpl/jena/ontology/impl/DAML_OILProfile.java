@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-08 16:18:11 $
+ * Last modified on   $Date: 2003-11-06 17:21:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.20 2003-09-08 16:18:11 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.21 2003-11-06 17:21:55 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -77,6 +77,7 @@ public class DAML_OILProfile
     private Resource m_deprecatedClass              = null;
     private Resource m_deprecatedProperty           = null;
     private Resource m_annotationProperty           = null;
+    private Resource m_ontologyProperty             = null;
     private Resource m_list                         = m_vocabModel.createResource( DAML_OIL.List.getURI()                      );                     
     private Resource m_nil                          = m_vocabModel.createResource( DAML_OIL.nil.getURI()                       );
     private Resource m_datarange                    = null;
@@ -151,6 +152,7 @@ public class DAML_OILProfile
     public Resource DEPRECATED_CLASS() {            return m_deprecatedClass; }
     public Resource DEPRECATED_PROPERTY() {         return m_deprecatedProperty; }
     public Resource ANNOTATION_PROPERTY() {         return m_annotationProperty; }
+    public Resource ONTOLOGY_PROPERTY() {           return m_ontologyProperty; }
     public Resource LIST() {                        return m_list; }
     public Resource NIL() {                         return m_nil; }
     public Resource DATARANGE() {                   return m_datarange; }
