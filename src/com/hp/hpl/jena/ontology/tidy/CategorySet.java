@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.8 2003-08-27 13:04:44 andy_seaborne Exp $
+  $Id: CategorySet.java,v 1.9 2003-09-25 16:01:52 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -16,6 +16,10 @@ class CategorySet implements Comparable {
     	Grammar.cyclic,
     	Grammar.cyclicFirst,
     	Grammar.cyclicRest
+    };
+    static private final int untyped[] = new int[]{
+		Grammar.badRestriction,
+		Grammar.notype
     };
 	/**
 	 * 
@@ -34,7 +38,7 @@ class CategorySet implements Comparable {
 	 */
 	static final Q untypedSets= new Q() {
 		boolean test(int all[]){
-			return member(Grammar.notype,all);
+			return intersect(untyped,all);
 		}
 	};
 	/**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.6 2003-09-23 11:15:33 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.7 2003-09-25 16:01:52 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -41,7 +41,7 @@ class SubCategorize {
 	static final int SecondOfTwo = Grammar.SecondOfTwo;
 
 	static private final int DL = Grammar.DL;
-	
+
 	static private final int ObjectAction = Grammar.ObjectAction;
 
 	static final long FAILURE = -1;
@@ -59,15 +59,15 @@ class SubCategorize {
 	 *  16 bits for s,p,o and 15bits for action.
 	 */
 	static private final int W = 16;
-	static private final int M = (1<<W)-1;
+	static private final int M = (1 << W) - 1;
 	static private boolean COMPARATIVE(int prop) {
 		return prop == Grammar.rdfssubClassOf
 			|| prop == Grammar.owldisjointWith
 			|| prop == Grammar.owlequivalentClass;
 	}
 	static private boolean SPECIALSYM(int i) {
-		return i < 5;
-		// i in { orphan, notype, cycle, cyclicRest, cyclicFirst } 
+		return i < 6;
+		// i in { orphan, notype, cycle, cyclicRest, cyclicFirst, badRestriction } 
 	}
 
 	static boolean pseudotriple(int subj, int prop, int obj) {
@@ -80,9 +80,9 @@ class SubCategorize {
 				if (subj == Grammar.orphan)
 					return true;
 				if (subj == Grammar.notype) {
-					if ( prop == Grammar.rdfrest)
-					    return false;
-					if ( prop == Grammar.rdffirst)
+					if (prop == Grammar.rdfrest)
+						return false;
+					if (prop == Grammar.rdffirst)
 						return false;
 					if (prop != Grammar.rdftype)
 						return true;
@@ -92,29 +92,38 @@ class SubCategorize {
 					return false;
 				}
 
+				if (subj == Grammar.badRestriction) {
+					if (prop == Grammar.rdftype)
+						return obj != Grammar.owlRestriction;
 
-                if ( (
-				prop == Grammar.rdftype && obj == Grammar.owlOntology)
-						
-				// Block restrictions
-								|| prop == Grammar.owlcardinality
-								|| prop == Grammar.owlminCardinality
-								|| prop == Grammar.owlmaxCardinality
-								|| prop == Grammar.owlhasValue
-								|| prop == Grammar.owlallValuesFrom
-								|| prop == Grammar.owlsomeValuesFrom
-								// Block descriptions
-								|| prop == Grammar.owlunionOf
-								|| prop == Grammar.owlintersectionOf
-								|| prop == Grammar.owlcomplementOf
-								|| prop == Grammar.owloneOf
-								// Block alldifferent
-								|| prop == Grammar.owldistinctMembers
-								// block comparison of restrictions
-								|| COMPARATIVE(prop) )
-						return false;
-				
-                
+					if (prop == Grammar.owlonProperty
+						|| prop == Grammar.owlcardinality
+						|| prop == Grammar.owlhasValue
+						|| prop == Grammar.owlminCardinality
+						|| prop == Grammar.owlmaxCardinality
+						|| prop == Grammar.owlsomeValuesFrom
+						|| prop == Grammar.owlallValuesFrom
+						|| COMPARATIVE(prop))
+						return true;
+					return false;
+				}
+
+				if ((prop == Grammar.rdftype
+					&& obj == Grammar.owlOntology) // Block restrictions
+					|| prop == Grammar.owlcardinality
+					|| prop == Grammar.owlminCardinality
+					|| prop == Grammar.owlmaxCardinality
+					|| prop == Grammar.owlhasValue
+					|| prop == Grammar.owlallValuesFrom
+					|| prop == Grammar.owlsomeValuesFrom // Block descriptions
+					|| prop == Grammar.owlunionOf
+					|| prop == Grammar.owlintersectionOf
+					|| prop == Grammar.owlcomplementOf
+					|| prop == Grammar.owloneOf // Block alldifferent
+					|| prop == Grammar.owldistinctMembers
+					// block comparison of restrictions
+					|| COMPARATIVE(prop))
+					return false;
 
 				if (subj == Grammar.cyclicRest)
 					return prop != Grammar.rdfrest;
@@ -133,15 +142,19 @@ class SubCategorize {
 			case 2 :
 				return prop == Grammar.notype;
 			case 4 :
-				return obj == Grammar.notype;
+				return obj == Grammar.notype || obj == Grammar.badRestriction;
 			case 3 :
 			case 6 :
 			case 7 :
 				return false;
 			case 5 :
-				if (subj == Grammar.notype || subj == Grammar.orphan)
+				if (subj == Grammar.notype
+					|| subj == Grammar.orphan
+					|| subj == Grammar.badRestriction)
 					return false;
-				if (obj == Grammar.notype || obj == Grammar.orphan)
+				if (obj == Grammar.notype
+					|| obj == Grammar.orphan
+					|| obj == Grammar.badRestriction)
 					return false;
 				if (COMPARATIVE(prop))
 					return false;
@@ -169,6 +182,11 @@ class SubCategorize {
 		boolean oks[] = new boolean[s.length];
 		boolean okp[] = new boolean[p.length];
 		boolean oko[] = new boolean[o.length];
+		boolean dbgMe = Arrays.binarySearch(o, Grammar.badRestriction) >= 0;
+		boolean dbgMe2 = Arrays.binarySearch(s, Grammar.badRestriction) >= 0;
+
+		if (dbgMe || dbgMe2)
+			System.err.println("XX");
 		int i, j, k;
 		boolean bad = true;
 		boolean dl = true;
@@ -186,20 +204,21 @@ class SubCategorize {
 							<< Grammar.ActionShift;
 					int ix = Arrays.binarySearch(Grammar.triples, triple);
 					if (ix < 0) {
-						if ( -ix-1 == Grammar.triples.length )
-						   continue;
+						if (-ix - 1 == Grammar.triples.length)
+							continue;
 						if ((Grammar.triples[-ix - 1] & (~ActionMask))
 							== triple) {
 							int action = Grammar.triples[-ix - 1] & ActionMask;
-							dl = dl && ( (action & DL) == DL );
-							objectAction = objectAction 
-							  && ( (action & ObjectAction) == ObjectAction);
-						    int sAction = action & ~(DL|ObjectAction);
-						    if ( structuredAction == -1)
-						       structuredAction = sAction;
-						    else if ( structuredAction != sAction )
-						       structuredAction = 0;
-						} else 
+							dl = dl && ((action & DL) == DL);
+							objectAction =
+								objectAction
+									&& ((action & ObjectAction) == ObjectAction);
+							int sAction = action & ~(DL | ObjectAction);
+							if (structuredAction == -1)
+								structuredAction = sAction;
+							else if (structuredAction != sAction)
+								structuredAction = 0;
+						} else
 							continue;
 					} else {
 						dl = false;
@@ -211,6 +230,8 @@ class SubCategorize {
 					bad = false;
 				}
 		if (bad) {
+			if (dbgMe)
+				System.err.println("Z");
 			return FAILURE;
 		}
 		for (i = 0; i < s.length; i++)
@@ -226,8 +247,27 @@ class SubCategorize {
 		int s2 = getSubSet(s, oks);
 		int p2 = getSubSet(p, okp);
 		int o2 = getSubSet(o, oko);
-		int action = (dl?DL:0)|(objectAction?ObjectAction:0)|
-		              structuredAction;
+		int action =
+			(dl ? DL : 0)
+				| (objectAction ? ObjectAction : 0)
+				| structuredAction;
+
+		if (dbgMe && Arrays.binarySearch(o, Grammar.badRestriction) < 0) {
+			for (int zz = 0; zz < p.length; zz++)
+				if (okp[zz])
+					System.err.print(p[zz] + " ");
+			System.err.println();
+		} else if (dbgMe) {
+			System.err.println("OK");
+		}
+		if (dbgMe2 && Arrays.binarySearch(s, Grammar.badRestriction) < 0) {
+			for (int zz = 0; zz < p.length; zz++)
+				if (okp[zz])
+					System.err.print(p[zz] + "*");
+			System.err.println();
+		} else if (dbgMe2) {
+			System.err.println("OK2");
+		}
 		return (((long) action) << (3 * W))
 			| (((long) s2) << (2 * W))
 			| (((long) p2) << (1 * W))
@@ -253,7 +293,7 @@ class SubCategorize {
 	 * @return The new subcategory for the subject.
 	 */
 	static int subject(long refinement, int subj) {
-		return  (int)(refinement>>(2*W))&M;
+		return (int) (refinement >> (2 * W)) & M;
 	}
 	/**
 	 * 
@@ -262,7 +302,7 @@ class SubCategorize {
 	 * @return The new subcategory for the property.
 	 */
 	static int prop(long refinement, int prop) {
-		return  (int)(refinement>>(1*W))&M;
+		return (int) (refinement >> (1 * W)) & M;
 	}
 	/**
 	 * 
@@ -271,7 +311,7 @@ class SubCategorize {
 	 * @return The new subcategory for the object.
 	 */
 	static int object(long refinement, int obj) {
-		return (int)(refinement>>(0*W))&M;
+		return (int) (refinement >> (0 * W)) & M;
 	}
 	/**
 	 * 
@@ -279,22 +319,22 @@ class SubCategorize {
 	 * @return An integer reflecting an action needed in response to this triple.
 	 */
 	static int action(long refinement) {
-		return (int)(refinement>>(3*W))& ~(DL|ObjectAction);
+		return (int) (refinement >> (3 * W)) & ~(DL | ObjectAction);
 	}
 	/**
 	* 
 	* @param refinement The result of {@link #refineTriple(int,int,int)}
 	* @return True if this triple is <em>the</em> triple for the blank node object.
 	*/
-   static boolean tripleForObject(long refinement) {
-	   return ((refinement>>(3*W))&ObjectAction) == ObjectAction;
-   }
+	static boolean tripleForObject(long refinement) {
+		return ((refinement >> (3 * W)) & ObjectAction) == ObjectAction;
+	}
 	/**
 	 *@param refinement The result of {@link #refineTriple(int,int,int)}
 	 * @return Is this triple in DL?.
 	 */
 	static boolean dl(long refinement) {
-		return ((refinement>>(3*W))&DL) == DL;
+		return ((refinement >> (3 * W)) & DL) == DL;
 	}
 }
 

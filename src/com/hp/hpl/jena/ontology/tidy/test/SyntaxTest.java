@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.5 2003-09-24 13:07:29 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.6 2003-09-25 16:02:30 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.ontology.*;
 import java.util.*;
 import java.io.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
+//import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.OWLTest;
 import com.hp.hpl.jena.shared.wg.*;
 /**
@@ -92,6 +92,8 @@ class SyntaxTest extends TestCase {
 			DMEntry ent = (DMEntry)dm.table.get(url);
 			Resource level = ent.lvl;
 			
+			if (!url.equals("http://www.w3.org/2002/03owlt/Restriction/conclusions006"))
+			  continue;
 			Checker chk = new Checker(ent.lvl.equals(OWLTest.Lite));
 			ent.init();
 			OntModel om = ModelFactory.createOntologyModel( 

@@ -17,7 +17,7 @@ grouping([orphan, ontologyPropertyID], ontologyPropertyHack ).
 grouping([allDifferent, description, listOfDataLiteral, listOfDescription, 
 listOfIndividualID, orphan, unnamedOntology,cyclic, 
 cyclicFirst, cyclicRest, restriction, unnamedDataRange, 
-unnamedIndividual,notype ],blank).
+unnamedIndividual,notype, badRestriction ],blank).
 
 grouping([restriction],restrictions).
 grouping([description],descriptions).
@@ -88,6 +88,7 @@ category(notype).
 category(cyclic).
 category(cyclicRest).
 category(cyclicFirst).
+category(badRestriction).
 category(X) :-
    setof(Z,isTTnode(Z),S),
    member(Z,S),
@@ -126,7 +127,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.12 2003-09-25 08:41:21 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.13 2003-09-25 16:02:30 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
