@@ -59,6 +59,13 @@ listOfIndividualID, orphan, unnamedOntology,cyclic,
 restriction, unnamedDataRange, unnamedIndividual,notype
 ],blank).
 
+grouping([restriction],restrictions).
+grouping([description],descriptions).
+grouping([listOfDataLiteral, listOfDescription, 
+listOfIndividualID],lists).
+
+
+
 %grouping(H) :- grouping(H,_).
 
 
@@ -81,7 +88,8 @@ allBuiltins(Q,N,P,notQuite) :-
 allBuiltins(Q,N,[Q:N],0) :-
   builtiny(Q,N).
 
-gogo :-
+%% map get ressurrected - currently dead.
+gogo_old :-
    buildChecker,
    gname,
    classfile.
@@ -127,6 +135,30 @@ uncan(N,Can) :-
   fail.
 uncan(_,_).
   
+
+gogo :-
+  compMapping,
+  buildChecker,
+  % tt/4 is now good.
+  jfile('Grammar',JF),
+  tell(JF),
+  copyrightHead,
+  wlist(['import java.util.Arrays;',nl,
+         'class Grammar {',nl]),
+  flag(catID,_,1),
+  category(C),
+  flag(catID,N,N+1),
+  wsfi(C,N),
+  fail.
+  
+gogo :-
+  wActions,
+  wGetBuiltinID,
+  wTripleTable,
+  wGroups,
+  wlist(['}',nl]),
+  copyrightTail,
+  told.
   
 
 
@@ -186,7 +218,10 @@ buildChecker :-
   assert(expg(G1,N)),
   assert(g(G1)),
   fail.
-buildChecker :-
+  
+buildChecker.
+
+buildChecker_old :-
   setof(N,isTTnode(N),S),
   member(X,S),
   assert(g([X])),
@@ -231,7 +266,7 @@ buildChecker :-
 
 */
 
-buildChecker :-
+buildChecker_old :-
    tell('tmpSubCategorizationInput'),
    /*
    wlist([orphan,nl]),
@@ -241,20 +276,20 @@ buildChecker :-
    g([A]),
    writeq(A),nl,
    fail.
-buildChecker :-
+buildChecker_old :-
    write('%%'),nl,
    tt(S,P,O,_),
    writeq(S),write(' '),
    writeq(P),write(' '),
    writeq(O),nl,
    fail.
-buildChecker :-
+buildChecker_old :-
    write('%%'),nl,
    g([A,B|T]),
    (member(X,[A,B|T]),
    writeq(X),put(" "),
    fail;nl),fail.
-buildChecker :-
+buildChecker_old :-
   write('%%'),nl,told,
   (
   shell(echo) ->
@@ -353,10 +388,10 @@ classfile :-
   tell(Tell).
 
 wGetBuiltinID :-
-  wsfi('NotQuiteBuiltin','1<<W'),
-  wsfi('BadXSD','2<<W'),
-  wsfi('BadOWL','3<<W'),
-  wsfi('BadRDF','5<<W'),
+  %wsfi('NotQuiteBuiltin','1<<W'),
+  wsfi('BadXSD','1<<W'),
+  wsfi('BadOWL','2<<W'),
+  wsfi('BadRDF','3<<W'),
   wsfi('DisallowedVocab','4<<W'),
   wsfi('Failure',-1),
   wlist(['static int getBuiltinID(String uri) {',nl]),
@@ -402,18 +437,19 @@ getBuiltins(_) :-
 
 specialBuiltin(bad,'| BadXSD').
 specialBuiltin(0,'').
-specialBuiltin(notQuite,'| NotQuiteBuiltin').
+specialBuiltin(notQuite,'').
 
 jfile(Nm,Nmx) :-
   concat_atom(['../../src/com/hp/hpl/jena/ontology/tidy/',Nm,'.java'],Nmx).
   
 
 wActions :-
-  wsfi('FirstOfOne',2),
-  wsfi('FirstOfTwo',4),
-  wsfi('SecondOfTwo',6),
-  wsfi('DisjointAction',8),
-  wsfi('ActionShift',5).
+  wsfi('FirstOfOne',4),
+  wsfi('FirstOfTwo',8),
+  wsfi('SecondOfTwo',12),
+  wsfi('ObjectAction',2),
+  wsfi('DL',1),
+  wsfi('ActionShift',4).
 
 wCategories :-
   retractall(width(_)),

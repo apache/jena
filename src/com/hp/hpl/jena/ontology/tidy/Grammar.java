@@ -5,6 +5,7 @@ class Grammar {
 	static final int lists[] = new int[]{};
 	static final int restrictions[] = new int[]{};
 	static final int descriptions[] = new int[]{};
+	static final int disjointWithNodes[] = new int[]{};
     static final int CategoryShift = 8;
     // orphan must be first
 	static final int orphan = 0;
@@ -417,113 +418,4 @@ static int getBuiltinID(String uri) {
     static final int ActionShift = 5;
     static final int ObjectAction = 2;
     static final int DL = 1;
-/** Given some knowledge about the categorization
-of a triple, return a refinement of that knowledge,
-or {@link #Failure} if no refinement exists.
-@param triple Shows the prior categorization of subject,
-predicate and object in the triple.
-@return Shows the possible legal matching categorizations of subject,
-predicate and object in the triple. Higher bits give additional information.
-*/
-    static int addTriple(int triple) {
-      if ( false )
-          return 0;
-     else return addTriple1( triple );
-     
-   }
-   static private int addTriple1( int triple ) {
-       switch (triple) {
-case 65793:
-case 65794:
-case 65795:
-case 65796:
-case 65797:
-case 65798:
-case 65799:
-case 65800:
-case 65802:
-case 65803:
-case 65804:
-case 65805:
-case 65806:
-case 65807:
-case 65808:
-case 65809:
-case 65810:
-case 65811:
-case 65812:
-case 65813:
-case 65828:
-case 65829:
-case 67854:
-case 67856:
-case 67857:
-case 97110:
-case 97143:
-case 131329:
-case 131330:
-case 131331:
-case 131332:
-case 131333:
-case 131334:
-case 131335:
-case 131336:
-case 131338:
-case 131339:
-case 131340:
-case 131341:
-case 131342:
-case 131343:
-case 131344:
-case 131345:
-case 131346:
-case 131347:
-case 131348:
-case 131349:
-case 131364:
-case 131365:
-case 131854:
-case 131856:
-case 131857:
-case 132354:
-case 132360:
-case 132367:
-case 132389:
-case 133390:
-case 133392:
-case 133393:
-case 196865:
-case 196866:
-case 196867:
-case 196868:
-case 196869:
-case 196870:
-case 196871:
-case 196872:
-case 196874:
-case 196875:
-case 196876:
-case 196877:
-case 196878:
-case 196879:
-case 196880:
-case 196881:
-case 196882:
-case 196883:
-case 196884:
-case 196885:
-case 196900:
-case 196901:
-case 198926:
-case 198928:
-case 198929:
-case 228215:
-case 262401:
-case 262402:
-case 262403:
-case 1604435:
-            return triple;case 65815:return 65813;
-case 1639698:return 2425106;     default: return Failure;
-   }
-}
 }

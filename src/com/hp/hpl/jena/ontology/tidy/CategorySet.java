@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: CategorySet.java,v 1.3 2003-04-15 15:00:45 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.4 2003-04-15 16:20:07 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -35,6 +35,17 @@ class CategorySet implements Comparable {
 	static final Q untypedSets= new Q() {
 		boolean test(int all[]){
 			return member(Grammar.notype,all);
+		}
+	};
+	/**
+	 * 
+	 * @return The ids of all CategorySet which may be the subject
+	 * or object of disjointWith. 
+	 */
+	static final Q disjointWithSets= new Q() {
+		boolean test(int all[]){
+			return all[0] != Grammar.orphan &&
+			  intersect(Grammar.disjointWithNodes,all);
 		}
 	};
 
@@ -105,6 +116,7 @@ class CategorySet implements Comparable {
    	  untypedSets,
    	  structuredOne,
    	  structuredTwo,
+   	  disjointWithSets
    };
    static private Q orphaned[] = new Q[]{
    	orphanSets,

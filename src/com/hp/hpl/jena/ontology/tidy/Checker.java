@@ -87,7 +87,7 @@ public class Checker extends EnhGraph {
 			(s.getCategories() << (2 * Shift))
 				| (p.getCategories() << Shift)
 				| o.getCategories();
-		int nkey = Grammar.addTriple(key);
+		int nkey = 1; //Grammar.addTriple(key);
 		if (nkey == Grammar.Failure) {
 			problems.add(t);
 			errorCnt++;
