@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.11 2003-08-06 08:54:27 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.12 2003-08-08 08:11:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -57,7 +57,8 @@ public class SimpleReifier implements Reifier
         }
         
     private Triple getTriple( Node n, Fragments f )
-        { return f.isComplete() ? nodeMap.putTriple( n, f.asTriple() ) : null; }
+        { // if (f.isComplete()) System.err.println( ">> this is not supposed to happen" );
+            return f.isComplete() ? nodeMap.putTriple( n, f.asTriple() ) : null; }
         
     /** true iff there is a triple bound to _n_ */
     public boolean hasTriple( Node n )

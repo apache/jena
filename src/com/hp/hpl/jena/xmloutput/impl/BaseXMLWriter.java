@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.21 2003-07-29 14:37:55 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.22 2003-08-08 08:11:15 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2003-07-29 14:37:55 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2003-08-08 08:11:15 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -212,7 +212,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 					val = null;
 			}
 			if (val == null) {
-				val = "j." + (count++);
+                // just in case the prefix has already been used, look for a free one.
+                // (the usual source of such prefixes is reading in a model we wrote out earlier)
+				do { val = "j." + (count++); } while (used.contains( val ));
 			}
 			ns.put(uri, val);
 

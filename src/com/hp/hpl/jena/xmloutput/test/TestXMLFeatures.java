@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.28 2003-07-21 10:54:11 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.29 2003-08-08 08:11:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -11,6 +11,7 @@ import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.graph.*;
@@ -29,7 +30,7 @@ import org.apache.log4j.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.28 $ $Date: 2003-07-21 10:54:11 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.29 $ $Date: 2003-08-08 08:11:15 $
  */
 
 public class TestXMLFeatures extends TestCase {
@@ -65,7 +66,31 @@ public class TestXMLFeatures extends TestCase {
 	public static Test suite() {
 		return new TestSuite(TestXMLFeatures.class);
 	}
-
+    
+    /**
+        Very specific test case to trap bug whereby a model which has  a prefix j.0 defined
+        (eg it was read in from a model we wrote out earlier) wants to allocate a new j.*
+        prefix and picked j.0, BOOM.
+    */
+    public void testBrokenPrefixing() throws Exception
+        {
+        Model m = ModelFactory.createDefaultModel();    
+        m.add( ModelTestBase.statement( m, "a http://bingle.bongle/booty#PP b" ) );
+        m.add( ModelTestBase.statement( m, "c http://dingle.dongle/dooty#PP d" ) );
+        StringWriter sw = new StringWriter();
+        m.write( sw );
+        Model m2 = ModelFactory.createDefaultModel();
+        String written = sw.toString();
+        m2.read( new StringReader( written ), "" );
+        StringWriter sw2 = new StringWriter();
+        m2.write( sw2 );
+        String s2 = sw2.toString();
+        int first = s2.indexOf( "xmlns:j.0=" );
+        int last = s2.lastIndexOf( "xmlns:j.0=" );
+        assertEquals( first, last );
+        System.out.println( sw2.toString() );
+        }
+        
 	public void testBug696057() throws IOException {
 		File f = File.createTempFile("jena", ".rdf");
 		String fileName = f.getAbsolutePath();
@@ -79,6 +104,7 @@ public class TestXMLFeatures extends TestCase {
 		assertTrue("Use of FileWriter", m.isIsomorphicWith(m1));
 		f.delete();
 	}
+    
 	public void testXMLBase() throws IOException, MalformedPatternException {
 		check(file1, //any will do
 		"xml:base=['\"]" + base2 + "['\"]", new Change() {
@@ -1065,5 +1091,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.28 2003-07-21 10:54:11 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.29 2003-08-08 08:11:15 chris-dollin Exp $
  */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.12 2003-07-15 13:26:58 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.13 2003-08-08 08:11:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -10,15 +10,18 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.cache.*;
 
 /**
- * <p>
- * A specialisation of Polymorphic that models an extended graph - that is, one that 
- * contains{@link EnhNode Enhanced nodes} or one that itself exposes additional 
- * capabilities beyond the graph API.
- * </p>
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)
- * <br><a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)
- * <br><a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> 
- * (refactoring and commentage)
+    A specialisation of Polymorphic that models an extended graph - that is, one that 
+    contains{@link EnhNode Enhanced nodes} or one that itself exposes additional 
+    capabilities beyond the graph API.
+ <p>   
+    <span style="color:red">WARNING</span>. The polymorphic aspects of EnhGraph 
+    are <span style="color:red">not supported</span> and are not expected to be
+    supported in this way for the indefinite future.
+    
+    @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)
+    <br><a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)
+    <br><a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> 
+    (refactoring and commentage)
 */
 
 public class EnhGraph 
@@ -149,8 +152,9 @@ public class EnhGraph
     /** 
      * Answer an enhanced graph that presents <i>this</i> in a way which satisfies type
      * t.  This is a stub method that has not yet been implemented.
-     * @param t A type
-     * @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
+     @deprecated
+     @param t A type
+     @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
      */
     protected Polymorphic convertTo(Class t) {
         throw new PersonalityConfigException
@@ -159,6 +163,7 @@ public class EnhGraph
     
     /**
         we can't convert to anything. 
+        @deprecated
     */
     protected boolean canSupport( Class t )
         { return false; }
