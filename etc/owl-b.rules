@@ -2,7 +2,7 @@
 # OWL rule set v0.1
 # This rule set is design to implement owl(f)lite using pure
 # tabled backward chaining. It is experimental and not fully debugged.
-# $Id: owl-b.rules,v 1.5 2003-06-13 08:54:23 der Exp $
+# $Id: owl-b.rules,v 1.6 2003-07-25 12:17:28 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -171,7 +171,7 @@
 
 # Interactions between cardinalities and some/all
 
-[restrictionProc1: (?X rdf:type, max(?P, '1')), (?X, rdf:type, some(?P, ?C)) 
+[restrictionProc1: (?X rdf:type, max(?P, 1)), (?X, rdf:type, some(?P, ?C)) 
 						-> (?X rdf:type all(?P, ?C))]
 
 [restrictionProc2a: unbound(?X), (?P rdf:type owl:FunctionalProperty), (?X, rdf:type, some(?P, ?C)) 
@@ -194,16 +194,16 @@
 [restrictionProc6: (?D owl:equivalentClass all(?P, ?C)) (?P rdfs:range ?C)
 						-> (owl:Thing rdfs:subClassOf ?D)]
 
-[restrictionProc7: (?A rdf:type max(?P, '1')), (?A ?P ?B), (?A ?P ?C) -> (?B owl:sameIndividualAs ?C)]
+[restrictionProc7: (?A rdf:type max(?P, 1)), (?A ?P ?B), (?A ?P ?C) -> (?B owl:sameIndividualAs ?C)]
 
-[restrictionProc8: (?X rdf:type min(?P, '1')), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
+[restrictionProc8: (?X rdf:type min(?P, 1)), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
 
-[restrictionProc9: (?X rdf:type max(?P, '0')) (?X ?P *) -> (?X rdf:type owl:Nothing)]
+[restrictionProc9: (?X rdf:type max(?P, 0)) (?X ?P *) -> (?X rdf:type owl:Nothing)]
 
 ## Omitted 10 for now, requires prototype generation
 
 [restrictionProc11: (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing) 
-						-> (?X rdf:type max(?P, '1'))]
+						-> (?X rdf:type max(?P, 1))]
 		
 #[restrictionProc12: bound (?D), (?D rdf:type owl:Class), (?P rdfs:range ?C), notFunctor(?C)  
 #						-> (?D rdfs:subClassOf all(?P, ?C)) ]

@@ -6,7 +6,7 @@
 # Warning: This version is under active development and the moment
 # and should NOT be regard as stable or usable.
 #
-# $Id: owl-fb.rules,v 1.12 2003-07-01 09:04:41 der Exp $
+# $Id: owl-fb.rules,v 1.13 2003-07-25 12:17:28 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -172,7 +172,7 @@
 # Interactions between cardinalities and some/all
 #------------------------------------------------------------------
 
-[restrictionMS-A: (?C rdfs:subClassOf max(?P, '1')), (?C rdfs:subClassOf some(?P, ?D))
+[restrictionMS-A: (?C rdfs:subClassOf max(?P, 1)), (?C rdfs:subClassOf some(?P, ?D))
 						-> (?C rdfs:subClassOf all(?P, ?D)) ]
 
 [restrictionFS-A: (?P rdf:type owl:FunctionalProperty), (?C rdfs:subClassOf some(?P, ?C))
@@ -181,14 +181,14 @@
 [restrictionR-S: (?P rdfs:range ?C), notFunctor(?C) ->
      [restrictionRSb: (?X rdf:type some(?P, ?C)) <- (?X ?P ?A) ] ]
      
-[restrictionRMn-S: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, '1')) 
+[restrictionRMn-S: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, 1)) 
 						-> (?C rdfs:subClassOf some(?P, ?D)) ]
 
 [restrictionRA-T: (?P rdfs:range ?C), (?D owl:equivalentClass all(?P, ?C)) 
 						-> (owl:Thing rdfs:subClassOf ?D) ]
 						
 [restrictionFT-M: (?P rdf:type owl:FunctionalProperty) ->
-         [restrictionFTMb: (?X rdf:type max(?P, '1')) <- (?X rdf:type owl:Thing)] ]
+         [restrictionFTMb: (?X rdf:type max(?P, 1)) <- (?X rdf:type owl:Thing)] ]
 
 # If leave this forward get #ranges * #classes deductions 
 # The backward one is only safe if there are no interactions with other forward rules
@@ -202,7 +202,7 @@
 
 [restriction-S: (?X rdf:type some(?P, ?C)) <- bound(?P), bound(?X), (?X ?P ?V), (?V rdf:type ?C) ]
 
-[restrictionM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type max(?P, '0')), (?X ?P ?A) ]
+[restrictionM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type max(?P, 0)), (?X ?P ?A) ]
 
 [restrictionA-Ty: (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type), notEqual(?C, ?D) ->
 		[restrictionA-tyb: (?Y rdf:type ?D) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
@@ -211,11 +211,11 @@
 #[restrictionA-S:  (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type) ->
 #		[restrictionA-Sb: (?X rdf:type some(?P, ?D)) <- (?X rdf:type ?C), (?X ?P ?Y)] ]
 
-#[restrictionM-sI: (?B owl:sameIndividualAs ?C) <- (?A rdf:type max(?P, '1')), (?A ?P ?B), (?A ?P ?C) ]
-[restrictionM-sI: (?C rdfs:subClassOf max(?P, '1')) ->
+#[restrictionM-sI: (?B owl:sameIndividualAs ?C) <- (?A rdf:type max(?P, 1)), (?A ?P ?B), (?A ?P ?C) ]
+[restrictionM-sI: (?C rdfs:subClassOf max(?P, 1)) ->
 	[restrictionM-sIb: (?B owl:sameIndividualAs ?C) <- (?A rdf:type ?C), (?A ?P ?B), (?A ?P ?C) ] ]
 
-[restrictionMM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type min(?P, '1')), (?X rdf:type max(?P, 0)) ]
+[restrictionMM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type min(?P, 1)), (?X rdf:type max(?P, 0)) ]
 
 #------------------------------------------------------------------
 # Using some(P,C) restriction to infer P values for instances.

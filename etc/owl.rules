@@ -149,7 +149,7 @@
 
 # Interactions between cardinalities and some/all
 
-[restrictionProc1: (?X rdf:type, max(?P, '1')), (?X, rdf:type, some(?P, ?C)) 
+[restrictionProc1: (?X rdf:type, max(?P, 1)), (?X, rdf:type, some(?P, ?C)) 
 						-> (?X rdf:type all(?P, ?C))]
 
 [restrictionProc2: (?P rdf:type owl:FunctionalProperty), (?X, rdf:type, some(?P, ?C)) 
@@ -163,11 +163,11 @@
 [restrictionProc6: (?P rdfs:range ?C), (?D owl:equivalentClass all(?P, ?C)) 
 						-> (owl:Thing rdfs:subClassOf ?D)]
 
-[restrictionProc7: (?A rdf:type max(?P, '1')), (?A ?P ?B), (?A ?P ?C) -> (?B owl:sameIndividualAs ?C)]
+[restrictionProc7: (?A rdf:type max(?P, 1)), (?A ?P ?B), (?A ?P ?C) -> (?B owl:sameIndividualAs ?C)]
 
-[restrictionProc8: (?X rdf:type min(?P, '1')), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
+[restrictionProc8: (?X rdf:type min(?P, 1)), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
 
-[restrictionProc9: (?X ?P *), (?X rdf:type max(?P, '0')) -> (?X rdf:type owl:Nothing)]
+[restrictionProc9: (?X ?P *), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
 
 [restrictionProc10: (?X rdf:type some(?P, ?C)), noValue(?X, ?P), notEqual(?P, owl:sameIndividualAs),
 					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
@@ -177,7 +177,7 @@
 
 # Best done backwards!
 [restrictionProc11: (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing) 
-						-> (?X rdf:type max(?P, '1'))]
+						-> (?X rdf:type max(?P, 1))]
 		
 [restrictionProc12: (?P rdfs:range ?C), (?D rdf:type owl:Class), notFunctor(?C)  
 						-> (?D rdfs:subClassOf all(?P, ?C)) ]

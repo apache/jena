@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.7 2003-07-18 16:19:00 der Exp $
+# $Id: owl-fb-test.rules,v 1.8 2003-07-25 12:17:28 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -196,53 +196,53 @@
 # min cardinality
 #------------------------------------------------------------------
 
-[min: (?C rdfs:subClassOf min(?P, '1')) ->
+[min: (?C rdfs:subClassOf min(?P, 1)) ->
     [min1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?T)] ]
 
-[minRec: (?C owl:equivalentClass min(?P, '1')), notEqual(?P, rdf:type) ->
+[minRec: (?C owl:equivalentClass min(?P, 1)), notEqual(?P, rdf:type) ->
     [min2b: (?X rdf:type ?C) <- (?X ?P ?Y)] ]
 
-[restriction-inter-MnS: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, '1')) 
+[restriction-inter-MnS: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, 1)) 
 						-> (?C rdfs:subClassOf some(?P, ?D)) ]
         
 #------------------------------------------------------------------
 # max cardinality 1
 #------------------------------------------------------------------
 
-[max1: (?C rdfs:subClassOf max(?P, '1')) ->
+[max1: (?C rdfs:subClassOf max(?P, 1)) ->
     [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- bound(?Y1),   (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notEqual(?Y1, ?Y2)]
     [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- unbound(?Y1), (?X ?P ?Y2), (?X rdf:type ?C), (?X ?P ?Y1), notEqual(?Y1, ?Y2)]
     ]
     
-[maxRec: (?C owl:equivalentClass max(?P, '1')), (?P rdf:type owl:FunctionalProperty) ->
+[maxRec: (?C owl:equivalentClass max(?P, 1)), (?P rdf:type owl:FunctionalProperty) ->
     [ (?X rdf:type ?C) <- (?X rdf:type owl:Thing)] ]
 
 #------------------------------------------------------------------
 # max cardinality 0
 #------------------------------------------------------------------
 
-[max2: (?C rdfs:subClassOf max(?P, '0')) ->
+[max2: (?C rdfs:subClassOf max(?P, 0)) ->
     [max2b: (?X rdf:type owl:Nothing) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
 
 # For completeness this requires iff version of rdfs:domain working forwards which it does not just now
-[maxRec2: (?C owl:equivalentClass max(?P, '0')), (?P rdfs:domain ?D), (?E owl:disjointWith ?D)
+[maxRec2: (?C owl:equivalentClass max(?P, 0)), (?P rdfs:domain ?D), (?E owl:disjointWith ?D)
 	-> (?E owl:equivalentClass ?C)]
 	
-[cardRec1: (?C owl:equivalentClass card(?P, '0')), (?P rdfs:domain ?D), (?E owl:disjointWith ?D)
+[cardRec1: (?C owl:equivalentClass card(?P, 0)), (?P rdfs:domain ?D), (?E owl:disjointWith ?D)
 	-> (?E owl:equivalentClass ?C)]
 	
-[cardRec3: (?C owl:equivalentClass card(?P, '0')) ->
-	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type max(?P, '0'))] ]
+[cardRec3: (?C owl:equivalentClass card(?P, 0)) ->
+	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type max(?P, 0))] ]
 
 #------------------------------------------------------------------
 # cardinality 1
 #------------------------------------------------------------------
 
-[restriction-inter-CFP: (?C owl:equivalentClass card(?P, '1')), (?P rdf:type owl:FunctionalProperty) ->
-     (?C owl:equivalentClass min(?P, '1')) ]
+[restriction-inter-CFP: (?C owl:equivalentClass card(?P, 1)), (?P rdf:type owl:FunctionalProperty) ->
+     (?C owl:equivalentClass min(?P, 1)) ]
 
-[cardRec2: (?C owl:equivalentClass card(?P, '1')) ->
-	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type min(P, '1')), (?X rdf:type max(P, '1')) ] ]
+[cardRec2: (?C owl:equivalentClass card(?P, 1)) ->
+	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type min(P, 1)), (?X rdf:type max(P, 1)) ] ]
 
 #------------------------------------------------------------------
 # someValuesFrom
@@ -274,7 +274,7 @@
 [all1: (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type), notEqual(?C, ?D) ->
 		[all1b: (?Y rdf:type ?D) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
 
-[allRec1: (?C rdfs:subClassOf max(?P, '1')), (?C rdfs:subClassOf some(?P, ?D))
+[allRec1: (?C rdfs:subClassOf max(?P, 1)), (?C rdfs:subClassOf some(?P, ?D))
 						-> (?C rdfs:subClassOf all(?P, ?D)) ]
 
 [allRec2: (?P rdf:type owl:FunctionalProperty), (?C rdfs:subClassOf some(?P, ?C))
