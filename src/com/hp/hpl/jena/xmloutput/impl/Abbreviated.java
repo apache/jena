@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.7 2003-08-27 13:09:18 andy_seaborne Exp $
+ *  $Id: Abbreviated.java,v 1.8 2003-11-06 17:32:33 ian_dickinson Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -24,7 +24,7 @@ import java.io.*;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-08-27 13:09:18 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-11-06 17:32:33 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
@@ -33,7 +33,7 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 			DAML_OIL.Ontology,
 			OWL.Ontology,
 			DAML_OIL.Datatype,
-			OWL.Datatype,
+			OWL.DataRange,       // !! TODO !! ijd - I'm not sure about this ... Jeremy please check (was OWL.Datatype)
 			RDFS.Datatype,
 			DAML_OIL.Class,
 			RDFS.Class,
