@@ -1,48 +1,42 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.4 2003-01-30 10:24:49 chris-dollin Exp $
+  $Id: TestWrappedIterator.java,v 1.1 2003-01-30 10:25:17 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.test;
-
-import junit.framework.TestSuite;
-import junit.framework.Test;
+package com.hp.hpl.jena.util.iterator.test;
 
 /**
- * All developers should edit this file to add their tests.
- * Please try to name your tests and test suites appropriately.
- * Note, it is better to name your test suites on creation
- * rather than in this file.
- * @author  jjc
- */
-public class TestPackage extends TestSuite {
+    test the WrappedIterator class. TODO: test _remove_, which means having
+    some fake base iterator to do the checking, and _close_, ditto.
+*/
 
-    static public Test suite() {
-        return new TestPackage();
+import com.hp.hpl.jena.graph.GraphTestBase;
+import com.hp.hpl.jena.util.iterator.*;
+import java.util.*;
+import junit.framework.*;
+
+public class TestWrappedIterator extends GraphTestBase
+    {
+    public static TestSuite suite()
+        { return new TestSuite( TestWrappedIterator.class ); }   
+            
+    public TestWrappedIterator(String name)
+        { super(name); }
+
+    public void testWrappedIterator()
+        {
+        Iterator i = Arrays.asList( new String [] {"bill", "and", "ben"} ).iterator();
+        ExtendedIterator e = WrappedIterator.create( i );
+        assertTrue( "wrapper has at least one element", e.hasNext() );
+        assertEquals( "", "bill", e.next() );
+        assertTrue( "wrapper has at least two elements", e.hasNext() );
+        assertEquals( "", "and", e.next() );
+        assertTrue( "wrapper has at least three elements", e.hasNext() );
+        assertEquals( "", "ben", e.next() );
+        assertFalse( "wrapper is now empty", e.hasNext() );
+        }
     }
-
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("jena");
-        addTest("Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
-        addTest("Util", com.hp.hpl.jena.util.test.TestPackage.suite());
-        addTest(com.hp.hpl.jena.enhanced.test.TestPackage.suite());
-        addTest("Output", com.hp.hpl.jena.xmloutput.test.TestPackage.suite());
-        addTest("RDQL", com.hp.hpl.jena.rdql.test.RDQLTestSuite.suite());
-        addTest("N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
-        addTest( "Model", com.hp.hpl.jena.rdf.model.test.TestModel.suite() );
-        addTest( com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
-        addTest("Mega", com.hp.hpl.jena.regression.MegaTestSuite.suite());
-        addTest( com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
-    }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
-}
 
 /*
     (c) Copyright Hewlett-Packard Company 2002

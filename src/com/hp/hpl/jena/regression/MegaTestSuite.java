@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: MegaTestSuite.java,v 1.3 2003-01-28 16:21:39 chris-dollin Exp $
+ * $Id: MegaTestSuite.java,v 1.4 2003-01-30 10:25:17 chris-dollin Exp $
  */
 
 /*
@@ -36,7 +36,7 @@
 package com.hp.hpl.jena.regression;
 
 import junit.framework.TestSuite;
-import junit.framework.Test;
+
 /**
  * All developers should edit this file to add their tests.
  * Please try to name your tests and test suites appropriately.

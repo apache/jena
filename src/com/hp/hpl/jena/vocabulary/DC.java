@@ -33,17 +33,14 @@ package com.hp.hpl.jena.vocabulary;
 
 import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFException;
 
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:21:38 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-01-30 10:25:18 $
  */
 public class DC{
     

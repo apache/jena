@@ -23,17 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.1.1.1 2002-12-19 19:20:52 bwm Exp $
+ * $Id: testModelEquals.java,v 1.2 2003-01-30 10:25:17 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
-
-
-import java.io.PrintWriter;
-
 import com.hp.hpl.jena.mem.ModelMem;
 
 /**

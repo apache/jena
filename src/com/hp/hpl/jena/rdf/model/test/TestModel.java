@@ -1,48 +1,28 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.4 2003-01-30 10:24:49 chris-dollin Exp $
+  $Id: TestModel.java,v 1.1 2003-01-30 10:25:17 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.test;
+package com.hp.hpl.jena.rdf.model.test;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+import junit.framework.*;
 
-/**
- * All developers should edit this file to add their tests.
- * Please try to name your tests and test suites appropriately.
- * Note, it is better to name your test suites on creation
- * rather than in this file.
- * @author  jjc
- */
-public class TestPackage extends TestSuite {
+public class TestModel extends GraphTestBase
+    {
+    public static TestSuite suite()
+        { return new TestSuite( TestModel.class ); }   
+        
+    public TestModel(String name)
+        { super(name); }
 
-    static public Test suite() {
-        return new TestPackage();
+    public void testCreateDefaultModel()
+        {
+        Model m = Factory.createDefaultModel();
+        }    
     }
-
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("jena");
-        addTest("Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
-        addTest("Util", com.hp.hpl.jena.util.test.TestPackage.suite());
-        addTest(com.hp.hpl.jena.enhanced.test.TestPackage.suite());
-        addTest("Output", com.hp.hpl.jena.xmloutput.test.TestPackage.suite());
-        addTest("RDQL", com.hp.hpl.jena.rdql.test.RDQLTestSuite.suite());
-        addTest("N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
-        addTest( "Model", com.hp.hpl.jena.rdf.model.test.TestModel.suite() );
-        addTest( com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
-        addTest("Mega", com.hp.hpl.jena.regression.MegaTestSuite.suite());
-        addTest( com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
-    }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
-}
 
 /*
     (c) Copyright Hewlett-Packard Company 2002

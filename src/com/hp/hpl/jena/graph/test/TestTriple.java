@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.2 2003-01-28 16:20:48 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.3 2003-01-30 10:25:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -15,7 +15,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.AnonId;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 

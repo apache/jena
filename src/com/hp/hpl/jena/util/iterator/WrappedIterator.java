@@ -1,48 +1,54 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.4 2003-01-30 10:24:49 chris-dollin Exp $
+  $Id: WrappedIterator.java,v 1.1 2003-01-30 10:25:17 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.test;
+package com.hp.hpl.jena.util.iterator;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import java.util.*;
 
 /**
- * All developers should edit this file to add their tests.
- * Please try to name your tests and test suites appropriately.
- * Note, it is better to name your test suites on creation
- * rather than in this file.
- * @author  jjc
- */
-public class TestPackage extends TestSuite {
+    a WrappedIterator is an ExtendedIterator wrapping around a plain (or
+    presented as plain) Iterator. The wrapping allows the usual extended
+    operations (filtering, concatenating) to be done on an Iterator derived
+    from some other source.
+<br>
+    @author kers
+*/
 
-    static public Test suite() {
-        return new TestPackage();
+public class WrappedIterator extends NiceIterator
+    {
+    /**
+        factory method for creating a wrapper arounf _it_. We reserve
+        the right to deliver the argument if it's already an extended iterator.
+    */
+    public static WrappedIterator create( Iterator it )
+        { return new WrappedIterator( it ); }
+      
+    /** the base iterator that we wrap */  
+    private Iterator base;
+    
+    /** private constructor: remember the base iterator */
+    private WrappedIterator( Iterator base )
+        { this.base = base; }
+        
+    /** hasNext: defer to the base iterator */
+    public boolean hasNext()
+        { return base.hasNext(); }
+        
+    /** next: defer to the base iterator */
+    public Object next()
+        { return base.next(); }
+        
+    /** remove: defer to the base iterator */
+    public void remove()
+        { base.remove(); }
+        
+    /** close: defer to the base, iff it is closable */
+    public void close()
+        { if (base instanceof ClosableIterator) ((ClosableIterator) base).close(); }
     }
-
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("jena");
-        addTest("Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
-        addTest("Util", com.hp.hpl.jena.util.test.TestPackage.suite());
-        addTest(com.hp.hpl.jena.enhanced.test.TestPackage.suite());
-        addTest("Output", com.hp.hpl.jena.xmloutput.test.TestPackage.suite());
-        addTest("RDQL", com.hp.hpl.jena.rdql.test.RDQLTestSuite.suite());
-        addTest("N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
-        addTest( "Model", com.hp.hpl.jena.rdf.model.test.TestModel.suite() );
-        addTest( com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
-        addTest("Mega", com.hp.hpl.jena.regression.MegaTestSuite.suite());
-        addTest( com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
-    }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
-}
 
 /*
     (c) Copyright Hewlett-Packard Company 2002

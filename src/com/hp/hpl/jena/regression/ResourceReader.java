@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ResourceReader.java,v 1.1.1.1 2002-12-19 19:20:47 bwm Exp $
+  $Id: ResourceReader.java,v 1.2 2003-01-30 10:25:17 chris-dollin Exp $
 */
 
 /*
@@ -11,7 +11,7 @@
  */
 
 package com.hp.hpl.jena.regression;
-import java.io.InputStreamReader;
+
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.io.IOException;
  * Not intended for an applet environment.
  * 
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:20:47 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-30 10:25:17 $'
  */
 class ResourceReader  {
     // If false use FileInputSDtream's assuming we are in the correct directory;

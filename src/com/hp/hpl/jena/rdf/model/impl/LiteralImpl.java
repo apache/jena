@@ -36,14 +36,12 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.dt.RDFDatatype;
 import com.hp.hpl.jena.graph.dt.DatatypeFormatException;
 
-import java.util.zip.DataFormatException;
-
 import com.hp.hpl.jena.enhanced.*;
 
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:12 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-30 10:25:18 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
 //    private Node node;
