@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.4 2003-04-04 13:59:51 chris-dollin Exp $
+  $Id: Reifier.java,v 1.5 2003-05-06 07:43:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -84,8 +84,8 @@ public interface Reifier extends GetTriple
         the exception raised by _reifyAs_ if a node is already bound to
         a reified triple.
     */
-    static class AlreadyReifiedException extends RDFException 
-        { AlreadyReifiedException( Node n ) { super( n.toString() ); } };
+    static public class AlreadyReifiedException extends RDFException 
+        { public AlreadyReifiedException( Node n ) { super( n.toString() ); } };
     }
     
 /*
