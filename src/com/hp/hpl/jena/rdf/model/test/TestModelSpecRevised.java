@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.3 2004-07-28 15:33:45 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.4 2004-07-28 15:44:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -74,14 +74,14 @@ public class TestModelSpecRevised extends ModelTestBase
         catch (RulesetNotFoundException e) { assertEquals( "nowhere:man", e.getURI() ); }
         }
     
-    public void testRulesetURLWorks()
-        {
-        String uri = GenericRuleReasonerFactory.URI;
-        URL url = TestModelSpecRevised.class.getResource( "/testing/modelspecs/empty.rules" );
-        Model rs = modelWithStatements( "_a jms:reasoner " + uri + "; _a jms:ruleSetURL " + url );
-        Resource A = resource( "_a" );
-        ModelSpecImpl.getReasonerFactory( A, rs );
-        }
+//    public void testRulesetURLWorks()
+//        {
+//        String uri = GenericRuleReasonerFactory.URI;
+//        URL url = TestModelSpecRevised.class.getResource( "/testing/modelspecs/empty.rules" );
+//        Model rs = modelWithStatements( "_a jms:reasoner " + uri + "; _a jms:ruleSetURL " + url );
+//        Resource A = resource( "_a" );
+//        ModelSpecImpl.getReasonerFactory( A, rs );
+//        }
     
     protected void testGetReasoner(String uri, Class wantClass)
         {
