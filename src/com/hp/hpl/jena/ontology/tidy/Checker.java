@@ -491,6 +491,13 @@ public class Checker extends AbsChecker {
   	}
   	sa.add(b);
   }
+
+/* (non-Javadoc)
+ * @see com.hp.hpl.jena.ontology.tidy.AbsChecker#extraInfo()
+ */
+boolean extraInfo() {
+	return false;
+}
 }
 
 /*

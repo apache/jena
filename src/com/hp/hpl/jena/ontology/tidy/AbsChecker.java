@@ -33,11 +33,12 @@ abstract class AbsChecker {
 	CNodeI getCNode(Node n) {
 		CNodeI rslt = (CNodeI)nodeInfo.get(n);
 		if ( rslt == null ) {
-			rslt = CNode.create(n, this);
+			rslt = CNode.create(n, this );
 			nodeInfo.put(n,rslt);
 		}
 		return rslt;
 	}
+	abstract boolean extraInfo();
 	/**0 on failure, 1 on trivial, 2 on refinement.
 		 * @param topLevelCall True if t has not already been checked, false if t is being rechecked, as a result of some other changes
 		 * @param t A triple from a graph being checked.

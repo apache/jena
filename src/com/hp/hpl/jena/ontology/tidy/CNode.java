@@ -11,7 +11,7 @@ import com.hp.hpl.jena.graph.*;
  *
  */
 abstract class CNode implements CNodeI {
-	  static public CNode create(Node n, AbsChecker eg) {
+	  static public CNode create(Node n, AbsChecker eg ) {
 				// work out what sort of node this is.
 	        if (n.isLiteral())
 				return new CLit(n, eg);
@@ -82,9 +82,13 @@ abstract class CNode implements CNodeI {
 
 	final AbsChecker checker;
 	final Node node;
+	final MinimalityInfo minimalityInfo;
 	CNode(Node n, AbsChecker eg) {
 		checker = eg;
 		node = n;
+		  minimalityInfo = eg.extraInfo()?new MinimalityInfo(this):null;
+		  
+		  
 	}
 	public Node asNode() {
 		return node;

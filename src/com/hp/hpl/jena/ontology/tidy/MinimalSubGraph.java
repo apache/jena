@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.6 2003-08-27 13:04:44 andy_seaborne Exp $
+  $Id: MinimalSubGraph.java,v 1.7 2003-11-14 10:48:32 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import java.util.*;
+import com.hp.hpl.jena.shared.*;
 
 /**
  * This class breaks the invariant of its superclass.
@@ -17,9 +18,15 @@ import java.util.*;
  *
  */
 class MinimalSubGraph extends AbsChecker {
+	static final int MAXDIST = 10000;
 	private final Checker parent;
 	private final Set todo = new HashSet();
-	private final Set done = new HashSet();
+	//private final Set done = new HashSet();
+	private final Map minInfos = new HashMap();
+	
+	void add(MinimalityInfo x) {
+		minInfos.put(x.cn.asNode(),x);
+	}
 	/**
 	 * @param triple  triple U context is not lite/DL valid
 	 * @param context A lite/DL valid graph
@@ -33,7 +40,14 @@ class MinimalSubGraph extends AbsChecker {
 			// getContradicition()
 			hasBeenChecked.add(problem);
 		} else {
+			if ( true ) 
+			  return;
+			hasBeenChecked.delete(problem);
+			setDistance(problem.getSubject(),0);
+			setDistance(problem.getPredicate(),0);
+			setDistance(problem.getObject(),0);
 			todo(problem);
+			hasBeenChecked.add(problem);
 			extend();
 		}
 	}
@@ -43,79 +57,150 @@ class MinimalSubGraph extends AbsChecker {
 	}
 
 	private void todo(Triple t) {
-		todo(t.getSubject());
-		todo(t.getObject());
-		todo(t.getPredicate());
+		if (!hasBeenChecked.contains(t))
+			todo.add(t);
+	}
+	private void todo(Node s, Node p, Node o) {
+		Iterator it = parent.hasBeenChecked.find(s,p,o);
+		while ( it.hasNext() ) {
+			Triple t = (Triple)it.next();
+			todo(t);
+		}
 	}
 	private void todo(Node n) {
-		if (!done.contains(n))
-			todo.add(n);
+		todo(n,Node.ANY,Node.ANY);
+		todo(Node.ANY,n,Node.ANY);
+		todo(Node.ANY,Node.ANY,n);
 	}
 	// pre-condition hasBeenChecked union ctxt is a contradicition
 	// pre-condition ctxt is reachable from problem
 	// post-condition hasBeenChecked is a contradiction
 	private void extend() {
 		while (true) {
+			Triple bestTriple = null;
+			boolean bestIsTrivial = true;
+			Triple tryMe = null;
+			int bestScore = 0;
+			
+
+			Iterator it2 = minInfos.values().iterator();
+			while (it2.hasNext()) {
+				MinimalityInfo mi = (MinimalityInfo)it2.next();
+				mi.oldCategory = mi.cn.getCategories();
+			}
+			// Foreach node in todo try extending it
+			Iterator it = todo.iterator();
+			while (it.hasNext()) {
+				tryMe = (Triple)it.next();
+				// Reset minInfos
+				
+				switch ( addX(tryMe, true) ) {
+					case 0:
+					  return;
+					case 1:
+					 if (!bestIsTrivial) break;
+					int sc = score();
+					if ( sc > bestScore ) {
+					  bestScore = sc;
+					  bestTriple = tryMe;
+					}
+				  	break;
+					case 2:
+					  if (bestIsTrivial) {
+					  	bestIsTrivial = false;
+					  	bestScore = 0;
+					  }
+					  sc = score();
+					  if ( sc > bestScore ) {
+					  	bestScore = sc;
+					  	bestTriple = tryMe;
+					  }
+					  break;
+					default:
+					  throw new BrokenException("Can't happen");
+				}
+				hasBeenChecked.delete(tryMe);
+				it2 = minInfos.values().iterator();
+				while (it2.hasNext()) {
+					MinimalityInfo mi = (MinimalityInfo)it2.next();
+					mi.cn.setCategories(mi.oldCategory,false);
+			//		mi.cn.getCategories();
+				}
+				
+			}
+			
+
+			if ( bestTriple == null)
+			 throw new BrokenException("no bestTriple");
+			// Choose best and extend
+			addX( bestTriple, true );
+			todo.remove(bestTriple);
+			
+			todo(bestTriple.getSubject());
+			todo(bestTriple.getPredicate());
+			todo(bestTriple.getObject());
+			int bestDistance = MAXDIST;
+			int d = getDistance(bestTriple.getSubject());
+			if ( d>= 0 && d<bestDistance) {
+				bestDistance = d;
+			}
+			d = getDistance(bestTriple.getPredicate());
+			if ( d>= 0 && d<bestDistance) {
+				bestDistance = d;
+			}
+			d = getDistance(bestTriple.getObject());
+			if ( d>= 0 && d<bestDistance) {
+				bestDistance = d;
+			}
+			setDistance(bestTriple.getSubject(),bestDistance);
+			setDistance(bestTriple.getPredicate(),bestDistance);
+			setDistance(bestTriple.getObject(),bestDistance);
+			
+			/*
 			// todo cannot be empty, because if it were
 			// we would have found a contradiction.
 			Node n = (Node) todo.iterator().next();
-			todo.remove(n);
-			done.add(n);
+		//	todo.remove(n);
+		//	done.add(n);
 			if (unfinished(n)) {
 				if (extend(n))
 					return;
 			}
+			*/
 		}
 	}
 
-	// return true if hasBeenChecked is a contradiction
-	private boolean extend(Node n) {
-		return extend(n, null, null, n)
-			|| extend(null, n, null, n)
-			|| extend(null, null, n, n);
-	}
-	private boolean unfinished(Node n) {
-		CNodeI inp = parent.getCNode(n);
-		CNodeI here = getCNode(n);
-		return inp.getCategories() != here.getCategories();
-	}
-	private boolean nontrivialReally(Node qu, Node rslt) {
-		return qu != null && unfinished(rslt);
-	}
-	// consider adding matching triples, return true on a contradiction
-	private boolean extend(Node s, Node p, Node o, Node k) {
-		Iterator it = parent.hasBeenChecked.find(s, p, o);
-		while (it.hasNext()) {
-			Triple t = (Triple) it.next();
-			int r = addX(t, true);
-			switch (r) {
-				case 0 :
-				    hasBeenChecked.add(t);
-					return true;
-				case 1 :
-					if (// if the only unfinished node is
-					// the one we started with then this is not interesting
-					 (!(nontrivialReally(s,t.getSubject())
-						|| nontrivialReally(p, t.getPredicate())
-						|| nontrivialReally(o, t.getObject())))
-						|| // Moreover, if the one we started with is now finished, it wasn't
-					// this time, and so we can wait for the other nodes to get back
-					// to us.
-					 (
-							!unfinished(k))) {
-						hasBeenChecked.delete(t);
-						break;
-					}
-					// fall through
-				case 2 :
-					todo(t);
-					break;
-			}
-
-		}
-		return false;
-
-	}
+  int getDistance(Node n) {
+  	MinimalityInfo mi = (MinimalityInfo)minInfos.get(n);
+  	return mi.distance;
+  }
+  void setDistance(Node n, int d) {
+	((MinimalityInfo)minInfos.get(n)).distance = d;
+  }
+  int score() {
+  	int bestSc = 0;
+  	Iterator it = minInfos.values().iterator();
+  	while (it.hasNext() ) {
+  		MinimalityInfo mi = (MinimalityInfo)it.next();
+  		int distScore = (MAXDIST - mi.distance)*MAXDIST;
+  		if ( distScore + MAXDIST < bestSc)
+  		  continue;
+  		int newCatLength = CategorySet.getSet(mi.cn.getCategories()).length;
+  		int oldCatLength = CategorySet.getSet(mi.oldCategory).length;
+  		
+  		//if ( newCatLength == oldCatLength )
+  		//  continue;
+  		if ( newCatLength > oldCatLength)
+  		  throw new BrokenException("cat length problem");
+  		distScore += oldCatLength - newCatLength;
+  		
+  		if ( distScore > bestSc)
+  		  bestSc = distScore;
+  		
+  	}
+  	return bestSc;
+  	
+  }
 
 	// The remaining methods are no-ops.
 	// These allow the sharing of AbsChecker between this class
@@ -125,6 +210,13 @@ class MinimalSubGraph extends AbsChecker {
 	 */
 	void actions(long key, CNodeI s, CNodeI o, Triple t) {
 		// nothing
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.AbsChecker#extraInfo()
+	 */
+	boolean extraInfo() {
+		return true;
 	}
 
 
