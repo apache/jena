@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:25 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-10 11:06:55 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.8 2004-12-06 13:50:25 andy_seaborne Exp $
+ * @version CVS $Id: TestList.java,v 1.9 2005-02-10 11:06:55 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase
@@ -748,7 +748,7 @@ public class TestList
             
             
             // delete all of list1 in one go
-            list1.removeAll();
+            list1.removeList();
             
             // model should now be empty
             assertEquals( "Model should be empty after deleting two lists", 0, m.size() );

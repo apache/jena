@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFList.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:12 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-10 11:06:17 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: RDFList.java,v 1.8 2004-12-06 13:50:12 andy_seaborne Exp $)
+ * @version Release ($Id: RDFList.java,v 1.9 2005-02-10 11:06:17 ian_dickinson Exp $)
  */
 public interface RDFList
     extends Resource
@@ -375,12 +375,31 @@ public interface RDFList
     
     
     /**
-     * <p>Remove all of the components of this list from the model.  Note that this
-     * is operation is only removing the list cells themselves, not the resources
-     * referenced by the list - unless being the object of an <code>rdf:first</code>
-     * statement is the only mention of that resource in the model. 
+     * <p>Deprecated. Since an <code>RDFList</code> does not behave like a Java container, it is not
+     * the case that the contents of the list can be removed and the container filled with values
+     * again. Therefore, this method name has been deprecated in favour of {@link #removeList}</p>
+     * @deprecated Replaced by {@link #removeList}
      */
     public void removeAll();
+    
+    
+    /**
+     * <p>Remove all of the components of this list from the model. Once this operation
+     * has completed, the {@link RDFList} resource on which it was called will no
+     * longer be a resource in the model, so further methods calls on the list object
+     * (for example, {@link #size} will fail.  Due to restrictions on the encoding
+     * of lists in RDF, it is not possible to perform an operation which empties a list
+     * and then adds further values to that list. Client code wishing to perform
+     * such an operation should do so in two steps: first remove the old list, then 
+     * create a new list with the new contents. It is important that RDF statements
+     * that reference the old list (in the object position) be updated to point 
+     * to the newly created list.  
+     * Note that this
+     * is operation is only removing the list cells themselves, not the resources
+     * referenced by the list - unless being the object of an <code>rdf:first</code>
+     * statement is the only mention of that resource in the model.</p>
+     */
+    public void removeList();
     
     
     /**
