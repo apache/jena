@@ -77,6 +77,10 @@
         <mkdir  dir="${src.dir}"/>
         <copy todir="${src.dir}">
             <fileset dir="${orig-src.dir}"
+                     includes="*"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/*"/>
+            <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/enhanced/**"/>
             <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/graph/**"/>
