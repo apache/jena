@@ -5,15 +5,16 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import java.net.UnknownHostException;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Date;
-import java.net.UnknownHostException;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.4 $ on $Date: 2003-05-01 23:59:15 $
+* @version $Revision: 1.5 $ on $Date: 2003-05-02 22:18:52 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -88,6 +89,7 @@ public abstract class DriverRDB implements IRDBDriver {
 
    /** Set to true if the insert operations should be done using the "proc" versions */
    protected boolean INSERT_BY_PROCEDURE;
+   
 
 // =======================================================================
 //	Common variables
@@ -134,6 +136,18 @@ public abstract class DriverRDB implements IRDBDriver {
     protected SpecializedGraph m_sysProperties = null;
     
     protected IDBConnection m_dbcon = null;
+    
+    //===================================
+    // for transaction support
+    //===================================
+    
+    
+    // caches whether or not underlying connection supports transactions
+    private Boolean m_transactionsSupported;
+    
+	/** flag to indicate that there is a transaction active on the associated connection */
+	protected boolean inTransaction = false;
+
 
 
 //	=======================================================================
@@ -514,32 +528,101 @@ public abstract class DriverRDB implements IRDBDriver {
 	private void notSupported(String opName)
 		{ throw new UnsupportedOperationException(opName); }
 		
-	/**
+		/**
 	 * If underlying database connection supports transactions, call abort()
 	 * on the connection, then turn autocommit on.
 	 */
-	public void abort()
-		{ notSupported("abort transaction"); }
+	public synchronized void abort() throws RDFRDBException {
+		if (transactionsSupported()) {
+			try {
+				if (inTransaction) {
+				  Connection c = m_sql.getConnection();
+				  c.rollback();
+				  c.commit();
+				  c.setAutoCommit(true);
+				  inTransaction = false;
+				}
+			} catch (SQLException e) {
+				throw new RDFRDBException("Transaction support failed: ", e);
+			}
+		} else {
+		}
+	}
+        
+
+
+
         
 	/**
 	 * If the underlying database connection supports transactions,
 	 * turn autocommit off, then begin a new transaction.
+	 * Note that transactions are associated with connections, not with
+	 * Models.  This 
 	 */
-	public void begin()
+	public synchronized void begin() throws  RDFRDBException {
+	  if (transactionsSupported()) {
+		try {
+			if (!inTransaction) {
+				// Starting a transaction could require us to lose any cached prepared statements
+				// for some jdbc drivers, currently I think all the drivers we use are safe and
+				// is a major performance hit so commented out for now.
+			  m_sql.flushPreparedStatementCache();
+			  Connection c = m_sql.getConnection();
+			  c.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			  c.setAutoCommit(false);
+			  inTransaction = true;
+			}
+		} catch (SQLException e) {
+			throw new RDFRDBException("Transaction support failed: ", e);
+		}
+	} else
 		{ notSupported("begin transaction"); }
-        
+	}
+	
 	/**
 	 * If the underlying database connection supports transactions,
 	 * call commit(), then turn autocommit on.
 	 */
-	public void commit()
-		{ notSupported("commit transaction"); }
+	public void commit() throws RDFRDBException{
+		if (transactionsSupported()) {
+			try {
+				  if (inTransaction) {
+				  	Connection c = m_sql.getConnection();
+					c.commit();
+					c.setAutoCommit(true);
+					c.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+					inTransaction =  false;
+				   }
+				} catch (SQLException e) {
+						throw new RDFRDBException("Transaction support failed: ", e);
+				}
+		} else {
+				  notSupported("commit transaction"); 
+		}
+	}
         
 	/**
 	 * Returns true if the underlying database supports transactions.
 	 */
-	public boolean transactionsSupported()
-		{ return false; }
+	public boolean transactionsSupported() { 
+		if (m_transactionsSupported != null) {
+			return(m_transactionsSupported.booleanValue());	
+		}
+		
+		if (m_dbcon != null) {
+			try {
+				Connection c = m_sql.getConnection();
+				if ( c != null) {
+					m_transactionsSupported = new Boolean(c.getMetaData().supportsMultipleTransactions());
+					return(m_transactionsSupported.booleanValue());
+				}
+			} catch (SQLException e) {
+				Log.severe("SQL Exception caught " + e);
+			}
+		}
+		return (false);
+			
+		}
         
 
 
