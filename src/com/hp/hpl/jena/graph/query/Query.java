@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.33 2004-07-21 13:12:06 chris-dollin Exp $
+  $Id: Query.java,v 1.34 2004-07-21 14:15:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -113,7 +113,7 @@ public class Query
         { 
         if (e.isApply() && e.getFun().equals( ExpressionFunctionURIs.AND ))
            for (int i = 0; i < e.argCount(); i += 1) addConstraint( e.getArg( i ) ); 
-        else if (e.isApply() && e.getFun().equals( ExpressionFunctionURIs.prefix + "Q_StringMatch"))
+        else if (e.isApply() && e.argCount() == 2 && e.getFun().equals( ExpressionFunctionURIs.prefix + "Q_StringMatch"))
             constraint.add( Rewrite.rewriteStringMatch( e ) );
         else
             constraint.add( e );
