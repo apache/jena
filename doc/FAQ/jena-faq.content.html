@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.8 2003-11-20 14:14:20 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.9 2003-11-20 15:05:00 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -163,9 +163,9 @@ Jena 2 &ndash; Frequently Asked Questions
 	</p>
 
 <p id="ontology-2">
-  <strong>Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
+  <strong>Q: Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
   <code>ConversionException</code> on SymmetricProperty (or other property types)?</strong><br />
-  This is a slightly tricky issue.  Internally, <code>.as()</code> calls the <em>supports</em> check,
+  <strong>A:</strong> This is a slightly tricky issue.  Internally, <code>.as()</code> calls the <em>supports</em> check,
   which tests whether the node that is being converted is a common flavour of property.
   Strictly, the only necessary test should be '<code>has rdf:type rdf:Property</code>',
   because that is entailed by all of the other property types.  However, that requires
