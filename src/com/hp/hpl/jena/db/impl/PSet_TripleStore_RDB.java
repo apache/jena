@@ -56,7 +56,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.14 $ on $Date: 2003-05-08 05:52:42 $
+* @version $Revision: 1.15 $ on $Date: 2003-05-11 01:37:54 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -144,13 +144,14 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	public void setInsertByProcedure(boolean value) { INSERT_BY_PROCEDURE = value; }
 	public void setCachePreparedStatements(boolean value) { CACHE_PREPARED_STATEMENTS = value; }
 	
+	
 	/**
 	 * Sets m_ASTName variable.
 	 * 
 	 * @param newName the name of the Asserted Statement Table
 	 */
 	public void setASTname(String newName){
-		m_ASTName = newName.toUpperCase();
+		m_ASTName = m_driver.toDBIdentifier(newName);
 		if (! doesTableExist(m_ASTName)) {
 			createASTable(m_ASTName);
 		}
@@ -281,6 +282,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
             boolean isInt = false; // true if literal can be interpreted as an integer
 			boolean hasLang = false; // true if literal has language
 			boolean hasType = false;
+			boolean isHuge = false; // true if literal larger than MAX_LITERAL
 /*            // Check if the literal can be translated to an int
             try {
                 val = Integer.parseInt(l.toString());
@@ -295,13 +297,15 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			LiteralLabel ll = l.getLiteral();
 
 			int len = lit.length();
+			if (len > MAX_LITERAL) 
+			    isHuge = true;
             
             if (! isInt && (len >= MAX_LITERAL))
             	opname += "Blob";
        
 			hasLang = literalHasLang(ll);
 			hasType = literalHasType(ll);
-
+			
             //DEBUG System.out.println("opname was " + opname);
             PreparedStatement ps = m_sql.getPreparedSQLStatement(opname);
             int argi = 1;
@@ -328,33 +332,10 @@ public  class PSet_TripleStore_RDB implements IPSet {
                 System.arraycopy(temp, 0, litData, 4, lenb);
                 
                 // Oracle has its own way to insert Blobs
-				if (m_driver.getDatabaseType().equalsIgnoreCase("Oracle")) {
-            		Connection dbcon = m_sql.getConnection();
-            		boolean saved = dbcon.getAutoCommit();
-            		dbcon.setAutoCommit(false);
-            		
-            		// insert a placeholder with an empty blob
-            		ps.executeUpdate();
-			//		m_sql.returnPreparedSQLStatement(ps, opname);
-            		
-            		// lock the new row for update
-            		PreparedStatement ops = m_sql.getPreparedSQLStatement("lockLiteralwithIdBlob");
-            		ops.setObject(1,id.getID());
-					ResultSet rs = ops.executeQuery();
-					rs.next();
-					IDBBlob dbBlob = DBBlob.getDBBlob(rs.getBlob(1),"Oracle");
-					
-					// oracle.sql.BLOB dbBlob = (oracle.sql.BLOB)rs.getBlob(1);
-				//	m_sql.returnPreparedSQLStatement(ops,"lockLiteralwithIdBlob");
-					
-					ops = dbcon.prepareStatement("updateBlobForLiteralID");
-					dbBlob.putBytes(1,litData);
-					ops.setObject(2,id.getID());
-					ops.setBlob(1,(Blob)dbBlob.getBlob());
-					dbcon.commit();
-					dbcon.setAutoCommit(saved);
-			//		m_sql.returnPreparedSQLStatement(ops, "updateBlobForLiteralID");
-					return(id);
+				if (isHuge && m_driver.getDatabaseType().equalsIgnoreCase("Oracle")) {
+            		//TODO fix to use Blob
+            		// For now, we do not support Blobs under Oracle
+            		throw new RDFRDBException("Oracle driver does not currently support large literals.");
 				} else {
 					ps.setBinaryStream(argi++, new ByteArrayInputStream(litData), litData.length);
 				}
