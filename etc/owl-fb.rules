@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.45 2004-03-02 13:38:53 der Exp $
+# $Id: owl-fb.rules,v 1.46 2004-03-04 16:29:11 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -228,9 +228,10 @@
 # and so does not appear in the subject position
 [restrictionSubclass1: (?D owl:equivalentClass ?R), isFunctor(?R) ->
        [restrictionSubclass1b: (?X rdf:type ?D) <- (?X rdf:type ?R)] ]
-       
-[restrictionSubclass2: (?D owl:equivalentClass ?R), isFunctor(?R) ->
-       [restrictionSubclass2b: (?X rdf:type ?R) <- (?X rdf:type ?D)] ]
+ 
+# This is redundant because equivalentClass is symmetric anyway      
+#[restrictionSubclass2: (?D owl:equivalentClass ?R), isFunctor(?R) ->
+#       [restrictionSubclass2b: (?X rdf:type ?R) <- (?X rdf:type ?D)] ]
        
 # Temp trial - might replace above       
 #[restrictionSubclass1: (?D owl:equivalentClass ?R), isFunctor(?R) , (?X rdf:type ?R) -> (?X rdf:type ?D)]
