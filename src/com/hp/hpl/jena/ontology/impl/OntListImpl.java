@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-11 15:17:03 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-02-13 22:44:37 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.2 2003-02-11 15:17:03 chris-dollin Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.3 2003-02-13 22:44:37 ian_dickinson Exp $
  */
 public class OntListImpl
     extends ResourceImpl
@@ -88,6 +88,10 @@ public class OntListImpl
     
     /** Error message if validity check fails */
     protected String m_errorMsg = null;
+    
+    /** Pointer to the node that is the tail of the list */
+    protected OntList m_tail = null;
+    
     
     
     // Constructors
@@ -217,17 +221,9 @@ public class OntListImpl
         }
         
         checkNotNil( "Tried to set the tail of an empty list" );
-        
+
         // @todo fix this once we know what the official mechanism is for mapping Resource -> Polymorphic
-        Statement current = getProperty( getVocabulary().getTail() );
-        Resource oldTail = current.getResource();
-        
-        // out with the old, in with the new
-        current.remove();
-        addProperty( getVocabulary().getTail(), tail );
-        
-        // return the old tail @todo fixme  Resource -> Polymorphic
-        return (OntList) ((EnhNode) oldTail).as( OntList.type );
+        return (OntList) ((EnhNode) setTailAux( this, tail, getVocabulary().getTail() )).as( OntList.type );
     }
     
     
@@ -274,15 +270,39 @@ public class OntListImpl
         }
         
         // create a new, anonymous typed resource to be the list cell
-        Resource cell = getModel().createResource();
-        cell.addProperty( RDF.type, getVocabulary().getCellType() );
-        
-        // set the head and tail
-        cell.addProperty( getVocabulary().getHead(), value );
-        cell.addProperty( getVocabulary().getTail(), this );
-        
         // map to a list facet @todo fixme Resource -> polymorphic
-        return (OntList) ((EnhNode) cell).as( OntList.type );
+        return (OntList) ((EnhNode) newListCell( value, this )).as( OntList.type );
+    }
+    
+    
+    /**
+     * <p>
+     * Add the given value to the end of the list. This means that the tail of
+     * the last list cell is side-effected to insert a cell with the given value
+     * before the nil element.
+     * </p>
+     * 
+     * @param value A new value to add to the head of the list
+     * @return This list
+     */
+    public OntList add( RDFNode value ) {
+        if (m_checkValid) {
+            checkValid();
+        }
+        
+        // if this is the empty list, we create a new node containing value - i.e. cons
+        if (isEmpty()) {
+            return cons( value );
+        }
+        
+        // get the tail of the list (which may be cached)
+        OntList tail = findElement( true, 0 );
+        
+        // now do the concatenate
+        setTailAux( tail, newListCell( value, getVocabulary().getNil() ), getVocabulary().getTail() );
+
+        // return this list to allow chaining
+        return this;
     }
     
     
@@ -732,6 +752,25 @@ public class OntListImpl
     }
     
     
+    /**
+     * <p>
+     * Construct a new list cell with the given value and tail.
+     * </p>
+     * 
+     * @param value The value at the head of the new list cell
+     * @param tail The tail of the list cell
+     * @return A new list cell as a resource
+     */
+    public Resource newListCell( RDFNode value, Resource tail ) {
+        Resource cell = getModel().createResource( getVocabulary().getCellType() );
+        
+        // set the head and tail
+        cell.addProperty( getVocabulary().getHead(), value );
+        cell.addProperty( getVocabulary().getTail(), tail );
+        
+        return cell;        
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////
@@ -880,6 +919,29 @@ public class OntListImpl
     }
     
     
+    /**
+     * <p>
+     * Helper method for setting the list tail, that assumes we have
+     * a resource that is a list.
+     * </p>
+     * 
+     * @param root The resource representing the list cell we're setting the
+     * tail of
+     * @param tail The new tail for this list, as a resource.
+     * @return The old tail, as a resource.
+     */
+    protected static Resource setTailAux( Resource root, Resource tail, Property pTail ) {
+        Statement current = root.getProperty( pTail );
+        Resource oldTail = current.getResource();
+            
+        // out with the old, in with the new
+        current.remove();
+        root.addProperty( pTail, tail );
+            
+        return oldTail;
+    }
+        
+        
     
     //==============================================================================
     // Inner class definitions
@@ -958,7 +1020,7 @@ public class OntListImpl
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright Hewlett-Packard Company 2002-2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
