@@ -1,4 +1,4 @@
-# Generic SQL driver file for Oracle suitable for multi-model formats
+# Generic SQL driver file for MySQL suitable for multi-model formats
 #
 #-------------------------------------------------------------------
 # Initialize a blank database - create tables and indexes - compound statement group
@@ -14,12 +14,11 @@ CREATE TABLE JENA_SYS_STMTASSERTED (
 CREATE TABLE JENA_LITERALS (
  LiteralId     MediumInt NOT NULL AUTO_INCREMENT PRIMARY KEY,
  LiteralIdx     tinyblob NOT NULL,
- TypeRes       VARCHAR(250),
  Lang          VARCHAR(250),
  asBLOB          BLOB,
  AsFloat       FLOAT,
  AsInt         INTEGER,
- ObjXSDType    VARCHAR(250)
+ XSDType    VARCHAR(250)
 ) TYPE = INNODB;;
 CREATE TABLE JENA_SYS_STMTREIFIED (
  SubjRes       VARCHAR(250),
@@ -147,9 +146,14 @@ getRowCount
 SELECT COUNT(*) FROM ${a}
 
 #-------------------------------------------------------------------
-# Insert a non-Blob literal string with Lang
-insertLiteralLang
-INSERT INTO JENA_LITERALS(LITERALIDX, LANG) VALUES (?,?)
+# Insert a non-Blob literal string
+insertLiteral
+INSERT INTO JENA_LITERALS(LITERALIDX, LANG, XSDType) VALUES (?,?,?)
+
+#-------------------------------------------------------------------
+# Insert a Blob literal string
+insertLiteralBlob
+INSERT INTO JENA_LITERALS(LITERALIDX, AsBLOB, LANG, XSDType) VALUES (?,?,?,?)
 
 #-------------------------------------------------------------------
 # Insert a non-Blob literal string without Lang
@@ -205,7 +209,7 @@ SELECT LITERALID FROM JENA_LITERALS WHERE LITERALIDX = ? AND lang = ?
 #-------------------------------------------------------------------
 # Return the details of a literal
 getLiteral
-SELECT asBLOB, LITERALIDX, Lang, OBJXSDType FROM JENA_LITERALS WHERE LITERALID = ?
+SELECT asBLOB, LITERALIDX, Lang, XSDType FROM JENA_LITERALS WHERE LITERALID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph

@@ -24,7 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.zip.CRC32;
 
-import com.hp.hpl.jena.datatypes.BaseDatatype;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.LiteralLabel;
 import com.hp.hpl.jena.graph.Node;
@@ -56,7 +57,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.11 $ on $Date: 2003-05-06 09:42:28 $
+* @version $Revision: 1.12 $ on $Date: 2003-05-06 16:58:24 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -280,36 +281,28 @@ public  class PSet_TripleStore_RDB implements IPSet {
             int val = 0;               // Integer translation of l, if possible
             boolean isInt = false; // true if literal can be interpreted as an integer
 			boolean hasLang = false; // true if literal has language
-            // Check if the literal can be translated to an int
+			boolean hasType = false;
+/*            // Check if the literal can be translated to an int
             try {
                 val = Integer.parseInt(l.toString());
                 isInt = true;
             } catch (NumberFormatException e) {
                 isInt = false;
             }
-            String opname = isInt ? "insertLiteralInt" : "insertLiteral";
-            
-			if (!SKIP_ALLOCATE_ID) {
-				opname += "withId";
-			}
-			
+*/
+            String opname = "insertLiteral";
+            			
 			String lit = l.toString();
+			LiteralLabel ll = l.getLiteral();
+
 			int len = lit.length();
             
-            if (! isInt && len >= MAX_LITERAL)
+            if (! isInt && (len >= MAX_LITERAL))
             	opname += "Blob";
-            
+       
+			hasLang = literalHasLang(ll);
+			hasType = literalHasType(ll);
 
-            if (INSERT_BY_PROCEDURE) opname = opname + "Proc";
-            
-			if (l.getLiteral().language().length() == 0) {
-				opname += "NoLang";
-				hasLang = false;
-			} else {
-				opname += "Lang";
-				hasLang = true;
-			}
-            
             //DEBUG System.out.println("opname was " + opname);
             PreparedStatement ps = m_sql.getPreparedSQLStatement(opname);
             int argi = 1;
@@ -368,13 +361,19 @@ public  class PSet_TripleStore_RDB implements IPSet {
 				}
             } 
             
-            if (isInt) {
+/*            if (isInt) {
                 ps.setInt(argi++, val);
             }       
-            
-            if (hasLang) {
+*/           
+            if (hasLang)
 				ps.setString(argi++, l.getLiteral().language());
-            }
+            else
+            	ps.setNull(argi++, java.sql.Types.VARCHAR);
+			if (hasType)
+				ps.setString(argi++, l.getLiteral().getDatatypeURI());
+			else
+				ps.setNull(argi++, java.sql.Types.VARCHAR);
+
 			
 			// TODO update here to work with executeBatch()
             if (INSERT_BY_PROCEDURE) {
@@ -442,9 +441,17 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		String lang = ll.language();
 		String ls = (String)(ll.getValue());
 		
-		return (ls.length() < MAX_LITERAL) &&
-			/* ((dtype == null) || dtype.equals("")) && */
-			((lang == null)  || lang.equals(""));
+		return (ls.length() < MAX_LITERAL) && !((literalHasLang(ll) || literalHasType(ll)));
+	}
+	
+	protected boolean literalHasLang ( LiteralLabel ll ) {
+		String lang = ll.language();		
+		return ((lang != null)  && !lang.equals(""));
+	}
+
+	protected boolean literalHasType ( LiteralLabel ll ) {
+		String dtype = ll.getDatatypeURI();		
+		return ((dtype != null) && !dtype.equals(""));
 	}
 			
 	/**
@@ -652,7 +659,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		if ( typeRes == null ) {
 			llabel = new LiteralLabel(literal,Lang == null ? "" : Lang);
 		} else {
-			BaseDatatype dt = new BaseDatatype(typeRes);
+//			BaseDatatype dt = new BaseDatatype(typeRes);
+			RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeRes);
 			llabel = new LiteralLabel(literal,Lang, dt);
 		}	 
 		return ((Node_Literal)Node.createLiteral(llabel));
