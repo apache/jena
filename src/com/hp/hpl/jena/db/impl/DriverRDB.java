@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.26 $ on $Date: 2003-08-19 02:29:22 $
+* @version $Revision: 1.27 $ on $Date: 2003-08-22 16:15:40 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1442,7 +1442,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		if ( !lobj.head.substring(0,3).equals(RDBcode + RDBCodeValue + RDBCodeDelim) )
 			throw new RDFRDBException("Malformed URI in Database: " + lobj.head);
 		res = lobj.head.substring(3,lobj.head.length() - EOS_LEN);
-		res = res + lobj.tail;	
+		if ( lobj.tail != null )
+			res = res + lobj.tail;	
 		return res;
 	}
 
