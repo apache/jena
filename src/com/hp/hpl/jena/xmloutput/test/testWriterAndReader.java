@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterAndReader.java,v 1.13 2003-04-05 08:56:39 jeremy_carroll Exp $
+  $Id: testWriterAndReader.java,v 1.14 2003-06-12 09:19:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -10,6 +10,7 @@ package com.hp.hpl.jena.xmloutput.test;
 import com.hp.hpl.jena.rdf.model.*;
 
 import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
@@ -32,7 +33,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-04-05 08:56:39 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-06-12 09:19:07 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	static private boolean showProgress = false;
@@ -470,7 +471,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	 */
 	public void warning(Exception e) {
 		Log.warning(toString() + " " + e.getMessage());
-		throw new RuntimeException(e.getMessage());
+		throw new JenaException( e );
 	}
 	public void error(Exception e) {
 		fail(e.getMessage());
@@ -522,5 +523,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.13 2003-04-05 08:56:39 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.14 2003-06-12 09:19:07 chris-dollin Exp $
  */

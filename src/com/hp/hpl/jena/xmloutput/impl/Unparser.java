@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.11 2003-05-21 16:45:20 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.12 2003-06-12 09:18:55 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -98,11 +98,13 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.arp.*;
 import org.apache.xerces.util.XMLChar;
 
+import com.hp.hpl.jena.shared.*;
+
 import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-05-21 16:45:20 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-06-12 09:18:55 $'
 
  */
 class Unparser {
@@ -1109,8 +1111,8 @@ class Unparser {
 	/* Unexpected error.
 	 */
 	private void error(String msg) {
-		RuntimeException e =
-			new RuntimeException("Internal error in Unparser: " + msg);
+		JenaException e =
+			new JenaBrokenException( "Internal error in Unparser: " + msg );
 		this.prettyWriter.fatalError(e);
 		throw e; // Just in case.
 	}
@@ -1137,7 +1139,7 @@ class Unparser {
 				"Internal error - giving up",
 				"Unparser",
 				"getNameSpace");
-			throw new RuntimeException("Internal error");
+			throw new JenaBrokenException( "Internal error: getNameSpace(bNode)" );
 		} else {
 			String uri = r.getURI();
 			int split = Util.splitNamespace(uri);
@@ -1184,7 +1186,7 @@ class Unparser {
 				"Internal error - giving up",
 				"Unparser",
 				"getLocalName");
-			throw new RuntimeException("Internal error");
+			throw new JenaBrokenException( "Internal error: getLocalName(bNode)" );
 		} else {
 			String uri = r.getURI();
 			int split = Util.splitNamespace(uri);

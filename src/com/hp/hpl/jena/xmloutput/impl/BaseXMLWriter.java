@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.11 2003-05-30 13:50:15 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.12 2003-06-12 09:18:52 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -23,6 +23,8 @@ import com.hp.hpl.jena.vocabulary.RSS;
 import com.hp.hpl.jena.vocabulary.VCARD;
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
+
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.rdf.arp.URI;
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
@@ -58,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-05-30 13:50:15 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-06-12 09:18:52 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -296,6 +298,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			true);
 	}
 	static public boolean dbg = false;
+    
 	String tag(String uri, String local, int type, boolean localIsQname) {
 		if (dbg)
 			System.err.println(uri + " - " + local);
@@ -327,7 +330,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				"Internal error: unexpected QName URI: <"
 					+ uri
 					+ ">.  Fixing up with j.cook.up code.",
-				new RuntimeException());
+				new JenaBrokenException( "unexpected QName URI " + uri ));
 			cookUp = true;
 		} else if (prefix.length() == 0) {
 			if (type == ATTR || type == FASTATTR)
@@ -360,7 +363,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 					break;
 				case FAST :
 					logger.fatal("Unreachable code - reached.");
-					throw new RuntimeException("Shouldn't happen.");
+					throw new JenaBrokenException( "cookup reached final FAST" );
 			}
 		}
 		return prefix + ":" + local;
