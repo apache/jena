@@ -9,6 +9,7 @@ package com.hp.hpl.jena.db;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.db.impl.DBQueryHandler;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.graph.*;
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -65,6 +66,7 @@ public class ModelRDB extends ModelCom implements Model {
      * formatting is inserted and opened.
      * @param dbcon a Connection specifying the database connection
      * @param modelID is the identifier of an RDF model within the database.
+     * The modelID "DEFAULT" is reserved and may not be used for user models.
      * @deprecated Since Jena 2.0, this call is not recommended -
      * in the short-term use ModelRDB.open or ModelRDB.createModel;
      * in the longer-term use factory methods to construct persistent models.
@@ -149,7 +151,8 @@ public class ModelRDB extends ModelCom implements Model {
      * Create a new model on an existing database.
      * Will format the database if it has not already been formatted.
      * @param dbcon a DBConnectionI specifying the database connection
-     * @param name the name to give the newly created model
+     * @param name the name to give the newly created model.
+     * The name "DEFAULT" is reserved and may not be used for user models.
      */
     public static ModelRDB createModel(IDBConnection dbcon, String name) throws RDFRDBException {
         return createModel(dbcon, name, getDefaultModelProperties(dbcon));
@@ -170,7 +173,8 @@ public class ModelRDB extends ModelCom implements Model {
 	 * in the call.
 	 * 
      * @param dbcon a DBConnectionI specifying the database connection
-     * @param name the name to give the newly created model
+     * @param name the name to give the newly created model.
+     * The name "DEFAULT" is reserved and may not be used for user models.
      * @param modelProperties a Model containing customization properties
      * @since Jena 2.0
      */
@@ -336,6 +340,86 @@ public class ModelRDB extends ModelCom implements Model {
 		}
 		return m;
 	}
+	
+	/**
+	* Get the value of DoDuplicateCheck
+	* @return bool boolean
+	*/
+	public boolean getDoDuplicateCheck() {
+		return m_graphRDB.m_driver.getDoDuplicateCheck();
+	}
+	/**
+	* Set the value of DoDuplicateCheck.
+	* @param bool boolean
+	*/
+	public void setDoDuplicateCheck(boolean bool) {
+		m_graphRDB.setDoDuplicateCheck(bool);
+	}
+	
+	/**
+	 * Set the value of DoFastpath.
+	 * @param val boolean
+	 */
+	public void setDoFastpath ( boolean val ) {
+		((DBQueryHandler)m_graphRDB.queryHandler()).setDoFastpath(val);
+	}
+	
+	/**
+	 * Get the value of DoFastpath.
+	 * @return boolean
+	 */
+	public boolean getDoFastpath () {
+		return ((DBQueryHandler)m_graphRDB.queryHandler()).getDoFastpath();
+	}
+
+	/**
+	 * Set the value of QueryOnlyAsserted.
+	 * @param opt boolean
+	 */
+	public void setQueryOnlyAsserted ( boolean opt ) {
+		((DBQueryHandler)m_graphRDB.queryHandler()).setQueryOnlyAsserted(opt);
+	}
+
+	/**
+	 * Get the value of QueryOnlyAsserted.
+	 * @return
+	 */
+	public boolean getQueryOnlyAsserted() {
+		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryOnlyAsserted();
+	}
+
+	/**
+	 * Set the value of QueryOnlyReified.
+	 * @param opt boolean
+	 */
+	public void setQueryOnlyReified ( boolean opt ) {
+		((DBQueryHandler)m_graphRDB.queryHandler()).setQueryOnlyReified(opt);
+	}
+
+	/**
+	 * Get the value of QueryOnlyReified.
+	 * @return boolean
+	 */
+	public boolean getQueryOnlyReified() {
+		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryOnlyReified();
+	}
+
+	/**
+	 * Set the value of QueryFullReified.
+	 * @param opt boolean
+	 */
+	public void setQueryFullReified ( boolean opt ) {
+		((DBQueryHandler)m_graphRDB.queryHandler()).setQueryFullReified(opt);
+	}
+
+	/**
+	 * Get the value of QueryFullReified.
+	 * @return boolean
+	 */
+	public boolean getQueryFullReified() {
+		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryFullReified();
+	}
+
 }
 
 /*
