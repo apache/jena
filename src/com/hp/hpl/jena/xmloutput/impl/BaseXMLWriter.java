@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.40 2005-03-14 16:01:56 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.41 2005-03-18 13:56:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -49,7 +49,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.40 $' Date='$Date: 2005-03-14 16:01:56 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.41 $' Date='$Date: 2005-03-18 13:56:44 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -231,7 +231,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             String value = (String) e.getValue();
             String already = this.getPrefixFor( value );
             if (already == null) 
-                { this.setNsPrefix( key, value ); 
+                { this.setNsPrefix( model.getNsURIPrefix( value ), value ); 
                 if (writingAllModelPrefixNamespaces) this.addNameSpace( value ); }
             }
         }

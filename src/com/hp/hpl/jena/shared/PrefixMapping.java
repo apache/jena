@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.28 2005-02-21 12:18:45 andy_seaborne Exp $
+  $Id: PrefixMapping.java,v 1.29 2005-03-18 13:55:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -24,10 +24,10 @@ import com.hp.hpl.jena.vocabulary.*;
 public interface PrefixMapping
     {
     /**
-        Specify the prefix name for a URI prefix string. Any existing use of that prefix
-        name is overwritten. Any existing prefix for the same URI is removed, unless
-        either prefix is the empty string.  (We still have to decide what happens if there are 
-        *overlapping* URIs.) The result is this same prefixMapping.
+        Specify the prefix name for a URI prefix string. Any existing use of 
+        that prefix name is overwritten. The result is this same prefixMapping. 
+        (The earlier restriction that adding second prefix for the same URI
+        caused the earlier binding to be deleted has been withdrawn.)
   <p>      
         A prefix name must be a valid NCName, or the empty string. The empty string
         is reserved to mean "the default namespace".
@@ -48,6 +48,10 @@ public interface PrefixMapping
         mapping. If the prefix is the empty string, then this removes the default
         namespace. If the prefix is not a legal prefix string, or is not present in
         the mapping, nothing happens.
+        
+        <p>The reverse URI-to-prefix mapping is updated, but if there are
+        multiple prefixes for the removed URI it is unspecified which of them
+        will be chosen.
         
      	@param prefix the prefix string to remove
      	@return this PrefixMapping
@@ -91,6 +95,9 @@ public interface PrefixMapping
     
     /**
         Answer the prefix for the given URI, or null if there isn't one.
+        If there is more than one, one of them will be picked. If possible,
+        it will be the most recently added prefix. (The cases where it's not
+        possible is when a binding has been removed.)
         
         @param uri the uri whose prefix is to be found
         @return the prefix mapped to that uri, or null if there isn't one
@@ -119,7 +126,8 @@ public interface PrefixMapping
         Compress the URI using the prefix mappings if possible. If there is a
         prefix mapping Name -> URIStart, and uri is URIStart+Tail, return Name:Tail;
         otherwise return uri unchanged. If there are multiple applicable mappings
-        available, which one is chosen is unspecified at the time of writing.
+        available, the "most recent" is chosen if that is possible, otherwise
+        one is picked "at random".
     <p>    
         The result is primarily intended for human convenience: it is <i>not</i> 
         necessarily a legal QName, as Tail need not be a legal NCName; and there's

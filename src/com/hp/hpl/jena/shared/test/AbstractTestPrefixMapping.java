@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.19 2005-02-21 12:18:48 andy_seaborne Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.20 2005-03-18 13:56:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -317,18 +317,32 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( "bPrefix:", pm.getNsPrefixURI( "b" ) );
         assertEquals( "cootle:", pm.getNsPrefixURI( "c" ) );
         }
-        
-    /**
-        Test that adding a new non-empty prefix mapping with the same URI as the old
-        one throws that old one away.
-    */
-    public void testSameURI()
+    
+    
+    public void testSecondPrefixRetainsExistingMap()
         {
-        PrefixMapping pm = getMapping();
-        pm.setNsPrefix( "crisp", crispURI );
-        pm.setNsPrefix( "sharp", crispURI );
-        assertEquals( null, pm.getNsPrefixURI( "crisp" ) );
-        assertEquals( crispURI, pm.getNsPrefixURI( "sharp" ) );
+        PrefixMapping A = getMapping();
+        A.setNsPrefix( "a", crispURI );
+        A.setNsPrefix( "b", crispURI );
+        assertEquals( crispURI, A.getNsPrefixURI( "a" ) );
+        assertEquals( crispURI, A.getNsPrefixURI( "b" ) );
+        }
+    
+    public void testSecondPrefixReplacesReverseMap()
+        {
+        PrefixMapping A = getMapping();
+        A.setNsPrefix( "a", crispURI );
+        A.setNsPrefix( "b", crispURI );
+        assertEquals( "b", A.getNsURIPrefix( crispURI ) );
+        }
+    
+    public void testSecondPrefixDeletedUncoversPreviousMap()
+        {
+        PrefixMapping A = getMapping();
+        A.setNsPrefix( "x", crispURI );
+        A.setNsPrefix( "y", crispURI );
+        A.removeNsPrefix( "y" );
+        assertEquals( "x", A.getNsURIPrefix( crispURI ) );
         }
         
     /**
@@ -341,22 +355,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         pm.setNsPrefix( "", ropeURI );
         assertEquals( ropeURI, pm.getNsPrefixURI( "frodo" ) );    
         }   
-                 
-    /**
-        Test that adding a new prefix mapping for U from another prefix
-        map throws away any existing prefix for U.
-    */
-    public void testSameURIKillsExistingPrefix()
-        {
-        PrefixMapping A = getMapping();
-        PrefixMapping B = getMapping();
-        A.setNsPrefix( "crisp", crispURI );
-        B.setNsPrefix( "sharp", crispURI );
-        A.setNsPrefixes( B );
-        assertEquals( crispURI, A.getNsPrefixURI( "sharp" ) );
-        assertEquals( null, A.getNsPrefixURI( "crisp" ) );
-        }
-    
+                
     /**
         Test that adding a new prefix mapping for U does not throw away a default 
         mapping for U.

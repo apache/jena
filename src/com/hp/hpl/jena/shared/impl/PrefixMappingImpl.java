@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.21 2005-02-21 12:18:48 andy_seaborne Exp $
+  $Id: PrefixMappingImpl.java,v 1.22 2005-03-18 13:56:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -15,7 +15,7 @@ import org.apache.xerces.util.XMLChar;
 
 /**
     An implementation of PrefixMapping. The mappings are stored in a hash
-    map, with the reverse lookup done with a linear search. This may need
+    prefixToURI, with the reverse lookup done with a linear search. This may need
     improving but could get complicated. The test for a legal prefix is left to
     xerces's XMLChar.isValidNCName() predicate.
         
@@ -23,11 +23,20 @@ import org.apache.xerces.util.XMLChar;
 */
 public class PrefixMappingImpl implements PrefixMapping
     {
-    private Map map;
-    private boolean locked;
+    protected Map prefixToURI;
+    protected Map URItoPrefix;
+    protected boolean locked;
     
     public PrefixMappingImpl()
-        { map = CollectionFactory.createHashedMap(); }
+        { prefixToURI = CollectionFactory.createHashedMap();
+        URItoPrefix = CollectionFactory.createHashedMap(); }
+    
+    protected void set( String prefix, String uri )
+        { prefixToURI.put( prefix, uri );
+        URItoPrefix.put( uri, prefix ); }
+    
+    protected String get( String prefix )
+        { return (String) prefixToURI.get( prefix ); }
            
     public PrefixMapping lock()
         { 
@@ -41,16 +50,28 @@ public class PrefixMappingImpl implements PrefixMapping
         checkLegal( prefix );
         if (!prefix.equals( "" )) 
             { checkProper( uri );
-            removeExistingNonDefault( uri ); }
-        map.put( prefix, uri );
+            /* removeExistingNonDefault( uri ); */ }
+        set( prefix, uri );
         return this;
         }
     
     public PrefixMapping removeNsPrefix( String prefix )
         {
         checkUnlocked();
-        map.remove( prefix );
+        String uri = (String) prefixToURI.remove( prefix );
+        regenerateReverseMapping();
         return this;
+        }
+    
+    protected void regenerateReverseMapping()
+        {
+        URItoPrefix.clear();
+        Iterator it = prefixToURI.entrySet().iterator();
+        while (it.hasNext())
+            {
+            Map.Entry e = (Map.Entry) it.next();
+            URItoPrefix.put( e.getValue(), e.getKey() );
+            } 
         }
         
     protected void checkUnlocked()
@@ -66,21 +87,6 @@ public class PrefixMappingImpl implements PrefixMapping
         if (uri.equals( "" )) return false;
         char last = uri.charAt( uri.length() - 1 );
         return Util.notNameChar( last ); 
-        }
- 
-    private void removeExistingNonDefault( String uri )
-        {
-        Iterator it = map.entrySet().iterator();
-        while (it.hasNext())
-            {
-            Map.Entry e = (Map.Entry) it.next();
-            if (e.getValue().equals( uri )
-                && !e.getKey().equals("")) 
-                {
-                map.remove( e.getKey() );
-                return;
-                }
-            }
         }
         
     /**
@@ -112,7 +118,7 @@ public class PrefixMappingImpl implements PrefixMapping
         }
         
     /**
-        Add the bindings in the map to our own. This will fail with a ClassCastException
+        Add the bindings in the prefixToURI to our own. This will fail with a ClassCastException
         if any key or value is not a String; we make no guarantees about order or
         completeness if this happens. It will fail with an IllegalPrefixException if
         any prefix is illegal; similar provisos apply.
@@ -141,15 +147,16 @@ public class PrefixMappingImpl implements PrefixMapping
         }
         
     public String getNsPrefixURI( String prefix ) 
-        { return (String) map.get( prefix ); }
+        { return get( prefix ); }
         
     public Map getNsPrefixMap()
-        { return CollectionFactory.createHashedMap( map ); }
+        { return CollectionFactory.createHashedMap( prefixToURI ); }
         
     public String getNsURIPrefix( String uri )
         {
-        Map.Entry e = findMapping( uri, false );
-        return e == null ? null : (String) e.getKey();
+        return (String) URItoPrefix.get( uri );
+//        Map.Entry e = findMapping( uri, false );
+//        return e == null ? null : (String) e.getKey();
         }
         
     /**
@@ -165,7 +172,7 @@ public class PrefixMappingImpl implements PrefixMapping
         else
             {
             String prefix = prefixed.substring( 0, colon );
-            String uri = (String) map.get( prefix );
+            String uri = get( prefix );
             return uri == null ? prefixed : uri + prefixed.substring( colon + 1 );
             } 
         }
@@ -174,7 +181,7 @@ public class PrefixMappingImpl implements PrefixMapping
         Answer a readable (we hope) representation of this prefix mapping.
     */
     public String toString()
-        { return "pm:" + map; }
+        { return "pm:" + prefixToURI; }
         
     /**
         Answer the qname for <code>uri</code> which uses a prefix from this
@@ -191,8 +198,10 @@ public class PrefixMappingImpl implements PrefixMapping
         int split = Util.splitNamespace( uri );
         String ns = uri.substring( 0, split ), local = uri.substring( split );
         if (local.equals( "" )) return null;
-        Map.Entry e = findMapping( ns, false );
-        return e == null ? null : (String) e.getKey() + ":" + local;
+        String prefix = (String) URItoPrefix.get( ns );
+        return prefix == null ? null : prefix + ":" + local;
+//        Map.Entry e = findMapping( ns, false );
+//        return e == null ? null : (String) e.getKey() + ":" + local;
         }
     
     /**
@@ -216,10 +225,10 @@ public class PrefixMappingImpl implements PrefixMapping
         }
         
     /**
-        Answer a map entry in which the value is an initial substring of <code>uri</code>.
+        Answer a prefixToURI entry in which the value is an initial substring of <code>uri</code>.
         If <code>partial</code> is false, then the value must equal <code>uri</code>.
         
-        Does a linear search of the entire map, so not terribly efficient for large maps.
+        Does a linear search of the entire prefixToURI, so not terribly efficient for large maps.
         
         @param uri the value to search for
         @param true if the match can be any leading substring, false for exact match
@@ -227,7 +236,7 @@ public class PrefixMappingImpl implements PrefixMapping
     */
     private Map.Entry findMapping( String uri, boolean partial )
         {
-        Iterator it = map.entrySet().iterator();
+        Iterator it = prefixToURI.entrySet().iterator();
         while (it.hasNext())
             {
             Map.Entry e = (Map.Entry) it.next();
