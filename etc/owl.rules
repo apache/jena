@@ -265,7 +265,7 @@
 
 [sameIndividualAs4: (?X owl:sameIndividualAs ?Y), (?X ?P ?V) -> (?Y ?P ?V) ]
 
-#[sameIndividualAs5: (?X owl:sameIndividualAs ?Y), (?V ?P ?X) -> (?V ?P ?Y) ]
+[sameIndividualAs5: (?X owl:sameIndividualAs ?Y), (?V ?P ?X) -> (?V ?P ?Y) ]
 
 [sameIndividualAs6: (?X owl:sameIndividualAs ?Y) -> (?X rdf:type owl:Thing) ]
 
