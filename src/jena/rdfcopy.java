@@ -24,15 +24,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcopy.java,v 1.4 2003-07-01 14:43:55 andy_seaborne Exp $
+ * $Id: rdfcopy.java,v 1.5 2003-07-10 13:10:44 andy_seaborne Exp $
  */
 
 package jena;
 
+import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.mem.ModelMem;
 
-import java.net.URL;
+import java.net.*;
+import java.io.*;
 import java.io.FileInputStream;
 
 /** A program which read an RDF model and copy it to the standard output stream.
@@ -59,7 +61,7 @@ import java.io.FileInputStream;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-07-01 14:43:55 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-07-10 13:10:44 $
  */
 public class rdfcopy extends java.lang.Object {
 
@@ -96,6 +98,7 @@ public class rdfcopy extends java.lang.Object {
 
 		try {
 			Model m = new ModelMem();
+            String base = in ;
 			RDFReader rdr = m.getReader(inlang);
 			for (j = 1; j < lastInProp; j++) {
 				int eq = args[j].indexOf("=");
@@ -103,7 +106,20 @@ public class rdfcopy extends java.lang.Object {
 					args[j].substring(0, eq),
 					args[j].substring(eq + 1));
 			}
-			rdr.read(m, in);
+            
+            try {
+                rdr.read(m, in);
+            } catch (JenaException ex)
+            {
+                if ( ! ( ex.getCause() instanceof MalformedURLException ) )
+                    throw ex ;
+                // Tried as a URL.  Try as a file name.
+                // Make absolute
+                File f = new File(in) ;
+                base = "file:///"+f.getCanonicalPath().replace('\\','/') ;
+                rdr.read(m, new FileInputStream(in), base) ;
+            }
+			//rdr.read(m, in);
 			RDFWriter w = m.getWriter(outlang);
 			j++;
 			for (; j < lastOutProp; j++) {
@@ -112,7 +128,7 @@ public class rdfcopy extends java.lang.Object {
 					args[j].substring(0, eq),
 					args[j].substring(eq + 1));
 			}
-            w.write(m,System.out,in);
+            w.write(m,System.out,base);
 			System.exit(0);
 		} catch (Exception e) {
 			System.err.println("Unhandled exception:");
