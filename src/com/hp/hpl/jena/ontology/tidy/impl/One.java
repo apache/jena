@@ -1,19 +1,21 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Two.java,v 1.4 2003-11-14 08:35:32 jeremy_carroll Exp $
+  $Id: One.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.graph.*;
 
 /**
+ * Public by mistake ...., this should be package private really.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-interface Two extends CNodeI {
+interface One extends CNodeI {
+	boolean incompleteOne();
+	
 	void first(Triple t);
-	void second(Triple t);
-	boolean incompleteTwo();
+
 }
 
 /*

@@ -1,27 +1,19 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Levels.java,v 1.2 2003-08-27 13:04:44 andy_seaborne Exp $
+  $Id: Two.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
+import com.hp.hpl.jena.graph.*;
 
 /**
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-class Levels {
-	static public final int Warning = 0;   
-  static public final int Lite = 1;
-  static public final int DL = 2;
-  static public final int Full = 3;
-  static public final int Other = 4; // Bad RDF doc
-  static private String desc[] = {
-  	"Warning", "Lite", "DL", "Full", "Other"
-  	
-  };
-  static public String toString(int i) {
-  	return desc[i];
-  }
+interface Two extends CNodeI {
+	void first(Triple t);
+	void second(Triple t);
+	boolean incompleteTwo();
 }
 
 /*

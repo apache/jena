@@ -1,11 +1,16 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.16 2003-11-25 16:01:13 chris-dollin Exp $
+  $Id: SubCategorize.java,v 1.1 2003-11-28 07:47:00 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package owlcompiler;
 
 import java.util.*;
+
+import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
+import com.hp.hpl.jena.ontology.tidy.impl.Constants;
+import com.hp.hpl.jena.ontology.tidy.impl.Lookup;
+import com.hp.hpl.jena.ontology.tidy.impl.SyntaxException;
 
 /**
  * This file is a front-end onto the Grammar.java file.
@@ -14,7 +19,7 @@ import java.util.*;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-class SubCategorize implements Constants {
+public class SubCategorize implements Constants,Lookup {
 	static final private int notType[] =
 		{
 			Grammar.rdfProperty,
@@ -189,13 +194,13 @@ class SubCategorize implements Constants {
 					int triple =
 						((((s[i] << w) | p[j]) << w) | o[k])
 							<< ActionShift;
-					int ix = Arrays.binarySearch(Triples.triples, triple);
+					int ix = Arrays.binarySearch(Grammar.triples, triple);
 					if (ix < 0) {
-						if (-ix - 1 == Triples.triples.length)
+						if (-ix - 1 == Grammar.triples.length)
 							continue;
-						if ((Triples.triples[-ix - 1] & (~ActionMask))
+						if ((Grammar.triples[-ix - 1] & (~ActionMask))
 							== triple) {
-							int action = Triples.triples[-ix - 1] & ActionMask;
+							int action = Grammar.triples[-ix - 1] & ActionMask;
 							dl = dl && ((action & DL) == DL);
 							objectAction =
 								objectAction
@@ -282,6 +287,87 @@ class SubCategorize implements Constants {
 			(((long) s2) << (2 * W))
 			| (((long) p2) << (1 * W))
 			| (((long) o2) << (0 * W));
+	}
+
+
+  /* Implementation of Lookup */
+  /* This is not meant for serious use, but is intended for
+   * easy performance comparison between compiled and non-compiled 
+   * form.
+   */
+   
+  long lookups[] = new long[2048];
+  int ix = 0;
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#done(int)
+	 */
+	public void done(int key) {
+		if ( key != Failure )
+		lookups[key] = 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#qrefine(int, int, int)
+	 */
+	public int qrefine(int s, int p, int o) {
+		// can infinite loop !!!
+		while ( lookups[ix] != 0 ) 
+		  if ( ++ix == lookups.length )
+		     ix = 0;
+		lookups[ix] = refineTriple(s,p,o);
+		if ( lookups[ix] == Failure )
+		  return Failure;
+		return ix;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#subject(int)
+	 */
+	public int subject(int k) {
+		
+		return (int)(lookups[k]>>(2*W))&M;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#prop(int)
+	 */
+	public int prop(int k) {
+		return (int)(lookups[k]>>(W))&M;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#object(int)
+	 */
+	public int object(int k) {
+		return (int)(lookups[k])&M;
+	}
+
+	public int action(int k) {
+		return  allActions( k) & ~(DL | ObjectAction|SubjectAction|RemoveTriple);
+	}
+
+	public boolean tripleForObject(int k) {
+		return (allActions( k) & ObjectAction) == ObjectAction;
+	}
+	public boolean tripleForSubject(int k) {
+		return (allActions( k) & SubjectAction) == SubjectAction;
+	}
+	public boolean removeTriple(int k) {
+		return //false;
+		(allActions( k) & RemoveTriple) == RemoveTriple;
+	}	
+	/**
+	*@param refinement The result of {@link #refineTriple(int,int,int)}
+	* @return Is this triple in DL?.
+	*/
+   public boolean dl(int k) {
+	   return (allActions( k) & DL) == DL;
+   }
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#allActions(int)
+	 */
+	public byte allActions(int k) {
+		return (byte)((lookups[k]>>(3*W))&M);
 	}
 
 }

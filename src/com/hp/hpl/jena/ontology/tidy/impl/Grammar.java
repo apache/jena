@@ -1,8 +1,8 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.27 2003-11-25 11:32:43 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 class Grammar implements Constants {
     static final int orphan = 1;
     static final int notype = 2;

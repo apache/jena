@@ -3,7 +3,7 @@
  * [see end of file]
  */
  
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -13,7 +13,10 @@ import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
 abstract class AbsChecker implements Constants {
-
+	//Lookup look = new owlcompiler.SubCategorize();
+	
+	Lookup look = new LookupTable();
+	
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;
 	AbsChecker(boolean lite, GraphMaker gf) {
@@ -78,12 +81,14 @@ abstract class AbsChecker implements Constants {
 			p0 = p1;
 			o0 = o1;
 //			key = SubCategorize.refineTriple(s0, p0, o0);
-			key = LookupTable.qrefine(s0,p0,o0);
+      if (key!=Failure)
+     			look.done(key);
+			key = look.qrefine(s0,p0,o0);
 			if (key == Failure) {
 				addProblem(Levels.DL, t);
 				success = false;
 			} else {
-				if (LookupTable.dl(key)) {
+				if (look.dl(key)) {
 					if (wantLite) {
 						success = false;
 						addProblem(Levels.Lite, t);
@@ -91,9 +96,9 @@ abstract class AbsChecker implements Constants {
 						setMonotoneLevel(Levels.DL);
 					}
 				}
-				o.setCategories(LookupTable.object(key), false);
-				p.setCategories(LookupTable.prop(key), false);
-				s.setCategories(LookupTable.subject(key), false);
+				o.setCategories(look.object(key), false);
+				p.setCategories(look.prop(key), false);
+				s.setCategories(look.subject(key), false);
 				success =
 					success
 						&& o.update()
@@ -105,7 +110,7 @@ abstract class AbsChecker implements Constants {
 			o1 = o.getCategories();
 		}
 		if (success) {
-			if (!LookupTable.removeTriple(key)) 
+			if (!look.removeTriple(key)) 
 			     hasBeenChecked.add(t);
 			else {
 //				System.err.println("D" + dCnt++);
@@ -137,6 +142,7 @@ abstract class AbsChecker implements Constants {
 		else
 			rr = 2;
 		//	System.err.println("* " + t.toString() + "[" + rr + "]");
+		look.done(key);
 		return rr;
 	}
 

@@ -3,7 +3,7 @@
  * [see end of file]
  */
 
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 
 import java.math.*;
 import com.hp.hpl.jena.graph.*;

@@ -14,8 +14,12 @@
  * To change the template for this generated file go to Window - Preferences -
  * Java - Code Generation - Code and Comments
  */
-package com.hp.hpl.jena.ontology.tidy;
+package owlcompiler;
 
+import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
+import com.hp.hpl.jena.ontology.tidy.impl.Constants;
+//import com.hp.hpl.jena.ontology.tidy.impl.Grammar;
+//import com.hp.hpl.jena.ontology.tidy.impl.Q;
 import com.hp.hpl.jena.shared.*;
 import java.util.*;
 import java.io.*;
@@ -29,7 +33,7 @@ public class Compiler implements Constants {
 
 	final private String SAVEFILE = "tmp/huge.ser";
 	static private long lookup[][];
-
+/*
 	boolean validate() {
 		if (prop(qrefine(14, 80, 89)) != 80) {
 			System.err.println("gggg");
@@ -56,6 +60,7 @@ public class Compiler implements Constants {
 		}
 		return true;
 	}
+	*/
 	private void saveResults() {
 		int key[] = new int[huge.size()];
 		int value[] = new int[huge.size()];
@@ -331,6 +336,7 @@ public class Compiler implements Constants {
 		save();
 		log("GX", 0);
 	}
+	/*
 	private void go2() {
 		if (restore())
 			System.err.println("Restore successful");
@@ -340,6 +346,7 @@ public class Compiler implements Constants {
 		}
 		System.err.println(validate() ? "Good" : "Bad");
 	}
+	*/
 	private void go() {
 		if (restore())
 			System.err.println("Restore successful");
@@ -357,10 +364,10 @@ public class Compiler implements Constants {
 		findUseless();
 		System.err.println("Saving results");
 		saveResults();
-		System.err.println("Saving data");
-		save();
+	//	System.err.println("Saving data");
+	//	save();
 	}
-
+/*
 	static final int[] intersection(int a[], int b[]) {
 		int rslt0[] = new int[a.length];
 		int k = 0;
@@ -371,6 +378,7 @@ public class Compiler implements Constants {
 		System.arraycopy(rslt0, 0, rslt1, 0, k);
 		return rslt1;
 	}
+	*/
 	private Integer compare(int i, int j) {
 		return compare(new Pair(i, j));
 	}
@@ -548,17 +556,18 @@ public class Compiler implements Constants {
 		Iterator it = huge.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry ent = (Map.Entry) it.next();
-			markSupers(
-				((Long) ent.getKey()).longValue(),
-				allActions(((Long) ent.getValue()).longValue()));
+			long k = ((Long) ent.getKey()).longValue();
+			long v = ((Long) ent.getValue()).longValue();
+			if ( (k | allActions(v)) == v )
+			    markSupers(k,allActions(v));
 		}
 		it = huge.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry ent = (Map.Entry) it.next();
-			if (isUseless((Long) ent.getKey())) {
+			long val = ((Long) ent.getValue()).longValue();
+			if (isUseless(new Long(val&((1L<<(3*W))-1)))) {
 				cnt++;
-				long old = ((Long) ent.getValue()).longValue();
-				long newv = (long) RemoveTriple << (3 * W) | old;
+				long newv = (long) RemoveTriple << (3 * W) | val;
 					ent.setValue(new Long(newv));
 				
 			}
@@ -580,7 +589,9 @@ public class Compiler implements Constants {
 		{ Grammar.cyclic, Grammar.cyclicRest, Grammar.cyclicFirst };
 	private boolean isUseless(Long l) {
 		short spo[] = expand(l.longValue());
-		int cnt = ((int[]) count.get(l))[0];
+		int cnt[] = ((int[]) count.get(l));
+		return cnt != null && cnt[0] == nLessThan(spo[0]) * nLessThan(spo[1]) * nLessThan(spo[2]);
+		/*
 		if (cnt != nLessThan(spo[0]) * nLessThan(spo[1]) * nLessThan(spo[2]))
 			return false;
 		spo = expand(((Long) huge.get(l)).longValue());
@@ -588,7 +599,7 @@ public class Compiler implements Constants {
 			return false;
 		if (Q.intersect(CategorySet.getSet(spo[2]), cycles))
 			return false;
-		return true;
+		return true; */
 	}
 
 	/**

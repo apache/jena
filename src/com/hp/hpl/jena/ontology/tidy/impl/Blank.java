@@ -1,18 +1,17 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NodeAction.java,v 1.2 2003-08-27 13:04:44 andy_seaborne Exp $
+  $Id: Blank.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
-
+package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * @author jjc
+ * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
- */
-interface NodeAction {
-	void apply(Node n);
+*/
+interface Blank extends CNodeI {
+  void addObjectTriple(Triple t);
 }
 
 /*

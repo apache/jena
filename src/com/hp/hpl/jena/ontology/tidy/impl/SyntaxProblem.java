@@ -1,9 +1,9 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxProblem.java,v 1.7 2003-11-14 08:35:32 jeremy_carroll Exp $
+  $Id: SyntaxProblem.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.enhanced.*;

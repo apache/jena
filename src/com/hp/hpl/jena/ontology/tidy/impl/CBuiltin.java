@@ -3,30 +3,35 @@
  * [see end of file]
  */
 
-package com.hp.hpl.jena.ontology.tidy;
-
-import com.hp.hpl.jena.graph.Node;
+package com.hp.hpl.jena.ontology.tidy.impl;
+import com.hp.hpl.jena.graph.*;
 
 /**
  * @author jjc
  *
  */
-class CURIref extends CGeneral {
-
-	/**
-	 * Constructor for CURIref.
-	 * @param n
-	 * @param eg
+class CBuiltin extends CNode {
+    final int category;
+    CBuiltin(Node n, AbsChecker eg, int i) {
+        super(n, eg);
+        category = i;
+    }
+    public int getCategories() {
+        return category;
+    }
+    public boolean setCategories(int c, boolean rec) {
+        if (c!=category)
+          throw new SyntaxException("Internal error in syntax checker.");
+        return true;
+    }
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.CNodeI#update()
 	 */
-	public CURIref(Node n, AbsChecker eg) {
-		this(n,eg,Grammar.userID);
+	public boolean update() {
+		return true;
 	}
-	public CURIref(Node n, AbsChecker eg, int c) {
-		super(n, eg);
-		if ( getCategories() == -1 )
-			  setCategories(c,false);
-	}
-
+    
+    
 }
 
 

@@ -2,7 +2,7 @@
  * Created on 24-Nov-2003
  *
  */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 import java.io.*;
 import com.hp.hpl.jena.shared.*;
 import java.util.*;
@@ -11,14 +11,13 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  * @author Jeremy J. Carroll
  *
  */
-class LookupTable implements Constants {
+class LookupTable implements Constants, Lookup {
 
 
-	static final private String DATAFILE = "etc/owl-syntax.ser";
 	static final int key[];
 	static final int value[];
 	static final byte action[];
-	static final int WW = 9;
+	
 static {
 
 	try {
@@ -55,7 +54,7 @@ static {
 	}
 }
 
-static int qrefine(int s, int p, int o) {
+public int qrefine(int s, int p, int o) {
 	int k = s<<(2*WW)|p<<WW|o;
 	int rslt = Arrays.binarySearch(key, k);
 	if (rslt < 0)
@@ -70,7 +69,7 @@ static int qrefine(int s, int p, int o) {
   * @param subj The old subcategory for the subject.
   * @return The new subcategory for the subject.
   */
- static int subject(int refinement) {
+ public int subject(int refinement) {
 	 return (int) (value[refinement] >> (2 * WW)) & MM;
  }
  /**
@@ -79,7 +78,7 @@ static int qrefine(int s, int p, int o) {
   * @param prop The old subcategory for the property.
   * @return The new subcategory for the property.
   */
- static int prop(int refinement) {
+ public int prop(int refinement) {
 	 return (int) (value[refinement] >> (1 * WW)) & MM;
  }
  /**
@@ -88,7 +87,7 @@ static int qrefine(int s, int p, int o) {
   * @param obj The old subcategory for the object.
   * @return The new subcategory for the object.
   */
- static int object(int refinement) {
+ public int object(int refinement) {
 	 return (int) (value[refinement] >> (0 * WW)) & MM;
  }
  /**
@@ -96,7 +95,7 @@ static int qrefine(int s, int p, int o) {
   * @param refinement The result of {@link #refineTriple(int,int,int)}
   * @return An integer reflecting an action needed in response to this triple.
   */
- static int action(int k) {
+ public int action(int k) {
 	 return  action[k] & ~(DL | ObjectAction|SubjectAction|RemoveTriple);
  }
  /**
@@ -104,13 +103,13 @@ static int qrefine(int s, int p, int o) {
  * @param refinement The result of {@link #refineTriple(int,int,int)}
  * @return True if this triple is <em>the</em> triple for the blank node object.
  */
- static boolean tripleForObject(int k) {
+ public boolean tripleForObject(int k) {
 	 return (action[k] & ObjectAction) == ObjectAction;
  }
- static boolean tripleForSubject(int k) {
+ public boolean tripleForSubject(int k) {
 	 return (action[k] & SubjectAction) == SubjectAction;
  }
- static boolean removeTriple(int k) {
+ public boolean removeTriple(int k) {
 	 return //false;
 	 (action[k] & RemoveTriple) == RemoveTriple;
  }	
@@ -118,15 +117,18 @@ static int qrefine(int s, int p, int o) {
  *@param refinement The result of {@link #refineTriple(int,int,int)}
  * @return Is this triple in DL?.
  */
-static boolean dl(int k) {
+public boolean dl(int k) {
 	return (action[k] & DL) == DL;
 }
  /**
   * @param k
   * @return
   */
- public static byte allActions(int k) {
+ public byte allActions(int k) {
 	 return action[k];
+ }
+ 
+ public void done(int k){
  }
 
 }

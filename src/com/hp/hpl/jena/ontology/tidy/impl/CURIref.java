@@ -3,32 +3,30 @@
  * [see end of file]
  */
 
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Node;
 
 /**
  * @author jjc
  *
  */
-interface CNodeI {
-    int getCategories();
-    /**
-     * @param recursive If c is not the current value then recursive processing is performed.
-     * @param c
-     */
-    boolean setCategories(int c, boolean recursive);
-    One asOne();
-    Two asTwo();
-    Blank asBlank();
-    void addDisjoint(CNodeI foo);
-    void addDisjoint1(CNodeI foo);
-    AbsChecker getChecker();
-    boolean update();
+class CURIref extends CGeneral {
+
 	/**
-	 * 
+	 * Constructor for CURIref.
+	 * @param n
+	 * @param eg
 	 */
-	 Node asNode();
+	public CURIref(Node n, AbsChecker eg) {
+		this(n,eg,Grammar.userID);
+	}
+	public CURIref(Node n, AbsChecker eg, int c) {
+		super(n, eg);
+		if ( getCategories() == -1 )
+			  setCategories(c,false);
+	}
+
 }
 
 

@@ -2,13 +2,15 @@
  * Created on 24-Nov-2003
  *
  */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 
 /**
  * @author Jeremy J. Carroll
  *
  */
-interface Constants {
+public interface Constants {
+
+
 	final static int RemoveTriple = (1<<5);
 	static final int FirstOfOne = 8;
 	static final int FirstOfTwo = 16;

@@ -3,7 +3,7 @@
  * [see end of file]
  */
 
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
@@ -42,6 +42,7 @@ public class Checker extends AbsChecker {
 //	private GraphMaker gf;
 	private Vector monotoneProblems = new Vector();
 	private Vector warnings = new Vector();
+	
 
 	private Vector nonMonotoneProblems = null;
 	private int nonMonotoneLevel;
@@ -425,12 +426,12 @@ public class Checker extends AbsChecker {
 		return Levels.toString(m);
 	}
 	void actions(int key, CNodeI s, CNodeI o, Triple t) {
-		if (LookupTable.tripleForObject(key))
+		if (look.tripleForObject(key))
 			o.asBlank().addObjectTriple(t);
-		if (LookupTable.tripleForSubject(key))
+		if (look.tripleForSubject(key))
 			s.asBlank().addObjectTriple(t);
 		
-		switch (LookupTable.action(key)) {
+		switch (look.action(key)) {
 			case FirstOfOne :
 				s.asOne().first(t);
 				break;

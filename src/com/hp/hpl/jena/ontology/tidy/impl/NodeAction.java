@@ -1,35 +1,22 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalityInfo.java,v 1.2 2003-11-14 22:43:25 jeremy_carroll Exp $
+  $Id: NodeAction.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.*;
 
 /**
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
+ * @author jjc
  *
-*/
-class MinimalityInfo {
-	int oldCategory;
-	final CNode cn;
-	int distance;
-	//int improvement;
-	final Triple oldSeen[] = new Triple[3];
-	
-	MinimalityInfo(CNode x) {
-		cn = x;
-		((MinimalSubGraph)x.getChecker()).add(this);
-		distance = -1;
-		oldCategory = cn.getCategories();
-		cn.getSeen(oldSeen);
-	}
-
+ */
+interface NodeAction {
+	void apply(Node n);
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+	(c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

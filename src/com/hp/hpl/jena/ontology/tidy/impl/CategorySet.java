@@ -1,9 +1,9 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.13 2003-11-24 19:40:13 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
 
 import java.util.*;
 import java.io.Serializable;
@@ -12,9 +12,10 @@ import com.hp.hpl.jena.shared.*;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-class CategorySet implements Comparable, Serializable {
+public class CategorySet implements Comparable, Serializable {
 	//com.hp.hpl.jena.ontology.tidy.CategorySet:
-	    static final long serialVersionUID = -1280155302467590202L;
+	  static final long serialVersionUID = -1280155302467590202L;
+
     static private final int cycles[] = new int[]{
     	Grammar.cyclic,
     	Grammar.cyclicFirst,
@@ -150,7 +151,7 @@ class CategorySet implements Comparable, Serializable {
 	
 	
 	static private final SortedSet sorted = new TreeSet();
-	static final Vector unsorted = new Vector();
+	public static final Vector unsorted = new Vector();
 	/**
 	 * 
 	 * @param k A sorted array of integers, each reflecting a category.
@@ -184,7 +185,7 @@ class CategorySet implements Comparable, Serializable {
 	 * @param isSorted True if s is known to already be in sort order.
 	 * @return
 	 */
-	synchronized static int find(int s[], boolean isSorted) {
+	public synchronized static int find(int s[], boolean isSorted) {
 		if (!isSorted)
 			Arrays.sort(s);
 		CategorySet cs = new CategorySet(s);
@@ -209,7 +210,7 @@ class CategorySet implements Comparable, Serializable {
 		for (int i=0;i<orphaned.length;i++)
 		   orphaned[i].testAdd(id,cats);
 	}
-	static int[] getSet(int id) {
+	public static int[] getSet(int id) {
 		return ((CategorySet) unsorted.elementAt(id)).cats;
 	}
 
@@ -217,7 +218,7 @@ class CategorySet implements Comparable, Serializable {
 	 * @param i
 	 * @return
 	 */
-	static String catString(int j) {
+	public static String catString(int j) {
 		int c[] = getSet(j);
 		StringBuffer rslt = new StringBuffer("{");
 		rslt.append(c[0]);
@@ -230,7 +231,7 @@ class CategorySet implements Comparable, Serializable {
 	/**
 	 * 
 	 */
-	void restore() {
+	public void restore() {
 		if (id < unsorted.size()) {
 			if ( compareTo(unsorted.get(id))!=0 )
 			throw new BrokenException("Problems during restore of constants.");

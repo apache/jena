@@ -3,35 +3,32 @@
  * [see end of file]
  */
 
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.tidy.impl;
+
 import com.hp.hpl.jena.graph.*;
 
 /**
  * @author jjc
  *
  */
-class CBuiltin extends CNode {
-    final int category;
-    CBuiltin(Node n, AbsChecker eg, int i) {
-        super(n, eg);
-        category = i;
-    }
-    public int getCategories() {
-        return category;
-    }
-    public boolean setCategories(int c, boolean rec) {
-        if (c!=category)
-          throw new SyntaxException("Internal error in syntax checker.");
-        return true;
-    }
-	/* (non-Javadoc)
-	 * @see com.hp.hpl.jena.ontology.tidy.CNodeI#update()
+interface CNodeI {
+    int getCategories();
+    /**
+     * @param recursive If c is not the current value then recursive processing is performed.
+     * @param c
+     */
+    boolean setCategories(int c, boolean recursive);
+    One asOne();
+    Two asTwo();
+    Blank asBlank();
+    void addDisjoint(CNodeI foo);
+    void addDisjoint1(CNodeI foo);
+    AbsChecker getChecker();
+    boolean update();
+	/**
+	 * 
 	 */
-	public boolean update() {
-		return true;
-	}
-    
-    
+	 Node asNode();
 }
 
 

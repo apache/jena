@@ -1,10 +1,13 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Triples.java,v 1.1 2003-11-25 11:32:44 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.1 2003-11-28 07:47:00 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package owlcompiler;
 import java.util.Arrays;
-class Triples implements Constants {
+
+import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
+import com.hp.hpl.jena.ontology.tidy.impl.Constants;
+class Grammar implements Constants {
     static final int orphan = 1;
     static final int notype = 2;
     static final int cyclic = 3;

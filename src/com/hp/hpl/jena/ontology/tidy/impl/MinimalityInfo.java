@@ -1,25 +1,35 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: One.java,v 1.4 2003-11-14 08:35:32 jeremy_carroll Exp $
+  $Id: MinimalityInfo.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
-import com.hp.hpl.jena.graph.*;
+package com.hp.hpl.jena.ontology.tidy.impl;
+
+import com.hp.hpl.jena.graph.Triple;
 
 /**
- * Public by mistake ...., this should be package private really.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-interface One extends CNodeI {
-	boolean incompleteOne();
+class MinimalityInfo {
+	int oldCategory;
+	final CNode cn;
+	int distance;
+	//int improvement;
+	final Triple oldSeen[] = new Triple[3];
 	
-	void first(Triple t);
+	MinimalityInfo(CNode x) {
+		cn = x;
+		((MinimalSubGraph)x.getChecker()).add(this);
+		distance = -1;
+		oldCategory = cn.getCategories();
+		cn.getSeen(oldSeen);
+	}
 
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright Hewlett-Packard Company 2003
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

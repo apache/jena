@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.OWLTest;
 import com.hp.hpl.jena.ontology.tidy.*;
+import com.hp.hpl.jena.ontology.tidy.impl.*;
 
 /**
  * @author jjc

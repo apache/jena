@@ -3,32 +3,45 @@
  * [see end of file]
  */
 
-package com.hp.hpl.jena.ontology.tidy;
-
-import com.hp.hpl.jena.shared.JenaException;
+package com.hp.hpl.jena.ontology.tidy.impl;
+import com.hp.hpl.jena.graph.*;
 
 /**
  * @author jjc
  *
  */
-public class SyntaxException extends JenaException {
-
-    /**
-     * Constructor for SyntaxException.
-     * @param message
-     */
-    public SyntaxException(String message) {
-        super(message);
+class CGeneral extends CNode {
+// local cache
+    int c = -1;
+    CGeneral(Node n, AbsChecker eg) {
+        super(n, eg);
     }
-
     /**
-     * Constructor for SyntaxException.
-     * @param cause
+     * @see CNodeI#getCategories()
      */
-    public SyntaxException(Exception cause) {
-        super(cause);
+    public int getCategories() {
+    
+        return c;
     }
-
+    /**
+     * @see CNodeI#setCategories(int)
+     */
+    public boolean setCategories(int cat, boolean rec) {
+    	int old = rec?getCategories():-1;
+    	c = cat;
+    	if ( rec && old != cat ) {
+    		return update();
+    	}
+    	return true;
+    	
+    }
+    int lastUpdate = -1;
+	public boolean update() {
+		if ( c == lastUpdate )
+		  return true;
+		lastUpdate = c;
+		return getChecker().recursivelyUpdate(asNode());
+	}
 }
 
 
