@@ -1,9 +1,5 @@
 /* Style sheet for Jena user manual documents */
-/* (c) Copyright 2003, Hewlett-Packard Development Company LP */
-/* $Id: $ */
-
-/* Import the site style sheet to maintain global visual coherency */
-@import "site.css";
+/* CVS $Id: $ */
 
 /* Media-specific rules */
 
@@ -17,27 +13,24 @@
 
 /* Non media-specific rules */
 
-/* Broswer CSS2 table support is rather "individual" */
-
-/* we want a bolder h1 style for long documents */
-.sectionHeading {
-    color: black ;
-    background: #CADFF4 ;
-    font-size: 16pt ;
-    font-weight: bold ;
-    text-align: center ;
-    padding-top: 5px;
-    padding-bottom: 5px;
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif ;
+	font-size: 10pt ;
+	color: black;
+	background: white ;
 }
 
+/* Broswer CSS2 table support is rather "individual" */
+
 table {
+  font-family: Verdana, Arial, sans-serif ;
+  font-size: 10pt ;
   border-color : black ;
   border-collapse: collapse;
   border-width: 1px;
   border: 1;
   cellspacing: 0 ;
   cellpadding: 0 ;
-  margin-left: 2ex;
 }
 
 td {
@@ -62,16 +55,50 @@ th {
   text-align:center;
 }
 
+
+.noindent     { margin-left: -5% ; margin-right: -5%; }
+.moreindent   { margin-left:  5% ; margin-right:  5%; }
+
+
+/* Use this for the document title as displayed on the page at the top. */
+h1 {
+    font-size: 135%;
+    font-weight: bold;
+    color:#000;
+    background:#CADFF4;
+    padding: 1px;
+    text-align:center;
+}
+
+h2 {
+    font-size: 110%;
+    font-weight: bold;
+    color: #003399;
+    background:#CADFF4;
+    margin-bottom:5px;
+}
+
+h3, h4, h5 {
+    font-size: 100%;
+    font-weight: bold;
+    margin-bottom:3px;
+}
+
 ul { list-style-type: disc }
 dt { font-weight: bold }
+
+/* Change background/foreground colour on hover */
+
+A:link { color: rgb(0, 0, 255) }        /* for unvisited links */
+A:hover { color: rgb(255, 0, 0) }       /* when mouse is over link */
 
 /* No extra space between paragraphs : inherits from body */
 pre {
     font-family: monospace;
     font-size: 10pt ;
     margin-top: 1 ;
-    margin-bottom: 0 ;
-    margin-left: 2ex;
+    margin-bottom: 1 ;
+    margin-left: 5ex ;
     }
 
 /* Some general utility definitions */
