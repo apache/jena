@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.1 2004-10-06 14:39:47 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.2 2004-10-06 15:04:39 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -46,10 +46,14 @@ import org.xml.sax.*;
  * for some source of SAX events (e.g. from a parser).
  * When parsing has finished call {@link #finishRDFParsing()}.
  * All the triples have now been processed.
+ * 
+ * Triples and errors are reported on a different thread.
+ * 
+ * 
  *  
  * @author Jeremy Carroll
  * */
-public class SAX2RDF extends DefaultHandler implements ContentHandler, LexicalHandler, ErrorHandler{
+public class SAX2RDF extends LexicalHandlerImpl implements ContentHandler, LexicalHandler, ErrorHandler{
 	/**
 	 * Factory method to create a new SAX2RDF.
 	 * @return A new SAX2RDF
@@ -61,7 +65,7 @@ public class SAX2RDF extends DefaultHandler implements ContentHandler, LexicalHa
      * @param base
 	 * @return Old value, if any.
      */
-	String setBaseURI(String base){ return null; }
+	public String setBaseURI(String base){ return null; }
     /**
      * Sets the value of xml:lang, particularly
      * for use when parsing a non-root element within
@@ -70,7 +74,7 @@ public class SAX2RDF extends DefaultHandler implements ContentHandler, LexicalHa
      * @param lang
 	 * @return Old value, if any.
      */
-	String setLang(String lang){ return null; }
+	public String setLang(String lang){ return null; }
 	/**
 	 * Sets the triple handler.
 	 * Either a triple handler or a model can be used.
@@ -78,7 +82,7 @@ public class SAX2RDF extends DefaultHandler implements ContentHandler, LexicalHa
 	 * @see #setModel
 	 * @return Old value, if any.
 	 * */
-	ARPHandler setTripleHandler(ARPHandler ah){ return null;}
+	public ARPHandler setTripleHandler(ARPHandler ah){ return null;}
 	/**
 	 * Sets the Jena Model to load the triples into.
 	 * Either a triple handler or a model can be used.
@@ -86,14 +90,14 @@ public class SAX2RDF extends DefaultHandler implements ContentHandler, LexicalHa
 	 * @see #setTripleHandler
 	 * @return Old value, if any.
 	 */
-	Model setModel(Model m){ return null; }
+	public Model setModel(Model m){ return null; }
 	/**
 	 * Sets the extended handler, for complex interactions
 	 * with the RDF parser.
 	 * @param eh The extended handler to use.
 	 * @return Old value, if any.
 	 */
-	ExtendedHandler setExtendedHandler(ExtendedHandler eh){ return null; }
+	public ExtendedHandler setExtendedHandler(ExtendedHandler eh){ return null; }
 	
 
     /**
@@ -157,55 +161,34 @@ public class SAX2RDF extends DefaultHandler implements ContentHandler, LexicalHa
  *
  */
     public void finishRDFParsing() {}
-/* (non-Javadoc)
- * @see org.xml.sax.ext.LexicalHandler#endCDATA()
- */
-public void endCDATA() throws SAXException {
-	// TODO Auto-generated method stub
-	
-}
-/* (non-Javadoc)
- * @see org.xml.sax.ext.LexicalHandler#endDTD()
- */
-public void endDTD() throws SAXException {
-	// TODO Auto-generated method stub
-	
-}
-/* (non-Javadoc)
- * @see org.xml.sax.ext.LexicalHandler#startCDATA()
- */
-public void startCDATA() throws SAXException {
-	// TODO Auto-generated method stub
-	
-}
-/* (non-Javadoc)
- * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
- */
-public void comment(char[] ch, int start, int length) throws SAXException {
-	// TODO Auto-generated method stub
-	
-}
-/* (non-Javadoc)
- * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
- */
-public void endEntity(String name) throws SAXException {
-	// TODO Auto-generated method stub
-	
-}
-/* (non-Javadoc)
- * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
- */
-public void startEntity(String name) throws SAXException {
-	// TODO Auto-generated method stub
-	
-}
-/* (non-Javadoc)
- * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
- */
-public void startDTD(String name, String publicId, String systemId) throws SAXException {
-	// TODO Auto-generated method stub
+    
+    /**
+     * Allow an application to register an error event handler.
+     *
+     * <p>If the application does not register an error handler, all
+     * error events get logged.</p>
+     *
+     * <p>Applications may register a new or different handler in the
+     * middle of a parse, but because of the asynchronicity between the
+     * XML parsing and the RDF parsing, the precise behaviour is not
+     * well-defined.</p>
+     *
+     * @param handler The error handler.
+     * @exception java.lang.NullPointerException If the handler 
+     *            argument is null.
+     * @see #getErrorHandler
+     */
+    public void setErrorHandler (ErrorHandler handler) {}
+
+
+    /**
+     * Return the current error handler.
+     *
+     * @return The current error handler.
+     * @see #setErrorHandler
+     */
+    public ErrorHandler getErrorHandler () {return null;}
 	
 }
     
 	
-}
