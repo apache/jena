@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.20 2004-06-23 15:23:00 chris-dollin Exp $
+  $Id: JMS.java,v 1.21 2004-07-28 15:33:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -59,6 +59,11 @@ public class JMS
         The property of an InfModelSpec that specifies the ReasonerSpec to use.
     */
     public static final Property reasonsWith = property( "reasonsWith" );
+    
+    /**
+         The property of a reasoner spec that specifies a rule-set URL.
+    */
+    public static final Property ruleSetURL = property( "ruleSetURL" );
     
     /**
         The property of a document manager that gives its policy path string.
@@ -197,7 +202,7 @@ public class JMS
         .add( JMS.reasonsWith, RDFS.domain, JMS.InfModelSpec )
         
         ;
-    
+
     /**
         Utility: answer a plain literal string with the given value.
      */

@@ -1,19 +1,20 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.30 2004-07-28 14:40:38 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.31 2004-07-28 15:33:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.ReasonerFactory;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
+import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -311,13 +312,27 @@ public abstract class ModelSpecImpl implements ModelSpec
         String rrs = rr.getURI();
         ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( rrs );
         if (rf == null) throw new NoSuchReasonerException( rrs );
+        StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
+        while (rulesets.hasNext()) load( rf, rulesets.nextStatement().getResource() );
         return rf;
+        }
+
+    /**
+     * @param rf
+     * @param resource
+     */
+    private static void load( ReasonerFactory rf, Resource u )
+        {
+        String uri = u.getURI();
+        try { new URL( uri ).getContent(); } 
+        catch (MalformedURLException e) { throw new RulesetNotFoundException( uri ); }
+        catch (IOException e) { throw new RulesetNotFoundException( uri ); }
         }
                 
     }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
