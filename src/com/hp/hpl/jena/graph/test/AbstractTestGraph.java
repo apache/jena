@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.10 2003-07-09 09:34:38 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.11 2003-07-09 10:15:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -234,7 +234,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getGraph();
         GraphEventManager gem = g.getEventManager();
-        assertSame( g, gem.register( new HistoryListener() ) );
+        assertSame( gem, gem.register( new HistoryListener() ) );
         }
         
     public void testEventUnregister()
@@ -268,6 +268,30 @@ public abstract class AbstractTestGraph extends GraphTestBase
         L.clear();
         g.delete( SPO );
         assertTrue( L.has( new Object[] { "delete", SPO} ) );
+        }
+        
+    public void testTwoListeners()
+        {
+        Triple SPO = Triple.create( "S P O" );
+        HistoryListener L1 = new HistoryListener();
+        HistoryListener L2 = new HistoryListener();
+        Graph g = getGraph();
+        GraphEventManager gem = g.getEventManager();
+        gem.register( L1 ).register( L2 );
+        g.add( SPO );
+        assertTrue( L2.has( new Object[] {"add", SPO} ) );
+        assertTrue( L1.has( new Object[] {"add", SPO} ) );
+        }
+        
+    public void testUnregisterWorks()
+        {
+        Triple SPO = Triple.create( "S P O" );
+        HistoryListener L = new HistoryListener();
+        Graph g = getGraph();
+        GraphEventManager gem = g.getEventManager();
+        gem.register( L ).unregister( L );
+        g.add( SPO );
+        assertTrue( L.has( new Object[] {} ) );
         }
     }
 

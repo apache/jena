@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.57 $' Date='$Date: 2003-07-08 14:36:01 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.58 $' Date='$Date: 2003-07-09 10:15:54 $'
  */
 
 public class ModelCom 
@@ -1441,12 +1441,33 @@ implements Model, ModelI, PrefixMapping, ModelLock
         
     public Model register( ModelChangedListener listener )
         {
-        listeners.add( listener );
+        getGraph().getEventManager().register( adapt( listener ) );
         return this;
         }
         
     public void unregister( ModelChangedListener listener )
         {
-        listeners.remove( listener );
+        getGraph().getEventManager().unregister( adapt( listener ) );
         }
+        
+    static class Adapter implements GraphListener
+        {
+        protected ModelCom m;
+        protected ModelChangedListener L;
+        
+        Adapter( ModelCom m, ModelChangedListener L )
+            { this.m = m; this.L = L; }
+            
+        public void notifyAdd( Triple t )
+            { L.addedStatement( m.asStatement( t ) ); }
+            
+        public void notifyDelete( Triple t )
+            { L.removedStatement( m.asStatement( t ) ); }
+            
+        public boolean equals( Object other )
+            { return other instanceof Adapter && L.equals( ((Adapter) other).L ); }
+        }
+        
+    public GraphListener adapt( final ModelChangedListener L )
+        { return new Adapter( this, L ); }
 }
