@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            18 Sept 2001
  * Filename           $RCSfile: DAMLSelector.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:22 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-14 15:10:46 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -45,10 +45,10 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
 
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.Property;
 
@@ -87,7 +87,7 @@ import java.util.Iterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLSelector.java,v 1.1 2003-03-12 17:16:22 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLSelector.java,v 1.2 2003-04-14 15:10:46 chris-dollin Exp $
  */
 public class DAMLSelector
     extends SimpleSelector

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:20 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-14 15:10:44 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -50,13 +50,13 @@ import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
-import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
 
 import java.util.*;
 
@@ -84,7 +84,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * properties, such as comment, label, and equivalentTo.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.1 2003-03-12 17:16:20 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.2 2003-04-14 15:10:44 chris-dollin Exp $
  */
 public abstract class DAMLCommonImpl
     extends ResourceImpl
@@ -698,7 +698,7 @@ public abstract class DAMLCommonImpl
                 Property p = (Property) i.next();
 
                 try {
-                    for (StmtIterator j = getModel().listStatements( new SimpleSelector( this, p, n ) );  j.hasNext(); ) {
+                    for (StmtIterator j = getModel().listStatements( this, p, n );  j.hasNext(); ) {
                         j.nextStatement().remove();
                     }
                 }
@@ -721,7 +721,7 @@ public abstract class DAMLCommonImpl
             while (preds.hasNext()) {
                 Property p = (Property) preds.next();
 
-                for (StmtIterator i = getModel().listStatements( new SimpleSelector( this, p, (RDFNode) null ) );  i.hasNext(); ) {
+                for (StmtIterator i = getModel().listStatements( this, p, (RDFNode) null );  i.hasNext(); ) {
                     i.nextStatement().remove();
                 }
             }

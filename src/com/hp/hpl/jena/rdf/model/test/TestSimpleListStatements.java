@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.2 2003-04-09 20:43:16 jeremy_carroll Exp $
+  $Id: TestSimpleListStatements.java,v 1.3 2003-04-14 15:10:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -13,8 +13,9 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.*;
+
+import junit.framework.*;
 
 public class TestSimpleListStatements extends TestCase
     {    
@@ -60,7 +61,8 @@ public class TestSimpleListStatements extends TestCase
     }
     
     protected void tearDown() throws java.lang.Exception {
-    	model = null;
+    	model.close();
+        model = null;
     }
     
     public void testBoolean() {
@@ -151,6 +153,61 @@ public class TestSimpleListStatements extends TestCase
     	}
     	assertEquals(7, i);
     }
+
+    public static Statement statement( Model m, String fact )
+         {
+         StringTokenizer st = new StringTokenizer( fact );
+         Resource sub = m.createResource( st.nextToken() );
+         Property pred = m.createProperty( st.nextToken() );
+         RDFNode obj = m.createResource( st.nextToken() );
+         return m.createStatement( sub, pred, obj );    
+         }
+         
+    public static Model modelAdd( Model m, String s )
+        {
+        StringTokenizer semis = new StringTokenizer( s, ";" );
+        while (semis.hasMoreTokens()) m.add( statement( m, semis.nextToken() ) );     
+        return m;
+        }
+        
+    public static Model modelWithStatements( String statements )
+        {
+        Model m = ModelFactory.createDefaultModel();
+        return modelAdd( m, statements );
+        }
+             
+    public Model modelWithStatements( StmtIterator it )
+        {
+        Model m = ModelFactory.createDefaultModel();
+        while (it.hasNext()) m.add( it.nextStatement() );
+        return m;
+        }
+        
+    public void checkReturns( String things, StmtIterator it )
+        {
+        Model wanted = modelWithStatements( things );
+        Model got = modelWithStatements( it );
+        // System.err.println( "| wanted " + wanted + " got " + got );
+        assertTrue( "equals", wanted.isIsomorphicWith( got ) );
+        }
+        
+    public void testListStatementsSPO()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource A = m.createResource( "A" ), X = m.createResource( "X" );
+        Property P = m.createProperty( "P" ), P1 = m.createProperty( "P1" );
+        RDFNode O = m.createResource( "O" ), Y = m.createResource( "Y" );
+        String S1 = "S P O; S1 P O; S2 P O";
+        String S2 = "A P1 B; A P1 B; A P1 C";
+        String S3 = "X P1 Y; X P2 Y; X P3 Y";
+        modelAdd( m, S1 );
+        modelAdd( m,  S2 );
+        modelAdd( m, S3 );
+        checkReturns( S1, m.listStatements( null, P, O ) );
+        checkReturns( S2, m.listStatements( A, P1, (RDFNode) null ) );
+        checkReturns( S3, m.listStatements( X, null, Y ) );
+        m.close();
+        }
 }
     	
 

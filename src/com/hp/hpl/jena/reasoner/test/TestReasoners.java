@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.8 2003-04-08 15:16:20 der Exp $
+ * $Id: TestReasoners.java,v 1.9 2003-04-14 15:10:57 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-04-08 15:16:20 $
+ * @version $Revision: 1.9 $ on $Date: 2003-04-14 15:10:57 $
  */
 public class TestReasoners extends TestCase {
     
@@ -175,7 +175,7 @@ public class TestReasoners extends TestCase {
         data.add(p, RDFS.range, C)
             .add(a, p, b);
         Model result = ModelFactory.createRDFSModel(data);
-        StmtIterator i = result.listStatements(new SimpleSelector(b, RDF.type, (RDFNode)null));
+        StmtIterator i = result.listStatements( b, RDF.type, (RDFNode)null );
         TestUtil.assertIteratorValues(this, i, new Object[] {
             new StatementImpl(b, RDF.type, RDFS.Resource),
             new StatementImpl(b, RDF.type, C)

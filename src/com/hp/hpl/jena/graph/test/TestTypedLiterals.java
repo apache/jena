@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.16 2003-04-13 15:09:50 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.17 2003-04-14 15:10:15 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -29,7 +29,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-04-13 15:09:50 $
+ * @version $Revision: 1.17 $ on $Date: 2003-04-14 15:10:15 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -487,8 +487,8 @@ public class TestTypedLiterals extends TestCase {
         Iterator qi = model.getGraph().queryHandler().prepareBindings(q, new Node[] {}).executeBindings();
         assertTrue(qi.hasNext());
         // Similar tests at Model API level
-        Selector s1 = new SimpleSelector(a, p, l2);
-        assertTrue(model.listStatements(s1).hasNext());
+        // Selector s1 = new SimpleSelector(a, p, l2);
+        assertTrue(model.listStatements( a, p, l2 ).hasNext());
     }
     
     /**

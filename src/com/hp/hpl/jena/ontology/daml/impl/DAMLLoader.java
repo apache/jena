@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:23 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-14 15:10:45 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -70,7 +70,6 @@ import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
 import com.hp.hpl.jena.rdf.model.*;
 
-import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 
 import com.hp.hpl.jena.mem.ModelMem;
@@ -86,7 +85,7 @@ import com.hp.hpl.jena.mem.ModelMem;
  * of imports on or off overall, or by using
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.1 2003-03-12 17:16:23 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.2 2003-04-14 15:10:45 chris-dollin Exp $
  */
 public class DAMLLoader
 {

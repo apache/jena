@@ -52,8 +52,8 @@ package com.hp.hpl.jena.rdf.model;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.3 $'
-            Date='$Date: 2003-04-03 12:22:36 $'
+            Revision='$Revision: 1.4 $'
+            Date='$Date: 2003-04-14 15:10:51 $'
  */
 public interface ModelCon {
 
@@ -712,24 +712,6 @@ public interface ModelCon {
  * @throws RDFException Generic RDF Exception
  */ 
     Model remove(Model m) throws RDFException;
-
-/** Find all the statements matching a pattern.
- * <p>Return an iterator over all the statements in a model
- *  that match a pattern.  The statements selected are those
- *  whose subject matches the <code>subject</code> argument,
- *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.
- *  If an argument is <code>null</code> it matches anything.</p>
- * @return an iterator over the subjects
- * @param subject   The subject sought
- * @param predicate The predicate sought
- * @param object    The value sought
- * @throws RDFException Generic RDF Exception
- */ 
-    StmtIterator listStatements(Resource subject,
-                                Property predicate,
-                                RDFNode  object)
-                                           throws RDFException;
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model

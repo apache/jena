@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: schemagen.java,v 1.8 2003-03-25 09:27:33 bwm Exp $
+ * $Id: schemagen.java,v 1.9 2003-04-14 15:11:00 chris-dollin Exp $
  */
 
 package jena;
@@ -66,7 +66,7 @@ import java.util.HashSet;
  *     are used, or this fixup leads to name clashes.</p>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-03-25 09:27:33 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-04-14 15:11:00 $
  */
 public class schemagen extends java.lang.Object {
 
@@ -158,7 +158,7 @@ public class schemagen extends java.lang.Object {
 
         // extract all the resources of the given type in the schema
         StmtIterator iter =
-            schema.listStatements(new SimpleSelector(null, RDF.type, type));
+            schema.listStatements( null, RDF.type, type );
         // for each one
         while (iter.hasNext()) {
             Resource r = iter.nextStatement().getSubject();

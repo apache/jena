@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.12 2003-04-14 10:56:10 chris-dollin Exp $
+  $Id: Model.java,v 1.13 2003-04-14 15:10:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,7 +50,7 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.12 $Date: 2003/04/11 10:36:43 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.13 $Date: 2003/04/14 10:56:10 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 
@@ -85,14 +85,6 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 *         the model.
 	 */
 	NsIterator listNameSpaces() throws RDFException;
-
-	/** List all statements.
-	 *
-	 *  <p>Subsequent operations on those statements may modify this model.</p>
-	 * @throws RDFException Generic RDF Exception
-	 * @return an iterator over all statements in the model.
-	 */
-	StmtIterator listStatements() throws RDFException;
 
 	/** Return a Resource instance in this model.
 	 *
@@ -573,6 +565,14 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
         Remove a particular reificiation.
     */
     void removeReification( ReifiedStatement rs );
+    
+    /** List all statements.
+     *
+     *  <p>Subsequent operations on those statements may modify this model.</p>
+     * @throws RDFException Generic RDF Exception
+     * @return an iterator over all statements in the model.
+     */
+    StmtIterator listStatements() throws RDFException;
 
 	/** List the statements matching a selector.
 	 *
@@ -583,6 +583,21 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 * @throws RDFException Generic RDF exception.
 	 */
 	StmtIterator listStatements(Selector s) throws RDFException;
+    /** Find all the statements matching a pattern.
+     * <p>Return an iterator over all the statements in a model
+     *  that match a pattern.  The statements selected are those
+     *  whose subject matches the <code>subject</code> argument,
+     *  whose predicate matches the <code>predicate</code> argument
+     *  and whose object matchesthe <code>object</code> argument.
+     *  If an argument is <code>null</code> it matches anything.</p>
+     * @return an iterator over the subjects
+     * @param subject   The subject sought
+     * @param predicate The predicate sought
+     * @param object    The value sought
+     * @throws RDFException Generic RDF Exception
+     */ 
+    
+    StmtIterator listStatements( Resource s, Property p, RDFNode o );
     
     /**
         Answer a ReifiedStatement that encodes _s_ and belongs to this Model.
@@ -752,5 +767,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.12 2003-04-14 10:56:10 chris-dollin Exp $
+ * $Id: Model.java,v 1.13 2003-04-14 15:10:50 chris-dollin Exp $
  */

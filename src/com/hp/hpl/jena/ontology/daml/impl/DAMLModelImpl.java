@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:10 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-14 15:10:46 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -50,7 +50,6 @@ import java.io.Reader;
 import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
 
 import com.hp.hpl.jena.mem.ModelMem;
 
@@ -87,7 +86,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.1 2003-03-12 17:16:10 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.2 2003-04-14 15:10:46 chris-dollin Exp $
  */
 public class DAMLModelImpl
     extends ModelMem
@@ -717,7 +716,7 @@ public class DAMLModelImpl
         try {
             // first try as a subject
             Resource r = getResource( uri );
-            StmtIterator i0 = listStatements( new SimpleSelector( r, null, (RDFNode) null ) );
+            StmtIterator i0 = listStatements( r, null, (RDFNode) null );
             if (i0.hasNext()) {
                 i0.close();
                 return true;
@@ -727,7 +726,7 @@ public class DAMLModelImpl
             }
 
             // now as object
-            StmtIterator i1 = listStatements( new SimpleSelector( null, null, r ) );
+            StmtIterator i1 = listStatements( null, null, r );
             if (i1.hasNext()) {
                 i1.close();
                 return true;
@@ -740,7 +739,7 @@ public class DAMLModelImpl
             // so we ignore any RDFException in this region
             try {
                 Property p = getProperty( uri );
-                StmtIterator p0 = listStatements( new SimpleSelector( null, p, (RDFNode) null ) );
+                StmtIterator p0 = listStatements( null, p, (RDFNode) null );
                 if (p0.hasNext()) {
                     p0.close();
                     return true;

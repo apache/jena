@@ -223,8 +223,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 //	if (m == null)
                 //		System.out.println("uggh");
                 StmtIterator si =
-                    m.listStatements(
-                        new SimpleSelector(null, RDF.type, (RDFNode) null));
+                    m.listStatements( null, RDF.type, (RDFNode) null );
 
                 while (si.hasNext()) {
                     Statement st = si.nextStatement();
