@@ -98,7 +98,7 @@ public class TestVocabJenaModelSpec extends ModelTestBase
     
     protected void ensure( Resource S, Property P, RDFNode O )
         {
-        if (!JMS.schema.contains( S, P, O ))
+        if (!JMS.getSchema().contains( S, P, O ))
             fail( "schema omits (" + nice( S ) + " " + nice( P ) + " " + nice( O ) + ")" );
         }
 

@@ -70,7 +70,7 @@ public class ModelSpecFactory
         Answer a wrapping of <code>m</code> as an RDFS model using the JMS schema.
     */
     public static Model withSchema( Model m )
-        { return ModelFactory.createRDFSModel( JMS.schema, m ); }
+        { return ModelFactory.createRDFSModel( JMS.getSchema(), m ); }
 
     /**
         Answer the unique subject of <code>m</code> which has type <code>type</code>.
