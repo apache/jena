@@ -2,7 +2,7 @@
 builtinx(owl,'Thing', classID).
 builtinx(owl,'Nothing',classID).
 
-builtinx(rdfs,'Literal',datatypeID).
+builtinx(rdfs,'Literal',dataRangeID).
 builtinx(rdf,'XMLLiteral',datatypeID).
 builtinx(xsd,string,datatypeID).
 builtinx(xsd,boolean,datatypeID).
@@ -170,7 +170,6 @@ disallowed(owl,onProperty).
 disallowed(owl,'Ontology').
 disallowed(owl,'Restriction').
 disallowed(owl,sameAs).
-disallowed(owl,sameIndividualAs).
 disallowed(owl,someValuesFrom).
 disallowed(owl,'SymmetricProperty').
 disallowed(owl,'TransitiveProperty').

@@ -75,6 +75,8 @@ annotation ::=
 
 annotation ::=
    annotation( a, dt ).
+annotation ::=
+   annotation( a, dr ).
 
 annotation ::=
    annotation( a, c ).
@@ -130,7 +132,9 @@ comment(note,
 
 
 dataLiteral ::=
-      dataLiteral(lexicalForm,[language],[dt]).
+      dataLiteral(lexicalForm,[language]).
+dataLiteral ::=
+      dataLiteral(lexicalForm,dt).
 
 individualComparison ::=
    sameIndividual(i).
@@ -176,7 +180,7 @@ smallInt ::= 0.
 smallInt ::= 1.
 
 dataRange ::= dt.
-%dataRange ::= dr.
+dataRange ::= dr.
 axiom ::=
   annotationProperty( a, { annotation } ).
 axiom ::=
@@ -225,6 +229,6 @@ axiom ::=
    equivalentProperties(cdp,cdp,{cdp}).
 
 axiom ::=
-   datatypeDeclaration( dt,{ annotation } ).
+   datatypeDeclaration( dt,+deprecated,{ annotation } ).
 
 axiom ::= description.

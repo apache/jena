@@ -47,7 +47,7 @@ m(owl:Builtin) -> true;  owl:Builtin.
 m(M) -> t(M,rdf:type,owl:ontologyProperty);    M.
 %m(rdfs:Builtin) -> true;                 rdfs:Builtin .
 
-dt(rdfs:literal) -> true;                rdfs:literal.
+dr(rdfs:literal) -> true;                rdfs:literal.
 /*
 dr(DR) -> 
          note(dataRange)/t(DR,rdf:type,owl:dataRange);   DR.
@@ -73,7 +73,7 @@ tp(OP) ->
           note(prop)/(+[t(OP,rdf:type,owl:objectProperty)]); OP.
 %,         +[t(OP,rdf:type,rdf:property)]; OP.
 comment(1, heading(1,'Literals')).
-dataLiteral(lexicalForm,language,dt)->true; lexicalForm@language^^x(dt).
+% dataLiteral(lexicalForm,language,dt)->true; lexicalForm@language^^x(dt).
 dataLiteral(lexicalForm,dt)->true; lexicalForm^^x(dt).
 dataLiteral(lexicalForm,language)->true; lexicalForm@language.
 dataLiteral(lexicalForm)->true; lexicalForm.
@@ -125,6 +125,8 @@ D + annotation( a, i ) ->
           t(D,x(a),x(i) ).
 D + annotation( a, dt ) ->
           t(D,x(a),x(dt) ).
+D + annotation( a, dr ) ->
+          t(D,x(a),x(dr) ).
 
 
 comment(1, heading(1,individuals)).
@@ -247,7 +249,7 @@ comment(1, heading(2,'Restrictions on Datatype Properties')).
 
 
 restriction( cdp, allValuesFrom( dataRange ) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:allValuesFrom,x(dataRange)),
@@ -255,7 +257,7 @@ restriction( cdp, allValuesFrom( dataRange ) ) ->
                                         blank.
 
 restriction( cdp, someValuesFrom( dataRange ) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:someValuesFrom,x(dataRange)),
@@ -263,28 +265,28 @@ restriction( cdp, someValuesFrom( dataRange ) ) ->
                                         blank.    
 
 restriction( cdp, cardinality(smallInt) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:cardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.    
 restriction( cdp, minCardinality(smallInt) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:minCardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.     
 restriction( cdp, maxCardinality(smallInt) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:maxCardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.     
 restriction( cdp, hasValue(dataLiteral) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:hasValue,x(dataLiteral)),
@@ -295,14 +297,15 @@ restriction( cdp, hasValue(dataLiteral) ) ->
 comment(1, heading(2,'Restrictions on Object Properties')).
 
 restriction( cop, allValuesFrom( classInRestriction ) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
-   t(blank,owl:allValuesFrom,x(classInRestriction));  
+   t(blank,owl:allValuesFrom,x(classInRestriction)),
+   +[t(blank,rdf:type,rdfs:class)];  
                                         blank.
 
 restriction( cop, someValuesFrom( classInRestriction ) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:someValuesFrom,x(classInRestriction)),
@@ -310,28 +313,28 @@ restriction( cop, someValuesFrom( classInRestriction ) ) ->
                                         blank.    
 
 restriction( cop, cardinality(smallInt) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:cardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.    
 restriction( cop, minCardinality(smallInt) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:minCardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.     
 restriction( cop, maxCardinality(smallInt) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:maxCardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.      
 restriction( cop, hasValue(i) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:hasValue,x(i)),
@@ -342,7 +345,7 @@ comment(1, heading(2,'Restrictions on Transitive Properties')).
 
 
 restriction( tp, allValuesFrom( classInRestriction ) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(tp)),
    t(blank,owl:allValuesFrom,x(classInRestriction)),
@@ -350,14 +353,14 @@ restriction( tp, allValuesFrom( classInRestriction ) ) ->
                                         blank.
 
 restriction( tp, someValuesFrom( classInRestriction ) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(tp)),
    t(blank,owl:someValuesFrom,x(classInRestriction)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.     
 restriction( tp, hasValue(i) ) ->
-   +[t(blank,rdf:type,owl:restriction)],
+   [t(blank,rdf:type,owl:restriction)],
    +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(tp)),
    t(blank,owl:hasValue,x(i)),
@@ -453,29 +456,29 @@ comment(1, heading(1,'Descriptions')).
 
 
 intersectionOf({description}) ->
-   +[t(blank,rdf:type,owl:class)],
+   [t(blank,rdf:type,owl:class)],
    t(blank,owl:intersectionOf,x(seq({description}))),
    +[t(blank,rdf:type,rdfs:class)];     blank.
 
 unionOf({description}) ->
-   +[t(blank,rdf:type,owl:class)],
+   [t(blank,rdf:type,owl:class)],
    t(blank,owl:unionOf,x(seq({description}))),
    +[t(blank,rdf:type,rdfs:class)];     blank.
 
 complementOf(description) ->
-   +[t(blank,rdf:type,owl:class)],
+   [t(blank,rdf:type,owl:class)],
    t(blank,owl:complementOf,x(description)),
    +[t(blank,rdf:type,rdfs:class)];     blank.
 
 oneOf({i}) ->
-   +[t(blank,rdf:type,owl:class)],
+   [t(blank,rdf:type,owl:class)],
    t(blank,owl:oneOf,x(seq({i}))),
    +[t(blank,rdf:type,rdfs:class)];     blank.
 
 comment(1, heading(1,'DataRanges')).
 
 dataRange( {dataLiteral} ) ->
-   +[t(blank,rdf:type,owl:dataRange)],
+   [t(blank,rdf:type,owl:dataRange)],
    t(blank,owl:oneOf,x(seq({dataLiteral}))),
    +[t(blank,rdf:type,rdfs:class)];     blank.
  
@@ -514,7 +517,9 @@ disjointClasses(description-1, description-2 ) ->
 subClassOf(description-1, description-2 ) ->
     t( x(description-1), rdfs:subClassOf, x(description-2) ).
 
-datatypeDeclaration( dt, {annotation} ) -> t(x(dt),rdf:type,rdfs:datatype),
+datatypeDeclaration( dt, [+deprecated], {annotation} ) -> 
+   t(x(dt),rdf:type,rdfs:datatype),
+   [t(x(dt),rdf:type,owl:deprecatedClass)],
    {x(x(dt),annotation)}.
 
 /*

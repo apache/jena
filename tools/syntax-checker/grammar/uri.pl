@@ -14,9 +14,9 @@ uriref(da, dataAnnotationProp, lite).
 uriref(c, class, lite).
 uriref(i, individual, lite).
 comment(note,
-   ['In OWL Lite the only DataRange is rdfs:Literal. 
-     User-defined DataRanges are available in OWL DL.']).
-%uriref(dr,dataRange, lite).
+   ['The only DataRange is rdfs:Literal. 
+     ']).
+uriref(dr,dataRange, lite).
 %uriref(sdp,simpleDataProp, lite).
 uriref(cdp,dataProp, lite).
 
