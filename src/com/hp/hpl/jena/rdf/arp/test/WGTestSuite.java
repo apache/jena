@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.18 2003-11-07 20:56:04 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.19 2003-11-07 22:30:42 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -28,6 +28,51 @@ import org.xml.sax.*;
  * @author  jjc
  */
 class WGTestSuite extends TestSuite implements ARPErrorNumbers {
+	static private Resource jena2;
+	static private Model testResults;
+	static private void initResults() {
+		logging = true;
+		testResults = ModelFactory.createDefaultModel();
+		jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena2");
+		jena2.addProperty(RDFS.comment, 
+			testResults.createLiteral(
+				"<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://jena.sourceforce.net/\">Jena2</a> is a" +
+				" Semantic Web framework in Java" +
+				" available from <a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://www.sourceforce.net/projects/jena\">" +
+				"sourceforge</a> CVS.",
+				true)
+		);
+		jena2.addProperty(RDFS.label, "Jena2");
+		testResults.setNsPrefix("results", OWLResults.NS);
+	}
+	static void logResult(Resource test, int type) {
+		if (!logging) return;
+		Resource rslt;
+		switch (type) {
+			case WGReasonerTester.NOT_APPLICABLE:
+			return;
+			case WGReasonerTester.FAIL:
+			rslt = OWLResults.FailingRun;
+			break;
+			case WGReasonerTester.PASS:
+			rslt = OWLResults.PassingRun;
+			break;
+			case WGReasonerTester.INCOMPLETE:
+			  rslt = OWLResults.IncompleteRun;
+			  break;
+			default:
+			throw new BrokenException("Unknown result type");
+		}
+		Resource result =
+			testResults
+				.createResource()
+				.addProperty(RDF.type, OWLResults.TestRun)
+				.addProperty(RDF.type, rslt)
+				.addProperty(OWLResults.test, test )
+				.addProperty(OWLResults.system, jena2);
+	}
+	private static boolean logging = false;
+	private static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/rdf-results.rdf";
     static public boolean checkMessages = false;
     static private boolean doSemanticTests() {
     	return ARPTests.internet;
@@ -52,7 +97,27 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         in.close();
         return model;
     }
-    
+
+	static private class DummyTest extends TestCase {
+		DummyTest() {
+			super("save results");
+		}
+		public void runTest()  throws IOException {
+			if (logging) {	    
+				RDFWriter w = testResults.getWriter("RDF/XML-ABBREV");
+				w.setProperty("xmlbase",BASE_RESULTS_URI );
+				OutputStream out;
+				try {
+				out = new FileOutputStream("/tmp/rdf-results.rdf");
+				}
+				catch (Exception e){
+					out = System.out;
+				}
+				w.write(testResults,out,BASE_RESULTS_URI);
+				out.close();
+			}
+		}
+	}
     static String testNS =
         "http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#";
         
@@ -216,7 +281,10 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                         action.act(st.getSubject());
                     }
                 }
-
+                if ( ARPTests.internet) {
+                	initResults();
+                	addTest(new DummyTest());
+                }
             } catch (RuntimeException re) {
                 re.printStackTrace();
                 throw re;
@@ -278,15 +346,28 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     	 	super(r);
     	 }
 		protected void runTest() throws IOException {
-			 int rslt = wgReasoner.runTestDetailedResponse(testID.getURI(),
+			 int rslt = WGReasonerTester.FAIL;
+			 try {
+			 rslt = wgReasoner.runTestDetailedResponse(testID.getURI(),
 			     RDFSRuleReasonerFactory.theInstance(),this,null);
-			 assertTrue(rslt>=0);
+			 }
+			 finally {
+			    logResult(testID,rslt);
+			 }
+			// assertTrue(rslt>=0);
+			 
 		}
 		/* (non-Javadoc)
 		 * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#createMe()
 		 */
 		String createMe() {
 			throw new UnsupportedOperationException();
+		}
+		/* (non-Javadoc)
+		 * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#reallyRunTest()
+		 */
+		void reallyRunTest() {
+			throw new BrokenException("");
 		}
     	 
     }
@@ -329,6 +410,17 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             }
             return null;
         }
+        protected void runTest()  throws IOException {
+        	int rslt = WGReasonerTester.FAIL;
+        	try {
+        		reallyRunTest();
+        		rslt = WGReasonerTester.PASS;
+        	}
+        	finally {
+        		logResult(testID,rslt);
+        	}
+        }
+        abstract void reallyRunTest();
         public void warning(Exception e) {
             error(0, e);
         }
@@ -389,10 +481,10 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             super(nm);
             expectedLevel = -1;
         }
-        protected void runTest() {
+        protected void reallyRunTest() {
             try {
                 Model m2 = read(output);
-                super.runTest();
+                super.reallyRunTest();
                 if (!m1.equals(m2)) {
                     save(output);
                     assertTrue(m1.isIsomorphicWith( m2 ) );
@@ -478,7 +570,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         void initExpected()  {
             initExpectedFromModel();
         }
-        protected void runTest() {
+        protected void reallyRunTest() {
             try {
                 m1 = read(input);
 
