@@ -9,10 +9,10 @@
   xml:base  ="http://jena.hpl.hp.com/testing/ontology"
 >
 
-<Ontology rdf:about="">
+<daml:Ontology rdf:about="">
   <daml:versionInfo>test version info</daml:versionInfo>
   <daml:imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
-</Ontology>
+</daml:Ontology>
 
 
 </rdf:RDF>

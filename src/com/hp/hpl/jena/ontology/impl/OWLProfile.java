@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-02 20:33:29 $
+ * Last modified on   $Date: 2003-04-04 20:36:19 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -25,6 +25,9 @@ package com.hp.hpl.jena.ontology.impl;
 // Imports
 ///////////////
 import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.util.*;
@@ -38,16 +41,12 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.5 2003-04-02 20:33:29 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.6 2003-04-04 20:36:19 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
 {
     // Constants
-    //////////////////////////////////
-
-
-    // Static variables
     //////////////////////////////////
 
 
@@ -148,6 +147,43 @@ public class OWLProfile
         ).iterator();
     }
 
+
+    /**
+     * <p>
+     * Answer true if the given graph supports a view of this node as the given 
+     * language element, according to the semantic constraints of the profile.
+     * If strict checking on the ontology model is turned off, this check is
+     * skipped.
+     * </p>
+     * 
+     * @param n A node to test
+     * @param g The enhanced graph containing <code>n</code>, which is assumed to
+     * be an {@link OntModel}.
+     * @param type A class indicating the facet that we are testing against.
+     * @return True if strict checking is off, or if <code>n</code> can be 
+     * viewed according to the facet resource <code>res</code>
+     */
+    public boolean isSupported( Node n, EnhGraph g, Class type ) {
+        if (g instanceof OntModel) {
+            OntModel m = (OntModel) g;
+            
+            if (!m.strictMode()) {
+                // checking turned off
+                return true;
+            }
+            else {
+                // lookup the profile check for this resource
+                SupportsCheck check = (SupportsCheck) s_supportsChecks.get( type );
+                
+                // a check must be defined for the test to succeed
+                return (check != null)  && check.doCheck( n, g );  
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -156,6 +192,153 @@ public class OWLProfile
     // Inner class definitions
     //==============================================================================
 
+    /** Helper class for doing syntactic/semantic checks on a node */
+    protected static class SupportsCheck
+    {
+        public boolean doCheck( Node n, EnhGraph g ) {
+            return true;
+        }
+    }
+    
+    
+    // Table of check data
+    //////////////////////
+    
+    private static Object[][] s_supportsCheckTable = new Object[][] {
+        // Resource (key),              check method
+        {  AllDifferent.class,          new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.AllDifferent.asNode() );
+                                            }
+                                        }
+        },
+        {  AnnotationProperty.class,    new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                for (Iterator i = ((OntModel) g).getProfile().getAnnotationProperties();  i.hasNext(); ) {
+                                                    if (((Resource) i.next()).asNode().equals( n )) {
+                                                        // a built-in annotation property
+                                                        return true;
+                                                    }
+                                                }
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() );
+                                            }
+                                        }
+        },
+        { Axiom.class,                  new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                // node will support being an Axiom facet if it has rdf:type owl:AllDifferent or equivalent
+                                                for (Iterator i = ((OntModel) g).getProfile().getAxiomTypes();  i.hasNext(); ) {
+                                                    if (g.asGraph().contains( n, RDF.type.asNode(), ((Resource) i.next()).asNode() )) {
+                                                        // node has a recognised axiom type
+                                                        return true;
+                                                    }
+                                                }
+
+                                                return false;
+                                            }
+                                        }
+        },
+        {  ClassDescription.class,      new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() );
+                                            }
+                                        }
+        },
+        {  DatatypeProperty.class,      new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  ObjectProperty.class,        new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  FunctionalProperty.class,    new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.FunctionalProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  InverseFunctionalProperty.class, new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() ) &&
+                                                !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  ObjectProperty.class,        new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  OntClass.class,              new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() );
+                                            }
+                                        }
+        },
+        {  OntList.class,               new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return n.equals( RDF.nil.asNode() )  ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), RDF.List.asNode() );
+                                            }
+                                        }
+        },
+        {  Ontology.class,              new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.Ontology.asNode() );
+                                            }
+                                        }
+        },
+        {  OntProperty.class,           new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), RDF.Property.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  Restriction.class,           new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() );
+                                            }
+                                        }
+        },
+        {  SymmetricProperty.class,     new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) &&
+                                                       !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  TransitiveProperty.class,    new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) &&
+                                                       !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
+                                            }
+                                        }
+        },
+    };
+
+
+    // Static variables
+    //////////////////////////////////
+
+    /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
+    protected static HashMap s_supportsChecks = new HashMap();
+    
+    static {
+        // initialise the map of supports checks from a table of static data
+        for (int i = 0;  i < s_supportsCheckTable.length;  i++) {
+            s_supportsChecks.put( s_supportsCheckTable[i][0], s_supportsCheckTable[i][1] );
+        }
+    }
 
 }
 

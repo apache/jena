@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: InverseFunctionalPropertyImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 16:06:07 $
+ * Last modified on   $Date: 2003-04-04 20:36:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: InverseFunctionalPropertyImpl.java,v 1.1 2003-04-01 16:06:07 ian_dickinson Exp $
+ * @version CVS $Id: InverseFunctionalPropertyImpl.java,v 1.2 2003-04-04 20:36:16 ian_dickinson Exp $
  */
 public class InverseFunctionalPropertyImpl
     extends ObjectPropertyImpl
@@ -56,7 +56,20 @@ public class InverseFunctionalPropertyImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { return new InverseFunctionalPropertyImpl( n, eg ); }
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new InverseFunctionalPropertyImpl( n, eg );
+            }
+            else {
+                throw new OntologyException( "Cannot convert node " + n + " to InverseFunctionalProperty");
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            // node will support being an InverseFunctionalProperty facet if it has rdf:type owl:InverseFunctionalProperty or equivalent
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, InverseFunctionalProperty.class );
+        }
     };
 
 

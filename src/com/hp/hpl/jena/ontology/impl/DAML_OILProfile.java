@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-02 20:33:30 $
+ * Last modified on   $Date: 2003-04-04 20:36:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,6 +24,9 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -38,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.4 2003-04-02 20:33:30 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.5 2003-04-04 20:36:22 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -225,6 +228,49 @@ public class DAML_OILProfile
         ).iterator();
     }
 
+
+
+    /**
+     * <p>
+     * Answer true if the given graph supports a view of this node as the given 
+     * language element, according to the semantic constraints of the profile.
+     * If strict checking on the ontology model is turned off, this check is
+     * skipped.
+     * </p>
+     * 
+     * @param n A node to test
+     * @param g The enhanced graph containing <code>n</code>, which is assumed to
+     * be an {@link OntModel}.
+     * @param type A class indicating the facet that we are testing against.
+     * @return True if strict checking is off, or if <code>n</code> can be 
+     * viewed according to the facet resource <code>res</code>
+     */
+    public boolean isSupported( Node n, EnhGraph g, Class type ) {
+        if (g instanceof OntModel) {
+            OntModel m = (OntModel) g;
+            
+            if (type == null) {
+                // if the facet resource is null, the facet is not in this profile so 
+                // we automatically return false;
+                return false;
+            }
+            else if (!m.strictMode()) {
+                // checking turned off
+                return true;
+            }
+            else {
+                // lookup the profile check for this resource
+                SupportsCheck check = (SupportsCheck) s_supportsChecks.get( type );
+                
+                return (check == null)  || check.doCheck( n, g );  
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -233,6 +279,116 @@ public class DAML_OILProfile
     // Inner class definitions
     //==============================================================================
 
+    /** Helper class for doing syntactic/semantic checks on a node */
+    protected static class SupportsCheck
+    {
+        public boolean doCheck( Node n, EnhGraph g ) {
+            return true;
+        }
+    }
+    
+    
+    // Table of check data
+    //////////////////////
+    
+    private static Object[][] s_supportsCheckTable = new Object[][] {
+        // Resource (key),              check method
+        {  ClassDescription.class,      new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Class.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() );
+                                            }
+                                        }
+        },
+        {  DatatypeProperty.class,      new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.DatatypeProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  ObjectProperty.class,        new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.ObjectProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  FunctionalProperty.class,    new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                // DAML's alias for functional property is uniqueProperty
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.UniqueProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  InverseFunctionalProperty.class, new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                // DAML's alias for functional property is unambiguousProperty
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.UnambiguousProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  ObjectProperty.class,        new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.ObjectProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  OntClass.class,              new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Class.asNode() );
+                                            }
+                                        }
+        },
+        {  OntList.class,               new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return n.equals( DAML_OIL.nil.asNode() )  ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.List.asNode() );
+                                            }
+                                        }
+        },
+        {  Ontology.class,              new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return n.equals( RDF.nil.asNode() )  ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Ontology.asNode() );
+                                            }
+                                        }
+        },
+        {  OntProperty.class,           new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), RDF.Property.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Property.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.ObjectProperty.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.DatatypeProperty.asNode() );
+                                            }
+                                        }
+        },
+        {  Restriction.class,           new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() );
+                                            }
+                                        }
+        },
+        {  TransitiveProperty.class,    new SupportsCheck() {
+                                            public boolean doCheck( Node n, EnhGraph g ) {
+                                                return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.TransitiveProperty.asNode() ) &&
+                                                       !g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.DatatypeProperty.asNode() );
+                                            }
+                                        }
+        },
+    };
+
+
+    // Static variables
+    //////////////////////////////////
+
+    /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
+    protected static HashMap s_supportsChecks = new HashMap();
+    
+    static {
+        // initialise the map of supports checks from a table of static data
+        for (int i = 0;  i < s_supportsCheckTable.length;  i++) {
+            s_supportsChecks.put( s_supportsCheckTable[i][0], s_supportsCheckTable[i][1] );
+        }
+    }
 
 }
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:46 $
+ * Last modified on   $Date: 2003-04-04 20:37:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.6 2003-03-27 16:28:46 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.7 2003-04-04 20:37:07 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase
@@ -144,7 +144,7 @@ public class TestList
         }
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list" + i + ".rdf" );
         
             OntList l0 = getListRoot( m );
@@ -160,7 +160,7 @@ public class TestList
         }
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
@@ -175,6 +175,9 @@ public class TestList
             Resource badList = m.createResource();
             m.getProperty( root, p ).remove();
             m.add( root, p, badList );
+            
+            // need to turn off strict checking otherwise the as() fails
+            m.setStrictMode( false );
             
             OntList l1 = getListRoot( m );
             checkValid( "valid2", l1, false );
@@ -196,7 +199,7 @@ public class TestList
         public HeadTest() {super( "HeadTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
         
             OntList l0 = getListRoot( m );
@@ -219,7 +222,7 @@ public class TestList
         }
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list" + i + ".rdf" );
         
             OntList l0 = getListRoot( m );
@@ -238,7 +241,7 @@ public class TestList
         public SetHeadTest() {super( "SetHeadTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
@@ -270,7 +273,7 @@ public class TestList
         public SetTailTest() {super( "SetTailTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
@@ -316,7 +319,7 @@ public class TestList
         public ConsTest() {super( "ConsTest" );}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
@@ -346,7 +349,7 @@ public class TestList
             m.add( root, p, list );
 
             // should be isomorphic with list 5
-            Model m0 = ModelFactory.createDefaultModel();
+            Model m0 = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m0.read( "file:testing/ontology/list5.rdf" );
             
             assertTrue( "Cons'ed and read models should be the same", m0.isIsomorphicWith( m ) );   
@@ -358,7 +361,7 @@ public class TestList
         public AddTest() {super( "AddTest" );}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             
             Resource root = m.createResource( NS + "root" );
             Property p = m.createProperty( NS, "p");
@@ -388,7 +391,7 @@ public class TestList
             m.add( root, p, list );
 
             // should be isomorphic with list 5
-            Model m0 = ModelFactory.createDefaultModel();
+            Model m0 = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m0.read( "file:testing/ontology/list5.rdf" );
             
             assertTrue( "Add'ed and read models should be the same", m0.isIsomorphicWith( m ) );   
@@ -400,7 +403,7 @@ public class TestList
         public TestListGet() {super("TestListGet");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
             
             Resource[] toGet = new Resource[] {
@@ -436,7 +439,7 @@ public class TestList
         public ReplaceTest() {super("ReplaceTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
             
             Literal[] toSet = new Literal[] {
@@ -477,7 +480,7 @@ public class TestList
         public IndexTest1() {super("IndexTest1");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
             
             Resource[] toGet = new Resource[] {
@@ -503,7 +506,7 @@ public class TestList
         public IndexTest2() {super("IndexTest2");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
             OntList list = (OntList) nil.as( OntList.class );
@@ -527,7 +530,7 @@ public class TestList
         public AppendTest() {super("AppendTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
@@ -565,7 +568,7 @@ public class TestList
         public ConcatenateTest() {super("ConcatenateTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
@@ -607,7 +610,7 @@ public class TestList
         public ConcatenateTest2() {super("ConcatenateTest2");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
@@ -636,7 +639,7 @@ public class TestList
         public ApplyTest() {super("ApplyTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
            
             OntList root = getListRoot( m );
@@ -660,7 +663,7 @@ public class TestList
         public ReduceTest() {super("ReduceTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             m.read( "file:testing/ontology/list5.rdf" );
            
             OntList root = getListRoot( m );
@@ -680,7 +683,7 @@ public class TestList
         public RemoveTest() {super( "RemoveTest" );}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
             
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
             OntList list0 = (OntList) nil.as( OntList.class );
@@ -714,7 +717,7 @@ public class TestList
         public ListEqualsTest() {super("ListEqualsTest");}
         
         public void runTest() {
-            Model m = ModelFactory.createDefaultModel();
+            Model m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
            
             Resource nil = m.getResource( OntListImpl.RDF_LIST_VOCAB.getNil().getURI() );
             OntList nilList = (OntList) nil.as( OntList.class );

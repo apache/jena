@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestOntology.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:47 $
+ * Last modified on   $Date: 2003-04-04 20:37:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntology.java,v 1.1 2003-03-27 16:28:47 ian_dickinson Exp $
+ * @version CVS $Id: TestOntology.java,v 1.2 2003-04-04 20:37:07 ian_dickinson Exp $
  */
 public class TestOntology
     extends OntTestCase 
@@ -76,7 +76,7 @@ public class TestOntology
             {   
                 "OWL Ontology.imports",
                 new PS() { 
-                    public PathSet ps( OntModel m ) { 
+                    public PathSet ps( OntModel m ) {
                         return ((Ontology) m.getResource( BASE )
                                .as( Ontology.class )).p_imports(); } 
                 },

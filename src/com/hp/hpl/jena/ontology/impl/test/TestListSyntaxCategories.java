@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-02 20:33:32 $
+ * Last modified on   $Date: 2003-04-04 20:37:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.1 2003-04-02 20:33:32 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.2 2003-04-04 20:37:07 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -407,6 +407,7 @@ public class TestListSyntaxCategories
                 Resource res = (Resource) i.next();
                 
                 assertTrue( "Should not fail node test on " + res, test( res ));
+                // TODO remove debug System.err.println( "Found property " + res );
                 
                 actual++;
                 if (expected != null) {

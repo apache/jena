@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 16:06:09 $
+ * Last modified on   $Date: 2003-04-04 20:36:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -34,12 +34,12 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * <p>
- * Class comment
+ * Implementation of the abstraction representing a general ontology property.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.2 2003-04-01 16:06:09 ian_dickinson Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.3 2003-04-04 20:36:18 ian_dickinson Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -57,7 +57,20 @@ public class OntPropertyImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { return new OntPropertyImpl( n, eg ); }
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new OntPropertyImpl( n, eg );
+            }
+            else {
+                throw new OntologyException( "Cannot convert node " + n + " to OntProperty");
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            // node will support being an OntProperty facet if it has rdf:type owl:Property or equivalent
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, OntProperty.class );
+        }
     };
 
 

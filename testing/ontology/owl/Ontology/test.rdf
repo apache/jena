@@ -9,13 +9,13 @@
   xml:base  ="http://jena.hpl.hp.com/testing/ontology"
 >
 
-<Ontology rdf:about="">
+<owl:Ontology rdf:about="">
   <owl:versionInfo>test version info</owl:versionInfo>
   <owl:imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
   <owl:priorVersion rdf:resource="http://jena.hpl.hp.com/testing/test-ontology-1a" />
   <owl:backwardCompatibleWith rdf:resource="http://jena.hpl.hp.com/testing/test-ontology-1b" />
   <owl:incompatibleWith rdf:resource="http://jena.hpl.hp.com/testing/test-ontology-1c" />
-</Ontology>
+</owl:Ontology>
 
 
 </rdf:RDF>

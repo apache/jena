@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-03 15:21:32 $
+ * Last modified on   $Date: 2003-04-04 20:37:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -59,7 +59,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.4 2003-04-03 15:21:32 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.5 2003-04-04 20:37:07 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -616,6 +616,31 @@ public interface OntModel
      * @param graph A sub-graph to add 
      */
     public void addSubGraph( Graph graph );
+    
+    
+    /**
+     * <p>
+     * Answer true if this model is currently in <i>strict checking mode</i>. Strict
+     * mode means
+     * that converting a common resource to a particular language element, such as
+     * an ontology class, will be subject to some simple syntactic-level checks for
+     * appropriateness. 
+     * </p>
+     * 
+     * @return True if in strict checking mode
+     */
+    public boolean strictMode();
+    
+    
+    /**
+     * <p>
+     * Set the checking mode to strict or non-strict.
+     * </p>
+     * 
+     * @param strict
+     * @see #strictMode()
+     */
+    public void setStrictMode( boolean strict );
 }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: OntTestCase.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-31 14:33:19 $
+ * Last modified on   $Date: 2003-04-04 20:37:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestCase.java,v 1.2 2003-03-31 14:33:19 ian_dickinson Exp $
+ * @version CVS $Id: OntTestCase.java,v 1.3 2003-04-04 20:37:07 ian_dickinson Exp $
  */
 public abstract class OntTestCase 
     extends TestCase
@@ -138,6 +138,9 @@ public abstract class OntTestCase
         /////////////////////////////
         
         public void setUp() {
+            // turn off imports processing
+            OntDocumentManager.getInstance().setProcessImports( false );
+            
             m_model = ModelFactory.createOntologyModel( m_profileURI );
             m_model.read( m_source );
         }

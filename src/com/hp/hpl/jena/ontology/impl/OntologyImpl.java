@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntologyImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:20:39 $
+ * Last modified on   $Date: 2003-04-04 20:36:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyImpl.java,v 1.2 2003-03-28 22:20:39 ian_dickinson Exp $
+ * @version CVS $Id: OntologyImpl.java,v 1.3 2003-04-04 20:36:23 ian_dickinson Exp $
  */
 public class OntologyImpl
     extends OntResourceImpl
@@ -54,7 +54,20 @@ public class OntologyImpl
      * A factory for generating Ontology facets from nodes in enhanced graphs.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { return new OntologyImpl( n, eg ); }
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new OntologyImpl( n, eg );
+            }
+            else {
+                throw new OntologyException( "Cannot convert node " + n + " to Ontology");
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            // node will support being an Ontology facet if it has rdf:type owl:Ontology or equivalent
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, Ontology.class );
+        }
     };
 
 

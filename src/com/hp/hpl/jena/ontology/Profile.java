@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-02 20:33:30 $
+ * Last modified on   $Date: 2003-04-04 20:37:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -25,6 +25,8 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.util.Iterator;
@@ -43,7 +45,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.5 2003-04-02 20:33:30 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.6 2003-04-04 20:37:06 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -606,6 +608,23 @@ public interface Profile
      */
     public Iterator listAliasesFor( Resource res );
     
+    
+    /**
+     * <p>
+     * Answer true if the given graph supports a view of this node as the given 
+     * language element, according to the semantic constraints of the profile.
+     * If strict checking on the ontology model is turned off, this check is
+     * skipped.
+     * </p>
+     * 
+     * @param n A node to test
+     * @param g The enhanced graph containing <code>n</code>, which is assumed to
+     * be an {@link OntModel}.
+     * @param type A class indicating the facet that we are testing against.
+     * @return True if strict checking is off, or if <code>n</code> can be 
+     * viewed according to the facet resource <code>res</code>
+     */
+    public boolean isSupported( Node n, EnhGraph g, Class type );
 }
 
 

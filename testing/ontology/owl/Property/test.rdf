@@ -14,7 +14,7 @@
 >
 
 
-<owl:Property rdf:ID="p">
+<rdf:Property rdf:ID="p">
 	<rdfs:subPropertyOf rdf:resource="#q" />
 	<rdfs:domain>
 		<owl:Class rdf:ID="ClassA" />
@@ -28,7 +28,7 @@
 	<owl:inverseOf>
 		<owl:Property rdf:ID="s" />
 	</owl:inverseOf>
-</owl:Property>
+</rdf:Property>
 
 
 </rdf:RDF>

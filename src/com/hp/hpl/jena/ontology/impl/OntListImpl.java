@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:46 $
+ * Last modified on   $Date: 2003-04-04 20:36:19 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.6 2003-03-27 16:28:46 ian_dickinson Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.7 2003-04-04 20:36:19 ian_dickinson Exp $
  */
 public class OntListImpl
     extends OntResourceImpl
@@ -60,7 +60,20 @@ public class OntListImpl
      * A factory for generating OntList facets from nodes in enhanced graphs.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { return new OntListImpl( n, eg ); }
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new OntListImpl( n, eg );
+            }
+            else {
+                throw new OntologyException( "Cannot convert node " + n + " to OntList");
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            // node will support being an OntList facet if it has rdf:type rdf:List or equivalent
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, OntList.class );
+        }
     };
 
 

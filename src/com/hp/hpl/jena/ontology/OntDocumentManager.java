@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-03 16:45:36 $
+ * Last modified on   $Date: 2003-04-04 20:37:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -35,6 +35,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.ontology.impl.OntologyGraph;
 
 
 
@@ -47,7 +48,7 @@ import com.hp.hpl.jena.mem.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.4 2003-04-03 16:45:36 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.5 2003-04-04 20:37:07 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -666,9 +667,9 @@ public class OntDocumentManager
         
         // we need to add this graph to the union
         // both the top-level source document model, and the local cache model
-        if (in instanceof MultiUnion) {
+        if (in instanceof OntologyGraph) {
             // 'in' is composite - so flatten all subgraphs into the main union
-            MultiUnion u = (MultiUnion) in;
+            MultiUnion u = ((OntologyGraph) in).getUnion();
             
             model.addSubGraph( u.getBaseGraph() );
             readState.getModel().addSubGraph( u.getBaseGraph() );
