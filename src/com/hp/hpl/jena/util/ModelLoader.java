@@ -8,11 +8,7 @@ package com.hp.hpl.jena.util;
 import java.io.* ;
 import java.net.* ;
 
-import com.hp.hpl.jena.rdql.QueryException;
-import com.hp.hpl.jena.rdql.QSys ;
-
 import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdf.model.impl.* ;
 import com.hp.hpl.jena.mem.* ;
 //import com.hp.hpl.jena.bdb.* ;
 //import com.hp.hpl.jena.rdb.* ;
@@ -22,7 +18,7 @@ import com.hp.hpl.jena.mem.* ;
  *  {@link #guessLang(String) guessLang}
  * 
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.1.1.1 2002-12-19 19:21:03 bwm Exp $
+ * @version $Id: ModelLoader.java,v 1.2 2003-01-28 18:26:11 andy_seaborne Exp $
  */
 
 public class ModelLoader
