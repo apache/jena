@@ -54,7 +54,7 @@ public class TestInputStreamFactory {
 	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
 	 */
 	public TestInputStreamFactory(URI baseDir, String propDir) {
-        createMe = "new ARPTestInputStreamFactory(URI.create(\""
+        createMe = "new TestInputStreamFactory(URI.create(\""
         +baseDir.toString()
         +"\"),\""+propDir+"\")";
 		base = baseDir;
@@ -116,7 +116,7 @@ public class TestInputStreamFactory {
 		
 		if (relative.isAbsolute())
 			throw new IllegalArgumentException(
-				"This  ARPTestInputStreamFactory only knows about '" + base + "'.");
+				"This  TestInputStreamFactory only knows about '" + base + "'.");
 		
 		String relPath = relative.toString();
 		if ( relPath.length() - relPath.lastIndexOf('.') > 5 ) {

@@ -80,7 +80,11 @@
 
 
 
+<test:NegativeParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-literals/Manifest.rdf#error001"/>
 
+<test:NegativeParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-literals/Manifest.rdf#error002"/>
+
+ 
 
 
 

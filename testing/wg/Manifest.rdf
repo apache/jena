@@ -3998,7 +3998,7 @@ but may hold in semantic extensions.
 <test:PositiveParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test005">
 
    <test:issue rdf:resource="http://www.w3.org/2000/03/rdf-tracking/#rdfms-xml-base" />
-   <test:status>APPROVED</test:status>
+   <test:status>OBSOLETED</test:status>
    <test:approval rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Mar/0235.html" />
    <!-- <test:discussion rdf:resource="pointer to archived email or other discussion" /> -->
    <!-- <test:description>

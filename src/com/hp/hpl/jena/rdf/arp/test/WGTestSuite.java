@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.19 2003-11-07 22:30:42 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.20 2003-11-07 23:44:55 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -86,6 +86,10 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         if (eh != null)
             jr.setErrorHandler(eh);
         jr.setProperty("error-mode", "strict");
+        
+        if ( base.indexOf("/xmlns/") != -1 
+          || base.indexOf("/comments/") != -1 )
+              jr.setProperty("embedding","true");
         jr.read(model, in, base);
         in.close();
         return model;

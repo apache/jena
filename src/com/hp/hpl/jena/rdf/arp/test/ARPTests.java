@@ -143,6 +143,7 @@ public class ARPTests extends java.lang.Object {
         pw.println("package com.hp.hpl.jena.rdf.arp.test;");
         pw.println("import junit.framework.TestSuite;");
         pw.println("import junit.framework.Test;");
+		    pw.println("import com.hp.hpl.jena.shared.wg.*;");
         pw.println("public class TestPackage{");
         pw.println("static public Test suite() {");
         String tsname = toJava(ts, pw, "xx");

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.8 2003-08-27 13:05:52 andy_seaborne Exp $
+   $Id: ARP.java,v 1.9 2003-11-07 23:45:05 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -225,11 +225,13 @@ public class ARP implements ARPErrorNumbers {
         arpf.setStrictErrorMode(nonErrorMode);
     }
 /** Sets whether the XML document is only RDF, or contains RDF embedded in other XML.
- * The default is embedded mode, which also matches RDF documents that use the
+ * The default is non-embedded mode.
+ * Embedded mode also matches RDF documents that use the
  * rdf:RDF tag at the top-level.
- * To match RDF documents which omit that optional tag, and consist of a single rdf:Description or
- * typed node, it is necessary to setEmbedding(false).
- * @param embed true: Look for embedded RDF (the default); or false: match a typed node or rdf:Description against the whole document.
+ * Non-embeded mode matches RDF documents which omit that optional tag, and consist of a single rdf:Description or
+ * typed node.
+ * To find embedded RDF it is necessary to setEmbedding(true).
+ * @param embed true: Look for embedded RDF; or false: match a typed node or rdf:Description against the whole document (the default).
  */    
     public void setEmbedding(boolean embed) {
         arpf.setEmbedding(embed);

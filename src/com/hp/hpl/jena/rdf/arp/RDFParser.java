@@ -31,7 +31,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: RDFParser.java,v 1.7 2003-10-10 11:19:39 jeremy_carroll Exp $
+ * * $Id: RDFParser.java,v 1.8 2003-11-07 23:45:05 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */

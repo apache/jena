@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.9 2003-10-10 11:19:39 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.10 2003-11-07 23:45:05 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -142,7 +142,7 @@ class ParserSupport
 	void checkString(Token t) throws ParseException {
 		if (!CharacterModel.isNormalFormC(((StrToken) t).value))
 			arp.parseWarning(
-				ERR_STRING_NOT_NORMAL_FORM_C,
+				WARN_STRING_NOT_NORMAL_FORM_C,
 				t.location,
 				"String not in Unicode Normal Form C: " + ((StrToken) t).value);
 		checkEncoding((StrToken) t);
@@ -159,7 +159,7 @@ class ParserSupport
 	void checkNormalFormC(Token t, ARPString str) throws ParseException {
 		if (!CharacterModel.isNormalFormC(str.toString()))
 			arp.parseWarning(
-				ERR_STRING_NOT_NORMAL_FORM_C,
+				WARN_STRING_NOT_NORMAL_FORM_C,
 				t.location,
 				"String not in Unicode Normal Form C: " + str.toString());
 	}
