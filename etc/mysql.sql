@@ -10,7 +10,7 @@ CREATE TABLE JENA_SYS_STMTASSERTED (
  ObjStr       TINYBLOB,
  ObjLiteral    INT,
  GraphID       VARCHAR(250)
-);;
+) TYPE  = INNODB;;
 CREATE TABLE JENA_LITERALS (
  LiteralId     MediumInt NOT NULL AUTO_INCREMENT PRIMARY KEY,
  LiteralIdx     tinyblob NOT NULL,
@@ -20,12 +20,12 @@ CREATE TABLE JENA_LITERALS (
  AsFloat       FLOAT,
  AsInt         INTEGER,
  ObjXSDType    VARCHAR(250)
-);;
+) TYPE = INNODB;;
 CREATE TABLE JENA_GRAPH(
  GraphId     VARCHAR(250) NOT NULL PRIMARY KEY,
  ReifierGraph        VARCHAR(250),
  ParentGraph         VARCHAR(250)
-);;
+) TYPE = INNODB;;
 CREATE INDEX JENA_IDX_SUBJ_PROP ON JENA_SYS_STMTASSERTED(SubjRes, PropRes);;
 CREATE INDEX JENA_IDX_OBJ ON JENA_SYS_STMTASSERTED(ObjRes);;
 
@@ -39,7 +39,7 @@ CREATE TABLE ${a} (
  ObjStr        TINYBLOB,
  ObjLiteral    INT,
  GraphID       VARCHAR(250)
-);;
+) TYPE = INNODB;;
 CREATE INDEX ${a}_IDX_SUBJ_PROP ON ${a}(SubjRes, PropRes);;
 CREATE INDEX ${a}_IDX_OBJ ON ${a}(ObjRes);;
 
