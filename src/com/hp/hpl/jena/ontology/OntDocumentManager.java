@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:55 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-16 21:09:30 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.ontology.impl.OntologyGraph;
 
 
@@ -46,14 +46,11 @@ import com.hp.hpl.jena.ontology.impl.OntologyGraph;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.7 2003-04-08 22:11:55 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.8 2003-04-16 21:09:30 jeremy_carroll Exp $
  */
 public class OntDocumentManager
 {
-    // Constants
-    //////////////////////////////////
-
-    /** The default path for searching for the metadata on locally cached ontologies */
+	/** The default path for searching for the metadata on locally cached ontologies */
     public static final String DEFAULT_METADATA_PATH = "file:etc/ont-policy.rdf;file:ont-policy.rdf";
 
     /** Delimiter between path entries */
@@ -400,12 +397,7 @@ public class OntDocumentManager
     public GraphFactory getDefaultGraphFactory() {
         if (m_graphFactory == null) {
             // construct the default graph factory
-            m_graphFactory = new GraphFactory() {
-                                 // default is to create a new in-memory graph with rdfs reasoning turned on
-                                 public Graph getGraph() {
-                                     return new GraphMem();
-                                 }
-                             };
+            m_graphFactory = new DefaultGraphFactory();
         }
 
         return m_graphFactory;

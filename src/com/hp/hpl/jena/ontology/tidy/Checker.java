@@ -5,6 +5,7 @@ import com.hp.hpl.jena.graph.*;
 import java.util.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -43,7 +44,6 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  */
 public class Checker extends EnhGraph {
-	// TODO personality factories
 	static private Personality personality =
 		new GraphPersonality()
         .add(CNodeI.class, CNode.factory)
@@ -51,6 +51,7 @@ public class Checker extends EnhGraph {
         .add(One.class,OneImpl.factory)
         .add(Two.class,TwoImpl.factory);
 	private Graph hasBeenChecked;
+	private GraphFactory gf;
 	private Vector monotoneProblems = new Vector();
 
 	private Vector nonMonotoneProblems = null;
@@ -71,10 +72,14 @@ public class Checker extends EnhGraph {
 
 	private int errorCnt = 0;
 
-	Checker(Graph g) {
+	Checker(Graph g, GraphFactory gf) {
 		super(g, personality);
+		this.gf = gf;
+		hasBeenChecked = gf.getGraph();
 	}
-
+    Checker(Graph g) {
+      this(g, new DefaultGraphFactory()); 
+    }
 	void add(Graph g) {
 		// Add every triple
 		ClosableIterator it = null;
@@ -118,10 +123,18 @@ public class Checker extends EnhGraph {
 		} else {
 			if ( wantLite && SubCategorize.dl(key))
 			      addProblem(Levels.Lite,t);
-			      // TODO recursive
+			   
+			   
+			// On recursive calls this triple might be in-place.
+			// we keep it on the call stack in order to reduce
+			// the amount of checking we have to do.
+			hasBeenChecked.delete(t);
+			
 			o.setCategories(SubCategorize.object(key,o0));
 			p.setCategories(SubCategorize.prop(key,p0));
 			s.setCategories(SubCategorize.subject(key,s0));
+			
+			hasBeenChecked.add(t);
 			
 			if ( SubCategorize.tripleForObject(key))
 			   o.asBlank().addObjectTriple(t);
@@ -138,6 +151,18 @@ public class Checker extends EnhGraph {
 				    break;
 			}
 		}
+	}
+	
+	void recursivelyUpdate(Node n ) {
+		rec(n,null,null);
+		rec(null,n,null);
+		rec(null,null,n);
+	}
+	void rec(Node s,Node p, Node o) {
+		ClosableIterator it = hasBeenChecked.find(s,p,o);
+		while ( it.hasNext())
+		   add((Triple)it.next());
+		it.close();
 	}
 	// TODO getSubLanguage()
 	public String getSubLanguage() {

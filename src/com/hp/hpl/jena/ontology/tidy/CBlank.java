@@ -1,6 +1,6 @@
 package com.hp.hpl.jena.ontology.tidy;
 
-import com.hp.hpl.jena.enhanced.EnhGraph;
+import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.Node;
 
 /**
@@ -8,7 +8,12 @@ import com.hp.hpl.jena.graph.Node;
  *
  */
 class CBlank extends OneTwoImpl implements Blank {
-    
+	final static public Implementation factory = new Implementation() {
+	public EnhNode wrap(Node n, EnhGraph eg) {
+					return new CBlank(n, eg);
+	}
+	};
+	
 	/**
 	 * Constructor for CBlank.
 	 * @param n

@@ -1,35 +1,27 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TwoImpl.java,v 1.2 2003-04-16 21:08:34 jeremy_carroll Exp $
+  $Id: DefaultGraphFactory.java,v 1.1 2003-04-16 21:09:31 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy;
+package com.hp.hpl.jena.ontology.impl;
 
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphFactory;
+import com.hp.hpl.jena.mem.GraphMem;
+
 
 /**
- * I explicitly did not want a class that implemented both One and Two.
- * The class structure here allows sharing of the common elements, and
- * avoiding the idea that something can be both a One 
- * (e.g. an owl description node)
- * and a Two (e.g. an rdf list node)
+ * I pulled this out of the OntDocumentManager file (method
+ * getDefaultGraphFactory, in order to reuse it.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
-*/
-class TwoImpl extends OneTwoImpl implements Two {
+ */
 
-	final static public Implementation factory = new Implementation() {
-	public EnhNode wrap(Node n, EnhGraph eg) {
-					return new TwoImpl(n, eg);
-	}
-	};
-	public TwoImpl(Node n, EnhGraph g) {
-		super(n, g);
-	}
-
+public class DefaultGraphFactory implements GraphFactory {
+	public Graph getGraph() {
+	     return new GraphMem();
+	 }
 }
-
 /*
 	(c) Copyright Hewlett-Packard Company 2003
 	All rights reserved.

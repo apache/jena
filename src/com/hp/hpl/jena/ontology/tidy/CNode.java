@@ -74,7 +74,9 @@ abstract class CNode extends EnhNode implements CNodeI {
         Model m = ModelFactory.createDefaultModel();
         return ((EnhGraph)m).getNodeAs(n,RDFNode.class);
     }
-
+    Checker getChecker() {
+    	return (Checker)getGraph();
+    }
 	Node getAttribute(Node property) {
 		Graph g = getGraph().asGraph();
 		ClosableIterator it = g.find(asNode(), property, null);
