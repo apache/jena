@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.14 2004-09-16 13:48:15 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.15 2004-09-16 14:12:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -162,13 +162,13 @@ public abstract class AbstractTestReifier extends GraphTestBase
         graphAdd( g, "x rdf:subject A; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement" );
         assertEquals( triple( "A P O" ), r.getTriple( node( "x" ) ) );
         try 
-            { graphAdd( g, "x rdf:subject BOOM" ); }
+            { graphAdd( g, "x rdf:subject BOOM" ); 
+            assertEquals( null, r.getTriple( node( "x" ) ) ); }
         catch (AlreadyReifiedException e) 
             {
             if (r instanceof DBReifier) { System.err.println( "! Db reifier must fix over-specification problem" ); }
             else throw e;
             }
-        assertEquals( null, r.getTriple( node( "x" ) ) );
         }
     
     public void testManifestQuadsStandard()
