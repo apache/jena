@@ -22,7 +22,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.24 2004-07-07 11:19:52 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.25 2004-07-07 11:28:29 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -363,7 +363,7 @@ public class N3JenaWriterCommon implements RDFWriter
             out.print(propStr);
             out.incIndent(indentObject);
 
-            if ( propStr.length() < widePropertyLen )
+            if ( (propStr.length()+minGap) <= widePropertyLen )
             {
                 // Property col allows for min gap but widePropertyLen > propertyCol 
                 // (which looses alignment - this is intentional.

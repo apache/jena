@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.14 2004-07-07 11:19:52 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.15 2004-07-07 11:28:29 andy_seaborne Exp $
  */
 
 
@@ -373,7 +373,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         {
             String padSp = null ;
             // Simple objects - allow property to be long and alignment to be lost
-            if (propStr.length() < widePropertyLen)
+            if ((propStr.length()+minGap) <= widePropertyLen)
                 padSp = pad(calcPropertyPadding(propStr)) ;
             
             if ( doObjectListsAsLists )
