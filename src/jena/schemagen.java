@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-22 22:48:43 $
+ * Last modified on   $Date: 2004-08-13 09:51:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.33 2004-06-22 22:48:43 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.34 2004-08-13 09:51:40 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -61,7 +61,7 @@ public class schemagen {
     /** The default location of the configuration model is {@value} */
     public static final String DEFAULT_CONFIG_URI = "file:schemagen.rdf";
 
-    /** The default marker string for denoting substitutions is '{@value}' */
+    /** The default marker string for denoting substitutions is {@value} */
     public static final String DEFAULT_MARKER = "%";
 
     /** Default template for writing out value declarations */
@@ -93,6 +93,9 @@ public class schemagen {
 
     /** Specify that the language of the source is OWL (the default); use <code>--owl</code> on command line;  use <code>sgen:owl</code> in config file */
     protected static final Object OPT_LANG_OWL = new Object();
+
+    /** Specify that the language of the source is RDFS; use <code>--rdfs</code> on command line;  use <code>sgen:rdfs</code> in config file */
+    protected static final Object OPT_LANG_RDFS = new Object();
 
     /** Specify that destination file; use <code>-o &lt;fileName&gt;</code> on command line;  use <code>sgen:output</code> in config file */
     protected static final Object OPT_OUTPUT = new Object();
@@ -172,6 +175,9 @@ public class schemagen {
     /** Option to show the usage message; use --help on command line */
     protected static final Object OPT_HELP = new Object();
 
+    /** Option to generate an output file with DOS (\r\n) line endings. Default is Unix line endings. */
+    protected static final Object OPT_DOS = new Object();
+
 
 
     // Static variables
@@ -204,6 +210,7 @@ public class schemagen {
         {OPT_INPUT,               new OptionDefinition( "-i", "input" ) },
         {OPT_LANG_DAML,           new OptionDefinition( "--daml", "daml" ) },
         {OPT_LANG_OWL,            new OptionDefinition( "--owl", "owl" ) },
+        {OPT_LANG_RDFS,           new OptionDefinition( "--rdfs", "rdfs" ) },
         {OPT_OUTPUT,              new OptionDefinition( "-o", "output" ) },
         {OPT_HEADER,              new OptionDefinition( "--header", "header" ) },
         {OPT_FOOTER,              new OptionDefinition( "--footer", "footer" ) },
@@ -227,8 +234,9 @@ public class schemagen {
         {OPT_INCLUDE,             new OptionDefinition( "--include", "include" ) },
         {OPT_CLASSNAME_SUFFIX,    new OptionDefinition( "--classnamesuffix", "classnamesuffix" )},
         {OPT_NOHEADER,            new OptionDefinition( "--noheader", "noheader" )},
-        {OPT_ENCODING,              new OptionDefinition( "-e", "encoding" )},
+        {OPT_ENCODING,            new OptionDefinition( "-e", "encoding" )},
         {OPT_HELP,                new OptionDefinition( "--help", null )},
+        {OPT_DOS,                 new OptionDefinition( "--dos", "dos" )},
     };
 
     /** Stack of replacements to apply */
@@ -240,8 +248,8 @@ public class schemagen {
     /** Perl5 pattern matcher */
     protected PatternMatcher m_matcher = new Perl5Matcher();
 
-    /** Local platform newline char */
-    protected String m_nl = "\n"; // System.getProperty( "line.separator" );
+    /** Output file newline char - default is Unix, override with --dos */
+    protected String m_nl = "\n";
 
     /** Size of indent step */
     protected int m_indentStep = 4;
@@ -346,7 +354,20 @@ public class schemagen {
 
     /** Create the source model after determining which input language */
     protected void determineLanguage() {
-        m_source = ModelFactory.createOntologyModel( OntModelSpec.getDefaultSpec( isTrue( OPT_LANG_DAML ) ? ProfileRegistry.DAML_LANG : ProfileRegistry.OWL_LANG ), null );
+        OntModelSpec s = null;
+        if (isTrue( OPT_LANG_DAML )) {
+            // daml language specified
+            s = OntModelSpec.getDefaultSpec( ProfileRegistry.DAML_LANG );
+        }
+        else if (isTrue( OPT_LANG_RDFS )) {
+            // rdfs language specified
+            s = OntModelSpec.getDefaultSpec( ProfileRegistry.RDFS_LANG );
+        }
+        else {
+            // owl is the default
+            s = OntModelSpec.getDefaultSpec( ProfileRegistry.OWL_LANG );
+        }
+        m_source = ModelFactory.createOntologyModel( s, null );
         m_source.getDocumentManager().setProcessImports( false );
     }
 
@@ -394,6 +415,11 @@ public class schemagen {
             catch (Exception e) {
                 abort( "I/O error while trying to open file for writing: " + outFile, null );
             }
+        }
+        
+        // check for DOS line endings
+        if (isTrue( OPT_DOS )) {
+            m_nl = "\r\n";
         }
     }
 
@@ -590,7 +616,7 @@ public class schemagen {
     /** Write out the given string with n spaces of indent, with newline */
     protected void writeln( int indent, String s ) {
         write( indent, s );
-        m_output.print( '\n' );
+        m_output.print( m_nl );
     }
 
     /** Write out the given string with n spaces of indent */
@@ -720,11 +746,15 @@ public class schemagen {
     /** Write the declaration of the model */
     protected void writeModelDeclaration() {
         if (useOntology()) {
+            String lang = "OWL";
+            if (isTrue( OPT_LANG_DAML )) {
+                lang = "DAML";
+            }
+            else if (isTrue( OPT_LANG_RDFS )) {
+                lang = "RDFS";
+            }
             writeln( 1, "/** <p>The ontology model that holds the vocabulary terms</p> */" );
-            writeln( 1, "private static OntModel m_model = ModelFactory.createOntologyModel( OntModelSpec." +
-                        (isTrue( OPT_LANG_DAML ) ? "DAML" : "OWL" ) +
-                        "_MEM, null );"
-                   );
+            writeln( 1, "private static OntModel m_model = ModelFactory.createOntologyModel( OntModelSpec." + lang + "_MEM, null );" );
         }
         else {
             writeln( 1, "/** <p>The RDF model that holds the vocabulary terms</p> */" );
@@ -830,8 +860,10 @@ public class schemagen {
     protected void writeObjectProperties() {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
-        for (Iterator i = m_source.listObjectProperties(); i.hasNext(); ) {
-            writeValue( (Resource) i.next(), template, "ObjectProperty", "createObjectProperty", "_PROP" );
+        if (!isTrue( OPT_LANG_RDFS )) {
+            for (Iterator i = m_source.listObjectProperties(); i.hasNext(); ) {
+                writeValue( (Resource) i.next(), template, "ObjectProperty", "createObjectProperty", "_PROP" );
+            }
         }
     }
 
@@ -839,8 +871,10 @@ public class schemagen {
     protected void writeDatatypeProperties() {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
-        for (Iterator i = m_source.listDatatypeProperties(); i.hasNext(); ) {
-            writeValue( (Resource) i.next(), template, "DatatypeProperty", "createDatatypeProperty", "_PROP" );
+        if (!isTrue( OPT_LANG_RDFS )) {
+            for (Iterator i = m_source.listDatatypeProperties(); i.hasNext(); ) {
+                writeValue( (Resource) i.next(), template, "DatatypeProperty", "createDatatypeProperty", "_PROP" );
+            }
         }
     }
 
@@ -848,8 +882,10 @@ public class schemagen {
     protected void writeAnnotationProperties() {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
-        for (Iterator i = m_source.listAnnotationProperties(); i.hasNext(); ) {
-            writeValue( (Resource) i.next(), template, "AnnotationProperty", "createAnnotationProperty", "_PROP" );
+        if (!isTrue( OPT_LANG_RDFS )) {
+            for (Iterator i = m_source.listAnnotationProperties(); i.hasNext(); ) {
+                writeValue( (Resource) i.next(), template, "AnnotationProperty", "createAnnotationProperty", "_PROP" );
+            }
         }
     }
 

@@ -41,7 +41,9 @@ be set to include the Jena <code>.jar</code> libraries.
 <table width="800" border="1" cellspacing="0" cellpadding="1">
 <caption align="bottom">Table 1: schemagen options</caption>
   <tr align="left"><th width="190">Command line option</th><th width="180">RDF config file property</th><th width="430">Meaning</th></tr>
-  <tr> <td>-a &lt;uri&gt;</td> <td>sgen:namespace</td> <td>The namespace URI for the vocabulary. Names with this URI as prefix are automatically included in the generated vocabulary.</td> </tr>
+  <tr> <td>-a &lt;uri&gt;</td> <td>sgen:namespace</td> <td>The namespace URI for the vocabulary. 
+    Names with this URI as prefix are automatically included in the generated vocabulary. If not specified, the base URI of the
+    ontology is used as a default (but note that some ontology documents don't define a base URI).</td> </tr>
   <tr> <td>-c &lt;filename&gt;<br>-c &lt;url&gt;</td> <td>&nbsp;</td> <td>Specify an alternative config file.</td> </tr>
   <tr> <td>--classdec &lt;string&gt;</td> <td>sgen:classdec</td> <td>Additional decoration for class header (such as <code>implements</code>)</td> </tr>
   <tr> <td>--classnamesuffix &lt;string&gt;</td> <td>sgen:classnamesuffix</td> <td>Option for adding a suffix to the generated class name, e.g. "Vocab".</td> </tr>
@@ -49,6 +51,7 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>--classTemplate &lt;string&gt;</td> <td>sgen:classTemplate</td> <td>Template for writing out declarations of class resources.</td> </tr>
   <tr> <td>--daml</td> <td>sgen:daml</td> <td>Specify that the language of the source ontology is DAML+OIL.</td> </tr>
   <tr> <td>--declarations &lt;string&gt;</td> <td>sgen:declarations</td> <td>Additional declarations to add at the top of the class.</td> </tr>
+  <tr> <td>--dos</td> <td>sgen:dos</td> <td>Use MSDOS-style line endings (i.e. \r\n). Default is Unix-style line endings.</td> </tr>
   <tr> <td>-e &lt;string&gt;</td> <td>sgen:encoding</td> <td>The surface syntax of the input file (e.g. RDF/XML, N3). Defaults to RDF/XML.</td> </tr>
   <tr> <td>--footer &lt;string&gt;</td> <td>sgen:footer</td> <td>Template for standard text to add to the end of the file.</td> </tr>
   <tr> <td>--header &lt;string&gt;</td> <td>sgen:header</td> <td>Template for the file header, including the class comment.</td> </tr>
@@ -74,6 +77,7 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>--propSection &lt;string&gt;</td> <td>sgen:propSection</td> <td>Section declaration comment for properties section.</td> </tr>
   <tr> <td>--propTemplate &lt;string&gt;</td> <td>sgen:propTemplate</td> <td>Template for writing out declarations of property resources.</td> </tr>
   <tr> <td>-r &lt;uri&gt;</td> <td>&nbsp;</td> <td>Specify the uri of the root node in the RDF configuration model.</td> </tr>
+  <tr> <td>--rdfs</td> <td>sgen:rdfs</td> <td>Specify that the language of the source ontology is RDFS.</td> </tr>
   <tr> <td>--uppercase</td> <td>sgen:uppercase</td> <td>Option for mapping constant names to uppercase (like Java constants). Default is to leave the case of names unchanged.</td> </tr>
 </table>
 
@@ -114,7 +118,7 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
   <code>Java jena.schemagen -i deputy.rdf -a http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen.html,v 1.9 2004-05-20 10:50:26 ian_dickinson Exp $ */
+/* CVS $Id: schemagen.html,v 1.10 2004-08-13 09:51:58 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -153,7 +157,7 @@ public class Deputy {
   to get:</p>
 <p>
   <pre><code>
-/* CVs $Id: schemagen.html,v 1.9 2004-05-20 10:50:26 ian_dickinson Exp $ */
+/* CVs $Id: schemagen.html,v 1.10 2004-08-13 09:51:58 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -337,6 +341,19 @@ Options can be specified on the command line (when invoking schemagen), or may b
   of the generated class (i.e. it will be the class name with Java appended). 
   Otherwise, the path is assumed to point to a file. Any existing file that has 
   the given path name will be overwritten.</p>
+<p>By default, schemagen will create files that have the Unix convention for line-endings
+  (i.e. '\n'). To switch to DOS-style line endings, use <code>--dos</code>.</p>
+<table width="650" border="0" cellspacing="0" cellpadding="1">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td  class="syntax">--dos</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td  class="syntax">&lt;sgen:dos rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:dos&gt;</td>
+  </tr>
+</table>
+<p></p>
 <h3 id="classname">Specifying the class name</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="1">
   <tr> 
@@ -372,7 +389,6 @@ Options can be specified on the command line (when invoking schemagen), or may b
 <p></p>
 <p>See also the <a href="#java_ids">note on legal Java identifiers</a>, which 
   applies to generated class names. </p>
-<p></p>
 <p></p>
 <h3 id="input">Specifying the vocabulary namespace</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
@@ -443,12 +459,12 @@ Options can be specified on the command line (when invoking schemagen), or may b
   </tr>
 </table>
 <p>By default, the Java class generated by schemagen will generate constants that 
-  are plain RDF Resource, Property or Literal constants. When working with OWL 
-  or DAML ontologies, it may be more convenient to have constants that are OntClass, 
+  are plain RDF Resource, Property or Literal constants. When working with OWL, 
+  DAML, or RDFS ontologies, it may be more convenient to have constants that are OntClass, 
   ObjectProperty, DatatypeProperty and Individual Java objects. To generate these 
   ontology constants, rather than plain RDF constants, set the ontology configuration 
   option. </p>
-<p>Furthermore, since Jena can handle input ontologies in both DAML+OIL and OWL, 
+<p>Furthermore, since Jena can handle input ontologies in DAML+OIL, OWL (the default), and RDFS, 
   it is necessary to be able to specify which language is being processed. This 
   will affect both the parsing of the input documents, and the language profile 
   selected for the constants in the generated Java class.</p>
@@ -474,7 +490,18 @@ Options can be specified on the command line (when invoking schemagen), or may b
   </tr>
 </table>
 <p></p>
-<h3 id="package">Specifying the Java package</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--rdfs</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:rdfs rdf:datatype=&quot;&amp;xsd;Boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
+  </tr>
+</table>
+<p></p>
+  <h3 id="package">Specifying the Java package</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td width="140" class="syntaxPrompt">Command line</td>
@@ -656,7 +683,7 @@ Options can be specified on the command line (when invoking schemagen), or may b
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.9 2004-05-20 10:50:26 ian_dickinson Exp $
+	CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.10 2004-08-13 09:51:58 ian_dickinson Exp $
 --&gt;
 
 <span class="xmlText">&lt;sgen:Config&gt;
@@ -688,10 +715,10 @@ Options can be specified on the command line (when invoking schemagen), or may b
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.9 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.10 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2004-05-20 10:50:26 $
+ * Last modified on &nbsp;&nbsp;$Date: 2004-08-13 09:51:58 $
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
@@ -758,6 +785,6 @@ Options can be specified on the command line (when invoking schemagen), or may b
 </code></pre>
 </p>
 <hr />
-<p><small>CVS $Id: schemagen.html,v 1.9 2004-05-20 10:50:26 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: schemagen.html,v 1.10 2004-08-13 09:51:58 ian_dickinson Exp $</small></p>
 </body>
 </html>
