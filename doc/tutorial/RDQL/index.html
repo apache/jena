@@ -419,7 +419,8 @@ results.close() ;</pre>
 
 <p>Results are returned as an iterator, with each call to <font face="monospace"> QueryResults.next</font> returning one set of variables
 bindings.&nbsp; The text formatter called by jena.rdfquery prints each ResultBinding out as a single line.</p>
-<p>Variables are accessed by name.&nbsp; To just print out the result we could do: (the full code is in <a href="rdql_code1.java.txt">rdql_code1</a>).</p>
+<p>Variables are accessed by name.&nbsp; To just print out the result we could do: (the full code is in
+<a href="../../src-examples/jena/examples/rdql/rdql_code1.java">rdql_code1</a>).</p>
 <pre class="box">for ( Iterator iter = results ; iter.hasNext() ; )
 {
     ResultBinding res = (ResultBinding)iter.next() ;
@@ -438,7 +439,8 @@ x = http://somewhere/SarahJones/   fname = Sarah Jones
 x = http://somewhere/MattJones/   fname = Matt Jones</pre>
   
 
-<p>The objects returned are real Jena objects: (see <a href="rdql_code2.java.txt">rdql_code2</a>):</p>
+<p>The objects returned are real Jena objects: (see
+<a href="../../src-examples/jena/examples/rdql/rdql_code2.java">rdql_code2</a>):</p>
 <pre class="box">for ( Iterator iter = results ; iter.hasNext() ; )
 {
     ResultBinding res = (ResultBinding)iter.next() ;
@@ -452,7 +454,8 @@ x = http://somewhere/MattJones/   fname = Matt Jones</pre>
 
 <p>With some care, it is possible to mix Jena API calls with queries.</p>
 
-<p>In <a href="rdql_code3.java.txt">rdql_code3</a>, we have:</p>
+<p>In <a href="../../src-examples/jena/examples/rdql/rdql_code3.java">rdql_code3</a>, 
+we have:</p>
 
 <pre class="box">for ( Iterator iter = results ; iter.hasNext() ; )
 {
@@ -489,7 +492,7 @@ as internal Jena datatsructures are not protected against concurrent updates and
 <p>As an exercise in calling RDQL from Java, find the subclass relationships in <a href="hierarchy.nt">this RDF model</a>
 (<a href="hierarchy.rdf">also available</a> in RDF/XML).</p>
 
-<p><a href="rdql_sc.java.txt">Here is one possible solution</a>.</p>
+<p><a href="../../src-examples/jena/examples/rdql/rdql_sc.java">Here is one possible solution</a>.</p>
 
 <h1><a name="Reference">Reference</a></h1>
 
