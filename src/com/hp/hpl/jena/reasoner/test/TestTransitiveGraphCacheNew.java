@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTransitiveGraphCacheNew.java,v 1.1 2004-11-25 17:32:36 der Exp $
+ * $Id: TestTransitiveGraphCacheNew.java,v 1.2 2004-11-26 17:24:36 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
  * off the main unit test paths.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class TestTransitiveGraphCacheNew extends TestCase {
@@ -56,7 +56,15 @@ public class TestTransitiveGraphCacheNew extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestTransitiveGraphCacheNew.class ); 
+//        return new TestSuite( TestTransitiveGraphCacheNew.class ); 
+        TestSuite suite = new TestSuite();
+        suite.addTest( new TestTransitiveGraphCacheNew("testBasicCache"));
+        suite.addTest( new TestTransitiveGraphCacheNew("testBug1"));
+        suite.addTest( new TestTransitiveGraphCacheNew("testCycle"));
+        suite.addTest( new TestTransitiveGraphCacheNew("testCycle2"));
+        suite.addTest( new TestTransitiveGraphCacheNew("testCycle3"));
+        suite.addTest( new TestTransitiveGraphCacheNew("testDirect"));
+        return suite;
     }  
 
     /**
@@ -215,23 +223,53 @@ public class TestTransitiveGraphCacheNew extends TestCase {
         cache.addRelation(g, e);
         
         TestUtil.assertIteratorValues(this, 
-            cache.find(new TriplePattern(e, directP, null)),
-            new Object[] {
-                new Triple(e, closedP, e),
-                new Triple(e, closedP, f)
-            });
-        TestUtil.assertIteratorValues(this, 
-            cache.find(new TriplePattern(f, directP, null)),
-            new Object[] {
-                new Triple(f, closedP, f),
-                new Triple(f, closedP, g)
-            });
-        TestUtil.assertIteratorValues(this, 
-            cache.find(new TriplePattern(g, directP, null)),
-            new Object[] {
-                new Triple(g, closedP, g),
-                new Triple(g, closedP, e)
-            });
+                cache.find(new TriplePattern(e, directP, null)),
+                new Object[] {
+                    new Triple(e, closedP, e),
+                    new Triple(e, closedP, f),
+                    new Triple(e, closedP, g)
+                });
+            TestUtil.assertIteratorValues(this, 
+                cache.find(new TriplePattern(f, directP, null)),
+                new Object[] {
+                    new Triple(f, closedP, f),
+                    new Triple(f, closedP, g),
+                    new Triple(f, closedP, e)
+                });
+            TestUtil.assertIteratorValues(this, 
+                cache.find(new TriplePattern(g, directP, null)),
+                new Object[] {
+                    new Triple(g, closedP, g),
+                    new Triple(g, closedP, e),
+                    new Triple(g, closedP, f)
+                });
+            TestUtil.assertIteratorValues(this, 
+                    cache.find(new TriplePattern(null, directP, e)),
+                    new Object[] {
+                        new Triple(e, closedP, e),
+                        new Triple(f, closedP, e),
+                        new Triple(b, closedP, e),
+                        new Triple(c, closedP, e),
+                        new Triple(g, closedP, e)
+                    });
+                TestUtil.assertIteratorValues(this, 
+                    cache.find(new TriplePattern(null, directP, f)),
+                    new Object[] {
+                        new Triple(f, closedP, f),
+                        new Triple(g, closedP, f),
+                        new Triple(b, closedP, f),
+                        new Triple(c, closedP, f),
+                        new Triple(e, closedP, f)
+                    });
+                TestUtil.assertIteratorValues(this, 
+                    cache.find(new TriplePattern(null, directP, g)),
+                    new Object[] {
+                        new Triple(g, closedP, g),
+                        new Triple(e, closedP, g),
+                        new Triple(b, closedP, g),
+                        new Triple(c, closedP, g),
+                        new Triple(f, closedP, g)
+                    });
         TestUtil.assertIteratorValues(this, 
             cache.find(new TriplePattern(g, closedP, null)),
             new Object[] {
@@ -417,6 +455,41 @@ public class TestTransitiveGraphCacheNew extends TestCase {
                     new Triple(f, closedP, c),
                     new Triple(f, closedP, d),
                     new Triple(f, closedP, g),
+                });
+    }
+    
+    /**
+     * Two ring-of-three cycles joined at two points
+     */
+    public void testCycle3() {
+        TransitiveGraphCacheNew cache = new TransitiveGraphCacheNew(directP, closedP);
+        cache.addRelation(a, b);
+        cache.addRelation(b, c);
+        cache.addRelation(c, a);
+        cache.addRelation(d, e);
+        cache.addRelation(e, f);
+        cache.addRelation(f, d);
+        cache.addRelation(b, d);
+        cache.addRelation(f, c);
+        TestUtil.assertIteratorValues(this, 
+                cache.find(new TriplePattern(a, directP, null)),
+                new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(a, closedP, b),
+                new Triple(a, closedP, c),
+                new Triple(a, closedP, d),
+                new Triple(a, closedP, e),
+                new Triple(a, closedP, f),
+                });
+        TestUtil.assertIteratorValues(this, 
+                cache.find(new TriplePattern(null, directP, a)),
+                new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(b, closedP, a),
+                new Triple(c, closedP, a),
+                new Triple(d, closedP, a),
+                new Triple(e, closedP, a),
+                new Triple(f, closedP, a),
                 });
     }
 
