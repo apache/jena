@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.21 2003-07-17 09:10:40 chris-dollin Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.22 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-07-17 09:10:40 $
+ * @version $Revision: 1.22 $ on $Date: 2003-07-25 12:16:47 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -123,7 +123,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
                 dataFind = FinderUtil.cascade(dataFind, fschema);
             }
             
-            context = new BBRuleContext(this, dataFind);
+            context = new BBRuleContext(this);
         }
         
         isPrepared = true;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BBRuleContext.java,v 1.6 2003-07-09 15:50:09 der Exp $
+ * $Id: BBRuleContext.java,v 1.7 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * interpret variable bindings to access the static triple data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-07-09 15:50:09 $
+ * @version $Revision: 1.7 $ on $Date: 2003-07-25 12:16:47 $
  */
 public class BBRuleContext implements RuleContext {
     
@@ -34,16 +34,12 @@ public class BBRuleContext implements RuleContext {
     /** The enclosing inference graph. */
     protected BackwardRuleInfGraphI graph;
     
-    /** The set of ground triples to be searched by the find operations */
-    protected Finder searchpath;
-    
     /**
      * Construct an empty context. It can't be used until
      * the rule and environment have been set.
      */
-    public BBRuleContext(BackwardRuleInfGraphI graph, Finder searchpath) {
+    public BBRuleContext(BackwardRuleInfGraphI graph) {
         this.graph = graph;
-        this.searchpath = searchpath;
     }
 
     /**
@@ -67,7 +63,8 @@ public class BBRuleContext implements RuleContext {
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#find(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
      */
     public ClosableIterator find(Node s, Node p, Node o) {
-        return searchpath.find(new TriplePattern(s, p, o));
+        return graph.findDataMatches(new TriplePattern(s, p, o));
+//        return searchpath.find(new TriplePattern(s, p, o));
     }
 
     /**

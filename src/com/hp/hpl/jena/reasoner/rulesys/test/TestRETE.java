@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRETE.java,v 1.6 2003-06-19 12:58:05 der Exp $
+ * $Id: TestRETE.java,v 1.7 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-19 12:58:05 $
+ * @version $Revision: 1.7 $ on $Date: 2003-07-25 12:16:47 $
  */
 public class TestRETE  extends TestCase {
      
@@ -207,7 +207,7 @@ public class TestRETE  extends TestCase {
                          new Triple(n2, q, n3),
                          new Triple(res, p, n3)
                      });
-        doRuleTest( "[rule1: (?x p ?y), (?x q ?y) -> remove('0')]",
+        doRuleTest( "[rule1: (?x p ?y), (?x q ?y) -> remove(0)]",
                      new Triple[] {
                          new Triple(n1, p, Util.makeIntNode(1)),
                          new Triple(n1, p, Util.makeIntNode(2)),

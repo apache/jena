@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.21 2003-06-02 09:04:32 der Exp $
+ * $Id: TestBackchainer.java,v 1.22 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * Test harness for the backward chainer. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-06-02 09:04:32 $
+ * @version $Revision: 1.22 $ on $Date: 2003-07-25 12:16:47 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -498,8 +498,8 @@ public class TestBackchainer extends TestCase {
     public void testBuiltin1() {
         Graph data = new GraphMem();
         List rules = Rule.parseRules(
-            "[a1: -> (a p '2') ]" +
-            "[a2: -> (a q '3') ]" +
+            "[a1: -> (a p 2) ]" +
+            "[a2: -> (a q 3) ]" +
             "[r1: (?x r ?s) <- (?x p ?y), (?x q ?z), sum(?y, ?z, ?s)]"
         );
         Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
@@ -796,7 +796,7 @@ public class TestBackchainer extends TestCase {
         // these ones are required for the inference.
         "[rdfs9:  bound(?y)   (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" + 
         "[restriction4: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X) -> (?C owl:equivalentClass max(?P, ?X))]" +
-        "[restrictionProc11: (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing) -> (?X rdf:type max(?P, '1'))]" +
+        "[restrictionProc11: (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing) -> (?X rdf:type max(?P, 1))]" +
         "[equivalentClass1: (?P owl:equivalentClass ?Q) -> (?P rdfs:subClassOf ?Q), (?Q rdfs:subClassOf ?P) ]" +
         "[restrictionSubclass1: bound(?D) (?D owl:equivalentClass ?R), isFunctor(?R) (?X rdf:type ?R)-> (?X rdf:type ?D)]" +
          // these ones are noise which can cause run aways or failures if there are bugs        

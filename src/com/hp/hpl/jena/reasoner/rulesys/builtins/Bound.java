@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Bound.java,v 1.2 2003-06-10 22:25:01 der Exp $
+ * $Id: Bound.java,v 1.3 2003-07-25 12:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Predicate used to check if a variable has been bound.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-10 22:25:01 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-25 12:16:46 $
  */
 public class Bound extends BaseBuiltin  {
 
@@ -32,13 +32,15 @@ public class Bound extends BaseBuiltin  {
      * This method is invoked when the builtin is called in a rule body.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes, some of which may be Node_RuleVariables.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
-    public boolean bodyCall(Node[] args, RuleContext context) {
+    public boolean bodyCall(Node[] args, int length, RuleContext context) {
         BindingEnvironment env = context.getEnv();
-        for (int i = 0; i < args.length; i++) {
+        for (int i = 0; i < length; i++) {
             if (args[i] instanceof Node_RuleVariable) return false;
         }
         return true;

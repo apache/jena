@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.4 2003-07-24 22:07:27 der Exp $
+ * $Id: TestBasicLP.java,v 1.5 2003-07-25 12:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-07-24 22:07:27 $
+ * @version $Revision: 1.5 $ on $Date: 2003-07-25 12:16:46 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -380,6 +380,59 @@ public class TestBasicLP  extends TestCase {
         assertTrue(i.hasNext());
         assertEquals(i.next(), new Triple(a, r, C1));
         i.close();
+    }
+    
+    /**
+     * Test axioms work.
+     */
+    public void testAxioms() {
+        doTest("[a1: -> (a r C1) ]" +
+               "[a2: -> (a r C2) ]" +
+               "[a3: (b r C1) <- ]" +
+               "[r1: (?x s ?y) <- (?x r ?y)]",
+                new Triple[] {
+                },
+                new Triple(Node.ANY, s, Node.ANY),
+                new Object[] {
+                    new Triple(a, s, C1),
+                    new Triple(a, s, C2),
+                    new Triple(b, s, C1),
+                } );
+    }
+
+    /**
+     * Test nested invocate of rules with permananet vars
+     */
+    public void testNestedPvars() {
+        doTest("[r1: (?x r ?y) <- (?x p ?z) (?z q ?y)]" +
+               "[r1: (?y t ?x) <- (?x p ?z) (?z q ?y)]" +
+               "[r3: (?x s ?y) <- (?x r ?y) (?y t ?x)]",
+                new Triple[] {
+                    new Triple(a, p, C1),
+                    new Triple(a, p, C2),
+                    new Triple(a, p, C3),
+                    new Triple(C2, q, b),
+                    new Triple(C3, q, c),
+                    new Triple(D1, q, D2),
+                },
+                new Triple(Node.ANY, s, Node.ANY),
+                new Object[] {
+                    new Triple(a, s, b),
+                    new Triple(a, s, c),
+                } );
+    }
+    
+    /**
+     * Test simple invocation of a builtin
+     */
+    public void testBuiltin1() {
+        doTest("[r1: (?x r ?y) <- print(?x, ?y)]",
+                new Triple[] {
+                },
+                new Triple(a, r, b),
+                new Object[] {
+                    new Triple(a, r, b),
+                } );
     }
     
     /** 

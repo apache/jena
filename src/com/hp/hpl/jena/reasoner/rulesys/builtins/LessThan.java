@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LessThan.java,v 1.2 2003-06-10 22:25:01 der Exp $
+ * $Id: LessThan.java,v 1.3 2003-07-25 12:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Bind the second argument to 1+ the first argument. Just used for testing builtins.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-10 22:25:01 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-25 12:16:46 $
  */
 public class LessThan extends BaseBuiltin {
 
@@ -28,6 +28,13 @@ public class LessThan extends BaseBuiltin {
     public String getName() {
         return "lessThan";
     }
+    
+    /**
+     * Return the expected number of arguments for this functor or 0 if the number is flexible.
+     */
+    public int getArgLength() {
+        return 2;
+    }
 
     /**
      * This method is invoked when the builtin is called in a rule body.
@@ -37,10 +44,8 @@ public class LessThan extends BaseBuiltin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
-    public boolean bodyCall(Node[] args, RuleContext context) {
-        if (args.length != 2) {
-            throw new BuiltinException(this, context, "must have 2 arguments");
-        }
+    public boolean bodyCall(Node[] args, int length, RuleContext context) {
+        checkArgs(length, context);
         if ( Util.isNumeric(args[0]) && Util.isNumeric(args[1]) ) {
             return Util.getIntValue(args[0]) < Util.getIntValue(args[1]);
         } else {

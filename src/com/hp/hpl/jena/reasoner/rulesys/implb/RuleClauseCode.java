@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.7 2003-07-24 16:52:41 der Exp $
+ * $Id: RuleClauseCode.java,v 1.8 2003-07-25 12:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
-import com.hp.hpl.jena.reasoner.ReasonerException;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
@@ -24,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-07-24 16:52:41 $
+ * @version $Revision: 1.8 $ on $Date: 2003-07-25 12:16:46 $
  */
 public class RuleClauseCode {
     
@@ -67,6 +66,9 @@ public class RuleClauseCode {
     /** put permanaent variable into call parameter (Yi, Ai) */
     public static final byte PUT_VARIABLE = 0x7;
     
+    /** put a dereferenced permanent variable into call parameter ready for BUILTIN call (Yi, Ai) */
+    public static final byte PUT_DEREF_VARIABLE = 0x14;
+    
     /** put temp variable into call parameter (Ti, Ai) */
     public static final byte PUT_TEMP = 0x8;
     
@@ -100,7 +102,7 @@ public class RuleClauseCode {
     /** reset an argument to an unbound variable (Ai) */
     public static final byte CLEAR_ARG = 0x10;
     
-    // current next = 0x14
+    // current next = 0x16
     
     /** The maximum number of permanent variables allowed in a single rule clause. 
      *   Future refactorings will remove this restriction. */
@@ -146,6 +148,13 @@ public class RuleClauseCode {
     }
     
     /**
+     * Return the rule from which this code block was compiled.
+     */
+    public Rule getRule() {
+        return rule;
+    }
+    
+    /**
      * Compile the rule into byte code.
      * <p>
      * Version 0 - no wildcard predicates, no functors, no register optimization. 
@@ -155,11 +164,11 @@ public class RuleClauseCode {
      */
     public void compile(LPRuleStore ruleStore) {
         CompileState state = new CompileState(rule);
-        
+
         // Compile the head operations
         ClauseEntry head = rule.getHeadElement(0);
         if (!(head instanceof TriplePattern)) {
-            throw new ReasonerException("Error compiling rule: heads of backward rules must be triple patterns\nIn rule " + rule.toShortString());
+            throw new LPRuleSyntaxException("Heads of backward rules must be triple patterns", rule);
         }
         state.emitHead((TriplePattern)head);
         
@@ -171,7 +180,7 @@ public class RuleClauseCode {
             } else if (entry instanceof Functor) {
                 state.emitBody((Functor)entry);
             } else {
-                throw new ReasonerException("Error compiling rule: can't create new bRules in an bRule\nIn rule " + rule.toShortString());
+                throw new LPRuleSyntaxException("can't create new bRules in an bRule", rule);
             }
         }
         
@@ -248,6 +257,9 @@ public class RuleClauseCode {
                 case PUT_VARIABLE:
                     out.println("PUT_VARIABLE " + "Y" + code[p++] + ", A" + code[p++]);
                     break;
+                case PUT_DEREF_VARIABLE:
+                    out.println("PUT_DEREF_VARIABLE " + "Y" + code[p++] + ", A" + code[p++]);
+                    break;
                 case CALL_PREDICATE:
                     out.println("CALL_PREDICATE " + args[argi++]);
                     break;
@@ -267,7 +279,7 @@ public class RuleClauseCode {
                     out.println("MAKE_FUNCTOR " + args[argi++]); 
                     break;
                 case CALL_BUILTIN:
-                    out.println("CALL_BUILTIN " + args[argi++]);
+                    out.println("CALL_BUILTIN " + ((Builtin)args[argi++]).getName() + "/" + code[p++]);
                     break;
                 case CLEAR_ARG:
                     out.println("CLEAR_ARG " + "A" + code[p++]);
@@ -312,11 +324,15 @@ public class RuleClauseCode {
         /** the set of variables processed so far during the compile phase */
         Set seen = new HashSet();
          
+        /** The rule being parsed */
+        Rule rule;
+        
         /** 
          * Constructor. 
          */
         CompileState(Rule rule) {
             classifyVariables(rule);
+            this.rule = rule;
             // Create a scratch area for assembling the code, use a worst-case size estimate
             code = new byte[10 + totalOccurrences + rule.bodyLength()*10];
             args = new ArrayList();
@@ -432,8 +448,31 @@ public class RuleClauseCode {
          * @param functor the built-in to be invoked.
          */
         void emitBody(Functor functor) {
+            Node[] fargs = functor.getArgs();
+            Builtin builtin = functor.getImplementor();
+            if (builtin == null) {
+                throw new LPRuleSyntaxException("Unknown builtin operation " + functor.getName(), rule);
+            }
+            if (builtin.getArgLength() != 0 && builtin.getArgLength() != fargs.length) {
+                throw new LPRuleSyntaxException("Wrong number of arguments to functor " + functor.getName() 
+                                                  + " expected " + functor.getArgLength(), rule);
+            }
+            for (int i = 0; i < fargs.length; i++) {
+                Node node = fargs[i];
+                if (node instanceof Node_RuleVariable) {
+                    code[p++] = PUT_DEREF_VARIABLE;
+                    code[p++] = (byte)((Node_RuleVariable)node).getIndex();
+                    code[p++] = (byte)i;                    
+                } else {
+                    code[p++] = PUT_CONSTANT;
+                    code[p++] = (byte)i;
+                    args.add(node);
+                }
+                
+            }
             code[p++] = CALL_BUILTIN;
-            args.add(functor);
+            code[p++] = (byte)fargs.length;
+            args.add(builtin);
         }
          
         /**
@@ -520,15 +559,13 @@ public class RuleClauseCode {
             }
             
             if (permanentVars.size() > MAX_PERMANENT_VARS) {
-                throw new ReasonerException("Rule too complex for current implementation\n" 
-                            + "Rule clauses are limited to " + MAX_PERMANENT_VARS + "permanent variables\n" 
-                            + "\nIn rule " + rule.toShortString());
+                throw new LPRuleSyntaxException("Rule too complex for current implementation\n" 
+                            + "Rule clauses are limited to " + MAX_PERMANENT_VARS + "permanent variables\n", rule); 
             }
             
             if (tempVars.size() > MAX_TEMPORARY_VARS) {
-                throw new ReasonerException("Rule too complex for current implementation\n" 
-                            + "Rule clauses are limited to " + MAX_TEMPORARY_VARS + "temporary variables\n" 
-                            + "\nIn rule " + rule.toShortString());
+                throw new LPRuleSyntaxException("Rule too complex for current implementation\n" 
+                            + "Rule clauses are limited to " + MAX_TEMPORARY_VARS + "temporary variables\n", rule); 
             }
             
             // Renumber the vars
@@ -614,7 +651,9 @@ public class RuleClauseCode {
             String test5 = "(?a p ?y) <- (?a p ?z), (?z p ?y).";
             String test6 = "(?x p C3) <- (C1 r ?x).";
             String test7 = "(?x p ?y) <- (?x r ?y) (?x q ?y).";
-            store.addRule(Rule.parseRule(test7));
+            String test8 = "(?x p ?y) <- (?x p ?z) addOne(?z, ?y).";
+            String test9 = "(?x p ?y) <- (?x p ?z) sum(?z, 2, ?y).";
+            store.addRule(Rule.parseRule(test9));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);

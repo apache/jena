@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Builtin.java,v 1.4 2003-06-24 09:07:21 der Exp $
+ * $Id: Builtin.java,v 1.5 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * be user extended.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-24 09:07:21 $
+ * @version $Revision: 1.5 $ on $Date: 2003-07-25 12:16:47 $
  */
 public interface Builtin {
 
@@ -43,23 +43,32 @@ public interface Builtin {
     public String getURI();
     
     /**
+     * Return the expected number of arguments for this functor or 0 if the number is flexible.
+     */
+    public int getArgLength();
+    
+    /**
      * This method is invoked when the builtin is called in a rule body.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes, some of which may be Node_RuleVariables.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
-    public boolean bodyCall(Node[] args, RuleContext context);
+    public boolean bodyCall(Node[] args, int length, RuleContext context);
     
     /**
      * This method is invoked when the builtin is called in a rule head.
      * Such a use is only valid in a forward rule.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
-    public void headAction(Node[] args, RuleContext context);
+    public void headAction(Node[] args, int length, RuleContext context);
     
     /**
      * Returns false if this builtin has side effects when run in a body clause,

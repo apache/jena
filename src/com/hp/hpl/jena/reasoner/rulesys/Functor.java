@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.11 2003-06-25 07:57:14 der Exp $
+ * $Id: Functor.java,v 1.12 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-25 07:57:14 $
+ * @version $Revision: 1.12 $ on $Date: 2003-07-25 12:16:47 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -100,6 +100,13 @@ public class Functor implements ClauseEntry {
     }
     
     /**
+     * Return the length of the functor argument array.
+     */
+    public int getArgLength() {
+        return args.length;
+    }
+    
+    /**
      * Returns true if the functor is fully ground, no variables
      */
     public boolean isGround() {
@@ -133,7 +140,7 @@ public class Functor implements ClauseEntry {
             logger.warn("Invoking undefined functor " + getName() + " in " + context.getRule().toShortString());
             return false;
         }
-        return implementor.bodyCall(getBoundArgs(context.getEnv()), context);
+        return implementor.bodyCall(getBoundArgs(context.getEnv()), args.length, context);
     }
     
     /**
@@ -147,7 +154,7 @@ public class Functor implements ClauseEntry {
             return false;
         }
         if (implementor.isSafe()) {
-            return implementor.bodyCall(getBoundArgs(context.getEnv()), context);
+            return implementor.bodyCall(getBoundArgs(context.getEnv()), args.length, context);
         } else {
             return false;
         }

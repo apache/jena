@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: AssertDisjointPairs.java,v 1.4 2003-06-12 14:17:01 der Exp $
+ * $Id: AssertDisjointPairs.java,v 1.5 2003-07-25 12:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * Assert the n^2 differtFrom pairs from a distinctMembers list
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-12 14:17:01 $
+ * @version $Revision: 1.5 $ on $Date: 2003-07-25 12:16:46 $
  */
 public class AssertDisjointPairs extends BaseBuiltin {
 
@@ -30,18 +30,24 @@ public class AssertDisjointPairs extends BaseBuiltin {
         return "assertDisjointPairs";
     }
     
+    /**
+     * Return the expected number of arguments for this functor or 0 if the number is flexible.
+     */
+    public int getArgLength() {
+        return 1;
+    }
     
     /**
      * This method is invoked when the builtin is called in a rule head.
      * Such a use is only valid in a forward rule.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
-    public void headAction(Node[] args, RuleContext context) {
-        if (args.length != 1) {
-            throw new BuiltinException(this, context, getName() + " expected single argument");
-        }
+    public void headAction(Node[] args, int length, RuleContext context) {
+        checkArgs(length, context);
         List l = Util.convertList(args[0], context);
         for (Iterator i = l.iterator(); i.hasNext(); ) {
             Node x = (Node)i.next();

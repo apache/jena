@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: MakeInstance.java,v 1.4 2003-07-13 21:16:15 der Exp $
+ * $Id: MakeInstance.java,v 1.5 2003-07-25 12:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.*;
  * an optional type cor the T value.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-07-13 21:16:15 $
+ * @version $Revision: 1.5 $ on $Date: 2003-07-25 12:16:46 $
  */
 public class MakeInstance extends BaseBuiltin {
 
@@ -39,22 +39,24 @@ public class MakeInstance extends BaseBuiltin {
      * This method is invoked when the builtin is called in a rule body.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes, some of which may be Node_RuleVariables.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
-    public boolean bodyCall(Node[] args, RuleContext context) {
+    public boolean bodyCall(Node[] args, int length, RuleContext context) {
 //        System.out.println("MakeInstance on ");
-//        for (int i = 0; i < args.length; i++) {
+//        for (int i = 0; i < length; i++) {
 //            System.out.println(" - " + PrintUtil.print(args[i]));
 //        }
-        if (args.length == 3 || args.length == 4) {
+        if (length == 3 || length == 4) {
             Node inst = args[0];
             Node prop = args[1];
-            Node pclass = args.length == 4 ? args[2] : null;
+            Node pclass = length == 4 ? args[2] : null;
             if (context instanceof BBRuleContext) {
                 Node temp = ((BBRuleContext)context).getTemp(inst, prop, pclass);
-                return context.getEnv().bind(args[args.length-1], temp); 
+                return context.getEnv().bind(args[length-1], temp); 
             } else {
                 throw new BuiltinException(this, context, "builtin " + getName() + " only usable in backward/hybrid rule sets");
             }

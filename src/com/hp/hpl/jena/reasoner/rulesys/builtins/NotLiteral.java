@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: NotLiteral.java,v 1.2 2003-06-10 22:25:01 der Exp $
+ * $Id: NotLiteral.java,v 1.3 2003-07-25 12:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Tests the single argument to make sure it is a literal.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-10 22:25:01 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-25 12:16:46 $
  */
 public class NotLiteral extends BaseBuiltin {
 
@@ -27,19 +27,26 @@ public class NotLiteral extends BaseBuiltin {
     public String getName() {
         return "notLiteral";
     }
+    
+    /**
+     * Return the expected number of arguments for this functor or 0 if the number is flexible.
+     */
+    public int getArgLength() {
+        return 1;
+    }
 
     /**
      * This method is invoked when the builtin is called in a rule body.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes, some of which may be Node_RuleVariables.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
-    public boolean bodyCall(Node[] args, RuleContext context) {
-        if (args.length != 1) {
-            throw new BuiltinException(this, context, "must have 1 arguments");
-        }
+    public boolean bodyCall(Node[] args, int length, RuleContext context) {
+        checkArgs(length, context);
         return !args[0].isLiteral();
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Remove.java,v 1.4 2003-06-10 22:25:01 der Exp $
+ * $Id: Remove.java,v 1.5 2003-07-25 12:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-10 22:25:01 $
+ * @version $Revision: 1.5 $ on $Date: 2003-07-25 12:16:46 $
  */
 public class Remove extends BaseBuiltin {
 
@@ -34,11 +34,13 @@ public class Remove extends BaseBuiltin {
      * Such a use is only valid in a forward rule.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
-    public void headAction(Node[] args, RuleContext context) {
+    public void headAction(Node[] args, int length, RuleContext context) {
         boolean ok = false;
-        for (int i = 0; i < args.length; i++) {
+        for (int i = 0; i < length; i++) {
             Node clauseN = args[i];
             if (Util.isNumeric(clauseN)) {
                 int clauseIndex = Util.getIntValue(clauseN);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETETerminal.java,v 1.6 2003-06-17 17:14:12 der Exp $
+ * $Id: RETETerminal.java,v 1.7 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-17 17:14:12 $
+ * @version $Revision: 1.7 $ on $Date: 2003-07-25 12:16:47 $
  */
 public class RETETerminal implements RETESinkNode {
 
@@ -131,7 +131,7 @@ public class RETETerminal implements RETESinkNode {
                 Functor f = (Functor)hClause;
                 Builtin imp = f.getImplementor();
                 if (imp != null) {
-                    imp.headAction(f.getBoundArgs(env), context);
+                    imp.headAction(f.getBoundArgs(env), f.getArgLength(), context);
                 } else {
                     throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + rule.toShortString());
                 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.25 2003-07-17 11:01:59 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.26 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2003-07-17 11:01:59 $
+ * @version $Revision: 1.26 $ on $Date: 2003-07-25 12:16:47 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -390,7 +390,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 engine.init(true, dataSource);
             }
             // Prepare the context for builtins run in backwards engine
-            context = new BBRuleContext(this, dataFind);
+            context = new BBRuleContext(this);
             
         }
     }

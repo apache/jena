@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.18 2003-07-18 12:50:50 chris-dollin Exp $
+ * $Id: TestBasics.java,v 1.19 2003-07-25 12:16:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-07-18 12:50:50 $
+ * @version $Revision: 1.19 $ on $Date: 2003-07-25 12:16:47 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -68,19 +68,21 @@ public class TestBasics extends TestCase  {
             "(?a rdf:type max(?a,1)) -> (?a rdf:type 'foo').",
             "(?a rdf:type _) -> addOne(?a).",
             "(?a rdf:type _) -> [(?a rdf:type _) -> addOne(?a)].",
-           "(?a rdf:type _) -> (?a rdf:type 42).",
+           "(?a rdf:type _) -> (?a rdf:type '42').",
+           "(?a rdf:type _) -> (?a rdf:type 4.2).",
            "(?a rdf:type _) -> (?a rdf:type ' fool that,I(am)').",
-            "[rule1: (?a rdf:type _) -> (?a rdf:type 42)]"
+            "[rule1: (?a rdf:type _) -> (?a rdf:type a)]"
         };
         String[] testResults = new String[] {
             "[ (?a rdf:type *) -> (?a rdf:type ?b) ]",
             "[ (?a rdf:type *) (?a rdf:type *) -> (?a rdf:type ?b) ]",
-            "[ (?a rdf:type max(?a 1)^^urn:x-hp-jena:Functor) -> (?a rdf:type 'foo') ]",
+            "[ (?a rdf:type max(?a 1^^http://www.w3.org/2001/XMLSchema#int)^^urn:x-hp-jena:Functor) -> (?a rdf:type 'foo') ]",
             "[ (?a rdf:type *) -> addOne(?a) ]",
             "[ (?a rdf:type *) -> [ (?a rdf:type *) -> addOne(?a) ] ]",
-            "[ (?a rdf:type *) -> (?a rdf:type 42) ]",
+            "[ (?a rdf:type *) -> (?a rdf:type '42') ]",
+            "[ (?a rdf:type *) -> (?a rdf:type 4.2^^http://www.w3.org/2001/XMLSchema#float) ]",
             "[ (?a rdf:type *) -> (?a rdf:type ' fool that,I(am)') ]",
-            "[ rule1: (?a rdf:type *) -> (?a rdf:type 42) ]"
+            "[ rule1: (?a rdf:type *) -> (?a rdf:type a) ]"
         };
         
         for (int i = 0; i < testRules.length; i++) {
@@ -336,7 +338,7 @@ public class TestBasics extends TestCase  {
     public void testEmbeddedFunctors() {
         String rules = "(?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
                        "(?C rb:restriction all(eg:p, eg:D)) -> (?C rb:restriction 'allOK')." +
-                       "[ -> (eg:foo eg:prop functor(eg:bar, '1')) ]" +
+                       "[ -> (eg:foo eg:prop functor(eg:bar, 1)) ]" +
                        "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
                        "[ (?x eg:prop functor(?v, *)) -> (?x eg:propfunc ?v) ]" +
                        "";
@@ -379,9 +381,9 @@ public class TestBasics extends TestCase  {
     public void testBuiltins() {
         String rules =  //"[testRule1: (n1 ?p ?a) -> print('rule1test', ?p, ?a)]" +
                        "[r1: (n1 p ?x), addOne(?x, ?y) -> (n1 q ?y)]" +
-                       "[r2: (n1 p ?x), lessThan(?x, '3') -> (n2 q ?x)]" +
-                       "[axiom1: -> (n1 p '1')]" +
-                       "[axiom2: -> (n1 p '4')]" +
+                       "[r2: (n1 p ?x), lessThan(?x, 3) -> (n2 q ?x)]" +
+                       "[axiom1: -> (n1 p 1)]" +
+                       "[axiom2: -> (n1 p 4)]" +
                        "";
         List ruleList = Rule.parseRules(rules);
         
@@ -403,7 +405,7 @@ public class TestBasics extends TestCase  {
      */
     public void testRemoveBuiltin() {
         String rules =  
-                       "[rule1: (?x p ?y), (?x q ?y) -> remove('0')]" +
+                       "[rule1: (?x p ?y), (?x q ?y) -> remove(0)]" +
                        "";
         List ruleList = Rule.parseRules(rules);
 
