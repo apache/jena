@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Node_RuleVariable.java,v 1.10 2003-07-20 19:05:40 der Exp $
+ * $Id: Node_RuleVariable.java,v 1.11 2003-07-21 15:16:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-07-20 19:05:40 $
+ * @version $Revision: 1.11 $ on $Date: 2003-07-21 15:16:45 $
  */
 public class Node_RuleVariable extends Node_Variable {
     /** The offset of this variable in the Frule's binding table */
@@ -84,9 +84,9 @@ public class Node_RuleVariable extends Node_Variable {
      * perverse on Node_RuleVariable so if we want to put then in a Set or Map
      * we need something with a better equals function.
      */
-    public Object getRepresentative() {
-        return label;
-    }
+//    public Object getRepresentative() {
+//        return label;
+//    }
     
     /**
      * Binds a value to the brule version of the variable. Does not follow
@@ -142,16 +142,25 @@ public class Node_RuleVariable extends Node_Variable {
         return ((VarLabel)label).getLabel();
     }
     
-    /** Equality override - all rule variables are treated as equal
-     *  to support easy variant matching. */
-    public boolean equals(Object o) {
+// Obsolete equality override this functionality has been moved into TriplePattern
+    
+//    /** Equality override - all rule variables are treated as equal
+//     *  to support easy variant matching. */
+//    public boolean equals(Object o) {
+//        return o instanceof Node_RuleVariable;
+//    }
+//        
+//    /** hash function override - all vars have same hash code to support fast
+//     *  search of variant tables */
+//    public int hashCode() {
+//        return 0xc3a7;
+//    }
+
+    /**
+     * Test that two nodes are semantically equivalent.
+     */
+    public boolean sameValueAs(Object o) {
         return o instanceof Node_RuleVariable;
-    }
-        
-    /** hash function override - all vars have same hash code to support fast
-     *  search of variant tables */
-    public int hashCode() {
-        return 0xc3a7;
     }
 
     /**

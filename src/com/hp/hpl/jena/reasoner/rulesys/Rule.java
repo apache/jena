@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.12 2003-06-25 07:57:14 der Exp $
+ * $Id: Rule.java,v 1.13 2003-07-21 15:16:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.12 $ on $Date: 2003-06-25 07:57:14 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.13 $ on $Date: 2003-07-21 15:16:45 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -330,11 +330,10 @@ public class Rule implements ClauseEntry {
         Node n = (env == null) ? nIn : env.getGroundVersion(nIn);
         if (n instanceof Node_RuleVariable) {
             Node_RuleVariable nv = (Node_RuleVariable)n;
-            Object rep = nv.getRepresentative();
-            Node c = (Node)vmap.get(rep);
+            Node c = (Node)vmap.get(nv);
             if (c == null) {
                 c = ((Node_RuleVariable)n).cloneNode();
-                vmap.put(rep, c);
+                vmap.put(nv, c);
             }
             return c;
         } else if (Functor.isFunctor(n)) {
