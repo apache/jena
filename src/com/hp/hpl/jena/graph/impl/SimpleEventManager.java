@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.8 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: SimpleEventManager.java,v 1.9 2004-03-23 13:47:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -112,6 +112,12 @@ public class SimpleEventManager implements GraphEventManager
         for (int i = 0; i < listeners.size(); i += 1) 
             ((GraphListener) listeners.get(i)).notifyDeleteGraph( g ); 
         }
+    
+    public void notifyEvent( Graph source, Object event )
+        {
+        for (int i = 0; i < listeners.size(); i += 1) 
+            ((GraphListener) listeners.get(i)).notifyEvent( source, event ); }
+    
     }
 
 /*

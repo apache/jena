@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelListenerAdapter.java,v 1.12 2003-08-27 13:05:53 andy_seaborne Exp $
+  $Id: ModelListenerAdapter.java,v 1.13 2004-03-23 13:47:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -62,6 +62,9 @@ public class ModelListenerAdapter implements GraphListener
 
     public void notifyDeleteGraph( Graph g )
         { L.removedStatements( m.asModel( g ) ); }
+    
+    public void notifyEvent( Graph g, Object event )
+        { L.notifyEvent( m, event ); }
         
     public boolean equals( Object other )
         { 

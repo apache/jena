@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: StatementListener.java,v 1.3 2003-08-27 13:05:53 andy_seaborne Exp $
+  $Id: StatementListener.java,v 1.4 2004-03-23 13:47:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
@@ -41,7 +41,9 @@ public class StatementListener implements ModelChangedListener
     public void removedStatements( StmtIterator statements ) 
         { while (statements.hasNext()) removedStatement( statements.nextStatement() ); }
     public void removedStatements( Model m ) 
-        { removedStatements( m.listStatements() ); }           
+        { removedStatements( m.listStatements() ); }            
+    public void notifyEvent( Model m, Object event ) 
+        {}
     }
 
 

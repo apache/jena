@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.85 2003-12-04 15:58:00 der Exp $
+    $Id: ModelCom.java,v 1.86 2004-03-23 13:47:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.85 $' Date='$Date: 2003-12-04 15:58:00 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.86 $' Date='$Date: 2004-03-23 13:47:41 $'
  */
 
 public class ModelCom 
@@ -1364,7 +1364,13 @@ implements Model, PrefixMapping, ModelLock
     */
     public GraphListener adapt( final ModelChangedListener L )
         { return new ModelListenerAdapter( this, L ); }
-}
+    
+    public Model notifyEvent( Object e )
+        {
+        getGraph().getEventManager().notifyEvent( getGraph(), e );
+        return this;
+        }
+    }
 
 /*
  *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RecordingListener.java,v 1.7 2004-01-29 12:34:03 chris-dollin Exp $
+  $Id: RecordingListener.java,v 1.8 2004-03-23 13:47:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -48,7 +48,13 @@ public class RecordingListener implements GraphListener
         
     public void notifyDeleteGraph( Graph g )
         { record( "deleteGraph", g ); }
+    
+    public void notifyEvent( Graph source, Object event )
+        { record( "someEvent", source, event ); }
         
+    protected void record( String tag, Object x, Object y )
+        { history.add( tag ); history.add( x ); history.add( y ); }
+    
     protected void record( String tag, Object info )
         { history.add( tag ); history.add( info ); }
         

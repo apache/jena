@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.40 2004-01-29 12:34:03 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.41 2004-03-23 13:47:41 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -502,6 +502,14 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph triples = graphWith( "this type graph; I type slowly" );
         g.getBulkUpdateHandler().delete( triples );
         L.assertHas( new Object[] {"deleteGraph", triples} );
+        }
+    
+    public void testGeneralEvent()
+        {
+        Graph g = getAndRegister( L );
+        Object value = new int[]{};
+        g.getEventManager().notifyEvent( g, value );
+        L.assertHas( new Object[] { "someEvent", g, value } );
         }
     
     /**

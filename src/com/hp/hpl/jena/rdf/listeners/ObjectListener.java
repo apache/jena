@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ObjectListener.java,v 1.3 2003-08-27 13:05:53 andy_seaborne Exp $
+  $Id: ObjectListener.java,v 1.4 2004-03-23 13:47:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
@@ -37,7 +37,8 @@ public class ObjectListener implements ModelChangedListener
     public void removedStatements( Statement [] statements ) { removed( statements ); }
     public void removedStatements( List statements ) { removed( statements ); }
     public void removedStatements( StmtIterator statements ) { removed( statements ); }
-    public void removedStatements( Model m ) { removed( m ); }               
+    public void removedStatements( Model m ) { removed( m ); }       
+    public void notifyEvent( Model m, Object event ) {}         
     }
 
 /*

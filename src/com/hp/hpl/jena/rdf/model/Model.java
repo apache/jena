@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.49 2003-12-08 11:55:58 ian_dickinson Exp $
+  $Id: Model.java,v 1.50 2004-03-23 13:47:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.49 $Date: 2003/11/28 16:17:25 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.50 $Date: 2003/12/08 11:55:58 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -930,6 +930,12 @@ public interface Model
         @return this model, for cascading
     */
     public Model unregister( ModelChangedListener listener );
+
+	/**
+         Notify any listeners that the event e has occurred.
+	 	@param e the event that has occurred
+	*/
+	public Model notifyEvent( Object e );
     
 }
 
@@ -958,5 +964,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.49 2003-12-08 11:55:58 ian_dickinson Exp $
+ * $Id: Model.java,v 1.50 2004-03-23 13:47:41 chris-dollin Exp $
  */

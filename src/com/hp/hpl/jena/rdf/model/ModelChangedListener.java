@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelChangedListener.java,v 1.9 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: ModelChangedListener.java,v 1.10 2004-03-23 13:47:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -96,6 +96,8 @@ public interface ModelChangedListener
      */
     
     void removedStatements( Model m );
+    
+    void notifyEvent( Model m, Object event );
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphListener.java,v 1.12 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: GraphListener.java,v 1.13 2004-03-23 13:47:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -72,6 +72,12 @@ public interface GraphListener
     	@param g the graph of triples added
      */
     void notifyDeleteGraph( Graph g );
+    
+    /**
+         method to call for a general event
+     	@param value
+     */
+    void notifyEvent( Graph source, Object value );
     }
 
 /*
