@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.4 2003-05-05 21:52:41 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.5 2003-05-12 07:56:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-05 21:52:41 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-12 07:56:43 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph {
 
@@ -33,9 +33,6 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
 
     /** Set for rules being used */
     protected List rules;
-    
-    /** Indexed version of the rule set */
-    protected RuleStore ruleStore;
     
     /** Table of derivation records, maps from triple to RuleDerivation */
     protected OneToManyMap derivations;
@@ -49,12 +46,8 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
     /** A finder that searches across the data, schema and axioms */
     protected Finder dataFind;
     
-    /** A table of memoized goal solutions */
-    protected GoalTable goalTable;
-    
-    /** A set of GoalResults's that have been awoken from suspension and
-     *  are awaiting processing */
-    protected HashSet agenda = new HashSet(); 
+    /** The core rule engine which includes all the memoized results */
+    protected BRuleEngine engine;
     
     /** Single context for the reasoner, used when passing information to builtins */
     protected BBRuleContext context;
@@ -87,16 +80,16 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
      * 
      * @param reasoner the parent reasoner 
      * @param data the data graph to be processed
+     * @param ruleStore the indexed set of rules to use
      */
-    public BasicBackwardRuleInfGraph(BasicBackwardRuleReasoner reasoner, Graph data) {
+    public BasicBackwardRuleInfGraph(BasicBackwardRuleReasoner reasoner, Graph data, RuleStore ruleStore) {
         super(data, reasoner);
-        rules = reasoner.getRules();
-        ruleStore = new RuleStore(rules);
         if (reasoner.schemaGraph != null) {
             fschema = new FGraph(reasoner.schemaGraph);
         }
         
         // Set up the chain of searches for triple matches in the raw data
+        rules = reasoner.getRules();
         extractAxioms();
         dataFind = fdata;
         if (faxioms != null) {
@@ -107,7 +100,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
         }
         
         // Set up the backchaining engine
-        goalTable = new GoalTable(this);
+        engine = new BRuleEngine(this, ruleStore);
         context = new BBRuleContext(this, dataFind);
     }    
    
@@ -124,7 +117,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
      */
     public synchronized ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         return WrappedIterator.create(
-             new TopGoalIterator( goalTable.findGoal(pattern) )
+             new TopGoalIterator( engine.findGoal(pattern) )
         );
     }
    
@@ -187,6 +180,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
      */
     public void setTraceOn(boolean state) {
         traceOn = state;
+        engine.setTraceOn(state);
     }
     
     /**
@@ -206,35 +200,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
     public ExtendedIterator findDataMatches(TriplePattern pattern) {
         return dataFind.find(pattern);
     }
-    
-    /**
-     * Add a new item to the agenda.
-     * @param item a GoalResults which was blocked waiting for new
-     * data and is now ready for processing.
-     */
-    public void addAgendaItem(GoalResults item) {
-        agenda.add(item);
-    }
-    
-    
-    /**
-     * Return a list of rules that match the given goal entry
-     */
-    public List rulesFor(GoalResults goal) {
-        return ruleStore.rulesFor(goal);
-    }    
-
-    /**
-     * Find the set of memoized solutions for the given goal
-     * and return a GoalState that can traverse all the solutions.
-     * 
-     * @param goal the goal to be solved
-     * @return a GoalState which can iterate over all of the goal solutions
-     */
-    public GoalState findGoal(TriplePattern goal) {
-        return goalTable.findGoal(goal);
-    }
-    
+            
     /**
      * Process a call to a builtin predicate
      * @param clause the Functor representing the call
@@ -310,18 +276,12 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
          */
         private void moveForward() {
             lookAhead = goalState.next();
-            if (lookAhead == StateFlag.FAIL) {
-                lookAhead = null;
-            } else if (lookAhead == StateFlag.SUSPEND) {
-                while (agenda.size() > 0) {
-                    Iterator i = agenda.iterator();
-                    GoalResults generator = (GoalResults)i.next();
-                    i.remove();
-                    while (generator.crank() instanceof Triple) {
-                        // Nothing, the crank will record the results as a side effect
-                    }
+            if (lookAhead == StateFlag.SUSPEND) {
+                if (engine.next(goalState) != null) {
+                    lookAhead = goalState.next();
+                } else {
+                    lookAhead = null;
                 }
-                lookAhead = null;
             }
         }
         

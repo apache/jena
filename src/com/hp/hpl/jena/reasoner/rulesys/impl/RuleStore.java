@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleStore.java,v 1.2 2003-05-05 21:52:42 der Exp $
+ * $Id: RuleStore.java,v 1.3 2003-05-12 07:58:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,11 +21,12 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * a crude first version aimed at supporting the backchaining
  * interpreter. It only indexes on predicate. 
  * <p>
- * TODO Improve idexing based on OWL rule set data.
- * </p>
+ * The rules are normalized to only contain a single head element
+ * by duplicating any multi headed rules.
+ * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-12 07:58:25 $
  */
 public class RuleStore {
 
@@ -43,33 +44,48 @@ public class RuleStore {
         goalMap = new OneToManyMap();
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
             Rule rule = (Rule)i.next();
-            for (int j = 0; j < rule.headLength(); j++) {
-                Object headClause = rule.getHeadElement(j);
-                if (headClause instanceof TriplePattern) {
-                    TriplePattern headpattern = (TriplePattern)headClause;
-                    Node predicate = headpattern.getPredicate();
-                    if (predicate.isVariable()) {
-                        goalMap.put(Node.ANY, rule);
-                    } else {
-                        goalMap.put(predicate, rule);
-                    }
+            if (rule.headLength() != 1) {
+                for (int j = 0; j < rule.headLength(); j++) {
+                    addRule ( new Rule(rule.getName(), 
+                                        new Object[] {rule.getHeadElement(j)}, 
+                                        rule.getBody()
+                                        ) );
                 }
+                
+            } else {
+                addRule(rule);
             }
         }
     }
     
     /**
-     * Return a list of ruleInstances that match the given goal pattern.
-     * @param results the GoalResults being constructed, contains the goal
-     * being matched and will be bound into each constructed rule instance
+     * Add a single rule to the store. It assumes the rule
+     * has a single head element.
      */
-    public List rulesFor(GoalResults generator) {
-        List rules = new LinkedList();
-        if (generator.goal.getPredicate().isVariable()) {
-            checkAll(goalMap.values().iterator(), generator, rules);
+    public void addRule(Rule rule) {
+        Object headClause = rule.getHeadElement(0);
+        if (headClause instanceof TriplePattern) {
+            TriplePattern headpattern = (TriplePattern)headClause;
+            Node predicate = headpattern.getPredicate();
+            if (predicate.isVariable()) {
+                goalMap.put(Node.ANY, rule);
+            } else {
+                goalMap.put(predicate, rule);
+            }
+        }
+    }
+    
+    /**
+     * Return a list of rules that match the given goal pattern
+     * @param goal the goal being matched
+     */
+    public List rulesFor(TriplePattern goal) {
+        List rules = new ArrayList();
+        if (goal.getPredicate().isVariable()) {
+            checkAll(goalMap.values().iterator(), goal, rules);
         } else {
-            checkAll(goalMap.getAll(generator.goal.getPredicate()), generator, rules);
-            checkAll(goalMap.getAll(Node.ANY), generator, rules);
+            checkAll(goalMap.getAll(goal.getPredicate()), goal, rules);
+            checkAll(goalMap.getAll(Node.ANY), goal, rules);
         }
         return rules;
     }
@@ -78,16 +94,11 @@ public class RuleStore {
      * Helper method to extract all matching clauses from an
      * iterator over rules
      */
-    private void checkAll(Iterator candidates, GoalResults generator, List matchingRules) {
+    private void checkAll(Iterator candidates, TriplePattern goal, List matchingRules) {
         while (candidates.hasNext()) {
             Rule r = (Rule)candidates.next();
-            for (int i = 0; i < r.headLength(); i++) {
-                Object clause = r.getHeadElement(i);
-                if (clause instanceof TriplePattern) {
-                    if ( ((TriplePattern)clause).subsumes(generator.goal) ) {
-                        matchingRules.add(new RuleInstance(generator, r));
-                    }
-                }
+            if ( ((TriplePattern)r.getHeadElement(0)).compatibleWith(goal) ) {
+                matchingRules.add(r);
             }
         }
     }

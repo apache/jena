@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.2 2003-05-05 15:16:00 der Exp $
+ * $Id: Rule.java,v 1.3 2003-05-12 07:56:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,8 +16,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 
-/**
- * Representation of a generic inference rule. 
+/** * Representation of a generic inference rule. 
  * <p>
  * This represents the rule specification but most engines will 
  * compile this specification into an abstract machine or processing
@@ -53,10 +52,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 15:16:00 $
- */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.3 $ on $Date: 2003-05-12 07:56:46 $ */
 public class Rule {
     
 //=======================================================================

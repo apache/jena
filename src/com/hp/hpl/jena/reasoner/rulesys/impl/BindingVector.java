@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.3 2003-05-07 06:56:34 der Exp $
+ * $Id: BindingVector.java,v 1.4 2003-05-12 07:58:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * Stack management is done externally.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-07 06:56:34 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-12 07:58:24 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -171,6 +171,22 @@ public class BindingVector implements BindingEnvironment {
                 getGroundVersion(goal.getPredicate()),
                 getGroundVersion(goal.getObject())
         );
+    }
+    
+    /**
+     * Printable form
+     */
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < environment.length; i++) {
+            if (environment[i] == null) {
+                buffer.append("-");
+            } else {
+                buffer.append(environment[i].toString());
+            }
+            buffer.append(" ");
+        }
+        return buffer.toString();
     }
     
 }

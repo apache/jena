@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleReasoner.java,v 1.2 2003-05-08 15:09:24 der Exp $
+ * $Id: BasicBackwardRuleReasoner.java,v 1.3 2003-05-12 07:56:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.RuleStore;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
@@ -21,12 +22,15 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-08 15:09:24 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-12 07:56:43 $
  */
 public class BasicBackwardRuleReasoner implements Reasoner {
 
-    /** The rules to be used by this instance of the forward engine */
+    /** The rules to be used by this instance of the backward engine */
     protected List rules;
+    
+    /** Indexed, normalized copy of the rule list */
+    protected RuleStore ruleStore;
     
     /** A cache set of schema data used in partial binding chains */
     protected Graph schemaGraph;
@@ -43,14 +47,16 @@ public class BasicBackwardRuleReasoner implements Reasoner {
      */
     public BasicBackwardRuleReasoner(List rules) {
         this.rules = rules;
+        ruleStore = new RuleStore(rules);
     }
     
     /**
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private BasicBackwardRuleReasoner(List rules, Graph schemaGraph) {
-        this.rules = rules;
+    private BasicBackwardRuleReasoner(BasicBackwardRuleReasoner parent, Graph schemaGraph) {
+        rules = parent.rules;
+        ruleStore = parent.ruleStore;
         this.schemaGraph = schemaGraph;
     }
     
@@ -59,7 +65,7 @@ public class BasicBackwardRuleReasoner implements Reasoner {
      * will be combined with the data when the final InfGraph is created.
      */
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
-        return new BasicBackwardRuleReasoner(rules, tbox);
+        return new BasicBackwardRuleReasoner(this, tbox);
     }
     
     /**
@@ -67,7 +73,7 @@ public class BasicBackwardRuleReasoner implements Reasoner {
      * will be combined with the data when the final InfGraph is created.
      */
     public Reasoner bindSchema(Model tbox) throws ReasonerException {
-        return new BasicBackwardRuleReasoner(rules, tbox.getGraph());
+        return new BasicBackwardRuleReasoner(this, tbox.getGraph());
     }
     
     /**
@@ -82,7 +88,7 @@ public class BasicBackwardRuleReasoner implements Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        BasicBackwardRuleInfGraph graph = new BasicBackwardRuleInfGraph(this, data);
+        BasicBackwardRuleInfGraph graph = new BasicBackwardRuleInfGraph(this, data, ruleStore);
         graph.setDerivationLogging(recordDerivations);
         graph.setRuleThreshold(nRulesThreshold);
         return graph;

@@ -5,13 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalTable.java,v 1.2 2003-05-05 21:52:42 der Exp $
+ * $Id: GoalTable.java,v 1.3 2003-05-12 07:58:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.BasicBackwardRuleInfGraph;
 
 import java.util.*;
 import org.apache.log4j.Logger;
@@ -21,7 +19,7 @@ import org.apache.log4j.Logger;
  *  is a table of partially evaluated goals.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-12 07:58:24 $
  */
 public class GoalTable {
 
@@ -29,7 +27,7 @@ public class GoalTable {
     protected Map table = new HashMap();
     
     /** The parent inference engine for the goal table */
-    BasicBackwardRuleInfGraph ruleEngine;
+    protected BRuleEngine ruleEngine;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(GoalTable.class);
@@ -40,7 +38,7 @@ public class GoalTable {
      * raw data graphs.
      * @param ruleEngine the parent inference engine instance for this table
      */
-    public GoalTable(BasicBackwardRuleInfGraph ruleEngine) {
+    public GoalTable(BRuleEngine ruleEngine) {
         this.ruleEngine = ruleEngine;
     }
 
@@ -52,7 +50,7 @@ public class GoalTable {
      * @return a GoalState which can iterate over all of the goal solutions
      */
     public GoalState findGoal(TriplePattern goal) {
-        if (ruleEngine.isTraceOn()) {
+        if (ruleEngine.getInfGraph().isTraceOn()) {
             logger.debug("findGoal on " + goal.toString());
         }
         GoalResults results = (GoalResults) table.get(goal);
@@ -60,7 +58,7 @@ public class GoalTable {
             results = new GoalResults(goal, ruleEngine);
             table.put(goal, results);
         }
-        return new GoalState(ruleEngine.findDataMatches(goal), results);
+        return new GoalState(ruleEngine.getInfGraph().findDataMatches(goal), results);
     }
         
     /**
@@ -71,13 +69,11 @@ public class GoalTable {
     }
     
     /**
-     * Normalize a node by relacing any variables by Node.ANY
+     * Set all the goals in the table to "complete".
      */
-    private Node normalize(Node n) {
-        if (n.isVariable()) {
-            return Node.ANY;
-        } else {
-            return n;
+    public void setAllComplete() {
+        for (Iterator i = table.values().iterator(); i.hasNext(); ) {
+            ((GoalResults)i.next()).setAllComplete();
         }
     }
 }

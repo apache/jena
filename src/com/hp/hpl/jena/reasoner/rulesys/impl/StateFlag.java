@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: StateFlag.java,v 1.1 2003-05-05 15:16:00 der Exp $
+ * $Id: StateFlag.java,v 1.2 2003-05-12 07:58:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -14,20 +14,35 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * backchaining rule interepreter. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:16:00 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-12 07:58:25 $
  */
 public class StateFlag {
+    
+    /** Label for printing */
+    private String label;
 
     /** Indicates a goal has failed and return no more answers at this time */
-    public static final StateFlag FAIL = new StateFlag();
+    public static final StateFlag FAIL = new StateFlag("FALL");
     
     /** Indicates that all currently available results have been returned and
      *  the goal should be suspended into new subgoal results have been generated */
-    public static final StateFlag SUSPEND = new StateFlag();
+    public static final StateFlag SUSPEND = new StateFlag("SUSPEND");
     
     /** Indicates that the goal remains active */
-    public static final StateFlag ACTIVE = new StateFlag();
+    public static final StateFlag ACTIVE = new StateFlag("ACTIVE");
     
+    /** Indicates a fully satisfied goal */
+    public static final StateFlag SATISFIED = new StateFlag("SATISFIED");
+    
+    /** Constructor */
+    private StateFlag(String label) {
+        this.label = label;
+    }
+    
+    /** Print string */
+    public String toString() {
+        return label;
+    }
 }
 
 

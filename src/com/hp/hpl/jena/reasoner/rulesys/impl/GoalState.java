@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalState.java,v 1.2 2003-05-05 21:52:42 der Exp $
+ * $Id: GoalState.java,v 1.3 2003-05-12 07:58:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import org.apache.log4j.Logger;
 
 /**
  * Represents the state in a traversal of all the solutions of a
@@ -20,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * whole derivation) is complete.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-12 07:58:24 $
  */
 public class GoalState {
     
@@ -32,6 +33,9 @@ public class GoalState {
     
     /** The index of the next memoized solution to return */
     protected int solutionPointer = 0;
+    
+    /** log4j logger*/
+    static Logger logger = Logger.getLogger(GoalState.class);
     
     /**
      * Constructor. Create a GoalState which can traverse all the
@@ -47,6 +51,13 @@ public class GoalState {
     }
 
     /**
+     * Return the GoalResults entry which this state is built in
+     */
+    public GoalResults getGoalResultsEntry() {
+        return results;
+    }
+    
+    /**
      * Return the next available result for this goal.
      * @return a Triple matching the goal if there is another result available, 
      * or FAIL if there are known to be no more matches or SUSPEND if there 
@@ -56,17 +67,16 @@ public class GoalState {
     public Object next() {
         if (tripleMatches != null) {
             if (tripleMatches.hasNext()) {
-                return tripleMatches.next(); 
+                return tripleMatches.next();  
             } else {
                 tripleMatches = null;
             }
         }
         if (solutionPointer < results.numResults()) {
-            return results.getResult(solutionPointer++);
+            return results.getResult(solutionPointer++); 
         } else {
-            Object result = results.crank();
-            if (!(result instanceof StateFlag)) solutionPointer++;
-            return result;
+            // No more results yet, the caller should block
+            return StateFlag.SUSPEND;
         }
     }
     
@@ -77,6 +87,13 @@ public class GoalState {
         if (tripleMatches != null) {
             tripleMatches.close();
         }
+    }
+    
+    /**
+     * Printable form
+     */
+    public String toString() {
+        return "GoalState(" + results.goal.toString() + ")";
     }
 }
 

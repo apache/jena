@@ -1,56 +1,66 @@
 /******************************************************************
- * File:        RuleInstance.java
+ * File:        unbound.java
  * Created by:  Dave Reynolds
- * Created on:  03-May-2003
+ * Created on:  11-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleInstance.java,v 1.4 2003-05-12 07:58:24 der Exp $
+ * $Id: Unbound.java,v 1.1 2003-05-12 07:58:24 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.impl;
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
-import com.hp.hpl.jena.reasoner.*;
+
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.graph.*;
 
 /**
- * Part of the backward chaining rule interpreter. A RuleInstance
- * links an instance of a rule to the GoalResults object for which it is
- * generating results. It is a simple data structure which is shared amongst
- * a set of RuleSets to reduce the store turn over needed for RuleState creation.
- * <p>
- * Encapuslation warning: this object is used in the tight inner loop of the engine so we access its
- * field pointers directly rather than through accessor methods.
- * </p>
+ * Predicate used to check if a variable has not been bound.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-12 07:58:24 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-12 07:58:24 $
  */
-public class RuleInstance {
+public class Unbound implements Builtin {
 
-    /** The rule being processed */
-    protected Rule rule;
+    /**
+     * Return a name for this builtin, normally this will be the name of the 
+     * functor that will be used to invoke it.
+     */
+    public String getName() {
+        return "unbound";
+    }
+
+    /**
+     * This method is invoked when the builtin is called in a rule body.
+     * @param args the array of argument values for the builtin, this is an array 
+     * of Nodes, some of which may be Node_RuleVariables.
+     * @param context an execution context giving access to other relevant data
+     * @return return true if the buildin predicate is deemed to have succeeded in
+     * the current environment
+     */
+    public boolean bodyCall(Node[] args, RuleContext context) {
+        BindingEnvironment env = context.getEnv();
+        for (int i = 0; i < args.length; i++) {
+            if ( !(args[i] instanceof Node_RuleVariable) ) return false;
+        }
+        return true;
+    }
     
-    /** The parent goal table entry which contains this continuation point */
-    protected GoalResults generator;
-    
-    /** The enclosing rule engine */
-    protected BRuleEngine engine;
-    
-    /** The head clause whose bindings are being sought */
-    protected TriplePattern head;
     
     /**
-     * Constructor. Create a new continuation point for a rule in
-     * the context of a specific goal represented by the table entry.
+     * This method is invoked when the builtin is called in a rule head.
+     * Such a use is only valid in a forward rule.
+     * @param args the array of argument values for the builtin, this is an array 
+     * of Nodes.
+     * @param context an execution context giving access to other relevant data
+     * @param rule the invoking rule
      */
-    RuleInstance(GoalResults results, Rule rule, TriplePattern head) {
-        this.generator = results;
-        this.rule = rule;
-        this.engine = results.getEngine();
-        this.head = head;
+    public void headAction(Node[] args, RuleContext context) {
+       // Can't be used in the head
+        throw new BuiltinException(this, context, "can't do bound/unbound in rule heads");
     }
-     
+
 }
+
 
 
 
