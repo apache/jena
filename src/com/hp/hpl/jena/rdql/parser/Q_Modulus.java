@@ -17,8 +17,8 @@ import java.io.PrintWriter;
  */
 
 /** 
- * @author: Automatically generated class: Operator: Modulus
- * @version: $Id: Q_Modulus.java,v 1.4 2003-06-18 15:26:41 andy_seaborne Exp $
+ * @author Automatically generated class: Operator: Modulus
+ * @version $Id: Q_Modulus.java,v 1.5 2003-06-19 08:42:44 andy_seaborne Exp $
  */
 
 public class Q_Modulus extends SimpleNode implements Expr, ExprNumeric

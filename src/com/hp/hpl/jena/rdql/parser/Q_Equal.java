@@ -17,8 +17,8 @@ import java.io.PrintWriter;
  */
 
 /** 
- * @author: Automatically generated class: Operator: Equal
- * @version: $Id: Q_Equal.java,v 1.3 2003-06-18 15:26:41 andy_seaborne Exp $
+ * @author Automatically generated class: Operator: Equal
+ * @version $Id: Q_Equal.java,v 1.4 2003-06-19 08:42:44 andy_seaborne Exp $
  */
 
 public class Q_Equal extends SimpleNode implements Expr, ExprBoolean
