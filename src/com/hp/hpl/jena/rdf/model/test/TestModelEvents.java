@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.7 2003-07-10 13:45:47 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.8 2003-07-11 11:20:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
 
 import java.util.*;
 import junit.framework.*;
@@ -45,6 +46,9 @@ public class TestModelEvents extends ModelTestBase
         public void addedStatements( List statements )
             { record( "addList", statements ); }
             
+        public void addedStatements( StmtIterator statements )
+            { record( "addIterator", iteratorToList( statements ) ); }
+            
         public void removedStatements( Statement [] statements )
             { record( "remove[]", Arrays.asList( statements ) ); }
         
@@ -53,6 +57,9 @@ public class TestModelEvents extends ModelTestBase
             
         public void removedStatements( List statements )
             { record( "removeList", statements ); }
+            
+        public void removedStatements( StmtIterator statements )
+            { record( "removeIterator", iteratorToList( statements ) ); }
             
         protected void record( String tag, Object info )
             { history.add( tag ); history.add( info ); }
@@ -155,8 +162,32 @@ public class TestModelEvents extends ModelTestBase
         model.register( SL );
         List L = Arrays.asList( statements( model, "b I g; m U g" ) );
         model.remove( L );
-        SL.assertHas( new Object[] {"removeList", L} );        }
+        SL.assertHas( new Object[] {"removeList", L} );
         }
+    
+    public void testAddStatementIterator()
+        {
+        model.register( SL );
+        Statement [] sa = statements( model, "x R y; a P b; x R y" );
+        StmtIterator it = asIterator( sa );
+        model.add( it );
+        SL.assertHas( new Object[] {"addIterator", Arrays.asList( sa )} );    
+        }
+        
+    public void testDeleteStatementIterator()
+        {
+        model.register( SL );
+        Statement [] sa = statements( model, "x R y; a P b; x R y" );
+        StmtIterator it = asIterator( sa );
+        model.remove( it );
+        SL.assertHas( new Object[] {"removeIterator", Arrays.asList( sa )} );    
+        }
+                    
+    protected StmtIterator asIterator( Statement [] statements )
+        {
+        return new StmtIteratorImpl( Arrays.asList( statements ).iterator() );
+        }
+    }
 
 
 /*

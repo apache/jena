@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.61 $' Date='$Date: 2003-07-10 13:45:47 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.62 $' Date='$Date: 2003-07-11 11:20:28 $'
  */
 
 public class ModelCom 
@@ -156,15 +156,9 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return add( s, p, ensureRDFNode( o ) );
     }
     
-    public Model add(StmtIterator iter)  {
-        try {
-            while (iter.hasNext()) {
-                add(iter.nextStatement());
-            }
-            return this;
-        } finally {
-            iter.close();
-        }
+    public Model add( StmtIterator iter )  {
+        getBulkUpdateHandler().add( asTriples( iter ) );
+        return this;
     }
     
     public Model add(Model m)  {
@@ -286,19 +280,11 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return this;
     }
     
-    /**
-        BUG. Will likely not deal properly with rel=ving things from itself,
-        but no tests catch this. *iter.remove() does not work*, it will
-        remove things from the wrong model. ARGH.
-    */
     public Model remove( StmtIterator iter ) 
         {
-        while (iter.hasNext()) {
-            Statement s = (Statement) iter.nextStatement();
-            this.remove( s ); // iter.remove();
-        }
+        getBulkUpdateHandler().delete( asTriples( iter ) );
         return this;
-    }
+        }
     
     /**
         Utility method: return a list of all elements in a model. WARNING: if the
@@ -1004,6 +990,12 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return L;
         }
         
+    private Iterator asTriples( StmtIterator it )
+        { return new Map1Iterator( mapAsTriple, it ); }
+        
+    private Map1 mapAsTriple = new Map1()
+        { public Object map1( Object s ) { return ((Statement) s).asTriple(); } };
+        
     /**
         remove all the Statements from the model by converting them to triples and
         removing those triples from the underlying graph.        
@@ -1309,13 +1301,12 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return L;
         }
         
-	private Iterator asStatements( final Iterator it ) {
-		return new Iterator() {
-			public boolean hasNext() { return it.hasNext(); }
-			public Object next() { return asStatement( (Triple) it.next() ); } 
-			public void remove() { it.remove(); }
-		};
+	public StmtIterator asStatements( final Iterator it ) {
+        return new StmtIteratorImpl( new Map1Iterator( mapAsStatement, it ) );
 	}
+    
+    protected Map1 mapAsStatement = new Map1()
+        { public Object map1( Object t ) { return asStatement( (Triple) t ); } };
 	
 	private Iterator listBySubject( Container cont ) {
 		return asStatements( graph.find( cont.asNode(), null, null ) );

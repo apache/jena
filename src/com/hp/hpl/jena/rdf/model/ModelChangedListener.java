@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelChangedListener.java,v 1.6 2003-07-10 13:45:47 chris-dollin Exp $
+  $Id: ModelChangedListener.java,v 1.7 2003-07-11 11:20:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -14,6 +14,10 @@ import java.util.*;
     or its underlying graph, for addition or removal. For an add, the item [or parts
     of that item] may have already been present in the model; for remove, the
     item [or parts of it] need not have been absent from the item.
+<p>
+    NOTE that the listener is supplied with more-or-less faithful copies of the
+    original items that were added to, or removed from, the model. In particular,
+    graph-level updates to the model appear as statements, not triples. 
     
  	@author kers (design by andy & the team)
 */
@@ -26,8 +30,9 @@ public interface ModelChangedListener
     void addedStatement( Statement s );
     
     /**
-        Method to call when an array of statements has been added to the attached model.
-        NOTE. This array need not be == to the array added using Model::add(Statement[]).       
+        Method to call when an array of statements has been added to the attached 
+        model. NOTE. This array need not be == to the array added using 
+        Model::add(Statement[]).       
         @param statements the array of added statements
     */
     void addedStatements( Statement [] statements );
@@ -40,25 +45,42 @@ public interface ModelChangedListener
     void addedStatements( List statements );
     
     /**
+        Method to call when a statement iterator has supplied elements to be added
+        to the attached model. <code>statements</code> is a copy of the
+        original iterator.
+    	@param statements
+     */
+    void addedStatements( StmtIterator statements );
+    
+    /**
         Method to call when a single statement has been removed from the attached model.
         @param s the statement that has been presented for removal.
     */
     void removedStatement( Statement s );
     
     /**
-        Method to call when an array of statements has been removed from the attached 
-        model. NOTE. This array need not be == to the array added using 
+        Method to call when an array of statements has been removed from the 
+        attached model. NOTE. This array need not be == to the array added using 
         Model::remove(Statement[]).
         @param statements the array of removed statements
     */    
     void removedStatements( Statement [] statements );
     
     /**
-        Method to call when a list of statements has been deleted from the attached model.
-        NOTE. This list need not be == to the list added using Model::remov(List).
+        Method to call when a list of statements has been deleted from the attached
+        model. NOTE. This list need not be == to the list added using 
+        Model::remov(List).
         @param statements the list of statements that have been removed.
     */
     void removedStatements( List statements );
+    
+    /**
+        Method to call when a statement iterator has been used to remove 
+        statements from the attached model. The iterator will be a copy, in the
+        correct order, of the iterator supplied for the removal.
+    	@param statements a statement-type copy of the updating iterator
+     */
+    void removedStatements( StmtIterator statements );
     }
 
 
