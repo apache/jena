@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: RuleMap.java,v 1.2 2004-04-16 13:19:44 der Exp $
+ * $Id: RuleMap.java,v 1.3 2004-06-18 10:14:54 der Exp $
  *****************************************************************/
 package jena;
 
@@ -41,7 +41,7 @@ import java.io.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2004-04-16 13:19:44 $
+ * @version $Revision: 1.3 $ on $Date: 2004-06-18 10:14:54 $
  */
 public class RuleMap {
     
@@ -53,9 +53,9 @@ public class RuleMap {
     public static List loadRules(String filename, Map prefixes) throws IOException {
         String fname = filename;
         if (fname.startsWith("file:///")) {
-            fname = fname.substring(8);
+            fname = File.separator + fname.substring(8);
         } else if (fname.startsWith("file:/")) {
-            fname = fname.substring(6);
+            fname = File.separator + fname.substring(6);
         } else if (fname.startsWith("file:")) {
             fname = fname.substring(5);
         }
