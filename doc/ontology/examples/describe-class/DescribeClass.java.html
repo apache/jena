@@ -24,10 +24,10 @@
 <A NAME="7"></A> * Web                http://sourceforge.net/projects/jena/
 <A NAME="8"></A> * Created            25-Jul-2003
 <A NAME="9"></A> * Filename           $RCSfile: DescribeClass.java.html,v $
-<A NAME="10"></A> * Revision           $Revision: 1.1 $
+<A NAME="10"></A> * Revision           $Revision: 1.2 $
 <A NAME="11"></A> * Release status     $State: Exp $
 <A NAME="12"></A> *
-<A NAME="13"></A> * Last modified on   $Date: 2003-08-28 13:18:27 $
+<A NAME="13"></A> * Last modified on   $Date: 2003-10-22 09:32:30 $
 <A NAME="14"></A> *               by   $Author: ian_dickinson $
 <A NAME="15"></A> *
 <A NAME="16"></A> *****************************************************************************/</FONT>
@@ -58,7 +58,7 @@
 <A NAME="41"></A> *
 <A NAME="42"></A> * @author Ian Dickinson, HP Labs
 <A NAME="43"></A> *         (&lt;a  href="mailto:Ian.Dickinson@hp.com" &gt;email&lt;/a&gt;)
-<A NAME="44"></A> * @version CVS $Id: DescribeClass.java.html,v 1.1 2003-08-28 13:18:27 ian_dickinson Exp $
+<A NAME="44"></A> * @version CVS $Id: DescribeClass.java.html,v 1.2 2003-10-22 09:32:30 ian_dickinson Exp $
 <A NAME="45"></A> */</FONT>
 <A NAME="46"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> DescribeClass {
 <A NAME="47"></A>    <FONT ID="SingleLineComment">// Constants
@@ -120,103 +120,131 @@
 <A NAME="103"></A>     * @param c The class to render
 <A NAME="104"></A>     */</FONT>
 <A NAME="105"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> renderClassDescription( PrintStream out, OntClass c ) {
-<A NAME="106"></A>        <FONT ID="If">if</FONT> (c.isRestriction()) {
-<A NAME="107"></A>            renderRestriction( out, (Restriction) c.as( Restriction.<FONT ID="Class">class</FONT> ) );
+<A NAME="106"></A>        <FONT ID="If">if</FONT> (c.isUnionClass()) {
+<A NAME="107"></A>            renderBooleanClass( out, <FONT ID="StringLiteral">"union"</FONT>, c.asUnionClass() );
 <A NAME="108"></A>        }
-<A NAME="109"></A>        <FONT ID="Else">else</FONT> {
-<A NAME="110"></A>            <FONT ID="If">if</FONT> (!c.isAnon()) {
-<A NAME="111"></A>                out.print( <FONT ID="StringLiteral">"Class "</FONT> );
-<A NAME="112"></A>                renderURI( out, prefixesFor( c ), c.getURI() );
-<A NAME="113"></A>                out.print( <FONT ID="CharacerLiteral">' '</FONT> );
-<A NAME="114"></A>            }
-<A NAME="115"></A>            <FONT ID="Else">else</FONT> {
-<A NAME="116"></A>                renderAnonymous( out, c, <FONT ID="StringLiteral">"class"</FONT> );
-<A NAME="117"></A>            }
-<A NAME="118"></A>        }
-<A NAME="119"></A>    }
-<A NAME="120"></A>
-<A NAME="121"></A>
-<A NAME="122"></A>    <FONT ID="SingleLineComment">// Internal implementation methods
-<A NAME="123"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
-<A NAME="124"></A></FONT>
-<A NAME="125"></A>    <FONT ID="FormalComment">/**
-<A NAME="126"></A>     * &lt;p&gt;Handle the case of rendering a restriction.&lt;/p&gt;
-<A NAME="127"></A>     * @param out The print stream to write to
-<A NAME="128"></A>     * @param r The restriction to render
-<A NAME="129"></A>     */</FONT>
-<A NAME="130"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderRestriction( PrintStream out, Restriction r ) {
-<A NAME="131"></A>        <FONT ID="If">if</FONT> (!r.isAnon()) {
-<A NAME="132"></A>            out.print( <FONT ID="StringLiteral">"Restriction "</FONT> );
-<A NAME="133"></A>            renderURI( out, prefixesFor( r ), r.getURI() );
-<A NAME="134"></A>        }
-<A NAME="135"></A>        <FONT ID="Else">else</FONT> {
-<A NAME="136"></A>            renderAnonymous( out, r, <FONT ID="StringLiteral">"restriction"</FONT> );
-<A NAME="137"></A>        }
-<A NAME="138"></A>        
-<A NAME="139"></A>        out.print( <FONT ID="CharacerLiteral">' '</FONT> );
-<A NAME="140"></A>        
-<A NAME="141"></A>        renderRestrictionElem( out, <FONT ID="StringLiteral">"on property"</FONT>, r.getOnProperty() );
-<A NAME="142"></A>
-<A NAME="143"></A>        <FONT ID="If">if</FONT> (r.isAllValuesFromRestriction()) {
-<A NAME="144"></A>            renderRestrictionElem( out, <FONT ID="StringLiteral">"all values from"</FONT>, r.asAllValuesFromRestriction().getAllValuesFrom() );        
-<A NAME="145"></A>        }
-<A NAME="146"></A>        <FONT ID="If">if</FONT> (r.isSomeValuesFromRestriction()) {
-<A NAME="147"></A>            renderRestrictionElem( out, <FONT ID="StringLiteral">"some values from"</FONT>, r.asSomeValuesFromRestriction().getSomeValuesFrom() );        
-<A NAME="148"></A>        }
-<A NAME="149"></A>        <FONT ID="If">if</FONT> (r.isHasValueRestriction()) {
-<A NAME="150"></A>            renderRestrictionElem( out, <FONT ID="StringLiteral">"has value"</FONT>, r.asHasValueRestriction().getHasValue() );        
-<A NAME="151"></A>        }
-<A NAME="152"></A>    }
-<A NAME="153"></A>
-<A NAME="154"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderRestrictionElem( PrintStream out, String desc, RDFNode value ) {
-<A NAME="155"></A>        out.print( desc );
-<A NAME="156"></A>        out.print( <FONT ID="StringLiteral">" "</FONT> );
-<A NAME="157"></A>        renderValue( out, value );
-<A NAME="158"></A>        out.print( <FONT ID="StringLiteral">",  "</FONT> );
-<A NAME="159"></A>    }
-<A NAME="160"></A>
-<A NAME="161"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderValue( PrintStream out, RDFNode value ) {
-<A NAME="162"></A>        <FONT ID="If">if</FONT> (value <FONT ID="InstanceOf">instanceof</FONT> Resource) {
-<A NAME="163"></A>            Resource r = (Resource) value;
-<A NAME="164"></A>            <FONT ID="If">if</FONT> (r.isAnon()) {
-<A NAME="165"></A>                renderAnonymous( out, r, <FONT ID="StringLiteral">"resource"</FONT> );
-<A NAME="166"></A>            }
-<A NAME="167"></A>            <FONT ID="Else">else</FONT> {
-<A NAME="168"></A>                renderURI( out, r.getModel(), r.getURI() ); 
-<A NAME="169"></A>            }
-<A NAME="170"></A>        }
-<A NAME="171"></A>        <FONT ID="Else">else</FONT> {
-<A NAME="172"></A>            out.print( value );
+<A NAME="109"></A>        <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT> (c.isIntersectionClass()) {
+<A NAME="110"></A>            renderBooleanClass( out, <FONT ID="StringLiteral">"intersection"</FONT>, c.asIntersectionClass() );
+<A NAME="111"></A>        }
+<A NAME="112"></A>        <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT> (c.isComplementClass()) {
+<A NAME="113"></A>            renderBooleanClass( out, <FONT ID="StringLiteral">"complement"</FONT>, c.asComplementClass() );
+<A NAME="114"></A>        }
+<A NAME="115"></A>        <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT> (c.isRestriction()) {
+<A NAME="116"></A>            renderRestriction( out, c.asRestriction() );
+<A NAME="117"></A>        }
+<A NAME="118"></A>        <FONT ID="Else">else</FONT> {
+<A NAME="119"></A>            <FONT ID="If">if</FONT> (!c.isAnon()) {
+<A NAME="120"></A>                out.print( <FONT ID="StringLiteral">"Class "</FONT> );
+<A NAME="121"></A>                renderURI( out, prefixesFor( c ), c.getURI() );
+<A NAME="122"></A>                out.print( <FONT ID="CharacerLiteral">' '</FONT> );
+<A NAME="123"></A>            }
+<A NAME="124"></A>            <FONT ID="Else">else</FONT> {
+<A NAME="125"></A>                renderAnonymous( out, c, <FONT ID="StringLiteral">"class"</FONT> );
+<A NAME="126"></A>            }
+<A NAME="127"></A>        }
+<A NAME="128"></A>    }
+<A NAME="129"></A>
+<A NAME="130"></A>
+<A NAME="131"></A>    <FONT ID="SingleLineComment">// Internal implementation methods
+<A NAME="132"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="133"></A></FONT>
+<A NAME="134"></A>    <FONT ID="FormalComment">/**
+<A NAME="135"></A>     * &lt;p&gt;Handle the case of rendering a restriction.&lt;/p&gt;
+<A NAME="136"></A>     * @param out The print stream to write to
+<A NAME="137"></A>     * @param r The restriction to render
+<A NAME="138"></A>     */</FONT>
+<A NAME="139"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderRestriction( PrintStream out, Restriction r ) {
+<A NAME="140"></A>        <FONT ID="If">if</FONT> (!r.isAnon()) {
+<A NAME="141"></A>            out.print( <FONT ID="StringLiteral">"Restriction "</FONT> );
+<A NAME="142"></A>            renderURI( out, prefixesFor( r ), r.getURI() );
+<A NAME="143"></A>        }
+<A NAME="144"></A>        <FONT ID="Else">else</FONT> {
+<A NAME="145"></A>            renderAnonymous( out, r, <FONT ID="StringLiteral">"restriction"</FONT> );
+<A NAME="146"></A>        }
+<A NAME="147"></A>        
+<A NAME="148"></A>        out.println();
+<A NAME="149"></A>        
+<A NAME="150"></A>        renderRestrictionElem( out, <FONT ID="StringLiteral">"    on property"</FONT>, r.getOnProperty() );
+<A NAME="151"></A>        out.println();
+<A NAME="152"></A>        
+<A NAME="153"></A>        <FONT ID="If">if</FONT> (r.isAllValuesFromRestriction()) {
+<A NAME="154"></A>            renderRestrictionElem( out, <FONT ID="StringLiteral">"    all values from"</FONT>, r.asAllValuesFromRestriction().getAllValuesFrom() );        
+<A NAME="155"></A>        }
+<A NAME="156"></A>        <FONT ID="If">if</FONT> (r.isSomeValuesFromRestriction()) {
+<A NAME="157"></A>            renderRestrictionElem( out, <FONT ID="StringLiteral">"    some values from"</FONT>, r.asSomeValuesFromRestriction().getSomeValuesFrom() );        
+<A NAME="158"></A>        }
+<A NAME="159"></A>        <FONT ID="If">if</FONT> (r.isHasValueRestriction()) {
+<A NAME="160"></A>            renderRestrictionElem( out, <FONT ID="StringLiteral">"    has value"</FONT>, r.asHasValueRestriction().getHasValue() );        
+<A NAME="161"></A>        }
+<A NAME="162"></A>    }
+<A NAME="163"></A>
+<A NAME="164"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderRestrictionElem( PrintStream out, String desc, RDFNode value ) {
+<A NAME="165"></A>        out.print( desc );
+<A NAME="166"></A>        out.print( <FONT ID="StringLiteral">" "</FONT> );
+<A NAME="167"></A>        renderValue( out, value );
+<A NAME="168"></A>    }
+<A NAME="169"></A>
+<A NAME="170"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderValue( PrintStream out, RDFNode value ) {
+<A NAME="171"></A>        <FONT ID="If">if</FONT> (value.canAs( OntClass.<FONT ID="Class">class</FONT> )) {
+<A NAME="172"></A>            renderClassDescription( out, (OntClass) value.as( OntClass.<FONT ID="Class">class</FONT> ) );
 <A NAME="173"></A>        }
-<A NAME="174"></A>    }
-<A NAME="175"></A>
-<A NAME="176"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderURI( PrintStream out, PrefixMapping prefixes, String uri ) {
-<A NAME="177"></A>        out.print( prefixes.usePrefix( uri ) );
-<A NAME="178"></A>    }
-<A NAME="179"></A>    
-<A NAME="180"></A>    <FONT ID="Protected">protected</FONT> PrefixMapping prefixesFor( Resource n ) {
-<A NAME="181"></A>        <FONT ID="Return">return</FONT> n.getModel().getGraph().getPrefixMapping();
-<A NAME="182"></A>    }
-<A NAME="183"></A>    
-<A NAME="184"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderAnonymous( PrintStream out, Resource anon, String name ) {
-<A NAME="185"></A>        String anonID = (String) m_anonIDs.get( anon.getId() );
-<A NAME="186"></A>        <FONT ID="If">if</FONT> (anonID == <FONT ID="Null">null</FONT>) {
-<A NAME="187"></A>            anonID = <FONT ID="StringLiteral">"a-"</FONT> + m_anonCount++;
-<A NAME="188"></A>            m_anonIDs.put( anon.getId(), anonID );
-<A NAME="189"></A>        }
-<A NAME="190"></A>        
-<A NAME="191"></A>        out.print( <FONT ID="StringLiteral">"Anonymous "</FONT>);
-<A NAME="192"></A>        out.print( name );
-<A NAME="193"></A>        out.print( <FONT ID="StringLiteral">" with ID "</FONT> );
-<A NAME="194"></A>        out.print( anonID );
-<A NAME="195"></A>    }
-<A NAME="196"></A>        
-<A NAME="197"></A>    <FONT ID="SingleLineComment">//==============================================================================
-<A NAME="198"></A></FONT>    <FONT ID="SingleLineComment">// Inner class definitions
-<A NAME="199"></A></FONT>    <FONT ID="SingleLineComment">//==============================================================================
-<A NAME="200"></A></FONT>
-<A NAME="201"></A>}
-<A NAME="202"></A>
-<A NAME="203"></A></pre>
+<A NAME="174"></A>        <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT> (value <FONT ID="InstanceOf">instanceof</FONT> Resource) {
+<A NAME="175"></A>            Resource r = (Resource) value;
+<A NAME="176"></A>            <FONT ID="If">if</FONT> (r.isAnon()) {
+<A NAME="177"></A>                renderAnonymous( out, r, <FONT ID="StringLiteral">"resource"</FONT> );
+<A NAME="178"></A>            }
+<A NAME="179"></A>            <FONT ID="Else">else</FONT> {
+<A NAME="180"></A>                renderURI( out, r.getModel(), r.getURI() ); 
+<A NAME="181"></A>            }
+<A NAME="182"></A>        }
+<A NAME="183"></A>        <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT> (value <FONT ID="InstanceOf">instanceof</FONT> Literal) {
+<A NAME="184"></A>            out.print( ((Literal) value).getLexicalForm() );
+<A NAME="185"></A>        }
+<A NAME="186"></A>        <FONT ID="Else">else</FONT> {
+<A NAME="187"></A>            out.print( value );
+<A NAME="188"></A>        }
+<A NAME="189"></A>    }
+<A NAME="190"></A>
+<A NAME="191"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderURI( PrintStream out, PrefixMapping prefixes, String uri ) {
+<A NAME="192"></A>        out.print( prefixes.usePrefix( uri ) );
+<A NAME="193"></A>    }
+<A NAME="194"></A>    
+<A NAME="195"></A>    <FONT ID="Protected">protected</FONT> PrefixMapping prefixesFor( Resource n ) {
+<A NAME="196"></A>        <FONT ID="Return">return</FONT> n.getModel().getGraph().getPrefixMapping();
+<A NAME="197"></A>    }
+<A NAME="198"></A>    
+<A NAME="199"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderAnonymous( PrintStream out, Resource anon, String name ) {
+<A NAME="200"></A>        String anonID = (String) m_anonIDs.get( anon.getId() );
+<A NAME="201"></A>        <FONT ID="If">if</FONT> (anonID == <FONT ID="Null">null</FONT>) {
+<A NAME="202"></A>            anonID = <FONT ID="StringLiteral">"a-"</FONT> + m_anonCount++;
+<A NAME="203"></A>            m_anonIDs.put( anon.getId(), anonID );
+<A NAME="204"></A>        }
+<A NAME="205"></A>        
+<A NAME="206"></A>        out.print( <FONT ID="StringLiteral">"Anonymous "</FONT>);
+<A NAME="207"></A>        out.print( name );
+<A NAME="208"></A>        out.print( <FONT ID="StringLiteral">" with ID "</FONT> );
+<A NAME="209"></A>        out.print( anonID );
+<A NAME="210"></A>    }
+<A NAME="211"></A>        
+<A NAME="212"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> renderBooleanClass( PrintStream out, String op, BooleanClassDescription boolClass ) {
+<A NAME="213"></A>        out.print( op );
+<A NAME="214"></A>        out.println( <FONT ID="StringLiteral">" of {"</FONT> );
+<A NAME="215"></A>        
+<A NAME="216"></A>        <FONT ID="For">for</FONT> (Iterator i = boolClass.listOperands(); i.hasNext(); ) {
+<A NAME="217"></A>            out.print( <FONT ID="StringLiteral">"      "</FONT> );
+<A NAME="218"></A>            renderClassDescription( out, (OntClass) i.next() );
+<A NAME="219"></A>            out.println();
+<A NAME="220"></A>        }
+<A NAME="221"></A>        out.print( <FONT ID="StringLiteral">"  } "</FONT> );
+<A NAME="222"></A>    }
+<A NAME="223"></A>    
+<A NAME="224"></A>    
+<A NAME="225"></A>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="226"></A></FONT>    <FONT ID="SingleLineComment">// Inner class definitions
+<A NAME="227"></A></FONT>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="228"></A></FONT>
+<A NAME="229"></A>}
+<A NAME="230"></A>
+<A NAME="231"></A></pre>
 </BODY>
 </HTML>

@@ -24,10 +24,10 @@
 <A NAME="7"></A> * Web                http://sourceforge.net/projects/jena/
 <A NAME="8"></A> * Created            22-Aug-2003
 <A NAME="9"></A> * Filename           $RCSfile: Main.java.html,v $
-<A NAME="10"></A> * Revision           $Revision: 1.1 $
+<A NAME="10"></A> * Revision           $Revision: 1.2 $
 <A NAME="11"></A> * Release status     $State: Exp $
 <A NAME="12"></A> *
-<A NAME="13"></A> * Last modified on   $Date: 2003-08-28 13:18:27 $
+<A NAME="13"></A> * Last modified on   $Date: 2003-10-22 09:32:30 $
 <A NAME="14"></A> *               by   $Author: ian_dickinson $
 <A NAME="15"></A> *
 <A NAME="16"></A> * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -52,7 +52,7 @@
 <A NAME="35"></A> *
 <A NAME="36"></A> * @author Ian Dickinson, HP Labs
 <A NAME="37"></A> *         (&lt;a  href="mailto:Ian.Dickinson@hp.com" &gt;email&lt;/a&gt;)
-<A NAME="38"></A> * @version CVS $Id: Main.java.html,v 1.1 2003-08-28 13:18:27 ian_dickinson Exp $
+<A NAME="38"></A> * @version CVS $Id: Main.java.html,v 1.2 2003-10-22 09:32:30 ian_dickinson Exp $
 <A NAME="39"></A> */</FONT>
 <A NAME="40"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> Main {
 <A NAME="41"></A>    <FONT ID="SingleLineComment">// Constants
@@ -71,35 +71,50 @@
 <A NAME="54"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
 <A NAME="55"></A></FONT>
 <A NAME="56"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Void">void</FONT> main( String[] args ) {
-<A NAME="57"></A>        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, <FONT ID="Null">null</FONT> );
-<A NAME="58"></A>        
-<A NAME="59"></A>        <FONT ID="SingleLineComment">// we have a local copy of the wine ontology
-<A NAME="60"></A></FONT>        m.getDocumentManager().addAltEntry( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/wine"</FONT>, 
-<A NAME="61"></A>                                            <FONT ID="StringLiteral">"file:testing/reasoners/bugs/wine.owl"</FONT> );
-<A NAME="62"></A>        m.getDocumentManager().addAltEntry( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/food"</FONT>, 
-<A NAME="63"></A>                                            <FONT ID="StringLiteral">"file:testing/reasoners/bugs/food.owl"</FONT> );
-<A NAME="64"></A>        m.getDocumentManager().addAltEntry( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/food.owl"</FONT>, 
-<A NAME="65"></A>                                            <FONT ID="StringLiteral">"file:testing/reasoners/bugs/food.owl"</FONT> );
+<A NAME="57"></A>        <FONT ID="SingleLineComment">// read the argument file, or the default
+<A NAME="58"></A></FONT>        String source = (args.length == <FONT ID="IntegerLiteral">0</FONT>) ? <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/wine"</FONT> : args[<FONT ID="IntegerLiteral">0</FONT>];
+<A NAME="59"></A>        
+<A NAME="60"></A>        <FONT ID="SingleLineComment">// guess if we're using a daml source
+<A NAME="61"></A></FONT>        <FONT ID="Boolean">boolean</FONT> isDAML = source.endsWith( <FONT ID="StringLiteral">".daml"</FONT> );
+<A NAME="62"></A>        
+<A NAME="63"></A>        OntModel m = ModelFactory.createOntologyModel( 
+<A NAME="64"></A>                        isDAML ? OntModelSpec.DAML_MEM : OntModelSpec.OWL_MEM, <FONT ID="Null">null</FONT>
+<A NAME="65"></A>                     );
 <A NAME="66"></A>
-<A NAME="67"></A>        m.read( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/wine"</FONT> );
-<A NAME="68"></A>        
-<A NAME="69"></A>        <FONT ID="SingleLineComment">// now list the classes
-<A NAME="70"></A></FONT>        <A HREF="DescribeClass.java.html">DescribeClass</A> dc = <FONT ID="New">new</FONT> <A HREF="DescribeClass.java.html">DescribeClass</A>();
-<A NAME="71"></A>        <FONT ID="For">for</FONT> (Iterator i = m.listClasses();  i.hasNext(); ) {
-<A NAME="72"></A>            dc.describeClass( System.out, (OntClass) i.next() );
-<A NAME="73"></A>        }
-<A NAME="74"></A>    }
-<A NAME="75"></A>    
-<A NAME="76"></A>    
-<A NAME="77"></A>    <FONT ID="SingleLineComment">// Internal implementation methods
-<A NAME="78"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
-<A NAME="79"></A></FONT>
-<A NAME="80"></A>    <FONT ID="SingleLineComment">//==============================================================================
-<A NAME="81"></A></FONT>    <FONT ID="SingleLineComment">// Inner class definitions
-<A NAME="82"></A></FONT>    <FONT ID="SingleLineComment">//==============================================================================
-<A NAME="83"></A></FONT>
-<A NAME="84"></A>}
-<A NAME="85"></A>
-<A NAME="86"></A></pre>
+<A NAME="67"></A>        <FONT ID="SingleLineComment">// we have a local copy of the wine ontology
+<A NAME="68"></A></FONT>        m.getDocumentManager().addAltEntry( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/wine"</FONT>,
+<A NAME="69"></A>                                            <FONT ID="StringLiteral">"file:doc/ontology/examples/describe-class/wine.owl"</FONT> );
+<A NAME="70"></A>        m.getDocumentManager().addAltEntry( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/food"</FONT>,
+<A NAME="71"></A>                                            <FONT ID="StringLiteral">"file:doc/ontology/examples/describe-class/food.owl"</FONT> );
+<A NAME="72"></A>
+<A NAME="73"></A>        <FONT ID="SingleLineComment">// read the source document
+<A NAME="74"></A></FONT>        m.read( source );
+<A NAME="75"></A>
+<A NAME="76"></A>        <A HREF="DescribeClass.java.html">DescribeClass</A> dc = <FONT ID="New">new</FONT> <A HREF="DescribeClass.java.html">DescribeClass</A>();
+<A NAME="77"></A>
+<A NAME="78"></A>        <FONT ID="If">if</FONT> (args.length &gt;= <FONT ID="IntegerLiteral">2</FONT>) {
+<A NAME="79"></A>            <FONT ID="SingleLineComment">// we have a named class to describe
+<A NAME="80"></A></FONT>            OntClass c = m.getOntClass( args[<FONT ID="IntegerLiteral">1</FONT>] );
+<A NAME="81"></A>            dc.describeClass( System.out, c );
+<A NAME="82"></A>        }
+<A NAME="83"></A>        <FONT ID="Else">else</FONT> {
+<A NAME="84"></A>            <FONT ID="For">for</FONT> (Iterator i = m.listClasses();  i.hasNext(); ) {
+<A NAME="85"></A>                <FONT ID="SingleLineComment">// now list the classes
+<A NAME="86"></A></FONT>                dc.describeClass( System.out, (OntClass) i.next() );
+<A NAME="87"></A>            }
+<A NAME="88"></A>        }
+<A NAME="89"></A>    }
+<A NAME="90"></A>
+<A NAME="91"></A>
+<A NAME="92"></A>    <FONT ID="SingleLineComment">// Internal implementation methods
+<A NAME="93"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="94"></A></FONT>
+<A NAME="95"></A>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="96"></A></FONT>    <FONT ID="SingleLineComment">// Inner class definitions
+<A NAME="97"></A></FONT>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="98"></A></FONT>
+<A NAME="99"></A>}
+<A NAME="100"></A>
+<A NAME="101"></A></pre>
 </BODY>
 </HTML>
