@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.2 2003-08-27 13:11:16 andy_seaborne Exp $
+ * $Id: TestBasicLP.java,v 1.3 2003-09-08 14:18:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:16 $
+ * @version $Revision: 1.3 $ on $Date: 2003-09-08 14:18:33 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1116,6 +1116,35 @@ public class TestBasicLP  extends TestCase {
                 "    Rule testRule2 concluded (C2 q C3) <-\n" +
                 "        Fact (C1 q C3)\r\n");
         assertEquals(testString, TestUtil.normalizeWhiteSpace(outString.getBuffer().toString()));
+    }
+
+    /**
+     * A suspect problem, originally derived from the OWL rules - risk of unbound variables escaping.
+     * Not managed to isolate are reproduce the problem yet.
+     */
+    public void testProblem9() {
+        String ruleSrc = 
+        "[test:   (?x owl:sameIndividualAs ?x) <- (?x rdf:type owl:Thing) ]" +
+        "[sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]" +
+        "[ans:    (?x p C1) <- (?y owl:sameIndividualAs ?x)]";
+        Node sI = OWL.sameIndividualAs.asNode();
+        doTest( ruleSrc,
+                new Node[] { ty, sI },                      // Tabled predicates
+                new Triple[] {                              // init data
+                    new Triple(a, ty, OWL.Thing.asNode()),
+                    new Triple(b, sI, c),
+                },
+        new Triple(Node.ANY, p, Node.ANY),                // query
+        new Object[] {                              // result
+            new Triple(a, p, C1),
+            new Triple(b, p, C1),
+            new Triple(c, p, C1),
+        } );
+//                new Triple(Node.ANY, ty, Node.ANY),                // query
+//                new Object[] {                              // result
+//                    new Triple(a, ty, OWL.Thing.asNode()),
+//                    new Triple(b, ty, OWL.Thing.asNode())
+//                } );
     }
     
     /** 
