@@ -128,7 +128,7 @@ public class WGTests extends java.lang.Object {
 			String number = testURI.substring(hash-3,hash);
 			SyntaxTest test = (SyntaxTest)getTest( dir, number, true );
 			String fileURI = ((Resource)testFile).getURI();
-			test.add( factory.open(fileURI), (Resource)level, fileURI );
+		    test.add( factory.open(fileURI), (Resource)level, fileURI );
 		}
 		results.close() ;
 		
@@ -149,7 +149,7 @@ public class WGTests extends java.lang.Object {
     	if ( !syntaxTest ) {
     		t = new TestSuite(nm);
     	} else {
-    		t = new SyntaxTest( nm);
+    		t = new SyntaxTest( nm, factory);
     	}
 		s.addTest(t);
     	return t;

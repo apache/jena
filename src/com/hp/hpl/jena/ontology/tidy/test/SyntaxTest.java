@@ -1,17 +1,19 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.3 2003-09-17 16:41:18 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.4 2003-09-23 11:15:34 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
 import junit.framework.TestCase;
 import com.hp.hpl.jena.ontology.tidy.*;
+import com.hp.hpl.jena.ontology.*;
 import java.util.*;
 import java.io.*;
 import com.hp.hpl.jena.rdf.model.*;
-
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.OWLTest;
+import com.hp.hpl.jena.shared.wg.*;
 /**
  *  @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
 *
@@ -21,35 +23,76 @@ class SyntaxTest extends TestCase {
 	/**
 	 * @param arg0
 	 */
-	public SyntaxTest(String nm, String lvl) {
+	
+	public SyntaxTest(String nm, TestInputStreamFactory factory) {
 		super(nm);
-		//	level = lvl;
-	}
-	public SyntaxTest(String nm) {
-		super(nm);
+		dm = new DocMan(factory);
 	}
 
-	Vector lvls = new Vector();
-	Vector in = new Vector();
-	Vector urls = new Vector();
+	
+	final DocMan dm;
+	
+	static private class DMEntry {
+		Model mdl;
+		final String url;
+		final InputStream in;
+		final Resource lvl;
+		DMEntry(String u, Resource l, InputStream i) {
+			mdl = null;
+		  url = u;
+		  lvl = l;
+		  in = i;
+		}
+		void init() {
+			if (mdl==null){
+				mdl = ModelFactory.createDefaultModel();
+				mdl.read(in,url);
+			}
+		}
+	}
+	static private class DocMan extends OntDocumentManager {
+		DocMan(TestInputStreamFactory f) {
+			super("");
+			fact = f;
+		}
+	  protected boolean read( Model model, String uri, boolean warn ){
+	  	DMEntry entry = (DMEntry)table.get(uri);
+	  	if (entry == null) {
+	  		model.read(fact.open(uri),uri);
+	  	} else {
+			entry.init();
+			model.add(entry.mdl);
+	  	}
+	  	return  true;
+	  }
+	  final Map table = new HashMap();
+	  final TestInputStreamFactory fact;
+	  void add(String url, DMEntry e) {
+	  	table.put(url,e);
+	  }
+	}
 
 	void add(InputStream in0, Resource r, String url) {
-		lvls.add(r);
-		in.add(in0);
-		urls.add(url);
+		dm.add(url, new DMEntry(url,r,in0));
 	}
 
 	protected void runTest() {
-		Iterator inI, lvlI, urlI;
-		inI = in.iterator();
-		lvlI = lvls.iterator();
-		urlI = urls.iterator();
+		Iterator i = dm.table.keySet().iterator();
 
-		while (inI.hasNext()) {
-			Resource level = (Resource) lvlI.next();
-			Checker chk = new Checker(level.equals(OWLTest.Lite));
+		while (i.hasNext()) {
+			String url = (String)i.next();
+			DMEntry ent = (DMEntry)dm.table.get(url);
+			Resource level = ent.lvl;
+			
+			Checker chk = new Checker(ent.lvl.equals(OWLTest.Lite));
+			ent.init();
+			OntModel om = ModelFactory.createOntologyModel( 
+			new OntModelSpec(null,dm,null,ProfileRegistry.OWL_LANG)  ,
+			ent.mdl);
 			//(InputStream) inI.next(),
-			chk.load( (String) urlI.next());
+			//om.read()
+			chk.add(om.getGraph());
+			
 			String rslt = chk.getSubLanguage();
 			if (!level.getURI().endsWith(rslt)) {
 				if (level.equals(OWLTest.Lite) || rslt.equals("Full")) {

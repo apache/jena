@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.3 2003-08-27 13:04:46 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.4 2003-09-23 11:15:34 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -29,7 +29,7 @@ public class TestPackage extends TestSuite {
 		}
 
 	private void addTest(String filename, String lvl) {
-		addTest(new SyntaxTest(filename,lvl));
+	//	addTest(new SyntaxTest(filename,lvl));
 	}
 
 }

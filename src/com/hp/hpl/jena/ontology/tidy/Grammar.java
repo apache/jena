@@ -1,6 +1,6 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.19 2003-09-17 12:41:05 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.20 2003-09-23 11:15:33 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.Arrays;
@@ -137,7 +137,7 @@ class Grammar {
     static final int owlminCardinality = 130;
     static final int owlonProperty = 131;
     static final int owloneOf = 132;
-    static final int owlsameIndividualAs = 133;
+    static final int owlsameAs = 133;
     static final int owlsomeValuesFrom = 134;
     static final int owlunionOf = 135;
     static final int rdfList = 136;
@@ -196,8 +196,8 @@ static int getBuiltinID(String uri) {
           return owlDatatypeProperty;
        } else if ( uri.equals("equivalentClass") ) {
           return owlequivalentClass;
-       } else if ( uri.equals("sameIndividualAs") ) {
-          return owlsameIndividualAs;
+       } else if ( uri.equals("sameAs") ) {
+          return owlsameAs;
        } else if ( uri.equals("equivalentProperty") ) {
           return owlequivalentProperty;
        } else if ( uri.equals("Class") ) {
@@ -256,8 +256,6 @@ static int getBuiltinID(String uri) {
           return owlAllDifferent;
        } else if ( uri.equals("distinctMembers") ) {
           return owldistinctMembers;
-       } else if ( uri.equals("sameAs") ) {
-           return DisallowedVocab;
        } else { return BadOWL; 
      }
    }
@@ -915,7 +913,7 @@ SPOA( individualID, dataPropID, literal, 0 ),
 SPOA( unnamedIndividual, dataPropID, dlInteger, 0 ),
 SPOA( unnamedIndividual, dataPropID, liteInteger, 0 ),
 SPOA( unnamedIndividual, dataPropID, literal, 0 ),
-SPOA( individualID, owlsameIndividualAs, individualID, 0 ),
+SPOA( individualID, owlsameAs, individualID, 0 ),
 SPOA( individualID, owldifferentFrom, individualID, 0 ),
 SPOA( restriction58subClassOf, owlhasValue, dlInteger, 0|DL|FirstOfTwo ),
 SPOA( restriction58subClassOf, owlhasValue, liteInteger, 0|DL|FirstOfTwo ),
