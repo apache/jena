@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.17 2003-08-27 13:01:45 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.18 2003-10-24 11:07:49 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -38,6 +38,9 @@ public class N3toRDF implements N3ParserEventHandler
     static final String NS_rdfs = "http://www.w3.org/2000/01/rdf-schema#" ;
 	
     static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
+    static final String LOG_IMPLIES = NS_W3_log+"implies" ; 
+    static final String LOG_MEANS =   NS_W3_log+"means" ; 
+
     static final String XMLLiteralURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral" ;
 
 	String base = null ;
@@ -141,14 +144,14 @@ public class N3toRDF implements N3ParserEventHandler
 			switch (pType)
 			{
 				case N3Parser.ARROW_R :
-					propStr = NS_W3_log + "implies";
+					propStr = LOG_IMPLIES ;
 					break;
 				case N3Parser.ARROW_MEANS :
-					propStr = NS_W3_log + "means";
+					propStr = LOG_MEANS ;
 					break;
 				case N3Parser.ARROW_L :
 					// Need to reverse subject and object
-					propStr = NS_W3_log + "implies";
+					propStr = LOG_IMPLIES ;
 					AST tmp = obj; obj = subj; subj = tmp;
 					break;
 				case N3Parser.EQUAL :
@@ -372,7 +375,9 @@ public class N3toRDF implements N3ParserEventHandler
         {
             String prefix = prefixed.substring( 0, colon );
             String uri = (String) myPrefixMapping.get( prefix );
-            return uri == null ? prefixed : uri + prefixed.substring( colon + 1 );
+            if ( uri == null )
+                return prefixed ;
+            return uri + prefixed.substring( colon + 1 ) ;
         }
         // Not this - model may already have prefixes defined;
         // we allow "illegal" prefixes (e.g. starts with a number)
