@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraphPrefixMapping.java,v 1.1 2003-04-28 15:34:11 chris-dollin Exp $
+  $Id: TestGraphPrefixMapping.java,v 1.2 2003-07-23 07:20:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -18,7 +18,7 @@ import junit.framework.*;
 public class TestGraphPrefixMapping extends GraphTestBase
     {
     public TestGraphPrefixMapping( String name )
-        { super( name ); };
+        { super( name ); }
         
     public static TestSuite suite()
         { return new TestSuite( TestGraphPrefixMapping.class ); }   

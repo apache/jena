@@ -614,13 +614,13 @@ public class SpecializedGraphReifier_RDB
 			public static final int IsStmt = 16;
 			public static final int HasNada = 0;
 		
-			public boolean hasSubj () { return (mask & HasSubj) == HasSubj; };
-			public boolean hasPred () { return (mask & HasPred) == HasPred; };
-			public boolean hasObj () { return (mask & HasObj) == HasObj; };
-			public boolean hasType () { return (mask & HasType) == HasType; };
-			public boolean hasSPOT () { return (mask & HasSPOT) == HasSPOT; };
-			public boolean isStmt () { return (mask & IsStmt) == IsStmt; };
-			public boolean hasNada () { return mask == HasNada; };
+			public boolean hasSubj () { return (mask & HasSubj) == HasSubj; }
+			public boolean hasPred () { return (mask & HasPred) == HasPred; }
+			public boolean hasObj () { return (mask & HasObj) == HasObj; }
+			public boolean hasType () { return (mask & HasType) == HasType; }
+			public boolean hasSPOT () { return (mask & HasSPOT) == HasSPOT; }
+			public boolean isStmt () { return (mask & IsStmt) == IsStmt; }
+			public boolean hasNada () { return mask == HasNada; }
 			public boolean hasOneBit () { return ( (mask == HasSubj) ||
 				(mask == HasPred) || (mask == HasObj) || ( mask == HasType) );
 			}
@@ -643,7 +643,7 @@ public class SpecializedGraphReifier_RDB
 				}			
 			}
 		
-			StmtMask () { mask = HasNada; };
+			StmtMask () { mask = HasNada; }
 		
 			public void setMerge ( StmtMask m ) {
 				mask |= m.mask;	

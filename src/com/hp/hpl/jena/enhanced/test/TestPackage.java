@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.10 2003-06-11 15:01:05 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.11 2003-07-23 07:20:02 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -74,7 +74,7 @@ public class TestPackage extends GraphTestBase  {
    	public TestPackage(String name)
 		{
 		super( name );
-		};
+		}
 		
     public static TestSuite suite()
         { TestSuite suite = new TestSuite( "Enhanced" ); 

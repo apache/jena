@@ -7,7 +7,6 @@ package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.DB;
 
@@ -28,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -119,13 +118,11 @@ public class DBPropGraph extends DBProp {
 
 	
 	public String getName() { return getPropString( graphName); }
-	public String getType() { return getPropString( graphType); };
+	public String getType() { return getPropString( graphType); }
 	public String getStmtTable() { return getPropString(stmtTable); }
 	public String getReifTable() { return getPropString(reifTable); }
-	public int getGraphId() { return Integer.parseInt(getPropString(graphId)); };
-	public String getDBSchema() { return getPropString(graphDBSchema); }
-
-
+	public int getGraphId() { return Integer.parseInt(getPropString(graphId)); }	
+    public String getDBSchema() { return getPropString(graphDBSchema); }
 	
 	public ExtendedIterator getAllLSets() {
 		return 

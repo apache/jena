@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.13 $ on $Date: 2003-07-18 09:32:51 $
+* @version $Revision: 1.14 $ on $Date: 2003-07-23 07:19:48 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -418,7 +418,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		StmtMask fragMask,
 		IDBID my_GID) {
 			
-			String stmtStr = null;;
+			String stmtStr = null;
 			Node val = null;
 			int argc = 1;
 			ResultSetTripleIterator result =

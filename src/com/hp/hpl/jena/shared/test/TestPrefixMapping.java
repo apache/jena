@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.5 2003-06-20 09:15:31 chris-dollin Exp $
+  $Id: TestPrefixMapping.java,v 1.6 2003-07-23 07:20:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -19,7 +19,7 @@ import junit.framework.*;
 public class TestPrefixMapping extends AbstractTestPrefixMapping
     {
     public TestPrefixMapping( String name )
-        { super( name ); };
+        { super( name ); }
         
     public static TestSuite suite()
         { return new TestSuite( TestPrefixMapping.class ); }   

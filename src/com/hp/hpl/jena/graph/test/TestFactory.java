@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFactory.java,v 1.7 2003-05-03 14:11:12 chris-dollin Exp $
+  $Id: TestFactory.java,v 1.8 2003-07-23 07:20:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -17,7 +17,7 @@ import junit.framework.*;
 public class TestFactory extends GraphTestBase
     {
     public TestFactory( String name )
-        { super( name ); };
+        { super( name ); }
         
     public static TestSuite suite()
         { return new TestSuite( TestFactory.class ); }   

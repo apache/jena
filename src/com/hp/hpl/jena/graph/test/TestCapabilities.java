@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCapabilities.java,v 1.1 2003-04-24 10:45:46 chris-dollin Exp $
+  $Id: TestCapabilities.java,v 1.2 2003-07-23 07:20:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -16,7 +16,7 @@ import junit.framework.*;
 public class TestCapabilities extends GraphTestBase
     {
     public TestCapabilities( String name )
-        { super( name ); };
+        { super( name ); }
         
     public static TestSuite suite()
         { return new TestSuite( TestCapabilities.class ); }   
@@ -27,7 +27,7 @@ public class TestCapabilities extends GraphTestBase
     public void testTheyreThere()
         {
         Graph g = Factory.createDefaultGraph();
-        Capabilities c = g.getCapabilities();
+        /* Capabilities c = */ g.getCapabilities();
         }
     }
 

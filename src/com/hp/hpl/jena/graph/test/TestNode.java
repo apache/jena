@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.21 2003-07-09 15:47:21 chris-dollin Exp $
+  $Id: TestNode.java,v 1.22 2003-07-23 07:20:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -96,8 +96,6 @@ public class TestNode extends GraphTestBase
             Node.cache( false );           
             AnonId id = new AnonId();
             LiteralLabel L2 = new LiteralLabel( id.toString(), "", false );
-            Node a = node( "a" ), b = node( "b" );
-            Triple T = new Triple( a, a, a ), T2 = new Triple( b, b, b );
             String U2 = id.toString();
             String N2 = id.toString();
             return new Object [][]
@@ -191,7 +189,6 @@ public class TestNode extends GraphTestBase
     */
     public void testFailingLabels()
         {
-        Triple T = triple( "x R y" );
         Node u = Node.createURI( U ), b = Node.createAnon();
         Node l = Node.createLiteral( L ), v = Node.createVariable( N );
         Node a = Node.ANY;
@@ -209,7 +206,7 @@ public class TestNode extends GraphTestBase
         testGetNameFails( a );
         testGetNameFails( u );
         testGetNameFails( b );
-        testGetNameFails( l );;
+        testGetNameFails( l );
     /* */
         testGetBlankNodeIdFails( a );
         testGetBlankNodeIdFails( u );
@@ -294,7 +291,7 @@ public class TestNode extends GraphTestBase
         String myNS = "eh:foo/bar#", suffix = "something";
         PrefixMapping mine = PrefixMapping.Factory.create().setNsPrefix( "mine", myNS );
         Node n = Node.create( mine, "mine:" + suffix );
-        assertEquals( myNS + suffix, Node.create( mine, "mine:" + suffix ).getURI() );
+        assertEquals( myNS + suffix, n.getURI() );
         }
         
     private void testCreateURI( String inOut )
@@ -313,7 +310,7 @@ public class TestNode extends GraphTestBase
     public void testCreatePrefixed()
         {
         PrefixMapping pm = PrefixMapping.Factory.create();
-        // Node n = Node.create( pm, "xyz" );
+        /* TODO Node n = */ Node.create( pm, "xyz" );
         }
         
     public void testNodeHelp()
@@ -422,11 +419,11 @@ public class TestNode extends GraphTestBase
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dt1 = tm.getTypeByValue( new Integer( 10 ) );
         RDFDatatype dt2 = tm.getTypeByValue( new Short( (short) 10 ) );
-        Node A = Node.createLiteral( "10", "", dt1 );
-        Node B = Node.createLiteral( "10", "", dt2 );
-        assertDiffer( "types must make a difference", A, B );
-        assertTrue( "A and B must express the same value", A.sameValueAs( B ) );
-        assertTrue( "matching literals must respect sameValueAs", A.matches( B ) );
+        Node a = Node.createLiteral( "10", "", dt1 );
+        Node b = Node.createLiteral( "10", "", dt2 );
+        assertDiffer( "types must make a difference", a, b );
+        assertTrue( "A and B must express the same value", a.sameValueAs( b ) );
+        assertTrue( "matching literals must respect sameValueAs", a.matches( b ) );
         }
         
     public void testConcrete()

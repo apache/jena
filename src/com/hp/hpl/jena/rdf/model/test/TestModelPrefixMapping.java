@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelPrefixMapping.java,v 1.1 2003-06-19 15:51:00 chris-dollin Exp $
+  $Id: TestModelPrefixMapping.java,v 1.2 2003-07-23 07:20:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -19,7 +19,7 @@ import junit.framework.*;
 public class TestModelPrefixMapping extends AbstractTestPrefixMapping
     {
     public TestModelPrefixMapping( String name )
-        { super( name ); };
+        { super( name ); }
     
     public static TestSuite suite()
         { return new TestSuite( TestModelPrefixMapping.class ); }   

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.21 2003-06-19 17:14:09 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.22 2003-07-23 07:20:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -30,7 +30,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-06-19 17:14:09 $
+ * @version $Revision: 1.22 $ on $Date: 2003-07-23 07:20:02 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -91,7 +91,7 @@ public class TestTypedLiterals extends TestCase {
         try {
             int i = l3.getInt();
             assertTrue("Allowed int conversion", false);
-        } catch (DatatypeFormatException e) {};
+        } catch (DatatypeFormatException e) {}
         assertEquals("Extract value", l1.getValue(), "foo");
         assertEquals("Extract lang", l1.getLanguage(), "lang1");
         assertEquals("Extract xml tag", l1.getWellFormed(), false);
@@ -129,7 +129,7 @@ public class TestTypedLiterals extends TestCase {
         try {
             int i = l1.getInt();
             assertTrue("Allowed int conversion", false);
-        } catch (DatatypeFormatException e) {};
+        } catch (DatatypeFormatException e) {}
         assertEquals("Extract lang", l1.getLanguage(), "lang1");
         assertEquals("Extract xml tag", l1.getWellFormed(), false);
     }

@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
-* @version $Revision: 1.5 $
+* @version $Revision: 1.6 $
  */
 public class DBPropPSet extends DBProp {
 
@@ -48,8 +48,8 @@ public class DBPropPSet extends DBProp {
 	}	
 	
 	public String getName() { return getPropString( pSetName); }
-	public String getType() { return getPropString( pSetType); };
-	public String getTable() { return getPropString( pSetTable); };
+	public String getType() { return getPropString( pSetType); }
+	public String getTable() { return getPropString( pSetTable); }
 }
 
 /*

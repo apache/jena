@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -74,9 +74,9 @@ public class DBPropDatabase extends DBProp {
 	}	
 	
 	public String getName() { return self.getURI(); }
-	public String getEngineType() { return getPropString( dbEngineType); };
-	public String getDriverVersion() { return getPropString( dbDriverVersion);};
-	public String getFormatDate() { return getPropString( dbFormatDate); };
+	public String getEngineType() { return getPropString( dbEngineType); }
+	public String getDriverVersion() { return getPropString( dbDriverVersion);}
+	public String getFormatDate() { return getPropString( dbFormatDate); }
 	
 	public void addGraph( DBPropGraph g ) {
 		putPropNode( dbGraph, g.getNode() );

@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.22 $ on $Date: 2003-07-15 03:20:03 $
+* @version $Revision: 1.23 $ on $Date: 2003-07-23 07:19:48 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -550,7 +550,7 @@ public abstract class DriverRDB implements IRDBDriver {
 					result = alltables.next();
 					alltables.close();
 			} catch (Exception e1) {
-					;// if anything goes wrong, the database is not formatted correctly;
+					// if anything goes wrong, the database is not formatted correctly;
 			}
 			return result;
 	}

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelBulkUpdate.java,v 1.3 2003-07-16 15:29:42 chris-dollin Exp $
+  $Id: TestModelBulkUpdate.java,v 1.4 2003-07-23 07:20:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -21,7 +21,7 @@ import junit.framework.*;
 public class TestModelBulkUpdate extends ModelTestBase
     {
     public TestModelBulkUpdate( String name )
-        { super( name ); };
+        { super( name ); }
         
     public static TestSuite suite()
         { return new TestSuite( TestModelBulkUpdate.class ); }   

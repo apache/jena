@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.* ;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.10 2003-07-15 13:26:47 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.11 2003-07-23 07:20:02 chris-dollin Exp $
  */
 
 public class ModelLoader
@@ -300,7 +300,7 @@ public class ModelLoader
 	 * This is a global change when the ModelLoader is used.
 	 */
 
-    public static void setFileBase(String _basename) { basename = _basename ; } ;
+    public static void setFileBase(String _basename) { basename = _basename ; } 
 
     private static String getFilenameExt(String filename)
     {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.9 2003-07-08 07:38:39 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.10 2003-07-23 07:20:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -21,8 +21,7 @@ import java.util.*;
 public abstract class AbstractTestPrefixMapping extends GraphTestBase
     {
     public AbstractTestPrefixMapping( String name )
-         { super( name ); };
-
+         { super( name ); }
 
     abstract protected PrefixMapping getMapping();
         
