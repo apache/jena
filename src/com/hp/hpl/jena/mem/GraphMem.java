@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.40 2004-07-27 15:32:13 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.41 2004-07-28 13:29:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -97,6 +97,13 @@ public class GraphMem extends GraphMemBase implements Graph
      	and (non-literal) object, concrete S/P/O patterns can immediately select
         an appropriate map. Because the match for literals must be by sameValueAs,
         not equality, the optimisation is not applied for literals.
+        
+        <p>Practice suggests doing the predicate test <i>last</i>, because there are
+        "usually" many more statements than predicates, so the predicate doesn't
+        cut down the search space very much. By "practice suggests" I mean that
+        when the order went, accidentally, from S/O/P to S/P/O, performance on
+        (ANY, P, O) searches on largish models with few predicates declined
+        dramatically - specifically on the not-galen.owl ontology.
     */
     public ExtendedIterator find( TripleMatch m ) 
         {
