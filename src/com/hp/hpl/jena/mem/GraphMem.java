@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.28 2004-01-16 16:06:17 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.29 2004-03-18 15:36:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -11,6 +11,7 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 import java.util.*;
 
@@ -109,7 +110,29 @@ public class GraphMem extends GraphBase implements Graph
     private static class GraphMemQueryHandler extends SimpleQueryHandler
         {
         GraphMemQueryHandler( GraphMem graph ) 
-            { super( graph ); }
+            { 
+            super( graph );
+            }
+        
+        public ExtendedIterator objectsFor( Node p, Node o )
+            {
+            return p == null && o == null ? findObjects() : super.objectsFor( p, o );
+            }
+        
+        public ExtendedIterator subjectsFor( Node p, Node o )
+            {
+            return p == null && o == null ? findSubjects() : super.subjectsFor( p, o );
+            }   
+        
+        public ExtendedIterator findObjects()
+            {
+            return WrappedIterator.create( ((GraphMem) graph).objects.domain() );
+            }
+        
+        public ExtendedIterator findSubjects()
+            {
+            return WrappedIterator.create( ((GraphMem) graph).subjects.domain() );
+            }
         }
         
     /**

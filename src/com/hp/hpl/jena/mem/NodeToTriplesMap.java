@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.4 2003-11-17 14:22:40 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.5 2004-03-18 15:36:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -18,6 +18,9 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
 public class NodeToTriplesMap 
     {
     HashMap map = new HashMap();
+    
+    public Iterator domain()
+        { return map.keySet().iterator(); }
     
     public void add( Node o, Triple t ) {
         HashSet s = (HashSet) map.get( o );
