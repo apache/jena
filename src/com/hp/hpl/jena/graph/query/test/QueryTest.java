@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.16 2003-07-18 13:59:24 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.17 2003-08-08 14:29:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -21,7 +21,12 @@ public class QueryTest extends AbstractTestQuery
 		{ super( name ); }
 		
     public static TestSuite suite()
-    	{ return new TestSuite( QueryTest.class ); }
+    	{ 
+        TestSuite result = new TestSuite();
+        result.addTest( new QueryTest( "testNodeVariablesA" ) );
+        result.addTest( new TestSuite( QueryTest.class ) );
+        return result;
+        } 
     	
     public Graph getGraph()
         { return new GraphMem(); }

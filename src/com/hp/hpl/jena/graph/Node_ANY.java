@@ -19,4 +19,7 @@ public class Node_ANY extends Node_Fluid
         
     public boolean matches( Node other )
         { return other != null; }
+        
+    public String toString()
+        { return "ANY"; }
     }

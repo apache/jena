@@ -1,10 +1,14 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Domain.java,v 1.2 2003-08-04 13:28:27 chris-dollin Exp $
+  $Id: Domain.java,v 1.3 2003-08-08 14:29:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
+
+import com.hp.hpl.jena.graph.*;
+
+import java.util.*;
 
 /**
     A Domain is an answer to a Binding query. It satisfies the List
@@ -15,31 +19,30 @@ package com.hp.hpl.jena.graph.query;
     @author kers
 */
 
-import java.util.*;
 
 public class Domain extends AbstractList
 	{
-	private Object [] value;
-	private int width;
+    /**
+        The array holding the bound values. 
+    */
+	private Node [] value;
 	
-	public Domain( Object [] value ) { this.value = value; }
+	public Domain( Node [] value ) 
+        { 
+        Node [] result = new Node[value.length];
+        for (int i = 0; i < value.length; i += 1) result[i] = value[i];
+        this.value = result;
+        }
+    
+    public Domain( int size ) { this( new Node[size] ); }
 	
-	public int size() { return width; }
-	public Object get( int i ) { return value[i]; }
-	  
-	public void setElement( int i, Object x ) 
-		{ 
-		value[i] = x; 
-		if (i >= width) width = i + 1; 
-		}
+	public int size() { return value.length; }
+	public Object get( int i ) { return value[i]; }	  
+	public void setElement( int i, Node x ) { value[i] = x; }
 	
-	public Domain extend()
+	public Domain copy()
 		{
-		Object [] result = new Object[value.length];
-		for (int i = 0; i < value.length; i += 1) result[i] = value[i];
-		Domain out = new Domain( result );
-		out.width = this.width;
-		return out;
+        return new Domain( this.value );
 		}
         
     public boolean equals( Object x )

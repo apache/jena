@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.16 2003-08-04 13:28:27 chris-dollin Exp $
+  $Id: Query.java,v 1.17 2003-08-08 14:29:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -173,8 +173,8 @@ public class Query
     */
     public ExtendedIterator executeBindings( List outStages, ArgMap args, Node [] nodes )
         {
-        Mapping map = new Mapping();
-        ArrayList stages = new ArrayList();
+        Mapping map = new Mapping( nodes );
+        ArrayList stages = new ArrayList();        
         addStages( stages, args, map );
         if (constraintGraph.size() > 0) 
             stages.add( new ConstraintStage( map, constraintGraph ) );
@@ -194,7 +194,7 @@ public class Query
          
     private int findIndex( Mapping map, Node node )
         {
-        if (map.maps( node ) == false) map.newIndex( node );
+        if (map.hasBound( node ) == false) map.newIndex( node );
         return map.indexOf( node );
         }
         
@@ -217,9 +217,9 @@ public class Query
         
     protected Domain filter( int [] indexes, Domain complete )
         {
-        Domain d = new Domain( new Object[indexes.length] );
+        Domain d = new Domain( indexes.length );
         for (int i = 0; i < indexes.length; i += 1) 
-            d.setElement( i, complete.get( indexes[i] ) );
+            d.setElement( i, (Node) complete.get( indexes[i] ) );
         return d;
         }     
                           

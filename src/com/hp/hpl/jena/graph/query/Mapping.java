@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Mapping.java,v 1.5 2003-07-18 11:02:18 chris-dollin Exp $
+  $Id: Mapping.java,v 1.6 2003-08-08 14:29:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -19,12 +19,23 @@ public class Mapping
 	private HashMap map;
 	
 	private int index = 0;
+    private int preIndex = 0;
 	
     /**
-        create a new, empty mapping.
-    */
-	public Mapping()
-		{ this.map = new HashMap(); }
+        Create a new mapping in which all variables are unbound and the variables
+        of <code>preDeclare</code> will be allocated the first slots in the map in their
+        natural order. [This is so that the query domain elements that come out of the
+        matching process will be positioned to be suitable as query answers.]
+    */    
+    public Mapping( Node [] preDeclare )
+        {
+        this.map = new HashMap();
+        index = preDeclare.length;    
+        for (int i = 0; i < preDeclare.length; i += 1) preDeclare( preDeclare[i] );
+        }
+        
+    private void preDeclare( Node v )
+        { map.put( v, new Integer( --preIndex ) ); }
 		
     /**
         get the index of a node in the mapping; undefined if the
@@ -36,7 +47,7 @@ public class Mapping
 	public int indexOf( Node v )
 		{ 
         Integer i = (Integer) map.get( v );
-        if (i == null) throw new Query.UnboundVariableException( v );
+        if (i == null || i.intValue() < 0) throw new Query.UnboundVariableException( v );
         return i.intValue();
         }
 
@@ -49,9 +60,10 @@ public class Mapping
     */
 	public int newIndex( Node v )
 		{
-		int result = index++;
-		map.put( v, new Integer( result ) );
-		return result;
+        Integer already = (Integer) map.get( v );
+        int result = already == null ? index++ : -already.intValue() - 1;
+        map.put( v, new Integer( result ) );
+        return result;
 		}
 		
     /**
@@ -62,11 +74,12 @@ public class Mapping
         { return map.size(); }
         
     /**
+        Answer true iff we have already bound v (predeclaration doesn't count)
         @param v the node to look up
-        @return true iff this mapping maps _v_ to an index
+        @return true iff this mapping has seen a binding occurance of v
     */
-	public boolean maps( Node v )
-		{ return map.containsKey( v ); }
+	public boolean hasBound( Node v )
+		{ return map.containsKey( v )  && ((Integer) map.get( v )).intValue() > -1; }
         
     /**
         @return a string representing this mapping

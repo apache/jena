@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternStageCompiler.java,v 1.3 2003-08-04 14:03:13 chris-dollin Exp $
+  $Id: PatternStageCompiler.java,v 1.4 2003-08-08 14:29:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -53,7 +53,7 @@ public final class PatternStageCompiler implements PatternCompiler
         if (X.equals( Query.ANY )) return compiler.any();
         if (X.isVariable()) 
             {
-            if (map.maps( X ))
+            if (map.hasBound( X ))
                 return compiler.bound( X, map.indexOf( X ) );
             else
                 return compiler.bind( X, map.newIndex( X ) );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Pattern.java,v 1.6 2003-08-08 13:02:46 chris-dollin Exp $
+  $Id: Pattern.java,v 1.7 2003-08-08 14:29:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -32,9 +32,10 @@ public class Pattern
         conversions of the constituent elements.
     */	
     public TripleMatch asTripleMatch( Domain d )
-        { return Triple.createMatch( S.asNodeMatch( d ), P.asNodeMatch( d ), O.asNodeMatch( d ) ); }
-          
-    public Element [] getParts() { return new Element[] {S, P, O}; }
+        { 
+        return Triple.createMatch
+            ( S.asNodeMatch( d ), P.asNodeMatch( d ), O.asNodeMatch( d ) ); 
+        }
     
     /**
         Answer true iff this pattern, given the values for variables as found in a given 

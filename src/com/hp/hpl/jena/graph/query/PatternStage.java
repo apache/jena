@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternStage.java,v 1.7 2003-08-08 13:02:46 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.8 2003-08-08 14:29:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -51,7 +51,7 @@ public class PatternStage extends Stage
     protected void nest( Pipe sink, Domain current, int index )
         {
         if (index == compiled.length)
-            sink.put( current.extend() );
+            sink.put( current.copy() );
         else
             {
             Pattern p = compiled[index];
