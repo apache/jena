@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Repeated.java,v 1.1 2004-08-16 14:51:28 chris-dollin Exp $
+  $Id: Repeated.java,v 1.2 2004-08-16 19:46:57 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -15,8 +15,17 @@ public abstract class Repeated extends RegexpTree
     {
     protected RegexpTree operand;
     
+    /**
+         Initialise this Repeated tree with the repeated operand expression.
+    */
     protected Repeated( RegexpTree operand )
         { this.operand = operand; }
+    
+    /**
+         Answer the repeated operand of this tree.
+    */
+    public RegexpTree getOperand()
+        { return operand; }
     }
 
 /*

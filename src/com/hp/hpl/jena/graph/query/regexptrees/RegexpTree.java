@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTree.java,v 1.1 2004-08-16 14:51:28 chris-dollin Exp $
+  $Id: RegexpTree.java,v 1.2 2004-08-16 19:46:57 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -15,6 +15,12 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 
 public abstract class RegexpTree
     {
+    public static final RegexpTree EOL = new EndOfLine();
+    
+    public static final RegexpTree SOL = new StartOfLine();
+
+    public static final RegexpTree ANY = new AnySingle();
+
     public abstract boolean equals( Object other );
     
     public abstract int hashCode();
