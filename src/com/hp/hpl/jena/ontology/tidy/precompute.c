@@ -13,7 +13,7 @@
 #define O(x)  ((x)&1023)
 #define P(x)  (((x)>>10)&1023)
 #define S(x)  (((x)>>20)&1023)
-#define SPO(s,p,o) (S(s)|P(p)|O(o))
+#define SPO(s,p,o) (((s)<<20)|((p)<<10)|(o))
 #define MAX_RESULTS 500000
 int results[MAX_RESULTS][6];
 int rCnt = 0;
@@ -38,7 +38,11 @@ int tcmp(const void * a, const void * b) {
 	return *(int*)a - *(int*)b;
 }
 
+int printTriple(i) {
+}
+
 int istriple(int i) {
+  int ii = printTriple(i);
   int *j = bsearch(&i, triples, 
                     tCnt, sizeof(int), tcmp );
   if ( j==null || *j != i ) {
@@ -139,7 +143,7 @@ void read(void) {
 	   p = symlookup(buf2);
 	   o = symlookup(buf3);
 	   assert(tCnt < MAX_TRIPLES);
-	   triples[tCnt++] = (s<<20) | (p <<10) | o;
+	   triples[tCnt++] = SPO(s,p,o);
 	   } else break;
    }
    qsort(triples,tCnt,sizeof(int),tcmp);
@@ -245,7 +249,7 @@ int main(int argc,char**argv) {
 	fprintf(stderr,"Y\n");
     qsort( sortedSets, setCnt, sizeof(Set), setCmp );
 	fprintf(stderr,"Z\n");
-	/* dump(); */
+	dump();
     
     partial();
 
