@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.28 2003-12-08 10:48:28 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.29 2003-12-11 11:11:31 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -105,7 +105,7 @@ import org.apache.xerces.util.XMLChar;
 
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2003-12-08 10:48:28 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.29 $' Date='$Date: 2003-12-11 11:11:31 $'
 
  */
 class Unparser {
@@ -380,6 +380,7 @@ class Unparser {
 		if (!doing.contains(r)) {
 			wPropAttrAll(r);
 		} else if (isGenuineAnon(r)) {
+			// ???
 			error("Genuine anon resource in cycle?");
 		}
 		indentMinus();

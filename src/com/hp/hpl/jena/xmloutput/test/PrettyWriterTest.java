@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: PrettyWriterTest.java,v 1.5 2003-09-09 10:58:59 chris-dollin Exp $
+    $Id: PrettyWriterTest.java,v 1.6 2003-12-11 11:11:31 jeremy_carroll Exp $
 */
 
 // Package
@@ -14,6 +14,9 @@ package com.hp.hpl.jena.xmloutput.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.vocabulary.*;
+import java.util.*;
 
 import org.apache.oro.text.awk.AwkCompiler;
 import org.apache.oro.text.awk.AwkMatcher;
@@ -25,7 +28,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.5 2003-09-09 10:58:59 chris-dollin Exp $,
+ * @version CVS info: $Id: PrettyWriterTest.java,v 1.6 2003-12-11 11:11:31 jeremy_carroll Exp $,
  */
 
 public class PrettyWriterTest extends ModelTestBase {
@@ -73,29 +76,71 @@ public class PrettyWriterTest extends ModelTestBase {
 			}
 		}
 	}
-    
+
 	public void testAnonDamlClass()
 		throws IOException, MalformedPatternException {
-		check( "file:testing/abbreviated/daml.rdf", "rdf:parseType=[\"']daml:collection[\"']" );
-	}
-    
-	public void testRDFCollection()
-		throws IOException, MalformedPatternException {
-		check( "file:testing/abbreviated/collection.rdf", "rdf:parseType=[\"']Collection[\"']" );
-	}
-    
-	public void testOWLPrefix()
-		throws IOException, MalformedPatternException {
-//		check(
-//			"file:testing/abbreviated/collection.rdf",
-//			"xmlns:owl=[\"']http://www.w3.org/2002/07/owl#[\"']");
-	}
-    
-	public void testLi()
-		throws IOException, MalformedPatternException {
-		check( "file:testing/abbreviated/container.rdf", "<rdf:li.*<rdf:li.*<rdf:li.*<rdf:li" );
+		check(
+			"file:testing/abbreviated/daml.rdf",
+			"rdf:parseType=[\"']daml:collection[\"']");
 	}
 
+	public void testRDFCollection()
+		throws IOException, MalformedPatternException {
+		check(
+			"file:testing/abbreviated/collection.rdf",
+			"rdf:parseType=[\"']Collection[\"']");
+	}
+
+	public void testOWLPrefix() throws IOException, MalformedPatternException {
+		//		check(
+		//			"file:testing/abbreviated/collection.rdf",
+		//			"xmlns:owl=[\"']http://www.w3.org/2002/07/owl#[\"']");
+	}
+
+	public void testLi() throws IOException, MalformedPatternException {
+		check(
+			"file:testing/abbreviated/container.rdf",
+			"<rdf:li.*<rdf:li.*<rdf:li.*<rdf:li");
+	}
+	public void test803804() {
+		String sourceT =
+			"<rdf:RDF "
++ " xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'"
++ " xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'"
+				+ " xmlns:owl=\"http://www.w3.org/2002/07/owl#\">"
++ " <owl:ObjectProperty rdf:about="
++"'http://example.org/foo#p'>" +
+	" </owl:ObjectProperty>" + "</rdf:RDF>";
+
+		OntModel m =
+			ModelFactory.createOntologyModel(
+				OntModelSpec.OWL_MEM_RULE_INF,
+				null);
+		m.read(
+			new ByteArrayInputStream(sourceT.getBytes()),
+			"http://example.org/foo");
+
+		Model m0 = ModelFactory.createModelForGraph(m.getGraph());
+	  Set copyOfm0 = new HashSet();
+	  Set blankNodes = new HashSet();
+	  Iterator it = m0.listStatements();
+	  while (it.hasNext()) {
+	  	Statement st = (Statement)it.next(); 
+		  copyOfm0.add(st);
+		  Resource subj = st.getSubject();
+		  if (subj.isAnon())
+		    blankNodes.add(subj);
+	  }
+	  
+	  it = blankNodes.iterator();
+	  while (it.hasNext()) {
+	  	Resource b = (Resource)it.next();
+	  	Statement st = m0.createStatement(b,OWL.sameAs,b);
+	//  	assertEquals(m0.contains(st),copyOfm0.contains(st));
+	  }
+	  
+	//	m0.write(System.err, "RDF/XML-ABBREV");
+	}
 }
 
 /*****************************************************************************
@@ -106,10 +151,10 @@ public class PrettyWriterTest extends ModelTestBase {
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: PrettyWriterTest.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  *
- * Last modified on   $Date: 2003-09-09 10:58:59 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-12-11 11:11:31 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002 Hewlett-Packard Development Company, LP
  * All rights reserved.
