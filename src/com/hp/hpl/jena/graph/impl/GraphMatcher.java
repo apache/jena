@@ -25,14 +25,19 @@ import com.hp.hpl.jena.shared.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-11 15:01:42 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-06-23 15:32:04 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
  /**
  * Are the two models isomorphic?
  * The isomorphism is defined as a bijection between the anonymous
- * variables such that the statements are identical.
+ * variables such that the statements are identical. 
+ * This is
+	 * described in 
+	 * <a href="http://www.w3.org/TR/rdf-concepts#section-Graph-syntax">
+     * http://www.w3.org/TR/rdf-concepts#section-Graph-syntax
+     * </a>
  */
     static public boolean equals(Graph m1,Graph m2)   {
         if ( m1 == m2 )
@@ -64,10 +69,9 @@ public class GraphMatcher extends java.lang.Object {
     static public Node[][] match(Graph m1,Graph m2)  {
             return new GraphMatcher(m1).match(new GraphMatcher(m2));
     }
-    /** Creates new ModelMatcher */
     /* NOTE: inner classes
      *    We use a number of non-static inner classes, these all
-     *    refer to the ModelMatcher for context.
+     *    refer to the GraphMatcher for context.
      *
      * NOTE: the built-in hashCode() is not modified, so that Set's etc
      * still work.
@@ -190,7 +194,7 @@ public class GraphMatcher extends java.lang.Object {
      * Returns null if situation is unworkable.
      * Returns non-null with no outstanding obvious bindings,
      * and with the hashing correct.
-     * The set of oblogatorily bound resources is returned.
+     * The set of obligatorily bound resources is returned.
      *
      */
     private Set obligBindings() {
@@ -934,5 +938,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.2 2003-06-11 15:01:42 chris-dollin Exp $
+ * $Id: GraphMatcher.java,v 1.3 2003-06-23 15:32:04 jeremy_carroll Exp $
  */
