@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: ListMapAsObject.java,v 1.3 2003-12-04 14:08:21 der Exp $
+ * $Id: ListMapAsObject.java,v 1.4 2004-03-08 17:54:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -15,13 +15,13 @@ import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
 /**
- * For each element in the RDF list (thrid argument) it asserts 
- * triples with that as the object and subject and predicategiven by arguments
+ * For each element in the RDF list (third argument) it asserts 
+ * triples with that as the object and subject and predicate given by arguments
  * one and two. A strange and hacky function, only usable in the head of
  * forward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-12-04 14:08:21 $
+ * @version $Revision: 1.4 $ on $Date: 2004-03-08 17:54:22 $
  */
 public class ListMapAsObject extends BaseBuiltin {
 
