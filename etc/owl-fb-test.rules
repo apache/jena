@@ -2,15 +2,21 @@
 # OWL rule set v0.3
 # This rule set is designed to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining). It differs
-# from earlier versions by more consistently sticky to instance reasoning.
+# from earlier versions by more consistently sticking to instance reasoning.
 #
 # Warning: This version is under active development and the moment
 # and should NOT be regard as stable or usable.
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.8 2003-07-25 12:17:28 der Exp $
+# $Id: owl-fb-test.rules,v 1.9 2003-08-14 07:49:40 der Exp $
 #------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# Tabling directives
+#------------------------------------------------------------------
+
+-> table(rdf:type).
 
 #------------------------------------------------------------------
 # RDFS Axioms
@@ -254,14 +260,13 @@
 					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
 					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass),
    ->
-    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
-    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
-    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), print (instClause, ?T, ?X), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T), print('?T=', ?T) ] 
+    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), print(typeClause, ?T, ?X), makeInstance(?X, ?P, ?D, ?T), print('?T=', ?T) ] 
+    
+#    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+#    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
+#    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
 #    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
-    [some1b-temp: (?T rdf:type ?D) <- (?X rdf:type ?C), print('some1b4-temp',?X, ?C, ?T), 
-                                       bound(?T), print('some1b4-temp-2',?X, ?C, ?D, ?T), 
-                                       makeInstance(?X, ?P, ?D, ?T), print('some1b4-temp-3',?X, ?C, ?T)
-                                        ] 
     ]
     
 [someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) ->
@@ -368,14 +373,14 @@
 
 # SymmetricProperty
 
-[symmetricProperty1: (?P rdf:type owl:SymmetricProperty) -> 
+[symmetricProperty1: (?P rdf:type owl:SymmetricProperty) -> table(?P),
                      [symmetricProperty1b: (?X ?P ?Y) <- (?Y ?P ?X)] ]
 
 
 # inverseOf
 [inverseOf1: (?P owl:inverseOf ?Q) -> (?Q owl:inverseOf ?P) ]
 
-[inverseOf2: (?P owl:inverseOf ?Q) -> [inversOf2b: (?X ?P ?Y) <- (?Y ?Q ?X)] ]
+[inverseOf2: (?P owl:inverseOf ?Q) -> table(?P), table(?Q), [inverseOf2b: (?X ?P ?Y) <- (?Y ?Q ?X)] ]
 
 [inverseOf3: (?P owl:inverseOf ?Q), (?P rdf:type owl:FunctionalProperty) 
 						-> (?Q rdf:type owl:InverseFunctionalProperty) ]
@@ -385,5 +390,5 @@
 
 # TransitiveProperty
 
-[transitiveProperty1: (?P rdf:type owl:TransitiveProperty) ->
+[transitiveProperty1: (?P rdf:type owl:TransitiveProperty) -> table(?P),
 			[transitiveProperty1b:  (?A ?P ?C) <- (?A ?P ?B), (?B ?P ?C)] ]
