@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.18 2003-08-19 12:58:00 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.19 2003-08-22 09:48:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -34,7 +34,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-08-19 12:58:00 $
+ * @version $Revision: 1.19 $ on $Date: 2003-08-22 09:48:39 $
  */
 public class ReasonerRegistry {
 
@@ -188,7 +188,7 @@ public class ReasonerRegistry {
      public static Reasoner getRDFSSimpleReasoner() {
          if (theRDFSSimpleReasoner == null) {
              theRDFSSimpleReasoner = RDFSRuleReasonerFactory.theInstance().create(null);
-             theRDFSSimpleReasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel.getURI(), ReasonerVocabulary.RDFS_SIMPLE);
+             theRDFSSimpleReasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_SIMPLE);
          } 
          return theRDFSSimpleReasoner;
      }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.7 2003-06-22 16:10:31 der Exp $
+ * $Id: Util.java,v 1.8 2003-08-22 09:48:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-22 16:10:31 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-22 09:48:28 $
  */
 public class Util {
 
@@ -202,18 +202,18 @@ public class Util {
     /**
      * Convert the value of a boolean configuration parameter to a boolean value.
      * Allows the value to be specified using a String or Boolean.
-     * @param the uri of the configuration property being set (to help with error messages)
+     * @param parameter the configuration property being set (to help with error messages)
      * @param value the parameter value
      * @return the converted value
      * @throws IllegalParameterException if the value can't be converted
      */
-    public static boolean convertBooleanPredicateArg(String parameterUri, Object value) {
+    public static boolean convertBooleanPredicateArg(Property parameter, Object value) {
         if (value instanceof Boolean) {
             return ((Boolean)value).booleanValue();
         } else if (value instanceof String) {
             return ((String)value).equalsIgnoreCase("true");
         } else {
-            throw new IllegalParameterException("Illegal type for " + parameterUri + " setting - use a Boolean");
+            throw new IllegalParameterException("Illegal type for " + parameter + " setting - use a Boolean");
         }
         
     }
@@ -221,22 +221,36 @@ public class Util {
     /**
      * Convert the value of an integer configuration parameter to an int value.
      * Allows the value to be specified using a String or Number.
-     * @param the uri of the configuration property being set (to help with error messages)
+     * @param parameter the configuration property being set (to help with error messages)
      * @param value the parameter value
      * @return the converted value
      * @throws IllegalParameterException if the value can't be converted
      */
-    public static int convertIntegerPredicateArg(String parameterUri, Object value) {
+    public static int convertIntegerPredicateArg(Property parameter, Object value) {
         if (value instanceof Number) {
             return ((Number)value).intValue();
         } else if (value instanceof String) {
             try {
                 return Integer.parseInt((String)value);
             } catch (NumberFormatException e) {
-                throw new IllegalParameterException("Illegal type for " + parameterUri + " setting - use an integer");
+                throw new IllegalParameterException("Illegal type for " + parameter + " setting - use an integer");
             }
         } else {
-            throw new IllegalParameterException("Illegal type for " + parameterUri + " setting - use an integer");
+            throw new IllegalParameterException("Illegal type for " + parameter + " setting - use an integer");
         }            
+    }
+    
+    /**
+     * Replace the value for a given parameter on the resource by a new value.
+     * @param config the resource whose values are to be updated
+     * @param parameter a predicate defining the parameter to be set
+     * @param value the new value
+     */
+    public static void updateParameter(Resource config, Property parameter, Object value) {
+        for (StmtIterator i = config.listProperties(parameter); i.hasNext(); ) {
+             i.next();
+             i.remove();
+        }
+        config.addProperty(parameter, value);
     }
 }

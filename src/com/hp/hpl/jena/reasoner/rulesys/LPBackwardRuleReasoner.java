@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBackwardRuleReasoner.java,v 1.2 2003-08-21 22:14:45 der Exp $
+ * $Id: LPBackwardRuleReasoner.java,v 1.3 2003-08-22 09:48:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-21 22:14:45 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-22 09:48:28 $
  */
 public class LPBackwardRuleReasoner implements Reasoner {
 
@@ -191,12 +191,12 @@ public class LPBackwardRuleReasoner implements Reasoner {
      * reasoner there are no configuration parameters and this method is simply 
      * here to meet the interfaces specification
      * 
-     * @param parameterUri the uri identifying the parameter to be changed
+     * @param parameter the property identifying the parameter to be changed
      * @param value the new value for the parameter, typically this is a wrapped
      * java object like Boolean or Integer.
      */
-    public void setParameter(String parameterUri, Object value) {
-        throw new IllegalParameterException(parameterUri);
+    public void setParameter(Property parameter, Object value) {
+        throw new IllegalParameterException(parameter.toString());
     }
 
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.9 2003-06-26 08:11:58 der Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.10 2003-08-22 09:48:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * data scanning hook. Implements datatype range validation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-26 08:11:58 $
+ * @version $Revision: 1.10 $ on $Date: 2003-08-22 09:48:28 $
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
     
@@ -84,7 +84,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
             StmtIterator i = configuration.listProperties();
             while (i.hasNext()) {
                 Statement st = i.nextStatement();
-                doSetParameter(st.getPredicate().getURI(), st.getObject().toString());
+                doSetParameter(st.getPredicate(), st.getObject().toString());
             }
         }
     }
@@ -94,16 +94,16 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      * exception on parameters it does not reconize.
      * @return false if the parameter was not recognized
      */
-    protected boolean doSetParameter(String parameterUri, Object value) {
-        if (parameterUri.equals(ReasonerVocabulary.PROPenableCMPScan.getURI())) {
-            boolean scanProperties = Util.convertBooleanPredicateArg(parameterUri, value);
+    protected boolean doSetParameter(Property parameter, Object value) {
+        if (parameter.equals(ReasonerVocabulary.PROPenableCMPScan)) {
+            boolean scanProperties = Util.convertBooleanPredicateArg(parameter, value);
             if (scanProperties) {
                 addPreprocessingHook(cmpProcessor);
             } else {
                 removePreprocessingHook(cmpProcessor);
             }
             return true;
-        } else if (parameterUri.equals(ReasonerVocabulary.PROPsetRDFSLevel.getURI())) {
+        } else if (parameter.equals(ReasonerVocabulary.PROPsetRDFSLevel)) {
             String level = ((String)value).toLowerCase();
             setRules(loadRules(level));
             if (level.equals(FULL_RULES)) {
@@ -113,7 +113,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
             }
             return true;
         } else {
-            return super.doSetParameter(parameterUri, value);
+            return super.doSetParameter(parameter, value);
         }
     }
     

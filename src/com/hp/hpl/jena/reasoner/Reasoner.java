@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.11 2003-08-21 22:14:45 der Exp $
+ * $Id: Reasoner.java,v 1.12 2003-08-22 09:48:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-21 22:14:45 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-22 09:48:39 $
  */
 public interface Reasoner {
     
@@ -102,11 +102,11 @@ public interface Reasoner {
      * by URI and can also be set when the Reasoner instance is created by specifying a
      * configuration in RDF.
      * 
-     * @param parameterUri the uri identifying the parameter to be changed
+     * @param parameterUri the property identifying the parameter to be changed
      * @param value the new value for the parameter, typically this is a wrapped
      * java object like Boolean or Integer.
      */
-    public void setParameter(String parameterUri, Object value);
+    public void setParameter(Property parameterUri, Object value);
 
     /**
      * Return a description of the capabilities of this reasoner encoded in

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.12 2003-08-21 12:04:45 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.13 2003-08-22 09:48:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-21 12:04:45 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-22 09:48:28 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -82,14 +82,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * @param configuration RDF node to configure the rule set and mode, can be null
      */
     public GenericRuleReasoner(ReasonerFactory factory, Resource configuration) {
-        super(factory);
-        if (configuration != null) {
-            StmtIterator i = configuration.listProperties();
-            while (i.hasNext()) {
-                Statement st = i.nextStatement();
-                doSetParameter(st.getPredicate().getURI(), st.getObject().toString());
-            }
-        }
+        super(factory, configuration);
     }
     
     /**
@@ -191,52 +184,31 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             preprocessorHooks.remove(hook);
         }
     }
-    
-    /**
-     * Set a configuration paramter for the reasoner. The supported parameters
-     * are:
-     * <ul>
-     * <li>PROPderivationLogging - set to true to enable recording all rule derivations</li>
-     * <li>PROPtraceOn - set to true to enable verbose trace information to be sent to the logger INFO channel</li>
-     * <li>PROPruleMode - set to "forward", "backward" or "hybrid" to control the rule processing direction</li>
-     * <li>PROPruleSet - argument is a string giving the URI for a rule set to load</li>
-     * <li>PROPenableOWLTranslation - set to true to enable translation of OWL schema elements to rules</li>
-     * </ul> 
-     * 
-     * @param parameterUri the uri identifying the parameter to be changed
-     * @param value the new value for the parameter, typically this is a wrapped
-     * java object like Boolean or Integer.
-     */
-    public void setParameter(String parameterUri, Object value) {
-        if (!doSetParameter(parameterUri, value)) {
-            throw new IllegalParameterException("GenericRuleReasoner doesn't recognize configuration parameter " + parameterUri);
-        }
-    }
-    
+        
     /**
      * Internal version of setParameter that does not directly raise an
      * exception on parameters it does not reconize.
      * @return false if the parameter was not recognized
      */
-    protected boolean doSetParameter(String parameterUri, Object value) {
-        if (parameterUri.equals(ReasonerVocabulary.PROPderivationLogging.getURI())) {
-            recordDerivations = Util.convertBooleanPredicateArg(parameterUri, value);
+    protected boolean doSetParameter(Property parameter, Object value) {
+        if (parameter.equals(ReasonerVocabulary.PROPderivationLogging)) {
+            recordDerivations = Util.convertBooleanPredicateArg(parameter, value);
             
-        } else if (parameterUri.equals(ReasonerVocabulary.PROPtraceOn.getURI())) {
-            traceOn =  Util.convertBooleanPredicateArg(parameterUri, value);
+        } else if (parameter.equals(ReasonerVocabulary.PROPtraceOn)) {
+            traceOn =  Util.convertBooleanPredicateArg(parameter, value);
             
-        } else if (parameterUri.equals(ReasonerVocabulary.PROPenableOWLTranslation.getURI())) {
-            enableOWLTranslation =  Util.convertBooleanPredicateArg(parameterUri, value);
+        } else if (parameter.equals(ReasonerVocabulary.PROPenableOWLTranslation)) {
+            enableOWLTranslation =  Util.convertBooleanPredicateArg(parameter, value);
             if (enableOWLTranslation) {
                 addPreprocessingHook(owlTranslator);    
             } else {
                 removePreprocessingHook(owlTranslator);
             }
             
-        } else if (parameterUri.equals(ReasonerVocabulary.PROPenableTGCCaching.getURI())) {
-            enableTGCCaching =  Util.convertBooleanPredicateArg(parameterUri, value);
+        } else if (parameter.equals(ReasonerVocabulary.PROPenableTGCCaching)) {
+            enableTGCCaching =  Util.convertBooleanPredicateArg(parameter, value);
             
-        } else if (parameterUri.equals(ReasonerVocabulary.PROPruleMode.getURI())) {
+        } else if (parameter.equals(ReasonerVocabulary.PROPruleMode)) {
             if (value.equals(FORWARD.name)) {
                 mode = FORWARD;
             } else if (value.equals(FORWARD_RETE.name)) {
@@ -249,7 +221,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
                 throw new IllegalParameterException("PROPruleMode can only be 'forward'm 'forwardRETE', 'backward', 'hybrid', not " + value);
             }
             
-        } else if (parameterUri.equals(ReasonerVocabulary.PROPruleSet.getURI())) {
+        } else if (parameter.equals(ReasonerVocabulary.PROPruleSet)) {
             if (value instanceof String) {
                 try {
                     String ruleString = Util.loadResourceFile((String)value);

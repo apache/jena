@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.6 2003-08-21 22:13:44 der Exp $
+ * $Id: TestGenericRules.java,v 1.7 2003-08-22 09:48:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-21 22:13:44 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-22 09:48:39 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -193,6 +193,28 @@ public class TestGenericRules extends TestCase {
         assertTrue(d.getRule().getName().equals("r1b"));
         TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
         assertTrue(! di.hasNext());
+        
+        // Check retrieval of configuration
+        Model m2 = ModelFactory.createDefaultModel();
+        Resource newConfig = m2.createResource();
+        reasoner.addDescription(m2, newConfig);
+        TestUtil.assertIteratorValues(this, newConfig.listProperties(), new Statement[] {
+            m2.createStatement(newConfig, ReasonerVocabulary.PROPderivationLogging, "true"),
+            m2.createStatement(newConfig, ReasonerVocabulary.PROPruleMode, "hybrid"),
+            m2.createStatement(newConfig, ReasonerVocabulary.PROPruleSet, "testing/reasoners/genericRuleTest.rules")
+            } );
+       
+        // Manual reconfig and check retrieval of changes
+        reasoner.setParameter(ReasonerVocabulary.PROPderivationLogging, "false");
+        newConfig = m2.createResource();
+        reasoner.addDescription(m2, newConfig);
+        TestUtil.assertIteratorValues(this, newConfig.listProperties(), new Statement[] {
+            m2.createStatement(newConfig, ReasonerVocabulary.PROPderivationLogging, "false"),
+            m2.createStatement(newConfig, ReasonerVocabulary.PROPruleMode, "hybrid"),
+            m2.createStatement(newConfig, ReasonerVocabulary.PROPruleSet, "testing/reasoners/genericRuleTest.rules")
+            } );
+        
+        
     }
 
     /**

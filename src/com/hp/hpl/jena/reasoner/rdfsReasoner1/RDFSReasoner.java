@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.16 2003-06-23 15:49:36 der Exp $
+ * $Id: RDFSReasoner.java,v 1.17 2003-08-22 09:48:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-06-23 15:49:36 $
+ * @version $Revision: 1.17 $ on $Date: 2003-08-22 09:48:39 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -172,15 +172,15 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
      * enable scanning of all properties looking for container membership properties, default on. </li>
      * </ul>
      * 
-     * @param parameterUri the uri identifying the paramter to be changed
+     * @param parameter the property identifying the parameter to be changed
      * @param value the new value for the parameter, typically this is a wrapped
      * java object like Boolean or Integer.
      */
-    public void setParameter(String parameterUri, Object value) {
-        if (parameterUri.equals(RDFSReasonerFactory.scanProperties.getURI())) {
-            scanProperties = Util.convertBooleanPredicateArg(parameterUri, value);
+    public void setParameter(Property parameter, Object value) {
+        if (parameter.equals(RDFSReasonerFactory.scanProperties)) {
+            scanProperties = Util.convertBooleanPredicateArg(parameter, value);
         } else {
-            throw new IllegalParameterException(parameterUri);
+            throw new IllegalParameterException(parameter.toString());
         }
     }
     

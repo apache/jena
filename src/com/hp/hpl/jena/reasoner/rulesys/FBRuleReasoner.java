@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.8 2003-08-21 22:14:45 der Exp $
+ * $Id: FBRuleReasoner.java,v 1.9 2003-08-22 09:48:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-21 22:14:45 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-22 09:48:28 $
  */
 public class FBRuleReasoner implements Reasoner {
     
@@ -79,7 +79,7 @@ public class FBRuleReasoner implements Reasoner {
             StmtIterator i = configuration.listProperties();
             while (i.hasNext()) {
                 Statement st = i.nextStatement();
-                doSetParameter(st.getPredicate().getURI(), st.getObject().toString());
+                doSetParameter(st.getPredicate(), st.getObject().toString());
             }
         }
     }
@@ -124,15 +124,11 @@ public class FBRuleReasoner implements Reasoner {
      * @param base the Resource to which the configuration parameters should be added.
      */
     public void addDescription(Model configSpec, Resource base) {
-        Resource rebase = base;
-        if (base.getModel() != configSpec) {
-            rebase = configSpec.getResource(base.getURI());
-        }
         if (configuration != null) {
             StmtIterator i = configuration.listProperties();
             while (i.hasNext()) {
                 Statement st = i.nextStatement();
-                rebase.addProperty(st.getPredicate(), st.getObject());
+                configSpec.add(base, st.getPredicate(), st.getObject());
             }
         }
     }
@@ -274,14 +270,21 @@ public class FBRuleReasoner implements Reasoner {
      * <li>PROPtraceOn - set to true to enable verbose trace information to be sent to the logger INFO channel</li>
      * </ul> 
      * 
-     * @param parameterUri the uri identifying the parameter to be changed
+     * @param parameter the property identifying the parameter to be changed
      * @param value the new value for the parameter, typically this is a wrapped
      * java object like Boolean or Integer.
      * @throws IllegalParameterException if the parameter is unknown 
      */
-    public void setParameter(String parameterUri, Object value) {
-        if (!doSetParameter(parameterUri, value)) {
-            throw new IllegalParameterException("Don't recognize configuration parameter " + parameterUri + " for rule-based reasoner");
+    public void setParameter(Property parameter, Object value) {
+        if (!doSetParameter(parameter, value)) {
+            throw new IllegalParameterException("RuleReasoner does not recognize configuration parameter " + parameter);
+        } else {
+            // Record the configuration change
+            if (configuration == null) {
+                Model configModel = ModelFactory.createDefaultModel();
+                configuration = configModel.createResource();
+            } 
+            Util.updateParameter(configuration, parameter, value);
         }
     }
 
@@ -292,17 +295,17 @@ public class FBRuleReasoner implements Reasoner {
      * <li>PROPderivationLogging - set to true to enable recording all rule derivations</li>
      * <li>PROPtraceOn - set to true to enable verbose trace information to be sent to the logger INFO channel</li>
      * </ul> 
-     * @param parameterUri the uri identifying the parameter to be changed
+     * @param parameter the property identifying the parameter to be changed
      * @param value the new value for the parameter, typically this is a wrapped
      * java object like Boolean or Integer.
      * @return false if the parameter was not known
      */
-    protected boolean doSetParameter(String parameterUri, Object value) {
-        if (parameterUri.equals(ReasonerVocabulary.PROPderivationLogging.getURI())) {
-            recordDerivations = Util.convertBooleanPredicateArg(parameterUri, value);
+    protected boolean doSetParameter(Property parameter, Object value) {
+        if (parameter.equals(ReasonerVocabulary.PROPderivationLogging)) {
+            recordDerivations = Util.convertBooleanPredicateArg(parameter, value);
             return true;
-        } else if (parameterUri.equals(ReasonerVocabulary.PROPtraceOn.getURI())) {
-            traceOn =  Util.convertBooleanPredicateArg(parameterUri, value);
+        } else if (parameter.equals(ReasonerVocabulary.PROPtraceOn)) {
+            traceOn =  Util.convertBooleanPredicateArg(parameter, value);
             return true;
         } else {
             return false;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.15 2003-08-21 22:14:45 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.16 2003-08-22 09:48:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * in any query. Any of tbox or data graph are allowed to be null.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-08-21 22:14:45 $
+ * @version $Revision: 1.16 $ on $Date: 2003-08-22 09:48:39 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -188,17 +188,17 @@ public class TransitiveReasoner implements Reasoner {
     }
     
     /**
-     * Set a configuration paramter for the reasoner. In the case of the this
-     * reasoner there are no configuration parameters and this method is simply 
-     * here to meet the interfaces specification
-     * 
-     * @param parameterUri the uri identifying the parameter to be changed
-     * @param value the new value for the parameter, typically this is a wrapped
-     * java object like Boolean or Integer.
-     */
-    public void setParameter(String parameterUri, Object value) {
-        throw new IllegalParameterException(parameterUri);
-    }
+      * Set a configuration paramter for the reasoner. In the case of the this
+      * reasoner there are no configuration parameters and this method is simply 
+      * here to meet the interfaces specification
+      * 
+      * @param parameter the property identifying the parameter to be changed
+      * @param value the new value for the parameter, typically this is a wrapped
+      * java object like Boolean or Integer.
+      */
+     public void setParameter(Property parameter, Object value) {
+         throw new IllegalParameterException(parameter.toString());
+     }
     
     /**
      * Accessor used during infgraph construction - return the cached
