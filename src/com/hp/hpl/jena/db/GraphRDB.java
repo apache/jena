@@ -46,7 +46,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -168,6 +168,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		
 		if(graphID == null)
 			graphID = DEFAULT;
+		else if ( graphID.equals(DEFAULT) )
+			throw new JenaException("The model name \"" + DEFAULT + "\" is reserved.");
 			
 		// Find the driver
 		m_driver = con.getDriver();
@@ -237,8 +239,11 @@ public class GraphRDB extends GraphBase implements Graph {
 		return m_properties.listTriples();
 	}
 
+	protected boolean isOpen()
+		{ return m_specializedGraphs != null; }
+
     protected void checkOpen()
-        { if (m_specializedGraphs == null) throw new ClosedException( "GraphRDB", this ); }
+        { if (isOpen() == false) throw new ClosedException( "GraphRDB", this ); }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#add(com.hp.hpl.jena.graph.Triple)
@@ -502,7 +507,31 @@ public class GraphRDB extends GraphBase implements Graph {
 		if (q == null) q = new DBQueryHandler( this);
 		return q;
 		}
-//*/
+
+	/**
+	* Get the value of DoDuplicateCheck
+	* @return bool boolean
+	*/
+	public boolean getDoDuplicateCheck() {
+		return m_driver.getDoDuplicateCheck();
+	}
+
+	/*
+	* Set the value of DoDuplicateCheck.
+	* @param bool boolean
+	*/
+	public void setDoDuplicateCheck(boolean bool) {
+		m_driver.setDoDuplicateCheck(bool);
+		boolean nb = !bool;
+		if (isOpen()) {
+			Iterator it = m_specializedGraphs.iterator();
+			while (it.hasNext()) {
+				SpecializedGraph sg = (SpecializedGraph) it.next();
+				sg.getPSet().setSkipDuplicateCheck(nb);
+			}
+		}
+	}
+
 }
 
 /*
