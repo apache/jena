@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.8 2003-05-16 11:12:52 chris-dollin Exp $
+  $Id: TestNode.java,v 1.9 2003-05-19 10:27:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -286,6 +286,15 @@ public class TestNode extends GraphTestBase
             if (in.equals( wanted )) fail( "should preserve " + in );
             else fail( "should translate " + in + " to " + wanted + " not " + got );
             }
+        }
+        
+    public void testNodeHelp()
+        {
+        assertTrue( "node() making URIs", node( "hello" ).isURI() );
+        assertTrue( "node() making literals", node( "123" ).isLiteral() );
+        assertTrue( "node() making literals", node( "'hello'" ).isLiteral() );
+        assertTrue( "node() making blanks", node( "_x" ).isBlank() );
+        assertTrue( "node() making variables", node( "?x" ).isVariable() );
         }
     }
 

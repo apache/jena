@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.4 2003-02-11 15:17:02 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.5 2003-05-19 10:27:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -22,7 +22,7 @@ import junit.framework.TestSuite;
 public class TestTriple extends TestCase
     {    
         
-        public TestTriple(String name)
+    public TestTriple(String name)
         { super( name ); }
     
     public static TestSuite suite()
@@ -123,6 +123,18 @@ public class TestTriple extends TestCase
             Node.cache(true);
         }
     }
+    
+    public void testTripleCreate()
+        {
+        Node S = Node.create( "s" ), P = Node.create( "p" ), O = Node.create( "o" );
+        assertEquals( new Triple( S, P, O ), Triple.create( S, P, O ) );
+        }
+        
+    public void testTripleCreateFromString()
+        {
+        Node S = Node.create( "a" ), P = Node.create( "_P" ), O = Node.create( "?c" );
+        assertEquals( new Triple( S, P, O ), Triple.create( "a _P ?c") );
+        }
 }
 /*
     (c) Copyright Hewlett-Packard Company 2002

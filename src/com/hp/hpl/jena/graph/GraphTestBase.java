@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.16 2003-05-15 15:30:22 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.17 2003-05-19 10:26:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -52,23 +52,8 @@ public class GraphTestBase extends JenaTestBase
         return result;
         }
         
-    public void testNodeHelp()
-        {
-        assertTrue( "node() making URIs", node( "hello" ).isURI() );
-        assertTrue( "node() making literals", node( "123" ).isLiteral() );
-        assertTrue( "node() making literals", node( "'hello'" ).isLiteral() );
-        assertTrue( "node() making blanks", node( "_x" ).isBlank() );
-        assertTrue( "node() making variables", node( "?x" ).isVariable() );
-        }
-        
     public static Triple triple( String fact )
-        {
-        StringTokenizer st = new StringTokenizer( fact );
-        Node sub = node( st.nextToken() );
-        Node pred = node( st.nextToken() );
-        Node obj = node( st.nextToken() );
-        return new Triple( sub, pred, obj );
-        }
+        { return Triple.create( fact ); }
         
     public static Triple [] tripleArray( String facts )
         {
