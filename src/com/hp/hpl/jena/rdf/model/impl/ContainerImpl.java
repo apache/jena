@@ -36,12 +36,13 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.shared.*;
 
 /** An internal class not normally of interest to application developers.
  *  A base class on which the other containers are built.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-15 12:43:41 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-13 15:28:36 $'
  */
 public class ContainerImpl extends ResourceImpl
                            implements Container, ContainerI {
@@ -180,7 +181,7 @@ public class ContainerImpl extends ResourceImpl
             getModel().remove(last);
         }
         if (size() != (size -1)) 
-            throw new RDFException(RDFException.ASSERTIONFAILURE); 
+            throw new JenaAssertionFailureException( "container size" ); 
         return this;
     }
     

@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.45 $' Date='$Date: 2003-06-12 15:10:29 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.46 $' Date='$Date: 2003-06-13 15:28:36 $'
  */
 
 public class ModelCom 
@@ -738,7 +738,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     
     public Property getProperty(String uri)  {
         if ( uri == null )
-             throw new RDFException(RDFException.INVALIDPROPERTYURI);
+             throw new JenaInvalidPropertyURIException( null );
         return IteratorFactory.asProperty(makeURI(uri),this);
     }
     

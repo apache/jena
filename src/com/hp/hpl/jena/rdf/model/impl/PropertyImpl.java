@@ -35,11 +35,12 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.shared.*;
 
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-06 09:28:22 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-13 15:28:37 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property {
@@ -68,7 +69,7 @@ public class PropertyImpl extends ResourceImpl implements Property {
         {
         String localName = getLocalName();
         if (localName == null || localName.equals( "" )) 
-            throw new RDFException( RDFException.INVALIDPROPERTYURI );
+            throw new JenaInvalidPropertyURIException( getURI() );
         }
 
     public PropertyImpl(String nameSpace, String localName)
@@ -98,7 +99,7 @@ public class PropertyImpl extends ResourceImpl implements Property {
     public PropertyImpl(String nameSpace,
                         String localName,
                         int ordinal,
-                        Model m) throws RDFException {
+                        Model m) {
         super(nameSpace, localName, m);
         checkLocalName();
         this.ordinal = ordinal;

@@ -35,11 +35,12 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.shared.*;
 
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-05-20 12:42:09 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-06-13 15:28:36 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     
@@ -51,23 +52,20 @@ public class AltImpl extends ContainerImpl implements Alt {
         }
     };
     
-    private AltImpl( Resource r )
-        { super( r ); }
-        
     /** Creates new AltMem */
     public AltImpl(Model model) throws RDFException 
-        { super(model); }
+        { super( model ); }
     
     public AltImpl(String uri, Model model) throws RDFException {
-        super(uri, model);
+        super( uri, model );
     }
     
     public AltImpl(Resource r, Model m) throws RDFException {
-        super(r, m);
+        super( r, m );
     }
     
     public AltImpl(Node n, EnhGraph g) {
-        super(n,g);
+        super( n, g );
     }
     
     /** get the default statement, explode if there isn't one */
@@ -75,7 +73,7 @@ public class AltImpl extends ContainerImpl implements Alt {
     private Statement needDefaultStatement() throws RDFException
     	{
         Statement stmt = getDefaultStatement();
-        if (stmt == null) throw new RDFException( RDFException.ALTHASNODEFAULT );
+        if (stmt == null) throw new JenaAltHasNoDefaultException( this );
         return stmt;
     	}
     	
