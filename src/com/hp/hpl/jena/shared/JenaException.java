@@ -14,15 +14,19 @@
  * @author jjc
  *
  */
-public class JenaException extends RDFException {
+public class JenaException extends RuntimeException {
 
 	/**
 	 * Constructor for JenaException.
 	 * @param message
 	 */
-	public JenaException(String message) {
+	public JenaException( String message ) {
 		super(message);
 	}
+    
+    public JenaException()
+        { super(); }
+        
     private Throwable cause;
     /* Java 1.3, 1.4 compatibility.
      * Support getCause() and initCause()
@@ -36,10 +40,11 @@ public class JenaException extends RDFException {
      * Constructor for JenaException.
 	 * @param cause
 	 * */
-	public JenaException(Exception cause) {
-		super( "" );
-        this.cause = cause;
-	}
+	public JenaException( Throwable cause )
+		{ this( "", cause ); }
+    
+    public JenaException( String message, Throwable cause )
+        { super( message ); this.cause = cause; }
     
     /*
         These are so that the printout of a nested exception reveals where

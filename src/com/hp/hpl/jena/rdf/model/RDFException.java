@@ -24,18 +24,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFException.java,v 1.7 2003-05-06 04:46:22 chris-dollin Exp $
+ * $Id: RDFException.java,v 1.8 2003-05-07 10:56:45 chris-dollin Exp $
  *
  * Created on 26 July 2000, 07:00
  */
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.shared.*;
+
 /** Generic RDF Exception class.
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-05-06 04:46:22 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-05-07 10:56:45 $
  */
-public class RDFException extends RuntimeException {
+public class RDFException extends JenaException {
     
     protected int       errorCode = 0;
     protected int       otherCode = 0;
