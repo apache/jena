@@ -1,25 +1,29 @@
 /******************************************************************
- * File:        BasicForwardRuleReasoner.java
+ * File:        FBRuleReasoner.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  29-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleReasoner.java,v 1.6 2003-05-29 16:44:57 der Exp $
+ * $Id: FBRuleReasoner.java,v 1.1 2003-05-29 16:44:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
-import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngine;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
-/** * Reasoner implementation which augments or transforms an RDF graph
- * according to a set of rules. This trivial version does not support
- * separate schema processing. The actual work is done in the inference
- * graph implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.6 $ on $Date: 2003-05-29 16:44:57 $ */
-public class BasicForwardRuleReasoner implements Reasoner {
+/**
+ * Rule-based reasoner interface. This is the default rule reasoner to use.
+ * It supports both forward reasoning and backward reasoning, including use
+ * of forward rules to generate and instantiate backward rules.
+ * 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
+ * @version $Revision: 1.1 $ on $Date: 2003-05-29 16:44:57 $
+ */
+public class FBRuleReasoner implements Reasoner {
     
     /** The parent reasoner factory which is consulted to answer capability questions */
     protected ReasonerFactory factory;
@@ -40,7 +44,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
     boolean traceOn = false;
     
     /** Base URI used for configuration properties for rule reasoners */
-    static final String URI = "http://www.hpl.hp.com/semweb/2003/BasicRuleReasoner";
+    static final String URI = "http://www.hpl.hp.com/semweb/2003/RuleReasoner";
      
     /** Property used to configure the derivation logging behaviour of the reasoner.
      *  Set to "true" to enable logging of derivations. */
@@ -59,7 +63,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
-    public BasicForwardRuleReasoner(List rules) {
+    public FBRuleReasoner(List rules) {
         this.rules = rules;
     }
     
@@ -68,7 +72,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * @param rules a list of Rule instances which defines the ruleset to process
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
-    public BasicForwardRuleReasoner(List rules, ReasonerFactory factory) {
+    public FBRuleReasoner(List rules, ReasonerFactory factory) {
         this.rules = rules;
         this.factory = factory;
     }
@@ -77,7 +81,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private BasicForwardRuleReasoner(List rules, InfGraph schemaGraph, ReasonerFactory factory) {
+    private FBRuleReasoner(List rules, InfGraph schemaGraph, ReasonerFactory factory) {
         this.rules = rules;
         this.schemaGraph = schemaGraph;
         this.factory = factory;
@@ -116,8 +120,9 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * will be combined with the data when the final InfGraph is created.
      */
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
-        InfGraph graph = new BasicForwardRuleInfGraph(this, rules, null, tbox);
-        return new BasicForwardRuleReasoner(rules, graph, factory);
+        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, null, tbox);
+        graph.prepare();
+        return new FBRuleReasoner(rules, graph, factory);
     }
     
     /**
@@ -125,8 +130,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * will be combined with the data when the final InfGraph is created.
      */
     public Reasoner bindSchema(Model tbox) throws ReasonerException {
-        InfGraph graph = new BasicForwardRuleInfGraph(this, rules, null, tbox.getGraph());
-        return new BasicForwardRuleReasoner(rules, graph, factory);
+        return bindSchema(tbox.getGraph());
     }
     
     /**
@@ -141,7 +145,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        BasicForwardRuleInfGraph graph = new BasicForwardRuleInfGraph(this, rules, schemaGraph);
+        BasicForwardRuleInfGraph graph = new FBRuleInfGraph(this, rules, schemaGraph);
         graph.setDerivationLogging(recordDerivations);
         graph.setRuleThreshold(nRulesThreshold);
         graph.setTraceOn(traceOn);
@@ -210,6 +214,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
     }
 
 }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Remove.java,v 1.2 2003-05-13 21:36:08 der Exp $
+ * $Id: Remove.java,v 1.3 2003-05-29 16:47:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-13 21:36:08 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-29 16:47:11 $
  */
 public class Remove implements Builtin {
 
@@ -59,7 +59,7 @@ public class Remove implements Builtin {
                 int clauseIndex = Util.getIntValue(clauseN);
                 Object clause = context.getRule().getBodyElement(clauseIndex);
                 if (clause instanceof TriplePattern) {
-                    Triple t = BasicForwardRuleInfGraph.instantiate(
+                    Triple t = FRuleEngine.instantiate(
                                         (TriplePattern)clause, 
                                         ((BFRuleContext)context).getEnvStack() );
                     context.getGraph().delete(t);

@@ -5,9 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerException.java,v 1.3 2003-04-15 21:19:01 jeremy_carroll Exp $
+ * $Id: ReasonerException.java,v 1.4 2003-05-29 16:47:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
+
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
  * Exception signalling some generic problem with the reasoning subsystem.
@@ -16,9 +18,9 @@ package com.hp.hpl.jena.reasoner;
  * should extend.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:19:01 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-29 16:47:10 $
  */
-public class ReasonerException extends RuntimeException {
+public class ReasonerException extends JenaException {
     
     /**
      * Constructor.

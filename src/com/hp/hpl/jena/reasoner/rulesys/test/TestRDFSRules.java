@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.8 2003-05-27 15:50:25 der Exp $
+ * $Id: TestRDFSRules.java,v 1.9 2003-05-29 16:47:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.8 $ on $Date: 2003-05-27 15:50:25 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.9 $ on $Date: 2003-05-29 16:47:10 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -50,14 +50,14 @@ public class TestRDFSRules extends TestCase {
         return new TestSuite(TestRDFSRules.class);
     }  
 
-//    /**
-//     * Test the basic functioning of an RDFS reasoner
-//     */
-//    public void testRDFSReasoner() throws IOException {
-//        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect.rdf");
-//        ReasonerFactory rf = RDFSRuleReasonerFactory.theInstance();
-//        assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
-//    }
+    /**
+     * Test the basic functioning of an RDFS reasoner
+     */
+    public void testRDFSReasoner() throws IOException {
+        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect.rdf");
+        ReasonerFactory rf = RDFSRuleReasonerFactory.theInstance();
+        assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
+    }
 
     /**
      * Test the basic functioning of an RDFS reasoner

@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleReasoner.java,v 1.5 2003-05-27 15:50:23 der Exp $
+ * $Id: BasicBackwardRuleReasoner.java,v 1.6 2003-05-29 16:44:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngine;
 import com.hp.hpl.jena.reasoner.rulesys.impl.RuleStore;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
@@ -22,7 +23,7 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-27 15:50:23 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-29 16:44:57 $
  */
 public class BasicBackwardRuleReasoner implements Reasoner {
 
@@ -45,7 +46,7 @@ public class BasicBackwardRuleReasoner implements Reasoner {
     boolean traceOn = false;
     
     /** threshold on the numbers of rule firings allowed in a single operation */
-    protected long nRulesThreshold = BasicForwardRuleInfGraph.DEFAULT_RULES_THRESHOLD;
+    protected long nRulesThreshold = FRuleEngine.DEFAULT_RULES_THRESHOLD;
 
     /**
      * Constructor. This is the raw version that does not reference a ReasonerFactory

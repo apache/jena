@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.6 2003-05-20 15:15:09 chris-dollin Exp $
+ * $Id: TestBasics.java,v 1.7 2003-05-29 16:47:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-20 15:15:09 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-29 16:47:10 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -130,7 +130,7 @@ public class TestBasics extends TestCase  {
         BindingStack env = new BindingStack();
         List rules = new ArrayList();
         BasicForwardRuleInfGraph inf = new BasicForwardRuleInfGraph(
-                                            new BasicForwardRuleReasoner(rules), rules);
+                                            new BasicForwardRuleReasoner(rules), rules, null);
         TriplePattern p1 = new TriplePattern(
                                     new Node_RuleVariable("?a", 0),
                                     n1,
@@ -141,28 +141,28 @@ public class TestBasics extends TestCase  {
                                     n2);
 
         // Should fail with no bindings
-        boolean match = BasicForwardRuleInfGraph.match(p1, new Triple(n1, n2, n3), env);
+        boolean match = FRuleEngine.match(p1, new Triple(n1, n2, n3), env);
         assertTrue(!match);
         assertEquals(null, env.getEnvironment()[0]);
         assertEquals(null, env.getEnvironment()[1]);
         assertEquals(null, env.getEnvironment()[2]);
         
         // Should succeed with two bindings
-        match = BasicForwardRuleInfGraph.match(p1, new Triple(n2, n1, n3), env);
+        match = FRuleEngine.match(p1, new Triple(n2, n1, n3), env);
         assertTrue(match);
         assertEquals(n2, env.getEnvironment()[0]);
         assertEquals(n3, env.getEnvironment()[1]);
         assertEquals(null, env.getEnvironment()[2]);
         
         // should fail but leave prior bindings intact
-        match = BasicForwardRuleInfGraph.match(p2, new Triple(n1, n2, n2), env);
+        match = FRuleEngine.match(p2, new Triple(n1, n2, n2), env);
         assertTrue(!match);
         assertEquals(n2, env.getEnvironment()[0]);
         assertEquals(n3, env.getEnvironment()[1]);
         assertEquals(null, env.getEnvironment()[2]);
         
         // should succeed with full binding set
-        match = BasicForwardRuleInfGraph.match(p2, new Triple(n3, n1, n2), env);
+        match = FRuleEngine.match(p2, new Triple(n3, n1, n2), env);
         assertTrue(match);
         assertEquals(n2, env.getEnvironment()[0]);
         assertEquals(n3, env.getEnvironment()[1]);

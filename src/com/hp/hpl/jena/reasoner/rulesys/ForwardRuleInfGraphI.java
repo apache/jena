@@ -1,55 +1,60 @@
 /******************************************************************
- * File:        TestPackage.java
+ * File:        ForwardRuleInfGraphI.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  28-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.6 2003-05-29 16:47:10 der Exp $
+ * $Id: ForwardRuleInfGraphI.java,v 1.1 2003-05-29 16:44:57 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.test;
+package com.hp.hpl.jena.reasoner.rulesys;
 
-
-import junit.framework.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.InfGraph;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
- * Aggregate tester that runs all the test associated with the rulesys package.
+ * This interface collects together the operations on the InfGraph which
+ * are needed to support the forward rule engine. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-29 16:47:10 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-29 16:44:57 $
  */
-
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+public interface ForwardRuleInfGraphI extends InfGraph {
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("RuleSys");
-        addTest( "TestBasics", TestBasics.suite() );
+    /**
+     * Return true if tracing should be acted on - i.e. if traceOn is true
+     * and we are past the bootstrap phase.
+     */
+    public boolean shouldTrace();
         
-        // Omitted temporarily in the interests of speed?
-        // addTest( "TestOWLRules", TestOWLRules.suite() );
-        
-        // Omitted while developing backward version
-        addTest( "TestBackchainer", TestBackchainer.suite() );
-        addTest( "TestRDFSRules", TestRDFSRules.suite() );
-        
-        addTest( "TestFBRules", TestFBRules.suite() );
-    }
+    /**
+     * Adds a new Backward rule as a rules of a forward rule process. Only some
+     * infgraphs support this.
+     */
+    public void addBRule(Rule brule);
+    
+    /**
+     * Return the Graph containing all the static deductions available so far.
+     */
+    public Graph getDeductionsGraph();
+    
+    /**
+     * Search the combination of data and deductions graphs for the given triple pattern.
+     * This may different from the normal find operation in the base of hybrid reasoners
+     * where we are side-stepping the backward deduction step.
+     */
+    public ExtendedIterator findForward(Node subject, Node predicate, Node object);
 
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
+    /**
+     * Log a dervivation record against the given triple.
+     */
+    public void logDerivation(Triple t, Object derivation);
 }
 
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

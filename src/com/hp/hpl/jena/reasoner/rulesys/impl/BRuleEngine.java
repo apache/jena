@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.13 2003-05-21 16:53:27 der Exp $
+ * $Id: BRuleEngine.java,v 1.14 2003-05-29 16:46:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-05-21 16:53:27 $
+ * @version $Revision: 1.14 $ on $Date: 2003-05-29 16:46:27 $
  */
 public class BRuleEngine {
 
@@ -41,8 +41,8 @@ public class BRuleEngine {
     /** The table of all goals */
     protected GoalTable goalTable;
     
-    /** The inference graph which is using this engine */
-    protected BasicBackwardRuleInfGraph infGraph;
+    /** The inference graph which is using this engine - used for calling builtins */
+    protected BackwardRuleInfGraphI infGraph;
     
     /** Indexed version of the rule set */
     protected RuleStore ruleStore;
@@ -62,7 +62,7 @@ public class BRuleEngine {
      * @param infGraph the parent inference graph which is using this engine
      * @param rules the indexed set of rules to process
      */
-    public BRuleEngine(BasicBackwardRuleInfGraph infGraph, RuleStore rules) {
+    public BRuleEngine(BackwardRuleInfGraphI infGraph, RuleStore rules) {
         this.infGraph = infGraph;
         goalTable = new GoalTable(this);
         ruleStore = rules;
@@ -211,7 +211,7 @@ public class BRuleEngine {
     /**
      * Return the rule infernce graph that owns this engine.
      */
-    public BasicBackwardRuleInfGraph getInfGraph() {
+    public BackwardRuleInfGraphI getInfGraph() {
         return infGraph;  
     }
     

@@ -5,16 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.1 2003-05-13 21:36:08 der Exp $
+ * $Id: BFRuleContext.java,v 1.2 2003-05-29 16:46:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
-import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
-import com.hp.hpl.jena.reasoner.rulesys.Rule;
-import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.graph.*;
@@ -27,7 +24,7 @@ import org.apache.log4j.Logger;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-13 21:36:08 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-29 16:46:27 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -37,7 +34,7 @@ public class BFRuleContext implements RuleContext {
     protected Rule rule;
     
     /** The enclosing inference graph. */
-    protected BasicForwardRuleInfGraph graph;
+    protected ForwardRuleInfGraphI graph;
     
     /** A stack of triples which have been added to the graph but haven't yet been processed. */
     protected List stack;
@@ -55,7 +52,7 @@ public class BFRuleContext implements RuleContext {
      * Constructor.
      * @param graph the inference graph which owns this context.
      */
-    public BFRuleContext(BasicForwardRuleInfGraph graph) {
+    public BFRuleContext(ForwardRuleInfGraphI graph) {
         this.graph = graph;
         env = new BindingStack();
         stack = new ArrayList();
@@ -178,7 +175,7 @@ public class BFRuleContext implements RuleContext {
      */
     public ClosableIterator find(Node s, Node p, Node o) {
         //return graph.find(s, p, o).andThen(pendingCache.find(s, p, o));
-        return graph.find(s, p, o);
+        return graph.findForward(s, p, o);
     }
     
     /**

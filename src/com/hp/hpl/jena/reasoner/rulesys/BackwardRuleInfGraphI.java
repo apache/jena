@@ -1,55 +1,47 @@
 /******************************************************************
- * File:        TestPackage.java
+ * File:        BackwardRuleInfGraphI.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  28-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.6 2003-05-29 16:47:10 der Exp $
+ * $Id: BackwardRuleInfGraphI.java,v 1.1 2003-05-29 16:44:56 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.test;
+package com.hp.hpl.jena.reasoner.rulesys;
 
-
-import junit.framework.*;
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
- * Aggregate tester that runs all the test associated with the rulesys package.
+ * This interface collects together those operations that the backchaining
+ * engine needs to invoke in the parent InfGraph. This allows different inf graphs
+ * to exploit the same core backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-29 16:47:10 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-29 16:44:56 $
  */
+public interface BackwardRuleInfGraphI {
+            
+    /**
+     * Process a call to a builtin predicate
+     * @param clause the Functor representing the call
+     * @param env the BindingEnvironment for this call
+     * @param rule the rule which is invoking this call
+     * @return true if the predicate succeeds
+     */
+    public boolean processBuiltin(Object clause, Rule rule, BindingEnvironment env);
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("RuleSys");
-        addTest( "TestBasics", TestBasics.suite() );
-        
-        // Omitted temporarily in the interests of speed?
-        // addTest( "TestOWLRules", TestOWLRules.suite() );
-        
-        // Omitted while developing backward version
-        addTest( "TestBackchainer", TestBackchainer.suite() );
-        addTest( "TestRDFSRules", TestRDFSRules.suite() );
-        
-        addTest( "TestFBRules", TestFBRules.suite() );
-    }
-
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
+    /**
+     * Match a pattern just against the stored data (raw data, schema,
+     * axioms) but no derivation.
+     */
+    public ExtendedIterator findDataMatches(TriplePattern pattern);
 
 }
 
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
