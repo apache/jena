@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BulkUpdateHandler.java,v 1.8 2004-06-24 12:11:47 chris-dollin Exp $
+  $Id: BulkUpdateHandler.java,v 1.9 2004-06-25 06:13:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -100,6 +100,11 @@ public interface BulkUpdateHandler
     	Remove all the statements from a graph.
     */
     void removeAll();
+    
+    /**
+       Remove all triples that would be delivered by find(s, p, o)
+    */
+    void remove( Node s, Node p, Node o );
     }
 
 /*

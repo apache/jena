@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.9 2004-06-24 12:11:50 chris-dollin Exp $
+  $Id: AbstractTestModel.java,v 1.10 2004-06-25 06:13:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
 
@@ -112,21 +113,71 @@ public abstract class AbstractTestModel extends ModelTestBase
         RDFNode r = model.asRDFNode( node( "a" ) );
         }
     
-    public void testClear()
+    public void testRemoveAll()
         {
-        testClear( "" );
-        testClear( "a RR b" );
-        testClear( "x P y; a Q b; c R 17; _d S 'e'" );
-        testClear( "subject Predicate 'object'; http://nowhere/x scheme:cunning not:plan" );
+        testRemoveAll( "" );
+        testRemoveAll( "a RR b" );
+        testRemoveAll( "x P y; a Q b; c R 17; _d S 'e'" );
+        testRemoveAll( "subject Predicate 'object'; http://nowhere/x scheme:cunning not:plan" );
         }
     
-    protected void testClear( String statements )
+    protected void testRemoveAll( String statements )
         {
         modelAdd( model, statements );
         assertSame( model, model.removeAll() );
         assertEquals( "model should have size 0 following removeAll(): ", 0, model.size() );
         }
     
+    /**
+ 		Test cases for RemoveSPO(); each entry is a triple (add, remove, result).
+	 	<ul>
+	 	<li>add - the triples to add to the graph to start with
+	 	<li>remove - the pattern to use in the removal
+	 	<li>result - the triples that should remain in the graph
+	 	</ul>
+	*/
+	protected String[][] cases =
+		{
+	            { "x R y", "x R y", "" },
+	            { "x R y; a P b", "x R y", "a P b" },
+	            { "x R y; a P b", "?? R y", "a P b" },
+	            { "x R y; a P b", "x R ??", "a P b" },
+	            { "x R y; a P b", "x ?? y", "a P b" },      
+	            { "x R y; a P b", "?? ?? ??", "" },       
+	            { "x R y; a P b; c P d", "?? P ??", "x R y" },       
+	            { "x R y; a P b; x S y", "x ?? ??", "a P b" },                 
+		};
+    
+    /**
+ 	Test that remove(s, p, o) works, in the presence of inferencing graphs that
+ 	mean emptyness isn't available. This is why we go round the houses and
+ 	test that expected ~= initialContent + addedStuff - removed - initialContent.
+ 	*/
+	public void testRemoveSPO()
+	    {
+	    ModelCom mc = (ModelCom) ModelFactory.createDefaultModel();
+	    for (int i = 0; i < cases.length; i += 1)
+	        for (int j = 0; j < 3; j += 1)
+	            {
+	            Model content = getModel();
+	            Model baseContent = copy( content );
+	            modelAdd( content, cases[i][0] );
+	            Triple remove = triple( cases[i][1] );
+	            Node s = remove.getSubject(), p = remove.getPredicate(), o = remove.getObject();
+	            Resource S = (Resource) (s.equals( Node.ANY ) ? null : mc.getRDFNode( s ));
+	            Property P = (Property)((p.equals( Node.ANY ) ? null : mc.getRDFNode( p ).as( Property.class )));
+	            RDFNode O = o.equals( Node.ANY ) ? null : mc.getRDFNode( o );
+	            Model expected = modelWithStatements( cases[i][2] );
+	            content.removeAll( S, P, O );
+	            Model finalContent = copy( content ).remove( baseContent );
+	            assertIsoModels( cases[i][1], expected, finalContent );
+	            }
+	    }
+	
+	protected Model copy( Model m )
+	    {
+	    return ModelFactory.createDefaultModel().add( m );
+	    }
     }
 
 

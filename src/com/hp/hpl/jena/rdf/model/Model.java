@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.52 2004-06-24 12:11:49 chris-dollin Exp $
+  $Id: Model.java,v 1.53 2004-06-25 06:13:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.*;
 
 import java.io.*;
@@ -61,7 +62,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.52 $Date: 2004/06/15 14:02:04 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.53 $Date: 2004/06/24 12:11:49 $'
  */
 public interface Model 
     extends ModelCon, ModelGraphInterface, 
@@ -935,6 +936,11 @@ public interface Model
     	Remove all the statements from this model.
     */
     public Model removeAll();
+
+    /**
+     	Remove all the statements matching (s, p, o) from this model.
+    */
+    public Model removeAll( Resource s, Property p, RDFNode r );
     
 }
 
@@ -963,5 +969,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.52 2004-06-24 12:11:49 chris-dollin Exp $
+ * $Id: Model.java,v 1.53 2004-06-25 06:13:42 chris-dollin Exp $
  */

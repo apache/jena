@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.43 2004-06-24 14:45:45 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.44 2004-06-25 06:13:41 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -551,6 +551,58 @@ public abstract class AbstractTestGraph extends GraphTestBase
         graphAdd( g, triples );
         g.getBulkUpdateHandler().removeAll();
         assertTrue( g.isEmpty() );
+        }
+    
+    /**
+     	Test cases for RemoveSPO(); each entry is a triple (add, remove, result).
+     	<ul>
+     	<li>add - the triples to add to the graph to start with
+     	<li>remove - the pattern to use in the removal
+     	<li>result - the triples that should remain in the graph
+     	</ul>
+    */
+    protected String[][] cases =
+    	{
+                { "x R y", "x R y", "" },
+                { "x R y; a P b", "x R y", "a P b" },
+                { "x R y; a P b", "?? R y", "a P b" },
+                { "x R y; a P b", "x R ??", "a P b" },
+                { "x R y; a P b", "x ?? y", "a P b" },      
+                { "x R y; a P b", "?? ?? ??", "" },       
+                { "x R y; a P b; c P d", "?? P ??", "x R y" },       
+                { "x R y; a P b; x S y", "x ?? ??", "a P b" },                 
+    	};
+    
+    /**
+     	Test that remove(s, p, o) works, in the presence of inferencing graphs that
+     	mean emptyness isn't available. This is why we go round the houses and
+     	test that expected ~= initialContent + addedStuff - removed - initialContent.
+    */
+    public void testRemoveSPO()
+        {
+        for (int i = 0; i < cases.length; i += 1)
+            for (int j = 0; j < 3; j += 1)
+                {
+                Graph content = getGraph();
+                Graph baseContent = copy( content );
+                graphAdd( content, cases[i][0] );
+                Triple remove = triple( cases[i][1] );
+                Graph expected = graphWith( cases[i][2] );
+                content.getBulkUpdateHandler().remove( remove.getSubject(), remove.getPredicate(), remove.getObject() );
+                Graph finalContent = remove( copy( content ), baseContent );
+                assertIsomorphic( cases[i][1], expected, finalContent );
+                }
+        }
+    
+    protected void add( Graph toUpdate, Graph toAdd )
+        {
+        toUpdate.getBulkUpdateHandler().add( toAdd );
+        }
+    
+    protected Graph remove( Graph toUpdate, Graph toRemove )
+        {
+        toUpdate.getBulkUpdateHandler().delete( toRemove );
+        return toUpdate;
         }
     
     protected Graph copy( Graph g )

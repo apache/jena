@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.15 2004-06-23 15:23:00 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.16 2004-06-25 06:13:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -101,7 +101,7 @@ public class GraphTestBase extends JenaTestBase
         if (!expected.isIsomorphicWith( got ))
             {
             Map map = new HashMap();
-            fail( "wanted " + nice( expected, map ) + "\nbut got " + nice( got, map ) );
+            fail( title + ": wanted " + nice( expected, map ) + "\nbut got " + nice( got, map ) );
             }
         }
     
