@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.18 2003-05-19 12:21:47 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.19 2003-05-19 13:15:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -20,8 +20,6 @@ import com.hp.hpl.jena.test.*;
 
 import java.util.*;
 import java.io.*;
-
-import junit.framework.*;
 
 public class GraphTestBase extends JenaTestBase
     {

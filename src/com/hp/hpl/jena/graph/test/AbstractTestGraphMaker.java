@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.4 2003-05-15 07:58:56 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.5 2003-05-19 13:16:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -51,7 +51,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         {
         gf.createGraph( "plain" ).close();
         gf.createGraph( "with.dot" ).close();
-        gf.createGraph( "http://electric-hedgehog.net/topic#marker" );
+        gf.createGraph( "http://electric-hedgehog.net/topic#marker" ).close();
         }
         
     /**

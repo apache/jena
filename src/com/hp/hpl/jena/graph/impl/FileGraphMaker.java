@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.4 2003-05-15 15:31:15 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.5 2003-05-19 13:16:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -86,7 +86,24 @@ public class FileGraphMaker extends BaseGraphMaker
         }
 
     private File withRoot( String name )
-        { return new File( root, name ); }
+        { return new File( root, makeSafe( name ) ); }
+        
+    /**
+        Make <code>name</name> safe for use as a filename. "safe" is a bit weak
+        here; we want to allow URIs as graph names and assume that our filing
+        systems will be reasonably liberal. We'll see ...
+        
+    	@param name
+    	@return
+     */
+    private String makeSafe( String name )
+        {
+        return name
+            .replaceAll( "_", "_U" )
+            .replaceAll( "/", "_S" )
+            .replaceAll( ":", "_C" )
+            ;    
+        }
         
     public void removeGraph( String name )
         { forget( withRoot( name ) ).delete(); }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFileGraph.java,v 1.4 2003-05-08 14:53:57 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.5 2003-05-19 13:16:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -40,7 +40,7 @@ public class TestFileGraph extends GraphTestBase
         result.addTest( new Case( "http://domain/S ftp:ftp/P O", "xxxI", ".n3" ) );
         return result;
         }
-
+        
     /**
         Test that the language code is guessed "correctly".
     */
