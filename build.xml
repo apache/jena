@@ -302,6 +302,7 @@
         <javadoc
        sourcepath="${src.dir}"
        destdir="${javadoc.dir}"
+       maxmemory="128m"
        author="true"
        version="true"
              classpathref="classpath"
