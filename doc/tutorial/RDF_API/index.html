@@ -15,29 +15,29 @@
 This is a tutorial introduction to both W3C's Resource Description Framework
 (RDF) and Jena, a Java API for RDF.  It is written for the programmer who is
 unfamiliar with RDF and who learns best by prototyping, or, for other
-reasons, wishes to move quickly to implementation.&nbsp; Some familiarity
+reasons, wishes to move quickly to implementation. Some familiarity
 with both XML and Java is assumed.
 
 <p>Implementing too quickly, without first understanding the RDF data model
-leads to frustration and disappointment.&nbsp; Yet studying the data model
+leads to frustration and disappointment. Yet studying the data model
 alone is dry stuff and often leads to tortuous metaphysical conundrums.  It
 is better to approach understanding both the data model and how to use it in
-parallel.&nbsp; Learn a bit of the data model and try it out.&nbsp; Then
-learn a bit more and try that out.&nbsp; Then the theory informs the practice
-and the practice the theory.&nbsp; The data model is quite simple, so this
+parallel. Learn a bit of the data model and try it out. Then
+learn a bit more and try that out. Then the theory informs the practice
+and the practice the theory. The data model is quite simple, so this
 approach does not take long.</p>
 
 <p>RDF has an XML syntax and many who are familiar with XML will think of RDF
-in terms of that syntax.&nbsp; This is mistake.&nbsp; RDF should be
-understood in terms of its data model.&nbsp; RDF data can be represented in
+in terms of that syntax. This is mistake. RDF should be
+understood in terms of its data model. RDF data can be represented in
 XML, however, understanding the syntax is secondary to understanding the data
-model.&nbsp;</p>
+model.</p>
 
 <p>An implementation of the Jena API, including the working source code for
 all the examples used in this tutorial can be downloaded from <a
 href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb/</a>.</p>
 
-<p>&nbsp;</p>
+<p></p>
 <hr>
 
 <h2>Table of Contents</h2>
@@ -47,10 +47,9 @@ href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb/</a>.</p>
   <li><a href="#ch-Writing RDF">Writing RDF</a></li>
   <li><a href="#ch-Reading RDF">Reading RDF</a></li>
   <li><a href="#ch-Jena RDF Packages">Jena RDF Packages</a></li>
-  <li><a href="#ch-Navigating a Graph">Navigating a Graph</a></li>
-  <li><a href="#ch-Querying a Graph">Querying a Graph</a></li>
-  <li><a href="#ch-Operations on Graphs">Operations on Graphs</a></li>
-  <li><a href="#ch-Exceptions">Exceptions</a></li>
+  <li><a href="#ch-Navigating a Model">Navigating a Model</a></li>
+  <li><a href="#ch-Querying a Model">Querying a Model</a></li>
+  <li><a href="#ch-Operations on Models">Operations on Models</a></li>
   <li><a href="#ch-Containers">Containers</a></li>
   <li><a href="#ch-More about Literals and Datatypes">More about Literals and
     Datatypes</a></li>
@@ -61,7 +60,7 @@ href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb/</a>.</p>
 <h2><a name="ch-Introduction" id="ch-Introduction">Introduction</a></h2>
 
 <p>The Resource Description Framework (RDF) is a standard (technically a W3C
-Recommendation) for describing resources.&nbsp; What is a resource?  That is
+Recommendation) for describing resources. What is a resource?  That is
 rather a deep question and the precise definition is still the subject of
 debate.  For our purpuses we can think of it as anything we can  identify.
 You are a resource, as is your home page, this tutorial, the number one and
@@ -80,46 +79,45 @@ size="1"><sup><a href="#fn-01">1</a></sup></font>,  in this case
 "http://.../JohnSmith".  If you try to access that resource using your
 browser, you are unlikely to be successful; April the first jokes not
 withstanding, you would be rather surprised if your browser were able to
-deliver John Smith to your desk top.&nbsp; If you are unfamiliar with URI's,
+deliver John Smith to your desk top. If you are unfamiliar with URI's,
 think of them simply as rather strange looking names.</p>
 
 <p>Resources have <a href="#glos-Property"><i>properties</i></a>.  In these
 examples we are interested in the sort of properties that would appear on
-John Smith's business card.&nbsp; Figure 1 shows only one property, John
+John Smith's business card. Figure 1 shows only one property, John
 Smith's full name.  A property is represented by an arc, labeled with the
 name of a property.  The name of a property is also a URI, but as URI's are
 rather long and cumbersome, the diagram shows it in XML qname form.   The
 part before the ':' is called a namespace prefix and represents a
-namespace.&nbsp; The part after the ':' is called a local name and represents
-a name in that namespace.&nbsp; Properties are usually represented in this
+namespace. The part after the ':' is called a local name and represents
+a name in that namespace. Properties are usually represented in this
 qname form when written as RDF XML and it is a convenient shorthand for
-representing them in diagrams and in text.&nbsp; Strictly, however,
-properties are identified by a URI.&nbsp; The nsprefix:localname form is a
-shorthand for the URI of the namespace concatenated with the localname.&nbsp;
+representing them in diagrams and in text. Strictly, however,
+properties are identified by a URI. The nsprefix:localname form is a
+shorthand for the URI of the namespace concatenated with the localname.
 There is no requirement that the URI of a property resolve to anything when
 accessed by a browser.</p>
 
-<p>Each property has a value.&nbsp; In this case the value is a <a
+<p>Each property has a value. In this case the value is a <a
 href="#glos-Literal"><i>literal</i></a>, which for now we can think of as a
 strings of characters<font size="1"><sup><a href="#fn-02">2</a></sup></font>.
 Literals are shown in rectangles.</p>
 
 <p>Jena is a Java API which can be used to create and manipulate RDF graphs
-like this one.&nbsp; Jena has object classes to represent graphs, resources,
-properties and literals.&nbsp; The interfaces representing resources,
+like this one. Jena has object classes to represent graphs, resources,
+properties and literals. The interfaces representing resources,
 properties and literals are called Resource, Property and Literal
-respectively.&nbsp; In Jena, a graph is called a model<font size="1"><sup><a
-href="#fn-03">3</a></sup></font> and is represented by the Model
+respectively. In Jena, a graph is called a model and is represented by the Model
 interface.</p>
 
-<p>The code to create this graph, or model,&nbsp; is simple:</p>
+<p>The code to create this graph, or model, is simple:</p>
 
 <blockquote>
   <pre><code>// some definitions
 static String personURI    = "http://somewhere/JohnSmith";
 static String fullName     = "John Smith";
 
-// create an empty graph
+// create an empty Model
 Model model = ModelFactory.createDefaultModel();
 
 // create the resource
@@ -129,13 +127,13 @@ Resource johnSmith = model.createResource(personURI);
  johnSmith.addProperty(VCARD.FN, fullName);</code></pre>
 </blockquote>
 
-<p>It begins with some constant definitions and then creates an empty graph
-or model.&nbsp; ModelMem is a class which implements the Model interface and
-holds all its data in main memory.&nbsp; Jena contains other implementations
-of the Model interface, e.g one which stores its data in a Berkley DB
-database, and another which uses a relational database.</p>
+<p>It begins with some constant definitions and then creates an empty Model
+or model, using the <code>Modelfactory</code> method <code>createDefaultModel()</code>
+to create a memory-based model. Jena contains other implementations
+of the Model interface, e.g one which uses a relational database: these
+types of Model are also available from ModelFactory.</p>
 
-<p>The John Smith resource is then created and a property added to it.&nbsp;
+<p>The John Smith resource is then created and a property added to it.
 The property is provided by a "constant" class VCARD which holds objects
 representing all the definitions in the VCARD schema.  Jena provides constant
 classes for other well known schemas, such as RDF and RDF schema themselves,
@@ -158,7 +156,7 @@ yourself.</p>
 <p>Now lets add some more detail to the vcard, exploring some more features
 of RDF and Jena.</p>
 
-<p>In the first example, the property value was a literal.&nbsp; RDF
+<p>In the first example, the property value was a literal. RDF
 properties can also take other resources as their value.  Using a common RDF
 technique, this example shows how to represent the different parts of John
 Smith's name:</p>
@@ -167,11 +165,11 @@ Smith's name:</p>
 
 <p>Here we have added a new property, vcard:N to represent the structure of
 John Smith's name.  There are several things of interest about this
-graph.&nbsp; Note that the vcard:N property takes a resource as its value.
-Note also that the ellipse representing the compound name has no URI.&nbsp;
+Model. Note that the vcard:N property takes a resource as its value.
+Note also that the ellipse representing the compound name has no URI.
 It is known as an <i><a href="#glos-blank node">blank Node</a>.</i></p>
 
-<p>The Jena code to construct this example, is again very simple.&nbsp; First
+<p>The Jena code to construct this example, is again very simple. First
 some declarations and the creation of the empty model.</p>
 
 <blockquote>
@@ -181,7 +179,7 @@ String givenName    = "John";
 String familyName   = "Smith";
 String fullName     = givenName + " " + familyName;
 
-// create an empty graph
+// create an empty Model
 Model model = ModelFactory.createDefaultModel();
 
 // create the resource
@@ -202,9 +200,9 @@ Jena distribution.</p>
 
 <h2><a name="ch-Statements">Statements</a></h2>
 
-<p>Each arc in an RDF graph is called a <i><a
-href="#glos-Statement">statement</a></i>.&nbsp; Each statement asserts a fact
-about a resource.&nbsp; A statement has three parts:</p>
+<p>Each arc in an RDF Model is called a <i><a
+href="#glos-Statement">statement</a></i>. Each statement asserts a fact
+about a resource. A statement has three parts:</p>
 <ul>
   <li>the <i><a href="#glos-Subject"> subject</a></i> is the resource from
     which the arc leaves</li>
@@ -215,15 +213,15 @@ about a resource.&nbsp; A statement has three parts:</p>
 </ul>
 
 <p>A statement is sometimes called a <a href="#glos-Triple">triple</a>,
-because of its three parts.&nbsp;</p>
+because of its three parts.</p>
 
-<p>An RDF graph is represented is a set of statements.  Each call of
-addProperty in tutorial2 added a another statement to the graph.  Note that a
-graph is <em>set</em> of statements; adding a duplicate of a statement has no
+<p>An RDF Model is represented is a set of statements.  Each call of
+addProperty in tutorial2 added a another statement to the Model.  Note that a
+Model is <em>set</em> of statements; adding a duplicate of a statement has no
 effect.  The Jena model interface defines a <span
 style="font-family: courier">listStatements()</span> method which returns an
-iterator<font size="1"><sup><a href="#fn-04">4</a></sup></font> over all all
-the statements in a graph. Each time the next method of the iterator is
+iterator<font size="1"><sup><a href="#fn-03">4</a></sup></font> over all all
+the statements in a Model. Each time the next method of the iterator is
 called it returns a Jena object of type <span
 style="font-family: courier">Statement</span>.  The <span
 style="font-family: courier">Statement</span> interface provides accessor
@@ -234,15 +232,15 @@ statements created and print them out.  The complete code for this can be
 found in <a href="code/Tutorial03.java">tutorial 3</a>.</p>
 
 <blockquote>
-  <pre>// list the statements in the graph
+  <pre>// list the statements in the Model
 StmtIterator iter = model.listStatements();
 
 // print out the predicate, subject and object of each statement
 while (iter.hasNext()) {
-    Statement stmt      = iter.nextStatement();         // get next statement
-    Resource  subject   = stmt.getSubject();   // get the subject
-    Property  predicate = stmt.getPredicate(); // get the predicate
-    RDFNode   object    = stmt.getObject();    // get the object
+    Statement stmt      = iter.nextStatement();  // get next statement
+    Resource  subject   = stmt.getSubject();     // get the subject
+    Property  predicate = stmt.getPredicate();   // get the predicate
+    RDFNode   object    = stmt.getObject();      // get the object
 
     System.out.print(subject.toString());
     System.out.print(" " + predicate.toString() + " ");
@@ -274,9 +272,9 @@ http://somewhere/JohnSmith http://www.w3.org/2001/vcard-rdf/3.0#FN  "John Smith"
 
 <p></p>
 
-<p>Now you know why it is clearer to draw graphs.  If you look carefully, you
+<p>Now you know why it is clearer to draw Models.  If you look carefully, you
 will see that each line consists of three fields representing the subject,
-predicate and object of each statement.  There are four arcs in the graph, so
+predicate and object of each statement.  There are four arcs in the Model, so
 there are four statements.  The "anon:14df86:ecc3dee17b:-7fff" is an internal
 identifier generated by Jena.  It is not a URI and should not be confused
 with one.  It is simply an internal label used by the Jena implementation.</p>
@@ -290,18 +288,18 @@ N-Triples writer built in.</p>
 
 <h2><a name="ch-Writing RDF">Writing RDF</a></h2>
 
-<p>Jena has methods for reading and writing RDF as XML.&nbsp; These can be
+<p>Jena has methods for reading and writing RDF as XML. These can be
 used to save an RDF model to a file and later, read it back in again.</p>
 
-<p>Tutorial 3 created a model and wrote it out in triple form.&nbsp; <a
+<p>Tutorial 3 created a model and wrote it out in triple form. <a
 href="code/Tutorial04.java">Tutorial 4</a> modifies tutorial 3 to write the
-model in RDF XML form to the standard output stream.&nbsp; The code again, is
-very simple.&nbsp; Simply create a <code>PrintWriter</code> and call the
-<code>model.write</code> method.</p>
+model in RDF XML form to the standard output stream. The code again, is
+very simple: <code>model.write</code> can take an <code>OutputStream</code>
+argument.</p>
 
 <blockquote>
   <pre><code>// now write the model in XML form to a file
-model.write(system.out);</code></pre>
+model.write(System.out);</code></pre>
 </blockquote>
 
 <p>The output should look something like this:</p>
@@ -324,7 +322,7 @@ model.write(system.out);</code></pre>
 
 <p></p>
 
-<p>The RDF specifications specify how to represent RDF as XML.&nbsp; The RDF
+<p>The RDF specifications specify how to represent RDF as XML. The RDF
 XML syntax is quite complex.  The reader is referred to the <a
 href="http://www.w3.org/TR/rdf-primer/">primer</a> being developed by the
 RDFCore WG for a more detailed introduction.  However, lets take a quick look
@@ -341,7 +339,7 @@ attribute was missing, this element would represent a blank node.</p>
 property name is the "FN" in the vcard namespace.  RDF converts this to a URI
 reference by concatenating the URI reference for the namespace prefix and
 "FN", the local name part of the name.  This gives a URI reference of
-&nbsp;"http://www.w3.org/2001/vcard-rdf/3.0#FN".  The value of the property
+"http://www.w3.org/2001/vcard-rdf/3.0#FN".  The value of the property
 is the literal "John Smith".</p>
 
 <p>The &lt;vcard:N&gt; element is a resource.  In this case the resource is
@@ -349,12 +347,12 @@ represented by a relative URI reference.  RDF converts this to an absolute
 URI reference by concatenating it with the base URI of the current
 document.</p>
 
-<p>There is an error in this RDF XML; it does not exactly represent the graph
-we created.  The blank node in the graph has been given a URI reference.  It
+<p>There is an error in this RDF XML; it does not exactly represent the Model
+we created.  The blank node in the Model has been given a URI reference.  It
 is no longer blank.  The RDF/XML syntax is not capable of representing all
-RDF graphs; for example it cannot represent a blank node which is the object
+RDF Models; for example it cannot represent a blank node which is the object
 of two statements.  The 'dumb' writer we used to write this RDF/XML  makes no
-attempt to write correctly the subset of graphs which can be written
+attempt to write correctly the subset of Models which can be written
 correctly.  It gives a URI to each blank node, making it no longer blank.</p>
 
 <p>Jena has an extensible interface which allows new writers for different
@@ -370,9 +368,9 @@ model.write(system.out, "RDF/XML-ABBREV");
 </blockquote>
 
 <p>This writer, the so called PrettyWriter, takes advantage of features of
-the RDF/XML abbreviated syntax to write a graph more compactly.  It is also
+the RDF/XML abbreviated syntax to write a Model more compactly.  It is also
 able to preserve blank nodes where that is possible.  It is however, not
-suitable for writing very large graphs, as its performance is unlikely to be
+suitable for writing very large Models, as its performance is unlikely to be
 acceptable.  To write large files and preserve blank nodes, write in
 N-Triples format:</p>
 
@@ -389,7 +387,7 @@ the N-Triples specification.</p>
 <h2><a name="ch-Reading RDF">Reading RDF</a></h2>
 
 <p><a href="code/Tutorial05.java">Tutorial 5</a> demonstrates reading the
-statements recorded in RDF XML form into a model.&nbsp; With this tutorial,
+statements recorded in RDF XML form into a model. With this tutorial,
 we have provided a small database of vcards in RDF/XML form.  The following
 code will read it in and write it out. <em>Note that for this application to
 run, the input file must be in a directory or jar on your classpath.</em></p>
@@ -421,7 +419,7 @@ style="font-family: courier">read()</span> method call is the URI which will
 be used for resolving relative URI's.  As there are no relative URI
 references in the test file, it is can be empty.</p>
 
-<p>For now, it can always be to the empty string.&nbsp; When run, <a
+<p>For now, it can always be to the empty string. When run, <a
 href="code/Tutorial05.java"> tutorial 5</a> will produce XML output which
 looks like:</p>
 
@@ -470,7 +468,7 @@ looks like:</p>
 
 <p>Jena is a Java API for semantic web applications.  The key RDF package for
 the application developer is
-<code>com.hp.hpl.jena.rdf.model</code>.&nbsp; The API has been defined
+<code>com.hp.hpl.jena.rdf.model</code>. The API has been defined
 in terms of interfaces so that application code can work with different
 implementations without change. This package contains interfaces for
 representing models, resources, properties, literals, statements and all the
@@ -483,29 +481,29 @@ specific class implementations.</p>
 working source code for all the examples used in this tutorial.</p>
 
 <p>The <code>com.hp.hpl.jena.common</code> package contains
-implementation classes which may be common to many implementations.&nbsp; For
+implementation classes which may be common to many implementations. For
 example, it defines classes <code>ResourceImpl</code>,
 <code>PropertyImpl</code>, <code>LiteralImpl</code> which may be used
-directly or subclassed by different implementations.&nbsp; Applications
-should rarely, if ever, use these classes directly.&nbsp; For example, rather
+directly or subclassed by different implementations. Applications
+should rarely, if ever, use these classes directly. For example, rather
 than creating a new instance of <code>ResourceImpl</code>, it is better to
 use the <code>createResource</code> method of whatever model is being
-used.&nbsp; That way, if the model implementation has used an optimized
+used. That way, if the model implementation has used an optimized
 implementation of <code>Resource</code>, then no conversions between the two
 types will be necessary.</p>
 
 <hr>
 
-<h2><a name="ch-Navigating a Graph">Navigating a Graph</a></h2>
+<h2><a name="ch-Navigating a Model">Navigating a Model</a></h2>
 
 <p>So far, this tutorial has dealt mainly with creating, reading and writing
-RDF graphs.&nbsp; It is now time to deal with accessing information held in a
-graph.</p>
+RDF Models. It is now time to deal with accessing information held in a
+Model.</p>
 
 <p>Given the URI of a resource, the resource object can be retrieved from a
-model using the <code>Model.getResource(String uri)</code> method.&nbsp; This
+model using the <code>Model.getResource(String uri)</code> method. This
 method is defined to return a Resource object if one exists in the model, or
-otherwise to create a new one.&nbsp; For example, to retrieve the Adam Smith
+otherwise to create a new one. For example, to retrieve the Adam Smith
 resource from the model read in from the file in tutorial 5:</p>
 
 <blockquote>
@@ -515,13 +513,13 @@ Resource vcard = model.getResource(johnSmithURI);</code>
 </blockquote>
 
 <p>The Resource interface defines a number of methods for accessing the
-properties of a resource.&nbsp; The <code>Resource.getProperty(Property
-p)</code> method accesses a property of the resource.&nbsp; This method does
+properties of a resource. The <code>Resource.getProperty(Property
+p)</code> method accesses a property of the resource. This method does
 not follow the usual Java accessor convention in that the type of the object
 returned is <code>Statement,</code> not the <code>Property</code> that you
 might have expected.  Returning the whole statement allows the application to
 access the value of the property using one of its accessor methods which
-return the object of the statement.&nbsp; For example to retrieve the
+return the object of the statement. For example to retrieve the
 resource which is the value of the <code>vcard:N</code> property:</p>
 
 <blockquote>
@@ -532,9 +530,9 @@ Resource name = (Resource) vcard.getProperty(VCARD.N)
 
 <p>In general, the object of a statement could be a resource or a literal, so
 the application code, knowing the value must be a resource, casts the
-returned object.&nbsp; One of the things that Jena tries to do is to provide
+returned object. One of the things that Jena tries to do is to provide
 type specific methods so the application does not have to cast and type
-checking can be done at compile time.&nbsp; The code fragment above, can be
+checking can be done at compile time. The code fragment above, can be
 more conveniently written:</p>
 
 <blockquote>
@@ -552,7 +550,7 @@ String fullName = vcard.getProperty(VCARD.FN)
 </blockquote>
 
 <p>In this example, the vcard resource has only one <code>vcard:FN</code> and
-one <code>vcard:N</code> property.&nbsp; RDF permits a resource to repeat a
+one <code>vcard:N</code> property. RDF permits a resource to repeat a
 property; for example Adam might have more than one nickname.  Lets give him
 two:</p>
 
@@ -562,10 +560,10 @@ vcard.addProperty(VCARD.NICKNAME, "Smithy")
      .addProperty(VCARD.NICKNAME, "Adman");</pre>
 </blockquote>
 
-<p>As noted before, Jena represents an RDF graph as <em>set </em>of
+<p>As noted before, Jena represents an RDF Model as <em>set </em>of
 statements, so adding a statement with the subject, predicate and object as
-one already in the graph will have no effect.  Jena does not define which of
-the two nicknames present in the graph will be returned.  The result of
+one already in the Model will have no effect.  Jena does not define which of
+the two nicknames present in the Model will be returned.  The result of
 calling <code>vcard.getProperty(VCARD.NICKNAME)</code> is indeterminate. Jena
 will return one of the values, but there is no guarantee even that two
 consecutive calls will return the same value.</p>
@@ -602,24 +600,24 @@ which produces the following output when run:</p>
 <code>listStatements()</code> method without an argument.</p>
 <hr>
 
-<h2><a name="ch-Querying a Graph">Querying a Graph</a></h2>
+<h2><a name="ch-Querying a Model">Querying a Model</a></h2>
 
 <p>The previous section dealt with the case of navigating a model from a
-resource with a known URI.&nbsp; This section deals with searching a
-model.&nbsp; The core Jena API supports only a limited query primitive.  The
+resource with a known URI. This section deals with searching a
+model. The core Jena API supports only a limited query primitive.  The
 more powerful query facilities of RDQL are described elsewhere in this
 tutorial.</p>
 
 <p>The <code>Model.listStatements()</code> method, which lists all the
-statements in a model, is perhaps the crudest way of querying a model.&nbsp;
-Its use is not recommended on very large graphs.
+statements in a model, is perhaps the crudest way of querying a model.
+Its use is not recommended on very large Models.
 <code>Model.listSubjects()</code> is similar, but returns an iterator over
 all resources that have properties, i.e. are the subject of some
-statement.&nbsp;</p>
+statement.</p>
 
 <p><code>Model.listSubjectsWithProperty(Property p, RDFNode
 o)</code><code></code> will return an iterator over all the resources which
-have property <code>p</code> with value <code>o</code>.&nbsp; We might expect
+have property <code>p</code> with value <code>o</code>. We might expect
 to be able to use the rdf:type property to retrieve all the vcard resources
 by searching for their type property:</p>
 
@@ -637,7 +635,7 @@ resources have such a property, then we can find all the vcards like this:</p>
   <pre>// list vcards
 ResIterator iter = model.listSubjectsWithProperty(VCARD.FN);
 while (iter.hasNext()) {
-    Resource r = iter.next();
+    Resource r = iter.nextResource();
     ...
 }</pre>
 </blockquote>
@@ -670,7 +668,7 @@ equal.  Thus:</p>
   </pre>
 </blockquote>
 
-<p>will select all the statements in a graph.</p>
+<p>will select all the statements in a Model.</p>
 
 <blockquote>
   <pre>Selector selector = new SimpleSelector(null, VCARD.FN, null);
@@ -774,20 +772,20 @@ StmtIterator iter = model.listStatements(
 </blockquote>
 
 <p>Whilst functionaly they may be equivalent, the first form will list all
-the statements in the graph and test each one individually, whilst the later
+the statements in the Model and test each one individually, whilst the later
 allows indexes maintained by the implementation to improve performance.  Try
-it on a large graph and see for yourself, but make a cup of coffee first.</p>
+it on a large Model and see for yourself, but make a cup of coffee first.</p>
 <hr>
 
-<h2><a name="ch-Operations on Graphs">Operations on Graphs</a></h2>
+<h2><a name="ch-Operations on Models">Operations on Models</a></h2>
 
-<p>Jena provides three operations for manipulating graphs as a whole.  These
+<p>Jena provides three operations for manipulating Models as a whole.  These
 are the common set operations of union, intersection and difference.</p>
 
-<p>The union of two graphs is the union of the sets of statements which
-represent each graph.  This is one of the key operations that the design of
+<p>The union of two Models is the union of the sets of statements which
+represent each Model.  This is one of the key operations that the design of
 RDF supports.  It enables data from disparate data sources to be merged.
-Consider the following two graphs:</p>
+Consider the following two Models:</p>
 
 <p style="text-align: center"><img alt="figure 4" src="figures/fig4.png">and
 <img alt="figure 5" src="figures/fig5.png"></p>
@@ -805,10 +803,10 @@ href="code/Tutorial09.java">tutorial 9</a>) and see what happens.</p>
 model1.read(new InputStreamReader(in1), "");
 model2.read(new InputStreamReader(in2), "");
 
-// merge the graphs
+// merge the Models
 Model model = model1.union(model2);
 
-// print the graph as RDF/XML
+// print the Model as RDF/XML
 model.write(system.out, "RDF/XML-ABBREV");</pre>
 </blockquote>
 
@@ -833,16 +831,16 @@ model.write(system.out, "RDF/XML-ABBREV");</pre>
 </blockquote>
 
 <p>Even if you are unfamiliar with the details of the RDF/XML syntax, it
-should be reasonably clear that the graphs have merged as expected.  The
-intersection and difference of the graphs can be computed in a similar
+should be reasonably clear that the Models have merged as expected.  The
+intersection and difference of the Models can be computed in a similar
 manner.</p>
 <hr>
 
 <h2><a name="ch-Containers" id="ch-Containers">Containers</a></h2>
 
 <p>RDF defines a special kind of resources for representing collections of
-things.&nbsp; These resources are called containers.&nbsp; The members of a
-container can be either literals or resources.&nbsp; There are three kinds of
+things. These resources are called containers. The members of a
+container can be either literals or resources. There are three kinds of
 container:</p>
 <ul>
   <li>a BAG is an unordered collection</li>
@@ -851,35 +849,35 @@ container:</p>
   <li>a SEQ is an ordered collection</li>
 </ul>
 
-<p>A container is represented by a resource.&nbsp; That resource will have an
+<p>A container is represented by a resource. That resource will have an
 rdf:type property whose value should be one of rdf:Bag, rdf:Alt or rdf:Seq,
-or a subclass of one of these, depending on the type of the container.&nbsp;
+or a subclass of one of these, depending on the type of the container.
 The first member of the container is the value of the container's rdf:_1
 property; the second member of the container is the value of the container's
-rdf:_2 property and so on.&nbsp; The rdf:_nnn properties are known as the
+rdf:_2 property and so on. The rdf:_nnn properties are known as the
 ordinal properties.</p>
 
-<p>For example, the graph for a simple bag containing the vcards of the
+<p>For example, the Model for a simple bag containing the vcards of the
 Smith's might look like this:</p>
 
 <p align="center"><img border="0" src="figures/fig3.png" alt="figure 3"></p>
 
 <p align="left">Whilst the members of the bag are represented by the
 properties rdf:_1, rdf:_2 etc the ordering of the properties is not
-significant.&nbsp; We could switch the values of the rdf:_1 and rdf:_2
-properties and the resulting graph would represent the same information.</p>
+significant. We could switch the values of the rdf:_1 and rdf:_2
+properties and the resulting Model would represent the same information.</p>
 
-<p align="left">Alt's are intended to represent alternatives.&nbsp; For
-example, lets say a resource represented a software product.&nbsp; It might
-have a property to indicate where it might be obtained from.&nbsp; The value
+<p align="left">Alt's are intended to represent alternatives. For
+example, lets say a resource represented a software product. It might
+have a property to indicate where it might be obtained from. The value
 of that property might be an Alt collection containing various sites from
-which it could be downloaded.&nbsp; Alt's are unordered except that the
-rdf:_1 property has special significance.&nbsp; It represents the default
+which it could be downloaded. Alt's are unordered except that the
+rdf:_1 property has special significance. It represents the default
 choice.</p>
 
 <p align="left">Whilst containers can be handled using the basic machinery of
 resources and properties, Jena has explicit interfaces and implementation
-classes to handle them.&nbsp; It is not a good idea to have an object
+classes to handle them. It is not a good idea to have an object
 manipulating a container, and at the same time to modify the state of that
 container using the lower level methods.</p>
 
@@ -903,7 +901,7 @@ while (iter.hasNext()) {
 }</code></pre>
 </blockquote>
 
-<p>If we write out this graph, it contains something like the following:</p>
+<p>If we write out this Model, it contains something like the following:</p>
 
 <blockquote>
   <pre>&lt;rdf:RDF
@@ -972,7 +970,7 @@ original RDF/XML syntax.</p>
 <p>Further there are really two sorts of Literals.  In one, the string
 component is just that, an ordinary string.  In the other the string
 component is expected to be a well balanced fragment of XML.  When an RDF
-graph is written as RDF/XML a special construction using a
+Model is written as RDF/XML a special construction using a
 parseType='Literal' attribute is used to represent it.</p>
 
 <p>In Jena, these attributes of a literal may be set when the literal is
@@ -987,7 +985,7 @@ r.addProperty(RDFS.label, model.createLiteral("chat", "en"))
  .addProperty(RDFS.label, model.createLiteral("chat", "fr"))
  .addProperty(RDFS.label, model.createLiteral("&lt;em&gt;chat&lt;/em&gt;", true));
 
-// write out the graph
+// write out the Model
 model.write(system.out);</pre>
 </blockquote>
 
@@ -1016,7 +1014,7 @@ equal if the cannonicalization of their strings is equal.</p>
 
 <p>Jena's interfaces also support typed literals, however, at present these
 are only convenience methods.  The typed value is converted to a string and a
-string literal is stored in the graph.  For example, try (noting that for
+string literal is stored in the Model.  For example, try (noting that for
 simple literals, we can omit the <code>model.createLiteral</code>(...)
 call):</p>
 
@@ -1028,7 +1026,7 @@ Resource r = model.createResource();
 r.addProperty(RDFS.label, "11")
  .addProperty(RDFS.label, 11);
 
-// write out the graph
+// write out the Model
 model.write(system.out, "N-TRIPLE");</pre>
 </blockquote>
 
@@ -1059,7 +1057,7 @@ expected.</p>
     </tr>
     <tr>
       <td valign="top"><a name="glos-Dublin Core">Dublin Core</a></td>
-      <td valign="top">A standard for metadata about web resources.&nbsp;
+      <td valign="top">A standard for metadata about web resources.
         Further information can be found at the <a
         href="http://purl.oclc.org/dc/">Dublin Core web site</a>.</td>
     </tr>
@@ -1067,7 +1065,7 @@ expected.</p>
       <td valign="top"><a name="glos-Literal"
       id="glos-Literal">Literal</a></td>
       <td valign="top">A string of characters which can be the value of a
-        property.&nbsp;</td>
+        property.</td>
     </tr>
     <tr>
       <td valign="top"><a name="glos-Object">Object</a></td>
@@ -1082,33 +1080,33 @@ expected.</p>
     <tr>
       <td valign="top"><a name="glos-Property"
       id="glos-Property">Property</a></td>
-      <td valign="top">A property is an attribute of a resource.&nbsp; For
+      <td valign="top">A property is an attribute of a resource. For
         example DC.title is a property, as is RDF.type.</td>
     </tr>
     <tr>
       <td valign="top"><a name="glos-Resource"
       id="glos-Resource">Resource</a></td>
-      <td valign="top">Some entity.&nbsp; It could be a web resource such as
+      <td valign="top">Some entity. It could be a web resource such as
         web page, or it could be a concrete physical thing such as a tree or
-        a car.&nbsp; It could be an abstract idea such as chess or
-        football.&nbsp; Resources are named by URI's.</td>
+        a car. It could be an abstract idea such as chess or
+        football. Resources are named by URI's.</td>
     </tr>
     <tr>
       <td valign="top"><a name="glos-Statement"
         id="glos-Statement">Statement</a></td>
-      <td valign="top">An arc in an RDF graph, normally interpretted as a
+      <td valign="top">An arc in an RDF Model, normally interpretted as a
         fact.</td>
     </tr>
     <tr>
       <td valign="top"><a name="glos-Subject"
       id="glos-Subject">Subject</a></td>
       <td valign="top">The resource which is the source of an arc in an RDF
-        graph</td>
+        Model</td>
     </tr>
     <tr>
       <td valign="top"><a name="glos-Triple" id="glos-Triple">Triple</a></td>
       <td valign="top">A structure containing a subject, a predicate and an
-        object.&nbsp; Another term for a statement.</td>
+        object. Another term for a statement.</td>
     </tr>
   </tbody>
 </table>
@@ -1119,10 +1117,10 @@ expected.</p>
   <li><a name="fn-01" id="fn-01"></a>The identifier of an RDF resource can
     include a fragment identifier, e.g.
     http://hostname/rdf/tutorial/#ch-Introduction, so, strictly speaking, an
-    RDF resource is identified by a URI reference.&nbsp;</li>
+    RDF resource is identified by a URI reference.</li>
   <li><a name="fn-02" id="fn-02"></a>As well as being a string of characters,
     literals also have an optional language encoding to represent the
-    language of the string.&nbsp; For example the literal "two" might have a
+    language of the string. For example the literal "two" might have a
     language encoding of "en" for English and the literal "deux" might have a
     language encoding of "fr" for France.</li>
   <li><a name="fn-04" id="fn-04"></a>Jena's current iterators do not conform
@@ -1133,5 +1131,5 @@ expected.</p>
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
 <br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>  
-<br> $Date: 2003-06-25 13:52:36 $ $Revision: 1.7 $</small></i></body>
+<br> $Date: 2003-06-25 15:20:21 $ $Revision: 1.8 $</small></i></body>
 </html>
