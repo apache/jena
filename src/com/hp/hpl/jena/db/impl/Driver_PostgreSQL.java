@@ -61,8 +61,9 @@ public class Driver_PostgreSQL extends DriverRDB {
 		m_dbcon = dbcon;
 		
 		try {   		
-			Properties defaultSQL = SQLCache.loadSQLFile(DEFAULT_SQL_FILE, null, ID_SQL_TYPE);
-			m_sql = new SQLCache(SQL_FILE, defaultSQL, dbcon, ID_SQL_TYPE);
+			// Properties defaultSQL = SQLCache.loadSQLFile(DEFAULT_SQL_FILE, null, ID_SQL_TYPE);
+			// m_sql = new SQLCache(SQL_FILE, defaultSQL, dbcon, ID_SQL_TYPE);
+			m_sql = new SQLCache(SQL_FILE, null, dbcon, ID_SQL_TYPE);
 		} catch (Exception e) {
             e.printStackTrace( System.err );
 			logger.error("Unable to set connection for Driver:", e);
