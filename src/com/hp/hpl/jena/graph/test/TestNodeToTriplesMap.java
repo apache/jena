@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.3 2004-07-08 15:32:59 chris-dollin Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.4 2004-07-09 06:36:04 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -176,6 +176,27 @@ public class TestNodeToTriplesMap extends GraphTestBase
         addTriples( ntO, "x P a; y Q b; z R c" );
         ntO.remove( triple( "z R c" ) );
         assertEquals( tripleSet( "x P a; y Q b" ), iteratorToSet( ntO.iterator() ) );
+        }
+    
+    public void testAddBooleanResult()
+        {
+        assertEquals( true, ntS.add( x, triple( "x P y" ) ) );
+        assertEquals( false, ntS.add( x, triple( "x P y" ) ) );
+    /* */
+        assertEquals( true, ntS.add( y, triple( "y Q z" ) ) );
+        assertEquals( false, ntS.add( y, triple( "y Q z" ) ) );
+    /* */
+        assertEquals( true, ntS.add( y, triple( "y R s" ) ) );
+        assertEquals( false, ntS.add( y, triple( "y R s" ) ) );
+        }
+    
+    public void testRemoveBooleanResult()
+        {
+        assertEquals( false, ntS.remove( triple( "x P y" ) ) );
+        ntS.add( x, triple( "x P y" ) );
+        assertEquals( false, ntS.remove( triple( "x Q y" ) ) );
+        assertEquals( true, ntS.remove( triple( "x P y" ) ) );
+        assertEquals( false, ntS.remove( triple( "x P y" ) ) );
         }
     
     // TODO more here

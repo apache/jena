@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.10 2004-07-08 15:33:00 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.11 2004-07-09 06:36:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -27,20 +27,24 @@ public abstract class NodeToTriplesMap
     
     public abstract Node getIndexNode( Triple t );
     
-    public void add( Node o, Triple t ) 
+    public boolean add( Node o, Triple t ) 
         {
         Set s = (Set) map.get( o );
         if (s == null) map.put( o, s = HashUtils.createSet() );
-        if (s.add( t )) size += 1; 
+        if (s.add( t )) { size += 1; return true; } else return false; 
         }
 
-    public void remove( Node o, Triple t ) 
+    public boolean remove( Node o, Triple t ) 
         {
         Set s = (Set) map.get( o );
-        if (s != null) 
+        if (s == null)
+            return false;
+        else
             {
-            if (s.remove( t )) size -= 1;
+            boolean result = s.remove( t );
+            if (result) size -= 1;
             if (s.isEmpty()) map.put( o, null );
+            return result;
         	}
         }
 
@@ -112,10 +116,8 @@ public abstract class NodeToTriplesMap
     /**
      * @param t
     */
-    public void remove( Triple t )
-        {
-        remove( getIndexNode( t ), t );
-        }
+    public boolean remove( Triple t )
+        { return remove( getIndexNode( t ), t ); }
     }
 
 /*
