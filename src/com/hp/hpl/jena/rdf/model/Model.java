@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.48 2003-11-28 16:17:25 andy_seaborne Exp $
+  $Id: Model.java,v 1.49 2003-12-08 11:55:58 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.48 $Date: 2003/11/13 16:36:32 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.49 $Date: 2003/11/28 16:17:25 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -400,7 +400,7 @@ public interface Model
 	  convert.
 	  A base URI of "" may permit relative URIs to be used in the
 	   model.
-	 * @param lang the langauge of the serialization <code>null<code>
+	 * @param lang the langauge of the serialization <code>null</code>
 	 * selects the default
 	 * @param in the source of the input serialization
 	 */
@@ -459,7 +459,7 @@ public interface Model
 	  A base URI of "" may permit relative URIs to be used in the
 	   model.
 	   
-	 * @param lang the langauge of the serialization <code>null<code>
+	 * @param lang the langauge of the serialization <code>null</code>
 	 * selects the default
 	 * @param reader the source of the input serialization
 	 */
@@ -958,5 +958,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.48 2003-11-28 16:17:25 andy_seaborne Exp $
+ * $Id: Model.java,v 1.49 2003-12-08 11:55:58 ian_dickinson Exp $
  */
