@@ -22,7 +22,7 @@ that may be used to control the output.
 Schemagen is typeically invoked from the command line or from a built script (such as Ant).
 Synopsis of the command:<br />
 <code><pre>
-java jena.schemagen -i &lt;input&gt; [-b &lt;baseURI&gt;] [-o &lt;output file&gt;] [-c &lt;config uri&gt;] [-e &lt;encoding&gt;] ...
+java jena.schemagen -i &lt;input&gt; [-b &lt;baseURI&gt;] [-o &lt;output file&gt;] [-c &lt;config uri&gt;] [-s &lt;syntax&gt;] ...
 </pre></code>
 Schemagen is highly configurable, either with command line options or by RDF information read from a configuration file.
 <b>Many</b> other options are defined, and these are described in detail below.  Note that the <code>CLASSPATH</code> environment variable must
@@ -41,7 +41,6 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>--classTemplate &lt;string&gt;</td> <td>sgen:classTemplate</td> <td>Template for writing out declarations of class resources.</td> </tr>
   <tr> <td>--daml</td> <td>sgen:daml</td> <td>Specify that the language of the source ontology is DAML+OIL.</td> </tr>
   <tr> <td>--declarations &lt;string&gt;</td> <td>sgen:declarations</td> <td>Additional declarations to add at the top of the class.</td> </tr>
-  <tr> <td>-e &lt;string&gt;</td> <td>sgen:encoding</td> <td>The encoding of the input file (e.g. RDF/XML, N3). Defaults to RDF/XML.</td> </tr>
   <tr> <td>--footer &lt;string&gt;</td> <td>sgen:footer</td> <td>Template for standard text to add to the end of the file.</td> </tr>
   <tr> <td>--header &lt;string&gt;</td> <td>sgen:header</td> <td>Template for the file header, including the class comment.</td> </tr>
   <tr> <td>-i &lt;filename&gt;<br>-i &lt;url&gt;</td> <td>sgen:input</td> <td>Specify the input document to load</td> </tr>
@@ -62,6 +61,7 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>--propSection &lt;string&gt;</td> <td>sgen:propSection</td> <td>Section declaration comment for properties section.</td> </tr>
   <tr> <td>--propTemplate &lt;string&gt;</td> <td>sgen:propTemplate</td> <td>Template for writing out declarations of property resources.</td> </tr>
   <tr> <td>-r &lt;uri&gt;</td> <td>&nbsp;</td> <td>Specify the uri of the root node in the RDF configuration model.</td> </tr>
+  <tr> <td>-s &lt;string&gt;</td> <td>sgen:syntax</td> <td>The surface syntax of the input file (e.g. RDF/XML, N3). Defaults to RDF/XML.</td> </tr>
   <tr> <td>--uppercase</td> <td>sgen:uppercase</td> <td>Option for mapping constant names to uppercase (like Java constants). Default is to leave the case of names unchanged.</td> </tr>
 </table>
 
@@ -102,7 +102,7 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen-HOWTO.html,v 1.1 2003-05-02 09:53:42 ian_dickinson Exp $ */
+/* CVS $Id: schemagen-HOWTO.html,v 1.2 2003-05-04 16:16:45 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -139,7 +139,7 @@ public class Deputy {
 <p>We noted earlier that schemagen is highly configurable. One additional argument generates a vocabulary file that uses Jena's ontology API, rather than the RDF model API. We change <code>rdfs:Class</code> to <code>owl:Class</code>, and invoke<br />
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg# --ontology</code><br />to get:</p>
 <p><code><pre>
-/* CVS $Id: schemagen-HOWTO.html,v 1.1 2003-05-02 09:53:42 ian_dickinson Exp $ */
+/* CVS $Id: schemagen-HOWTO.html,v 1.2 2003-05-04 16:16:45 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -239,7 +239,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen-HOWTO.html,v 1.1 2003-05-02 09:53:42 ian_dickinson Exp $
+	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen-HOWTO.html,v 1.2 2003-05-04 16:16:45 ian_dickinson Exp $
 --&gt;
 
 &lt;sgen:Config&gt;
@@ -271,10 +271,10 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen-HOWTO.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.1 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.2 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2003-05-02 09:53:42 $
+ * Last modified on &nbsp;&nbsp;$Date: 2003-05-04 16:16:45 $
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
@@ -340,6 +340,6 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
 &lt;/rdf:RDF&gt;
 </pre></code></p>
 <hr />
-<p><small>CVS $Id: schemagen-HOWTO.html,v 1.1 2003-05-02 09:53:42 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: schemagen-HOWTO.html,v 1.2 2003-05-04 16:16:45 ian_dickinson Exp $</small></p>
 </body>
 </html>
