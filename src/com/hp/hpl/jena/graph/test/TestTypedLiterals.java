@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.19 2003-05-28 11:13:51 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.20 2003-06-19 16:44:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -29,7 +30,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-05-28 11:13:51 $
+ * @version $Revision: 1.20 $ on $Date: 2003-06-19 16:44:35 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -366,7 +367,7 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("dateTime value", 12, xdt.getHours());
         assertEquals("dateTime value", 56, xdt.getMinutes());
         assertEquals("dateTime value", 32, xdt.getFullSeconds());
-        assertEquals("serialization", "1999-5-31T12:56:32.0Z", l1.getValue().toString());
+        assertEquals("serialization", "1999-05-31T12:56:32Z", l1.getValue().toString());
         Calendar cal = xdt.asCalendar();
         Calendar testCal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         testCal.set(1999, 5, 31, 12, 56, 32);
@@ -550,6 +551,21 @@ public class TestTypedLiterals extends TestCase {
        assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue("10"));
     }
     
+    /**
+     * Test a user error report concerning date/time literals
+     */
+    public void testDateTimeBug() {
+        String XSDDateURI = XSD.date.getURI(); 
+        TypeMapper typeMapper=TypeMapper.getInstance(); 
+        RDFDatatype dt = typeMapper.getSafeTypeByName(XSDDateURI); 
+        Object obj = dt.parse("2003-05-21"); 
+        Literal literal = m.createTypedLiteral(obj, "", dt);        String serialization = literal.toString();     
+        Object value2 = dt.parse(obj.toString());
+        assertEquals(obj, value2);
+        
+        RDFDatatype dateType = XSDDatatype.XSDdate;
+        Literal l = m.createTypedLiteral("2003-05-21", "", dateType);
+    }
       
     /**
      * Test that two objects are not semantically the same

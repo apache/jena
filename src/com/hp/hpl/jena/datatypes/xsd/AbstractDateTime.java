@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.3 2003-04-15 20:54:05 jeremy_carroll Exp $
+ * $Id: AbstractDateTime.java,v 1.4 2003-06-19 16:45:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -21,7 +21,7 @@ import org.apache.xerces.impl.dv.xs.AbstractDateTimeDV;
  * conventient access to the date values.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 20:54:05 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-19 16:45:02 $
  */
 public class AbstractDateTime {
 
@@ -58,6 +58,7 @@ public class AbstractDateTime {
      */
     public AbstractDateTime(Object value, XSSimpleType dtype) {
         data = (int[]) value;
+        if (data[UTC] == 0) data[UTC]='Z';
         extractFractionalSeconds();
         typeDecl = (XSSimpleTypeDecl)dtype;
     }
@@ -77,7 +78,8 @@ public class AbstractDateTime {
      * Serialization
      */
     public String toString() {
-        return typeDecl.getStringValue(data);
+        String lex = typeDecl.getStringValue(data);
+        return lex;
     }
     
     /**

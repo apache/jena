@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTimeType.java,v 1.4 2003-05-28 11:13:46 chris-dollin Exp $
+ * $Id: XSDDateTimeType.java,v 1.5 2003-06-19 16:45:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * wrap the return value in a more convenient accessor type. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:46 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-19 16:45:02 $
  */
 public class XSDDateTimeType extends XSDDatatype {
 
@@ -36,6 +36,14 @@ public class XSDDateTimeType extends XSDDatatype {
      */
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         return new XSDDateTime(super.parse(lexicalForm), typeDeclaration);
+    }
+   
+    /**
+     * Convert a value of this datatype out
+     * to lexical form.
+     */
+    public String unparse(Object value) {
+        return value.toString();
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.4 2003-04-15 21:02:34 jeremy_carroll Exp $
+ * $Id: XSDDateTime.java,v 1.5 2003-06-19 16:45:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * <p>TODO: revist and consider have separate types for each.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:02:34 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-19 16:45:02 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -155,6 +155,45 @@ public class XSDDateTime extends AbstractDateTime {
         return ((data[HOUR]) * 60l + data[MINUTE]) * 60l + getSeconds();
     }
     
+    /**
+     * Return legal serialized form.
+     */
+    public String toString() {
+        StringBuffer buff = new StringBuffer();
+        if ((mask & YEAR_MASK) != 0) {
+            buff.append(data[CY]);
+        } else {
+            buff.append("-");
+        }
+        if ((mask & (MONTH_MASK | DAY_MASK)) != 0) {
+            buff.append("-");
+            if ((mask & MONTH_MASK) != 0) {
+                if (data[MONTH] <= 9) buff.append("0");
+                buff.append(data[MONTH]);
+            } else {
+                buff.append("-");
+            }
+            if ((mask & DAY_MASK) != 0) {
+                buff.append("-");
+                if (data[DAY] <= 9) buff.append("0");
+                buff.append(data[DAY]);
+            }
+        }
+        if ((mask & TIME_MASK) != 0 ) {
+            buff.append("T");
+            buff.append(data[HOUR]);
+            buff.append(":");
+            buff.append(data[MINUTE]);
+            buff.append(":");
+            buff.append(data[SECOND]);
+            if (data[MS] != 0) {
+                buff.append(".");
+                buff.append(data[MS]);
+            }
+            buff.append("Z");
+        }
+        return buff.toString();
+    }
     
 }
 
