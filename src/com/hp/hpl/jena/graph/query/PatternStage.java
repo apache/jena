@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.10 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: PatternStage.java,v 1.11 2003-09-25 13:26:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -21,7 +21,7 @@ public class PatternStage extends Stage
     protected Graph graph;
     protected Pattern [] compiled;
     
-    public PatternStage( Graph graph, Mapping map, Triple [] triples )
+    public PatternStage( Graph graph, Mapping map, Graph constraints, Triple [] triples )
         {
         this.graph = graph;
         this.compiled = compile( map, triples );

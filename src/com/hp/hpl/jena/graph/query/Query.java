@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.24 2003-09-12 12:13:30 chris-dollin Exp $
+  $Id: Query.java,v 1.25 2003-09-25 13:26:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -61,6 +61,8 @@ public class Query
         The built-in constraint operator not-equals.
     */
     public static final Node NE = Node.create( "&ne" );
+    
+    public static final Node MATCHES = Node.create( "&matches" );
         
     /**
         Initialiser for Query; makes an empty Query [no matches, no constraints]

@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.27 2003-09-25 10:35:28 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.28 2003-09-25 13:27:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2003-09-25 10:35:28 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2003-09-25 13:27:01 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -507,11 +507,19 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		} while (charcode != 0);
 		sb.append( ESCAPE );
 	}
-
-	
+    
+    /**
+        Set the writer property propName to the value obtained from propValue. Return an
+        Object representation of the original value.
+         
+     	@see com.hp.hpl.jena.rdf.model.RDFWriter#setProperty(java.lang.String, java.lang.Object)
+     */
 	final synchronized public Object setProperty( String propName, Object propValue ) {
 		if (propName.equalsIgnoreCase("showXmlDeclaration")) {
 			return setShowXmlDeclaration(propValue);
+        } else if (propName.equalsIgnoreCase( "minimalPrefixes" )) {
+            try { return new Boolean( !writingAllModelPrefixNamespaces ); }
+            finally { writingAllModelPrefixNamespaces = !getBoolean( propValue ); }
 		} else if (propName.equalsIgnoreCase("xmlbase")) {
 			String result = xmlBase;
 			xmlBase = (String) propValue;
@@ -522,13 +530,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			return setWidth(propValue);
 		} else if (propName.equalsIgnoreCase("longid")) {
 			Boolean result = new Boolean(longId);
-			longId = toboolean(propValue);
+			longId = getBoolean(propValue);
 			return result;
 		} else if (propName.equalsIgnoreCase("attributeQuoteChar")) {
 			return setAttributeQuoteChar(propValue);
 		} else if (propName.equalsIgnoreCase( "allowBadURIs" )) {
 			Boolean result = new Boolean( !demandGoodURIs );
-            demandGoodURIs = !toboolean(propValue);
+            demandGoodURIs = !getBoolean(propValue);
 			return result;
 		} else if (propName.equalsIgnoreCase("prettyTypes")) {
 			return setTypes((Resource[]) propValue);
@@ -607,7 +615,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		return oldValue;
 	}
 
-	static private boolean toboolean(Object o) {
+    /**
+        Answer the boolean value corresponding to o, which must either be a Boolean,
+        or a String parsable as a Boolean.
+    */
+	static private boolean getBoolean( Object o ) {
 		if (o instanceof Boolean)
 			return ((Boolean) o).booleanValue();
 		else

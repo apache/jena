@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.13 2003-09-17 12:14:05 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.14 2003-09-25 13:27:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -421,9 +421,34 @@ public abstract class AbstractTestQuery extends GraphTestBase
         q.addMatch( X, node("pinged"), Y );
         q.addConstraint( X, Query.NE, Y );
         Set bindings = iteratorToSet( q.executeBindings( g, new Node [] {X} ).mapWith(getFirst) );
-        assertEquals( "", setFrom( new Node[] {node("bill"), node("ben")} ), bindings );
+        assertEquals( setFrom( new Node[] {node("bill"), node("ben")} ), bindings );
         }
        
+   /**
+        Test that the MATCHES constraint works.
+    */
+   public void testMatchConstraint()
+        {
+        Map1 getFirst = new Map1(){ public Object map1(Object x) { return ((List) x).get(0); }};
+        Set expected = new HashSet();
+        expected.add( node( "beta" ) );
+        Query q = new Query()  
+            .addMatch( X, node( "ppp" ), Y )
+            .addConstraint( Y, Query.MATCHES, node( "'ell'" ) );
+            ;
+        Graph g = getGraphWith( "alpha ppp beta; beta ppp 'hello'; gamma ppp 'goodbye'" );
+        Set bindings = iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ); 
+        assertEquals( expected, bindings );
+        }
+        
+    /**
+        Test that a PatternStage extracts appropriate parts of a constraint set.
+    */
+    public void testExtractConstraint()
+        {
+            
+        }
+        
     public void testStringResults()
         {
         Graph g = getGraphWith( "ding dong dilly" );

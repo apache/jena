@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryHandler.java,v 1.9 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: QueryHandler.java,v 1.10 2003-09-25 13:26:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -30,7 +30,7 @@ public interface QueryHandler
         produce a single Stage which will probe the underlying graph for triples
         matching p and inject all the resulting bindings into the processing stream
         (see Stage for details)
-    <br>
+    <p>
         _map_ is the variable binding map to use and update. _constraints_ is
         the current constraint graph: if this Stage can absorb some of the constraints, 
         it may do so, remove them from the graph.
