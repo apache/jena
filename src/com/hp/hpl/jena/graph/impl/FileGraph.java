@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.5 2003-05-13 19:18:56 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.6 2003-05-15 12:48:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -114,7 +114,8 @@ public class FileGraph extends GraphMem
             FileOutputStream out = new FileOutputStream( intermediate );
             model.write( out, lang ); 
             out.close();
-            intermediate.renameTo( name );
+            if (intermediate.renameTo( name ) == false)
+                throw new JenaException( "rename to " + intermediate + " failed" );
             super.close();
             }
         catch (IOException e) 
