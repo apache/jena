@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.100 2004-12-08 14:11:15 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.101 2005-02-17 14:31:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -52,14 +52,9 @@ public class ModelCom
     
     public ModelCom( Graph base, Personality personality )
         { super( base, personality ); 
-        addDefaultPrefixMapping(); }
+        withDefaultMappings( defaultPrefixMapping ); }
     
     private static PrefixMapping defaultPrefixMapping = PrefixMapping.Factory.create();
-    
-    protected void addDefaultPrefixMapping()
-        { Map temp = defaultPrefixMapping.getNsPrefixMap();
-        temp.putAll( this.getNsPrefixMap() );
-        this.setNsPrefixes( temp ); }
     
     public static PrefixMapping getDefaultModelPrefixes()
         { return defaultPrefixMapping; }
