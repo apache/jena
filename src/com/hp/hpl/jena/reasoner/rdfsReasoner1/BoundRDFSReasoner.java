@@ -137,12 +137,15 @@ public class BoundRDFSReasoner implements Reasoner {
      * @param data the raw data graph being bound to the reasoner
      * @param sPropertyCache a cache of subPropertyOf relations from the box
      * @param sClassCache a cache of subClassOf relations from the tbox
+     * @param scanProperties set to true to force an eager scan of statements looking for 
+     *                        container properties
      */
     public BoundRDFSReasoner( Finder tbox, Graph data,
                                TransitiveGraphCache sPropertyCache,
-                               TransitiveGraphCache sClassCache) {
+                               TransitiveGraphCache sClassCache, boolean scanProperties) {
         this.subPropertyCache = sPropertyCache.deepCopy();
         this.subClassCache = sClassCache;
+        this.scanProperties = scanProperties;
         
         // Combine a place to hold axioms and local deductions and the tbox into single cache
         if (tbox == null) {
@@ -265,7 +268,7 @@ public class BoundRDFSReasoner implements Reasoner {
      * @param tbox schema containing the property and class declarations
      */
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
-        throw new ReasonerException("Attempt to bind multiple rulesets - disallowed for now");
+        throw new ReasonerException("Attempt to bind multiple schemas - disallowed for now");
     }
      
     /**

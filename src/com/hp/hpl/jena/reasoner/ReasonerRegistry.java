@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.1 2003-01-30 18:30:43 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.2 2003-02-01 13:35:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.mem.ModelMem;
@@ -31,7 +32,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:30:43 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-01 13:35:01 $
  */
 public class ReasonerRegistry {
 
@@ -49,6 +50,30 @@ public class ReasonerRegistry {
     
     /** The RDF class to which all Reasoners belong */
     public static Resource ReasonerClass = new ResourceImpl(JenaReasonerNS + "ReasonerClass");    
+    
+    /** Reasoner description property: name of the reasoner */
+    public static Property nameP;
+    
+    /** Reasoner description property: text description of the reasoner */
+    public static Property descriptionP;
+    
+    /** Reasoner description property: version of the reasoner */
+    public static Property versionP;
+    
+    /** Reasoner description property: a schema property supported by the reasoner */
+    public static Property supportsP;
+    
+    /** Reasoner description property: a configuration property supported by the reasoner */
+    public static Property configurationP;
+    
+    // Static initializer for properties
+    static {
+        nameP = new PropertyImpl(JenaReasonerNS, "name");
+        descriptionP = new PropertyImpl(JenaReasonerNS, "description");
+        versionP = new PropertyImpl(JenaReasonerNS, "version");
+        supportsP = new PropertyImpl(JenaReasonerNS, "supports");
+        configurationP = new PropertyImpl(JenaReasonerNS, "configurationProperty");
+    }
     
     /**
      * Constructor is hidden - go via theRegistry
@@ -77,10 +102,8 @@ public class ReasonerRegistry {
      */
     public void register(ReasonerFactory factory) {
         reasonerFactories.put(factory.getURI(), factory);
-        Graph description = factory.getCapabilities();
-        for (Iterator i = description.find(null, null, null); i.hasNext(); ) {
-            allDescriptions.getGraph().add((Triple)i.next());
-        }
+        Model description = factory.getCapabilities();
+        allDescriptions.add(description);
         allDescriptions.createResource(factory.getURI())
                         .addProperty(RDF.type, ReasonerClass);
     }
@@ -123,6 +146,15 @@ public class ReasonerRegistry {
     }
     
     /**
+     * Return the factory for the given reasoner.
+     * @param the URI of the reasoner
+     * @return the ReasonerFactory instance for this reasoner
+     */
+    public ReasonerFactory getFactory(String uri) {
+        return (ReasonerFactory)reasonerFactories.get(uri);
+    }
+    
+    /**
      * Create and return a new instance of the reasoner identified by
      * the given uri.
      * <p>TODO: It might be useful to all pass the descriptive information to
@@ -136,9 +168,9 @@ public class ReasonerRegistry {
      * some problem during instantiation
      */
     public Reasoner create(String uri, Model configuration) throws ReasonerException {
-        ReasonerFactory factory = (ReasonerFactory)reasonerFactories.get(uri);
+        ReasonerFactory factory = getFactory(uri);
         if (factory != null) {
-            return factory.create(configuration.getGraph());
+            return factory.create(configuration);
         } else {
             throw new ReasonerException("Attempted to instantiate an unknown reasoner: " + uri);
         }

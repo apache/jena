@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.2 2003-01-31 08:49:35 der Exp $
+ * $Id: ReasonerTester.java,v 1.3 2003-02-01 13:35:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -43,7 +43,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:49:35 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-01 13:35:01 $
  */
 public class ReasonerTester {
 
@@ -172,15 +172,16 @@ public class ReasonerTester {
      * Run all the tests in the manifest
      * @param reasonerF the factory for the reasoner to be tested
      * @param testcase the JUnit test case which is requesting this test
+     * @param configuration optional configuration information
      * @return true if all the tests pass
      * @throws IOException if one of the test files can't be found
      * @throws RDFException if the test can't be found or fails internally
      */
-    public boolean runTests(ReasonerFactory reasonerF, TestCase testcase) throws IOException {
+    public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Model configuration) throws IOException {
         ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, testClass);
         while (tests.hasNext()) {
             String test = tests.next().toString();
-            if (!runTest(test, reasonerF, testcase)) return false;
+            if (!runTest(test, reasonerF, testcase, configuration)) return false;
         }
         return true;
     }
@@ -190,11 +191,12 @@ public class ReasonerTester {
      * @param uri the uri of the test, as defined in the manifest file
      * @param reasonerF the factory for the reasoner to be tested
      * @param testcase the JUnit test case which is requesting this test
+     * @param configuration optional configuration information
      * @return true if the test passes
      * @throws IOException if one of the test files can't be found
      * @throws RDFException if the test can't be found or fails internally
      */
-    public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase) throws IOException {
+    public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Model configuration) throws IOException {
         // Find the specification for the named test
         Resource test = testManifest.getResource(uri);
         if (!test.hasProperty(RDF.type, testClass)) {
@@ -207,7 +209,7 @@ public class ReasonerTester {
         // Construct the inferred graph
         Graph tbox = loadTestFile(test, tboxP);
         Graph data = loadTestFile(test, dataP);
-        Reasoner reasoner = reasonerF.create(null);
+        Reasoner reasoner = reasonerF.create(configuration);
         InfGraph graph = reasoner.bindSchema(tbox).bind(data);
         
         // Run each query triple and accumulate the results
@@ -249,7 +251,9 @@ public class ReasonerTester {
         }
         */
         // ... end of debugging hack
-        testcase.assertTrue(description, correct);
+        if (testcase != null) {
+            testcase.assertTrue(description, correct);
+        }
         return correct;
     }
     

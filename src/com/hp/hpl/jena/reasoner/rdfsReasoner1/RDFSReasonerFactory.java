@@ -5,24 +5,34 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.1 2003-01-30 18:31:10 der Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.2 2003-02-01 13:35:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
-import com.hp.hpl.jena.reasoner.ReasonerFactory;
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner;
+import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
+import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * Factory class for creating blank instances of the RDFS reasoner.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:10 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-01 13:35:01 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
     /** Single global instance of this factory */
     private static ReasonerFactory theInstance = new RDFSReasonerFactory();
+    
+    /** Static URI for this reasoner type */
+    public static final String URI = "http://www.hpl.hp.com/semweb/2003/RDFSReasoner1";
+    
+    /** Property used to configure the scan behaviour of the reasoner.
+     *  Set to "true" to enable scanning of triples looking for rdf:_1 assertions. */
+    public static final Property scanProperties = new PropertyImpl(URI+"#", "scanProperties");
     
     /**
      * Return the single global instance of this factory
@@ -36,26 +46,52 @@ public class RDFSReasonerFactory implements ReasonerFactory {
      * @param configuration a set of arbitrary configuration information to be 
      * passed the reasoner encoded within an RDF graph.
      */
-    public Reasoner create(Graph configuration) {
-        return new RDFSReasoner();
+    public Reasoner create(Model configuration) {
+        return new RDFSReasoner(configuration);
     }
    
     /**
      * Return a description of the capabilities of this reasoner encoded in
-     * RDF. For this simple reasoner we have no useful description yet but
-     * could add this later for completeness.
+     * RDF. This method is normally called by the ReasonerRegistry which caches
+     * the resulting information so dynamically creating here is not really an overhead.
      */
-    public Graph getCapabilities() {
-        return null;
+    public Model getCapabilities() {
+        Model capabilities = new ModelMem();
+        Resource base = capabilities.createResource(getURI());
+        base.addProperty(ReasonerRegistry.nameP, "RDFS Reasoner 1")
+            .addProperty(ReasonerRegistry.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
+                                        + "Eager caching of schema information, back chaining for most entailments\n"
+                                        + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
+            .addProperty(ReasonerRegistry.configurationP, scanProperties)
+            .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
+            .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
+            .addProperty(ReasonerRegistry.supportsP, RDFS.member)
+            .addProperty(ReasonerRegistry.supportsP, RDFS.range)
+            .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
+            .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubClassOf)
+            .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubPropertyOf)
+            .addProperty(ReasonerRegistry.versionP, "0.1");
+        return capabilities;
     }
     
     /**
      * Return the URI labelling this type of reasoner
      */
     public String getURI() {
-        return "http://www.hpl.hp.com/semweb/2003/RDFSReasoner1";
+        return URI;
     }
     
+    /**
+     * Temporary testing hack
+     */
+    public static void main(String[] args) {
+        Resource rdfsDescr = ReasonerRegistry.theRegistry().getDescription(URI);
+        System.out.println("Reasoner: " + rdfsDescr);
+        for (StmtIterator i = rdfsDescr.listProperties(); i.hasNext(); ) {
+            Statement s = i.next();
+            System.out.println(s.getPredicate().getLocalName() + " = " + s.getObject());
+        }
+    }
 }
 
 /*

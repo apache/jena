@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.2 2003-01-31 08:49:35 der Exp $
+ * $Id: RDFSReasoner.java,v 1.3 2003-02-01 13:35:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -29,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:49:35 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-01 13:35:01 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -38,16 +39,35 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The range property */
     public static Node rangeP;
     
+    /** Note if the reasoner is configured to scan for member properties */
+    protected boolean scanProperties = true;
+    
     // Static initializer
     static {
         domainP = RDFS.domain.getNode();
         rangeP = RDFS.range.getNode();
     }
     
-    
     /** Constructor */
     public RDFSReasoner() {
         super();
+    }
+     
+    /** 
+     * Constructor 
+     * @param configuration set of configuration information, this should be an RDF Graph
+     * containing a resource corresponding this this reasoner with attached properties. The
+     * only meaningful configuration property at present is scanProperties.
+     */
+    public RDFSReasoner(Model configuration) {
+        super();
+        if (configuration != null) {
+            Resource base = configuration.getResource(RDFSReasonerFactory.URI);
+            StmtIterator i = base.listProperties(RDFSReasonerFactory.scanProperties);
+            if (i.hasNext()) {
+                scanProperties = i.next().getObject().toString().equalsIgnoreCase("true");
+            }
+        }
     }
      
     /**
@@ -59,7 +79,7 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
      * subClassOf is discovered.
      * @param tbox schema containing the property and class declarations
      */
-    public Reasoner bindSchema(Graph tbox) throws ReasonerException {
+    public Reasoner bindRuleset(Graph tbox) throws ReasonerException {
         super.bindSchema(tbox);
         subPropertyCache.setCaching(true);
         
@@ -81,7 +101,8 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        Reasoner bReasoner = new BoundRDFSReasoner(tbox, data, subPropertyCache, subClassCache);
+        Reasoner bReasoner = new BoundRDFSReasoner(tbox, data, subPropertyCache, 
+                                                    subClassCache, scanProperties);
         return new BaseInfGraph(data, bReasoner);
     }   
     

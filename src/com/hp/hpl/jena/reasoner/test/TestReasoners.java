@@ -5,13 +5,15 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.1 2003-01-30 18:31:11 der Exp $
+ * $Id: TestReasoners.java,v 1.2 2003-02-01 13:35:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.mem.ModelMem;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -21,7 +23,7 @@ import java.io.IOException;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:11 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-01 13:35:01 $
  */
 public class TestReasoners extends TestCase {
     
@@ -50,7 +52,7 @@ public class TestReasoners extends TestCase {
     public void testTransitiveReasoner() throws IOException {
         ReasonerTester tester = new ReasonerTester("transitive/manifest.rdf");
         ReasonerFactory rf = TransitiveReasonerFactory.theInstance();
-        assertTrue("transitive reasoner tests", tester.runTests(rf, this));
+        assertTrue("transitive reasoner tests", tester.runTests(rf, this, null));
     }
     // */
 
@@ -61,7 +63,13 @@ public class TestReasoners extends TestCase {
     public void testRDFSReasoner() throws IOException {
         ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
-        assertTrue("RDFS reasoner tests", tester.runTests(rf, this));
+        assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
+        // Test effect of switching of property scan - should break container property test case
+        Model configuration = new ModelMem();
+        configuration.createResource(RDFSReasonerFactory.URI)
+                     .addProperty(RDFSReasonerFactory.scanProperties, "false");
+        assertTrue("RDFS reasoner tests", 
+                    !tester.runTest(NAMESPACE + "rdfs/test17", rf, null, configuration));
     }
     // */
     
@@ -73,7 +81,7 @@ public class TestReasoners extends TestCase {
         ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
         assertTrue("RDFS reasoner tests", 
-                    tester.runTest(NAMESPACE + "rdfs/test19", rf, this));
+                    tester.runTest(NAMESPACE + "rdfs/test17", rf, this, null));
     }
     */
 
