@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.52 $
+ * Revision           $Revision: 1.53 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-09-15 13:17:15 $
+ * Last modified on   $Date: 2004-09-15 13:22:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -1269,7 +1269,7 @@ public class TestBugReports
         //System.out.println( "level = " + level );
         for (Iterator i = problems.iterator(); i.hasNext(); ) {
             SyntaxProblem sp = (SyntaxProblem) i.next();
-            System.out.println( "problem = " + sp.longDescription() );
+            //System.out.println( "problem = " + sp.longDescription() );
         }
     }
     
