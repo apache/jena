@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-01 11:48:29 $
+ * Last modified on   $Date: 2004-03-01 11:51:08 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -131,7 +131,7 @@ public class TestBugReports extends TestCase {
         assertEquals( 3, count );
     }
     
-    /** Bug report by Dana Nadah - cannot remove import */
+    /** Bug report by Danah Nada - cannot remove import */
     public void test_dn_02() {
         OntModel mymod = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
         mymod.read( "file:testing/ontology/testImport3/a.owl" );
