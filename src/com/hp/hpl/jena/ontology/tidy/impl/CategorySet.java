@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.6 2003-12-05 08:00:24 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.7 2003-12-05 08:15:14 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -25,130 +25,11 @@ public class CategorySet implements Comparable, Serializable, Constants {
 		Grammar.notype,
 		Grammar.badRestriction
     };
-	/**
-	 * 
-	 * @return The ids of all CategorySet which might be cyclic. 
-	 */
-	static final Q cyclicSets = new Q() {
-	   boolean test(int a[]) {
-	   	  return intersect(cycles,a);
-	   }
-	};
 
-	/**
-	 * 
-	 * @return The ids of all CategorySet which are of illegal 
-	 * untyped nodes  in the graph. 
-	 */
-	static final Q untypedSets= new Q() {
-		boolean test(int all[]){
-			return intersect(untyped,all);
-		}
-	};
-	/**
-	 * 
-	 * @return The ids of all CategorySet which may be the subject
-	 * or object of disjointWith. 
-	 */
-//	static final Q disjointWithSets= new Q() {
-//		boolean test(int all[]){
-//			return all[0] != Grammar.orphan &&
-//			  intersect(Grammar.disjointWithX,all);
-//		}
-//	};
-
-    static final private int orphanTypes[] = new int[]{
+	static final private int orphanTypes[] = new int[]{
    // 	Grammar.owlOntologyProperty,
-    	Grammar.rdfList
-    };
-	/**
-	 * 
-	 * @return The ids of all CategorySet which are of illegal orphans
-	 *  in the graph. 
-	 */
-	static final Q orphanSets = new Q() {
-		boolean test(int all[]){
-			return all[0]==Grammar.orphan
-			  && intersect(orphanTypes,all);
-		}
-	};
-	/**
-		 * 
-		 * @return The ids of all CategorySet which are DL only orphans
-		 *  in the graph. 
-		 */
-	static final Q dlOrphanSets = new Q() {
-	boolean test(int all[]){
-		return all[0]==Grammar.orphan
-		  && ( intersect(Grammar.restrictionsX,all)
-		  || intersect(Grammar.descriptionsX,all) );
-	} 
-};	
-
-//   static final Q descSets = new Q() {
-//	boolean test(int all[]){
-//		return ( intersect(Grammar.restrictionsX,all)
-//		  || intersect(Grammar.descriptionsX,all) );
-//	} 
-//};
-	/**
-	 * The ids of all orphaned unnamed individuals, which are
-	 * not known not to be cyclic.
-	 * In fact, these are not cyclic.
-	 * @return
-	 */
-//	static final Q cyclicOrphanSets= new Q() {
-//	boolean test(int all[]){
-//		return all[0]==Grammar.orphan
-//		  && member(Grammar.unnamedIndividual,all)
-//		  && intersect(cycles,all);
-//	} 
-//};
-
-//  static final Q userTypedLiterals = new Q() {
-//  	int[] asInt() {
-//  		return new int[]{Grammar.userTypedLiteral
-//  		};
-//  	}
-//  	boolean test(int all[]) {
-//  		return false;
-//  	}
-//  };
-
-	/**
-	 * @return the ids of all categories for which the node must be structured
-	 * with one member.
-	 */
-	static final Q structuredOne = new Q() {
-	boolean test(int all[]){
-		return member(Grammar.allDifferent,all)
-          || member(Grammar.unnamedDataRange,all)
-		  || intersect(Grammar.descriptionsX,all);
-	} 
-};
-	/**
-		 * @return the ids of all categories for which the node must be structured
-		 * with two members.
-		 */
-	static final Q structuredTwo= new Q() {
-	boolean test(int all[]){
-		return  intersect(Grammar.listsX,all)
-		  || intersect(Grammar.restrictionsX,all);
-	} 
-};
-   static private Q various[] = new Q[]{
-   	  cyclicSets,
-   	  untypedSets,
-   	  structuredOne,
-   	  structuredTwo,
-   //	  disjointWithSets
-   };
-   static private Q orphaned[] = new Q[]{
-   	orphanSets,
-   	dlOrphanSets,
-   //	cyclicOrphanSets
-   };
-	
+		Grammar.rdfList
+	};	
 	
 	static private final SortedSet sorted = new TreeSet();
 	public static final Vector unsorted = new Vector();
@@ -217,11 +98,7 @@ public class CategorySet implements Comparable, Serializable, Constants {
 		int flag = 0;
 		unsorted.add(this);
 		sorted.add(this);
-		for (int i=0;i<various.length;i++)
-		   various[i].testAdd(id,cats);
-		if ( cats[0]==Grammar.orphan )
-		for (int i=0;i<orphaned.length;i++)
-		   orphaned[i].testAdd(id,cats);
+		
 		if ( Q.intersect(cycles,cats) )
 		   flag |= CYCLIC;
 		if (Q.intersect(untyped,cats) )
