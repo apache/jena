@@ -1,14 +1,12 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Predicate.java,v 1.1.1.1 2002-12-19 19:13:56 bwm Exp $
+  $Id: Predicate.java,v 1.2 2003-08-04 14:03:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-	@author kers
-<br>
     A query Predicate is something that can evaluate to a boolean
     in the context of a Domain (which supplies values for variables).
 */
@@ -33,7 +31,7 @@ public interface Predicate
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,8 +1,12 @@
+/*
+  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: PredicateFactory.java,v 1.2 2003-08-04 14:03:13 chris-dollin Exp $
+*/
+
 package com.hp.hpl.jena.graph.query;
 
 /**
-	@author kers
-<br>
     A query PredicateFactory is something that can construct a
     Predicate from two Valuators.
 */
@@ -13,7 +17,7 @@ public interface PredicateFactory
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

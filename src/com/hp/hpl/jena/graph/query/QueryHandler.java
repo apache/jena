@@ -1,22 +1,22 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryHandler.java,v 1.6 2003-07-10 09:01:17 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.7 2003-08-04 14:03:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
+
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     a QueryHandler handles queries on behalf of a graph. It's primary purpose
     is to isolate changes to the query interface away from the Graph; multiple
     different Graph implementations can use the same QueryHandler class, such
     as the built-in SimpleQueryHandler.
-    <br>
+
 	@author kers
 */
-
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.*;
 
 public interface QueryHandler
     {
@@ -68,7 +68,7 @@ public interface QueryHandler
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

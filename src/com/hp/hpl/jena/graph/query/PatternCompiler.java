@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternCompiler.java,v 1.1.1.1 2002-12-19 19:13:54 bwm Exp $
+  $Id: PatternCompiler.java,v 1.2 2003-08-04 14:03:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,22 +9,38 @@ package com.hp.hpl.jena.graph.query;
 import com.hp.hpl.jena.graph.*;
 
 /**
+    A PatternCompiler is some class that knows how to handle fixed Node values,
+    binding and bound occurences of variables, and wildcards.
 	@author kers
 */
 
 public interface PatternCompiler
     {
+    /**
+        Method called to deliver a compiled Element constructed from a constant Node.
+    */
     public Element fixed( Node value );
     
+    /**
+        Method called to deliver a compiled element from a bound occurance of a 
+        variable Node allocated at a given index position.
+    */
     public Element bound( Node n, int index );
     
+    /**
+        Method called to deliver a compiled element from a binding occurance of a
+        variable Node allocated at a given index position.
+    */
     public Element bind( Node n, int index );
     
+    /**
+        Method called to deliver a compiled element from a wildcard ANY.
+    */
     public Element any();
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

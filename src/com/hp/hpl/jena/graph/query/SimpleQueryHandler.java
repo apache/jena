@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.9 2003-08-04 13:28:27 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.10 2003-08-04 14:03:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;

@@ -1,14 +1,12 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Valuator.java,v 1.1.1.1 2002-12-19 19:14:04 bwm Exp $
+  $Id: Valuator.java,v 1.2 2003-08-04 14:03:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-	@author kers
-<br>
     A Valuator is something that can return a Node as a value, given
     a domain _d_ to look in if necessary.
 */
@@ -22,7 +20,7 @@ public interface Valuator
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

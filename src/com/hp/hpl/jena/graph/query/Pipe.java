@@ -1,27 +1,42 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Pipe.java,v 1.1.1.1 2002-12-19 19:13:55 bwm Exp $
+  $Id: Pipe.java,v 1.2 2003-08-04 14:03:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
+    A Pipe is anything that can be used to get and put Domain objects; it can be closed,
+    and it can be tested for whether more elements are available.
+    
 	@author kers
 */
 public interface Pipe
     {
+    /**
+        Answer true iff there are more elements for <code>get()</code> to get.
+    */
+    public boolean hasNext();
+    
+    /**
+        Answer the next element if there is one, otherwise throw an exception.
+     */
     public Domain get();
     
+    /**
+        Put a domain element into the pipe for later extraction.
+    */
     public void put( Domain d );
     
+    /**
+        Close the pipe: further operations on it have undefined effects.
+    */
     public void close();
-    
-    public boolean hasNext();
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
