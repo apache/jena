@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Restriction.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:29 $
+ * Last modified on   $Date: 2003-07-30 19:14:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Restriction.java,v 1.7 2003-06-08 18:53:29 ian_dickinson Exp $
+ * @version CVS $Id: Restriction.java,v 1.8 2003-07-30 19:14:51 ian_dickinson Exp $
  */
 public interface Restriction
     extends OntClass
@@ -208,12 +208,12 @@ public interface Restriction
          
     /** 
      * <p>Convert this restriction to a has value class expression</p>
-     * @param individual The value which the restricted property must have, for resource to be
-     * in the extension of this restriction
+     * @param value The value which the restricted property must have, for resource to be
+     * in the extension of this restriction. Can be a resource or a literal.
      * @return This class, but converted to a HasValueRestriction
      * @exception ProfileException if {@link Profile#HAS_VALUE()} is not supported in the current profile
      */
-    public HasValueRestriction convertToHasValueRestriction( Resource individual );
+    public HasValueRestriction convertToHasValueRestriction( RDFNode value );
          
     /** 
      * <p>Convert this restriction to a cardinality restriction class expression</p>

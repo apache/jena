@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:52:43 $
+ * Last modified on   $Date: 2003-07-30 19:14:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,8 +28,7 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.*;
 
 
 /**
@@ -39,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.11 2003-06-08 18:52:43 ian_dickinson Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.12 2003-07-30 19:14:42 ian_dickinson Exp $
  */
 public class RestrictionImpl 
     extends OntClassImpl
@@ -297,13 +296,13 @@ public class RestrictionImpl
          
     /** 
      * <p>Convert this restriction to a has value class expression</p>
-     * @param individual The value which the restricted property must have, for resource to be
+     * @param value The value which the restricted property must have, for resource to be
      * in the extension of this restriction
      * @return This class, but converted to a HasValueRestriction
      * @exception ProfileException if {@link Profile#HAS_VALUE()} is not supported in the current profile
      */
-    public HasValueRestriction convertToHasValueRestriction( Resource individual ) {
-        setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", individual );
+    public HasValueRestriction convertToHasValueRestriction( RDFNode value ) {
+        setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
         return (HasValueRestriction) as( HasValueRestriction.class );
     }
          
