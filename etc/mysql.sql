@@ -51,7 +51,7 @@ CREATE TABLE JENA_PREFIX (
 DROP TABLE IF EXISTS JENA_GRAPH;;
 CREATE TABLE JENA_GRAPH (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
- Name    TINYBLOB NOT NULL
+ Name    TINYBLOB
 ) Type = ${b};;
 CREATE UNIQUE INDEX JENA_IXLIT ON JENA_LONG_LIT(Head(${c}),Hish);;
 CREATE UNIQUE INDEX JENA_IXURI ON JENA_LONG_URI(Head(${c}),Hish);;
@@ -119,6 +119,11 @@ DELETE FROM ${a} WHERE (GraphID = ?)
 # Store the name of a new graph and create a unique identifier for it.
 insertGraph
 INSERT INTO JENA_GRAPH (Name) VALUES (?)
+
+#-------------------------------------------------------------------
+# Remove the name of a graph.
+deleteGraph
+Update JENA_GRAPH SET NAME=null where ID = ?
 
 #-------------------------------------------------------------------
 # Delete a triple
