@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Max.java,v 1.1 2003-09-22 08:11:25 der Exp $
+ * $Id: Max.java,v 1.2 2003-09-22 15:35:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -13,10 +13,10 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- *  Bind the third arg to the sum of the first two args.
+ *  Bind the third arg to the max of the first two args.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-09-22 08:11:25 $
+ * @version $Revision: 1.2 $ on $Date: 2003-09-22 15:35:04 $
  */
 public class Max extends BaseBuiltin {
 
