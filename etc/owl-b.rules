@@ -51,17 +51,34 @@
 #------------------------------------------------------------------
 
 # This one could be omitted since the results are not really very interesting!
-# [rdf1and4: (?x ?p ?y) -> (?p rdf:type rdf:Property), (?x rdf:type rdfs:Resource), (?y rdf:type rdfs:Resource)]
-# [rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
+#[rdf1: (?x ?p ?y) -> (?x rdf:type rdfs:Resource)]
+#[rdf1b: (?x ?p ?y), notLiteral(?y) -> (?y rdf:type rdfs:Resource)]
+#[rdf4: (?x ?p ?y) -> (?p rdf:type rdf:Property)]
+#[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
 
-[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)] 
-[rdfs3:  (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)] 
-[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
+
+[rdfs2:  bound(?c)   (?p rdfs:domain ?c) (?x ?p ?y)  -> (?x rdf:type ?c)] 
+[rdfs2:  unbound(?c) (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)] 
+
+[rdfs3:  bound(?c)   (?p rdfs:range ?c) (?x ?p ?y) -> (?y rdf:type ?c)] 
+[rdfs3:  unbound(?c) (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)] 
+
+[rdfs5a: unbound(?c) (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
+[rdfs5a: bound(?c)   (?b rdfs:subPropertyOf ?c)  (?a rdfs:subPropertyOf ?b)-> (?a rdfs:subPropertyOf ?c)] 
+
 [rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
-[rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
+
+[rdfs6:  unbound(?q) (?a ?p ?b) (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
+[rdfs6:  bound(?q)   (?p rdfs:subPropertyOf ?q) (?a ?p ?b) -> (?a ?q ?b)] 
+
 [rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
-[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
-[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)] 
+
+[rdfs8:  unbound(?c) (?a rdfs:subClassOf ?b) (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
+[rdfs8:  bound(?c)   (?b rdfs:subClassOf ?c) (?a rdfs:subClassOf ?b) -> (?a rdfs:subClassOf ?c)] 
+
+[rdfs9:  bound(?y)   (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)] 
+[rdfs9:  unbound(?y) (?a rdf:type ?x) (?x rdfs:subClassOf ?y) -> (?a rdf:type ?y)] 
+
 [rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 
 
 #------------------------------------------------------------------
@@ -87,9 +104,7 @@
 -> (owl:Class rdfs:subClassOf rdfs:Class).
 -> (owl:Restriction rdfs:subClassOf owl:Class).
 
-# This is true in OWL-full but does lead to rather a lot of additional conclusions that
-# are not helpful for the practical test cases, explore consequences of retricting
-# closer to OWL/DL
+# Omitted since this owl:Class is likelty to die anyway.
 #-> (rdfs:Class rdfs:subClassOf owl:Class).
 
 -> (owl:Thing rdf:type owl:Class).
@@ -164,9 +179,9 @@
 
 [restrictionProc9: (?X ?P *), (?X rdf:type max(?P, '0')) -> (?X rdf:type owl:Nothing)]
 
-[restrictionProc10: (?X rdf:type some(?P, ?C)), noValue(?X, ?P), notEqual(?P, owl:sameIndividualAs),
-					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), makeTemp(?T)
-   	  						-> (?X ?P ?T), (?T rdf:type ?C)]
+#[restrictionProc10: (?X rdf:type some(?P, ?C)), noValue(?X, ?P), notEqual(?P, owl:sameIndividualAs),
+#					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), makeTemp(?T)
+#   	  						-> (?X ?P ?T), (?T rdf:type ?C)]
 
 # Best done backwards!
 [restrictionProc11: (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing) 
@@ -183,8 +198,8 @@
 # Create prototypical instances for each class and infer any subclass relations
 # This is better done as part of an explicit taxonomy building phase.
 
-[prototype1: (?c rdf:type owl:Class), noValue(?c, rb:prototype), makeTemp(?t)
-  	    				-> (?c rb:prototype ?t), (?t rdf:type ?c)]
+#[prototype1: (?c rdf:type owl:Class), noValue(?c, rb:prototype), makeTemp(?t)
+#  	    				-> (?c rb:prototype ?t), (?t rdf:type ?c)]
     
 [prototype2: (?c rb:prototype ?p), (?p rdf:type ?d), notEqual(?c, ?d) 
 						-> (?c rdfs:subClassOf ?d)]
@@ -199,15 +214,15 @@
 # This one is best done backwards or with a dedicated equality reasoner
 # Hacked for now just for completeness
 
-[distinct2: (* owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
+# [distinct2: (* owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
 
 # To be improved when resolve how to record contradictions
 
-[conflict1: (?X owl:sameIndividualAs ?Y), (?X owl:differentFrom ?Y) 
-						-> contradiction('same/different', ?X, ?Y) ]
+#[conflict1: (?X owl:sameIndividualAs ?Y), (?X owl:differentFrom ?Y) 
+#						-> contradiction('same/different', ?X, ?Y) ]
 		
-[conflict2: (?X rdf:type ?C), (?X rdf:type ?D), (?C owl:disjointWith ?D) 
-						-> contradiction('disjoint classes overlap', ?C, ?D, ?X) ]
+#[conflict2: (?X rdf:type ?C), (?X rdf:type ?D), (?C owl:disjointWith ?D) 
+#						-> contradiction('disjoint classes overlap', ?C, ?D, ?X) ]
 
 #------------------------------------------------------------------
 # Property rules
