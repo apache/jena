@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.9 2003-11-08 15:53:56 der Exp $
+ * $Id: XSDBaseNumericType.java,v 1.10 2003-12-04 11:01:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -18,13 +18,13 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 
 /**
- * Base implementation for all numeric datatypes derinved from
+ * Base implementation for all numeric datatypes derived from
  * xsd:decimal. The only purpose of this place holder is
  * to support the isValidLiteral tests across numeric types. Note
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-11-08 15:53:56 $
+ * @version $Revision: 1.10 $ on $Date: 2003-12-04 11:01:53 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -91,13 +91,21 @@ public class XSDBaseNumericType extends XSDDatatype {
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {        
+    public Object parse(String lexicalForm) throws DatatypeFormatException {
+        checkWhitespace(lexicalForm);        
+        return super.parse(lexicalForm);
+    }
+    
+    /**
+     * Check for whitespace violations.
+     * Turned off by default.
+     */
+    protected void checkWhitespace(String lexicalForm) {
         if (JenaParameters.enableWhitespaceCheckingOfTypedLiterals) {
             if ( ! lexicalForm.trim().equals(lexicalForm)) {
                 throw new DatatypeFormatException(lexicalForm, this, "whitespace violation");
             }
         }
-        return super.parse(lexicalForm);
     }
     
     /**

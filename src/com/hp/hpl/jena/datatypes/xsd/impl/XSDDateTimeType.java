@@ -5,22 +5,20 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTimeType.java,v 1.6 2003-08-27 12:54:12 andy_seaborne Exp $
+ * $Id: XSDDateTimeType.java,v 1.7 2003-12-04 11:01:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
-import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 /**
- * The XSD date/time type, the only job of this extra layer is to
- * wrap the return value in a more convenient accessor type. 
+ * Type processor for dateTime, most of the machinery is in the
+ * base XSDAbstractDateTimeType class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-27 12:54:12 $
+ * @version $Revision: 1.7 $ on $Date: 2003-12-04 11:01:54 $
  */
-public class XSDDateTimeType extends XSDDatatype {
+public class XSDDateTimeType extends XSDAbstractDateTimeType {
 
     /**
      * Constructor
@@ -30,30 +28,27 @@ public class XSDDateTimeType extends XSDDatatype {
     }
 
     /**
-     * Parse a lexical form of this datatype to a value
-     * @return a Duration value
-     * @throws DatatypeFormatException if the lexical form is not legal
+     * Parse a validated date. This is invoked from
+     * XSDDatatype.convertValidatedDataValue rather then from a local
+     * parse method to make the implementation of XSDGenericType easier.
      */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        return new XSDDateTime(super.parse(lexicalForm), typeDeclaration);
-    }
-   
-    /**
-     * Convert a value of this datatype out
-     * to lexical form.
-     */
-    public String unparse(Object value) {
-        return value.toString();
+    public Object parseValidated(String str) {
+         int len = str.length();
+         int[] date = new int[TOTAL_SIZE];
+         int[] timeZone = new int[2];
+
+         int end = indexOf (str, 0, len, 'T');
+
+         // both time and date
+         getDate(str, 0, end, date);
+         getTime(str, end+1, len, date, timeZone);
+
+         if ( date[utc]!=0 && date[utc]!='Z') {
+             AbstractDateTime.normalize(date, timeZone);
+         }
+         return new XSDDateTime(date, XSDDateTime.FULL_MASK);
     }
     
-    /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
-     */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
-    }
 }
 
 /*

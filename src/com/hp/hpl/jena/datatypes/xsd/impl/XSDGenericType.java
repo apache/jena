@@ -5,27 +5,26 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDGenericType.java,v 1.5 2003-08-27 12:54:12 andy_seaborne Exp $
+ * $Id: XSDGenericType.java,v 1.6 2003-12-04 11:01:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import org.apache.xerces.impl.dv.XSSimpleType;
-import org.apache.xerces.impl.dv.xs.DecimalDV;
-import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 
-import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * Datatype template that adapts any response back from Xerces type parsing
  * to an appropriate java representation. This is primarily used in creating
  * user defined types - the built in types have a fixed mapping.
+ * <p>
+ * This class is probably now redundant in that XSDDatatype can support
+ * run time conversion of union results. Left in for now during restructuring and
+ * in case any existing user code expects this type - very unlikely.
+ * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 12:54:12 $
+ * @version $Revision: 1.6 $ on $Date: 2003-12-04 11:01:52 $
  */
 public class XSDGenericType extends XSDDatatype {
 
@@ -38,59 +37,25 @@ public class XSDGenericType extends XSDDatatype {
         super(xstype, namespace);
     }
 
-    /**
-     * Parse a lexical form of this datatype to a value
-     * @throws DatatypeFormatException if the lexical form is not legal
-     */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        Object xsdValue = super.parse(lexicalForm);
-        if (xsdValue instanceof String || xsdValue instanceof Number) {
-            return xsdValue;
-        } else {
-            XSSimpleTypeDecl decl = (XSSimpleTypeDecl) typeDeclaration;
-            if (decl.getIsNumeric()) {
-                return convertNumeric(xsdValue);
-            } else if (decl.getVariety() == XSSimpleTypeDecl.VARIETY_UNION) {
-                try {
-                    // Just try it as a number
-                    return convertNumeric(xsdValue);
-                } catch (ClassCastException e) {
-                    // Rats assume its usable java already
-                    // TODO add date/time format conversion
-                    return xsdValue;
-                }
-            } else {
-                // This will be a date/time type - leave unprocessed for now
-                // @TODO add date/time format conversion
-                return xsdValue;
-            }
-        }
-    }
+//  No longer need to perform any special case processing of union types since we
+//  now do runtime type coercion - is that right?
+
+//    /**
+//     * Parse a lexical form of this datatype to a value
+//     * @throws DatatypeFormatException if the lexical form is not legal
+//     */
+//    public Object parse(String lexicalForm) throws DatatypeFormatException {
+//        try {
+//            ValidationContext context = new ValidationState();
+//            ValidatedInfo resultInfo = new ValidatedInfo();
+//            Object result = typeDeclaration.validate(lexicalForm, context, resultInfo);
+//            return convertValidatedDataValue(resultInfo);
+//        } catch (InvalidDatatypeValueException e) { 
+//            throw new DatatypeFormatException(lexicalForm, this, "during parse -" + e);
+//        } 
+//    }
     
-    /**
-     * Helper method.
-     * Attempts to convert a type to a number, with throw a ClassCastException if this is not a number
-     */
-    private Object convertNumeric(Object xsdValue) {
-        if (xsdValue instanceof Number) {
-            return xsdValue;
-        }
-        DecimalDV dv = XSDBigNumberType.decimalDV;
-        if (dv.getFractionDigits(xsdValue) > 1) {
-            return new BigDecimal(xsdValue.toString());
-        } else {
-            // Pick a small representation, this just works on string length so it
-            // will not be the minimal representation, just an adequate one
-            int digits = dv.getTotalDigits(xsdValue);
-            if (digits > 18) {
-                return new BigInteger(xsdValue.toString());
-            } else if (digits > 9) {
-                return new Long(xsdValue.toString());
-            } else {
-                return new Integer(xsdValue.toString());
-            }
-        }
-    }
+ 
 }
 
 /*

@@ -1,56 +1,74 @@
 /******************************************************************
- * File:        XSDLongType.java
+ * File:        XSDYearType.java
  * Created by:  Dave Reynolds
- * Created on:  10-Dec-02
+ * Created on:  04-Dec-2003
  * 
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: XSDLongType.java,v 1.5 2003-08-27 12:54:12 andy_seaborne Exp $
+ * $Id: XSDYearType.java,v 1.1 2003-12-04 11:01:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
-import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.datatypes.xsd.AbstractDateTime;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 
 /**
- * Datatype template used to define XSD long types
+ * Type processor for year, most of the machinery is in the
+ * base XSDAbstractDateTimeType class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 12:54:12 $
+ * @version $Revision: 1.1 $ on $Date: 2003-12-04 11:01:51 $
  */
-public class XSDLongType extends XSDBaseNumericType {
-    
+public class XSDYearType extends XSDAbstractDateTimeType {
+
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
-     * used to lookup a type definition from the Xerces schema factory.
+     * Constructor
      */
-    public XSDLongType(String typeName) {
-        super(typeName);
-    }
-    
-    /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
-     * used to lookup a type definition from the Xerces schema factory.
-     * @param javaClass the java class for which this xsd type is to be
-     * treated as the cannonical representation
-     */
-    public XSDLongType(String typeName, Class javaClass) {
-        super(typeName, javaClass);
-    }
-    
-    /**
-     * Parse a lexical form of this datatype to a value
-     * @throws DatatypeFormatException if the lexical form is not legal
-     */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {        
-        return new Long(super.parse(lexicalForm).toString());
+    public XSDYearType(String typename) {
+        super(typename);
     }
 
+    /**
+     * Parse a validated date. This is invoked from
+     * XSDDatatype.convertValidatedDataValue rather then from a local
+     * parse method to make the implementation of XSDGenericType easier.
+     */
+    public Object parseValidated(String str) {
+        int len = str.length();
+        int[] date = new int[TOTAL_SIZE];
+        int[] timeZone = new int[2];
+
+        // check for preceding '-' sign
+        int start = 0;
+        if (str.charAt(0)=='-') {
+            start = 1;
+        }
+        int sign = findUTCSign(str, start, len);
+        if (sign == -1) {
+            date[CY]=parseIntYear(str, len);
+        }
+        else {
+            date[CY]=parseIntYear(str, sign);
+            getTimeZone (str, date, sign, len, timeZone);
+        }
+
+        //initialize values
+        date[M]=MONTH;
+        date[D]=1;
+
+        if ( date[utc]!=0 && date[utc]!='Z' ) {
+            AbstractDateTime.normalize(date, timeZone);
+        }
+
+        return new XSDDateTime(date, YEAR_MASK );
+    }
+    
 }
 
+
+
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright Hewlett-Packard Development Company, LP 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

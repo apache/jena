@@ -1,57 +1,62 @@
 /******************************************************************
- * File:        XSDByteType.java
+ * File:        XSDTimeType.java
  * Created by:  Dave Reynolds
- * Created on:  10-Dec-02
+ * Created on:  04-Dec-2003
  * 
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: XSDByteType.java,v 1.6 2003-12-04 11:01:52 der Exp $
+ * $Id: XSDTimeType.java,v 1.1 2003-12-04 11:01:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.datatypes.xsd.AbstractDateTime;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 
 /**
- * Datatype template used to define XSD int types
- *
+ * Type processor for time, most of the machinery is in the
+ * base XSDAbstractDateTimeType class.
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-12-04 11:01:52 $
+ * @version $Revision: 1.1 $ on $Date: 2003-12-04 11:01:53 $
  */
-public class XSDByteType extends XSDBaseNumericType {
+public class XSDTimeType extends XSDAbstractDateTimeType {
 
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
-     * used to lookup a type definition from the Xerces schema factory.
+     * Constructor
      */
-    public XSDByteType(String typeName) {
-        super(typeName);
+    public XSDTimeType(String typename) {
+        super(typename);
+    }
+
+    /**
+     * Parse a validated date. This is invoked from
+     * XSDDatatype.convertValidatedDataValue rather then from a local
+     * parse method to make the implementation of XSDGenericType easier.
+     */
+    public Object parseValidated(String str) {
+        int len = str.length();
+        int[] date = new int[TOTAL_SIZE];
+        int[] timeZone = new int[2];
+
+        // time
+        // initialize to default values
+        date[CY]=YEAR;
+        date[M]=MONTH;
+        date[D]=DAY;
+        getTime(str, 0, len, date, timeZone);
+
+        if ( date[utc]!=0 && date[utc]!='Z' ) {
+            AbstractDateTime.normalize(date, timeZone);
+        }
+
+        return new XSDDateTime(date, TIME_MASK);
     }
     
-    /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
-     * used to lookup a type definition from the Xerces schema factory.
-     * @param javaClass the java class for which this xsd type is to be
-     * treated as the cannonical representation
-     */
-    public XSDByteType(String typeName, Class javaClass) {
-        super(typeName, javaClass);
-    }
-        
-    /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
-     */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
-    }
-
 }
 
+
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright Hewlett-Packard Development Company, LP 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

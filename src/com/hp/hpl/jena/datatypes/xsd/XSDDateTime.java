@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.8 2003-08-27 12:53:29 andy_seaborne Exp $
+ * $Id: XSDDateTime.java,v 1.9 2003-12-04 11:03:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
-import org.apache.xerces.impl.dv.XSSimpleType;
 import java.util.*;
 
 /**
@@ -18,7 +17,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-27 12:53:29 $
+ * @version $Revision: 1.9 $ on $Date: 2003-12-04 11:03:55 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -38,19 +37,7 @@ public class XSDDateTime extends AbstractDateTime {
     
     /** table mapping xs type name to mask of legal values */
     public static final HashMap maskMap = new HashMap();
-    
-    // initialize the mask map
-    static {
-        maskMap.put("dateTime",   new Integer(FULL_MASK));
-        maskMap.put("date",       new Integer(YEAR_MASK | MONTH_MASK | DAY_MASK));
-        maskMap.put("time",       new Integer(TIME_MASK));
-        maskMap.put("gYearMonth", new Integer(YEAR_MASK | MONTH_MASK));
-        maskMap.put("gMonthDay",  new Integer(MONTH_MASK | DAY_MASK));
-        maskMap.put("gYear",      new Integer(YEAR_MASK));
-        maskMap.put("gMonth",     new Integer(MONTH_MASK));
-        maskMap.put("gDay",       new Integer(DAY_MASK));
-    }
-    
+        
     /** Set of legal fields for the particular date/time instance */
     protected short mask;
     
@@ -59,11 +46,12 @@ public class XSDDateTime extends AbstractDateTime {
      * the internals spread across multiple packages.
      * 
      * @param value the date/time value returned by the parsing
-     * @param dtype the XSD type representation
+     * @param mask bitmask defining which components are valid in this instance
+     * (e.g. dates don't have valid time fields).
      */
-    public XSDDateTime(Object value, XSSimpleType dtype) {
-        super(value, dtype);
-        mask = ((Integer)maskMap.get(dtype.getName())).shortValue();
+    public XSDDateTime(Object value, int mask) {
+        super(value);
+        this.mask = (short)mask;
     }
     
     /**
@@ -74,9 +62,9 @@ public class XSDDateTime extends AbstractDateTime {
      * @throws IllegalDateTimeFieldException if this is not a full date + time
      */
     public Calendar asCalendar () throws IllegalDateTimeFieldException {
-        TimeZone tz = data[UTC] == 'Z' ? TimeZone.getTimeZone("GMT") : TimeZone.getDefault();
+        TimeZone tz = data[utc] == 'Z' ? TimeZone.getTimeZone("GMT") : TimeZone.getDefault();
         Calendar calendar = new GregorianCalendar(tz);
-        calendar.set(data[CY], data[MONTH], data[DAY], data[HOUR], data[MINUTE], data[SECOND]);
+        calendar.set(data[CY], data[M], data[D], data[h], data[m], data[s]);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
     }
@@ -96,7 +84,7 @@ public class XSDDateTime extends AbstractDateTime {
      */
     public int getMonths() throws IllegalDateTimeFieldException {
         if ((mask & MONTH_MASK) == 0) throw new IllegalDateTimeFieldException("Month not available");
-        return data[MONTH];
+        return data[M];
     }
     
     /**
@@ -105,7 +93,7 @@ public class XSDDateTime extends AbstractDateTime {
      */
     public int getDays() throws IllegalDateTimeFieldException {
         if ((mask & DAY_MASK) == 0) throw new IllegalDateTimeFieldException("Day not available");
-        return data[DAY];
+        return data[D];
     }
     
     /**
@@ -114,7 +102,7 @@ public class XSDDateTime extends AbstractDateTime {
      */
     public int getHours() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
-        return data[HOUR];
+        return data[h];
     }
     
     /**
@@ -123,7 +111,7 @@ public class XSDDateTime extends AbstractDateTime {
      */
     public int getMinutes() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
-        return data[MINUTE];
+        return data[m];
     }
     
     /**
@@ -132,7 +120,7 @@ public class XSDDateTime extends AbstractDateTime {
      */
     public int getFullSeconds() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
-        return data[SECOND];
+        return data[s];
     }
     
     /**
@@ -141,7 +129,7 @@ public class XSDDateTime extends AbstractDateTime {
      */
     public double getSeconds() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
-        return data[SECOND] + fractionalSeconds;
+        return data[s] + fractionalSeconds;
     }
     
     /**
@@ -151,7 +139,7 @@ public class XSDDateTime extends AbstractDateTime {
      */
     public double getTimePart() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
-        return ((data[HOUR]) * 60l + data[MINUTE]) * 60l + getSeconds();
+        return ((data[h]) * 60l + data[m]) * 60l + getSeconds();
     }
     
     /**
@@ -167,27 +155,27 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & (MONTH_MASK | DAY_MASK)) != 0) {
             buff.append("-");
             if ((mask & MONTH_MASK) != 0) {
-                if (data[MONTH] <= 9) buff.append("0");
-                buff.append(data[MONTH]);
+                if (data[M] <= 9) buff.append("0");
+                buff.append(data[M]);
             } else {
                 buff.append("-");
             }
             if ((mask & DAY_MASK) != 0) {
                 if (mask != DAY_MASK) buff.append("-");
-                if (data[DAY] <= 9) buff.append("0");
-                buff.append(data[DAY]);
+                if (data[D] <= 9) buff.append("0");
+                buff.append(data[D]);
             }
         }
         if ((mask & TIME_MASK) != 0 ) {
             buff.append("T");
-            buff.append(data[HOUR]);
+            buff.append(data[h]);
             buff.append(":");
-            buff.append(data[MINUTE]);
+            buff.append(data[m]);
             buff.append(":");
-            buff.append(data[SECOND]);
-            if (data[MS] != 0) {
+            buff.append(data[s]);
+            if (data[ms] != 0) {
                 buff.append(".");
-                buff.append(data[MS]);
+                buff.append(data[ms]);
             }
             buff.append("Z");
         }

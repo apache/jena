@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseDatatype.java,v 1.7 2003-09-09 12:00:39 der Exp $
+ * $Id: BaseDatatype.java,v 1.8 2003-12-04 11:03:56 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * can inherit.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-09-09 12:00:39 $
+ * @version $Revision: 1.8 $ on $Date: 2003-12-04 11:03:56 $
  */
 public class BaseDatatype implements RDFDatatype {
     
@@ -76,7 +76,7 @@ public class BaseDatatype implements RDFDatatype {
      * lexically legal like "1").
      */
     public boolean isValidLiteral(LiteralLabel lit) {
-        // default is than only literals with the same type are valid
+        // default is that only literals with the same type are valid
         return equals(lit.getDatatype());
     }
      
