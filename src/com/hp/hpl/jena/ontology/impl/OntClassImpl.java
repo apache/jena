@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.41 $
+ * Revision           $Revision: 1.42 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 18:12:55 $
+ * Last modified on   $Date: 2005-01-21 17:58:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.41 2004-12-07 18:12:55 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.42 2005-01-21 17:58:40 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -565,20 +565,27 @@ public class OntClassImpl
      */
     public ExtendedIterator listDeclaredProperties( boolean all ) {
         // decide which model to use, based on whether we want entailments
+        // TODO this is a hack to get around a jena-dev bug report - code to be replaced
+        // during the forthcoming re-write of ldp
         OntModel mOnt = (OntModel) getModel();
-        Model m = all ? mOnt : mOnt.getBaseModel();
+        Model base = mOnt.getBaseModel();
+        boolean hasInf = (mOnt.getGraph() instanceof InfGraph);
+        // the issue is that for all=false, we only want to ingore entailments, not imports
+        Model m = (all || !hasInf) ? mOnt : base;
 
         Set supers = new HashSet();
         Set props= new HashSet();
         
-        // collect all of the super-classes of this class
+        // collect all of the super-classes of this class (including self)
         supers.add( this );
-        for (StmtIterator i = m.listStatements( this, getProfile().SUB_CLASS_OF(), (RDFNode) null ); i.hasNext(); ) {
-             supers.add( i.nextStatement().getObject() );
+        if (all) {
+            for (Iterator i = listSuperClasses(); i.hasNext(); ) {
+                 supers.add( i.next() );
+            }
         }
         
         // now iterate over the super-classes (all) or just myself (not all)
-        for (Iterator i = all ? supers.iterator() : new SingletonIterator(this); i.hasNext(); ) {
+        for (Iterator i = supers.iterator(); i.hasNext(); ) {
             Resource supClass = (Resource) i.next();
             
             // is this super-class a restriction?
