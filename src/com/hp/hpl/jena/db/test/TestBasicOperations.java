@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.11 2003-08-27 12:56:20 andy_seaborne Exp $
+  $Id: TestBasicOperations.java,v 1.12 2003-12-12 22:17:26 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -320,6 +320,30 @@ public class TestBasicOperations extends TestCase {
 		}
 
 	}
+	
+	public void testPrefixCachePersists() throws java.lang.Exception {
+		// check that the prefix cache persists and affects all models in db.
+		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
+		IRDBDriver d = conn.getDriver();
+		d.setDoCompressURI(true);
+		model = ModelRDB.createModel(conn);
+		int cacheSize = d.getCompressCacheSize();
+		d.setCompressCacheSize(cacheSize/2);	
+		model.close();
+		conn.close();
+		
+		conn = TestConnection.makeTestConnection();
+		d = conn.getDriver();
+		try {
+			d.setDoCompressURI(false);
+			assertFalse(true); // should not get here
+		} catch (Exception e) {
+			model = ModelRDB.createModel(conn,"NamedModel");
+			assertTrue(d.getDoCompressURI() == true);
+			assertTrue(d.getCompressCacheSize() == cacheSize);
+		}
+	}
+
 
 	public void testAddRemoveDatatype() {
 		Resource s = model.createResource("test#subject");
