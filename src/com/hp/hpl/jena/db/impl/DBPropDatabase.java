@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -90,13 +90,17 @@ public class DBPropDatabase extends DBProp {
 	}
 	
 	public ExtendedIterator getAllGraphs() {
-		Iterator matches = graph.find( self, dbGraph, null, newComplete() );
-		return new Map1Iterator(new MapToLSet(), matches);
+		return 
+            graph.find( self, dbGraph, null, newComplete() ) 
+            .mapWith( new MapToLSet() );
 	}
 	
 	public ExtendedIterator getAllGraphNames() {
-		return new Map1Iterator(new MapGraphToName(), getAllGraphs());
+        return getAllGraphs() .mapWith( graphToName ); 
 	}
+
+    static final Map1 graphToName = new Map1() 
+        { public Object map1( Object o)  { return ((DBPropGraph) o).getName(); } };
 
 	private class MapToLSet implements Map1 {
 		public Object map1( Object o) {
@@ -104,12 +108,7 @@ public class DBPropDatabase extends DBProp {
 			return new DBPropGraph( graph, t.getObject() );			
 		}
 	}
-	private class MapGraphToName implements Map1 {
-		public Object map1( Object o) {
-			DBPropGraph graph = (DBPropGraph) o;
-			return graph.getName();			
-		}
-	}
+    
 	static Node findDBPropNode( SpecializedGraph g) {
 		Iterator matches = g.find( null, dbEngineType, null, newComplete() );
 		if( matches.hasNext()) return ((Triple) matches.next()).getSubject();
