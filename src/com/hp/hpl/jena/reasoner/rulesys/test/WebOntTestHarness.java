@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.17 2003-09-24 15:10:47 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.18 2003-09-24 21:11:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-09-24 15:10:47 $
+ * @version $Revision: 1.18 $ on $Date: 2003-09-24 21:11:28 $
  */
 public class WebOntTestHarness {
 
@@ -251,8 +251,8 @@ public class WebOntTestHarness {
         System.out.println("Testing " + (approvedOnly ? "only APPROVED" : "APPROVED and PROPOSED") );
         System.out.println("Positive entailment: ");
         runTests(findTestsOfType(OWLTest.PositiveEntailmentTest));
-        System.out.println("\nNegative entailment: ");
-        runTests(findTestsOfType(OWLTest.NegativeEntailmentTest));
+//        System.out.println("\nNegative entailment: ");
+//        runTests(findTestsOfType(OWLTest.NegativeEntailmentTest));
         System.out.println("\nTrue tests: ");
         runTests(findTestsOfType(OWLTest.TrueTest));
         System.out.println("\nOWL for OWL tests: ");
