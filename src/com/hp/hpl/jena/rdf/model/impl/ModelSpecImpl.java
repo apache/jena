@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.8 2003-08-24 16:23:33 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.9 2003-08-24 16:34:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -83,7 +83,7 @@ public abstract class ModelSpecImpl implements ModelSpec
             }
         if (d.listStatements( null, RDF.type, JMS.InfModelSpec).hasNext())
             return new InfModelSpec( desc );
-        if (d.listStatements( null, RDF.type, JMS.MemMakerSpec).hasNext())
+        if (d.listStatements( null, RDF.type, JMS.PlainModelSpec).hasNext())
             return new PlainModelSpec( desc );
         throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JMS.java,v 1.9 2003-08-24 16:23:41 chris-dollin Exp $
+  $Id: JMS.java,v 1.10 2003-08-24 16:34:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -45,6 +45,7 @@ public class JMS
     public static final Resource MemMakerSpec = resource( "MemMakerSpec" );
     public static final Resource RDBMakerSpec = resource( "RDBMakerSpec" );
     
+    public static final Resource ModelSpec = resource( "ModelSpec" );
     public static final Resource PlainModelSpec = resource( "PlainModelSpec" );
     public static final Resource InfModelSpec = resource( "ReasonerSpec" );
     public static final Resource OntModelSpec = resource( "OntModelSpec" );
@@ -62,9 +63,11 @@ public class JMS
         .add( JMS.MemMakerSpec, RDFS.subClassOf, JMS.MakerSpec )
         .add( JMS.FileMakerSpec, RDFS.subClassOf, JMS.MakerSpec )
         .add( JMS.RDBMakerSpec, RDFS.subClassOf, JMS.MakerSpec )
+        .add( JMS.PlainModelSpec, RDFS.subClassOf, JMS.ModelSpec )
         .add( JMS.InfModelSpec, RDFS.subClassOf, JMS.PlainModelSpec )
         .add( JMS.OntModelSpec, RDFS.subClassOf, JMS.InfModelSpec )
         .add( JMS.reificationMode, RDFS.domain, JMS.MakerSpec )
+        .add( JMS.maker, RDFS.domain, JMS.PlainModelSpec )
         .add( JMS.ontLanguage, RDFS.domain, JMS.OntModelSpec )
         .add( JMS.reasoner, RDFS.domain, JMS.InfModelSpec )
         .add( JMS.importMaker, RDFS.subClassOf, JMS.maker )
