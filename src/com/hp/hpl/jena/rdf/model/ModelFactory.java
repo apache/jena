@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.14 2003-05-14 14:58:30 ian_dickinson Exp $
+  $Id: ModelFactory.java,v 1.15 2003-05-15 07:58:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -31,10 +31,12 @@ public class ModelFactory extends ModelFactoryBase
         {}
         
     /** 
-        construct a new memory-based model that captures reification triples 
+        construct a new memory-based model with the standard reification style
+        (reification triples contribute to ReifiedStatements, and are visible to
+        listStatements etc).
     */
     public static Model createDefaultModel()
-        { return new ModelCom( new GraphMem( Reifier.Convenient ) ); }
+        { return new ModelCom( new GraphMem( Reifier.Standard ) ); }
         
     /**
         construct a new memory-based model that does not capture reification triples
@@ -56,13 +58,13 @@ public class ModelFactory extends ModelFactoryBase
         Answer a ModelMaker that constructs memory-based Models that
         are backed by files in the root directory. The Model is loaded from the
         file when it is opened, and when the Model is closed it is written back.
-        The model is given the Convenient reification style.
+        The model is given the Standard reification style.
         
         @param root the name of the directory in which the backing files are held
         @return a ModelMaker linked to the files in the root
     */
     public static ModelMaker createFileModelMaker( String root )
-        { return createFileModelMaker( root, Reifier.Convenient ); }
+        { return createFileModelMaker( root, Reifier.Standard ); }
     
     /**
         Answer a ModelMaker that constructs memory-based Models that
@@ -78,13 +80,13 @@ public class ModelFactory extends ModelFactoryBase
         
     /**
         Answer a ModelMaker that constructs memory-based Models that do
-        not persist past JVM termination. The model has the Convenient reification
+        not persist past JVM termination. The model has the Standard reification
         style.
         
         @return a ModelMaker that constructs memory-based models
     */
     public static ModelMaker createMemModelMaker()
-        { return createMemModelMaker( Reifier.Convenient ); }
+        { return createMemModelMaker( Reifier.Standard ); }
         
     /**
         Answer a ModelMaker that constructs memory-based Models that do
@@ -99,13 +101,13 @@ public class ModelFactory extends ModelFactoryBase
     /**
         Answer a ModelMaker that accesses database-backed Models on
         the database at the other end of the connection c with the usual
-        "Convenient" reification style.
+        Standard reification style.
         
         @param c a connection to the database holding the models
         @return a ModelMaker whose Models are held in the database at c
     */
     public static ModelMaker createModelRDBMaker( IDBConnection c )
-        { return createModelRDBMaker( c, Reifier.Convenient ); }
+        { return createModelRDBMaker( c, Reifier.Standard ); }
         
     /**
         Answer a ModelMaker that accesses database-backed Models on

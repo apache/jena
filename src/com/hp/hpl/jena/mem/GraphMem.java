@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.9 2003-05-13 14:59:45 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.10 2003-05-15 07:58:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -25,7 +25,8 @@ public class GraphMem extends GraphBase implements Graph {
     NodeMap objects = new NodeMap();
 
     /** Creates new Store */
-    public GraphMem() {}
+    public GraphMem() 
+        { this( Reifier.Minimal ); }
     
     public GraphMem( Reifier.Style style )
         { super( style ); }

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-14 15:39:01 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-15 07:58:56 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.12 2003-05-14 15:39:01 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.13 2003-05-15 07:58:56 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -684,7 +684,7 @@ public class OntDocumentManager
             else {
                 try {
                     // we have opened the file as a system resource - try to load it into the model
-                    model.read( is, null, lang );
+                    model.read( is, resolvableURI, lang );
                 }
                 finally {
                     try {is.close();} catch (IOException ignore) {}

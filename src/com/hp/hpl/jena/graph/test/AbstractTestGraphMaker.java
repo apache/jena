@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.3 2003-05-09 10:49:50 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.4 2003-05-15 07:58:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -47,6 +47,13 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         g1.close();
         }
     
+    public void testAnyName()
+        {
+        gf.createGraph( "plain" ).close();
+        gf.createGraph( "with.dot" ).close();
+        gf.createGraph( "http://electric-hedgehog.net/topic#marker" );
+        }
+        
     /**
         Test that we can't create a graph with the same name twice. 
     */    
