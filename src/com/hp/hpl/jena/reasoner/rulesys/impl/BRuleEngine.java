@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.16 2003-06-02 09:04:33 der Exp $
+ * $Id: BRuleEngine.java,v 1.17 2003-06-04 08:09:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,9 +28,12 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-06-02 09:04:33 $
+ * @version $Revision: 1.17 $ on $Date: 2003-06-04 08:09:50 $
  */
 public class BRuleEngine {
+    
+//  =======================================================================
+//  Variables
 
     /** a list of active RuleStates to be processed */
     protected LinkedList agenda = new LinkedList();
@@ -50,12 +53,21 @@ public class BRuleEngine {
     /** True if debug information should be written out */
     protected boolean traceOn = false;
     
+    /** Set to true to flag that derivations should be logged */
+    protected boolean recordDerivations;
+    
+    /** performance stats - number of rules fired */
+    protected long nRulesFired = 0;
+    
     /** The size of the result batch permitted before a rule should 
      * reschedule itself lower on the agenda */
     protected int batchSize = 10;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(BRuleEngine.class);
+    
+//  =======================================================================
+//  Constructors
     
     /**
      * Constructor.
@@ -77,6 +89,9 @@ public class BRuleEngine {
         goalTable = new GoalTable(this);
         ruleStore = new RuleStore();
     }
+    
+//  =======================================================================
+//  Control methods
     
     /**
      * Clear all tabled results.
@@ -144,6 +159,21 @@ public class BRuleEngine {
     public boolean isTraceOn() {
         return traceOn;
     }
+   
+    /**
+     * Return the number of rules fired since this rule engine instance
+     * was created and initialized
+     */
+    public long getNRulesFired() {
+        return nRulesFired;
+    }
+    
+    /**
+     * Set to true to enable derivation caching
+     */
+    public void setDerivationLogging(boolean recordDerivations) {
+        this.recordDerivations = recordDerivations;
+    }
 
     /**
      * Dump an a summary of the goal table state to stdout.
@@ -152,6 +182,9 @@ public class BRuleEngine {
     public void dump() {
         goalTable.dump();        
     }
+    
+//  =======================================================================
+//  Engine implementation  
     
     /**
      * Append a new rule node to the end of the agenda.
@@ -358,6 +391,20 @@ public class BRuleEngine {
                     }
                     numResults++;
                     current = continuation;
+                    nRulesFired++;
+                    if (newresult && recordDerivations) {
+                        Rule rule = current.ruleInstance.rule;
+                        List matchList = new ArrayList(rule.bodyLength());
+                        for (int i = 0; i < rule.bodyLength(); i++) {
+                            Object clause = rule.getBodyElement(i);
+                            if (clause instanceof TriplePattern) {
+                                matchList.add(env.instantiate((TriplePattern)clause));
+                            } 
+                        }
+
+                        RuleDerivation derivation = new RuleDerivation(rule, finalResult, matchList, infGraph);
+                        infGraph.logDerivation(finalResult, derivation);
+                    }
                     if (newresult && resultDest == topGoal) {
                         // Found a top level goal result so return it now
                         if (current != null) prependToAgenda(current);

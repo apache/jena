@@ -5,10 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BackwardRuleInfGraphI.java,v 1.3 2003-06-02 16:52:30 der Exp $
+ * $Id: BackwardRuleInfGraphI.java,v 1.4 2003-06-04 08:08:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -18,9 +20,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * to exploit the same core backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-02 16:52:30 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-04 08:08:58 $
  */
-public interface BackwardRuleInfGraphI extends SilentAddI {
+public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
             
     /**
      * Process a call to a builtin predicate
@@ -36,6 +38,11 @@ public interface BackwardRuleInfGraphI extends SilentAddI {
      * axioms) but no backchaining derivation.
      */
     public ExtendedIterator findDataMatches(TriplePattern pattern);
+
+    /**
+     * Log a dervivation record against the given triple.
+     */
+    public void logDerivation(Triple t, Object derivation);
 
 }
 

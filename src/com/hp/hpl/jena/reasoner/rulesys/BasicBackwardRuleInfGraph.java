@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.13 2003-06-02 16:52:31 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.14 2003-06-04 08:08:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-02 16:52:31 $
+ * @version $Revision: 1.14 $ on $Date: 2003-06-04 08:08:58 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -257,6 +257,13 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
     
 //  =======================================================================
 //   Interface between infGraph and the goal processing machinery
+
+    /**
+     * Log a dervivation record against the given triple.
+     */
+    public void logDerivation(Triple t, Object derivation) {
+        derivations.put(t, derivation);
+    }
 
     /**
      * Match a pattern just against the stored data (raw data, schema,

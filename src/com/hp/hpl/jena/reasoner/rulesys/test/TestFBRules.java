@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.6 2003-06-03 21:19:59 der Exp $
+ * $Id: TestFBRules.java,v 1.7 2003-06-04 08:09:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 import org.apache.log4j.Logger;
@@ -32,7 +33,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-03 21:19:59 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-04 08:09:49 $
  */
 public class TestFBRules extends TestCase {
     
@@ -75,7 +76,7 @@ public class TestFBRules extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestFBRules.class ); 
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestFBRules( "testDuplicatesEC4" ));
+//        suite.addTest(new TestFBRules( "testHybrid2" ));
 //        return suite;
     }  
 
@@ -411,13 +412,25 @@ public class TestFBRules extends TestCase {
         "[r2: (?p rdf:type s) -> [r2b: (?x ?p ?x) <- (?x rdf:type t)]]"
                           );        
         Reasoner reasoner =  new FBRuleReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+        FBRuleInfGraph infgraph = (FBRuleInfGraph) reasoner.bind(data);
+        infgraph.setDerivationLogging(true);
+        infgraph.prepare();
+        assertTrue("Forward rule count", infgraph.getNRulesFired() == 3);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, p, null), new Object[] {
                   new Triple(a, p, a),
                   new Triple(a, p, b),
                   new Triple(b, p, a)
               } );
+        assertTrue("Backward rule count", infgraph.getNRulesFired() == 8);
+              
+        // Check derivation tracing as well
+        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
+        assertTrue(di.hasNext());
+        RuleDerivation d = (RuleDerivation)di.next();
+        assertTrue(d.getRule().getName().equals("r1b"));
+        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
+        assertTrue(! di.hasNext());
     }
     
     /**

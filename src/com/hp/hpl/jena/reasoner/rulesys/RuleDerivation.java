@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleDerivation.java,v 1.1 2003-04-17 15:24:26 der Exp $
+ * $Id: RuleDerivation.java,v 1.2 2003-06-04 08:08:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * provide more specific information.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:26 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-04 08:08:58 $
  */
 public class RuleDerivation implements Derivation {
     
@@ -106,6 +106,27 @@ public class RuleDerivation implements Derivation {
         }
     }
     
+
+    /**
+     * @return the triple concluded by the derivation
+     */
+    public Triple getConclusion() {
+        return conclusion;
+    }
+
+    /**
+     * @return the set of triples which were used in firing this rule derivation
+     */
+    public List getMatches() {
+        return matches;
+    }
+
+    /**
+     * @return the rule which fired to create this derivation
+     */
+    public Rule getRule() {
+        return rule;
+    }
 
 }
 

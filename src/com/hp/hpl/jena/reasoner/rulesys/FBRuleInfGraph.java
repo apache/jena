@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.6 2003-06-03 21:21:29 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.7 2003-06-04 08:08:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
 //import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -31,7 +32,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-03 21:21:29 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-04 08:08:58 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -255,7 +256,29 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         super.setTraceOn(state);
         bEngine.setTraceOn(state);
     }
+
+    /**
+     * Set to true to enable derivation caching
+     */
+    public void setDerivationLogging(boolean recordDerivations) {
+        this.recordDerivations = recordDerivations;
+        engine.setDerivationLogging(recordDerivations);
+        bEngine.setDerivationLogging(recordDerivations);
+        if (recordDerivations) {
+            derivations = new OneToManyMap();
+        } else {
+            derivations = null;
+        }
+    }
    
+    /**
+     * Return the number of rules fired since this rule engine instance
+     * was created and initialized
+     */
+    public long getNRulesFired() {
+        return engine.getNRulesFired() + bEngine.getNRulesFired();
+    }
+    
     /**
      * Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. It will
