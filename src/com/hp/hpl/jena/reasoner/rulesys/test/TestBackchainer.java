@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.25 2003-08-12 17:01:41 der Exp $
+ * $Id: TestBackchainer.java,v 1.26 2003-08-13 08:03:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import junit.framework.TestSuite;
  * Parameterizable in subclasses by overriding createReasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2003-08-12 17:01:41 $
+ * @version $Revision: 1.26 $ on $Date: 2003-08-13 08:03:25 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -782,7 +782,9 @@ public class TestBackchainer extends TestCase {
         "[rdfs9:  bound(?y)   (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" + 
         "[restriction4: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X) -> (?C owl:equivalentClass max(?P, ?X))]" +
         "[restrictionProc11: (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing) -> (?X rdf:type max(?P, 1))]" +
-        "[equivalentClass1: (?P owl:equivalentClass ?Q) -> (?P rdfs:subClassOf ?Q), (?Q rdfs:subClassOf ?P) ]" +
+//        "[equivalentClass1: (?P owl:equivalentClass ?Q) -> (?P rdfs:subClassOf ?Q), (?Q rdfs:subClassOf ?P) ]" +
+        "[equivalentClass1: (?P owl:equivalentClass ?Q) -> (?P rdfs:subClassOf ?Q) ]" +
+        "[equivalentClass1: (?P owl:equivalentClass ?Q) -> (?Q rdfs:subClassOf ?P) ]" +
         "[restrictionSubclass1: bound(?D) (?D owl:equivalentClass ?R), isFunctor(?R) (?X rdf:type ?R)-> (?X rdf:type ?D)]" +
          // these ones are noise which can cause run aways or failures if there are bugs        
         "[rdfs8:  unbound(?c) (?a rdfs:subClassOf ?b) (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 

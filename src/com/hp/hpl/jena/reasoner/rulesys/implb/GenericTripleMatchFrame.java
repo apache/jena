@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericTripleMatchFrame.java,v 1.1 2003-08-07 17:02:30 der Exp $
+ * $Id: GenericTripleMatchFrame.java,v 1.2 2003-08-13 08:02:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
  * </p>
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-07 17:02:30 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-13 08:02:40 $
  */
 public class GenericTripleMatchFrame extends GenericChoiceFrame {
     
@@ -48,15 +48,26 @@ public class GenericTripleMatchFrame extends GenericChoiceFrame {
      */
     public boolean bindResult(Triple triple, LPInterpreter interpreter) {
         if (objectVar != null)    interpreter.bind(objectVar,    triple.getObject());
+        int mark = interpreter.trail.size();
         if (objectFunctor != null) {
-            int mark = interpreter.trail.size();
             if (! functorMatch(triple, interpreter)) {
                 interpreter.unwindTrail(mark);
                 return false;
             }
         }
-        if (subjectVar != null)   interpreter.bind(subjectVar,   triple.getSubject());
-        if (predicateVar != null) interpreter.bind(predicateVar, triple.getPredicate());
+        if (subjectVar != null) {
+            if (! interpreter.unify(subjectVar,   triple.getSubject()) ) {
+                interpreter.unwindTrail(mark);
+                return false;
+            }
+        } 
+        if (predicateVar != null) {
+            if (! interpreter.unify(predicateVar, triple.getPredicate()) ) {
+                interpreter.unwindTrail(mark);
+                return false;
+            }
+                
+        } 
         return true;
     }
     

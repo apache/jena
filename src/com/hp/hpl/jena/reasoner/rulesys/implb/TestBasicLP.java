@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.18 2003-08-12 23:11:04 der Exp $
+ * $Id: TestBasicLP.java,v 1.19 2003-08-13 08:02:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-08-12 23:11:04 $
+ * @version $Revision: 1.19 $ on $Date: 2003-08-13 08:02:40 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -70,8 +70,7 @@ public class TestBasicLP  extends TestCase {
 //        return new TestSuite( TestBasicLP.class );
         
         TestSuite suite = new TestSuite();
-        suite.addTest(new TestBasicLP( "testProblem2" ));
-        suite.addTest(new TestBasicLP( "testProblem7" ));
+        suite.addTest(new TestBasicLP( "testProblem8" ));
         return suite;
     }  
    
@@ -793,7 +792,30 @@ public class TestBasicLP  extends TestCase {
                     new Triple(a, p, d),
                 } );
     }
-   
+
+    /**
+     * Test tabled calls with aliased local vars in the call.
+     */   
+    public void testTabled7() {
+        doTest("[r1: (?a q ?b) <- (?a p ?b)]" +
+               "[r2: (?a q ?a) <- (?a s ?a)]" +
+               "[r2: (?a r ?z) <- (?a q ?a)]",
+                new Node[] { },
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(c, p, c),
+                    new Triple(a, p, a),
+                    new Triple(b, s, e),
+                    new Triple(d, s, d),
+                },
+                new Triple(Node.ANY, r, C1),
+                new Object[] {
+                    new Triple(a, r, C1),
+                    new Triple(c, r, C1),
+                    new Triple(d, r, C1),
+                } );
+    }
+    
     /**
      * Test RDFS example.
      */
@@ -1025,6 +1047,33 @@ public class TestBasicLP  extends TestCase {
                 new Triple(a, ty, C2),
                 new Triple(a, ty, C3)
             } );
+    }
+
+    /**
+     * A problem from the original backchainer tests - RDFS example which failed
+     */
+    public void testProblem8() {
+        String ruleSrc = 
+        "[rdfs9:   (?a rdf:type ?y) <- bound(?y) (?x rdfs:subClassOf ?y) (?a rdf:type ?x)]" + 
+        "[restriction4:  (?C owl:equivalentClass max(?P, ?X)) <- (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X)]" +
+        "[restrictionProc11: (?X rdf:type max(?P, 1)) <- (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing)]" +
+        "[equivalentClass1: (?Q rdfs:subClassOf ?P) <- (?P owl:equivalentClass ?Q) ]" +
+        "[equivalentClass1: (?P rdfs:subClassOf ?Q) <- (?P owl:equivalentClass ?Q) ]" +
+        "[restrictionSubclass1: (?X rdf:type ?D) <- bound(?D) (?D owl:equivalentClass ?R), isFunctor(?R) (?X rdf:type ?R)]";
+        doTest( ruleSrc,
+                new Node[] { ty, sC, OWL.equivalentClass.asNode() },
+                new Triple[] {
+                    new Triple(a, ty, OWL.Thing.asNode()),
+                    new Triple(p, ty, OWL.FunctionalProperty.asNode()),
+                    new Triple(c, OWL.equivalentClass.asNode(), C1),
+                    new Triple(C1, ty, OWL.Restriction.asNode()),
+                    new Triple(C1, OWL.onProperty.asNode(), p),
+                    new Triple(C1, OWL.maxCardinality.asNode(), Util.makeIntNode(1)),
+                },
+                new Triple(a, ty, c),
+                new Object[] {
+                    new Triple(a, ty, c)
+                } );
     }
     
     /** 

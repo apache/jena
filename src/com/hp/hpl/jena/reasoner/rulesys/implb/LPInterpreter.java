@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.22 2003-08-12 23:11:04 der Exp $
+ * $Id: LPInterpreter.java,v 1.23 2003-08-13 08:02:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-08-12 23:11:04 $
+ * @version $Revision: 1.23 $ on $Date: 2003-08-13 08:02:40 $
  */
 public class LPInterpreter {
 
@@ -107,21 +107,14 @@ public class LPInterpreter {
     public LPInterpreter(LPBRuleEngine engine, TriplePattern goal, List clauses, boolean isTop) {
         this.engine = engine;
         this.goal = goal;       // Used for debug only
-        // Temp ...
-        // TODO: remove
-        if (goal.getSubject().isVariable() 
-            && goal.getPredicate().equals(com.hp.hpl.jena.vocabulary.RDFS.Nodes.subClassOf)
-            && goal.getObject().isVariable()) {
-                System.out.println("Creating interpreter: " + goal);
-            }
-        // ... end temp
         
         // Construct dummy top environemnt which is a call into the clauses for this goal
         envFrame = new EnvironmentFrame(RuleClauseCode.returnCodeBlock);
         envFrame.allocate(RuleClauseCode.MAX_PERMANENT_VARS);
-        envFrame.pVars[0] = argVars[0] = standardize(goal.getSubject());
-        envFrame.pVars[1] = argVars[1] = standardize(goal.getPredicate());
-        envFrame.pVars[2] = argVars[2] = standardize(goal.getObject());
+        HashMap mappedVars = new HashMap();
+        envFrame.pVars[0] = argVars[0] = standardize(goal.getSubject(), mappedVars);
+        envFrame.pVars[1] = argVars[1] = standardize(goal.getPredicate(), mappedVars);
+        envFrame.pVars[2] = argVars[2] = standardize(goal.getObject(), mappedVars);
         
         if (clauses != null && clauses.size() > 0) {
             if (isTop && engine.getRuleStore().isTabled(goal)) {
@@ -188,14 +181,6 @@ public class LPInterpreter {
      * @return either a StateFlag or  a result Triple
      */
     public synchronized Object next() {
-        // Temp ...
-        if (cpFrame == topTMFrame && argVars[0].isURI() && argVars[0].getURI().equals("C1") &&
-                argVars[1].equals(com.hp.hpl.jena.vocabulary.RDF.Nodes.type) &&
-                argVars[2].equals(com.hp.hpl.jena.vocabulary.RDFS.Nodes.Class)) {
-                    System.out.println("Starting strange case ...");
-                    // TODO: remove
-                }
-        // ... end temp
         StateFlag answer = run();
         if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
@@ -203,7 +188,7 @@ public class LPInterpreter {
             return topTMFrame.lastMatch;
         } else {
             Triple t = new Triple(deref(pVars[0]), deref(pVars[1]), derefPossFunctor(pVars[2]));
-            System.out.println("Ans: " + t);
+//            System.out.println("Ans: " + t);
             return t;
         }
     }
@@ -246,15 +231,6 @@ public class LPInterpreter {
         byte[] code;
         Object[] args;
         
-        // Temp ...
-        // TODO: remove
-        if (goal.getSubject().isVariable() 
-            && goal.getPredicate().equals(com.hp.hpl.jena.vocabulary.RDFS.Nodes.subClassOf)
-            && goal.getObject().isVariable()) {
-                System.out.println("Running interpreter: " + goal);
-            }
-        // ... end temp
-
         main: while (cpFrame != null) {
             // restore choice point
             if (cpFrame instanceof ChoicePointFrame) {
@@ -266,18 +242,6 @@ public class LPInterpreter {
                 }
                 
                 clause = (RuleClauseCode)choice.nextClause();
-                // Temp ...
-                // TODO: remove
-//                if (clause.rule.getName().equals("rdfs7") && deref(argVars[2]).isURI() &&
-//                        deref(argVars[2]).getURI().equals("C1")) {
-                if (clause.rule.getName() != null && clause.rule.getName().equals("rdfs7") ) {
-                    System.out.println("Starting choice on suspect rule. args = " + deref(argVars[0]) + " " + deref(argVars[1]) + " " + deref(argVars[2]));
-                    System.out.println("Interpreter invocation goal was: " + goal);
-                    if (iContext instanceof Generator) {
-                        System.out.println("Invoked by generator with goal: " + ((Generator)iContext).goal);
-                    }
-                }
-                // ... end temp
                 // Create an execution environment for the new choice of clause
                 envFrame = new EnvironmentFrame(clause);
                 envFrame.linkTo(choice.envFrame);
@@ -612,14 +576,6 @@ public class LPInterpreter {
      * Set up a tabled choice point as part of a CALL.
      */
     private void setupTabledCall(int pc, int ac) {
-        // Temp ...
-        // TODO: remove
-        if (deref(argVars[0]).isURI() && deref(argVars[0]).getURI().equals("C1") &&
-                deref(argVars[1]).equals(com.hp.hpl.jena.vocabulary.RDF.Nodes.type) &&
-                deref(argVars[2]).equals(com.hp.hpl.jena.vocabulary.RDFS.Nodes.Class)) {
-                    System.out.println("Seting up call ...");
-                }
-        // ... end temp
         ConsumerChoicePointFrame ccp = new ConsumerChoicePointFrame(this);
         ccp.linkTo(cpFrame);
         ccp.setContinuation(pc, ac);
@@ -651,11 +607,6 @@ public class LPInterpreter {
      * Restore the interpter state according to the given consumer choice point.
      */
     public void restoreState(ConsumerChoicePointFrame ccp) {
-        // Temp
-        Node s = ccp.goal.getSubject(); 
-        if (s.isURI() && s.getURI().equals("C1")) {
-            System.out.println("Restore of " + ccp.goal);
-        }
         cpFrame = ccp;
         System.arraycopy(ccp.argVars, 0, argVars, 0, argVars.length);
         unwindTrail(0);
@@ -730,9 +681,8 @@ public class LPInterpreter {
         if (node instanceof Node_RuleVariable) {
             Node dnode = ((Node_RuleVariable)node).deref();
             if (dnode.isVariable()) {
-                // Problem with variable in return result
-                // Temp debug ...
-                System.out.println("Hit problem");
+                // Problem with variable in return result  "should never happen"
+                throw new ReasonerException("Internal error in LP reasoner: variable in triple result");
             }
             if (Functor.isFunctor(dnode)) {
                 Functor f = (Functor) dnode.getLiteral().getValue();
@@ -764,18 +714,21 @@ public class LPInterpreter {
      * Standardize a node by replacing instances of wildcard ANY by new distinct variables.
      * This is used in constructing the arguments to a top level call from a goal pattern.
      * @param node the node to be standardized
+     * @param mappedVars known mappings from input variables to local variables
      */
-    private Node standardize(Node node) {
+    private Node standardize(Node node, Map mappedVars) {
+        Node dnode = deref(node);
         if (node == Node.ANY || node == Node_RuleVariable.WILD) {
             return new Node_RuleVariable(null, 0);
+        } else if (dnode.isVariable()) {
+            Node mnode = (Node) mappedVars.get(dnode);
+            if (mnode == null) {
+                mnode = new Node_RuleVariable(null, 0);
+                mappedVars.put(dnode, mnode); 
+            }
+            return mnode;
         } else {
-            // TEmp...
-            // TODO: remove
-            Node_RuleVariable temp = new Node_RuleVariable(null, 0);
-            unify(node, temp);
-            return temp;
-            // ... end temp
-//            return node;
+            return dnode;
         }
     }
 }

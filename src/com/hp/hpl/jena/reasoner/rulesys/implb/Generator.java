@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Generator.java,v 1.7 2003-08-12 23:11:04 der Exp $
+ * $Id: Generator.java,v 1.8 2003-08-13 08:02:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-12 23:11:04 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-13 08:02:40 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -202,10 +202,6 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
                 checkReadyNeeded = true;
                 break;
             } else {
-                // TEmp ...
-                // TODO: remove
-                System.out.println("Result " + result + " returned to generator for " + goal);
-                // ... end temp
                 // Simple triple result
                 if (resultSet.add(result)) {
                     results.add(result);
