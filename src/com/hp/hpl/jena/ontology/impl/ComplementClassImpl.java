@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:38 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-06-24 15:28:05 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.8 2003-06-21 12:35:38 ian_dickinson Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.9 2003-06-24 15:28:05 chris-dollin Exp $
  */
 public class ComplementClassImpl 
     extends OntClassImpl
@@ -75,7 +75,7 @@ public class ComplementClassImpl
             return (profile != null)  &&  
                    profile.isSupported( node, eg, OntClass.class )  &&
                    comp != null && 
-                   eg.asGraph().contains( node, comp.asNode(), null );
+                   eg.asGraph().contains( node, comp.asNode(), Node.ANY );
         }
     };
 

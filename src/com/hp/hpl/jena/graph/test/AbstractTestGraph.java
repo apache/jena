@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.6 2003-06-24 10:34:24 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.7 2003-06-24 15:28:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -42,6 +42,15 @@ public abstract class AbstractTestGraph extends GraphTestBase
         g.add( Triple.create( r, p,  s ) );
         assertTrue( g.contains( r, p, Node.ANY ) );
         assertTrue( g.find( r, p, Node.ANY ).hasNext() );
+        }
+        
+    public void testFindByFluidTriple()
+        {
+        Graph g = getGraph();
+        g.add( triple( "x y z ") );
+        assertTrue( g.find( triple( "?? y z" ) ).hasNext() );
+        assertTrue( g.find( triple( "x ?? z" ) ).hasNext() );
+        assertTrue( g.find( triple( "x y ??" ) ).hasNext() );
         }
         
     public void testAGraph()

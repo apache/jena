@@ -1,18 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TripleMatch.java,v 1.3 2003-06-11 12:49:42 chris-dollin Exp $
+  $Id: TripleMatch.java,v 1.4 2003-06-24 15:27:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 /**
- * THIS INTERFACE IS BECOMMING OBSOLETE.
- * A TripleMatch evaluates as true against a triple
- * if all four methods evaluate as true.
- * @author Jeremy Carroll
- *
- * 
+ * @author Jeremy Carroll; updated by kers
  */
 public interface TripleMatch {
     

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: AbstractProfile.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 14:29:59 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-06-24 15:28:05 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -25,6 +25,8 @@ package com.hp.hpl.jena.ontology.impl;
 // Imports
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.ontology.*;
 
@@ -39,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AbstractProfile.java,v 1.2 2003-04-08 14:29:59 ian_dickinson Exp $
+ * @version CVS $Id: AbstractProfile.java,v 1.3 2003-06-24 15:28:05 chris-dollin Exp $
  */
 public abstract class AbstractProfile
     implements Profile 
@@ -104,6 +106,18 @@ public abstract class AbstractProfile
         return aliasMap().getAll( res );
     }
 
+    /**
+        Utility method: answer true iff the enhanced graph contains some triple which
+        has n as subject, p.asNode() as predicate, and any object.
+        
+         @param an enhanced graph to search for triples
+         @param n some node
+         @param p a property containing a predicate node
+         @return true iff the graph contains (n, p, X) for some X 
+    */
+    public static boolean containsSome( EnhGraph g, Node n, Property p )  { 
+        return g.asGraph().contains( n, p.asNode(), Node.ANY ); 
+    }
 
     // Internal implementation methods
     //////////////////////////////////

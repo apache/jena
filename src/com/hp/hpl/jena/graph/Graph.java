@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.10 2003-06-24 10:34:18 chris-dollin Exp $
+  $Id: Graph.java,v 1.11 2003-06-24 15:27:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -53,14 +53,28 @@ public interface Graph  {
     */
     PrefixMapping getPrefixMapping();
     
-    /** adds the triple t (if possible) to the set belong to the graph */
+    /** 
+        Add the triple t (if possible) to the set belonging to this graph 
+     
+        @param t the triple to add to the graph
+        @throws JenaAddDeniedException if the triple cannot be added 
+    */
 	void add(Triple t) throws JenaAddDeniedException;
     
-    /** removes the triple t (if possible) from the set belonging to this graph */   
+    /** 
+        Remove the triple t (if possible) from the set belonging to this graph 
+    
+        @param  t the triple to add to the graph
+        @throws JenaDeleteDeniedException if the triple cannot be removed  
+    */   
 	void delete(Triple t) throws JenaDeleteDeniedException;
       
-	  /** Returns an iterator over Triple.
-	   */
+    /** 
+        Returns an iterator over all the Triples that match the triple pattern.
+	   
+        @param m a Triple[Match] encoding the pattern to look for
+        @return an iterator of all triples in this graph that match m
+    */
 	ExtendedIterator find(TripleMatch m);
     
 	  /** Returns an iterator over Triple.
@@ -78,12 +92,17 @@ public interface Graph  {
 	 */
 	boolean isIsomorphicWith(Graph g);
     
-    /** true iff the graph contains a triple matching (s, p, o).
-        [extended notion of `Node` including `null`]
+    /** 
+        Answer true iff the graph contains a triple matching (s, p, o).
+        s/p/o may be concrete or fluid. Equivalent to find(s,p,o).hasNext,
+        but an implementation is expected to optimise this in easy cases.
     */
     boolean contains( Node s, Node p, Node o );
     
-    /** true iff the graph contains the triple t. */
+    /** 
+        Answer true iff the graph contains a triple that t matches; t may be
+        fluid.
+    */
     boolean contains( Triple t );
     
 	/** Free all resources, any further use of this Graph is an error.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.10 2003-06-20 08:56:50 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.11 2003-06-24 15:28:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -216,6 +216,23 @@ public class TestTriple extends GraphTestBase
         assertTrue( Triple.create( "?? P O" ).subjectMatches( node( "SUB" ) ) );
         assertTrue( Triple.create( "S ?? O" ).predicateMatches( node( "PRED" ) ) );
         assertTrue( Triple.create( "S P ??" ).objectMatches( node( "OBJ" ) ) );    
+        }
+        
+    public void testConcrete()
+        {
+        assertTrue( Triple.create( "S P O" ).isConcrete() );
+        assertTrue( Triple.create( "S P 11").isConcrete() );
+        assertTrue( Triple.create( "S P _X").isConcrete() );
+        assertTrue( Triple.create( "S _P 11").isConcrete() );
+        assertTrue( Triple.create( "_S _P _O").isConcrete() );
+        assertTrue( Triple.create( "10 11 12").isConcrete() );
+        assertTrue( Triple.create( "S P 11").isConcrete() );
+        assertFalse( Triple.create( "?? P 11").isConcrete() );
+        assertFalse( Triple.create( "S ?? 11").isConcrete() );
+        assertFalse( Triple.create( "S P ??").isConcrete() );
+        assertFalse( Triple.create( "?S P 11").isConcrete() );
+        assertFalse( Triple.create( "S ?P 11").isConcrete() );
+        assertFalse( Triple.create( "S P ?O").isConcrete() );
         }
 }
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.3 2003-06-13 10:12:16 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.4 2003-06-24 15:28:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 /**
@@ -64,21 +64,21 @@ public abstract class GraphBase implements Graph {
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#add(Triple)
 	 */
-	public void add(Triple t) {
-		throw new UnsupportedOperationException("GraphBase::add");
+	public void add( Triple t ) {
+		throw new JenaAddDeniedException( "GraphBase::add" );
 	}
 
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#delete(Triple)
 	 */
-	public void delete(Triple t) {
-		throw new UnsupportedOperationException("GraphBase::delete");
+	public void delete( Triple t ) {
+		throw new JenaDeleteDeniedException( "GraphBase::delete" );
 	}
 
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#find(TripleMatch)
 	 */
-	public abstract ExtendedIterator find(TripleMatch m);
+	public abstract ExtendedIterator find( TripleMatch m );
 
 	/**
 		contains( t ) - return true iff the triple t is in this graph
@@ -89,13 +89,25 @@ public abstract class GraphBase implements Graph {
 
 	/**
 		contains( s, p, o ) - returns true iff the triple (s, p, o) is in this graph. 
-	    [currently any of them may be null as a wildcard]. Boring implementation
-	    in terms of `find`, which subclasses may [should] optimise.
+	    s/p/o may be concrete or fluid. default implementation used the
+        containsByFind utility.
 	*/
-	public boolean contains(Node s, Node p, Node o) {
-		ClosableIterator it = find(s, p, o);
-		try { return it.hasNext(); } finally { it.close(); }
+	public boolean contains( Node s, Node p, Node o ) {
+		return containsByFind( Triple.create( s, p, o ) );
 	}
+    
+    /**
+        Utility method: answer true iff we can find at least one instantiation of
+        the triple in this graph using find(TripleMatch).
+        
+        @param t Triple that is the pattern to match
+        @return true iff find(t) returns at least one result
+    */
+    final protected boolean containsByFind( Triple t )
+        {
+        ClosableIterator it = find( t );
+        try { return it.hasNext(); } finally { it.close(); }
+        }
 
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#find(Node, Node, Node)

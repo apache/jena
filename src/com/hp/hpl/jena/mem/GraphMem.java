@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.14 2003-06-24 10:34:24 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.15 2003-06-24 15:28:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import java.util.*;
@@ -58,34 +59,39 @@ public class GraphMem extends GraphBase implements Graph {
             }
         }
 
-    public int size() throws UnsupportedOperationException {
+    public int size()  {
         return triples.size();
     }
 
-    public boolean contains(Triple t) {
-        return triples.contains(t);
+    /**
+        Answer true iff t matches some triple in the graph. If t is concrete, we
+        can use a simple membership test; otherwise we resort to the generic
+        method using find.
+    */
+    public boolean contains( Triple t ) {
+        return t.isConcrete() ? triples.contains( t ) : containsByFind( t );
     }
 
-    public boolean contains(Node s, Node p, Node o) {
-        return 
-            s == null || Node.ANY.equals( s ) 
-            || p == null || Node.ANY.equals( p )
-            || o == null || Node.ANY.equals( o )
-            ? super.contains( s, p, o )
-            : contains( new Triple(s, p, o) )
-            ;
+    /**
+        Answer true if there's some triple in the graph that (s, p, o) matches.
+        Ensures that nulls are not present and then defers to contains(Triple). 
+    */
+    public boolean contains( Node s, Node p, Node o ) {
+        if (s == null || p == null || o == null) throw new JenaException( "null not allowed" );
+        return contains( Triple.create( s, p, o ) );
     }
 
     /** Returns an iterator over Triple.
      */
-    public ExtendedIterator find(TripleMatch m) {
+    public ExtendedIterator find( TripleMatch m ) {
+        Triple tm = m.asTriple();
         Node s = m.getMatchSubject();
         Node p = m.getMatchPredicate();
         Node o = m.getMatchObject();
-        Triple tm = m.asTriple();
+        Node ms = tm.getSubject();
         // @@ some redundant compares in this code which could be improved
-        if (s != null) {
-            return new TripleMatchIterator(tm, subjects.iterator(s));
+        if (ms.isConcrete()) {
+            return new TripleMatchIterator(tm, subjects.iterator( ms ));
         } else if (o != null && !o.isLiteral()) {
             // der - added guard on isLiteral to support typed literal semantics
             return new TripleMatchIterator(tm, objects.iterator(o));

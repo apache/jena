@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:12 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-06-24 15:28:05 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.14 2003-06-16 13:40:12 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.15 2003-06-24 15:28:05 chris-dollin Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -328,48 +328,48 @@ public class OWLProfile
         {  HasValueRestriction.class,   new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
-                                                       g.asGraph().contains( n, OWL.hasValue.asNode(), null ) &&
-                                                       g.asGraph().contains( n, OWL.onProperty.asNode(), null );
+                                                       containsSome( g,n, OWL.hasValue ) &&
+                                                       containsSome( g,n, OWL.onProperty );
                                             }
                                         }
         },
         {  AllValuesFromRestriction.class,   new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
-                                                       g.asGraph().contains( n, OWL.allValuesFrom.asNode(), null ) &&
-                                                       g.asGraph().contains( n, OWL.onProperty.asNode(), null );
+                                                       containsSome( g, n, OWL.allValuesFrom ) &&
+                                                       containsSome( g, n, OWL.onProperty );
                                             }
                                         }
         },
         {  SomeValuesFromRestriction.class,   new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
-                                                       g.asGraph().contains( n, OWL.someValuesFrom.asNode(), null ) &&
-                                                       g.asGraph().contains( n, OWL.onProperty.asNode(), null );
+                                                       containsSome( g,n, OWL.someValuesFrom ) &&
+                                                       containsSome( g,n, OWL.onProperty );
                                             }
                                         }
         },
         {  CardinalityRestriction.class,   new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
-                                                       g.asGraph().contains( n, OWL.cardinality.asNode(), null ) &&
-                                                       g.asGraph().contains( n, OWL.onProperty.asNode(), null );
+                                                      containsSome( g, n, OWL.cardinality ) &&
+                                                       containsSome( g, n, OWL.onProperty );
                                             }
                                         }
         },
         {  MinCardinalityRestriction.class,   new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
-                                                       g.asGraph().contains( n, OWL.minCardinality.asNode(), null ) &&
-                                                       g.asGraph().contains( n, OWL.onProperty.asNode(), null );
+                                                       containsSome( g, n, OWL.minCardinality ) &&
+                                                       containsSome( g, n, OWL.onProperty );
                                             }
                                         }
         },
         {  MaxCardinalityRestriction.class,   new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
-                                                       g.asGraph().contains( n, OWL.maxCardinality.asNode(), null ) &&
-                                                       g.asGraph().contains( n, OWL.onProperty.asNode(), null );
+                                                       containsSome( g, n, OWL.maxCardinality ) &&
+                                                       containsSome( g, n, OWL.onProperty ); 
                                             }
                                         }
         },
@@ -389,7 +389,11 @@ public class OWLProfile
         },
     };
 
-
+    // to allow concise reference in the code above.
+    public static boolean containsSome( EnhGraph g, Node n, Property p ) {
+        return AbstractProfile.containsSome( g, n, p ); 
+        }
+        
     // Static variables
     //////////////////////////////////
 
