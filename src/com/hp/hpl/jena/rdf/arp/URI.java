@@ -96,7 +96,7 @@ import org.apache.commons.logging.LogFactory;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.16 2004-07-09 11:02:44 chris-dollin Exp $
+* @version  $Id: URI.java,v 1.17 2004-07-13 14:50:24 chris-dollin Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -885,7 +885,7 @@ public class URI implements Serializable {
 			throw new MalformedURIException("Cannot set scheme from null string!");
 		}
 		if (!isConformantSchemeName(p_scheme)) {
-			throw new MalformedURIException("The scheme is not conformant.");
+			throw new MalformedURIException("The scheme '" + p_scheme + "' is not conformant.");
 		}
 
 		m_scheme = p_scheme; //.toLowerCase();
