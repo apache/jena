@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.18 2004-01-30 13:09:26 der Exp $
+ * $Id: Util.java,v 1.19 2004-03-18 12:14:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -31,7 +31,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2004-01-30 13:09:26 $
+ * @version $Revision: 1.19 $ on $Date: 2004-03-18 12:14:28 $
  */
 public class Util {
 
@@ -163,8 +163,13 @@ public class Util {
      */
     private static List convertList(Node node, RuleContext context, List sofar) {
         if (node == null || node.equals(RDF.nil.asNode())) return sofar;
-        sofar.add(getPropValue(node, RDF.first.asNode(), context));
-        return convertList(getPropValue(node, RDF.rest.asNode(), context), context, sofar);
+        Node next = getPropValue(node, RDF.first.asNode(), context);
+        if (next != null) {
+            sofar.add(next);
+            return convertList(getPropValue(node, RDF.rest.asNode(), context), context, sofar);
+        } else {
+            return sofar;
+        }
     }
     
     /**

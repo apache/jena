@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.21 2003-08-27 13:11:16 andy_seaborne Exp $
+ * $Id: TestBasics.java,v 1.22 2004-03-18 12:14:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-08-27 13:11:16 $
+ * @version $Revision: 1.22 $ on $Date: 2004-03-18 12:14:53 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -40,6 +40,7 @@ public class TestBasics extends TestCase  {
     Node n2 = Node.createURI("n2");
     Node n3 = Node.createURI("n3");
     Node n4 = Node.createURI("n4");
+    Node n5 = Node.createURI("n5");
     Node res = Node.createURI("res");
         
      
@@ -457,7 +458,41 @@ public class TestBasics extends TestCase  {
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
         assertEquals(infgraph.size(), 2);
     }
+       
+    /**
+     * Test the list conversion utility that is used in some of the builtins.
+     */
+    public void testConvertList() {
+        Graph data = new GraphMem();
+        Node first = RDF.Nodes.first;
+        Node rest  = RDF.Nodes.rest;
+        Node nil = RDF.Nodes.nil;
+        data.add(new Triple(n1, first, p));
+        data.add(new Triple(n1, rest, n2));
+        data.add(new Triple(n2, first, q));
+        data.add(new Triple(n2, rest, nil));
+
+        data.add(new Triple(n3, first, p));
+        data.add(new Triple(n3, rest, n4));
+        data.add(new Triple(n4, rest, n5));
+        data.add(new Triple(n5, first, q));
+        data.add(new Triple(n5, rest, nil));
         
+        String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
+        List ruleList = Rule.parseRules(rules);
+        InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
+        
+        RuleContext context = new BFRuleContext( (ForwardRuleInfGraphI) infgraph);
+        List result = Util.convertList(n1, context);
+        assertEquals(result.size(), 2);
+        assertEquals(result.get(0), p);
+        assertEquals(result.get(1), q);
+
+        List result2 = Util.convertList(n3, context);
+        assertEquals(result2.size(), 1);
+        assertEquals(result2.get(0), p);
+    }
+     
 }
 
 /*
