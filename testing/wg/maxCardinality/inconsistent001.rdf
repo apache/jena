@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: inconsistent001.rdf,v 1.1 2003-04-17 14:34:38 der Exp $
+  $Id: inconsistent001.rdf,v 1.2 2003-09-11 09:47:00 jeremy_carroll Exp $
 -->
 <!--
 A property with maximum cardinality of two cannot take
@@ -38,12 +38,12 @@ three distinct values on some subject node.
     </rdf:Description>
 
     <rdf:Description rdf:about="inconsistent001#ob1">
-        <owl:differentIndividualFrom rdf:resource="inconsistent001#ob2"/>
-        <owl:differentIndividualFrom rdf:resource="inconsistent001#ob3"/>
+        <owl:differentFrom rdf:resource="inconsistent001#ob2"/>
+        <owl:differentFrom rdf:resource="inconsistent001#ob3"/>
     </rdf:Description>
 
     <rdf:Description rdf:about="inconsistent001#ob2">
-        <owl:differentIndividualFrom rdf:resource="inconsistent001#ob3"/>
+        <owl:differentFrom rdf:resource="inconsistent001#ob3"/>
     </rdf:Description>
 
     <owl:ObjectProperty rdf:about="inconsistent001#prop"/>

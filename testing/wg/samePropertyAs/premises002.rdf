@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: premises002.rdf,v 1.1 2003-04-17 14:33:31 der Exp $
+  $Id: premises002.rdf,v 1.2 2003-09-11 09:47:00 jeremy_carroll Exp $
 -->
 <!--
 A reasoner can also deduce that <code>hasLeader</code> is a <code>subProperty</code> of <code>hasHead</code> and <code>hasHead</code> is a <code>subProperty</code> of <code>hasLeader</code>.

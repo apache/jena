@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: Manifest001.rdf,v 1.1 2003-04-17 14:33:20 der Exp $
+  $Id: Manifest001.rdf,v 1.2 2003-09-11 09:47:01 jeremy_carroll Exp $
 -->
 <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
       xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
@@ -28,7 +28,7 @@
    <rtest:description rdf:parseType='Literal'>
 A simple example.</rtest:description>
    <rtest:premiseDocument>
-         <rtest:RDF-XML-Document rdf:about='premises001' >  <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' /> </rtest:RDF-XML-Document>
+         <rtest:RDF-XML-Document rdf:about='premises001' >  <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Lite' /> </rtest:RDF-XML-Document>
    </rtest:premiseDocument>
    <rtest:conclusionDocument>
          <rtest:RDF-XML-Document rdf:about='conclusions001' >  <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' /> </rtest:RDF-XML-Document>

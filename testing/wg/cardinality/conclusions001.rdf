@@ -1,5 +1,5 @@
 <!--++ cardinality/conclusions001.rdf ** generated using webont test editor. ++-->
-<!--++ Created 18 Dec 2002 12:05:39 GMT ++-->
+<!--++ Created 19 Apr 2003 11:25:39 GMT ++-->
 <!--
   Copyright World Wide Web Consortium, (Massachusetts Institute of
   Technology, European Research Consortium for Informatics and
@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: conclusions001.rdf,v 1.1 2003-04-17 14:51:38 der Exp $
+  $Id: conclusions001.rdf,v 1.2 2003-09-11 09:46:56 jeremy_carroll Exp $
 -->
 <!--
 An <code>owl:cardinality</code> constraint is simply shorthand for a pair of <code>owl:minCardinality</code> and <code>owl:maxCardinality</code> constraints.
@@ -23,23 +23,21 @@ An <code>owl:cardinality</code> constraint is simply shorthand for a pair of <co
     xml:base="http://www.w3.org/2002/03owlt/cardinality/conclusions001" >
     <owl:Class rdf:about="premises001#c">
       <rdfs:subClassOf>
-          <rdf:Description>
-             <owl:intersectionOf rdf:parseType="Collection">
-                <owl:Restriction>
-                   <owl:onProperty rdf:resource="premises001#p"/>
-                   <owl:maxCardinality
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="premises001#p"/>
+          <owl:maxCardinality
  rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
-                   >1</owl:maxCardinality>
-                </owl:Restriction>
-                <owl:Restriction>
-                   <owl:onProperty rdf:resource="premises001#p"/>
-                   <owl:minCardinality
+          >1</owl:maxCardinality>
+        </owl:Restriction>
+      </rdfs:subClassOf>
+      <rdfs:subClassOf>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="premises001#p"/>
+          <owl:minCardinality
  rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
-                   >1</owl:minCardinality>
-                </owl:Restriction>
-              </owl:intersectionOf>
-           </rdf:Description>
+           >1</owl:minCardinality>
+         </owl:Restriction>
        </rdfs:subClassOf>
-     </owl:Class>
-     <owl:ObjectProperty rdf:about="premises001#p"/>
+    </owl:Class>
+    <owl:ObjectProperty rdf:about="premises001#p"/>
 </rdf:RDF>

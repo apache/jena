@@ -8,7 +8,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: premises001.rdf,v 1.1 2003-04-17 14:33:51 der Exp $
+  $Id: premises001.rdf,v 1.2 2003-09-11 09:46:58 jeremy_carroll Exp $
 -->
 <!--
 If a document imports another document, then it entails anything that is
@@ -23,7 +23,8 @@ entailed by the conjunction of the two documents.
     xml:base='http://www.w3.org/2002/03owlt/imports/premises001' >
 
     <rdf:Description rdf:about=''>
-        <owl:imports rdf:resource='http://www.w3.org/2002/03owlt/imports/support001-A'/>
+        <owl:imports 
+     rdf:resource="http://www.w3.org/2002/03owlt/imports/support001-A"/>
     </rdf:Description>
 
     <ont:Man rdf:about='http://example.org/data#Socrates'/>

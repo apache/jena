@@ -1,5 +1,5 @@
 <!--++ Nothing/inconsistent001.rdf ** generated using webont test editor. ++-->
-<!--++ Created 27 Sep 2002 10:56:42 GMT ++-->
+<!--++ Created 7 May 2003 11:22:12 GMT ++-->
 <!--
   Copyright World Wide Web Consortium, (Massachusetts Institute of
   Technology, European Research Consortium for Informatics and
@@ -10,16 +10,18 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: inconsistent001.rdf,v 1.1 2003-04-17 14:34:53 der Exp $
+  $Id: inconsistent001.rdf,v 1.2 2003-09-11 09:47:02 jeremy_carroll Exp $
 -->
 <!--
-The triple asserts something of type <code>Nothing</code>, however
+The triple asserts something of type <code>owl:Nothing</code>, however
 that is the empty class.
 -->
 <!-- Author: Jeremy J. Carroll -->
 <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:owl="http://www.w3.org/2002/07/owl#">
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/Nothing/inconsistent001" >
 
   <owl:Nothing/>
+
 </rdf:RDF>

@@ -1,0 +1,183 @@
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:rtest="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#"
+         xmlns:otest="http://www.w3.org/2002/03owlt/testOntology#"
+         xml:base="http://www.w3.org/2002/03owlt/testOntology#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+>
+
+<rdfs:Class rdf:about="#PositiveEntailmentTest">
+   <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#PositiveEntailmentTest"/>
+   <rdfs:comment>
+This is a positive entailment test according to the OWL entailment rules.
+   </rdfs:comment>
+   <rdfs:subClassOf>
+     <owl:Restriction>
+       <owl:onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#entailmentRules"/>
+       <owl:hasValue rdf:resource="http://www.w3.org/2002/07/owl#"/>
+     </owl:Restriction>
+   </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#NegativeEntailmentTest">
+   <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#NegativeEntailmentTest"/>
+   <rdfs:comment>
+This is a negative entailment test according to the OWL entailment rules.
+   </rdfs:comment>
+   <rdfs:subClassOf>
+     <owl:Restriction>
+       <owl:onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#entailmentRules"/>
+       <owl:hasValue rdf:resource="http://www.w3.org/2002/07/owl#"/>
+     </owl:Restriction>
+   </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#TrueTest">
+   <rdfs:subClassOf rdf:resource="#PositiveEntailmentTest"/>
+   <rdfs:comment>
+The conclusions follow from the empty premises.
+   </rdfs:comment>
+   <rdfs:subClassOf>
+     <owl:Restriction>
+       <owl:onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#premiseDocument"/>
+       <owl:hasValue>
+          <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/empty"/>
+       </owl:hasValue>
+     </owl:Restriction>
+   </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#OWLforOWLTest">
+   <rdfs:subClassOf rdf:resource="#TrueTest"/>
+   <rdfs:comment>
+Illustrative of the use of OWL to describe OWL Full.
+   </rdfs:comment>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#ImportLevelTest">
+   <rdfs:comment>
+These tests use two documents.
+One is named importsNNN.rdf, 
+the other is named mainNNN.rdf.
+These tests indicate the 
+interaction between owl:imports
+and the sublanguage levels of the main document.
+   </rdfs:comment>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#NotOwlFeatureTest">
+   <rdfs:comment>
+This is a negative test. The input document contains some use of the
+OWL namespace which is not a feature of OWL. These typically show
+DAML+OIL features that are not being carried forward into OWL.
+   </rdfs:comment>
+   <rdfs:subClassOf>
+     <owl:Restriction >
+       <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+       <owl:onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#inputDocument"/>
+     </owl:Restriction>
+   </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#ImportEntailmentTest">
+   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/03owlt/testOntology#PositiveEntailmentTest" />
+   <rdfs:comment>
+The premise document, and its imports closure, entails the 
+conclusion document.
+   </rdfs:comment>
+</rdfs:Class>
+
+<rdfs:Property rdf:ID="importedPremiseDocument">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#inputDocument"/>
+  <rdfs:comment>Despite the property URI, the document indicated by
+this property may or may not be imported into the test.</rdfs:comment>
+</rdfs:Property>
+
+<rdfs:Class rdf:about="#InconsistencyTest">
+   <rdfs:subClassOf rdf:resource="#PositiveEntailmentTest" />
+   <rdfs:subClassOf>
+     <owl:Restriction>
+       <owl:onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#conclusionDocument"/>
+       <owl:hasValue >
+          <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/false"/>
+       </owl:hasValue>
+     </owl:Restriction>
+   </rdfs:subClassOf>
+   <rdfs:comment>
+An inconsistent OWL document. (One that entails falsehood).
+   </rdfs:comment>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#ConsistencyTest">
+   <rdfs:subClassOf rdf:resource="#NegativeEntailmentTest" />
+   <rdfs:subClassOf>
+     <owl:Restriction>
+       <owl:onProperty rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#conclusionDocument"/>
+       <owl:hasValue >
+          <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/false"/>
+       </owl:hasValue>
+     </owl:Restriction>
+   </rdfs:subClassOf>
+   <rdfs:comment>
+A consistent OWL document. (One that does not entail falsehood).
+   </rdfs:comment>
+</rdfs:Class>
+
+
+<rdf:Property rdf:about="#feature">
+   <rdfs:comment>
+This property relates a test to a language feature.
+The language feature is usually indicated by a class or property.
+   </rdfs:comment>
+</rdf:Property>
+
+
+<owl:FunctionalProperty rdf:ID="level">
+   <rdfs:range>
+     <owl:Class>
+        <owl:oneOf rdf:parseType="Collection">
+           <rdf:Description rdf:ID="Lite" />
+           <rdf:Description rdf:ID="DL" />
+           <rdf:Description rdf:ID="Full" />
+        </owl:oneOf>
+     </owl:Class>
+    </rdfs:range>
+    <rdfs:comment>
+Indicates the conformance level of a document or test in the OWL test suite.
+    </rdfs:comment>
+</owl:FunctionalProperty>
+
+<rdfs:Class rdf:ID="Issue">
+  <rdfs:comment>
+A member of this class is an issue in some issue list.
+  </rdfs:comment>
+</rdfs:Class>
+
+<owl:DatatypeProperty rdf:ID="issueNumber">
+  <rdfs:domain rdf:resource="#Issue" />
+  <rdfs:comment>
+A string valued property that gives a numeral (or some other quasi-numeric string)
+associated with an issue.
+  </rdfs:comment>
+</owl:DatatypeProperty>
+
+<owl:ObjectProperty rdf:ID="usedDatatype">
+    <rdfs:domain rdf:resource="#Test" />
+    <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Datatype" />
+    <rdfs:comment>The object is a datatype that appears in one of the
+test files in the subject test.</rdfs:comment>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:ID="supportedDatatype">
+    <rdfs:subPropertyOf rdf:resource="#usedDatatype" />
+    <rdfs:comment>The subject test is valid only when
+the object datatype is included in the datatype theory.</rdfs:comment>
+</owl:ObjectProperty>
+<!--
+<owl:ObjectProperty rdf:ID="notSupportedDatatype">
+    <rdfs:subPropertyOf rdf:resource="#usedDatatype" />
+    <rdfs:comment>The subject test is valid only when
+the object datatype is not included in the datatype theory.</rdfs:comment>
+</owl:ObjectProperty>
+-->
+
+</rdf:RDF>

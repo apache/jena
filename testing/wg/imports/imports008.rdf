@@ -10,10 +10,12 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: imports008.rdf,v 1.1 2003-04-17 14:33:50 der Exp $
+  $Id: imports008.rdf,v 1.2 2003-09-11 09:46:58 jeremy_carroll Exp $
 -->
 <!--
-Some RDFS files can have type declarations added to make a useful OWL Lite file.
+It is often possible to import an ordinary RDFS document
+unchanged into an OWL Lite document. Aditional type
+declarations may be needed in the importing document.
 -->
 <!-- Author: Jeremy J. Carroll -->
 <rdf:RDF

@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: conclusions005.rdf,v 1.1 2003-04-17 14:51:44 der Exp $
+  $Id: conclusions005.rdf,v 1.2 2003-09-11 09:46:56 jeremy_carroll Exp $
 -->
 <!--
 An <code>owl:cardinality</code> constraint is simply shorthand for a pair of <code>owl:minCardinality</code> and <code>owl:maxCardinality</code> constraints.

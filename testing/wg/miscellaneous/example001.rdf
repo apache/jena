@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <!--
   Copyright World Wide Web Consortium, (Massachusetts Institute of
   Technology, European Research Consortium for Informatics and
@@ -9,7 +8,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: example001.rdf,v 1.1 2003-04-17 14:33:40 der Exp $
+  $Id: example001.rdf,v 1.2 2003-09-11 09:46:56 jeremy_carroll Exp $
 -->
 
 <!DOCTYPE owl [
@@ -20,6 +19,8 @@
    ]>
 
 <rdf:RDF
+    xml:base="http://www.w3.org/2002/03owlt/miscellaneous/example001"
+   
   xmlns     = "http://www.example.org/wine#"
   xmlns:vin = "http://www.example.org/wine#"
   xmlns:food= "http://www.example.org/food#"

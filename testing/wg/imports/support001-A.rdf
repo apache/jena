@@ -8,7 +8,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: support001-A.rdf,v 1.1 2003-04-17 14:33:50 der Exp $
+  $Id: support001-A.rdf,v 1.2 2003-09-11 09:46:58 jeremy_carroll Exp $
 -->
 <!--
 If a document imports another document, then it entails anything that is

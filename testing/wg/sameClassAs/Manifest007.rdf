@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: Manifest007.rdf,v 1.1 2003-04-17 14:33:44 der Exp $
+  $Id: Manifest007.rdf,v 1.2 2003-09-11 09:46:59 jeremy_carroll Exp $
 -->
 <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
       xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
@@ -22,7 +22,7 @@
       xml:base='http://www.w3.org/2002/03owlt/sameClassAs/Manifest007'
 >
 <otest:PositiveEntailmentTest rdf:ID='test'>
-   <rtest:status>PROPOSED</rtest:status>
+   <rtest:status>OBSOLETED</rtest:status>
    <dc:creator>Jeremy J. Carroll</dc:creator>
    <otest:feature rdf:resource='http://www.w3.org/2002/07/owl#sameClassAs' />
    <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />

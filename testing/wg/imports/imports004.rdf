@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: imports004.rdf,v 1.1 2003-04-17 14:33:50 der Exp $
+  $Id: imports004.rdf,v 1.2 2003-09-11 09:46:58 jeremy_carroll Exp $
 -->
 <!--
 Importing OWL Full documents may change the level of OWL Lite or OWL DL documents.

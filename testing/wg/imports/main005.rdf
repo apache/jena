@@ -10,10 +10,11 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: main005.rdf,v 1.1 2003-04-17 14:33:50 der Exp $
+  $Id: main005.rdf,v 1.2 2003-09-11 09:46:58 jeremy_carroll Exp $
 -->
 <!--
-OWL DL documents cannot be imported by OWL Lite documents. 
+If an OWL Lite document imports an OWL DL 
+document then it becomes OWL DL.
 -->
 <!-- Author: Jeremy J. Carroll -->
 <rdf:RDF

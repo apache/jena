@@ -10,10 +10,11 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: imports005.rdf,v 1.1 2003-04-17 14:33:50 der Exp $
+  $Id: imports005.rdf,v 1.2 2003-09-11 09:46:58 jeremy_carroll Exp $
 -->
 <!--
-OWL DL documents cannot be imported by OWL Lite documents. 
+If an OWL Lite document imports an OWL DL 
+document then it becomes OWL DL.
 -->
 <!-- Author: Jeremy J. Carroll -->
 <rdf:RDF
@@ -21,6 +22,7 @@ OWL DL documents cannot be imported by OWL Lite documents.
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:owl="http://www.w3.org/2002/07/owl#"
     xml:base="http://www.w3.org/2002/03owlt/imports/imports005" >
+    <owl:Ontology rdf:about=""/>
     <owl:Class rdf:ID="c">
       <owl:oneOf rdf:parseType="Collection">
         <owl:Thing rdf:ID="x"/>

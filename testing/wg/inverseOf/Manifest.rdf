@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:rtest="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#"
+         xmlns:otest="http://www.w3.org/2002/03owlt/testOntology#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+>
+<!-- OBSOLETED - moved to Manifest001
+
+<otest:PositiveEntailmentTest rdf:ID="test001">
+   <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues.html#I4.5-InverseOf" />
+   <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#inverseOf"/>
+   <rtest:status>APPROVED</rtest:status>
+  <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2002May/0287.html" />
+
+
+
+   <rtest:description> If the pair (x,y) is an instance of P, than the pair (y,x) is
+  an instance of the named property.
+   </rtest:description>
+
+   <rtest:premiseDocument>
+     <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/mapInvP" />
+   </rtest:premiseDocument>
+
+   <rtest:conclusionDocument>
+     <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/mapInvC" />
+   </rtest:conclusionDocument>
+
+</otest:PositiveEntailmentTest>
+
+-->
+
+
+</rdf:RDF>

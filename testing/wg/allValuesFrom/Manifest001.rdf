@@ -1,5 +1,5 @@
 <!--++ allValuesFrom/Manifest001.rdf ** generated using webont test editor. ++-->
-<!--++ Created 17 Dec 2002 13:31:57 GMT ++-->
+<!--++ Created 21 Apr 2003 19:12:55 GMT ++-->
 <!--
   Copyright World Wide Web Consortium, (Massachusetts Institute of
   Technology, European Research Consortium for Informatics and
@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: Manifest001.rdf,v 1.1 2003-04-17 14:34:29 der Exp $
+  $Id: Manifest001.rdf,v 1.2 2003-09-11 09:47:00 jeremy_carroll Exp $
 -->
 <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
       xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
@@ -22,7 +22,9 @@
       xml:base='http://www.w3.org/2002/03owlt/allValuesFrom/Manifest001'
 >
 <otest:PositiveEntailmentTest rdf:ID='test'>
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
    <rtest:status>APPROVED</rtest:status>
+   <rtest:approval rdf:resource='http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444' />
    <dc:creator>Jeremy J. Carroll</dc:creator>
    <otest:feature rdf:resource='http://www.w3.org/2002/07/owl#allValuesFrom' />
    <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Lite' />

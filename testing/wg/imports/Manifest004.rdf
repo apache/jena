@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: Manifest004.rdf,v 1.1 2003-04-17 14:33:50 der Exp $
+  $Id: Manifest004.rdf,v 1.2 2003-09-11 09:46:58 jeremy_carroll Exp $
 -->
 <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
       xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
@@ -21,8 +21,8 @@
       xmlns:owl='http://www.w3.org/2002/07/owl#'
       xml:base='http://www.w3.org/2002/03owlt/imports/Manifest004'
 >
-<otest:ImportsLevelTest rdf:ID='test'>
-   <rtest:status>APPROVED</rtest:status>
+<otest:ImportLevelTest rdf:ID='test'>
+   <rtest:status>APPROVED</rtest:status> <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
    <dc:creator>Jeremy J. Carroll</dc:creator>
    <otest:feature rdf:resource='http://www.w3.org/2002/07/owl#imports' />
    <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
@@ -38,5 +38,5 @@ Importing OWL Full documents may change the level of OWL Lite or OWL DL document
               <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
          </rtest:RDF-XML-Document>
    </rtest:inputDocument>
-</otest:ImportsLevelTest >
+</otest:ImportLevelTest >
 </rdf:RDF>
