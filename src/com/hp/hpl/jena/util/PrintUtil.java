@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PrintUtil.java,v 1.6 2003-08-01 13:25:41 chris-dollin Exp $
+ * $Id: PrintUtil.java,v 1.7 2003-08-22 16:03:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-01 13:25:41 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-22 16:03:45 $
  */
 public class PrintUtil {
 
@@ -89,7 +89,7 @@ public class PrintUtil {
             return "*";
         }
         if (node == null) {
-            return "Null";
+            return "null";
         }
         return node.toString();
     }
@@ -98,6 +98,7 @@ public class PrintUtil {
      * Return a simplified print string for an RDFNode. 
      */
     public static String print(RDFNode node) {
+        if (node == null) return "null";
         return print(node.asNode());
     }
     
@@ -130,6 +131,7 @@ public class PrintUtil {
      * Default print which just uses tostring
      */
     public static String print(Object obj) {
+        if (obj == null) return "null";
         if (obj instanceof Triple) {
             return print((Triple)obj);
         } else if (obj instanceof TriplePattern) {
