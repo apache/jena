@@ -1,69 +1,45 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.14 2003-10-10 15:04:49 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.15 2003-10-16 09:45:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
-import com.hp.hpl.jena.graph.*;
-
 /**
     A ConstraintStage implements the constraint evaluation part of a
-    query. The constraint, expressed as a graph in which each triple
-    SPO constrains the value denoted by S and O to be related by
-    P, is compiled into Predicate objects. The meaning of each P is
-    given by a mapping from predicate URIs to PredicateFactories.
+    query. Any constraints not handled by previous PatternStages are prepared
+    against the mapping and valuated against each binding that comes down
+    the pipe; only bindings that evaluate to <code>true</code> are passed onward.
     
     @author kers
 */
 
 public class ConstraintStage extends Stage
     {
-    protected ExpressionSet constraint;
-    protected Mapping map;
-    protected Valof valof;
+    /**
+        The set of prepared Valuators representing the constraint.
+    */
     protected ExpressionSet prepared;
-    
-    static class Valof implements VariableValues
-        {
-        private Mapping map;
-        private Domain dom;
-        
-        Valof( Mapping map ) { this.map = map; }
-        
-        public Object get( String name )
-             { return dom.get( map.indexOf( Node.createVariable( name ) ) );  }
-                 
-        public Valof setDomain( Domain d ) { dom = d; return this; }  
-        }
-        
+
     /**
         Initialise this ConstraintStage with the mapping [from names to indexes] and
         ExpressionSet [the constraint expressions] that will be evaluated when the
         constraint stage runs.
     */
     public ConstraintStage( Mapping map, ExpressionSet constraint )
-        { this.constraint = constraint; 
-        this.map = map; 
-        this.valof = new Valof( map );
-        this.prepared = constraint.prepare( map );
-        checkConstraint( map, constraint ); }
-        
-    protected void checkConstraint( Mapping map, ExpressionSet constraint )
-        { // TODO this properly
-        // Node n = Node.create( "?deadwood" );
-        // constraint.evalBool( valof.setDomain( new Domain( new Boolean [10] ) ) );    
-        }
-        
- 
+        { this.prepared = constraint.prepare( map ); }
+
+    /**
+        Evaluate the prepared constraints with the values given by the domain.
+        Answer true if the constraint evaluates to true, and false if it evaluates to
+        false or throws an exception.
+    */
    private boolean evalConstraint( Domain d, ExpressionSet e )
-        // { return e.evalBool( valof.setDomain( d ) ); }
-        { 
-        try { return e.evalBool( d ); } 
+        { try 
+            { return e.evalBool( d ); } 
         catch (Exception ex) 
-            { ex.printStackTrace( System.err );
-                return false; } }
+            { ex.printStackTrace( System.err ); return false; } }
         
     /**
         the delivery component: read the domain elements out of the
@@ -77,10 +53,8 @@ public class ConstraintStage extends Stage
         	public void run()
         		{
 		        while (mine.hasNext())
-		            {
-		            Domain d = mine.get();
-		            if (evalConstraint( d, prepared )) L.put( d );
-		            }
+		            { Domain d = mine.get();
+		            if (evalConstraint( d, prepared )) L.put( d ); }
 		        L.close();
         		}
         	} .start();

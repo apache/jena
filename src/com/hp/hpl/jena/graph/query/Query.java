@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.30 2003-10-15 14:03:32 chris-dollin Exp $
+  $Id: Query.java,v 1.31 2003-10-16 09:45:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -111,7 +111,10 @@ public class Query
         
     public Query addConstraint( Expression e )
         { 
-        constraint.add( e );
+        if (e.isApply() && e.getFun().equals( ExpressionFunctionURIs.AND ))
+           for (int i = 0; i < e.argCount(); i += 1) addConstraint( e.getArg( i ) ); 
+        else
+            constraint.add( e );
         return this;    
         }
                 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BaseExampleExpression.java,v 1.8 2003-10-15 10:56:05 chris-dollin Exp $
+  $Id: BaseExampleExpression.java,v 1.9 2003-10-16 09:45:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -42,6 +42,11 @@ public abstract class BaseExampleExpression
         {
         return new BaseExampleExpression()
             {                
+            public String getFun() { return ExpressionFunctionURIs.AND; }
+            public boolean isApply() { return true; }
+            public Expression getArg( int i ) { return i == 0 ? L : R; }
+            public int argCount() { return 2; }
+            
             public Valuator prepare( VariableIndexes vi )
                 {
                 return BaseExampleValuator.and( L.prepare( vi ), R.prepare( vi ) );    

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.13 2003-10-15 10:56:30 chris-dollin Exp $
+  $Id: Expression.java,v 1.14 2003-10-16 09:45:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -19,6 +19,12 @@ import java.util.*;
     (eg an application), <em>the result is unspecified</code>; an implementation is
     free to throw an exception, deliver a null result, deliver a misleading value,
     whatever is convenient.
+<p>
+    The nested class <code>Util</code> provides some expression utility
+    methods, including a generic version of <code>prepare</code>. The nested 
+    abstract class <code>Base</code> and its sub-classes <code>Literal</code>, 
+    <code>Variable</code>, and <code>Application</code> provide a framework 
+    for developers to implement Expressions over.
 
 	@author kers
 */
@@ -97,7 +103,10 @@ public interface Expression
     public static Expression FALSE = new BoolConstant( false );
     
     /**
-        An abstract base class for Expressions; over-ride as appropriate. 
+        An abstract base class for Expressions; over-ride as appropriate. The
+        sub-classes may be more useful. Base provides an implementation of
+        <code>prepare</code> which produces a slow Valuator that relies
+        on the Base's <code>evalBool</code>.
     */
     public static abstract class Base implements Expression
         {        
@@ -109,8 +118,39 @@ public interface Expression
         public int argCount() { return 0; }
         public String getFun() { return null; }
         public Expression getArg( int i ) { return null; }
+        public Valuator prepare( VariableIndexes vi ) { return Util.prepare( this, vi ); }
         }
     
+    /**
+        An abstract base class for literal nodes; subclasses implement getValue().
+    */
+    public static abstract class Literal extends Base
+        {
+        public boolean isLiteral() { return true; }
+        public abstract Object getValue();
+        }
+    
+    /**
+        An abstract base class for variable nodes; subclasses implement getName().
+    */
+    public static abstract class Variable extends Base
+        {
+        public boolean isVariable() { return true; }
+        public abstract String getName();
+        }
+    
+    /**
+        An abstract base class for apply nodes; subclasses implement getFun(),
+        argCount(), and getArg().
+    */
+    public static abstract class Application extends Base
+        {
+        public boolean isApply() { return true; }
+        public abstract int argCount();
+        public abstract String getFun();
+        public abstract Expression getArg( int i );
+        }
+
     /**
         Utility methods for Expressions, captured in a class because they can't be
         written directly in the interface.
@@ -137,8 +177,47 @@ public interface Expression
                     addVariablesOf( s, e.getArg( i ) );
             return s;
             }           
+        
+        /**
+            Answer a Valuator v such that <code>v.evalBool(IndexValues iv)</code>
+            will return
+        <br>
+            <code>
+            e.evalBool( vv ) where vv.get(name) = iv.get(vi.indexOf(name))
+            </code>
+         */
+        public static Valuator prepare( final Expression e, VariableIndexes vi )
+            {
+            final Valof valof = new Valof( vi );
+            return new Valuator()
+                {
+                public boolean evalBool( IndexValues iv )
+                    { return e.evalBool( valof.setDomain( iv ) ); }
+                };
+            }
         }
+     
+    /**
+    	Valof provides an implementation of VariableValues which composes the
+        "compile-time" VariableIndexes map with the "run-time" IndexValues map
+        to produce a VariableValues map. A Valof has mutable state; the setDomain
+        operation changes the IndexValues mapping of the Valof.
     
+    	@author kers
+     */
+    static class Valof implements VariableValues
+        {
+        private VariableIndexes map;
+        private IndexValues dom;
+        
+        public Valof( VariableIndexes map ) { this.map = map; }
+        
+        public final Object get( String name )
+             { return dom.get( map.indexOf( name ) );  }
+                 
+        public final Valof setDomain( IndexValues d ) { dom = d; return this; }  
+        }
+               
     /**
     	Base class used to implement <code>TRUE</code> and <code>FALSE</code>.
      */
