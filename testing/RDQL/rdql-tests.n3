@@ -76,6 +76,15 @@
 [ mf:name "test-B-03" ; mf:action <file:test-B-03> ; mf:result <file:result-B-03.n3> ]
 [ mf:name "test-B-04" ; mf:action <file:test-B-04> ; mf:result <file:result-B-04.n3> ]
 [ mf:name "test-B-05" ; mf:action <file:test-B-05> ; mf:result <file:result-B-05.n3> ]
+[ mf:name "test-B-06" ; mf:action <file:test-B-06> ; mf:result <file:result-B-06.n3> ]
+[ mf:name "test-B-07" ; mf:action <file:test-B-07> ; mf:result <file:result-B-07.n3> ]
+[ mf:name "test-B-08" ; mf:action <file:test-B-08> ; mf:result <file:result-B-08.n3> ]
+[ mf:name "test-B-09" ; mf:action <file:test-B-09> ; mf:result <file:result-B-09.n3> ]
+[ mf:name "test-B-10" ; mf:action <file:test-B-10> ; mf:result <file:result-B-10.n3> ]
+[ mf:name "test-B-11" ; mf:action <file:test-B-11> ; mf:result <file:result-B-11.n3> ]
+[ mf:name "test-B-12" ; mf:action <file:test-B-12> ; mf:result <file:result-B-12.n3> ]
+
+# Jena Tutorial
 [ mf:name "test-T-01" ; mf:action <file:test-T-01> ; mf:result <file:result-T-01.n3> ]
 [ mf:name "test-T-02" ; mf:action <file:test-T-02> ; mf:result <file:result-T-02.n3> ]
 [ mf:name "test-T-03" ; mf:action <file:test-T-03> ; mf:result <file:result-T-03.n3> ]

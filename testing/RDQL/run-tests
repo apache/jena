@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# $Id: run-tests,v 1.2 2003-03-10 09:41:51 andy_seaborne Exp $
+# $Id: run-tests,v 1.3 2003-03-11 17:56:26 andy_seaborne Exp $
 
 # You will probably need to change this script if you use it.
 
-JENADIR=~/Projects/jena
+
+
 RDQL_ARGS=""
 
 for arg in "$@"
@@ -19,19 +20,10 @@ do
     done
 
 
-export JENAROOT="/home/afs/Projects/Jena"
+export JENAROOT="/home/afs/Projects/Jena2"
+export CP="$JENAROOT/classes"
+
 CP="$(jena_path)"
-## CP="${CP:-}"
-## for jar in $JENADIR/lib/*.jar
-## do
-##     if [ "$CP" = "" ]
-##     then
-## 	CP="$jar"
-##     else
-## 	CP="$CP;$jar"
-## 	fi
-## done
 
-TESTFILE="${1:-_control_}"
-
-java -cp "$CP" jena.rdfquery $RDQL_ARGS --test "$TESTFILE"
+TESTFILE="${1:-rdql-tests.n3}"
+rdql --test "$TESTFILE"

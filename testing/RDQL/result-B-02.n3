@@ -10,6 +10,6 @@
           rs:binding [ rdf:type rs:ResultBinding ;
                        rs:variable "x" ; rs:value <http://rdf.hp.com/r> ] ;
           rs:binding [ rdf:type rs:ResultBinding ;
-                       rs:variable "y" ; rs:value <http://rdf.hp.com/p> ] ;
+                       rs:variable "y" ; rs:value <http://rdf.hp.com/p2> ] ;
         ] ;
     .
