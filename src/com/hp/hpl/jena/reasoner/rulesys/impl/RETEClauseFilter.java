@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEClauseFilter.java,v 1.2 2003-06-09 21:00:38 der Exp $
+ * $Id: RETEClauseFilter.java,v 1.3 2003-06-10 08:52:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * and bindings are implemented using a simple byte-coded interpreter.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:38 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-10 08:52:17 $
  */
 public class RETEClauseFilter {
     
@@ -80,13 +80,19 @@ public class RETEClauseFilter {
     /**
      * Create a filter node from a rule clause.
      * Clause complexity is limited to less than 50 args in a Functor.
+     * @param clause the rule clause
+     * @param envLength the size of binding environment that should be created on successful matches
      */
-    public static RETEClauseFilter compile(TriplePattern clause) { 
+    public static RETEClauseFilter compile(TriplePattern clause, int envLength) { 
         byte[] instructions = new byte[300];
         byte[] bindInstructions = new byte[100];
         ArrayList args = new ArrayList();
         int pc = 0;   
         int bpc = 0;
+        
+        // Pass 0 - prepare env creation statement
+        bindInstructions[bpc++] = CREATEToken;
+        bindInstructions[bpc++] = (byte)envLength;
         
         // Pass 1 - check literal values
         Node n = clause.getSubject();
@@ -131,7 +137,7 @@ public class RETEClauseFilter {
                     } else {
                         bindInstructions[bpc++] = BIND;
                         bindInstructions[bpc++] = addr;
-                        bindInstructions[bpc++] = (byte)((Node_RuleVariable)n).getIndex();
+                        bindInstructions[bpc++] = (byte)((Node_RuleVariable)fn).getIndex();
                     }
                 }
             } else {
@@ -145,10 +151,12 @@ public class RETEClauseFilter {
             bindInstructions[bpc++] = ADDRObject;
             bindInstructions[bpc++] = (byte)((Node_RuleVariable)n).getIndex();
         }
+        bindInstructions[bpc++] = END;
+        
         // Pass 4 - Pack instructions
         byte[] packed = new byte[pc + bpc];
         System.arraycopy(instructions, 0, packed, 0, pc);
-        System.arraycopy(instructions, pc, packed, 0, bpc);
+        System.arraycopy(bindInstructions, 0, packed, pc, bpc);
         Object[] packedArgs = args.toArray();
         return new RETEClauseFilter(packed, packedArgs);
     }
