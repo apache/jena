@@ -12,6 +12,8 @@ This release adds a substantially revised and improved ontology API along
 with improved reasoning support for RDFS and many small improvements to 
 the graph SPI. <database?>
 
+... ontology and graph details ...
+
 Reasoners:
 
 The previous default RDFS reasoner (RDFSReasoner1) has been replaced by
@@ -21,9 +23,9 @@ faster, more scalable and more configurable than the earlier version.
 
 The release also includes a very preliminary rule set which implements the
 OWL/Lite subset of OWL/full. This implementation is not yet stable or scalable 
-and is not recommended for use at this stage.
+and is not recommended for non-trivial use at this stage.
 
-Some very preliminary documentation is in <Jena>/doc/user-manual/infernce.
+Some early documentation is in <Jena>/doc/user-manual/inference.
 
 
 
