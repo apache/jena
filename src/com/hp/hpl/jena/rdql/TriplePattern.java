@@ -5,7 +5,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.5 2003-02-20 16:45:51 andy_seaborne Exp $
+ * @version  $Id: TriplePattern.java,v 1.6 2003-02-21 18:17:56 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -15,7 +15,6 @@ import java.util.* ;
 import org.apache.log4j.Logger ;
 
 import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdf.model.impl.* ;
 import com.hp.hpl.jena.mem.* ;
 
 public class TriplePattern
@@ -359,8 +358,10 @@ public class TriplePattern
             o = _o ;
             currentBinding = binding ;
             try {
-                Selector selector = new SimpleSelector(s, p, o) ;
-                sIter = m.listStatements(selector) ;
+                // Jena1 needed:
+                //Selector selector = new SimpleSelector(s, p, o) ;
+                //sIter = m.listStatements(selector) ;
+                sIter = m.listStatements(s, p, o) ;
             } catch (RDFException rdfEx)
             {
                 QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator(RDFException)", "BindingIterator") ;
