@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-08-27 15:20:59 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -46,7 +46,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.14 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.15 2003-08-27 15:20:59 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -218,6 +218,42 @@ public class TestBugReports
         workModel.createStatement(sub, p, obj);
     }
 
+    /** Bug report from Christoph Kunz - reification problems and UnsupportedOperationException */
+    public void test_ck_03() {
+        // part A - surprising reification
+        OntModel model1 = ModelFactory.createOntologyModel(OntModelSpec.DAML_MEM, null);
+        OntModel model2 = ModelFactory.createOntologyModel(OntModelSpec.DAML_MEM_RULE_INF, null);
+
+        Individual sub = model1.createIndividual("http://mytest#i1", model1.getProfile().CLASS());
+        OntProperty pred = model1.createOntProperty("http://mytest#");
+        Individual obj = model1.createIndividual("http://mytest#i2", model1.getProfile().CLASS());
+        OntProperty probabilityP = model1.createOntProperty("http://mytest#prob");
+
+        Statement st = model1.createStatement(sub, pred, obj);
+        model1.add(st);
+        st.createReifiedStatement().addProperty(probabilityP, 0.9);
+        assertTrue( "st should be reified", st.isReified() );
+
+        Statement st2 = model2.createStatement(sub, pred, obj);
+        model2.add(st2);
+        st2.createReifiedStatement().addProperty(probabilityP, 0.3);
+        assertTrue( "st2 should be reified", st2.isReified() );
+
+        sub.addProperty(probabilityP, 0.3);
+        sub.removeAll(probabilityP).addProperty(probabilityP, 0.3); //!!! exception
+
+        // Part B - exception in remove All
+        Individual sub2 = model2.createIndividual("http://mytest#i1", model1.getProfile().CLASS());
+
+        sub.addProperty(probabilityP, 0.3);
+        sub.removeAll(probabilityP); //!!! exception
+
+        sub2.addProperty(probabilityP, 0.3);
+        sub2.removeAll(probabilityP); //!!! exception
+
+    }
+    
+    
     /**
      * Bug report by sjooseng [sjooseng@hotmail.com].  CCE in listOneOf in Enumerated
      * Class with DAML profile.
