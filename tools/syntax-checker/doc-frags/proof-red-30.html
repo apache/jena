@@ -1,0 +1,50 @@
+<p>
+We now consider the case where the explicit type is a blank node.
+</p>
+%%lemma('blank explicit type reduction').
+<dd>
+If <em>g</em> is an acceptable graph
+containing some explicit type triple <em>tr</em>
+with uriref subject <em>n</em>
+which appears in no other triple, except for other
+explicit type triples,
+ and the object of <em>tr</em> is a blank node <em>b</em>,
+then <em>g</em>
+can be reduced by removing that triple.
+</dd>
+<dt>Proof:</dt>
+<dd>
+As before, <em>h</em> is acceptable.
+<br />
+<em>b</em>
+must be 
+%%dl_only(Lvl,'a description or').
+ a restriction (by inspection
+of the triple tables). 
+We use the table below to find a directive corresponding
+to <em>tr</em>. Each entry contains one unexpanded nonterminal
+from the abstract syntax grammar; this being 
+%%dl_only(Lvl,either).
+ <code>restriction</code> 
+%%dl_only(Lvl,'or <code>description</code>').
+.
+Since <em>b</em> is 
+the
+<a href="triples.html#one-object"> object of at most one triple</a>
+ in <em>g</em>,
+and that triple is <em>tr</em> which is not in <em>h</em>, we have
+that <em>b</em> is not the object of any triple in <em>h</em>.
+Hence, the 
+%%linkLemma(description).  applies and a directive
+<em>d</em>
+in any abstract syntax tree corresponding to <em>h</em>
+corresponds to <em>d</em>.
+Thus a new abstract syntax tree can be formed, by cutting <em>d</em> 
+from the old tree and pasting it into the partially unexpanded directive,
+and adding this new directive into the tree.
+</dd>
+</dl>
+
+
+
+
