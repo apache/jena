@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryIsEquivalentTranslator.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-12 15:56:00 $
+ * Last modified on   $Date: 2004-05-18 09:56:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.7 2004-05-12 15:56:00 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.8 2004-05-18 09:56:34 ian_dickinson Exp $
  */
 public class DIGQueryIsEquivalentTranslator 
     extends DIGQueryTranslator
@@ -115,7 +115,9 @@ public class DIGQueryIsEquivalentTranslator
         if (!m_qObject.isBlank() &&
             (p.getURI().equals( da.getOntLanguage().UNION_OF().getURI()) ||
              p.getURI().equals( da.getOntLanguage().INTERSECTION_OF().getURI()) ||
-             p.getURI().equals( da.getOntLanguage().COMPLEMENT_OF().getURI()) ))
+             p.getURI().equals( da.getOntLanguage().COMPLEMENT_OF().getURI()) ) ||
+             p.getURI().equals( da.getOntLanguage().ONE_OF().getURI())
+            )
         {
             if (premises == null) {
                 LogFactory.getLog( getClass() ).warn( "Cannot add comprehension axiom bNode for query because premises model is null" );
@@ -169,7 +171,9 @@ public class DIGQueryIsEquivalentTranslator
                 (pred.getURI().equals( m_predicate ) ||
                  pred.getURI().equals( da.getOntLanguage().UNION_OF().getURI() ) ||
                  pred.getURI().equals( da.getOntLanguage().INTERSECTION_OF().getURI() ) ||
-                 pred.getURI().equals( da.getOntLanguage().COMPLEMENT_OF().getURI() ));
+                 pred.getURI().equals( da.getOntLanguage().COMPLEMENT_OF().getURI() ) ||
+                 pred.getURI().equals( da.getOntLanguage().ONE_OF().getURI() )
+                );
         
         return pass;
     }
