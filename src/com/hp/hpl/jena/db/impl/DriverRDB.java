@@ -51,7 +51,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.41 $ on $Date: 2004-07-25 14:31:08 $
+* @version $Revision: 1.42 $ on $Date: 2004-07-25 14:39:43 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -298,7 +298,6 @@ public abstract class DriverRDB implements IRDBDriver {
                       return formatAndConstructSystemSpecializedGraph();
                     }
                 } catch (Exception e) {
-                    System.out.println("TEMP error flag");
                     // We see an error during format testing, might be a dead
                     // connection rather than an unformated database so abort
                     throw new JenaException("The database appears to be unformatted or corrupted.\n" +
