@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: TestStatements.java,v 1.5 2003-04-14 10:57:27 chris-dollin Exp $
+	$Id: TestStatements.java,v 1.6 2003-04-15 12:43:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -79,11 +79,11 @@ public class TestStatements extends GraphTestBase
         Statement S1 = A.createStatement( S, P, O );
         Statement S2 = A.createStatement( S, P, O );
         assertEquals( S1, S2 );
-        S1.set( S );
+        S1.changeObject( S );
         // assertEquals( S1, S2 );
         HashMap h = new HashMap();
         h.put( S2, "pontisbright" );
-        S2.set( S );
+        S2.changeObject( S );
         // System.err.println( h.get( S2 ) );
         }
         

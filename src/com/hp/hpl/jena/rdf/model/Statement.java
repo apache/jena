@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Triple;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-04-03 12:22:35 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-04-15 12:43:41 $
  */
 public interface Statement  //extends Resource 
 {
@@ -281,109 +281,109 @@ public interface Statement  //extends Resource
      */    
     public boolean getWellFormed() throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      * @return this object to enable cascading of method calls.
      * @param o The new value to be set.
      * @throws RDFException Generic RDF exception.
      */
-    public Statement set(boolean o) throws RDFException;
+    public Statement changeObject(boolean o) throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(long o) throws RDFException;
+    public Statement changeObject(long o) throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(char o) throws RDFException;
+    public Statement changeObject(char o) throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(float o) throws RDFException;
+    public Statement changeObject(float o) throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(double o) throws RDFException;
+    public Statement changeObject(double o) throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(String o) throws RDFException;  
+    public Statement changeObject(String o) throws RDFException;  
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @param wellFormed true if o is well formed XML
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(String o, boolean wellFormed) throws RDFException;
+    public Statement changeObject(String o, boolean wellFormed) throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @param l the language of the String
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement..
      */
-    public Statement set(String o, String l) throws RDFException;
+    public Statement changeObject(String o, String l) throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @param l the language of the String
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(String o, String l, boolean wellFormed) 
+    public Statement changeObject(String o, String l, boolean wellFormed) 
       throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set
      * @param wellFormed true if o is well formed XML
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(RDFNode o) throws RDFException;
+    public Statement changeObject(RDFNode o) throws RDFException;
     
-    /** Set the object of the statement.
+    /** change the object of the statement (S, P, X) to o.
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      *  The Object o is converted to a string representation by calling its
      *  <CODE>toString()</CODE> method.
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
-     * @return this object to enable cascading of method calls.
+     * @return the new (S, P, o) statement.
      */
-    public Statement set(Object o) throws RDFException;
+    public Statement changeObject(Object o) throws RDFException;
     
     /** Remove this statement from its associated model.
      *

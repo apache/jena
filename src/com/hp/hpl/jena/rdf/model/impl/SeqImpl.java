@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-15 06:49:09 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-15 12:43:42 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
@@ -162,55 +162,55 @@ public class SeqImpl extends ContainerImpl implements Seq {
 
     public Seq set(int index, RDFNode o) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o);
+        getProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, boolean o) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o);
+        getProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, long o) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o);
+        getProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, float o) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o);
+        getProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, double o) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o);
+        getProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, char o) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o);
+        getProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, String o) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o);
+        getProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, String o, String l) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o, l);
+        getProperty(RDF.li(index)).changeObject(o, l);
         return this;
     }
     
     public Seq set(int index, Object o) throws RDFException {
         checkIndex(index);
-        getProperty(RDF.li(index)).set(o);
+        getProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     

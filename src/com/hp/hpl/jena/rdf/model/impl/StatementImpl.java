@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-04-14 10:57:27 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-04-15 12:43:42 $
  */
 public class StatementImpl  implements Statement {
     
@@ -185,47 +185,47 @@ public class StatementImpl  implements Statement {
         return getLiteral().getWellFormed();
     }      
     
-    public Statement set(boolean o) throws RDFException {
+    public Statement changeObject(boolean o) throws RDFException {
         return stringReplace( String.valueOf( o ) ); 
     }
     
-    public Statement set(long o) throws RDFException {
+    public Statement changeObject(long o) throws RDFException {
         return stringReplace( String.valueOf( o ) );
     }
     
-    public Statement set(char o) throws RDFException {
+    public Statement changeObject(char o) throws RDFException {
         return stringReplace( String.valueOf( o ) );
     }
     
-    public Statement set(float o) throws RDFException {
+    public Statement changeObject(float o) throws RDFException {
         return stringReplace( String.valueOf( o ) );
     }
     
-    public Statement set(double o) throws RDFException {
+    public Statement changeObject(double o) throws RDFException {
         return stringReplace( String.valueOf( o ) );
     }
     
-    public Statement set(String o) throws RDFException {
+    public Statement changeObject(String o) throws RDFException {
         return stringReplace( String.valueOf( o ) );
     }  
     
-    public Statement set(String o, boolean wellFormed) throws RDFException {
+    public Statement changeObject(String o, boolean wellFormed) throws RDFException {
         return stringReplace( String.valueOf( o ), "", wellFormed );
     }  
     
-    public Statement set(String o, String l) throws RDFException {
+    public Statement changeObject(String o, String l) throws RDFException {
         return stringReplace( String.valueOf( o ), l, false );
     }    
     
-    public Statement set(String o, String l, boolean wellFormed) throws RDFException {
+    public Statement changeObject(String o, String l, boolean wellFormed) throws RDFException {
         return stringReplace( String.valueOf( o ), l, wellFormed );
     }    
     
-    public Statement set(RDFNode o) throws RDFException {
+    public Statement changeObject(RDFNode o) throws RDFException {
         return replace(o);
     }    
     
-    public Statement set(Object o) throws RDFException {
+    public Statement changeObject(Object o) throws RDFException {
         return o instanceof RDFNode
             ? replace( (RDFNode) o )
             : stringReplace( o.toString() )
@@ -251,10 +251,9 @@ public class StatementImpl  implements Statement {
         { return replace( new LiteralImpl( Node.createLiteral( s, lang, wellFormed ), model ) ); };
             
     /** it turns out to be handy to return this StatementImpl as the result */ 
-    protected StatementImpl replace(RDFNode n) throws RDFException {
+    protected StatementImpl replace(RDFNode n)  {
     	mustHaveModel().remove( this ).add( subject, predicate, n );
-    	object = n;
-        return this;
+    	return new StatementImpl( subject, predicate, n, model );
     }
         
     public String toString() {

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.5 2003-04-14 10:57:28 chris-dollin Exp $
+ * $Id: Regression.java,v 1.6 2003-04-15 12:43:42 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.graph.*;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-14 10:57:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-04-15 12:43:42 $'
  */
 public class Regression extends Object {
 
@@ -2777,7 +2777,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(!tvBoolean);
+            n++; stmt = stmt.changeObject(!tvBoolean);
             n++;  if (! (stmt.getBoolean() == !tvBoolean)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2788,7 +2788,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvByte);
+            n++; stmt = stmt.changeObject(tvByte);
             n++;  if (! (stmt.getByte() == tvByte)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2799,7 +2799,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvShort);
+            n++; stmt = stmt.changeObject(tvShort);
             n++;  if (! (stmt.getShort() == tvShort)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2810,7 +2810,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvInt);
+            n++; stmt = stmt.changeObject(tvInt);
             n++;  if (! (stmt.getInt() == tvInt)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2821,7 +2821,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvLong);
+            n++; stmt = stmt.changeObject(tvLong);
             n++;  if (! (stmt.getLong() == tvLong)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2832,7 +2832,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvChar);
+            n++; stmt = stmt.changeObject(tvChar);
             n++;  if (! (stmt.getChar() == tvChar)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2843,7 +2843,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvFloat);
+            n++; stmt = stmt.changeObject(tvFloat);
             n++;  if (! ((stmt.getFloat()-tvFloat)<0.00005)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2854,7 +2854,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvDouble);
+            n++; stmt = stmt.changeObject(tvDouble);
             n++;  if (! ((stmt.getDouble()-tvDouble)<0.0005)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2867,13 +2867,13 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvString);
+            n++; stmt = stmt.changeObject(tvString);
             n++;  if (! (stmt.getString().equals(tvString))) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
             n++;  if (! m.contains(stmt.getSubject(), RDF.value, tvString))
                        error(test,n);
-            n++; stmt.set(tvString, lang);
+            n++; stmt = stmt.changeObject(tvString, lang);
             n++;  if (! (stmt.getString().equals(tvString))) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvString))
                         error(test,n);
@@ -2884,7 +2884,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvResObj);
+            n++; stmt = stmt.changeObject(tvResObj);
             n++;  if (! (stmt.getResource().equals(tvResObj))) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2895,7 +2895,7 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt.set(tvLitObj);
+            n++; stmt = stmt.changeObject(tvLitObj);
             n++;  if (! (stmt.getObject(new LitTestObjF()).equals(tvLitObj)))
                       error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))

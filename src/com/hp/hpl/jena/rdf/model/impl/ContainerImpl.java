@@ -41,7 +41,7 @@ import com.hp.hpl.jena.enhanced.*;
  *  A base class on which the other containers are built.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-11 15:10:16 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-15 12:43:41 $'
  */
 public class ContainerImpl extends ResourceImpl
                            implements Container, ContainerI {
@@ -176,7 +176,7 @@ public class ContainerImpl extends ResourceImpl
             getModel().remove(s);
         } else {
             last = getModel().getProperty(this, RDF.li(size));
-            s.set(last.getObject());
+            s.changeObject(last.getObject());
             getModel().remove(last);
         }
         if (size() != (size -1)) 
