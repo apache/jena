@@ -1,46 +1,39 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.5 2003-04-24 10:45:46 chris-dollin Exp $
+  $Id: TestCapabilities.java,v 1.1 2003-04-24 10:45:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
+import com.hp.hpl.jena.graph.*;
 import junit.framework.*;
-import com.hp.hpl.jena.graph.query.test.*;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
+    Test graph capabilities.
+ 	@author kers
 */
+public class TestCapabilities extends GraphTestBase
+    {
+    public TestCapabilities( String name )
+        { super( name ); };
+        
+    public static TestSuite suite()
+        { return new TestSuite( TestCapabilities.class ); }   
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("graph");
-        addTest( "TestNode", TestNode.suite() );
-        addTest( "TestTriple", TestTriple.suite() );
-        addTest( "TestReifier", TestReifier.suite() );   
-        addTest( "TestTypedLiterals", TestTypedLiterals.suite() );
-        addTest( "TestGraphQuery", QueryTest.suite() );
-        addTest( "TestFactory", TestFactory.suite() );
-        addTest( "TestCapabilities", TestCapabilities.suite() );
+    /**
+        pending on use-cases.
+    */
+    public void testTheyreThere()
+        {
+        Graph g = Factory.createDefaultGraph();
+        Capabilities c = g.getCapabilities();
         }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
     }
 
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

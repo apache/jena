@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.8 2003-04-16 15:32:07 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.9 2003-04-24 10:45:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -13,14 +13,16 @@ import java.util.*;
 
 /**
  * <p>
- * A specialisation of Polymorphic that models an extended graph - that is, one that contains
- * {@link EnhNode Enhanced nodes} or one that itself exposes additional capabilities beyond
- * the graph API.
+ * A specialisation of Polymorphic that models an extended graph - that is, one that 
+ * contains{@link EnhNode Enhanced nodes} or one that itself exposes additional 
+ * capabilities beyond the graph API.
  * </p>
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)<br>
- *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
- *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (refactoring and commentage)
+ * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)
+ * <br><a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)
+ * <br><a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> 
+ * (refactoring and commentage)
 */
+
 public class EnhGraph 
     extends Polymorphic 
 {
@@ -32,7 +34,8 @@ public class EnhGraph
     static private int cnt = 0;
 
     /** Cache of enhanced nodes that have been created */
-    private Cache enhNodes = CacheManager.createCache("RAND","EnhGraph-"+cnt++,1000);
+    private Cache enhNodes = CacheManager.createCache
+        ("RAND","EnhGraph-"+cnt++,1000);
     
     /** The unique personality that is bound to this polymorphic instace */
     private Personality personality;
@@ -45,7 +48,8 @@ public class EnhGraph
      * Construct an enhanced graph from the given underlying graph, and
      * a factory for generating enhanced nodes.
      * 
-     * @param g The underlying plain graph, may be null to defer binding to a given graph until later.
+     * @param g The underlying plain graph, may be null to defer binding to a given 
+     *      graph until later.
      * @param p The personality factory, that maps types to realisations
      */
     public EnhGraph( Graph g, Personality p ) {
@@ -63,33 +67,6 @@ public class EnhGraph
     public Graph asGraph() {
         return graph;
     }
-    
-    /**
-        records the namespace mappings that have been given to this graph.
-        the map is from prefix names to sets of URI strings. In a sane map, 
-        each prefix maps to a singleton set (or null, if it's absent).
-    */
-    private Map nameSpaces = new HashMap();
-    
-    /**
-        add the entries from ns to this mapping.
-        TODO this will replace existing entries, not add to them. Fix.
-    */
-    public void addNamespaces( Map ns )
-        {
-        nameSpaces.putAll( ns );
-        }
-        
-    /**
-        get the namespace mapping as a map from prefix names to sets
-        of strings.
-    */
-    public Map getNamespaces()
-        {
-        Map result = new HashMap();
-        result.putAll( nameSpaces );
-        return result;
-        }
    
     /**
      * Set the graph that this enhanced graph is wrapping. May only be performed once.
@@ -126,14 +103,9 @@ public class EnhGraph
      * @see #isIsomorphicWith
      */
     final public boolean equals(Object o) {
-        return this == o || o instanceof EnhGraph && graph.equals(((EnhGraph) o).asGraph());
-//     	if (o instanceof EnhGraph) {
-//     		return /* super.equals(o) || */
-//     		       graph.equals(((EnhGraph) o).asGraph());
-//     	}
-//        else {
-//            return false;
-//        }
+        return 
+            this == o 
+            || o instanceof EnhGraph && graph.equals(((EnhGraph) o).asGraph());
     }
     
     
@@ -164,9 +136,9 @@ public class EnhGraph
             return eh.viewAs(interf);
             
         // not in the cache, so build a new one
-        eh = (EnhNode) ((GraphPersonality) personality).nodePersonality().newInstance( interf, n, this );
-        enhNodes.put(n,eh);
-        
+        eh = (EnhNode) ((GraphPersonality) personality).nodePersonality()
+            .newInstance( interf, n, this );
+        enhNodes.put( n, eh );        
         return eh;
     }
     
@@ -195,7 +167,8 @@ public class EnhGraph
      * @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
      */
     protected Polymorphic convertTo(Class t) {
-        throw new PersonalityConfigException( "Alternative perspectives on graphs has not been implemented yet" );
+        throw new PersonalityConfigException
+            ( "Alternative perspectives on graphs has not been implemented yet" );
     }
     
     /**
@@ -217,7 +190,7 @@ public class EnhGraph
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -45,6 +45,15 @@
 			new Resources are <i>ReifiedStatement</i> objects. See
 			<a href="reify-api.html">the API proposal</a> document for
 			the moment.
+
+		<h3>Statement.set</h3>
+			The <i>Statement.set(X)</i> methods have been removed. In its
+			place we have the <i>Statement.changeObject(X)</i> methods.
+			These methods update the model in the same way, but they do
+			<i>not</i> alter the Statement object - they construct a new
+			one and return it. This avoids certain technical difficulties
+			which arose from having mutable Statement objects.
+
 		<h2>What Should be Changed</h2>
 		<h3>new SimpleSelector</h3>
 		<ul>
