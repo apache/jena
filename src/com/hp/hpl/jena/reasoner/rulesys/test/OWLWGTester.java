@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.13 2003-07-18 12:50:49 chris-dollin Exp $
+ * $Id: OWLWGTester.java,v 1.14 2003-08-15 16:11:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.implb.FBLPRuleInfGraph;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
 import com.hp.hpl.jena.util.ModelLoader;
 //import com.hp.hpl.jena.util.PrintUtil;
@@ -33,7 +34,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-07-18 12:50:49 $
+ * @version $Revision: 1.14 $ on $Date: 2003-08-15 16:11:17 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -175,6 +176,10 @@ public class OWLWGTester {
         InfGraph graph = reasoner.bind(premises.getGraph());
         Model result = ModelFactory.createModelForGraph(graph);
         
+        if (stats && graph instanceof FBLPRuleInfGraph) {
+            ((FBLPRuleInfGraph)graph).resetLPProfile(true);
+        }
+        
         // Check the results against the official conclusions
         boolean correct = true;
         if (testType.equals(PositiveEntailmentTest)) {
@@ -189,6 +194,10 @@ public class OWLWGTester {
         if (stats) {
             logger.info("Time=" + (t2-t1) + "ms for " + test.getURI());
             printStats();
+            
+            if (graph instanceof FBLPRuleInfGraph) {
+                ((FBLPRuleInfGraph)graph).printLPProfile();
+            }
         }
         
         if (!correct) {
