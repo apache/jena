@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.11 2003-08-26 15:44:15 wkw Exp $
+  $Id: TestConnection.java,v 1.12 2003-08-26 17:22:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -136,7 +136,7 @@ public class TestConnection extends TestCase {
 		ModelMaker maker = ModelFactory.createModelRDBMaker(conn);
 		Model m = null;
 		try {
-			m  = maker.createModel(DefModel);
+			m  = maker.createModel(DefModel, false);
 			assertTrue(false);
 		} catch (Exception e) {
 		}
