@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLRuleTranslationHook.java,v 1.4 2003-09-05 16:15:44 der Exp $
+ * $Id: OWLRuleTranslationHook.java,v 1.5 2003-09-05 16:42:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * intersection statement.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-09-05 16:15:44 $
+ * @version $Revision: 1.5 $ on $Date: 2003-09-05 16:42:51 $
  */
 public class OWLRuleTranslationHook implements RulePreprocessHook {
 
@@ -54,6 +54,7 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
                                     new TriplePattern(className, RDFS.subClassOf.asNode(), description)
                                     }, new ClauseEntry[0]);
                 ir.setBackward(false);
+//                System.out.println("translation hook => " + ir);
                 infGraph.addRuleDuringPrepare(ir);
                // Recognition rule elements
                recognitionBody.add(new TriplePattern(var, RDF.type.asNode(), description));
@@ -86,6 +87,7 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
             throw new ReasonerException("Illegal list structure in owl:intersectionOf");
         }
         // Translate the first description element
+        /* - temp comment out during debugging
         if (dataFind.contains(new TriplePattern(description, RDF.type.asNode(), OWL.Restriction.asNode()))) {
             // Process a restriction element
             Node onprop = Util.getPropValue(description, OWL.onProperty.asNode(), dataFind);
@@ -110,6 +112,10 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
             // Assume its a class name
             elements.add(description);
         }
+        */
+        // Above used to translated intersections into direct functor tests but in fact the
+        // references to the restriction bNode is sufficent and a better match to the current rules
+        elements.add(description);
         // Process the list tail
         Node next = Util.getPropValue(node, RDF.rest.asNode(), dataFind);
         translateIntersectionList(next, dataFind, elements);
