@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.4 2003-04-08 14:13:56 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.5 2003-04-08 14:54:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -91,18 +91,9 @@ public abstract class GraphBase implements Graph {
 	protected Reifier reifier = null;
 	
 	public Reifier getReifier() {
-		if (reifier == null) reifier = new NullReifier( this );
+		if (reifier == null) reifier = new SimpleReifier( this, false );
 		return reifier;
 	}
-    
-    static class NullReifier extends SimpleReifier
-        {
-        NullReifier( Graph parent )
-            {
-            super( parent );
-            passing = true;
-            }
-        }
     
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#size()
@@ -138,44 +129,12 @@ public abstract class GraphBase implements Graph {
 	}
     
     /**
-        return a dynamic copy of G with full reification
+        return a dynamic copy of G with full reification (ie captures
+        inbound reification triples)
     */
     public static Graph withReification( Graph g )
-        {
-        return new SPOO( g );
-        }
+        { return new ReifyingCaptureGraph( g ); }
         
-    public static class SPOO extends GraphBase
-        {
-        Graph under;
-        
-        SPOO( Graph under )
-            { this.under = under; }
-            
-        public Reifier getReifier() 
-            {
-            if (reifier == null) reifier = new SimpleReifier( this );
-            return reifier;
-            }
-            
-        public ExtendedIterator find( TripleMatch m ) 
-            { return under.find( m ); }
-            
-        public boolean contains( Node s, Node p, Node o )
-            { return under.contains( s, p, o ); }
-            
-        public void add( Triple t )
-            { if (getReifier().handledAdd( t ) == false) under.add( t ); }
-            
-        public void delete( Triple t )
-            { if (getReifier().handledRemove( t ) == false) under.delete( t ); }
-            
-        public int size()
-            { return under.size(); }
-            
-        public String toString()
-            { return "SPOO " + super.toString(); }
-        }
 }
 
 /*

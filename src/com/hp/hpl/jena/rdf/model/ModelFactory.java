@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.4 2003-04-08 14:14:58 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.5 2003-04-08 14:55:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -33,7 +33,7 @@ public class ModelFactory
         (but still handles reifyAs() and .as(ReifiedStatement).
     */
     public static Model createNonreifyingModel()
-        { return new ModelCom( GraphBase.withReification( new GraphMem() ), BuiltinPersonalities.model );}
+        { return new ModelCom( new GraphMem(), BuiltinPersonalities.model );}
         
     /** 
      * <p>
