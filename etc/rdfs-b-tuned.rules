@@ -47,10 +47,10 @@
 #------------------------------------------------------------------
 
 # This one could be omitted since the results are not really very interesting!
-#[rdf1: (?x ?p ?y) -> (?x rdf:type rdfs:Resource)]
-#[rdf1b: (?x ?p ?y), notLiteral(?y) -> (?y rdf:type rdfs:Resource)]
-#[rdf4: (?x ?p ?y) -> (?p rdf:type rdf:Property)]
-#[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
+[rdf1: (?x ?p ?y) -> (?x rdf:type rdfs:Resource)]
+[rdf1b: (?x ?p ?y), notLiteral(?y) -> (?y rdf:type rdfs:Resource)]
+[rdf4: (?x ?p ?y) -> (?p rdf:type rdf:Property)]
+[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
 
 [rdfs2:  bound(?c)   (?p rdfs:domain ?c) (?x ?p ?y)  -> (?x rdf:type ?c)] 
 [rdfs2:  unbound(?c) (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)] 
