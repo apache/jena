@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ContainerImpl.java,v 1.10 2003-07-24 12:40:48 chris-dollin Exp $
+  $Id: ContainerImpl.java,v 1.11 2003-08-27 13:05:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -19,7 +19,7 @@ import java.util.*;
  *  A base class on which the other containers are built.
  *
  * @author  bwm, kers
- * @version  $Id: ContainerImpl.java,v 1.10 2003-07-24 12:40:48 chris-dollin Exp $
+ * @version  $Id: ContainerImpl.java,v 1.11 2003-08-27 13:05:53 andy_seaborne Exp $
 */
 
 public class ContainerImpl extends ResourceImpl
@@ -219,7 +219,7 @@ public class ContainerImpl extends ResourceImpl
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+ *  (c) Copyright 2000  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -3,22 +3,22 @@
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BuiltinRegistry.java,v 1.11 2003-08-24 21:16:46 der Exp $
+ * $Id: BuiltinRegistry.java,v 1.12 2003-08-27 13:09:18 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.reasoner.rulesys.builtins.*;
 import java.util.*;
 
-/** * A registry for mapping functor names on java objects (instances 
+/** * A registry for mapping functor names on java objects (instances 
  * of subclasses of Builtin) which implement their behvaiour.
  * <p>
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.
  * 
- * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.11 $ on $Date: 2003-08-24 21:16:46 $ */
+ * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.12 $ on $Date: 2003-08-27 13:09:18 $ */
 public class BuiltinRegistry {
 
     /** The single global static registry */
@@ -113,7 +113,7 @@ public class BuiltinRegistry {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

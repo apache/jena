@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommon.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:34 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:04:45 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommon.java,v 1.7 2003-06-21 12:35:34 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommon.java,v 1.8 2003-08-27 13:04:45 andy_seaborne Exp $
  */
 public interface DAMLCommon
     extends OntResource
@@ -166,7 +166,7 @@ public interface DAMLCommon
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2001-2003
+    (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestMultiUnion.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-28 10:28:53 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-27 13:01:01 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -42,7 +42,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestMultiUnion.java,v 1.4 2003-05-28 10:28:53 chris-dollin Exp $
+ * @version CVS $Id: TestMultiUnion.java,v 1.5 2003-08-27 13:01:01 andy_seaborne Exp $
  */
 public class TestMultiUnion
     extends GraphTestBase
@@ -323,7 +323,7 @@ public class TestMultiUnion
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

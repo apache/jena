@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: TestAxioms.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:16:45 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:04:46 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -36,7 +36,7 @@ import junit.framework.TestSuite;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAxioms.java,v 1.4 2003-05-30 14:16:45 ian_dickinson Exp $
+ * @version CVS $Id: TestAxioms.java,v 1.5 2003-08-27 13:04:46 andy_seaborne Exp $
  */
 public class TestAxioms
     extends OntTestBase 
@@ -86,7 +86,7 @@ public class TestAxioms
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

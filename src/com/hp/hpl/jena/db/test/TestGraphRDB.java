@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDB.java,v 1.6 2003-07-16 15:29:41 chris-dollin Exp $
+  $Id: TestGraphRDB.java,v 1.7 2003-08-27 12:56:20 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -53,7 +53,7 @@ public class TestGraphRDB extends AbstractTestGraph
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DBPropPrefix extends DBProp {
 
@@ -52,7 +52,7 @@ public class DBPropPrefix extends DBProp {
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2003.
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on the Jena1 version of IRDBDriver by Dave Reynolds
 * 
 * @author hkuno
-* @version $Revision: 1.8 $
+* @version $Revision: 1.9 $
 */
 
 public interface IPSet {
@@ -159,7 +159,7 @@ public interface IPSet {
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000-2003
+ *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

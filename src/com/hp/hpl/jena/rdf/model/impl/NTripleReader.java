@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001, 2002
+ *  (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleReader.java,v 1.10 2003-08-23 12:18:19 der Exp $
+ * $Id: NTripleReader.java,v 1.11 2003-08-27 13:05:53 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -42,7 +42,7 @@ import java.util.*;
 /** N-Triple Reader
  *
  * @author  Brian McBride, Jeremy Carroll, Dave Banks
- * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-08-23 12:18:19 $
+ * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-08-27 13:05:53 $
  */
 public class NTripleReader extends Object implements RDFReader {
     static final Logger log = Logger.getLogger(NTripleReader.class);

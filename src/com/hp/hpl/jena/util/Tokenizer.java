@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  24-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Tokenizer.java,v 1.1 2003-06-24 10:55:24 der Exp $
+ * $Id: Tokenizer.java,v 1.2 2003-08-27 13:07:55 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
  * character strings which can include other separators.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-24 10:55:24 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:07:55 $
  */
 public class Tokenizer {
     
@@ -159,7 +159,7 @@ public class Tokenizer {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  18-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Finder.java,v 1.4 2003-06-22 16:10:50 der Exp $
+ * $Id: Finder.java,v 1.5 2003-08-27 13:09:19 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * Should be implemented by reasoners, caches and related datastructures.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:09:19 $
  */
 public interface Finder {
 
@@ -49,7 +49,7 @@ public interface Finder {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

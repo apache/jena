@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-May-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfModelImpl.java,v 1.4 2003-08-25 08:31:30 der Exp $
+ * $Id: InfModelImpl.java,v 1.5 2003-08-27 13:05:53 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * an InfGraph.
 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-25 08:31:30 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:05:53 $
  */
 public class InfModelImpl extends ModelCom implements InfModel {
 
@@ -164,7 +164,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  27-Mar-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSD.java,v 1.4 2003-04-15 21:32:22 jeremy_carroll Exp $
+ * $Id: XSD.java,v 1.5 2003-08-27 13:08:11 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
  * the XSD primitive datatypes which are known to Jena. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:32:22 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:08:11 $
  */
 public class XSD {
     /** Resource URI for xsd:float */
@@ -203,7 +203,7 @@ public class XSD {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

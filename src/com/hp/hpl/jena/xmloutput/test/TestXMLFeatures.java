@@ -1,8 +1,8 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.29 2003-08-08 08:11:15 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.30 2003-08-27 13:11:17 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import org.apache.log4j.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.29 $ $Date: 2003-08-08 08:11:15 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.30 $ $Date: 2003-08-27 13:11:17 $
  */
 
 public class TestXMLFeatures extends TestCase {
@@ -1066,7 +1066,7 @@ public class TestXMLFeatures extends TestCase {
 	}
 }
 /*
- *  (c)   Copyright Hewlett-Packard Company 2001-2003
+ *  (c)   Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *    All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -1091,5 +1091,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.29 2003-08-08 08:11:15 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.30 2003-08-27 13:11:17 andy_seaborne Exp $
  */

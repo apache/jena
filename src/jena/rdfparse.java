@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: rdfparse.java,v 1.2 2003-07-01 14:43:55 andy_seaborne Exp $
+  $Id: rdfparse.java,v 1.3 2003-08-27 13:04:04 andy_seaborne Exp $
 */
 
 package jena;
@@ -84,7 +84,7 @@ public class rdfparse {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AlreadyLinkedViewException.java,v 1.1 2003-06-11 15:13:22 chris-dollin Exp $
+  $Id: AlreadyLinkedViewException.java,v 1.2 2003-08-27 12:59:37 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -24,7 +24,7 @@ public class AlreadyLinkedViewException extends JenaException
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

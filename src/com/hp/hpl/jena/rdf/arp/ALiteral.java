@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001 
+ *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ALiteral.java,v 1.1.1.1 2002-12-19 19:15:56 bwm Exp $
+   $Id: ALiteral.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
    AUTHOR:  Jeremy J. Carroll
 */
  /*

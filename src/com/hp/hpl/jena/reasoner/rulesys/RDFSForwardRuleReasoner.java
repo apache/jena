@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  06-Apr-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSForwardRuleReasoner.java,v 1.1 2003-06-22 16:10:31 der Exp $
+ * $Id: RDFSForwardRuleReasoner.java,v 1.2 2003-08-27 13:11:15 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,14 +14,14 @@ import java.util.*;
 
 import com.hp.hpl.jena.reasoner.ReasonerException;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
-/** * An pure forward chaining implementation of the RDFS closure rules
+/** * An pure forward chaining implementation of the RDFS closure rules
  * based upon the basic forward rule interpreter. The normal mixed
  * forward/backward implementation is generally preferred but this has 
  * two possible uses. First, it is a test and demonstration of the forward
  * chainer. Second, if you want all the RDFS entailments for an entire 
  * dataset the forward chainer will be more efficient.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.1 $ on $Date: 2003-06-22 16:10:31 $ */
-public class RDFSForwardRuleReasoner extends GenericRuleReasoner {    
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:15 $ */
+public class RDFSForwardRuleReasoner extends GenericRuleReasoner {    
     /** The location of the OWL rule definitions on the class path */
     public static final String RULE_FILE = "etc/rdfs.rules";
 //    public static final String RULE_FILE = "etc/rdfs-noresource.rules";
@@ -55,7 +55,7 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

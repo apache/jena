@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleGraphMaker.java,v 1.1 2003-05-09 10:40:27 chris-dollin Exp $
+  $Id: TestSimpleGraphMaker.java,v 1.2 2003-08-27 13:00:37 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -30,7 +30,7 @@ public class TestSimpleGraphMaker extends AbstractTestGraphMaker
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

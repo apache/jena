@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Mar-2003
  * Filename           $RCSfile: OntologyException.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 15:21:50 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-27 13:04:45 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyException.java,v 1.2 2003-06-17 15:21:50 chris-dollin Exp $
+ * @version CVS $Id: OntologyException.java,v 1.3 2003-08-27 13:04:45 andy_seaborne Exp $
  */
 public class OntologyException
     extends JenaException 
@@ -75,7 +75,7 @@ public class OntologyException
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

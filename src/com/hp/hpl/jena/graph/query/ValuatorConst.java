@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ValuatorConst.java,v 1.3 2003-08-04 14:03:13 chris-dollin Exp $
+  $Id: ValuatorConst.java,v 1.4 2003-08-27 13:00:59 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -24,7 +24,7 @@ public class ValuatorConst implements Valuator
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002, 2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

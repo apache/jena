@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: SomeValuesFromRestriction.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-19 16:50:41 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:04:45 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SomeValuesFromRestriction.java,v 1.4 2003-08-19 16:50:41 ian_dickinson Exp $
+ * @version CVS $Id: SomeValuesFromRestriction.java,v 1.5 2003-08-27 13:04:45 andy_seaborne Exp $
  */
 public interface SomeValuesFromRestriction 
     extends Restriction
@@ -90,7 +90,7 @@ public interface SomeValuesFromRestriction
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

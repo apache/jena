@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  06-Apr-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Derivation.java,v 1.4 2003-06-04 08:09:49 der Exp $
+ * $Id: Derivation.java,v 1.5 2003-08-27 13:09:19 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.io.PrintWriter;
  * the derivation trace. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-04 08:09:49 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:09:19 $
  */
 public interface Derivation {
 
@@ -40,7 +40,7 @@ public interface Derivation {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 15:30:37 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:04:45 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -41,7 +41,7 @@ import java.util.*;
  * information from all loaded ontologies.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.8 2003-07-24 15:30:37 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.9 2003-08-27 13:04:45 andy_seaborne Exp $
  */
 public interface DAMLModel
     extends OntModel
@@ -338,7 +338,7 @@ public interface DAMLModel
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

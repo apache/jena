@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: One.java,v 1.2 2003-04-17 10:50:02 jeremy_carroll Exp $
+  $Id: One.java,v 1.3 2003-08-27 13:04:44 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -19,7 +19,7 @@ interface One extends CNodeI {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+	(c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

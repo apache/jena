@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestIntersection.java,v 1.5 2003-05-28 10:28:53 chris-dollin Exp $
+  $Id: TestIntersection.java,v 1.6 2003-08-27 13:01:01 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -55,7 +55,7 @@ public class TestIntersection extends GraphTestBase
 		}
 	}
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

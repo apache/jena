@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001 
+ *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,12 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: DAML.java,v 1.1.1.1 2002-12-19 19:16:08 bwm Exp $
+ * * $Id: DAML.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
 /*
- *  (c) Copyright Hewlett-Packard Company 2001 
+ *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ package com.hp.hpl.jena.rdf.arp;
  * A fuller DAML implementation would belong in
  * com.hp.hpl.vocabulary
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:16:08 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-08-27 13:05:52 $'
  */
 class DAML {
     

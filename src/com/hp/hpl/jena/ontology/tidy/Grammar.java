@@ -1,6 +1,6 @@
-/* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
+/* (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Grammar.java,v 1.17 2003-05-07 20:28:25 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.18 2003-08-27 13:04:44 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.Arrays;
@@ -2983,7 +2983,7 @@ static final int lists = CategorySet.find( listsX,false);
 static final int disjointWith = CategorySet.find( disjointWithX,false);
 }
  /*
-	(c) Copyright Hewlett-Packard Company 2003
+	(c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
  
 	Redistribution and use in source and binary forms, with or without

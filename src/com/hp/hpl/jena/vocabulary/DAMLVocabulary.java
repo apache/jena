@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            16 Jan 2001
  * Filename           $RCSfile: DAMLVocabulary.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:01 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:08:11 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLVocabulary.java,v 1.4 2003-06-18 21:56:01 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLVocabulary.java,v 1.5 2003-08-27 13:08:11 andy_seaborne Exp $
  */
 public interface DAMLVocabulary
 {
@@ -221,7 +221,7 @@ public interface DAMLVocabulary
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

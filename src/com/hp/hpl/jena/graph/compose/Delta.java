@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Delta.java,v 1.5 2003-08-04 13:28:57 chris-dollin Exp $
+  $Id: Delta.java,v 1.6 2003-08-27 13:01:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -80,7 +80,7 @@ public class Delta extends Dyadic implements Graph
 	}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

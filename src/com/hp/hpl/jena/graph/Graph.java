@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Graph.java,v 1.21 2003-08-25 16:54:40 chris-dollin Exp $
+  $Id: Graph.java,v 1.22 2003-08-27 13:01:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -129,7 +129,7 @@ public interface Graph  extends GraphAdd
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

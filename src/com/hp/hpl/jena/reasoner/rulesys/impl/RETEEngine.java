@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEEngine.java,v 1.14 2003-08-08 10:10:20 der Exp $
+ * $Id: RETEEngine.java,v 1.15 2003-08-27 13:11:15 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-08-08 10:10:20 $
+ * @version $Revision: 1.15 $ on $Date: 2003-08-27 13:11:15 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -482,7 +482,7 @@ public class RETEEngine implements FRuleEngineI {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

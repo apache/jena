@@ -6,12 +6,12 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: PrettyWriterTest.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  *
- * Last modified on   $Date: 2003-06-17 13:39:28 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-27 13:11:17 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright Hewlett-Packard Company 2002
+ * (c) Copyright 2002 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.3 2003-06-17 13:39:28 chris-dollin Exp $,
+ * @version CVS info: $Id: PrettyWriterTest.java,v 1.4 2003-08-27 13:11:17 andy_seaborne Exp $,
  */
 public class PrettyWriterTest extends TestCase {
 

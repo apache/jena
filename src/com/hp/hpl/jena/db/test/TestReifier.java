@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.12 2003-08-05 14:34:08 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.13 2003-08-27 12:56:20 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -62,7 +62,7 @@ public class TestReifier extends AbstractTestReifier  {
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

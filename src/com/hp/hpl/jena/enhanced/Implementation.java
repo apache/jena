@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Implementation.java,v 1.5 2003-07-15 13:26:58 chris-dollin Exp $
+  $Id: Implementation.java,v 1.6 2003-08-27 12:59:37 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -40,7 +40,7 @@ public abstract class Implementation {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2002
+	(c) Copyright 2002 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
  *
  *  All rights reserved.
  *
@@ -44,7 +44,7 @@ public class CacheManager {
     }
 }
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
  *
  *  All rights reserved.
  *
@@ -71,5 +71,5 @@ public class CacheManager {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: CacheManager.java,v 1.3 2003-04-08 22:11:58 ian_dickinson Exp $
+ * $Id: CacheManager.java,v 1.4 2003-08-27 13:07:54 andy_seaborne Exp $
  */

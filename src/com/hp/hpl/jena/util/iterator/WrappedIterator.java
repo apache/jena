@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.3 2003-04-11 10:37:51 chris-dollin Exp $
+  $Id: WrappedIterator.java,v 1.4 2003-08-27 13:07:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -58,7 +58,7 @@ public class WrappedIterator extends NiceIterator
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

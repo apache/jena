@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.18 2003-07-23 07:20:02 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.19 2003-08-27 13:11:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -54,7 +54,7 @@ public class TestPackage extends TestSuite {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

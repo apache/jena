@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFactory.java,v 1.9 2003-07-24 09:10:18 chris-dollin Exp $
+  $Id: TestFactory.java,v 1.10 2003-08-27 13:00:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -29,7 +29,7 @@ public class TestFactory extends GraphTestBase
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

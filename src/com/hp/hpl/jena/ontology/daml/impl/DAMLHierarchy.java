@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            7 Sept 2001
  * Filename           $RCSfile: DAMLHierarchy.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:04:45 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -37,7 +37,7 @@ import java.util.*;
  * into their model each time. Uses Singleton pattern.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLHierarchy.java,v 1.3 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLHierarchy.java,v 1.4 2003-08-27 13:04:45 andy_seaborne Exp $
  */
 public class DAMLHierarchy
 {
@@ -274,7 +274,7 @@ public class DAMLHierarchy
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2001-2003
+    (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+ *  (c) Copyright 2000  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ import java.util.Iterator;
 /** An internal class, not normally of interest to application developers.
  *  A simple factory class which creates ContainerNodeIterator's.
  * @author bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-07-24 12:01:07 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-08-27 13:05:53 $'
  */
 public class ContNodeIteratorFactoryImpl
   extends Object implements NodeIteratorFactory {

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Apr-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.16 2003-06-22 16:10:50 der Exp $
+ * $Id: TestRDFSRules.java,v 1.17 2003-08-27 13:11:16 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,12 +26,12 @@ import java.io.IOException;
 import java.util.Iterator;
 import org.apache.log4j.Logger;
 
-/** * Test suite to test the production rule version of the RDFS implementation.
+/** * Test suite to test the production rule version of the RDFS implementation.
  * <p> The tests themselves have been replaced by an updated version
  * of the top level TestRDFSReasoners but this file is maintained for now since
  * the top level timing test can sometimes be useful. </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.16 $ on $Date: 2003-06-22 16:10:50 $ */
-public class TestRDFSRules extends TestCase {   
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.17 $ on $Date: 2003-08-27 13:11:16 $ */
+public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
     
@@ -155,7 +155,7 @@ public class TestRDFSRules extends TestCase {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

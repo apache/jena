@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  23-Aug-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: JenaParameters.java,v 1.1 2003-08-23 12:17:06 der Exp $
+ * $Id: JenaParameters.java,v 1.2 2003-08-27 13:07:30 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.shared.impl;
 
@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.impl;
  * moved to being model-specific rather than global.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-23 12:17:06 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:07:30 $
  */
 public class JenaParameters {
     
@@ -76,7 +76,7 @@ public class JenaParameters {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DoesNotExistException.java,v 1.1 2003-05-02 15:30:38 chris-dollin Exp $
+  $Id: DoesNotExistException.java,v 1.2 2003-08-27 13:07:30 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -22,7 +22,7 @@ public class DoesNotExistException extends RDFRDBException
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

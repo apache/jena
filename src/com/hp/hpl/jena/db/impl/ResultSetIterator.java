@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.4 $ on $Date: 2003-07-01 12:48:12 $
+* @version $Revision: 1.5 $ on $Date: 2003-08-27 12:56:40 $
 */
 
 public class ResultSetIterator implements ExtendedIterator {
@@ -261,7 +261,7 @@ public class ResultSetIterator implements ExtendedIterator {
 } // End class
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-May-2003
  * Filename           $RCSfile: ProfileException.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:13:05 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:04:45 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -38,7 +38,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ProfileException.java,v 1.1 2003-05-23 11:13:05 ian_dickinson Exp $
+ * @version CVS $Id: ProfileException.java,v 1.2 2003-08-27 13:04:45 andy_seaborne Exp $
  */
 public class ProfileException
     extends OntologyException 
@@ -75,7 +75,7 @@ public class ProfileException
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

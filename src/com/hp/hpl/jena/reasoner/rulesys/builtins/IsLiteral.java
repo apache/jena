@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  15-May-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: IsLiteral.java,v 1.3 2003-07-25 12:16:46 der Exp $
+ * $Id: IsLiteral.java,v 1.4 2003-08-27 13:09:41 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Tests the single argument to make sure it is a literal.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-25 12:16:46 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:09:41 $
  */
 public class IsLiteral extends BaseBuiltin {
 
@@ -54,7 +54,7 @@ public class IsLiteral extends BaseBuiltin {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- *  (c)  Copyright Hewlett-Packard Company 2001,2002
+ *  (c)  Copyright 2001,2002 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testMatch.java,v 1.3 2003-06-17 14:39:39 chris-dollin Exp $
+ * $Id: testMatch.java,v 1.4 2003-08-27 13:07:12 andy_seaborne Exp $
  *
  * testMatch.java
  *
@@ -40,7 +40,7 @@ import java.util.Random;
 /**
  *
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-06-17 14:39:39 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-08-27 13:07:12 $' 
  */
 
 public class testMatch extends java.lang.Object {

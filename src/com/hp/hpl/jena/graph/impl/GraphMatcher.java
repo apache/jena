@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2002, 2003
+ *  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
  *  
  *  All rights reserved.
  * 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.shared.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-07-23 07:34:40 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-08-27 13:00:58 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -911,7 +911,7 @@ public class GraphMatcher extends java.lang.Object {
     
 }
 /*
- *  (c) Copyright Hewlett-Packard Company 2002, 2003
+ *  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
  *  
  *  All rights reserved.
  * 
@@ -938,5 +938,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.4 2003-07-23 07:34:40 chris-dollin Exp $
+ * $Id: GraphMatcher.java,v 1.5 2003-08-27 13:00:58 andy_seaborne Exp $
  */

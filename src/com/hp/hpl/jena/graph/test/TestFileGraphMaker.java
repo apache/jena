@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.2 2003-05-13 19:18:56 chris-dollin Exp $
+  $Id: TestFileGraphMaker.java,v 1.3 2003-08-27 13:00:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -28,7 +28,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

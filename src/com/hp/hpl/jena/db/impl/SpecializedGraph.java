@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  */
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * in the list.
  *
  * @author csayers
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  */
 public interface SpecializedGraph {
@@ -211,7 +211,7 @@ public interface SpecializedGraph {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETERuleInfGraph.java,v 1.4 2003-08-26 15:16:14 andy_seaborne Exp $
+ * $Id: RETERuleInfGraph.java,v 1.5 2003-08-27 13:11:15 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * RETE implementation of the forward rule infernce graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-26 15:16:14 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:11:15 $
  */
 public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
 
@@ -106,7 +106,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

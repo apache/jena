@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001 
+ *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIref.java,v 1.2 2003-07-15 14:48:08 chris-dollin Exp $
+ * * $Id: URIref.java,v 1.3 2003-08-27 13:07:55 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 *//*

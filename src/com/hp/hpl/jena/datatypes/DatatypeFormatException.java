@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  07-Dec-02
  * 
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DatatypeFormatException.java,v 1.8 2003-08-23 12:19:48 der Exp $
+ * $Id: DatatypeFormatException.java,v 1.9 2003-08-27 12:54:03 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.shared.*;
  * datatype.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-23 12:19:48 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-27 12:54:03 $
  */
 public class DatatypeFormatException extends JenaException 
 {
@@ -54,7 +54,7 @@ public class DatatypeFormatException extends JenaException
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  16-Dec-2002
  * 
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTimeType.java,v 1.5 2003-06-19 16:45:02 der Exp $
+ * $Id: XSDDateTimeType.java,v 1.6 2003-08-27 12:54:12 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * wrap the return value in a more convenient accessor type. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-19 16:45:02 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-27 12:54:12 $
  */
 public class XSDDateTimeType extends XSDDatatype {
 
@@ -57,7 +57,7 @@ public class XSDDateTimeType extends XSDDatatype {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

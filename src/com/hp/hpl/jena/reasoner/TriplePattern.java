@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  18-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TriplePattern.java,v 1.17 2003-08-15 16:12:11 der Exp $
+ * $Id: TriplePattern.java,v 1.18 2003-08-27 13:11:17 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-08-15 16:12:11 $
+ * @version $Revision: 1.18 $ on $Date: 2003-08-27 13:11:17 $
  */
 public class TriplePattern implements ClauseEntry {
 
@@ -336,7 +336,7 @@ public class TriplePattern implements ClauseEntry {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  19-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.21 2003-08-12 09:33:03 der Exp $
+ * $Id: ReasonerTester.java,v 1.22 2003-08-27 13:11:15 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -46,7 +46,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-08-12 09:33:03 $
+ * @version $Revision: 1.22 $ on $Date: 2003-08-27 13:11:15 $
  */
 public class ReasonerTester {
 
@@ -309,7 +309,7 @@ public class ReasonerTester {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  16-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.20 2003-08-25 20:58:34 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.21 2003-08-27 13:11:17 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-08-25 20:58:34 $
+ * @version $Revision: 1.21 $ on $Date: 2003-08-27 13:11:17 $
  */
 public class ReasonerRegistry {
 
@@ -217,7 +217,7 @@ public class ReasonerRegistry {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

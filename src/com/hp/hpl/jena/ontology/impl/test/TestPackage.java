@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.15 2003-07-17 12:31:41 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.16 2003-08-27 13:04:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.ontology.impl.test;
@@ -47,7 +47,7 @@ public class TestPackage extends TestSuite {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

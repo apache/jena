@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  15-Dec-02
  * 
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.4 2003-06-19 16:45:02 der Exp $
+ * $Id: AbstractDateTime.java,v 1.5 2003-08-27 12:53:29 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -21,7 +21,7 @@ import org.apache.xerces.impl.dv.xs.AbstractDateTimeDV;
  * conventient access to the date values.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-19 16:45:02 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 12:53:29 $
  */
 public class AbstractDateTime {
 
@@ -121,7 +121,7 @@ public class AbstractDateTime {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

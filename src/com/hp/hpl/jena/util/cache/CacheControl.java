@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
  *  
  *  All rights reserved.
  * 
@@ -63,7 +63,7 @@ public interface CacheControl {
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
  *  
  *  All rights reserved.
  * 
@@ -90,6 +90,6 @@ public interface CacheControl {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: CacheControl.java,v 1.1.1.1 2002-12-19 19:21:08 bwm Exp $
+ * $Id: CacheControl.java,v 1.2 2003-08-27 13:07:54 andy_seaborne Exp $
  */
 

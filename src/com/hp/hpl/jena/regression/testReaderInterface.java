@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testReaderInterface.java,v 1.11 2003-07-21 10:54:11 chris-dollin Exp $
+ * $Id: testReaderInterface.java,v 1.12 2003-08-27 13:07:12 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class testReaderInterface extends Object {
 

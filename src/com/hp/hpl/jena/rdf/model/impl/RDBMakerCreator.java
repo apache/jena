@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RDBMakerCreator.java,v 1.1 2003-08-25 14:55:18 chris-dollin Exp $
+  $Id: RDBMakerCreator.java,v 1.2 2003-08-27 13:05:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -60,7 +60,7 @@ public class RDBMakerCreator implements ModelMakerCreator
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

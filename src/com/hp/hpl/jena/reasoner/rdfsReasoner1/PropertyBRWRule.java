@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PropertyBRWRule.java,v 1.6 2003-04-15 21:23:06 jeremy_carroll Exp $
+ * $Id: PropertyBRWRule.java,v 1.7 2003-08-27 13:11:16 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of "anything mentioned in predicated position is a Property".
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-15 21:23:06 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-27 13:11:16 $
  */
 public class PropertyBRWRule extends BRWRule {
 
@@ -95,7 +95,7 @@ public class PropertyBRWRule extends BRWRule {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

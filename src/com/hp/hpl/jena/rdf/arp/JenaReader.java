@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.13 2003-08-20 13:15:18 jeremy_carroll Exp $
+ * * $Id: JenaReader.java,v 1.14 2003-08-27 13:05:52 andy_seaborne Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TripleMatchIterator.java,v 1.3 2003-06-10 10:46:19 chris-dollin Exp $
+  $Id: TripleMatchIterator.java,v 1.4 2003-08-27 13:01:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -23,7 +23,7 @@ public class TripleMatchIterator
     }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

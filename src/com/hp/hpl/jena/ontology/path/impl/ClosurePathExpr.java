@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            20-Mar-2003
  * Filename           $RCSfile: ClosurePathExpr.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 16:17:59 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:04:44 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClosurePathExpr.java,v 1.3 2003-07-24 16:17:59 ian_dickinson Exp $
+ * @version CVS $Id: ClosurePathExpr.java,v 1.4 2003-08-27 13:04:44 andy_seaborne Exp $
  */
 public class ClosurePathExpr
     extends AbstractPathExpr 
@@ -197,7 +197,7 @@ public class ClosurePathExpr
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

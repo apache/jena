@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000-2003 
+ *  (c) Copyright 2000, 2001, 2002, 2003  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: IteratorIterator.java,v 1.2 2003-08-26 15:16:36 andy_seaborne Exp $
+ * $Id: IteratorIterator.java,v 1.3 2003-08-27 13:07:54 andy_seaborne Exp $
  *
  */
 
@@ -37,7 +37,7 @@ import java.util.NoSuchElementException;
  * Iterator over the next level values.
  * Similar to list splicing in lisp.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-08-26 15:16:36 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-08-27 13:07:54 $'
  */
 public class IteratorIterator implements Iterator
 {

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.11 2003-07-23 07:20:02 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.12 2003-08-27 12:59:59 andy_seaborne Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -442,7 +442,7 @@ public class TestPackage extends GraphTestBase  {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

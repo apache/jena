@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.16 $ on $Date: 2003-08-25 02:14:51 $
+* @version $Revision: 1.17 $ on $Date: 2003-08-27 12:56:40 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -475,7 +475,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	}
 }
 	/*
-	 *  (c) Copyright Hewlett-Packard Company 2000-2003
+	 *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
 	 *  All rights reserved.
 	 *
 	 * Redistribution and use in source and binary forms, with or without

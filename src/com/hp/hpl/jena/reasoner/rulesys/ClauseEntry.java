@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  31-May-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ClauseEntry.java,v 1.3 2003-07-09 07:59:18 der Exp $
+ * $Id: ClauseEntry.java,v 1.4 2003-08-27 13:09:18 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.reasoner.rulesys;
  * Strictly these should probably be called terms rather than clause entries.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-09 07:59:18 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:09:18 $
  */
 public interface ClauseEntry {
     
@@ -29,7 +29,7 @@ public interface ClauseEntry {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Concrete.java,v 1.2 2003-07-18 15:14:00 chris-dollin Exp $
+  $Id: Node_Concrete.java,v 1.3 2003-08-27 13:01:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -21,7 +21,7 @@ public abstract class Node_Concrete extends Node
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright Hewlett-Packard Company 2000-2003
+ *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.22 2003-08-08 08:11:15 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.23 2003-08-27 13:09:18 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2003-08-08 08:11:15 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2003-08-27 13:09:18 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -714,7 +714,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2000-2003
+	(c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-11 10:16:10 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-27 13:01:00 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.3 2003-07-11 10:16:10 chris-dollin Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.4 2003-08-27 13:01:00 andy_seaborne Exp $
  */
 public abstract class CompositionBase
     extends GraphBase
@@ -219,7 +219,7 @@ public abstract class CompositionBase
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

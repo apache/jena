@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.5 2003-05-08 15:19:33 chris-dollin Exp $
+  $Id: MinimalSubGraph.java,v 1.6 2003-08-27 13:04:44 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -132,7 +132,7 @@ class MinimalSubGraph extends AbsChecker {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+	(c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 * Version of ResultSetIterator that extracts database rows as Triples from a reified statement table.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.3 $ on $Date: 2003-08-11 02:46:02 $
+* @version $Revision: 1.4 $ on $Date: 2003-08-27 12:56:40 $
 */
 public class ResultSetReifIterator extends ResultSetIterator {
 
@@ -207,7 +207,7 @@ public class ResultSetReifIterator extends ResultSetIterator {
 } // End class
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

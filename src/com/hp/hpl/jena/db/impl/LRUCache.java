@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.shared.JenaException;
 * the same as SimpleCache.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.3 $ on $Date: 2003-08-27 03:18:22 $
+* @version $Revision: 1.4 $ on $Date: 2003-08-27 12:56:40 $
 */
 
 public class LRUCache implements ICache {
@@ -139,7 +139,7 @@ public class LRUCache implements ICache {
 
 }
 /*
- *  (c) Copyright Hewlett-Packard Company 2003.
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

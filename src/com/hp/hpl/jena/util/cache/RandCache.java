@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
  *
  *  All rights reserved.
  *
@@ -125,7 +125,7 @@ public class RandCache implements Cache, CacheControl {
 
 }
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
  *
  *  All rights reserved.
  *
@@ -152,5 +152,5 @@ public class RandCache implements Cache, CacheControl {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandCache.java,v 1.3 2003-07-23 07:20:02 chris-dollin Exp $
+ * $Id: RandCache.java,v 1.4 2003-08-27 13:07:54 andy_seaborne Exp $
  */

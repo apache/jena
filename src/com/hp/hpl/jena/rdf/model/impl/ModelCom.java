@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelCom.java,v 1.75 2003-08-23 14:19:22 der Exp $
+  $Id: ModelCom.java,v 1.76 2003-08-27 13:05:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.75 $' Date='$Date: 2003-08-23 14:19:22 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.76 $' Date='$Date: 2003-08-27 13:05:53 $'
  */
 
 public class ModelCom 
@@ -1334,7 +1334,7 @@ implements Model, PrefixMapping, ModelLock
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
 *
  * Redistribution and use in source and binary forms, with or without

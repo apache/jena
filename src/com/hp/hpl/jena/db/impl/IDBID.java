@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -27,7 +27,7 @@ package com.hp.hpl.jena.db.impl;
 * encapsulates the different ID representations.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:57:17 $
+* @version $Revision: 1.2 $ on $Date: 2003-08-27 12:56:40 $
 */
 
 public interface IDBID {
@@ -39,7 +39,7 @@ public interface IDBID {
 
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

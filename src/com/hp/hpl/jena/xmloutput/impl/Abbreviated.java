@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
+ *  (c)     Copyright 2000, 2001, 2002 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.6 2003-06-11 13:29:18 chris-dollin Exp $
+ *  $Id: Abbreviated.java,v 1.7 2003-08-27 13:09:18 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -24,7 +24,7 @@ import java.io.*;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-11 13:29:18 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-08-27 13:09:18 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
@@ -145,7 +145,7 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
 }
 /*
-	(c) Copyright Hewlett-Packard Company 200, 2003
+	(c) Copyright 200, 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

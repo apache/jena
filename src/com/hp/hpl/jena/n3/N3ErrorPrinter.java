@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -10,7 +10,7 @@ import java.io.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ErrorPrinter.java,v 1.4 2003-03-11 18:04:08 andy_seaborne Exp $
+ * @version 	$Id: N3ErrorPrinter.java,v 1.5 2003-08-27 13:01:45 andy_seaborne Exp $
  */
 public class N3ErrorPrinter extends NullN3EventHandler
 {
@@ -45,7 +45,7 @@ public class N3ErrorPrinter extends NullN3EventHandler
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

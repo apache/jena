@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.12 2003-08-26 15:16:43 chris-dollin Exp $
+  $Id: JMS.java,v 1.13 2003-08-27 13:08:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -121,7 +121,7 @@ public class JMS
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

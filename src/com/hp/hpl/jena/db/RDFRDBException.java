@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RDFRDBException.java,v 1.2 2003-05-21 14:49:13 chris-dollin Exp $
+  $Id: RDFRDBException.java,v 1.3 2003-08-27 12:56:40 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db;
@@ -32,7 +32,7 @@ public class RDFRDBException extends JenaException {
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000-2003
+ *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

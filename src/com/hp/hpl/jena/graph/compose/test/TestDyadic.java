@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDyadic.java,v 1.4 2003-06-11 15:01:42 chris-dollin Exp $
+  $Id: TestDyadic.java,v 1.5 2003-08-27 13:01:01 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -51,7 +51,7 @@ public class TestDyadic extends GraphTestBase
 	}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

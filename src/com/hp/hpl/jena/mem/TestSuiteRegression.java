@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestSuiteRegression.java,v 1.1.1.1 2002-12-19 19:14:18 bwm Exp $
+ * $Id: TestSuiteRegression.java,v 1.2 2003-08-27 13:01:27 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.mem;
@@ -34,7 +34,7 @@ import junit.framework.TestSuite;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:14:18 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-08-27 13:01:27 $
  */
 public class TestSuiteRegression extends Object {
 

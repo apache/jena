@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.10 2003-08-27 08:08:44 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.11 2003-08-27 13:00:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -668,7 +668,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

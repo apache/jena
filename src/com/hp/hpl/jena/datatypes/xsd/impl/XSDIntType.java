@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  10-Dec-02
  * 
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDIntType.java,v 1.4 2003-04-15 21:06:38 jeremy_carroll Exp $
+ * $Id: XSDIntType.java,v 1.5 2003-08-27 12:54:12 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.datatypes.*;
  * Datatype template used to define XSD int types
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:06:38 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 12:54:12 $
  */
 public class XSDIntType extends XSDBaseNumericType {
 
@@ -50,7 +50,7 @@ public class XSDIntType extends XSDBaseNumericType {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

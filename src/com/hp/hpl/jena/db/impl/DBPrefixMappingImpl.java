@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.4 2003-06-19 15:51:00 chris-dollin Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.5 2003-08-27 12:56:39 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,7 +19,7 @@ import java.util.*;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.4 $
+ 	@version $Revision: 1.5 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -93,7 +93,7 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

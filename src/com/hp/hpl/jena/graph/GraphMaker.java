@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMaker.java,v 1.7 2003-08-20 13:02:12 chris-dollin Exp $
+  $Id: GraphMaker.java,v 1.8 2003-08-27 13:01:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -126,13 +126,13 @@ public interface GraphMaker
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  *
- * Last modified on   $Date: 2003-08-20 13:02:12 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-27 13:01:00 $
+ *               by   $Author: andy_seaborne $
 
  *****************************************************************************/
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestVocabDC10.java,v 1.1 2003-07-01 09:06:59 chris-dollin Exp $
+  $Id: TestVocabDC10.java,v 1.2 2003-08-27 13:08:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
@@ -43,7 +43,7 @@ public class TestVocabDC10 extends VocabTestBase
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

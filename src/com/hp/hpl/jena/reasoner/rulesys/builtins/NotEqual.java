@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  13-Apr-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NotEqual.java,v 1.4 2003-08-24 21:13:09 der Exp $
+ * $Id: NotEqual.java,v 1.5 2003-08-27 13:11:14 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Check that the two args are different. This uses a semantic equality test.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-24 21:13:09 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:11:14 $
  */
 public class NotEqual extends BaseBuiltin {
 
@@ -59,7 +59,7 @@ public class NotEqual extends BaseBuiltin {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

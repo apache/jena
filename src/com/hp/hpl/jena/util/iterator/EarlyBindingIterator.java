@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EarlyBindingIterator.java,v 1.1 2003-04-17 13:12:01 jeremy_carroll Exp $
+  $Id: EarlyBindingIterator.java,v 1.2 2003-08-27 13:07:54 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.util.iterator;
 import java.util.*;
@@ -27,7 +27,7 @@ public class EarlyBindingIterator extends WrappedIterator {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+	(c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

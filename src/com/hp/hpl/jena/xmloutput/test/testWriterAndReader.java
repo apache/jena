@@ -1,8 +1,8 @@
 /*
-    (c) Copyright Hewlett-Packard Company 2001-2003
+    (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.17 2003-07-01 12:48:28 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.18 2003-08-27 13:11:17 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-07-01 12:48:28 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2003-08-27 13:11:17 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	static private boolean showProgress = false;
@@ -496,7 +496,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 }
 
 /*
- *  (c)   Copyright Hewlett-Packard Company 2001,2002
+ *  (c)   Copyright 2001,2002 Hewlett-Packard Development Company, LP
  *    All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -521,5 +521,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.17 2003-07-01 12:48:28 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.18 2003-08-27 13:11:17 andy_seaborne Exp $
  */

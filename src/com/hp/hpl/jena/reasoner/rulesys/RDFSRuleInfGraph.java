@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleInfGraph.java,v 1.1 2003-06-22 16:10:31 der Exp $
+ * $Id: RDFSRuleInfGraph.java,v 1.2 2003-08-27 13:11:15 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * the validation support.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-22 16:10:31 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:15 $
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {
 
@@ -130,7 +130,7 @@ public class RDFSRuleInfGraph extends FBRuleInfGraph {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

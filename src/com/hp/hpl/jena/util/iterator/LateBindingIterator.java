@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001 
+ *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: LateBindingIterator.java,v 1.1.1.1 2002-12-19 19:21:16 bwm Exp $
+ * $Id: LateBindingIterator.java,v 1.2 2003-08-27 13:07:54 andy_seaborne Exp $
  *
  *
  * LateBindingIterator.java
@@ -43,7 +43,7 @@ import java.util.Iterator ;
  * code, while delaying the evaluation of what actually
  * is going to be iterated over.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:16 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-08-27 13:07:54 $'
  */
 abstract public class LateBindingIterator implements Iterator {
 

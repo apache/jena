@@ -1,8 +1,8 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved. 
  * [See end of file]
-  $Id: TestLogger.java,v 1.3 2003-04-15 21:30:06 jeremy_carroll Exp $
+  $Id: TestLogger.java,v 1.4 2003-08-27 13:07:55 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.util;
 import org.apache.log4j.*;
@@ -49,7 +49,7 @@ public class TestLogger {
     }
 }
 /*
- *  (c)     Copyright Hewlett-Packard Company 2003
+ *  (c)     Copyright 2003 Hewlett-Packard Development Company, LP
  *     All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,5 +74,5 @@ public class TestLogger {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestLogger.java,v 1.3 2003-04-15 21:30:06 jeremy_carroll Exp $
+ * $Id: TestLogger.java,v 1.4 2003-08-27 13:07:55 andy_seaborne Exp $
  */

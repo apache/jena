@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  18-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FinderUtil.java,v 1.5 2003-06-23 15:49:41 der Exp $
+ * $Id: FinderUtil.java,v 1.6 2003-08-27 13:09:19 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * The cascades are designed to cope with null Finders as well.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-23 15:49:41 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-27 13:09:19 $
  */
 public class FinderUtil {
     
@@ -119,7 +119,7 @@ public class FinderUtil {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

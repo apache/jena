@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FGraph.java,v 1.6 2003-06-22 16:10:50 der Exp $
+ * $Id: FGraph.java,v 1.7 2003-08-27 13:09:19 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-27 13:09:19 $
  */
 public class FGraph implements Finder {
 
@@ -80,7 +80,7 @@ public class FGraph implements Finder {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

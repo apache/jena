@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  23-Jul-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DAMLMicroReasonerFactory.java,v 1.2 2003-08-22 12:51:12 der Exp $
+ * $Id: DAMLMicroReasonerFactory.java,v 1.3 2003-08-27 13:09:18 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * that correspond roughly to what was there in Jena1. We hope.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-22 12:51:12 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-27 13:09:18 $
  */
 public class DAMLMicroReasonerFactory implements ReasonerFactory {
    
@@ -81,7 +81,7 @@ public class DAMLMicroReasonerFactory implements ReasonerFactory {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

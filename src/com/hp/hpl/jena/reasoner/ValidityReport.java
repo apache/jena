@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Feb-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ValidityReport.java,v 1.5 2003-05-08 15:08:16 der Exp $
+ * $Id: ValidityReport.java,v 1.6 2003-08-27 13:11:17 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import java.util.Iterator;
  * each of which has a severity, a type (string) and a description (string).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-08 15:08:16 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-27 13:11:17 $
  */
 public interface ValidityReport {
     
@@ -92,7 +92,7 @@ public interface ValidityReport {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

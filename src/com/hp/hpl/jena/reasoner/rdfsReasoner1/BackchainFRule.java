@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  26-Jan-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BackchainFRule.java,v 1.4 2003-04-15 21:22:14 jeremy_carroll Exp $
+ * $Id: BackchainFRule.java,v 1.5 2003-08-27 13:09:18 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.reasoner.*;
  * and registers it with the reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:22:14 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:09:18 $
  */
 public class BackchainFRule extends BaseFRule {
 
@@ -38,7 +38,7 @@ public class BackchainFRule extends BaseFRule {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.25 2003-08-26 15:16:43 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.26 2003-08-27 13:05:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -353,7 +353,7 @@ public class ModelFactory extends ModelFactoryBase
     
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: OneImpl.java,v 1.4 2003-05-20 12:42:09 chris-dollin Exp $
+  $Id: OneImpl.java,v 1.5 2003-08-27 13:04:44 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -37,7 +37,7 @@ class OneImpl extends OneTwoImpl implements One {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+	(c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

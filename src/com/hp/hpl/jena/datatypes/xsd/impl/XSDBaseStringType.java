@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Feb-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseStringType.java,v 1.6 2003-08-23 12:19:48 der Exp $
+ * $Id: XSDBaseStringType.java,v 1.7 2003-08-27 12:54:12 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-23 12:19:48 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-27 12:54:12 $
  */
 public class XSDBaseStringType extends XSDDatatype {
 
@@ -81,7 +81,7 @@ public class XSDBaseStringType extends XSDDatatype {
  }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

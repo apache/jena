@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.2 2003-04-03 11:22:52 jeremy_carroll Exp $
+ * $Id: AnonId.java,v 1.3 2003-08-27 13:05:52 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,7 +36,7 @@ import java.rmi.server.UID;
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-04-03 11:22:52 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-08-27 13:05:52 $
  */
 public class AnonId extends java.lang.Object {
     

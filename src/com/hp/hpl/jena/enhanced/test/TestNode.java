@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.1.1.1 2002-12-19 19:13:15 bwm Exp $
+  $Id: TestNode.java,v 1.2 2003-08-27 12:59:59 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -22,7 +22,7 @@ public interface TestNode {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2002
+	(c) Copyright 2002 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Jun-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLRuleTranslationHook.java,v 1.2 2003-08-22 10:21:57 der Exp $
+ * $Id: OWLRuleTranslationHook.java,v 1.3 2003-08-27 13:11:15 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * intersection statement.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-22 10:21:57 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-27 13:11:15 $
  */
 public class OWLRuleTranslationHook implements RulePreprocessHook {
 
@@ -115,7 +115,7 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

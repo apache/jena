@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: VarIndex.java,v 1.1 2003-08-19 02:29:52 wkw Exp $
+  $Id: VarIndex.java,v 1.2 2003-08-27 12:56:40 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -62,7 +62,7 @@ import com.hp.hpl.jena.shared.JenaException;
 }		
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

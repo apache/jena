@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBTransactionHandler.java,v 1.4 2003-05-21 16:44:11 chris-dollin Exp $
+  $Id: DBTransactionHandler.java,v 1.5 2003-08-27 12:56:39 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.impl.*;
  * Transaction handler for graphs backed by a database.
  *
  * @author csayers based on SimpleTransactionHandler by kers 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class DBTransactionHandler extends TransactionHandlerBase {
 	private IRDBDriver m_driver = null;
@@ -49,7 +49,7 @@ public class DBTransactionHandler extends TransactionHandlerBase {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Reifier.java,v 1.19 2003-08-20 15:12:57 chris-dollin Exp $
+  $Id: Reifier.java,v 1.20 2003-08-27 13:01:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -115,7 +115,7 @@ public interface Reifier extends GetTriple
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002, 2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

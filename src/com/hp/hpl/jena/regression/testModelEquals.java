@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001,2002
+ *  (c) Copyright 2001,2002 Hewlett-Packard Development Company, LP
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.6 2003-07-01 09:06:58 chris-dollin Exp $
+ * $Id: testModelEquals.java,v 1.7 2003-08-27 13:07:12 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.regression;

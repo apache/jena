@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.21 $ $Date: 2003-08-01 13:25:41 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.22 $ $Date: 2003-08-27 13:05:53 $
  */
 public class StatementImpl  implements Statement {
     

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  */
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * Interface for a specialized graphs that are optimized for reification.
  *
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  */
 public interface SpecializedGraphReifier extends SpecializedGraph {
@@ -80,7 +80,7 @@ public interface SpecializedGraphReifier extends SpecializedGraph {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

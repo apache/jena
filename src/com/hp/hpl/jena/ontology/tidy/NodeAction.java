@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NodeAction.java,v 1.1 2003-04-17 10:50:04 jeremy_carroll Exp $
+  $Id: NodeAction.java,v 1.2 2003-08-27 13:04:44 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -16,7 +16,7 @@ interface NodeAction {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+	(c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -22,7 +22,7 @@ import java.util.*;
 * when the threshold limit is exceeded.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:57:17 $
+* @version $Revision: 1.2 $ on $Date: 2003-08-27 12:56:40 $
 */
 
 public class SimpleCache implements ICache {
@@ -94,7 +94,7 @@ public class SimpleCache implements ICache {
     }
 }
 /*
- *  (c) Copyright Hewlett-Packard Company 2003.
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

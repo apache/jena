@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  29-Mar-03
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.8 2003-08-24 21:19:44 der Exp $
+ * $Id: PrintUtil.java,v 1.9 2003-08-27 13:07:55 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-24 21:19:44 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-27 13:07:55 $
  */
 public class PrintUtil {
 
@@ -186,7 +186,7 @@ public class PrintUtil {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

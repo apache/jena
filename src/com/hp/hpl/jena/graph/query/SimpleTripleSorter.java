@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleTripleSorter.java,v 1.6 2003-08-13 09:27:02 chris-dollin Exp $
+  $Id: SimpleTripleSorter.java,v 1.7 2003-08-27 13:00:59 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -223,7 +223,7 @@ public class SimpleTripleSorter implements TripleSorter
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

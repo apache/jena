@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 13:04:01 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-27 13:04:45 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
+ * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * footer for full conditions)
  * ****************************************************************************/
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.11 2003-06-21 13:04:01 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.12 2003-08-27 13:04:45 andy_seaborne Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -522,7 +522,7 @@ public interface OntProperty
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
+    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

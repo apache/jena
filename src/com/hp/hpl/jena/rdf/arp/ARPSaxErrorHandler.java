@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001, 2002 
+ *  (c) Copyright 2001, 2002  Hewlett-Packard Development Company, LP
  * See end of file.
  */
 
@@ -62,7 +62,7 @@ public class ARPSaxErrorHandler extends Object implements org.xml.sax.ErrorHandl
     }
 }
 /*
- *  (c) Copyright Hewlett-Packard Company 2001, 2002
+ *  (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
