@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.4 2003-11-17 07:24:58 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.5 2004-06-30 17:16:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.mem.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import junit.framework.*;
@@ -59,6 +60,21 @@ public class TestGraphMem extends AbstractTestGraph
         ExtendedIterator it = g.find( Node.ANY, Node.ANY, node( "y" ) );
         it.next(); it.remove();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
+        }
+    
+    public void testRemoveAllDoesntUseFind()
+        {
+        Graph g = new GraphMem()
+        	{
+            public ExtendedIterator find( Node s, Node p, Node o )
+                { throw new JenaException( "find is Not Allowed" ); }
+            
+            public ExtendedIterator find( Triple t )
+                { throw new JenaException( "find is Not Allowed" ); }
+        	};
+        graphAdd( g, "x P y; a Q b" );
+        g.getBulkUpdateHandler().removeAll();
+        assertEquals( 0, g.size() );
         }
     }
 

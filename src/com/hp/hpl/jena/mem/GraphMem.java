@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.30 2004-06-30 12:58:00 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.31 2004-06-30 17:16:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -108,34 +108,12 @@ public class GraphMem extends GraphBase implements Graph
         return q;
         }
         
-    private static class GraphMemQueryHandler extends SimpleQueryHandler
+    public BulkUpdateHandler getBulkUpdateHandler()
         {
-        GraphMemQueryHandler( GraphMem graph ) 
-            { 
-            super( graph );
-            }
-        
-        public ExtendedIterator objectsFor( Node p, Node o )
-            {
-            return p == null && o == null ? findObjects() : super.objectsFor( p, o );
-            }
-        
-        public ExtendedIterator subjectsFor( Node p, Node o )
-            {
-            return p == null && o == null ? findSubjects() : super.subjectsFor( p, o );
-            }   
-        
-        public ExtendedIterator findObjects()
-            {
-            return WrappedIterator.create( ((GraphMem) graph).objects.domain() );
-            }
-        
-        public ExtendedIterator findSubjects()
-            {
-            return WrappedIterator.create( ((GraphMem) graph).subjects.domain() );
-            }
+        if (bud == null) bud = new GraphMemBulkUpdateHandler( this );
+        return bud;
         }
-        
+    
     /**
         Answer true iff t matches some triple in the graph. If t is concrete, we
         can use a simple membership test; otherwise we resort to the generic

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.6 2004-06-30 12:58:00 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.7 2004-06-30 17:16:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -41,6 +41,9 @@ public final class NodeToTriplesMap
         Set s = (Set) map.get( o );
         return s == null ? NullIterator.instance :  s.iterator();
         }
+    
+    public void clear() 
+        { map.clear(); }
     }
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
