@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelSpec.java,v 1.12 2003-08-25 11:22:30 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.13 2003-08-25 11:54:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -31,17 +31,17 @@ public class TestModelSpec extends ModelTestBase
         {
         Model aModel = ModelFactory.createDefaultModel();
         Resource type = resource( aModel, "jms:SomeType" );    
-        assertSame( null, ModelSpecImpl.findCreator( type ) );    
+        assertSame( null, ModelSpecCreatorRegistry.findCreator( type ) );    
         }
         
     public void testFindCreator()
         {
         Model aModel = ModelFactory.createDefaultModel();
         Resource type = resource( aModel, "jms:SomeType" );    
-        ModelSpecImpl.ModelSpecCreator c = new ModelSpecImpl.ModelSpecCreator() 
+        ModelSpecCreator c = new ModelSpecCreator() 
             { public ModelSpec create( Model m ) { return null; } };
-        ModelSpecImpl.register( type, c );
-        assertSame( c, ModelSpecImpl.findCreator( type ) );    
+        ModelSpecCreatorRegistry.register( type, c );
+        assertSame( c, ModelSpecCreatorRegistry.findCreator( type ) );    
         }
         
     public void testFindCreatorChoice()
@@ -49,21 +49,21 @@ public class TestModelSpec extends ModelTestBase
         Model aModel = ModelFactory.createDefaultModel();
         Resource type1 = resource( aModel, "jms:SomeType1" );    
         Resource type2 = resource( aModel, "jms:SomeType2" );    
-        ModelSpecImpl.ModelSpecCreator c1 = new ModelSpecImpl.ModelSpecCreator()
+        ModelSpecCreator c1 = new ModelSpecCreator()
             { public ModelSpec create( Model m ) { return null; } };
-        ModelSpecImpl.ModelSpecCreator c2 = new ModelSpecImpl.ModelSpecCreator() 
+        ModelSpecCreator c2 = new ModelSpecCreator() 
             { public ModelSpec create( Model m ) { return null; } };
-        ModelSpecImpl.register( type1, c1 );
-        ModelSpecImpl.register( type2, c2 );
-        assertSame( c1, ModelSpecImpl.findCreator( type1 ) );   
-        assertSame( c2, ModelSpecImpl.findCreator( type2 ) );   
+        ModelSpecCreatorRegistry.register( type1, c1 );
+        ModelSpecCreatorRegistry.register( type2, c2 );
+        assertSame( c1, ModelSpecCreatorRegistry.findCreator( type1 ) );   
+        assertSame( c2, ModelSpecCreatorRegistry.findCreator( type2 ) );   
         } 
         
     public void testHasStandardCreators()
         {
-        assertNotNull( ModelSpecImpl.findCreator( JMS.InfModelSpec ) );  
-        assertNotNull( ModelSpecImpl.findCreator( JMS.PlainModelSpec ) );   
-        assertNotNull( ModelSpecImpl.findCreator( JMS.OntModelSpec ) );     
+        assertNotNull( ModelSpecCreatorRegistry.findCreator( JMS.InfModelSpec ) );  
+        assertNotNull( ModelSpecCreatorRegistry.findCreator( JMS.PlainModelSpec ) );   
+        assertNotNull( ModelSpecCreatorRegistry.findCreator( JMS.OntModelSpec ) );     
         }
             
     public void testOntModeSpecIsaModelSpec()

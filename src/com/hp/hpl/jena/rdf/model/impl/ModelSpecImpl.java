@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.11 2003-08-25 11:22:15 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.12 2003-08-25 11:54:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -11,7 +11,6 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.ontology.*;
 
 import java.util.*;
 
@@ -84,50 +83,12 @@ public abstract class ModelSpecImpl implements ModelSpec
         Model d = withSchema( desc );
         Resource r = findRootByType( d, JMS.ModelSpec );
         Resource type = findSpecificType( d, r, JMS.ModelSpec );
-        ModelSpecCreator sc = findCreator( type );
+        ModelSpecCreator sc = ModelSpecCreatorRegistry.findCreator( type );
         if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
-        return findCreator( type ).create( desc );
+        return sc.create( desc );
         }
-        
-    public interface ModelSpecCreator
-        {
-        public ModelSpec create( Model desc );    
-        }
-        
-    static Map creators = new HashMap();
-    
-    public static ModelSpecCreator findCreator( Resource type )
-        {
-        return (ModelSpecCreator) creators.get( type );    
-        }
-        
-    public static void register( Resource type, ModelSpecCreator c )
-        {
-        creators.put( type, c );  
-        }
-        
-    static class InfSpecCreator implements ModelSpecCreator
-        {
-        public ModelSpec create( Model desc ) { return new InfModelSpec( desc ); }    
-        }
-        
-    static class PlainSpecCreator implements ModelSpecCreator
-        {
-        public ModelSpec create( Model desc ) { return new PlainModelSpec( desc ); }    
-        }
-            
-    static class OntSpecCreator implements ModelSpecCreator
-        {
-        public ModelSpec create( Model desc ) { return new OntModelSpec( desc ); }    
-        }
-            
-    static
-        {
-        register( JMS.InfModelSpec, new InfSpecCreator() );  
-        register( JMS.OntModelSpec, new OntSpecCreator() );  
-        register( JMS.PlainModelSpec, new PlainSpecCreator() );    
-        }
-        
+
+
     static void showModel( String title, Model m )
         {
         System.err.println( "-->> " + title + " <<--" );
