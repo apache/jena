@@ -13,7 +13,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.3 2004-04-01 11:13:50 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.4 2004-05-14 20:37:11 andy_seaborne Exp $
  */ 
  
 abstract class DBcmd
@@ -48,6 +48,8 @@ abstract class DBcmd
         drivers.put("mysql",       "com.mysql.jdbc.Driver");
         drivers.put("postgresql",  "org.postgresql.Driver");
         drivers.put("postgres",    "org.postgresql.Driver");
+        drivers.put("postgresql",  "org.postgresql.Driver");
+        drivers.put("PostgreSQL",  "org.postgresql.Driver") ;  // Thanks to Joshua Moore [j.moore@dkfz-heidelberg.de]
     }
 
     boolean takesPositionalArgs = false ;
