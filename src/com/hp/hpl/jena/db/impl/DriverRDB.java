@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.24 $ on $Date: 2003-08-11 02:43:18 $
+* @version $Revision: 1.25 $ on $Date: 2003-08-12 02:37:11 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1020,7 +1020,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				DBIDInt URIid = getURIID(qname,addIfLong);
 				if ( URIid == null ) return res;
 				dbid = URIid.getIntID();
-				res = new String(RDBCodeLiteral + RDBCodeRef + RDBCodeDelim + dbid);
+				res = new String(RDBCodeURI + RDBCodeRef + pfx + dbid);
 			} else {
 				res = RDBCodeURI + RDBCodeValue + pfx + qname + EOS;
 			}
@@ -1093,12 +1093,14 @@ public abstract class DriverRDB implements IRDBDriver {
 					throw new RDFRDBException("Bad URI Prefix: " + RDBString);
 			}
 			pos = pi.pos + 1;
-			String qname = RDBString.substring(pos,len - EOS_LEN);
+			String qname;
 			if ( valType.equals(RDBCodeRef) ) {
-				qname = IDtoURI(qname);
+				qname = IDtoURI(RDBString.substring(pos));
 				if ( qname == null )
 					throw new RDFRDBException("Bad URI: " + RDBString);
-			}
+			} else
+				qname = RDBString.substring(pos,len - EOS_LEN);
+
 			res = Node.createURI(prefix + qname);
 			
 		} else if ( nodeType.equals(RDBCodeLiteral) ) {
@@ -1200,7 +1202,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		headLen = res.head.length();
 		avail = INDEX_KEY_LENGTH - (headLen + EOS_LEN);
 		if ( split > avail ) {
-			res.head = res.head + prefix.substring(0,avail) + EOS;
+			res.head = res.head + prefix.substring(0,avail);
 			res.tail = prefix.substring(avail);
 			res.hash = stringToHash(res.tail);
 		} else {
@@ -1288,7 +1290,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		headLen = res.head.length();
 		avail = INDEX_KEY_LENGTH - (headLen + EOS_LEN);
 		if ( qname.length() > avail ) {
-			res.head = res.head + qname.substring(0,avail) + EOS;
+			res.head = res.head + qname.substring(0,avail);
 			res.tail = qname.substring(avail);
 			res.hash = stringToHash(res.tail);
 		} else {
@@ -1551,7 +1553,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			// should really optimize this and not
 			// even run the query but ok for now.
 			val = RDBCodeInvalid;
-		return colAliasToString(alias,pred) + "=" + "\"" + val + "\"";		
+		return colAliasToString(alias,pred) + "=" + QUOTE_CHAR + val + QUOTE_CHAR;		
 	}
 	
 	public String genSQLQualParam( int alias, char pred ) {
