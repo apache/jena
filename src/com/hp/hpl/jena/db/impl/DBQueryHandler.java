@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.6 2003-08-25 02:17:47 wkw Exp $
+  $Id: DBQueryHandler.java,v 1.7 2003-08-26 03:02:34 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -153,7 +153,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
 								vx.bindToVarMap(varMap);						
 						}
 						stages[stageCnt] =
-							new DBQueryStage(graph,src.singleSource(),varList,qryPat);
+							new DBQueryStage(graph,src.singleSource(),varList,qryPat, constraints);
 					} else
 						stages[stageCnt] =
 							super.patternStage(varMap,constraints, new Triple[]{ptn[src.index]});

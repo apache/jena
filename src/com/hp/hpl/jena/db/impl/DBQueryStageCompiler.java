@@ -7,6 +7,7 @@ import com.hp.hpl.jena.graph.query.Domain;
 import com.hp.hpl.jena.graph.query.Element;
 import com.hp.hpl.jena.graph.query.Fixed;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -27,7 +28,7 @@ public final class DBQueryStageCompiler
         array of Patterns. *preserve the order*. 
     */  
     public static DBQuery compile( DBQueryStageCompiler compiler, DBQueryHandler qh, SpecializedGraph sg,
-    		List varList, List dbPat )
+    		List varList, List dbPat, Graph constraints )
         {
         DBQuery query = new DBQuery(sg,varList,qh.queryOnlyStmt,
         		qh.queryOnlyReif,qh.queryFullReif);
@@ -35,7 +36,8 @@ public final class DBQueryStageCompiler
         for (int i = 0; i < dbPat.size(); i += 1) {
 			compilePattern (compiler, query, (DBPattern) dbPat.get(i));
         }
-        compileQuery (compiler, query);
+		compileConstraints (compiler, query, constraints);
+		compileQuery (compiler, query);
         return query;
     }
        
@@ -124,6 +126,59 @@ public final class DBQueryStageCompiler
 				throw new JenaException("Invalid Element in qualifier");
 			return qual;
 		}
+
+		/**
+			compile the constraints.
+		*/
+		private static void compileConstraints( DBQueryStageCompiler compiler, DBQuery query,
+			Graph constraints )
+			{
+				// for each variable bound by this query, compile any equal
+				// or not equal constraints
+			/* disable for now
+				int varCnt = query.binding.length;
+				for(int i = 0; (i<varCnt) && (constraints.size() > 0); i++) {
+					VarIndex vx = query.binding[i];
+					if ( vx.isArgVar() )
+						continue;
+					// look for variable on both left and right side of operator
+					compConstraints(query, vx.var, constraints);
+					compConstraints(query, vx.var, constraints);
+				}
+			*/	
+			}
+			
+		private static void compConstraints( DBQuery query, Node_Variable var, Graph constraints ) {
+			Triple[] done = new Triple[constraints.size()];
+			int doneCnt = 0;
+			// check for var on left side of operator
+			ExtendedIterator it = constraints.find(var, Node.ANY, Node.ANY);
+			while ( it.hasNext() ) {
+				Triple t = (Triple) it.next();
+				if ( genConstraints(query,(Node_Variable)t.getSubject(),t.getPredicate(),t.getObject()) )
+					done[doneCnt++] = t;
+			}
+			for(doneCnt--;doneCnt>0;doneCnt--) constraints.delete(done[doneCnt]);
+			
+			// check for var on right side of operator
+			it = constraints.find( Node.ANY, Node.ANY, var);
+			while ( it.hasNext() ) {
+				Triple t = (Triple) it.next();
+				if ( genConstraints(query,(Node_Variable)t.getObject(),t.getPredicate(),t.getSubject()) )
+					done[doneCnt++] = t;
+			}
+			for(doneCnt--;doneCnt>0;doneCnt--) constraints.delete(done[doneCnt]);
+		}
+		
+		private static boolean genConstraints( DBQuery query, Node_Variable var, Node pred, Node obj ) {
+			boolean res = false;
+			// not sure what to check for here
+			return res;
+		}
+		
+
+	
+			
 
 	/**
 		compile the final form of the query statement.

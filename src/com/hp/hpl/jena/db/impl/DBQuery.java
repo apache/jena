@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQuery.java,v 1.2 2003-08-19 02:27:50 wkw Exp $
+  $Id: DBQuery.java,v 1.3 2003-08-26 03:02:34 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -21,7 +21,7 @@ public class DBQuery
 	int varCnt;         // number of variables in query
 	int aliasCnt;        // number of tables aliases (scans) in from clause
 	String stmt;        // query string
-	VarIndex[] binding;  // list of VarIndex
+	VarIndex[] binding;  // list of VarIndex, variables referenced in this query
 	int[] resList;		// indexes of result columns in mapping
 	int graphId;        // id of graph to query
 	String table;   // name of table to query
@@ -57,7 +57,7 @@ public class DBQuery
 		qryOnlyStmt = queryOnlyStmt;
 		qryOnlyReif = queryOnlyReif;
 		qryFullReif = queryFullReif;
-		// add result variables to mapping
+		// array of variable bound by query
 		binding = new VarIndex[varList.size()];
 		for ( varCnt=0; varCnt<varList.size(); varCnt++ ) {
 			binding[varCnt] = (VarIndex) varList.get(varCnt);

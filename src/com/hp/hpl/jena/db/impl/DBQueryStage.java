@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQueryStage.java,v 1.3 2003-08-19 02:28:14 wkw Exp $
+  $Id: DBQueryStage.java,v 1.4 2003-08-26 03:02:34 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -29,20 +29,20 @@ public class DBQueryStage extends Stage
     protected DBQuery compiled;
             
 	public DBQueryStage( GraphRDB graph, SpecializedGraph sg, 
-					List varList, List dbPat )
+					List varList, List dbPat, Graph constraints )
 		{
 		this.graph = graph;
-		this.compiled = compile (sg, varList, dbPat);
+		this.compiled = compile (sg, varList, dbPat, constraints);
 		}
 
-	protected DBQuery compile( SpecializedGraph sg, List varList, List dbPat )
-        { return compile( compiler, sg, varList, dbPat ); }
+	protected DBQuery compile( SpecializedGraph sg, List varList, List dbPat, Graph constraints )
+        { return compile( compiler, sg, varList, dbPat, constraints ); }
         
     protected DBQuery compile( DBQueryStageCompiler compiler, SpecializedGraph sg,
-    			List varList, List dbPat )
+    			List varList, List dbPat, Graph constraints )
         {
         return DBQueryStageCompiler.compile( compiler, (DBQueryHandler) graph.queryHandler(),
-        			sg, varList, dbPat );
+        			sg, varList, dbPat, constraints );
         }
                  
     private static final DBQueryStageCompiler compiler = new DBQueryStageCompiler();
