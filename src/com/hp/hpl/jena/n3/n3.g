@@ -610,22 +610,6 @@ protected
 NWS: ~(' ' | '\t' | '\f' | '\r' | '\n' ) ;
 
 
-// Align with XML 1.1 -- http://www.w3.org/TR/xml11/
-// NameStartChar    ::= ":" | [A-Z] | "_" | [a-z] | ...
-// NameChar         ::= NameStartChar | "-" | "." | [0-9] | ...
-// Name             ::= NameStartChar NameChar*
-
-// Namepace 1.1 -- http://www.w3.org/TR/xml-names11/
-// NCName           ::= NCNameStartChar NCNameChar*
-// NCNameChar       ::=    NameChar - ':' 
-// NCNameStartChar  ::=    NameStartChar - ':'
-// QName            ::=    PrefixedName 
-//                       | UnprefixedName 
-// PrefixedName     ::=    Prefix ':' LocalPart  
-// UnprefixedName   ::=    LocalPart  
-// Prefix           ::=    NCName (does not start with numbers)
-// LocalPart        ::=    NCName (does not start with numbers) 
-
 protected
 ALPHA: ('A'..'Z')|('a'..'z') ;
 
