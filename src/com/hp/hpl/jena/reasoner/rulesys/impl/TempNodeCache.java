@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TempNodeCache.java,v 1.1 2003-07-09 07:59:18 der Exp $
+ * $Id: TempNodeCache.java,v 1.2 2003-07-09 15:50:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,8 +22,13 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * to a deductions graph due to the risk of concurrent access.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-09 07:59:18 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-09 15:50:09 $
  */
+
+// Implementation note: We need to map from a pair of values (instance and prop).
+// The current implementation in terms on NodePair will turn over storage during
+// lookup. Could replace this with a cascaded hash table.
+
 public class TempNodeCache {
 
     /** Map from instance+property to value */
@@ -32,7 +37,6 @@ public class TempNodeCache {
     /** Map from temp to RDF class, if any */
     protected Map classMap = new HashMap(); 
     
-
     /**
      * Retrieve or create a bNode representing an inferred property value.
      * @param instance the base instance node to which the property applies
@@ -41,8 +45,76 @@ public class TempNodeCache {
      * @return the bNode representing the property value 
      */
     public Node getTemp(Node instance, Node prop, Node pclass) {
-        // TODO implement
-        return null;
+        NodePair ip = new NodePair(instance, prop);
+        Node result = null;
+        for (Iterator i = ipMap.getAll(ip); i.hasNext(); ) {
+            Node t = (Node)i.next();
+            if (pclass != null) {
+                if (classMap.get(t).equals(pclass)) {
+                    result = t;
+                    break;
+                }
+            } else {
+                result = t;
+                break;
+            }
+        }
+        if (result == null) {
+            // No value yet, so create one
+            result = Node.createAnon();
+            ipMap.put(ip, result);
+            if (pclass != null) {
+                classMap.put(result, pclass);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Inner class used to hold and hash a node pair.
+     */
+    public static class NodePair {
+        /** first node in the pair */
+        protected Node first;
+        
+        /** second node in the pair */
+        protected Node second;
+        
+        /** Constructor */
+        public NodePair(Node first, Node second) {
+            this.first = first;
+            this.second = second;
+        }
+        
+        /**
+         * Return the first node in the pair.
+         */
+        public Node getFirst() {
+            return first;
+        }
+        
+        /**
+         * Return the second node in the pair.
+         */
+        public Node getSecond() {
+            return second;
+        }
+        
+        /**
+         * Equality of each component.
+         */
+        public boolean equals(Object o) {
+            return o instanceof NodePair &&
+                        first.equals(((NodePair)o).first) && 
+                        second.equals(((NodePair)o).second); 
+        }
+        /**
+         * Simple combined hashcode.
+         */
+        public int hashCode() {
+            return first.hashCode() ^ (second.hashCode() << 1);
+        }
+
     }
     
 }

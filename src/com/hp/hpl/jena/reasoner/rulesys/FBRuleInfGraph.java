@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.23 2003-07-09 07:59:18 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.24 2003-07-09 15:50:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-07-09 07:59:18 $
+ * @version $Revision: 1.24 $ on $Date: 2003-07-09 15:50:17 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -66,6 +66,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     
     /** Optional list of preprocessing hooks  to be run in sequence during preparation time */
     protected List preprocessorHooks;
+    
+    /** Cache of temporary property values inferred through getTemp calls */
+    protected TempNodeCache tempNodecache = new TempNodeCache();
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(FBRuleInfGraph.class);
@@ -257,8 +260,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @return the bNode representing the property value 
      */
     public Node getTemp(Node instance, Node prop, Node pclass) {
-        // TODO implement
-        return null;
+        return tempNodecache.getTemp(instance, prop, pclass);
     }
    
 //  =======================================================================

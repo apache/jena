@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.12 2003-06-23 16:27:56 der Exp $
+ * $Id: TestFBRules.java,v 1.13 2003-07-09 15:50:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-06-23 16:27:56 $
+ * @version $Revision: 1.13 $ on $Date: 2003-07-09 15:50:17 $
  */
 public class TestFBRules extends TestCase {
     
@@ -487,23 +487,19 @@ public class TestFBRules extends TestCase {
     public void testMakeInstance() {
         Graph data = new GraphMem();
         data.add(new Triple(a, ty, C1));
-        data.add(new Triple(b, ty, C1));
-        data.add(new Triple(b, p, c));
         List rules = Rule.parseRules(
-    "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
+        "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
+        "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
                           "" );        
         Reasoner reasoner =  new FBRuleReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        // Should not have triggered on b
-        TestUtil.assertIteratorValues(this, 
-              infgraph.find(b, p, null), new Object[] {
-                  new Triple(b, p, c)
-              } );
-        // Should have added an value instance to a
-        Node instance = getValue(infgraph, a, p);
-        // No longer creates the type assertion until we can support concurrent update
-//        Node instClass = getValue(infgraph, instance, ty);
-//        assertEquals(instClass, C2);
+        
+        Node valueInstance = getValue(infgraph, a, p);
+        assertNotNull(valueInstance);
+        Node valueInstance2 = getValue(infgraph, a, p);
+        assertEquals(valueInstance, valueInstance2);
+        Node valueType = getValue(infgraph, valueInstance, RDF.type.asNode());
+        assertEquals(valueType, C2);
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BBRuleContext.java,v 1.5 2003-06-12 14:17:00 der Exp $
+ * $Id: BBRuleContext.java,v 1.6 2003-07-09 15:50:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * interpret variable bindings to access the static triple data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-12 14:17:00 $
+ * @version $Revision: 1.6 $ on $Date: 2003-07-09 15:50:09 $
  */
 public class BBRuleContext implements RuleContext {
     
@@ -32,7 +32,7 @@ public class BBRuleContext implements RuleContext {
     protected Rule rule;
     
     /** The enclosing inference graph. */
-    protected InfGraph graph;
+    protected BackwardRuleInfGraphI graph;
     
     /** The set of ground triples to be searched by the find operations */
     protected Finder searchpath;
@@ -41,7 +41,7 @@ public class BBRuleContext implements RuleContext {
      * Construct an empty context. It can't be used until
      * the rule and environment have been set.
      */
-    public BBRuleContext(InfGraph graph, Finder searchpath) {
+    public BBRuleContext(BackwardRuleInfGraphI graph, Finder searchpath) {
         this.graph = graph;
         this.searchpath = searchpath;
     }
@@ -125,6 +125,19 @@ public class BBRuleContext implements RuleContext {
      */
     public void remove(Triple t) {
         graph.delete(t);
+    }
+
+    /**
+     * Retrieve or create a bNode representing an inferred property value.
+     * This is currently only available on backward contexts and not part of the 
+     * normal RuleContext interface.
+     * @param instance the base instance node to which the property applies
+     * @param prop the property node whose value is being inferred
+     * @param pclass the (optional, can be null) class for the inferred value.
+     * @return the bNode representing the property value 
+     */
+    public Node getTemp(Node instance, Node prop, Node pclass) {
+        return graph.getTemp(instance, prop, pclass);
     }
 
 }
