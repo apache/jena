@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCacheNew.java,v 1.4 2004-11-28 16:34:49 der Exp $
+ * $Id: TransitiveGraphCacheNew.java,v 1.5 2004-11-28 21:50:22 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,7 +42,7 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 
 // TODO: This version is a compromise between bug fixing earlier code,
@@ -66,6 +66,9 @@ public class TransitiveGraphCacheNew {
     /** The RDF predicate representing the closed relation */
     protected Node closedPredicate;
 	
+    /** A list of pending deletes which break the cycle-free normal form */
+    protected Set deletesPending;
+    
     /**
      * Inner class used to represent vistors than can be applied to each
      * node in a graph walk.
@@ -97,6 +100,7 @@ public class TransitiveGraphCacheNew {
 		 * of all the nodes in the SCC. For non-lead nodes it will be a ref to the lead node. */
 		protected Object aliases;
 
+		
         /**
          * Constructor.
          */
@@ -126,7 +130,7 @@ public class TransitiveGraphCacheNew {
 		 */
 		public GraphNode leadNode() {
 			if (aliases != null && aliases instanceof GraphNode) {
-				return (GraphNode)aliases;
+				return ((GraphNode)aliases).leadNode();
 			} else {
 				return this;
 			}
@@ -203,6 +207,55 @@ public class TransitiveGraphCacheNew {
 			succClosedTriples = null;
 		}
         
+		/**
+		 * Propagate the results of adding a link from this
+		 * node to the target node.
+		 */
+		public void propagateAdd(GraphNode target) {
+			Set sc = target.succClosed;
+			visitPredecessors(new Visitor() {
+				public void visit(GraphNode node, Object arg1, Object target) {
+					Set sc = (Set)arg1;
+					// Add closure
+					node.succClosed.addAll(sc);
+					node.succClosed.add(target);
+					// Scan for redundant links
+					for (Iterator i = node.succ.iterator(); i.hasNext();) {
+						GraphNode s = (GraphNode)i.next();
+						if (sc.contains(s)) {
+							i.remove();
+							s.pred.remove(node);
+						}
+					}
+				}
+		    }, sc, target);
+		}
+        
+		/**
+		 * Propagate the results of creating a new SCC with this
+		 * node as lead.
+		 */
+		public void propagateSCC() {
+			Set visited = new HashSet();
+			visited.add(this);
+			// Scan predecessors not including ourselves
+			doVisitPredecessors(new Visitor() {
+				public void visit(GraphNode node, Object arg1, Object arg2) {
+					Set sc = (Set)arg1;
+					// Add closure
+					node.succClosed.addAll(sc);
+					// Scan for redundant links
+					for (Iterator i = node.succ.iterator(); i.hasNext();) {
+						GraphNode s = (GraphNode)i.next();
+						if (sc.contains(s)) {
+							i.remove();
+							s.pred.remove(node);
+						}
+					}
+				}
+		    }, succClosed, null, visited);
+		}
+		
         /**
          * Given a set of SCC nodes make this the lead member of the SCC and
          * reroute all incoming and outgoing links accordingly.
@@ -232,7 +285,16 @@ public class TransitiveGraphCacheNew {
             
             // Find all predecessor nodes and relink link them to point to us
             Set done = new HashSet();
-            this.aliases = members;
+            Set newAliases = new HashSet();
+            for (Iterator i = members.iterator(); i.hasNext(); ) {
+            	GraphNode m = (GraphNode)i.next();
+            	if (m.aliases instanceof Set) {
+            		newAliases.addAll((Set)m.aliases);
+            	} else {
+            		newAliases.add(m);
+            	}
+            }
+            this.aliases = newAliases;
             for (Iterator i = members.iterator(); i.hasNext(); ) {
                 GraphNode n = (GraphNode)i.next();
                 if (n != this) {
@@ -503,18 +565,18 @@ public class TransitiveGraphCacheNew {
         if (start.equals(end)) return;      // Reflexive case is built in
     	GraphNode startN = getLead(start);
     	GraphNode endN = getLead(end);
-    	boolean needJoin = endN.pathTo(startN);
     	
     	// Check if this link is already known about
     	if (startN.pathTo(endN)) {
     		// yes, so no work to do
     		return;
-    	} else {
-    		startN.assertLinkTo(endN);
     	}
 
+    	boolean needJoin = endN.pathTo(startN);
         Set members = null;
         if (needJoin) {
+        	// Reduce graph to DAG by factoring out SCCs
+//	        startN.assertLinkTo(endN);
             // First find all the members of the new component
             members = new HashSet();
             members.add(endN);
@@ -522,42 +584,19 @@ public class TransitiveGraphCacheNew {
                 public void visit(GraphNode node, Object members, Object endN) {
                     if (((GraphNode)endN).pathTo(node)) ((Set)members).add(node);
                 } }, members, endN);
+            // Then create the SCC
+            startN.makeLeadNodeFor(members);
+            // Now propagate the closure in the normalized graph
+            startN.propagateSCC();
+        } else {
+	    	// Walk all predecessors of start retracting redundant direct links
+	    	// and adding missing closed links
+	        startN.propagateAdd(endN);
+	        startN.assertLinkTo(endN);
         }
         
-    	// Walk all predecessors of start retracting redundant direct links
-    	// and adding missing closed links
-    	startN.visitPredecessors(new Visitor() {
-    		public void visit(GraphNode node, Object arg1, Object arg2) {
-    			GraphNode target = (GraphNode)arg1;
-    			if (node.pathTo(target)) {
-    				// This is a redundant link 
-    				node.retractLinkTo(target);
-    			} else {
-    				// Propagate closure
-    				LinkedList taskStack = new LinkedList();
-                    Set done = new HashSet();
-    				taskStack.addLast(target);
-    				while ( ! taskStack.isEmpty()) {
-    					GraphNode next = (GraphNode) taskStack.removeLast();
-                        if (done.add(next)) {
-        					node.assertIndirectLinkTo(next);
-        					for (Iterator i = next.iteratorOverSuccessors(); i.hasNext(); ) {
-        						GraphNode s = (GraphNode)i.next();
-        						if (node.pathTo(s)) {
-        							node.retractLinkTo(s);
-        						} else {
-        							taskStack.addLast(s);
-        						}
-        					}
-                        }
-    				}
-    			}
-    		}
-    	}, endN, null);
-    	
     	if (needJoin) {
     		// Create a new strongly connected component
-            startN.makeLeadNodeFor(members);
     	}
     }
     

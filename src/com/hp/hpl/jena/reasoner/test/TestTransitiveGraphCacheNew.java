@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTransitiveGraphCacheNew.java,v 1.3 2004-11-28 16:35:51 der Exp $
+ * $Id: TestTransitiveGraphCacheNew.java,v 1.4 2004-11-28 21:50:25 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
  * off the main unit test paths.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 
 public class TestTransitiveGraphCacheNew extends TestCase {
@@ -312,11 +312,7 @@ public class TestTransitiveGraphCacheNew extends TestCase {
         cache.addRelation(a, b);  
         cache.addRelation(c, a);        
         cache.addRelation(c, b);        
-        System.out.println("After (ab), (ca), (cb)");
-        System.out.println(cache.dump());
         cache.addRelation(a, c);     
-        System.out.println("After (ac)");
-        System.out.println(cache.dump());
         TestUtil.assertIteratorValues(this, 
             cache.find(new TriplePattern(a, directP, null)),
             new Object[] {
@@ -459,6 +455,7 @@ public class TestTransitiveGraphCacheNew extends TestCase {
                     new Triple(f, closedP, c),
                     new Triple(f, closedP, d),
                     new Triple(f, closedP, g),
+                    new Triple(f, closedP, e),
                 });
     }
     
