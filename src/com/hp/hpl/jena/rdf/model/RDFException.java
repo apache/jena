@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFException.java,v 1.6 2003-05-05 11:09:08 chris-dollin Exp $
+ * $Id: RDFException.java,v 1.7 2003-05-06 04:46:22 chris-dollin Exp $
  *
  * Created on 26 July 2000, 07:00
  */
@@ -33,7 +33,7 @@ package com.hp.hpl.jena.rdf.model;
 
 /** Generic RDF Exception class.
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-05-05 11:09:08 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-05-06 04:46:22 $
  */
 public class RDFException extends RuntimeException {
     
@@ -178,18 +178,7 @@ public class RDFException extends RuntimeException {
         this.message = errorMessage[this.errorCode];
         nestedException = e;
     }
-    
-    /** Create a new RDFException with a given error code and encapsulate another
-     * exception.
-     * @param errorCode The code number of the error which has occurred.
-     * @param e The exception to be encapsulated.
-     */
-    public RDFException(int errorCode, Exception e) {
-        this.errorCode = errorCode;
-        this.message = errorMessage[NESTEDEXCEPTION];
-        nestedException = e;
-    }
-    
+
     /** Create a new RDFException with a given error code and message
      * @param errorCode The code number of the error which has occurred.
      * @param message The message associated with the error

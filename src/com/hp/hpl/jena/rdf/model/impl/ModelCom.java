@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2003-05-03 07:44:50 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.34 $' Date='$Date: 2003-05-06 04:46:22 $'
  */
 
 public class ModelCom 
@@ -481,13 +481,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         { return new ResourceImpl( id ); }
         
     public Resource createResource(String uri, ResourceF f) throws RDFException {
-        try {
-            return f.createResource(createResource(uri));
-        } catch (Exception e) {
-            e.printStackTrace( System.out );
-           throw new RDFException(RDFException.NESTEDEXCEPTION, e);
-       }
-       
+       return f.createResource( createResource( uri ) );
     }
     
  
