@@ -13,6 +13,17 @@ functionality with an ontology API, including OWL, a reasoner plug-in
 architecture together with rule-based reasoners for RDFS and OWL.
 
 
+
 Changes from Jena2-beta1:
 
 The jar file "antlr.debug.jar" has been replaced by "antlr.jar".
+
+
+Persistent Storage:
+
+1) Fastpath is enabled.
+2) URI prefix compression is implemented.
+3) Configuration and access options are exposed to applications through get/set methods.
+4) The prefix for database table names may be redefined.
+5) Oracle is now fully supported.
+6) New factory methods for persistent models are available, deprecating the existing ModelRDB constructors.
