@@ -65,9 +65,6 @@ package com.hp.hpl.jena.rdf.arp;
 import java.io.Serializable;
 import org.apache.log4j.Logger;
 
-import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
-
-import java.util.StringTokenizer;
 
 /**********************************************************************
 * A class to represent a Uniform Resource Identifier (URI). This class
@@ -98,7 +95,7 @@ import java.util.StringTokenizer;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.11 2003-11-29 15:06:41 jeremy_carroll Exp $
+* @version  $Id: URI.java,v 1.12 2003-11-30 23:38:51 jeremy_carroll Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {

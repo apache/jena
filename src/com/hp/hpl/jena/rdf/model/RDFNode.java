@@ -32,7 +32,6 @@
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.FrontsNode;
-import com.hp.hpl.jena.graph.Node;
 /** An RDF Resource or an RDF Literal.
  *
  * <p><CODE>RDFNode</CODE> represents the methods which RDF Resources and RDF
@@ -40,7 +39,7 @@ import com.hp.hpl.jena.graph.Node;
  * <p>Chris added the _as_ method to allow RDFNodes to participate in polymorphic
  * conversions.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-11-20 16:53:24 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-11-30 23:38:34 $'
  */
 public interface RDFNode extends FrontsNode
 {
