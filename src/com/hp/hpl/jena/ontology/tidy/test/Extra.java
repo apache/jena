@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Extra.java,v 1.17 2005-02-21 12:08:37 andy_seaborne Exp $
+  $Id: Extra.java,v 1.18 2005-04-06 12:46:05 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.vocabulary.OWLTest;
 import com.hp.hpl.jena.ontology.tidy.*;
 import java.util.*;
@@ -173,7 +174,8 @@ public class Extra extends TestCase {
 		}
    	}));
    	System.setErr(new PrintStream(bos));
-   	owlsyntax.main(new String[]{"file:testing/ontology/tidy/emess.rdf"});
+   	try { owlsyntax.main(new String[]{"file:testing/ontology/tidy/emess.rdf"}); }
+    catch (Exception e) { throw new JenaException( e ); }
    	}
    	finally {
    	  System.setOut(oldOut);
