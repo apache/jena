@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdfns 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfsns 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY dcns 'http://purl.org/dc/elements/1.1/'>
+    <!ENTITY dctermsns 'http://purl.org/dc/terms/'>
+    <!ENTITY dctypens 'http://purl.org/dc/dcmitype/'>
+]>
+<rdf:RDF xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="http://purl.org/dc/dcmitype/">
+<dc:title xml:lang="en-US">The DCMI Types namespace providing access to its content by means of an RDF Schema</dc:title>
+<dc:publisher xml:lang="en-US">The Dublin Core Metadata Initiative</dc:publisher>
+<dc:description xml:lang="en-US">The Dublin Core Types namespace provides URIs for the entries of the DCMI Type Vocabulary. Entries are declared using RDF Schema language to support RDF applications. The Schema will be updated according to dc-usage decisions.</dc:description>
+<dc:language xml:lang="en-US">English</dc:language>
+<dcterms:requires rdf:resource="http://dublincore.org/documents/dcmi-type-vocabulary/"/>
+<dc:source rdf:resource="http://dublincore.org/documents/dcmi-type-vocabulary/"/>
+<dc:source rdf:resource="http://dublincore.org/usage/terms/"/>
+<dcterms:requires rdf:resource="http://purl.org/dc/elements/1.1/"/>
+<dcterms:isReferencedBy rdf:resource="http://purl.org/dc/terms/"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dcterms:modified>2003-03-24</dcterms:modified>
+</rdf:Description>
+<dcterms:TypeScheme rdf:about="http://purl.org/dc/terms/DCMIType">
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dc:description>
+	    The DCMI Type Vocabulary provides a general, cross-domain list of
+	    approved terms that may be used as values for the Resource Type
+	    element to identify the genre of a resource.
+	</dc:description>
+<dcterms:issued>2000-07-11</dcterms:issued>
+</dcterms:TypeScheme>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/Collection">
+<rdfs:label xml:lang="en-US">Collection</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">A collection is an aggregation of items. The term 
+		collection means that the resource is described as a 
+		group; its parts may be separately described and navigated.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#Collection-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/Dataset">
+<rdfs:label xml:lang="en-US">Dataset</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">A dataset is information encoded in a defined structure 
+		(for example, lists, tables, and databases), intended to 
+		be useful for direct machine processing.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#Dataset-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/Event">
+<rdfs:label xml:lang="en-US">Event</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">An event is a non-persistent, time-based occurrence. 
+		Metadata for an event provides descriptive
+		information that is the basis for discovery of the
+		purpose, location, duration, responsible agents, and
+		links to related events and resources.  The resource
+		of type event may not be retrievable if the described
+		instantiation has expired or is yet to occur.
+		Examples - exhibition, web-cast, conference,
+		workshop, open-day, performance, battle, trial,
+		wedding, tea-party, conflagration.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#Event-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/Image">
+<rdfs:label xml:lang="en-US">Image</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">An image is a primarily symbolic visual representation 
+		other than text. For example - images and photographs of 
+		physical objects, paintings, prints, drawings, other 
+		images and graphics, animations and moving pictures, 
+		film, diagrams, maps, musical notation. Note that image 
+		may include both electronic and physical representations.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#Image-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/InteractiveResource">
+<rdfs:label xml:lang="en-US">Interactive Resource</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">An interactive resource is a resource which requires 
+		interaction from the user to be understood, executed, 
+		or experienced. For example - forms on web pages, applets, 
+		multimedia learning objects, chat services, virtual 
+		reality.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#InteractiveResource-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/Service">
+<rdfs:label xml:lang="en-US">Service</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">A service is a system that provides one or more 
+		functions of value to the end-user. Examples include: 
+		a photocopying service, a banking service, an 
+		authentication service, interlibrary loans, a Z39.50 
+		or Web server.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#Service-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/Software">
+<rdfs:label xml:lang="en-US">Software</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">Software is a computer program in source or 
+		compiled form which may be available for installation 
+		non-transiently on another machine. For software which 
+		exists only to create an interactive environment, use 
+		interactive instead.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#Software-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/Sound">
+<rdfs:label xml:lang="en-US">Sound</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">A sound is a resource whose content is primarily 
+		intended to be rendered as audio. For example - a 
+		music playback file format, an audio compact disc, 
+		and recorded speech or sounds.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#Sound-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/Text">
+<rdfs:label xml:lang="en-US">Text</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">A text is a resource whose content is primarily 
+		words for reading. For example - books, letters, 
+		dissertations, poems, newspapers, articles, 
+		archives of mailing lists. Note that facsimiles 
+		or images of texts are still of the genre text.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2000-07-11</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#Text-001"/>
+</dcterms:DCMIType>
+<dcterms:DCMIType rdf:about="http://purl.org/dc/dcmitype/PhysicalObject">
+<rdfs:label xml:lang="en-US">Physical Object</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="http://purl.org/dc/dcmitype/"/>
+<rdfs:comment xml:lang="en-US">An inanimate, three-dimensional object or substance.  
+		For example -- a computer, the great pyramid, a 
+		sculpture.  Note that digital representations 
+		of, or surrogates for, these things should use Image, 
+		Text or one of the other types.</rdfs:comment>
+<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+<dcterms:issued>2002-07-13</dcterms:issued>
+<dc:type rdf:resource="http://dublincore.org/usage/documents/principles/#vocabulary-term"/>
+<dcterms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#PhysicalObject-001"/>
+</dcterms:DCMIType>
+</rdf:RDF>

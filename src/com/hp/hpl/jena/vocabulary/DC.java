@@ -1,5 +1,21 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+ * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.vocabulary;
+
+
+/* Current Dublin Core version
+ * Currently, version 1.1
+ * @version $Id: DC.java,v 1.3 2003-05-08 14:42:56 andy_seaborne Exp $
+ */
+
+public class DC  extends DC_11
+{}    
+
+/*
+ *  (c) Copyright Hewlett-Packard Company 2003 
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,92 +40,5 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * RDF.java
- *
- * Created on 26th January 2001, 22:25
  */
 
-package com.hp.hpl.jena.vocabulary;
-
-import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFException;
-
-/**
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-01-30 10:25:18 $
- */
-public class DC{
-    
-    // next free error code = 2
-    
-    protected static final String uri =
-        "http://purl.org/dc/elements/1.0/";
-    
-/** returns the URI for this schema
- * @return the URI for this schema
- */    
-    public static String getURI()
-    {
-        return uri;
-    }
-    
-
-           static final String   ncontributor = "contributor";
-    public static       Property contributor;  
-           static final String   ncoverage = "coverage";
-    public static       Property coverage;
-           static final String   ncreator = "creator";
-    public static       Property creator;  
-           static final String   ndate = "date";
-    public static       Property date;
-           static final String   ndescription = "description";
-    public static       Property description;  
-           static final String   nformat = "format";
-    public static       Property format; 
-           static final String   nidentifier = "identifier";
-    public static       Property identifier; 
-           static final String   nlanguage = "language";
-    public static       Property language;
-           static final String   npublisher = "publisher";
-    public static       Property publisher;  
-           static final String   nrelation = "relation";
-    public static       Property relation; 
-           static final String   nrights = "rights";
-    public static       Property rights;
-           static final String   nsource = "source";
-    public static       Property source;
-           static final String   nsubject = "subject";
-    public static       Property subject; 
-           static final String   ntitle = "title";
-    public static       Property title;
-           static final String ntype = "type";
-    public static       Property type;   
-
-    
-    static {
-        try {
-            contributor   = new PropertyImpl(uri, ncontributor);
-            coverage      = new PropertyImpl(uri, ncoverage);
-            creator       = new PropertyImpl(uri, ncreator);
-            date          = new PropertyImpl(uri, ndate);
-            description   = new PropertyImpl(uri, ndescription);
-            format        = new PropertyImpl(uri, nformat);
-            identifier    = new PropertyImpl(uri, nidentifier);
-            language      = new PropertyImpl(uri, nlanguage);
-            publisher     = new PropertyImpl(uri, npublisher);
-            relation      = new PropertyImpl(uri, nrelation);
-            rights        = new PropertyImpl(uri, nrights);
-            source        = new PropertyImpl(uri, nsource);
-            subject       = new PropertyImpl(uri, nsubject);
-            title         = new PropertyImpl(uri, ntitle);
-            type          = new PropertyImpl(uri, ntype);
-        } catch (RDFException e) {
-            ErrorHelper.logInternalError("RDF", 1, e);
-        }
-    }
-    
-}
