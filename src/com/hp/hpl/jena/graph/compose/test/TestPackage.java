@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.1 2003-03-04 17:51:44 ian_dickinson Exp $
+  $Id: TestPackage.java,v 1.2 2003-07-01 14:04:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -19,7 +19,7 @@ import junit.framework.TestSuite;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2003-03-04 17:51:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-07-01 14:04:55 $
  */
 public class TestPackage extends Object {
     
@@ -33,8 +33,6 @@ public class TestPackage extends Object {
         result.addTest( TestUnion.suite() );
         result.addTest( TestDifference.suite() );
         result.addTest( TestIntersection.suite() );
-        result.addTest( TestRDFS.suite() );
-        result.addTest( TestRDFClosure.suite() );
         result.addTest( TestMultiUnion.suite() );
         return  result;
     }
