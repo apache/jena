@@ -1,6 +1,35 @@
 Release Notes
 =============
 
+Jena 2.1 - Main changes from Jena 2.0
+  OWL Syntax Checker
+      Major update from alpha version (Jena 2.0), to production 
+      version (Jena 2.1).
+      API created.
+      Many fold performance improvement (orders of 
+      magnitude)
+      Now conformant with OWL Recommendation.
+      Streaming mode added, suitable for lower memory
+      environments or large input.
+      Command-Line jena.owlsyntax program added.
+      Still to do: better error messages.
+     
+     
+  ARP
+      Extended API to show bnode scope and XML Namespaces.
+      Discovered memory leak which has been present since
+      the beginning. This is not fixed. Users of ARP and 
+      Jena in memory limited, or long-running applications, 
+      or reading lots of varied RDF/XML, should read the 
+      updated Javadoc for the package 
+      com.hp.hpl.jena.rdf.arp.
+
+
+Jena 2.1 changes from Jena 2.1-dev-3
+  Minor bug fixes in OWL Syntax Checker.
+  Streaming mode in OWL Syntax Checker.
+  Documented ARP memory leak.
+
 Jena 2.1-dev-3
   Implements W3C RDF and OWL Proposed Recommendations
   OWL Syntax Checker - much faster, new API (error msgs still being worked on)
