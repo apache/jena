@@ -68,3 +68,9 @@ The new method Model::isEmpty() tests a model to see if it is empty (contains
 no [no-reified] statements). This is equivalent to size()==0 but it (a) more
 convenient and (b) can be implemented more efficiently by some models.
 
+A preliminary model update event handling interface has been provided. Models
+may register (and unregister) ModelChangedListener's which are told about
+calls which update the model - add/remove single statements, statement
+arrays, statement lists, statement iterators, or [other] models.
+
+
