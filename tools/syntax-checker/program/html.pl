@@ -466,8 +466,13 @@ nonStructural(t(X,_,_)) :-
 nonStructural(t(X,Y,_)) :-
   structural(X),
   comparative(Y).
-nonStructural(t(X,rdf:type,rdfs:'Class')) :-
+nonStructural(T) :- funnyType(T).
+
+funnyType(t(restriction,rdf:type,owl:'Class')).
+funnyType(t(unnamedDataRange,rdf:type,owl:'Class')).
+funnyType(t(X,rdf:type,rdfs:'Class')) :-
   structural(X).
+  
 
 auxilliary(t(X,Y,_)) :-
   fail,

@@ -126,7 +126,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.11 2003-04-17 12:21:20 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.12 2003-09-25 08:41:21 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -233,7 +233,7 @@ buildChecker :-
 buildChecker :-
    m(D),
    tt(D,P,O,Lvl),
-   \+ comparative(P),
+   \+ nonStructural(t(D,P,O)),
    retract(tt(D,P,O,Lvl)),
    fail.
 buildChecker :-
@@ -250,6 +250,13 @@ buildChecker :-
    retract(tt(S,Q:P,D,Lvl)),
    m(D,D-N*P),
    assert(tt(S,Q:P,D-N*P,Lvl)),
+   fail.
+buildChecker :-
+   m(D),
+   funnyType(t(D,PP,T)),
+   retract(tt(D,PP,T,Lvl)),
+   m(D,D-N*P),
+   assert(tt(D-N*P,PP,T,Lvl)),
    fail.
 buildChecker :-
    m(D),
