@@ -24,10 +24,11 @@ import com.hp.hpl.jena.shared.*;
  * resources: applications may also create specialised FileManagers.
  * 
  * A FileManager contains a list of location functions to try: the global
- * FileManger has one @link{LocatorFile} and one @link{LocatorClassLoader}.
+ * FileManger has one {@link LocatorFile}, one {@link LocatorClassLoader} and
+ * one {@link LocatorURL}
  * 
  * A FileManager works in conjunction with a LocationMapper.
- * A @link{LocationMapper} is a set of alternative locations for system
+ * A {@link LocationMapper} is a set of alternative locations for system
  * resources and a set of alternative prefix locations.  For example, a local
  * copy of a common RDF dataset may be used whenever the usual URL is used by
  * the application.
@@ -39,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.8 2004-12-07 18:51:18 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.9 2004-12-19 17:54:44 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -175,18 +176,19 @@ public class FileManager
      *  defaulting to RDF/XML.
      *  @param filenameOrURI The filename or a URI (file:, http:)
      *  @return a new model
+     *  @exception JenaException if there is syntax error in file.
      */
 
     public Model loadModel(String filenameOrURI)
     { return loadModel(filenameOrURI, null) ; }
 
     /** Load a model from a file (local or remote).
-     *  Guesses the syntax of the file based on filename extension, 
-     *  defaulting to RDF/XML.
+     *  URI is teh base for reading the model.
      * 
      *  @param filenameOrURI The filename or a URI (file:, http:)
      *  @param rdfSyntax  RDF Serialization syntax. 
      *  @return a new model
+     *  @exception JenaException if there is syntax error in file.
      */
 
     public Model loadModel(String filenameOrURI, String rdfSyntax)
@@ -195,14 +197,13 @@ public class FileManager
     }
     
     /** Load a model from a file (local or remote).
-     *  Guesses the syntax of the file based on filename extension, 
-     *  defaulting to RDF/XML.
      * 
      *  @param filenameOrURI The filename or a URI (file:, http:)
      *  @param baseURI  Base URI for loading the RDF model.
      *  @param rdfSyntax  RDF Serialization syntax. 
      *  @return a new model
-     */
+     *  @exception JenaException if there is syntax error in file.
+    */
 
     public Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax)
     {
@@ -228,6 +229,7 @@ public class FileManager
      * @param model
      * @param filenameOrURI
      * @return The model or null, if there was an error.
+     *  @exception JenaException if there is syntax error in file.
      */    
 
     public Model readModel(Model model, String filenameOrURI)
@@ -239,6 +241,7 @@ public class FileManager
      * @param filenameOrURI
      * @param rdfSyntax RDF Serialization syntax.
      * @return The model or null, if there was an error.
+     *  @exception JenaException if there is syntax error in file.
      */    
 
     public Model readModel(Model model, String filenameOrURI, String rdfSyntax)
@@ -253,7 +256,7 @@ public class FileManager
      * @param baseURI
      * @param syntax
      * @return The model
-     * @exception If syntax error in file.
+     *  @exception JenaException if there is syntax error in file.
      */    
 
     public Model readModel(Model model, String filenameOrURI, String baseURI, String syntax)
@@ -283,25 +286,32 @@ public class FileManager
         return model ;
     }
 
-//    /** Find file on a path - does NOT apply location mapping */
-//    
-//    public InputStream find(String path)
-//    {
-//        StringTokenizer pathElems = new StringTokenizer( path, PATH_DELIMITER );
-//        while (pathElems.hasMoreTokens()) {
-//            String uri = pathElems.nextToken();
-//            InputStream in = openNoMap(uri) ;
-//            if ( in != null )
-//                return in ;
-//        }
-//        return null ;
-//    }
-//     
-    private String chooseBaseURI(String baseURI)
+    // replace with RelURI.resolve()
+    private static String chooseBaseURI(String baseURI)
     {
         String scheme = FileUtils.getScheme(baseURI) ;
+        
         if ( scheme != null )
+        {
+            if ( scheme.equals("file") )
+            {
+                if ( ! baseURI.startsWith("file:/") )
+                {
+                    try {
+                        // Fix up file URIs.  Yuk.
+                        String tmp = baseURI.substring("file:".length()) ;
+                        File f = new File(tmp) ;
+                        baseURI = "file:///"+f.getCanonicalPath() ;
+                        baseURI = baseURI.replace('\\','/') ;
+                        // Convert to URI.  Except that it removes ///
+                        //java.net.URL u = new java.net.URL(baseURI) ;
+                        //baseURI = u.toExternalForm() ;
+                    } catch (Exception ex) {}
+                }
+            }
             return baseURI ;
+        }
+            
         if ( baseURI.startsWith("/") )
             return "file://"+baseURI ;
         return "file:"+baseURI ;
