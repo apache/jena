@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.13 2003-07-17 15:11:50 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.14 2003-07-17 15:34:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -505,7 +505,12 @@ public class QueryTest extends GraphTestBase
     */
     public void testQueryConstraintNull()
         {
-        Query q = new Query();
+        try 
+            { 
+            Query q = new Query().addConstraint( null, node( "ne" ), null );
+            fail( "null operands to addConstraint should be caught" );
+            }
+        catch (Exception e) { /* should be more explicit */ }
         }
         
     public void testCloseQuery()
