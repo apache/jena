@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.16 2004-05-06 11:02:05 ian_dickinson Exp $
+ * $Id: ReasonerVocabulary.java,v 1.17 2004-08-12 17:03:18 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2004-05-06 11:02:05 $
+ * @version $Revision: 1.17 $ on $Date: 2004-08-12 17:03:18 $
  */
 public class ReasonerVocabulary {
     
@@ -49,6 +49,9 @@ public class ReasonerVocabulary {
     /** The property that represents the direct/minimal version of the subPropertyOf relationship */
     public static Property directSubPropertyOf; 
 
+    /** A faux property used in reasoner capabilty models to denote reasoners that infer that individuals have rdf:type owl:Thing (or daml:Thing) */
+    public static Property individualAsThingP;
+    
     /** Base URI used for configuration properties for rule reasoners */
     public static final String PropURI = "http://jena.hpl.hp.com/2003/RuleReasoner";
 
@@ -144,6 +147,7 @@ public class ReasonerVocabulary {
             configurationP = ResourceFactory.createProperty(JenaReasonerNS, "configurationProperty");
             directSubClassOf = ResourceFactory.createProperty(ReasonerRegistry.makeDirect(RDFS.subClassOf.getNode()).getURI());
             directSubPropertyOf = ResourceFactory.createProperty(ReasonerRegistry.makeDirect(RDFS.subPropertyOf.getNode()).getURI());
+            individualAsThingP = ResourceFactory.createProperty(JenaReasonerNS, "individualAsThing");
             PROPderivationLogging  = ResourceFactory.createProperty(PropURI+"#", "derivationLogging");
             PROPtraceOn = ResourceFactory.createProperty(PropURI+"#", "traceOn");
             PROPruleMode = ResourceFactory.createProperty(PropURI+"#", "ruleMode");

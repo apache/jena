@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DAMLMicroReasonerFactory.java,v 1.4 2004-04-22 11:04:50 ian_dickinson Exp $
+ * $Id: DAMLMicroReasonerFactory.java,v 1.5 2004-08-12 17:03:22 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * that correspond roughly to what was there in Jena1. We hope.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2004-04-22 11:04:50 $
+ * @version $Revision: 1.5 $ on $Date: 2004-08-12 17:03:22 $
  */
 public class DAMLMicroReasonerFactory implements ReasonerFactory {
    
@@ -69,6 +69,7 @@ public class DAMLMicroReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, DAML_OIL.subPropertyOf)
                 .addProperty(ReasonerVocabulary.supportsP, DAML_OIL.range)
                 .addProperty(ReasonerVocabulary.supportsP, DAML_OIL.domain)
+                .addProperty(ReasonerVocabulary.supportsP, ReasonerVocabulary.individualAsThingP )
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.47 $
+ * Revision           $Revision: 1.48 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 15:57:58 $
+ * Last modified on   $Date: 2004-08-12 17:03:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -1114,15 +1114,19 @@ public class TestBugReports
     }
     
     /** Test case for SF bug 940570 - listIndividuals not working with RDFS_INF
-     * TODO Temporarily disabled - need to talk to Dave about a robust solution 
      */
-    public void xxx_test_sf_940570() {
+    public void test_sf_940570() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
         OntClass C = m.createClass( NS + "C" );
         Resource a = m.createResource( NS + "a", C );
         
-        int count = 0;
         TestUtil.assertIteratorValues( this, m.listIndividuals(), new Object[] {a} );
+        
+        OntModel dm = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF );
+        OntClass D = dm.createClass( NS + "D" );
+        Resource b = dm.createResource( NS + "b", D );
+        
+        TestUtil.assertIteratorValues( this, dm.listIndividuals(), new Object[] {b} );
     }
     
     /** Test case for SF bug 945436 - a xml:lang='' in the dataset causes sring index exception in getLabel() */

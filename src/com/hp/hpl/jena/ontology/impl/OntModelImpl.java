@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.69 $
+ * Revision           $Revision: 1.70 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 14:43:16 $
+ * Last modified on   $Date: 2004-08-12 17:03:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.69 2004-08-12 14:43:16 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.70 2004-08-12 17:03:23 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -396,7 +396,13 @@ public class OntModelImpl
         // since the reasoner implements some OWL full functionality for RDF compatability, we
         // have to decide which strategy to use for indentifying individuals depending on whether
         // or not a powerful reasoner (i.e. owl:Thing/daml:Thing aware) is being used with this model
-        if (!(getGraph() instanceof BasicForwardRuleInfGraph) || (m_individualsQueryInf == null) || getProfile().CLASS().equals( RDFS.Class )) {
+        boolean supportsIndAsThing = false;
+        if (getGraph() instanceof InfGraph) {
+            supportsIndAsThing = ((InfGraph) getGraph()).getReasoner()
+                                                        .getCapabilities()
+                                                        .contains( null, ReasonerVocabulary.supportsP, ReasonerVocabulary.individualAsThingP );
+        }
+        if (!supportsIndAsThing || (m_individualsQueryInf == null) || getProfile().CLASS().equals( RDFS.Class )) {
             // no inference, or we are in RDFS land, so we pick things that have rdf:type whose rdf:type is Class
             ExtendedIterator indivI = queryFor( m_individualsQueryNoInf0, null, Individual.class );
 
