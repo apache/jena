@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.13 2003-06-11 11:22:52 chris-dollin Exp $
+  $Id: Node.java,v 1.14 2003-06-11 15:01:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -94,23 +94,6 @@ public abstract class Node {
     public static Node createURI( String uri )
         { return create( makeURI, uri ); }
        
-    private static String checkURI( String uri )
-        { // must start "letters:"
-        if (uri.length() == 0) return uri; // surely not
-        if (Character.isLetterOrDigit( uri.charAt(0))) return uri;
-        if (uri.charAt(0) == '#' || uri.charAt(0) == '_') return uri;
-        for (int i = 0; i < uri.length(); i += 1)
-            {
-            char ch = uri.charAt( i );
-            if (uri.charAt( i ) == ':') return uri;
-            if (Character.isLetterOrDigit( ch ) || ch == '_') {} else break;
-            }
-        System.err.println( "| BAD URI: " + uri );
-        RuntimeException th = new RuntimeException( "BAD " + uri );
-        th.printStackTrace( System.err );
-        throw th;
-        }    
-   
     /** make a blank node with a fresh anon id */ 
     public static Node createAnon()
         { return createAnon( new AnonId() ); }

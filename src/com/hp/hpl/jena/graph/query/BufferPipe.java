@@ -1,13 +1,16 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BufferPipe.java,v 1.1.1.1 2002-12-19 19:13:51 bwm Exp $
+  $Id: BufferPipe.java,v 1.2 2003-06-11 15:01:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
+
 import EDU.oswego.cs.dl.util.concurrent.*;
+import com.hp.hpl.jena.shared.*;
 
 /**
+    This class is a pipe between query threads, implemented as a bounded buffer.
 	@author kers
 */
 public class BufferPipe implements Pipe
@@ -24,20 +27,18 @@ public class BufferPipe implements Pipe
     private Object fetch()
         {
         try { return buffer.take(); }
-        catch (Exception e) { throw new RuntimeException( "failed to get object out of bounded buffer: " + e ); }
+        catch (Exception e) { throw new BoundedBufferTakeException( e ); }
         }
 
     /** get something from the pipe; take care of BoundedBuffer's checked exceptions */
     private void putAny( Object d )
         {
         try { buffer.put( d ); return; }
-        catch (Exception e) { throw new RuntimeException( "failed to put object into bounded buffer: " + e ); }
+        catch (Exception e) { throw new BoundedBufferPutException( e ); }
         }
-
+        
     public void put( Domain d )
-        {
-        putAny( d );
-        }
+        { putAny( d ); }
 
     public void close()
         { putAny( finished );  }
@@ -61,9 +62,21 @@ public class BufferPipe implements Pipe
         
     public Domain get()
         { hasNext(); try { return (Domain) pending; } finally { pending = null; } }
+
+    /**
+        Exception to throw if a <code>take</code> throws an exception.
+    */
+    public static class BoundedBufferTakeException extends JenaException
+        { BoundedBufferTakeException( Exception e ) { super( e ); }  }
+    
+    /**
+        Exception to throw if a <code>put</code> throws an exception.
+    */
+    public static class BoundedBufferPutException extends JenaException
+        { BoundedBufferPutException( Exception e ) { super( e ); }  }
     }
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

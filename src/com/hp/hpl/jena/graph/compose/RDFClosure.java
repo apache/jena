@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFClosure.java,v 1.5 2003-06-10 10:45:25 chris-dollin Exp $
+  $Id: RDFClosure.java,v 1.6 2003-06-11 15:01:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -40,7 +40,7 @@ public class RDFClosure extends Dyadic implements Graph
 
 	public void delete(  Triple t )
 		{
-		throw new RuntimeException( "RDFClosure::delete not implemented [yet]" );
+		throw new UnsupportedOperationException( "RDFClosure::delete not implemented [yet]" );
 		}
 		
 	static Node RDFtype = GraphTestBase.node( "rdf:type" );	

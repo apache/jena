@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Polymorphic.java,v 1.4 2003-04-02 13:26:35 jeremy_carroll Exp $
+  $Id: Polymorphic.java,v 1.5 2003-06-11 14:59:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -108,11 +108,14 @@ public abstract class Polymorphic {
     public abstract boolean equals( Object o );
     
     /**
-        add another view for this object. _other_ must be freshly constructed.
+        add another view for this object. <code>other</code> must be freshly constructed.
         To be called by subclasses when they have constructed a new view
         for this object.
+        
+        This method is public ONLY so that it can be tested.
+        TODO find a better way to make it testable.
     */
-    void addView( Polymorphic other )
+    public void addView( Polymorphic other )
         {
         if (other.ring == other)
             {
@@ -120,7 +123,7 @@ public abstract class Polymorphic {
             this.ring = other;
             }
         else
-            throw new RuntimeException( "oops: stale 'other' view" );
+            throw new AlreadyLinkedViewException( other );
         }
 
 }

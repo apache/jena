@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.9 2003-05-28 10:28:52 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.10 2003-06-11 15:01:05 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -388,6 +388,33 @@ public class TestPackage extends GraphTestBase  {
         EnhNode eBlank = new EnhNode( Node.createAnon(), eg );
         assertTrue( "URI node can be an Example", eNode.supports( Example.class ) );
         assertFalse( "Blank node cannot be an Example", eBlank.supports( Example.class ) );
+        }
+        
+    static class AnotherExample 
+        {
+        static final Implementation factory = new Implementation()
+            {
+            public EnhNode wrap( Node n, EnhGraph g ) { return new EnhNode( n, g ); }
+            
+            public boolean canWrap( Node n, EnhGraph g ) { return n.isURI(); }
+            };
+        }
+    
+    public void testAlreadyLinkedViewException()
+        {
+         Graph g = new GraphMem();
+         Personality ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
+         EnhGraph eg = new EnhGraph( g, ours ); 
+         Node n = Node.create( "spoo:bar" );
+         EnhNode eNode = new EnhNode( n, eg );
+         eNode.viewAs( Example.class );
+         try
+            { 
+            eNode.addView( eNode ); 
+            fail( "should raise an AlreadyLinkedViewException " );
+            }
+        catch (AlreadyLinkedViewException e)
+            {}                
         }
         
     /**

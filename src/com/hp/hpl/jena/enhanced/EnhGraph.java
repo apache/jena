@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.10 2003-04-29 17:56:58 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.11 2003-06-11 14:59:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -66,18 +66,6 @@ public class EnhGraph
         return graph;
     }
    
-    /**
-     * Set the graph that this enhanced graph is wrapping. May only be performed once.
-     * @param g The underlying graph
-     * @exception RunTimeException if the graph has already been set
-     */
-    protected void setGraph(Graph g) {
-     	if ( graph != null )
-     	  throw new RuntimeException("Programming error: graph is already set.");
-     	graph = g;
-    }
-     
-     
     /**
      * Hashcode for an enhnaced graph is delegated to the underlyin graph.
      * @return The hashcode as an int

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternStage.java,v 1.2 2003-01-09 15:28:02 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.3 2003-06-11 15:01:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -56,7 +56,6 @@ public class PatternStage extends Stage
 
     public Pipe deliver( final Pipe result )
         {
-        // if (patterns.length != 1) throw new RuntimeException( "only single patterns implemented" );
         final Pipe stream = previous.deliver( new BufferPipe() );
 		new Thread() { public void run() { PatternStage.this.run( stream, result ); } } .start();
         return result;

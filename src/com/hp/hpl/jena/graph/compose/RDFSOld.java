@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFSOld.java,v 1.4 2003-06-10 10:45:24 chris-dollin Exp $
+  $Id: RDFSOld.java,v 1.5 2003-06-11 15:01:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -252,7 +252,7 @@ public class RDFSOld extends Dyadic implements Vocabulary
                 }
             else
                 {
-                throw new RuntimeException( "only StandardTripleMatch works" );
+                throw new UnsupportedOperationException( "only StandardTripleMatch works" );
                 }
         if (wouldMatch( tm, null, rdfType, rdfsResource ))
         	{ /* have to deliver all resource-type things */
