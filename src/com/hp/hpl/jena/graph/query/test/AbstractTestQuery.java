@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.7 2003-08-12 09:56:33 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.8 2003-08-12 12:53:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -627,14 +627,12 @@ public abstract class AbstractTestQuery extends GraphTestBase
         if (already == null) already = new Integer( 0 );
         result.put( key, new Integer( already.intValue() + 1 ) );  
         }
-        
-    TripleSorter optimisedSort = new SimpleTripleSorter();
     
     public void testQueryOptimisation()
         {
         int dontCount = queryCount( Query.dontSort );
-        int optimCount = queryCount( optimisedSort );
-        // System.err.println( ">> dontCount = " + dontCount );
+        int optimCount = queryCount( new SimpleTripleSorter() );
+        // System.err.println( ">> dontCount=" + dontCount + " optimCount=" + optimCount );
         if (optimCount > dontCount) 
             fail( "optimisation " + optimCount + " yet plain " + dontCount );   
         }
