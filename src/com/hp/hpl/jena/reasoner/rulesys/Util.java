@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.8 2003-08-22 09:48:28 der Exp $
+ * $Id: Util.java,v 1.9 2003-08-24 21:17:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-22 09:48:28 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-24 21:17:33 $
  */
 public class Util {
 
@@ -49,6 +49,31 @@ public class Util {
         return ((Number)n.getLiteral().getValue()).intValue();
     }
    
+    /**
+     * Compare two numeric nodes.
+     * @param n1 the first numeric valued literal node
+     * @param n2 the second numeric valued literal node
+     * @return -1 if n1 is less than n2, 0 if n1 equals n2 and +1 if n1 greater than n2
+     * @throws ClassCastException if either not is not numeric
+     */
+    public static int compareNumbers(Node n1, Node n2) {
+        if (n1.isLiteral() && n2.isLiteral()) {
+            Object v1 = n1.getLiteral().getValue();
+            Object v2 = n2.getLiteral().getValue();
+            if (v1 instanceof Number && v2 instanceof Number) {
+                if (v1 instanceof Float || v1 instanceof Double 
+                        || v1 instanceof Float || v2 instanceof Double) {
+                            return Double.compare(((Number)v1).doubleValue(), ((Number)v2).doubleValue());                            
+                } else {
+                    long l1 = ((Number)v1).longValue();
+                    long l2 = ((Number)v2).longValue();
+                    return (l1 < l2) ? -1 : ( (l1 == l2) ? 0 : +1 );
+                }
+            }
+        }
+        throw new ClassCastException("Non-numeric literal in compareNumbers");
+    }
+    
     /**
      * Helper - returns the (singleton) value for the given property on the given
      * root node in the data graph.
@@ -108,6 +133,24 @@ public class Util {
      */
     public static Node makeIntNode(int value) {
         return Node.createLiteral(new LiteralLabel(new Integer(value)));
+    }
+    
+    /**
+     * Construct a new long valued node
+     */
+    public static Node makeLongNode(long value) {
+        if (value > Integer.MAX_VALUE) {
+            return Node.createLiteral(new LiteralLabel(new Long(value)));
+        } else {
+            return Node.createLiteral(new LiteralLabel(new Integer((int)value)));
+        }
+    }
+    
+    /**
+     * Construct a new double valued node
+     */
+    public static Node makeDoubleNode(double value) {
+        return Node.createLiteral(new LiteralLabel(new Double(value)));
     }
     
     /**
