@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.21 2003-11-22 14:29:07 jeremy_carroll Exp $
+  $Id: TestPackage.java,v 1.22 2004-07-05 13:57:56 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -37,6 +37,7 @@ public class TestPackage extends TestSuite {
         addTest( com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
         addTest( "Vocabularies", com.hp.hpl.jena.vocabulary.test.TestVocabularies.suite() );
         addTest( com.hp.hpl.jena.rdf.arp.test.MoreTests.suite());
+        addTest( com.hp.hpl.jena.rdf.arp.test.URITests.suite());
         addTest( com.hp.hpl.jena.shared.test.TestSharedPackage.suite() );
         addTest("Reasoners", com.hp.hpl.jena.reasoner.test.TestPackage.suite());
         addTest("Composed graphs", com.hp.hpl.jena.graph.compose.test.TestPackage.suite() );
