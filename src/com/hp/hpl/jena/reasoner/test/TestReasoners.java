@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.21 2003-06-24 15:47:04 der Exp $
+ * $Id: TestReasoners.java,v 1.22 2003-08-04 14:01:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -16,18 +16,20 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.rdf.model.impl.StatementImpl;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-06-24 15:47:04 $
+ * @version $Revision: 1.22 $ on $Date: 2003-08-04 14:01:32 $
  */
 public class TestReasoners extends TestCase {
     
@@ -334,6 +336,34 @@ public class TestReasoners extends TestCase {
         
     }
         
+    /**
+     * Test for duplicate statements in a constructed ontology.
+     */
+    public void testDuplicateStatements() {
+        String NS = "http://swt/test#"; 
+         OntModelSpec s = new OntModelSpec(ModelFactory.createMemModelMaker(), 
+                                     null, null, ProfileRegistry.DAML_LANG); 
+         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RULE_INF, null); 
+ 
+         OntClass documentC = model.createClass(NS + "DOCUMENT"); 
+         OntClass topicC = model.createClass(NS + "TOPIC"); 
+ 
+         ObjectProperty hasTopicP = model.createObjectProperty(NS + "hasTopic"); 
+         hasTopicP.addDomain(documentC); 
+         hasTopicP.addRange(topicC); 
+         ObjectProperty hasDocP = model.createObjectProperty(NS + "hasDocument"); 
+         hasDocP.addDomain(topicC); 
+         hasDocP.addRange(documentC); 
+         hasDocP.setInverseOf(hasTopicP); 
+ 
+         Individual fooTopic = model.createIndividual(NS + "fooTopic", topicC); 
+         Individual fooDoc = model.createIndividual(NS + "fooDoc", documentC); 
+ 
+         fooDoc.addProperty(hasTopicP, fooTopic); 
+ 
+         TestUtil.assertIteratorLength(fooDoc.listProperties(hasTopicP), 1);
+    }
+    
 }
 
 /*

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestUtil.java,v 1.5 2003-05-07 06:57:30 der Exp $
+ * $Id: TestUtil.java,v 1.6 2003-08-04 14:01:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-07 06:57:30 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-04 14:01:33 $
  */
 public class TestUtil {
     
@@ -76,6 +76,17 @@ public class TestUtil {
         return result.toString();
     }
     
+    /**
+     * Check the length of an iterator.
+     */
+    public static void assertIteratorLength(Iterator it, int expectedLength) {
+        int length = 0;
+        while (it.hasNext()) {
+            it.next();
+            length++;
+        }
+        TestCase.assertEquals(expectedLength, length);
+    }
 }
 
 /*
