@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ConsumerChoicePointFrame.java,v 1.8 2003-08-17 20:09:17 der Exp $
+ * $Id: ConsumerChoicePointFrame.java,v 1.9 2003-08-19 17:15:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-17 20:09:17 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-19 17:15:48 $
  */
 public class ConsumerChoicePointFrame extends GenericTripleMatchFrame 
                 implements LPAgendaEntry, LPInterpreterState {
@@ -133,6 +133,13 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
      */
     public Generator getGenerator() {
         return generator;
+    }
+    
+    /**
+     * Return the interpeter context which is reading the results of this consumer.
+     */
+    public LPInterpreterContext getConsumingContext() {
+        return context;
     }
 
 }
