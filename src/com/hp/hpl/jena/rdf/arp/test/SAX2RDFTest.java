@@ -13,6 +13,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.arp.*;
+
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.*;
 
@@ -1150,18 +1151,19 @@ public class SAX2RDFTest extends TestCase {
 		s.addTestSuite(PushMePullYouTest.class);
 		s.addTestSuite(SAX2RDFMoreTests.class);
 		//for (int j=0; j<20; j++)
-		for (int i = 0; i < all.length; i += 20) {
+		for (int i = 0; i < all.length; i += 25) {
 			String nm = all[i];
 			//if (all[i].indexOf("premises663")==-1)
 			//	continue;
 			if (all[i].startsWith("wg/")) {
-				s.addTest(new SAX2RDFTest("wg/", ARPTests.wgTestDir.toString(),
-						all[i].substring(3)));
+				
+				addTests(s, "wg/", ARPTests.wgTestDir.toString(),
+						all[i].substring(3));
 			} else if (all[i].startsWith("arp/")) {
-				s.addTest(new SAX2RDFTest("arp/", ARPTests.arpTestDir
-						.toString(), all[i].substring(4)));
+				addTests(s,"arp/", ARPTests.arpTestDir
+						.toString(), all[i].substring(4));
 			} else {
-				s.addTest(new SAX2RDFTest("", "http://example.org/", all[i]));
+				addTests(s,"", "http://example.org/", all[i]);
 
 			}
 		}
@@ -1170,9 +1172,24 @@ public class SAX2RDFTest extends TestCase {
 
 		return s;
 	}
+	
+	static private void addTests(TestSuite s, String dir, String base, String file){
+
+
+		TestCase tc = new SAX2RDFTest(dir,base,file);
+		tc.setName("SAX "+tc.getName());
+		//s.addTest(tc);
+		
+		tc = new DOM2RDFTest(dir,base,file);
+		
+		tc.setName("DOM "+tc.getName());
+		s.addTest(tc);
+		
+
+	}
 
 	//final private String dir;
-	final private String base;
+	final String base;
 
 	final private String file;
 
@@ -1181,11 +1198,11 @@ public class SAX2RDFTest extends TestCase {
 		//this.dir = dir;
 		this.base = base0 + file;
 		this.file = "testing/" + dir + file;
-		//	System.err.println(base+" + "+this.file);
+		//System.err.println(base+" + "+this.file);
 	}
 
 	public void runTest() throws Exception {
-
+		//System.err.println(base+" + "+this.file);
 		Model m = ModelFactory.createDefaultModel();
 		Model m2 = ModelFactory.createDefaultModel();
 		InputStream in = new FileInputStream(file);
@@ -1202,22 +1219,7 @@ public class SAX2RDFTest extends TestCase {
 		 * w = m.getReader(); w.setErrorHandler(eh2); w.read(m2,in,base);
 		 * in.close();
 		 */
-		XMLReader saxParser = new SAXParser();
-		SAX2Model handler = SAX2Model.newInstance(base, m2);
-		SAX2RDF.installHandlers(saxParser, handler);
-		handler.setErrorHandler(eh2);
-
-		InputSource ins = new InputSource(in);
-		ins.setSystemId(base);
-		try {
-			try {
-				saxParser.parse(ins);
-			} finally {
-				handler.close();
-			}
-		} catch (SAXParseException e) {
-			// already reported, leave it be.
-		}
+		loadXMLModel(m2, in, eh2);
 
 		in.close();
 
@@ -1247,6 +1249,26 @@ public class SAX2RDFTest extends TestCase {
 
 		for (int i = 0; i < eh.v.size(); i++) {
 			assertEquals("Error " + i + " different.", a[i], a2[i]);
+		}
+
+	}
+
+	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws MalformedURIException, SAXException, IOException {
+		XMLReader saxParser = new SAXParser();
+		SAX2Model handler = SAX2Model.newInstance(base, m2);
+		SAX2RDF.installHandlers(saxParser, handler);
+		handler.setErrorHandler(eh2);
+
+		InputSource ins = new InputSource(in);
+		ins.setSystemId(base);
+		try {
+			try {
+				saxParser.parse(ins);
+			} finally {
+				handler.close();
+			}
+		} catch (SAXParseException e) {
+			// already reported, leave it be.
 		}
 
 	}

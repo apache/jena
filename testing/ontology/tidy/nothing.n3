@@ -1,0 +1,9 @@
+# Base: file:///C:/eclipse/workspace/jena2/testing/wg/Nothing/conclusions002.rdf
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :        <#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+
+[]    a       owl:Class ;
+      owl:equivalentClass owl:Nothing ;
+      owl:oneOf () .
+      

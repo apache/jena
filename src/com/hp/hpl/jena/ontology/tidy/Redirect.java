@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Redirect.java,v 1.1 2004-01-11 21:20:29 jeremy_carroll Exp $
+  $Id: Redirect.java,v 1.2 2004-12-13 17:17:57 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.*;
  * This is a simple tility class for permitting local copies
  * of websites to be used instead of remote access.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
- *
+ * @deprecated Use OntDocumentManager
 */
 public class Redirect {
       private Vector remoteURL = new Vector();

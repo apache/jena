@@ -45,6 +45,15 @@ public class CheckerImpl extends AbsChecker {
 
 	private Vector nonMonotoneProblems = null;
 	private int nonMonotoneLevel;
+	
+	static OntDocumentManager importsCloseManager =
+		new OntDocumentManager();
+	static {
+		importsCloseManager.setProcessImports(true);
+	}
+	static OntModelSpec dullOWL =
+		new OntModelSpec(null, importsCloseManager, null, ProfileRegistry.OWL_LANG);
+	
 
 	/**
 	 * Answer an Iterator over {@link SyntaxProblem}'s which
@@ -440,9 +449,6 @@ public class CheckerImpl extends AbsChecker {
 
 	protected Graph importsClosure(Graph g) {
 		// create an ontology model with no reasoner and the default doc manager
-		OntModelSpec dullOWL =
-			new OntModelSpec(null, null, null, ProfileRegistry.OWL_LANG);
-		dullOWL.getDocumentManager().setProcessImports(true);
 		OntModel m =
 			ModelFactory.createOntologyModel(
 				dullOWL,

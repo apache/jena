@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Extra.java,v 1.14 2004-12-06 13:50:22 andy_seaborne Exp $
+  $Id: Extra.java,v 1.15 2004-12-13 17:17:55 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 import junit.framework.TestSuite;
@@ -27,6 +27,7 @@ public class Extra extends TestCase {
 	static public Test suite() {
 		TestSuite s = new TestSuite(Extra.class);
 		s.setName("More OWL syntax");
+		s.addTest(CmdLineTidyTest.suite());
 		return s;
    }
    /*

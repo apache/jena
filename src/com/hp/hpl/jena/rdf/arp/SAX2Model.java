@@ -85,7 +85,7 @@ public class SAX2Model extends SAX2RDF {
 
 	final private JenaHandler handler;
 
-    private SAX2Model(String base, Model m, String lang) throws MalformedURIException {
+    protected SAX2Model(String base, Model m, String lang) throws MalformedURIException {
     	super(base,lang);
     	handler = new JenaHandler(m,errorHandler);
     	handler.useWith(getHandlers());

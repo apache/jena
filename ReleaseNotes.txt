@@ -173,6 +173,10 @@ Post Jena 2.1 change list
    DIG reasoner interface
       o Various bug fixes, plus a significant performance fix for listIndividuals()
 
+   OWL Syntax Checker
+      o Added support for OntDocumentManager
+      o Improved command line, supports N3 etc, OntDocumentManager
+      
    File Utilities
       o ModelLoader retired by deprecation.
         Use FileManager instead, specifically, FileManager.get() for the
@@ -194,7 +198,9 @@ Post Jena 2.1 change list
         Documentation shows how to parse a DOM as RDF.
       o ARP setup rationalized, a few methods deprecated as a result.
       o Improved documentation, covering new features, (see doc/ARP)
-      
+      o *Removed* StanfordImpl, assuming noone uses it. Please
+        complain (jena-dev@yahoogroups.com) if assumption was false.
+         
   Utilities
       o new class IteratorCollection with methods iteratorToSet and
         iteratorToList (heavility used in tests and useful in general)

@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP [See end of
- * file] $Id: StreamingChecker.java,v 1.3 2004-10-11 11:55:11 jeremy_carroll Exp $
+ * file] $Id: StreamingChecker.java,v 1.4 2004-12-13 17:17:57 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -9,6 +9,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.tidy.impl.CheckerImpl;
+import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.datatypes.*;
 import java.util.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -37,7 +38,12 @@ import java.net.URL;
  *  
  */
 public class StreamingChecker extends CheckerImpl implements CheckerResults {
-
+    private OntDocumentManager docManager;
+    /**
+     * Not part of public API, for performance testing.
+     * @deprecated Not part of API
+     * @return List of loaded files.
+     */
 	public String[] getLoaded() {
 		String rslt[] = new String[imported.size()];
 		int i = 0;
@@ -48,11 +54,23 @@ public class StreamingChecker extends CheckerImpl implements CheckerResults {
 		}
 		return rslt;
 	}
+    /**
+     * Not part of public API, for performance testing.
+     * @deprecated Not part of API
+     * @return Triple count.
+     */
 	public int getTripleCount() {
 		int x = cnt;
 		return tripleCnt;
 	}
+	/**
+	 * @deprecated Use OntDocumentManager
+	 */
 	private Redirect r = new Redirect();
+	/**
+	 * @deprecated Use OntDocumentManager
+	 
+	 */
 	public Redirect getRedirect() {
 		return r;
 	}
@@ -67,10 +85,22 @@ public class StreamingChecker extends CheckerImpl implements CheckerResults {
 	 *            indicate any OWL DL or OWL Full construction.
 	 */
 	public StreamingChecker(boolean liteFlag) {
+		this(liteFlag,OntDocumentManager.getInstance());
+	}
+	/**
+	 * Create a new checker - indicate whether error reports are wanted for
+	 * non-OWL Lite constructions or only non-OWL DL constructions.
+	 * 
+	 * @param liteFlag
+	 *            If true {@link #getErrors()}and {@link #getProblems()}will
+	 *            indicate any OWL DL or OWL Full construction.
+	 * @param dM The OntDocumentManager to use.
+	 */
+	public StreamingChecker(boolean liteFlag,OntDocumentManager dM) {
 		super(liteFlag);
 		this.setOptimizeMemory(true);
+		this.docManager = dM;
 	}
-
 	
 
 	private Set imported;
@@ -170,7 +200,8 @@ public class StreamingChecker extends CheckerImpl implements CheckerResults {
 			return;
 		imported.add(url);
 
-		String loadURL = r.redirect(url);
+		String loadURLx = r.redirect(url);
+		String loadURL = docManager.doAltURLMapping(loadURLx);
 		InputStream in = new URL(loadURL).openStream();
 		load(in, url);
 
