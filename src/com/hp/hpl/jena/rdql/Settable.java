@@ -5,10 +5,12 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: Settable.java,v 1.1.1.1 2002-12-19 19:18:56 bwm Exp $
+ * @version  $Id: Settable.java,v 1.2 2003-02-20 16:21:59 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
+//import com.hp.hpl.jena.rdf.model.Resource ; 
+//import com.hp.hpl.jena.rdf.model.Literal ; 
 
 public interface Settable extends Value
 {
@@ -17,6 +19,9 @@ public interface Settable extends Value
     public void setBoolean(boolean b) ;
     public void setString(String s) ;
     public void setURI(String uri) ;
+    // These are not needed because intermediate result are not RDF values.
+    //public void setRDFLiteral(Literal l) ;
+    //public void setRDFResource(Resource r) ;
 }
 
 /*

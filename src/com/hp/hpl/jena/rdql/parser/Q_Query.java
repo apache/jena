@@ -48,9 +48,21 @@ public class Q_Query extends SimpleNode
     {
         query = q ;
         try {
-            int i = 0 ;
             int numQueryChildren = jjtGetNumChildren() ;
-
+            // Firstly , fix up URIs and qnames.
+            // Do this always because of default prefixes.
+            
+            for ( int j = 0 ; j < numQueryChildren ; j++ )
+            {
+                Node n = jjtGetChild(j) ;
+                if ( n instanceof Q_PrefixesClause )
+                {
+                    extractPrefixes(q, (Q_PrefixesClause)n) ; 
+                }
+            }
+            this.fixup(this) ;
+            
+            int i = 0 ;
             // Select
             if ( jjtGetChild(i) instanceof Q_SelectClause )
             {
@@ -89,23 +101,21 @@ public class Q_Query extends SimpleNode
 	                i++ ;
 	            }
 
-            // Prefixes
-            // Do this always because of default prefixes.
-            
-            Q_PrefixesClause qpc = null ;
-            if ( i < numQueryChildren && jjtGetChild(i) instanceof Q_PrefixesClause )
-            {
-            	qpc = (Q_PrefixesClause)jjtGetChild(i) ;
-            	i++ ;
-            }
-            
-            extractPrefixes(q, qpc) ;
+//            Q_PrefixesClause qpc = null ;
+//            if ( i < numQueryChildren && jjtGetChild(i) instanceof Q_PrefixesClause )
+//            {
+//                qpc = (Q_PrefixesClause)jjtGetChild(i) ;
+//                i++ ;
+//            }
+//            
+//            extractPrefixes(q, qpc) ;
+//            // Now allow any node (such as Q_URI) to do fixups
+//            this.fixup(this) ;
 
-            // Now allow any node (such as Q_URI) to do fixups
-            this.fixup(this) ;
         }
-        catch (ClassCastException e) { throw new RDQL_InternalErrorException("Parser generated illegal parse tree: "+e) ; }
         catch (RDQL_InternalErrorException e) { throw e ; }
+        catch (QueryException qEx) { throw qEx; } 
+        catch (ClassCastException e) { throw new RDQL_InternalErrorException("Parser generated illegal parse tree: "+e) ; }
         catch (Exception e) { throw new RDQL_InternalErrorException("Unknown exception: "+e) ; }
     }
 
@@ -118,7 +128,7 @@ public class Q_Query extends SimpleNode
     public String toString()
     {
     	throw new UnsupportedOperationException ("Q_Query.toString()") ;
-        /**
+        /*
         StringBuff sbuff = new StringBuffer(1024) ;
         sbuff.append(RDQLParserConstants.tokenImage[RDQLParserConstants.SELECT]) ;
         for ( for i = 0 ; i < query.resultVars.size() ; i++ )
@@ -130,7 +140,7 @@ public class Q_Query extends SimpleNode
             TriplePattern tp = (TriplePattern)query.constraints.get(i) ;
             sbuff.append(tp.toString()) ;
         }
-        **/
+        */
     }
 
     private void extractVarList(Query q, Node node)
@@ -221,6 +231,7 @@ public class Q_Query extends SimpleNode
             for ( int k = 0 ; k < qnsd.jjtGetNumChildren() ; k+=2 )
             {
                 Q_Identifier id = (Q_Identifier)qnsd.jjtGetChild(k) ;
+                Object tmp = qnsd.jjtGetChild(k+1) ; // Temp debug
                 Q_URI uri = (Q_URI)qnsd.jjtGetChild(k+1) ;
                 query.setPrefix(id.toString(), uri.toString()) ;
             }

@@ -8,6 +8,8 @@ package com.hp.hpl.jena.rdql;
 import java.util.* ;
 import java.io.* ;
 
+import com.hp.hpl.jena.rdf.model.* ;
+
 /** <p>Takes a QueryResult object and returns formatted (in various ways)
  *  Useful for the scripting interface.
  *  May help for display in other contexts.</p>
@@ -22,7 +24,7 @@ import java.io.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.2 2003-01-30 13:52:10 andy_seaborne Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.3 2003-02-20 16:21:58 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter
@@ -70,8 +72,7 @@ public class QueryResultsFormatter
             {
                 col++ ;
                 String rVar = (String)iter.next() ;
-                Value val = env.getValue(rVar) ;
-                String s = (val==null)? notThere : val.asQuotedString() ;
+                String s = getVarAsString(env, rVar) ;
                 if ( colWidths[col] < s.length() )
                     colWidths[col] = s.length() ;
             }
@@ -137,20 +138,7 @@ public class QueryResultsFormatter
             for (Iterator iter = queryResults.getResultVars().iterator() ; iter.hasNext() ; )
             {
                 String rVar = (String)iter.next() ;
-                Value val = env.getValue(rVar) ;
-
-                /*
-            // Doing it this way tests the iterator on ResultBindings
-            // but does not print anything for variables not in the query results.
-            for ( ResultBinding.ResultBindingIterator iter = env.iterator() ; iter.hasNext() ; )
-            {
-                iter.next() ;
-                String rVar = iter.varName() ;
-                if ( ! queryResults.getResultVars().contains(rVar) )
-                    continue ;
-                Value val = iter.value() ;
-                 */
-                String s = (val==null)? notThere : val.asQuotedString() ;
+                String s = getVarAsString(env, rVar) ;
                 pw.print("?") ;
                 pw.print(rVar) ;
                 pw.print(" ");
@@ -191,8 +179,7 @@ public class QueryResultsFormatter
                 sbuff.append('?') ;
                 sbuff.append(rVar) ;
                 sbuff.append(' ') ;
-                Value val = env.getValue(rVar) ;
-                String s = (val==null)? notThere : val.asQuotedString() ;
+                String s = getVarAsString(env, rVar) ;
 
                 int pad = colWidths[col] ;
                 sbuff.append(s) ;
@@ -227,7 +214,6 @@ public class QueryResultsFormatter
      */
     public void printAll(PrintWriter pw, String colSep, String lineEnd)
     {
-        // Temp move
         if ( queryResults.getResultVars().size() == 0 )
         {
             pw.println("==== No variables ====") ;
@@ -263,9 +249,7 @@ public class QueryResultsFormatter
             for ( int col = 0 ; col < numCols ; col++ )
             {
                 String rVar = (String)queryResults.getResultVars().get(col) ;
-                Value val = env.getValue(rVar) ;
-                String s = (val==null)? notThere : val.asQuotedString() ;
-                row[col] = s ;
+                row[col] = this.getVarAsString(env, rVar );
             }
             printRow(pw, row, colSep, lineEnd) ;
         }
@@ -330,7 +314,7 @@ public class QueryResultsFormatter
             {
                 String rVar = (String)queryResults.getResultVars().get(col) ;
                 Value val = env.getValue(rVar) ;
-                // Use the unquoted form here - shoudl also XML-escape it.
+                // Use the unquoted form here - should also XML-escape it.
                 String s = (val==null)? notThere : val.toString() ;
 
                 pw.print("    <td>") ;
@@ -365,6 +349,39 @@ public class QueryResultsFormatter
                 //String valStr = (val==null) ? null : val.toString() ;
             }
         }
+    }
+    
+    private String getVarAsString(ResultBinding env, String varName)
+    {
+        // Without adornment.
+        //Value val = env.getValue(rVar) ;
+        //String s = (val==null)? notThere : val.asQuotedString() ;
+        //return s ;
+                
+        // Print in all details
+        Object obj = env.get(varName) ;
+                
+        String s = notThere ;
+        if ( obj != null )
+        {
+            if ( ! ( obj instanceof RDFNode ) )
+                s = "Found a "+(obj.getClass().getName()) ;
+            else if ( obj instanceof Literal )
+            {
+                Literal l = (Literal)obj ;
+                StringBuffer sb = new StringBuffer() ;
+                sb.append('"').append(l.toString()).append('"') ;
+                
+                if ( ! l.getLanguage().equals(""))
+                    sb.append("@").append(l.getLanguage()) ;
+                if ( l.getDatatype() != null )
+                    sb.append("^^<").append(l.getDatatypeURI()).append(">") ;
+                s = sb.toString() ;
+            }
+            else
+                s = obj.toString() ;
+        }
+        return s ;
     }
 }
 

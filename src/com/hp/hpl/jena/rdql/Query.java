@@ -7,9 +7,10 @@ package com.hp.hpl.jena.rdql;
 
 import java.io.* ;
 import java.util.* ;
+import org.apache.log4j.Logger;
+
 
 import com.hp.hpl.jena.rdql.parser.*;
-import com.hp.hpl.jena.util.Log ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 
@@ -25,11 +26,13 @@ import com.hp.hpl.jena.rdf.model.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.1.1.1 2002-12-19 19:18:45 bwm Exp $
+ * @version 	$Id: Query.java,v 1.2 2003-02-20 16:21:58 andy_seaborne Exp $
  */
 
 public class Query
 {
+    static Logger logger = Logger.getLogger("com.hp.hpl.jena.rdql") ;
+    
     // The names of variables wanted by the caller.
     protected List resultVars = new ArrayList() ;         // Type in list: String name
     protected List triplePatterns = new ArrayList() ;     // Type in list: TriplePatterns
@@ -41,15 +44,15 @@ public class Query
     {
 		defaultPrefixMap.put("rdf",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
 		defaultPrefixMap.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#") ;
+        defaultPrefixMap.put("xsd" , "http://www.w3.org/2001/XMLSchema#") ; 
+        defaultPrefixMap.put("owl" , "http://www.w3.org/2002/07/owl#") ; 
     }
-    
-
 
     // Turn logging on and off.
     // This is in addition to the log levels.
     boolean loggingOn = false ;
 
-    Log log = Log.getInstance() ;
+    Logger log = logger ;
 
     // If no model is provided explicitly, the query engine will load
     // a model from the URL.
@@ -88,7 +91,7 @@ public class Query
             parseTime = System.currentTimeMillis() - startTime;
 
             if ( loggingOn )
-                log.info("Query parse time: "+parseTime, "Query", null) ;
+                log.debug("Query parse time: "+parseTime) ;
 
             query = (Q_Query)parser.top() ;
             // Post-parsing work on the query tree
@@ -96,9 +99,12 @@ public class Query
 
             buildTime = System.currentTimeMillis() - parseTime - startTime ;
             if ( loggingOn )
-                log.info("Query parse and build time: "+buildTime, "Query", null) ;
-        } catch (Exception e)
+                log.debug("Query parse and build time: "+buildTime) ;
+        }
+        catch (QueryException qEx) { throw qEx ; }
+        catch (Exception e)
         {
+            //e.printStackTrace(System.err) ;
             throw new QueryException("Parse error: "+e) ;
         }
     }
@@ -193,10 +199,10 @@ public class Query
 
     /** Set the log destination.  By default the log does to the Jena system log
      */
-     public void setLog(Log newLog) { log = newLog ; }
+     public void setLog(Logger newLog) { log = newLog ; }
 
      /** Get the current log */
-     public Log getLog() { return log ; }
+     public Logger getLog() { return log ; }
 
      /** Switch for logging.  This is in addition to log levels.  Default is off */
      public void setLogging(boolean loggingSwitch) { loggingOn = loggingSwitch ; }
@@ -227,9 +233,7 @@ public class Query
 
 
 
-    // Reverse of parsing
-    // The keywords a are in parser datastructures but not in a portable way.
-    // We would need to know th etoken number which might change when jjtree is run.
+    // Reverse of parsing : should produce a string that parses to the same query
     public String toString()
     {
         StringWriter stringWriter = new StringWriter(512) ;
@@ -267,7 +271,11 @@ public class Query
             {
                 TriplePattern tp = (TriplePattern)iter.next() ;
                 if ( ! first )
+                {
                     pw.print(", ") ;
+                    pw.println() ;
+                    pw.print("        ") ;
+                }
                 pw.print(tp.toString()) ;
                 first = false ;
             }
@@ -297,22 +305,22 @@ public class Query
             }
         }
 
-        // If all URIs should have been expanded - no need for this.
-        // Currently, 
 		if ( prefixMap.size() > 0 )
 		{
 			pw.println("USING") ;
+            boolean first = true ;
 			for ( Iterator iter = prefixMap.keySet().iterator() ; iter.hasNext() ; )
 			{
+                if ( ! first )
+                    pw.println(" ,") ;
 				String k = (String)iter.next() ;
 				String v = (String)prefixMap.get(k) ;
-				pw.println("    "+k+" FOR <"+v+">") ;
+				pw.print("    "+k+" FOR <"+v+">") ;
+                first = false ;
 			}
+            pw.println() ;
 		}
         
-        // Using
-        // Actually - must change so Q_URIs remember their prefix.
-
         pw.flush() ;
         pw.close() ;
         return stringWriter.getBuffer().toString() ;

@@ -7,15 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_URI extends Literal {
-
-    // The form actually coming from the parser.
-    String seen = "" ;
-
-    // This is set false until the Q_URI is transformed into absolute form
-    // or it is known to be.
-
-    boolean isAbsolute = false ;
+class Q_URI extends ParsedLiteral {
 
     Q_URI(int id)
     {
@@ -27,94 +19,17 @@ class Q_URI extends Literal {
         super(p, id);
     }
 
-    void accumulate(String s)
-    {
-        seen = seen+s ;
-    }
-
     public void jjtClose()
     {
-        // Can't convert to absolute form until the entire query is parsed.
-        // Don't need to do %-escape processing here because we work in string-space.
-        // Easier to work on the version of URIs with the escape squcnes still in.
-        //seen = processEscapes(seen) ;
-        super.setURI(seen);
-    }
-
-    static public String processEscapes(String s)
-    {
-        StringBuffer result = new StringBuffer() ;
-        // After end of last % seen
-        int len = s.length() ;
-        int k = 0 ;
-
-        for ( ;; )
-        {
-            int i = s.indexOf("%", k) ;
-            if ( ( i < 0 ) || ( i+2 >= len ) )
-            {
-                result.append(s.substring(k)) ;
-                return result.toString() ;
-            }
-            result.append(s.substring(k,i)) ;
-
-            int vHi = Character.digit(s.charAt(i+1),16) ;
-            int vLo = Character.digit(s.charAt(i+2),16) ;
-            result.append((char)(vHi*16+vLo)) ;
-            k = i+3 ;
-        }
-    }
-
-    public void fixup(Q_Query qnode)
-    {
-        if ( ! isAbsolute )
-            absolute(qnode) ;
-    }
-
-    static final String prefixOperator = ":" ;
-
-    private void absolute(Q_Query qnode)
-    {
-        int i = seen.indexOf(prefixOperator) ;
-        if ( i < 0 )
-        {
-            isAbsolute = true ;
-            return ;
-        }
-
-        String prefix = seen.substring(0,i) ;
-        
-        String full = qnode.getPrefix(prefix) ;
-
-        if ( full == null )
-        {
-            isAbsolute = true ;
-            return ;
-        }
-
-        String remainder = seen.substring(i+prefixOperator.length()) ;
-        super.setURI(full+remainder) ;
-        isAbsolute = true ;
+        super.setRDFResource(model.createResource(super.getString())) ;    
     }
     
 	public static Q_URI makeURI(String s)
 	{
 		Q_URI uri = new Q_URI(0) ;
-		uri.seen = s ;
 		uri.setURI(s) ;
 		return uri ;
 	}
-
-
-    // Override these to retain prefix.
-    // But be aware of effects on URIs in expressions
-    public String asQuotedString()    { return "<"+seen+">" ; }
-    public String asUnquotedString()  { return seen ; }
-    // Must return the expanded form
-    public String valueString()       { return super.getURI() ; }
-
-	// Displyable form
-    public String toString() { return seen ; }
 }
 
 /*

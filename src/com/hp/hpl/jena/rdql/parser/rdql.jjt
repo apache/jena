@@ -136,12 +136,23 @@ TOKEN :
   >
 }
 
+// Modes to read things that might be keywords as well.
+
 <READ_URI> TOKEN :
 {
       <URI:  ( ~[" ", "\n", "\r", ">", "\t"] )+ >
 }
 
+<READ_QNAME> TOKEN :
+{
+  <QNAME: <QNAME_PREFIX> ":" <QNAME_LNAME>>
+|
+  <QNAME_PREFIX: (["a"-"z"] | ["A"-"Z"] | ["0"-"9"] )+>
+|
+  <QNAME_LNAME:  (["a"-"z"] | ["A"-"Z"] | ["0"-"9"] )+>
+}
 
+/* To go ...
 <READ_IDENTIFIER> TOKEN :
 {
   <IDENTIFIER: (<LETTER>|<DIGIT>|"_"|"$"|".")+ >
@@ -150,6 +161,8 @@ TOKEN :
 |
   < DIGIT:  ["0"-"9"]>
 }
+*/
+
 /* Keywords : includes operators that are words and should be
  * before general things like IDENTIFIER which swallow almost anything
  */
@@ -171,11 +184,7 @@ TOKEN [IGNORE_CASE] :
   < FOR:         "for" >
 | < STR_EQ: "eq" >
 | < STR_NE: "ne" >
-| < STR_MATCH: ("=~"|"~~") >
-| < STR_NMATCH: "!~" >
-
 }
-
 
 TOKEN :
 {
@@ -184,6 +193,17 @@ TOKEN :
   < NULL_LITERAL: "null">
 |
   < DIGITS: (["0"-"9"])+ >
+}
+
+// Identifier
+
+TOKEN:
+{
+  <IDENTIFIER: (<LETTER>|<DIGIT>|"_"|"$"|".")+ >
+|
+  < LETTER: (["a"-"z"] | ["A"-"Z"])>
+|
+  < DIGIT:  ["0"-"9"]>
 }
 
 /* SEPARATORS */
@@ -221,7 +241,7 @@ TOKEN :
 | < GE: ">=" >    // Maybe: | "=<" >
 | < SC_OR: "||" >
 | < SC_AND: "&&" >
-| < SC_XOR: "^^" >
+//| < SC_XOR: "^^" >
 | < INCR: "++" >
 | < DECR: "--" >
 | < PLUS: "+" >
@@ -237,6 +257,10 @@ TOKEN :
 | < RUNSIGNEDSHIFT: ">>>" >
 // The tokens for string EQ and string NE are done before IDENTIFIER
 // to ensure that they are recognized as reserved words.
+| < STR_MATCH: ("=~"|"~~") >
+| < STR_NMATCH: "!~">
+| < DATATYPE: "^^">
+| < AT: "@">
 }
 
 // **** Debug point
@@ -314,7 +338,6 @@ void VarOrURI() #void :
 {}
 {
   Var() | URI()
-  // | Identifier() ':' Identifier()
 }
 
 void VarOrLiteral() #void :
@@ -345,7 +368,7 @@ void PrefixesClause() :
 void PrefixDecl() :
 {}
 {
-  Identifier() <FOR> URI()
+  Identifier() <FOR> QuotedURI()
 }
 
 
@@ -526,19 +549,19 @@ void PrimaryExpression() #void :
 |
   Literal()
 |
-  FunctionCall()
-|
+//  FunctionCall()
+//|
   // And this is why expressions are not typed by the parser!
   // Arbitrary lookahead of chars to see is the expression
   // is numeric or boolean.
   <LPAREN> Expression() <RPAREN>
 }
 
-void FunctionCall() :
-{}
-{
-  Identifier() <LPAREN> ArgList() <RPAREN>
-}
+// void FunctionCall() :
+// {}
+// {
+//   Identifier() <LPAREN> ArgList() <RPAREN>
+// }
 
 void ArgList() :
 {}
@@ -575,21 +598,22 @@ void NumericLiteral() :
   t = <FLOATING_POINT_LITERAL> { jjtThis.set(false, t.image) ; }
 }
 
-// DATATYPE
-
 void TextLiteral() :
 {
   Token t ;
 }
 {
-/***
-  t = <CHARACTER_LITERAL> { jjtThis.set(t.image) ; }
-|
-***/
-  t = <STRING_LITERAL1>    { jjtThis.set(t.image) ; }
-|
-  t = <STRING_LITERAL2>    { jjtThis.set(t.image) ; }
-}
+  ( t = <STRING_LITERAL1> { jjtThis.set(t.image) ; }
+  | t = <STRING_LITERAL2> { jjtThis.set(t.image) ; } )
+
+  // Optional lang tag and datatype.
+
+  ( <AT> Identifier() ) ?
+  ( <DATATYPE> URI() )?
+} 
+
+
+
 
 <READ_REGEX> TOKEN :
 {
@@ -738,7 +762,23 @@ void URL() :
   URI()
 }
 
-void URI() :
+void URI() #void :
+{ }
+{
+  QuotedURI()
+|
+  QName()
+}
+
+void QName() :
+{ }
+{
+  // Needs tuning
+  Identifier() ":" Identifier()
+}  
+
+
+void QuotedURI() :
 { Token tt = null ;
   int state = 0 ;
 }
@@ -750,30 +790,41 @@ void URI() :
   }
   tt = <URI>
   { 
-    jjtThis.accumulate(tt.image) ;
+    jjtThis.set(tt.image) ;
     token_source.SwitchTo(state) ;
   }
-
   ">"
 }
 
 
 
+// void Identifier() :
+// { Token tt = null ;
+//   int state = 0 ;
+// }
+// {
+//   {
+//     state = token_source.curLexState ;
+//     token_source.SwitchTo(READ_IDENTIFIER) ; 
+//   }
+//   tt = <IDENTIFIER>
+//   { 
+//     jjtThis.set(tt.image) ;
+//     token_source.SwitchTo(state) ;
+//   }
+// }
+
 void Identifier() :
-{ Token tt = null ;
-  int state = 0 ;
-}
+{}
 {
-  {
-    state = token_source.curLexState ;
-    token_source.SwitchTo(READ_IDENTIFIER) ; 
-  }
-  tt = <IDENTIFIER>
-  { 
-    jjtThis.set(tt.image) ;
-    token_source.SwitchTo(state) ;
-  }
+  ( <IDENTIFIER> 
+    // And all keywords
+    | <SELECT> | <SOURCE> | <FROM> | <WHERE>
+    | <SUCHTHAT> | <PREFIXES> | <FOR>
+    | <STR_EQ> | <STR_NE> )
+  { jjtThis.set(token.image) ; }
 }
+
 
 /*
  *  (c) Copyright Hewlett-Packard Company 2001, 2002

@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_NumericLiteral extends Literal implements ExprNumeric
+class Q_NumericLiteral extends ParsedLiteral implements ExprNumeric
 {
   Q_NumericLiteral(int id) {
     super(id);

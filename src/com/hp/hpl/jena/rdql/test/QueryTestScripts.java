@@ -24,7 +24,7 @@ import com.hp.hpl.jena.rdql.* ;
  *  adding new script files.  This class need not change.
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.3 2003-02-01 14:35:33 bwm Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.4 2003-02-20 16:22:43 andy_seaborne Exp $
  */
 
 
@@ -33,7 +33,7 @@ public class QueryTestScripts extends TestSuite
 	static final String testSetName = "RDQL - Query - Scripts" ;
 
     static final public String defaultControlFilename = "_control_" ;
-    static final public String defaultTestDirectory = "modules/rdf/regression/testRDQL" ;
+    static final public String defaultTestDirectory = "testing/RDQL" ;
     
     public String basename = null ;
     static public boolean printDetails = false ;

@@ -28,7 +28,7 @@ class Q_Var extends SimpleNode implements Var, Expr
 
     public Value eval(Query q, ResultBinding env)
     {
-        //return env.getValue(varName) ;
+        // Result is a copy as a bound variable.
         Value v = env.getValue(varName) ;
         WorkingVar v2 = new WorkingVar() ;
         v2.setString(v.getString());

@@ -10,10 +10,8 @@ import junit.framework.*;
 /**
  * All the RDQL tests 
  * @author		Andy Seaborne
- * @version 	$Id: RDQLTestSuite.java,v 1.1.1.1 2002-12-19 19:20:09 bwm Exp $
+ * @version 	$Id: RDQLTestSuite.java,v 1.2 2003-02-20 16:22:44 andy_seaborne Exp $
  */
-
-// Modelled after the MegaTestSuite.
 
 public class RDQLTestSuite extends TestSuite
 {

@@ -5,12 +5,12 @@
  
 /** Hopefully, you won't see this!
  * @author   Andy Seaborne
- * @version  $Id: RDQL_InternalErrorException.java,v 1.1.1.1 2002-12-19 19:18:55 bwm Exp $
+ * @version  $Id: RDQL_InternalErrorException.java,v 1.2 2003-02-20 16:21:59 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
 
-public class RDQL_InternalErrorException extends com.hp.hpl.jena.rdql.QueryException
+public class RDQL_InternalErrorException extends QueryException
 {
     public RDQL_InternalErrorException() { super() ; }
     public RDQL_InternalErrorException (String msg) { super(msg) ; }

@@ -7,14 +7,14 @@ package com.hp.hpl.jena.rdql;
 
 /** 
  * @author		Andy Seaborne
- * @version 	$Id: QueryResultsMem.java,v 1.1.1.1 2002-12-19 19:18:53 bwm Exp $
+ * @version 	$Id: QueryResultsMem.java,v 1.2 2003-02-20 16:21:58 andy_seaborne Exp $
  */
 
 import java.util.*;
 import java.io.*;
 import java.net.*;
 
-import com.hp.hpl.jena.rdql.parser.Literal; 
+import com.hp.hpl.jena.rdql.parser.ParsedLiteral; 
 import com.hp.hpl.jena.rdql.* ;
 
 import com.hp.hpl.jena.util.tuple.*;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.util.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: QueryResultsMem.java,v 1.1.1.1 2002-12-19 19:18:53 bwm Exp $
+ * @version 	$Id: QueryResultsMem.java,v 1.2 2003-02-20 16:21:58 andy_seaborne Exp $
  */
 
 
@@ -240,11 +240,11 @@ public class QueryResultsMem implements QueryResults
 				}
 				// Maybe should try to create "real" Jena objects
 				// Query literal - not a Jena RDf Literal
-				Literal l = null;
+				ParsedLiteral l = null;
 				if (value.isURI())
-					l = Literal.makeURI(value.get());
+					l = ParsedLiteral.makeURI(value.get());
 				else
-					l = Literal.makeString(value.get());
+					l = ParsedLiteral.makeString(value.get());
 				thisRow.add(var, l);
 				//System.err.println("This row: "+thisRow) ;
 			}

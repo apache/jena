@@ -5,15 +5,14 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.3 2003-02-11 15:17:09 chris-dollin Exp $
+ * @version  $Id: TriplePattern.java,v 1.4 2003-02-20 16:21:59 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
 
 import java.util.* ;
-import java.io.* ;
 
-import com.hp.hpl.jena.util.Log;
+import org.apache.log4j.Logger ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.rdf.model.impl.* ;
@@ -108,7 +107,7 @@ public class TriplePattern
 						predicate = subject.getModel().createProperty(((Resource)tmp).getURI()) ;
 					} catch (RDFException rdfEx)
 					{
-						if ( rdfEx.getErrorCode() != rdfEx.INVALIDPROPERTYURI )
+						if ( rdfEx.getErrorCode() != RDFException.INVALIDPROPERTYURI )
 							throw rdfEx ;
 						System.err.println("Illegal property URI: "+((Resource)tmp).getURI()) ;
 						return null ;
@@ -208,7 +207,7 @@ public class TriplePattern
     // This was written before the substitute operation and has not been
     // converted because it works as it is.
 
-    public Iterator match(Log log, QueryEngine qe, Model m, ResultBinding env)
+    public Iterator match(Logger log, QueryEngine qe, Model m, ResultBinding env)
     {
         queryEngine = qe ;
         
@@ -268,7 +267,7 @@ public class TriplePattern
                         {
                             if ( log != null )
                                 //throw new EvalFailureException("TriplePattern: Attempt to match an anonymous resource with a property") ;
-                                log.warning("Attempt to match an anonymous resource with a property", "TriplePattern", "match") ;
+                                log.warn("TriplePattern: Attempt to match an anonymous resource with a property") ;
                             return null ;
                         }
                     }
@@ -317,6 +316,23 @@ public class TriplePattern
                 log.debug("              Select: "+(o==null? objectSlot.getVar().toString() : o.toString())) ;
             }
 
+            // Development debugging - remove.
+//            if ( o != null )
+//            {
+//                if ( o instanceof Literal )
+//                {
+//                    String tmp = "\""+((Literal)o).toString()+"\"" ;
+//                    if ( ! ((Literal)o).getLanguage().equals(""))
+//                        tmp = tmp+"@"+((Literal)o).getLanguage() ;
+//                    String dt = ((Literal)o).getDatatypeURI() ;
+//                    if ( ((Literal)o).getDatatypeURI() != null )
+//                        tmp = tmp+"^^<"+((Literal)o).getDatatypeURI()+">" ;
+//                    System.err.println("Object:" +tmp) ;//                } 
+//                else
+//                    System.err.println("Object: <"+o.toString()+">") ;
+//            }
+//            else
+//                System.err.println("Object is null") ;
             return new BindingIterator(log, m, s, p, o, env) ;
         }
         catch (EvalFailureException evalEx) { return null ; }
@@ -330,12 +346,12 @@ public class TriplePattern
         Resource s ;
         Property p ;
         RDFNode o ;
-        Log log ;
+        Logger log ;
         ResultBinding currentBinding ;
         Object current ;
         boolean finished = false ;
 
-        BindingIterator(Log _log, Model m, Resource _s, Property _p, RDFNode _o, ResultBinding binding)
+        BindingIterator(Logger _log, Model m, Resource _s, Property _p, RDFNode _o, ResultBinding binding)
         {
             log = _log ;
             s = _s ;
@@ -381,7 +397,8 @@ public class TriplePattern
             {
                 current = process() ;
                 String tmp = (current!=null)?((ResultBinding)current).toString():"<<null>>" ;
-                Log.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
+                if ( log != null )
+                    log.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
             }
                 
             return current != null ;
@@ -396,7 +413,8 @@ public class TriplePattern
             if ( hasNext() )
             {
                 String tmp = (current!=null)?((ResultBinding)current).toString():"<<null>>" ;
-                Log.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
+                if ( log != null )
+                    log.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
                 Object x = current ;
                 current = null ;
                 return x ;
@@ -421,7 +439,8 @@ public class TriplePattern
                         sIter.close() ;
                         sIter = null ;
                         String tmp = Thread.currentThread().getName() ;
-                        Log.debug("("+tmp+") sIter close") ;
+                        if ( log != null )
+                            log.debug("("+tmp+") sIter close") ;
                         return null ;
                     }
 
@@ -530,6 +549,11 @@ public class TriplePattern
 
     private RDFNode valueToRDFNode(Model m, Value v) throws RDFException
     {
+        if ( v.isRDFLiteral())
+            return v.getRDFLiteral() ;
+        if ( v.isRDFResource() )
+            return v.getRDFResource() ;
+
         // Order matters here : string must be last
         if ( v.isURI() )
             return m.createResource(v.getURI()) ;

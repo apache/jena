@@ -7,7 +7,7 @@
  * of RDQL can access it.
  * 
  * @author   Andy Seaborne
- * @version  $Id: Slot.java,v 1.1.1.1 2002-12-19 19:18:57 bwm Exp $
+ * @version  $Id: Slot.java,v 1.2 2003-02-20 16:21:59 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -71,6 +71,12 @@ public class Slot
         property = p;
     }
 
+    public void set(Literal l)
+    {
+        unset() ;
+        literal = l ;
+    }
+
     public boolean isValue() { return value != null ; }
     public boolean isVar()   { return variable != null ; }
     public boolean isResource() { return resource != null ; }
@@ -100,6 +106,20 @@ public class Slot
             return "<"+property.toString()+">" ;
         if ( resource != null )
             return "<"+resource.toString()+">" ;
+        if ( literal != null )
+        {
+            String s = literal.toString() ;
+            if ( literal.getLanguage().equals("") && literal.getDatatype() == null )
+                return s ;
+            
+            StringBuffer sb = new StringBuffer(s) ;
+            if ( !literal.getLanguage().equals("") )
+                sb.append("@").append(literal.getLanguage()) ;
+            if ( literal.getDatatype() != null)
+                sb.append("^^").append(literal.getDatatypeURI()) ;
+            return sb.toString() ;
+        }
+
         return "slot:unset" ;
     }
 }

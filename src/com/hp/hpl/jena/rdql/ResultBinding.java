@@ -11,7 +11,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.1.1.1 2002-12-19 19:18:56 bwm Exp $
+ * @version  $Id: ResultBinding.java,v 1.2 2003-02-20 16:21:59 andy_seaborne Exp $
  */
 
 
@@ -160,9 +160,9 @@ public class ResultBinding
             WorkingVar w = new WorkingVar() ;
             if ( uri == null || uri.length() == 0 )
             {
-                // Anon resource
+                // BNode.
                 // Create a pseudo-uri for it so that filter functions
-                // can distinguish it from other anon resources.
+                // can distinguish it from other bNodes resources.
                 try {
                     uri = "anon:"+((Resource)arg).getId() ;
                 } catch (RDFException rdfEx) { throw new RDQL_InternalErrorException("ResultBinding: error on anon resource") ; }
@@ -171,9 +171,11 @@ public class ResultBinding
             return w ;
         }
 
+        // Literal.
         if ( arg instanceof RDFNode )
         {
             WorkingVar w = new WorkingVar() ;
+            // Simple appearance.  Without lang tag or datatype
             w.setString(arg.toString()) ;
             return w ;
         }
@@ -315,7 +317,7 @@ public class ResultBinding
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

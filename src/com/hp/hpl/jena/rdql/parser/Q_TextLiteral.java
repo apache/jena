@@ -7,7 +7,13 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_TextLiteral extends Literal {
+import com.hp.hpl.jena.rdf.model.* ;
+
+class Q_TextLiteral extends ParsedLiteral {
+
+    Q_URI datatype = null ;
+    String langTag = null ;
+    String seen = null ;
 
   Q_TextLiteral(int id) {
     super(id);
@@ -19,10 +25,51 @@ class Q_TextLiteral extends Literal {
 
   void set(String s)
   {
+    seen = s ; 
     // Remove string quotes
     s = s.substring(1,s.length()-1) ;
     super.setString(unescape(s,'\\')) ;
   }
+  
+    public void jjtClose()
+    {
+        int n = jjtGetNumChildren();
+        for (int i = 0; i < n; i++)
+        {
+            Node node = this.jjtGetChild(i);
+
+            if (node instanceof Q_Identifier)
+                langTag = ((Q_Identifier) node).id;
+
+            if (node instanceof Q_URI)
+                datatype = (Q_URI) node ;
+        }
+        if ( langTag != null )
+            seen = seen+"@"+langTag ;
+        if ( datatype != null )
+            seen = seen+"^^"+datatype.asQuotedString() ;
+    }
+  
+    public void fixup(Q_Query qnode)
+    {
+        // Must wait until tany QName is resolved.
+        String tmp = null ;
+        if ( datatype != null )
+        {
+            if ( ! datatype.isSet )
+                datatype.fixup(qnode) ;
+            tmp = datatype.valueString() ;
+        }
+                 
+        Literal l = model.createTypedLiteral(super.getString(), langTag, tmp) ;
+        super.setRDFLiteral(l) ; 
+    }
+  
+    public String asQuotedString()
+    {
+        return seen ;
+        //return super.asQuotedString() ;
+    }
   
   // Utility to remove escapes
   static String unescape(String s, char escape)

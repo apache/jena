@@ -5,11 +5,13 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: Value.java,v 1.2 2003-01-30 13:52:11 andy_seaborne Exp $
+ * @version  $Id: Value.java,v 1.3 2003-02-20 16:22:00 andy_seaborne Exp $
  */
 
 
 package com.hp.hpl.jena.rdql;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 
 // There is a separate settable interface
 
@@ -21,12 +23,16 @@ public interface Value extends Printable
     public boolean isBoolean() ;
     public boolean isString() ;
     public boolean isURI() ;
+    public boolean isRDFLiteral() ;
+    public boolean isRDFResource() ;
 
     public long getInt() ;
     public double getDouble() ;
     public boolean getBoolean() ;
     public String getString() ;
     public String getURI() ;
+    public Literal getRDFLiteral() ;
+    public Resource getRDFResource() ;   
 
     // Should be in the form usable to print out : this may depend on the
     // intended interpretation context.  For RDQL-the-language, this should

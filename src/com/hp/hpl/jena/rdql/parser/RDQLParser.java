@@ -345,6 +345,16 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     case HOOK:
       Var();
       break;
+    case SELECT:
+    case SOURCE:
+    case FROM:
+    case WHERE:
+    case SUCHTHAT:
+    case PREFIXES:
+    case FOR:
+    case STR_EQ:
+    case STR_NE:
+    case IDENTIFIER:
     case LT:
       URI();
       break;
@@ -364,8 +374,18 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     case FLOATING_POINT_LITERAL:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
+    case SELECT:
+    case SOURCE:
+    case FROM:
+    case WHERE:
+    case SUCHTHAT:
+    case PREFIXES:
+    case FOR:
+    case STR_EQ:
+    case STR_NE:
     case BOOLEAN_LITERAL:
     case NULL_LITERAL:
+    case IDENTIFIER:
     case LT:
       Literal();
       break;
@@ -416,6 +436,15 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
       label_4:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case SELECT:
+        case SOURCE:
+        case FROM:
+        case WHERE:
+        case SUCHTHAT:
+        case PREFIXES:
+        case FOR:
+        case STR_EQ:
+        case STR_NE:
         case IDENTIFIER:
         case COMMA:
           ;
@@ -456,7 +485,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     try {
       Identifier();
       jj_consume_token(FOR);
-      URI();
+      QuotedURI();
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -1337,9 +1366,18 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     case FLOATING_POINT_LITERAL:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
-    case IDENTIFIER:
+    case SELECT:
+    case SOURCE:
+    case FROM:
+    case WHERE:
+    case SUCHTHAT:
+    case PREFIXES:
+    case FOR:
+    case STR_EQ:
+    case STR_NE:
     case BOOLEAN_LITERAL:
     case NULL_LITERAL:
+    case IDENTIFIER:
     case LPAREN:
     case LT:
     case BANG:
@@ -1462,9 +1500,18 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     case FLOATING_POINT_LITERAL:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
-    case IDENTIFIER:
+    case SELECT:
+    case SOURCE:
+    case FROM:
+    case WHERE:
+    case SUCHTHAT:
+    case PREFIXES:
+    case FOR:
+    case STR_EQ:
+    case STR_NE:
     case BOOLEAN_LITERAL:
     case NULL_LITERAL:
+    case IDENTIFIER:
     case LPAREN:
     case LT:
     case HOOK:
@@ -1486,13 +1533,20 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     case FLOATING_POINT_LITERAL:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
+    case SELECT:
+    case SOURCE:
+    case FROM:
+    case WHERE:
+    case SUCHTHAT:
+    case PREFIXES:
+    case FOR:
+    case STR_EQ:
+    case STR_NE:
     case BOOLEAN_LITERAL:
     case NULL_LITERAL:
+    case IDENTIFIER:
     case LT:
       Literal();
-      break;
-    case IDENTIFIER:
-      FunctionCall();
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
@@ -1506,37 +1560,11 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     }
   }
 
-  final public void FunctionCall() throws ParseException {
- /*@bgen(jjtree) FunctionCall */
-  Q_FunctionCall jjtn000 = new Q_FunctionCall(JJTFUNCTIONCALL);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      Identifier();
-      jj_consume_token(LPAREN);
-      ArgList();
-      jj_consume_token(RPAREN);
-    } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
-    }
-    if (jjte000 instanceof RuntimeException) {
-      {if (true) throw (RuntimeException)jjte000;}
-    }
-    if (jjte000 instanceof ParseException) {
-      {if (true) throw (ParseException)jjte000;}
-    }
-    {if (true) throw (Error)jjte000;}
-    } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-    }
-    }
-  }
-
+// void FunctionCall() :
+// {}
+// {
+//   Identifier() <LPAREN> ArgList() <RPAREN>
+// }
   final public void ArgList() throws ParseException {
  /*@bgen(jjtree) ArgList */
   Q_ArgList jjtn000 = new Q_ArgList(JJTARGLIST);
@@ -1579,9 +1607,20 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
   }
 
 /******************************************************************/
-// Literals
+// Literals (as in query literls - any value in the query
+// Not "RDF literals".
   final public void Literal() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SELECT:
+    case SOURCE:
+    case FROM:
+    case WHERE:
+    case SUCHTHAT:
+    case PREFIXES:
+    case FOR:
+    case STR_EQ:
+    case STR_NE:
+    case IDENTIFIER:
     case LT:
       URI();
       break;
@@ -1645,26 +1684,50 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STRING_LITERAL1:
-        /***
-          t = <CHARACTER_LITERAL> { jjtThis.set(t.image) ; }
-        |
-        ***/
-          t = jj_consume_token(STRING_LITERAL1);
-                             jjtree.closeNodeScope(jjtn000, true);
-                             jjtc000 = false;
-                             jjtn000.set(t.image) ;
+        t = jj_consume_token(STRING_LITERAL1);
+                            jjtn000.set(t.image) ;
         break;
       case STRING_LITERAL2:
         t = jj_consume_token(STRING_LITERAL2);
-                             jjtree.closeNodeScope(jjtn000, true);
-                             jjtc000 = false;
-                             jjtn000.set(t.image) ;
+                            jjtn000.set(t.image) ;
         break;
       default:
         jj_la1[38] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case AT:
+        jj_consume_token(AT);
+        Identifier();
+        break;
+      default:
+        jj_la1[39] = jj_gen;
+        ;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case DATATYPE:
+        jj_consume_token(DATATYPE);
+        URI();
+        break;
+      default:
+        jj_la1[40] = jj_gen;
+        ;
+      }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1843,8 +1906,62 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
   }
 
   final public void URI() throws ParseException {
- /*@bgen(jjtree) URI */
-  Q_URI jjtn000 = new Q_URI(JJTURI);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case LT:
+      QuotedURI();
+      break;
+    case SELECT:
+    case SOURCE:
+    case FROM:
+    case WHERE:
+    case SUCHTHAT:
+    case PREFIXES:
+    case FOR:
+    case STR_EQ:
+    case STR_NE:
+    case IDENTIFIER:
+      QName();
+      break;
+    default:
+      jj_la1[41] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  final public void QName() throws ParseException {
+ /*@bgen(jjtree) QName */
+  Q_QName jjtn000 = new Q_QName(JJTQNAME);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      Identifier();
+      jj_consume_token(COLON);
+      Identifier();
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
+    }
+  }
+
+  final public void QuotedURI() throws ParseException {
+ /*@bgen(jjtree) QuotedURI */
+  Q_QuotedURI jjtn000 = new Q_QuotedURI(JJTQUOTEDURI);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token tt = null ;
   int state = 0 ;
@@ -1853,7 +1970,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     state = token_source.curLexState ;
     token_source.SwitchTo(READ_URI) ;
       tt = jj_consume_token(URI);
-    jjtn000.accumulate(tt.image) ;
+    jjtn000.set(tt.image) ;
     token_source.SwitchTo(state) ;
       jj_consume_token(GT);
     } finally {
@@ -1863,20 +1980,66 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     }
   }
 
+// void Identifier() :
+// { Token tt = null ;
+//   int state = 0 ;
+// }
+// {
+//   {
+//     state = token_source.curLexState ;
+//     token_source.SwitchTo(READ_IDENTIFIER) ; 
+//   }
+//   tt = <IDENTIFIER>
+//   { 
+//     jjtThis.set(tt.image) ;
+//     token_source.SwitchTo(state) ;
+//   }
+// }
   final public void Identifier() throws ParseException {
  /*@bgen(jjtree) Identifier */
   Q_Identifier jjtn000 = new Q_Identifier(JJTIDENTIFIER);
   boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);Token tt = null ;
-  int state = 0 ;
+  jjtree.openNodeScope(jjtn000);
     try {
-    state = token_source.curLexState ;
-    token_source.SwitchTo(READ_IDENTIFIER) ;
-      tt = jj_consume_token(IDENTIFIER);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IDENTIFIER:
+        jj_consume_token(IDENTIFIER);
+        break;
+      case SELECT:
+        jj_consume_token(SELECT);
+        break;
+      case SOURCE:
+        jj_consume_token(SOURCE);
+        break;
+      case FROM:
+        jj_consume_token(FROM);
+        break;
+      case WHERE:
+        jj_consume_token(WHERE);
+        break;
+      case SUCHTHAT:
+        jj_consume_token(SUCHTHAT);
+        break;
+      case PREFIXES:
+        jj_consume_token(PREFIXES);
+        break;
+      case FOR:
+        jj_consume_token(FOR);
+        break;
+      case STR_EQ:
+        jj_consume_token(STR_EQ);
+        break;
+      case STR_NE:
+        jj_consume_token(STR_NE);
+        break;
+      default:
+        jj_la1[42] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
-    jjtn000.set(tt.image) ;
-    token_source.SwitchTo(state) ;
+    jjtn000.set(token.image) ;
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1906,7 +2069,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
   }
 
   public RDQLParserTokenManager token_source;
-  ASCII_UCodeESC_CharStream jj_input_stream;
+  JavaCharStream jj_input_stream;
   public Token token, jj_nt;
   private int jj_ntk;
   private Token jj_scanpos, jj_lastpos;
@@ -1914,21 +2077,21 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
   public boolean lookingAhead = false;
   private boolean jj_semLA;
   private int jj_gen;
-  final private int[] jj_la1 = new int[39];
-  final private int[] jj_la1_0 = {0x0,0x30000000,0x80000000,0x0,0x0,0x8000000,0x30000000,0x0,0x80000000,0x80000000,0x0,0x690000,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1690000,0x0,0x1690000,0x1690000,0x0,0x690000,0x90000,0x600000,};
-  final private int[] jj_la1_1 = {0x10000,0x0,0x0,0x1,0x810000,0x0,0x0,0x10200,0x10000,0x10000,0x900000,0x9000c0,0x10000,0x20000000,0x40000000,0x3c,0x3c,0x0,0x0,0x0,0x6000000,0x6000000,0x18180000,0x18180000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf002c0,0x600000,0xf002c0,0x9002c0,0x10000,0x1000c0,0x0,0x0,};
-  final private int[] jj_la1_2 = {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80,0x100,0x40,0x0,0x0,0x0,0x0,0x1c00,0x1c00,0xc,0xc,0x230,0x230,0xc,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+  final private int[] jj_la1 = new int[43];
+  final private int[] jj_la1_0 = {0x0,0x30000000,0x80000000,0x0,0x0,0x8000000,0x30000000,0x0,0x80000000,0x80000000,0xf8000000,0xf8690000,0xf8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf8690000,0x0,0xf8690000,0xf8690000,0x0,0xf8690000,0x90000,0x600000,0x0,0x0,0xf8000000,0xf8000000,};
+  final private int[] jj_la1_1 = {0x20000,0x0,0x0,0x1,0x1020000,0x0,0x0,0x20400,0x20000,0x20000,0x120008f,0x12000bf,0x2008f,0x40000000,0x80000000,0xc,0xc,0x0,0x0,0x0,0xc000000,0xc000000,0x30300000,0x30300000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1e004bf,0xc00000,0x1e004bf,0x12004bf,0x20000,0x2000bf,0x0,0x0,0x0,0x0,0x20008f,0x8f,};
+  final private int[] jj_la1_2 = {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000,0x6000,0x80,0x100,0x40,0x0,0x0,0x0,0x0,0x1c00,0x1c00,0xc,0xc,0x230,0x230,0xc,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x8000,0x0,0x0,};
   final private JJCalls[] jj_2_rtns = new JJCalls[1];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
   public RDQLParser(java.io.InputStream stream) {
-    jj_input_stream = new ASCII_UCodeESC_CharStream(stream, 1, 1);
+    jj_input_stream = new JavaCharStream(stream, 1, 1);
     token_source = new RDQLParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 43; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1939,17 +2102,17 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 43; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   public RDQLParser(java.io.Reader stream) {
-    jj_input_stream = new ASCII_UCodeESC_CharStream(stream, 1, 1);
+    jj_input_stream = new JavaCharStream(stream, 1, 1);
     token_source = new RDQLParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 43; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1960,7 +2123,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 43; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1969,7 +2132,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 43; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1979,7 +2142,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 43; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2086,15 +2249,15 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[78];
-    for (int i = 0; i < 78; i++) {
+    boolean[] la1tokens = new boolean[82];
+    for (int i = 0; i < 82; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 39; i++) {
+    for (int i = 0; i < 43; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -2109,7 +2272,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         }
       }
     }
-    for (int i = 0; i < 78; i++) {
+    for (int i = 0; i < 82; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

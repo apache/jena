@@ -8,7 +8,7 @@
 package com.hp.hpl.jena.rdql.parser;
 import com.hp.hpl.jena.rdql.QueryException;
 
-class Q_URL extends Literal {
+class Q_URL extends ParsedLiteral {
 
     String urlString ;
 

@@ -6,14 +6,19 @@
 package com.hp.hpl.jena.rdql.parser;
 
 import com.hp.hpl.jena.rdql.*;
+import com.hp.hpl.jena.rdf.model.*;
+
 import java.io.PrintWriter;
 
-// A literal is an implementation of value that is created
+// An implementation of value that is created
 // from the parsing process.
 
 
-public class Literal extends SimpleNode implements Value, Expr
+public class ParsedLiteral extends SimpleNode implements Value, Expr
 {
+    // Used to create resources and literals
+    static Model model = ModelFactory.createDefaultModel() ;
+
     boolean isSet = false ;
 
     boolean isInt = false ;
@@ -21,17 +26,23 @@ public class Literal extends SimpleNode implements Value, Expr
     boolean isDouble = false ;
     boolean isURI = false ;
     boolean isString = false ;
+    boolean isRDFResource = false ;
+    boolean isRDFLiteral = false ;
 
     long valInt ;
     boolean valBoolean ;
     double valDouble ;
     String valString ;
     String valURI ;
+    Literal valRDFLiteral ;
+    Resource valRDFResource ;  
+    
+    //RDFNode rdfNode ;
 
     // Constructors used by the parser
-    Literal(int id) { super(id); }
+    ParsedLiteral(int id) { super(id); }
 
-    Literal(RDQLParser p, int id) { super(p, id); }
+    ParsedLiteral(RDQLParser p, int id) { super(p, id); }
 
 
     protected void unset()
@@ -44,6 +55,12 @@ public class Literal extends SimpleNode implements Value, Expr
 
         if ( isURI )
             valURI = null ;
+            
+        if ( isRDFResource )
+            valRDFResource = null ; 
+
+        if ( isRDFLiteral )
+            valRDFLiteral = null ; 
 
         isInt = false ;
         isBoolean = false ;
@@ -62,18 +79,41 @@ public class Literal extends SimpleNode implements Value, Expr
 
     public boolean isSet() { return isSet ; }
 
-    public boolean isNumber()   { return isSet && (isInt || isDouble) ; }
-    public boolean isInt()      { return isSet && isInt ; }
-    public boolean isDouble()   { return isSet && isDouble ; }
-    public boolean isBoolean()  { return isSet && isBoolean ; }
-    public boolean isString()   { return isSet && isString ; }
-    public boolean isURI()      { return isSet && isURI ; }
+    public boolean isNumber()       { return isSet && (isInt || isDouble) ; }
+    public boolean isInt()          { return isSet && isInt ; }
+    public boolean isDouble()       { return isSet && isDouble ; }
+    public boolean isBoolean()      { return isSet && isBoolean ; }
+    public boolean isString()       { return isSet && isString ; }
+    public boolean isURI()          { return isSet && isURI ; }
+    public boolean isRDFResource()  { return isSet && isRDFResource ; }
+    public boolean isRDFLiteral()   { return isSet && isRDFLiteral ; }
+    
 
-    protected void setInt(long i)        { unset() ; isSet = true ; isInt = true ; valInt = i ; }
-    protected void setDouble(double d)   { unset() ; isSet = true ; isDouble = true ; valDouble = d ; }
-    protected void setBoolean(boolean b) { unset() ; isSet = true ; isBoolean = true ; valBoolean = b ; }
-    protected void setString(String s)   { unset() ; isSet = true ; isString = true ; valString = s ; }
-    protected void setURI(String uri)    { unset() ; isSet = true ; isURI = true ; isString = true ; valURI = uri ; valString = uri ; }
+    protected void setInt(long i)               { unset() ; isSet = true ; isInt = true ; valInt = i ; }
+    protected void setDouble(double d)          { unset() ; isSet = true ; isDouble = true ; valDouble = d ; }
+    protected void setBoolean(boolean b)        { unset() ; isSet = true ; isBoolean = true ; valBoolean = b ; }
+    protected void setString(String s)          { unset() ; isSet = true ; isString = true ; valString = s ; }
+    protected void setURI(String uri)           { unset() ; isSet = true ; isURI = true ; isString = true ; valURI = uri ; valString = uri ; }
+    
+    protected void setRDFLiteral(Literal l)
+    {
+        unset();
+        isSet = true;
+        isString = true ;
+        isRDFLiteral = true;
+        valString = l.toString() ;
+        valRDFLiteral = l;
+    }
+    
+    protected void setRDFResource(Resource r)
+    {
+        unset();
+        isSet = true;
+        isURI = true ;
+        isRDFResource = true;
+        valURI = r.toString() ;
+        valRDFResource = r;
+    }
 
     public long getInt()
     {
@@ -107,6 +147,19 @@ public class Literal extends SimpleNode implements Value, Expr
         return valURI ;
     }
 
+    public Literal getRDFLiteral()
+    {
+        if ( ! isSet || ! isRDFLiteral ) throw new ValueException("Not a Literal: "+this) ;
+        return valRDFLiteral ;
+    }
+
+    public Resource getRDFResource()
+    {
+        if ( ! isSet || ! isRDFResource ) throw new ValueException("Not a Resource: "+this) ;
+        return valRDFResource ;
+    }
+
+
 
     // In all these stringification operations, order matters e.g. URI before string
     public String asQuotedString()
@@ -115,6 +168,22 @@ public class Literal extends SimpleNode implements Value, Expr
         if ( isInt ) return Long.toString(valInt) ;
         if ( isDouble ) return Double.toString(valDouble) ;
         if ( isBoolean ) return (valBoolean?"true":"false") ;
+        
+        if ( isRDFLiteral )
+        {
+            StringBuffer sb = new StringBuffer() ;
+            sb.append('"').append(valRDFLiteral.toString()).append('"') ;
+            if ( ! valRDFLiteral.getLanguage().equals("") )
+                sb.append('@').append(valRDFLiteral.getLanguage()) ;
+            if ( valRDFLiteral.getDatatypeURI() != null )
+            {
+                com.hp.hpl.jena.graph.dt.RDFDatatype tmp = valRDFLiteral.getDatatype() ;
+                sb.append("^^<").append(valRDFLiteral.getDatatypeURI()).append(">") ; 
+            }
+            return  sb.toString() ;
+        }
+
+        if ( isRDFResource) return "<"+valRDFResource.toString()+">" ;
         // Escaping needed
         if ( isURI ) return "<"+valURI+">" ;
         // Escaping needed
@@ -130,6 +199,8 @@ public class Literal extends SimpleNode implements Value, Expr
         if ( isInt ) return Long.toString(valInt) ;
         if ( isDouble ) return Double.toString(valDouble) ;
         if ( isBoolean ) return (valBoolean?"true":"false") ;
+        if ( isRDFLiteral) return valRDFLiteral.toString() ;
+        if ( isRDFResource ) return valRDFResource.toString() ;
         if ( isURI ) return valURI ;
         if ( isString ) return valString ;
 
@@ -144,6 +215,8 @@ public class Literal extends SimpleNode implements Value, Expr
         if ( isInt ) return "int:"+Long.toString(valInt) ;
         if ( isDouble ) return "double:"+Double.toString(valDouble) ;
         if ( isBoolean ) return "boolean:"+(valBoolean?"true":"false") ;
+        if ( isRDFLiteral) return "RDF:\""+valRDFLiteral.toString()+"\"" ;
+        if ( isRDFResource ) return "RDF:<"+valRDFResource.toString()+">" ;
         if ( isURI ) return "URI:"+valURI ;
         if ( isString ) return "string:"+valString ;
 
@@ -168,15 +241,16 @@ public class Literal extends SimpleNode implements Value, Expr
     
 	// Used by QueryResultsMem to build values
 
-	public static Literal makeString(String s)
+	public static ParsedLiteral makeString(String s)
 	{
-		Literal l = new Literal(0) ; 
+		ParsedLiteral l = new ParsedLiteral(0) ; 
 		l.setString(s) ;
 		return l ;
 	}
 	
 	// Q_URI is not public.
 	public static Q_URI makeURI(String s) { return Q_URI.makeURI(s) ; }
+
 }
 
 /*

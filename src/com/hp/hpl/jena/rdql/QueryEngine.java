@@ -8,8 +8,6 @@ package com.hp.hpl.jena.rdql;
 import java.util.* ;
 import EDU.oswego.cs.dl.util.concurrent.* ;
 
-
-
 // To do:
 //   Debugging version with no threading.
 
@@ -26,7 +24,7 @@ import EDU.oswego.cs.dl.util.concurrent.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: QueryEngine.java,v 1.1.1.1 2002-12-19 19:18:46 bwm Exp $
+ * @version 	$Id: QueryEngine.java,v 1.2 2003-02-20 16:21:58 andy_seaborne Exp $
  */
 
 
@@ -66,7 +64,7 @@ public class QueryEngine implements QueryExecution
         {
             if ( query.sourceURL == null )
             {
-                query.log.warning("No data for query (no URL, no model)", "QueryEngine", "init") ;
+                query.getLog().warn("No data for query (no URL, no model)") ;
                 throw new QueryException("No model for query") ;
             }
             long startTime = System.currentTimeMillis() ;
@@ -114,7 +112,7 @@ public class QueryEngine implements QueryExecution
             new Thread("Constraints-"+idQueryExecution) { public void run() { execConstraints(pipe1, pipe2) ; } }.start() ;
         else
             if ( query.loggingOn )
-                query.log.debug("No constraint pipe stage", "Query", "exec");
+                query.getLog().debug("No constraint pipe stage");
 
         Iterator resultsIter = new ResultsIterator(pipe2) ;
         return new QueryResultsStream(query, this, resultsIter) ;
@@ -190,10 +188,9 @@ public class QueryEngine implements QueryExecution
     {
         if ( query.loggingOn )
         {
-            query.log.finer("Triple matching: "+(index+1)+" of "+query.triplePatterns.size(),
-                            "QueryEngine", "execTriplesWorker") ;
-            query.log.finer("Triple matching: "+(env==null ? "<<null ResultBinding>>" : env.toString()),
-                            "QueryEngine", "execTriplesWorker") ;
+            query.getLog().debug("QueryEngine.execTriplesWorker: "+
+                                 "Triple matching: "+(index+1)+" of "+query.triplePatterns.size()) ;
+            query.getLog().debug("QueryEngine.execTriplesWorker: "+                                 "Triple matching: "+(env==null ? "<<null ResultBinding>>" : env.toString())) ;
         }
 
         if ( queryStop )

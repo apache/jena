@@ -10,6 +10,7 @@ package com.hp.hpl.jena.rdql.parser;
 class Q_Identifier extends SimpleNode {
 
     String id ;
+    RDQLParser parser ;
 
   Q_Identifier(int id) {
     super(id);
@@ -17,6 +18,7 @@ class Q_Identifier extends SimpleNode {
 
   Q_Identifier(RDQLParser p, int id) {
     super(p, id);
+    parser = p ;
   }
 
   void set(String s)
