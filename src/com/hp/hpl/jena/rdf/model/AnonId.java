@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.4 2004-03-18 14:04:01 der Exp $
+ * $Id: AnonId.java,v 1.5 2004-03-19 07:40:07 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2004-03-18 14:04:01 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2004-03-19 07:40:07 $
  */
 
 // This version contains experimental modifications by der to 
@@ -49,13 +49,20 @@ public class AnonId extends java.lang.Object {
     
     String id = null;
 
-    /** Support for debugging: global anonID counter */
-    private static int idCount = 0;
+    /** 
+        Support for debugging: global anonID counter. The intial value is just to
+        make the output look prettier if it has lots (but not lots and lots) of bnodes
+        in it.
+    */
+    private static int idCount = 100000;
     
-    /** Creates new AnonId.
-     *
-     * <p>This id is guaranteed to be unique on this machine.</p>
-     */
+    /** 
+        Creates new AnonId. Normally this id is guaranteed to be unique on this 
+        machine: it is time-dependant. However, sometimes [incorrect] code is
+        sensitive to bnode ordering and produces bizarre bugs (both Dave and
+        Chris have been bitten by this, as have some users, I think). Hence the
+        disableBNodeUIDGeneration flag, which allows bnode IDs to be predictable.
+    */
     public AnonId() {
         if (JenaParameters.disableBNodeUIDGeneration) {
             synchronized (AnonId.class) {

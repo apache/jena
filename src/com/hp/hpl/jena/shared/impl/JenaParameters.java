@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: JenaParameters.java,v 1.6 2004-03-18 14:04:02 der Exp $
+ * $Id: JenaParameters.java,v 1.7 2004-03-19 07:40:30 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.shared.impl;
 
@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.impl;
  * moved to being model-specific rather than global.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2004-03-18 14:04:02 $
+ * @version $Revision: 1.7 $ on $Date: 2004-03-19 07:40:30 $
  */
 public class JenaParameters {
     
@@ -100,8 +100,8 @@ public class JenaParameters {
      * simple count local to this JVM. This is ONLY for use in debugging
      * systems exhibiting non-deterministic behaviour due to the 
      * time-dependence of UIDs, not for normal production use. In particular, it
-     * breaks the contract that anonIDs should be unique on the same machine, they 
-     * will only be unique for a single JVM run.
+     * breaks the contract that anonIDs should be unique on the same machine: they 
+     * will only be unique for this single JVM run.
      */
     public static boolean disableBNodeUIDGeneration = false;
 }
