@@ -4,5 +4,5 @@
 
 SELECT *
 FROM <modelA.nt>
-WHERE (x:r-é ?p ?v)
+WHERE (x:r-\u00E9 ?p ?v)
 USING x FOR <http://rdf.hp.com/>

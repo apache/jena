@@ -1,6 +1,6 @@
 // (c) Copyright 2003 Hewlett-Packard Development Company, LP
-// Extra synatx checks
-// Test S-01 an dS-02 are the same
+// Extra syntax checks
+// Test S-01 and S-02 are the same query, using different prefixes.
 
 SELECT *
 FROM <modelA.nt>

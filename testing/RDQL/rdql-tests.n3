@@ -21,6 +21,8 @@
 ## [ mf:name "test-S-01" ; mf:action <file:test-S-01> ; mf:result <file:result-S-01.n3> ]
 ## [ mf:name "test-S-02" ; mf:action <file:test-S-02> ; mf:result <file:result-S-02.n3> ]
 ## [ mf:name "test-S-03" ; mf:action <file:test-S-03> ; mf:result <file:result-S-03.n3> ]
+## [ mf:name "test-S-04" ; mf:action <file:test-S-04> ; mf:result <file:result-S-04.n3> ]
+## [ mf:name "test-S-05" ; mf:action <file:test-S-05> ; mf:result <file:result-S-05.n3> ]
 
 # 
 
