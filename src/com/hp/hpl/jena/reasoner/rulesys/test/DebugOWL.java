@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.5 2003-06-16 17:01:57 der Exp $
+ * $Id: DebugOWL.java,v 1.6 2003-06-16 21:28:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-16 17:01:57 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-16 21:28:34 $
  */
 public class DebugOWL {
 
@@ -71,6 +71,9 @@ public class DebugOWL {
     /** reasoner config: normal RDFS */
     public static final int RDFSFB = 4;
     
+    /** reasoner config: experimental RDFS - hybrid + TGC */
+    public static final int RDFSExpt = 5;
+    
     
     /**
      * Construct an empty test harness.
@@ -106,6 +109,10 @@ public class DebugOWL {
             
             case RDFSFB:
                 reasoner = RDFSFBRuleReasonerFactory.theInstance().create(null);
+                break;
+            
+            case RDFSExpt:
+                reasoner = RDFSExptRuleReasonerFactory.theInstance().create(null);
                 break;
             
         } 
@@ -238,10 +245,10 @@ public class DebugOWL {
     public void run() {
         run(3,5,10);
         run(4,5,10);
-//        run(5,5,10);
+        run(5,5,10);
         run(3,5,30);
         run(4,5,30);
-//        run(5,5,30);
+        run(5,5,30);
     }
     
     /**
@@ -263,7 +270,7 @@ public class DebugOWL {
 //            new DebugOWL(OWL).run(dataFile);
             
             // owl.owl goes into meltdown with even the forward rules
-            new DebugOWL(OWLFB).run(schemaFile);
+//            new DebugOWL(OWLFB).run(schemaFile);
 //            new DebugOWL(OWL).run("file:temp/owl-subset.owl");
             
             // Test volz examples on OWL config
@@ -271,12 +278,13 @@ public class DebugOWL {
             
             // Test volz examples on RDFS config
 //            new DebugOWL(RDFSFB).run();
+            new DebugOWL(RDFSExpt).run();
                         
-            DebugOWL tester = new DebugOWL(OWLFB);
-            tester.load(schemaFile, dataFile);
-            System.out.println("Test schema + data  started ...");
-            long t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
-            System.out.println("Took " + t + "ms");
+//            DebugOWL tester = new DebugOWL(OWLFB);
+//            tester.load(schemaFile, dataFile);
+//            System.out.println("Test schema + data  started ...");
+//            long t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
+//            System.out.println("Took " + t + "ms");
 
         } catch (Exception e) {
             System.out.println("Problem: " + e);

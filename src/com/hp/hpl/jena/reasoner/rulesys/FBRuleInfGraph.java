@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.12 2003-06-16 17:01:57 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.13 2003-06-16 21:28:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-06-16 17:01:57 $
+ * @version $Revision: 1.13 $ on $Date: 2003-06-16 21:28:30 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -268,11 +268,31 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                         TransitiveReasoner.cacheSubClass(tempTbox, subPropertyCache, subClassCache);
                     }     
                 } else {
-                    if (fdata != null) {
+                    if (data != null) {
                         TransitiveReasoner.cacheSubProp(fdata, subPropertyCache);
                         TransitiveReasoner.cacheSubClass(fdata, subPropertyCache, subClassCache);
                     }
                 }
+                // Insert any axiomatic statements into the caches
+                for (Iterator i = rules.iterator(); i.hasNext(); ) {
+                    Rule r = (Rule)i.next();
+                    if (r.bodyLength() == 0) {
+                        // An axiom
+                        for (int j = 0; j < r.headLength(); j++) {
+                            Object head = r.getHeadElement(j);
+                            if (head instanceof TriplePattern) {
+                                TriplePattern h = (TriplePattern) head;
+                                Node pred = h.getPredicate();
+                                if (pred.equals(RDFS.subClassOf.asNode())) {
+                                    subClassCache.addRelation(h.getSubject(), h.getObject());
+                                } else if (pred.equals(RDFS.subPropertyOf.asNode())) {
+                                    subPropertyCache.addRelation(h.getSubject(), h.getObject());
+                                }
+                            }
+                        }
+                    }
+                }
+
                 subPropertyCache.setCaching(true);
                 subClassCache.setCaching(true);
                 dataFind = FinderUtil.cascade(subClassCache, subPropertyCache, dataFind);

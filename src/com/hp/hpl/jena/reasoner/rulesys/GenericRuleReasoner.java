@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.4 2003-06-16 17:01:57 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.5 2003-06-16 21:28:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-16 17:01:57 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-16 21:28:30 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -258,6 +258,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         GenericRuleReasoner grr = new GenericRuleReasoner(rules, graph, factory, mode);
         grr.setDerivationLogging(recordDerivations);
         grr.setTraceOn(traceOn);
+        grr.setTransitiveClosureCaching(enableTGCCaching);
         return grr;
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.6 2003-04-30 16:42:23 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.7 2003-06-16 21:27:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -35,11 +35,9 @@ import java.util.*;
  * be more efficient but require more space unless we have a good sparse binary
  * matrix package.</p>
  * <p>
- * TODO - this file has got much too long, pull out the graph and
- * iterator machinery as separate top level classes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-30 16:42:23 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-16 21:27:54 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -466,7 +464,6 @@ public class TransitiveGraphCache implements Finder {
      * Inner class used to walk to forward or backward links 
      * of the graph.
      * <p> The triples are dynamically allocated which is costly. 
-     * TODO - think about caching solutions.</p>
      * <p>I justify the direct accesses to GraphNode fields on the grounds
      * that this is a private inner class ...</p>
      */
