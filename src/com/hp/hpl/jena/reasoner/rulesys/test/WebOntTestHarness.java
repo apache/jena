@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.9 2003-09-18 21:16:46 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.10 2003-09-19 16:28:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-09-18 21:16:46 $
+ * @version $Revision: 1.10 $ on $Date: 2003-09-19 16:28:04 $
  */
 public class WebOntTestHarness {
 
@@ -43,19 +43,25 @@ public class WebOntTestHarness {
 //  Internal state
 
     /** The reasoner being tested */
-    public Reasoner reasoner;
+    Reasoner reasoner;
     
     /** The total set of known tests */
-    public Model testDefinitions;
+    Model testDefinitions;
     
     /** The number of tests run */
-    public int testCount = 0;
+    int testCount = 0;
     
     /** The time cost in ms of the last test to be run */
-    public long lastTestDuration = 0;
+    long lastTestDuration = 0;
     
     /** Number of tests passed */
-    public int passCount = 0;
+    int passCount = 0;
+    
+    /** The model describing the results of the run */
+    Model testResults;
+    
+    /** The resource which acts as a description for the Jena2 instance being tested */
+    Resource jena2;
     
 //  =======================================================================
 //  Internal constants
@@ -65,6 +71,9 @@ public class WebOntTestHarness {
     
     /** The base URI in which the files are purported to reside */
     public static String BASE_URI = "http://www.w3.org/2002/03owlt/";
+    
+    /** The base URI for the results file */
+    public static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/owl-results.rdf";
     
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
     public static final String[] TEST_DIRS= {"AllDifferent", "AllDistinct", 
@@ -146,6 +155,7 @@ public class WebOntTestHarness {
     public WebOntTestHarness() {
         testDefinitions = loadAllTestDefinitions();
         reasoner = ReasonerRegistry.getOWLReasoner();
+        initResults();
     }
 
     /** Load all of the known manifest files into a single model */
@@ -182,13 +192,36 @@ public class WebOntTestHarness {
         return testDefs;
     }
     
+    /** 
+     * Initialize the result model.
+     */
+    public void initResults() {
+        testResults = ModelFactory.createDefaultModel();
+        jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena2");
+        jena2.addProperty(RDFS.comment, 
+            testResults.createLiteral(
+                "<a href=\"http://jena.sourceforce.net/\">Jena2</a> includes a rule-based inference engine for RDF processing, " +
+                "supporting both forward and backward chaining rules. Its OWL rule set is designed to provide a sound " +
+                "but not complete implementation of that fragment of OWL/Full limited to the OWL/lite vocabulary. In" +
+                "particular it does not support unionOf/complementOf.",
+                true)
+        );
+        jena2.addProperty(RDFS.label, "Jena2");
+        testResults.setNsPrefix("results", OWLResults.NS);
+    }
+    
 //  =======================================================================
 //  Main control methods
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        String resultFile = "owl-results.rdf";
+        if (args.length >= 1) {
+            resultFile = args[0];
+        }
         WebOntTestHarness harness = new WebOntTestHarness();
         harness.runTests();
 //        harness.runTest("http://www.w3.org/2002/03owlt/description-logic/Manifest630#test");
+        harness.testResults.write(new FileOutputStream(resultFile), "RDF/XML-ABBREV", BASE_RESULTS_URI);
     }
     
     /**
@@ -248,7 +281,12 @@ public class WebOntTestHarness {
         } else {
             System.out.println("\nFAIL: " + test);
         }
-        // TODO add logging to the rdf result format
+        // log to the rdf result format
+        Resource result = testResults.createResource()
+            .addProperty(RDF.type, OWLResults.TestRun)
+            .addProperty(RDF.type, success ? OWLResults.PassingRun : OWLResults.FailingRun)
+            .addProperty(OWLResults.test, test)
+            .addProperty(OWLResults.system, jena2);
     }
     
     /**
