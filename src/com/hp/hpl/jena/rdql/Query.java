@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdql.parser.RDQLParser ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.13 2003-10-24 11:06:07 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.14 2003-11-27 17:58:16 andy_seaborne Exp $
  */
 
 public class Query
@@ -83,8 +83,9 @@ public class Query
             long startTime = 0;
             //long stopTime = 0;
 
-            ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes()) ;
-
+            //ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes()) ;
+            Reader in = new StringReader(s) ;
+            
             startTime = System.currentTimeMillis();
             RDQLParser parser = new RDQLParser(in) ;
             parser.CompilationUnit();
