@@ -14,7 +14,10 @@ Jena 2.1 - Main changes from Jena 2.0
       Command-Line jena.owlsyntax program added.
       Still to do: better error messages.
      
-     
+  RDF/XML-ABBREV output
+      Changes default configuration to not use property
+      attributes, which seem unpopular.
+      
   ARP
       Extended API to show bnode scope and XML Namespaces.
       Discovered memory leak which has been present since
