@@ -3,7 +3,20 @@
 # Make the site from template and content.
 
 MARK=.content.html
-FILES="$(echo *$MARK)"
+
+# merge of template does not work for anything other that current directory
+#DIRS=". how-to FAQ"
+DIRS="."
+
+FILES=
+for d in $DIRS
+do
+    F="$(echo $d/*$MARK)"
+    if [ "$F" != "$d/*$MARK" ]
+    then
+        FILES="$FILES $(echo $d/*$MARK)"
+        fi
+    done
 
 if [ "$FILES" = "*$MARK" ]
 then
