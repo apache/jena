@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseBuiltin.java,v 1.4 2003-08-22 12:51:12 der Exp $
+ * $Id: BaseBuiltin.java,v 1.5 2003-08-27 09:36:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * implementations can inherit from.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-22 12:51:12 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-27 09:36:00 $
  */
 public abstract class BaseBuiltin implements Builtin {
 
@@ -71,7 +71,6 @@ public abstract class BaseBuiltin implements Builtin {
      * @param length the length of the argument list, may be less than the length of the args array
      * for some rule engines
      * @param context an execution context giving access to other relevant data
-     * @param rule the invoking rule
      */
     public void headAction(Node[] args, int length, RuleContext context) {
         throw new BuiltinException(this, context, "builtin " + getName() + " not usable in rule heads");

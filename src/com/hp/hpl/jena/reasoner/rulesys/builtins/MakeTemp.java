@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: MakeTemp.java,v 1.3 2003-07-25 12:16:46 der Exp $
+ * $Id: MakeTemp.java,v 1.4 2003-08-27 09:36:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Create a new anonymous node and bind it to the each argument
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-25 12:16:46 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-27 09:36:00 $
  */
 public class MakeTemp extends BaseBuiltin {
 
@@ -54,7 +54,6 @@ public class MakeTemp extends BaseBuiltin {
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes.
      * @param context an execution context giving access to other relevant data
-     * @param rule the invoking rule
      */
     public void headAction(Node[] args, RuleContext context) {
         // Can't be used in the head
