@@ -151,6 +151,25 @@ Post Jena 2.1 change list
       o OntModels created over existing base models don't include elements
         from their document manager's PrefixMapping if they would clash with
         those already existing in the base.
+      o Fixed bug 985258 - schemagen can now create RDFS vocabularies
+      o Fixed bug 940570 - solved a problem with listIndividuals when using
+        the default OWL reasoner
+      o Fixed bug 948995 - .as() on owl:InverseFunctionalProperty for 
+        datatype properties failing
+      o Various fixes to prevent cycles in the graph confusing listSubClasses,
+        listSuperClasses, etc
+      o fixed profiles to allow owl:Thing .as(OntClass.class) even if no
+        reasoner present
+      o In response to bug 1065103, DAML models now by default use rdfs:subClassOf,
+        rdfs:subPropertyOf, rdfs:range and rdfs:domain in preference to their daml:
+        equivalents.  The old (Jena 2.1) behaviour is available by switching to the 
+        DAML_OILLegacyProfile in the OntModelSpec.  The new version more closely
+        matches what typical DAML ontologies do.
+      o Added createIndividual() to OntClass
+      o Added listDataRanges() to OntModel
+        
+   DIG reasoner interface
+      o Various bug fixes, plus a significant performance fix for listIndividuals()
 
    File Utilities
       o ModelLoader retired by deprecation.
