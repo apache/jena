@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.6 2003-05-30 13:50:15 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.7 2003-06-19 12:58:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -244,6 +244,14 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.setNsPrefixes( B );
         assertEquals( crispURI, A.getNsPrefixURI( "sharp" ) );
         assertEquals( null, A.getNsPrefixURI( "crisp" ) );
+        }
+        
+    public void testReturnsSelf()
+        {
+        PrefixMapping A = getMapping();
+        assertSame( A, A.setNsPrefix( "crisp", crispURI ) );
+        assertSame( A, A.setNsPrefixes( A ) );
+        assertSame( A, A.setNsPrefixes( new HashMap() ) );
         }
     }
 

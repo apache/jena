@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.7 2003-05-30 14:57:36 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.8 2003-06-19 12:58:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -28,12 +28,13 @@ public class PrefixMappingImpl implements PrefixMapping
         map = new HashMap(); 
         }
            
-    public void setNsPrefix( String prefix, String uri ) 
+    public PrefixMapping setNsPrefix( String prefix, String uri ) 
         {
         checkLegal( prefix );
         if (!prefix.equals( "" )) removeExisting( uri );
         checkProper( uri );
         map.put( prefix, uri );
+        return this;
         }
         
     private void checkProper( String uri )
@@ -68,8 +69,8 @@ public class PrefixMappingImpl implements PrefixMapping
         
         @param other the PrefixMapping whose bindings we are to add to this.
     */
-    public void setNsPrefixes( PrefixMapping other )
-        { setNsPrefixes( other.getNsPrefixMap() ); }
+    public PrefixMapping setNsPrefixes( PrefixMapping other )
+        { return setNsPrefixes( other.getNsPrefixMap() ); }
         
     /**
         Add the bindings in the map to our own. This will fail with a ClassCastException
@@ -79,7 +80,7 @@ public class PrefixMappingImpl implements PrefixMapping
         
          @param other the Map whose bindings we are to add to this.
     */
-    public void setNsPrefixes( Map other )
+    public PrefixMapping setNsPrefixes( Map other )
         {
         Iterator it = other.entrySet().iterator();
         while (it.hasNext())
@@ -87,6 +88,7 @@ public class PrefixMappingImpl implements PrefixMapping
             Map.Entry e = (Map.Entry) it.next();
             setNsPrefix( (String) e.getKey(), (String) e.getValue() );
             }
+        return this;
         }
          
     /**

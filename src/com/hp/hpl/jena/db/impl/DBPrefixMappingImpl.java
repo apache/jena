@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.2 2003-04-30 22:57:56 csayers Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.3 2003-06-19 12:58:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,7 +19,7 @@ import java.util.*;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.2 $
+ 	@version $Revision: 1.3 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -56,7 +56,7 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 	 * and update the persistent store.
 	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefix(java.lang.String, java.lang.String)
 	 */
-	public void setNsPrefix(String prefix, String uri) {
+	public PrefixMapping setNsPrefix(String prefix, String uri) {
 		// Ordering is important here - we need to add it to the prefixMappingImpl
 		// first since it checks the validity of the prefix (it will throw
 		// an exception if there's any problem).
@@ -66,26 +66,28 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 		// (the addPrefix call will overwrite any existing mapping with the same prefix
 		// so it matches the behaviour of the prefixMappingImpl).
 		m_graphProperties.addPrefix(prefix, uri);
+        return this;
 	}
 
 	/* (non-Javadoc)
 	 * Override the default implementation so we can catch all write operations
 	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(com.hp.hpl.jena.shared.PrefixMapping)
 	 */
-	public void setNsPrefixes(PrefixMapping other) {
-		setNsPrefixes(other.getNsPrefixMap());
+	public PrefixMapping setNsPrefixes(PrefixMapping other) {
+		return setNsPrefixes(other.getNsPrefixMap());
 	}
 
 	/* (non-Javadoc)
 	 * Override the default implementation so we can catch all write operations
 	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(java.util.Map)
 	 */
-	public void setNsPrefixes(Map other) {
+	public PrefixMapping setNsPrefixes(Map other) {
 		Iterator it = other.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry e = (Map.Entry) it.next();
 			setNsPrefix((String) e.getKey(), (String) e.getValue());
 		}
+        return this;
 	}
 }
 
