@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.4 2003-05-03 07:44:50 chris-dollin Exp $
+  $Id: TestPrefixMapping.java,v 1.5 2003-06-20 09:15:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
 
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.*;
-
+import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.*;
 
 /**
@@ -26,6 +26,19 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping
     
     protected PrefixMapping getMapping()
         { return new PrefixMappingImpl(); }        
+        
+    public void testStandard()
+        {
+        PrefixMapping st = PrefixMapping.Standard;
+        assertEquals( RDF.getURI(), st.getNsPrefixURI( "rdf" ) );
+        assertEquals( RDFS.getURI(), st.getNsPrefixURI( "rdfs" ) );
+        assertEquals( DC.getURI(), st.getNsPrefixURI( "dc" ) );
+        assertEquals( OWL.NAMESPACE, st.getNsPrefixURI( "owl" ) );
+        assertEquals( RSS.getURI(), st.getNsPrefixURI( "rss" ) );
+        assertEquals( VCARD.getURI(), st.getNsPrefixURI( "vcard" ) );
+        assertEquals( DAMLVocabulary.NAMESPACE_DAML_2000_12_URI, st.getNsPrefixURI( "daml" ) );
+        }
+        
     }
 
 
