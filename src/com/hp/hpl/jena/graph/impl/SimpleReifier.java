@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.2 2003-05-30 13:50:12 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.3 2003-07-18 09:33:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -17,6 +17,8 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
+
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class SimpleReifier implements Reifier
     {
@@ -194,10 +196,10 @@ public class SimpleReifier implements Reifier
     */
     private void parentRemoveQuad( Node n, Triple t )
         {
-        parent.delete( new Triple( n, type, Statement ) );
-        parent.delete( new Triple( n, subject, t.getSubject() ) );
-        parent.delete( new Triple( n, predicate, t.getPredicate() ) );
-        parent.delete( new Triple( n, object, t.getObject() ) ); 
+        parent.delete( new Triple( n, RDF.Nodes.type, RDF.Nodes.Statement ) );
+        parent.delete( new Triple( n, RDF.Nodes.subject, t.getSubject() ) );
+        parent.delete( new Triple( n, RDF.Nodes.predicate, t.getPredicate() ) );
+        parent.delete( new Triple( n, RDF.Nodes.object, t.getObject() ) ); 
         }        
               
     /**
@@ -206,10 +208,10 @@ public class SimpleReifier implements Reifier
     */         
     private void graphAddQuad( Graph g, Node node, Triple t )
         {
-        g.add( new Triple( node, Reifier.subject, t.getSubject() ) );
-        g.add( new Triple( node, Reifier.predicate, t.getPredicate() ) );
-        g.add( new Triple( node, Reifier.object, t.getObject() ) );
-        g.add( new Triple( node, Reifier.type, Reifier.Statement ) );
+        g.add( new Triple( node, RDF.Nodes.subject, t.getSubject() ) );
+        g.add( new Triple( node, RDF.Nodes.predicate, t.getPredicate() ) );
+        g.add( new Triple( node, RDF.Nodes.object, t.getObject() ) );
+        g.add( new Triple( node, RDF.Nodes.type, RDF.Nodes.Statement ) );
         }
                 
     /**

@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.11 2003-05-28 11:13:51 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.12 2003-07-18 09:33:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-
+import com.hp.hpl.jena.vocabulary.RDF;
 import junit.framework.*;
 
 /**
@@ -51,12 +51,12 @@ public class TestReifier extends GraphTestBase
         Node S = node( "sub" ), O = node( "obj" );
         Node RS = node( "http://example.org/type" );
     /* */
-        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, Reifier.type,  RS )  ) );
-        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, S,  Reifier.subject )  ) );
-        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, S,  Reifier.type )  ) );
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, RDF.Nodes.type,  RS )  ) );
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, S,  RDF.Nodes.subject )  ) );
+        assertFalse( "reifier must not intercept quadlet", r.handledAdd( new Triple( S, S,  RDF.Nodes.type )  ) );
     /* */
-        assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, Reifier.predicate, O ) ) );
-        assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, Reifier.type,  Reifier.Statement )  ) );
+        assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, RDF.Nodes.predicate, O ) ) );
+        assertTrue( "reifier must intercept quadlet", r.handledAdd( new Triple( S, RDF.Nodes.type,  RDF.Nodes.Statement )  ) );
         }
         
     public void testHiddenTriples()
@@ -64,11 +64,11 @@ public class TestReifier extends GraphTestBase
         Graph g = GraphBase.withReification( graphWith( "" ) );
         Reifier r = g.getReifier();
         Node S = node( "SSS" ), P = node( "PPP" ), O = node( "OOO " );
-        g.add( new Triple( S, Reifier.predicate, P ) );
+        g.add( new Triple( S, RDF.Nodes.predicate, P ) );
         assertEquals( "graph must still be empty", 0, g.size() );
         assertEquals( "reifier must have the triple", 1, r.getHiddenTriples().size() );
         assertContains( "xxx", "SSS rdf:predicate PPP", r.getHiddenTriples() );
-        g.add( new Triple( S, Reifier.subject, S) );
+        g.add( new Triple( S, RDF.Nodes.subject, S) );
         assertContains( "xxx", "SSS rdf:subject SSS", r.getHiddenTriples() );
         }
                
@@ -160,7 +160,7 @@ public class TestReifier extends GraphTestBase
         {
         Graph G = GraphBase.withReification( graphWith( "" ) );
         Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
-        G.add( new Triple( X, Reifier.type, Reifier.Statement ) );
+        G.add( new Triple( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
         G.getReifier().reifyAs( X, new Triple( a, b, c ) ); 
         }
         
@@ -169,7 +169,7 @@ public class TestReifier extends GraphTestBase
         Graph G = GraphBase.withReification( graphWith( "" ) );
         Node X = node( "x" ), Y = node( "y" );
         Node a = node( "a" ), b = node( "b" ), c = node( "c" );
-        G.add( new Triple( X, Reifier.subject, Y ) );
+        G.add( new Triple( X, RDF.Nodes.subject, Y ) );
         try
             {
             G.getReifier().reifyAs( X, new Triple( a, b, c ) );

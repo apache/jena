@@ -1,65 +1,81 @@
 /*
- *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002. All rights reserved.
- * [See end of file]
- *  $Id: RDF.java,v 1.6 2003-06-23 12:59:03 chris-dollin Exp $
+    (c)  Copyright Hewlett-Packard Company 2000-2003. All rights reserved.
+    [See end of file]
+    $Id: RDF.java,v 1.7 2003-07-18 09:33:32 chris-dollin Exp $
 */
-
 
 package com.hp.hpl.jena.vocabulary;
 
-import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
- *
- * @author  bwm; updated by kers/daniel/christopher
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-23 12:59:03 $'
- */
+
+    @author  bwm; updated by kers/daniel/christopher
+    @version $Id: RDF.java,v 1.7 2003-07-18 09:33:32 chris-dollin Exp $
+*/
+
 public class RDF{
 
+    protected static final String uri ="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-    protected static final String uri =
-        "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-
-/** returns the URI for this schema
- * @return the URI for this schema
- */
-    public static String getURI()
-    {
-        return uri;
-    }
-    
-    /*
-         would use a Model as a resource/property factory, but ... createDefaultModel
-         needs Reifier.Standard which needs Reifier which needs RDF.type; oops,
-         circularity and sudden death. 
-         TODO break circularity somehow. 
+    /** returns the URI for this schema
+        @return the URI for this schema
     */
+    public static String getURI()
+        { return uri; }
 
-    public static       Property li(int i) {
-    	// System.err.println( "constructing RDF.li(" + i + ")" );
-        return new PropertyImpl(uri, "_"+Integer.toString(i));}
+    protected static final Resource resource( String local )
+        { return ResourceFactory.createResource( uri + local ); }
 
-    public static final Resource Alt = new ResourceImpl(uri+"Alt");
-    public static final Resource Bag = new ResourceImpl(uri+"Bag");
-    public static final Resource Property = new ResourceImpl(uri+"Property");
-    public static final Resource Seq = new ResourceImpl(uri+"Seq");
-    public static final Resource Statement = new ResourceImpl(uri+"Statement");
-    public static final Resource List = new ResourceImpl(uri+"List");
-    public static final Resource nil = new ResourceImpl(uri+"nil");
+    protected static final Property property( String local )
+        { return ResourceFactory.createProperty( uri, local ); }
 
-    public static final Property first = new PropertyImpl(uri, "first");
-    public static final Property rest = new PropertyImpl(uri, "rest");
-    public static final Property subject = new PropertyImpl(uri, "subject");
-    public static final Property predicate = new PropertyImpl(uri, "predicate");
-    public static final Property object = new PropertyImpl(uri, "object");
-    public static final Property type = new PropertyImpl(uri, "type");
-    public static final Property value = new PropertyImpl(uri, "value");
+    public static Property li( int i )
+        { return property( "_" + i ); }
+
+    public static final Resource Alt = resource( "Alt" );
+    public static final Resource Bag = resource( "Bag" );
+    public static final Resource Property = resource( "Property" );
+    public static final Resource Seq = resource( "Seq" );
+    public static final Resource Statement = resource( "Statement" );
+    public static final Resource List = resource( "List" );
+    public static final Resource nil = resource( "nil" );
+
+    public static final Property first = property( "first" );
+    public static final Property rest = property( "rest" );
+    public static final Property subject = property( "subject" );
+    public static final Property predicate = property( "predicate" );
+    public static final Property object = property( "object" );
+    public static final Property type = property( "type" );
+    public static final Property value = property( "value" );
+
+    /**
+        The same items of vocabulary, but at the Node level, parked inside a
+        nested class so that there's a simple way to refer to them.
+    */
+    public static final class Nodes
+        {
+        public static final Node Alt = RDF.Alt.getNode();
+        public static final Node Bag = RDF.Bag.getNode();
+        public static final Node Property = RDF.Property.getNode();
+        public static final Node Seq = RDF.Seq.getNode();
+        public static final Node Statement = RDF.Statement.getNode();
+        public static final Node List = RDF.List.getNode();
+        public static final Node nil = RDF.nil.getNode();
+        public static final Node first = RDF.first.getNode();
+        public static final Node rest = RDF.rest.getNode();
+        public static final Node subject = RDF.subject.getNode();
+        public static final Node predicate = RDF.predicate.getNode();
+        public static final Node object = RDF.object.getNode();
+        public static final Node type = RDF.type.getNode();
+        public static final Node value = RDF.value.getNode();
+        }
 
 }
 
 /*
- *  (c)   Copyright Hewlett-Packard Company 2000, 2001, 2002
+ *  (c)   Copyright Hewlett-Packard Company 2000, 2001, 2002, 2003
  *   All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

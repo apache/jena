@@ -13,7 +13,7 @@ import java.util.List;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
-
+import com.hp.hpl.jena.vocabulary.RDF;
 /**
  * @author hkuno
  * @version $Version$
@@ -96,22 +96,22 @@ public class SpecializedGraphReifier_RDB
 				boolean didUpdate = false;
 				/* add whatever is missing to reify t */
 				if ( !same.hasSubj() ) {
-					Triple st = new Triple(n,Reifier.subject,t.getSubject());
+					Triple st = new Triple(n,RDF.Nodes.subject,t.getSubject());
 					m_reif.updateFrag(n, st, new StmtMask(st), my_GID);
 					didUpdate = true;
 				}
 				if ( !same.hasPred() ) {
-					Triple pt = new Triple(n,Reifier.predicate,t.getPredicate());
+					Triple pt = new Triple(n,RDF.Nodes.predicate,t.getPredicate());
 					m_reif.updateFrag(n, pt, new StmtMask(pt), my_GID);
 					didUpdate = true;
 				}
 				if ( !same.hasObj() ) {
-					Triple ot = new Triple(n,Reifier.object,t.getObject());
+					Triple ot = new Triple(n,RDF.Nodes.object,t.getObject());
 					m_reif.updateFrag(n, ot, new StmtMask(ot), my_GID);
 					didUpdate = true;
 				}
 				if ( !rs.mask.hasType() ) {
-					Triple tt = new Triple(n,Reifier.type,Reifier.Statement);
+					Triple tt = new Triple(n,RDF.Nodes.type,RDF.Nodes.Statement);
 					m_reif.updateFrag(n, tt, new StmtMask(tt), my_GID);
 					didUpdate = true;
 				}
@@ -346,17 +346,17 @@ public class SpecializedGraphReifier_RDB
 
 		if ( row.getSubject() != null ) {
 			obj = row.getSubject();
-			pred = Reifier.subject;
+			pred = RDF.Nodes.subject;
 			valCnt++;	
 		}
 		if ( row.getPredicate() != null ) {
 			obj = row.getPredicate();
-			pred = Reifier.predicate;
+			pred = RDF.Nodes.predicate;
 			valCnt++;	
 		}
 		if ( row.getObject() != null ) {
 			obj = row.getObject();
-			pred = Reifier.object;
+			pred = RDF.Nodes.object;
 			valCnt++;	
 		}
 		if ( valCnt != 1 )
@@ -596,10 +596,10 @@ public class SpecializedGraphReifier_RDB
 	}
 
 	static boolean isReifProp ( Node_URI p ) {
-		return p.equals(Reifier.subject) ||
-			p.equals(Reifier.predicate)||
-			p.equals(Reifier.object) || 
-			p.equals(Reifier.type);			
+		return p.equals(RDF.Nodes.subject) ||
+			p.equals(RDF.Nodes.predicate)||
+			p.equals(RDF.Nodes.object) || 
+			p.equals(RDF.Nodes.type);			
 	}
 				
 	class StmtMask {
@@ -633,12 +633,12 @@ public class SpecializedGraphReifier_RDB
 				mask = HasNada;
 				Node_URI p = (Node_URI) t.getPredicate();
 				if ( p != null ) {
-					if ( p.equals(Reifier.subject) ) mask = HasSubj;
-					else if ( p.equals(Reifier.predicate) ) mask = HasPred; 
-					else if ( p.equals(Reifier.object) ) mask = HasObj; 
-					else if ( p.equals(Reifier.type) ) {
+					if ( p.equals(RDF.Nodes.subject) ) mask = HasSubj;
+					else if ( p.equals(RDF.Nodes.predicate) ) mask = HasPred; 
+					else if ( p.equals(RDF.Nodes.object) ) mask = HasObj; 
+					else if ( p.equals(RDF.Nodes.type) ) {
 							Node o = t.getObject();
-							if ( o.equals(Reifier.Statement) ) mask = HasType;
+							if ( o.equals(RDF.Nodes.Statement) ) mask = HasType;
 					}
 				}			
 			}

@@ -1,17 +1,16 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fragments.java,v 1.2 2003-06-06 09:28:19 chris-dollin Exp $
+  $Id: Fragments.java,v 1.3 2003-07-18 09:33:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import java.util.*;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Reifier;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.*;
+
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
     A _Fragments_ object represents the reification triples that have been
@@ -91,10 +90,10 @@ public class Fragments
     */
     public void includeInto( Graph g )
         {
-        includeInto( g, Reifier.subject, SUBJECTS );
-        includeInto( g, Reifier.predicate, PREDICATES );
-        includeInto( g, Reifier.object, OBJECTS );
-        includeInto( g, Reifier.type, TYPES );
+        includeInto( g, RDF.Nodes.subject, SUBJECTS );
+        includeInto( g, RDF.Nodes.predicate, PREDICATES );
+        includeInto( g, RDF.Nodes.object, OBJECTS );
+        includeInto( g, RDF.Nodes.type, TYPES );
         }
         
     /**
@@ -120,7 +119,7 @@ public class Fragments
         slots[SUBJECTS].add( t.getSubject() );
         slots[PREDICATES].add( t.getPredicate() );
         slots[OBJECTS].add( t.getObject() );
-        slots[TYPES].add( Reifier.Statement );
+        slots[TYPES].add( RDF.Nodes.Statement );
         return this;
         }
         
@@ -155,7 +154,7 @@ public class Fragments
         {
         Node p = t.getPredicate();
         Integer x = (Integer) selectors.get( p );
-        if (x == null || (p.equals( Reifier.type ) && !t.getObject().equals( Reifier.Statement ) ) ) return -1;
+        if (x == null || (p.equals( RDF.Nodes.type ) && !t.getObject().equals( RDF.Nodes.Statement ) ) ) return -1;
         return x.intValue();
         }
         
@@ -176,10 +175,10 @@ public class Fragments
     private static HashMap makeSelectors()
         {
         HashMap result = new HashMap();
-        result.put( Reifier.subject, new Integer( Fragments.SUBJECTS ) );
-        result.put( Reifier.predicate, new Integer( Fragments.PREDICATES ) );
-        result.put( Reifier.object, new Integer( Fragments.OBJECTS ) );
-        result.put( Reifier.type, new Integer( Fragments.TYPES ) );
+        result.put( RDF.Nodes.subject, new Integer( Fragments.SUBJECTS ) );
+        result.put( RDF.Nodes.predicate, new Integer( Fragments.PREDICATES ) );
+        result.put( RDF.Nodes.object, new Integer( Fragments.OBJECTS ) );
+        result.put( RDF.Nodes.type, new Integer( Fragments.TYPES ) );
         return result;
         }
     }

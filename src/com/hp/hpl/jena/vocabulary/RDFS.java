@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2000, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFS.java,v 1.6 2003-06-30 14:55:53 chris-dollin Exp $
+  $Id: RDFS.java,v 1.7 2003-07-18 09:33:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -9,46 +9,51 @@ package com.hp.hpl.jena.vocabulary;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
- *
- * @author  bwm, updated by kers/daniel/christopher
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-30 14:55:53 $'
+    RDFS vocabulary items
+    @author  bwm, updated by kers/daniel/christopher
+    @version $Id: RDFS.java,v 1.7 2003-07-18 09:33:32 chris-dollin Exp $
  */
 public class RDFS {
 
     protected static final String uri="http://www.w3.org/2000/01/rdf-schema#";
-    
-    private static Model m = ModelFactory.createDefaultModel();
-    
-    public static final Resource Class = m.createResource(uri+"Class");
-    public static final Resource Datatype = m.createResource(uri+"Datatype");
-    public static final Resource ConstraintProperty  =  m.createResource(uri+"ConstraintProperty");
-    public static final Resource Container  = m.createResource(uri+"Container");
-    public static final Resource ContainerMembershipProperty
-                                                     = m.createResource(uri+"ContainerMembershipProperty");
-    public static final Resource ConstraintResource  = m.createResource(uri+"ConstraintResource");
-    public static final Resource Literal = m.createResource(uri+"Literal");
-    public static final Resource Resource = m.createResource(uri+"Resource");
-    
-    public static final Property comment = m.createProperty(uri, "comment");
-    public static final Property domain = m.createProperty(uri, "domain");
-    public static final Property label = m.createProperty(uri, "label");
-    public static final Property isDefinedBy = m.createProperty(uri, "isDefinedBy");
-    public static final Property range = m.createProperty(uri, "range");
-    public static final Property seeAlso = m.createProperty(uri, "seeAlso");
-    public static final Property subClassOf  = m.createProperty(uri, "subClassOf");
-    public static final Property subPropertyOf  = m.createProperty(uri, "subPropertyOf");
-    public static final Property member  = m.createProperty(uri, "member"); 
 
-/** returns the URI for this schema
- * @return the URI for this schema
- */    
+    protected static final Resource resource( String local )
+        { return ResourceFactory.createResource( uri + local ); }
+
+    protected static final Property property( String local )
+        { return ResourceFactory.createProperty( uri, local ); }
+            
+    public static final Resource Class = resource( "Class");
+    public static final Resource Datatype = resource( "Datatype");
+    public static final Resource ConstraintProperty  =  resource( "ConstraintProperty");
+    public static final Resource Container  = resource( "Container");
+    public static final Resource ContainerMembershipProperty
+                                                     = resource( "ContainerMembershipProperty");
+    public static final Resource ConstraintResource  = resource( "ConstraintResource");
+    public static final Resource Literal = resource( "Literal");
+    public static final Resource Resource = resource( "Resource");
+    
+    public static final Property comment = property(  "comment");
+    public static final Property domain = property(  "domain");
+    public static final Property label = property(  "label");
+    public static final Property isDefinedBy = property(  "isDefinedBy");
+    public static final Property range = property(  "range");
+    public static final Property seeAlso = property(  "seeAlso");
+    public static final Property subClassOf  = property(  "subClassOf");
+    public static final Property subPropertyOf  = property(  "subPropertyOf");
+    public static final Property member  = property(  "member"); 
+
+    /** 
+        returns the URI for this schema
+        @return the URI for this schema
+    */    
     public static String getURI() {
         return uri;
     }
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -17,6 +17,8 @@ import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import org.apache.log4j.Logger;
 
 //=======================================================================
@@ -37,7 +39,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.12 $ on $Date: 2003-07-15 03:31:33 $
+* @version $Revision: 1.13 $ on $Date: 2003-07-18 09:32:51 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -155,17 +157,17 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		}
 		if ( (pred != null) && !pred.equals(Node.ANY) ) {
 			gotPred = true;
-			if ( pred.equals(Reifier.subject) ) reifProp = 'S';
-			else if ( pred.equals(Reifier.predicate) ) reifProp = 'P';
-			else if ( pred.equals(Reifier.object) ) reifProp = 'O';
-			else if ( pred.equals(Reifier.type) ) reifProp = 'T';
+			if ( pred.equals(RDF.Nodes.subject) ) reifProp = 'S';
+			else if ( pred.equals(RDF.Nodes.predicate) ) reifProp = 'P';
+			else if ( pred.equals(RDF.Nodes.object) ) reifProp = 'O';
+			else if ( pred.equals(RDF.Nodes.type) ) reifProp = 'T';
 			else done = true;
 			stmtStr += ("P" + reifProp);
 		}
 		if ( (obj != null) && !obj.equals(Node.ANY) ) {
 			gotObj = true;
 			stmtStr += "O";
-			if ( obj.equals(Reifier.Statement) ) {
+			if ( obj.equals(RDF.Nodes.Statement) ) {
 				objIsStmt = true;
 				stmtStr += "C"; 
 			} else if ( reifProp == 'T' )	

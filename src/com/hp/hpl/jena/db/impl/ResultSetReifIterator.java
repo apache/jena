@@ -16,6 +16,7 @@ import java.sql.*;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 import org.apache.log4j.Logger;
 
@@ -24,7 +25,7 @@ import org.apache.log4j.Logger;
 * Version of ResultSetIterator that extracts database rows as Triples from a reified statement table.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.1 $ on $Date: 2003-07-10 18:41:10 $
+* @version $Revision: 1.2 $ on $Date: 2003-07-18 09:32:51 $
 */
 public class ResultSetReifIterator extends ResultSetIterator {
 
@@ -139,28 +140,28 @@ public class ResultSetReifIterator extends ResultSetIterator {
 			if ( m_getTriples == true ) {
 				if ( m_tripleNum == 0) {
 					if ( !m_subjNode.equals(Node.ANY) ) {
-						t = new Triple(m_stmtURI,Reifier.subject,m_subjNode);
+						t = new Triple(m_stmtURI,RDF.Nodes.subject,m_subjNode);
 						m_tripleCount--;
 					} else
 						m_tripleNum++;
 				}
 				if ( m_tripleNum == 1) {
 					if ( !m_predNode.equals(Node.ANY) ) {
-						t = new Triple(m_stmtURI,Reifier.predicate,m_predNode);
+						t = new Triple(m_stmtURI,RDF.Nodes.predicate,m_predNode);
 						m_tripleCount--;
 					} else
 						m_tripleNum++;
 				}
 				if ( m_tripleNum == 2) {
 					if ( !m_objNode.equals(Node.ANY) ) {
-						t = new Triple(m_stmtURI,Reifier.object,m_objNode);
+						t = new Triple(m_stmtURI,RDF.Nodes.object,m_objNode);
 						m_tripleCount--;
 					} else
 						m_tripleNum++;
 				}
 				if ( m_tripleNum >= 3) {
 					if ( m_hasType ) {
-						t = new Triple(m_stmtURI,Reifier.type,Reifier.Statement);
+						t = new Triple(m_stmtURI,RDF.Nodes.type,RDF.Nodes.Statement);
 						m_tripleCount--;
 					} else
 						throw new JenaException("Reified triple not found");
