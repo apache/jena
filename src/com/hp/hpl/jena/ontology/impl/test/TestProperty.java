@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 13:03:57 $
+ * Last modified on   $Date: 2003-06-22 19:20:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.8 2003-06-21 13:03:57 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.9 2003-06-22 19:20:43 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestBase 
@@ -72,12 +72,12 @@ public class TestProperty
 
     public OntTestCase[] getTests() {
         return new OntTestCase[] {
-            new OntTestCase( "OntProperty.super-property", true, true, true ) {
+            new OntTestCase( "OntProperty.super-property", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntProperty p = m.createObjectProperty( NS + "p" );
-                    OntProperty q = m.createObjectProperty( NS + "q" );
-                    OntProperty r = m.createObjectProperty( NS + "r" );
+                    OntProperty p = m.createOntProperty( NS + "p" );
+                    OntProperty q = m.createOntProperty( NS + "q" );
+                    OntProperty r = m.createOntProperty( NS + "r" );
                     
                     p.addSuperProperty( q );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
@@ -97,12 +97,12 @@ public class TestProperty
                     assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
                 }
             },
-            new OntTestCase( "OntProperty.sub-property", true, true, true ) {
+            new OntTestCase( "OntProperty.sub-property", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntProperty p = m.createObjectProperty( NS + "p" );
-                    OntProperty q = m.createObjectProperty( NS + "q" );
-                    OntProperty r = m.createObjectProperty( NS + "r" );
+                    OntProperty p = m.createOntProperty( NS + "p" );
+                    OntProperty q = m.createOntProperty( NS + "q" );
+                    OntProperty r = m.createOntProperty( NS + "r" );
                     
                     p.addSubProperty( q );
                     assertEquals( "Cardinality should be 1", 1, q.getCardinality( prof.SUB_PROPERTY_OF() ) );
@@ -124,10 +124,10 @@ public class TestProperty
                     assertTrue( "Should not have sub-prop r", !p.hasSubProperty( r, false ) );
                 }
             },
-            new OntTestCase( "OntProperty.domain", true, true, true ) {
+            new OntTestCase( "OntProperty.domain", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntProperty p = m.createOntProperty( NS + "p" );
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
                     OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
                     
@@ -149,10 +149,10 @@ public class TestProperty
                     assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.DOMAIN() ) );
                 }
             },
-            new OntTestCase( "OntProperty.range", true, true, true ) {
+            new OntTestCase( "OntProperty.range", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntProperty p = m.createOntProperty( NS + "p" );
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
                     OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
                     
@@ -174,7 +174,7 @@ public class TestProperty
                     assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.RANGE() ) );
                 }
             },
-            new OntTestCase( "OntProperty.equivalentProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.equivalentProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -199,7 +199,7 @@ public class TestProperty
                     assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.EQUIVALENT_PROPERTY() ) );
                 }
             },
-            new OntTestCase( "OntProperty.inverseOf", true, true, true ) {
+            new OntTestCase( "OntProperty.inverseOf", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -224,9 +224,10 @@ public class TestProperty
                     assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.INVERSE_OF() ) );
                 }
             },
-            new OntTestCase( "OntProperty.subproperty.fromFile", true, true, true ) {
+            new OntTestCase( "OntProperty.subproperty.fromFile", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    String lang = m_owlLang ? "owl" : (m_damlLang ? "daml" : "rdfs");
+                    String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
                     OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
@@ -236,9 +237,10 @@ public class TestProperty
                     iteratorTest( q.listSubProperties(), new Object[] {p} );
                 }
             },
-            new OntTestCase( "OntProperty.domain.fromFile", true, true, true ) {
+            new OntTestCase( "OntProperty.domain.fromFile", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    String lang = m_owlLang ? "owl" : (m_damlLang ? "daml" : "rdfs");
+                    String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
                     OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
@@ -247,9 +249,10 @@ public class TestProperty
                     assertTrue( "p should have domain A", p.hasDomain( A ) );
                 }
             },
-            new OntTestCase( "OntProperty.range.fromFile", true, true, true ) {
+            new OntTestCase( "OntProperty.range.fromFile", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    String lang = m_owlLang ? "owl" : (m_damlLang ? "daml" : "rdfs");
+                    String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
                     OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
@@ -258,9 +261,10 @@ public class TestProperty
                     assertTrue( "p should have domain B", p.hasRange( B ) );
                 }
             },
-            new OntTestCase( "OntProperty.equivalentProeprty.fromFile", true, true, true ) {
+            new OntTestCase( "OntProperty.equivalentProeprty.fromFile", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    String lang = m_owlLang ? "owl" : (m_damlLang ? "daml" : "rdfs");
+                    String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
                     OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
@@ -269,9 +273,10 @@ public class TestProperty
                     assertTrue( "p should have equiv prop r", p.hasEquivalentProperty( r ) );
                 }
             },
-            new OntTestCase( "OntProperty.inversePropertyOf.fromFile", true, true, true ) {
+            new OntTestCase( "OntProperty.inversePropertyOf.fromFile", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    String lang = m_owlLang ? "owl" : (m_damlLang ? "daml" : "rdfs");
+                    String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
                     OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
@@ -282,7 +287,7 @@ public class TestProperty
             },
             
             // type tests
-            new OntTestCase( "OntProperty.isFunctionalProperty dt", true, true, true ) {
+            new OntTestCase( "OntProperty.isFunctionalProperty dt", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntProperty p = m.createDatatypeProperty( NS + "p", true );
                 
@@ -296,7 +301,7 @@ public class TestProperty
                     } 
                 }
             },
-            new OntTestCase( "OntProperty.isFunctionalProperty object", true, true, true ) {
+            new OntTestCase( "OntProperty.isFunctionalProperty object", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntProperty p = m.createObjectProperty( NS + "p", true );
                 
@@ -310,7 +315,7 @@ public class TestProperty
                     } 
                 }
             },
-            new OntTestCase( "OntProperty.isDatatypeProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.isDatatypeProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntProperty p = m.createDatatypeProperty( NS + "p", false );
                 
@@ -324,7 +329,7 @@ public class TestProperty
                     } 
                 }
             },
-            new OntTestCase( "OntProperty.isObjectProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.isObjectProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntProperty p = m.createObjectProperty( NS + "p", false );
                 
@@ -338,7 +343,7 @@ public class TestProperty
                     } 
                 }
             },
-            new OntTestCase( "OntProperty.isTransitiveProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.isTransitiveProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntProperty p = m.createTransitiveProperty( NS + "p" );
                 
@@ -352,7 +357,7 @@ public class TestProperty
                     } 
                 }
             },
-            new OntTestCase( "OntProperty.isInverseFunctionalProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.isInverseFunctionalProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntProperty p = m.createInverseFunctionalProperty( NS + "p" );
                 
@@ -366,7 +371,7 @@ public class TestProperty
                     } 
                 }
             },
-            new OntTestCase( "OntProperty.isSymmetricProperty", true, true, false ) {
+            new OntTestCase( "OntProperty.isSymmetricProperty", true, true, false, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntProperty p = m.createSymmetricProperty( NS + "p" );
                 
@@ -380,7 +385,7 @@ public class TestProperty
                     } 
                 }
             },
-            new OntTestCase( "OntProperty.convertToFunctionalProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.convertToFunctionalProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
@@ -403,7 +408,7 @@ public class TestProperty
                     if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
                 }
             },
-            new OntTestCase( "OntProperty.convertToDatatypeProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.convertToDatatypeProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
@@ -426,7 +431,7 @@ public class TestProperty
                     if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
                 }
             },
-            new OntTestCase( "OntProperty.convertToObjectProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.convertToObjectProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
@@ -449,7 +454,7 @@ public class TestProperty
                     if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
                 }
             },
-            new OntTestCase( "OntProperty.convertToTransitiveProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.convertToTransitiveProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
@@ -472,7 +477,7 @@ public class TestProperty
                     if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
                 }
             },
-            new OntTestCase( "OntProperty.convertToInverseFunctionalProperty", true, true, true ) {
+            new OntTestCase( "OntProperty.convertToInverseFunctionalProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
@@ -495,7 +500,7 @@ public class TestProperty
                     if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", !p.isSymmetricProperty() ); } 
                 }
             },
-            new OntTestCase( "OntProperty.convertToSymmetricProperty", true, true, false ) {
+            new OntTestCase( "OntProperty.convertToSymmetricProperty", true, true, false, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
@@ -518,7 +523,7 @@ public class TestProperty
                     if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", p.isSymmetricProperty() ); } 
                 }
             },
-            new OntTestCase( "OntProperty.inverse", true, true, true ) {
+            new OntTestCase( "OntProperty.inverse", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     ObjectProperty q = m.createObjectProperty( NS + "q" );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestAllDifferent.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:15 $
+ * Last modified on   $Date: 2003-06-22 19:20:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAllDifferent.java,v 1.3 2003-06-08 18:53:15 ian_dickinson Exp $
+ * @version CVS $Id: TestAllDifferent.java,v 1.4 2003-06-22 19:20:44 ian_dickinson Exp $
  */
 public class TestAllDifferent
     extends OntTestBase 
@@ -69,7 +69,7 @@ public class TestAllDifferent
 
     public OntTestCase[] getTests() {
         return new OntTestCase[] {
-            new OntTestCase( "AllDifferent.distinctMembers", true, true, false ) {
+            new OntTestCase( "AllDifferent.distinctMembers", true, true, false, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     AllDifferent a = m.createAllDifferent();

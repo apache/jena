@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestIndividual.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:16 $
+ * Last modified on   $Date: 2003-06-22 19:20:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestIndividual.java,v 1.2 2003-06-08 18:53:16 ian_dickinson Exp $
+ * @version CVS $Id: TestIndividual.java,v 1.3 2003-06-22 19:20:44 ian_dickinson Exp $
  */
 public class TestIndividual 
     extends OntTestBase 
@@ -69,7 +69,7 @@ public class TestIndividual
 
     public OntTestCase[] getTests() {
         return new OntTestCase[] {
-            new OntTestCase( "Individual.sameIndividualAs", true, false, true ) {
+            new OntTestCase( "Individual.sameIndividualAs", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntClass A = m.createClass( NS + "A" );

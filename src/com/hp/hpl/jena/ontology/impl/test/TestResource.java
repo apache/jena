@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 15:09:31 $
+ * Last modified on   $Date: 2003-06-22 19:20:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.5 2003-06-10 15:09:31 ian_dickinson Exp $
+ * @version CVS $Id: TestResource.java,v 1.6 2003-06-22 19:20:44 ian_dickinson Exp $
  */
 public class TestResource 
     extends OntTestBase
@@ -73,7 +73,7 @@ public class TestResource
     
     public OntTestCase[] getTests() {
         return new OntTestCase[] {
-            new OntTestCase( "OntResource.sameAs", true, false, true ) {
+            new OntTestCase( "OntResource.sameAs", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
@@ -101,7 +101,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.SAME_AS() ) );
                 }
             },
-            new OntTestCase( "OntResource.differentFrom", true, true, true ) {
+            new OntTestCase( "OntResource.differentFrom", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
@@ -129,7 +129,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.DIFFERENT_FROM() ) );
                 }
             },
-            new OntTestCase( "OntResource.seeAlso", true, true, true ) {
+            new OntTestCase( "OntResource.seeAlso", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
@@ -157,7 +157,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.SEE_ALSO() ) );
                 }
             },
-            new OntTestCase( "OntResource.isDefinedBy", true, true, true ) {
+            new OntTestCase( "OntResource.isDefinedBy", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
@@ -185,7 +185,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.IS_DEFINED_BY() ) );
             }
             },
-            new OntTestCase( "OntResource.versionInfo", true, true, true ) {
+            new OntTestCase( "OntResource.versionInfo", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
@@ -211,7 +211,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.VERSION_INFO() ) );
                 }
             },
-            new OntTestCase( "OntResource.label.nolang", true, true, true ) {
+            new OntTestCase( "OntResource.label.nolang", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
@@ -237,7 +237,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.LABEL() ) );
                 }
             },
-            new OntTestCase( "OntResource.label.lang", true, true, true ) {
+            new OntTestCase( "OntResource.label.lang", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
                     
@@ -271,7 +271,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 4", 4, a.getCardinality( a.getProfile().LABEL() ) );
                 }
             },
-            new OntTestCase( "OntResource.comment.nolang", true, true, true ) {
+            new OntTestCase( "OntResource.comment.nolang", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
@@ -297,7 +297,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.COMMENT() ) );
                 }
             },
-            new OntTestCase( "OntResource.comment.lang", true, true, true ) {
+            new OntTestCase( "OntResource.comment.lang", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
                     
@@ -331,7 +331,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 4", 4, a.getCardinality( a.getProfile().COMMENT() ) );
                 }
             },
-            new OntTestCase( "OntResource.type (no inference)", true, true, true ) {
+            new OntTestCase( "OntResource.type (no inference)", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
@@ -366,7 +366,7 @@ public class TestResource
                     assertEquals( "Cardinality should be 0", 0, a.getCardinality( RDF.type ) );
                 }
             },
-            new OntTestCase( "OntResource.remove", true, true, true ) {
+            new OntTestCase( "OntResource.remove", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );

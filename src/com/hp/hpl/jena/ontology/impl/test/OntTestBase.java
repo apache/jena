@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:29 $
+ * Last modified on   $Date: 2003-06-22 19:20:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.5 2003-06-13 19:09:29 ian_dickinson Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.6 2003-06-22 19:20:10 ian_dickinson Exp $
  */
 public abstract class OntTestBase 
     extends TestSuite
@@ -95,16 +95,20 @@ public abstract class OntTestBase
         protected boolean m_inOWL;
         protected boolean m_inOWLLite;
         protected boolean m_inDAML;
+        protected boolean m_inRDFS;
         protected String m_langElement;
         protected boolean m_owlLang = true;
         protected boolean m_owlLiteLang = false;
+        protected boolean m_rdfsLang = false;
+        protected boolean m_damlLang = false;
 
-        public OntTestCase( String langElement, boolean inOWL, boolean inOWLLite, boolean inDAML ) {
+        public OntTestCase( String langElement, boolean inOWL, boolean inOWLLite, boolean inDAML, boolean inRDFS ) {
             super( "Ontology API test " + langElement );
             m_langElement = langElement;
             m_inOWL = inOWL;
             m_inOWLLite = inOWLLite;
             m_inDAML = inDAML;
+            m_inRDFS = inRDFS;
         }
 
         public void runTest()
@@ -120,8 +124,15 @@ public abstract class OntTestBase
             // now DAML
             m_owlLang = false;
             m_owlLiteLang = false;
+            m_damlLang = true;
             
             runTest( ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM, null ), m_inDAML );
+            
+            // now RDFS
+            
+            m_rdfsLang = true;
+            m_damlLang = false;
+            runTest( ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM, null ), m_inRDFS);
         }
     
         protected void runTest( OntModel m, boolean inModel )

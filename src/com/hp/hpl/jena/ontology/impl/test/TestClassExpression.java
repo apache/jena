@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-19 14:37:22 $
+ * Last modified on   $Date: 2003-06-22 19:20:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.19 2003-06-19 14:37:22 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.20 2003-06-22 19:20:44 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -71,7 +71,7 @@ public class TestClassExpression
 
     public OntTestCase[] getTests() {
         return new OntTestCase[] {
-            new OntTestCase( "OntClass.super-class", true, true, true ) {
+            new OntTestCase( "OntClass.super-class", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntClass A = m.createClass( NS + "A" );
@@ -97,7 +97,7 @@ public class TestClassExpression
                     assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.SUB_CLASS_OF() ) );
                 }
             },
-            new OntTestCase( "OntClass.sub-class", true, true, true ) {
+            new OntTestCase( "OntClass.sub-class", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntClass A = m.createClass( NS + "A" );
@@ -123,7 +123,7 @@ public class TestClassExpression
                     assertTrue( "A should not have sub-class C", !A.hasSubClass( C, false ) );
                 }
             },
-            new OntTestCase( "OntClass.equivalentClass", true, true, true ) {
+            new OntTestCase( "OntClass.equivalentClass", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntClass A = m.createClass( NS + "A" );
@@ -149,7 +149,7 @@ public class TestClassExpression
                     assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
                 }
             },
-            new OntTestCase( "OntClass.disjointWith", true, false, true ) {
+            new OntTestCase( "OntClass.disjointWith", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntClass A = m.createClass( NS + "A" );
@@ -175,7 +175,7 @@ public class TestClassExpression
                     assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.DISJOINT_WITH() ) );
                 }
             },
-			new OntTestCase( "EnumeratedClass.oneOf", true, false, true ) {
+			new OntTestCase( "EnumeratedClass.oneOf", true, false, true, false ) {
 				public void ontTest( OntModel m ) throws Exception {
 					Profile prof = m.getProfile();
 					EnumeratedClass A = m.createEnumeratedClass( NS + "A", null );
@@ -204,7 +204,7 @@ public class TestClassExpression
                     assertTrue( "Should not have b as an enum value", !A.hasOneOf( b ) );
 				}
 			},
-			new OntTestCase( "IntersectionClass.intersectionOf", true, true, true ) {
+			new OntTestCase( "IntersectionClass.intersectionOf", true, true, true, false ) {
 				public void ontTest( OntModel m ) throws Exception {
 					Profile prof = m.getProfile();
 					IntersectionClass A = m.createIntersectionClass( NS + "A", null );
@@ -233,7 +233,7 @@ public class TestClassExpression
                     assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
 				}
 			},
-			new OntTestCase( "UnionClass.unionOf", true, false, true ) {
+			new OntTestCase( "UnionClass.unionOf", true, false, true, false ) {
 				public void ontTest( OntModel m ) throws Exception {
 					Profile prof = m.getProfile();
 					UnionClass A = m.createUnionClass( NS + "A", null );
@@ -262,7 +262,7 @@ public class TestClassExpression
                     assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
 				}
 			},
-            new OntTestCase( "ComplementClass.complementOf", true, false, true ) {
+            new OntTestCase( "ComplementClass.complementOf", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     ComplementClass A = m.createComplementClass( NS + "A", null );
@@ -297,7 +297,7 @@ public class TestClassExpression
                     assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
                 }
             },
-            new OntTestCase( "Restriction.onProperty", true, true, true ) {
+            new OntTestCase( "Restriction.onProperty", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -324,7 +324,7 @@ public class TestClassExpression
                     assertTrue( "Should not have q as on property", !A.onProperty( q ) );
                 }
             },
-            new OntTestCase( "AllValuesFromRestriction.allValuesFrom", true, true, true ) {
+            new OntTestCase( "AllValuesFromRestriction.allValuesFrom", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -351,7 +351,7 @@ public class TestClassExpression
                     assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.SOME_VALUES_FROM() ));
                 }
             },
-            new OntTestCase( "HasValueRestriction.hasValue", true, false, true ) {
+            new OntTestCase( "HasValueRestriction.hasValue", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -381,7 +381,7 @@ public class TestClassExpression
                     assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.HAS_VALUE() ));
                 }
             },
-            new OntTestCase( "SomeValuesFromRestriction.someValuesFrom", true, true, true ) {
+            new OntTestCase( "SomeValuesFromRestriction.someValuesFrom", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -408,7 +408,7 @@ public class TestClassExpression
                     assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.SOME_VALUES_FROM() ));
                 }
             },
-            new OntTestCase( "CardinalityRestriction.cardinality", true, true, true ) {
+            new OntTestCase( "CardinalityRestriction.cardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -434,7 +434,7 @@ public class TestClassExpression
                     assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.CARDINALITY() ));
                 }
             },
-            new OntTestCase( "MinCardinalityRestriction.minCardinality", true, true, true ) {
+            new OntTestCase( "MinCardinalityRestriction.minCardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -460,7 +460,7 @@ public class TestClassExpression
                     assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.MIN_CARDINALITY() ));
                 }
             },
-            new OntTestCase( "MaxCardinalityRestriction.maxCardinality", true, true, true ) {
+            new OntTestCase( "MaxCardinalityRestriction.maxCardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createObjectProperty( NS + "p" );
@@ -488,9 +488,10 @@ public class TestClassExpression
             },
             
             // from file
-            new OntTestCase( "OntClass.subclass.fromFile", true, true, true ) {
+            new OntTestCase( "OntClass.subclass.fromFile", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    String fileName = m_owlLang ? "file:testing/ontology/owl/ClassExpression/test.rdf" : "file:testing/ontology/daml/ClassExpression/test.rdf";
+                    String lang = m_owlLang ? "owl" : (m_damlLang ? "daml" : "rdfs");
+                    String fileName = "file:testing/ontology/" + lang + "/ClassExpression/test.rdf";
                     m.read( fileName );
 
                     OntClass A = m.createClass( NS + "ClassA" );
@@ -500,9 +501,10 @@ public class TestClassExpression
                     iteratorTest( B.listSubClasses(), new Object[] {A} );
                 }
             },
-            new OntTestCase( "OntClass.equivalentClass.fromFile", true, true, true ) {
+            new OntTestCase( "OntClass.equivalentClass.fromFile", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    String fileName = m_owlLang ? "file:testing/ontology/owl/ClassExpression/test.rdf" : "file:testing/ontology/daml/ClassExpression/test.rdf";
+                    String lang = m_owlLang ? "owl" : (m_damlLang ? "daml" : "rdfs");
+                    String fileName = "file:testing/ontology/" + lang + "/ClassExpression/test.rdf";
                     m.read( fileName );
 
                     OntClass A = m.createClass( NS + "ClassA" );
@@ -511,9 +513,10 @@ public class TestClassExpression
                     assertTrue( "A should be equiv to C", A.hasEquivalentClass( C ) );
                 }
             },
-            new OntTestCase( "OntClass.disjoint.fromFile", true, false, true ) {
+            new OntTestCase( "OntClass.disjoint.fromFile", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    String fileName = m_owlLang ? "file:testing/ontology/owl/ClassExpression/test.rdf" : "file:testing/ontology/daml/ClassExpression/test.rdf";
+                    String lang = m_owlLang ? "owl" : (m_damlLang ? "daml" : "rdfs");
+                    String fileName = "file:testing/ontology/" + lang + "/ClassExpression/test.rdf";
                     m.read( fileName );
 
                     OntClass A = m.createClass( NS + "ClassA" );
@@ -524,7 +527,7 @@ public class TestClassExpression
             },
             
             // type testing
-            new OntTestCase( "OntClass.isEnumeratedClass", true, false, true ) {
+            new OntTestCase( "OntClass.isEnumeratedClass", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass b = m.createClass( NS + "B" );
                     Individual x = m.createIndividual( NS + "x", b );
@@ -538,7 +541,7 @@ public class TestClassExpression
                     assertTrue( "restriction test not correct",         !a.isRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.isIntersectionClass", true, true, true ) {
+            new OntTestCase( "OntClass.isIntersectionClass", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass b = m.createClass( NS + "B" );
                     OntClass c = m.createClass( NS + "C" );
@@ -551,7 +554,7 @@ public class TestClassExpression
                     assertTrue( "restriction test not correct",         !a.isRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.isUnionClass", true, false, true ) {
+            new OntTestCase( "OntClass.isUnionClass", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass b = m.createClass( NS + "B" );
                     OntClass c = m.createClass( NS + "C" );
@@ -564,7 +567,7 @@ public class TestClassExpression
                     assertTrue( "restriction test not correct",         !a.isRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.isComplementClass", true, false, true ) {
+            new OntTestCase( "OntClass.isComplementClass", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass b = m.createClass( NS + "B" );
                     OntClass a = m.createComplementClass( NS + "A", b );
@@ -576,7 +579,7 @@ public class TestClassExpression
                     assertTrue( "restriction test not correct",         !a.isRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.isRestriction", true, true, true ) {
+            new OntTestCase( "OntClass.isRestriction", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass a = m.createRestriction( null );
                     
@@ -589,7 +592,7 @@ public class TestClassExpression
             },
             
             // conversion
-            new OntTestCase( "OntClass.toEnumeratedClass", true, false, true ) {
+            new OntTestCase( "OntClass.toEnumeratedClass", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass a = m.createClass( NS + "A" );
                     
@@ -611,7 +614,7 @@ public class TestClassExpression
                     assertTrue( "restriction test not correct",         !a.isRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.toIntersectionClass", true, true, true ) {
+            new OntTestCase( "OntClass.toIntersectionClass", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass a = m.createClass( NS + "A" );
                     
@@ -632,7 +635,7 @@ public class TestClassExpression
                     assertTrue( "restriction test not correct",         !a.isRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.toUnionClass", true, false, true ) {
+            new OntTestCase( "OntClass.toUnionClass", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass a = m.createClass( NS + "A" );
                     
@@ -653,7 +656,7 @@ public class TestClassExpression
                     assertTrue( "restriction test not correct",         !a.isRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.toComplementClass", true, false, true ) {
+            new OntTestCase( "OntClass.toComplementClass", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass a = m.createClass( NS + "A" );
                     
@@ -673,7 +676,7 @@ public class TestClassExpression
                     assertTrue( "restriction test not correct",         !a.isRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.toRestriction", true, true, true ) {
+            new OntTestCase( "OntClass.toRestriction", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass a = m.createClass( NS + "A" );
                     
@@ -696,7 +699,7 @@ public class TestClassExpression
             
             
             // restriction type testing
-            new OntTestCase( "Restriction.isAllValuesFrom", true, true, true ) {
+            new OntTestCase( "Restriction.isAllValuesFrom", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass b = m.createClass( NS + "B" );
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
@@ -710,7 +713,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.isSomeValuesFrom", true, true, true ) {
+            new OntTestCase( "Restriction.isSomeValuesFrom", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass b = m.createClass( NS + "B" );
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
@@ -724,7 +727,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.isHasValue", true, false, true ) {
+            new OntTestCase( "Restriction.isHasValue", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass b = m.createClass( NS + "B" );
                     Individual x = m.createIndividual( b );
@@ -739,7 +742,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.isCardinality", true, true, true ) {
+            new OntTestCase( "Restriction.isCardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createCardinalityRestriction( null, p, 3 );
@@ -752,7 +755,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.isMinCardinality", true, true, true ) {
+            new OntTestCase( "Restriction.isMinCardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createMinCardinalityRestriction( null, p, 1 );
@@ -765,7 +768,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.isMaxCardinality", true, true, true ) {
+            new OntTestCase( "Restriction.isMaxCardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createMaxCardinalityRestriction( null, p, 5 );
@@ -780,7 +783,7 @@ public class TestClassExpression
             },
             
             // restriction conversions
-            new OntTestCase( "Restriction.convertToAllValuesFrom", true, true, true ) {
+            new OntTestCase( "Restriction.convertToAllValuesFrom", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
@@ -803,7 +806,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.convertToSomeValuesFrom", true, true, true ) {
+            new OntTestCase( "Restriction.convertToSomeValuesFrom", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
@@ -826,7 +829,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.convertToHasValue", true, false, true ) {
+            new OntTestCase( "Restriction.convertToHasValue", true, false, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
@@ -850,7 +853,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.convertCardinality", true, true, true ) {
+            new OntTestCase( "Restriction.convertCardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
@@ -872,7 +875,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.convertMinCardinality", true, true, true ) {
+            new OntTestCase( "Restriction.convertMinCardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
@@ -894,7 +897,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "Restriction.convertMaxCardinality", true, true, true ) {
+            new OntTestCase( "Restriction.convertMaxCardinality", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
@@ -916,7 +919,7 @@ public class TestClassExpression
                     assertTrue( "max cardinality test not correct",   a.isMaxCardinalityRestriction() );
                 }
             },
-            new OntTestCase( "OntClass.listInstances", true, true, true ) {
+            new OntTestCase( "OntClass.listInstances", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass A = m.createClass( NS + "A" );
                     OntClass B = m.createClass( NS + "B" );
@@ -930,30 +933,35 @@ public class TestClassExpression
                     iteratorTest( A.listInstances(), new Object[] {a0, a1, b0} );
                 }
             },
-            new OntTestCase( "OntClass.listDefinedProperties", true, true, true ) {
+            new OntTestCase( "OntClass.listDefinedProperties", true, true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
                     OntClass A = m.createClass( NS + "A" );
                     //OntClass B = m.createClass( NS + "B" );
                     OntClass C = m.createClass( NS + "C" );
                     
-                    ObjectProperty p = m.createObjectProperty( NS + "p" );
-                    ObjectProperty q = m.createObjectProperty( NS + "q" );
-                    ObjectProperty r = m.createObjectProperty( NS + "r" );
-                    ObjectProperty s = m.createObjectProperty( NS + "s" );
+                    OntProperty p = m.createOntProperty( NS + "p" );
+                    OntProperty q = m.createOntProperty( NS + "q" );
+                    OntProperty r = m.createOntProperty( NS + "r" );
+                    OntProperty s = m.createOntProperty( NS + "s" );
                     
                     p.setDomain( A );
                     q.setDomain( A );
                     s.setDomain( C );
                     
-                    Restriction r0 = m.createRestriction( r );
-                    C.addSuperClass( r0 );
+                    if (m_rdfsLang) {
+                        iteratorTest( A.listDeclaredProperties(), new Object[] {p, q} );
+                    }
+                    else {
+                        Restriction r0 = m.createRestriction( r );
+                        C.addSuperClass( r0 );
                     
-                    iteratorTest( A.listDeclaredProperties(), new Object[] {p, q} );
+                        iteratorTest( A.listDeclaredProperties(), new Object[] {p, q} );
                     
-                    // no longer counted, since this now relies on inference which is turned off
-                    //iteratorTest( C.listDeclaredProperties(), new Object[] {s, r} );
+                        // no longer counted, since this now relies on inference which is turned off
+                        //iteratorTest( C.listDeclaredProperties(), new Object[] {s, r} );
                     
-                    iteratorTest( r0.listDeclaredProperties(), new Object[] {r} );
+                        iteratorTest( r0.listDeclaredProperties(), new Object[] {r} );
+                    }
                 }
             },
             

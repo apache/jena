@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestOntology.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:16 $
+ * Last modified on   $Date: 2003-06-22 19:20:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntology.java,v 1.6 2003-06-08 18:53:16 ian_dickinson Exp $
+ * @version CVS $Id: TestOntology.java,v 1.7 2003-06-22 19:20:44 ian_dickinson Exp $
  */
 public class TestOntology
     extends OntTestBase 
@@ -71,7 +71,7 @@ public class TestOntology
 
     public OntTestCase[] getTests() {
         return new OntTestCase[] {
-            new OntTestCase( "Ontology.imports", true, true, true ) {
+            new OntTestCase( "Ontology.imports", true, true, true, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
@@ -96,7 +96,7 @@ public class TestOntology
                     assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.IMPORTS() ) );
                 }
             },
-            new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false ) {
+            new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
@@ -121,7 +121,7 @@ public class TestOntology
                     assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
                 }
             },
-            new OntTestCase( "Ontology.priorVersion", true, true, false ) {
+            new OntTestCase( "Ontology.priorVersion", true, true, false, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
@@ -146,7 +146,7 @@ public class TestOntology
                     assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.PRIOR_VERSION() ) );
                 }
             },
-            new OntTestCase( "Ontology.incompatibleWith", true, true, false ) {
+            new OntTestCase( "Ontology.incompatibleWith", true, true, false, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );

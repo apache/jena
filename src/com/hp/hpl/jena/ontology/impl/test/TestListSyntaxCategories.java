@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 12:59:58 $
+ * Last modified on   $Date: 2003-06-22 19:20:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.9 2003-06-18 12:59:58 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.10 2003-06-22 19:20:44 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -608,7 +608,8 @@ public class TestListSyntaxCategories
         
         /* get the iterator */
         public Iterator doList( OntModel m ) {
-            throw new RuntimeException("This method should be overridden");
+            // should be overriden in sub-classes
+            return null;
         }
         
         /* test the Java type of the result, and other tests */
