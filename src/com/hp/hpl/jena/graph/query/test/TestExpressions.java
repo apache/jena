@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.2 2004-07-21 07:38:14 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.3 2004-07-21 08:39:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.test.GraphTestBase;
 */
 public class TestExpressions extends GraphTestBase
     {
+    
     public TestExpressions( String name ) 
         { super( name ); }
     
@@ -25,6 +26,8 @@ public class TestExpressions extends GraphTestBase
 
     protected static final IndexValues none = new IndexValues() 
         { public Object get( int i ) { return null; } };
+        
+    protected static final Mapping empty = new Mapping( new Node[0] );
         
     public void testSpoo()
         {
@@ -40,18 +43,48 @@ public class TestExpressions extends GraphTestBase
     
     public void testPrepareTRUE()
         {
-        Valuator t = Expression.TRUE.prepare( new Mapping( new Node[0] ) );  
+        Valuator t = Expression.TRUE.prepare( empty );  
         assertEquals( true, t.evalBool( none ) );    
         assertEquals( Boolean.TRUE, t.evalObject( none ) );
         }
         
     public void testPrepareFALSE()
         {
-        Valuator t = Expression.FALSE.prepare( new Mapping( new Node[0] ) );  
+        Valuator t = Expression.FALSE.prepare( empty );  
         assertEquals( false, t.evalBool( none ) );    
         assertEquals( Boolean.FALSE, t.evalObject( none ) );
         }
     
+    public void testFixed()
+        {
+        testFixed( "hello" );
+        testFixed( "goodbye" );
+        testFixed( Boolean.TRUE );
+        testFixed( new int[] {17, 27, 42} );
+        }
+
+    protected void testFixed( Object value )
+        {
+        Expression e = new Expression.Fixed( value );
+        assertEquals( value, e.getValue() );
+        assertEquals( value, e.prepare( empty ).evalObject( none ) );
+        }
+    
+    public void testDyadic()
+        {
+        Expression L = new Expression.Fixed( "a" );
+        Expression R = new Expression.Fixed( "b" );
+        Expression e = new Expression.Dyadic( L, "eh:op", R )
+        	{
+            public Object eval( Object x, Object y )
+                { return "" + x + "--" + y; }
+            };
+        assertEquals( 2, e.argCount() );
+        assertSame( L, e.getArg( 0 ) );
+        assertSame( R, e.getArg( 1 ) );
+        assertEquals( "eh:op", e.getFun() );
+        assertEquals( "a--b", e.prepare( empty ).evalObject( none ) );
+        }
     
     }
 
