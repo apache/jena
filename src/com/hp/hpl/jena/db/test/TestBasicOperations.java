@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.3 2003-05-05 21:13:00 csayers Exp $
+  $Id: TestBasicOperations.java,v 1.4 2003-05-09 20:55:28 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -150,6 +150,7 @@ public class TestBasicOperations extends TestCase
 			stmt = model.createStatement(s,p,l);
 			model.add(stmt);
 			assertTrue(model.contains(stmt));
+			assertTrue(stmt.getObject().equals(l));
 			buffer.append(base);
 		}
 		assertTrue ( model.size() == (modelSizeBeg + maxMaxLit - minMaxLit) ); 
