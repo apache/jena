@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBigNumberType.java,v 1.1 2003-03-31 10:01:27 der Exp $
+ * $Id: XSDBigNumberType.java,v 1.2 2003-04-13 15:09:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
  * Datatype template used to define those XSD numeric types which might
@@ -23,7 +22,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * and default to a Long when possible.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:27 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-13 15:09:15 $
  */
 public class XSDBigNumberType extends XSDBaseNumericType {
     
@@ -64,16 +63,6 @@ public class XSDBigNumberType extends XSDBaseNumericType {
         }
     }
     
-    /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
-     */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
-    }
-    
-
 }
 
 /*

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.15 2003-04-10 08:34:12 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.16 2003-04-13 15:09:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -29,7 +29,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-04-10 08:34:12 $
+ * @version $Revision: 1.16 $ on $Date: 2003-04-13 15:09:50 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -262,6 +262,13 @@ public class TestTypedLiterals extends TestCase {
         assertSame("Int lex form", l1, l3);
         assertSame("Ignore language in integer", l1, l2);
         assertSame("Ignore language in integer", l1, l4);
+        
+        l1 = m.createTypedLiteral("1", "", XSDDatatype.XSDint);
+        l2 = m.createTypedLiteral("1", "", XSDDatatype.XSDinteger);
+        l3 = m.createTypedLiteral("1", "", XSDDatatype.XSDnonNegativeInteger);
+        
+        assertSame("numeric comparisons", l1, l2);
+        assertSame("numeric comparisons", l3, l2);
     }
     
     /**

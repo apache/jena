@@ -5,18 +5,17 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDIntType.java,v 1.1 2003-03-31 10:01:24 der Exp $
+ * $Id: XSDIntType.java,v 1.2 2003-04-13 15:09:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
  * Datatype template used to define XSD int types
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:24 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-13 15:09:15 $
  */
 public class XSDIntType extends XSDBaseNumericType {
 
@@ -46,15 +45,6 @@ public class XSDIntType extends XSDBaseNumericType {
      */
     public Object parse(String lexicalForm) throws DatatypeFormatException {        
         return new Integer(super.parse(lexicalForm).toString());
-    }
-    
-    /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
-     */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
     }
 
 }
