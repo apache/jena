@@ -11,8 +11,8 @@ import com.hp.hpl.jena.shared.JenaException;
 
 public class FileUtils {
     
-	public static String readWholeFile(String filename) throws IOException {
-		Reader r = new BufferedReader(new FileReader(filename), 1024);
+	public static String readWholeFileAsUTF8(String filename) throws IOException {
+		Reader r = new BufferedReader(asUTF8(new FileInputStream(filename)),1024) ;
 		StringWriter sw = new StringWriter(1024);
 		char buff[] = new char[1024];
 		while (r.ready()) {
