@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on the Jena1 version of IRDBDriver by Dave Reynolds
 * 
 * @author hkuno
-* @version $Revision: 1.2 $
+* @version $Revision: 1.3 $
 */
 
 public interface IPSet {
@@ -131,6 +131,12 @@ public interface IPSet {
 	 * @param gid the id of the graph
 	 */
 	public void deleteTriple(Triple t, IDBID gid);
+	
+	/**
+		 * @param t the triple to be added
+		 * @param gid the id of the graph
+		 */
+	public void deleteTripleList(List triples, IDBID gid);
 	
 	
 	/**
