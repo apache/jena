@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.32 2003-08-22 14:34:01 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.33 2003-08-25 16:41:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -300,7 +300,13 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testHasCapabilities()
         {
         Graph g = getGraph();
-        /* Capabilities c = */ g.getCapabilities();
+        Capabilities c = g.getCapabilities();
+        boolean sa = c.sizeAccurate();
+        boolean aaSome = c.addAllowed();
+        boolean aaAll = c.addAllowed( true );
+        boolean daSome = c.deleteAllowed();
+        boolean daAll = c.deleteAllowed( true );
+        boolean cbe = c.canBeEmpty();
         }
         
     public void testFind()

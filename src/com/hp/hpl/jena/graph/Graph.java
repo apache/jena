@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.19 2003-08-22 16:03:09 der Exp $
+  $Id: Graph.java,v 1.20 2003-08-25 16:41:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -125,17 +125,12 @@ public interface Graph  extends GraphAdd
      * For example, an inference graph might return the number of triples in the raw data graph. 
      */
 	 int size() throws UnsupportedOperationException;
-	 
-	 int ADD     = 1;
-	 int DELETE  = 2;
-	 int SIZE    = 4;
-	 int ORDERED = 8;
-     
+
 	 /**
-	  * Returns the bitwise or of ADD, DELETE, SIZE and ORDERED,
+	  * Returns the bitwise or of ADD, DELETE, SIZE,
 	  * to show the capabilities of this implementation of Graph.
-	  * So a read-only graph that finds in an unordered fashion,
-	  * but can tell you how many triples are in the graph returns
+	  * So a read-only graph that can tell you how many triples are in the graph 
+        returns
 	  * SIZE.
 	  */
 	 int capabilities();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Dyadic.java,v 1.5 2003-08-04 13:28:57 chris-dollin Exp $
+  $Id: Dyadic.java,v 1.6 2003-08-25 16:41:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -16,9 +16,6 @@ import com.hp.hpl.jena.graph.*;
 
 public abstract class Dyadic extends CompositionBase
 	{
-	public int capabilities() 
-		{ return ADD | DELETE | SIZE;  }
-
 	protected Graph L;
 	protected Graph R;
 	

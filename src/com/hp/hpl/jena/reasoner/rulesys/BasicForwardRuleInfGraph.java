@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.30 2003-08-22 16:04:32 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.31 2003-08-25 16:41:27 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2003-08-22 16:04:32 $
+ * @version $Revision: 1.31 $ on $Date: 2003-08-25 16:41:27 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -271,17 +271,6 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         if (isPrepared) {
             engine.add(t);
         }
-    }
-    
-    /**
-     * Returns the bitwise or of ADD, DELETE, SIZE and ORDERED,
-     * to show the capabilities of this implementation of Graph.
-     * So a read-only graph that finds in an unordered fashion,
-     * but can tell you how many triples are in the graph returns
-     * SIZE.
-     */
-    public int capabilities() {
-        return ADD | SIZE | DELETE;
     }
 
     /**

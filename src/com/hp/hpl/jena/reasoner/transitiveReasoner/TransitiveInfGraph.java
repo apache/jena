@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.15 2003-08-19 20:10:01 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.16 2003-08-25 16:41:27 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-08-19 20:10:01 $
+ * @version $Revision: 1.16 $ on $Date: 2003-08-25 16:41:27 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -128,18 +128,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
         fdata.getGraph().add(t);
         transitiveEngine.add(t);
     }
-    
-    /**
-     * Returns the bitwise or of ADD, DELETE, SIZE and ORDERED,
-     * to show the capabilities of this implementation of Graph.
-     * So a read-only graph that finds in an unordered fashion,
-     * but can tell you how many triples are in the graph returns
-     * SIZE.
-     */
-    public int capabilities() {
-        return ADD | SIZE | DELETE;
-    }
-    
+
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph.
      */   

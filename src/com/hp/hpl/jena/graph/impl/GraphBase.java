@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.19 2003-08-22 14:34:02 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.20 2003-08-25 16:41:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -100,8 +100,13 @@ public abstract class GraphBase implements Graph {
         return bud;
         }
         
+    private Capabilities capabilities = null;
+    
     public Capabilities getCapabilities()
-        { return null; }
+        { 
+        if (capabilities == null) capabilities = new AllCapabilities();
+        return capabilities;
+        }
         
     private PrefixMapping pm = new PrefixMappingImpl();
     

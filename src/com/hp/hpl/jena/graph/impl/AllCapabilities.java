@@ -1,51 +1,28 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Capabilities.java,v 1.3 2003-08-25 16:41:26 chris-dollin Exp $
+  $Id: AllCapabilities.java,v 1.1 2003-08-25 16:41:26 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
+
+import com.hp.hpl.jena.graph.Capabilities;
 
 /**
-    Interface for expressing capabilities.
- 	@author kers
-*/
-public interface Capabilities
+    A default implementation of capabilities, in which everything is allowed,
+    size is accurate, and graphs may be completely empty.
+    
+ 	@author hedgehog
+ */
+
+public class AllCapabilities implements Capabilities
     {
-    /**
-        Answer true iff Graph::size() is accurate.
-     */
-    boolean sizeAccurate();
-    
-    /**
-        Answer true if Graph::add() can be used to add at least some triples to
-        the graph.
-     */
-    boolean addAllowed();
-    
-    /**
-        Answer true if Graph::add() can be used to add at least some triples to the
-        graph. If everyTriple is true, answer true iff *any* triple can be added (ie the
-        graph places no special restrictions on triples).
-     */
-    boolean addAllowed( boolean everyTriple );
-    
-    /**
-        Answer true iff Graph::delete() can be used to remove at least some triples
-        from the graph.
-     */
-    boolean deleteAllowed();
-    
-    /**
-        Answer true if Graph::delete() can be used to remove at least some triples 
-        from the graph. If everyTriple is true, any such triple may be removed.
-     */
-    boolean deleteAllowed( boolean everyTriple );
-    
-    /**
-        Answer true iff the graph can be completely empty.
-     */
-    boolean canBeEmpty();
+    public boolean sizeAccurate() { return true; }
+    public boolean addAllowed() { return addAllowed( false ); }
+    public boolean addAllowed( boolean every ) { return true; } 
+    public boolean deleteAllowed() { return deleteAllowed( false ); }
+    public boolean deleteAllowed( boolean every ) { return true; } 
+    public boolean canBeEmpty() { return true; }
     }
 
 /*
