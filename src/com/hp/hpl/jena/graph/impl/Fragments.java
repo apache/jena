@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fragments.java,v 1.3 2003-07-18 09:33:32 chris-dollin Exp $
+  $Id: Fragments.java,v 1.4 2003-07-25 11:41:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -38,10 +38,9 @@ public class Fragments
     private final Set [] slots = {new HashSet(), new HashSet(), new HashSet(), new HashSet()};
     
     /**
-        the Node the fragments are about. It is not used internally; 
-        it is included for completeness and diagnostics. 
+        the Node the fragments are about. 
     */
-    private Node n;
+    private Node anchor;
     
     /**
         a fresh Fragments object remembers the node n and starts
@@ -50,7 +49,7 @@ public class Fragments
         to create the Fragments in the first place ...)
     */
     public Fragments( Node n ) 
-        { this.n = n; }
+        { this.anchor = n; }
         
     public Fragments( Node n, Triple t )
         {
@@ -88,7 +87,7 @@ public class Fragments
         include into g all of the reification components that this Fragments
         represents.
     */
-    public void includeInto( Graph g )
+    public void includeInto( GraphAdd g )
         {
         includeInto( g, RDF.Nodes.subject, SUBJECTS );
         includeInto( g, RDF.Nodes.predicate, PREDICATES );
@@ -101,11 +100,11 @@ public class Fragments
         o is an element of the slot _which_ corresponding to
         _predicate_.
     */
-    private void includeInto( Graph g, Node predicate, int which )
+    private void includeInto( GraphAdd g, Node predicate, int which )
         {
         Iterator it = slots[which].iterator();
         while (it.hasNext())
-            g.add( new Triple( n, predicate, (Node) it.next() ) );
+            g.add( new Triple( anchor, predicate, (Node) it.next() ) );
         }
         
     /**
@@ -144,7 +143,7 @@ public class Fragments
         return a readable representation of this Fragment for debugging purposes.
     */
     public String toString()
-        { return n + " s:" + slots[SUBJECTS] + " p:" + slots[PREDICATES] + " o:" + slots[OBJECTS] + " t:" + slots[TYPES]; }
+        { return anchor + " s:" + slots[SUBJECTS] + " p:" + slots[PREDICATES] + " o:" + slots[OBJECTS] + " t:" + slots[TYPES]; }
        
     /**
         given a triple t, see if it's a reification triple and if so return the internal seelctor;
@@ -184,7 +183,7 @@ public class Fragments
     }
     
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

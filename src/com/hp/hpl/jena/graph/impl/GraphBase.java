@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.14 2003-07-24 15:29:31 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.15 2003-07-25 11:41:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -192,8 +192,11 @@ public abstract class GraphBase implements Graph {
 	 */
 	public int size() {
         checkOpen();
-		throw new UnsupportedOperationException("GraphBase::size");
-	}
+		ExtendedIterator it = GraphUtil.findAll( this );
+        int result = 0;
+        while (it.hasNext()) { it.next(); result += 1; }
+        return result;    
+        }
 
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#capabilities()

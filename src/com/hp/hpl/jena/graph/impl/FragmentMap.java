@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FragmentMap.java,v 1.3 2003-07-25 09:03:41 chris-dollin Exp $
+  $Id: FragmentMap.java,v 1.4 2003-07-25 11:41:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -48,77 +47,59 @@ public class FragmentMap extends HashMap
         return value;
         }        
         
-    public ExtendedIterator allTriples()
+    /**
+        add to a graphy thing all of the triples that correspond to a reification
+        of t on tag.
+    */         
+    public static void graphAddQuad( GraphAdd g, Node node, Triple t )
         {
-        final Iterator it = this.entrySet().iterator();
-        return new NiceIterator()
-            {
-            private List pending = new ArrayList();
-            
-            public boolean hasNext() { return pending.size() > 0 || checkNext(); }
-            
-            private boolean checkNext()
-                {
-                if (it.hasNext() == false) return false;
-                refill();
-                return pending.size() > 0 || checkNext();    
-                }
-            
-            private void refill()
-                {
-                Map.Entry e  = (Map.Entry) it.next();
-                Node n = (Node) e.getKey();
-                Object x = e.getValue();
-                if (x instanceof Triple)
-                    {
-                    Triple t = (Triple) x;
-                    pending.add( Triple.create( n, RDF.Nodes.subject, t.getSubject() ) );
-                    pending.add( Triple.create( n, RDF.Nodes.predicate, t.getPredicate() ) );
-                    pending.add( Triple.create( n, RDF.Nodes.object, t.getObject() ) );
-                    pending.add( Triple.create( n, RDF.Nodes.type, RDF.Nodes.Statement ) );
-                    }
-                else
-                    {
-                    Fragments f = (Fragments) x;
-                    Graph temp = new GraphMem();
-                    f.includeInto( temp );
-                    Iterator xx = temp.find( Node.ANY, Node.ANY, Node.ANY );
-                    while (xx.hasNext()) pending.add( xx.next() );
-                    }
-                }
+        g.add( new Triple( node, RDF.Nodes.subject, t.getSubject() ) );
+        g.add( new Triple( node, RDF.Nodes.predicate, t.getPredicate() ) );
+        g.add( new Triple( node, RDF.Nodes.object, t.getObject() ) );
+        g.add( new Triple( node, RDF.Nodes.type, RDF.Nodes.Statement ) );
+        }
                 
-            public Object next()
-                {
-                if (pending.size() > 0)
-                    {
-                    return pending.remove( pending.size() - 1 );
-                    }
-                else
-                    {
-                    refill();
-                    return next();
-                    }
-                }
-            };
+    /**
+        Answer an iterator over all the reification triples in this map that match the
+        filter <code>tm</code>. We optimise slightly; if the subject of the match is
+        concrete, then we only look at the triples arising from that subject, which
+        is easy because our map keys on it. Otherwise we hand the job over to
+        a FragmentTripleIterator and just let it filter the iterator slowly.
+    <p>
+        We *could* see if the predicate is sensible, since we'll only have
+        rdf:[subject|predicate|object|type] triples, but we don't, for now.
+        
+        @param tm the triple match for the interesting triples
+        @return an iterator over all the reification triples
+    */
+    public ExtendedIterator allTriples( TripleMatch tm )
+        {
+        Triple t = tm.asTriple();
+        Node subject = t.getSubject();
+        if (subject.isConcrete())
+            {
+            Object x = get( subject );  
+            return x == null
+                ? new NiceIterator()
+                : FragmentTripleIterator.toIterator( t, subject, x )
+                ; 
+            }
+        else
+            {
+            final Iterator it = this.entrySet().iterator();   
+            return new FragmentTripleIterator( t, it );
+            }
         }
         
+    /**
+        Return the fragment map as a read-only Graph of triples. We rely on the
+        default code in GraphBase which allows us to only implement find(TripleMatch)
+        to present a Graph. All the hard work is done by allTriples.
+    */
     public Graph asGraph()
         {
         return new GraphBase()
-            {
-            public int size()
-                {
-                ExtendedIterator it = allTriples();
-                int result = 0;
-                while (it.hasNext()) { it.next(); result += 1; }
-                return result;    
-                }
-                
-            public ExtendedIterator find( TripleMatch tm )
-                {
-                return new TripleMatchIterator( tm.asTriple(), allTriples() );
-                }
-            };
+            { public ExtendedIterator find( TripleMatch tm ) { return allTriples( tm ); } };
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.6 2003-07-25 09:03:41 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.7 2003-07-25 11:41:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -14,7 +14,6 @@ package com.hp.hpl.jena.graph.impl;
 */
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
@@ -86,7 +85,7 @@ public class SimpleReifier implements Reifier
     private Filter completeFragment = new Filter()
         { public boolean accept( Object x ) { return isComplete( (Node) x ); } };
         
-    private boolean isComplete( Node n )
+    protected boolean isComplete( Node n )
         {
         Object x = nodeMap.get( n );
         return x instanceof Triple || ((Fragments) x) .isComplete();
@@ -105,7 +104,7 @@ public class SimpleReifier implements Reifier
             nodeMap.putTriple( tag, t );
         else
             {
-            graphAddQuad( parent, tag, t );
+            FragmentMap.graphAddQuad( parent, tag, t );
             Triple t2 = getTriple( tag );
             if (t2 == null) throw new CannotReifyException( tag );
             }
@@ -177,31 +176,8 @@ public class SimpleReifier implements Reifier
         }
         
     public Graph getHiddenTriples()
-        { // TODO: turn into a dynamic graph
-//        Graph result = new GraphMem();
-//        ((SimpleReifier) result.getReifier()).passing = true;
-//        Iterator it = nodeMap.keySet().iterator();
-//        while (it.hasNext()) include( result, (Node) it.next() );
-//        return result;
-        return nodeMap.asGraph();
-        }
+        { return nodeMap.asGraph(); }
     
-    /**
-        include into g all of the reification components
-        associated with node.
-        
-        @param g the graph to add triples to
-        @param node the node whose components to add
-    */
-    private void include( Graph g, Node node )
-        {
-        Object f = nodeMap.get( node );
-        if (f instanceof Triple)
-            graphAddQuad( g, node, (Triple) f ); 
-        else
-            ((Fragments) f).includeInto( g ); 
-        }       
-        
     /**
         remove from the parent all of the triples that correspond to a reification
         of t on tag.
@@ -215,18 +191,6 @@ public class SimpleReifier implements Reifier
         }        
               
     /**
-        add to the graph all of the triples that correspond to a reification
-        of t on tag.
-    */         
-    private void graphAddQuad( Graph g, Node node, Triple t )
-        {
-        g.add( new Triple( node, RDF.Nodes.subject, t.getSubject() ) );
-        g.add( new Triple( node, RDF.Nodes.predicate, t.getPredicate() ) );
-        g.add( new Triple( node, RDF.Nodes.object, t.getObject() ) );
-        g.add( new Triple( node, RDF.Nodes.type, RDF.Nodes.Statement ) );
-        }
-                
-    /**
         our string representation is <R ...> wrapped round the string representation
         of our node map.
     */
@@ -235,7 +199,7 @@ public class SimpleReifier implements Reifier
     }
     
 /*
-    (c) Copyright Hewlett-Packard Company 200, 2003
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
