@@ -13,8 +13,6 @@ import java.util.*;
 
 /**
  *
- * DBStoreDesc
- * 
  * A wrapper to assist in getting and setting DB information from 
  * a persistent store.
  * 
@@ -28,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DBPropGraph extends DBProp {
 
@@ -74,9 +72,10 @@ public class DBPropGraph extends DBProp {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		TripleMatch match = new StandardTripleMatch(self, graphPrefix, prefix.getNode());
 		Iterator matches = graph.find( match, complete);
-		if( matches.hasNext() )
+		if( matches.hasNext() ) {
 			graph.delete( (Triple)(matches.next()), complete );
-		prefix.remove();
+			prefix.remove();
+		}
 	}
 	
 	public void addPrefix( String prefix, String uri ) {

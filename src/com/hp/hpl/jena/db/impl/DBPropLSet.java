@@ -13,8 +13,6 @@ import java.util.*;
 
 /**
  *
- * DBStoreDesc
- * 
  * A wrapper to assist in getting and setting DB information from 
  * a persistent store.
  * 
@@ -29,7 +27,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DBPropLSet extends DBProp {
 

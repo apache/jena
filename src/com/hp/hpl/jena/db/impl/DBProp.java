@@ -11,10 +11,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 /**
  *
- * DBPropNode
- * 
- * A wrapper to assist in getting and setting DB property information from 
- * a persistent store.
+ * A base class for DB property information in a persistent store.
  * 
  * This is written in the style of enhanced nodes - no state is
  * stored in the DBStoreDesc, instead all state is in the
@@ -26,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public abstract class DBProp {
 

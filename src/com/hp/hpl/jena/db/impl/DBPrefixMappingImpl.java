@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.1 2003-04-30 21:18:24 csayers Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.2 2003-04-30 22:57:56 csayers Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,12 +19,25 @@ import java.util.*;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.1 $
+ 	@version $Revision: 1.2 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
 	protected DBPropGraph m_graphProperties = null;
 	
+	/**
+	 * Constructor for a persistent prefix mapping.
+	 * 
+	 * Each GraphRDB has a set of associated properties
+	 * which are, themselves, represented as triples in
+	 * a system graph.
+	 * 
+	 * The prefix mapping is persisted by converting it
+	 * to triples and storing it along with the other
+	 * properties of the GraphRDB in that system graph.
+	 * 
+	 * @param graphProperties the system properties of a persistent graph.
+	 */
 	public DBPrefixMappingImpl( DBPropGraph graphProperties) {
 		super();
 		m_graphProperties = graphProperties;
@@ -38,22 +51,35 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * Override the default implementation so we can catch the write operation
+	 * and update the persistent store.
+	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefix(java.lang.String, java.lang.String)
+	 */
 	public void setNsPrefix(String prefix, String uri) {
-		// Ordering is important here - we need to add it to the prefixMap
-		// first (since it checks the validity of the prefix - it will throw
+		// Ordering is important here - we need to add it to the prefixMappingImpl
+		// first since it checks the validity of the prefix (it will throw
 		// an exception if there's any problem).
 		super.setNsPrefix(prefix, uri);
 		
 		// All went well, so persist the prefix by adding it to the graph properties
 		// (the addPrefix call will overwrite any existing mapping with the same prefix
-		// so it matches the behaviour of the superclass).
+		// so it matches the behaviour of the prefixMappingImpl).
 		m_graphProperties.addPrefix(prefix, uri);
 	}
 
+	/* (non-Javadoc)
+	 * Override the default implementation so we can catch all write operations
+	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(com.hp.hpl.jena.shared.PrefixMapping)
+	 */
 	public void setNsPrefixes(PrefixMapping other) {
 		setNsPrefixes(other.getNsPrefixMap());
 	}
 
+	/* (non-Javadoc)
+	 * Override the default implementation so we can catch all write operations
+	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(java.util.Map)
+	 */
 	public void setNsPrefixes(Map other) {
 		Iterator it = other.entrySet().iterator();
 		while (it.hasNext()) {

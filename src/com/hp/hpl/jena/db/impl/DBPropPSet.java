@@ -10,8 +10,6 @@ import com.hp.hpl.jena.vocabulary.DB;
 
 /**
  *
- * DBStoreDesc
- * 
  * A wrapper to assist in getting and setting DB information from 
  * a persistent store.
  * 
@@ -25,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
-* @version $Revision: 1.2 $
+* @version $Revision: 1.3 $
  */
 public class DBPropPSet extends DBProp {
 
