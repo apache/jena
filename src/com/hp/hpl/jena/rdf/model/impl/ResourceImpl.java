@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.20 2003-08-27 13:05:53 andy_seaborne Exp $
+  $Id: ResourceImpl.java,v 1.21 2003-08-27 15:06:49 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
+
+import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.enhanced.*;
@@ -14,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2003-08-27 13:05:53 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2003-08-27 15:06:49 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -257,10 +259,31 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
     
     public Resource removeAll( Property p ) {
-        for (StmtIterator i = listProperties( p );  i.hasNext();  ) {
-            i.next();
-            i.remove();
+        // there is a risk that the iterator we get by listing the properties is unable
+        // to perform the remove operation. We therefore trap unsupportedOperationEx
+        // and try an alternative strategy.  THERE IS A FURTHER RISK (thanks to kers for
+        // this analysis) that an UnsupOpEx may be thrown for reasons other than the
+        // inability of the iterator.
+        // TODO: investigate and implement a more comprehensive solution, OR decide
+        // to accept the risk!
+        try {
+            for (StmtIterator i = listProperties( p );  i.hasNext();  ) {
+                i.next();
+                i.remove();
+            }
         }
+        catch (UnsupportedOperationException e) {
+            List stmts = new ArrayList();
+            
+            // collect the statements first
+            for (StmtIterator i = listProperties( p ); i.hasNext(); stmts.add( i.next() ) );
+            
+            // and only then can we remove them
+            for (Iterator j = stmts.iterator();  j.hasNext(); ) {
+                ((Statement) j.next()).remove();
+            }
+        }
+        
         return this;
     }
     
