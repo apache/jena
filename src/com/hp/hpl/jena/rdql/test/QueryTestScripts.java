@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: QueryTestScripts.java,v 1.15 2003-09-09 14:41:02 chris-dollin Exp $
+ * $Id: QueryTestScripts.java,v 1.16 2003-11-27 17:46:24 andy_seaborne Exp $
  */
 
 
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.15 2003-09-09 14:41:02 chris-dollin Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.16 2003-11-27 17:46:24 andy_seaborne Exp $
  */
 
 
@@ -201,7 +201,8 @@ public class QueryTestScripts extends TestSuite
                 }
 
                 String qf = convertFilename(queryFile, directory) ;
-                String queryString = FileUtils.readWholeFile(qf) ;
+                String queryString = FileUtils.readWholeFileAsUTF8(qf) ;
+                
                 if ( printDetails ) {
                     pw.println("Query:") ;
                     pw.println(queryString);
@@ -211,8 +212,18 @@ public class QueryTestScripts extends TestSuite
                 }
 
                 long startTime = System.currentTimeMillis();
-                query = new Query(queryString) ;
-
+                
+                try {
+                    query = new Query(queryString) ;
+                }
+                catch (QueryException qEx)
+                {
+                    query = null ;
+                    pw.flush() ;
+                    Assert.assertFalse("Parse failure: "+qEx.getMessage(), true) ; 
+                    // Test failure.
+                    throw qEx ;
+                }    
                 if ( printDetails ) {
                     pw.println("Parsed query:") ;
                     pw.println(query.toString()) ;
@@ -309,7 +320,7 @@ public class QueryTestScripts extends TestSuite
                         qr2.toModel().write(pw, "N3") ;
                         qr2.close() ;
                         pw.flush() ;
-                        Assert.assertTrue("Rsults do not match: "+queryFile,false) ;
+                        Assert.assertTrue("Results do not match: "+queryFile,false) ;
                     }
                     //else
                     //  System.err.println("Test: "+queryFile+" => "+resultsFile+" passed") ;
@@ -317,12 +328,6 @@ public class QueryTestScripts extends TestSuite
                     qr2.close() ;
                 }
                 results.close() ;
-            }
-            catch (QueryException qEx) {
-                pw.flush() ;
-                Assert.fail(queryFile) ;
-                // Test failure.
-                throw qEx ;
             }
             catch (IOException ioEx){ pw.println("IOException: "+ioEx) ; ioEx.printStackTrace(pw) ; pw.flush() ; }
             //catch (JenaException rdfEx) { pw.println("JenaException: "+rdfEx) ; rdfEx.printStackTrace(pw) ; pw.flush() ; }
@@ -335,7 +340,7 @@ public class QueryTestScripts extends TestSuite
             }
             finally
             {
-                if ( model == null && query.getSource() != null )
+                if ( model == null && query != null && query.getSource() != null )
                     query.getSource().close() ;
                 pw.flush() ;
 
