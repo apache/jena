@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.16 2003-09-17 12:41:05 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.17 2003-09-17 16:40:59 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -27,10 +27,7 @@ import org.xml.sax.*;
 class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     static public boolean checkMessages = false;
     static private boolean inDevelopment = false;
-    static Reader getReader(String prop) throws IOException {
-        return new InputStreamReader(TestInputStreamFactory.getInputStream(prop), "utf-8");
-    }
-    Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
+     Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
         throws IOException {
         Model model = ModelFactory.createDefaultModel();
         JenaReader jr = new JenaReader();

@@ -136,14 +136,17 @@ public class TestInputStreamFactory {
 		if (!in)
 			throw new IllegalArgumentException("Can only save to URLs");
 
+        String relPath = relative.toString();
+        if ( relPath.length() - relPath.lastIndexOf('.') > 5 )
+           relPath = relPath + ".rdf";
 		if (zip != null)
-			return new LazyZipEntryInputStream(zip, relative.toString());
+			return new LazyZipEntryInputStream(zip,relPath );
 		else
-			return TestInputStreamFactory.getInputStream(property + relative.toString());
+			return TestInputStreamFactory.getInputStream(property + relPath );
 
 	}
 
-	public static InputStream getInputStream(String prop) {
+	private static InputStream getInputStream(String prop) {
 	    // System.err.println(prop);
 	    ClassLoader loader = TestInputStreamFactory.class.getClassLoader();
 	    if (loader == null)

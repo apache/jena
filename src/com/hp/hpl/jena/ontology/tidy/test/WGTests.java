@@ -25,19 +25,24 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
 *
- * ARPTests.java
+ * WGTests.java
  *
  * Created on September 18, 2001, 7:50 PM
  */
 
 package com.hp.hpl.jena.ontology.tidy.test;
 
+import com.hp.hpl.jena.shared.wg.*;
 import com.hp.hpl.jena.shared.wg.URI;
+import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.rdql.*;
 
 import junit.framework.TestSuite;
 import junit.framework.Test;
 import java.io.*;
-//import java.util.*;
+import java.net.*;
+import java.util.*;
 /**
  * The JUnit test suite for ARP.
  *
@@ -48,110 +53,110 @@ public class WGTests extends java.lang.Object {
 	/**
 	 * Setting this field to true uses the tests found
 	 * on the W3C web site.
-	 * The default value false uses a cached corrected
+	 * The default value false uses the cached (possibly edited)
 	 * copy of the tests.
 	 */
 	static public boolean internet = false;
-	static private URI wgTestDir =
-		URI.create("http://www.w3.org/2002/03owlt/");
-	static public Test suite() {
+	static private URI wgTestDir = URI.create("http://www.w3.org/2002/03owlt/");
+	/**
+	 * Setting this before invoking suite can permit the use of a zip based factory
+	 * etc.
+	 */
+	static private TestInputStreamFactory factory;
+	
+	static private String manifestURI = "OWLManifest.rdf";
+	static private boolean manifestInFactory = true;
+	
+	static public Test suite() throws IOException {
 		TestSuite s = new TestSuite("OWL-Syntax");
-		/*
-		if (internet) {
-			s.addTest(NTripleTestSuite.suite(wgTestDir, wgTestDir, "WG Parser Tests"));
-		} else {
-			s.addTest(WGTestSuite.suite(wgTestDir, "wg",
-			//    URI.create(
-			//    "file://src/com/hp/hpl/jena/rdf/arp/test/data/wg/"),
-			"WG Parser Tests"));
-			s.addTest(WGTestSuite.suite(arpTestDir, "arp",
-			//  URI.create(
-			//  "file://src/com/hp/hpl/jena/rdf/arp/test/data/arp-bugs/"),
-			"ARP Tests"));
-			s.addTest(NTripleTestSuite.suite(wgTestDir, "wg",
-			//    URI.create(
-			//    "file://src/com/hp/hpl/jena/rdf/arp/test/data/wg/"),
-			"NTriple WG Tests"));
+		InputStream manifest;
+		if (factory == null) {
+			if (internet) {
+				factory = new TestInputStreamFactory(wgTestDir, wgTestDir);
+			} else {
+				factory = new TestInputStreamFactory(wgTestDir, "wg");
+			}
 		}
-		*/
+		if ( manifestInFactory ) {
+			manifest = factory.open(manifestURI);
+		} else {
+			try {
+		     manifest = new URL(manifestURI).openStream();
+			}
+			catch (MalformedURLException e) {
+				manifest = new FileInputStream(manifestURI);
+			}
+		}
+		Model m = ModelFactory.createDefaultModel();
+		m.read(manifest,"");
+
+		Query query =  new Query(
+				"SELECT ?s, ?t, ?f, ?l " +
+				"WHERE (?f rdf:type " +
+				" <http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#RDF-XML-Document> )" +
+				" (?t ?p ?f ) " +
+                " (?t rtest:status ?s) " +
+                " (?f otest:level ?l ) " +
+				"AND ?s ne \"OBSOLETED\""+
+				"USING rtest FOR <http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#>" +
+				" otest FOR <http://www.w3.org/2002/03owlt/testOntology#>"
+				);
+				
+//		   Need to set the source if the query does not.
+		query.setSource(m);
+		QueryExecution qe = new QueryEngine(query) ;
+
+		QueryResults results = qe.exec() ;
+		
+		for ( Iterator iter = results ; iter.hasNext() ; )
+		{
+			ResultBinding res = (ResultBinding)iter.next() ;
+			Object status = res.get("s");
+			Object testResource = res.get("t") ;
+			Object testFile = res.get("f") ;
+			Object level = res.get("l");
+			
+			TestSuite st = (TestSuite)getTest(s, ((Literal)status).getLexicalForm(), false );
+			String testURI = ((Resource)testResource).getURI();
+			System.err.println(testURI);
+			int lastSl = testURI.lastIndexOf('/');
+			int penUltimateSl = testURI.lastIndexOf('/', lastSl -1 );
+			int hash = testURI.lastIndexOf('#');
+			System.err.println(lastSl + " " + penUltimateSl + " " + hash);
+			String dirName = testURI.substring(penUltimateSl+1,lastSl);
+			TestSuite dir = (TestSuite)getTest(st, dirName, false );
+			String number = testURI.substring(hash-3,hash);
+			SyntaxTest test = (SyntaxTest)getTest( dir, number, true );
+			String fileURI = ((Resource)testFile).getURI();
+			test.add( factory.open(fileURI), (Resource)level, fileURI );
+		}
+		results.close() ;
+		
 		return s;
 	}
-	/*
-    static int cnt = 0;
-    static String toJava(Test s,PrintWriter pw, String wgparent) {
-        String name = "test"+cnt++;
-        if ( s instanceof TestSuite ) {
-            TestSuite ts = (TestSuite)s;
-            if ( s instanceof WGTestSuite ) {
-            pw.println("WGTestSuite "+name + " = " + ((WGTestSuite)s).createMe+";");
-             wgparent = name;
-            } else {
-            pw.println("TestSuite "+name + " = new TestSuite(\""+ts.getName()+"\");");
-            }
-            Enumeration ee = ts.tests();
-            while ( ee.hasMoreElements() ) {
-                Test tt = (Test)ee.nextElement();
-                if ( tt == null )
-                   continue;
-                String sub = toJava(tt,pw ,wgparent);
-                pw.println(name+".addTest("+sub+");");
-            }
-        }
-        else if ( s instanceof WGTestSuite.Test ) {
-            String className = s.getClass().getName();
-            String localPart = className.substring(className.lastIndexOf('$')+1);
-            pw.println("Test "+ name + " = " + wgparent +".create" + localPart +"(" 
-+ ((WGTestSuite.Test)s).createMe() + ");");
-        }
-        else {
-            pw.println(name + " is of class " + s.getClass().getName());
-        }
-            
-           
-        return name;
+
+    static private Test getTest( TestSuite s, String nm, boolean syntaxTest ) {
+    	Enumeration already = s.tests();
+    	Test t;
+    	while ( already.hasMoreElements() ) {
+    		t = (Test)already.nextElement();
+    		if ( ( syntaxTest 
+    		         ? ((SyntaxTest) t).getName()
+    		         : ((TestSuite)t).getName()   ).equals(nm) )
+    		    return t;
+    	}
+    	
+    	if ( !syntaxTest ) {
+    		t = new TestSuite(nm);
+    	} else {
+    		t = new SyntaxTest( nm);
+    	}
+		s.addTest(t);
+    	return t;
     }
-    */
-	static public void main(String args[]) throws IOException {
-		Test ts = suite();
-        PrintWriter pw = new PrintWriter(new FileWriter("src/com/hp/hpl/jena/rdf/arp/test/TestPackage.java"));
-        pw.println("/*");
-        pw.println(" *  (c) Copyright 2002-2003 Hewlett-Packard Development Company, LP") ;
-        pw.println(" *  All rights reserved.");
-        pw.println(" *");
-        pw.println(" * Redistribution and use in source and binary forms, with or without");
-        pw.println(" * modification, are permitted provided that the following conditions");
-        pw.println(" * are met:");
-        pw.println(" * 1. Redistributions of source code must retain the above copyright");
-        pw.println(" *    notice, this list of conditions and the following disclaimer.");
-        pw.println(" * 2. Redistributions in binary form must reproduce the above copyright");
-        pw.println(" *    notice, this list of conditions and the following disclaimer in the");
-        pw.println(" *    documentation and/or other materials provided with the distribution.");
-        pw.println(" * 3. The name of the author may not be used to endorse or promote products");
-        pw.println(" *    derived from this software without specific prior written permission.");
-        pw.println("");
-        pw.println(" * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR");
-        pw.println(" * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES");
-        pw.println(" * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.");
-        pw.println(" * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,");
-        pw.println(" * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT");
-        pw.println(" * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,");
-        pw.println(" * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY");
-        pw.println(" * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT");
-        pw.println(" * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF");
-        pw.println(" * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.");
-        pw.println(" *");
-        pw.println(" */");
-        
-        pw.println("package com.hp.hpl.jena.rdf.arp.test;");
-        pw.println("import junit.framework.TestSuite;");
-        pw.println("import junit.framework.Test;");
-        pw.println("public class TestPackage{");
-        pw.println("static public Test suite() {");
-   //     String tsname = toJava(ts, pw, "xx");
-   //    pw.println("return " + tsname+ ";");
-        pw.println("} }");
-        pw.println("");
-        pw.flush();
+
+	static public void main(String args[]) {
+
 	}
 
 }

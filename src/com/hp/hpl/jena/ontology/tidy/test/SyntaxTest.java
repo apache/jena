@@ -1,50 +1,76 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.2 2003-08-27 13:04:46 andy_seaborne Exp $
+  $Id: SyntaxTest.java,v 1.3 2003-09-17 16:41:18 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
 import junit.framework.TestCase;
 import com.hp.hpl.jena.ontology.tidy.*;
-import java.util.Iterator;
- /**
-  *  @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
- *
+import java.util.*;
+import java.io.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.vocabulary.OWLTest;
+/**
+ *  @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
+*
 */
 class SyntaxTest extends TestCase {
-	
 
 	/**
 	 * @param arg0
 	 */
 	public SyntaxTest(String nm, String lvl) {
 		super(nm);
-		level = lvl;
+		//	level = lvl;
 	}
-	
-	String level;
-	
+	public SyntaxTest(String nm) {
+		super(nm);
+	}
+
+	Vector lvls = new Vector();
+	Vector in = new Vector();
+	Vector urls = new Vector();
+
+	void add(InputStream in0, Resource r, String url) {
+		lvls.add(r);
+		in.add(in0);
+		urls.add(url);
+	}
+
 	protected void runTest() {
-		//System.err.println(getName() + " is " + level);
-		Checker chk = new Checker(level.equals("Lite"));
-		
-		chk.load("file:testing/wg/"+getName()+".rdf");
-		String rslt = chk.getSubLanguage();
-		if ( !rslt.equals(level) ) {
-		   if ( level.equals("Lite") || rslt.equals("Full") ) {
-		   	// print out msgs
-			Iterator it = chk.getProblems();
-			while (it.hasNext()) {
-				SyntaxProblem sp = (SyntaxProblem) it.next();
-				System.err.println(sp.longDescription());
+		Iterator inI, lvlI, urlI;
+		inI = in.iterator();
+		lvlI = lvls.iterator();
+		urlI = urls.iterator();
+
+		while (inI.hasNext()) {
+			Resource level = (Resource) lvlI.next();
+			Checker chk = new Checker(level.equals(OWLTest.Lite));
+			//(InputStream) inI.next(),
+			chk.load( (String) urlI.next());
+			String rslt = chk.getSubLanguage();
+			if (!level.getURI().endsWith(rslt)) {
+				if (level.equals(OWLTest.Lite) || rslt.equals("Full")) {
+					// print out msgs
+					Iterator it = chk.getProblems();
+					while (it.hasNext()) {
+						SyntaxProblem sp = (SyntaxProblem) it.next();
+						System.err.println(sp.longDescription());
+					}
+				}
+				int hash = level.getURI().lastIndexOf('#');
+				String msg =
+					getName()
+						+ " is found as OWL "
+						+ rslt
+						+ " not "
+						+ level.getURI().substring(hash + 1);
+				System.err.println(msg);
+				fail(msg);
 			}
-		   }
-		   String msg = getName() + " is found as OWL " + rslt + " not " + level;
-		   System.err.println(msg);
-		   fail(msg);
 		}
-		
 	}
 
 }
