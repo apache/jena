@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.28 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.29 2003-09-11 15:01:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -51,11 +51,18 @@ public class ModelFactory extends ModelFactoryBase
     public static final ReificationStyle Minimal = ReificationStyle.Minimal;
     
     /**
-        Answer a ModelSpec which can create models to the specifcations in the RDF
-        description.
+        Answer a ModelSpec which can create models to the specifications in the RDF
+        description. The root of the description is the unique resource of type ModelSpec.
     */
     public static ModelSpec createSpec( Model desc )
         { return ModelSpecImpl.create( desc ); }
+        
+    /**
+        Answer a ModelSpec which can create models to the specifcations in the RDF
+        description rooted at the given root.
+    */
+    public static ModelSpec createSpec( Resource root, Model desc )
+        { return ModelSpecImpl.create( root, desc ); }
         
     /**
         Answer a fresh Model created according to the ModelSpec argument.

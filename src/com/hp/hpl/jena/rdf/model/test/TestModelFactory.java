@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelFactory.java,v 1.18 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: TestModelFactory.java,v 1.19 2003-09-11 15:00:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -104,6 +104,13 @@ public class TestModelFactory extends ModelTestBase
         ModelSpec spec = ModelFactory.createSpec( desc );
         Model m = ModelFactory.createModelOver( spec, "aName" );    
         }        
+        
+    public void testCreateNamed()
+        {
+        Resource root = ResourceFactory.createResource();
+        Model desc = TestModelSpec.createPlainModelDesc( root );
+        ModelSpec spec = ModelFactory.createSpec( root, desc );    
+        }
     }
 
 /*
