@@ -1,59 +1,31 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraphRDBFactory.java,v 1.2 2003-05-08 15:19:27 chris-dollin Exp $
+  $Id: TestFileGraphMaker.java,v 1.1 2003-05-09 10:40:27 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.db.test;
+package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.graph.impl.*;
 
 import junit.framework.*;
 
 /**
  	@author hedgehog
-    
-    Test the RDB graph factory, based on the abstract test class. We track the
-    current graph factory so that we can discard all the graphs we create during
-    the test.
 */
-
-public class TestGraphRDBFactory extends AbstractTestGraphMaker
+public class TestFileGraphMaker extends AbstractTestGraphMaker
     {
-    /**
-        A clean test connection for all the graph factories.
-    */
-    IDBConnection connection = TestConnection.makeAndCleanTestConnection();
-    
-    public TestGraphRDBFactory( String name )
+    public TestFileGraphMaker( String name )
         { super( name ); }
 
     public static TestSuite suite()
-        { return new TestSuite( TestGraphRDBFactory.class ); }
+        { return new TestSuite( TestFileGraphMaker.class ); }
 
-    /**
-        The current factory object, or null when there isn't one.
-     */
-    private GraphRDBMaker current;
-    
-    /**
-        Invent a new factory on the connection, record it, and return it.    
-    */
     public GraphMaker getGraphFactory()
-        { return current = new GraphRDBMaker( connection ); }    
-        
-    /**
-        Run the parent teardown, and then remove all the freshly created graphs.
-    */
-    public void tearDown()
-        {
-        super.tearDown();
-        if (current != null) current.removeAll();
-        }
+        { return new FileGraphMaker( getTempDirectory(), true ); } 
     }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003
