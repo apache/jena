@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.21 2004-04-20 07:32:19 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.22 2004-06-17 10:48:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -172,9 +172,16 @@ public class ModelTestBase extends GraphTestBase
     public void assertIsoModels( String title, Model wanted, Model got )
         {
         if (wanted.isIsomorphicWith( got ) == false)
-            fail( title + ": expected " + wanted + " but had " + got );
+            fail( title + ": expected " + nice(wanted) + "\n but had " + nice(got) );
         }
         
+    protected String nice( Model m )
+        {
+        StringBuffer b = new StringBuffer( (int) m.size() * 100 );
+        StmtIterator it = m.listStatements();
+        while (it.hasNext()) b.append( "\n    " + it.nextStatement().asTriple().toString( PrefixMapping.Extended ) );
+        return b.toString();
+        }
     /**
         Fail if the two models are not isomorphic. See assertIsoModels(String,Model,Model).
     */
