@@ -14,10 +14,21 @@ import java.io.Writer;
 
 import com.hp.hpl.jena.rdf.model.*;
 
-/** An N3 writher that indirections onto one of the other writers.
+/** Entry point for N3 writers.  This writer will choose the actual writer
+ *  to use by looking at the system property
+ *  <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code> to get the
+ *  writer name.
+ *  <p>
+ *  The following N3 writers are provided:
+ *  <ul>
+ *  <li>N3-PP: Pretty Printer (the default)</li>
+ *  <li>N3-PLAIN: Plain, record/frame-oriented format</li> 
+ *  <li>N3-TRIPLES: Triples, with prefixes.</li>
+ *  </ul>
+ *  </p>
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.18 2003-06-09 16:03:18 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.19 2003-06-10 10:17:52 andy_seaborne Exp $
  */
 
 
@@ -25,29 +36,50 @@ import com.hp.hpl.jena.rdf.model.*;
 public class N3JenaWriter implements RDFWriter
 {
     static public boolean DEBUG = false ;
+    
+    /** Compatibility.
+     * @deprecated Set <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code> to the name of the writer instead.
+     */
+    
     static public final String propWriteSimple = "com.hp.hpl.jena.n3.N3JenaWriter.writeSimple" ;
+    
+    /** System property name that sets the default N3 writer name */   
     static public final String propWriterName = "com.hp.hpl.jena.n3.N3JenaWriter.writer" ;
 
+    /**
+     * General name for the N3 writer.  Will make a decision on exactly which
+     * writer to use (pretty writer, plain writer or simple writer) when created.
+     * Default is the pretty writer but can be overridden with system property
+     * <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code>.  
+     */
+     
+    static public final String n3Writer              = "N3" ;
+    
+    /**
+     * Name of the N3 pretty writer.  The pretty writer
+     * uses a frame-like layout, with prefixing, clustering like properties
+     * and embedding one-referenced bNodes.
+     */
     static public final String n3WriterPrettyPrinter = "N3-PP" ;
+    
+    /**
+     * Name of the N3 plain writer.  The plain writer writes records
+     * by subject.
+     */
     static public final String n3WriterPlain         = "N3-PLAIN" ;
+    
+    /**
+     * Name of the N3 triples writer. This writer writes one line per statement,
+     * like N-Triples, but does N3-style prefixing.
+     */
     static public final String n3WriterTriples       = "N3-TRIPLES" ;
+    
+    /**
+     * Alternative name for the N3 triples writer.
+     */
     static public final String n3WriterTriplesAlt    = "N3-TRIPLE" ;
 
     RDFWriter writer = null ;
-    
-    /** Entry point for N3 writers.  This writer will choose the actual writer
-     *  to use by looking at the system property
-     *  <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code> to get the
-     *  writer name.
-     *  <p>
-     *  The following N3 writers are provided:
-     *  <ul>
-     *  <li>N3-PP: Pretty Printer (the default)</li>
-     *  <li>N3-PLAIN: Plain, record/frame-oriented format</li> 
-     *  <li>N3-TRIPLES: Triples, with prefixes.</li>
-     *  </ul>
-     *  </p>
-     */  
     
     public N3JenaWriter() { writer = chooseWriter() ; }
     

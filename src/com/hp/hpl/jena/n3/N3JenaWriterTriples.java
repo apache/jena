@@ -9,17 +9,17 @@ package com.hp.hpl.jena.n3;
 import com.hp.hpl.jena.rdf.model.*;
 
 /** A simple N3 writer - writes N3 out as triples with prefixes done.
- *  "N3 triples" - tripels with N3 abbreviations and prefixes.
+ *  "N3 triples" - triples with N3 abbreviations and prefixes.
  *  Very simple.  
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTriples.java,v 1.1 2003-06-09 14:50:11 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterTriples.java,v 1.2 2003-06-10 10:17:52 andy_seaborne Exp $
  */
-
-
 
 public class N3JenaWriterTriples extends N3JenaWriterCommon
 {
+    static public final int colWidth = 8 ; 
+    
     protected void writeModel(Model model)
     {
         alwaysAllocateBNodeLabel = true ;
@@ -27,14 +27,28 @@ public class N3JenaWriterTriples extends N3JenaWriterCommon
         for ( ; sIter.hasNext() ; )
         {
             Statement stmt = sIter.nextStatement() ;
-            out.print( formatResource(stmt.getSubject()) ) ;
-            out.print(" ") ;
-            out.print( formatProperty(stmt.getPredicate()) ) ;
-            out.print(" ") ;
+            String subjStr = formatResource(stmt.getSubject()) ;
+            
+            out.print(subjStr) ;
+            padCol(subjStr) ; 
+            out.print(minGapStr) ;
+            
+            
+            String predStr = formatProperty(stmt.getPredicate()) ;
+            out.print(predStr) ;
+            padCol(predStr) ;
+            out.print(minGapStr) ;
+            
             out.print( formatNode(stmt.getObject()) ) ;
             out.println(" .") ; 
         }
         sIter.close() ;
+    }
+    
+    private void padCol(String tmp)
+    {
+        if ( tmp.length() < (colWidth) )
+            out.print(pad( colWidth - tmp.length())) ;
     }
 }
 

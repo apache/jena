@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.2 2003-06-09 16:52:05 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.3 2003-06-10 10:17:52 andy_seaborne Exp $
  */
 
 
@@ -332,52 +332,6 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         clearDatastructures() ;
     }
 
-//    protected void writeSubject(Resource resource)
-//	{
-//		String tmp = formatResource(resource);
-//		out.print(tmp);
-//		// Currently at end of subject
-//		if (tmp.length() + minGap < indent)
-//			out.print( pad(indent - tmp.length()));
-//		else
-//		{
-//			// Does not fit this line.
-//			out.println();
-//		}
-//		out.incIndent(indent) ;
-//		writePropertyList(resource) ;
-//		out.decIndent(indent) ;
-//		out.println( " .");
-//		//out.setIndent(0) ;
-//	}
-
-//	protected void writePropertyList(Resource resource)
-//	{
-//		// Properties to do.
-//		Set properties = new HashSet() ;
-//		StmtIterator sIter = resource.listProperties();
-//		for ( ; sIter.hasNext() ; )
-//		{
-//			properties.add(sIter.nextStatement().getPredicate()) ;
-//		}
-//		sIter.close() ;
-//
-//        // Should write certain well know properties in standard order
-//        // e.g. rdf:type, rdfs:subClassOf, rdfs:subPropertyOf
-//
-//	topLevelLoop:
-//		// For each property.
-//		for (Iterator iter = properties.iterator() ; iter.hasNext();)
-//		{
-//			Property property = (Property)iter.next() ;
-//
-//			// Object list
-//			writeObjectList(resource, property) ;
-//
-//			if (iter.hasNext())
-//				out.println( " ;");
-//		}
-//	}
 
 
 	// Need to decide between one line or many.
@@ -502,15 +456,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 		rdfListsDone.add(resource);
 
 	}
-//
-//	private String pad(int cols)
-//	{
-//		StringBuffer sb = new StringBuffer() ;
-//		for ( int i = 0 ; i < cols ; i++ )
-//			sb.append(' ') ;
-//		return sb.toString() ;
-//	}
-//
+
 	// Called before each writing run.
 	protected void allocateDatastructures()
 	{

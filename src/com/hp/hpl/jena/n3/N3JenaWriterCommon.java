@@ -18,7 +18,7 @@ import java.io.* ;
 /** Common framework for implemening N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.2 2003-06-09 16:52:04 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.3 2003-06-10 10:17:52 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -60,6 +60,7 @@ public class N3JenaWriterCommon implements RDFWriter
 
     // Min spacing of items    
     int minGap = 1 ;
+    final String minGapStr = pad(minGap) ;
 
     // Gap from subject to property
 	int indentProperty = 6 ;
@@ -301,9 +302,12 @@ public class N3JenaWriterCommon implements RDFWriter
         out.print(tmp);
         // May be very short : if so, stay on this line.
         
-        // Currently at end of subject
-        if (tmp.length() + minGap < shortSubject )
-            out.print( pad(shortSubject - tmp.length()));
+        // Currently at end of subject.
+        if (tmp.length() <= shortSubject )
+        {
+            out.print( pad(shortSubject - tmp.length()) );
+            out.print(minGapStr) ;
+        }
         else
             // Does not fit this line.
             out.println();
@@ -334,7 +338,8 @@ public class N3JenaWriterCommon implements RDFWriter
             String tmp = "@prefix " + p + ": ";
             out.print(tmp);
             out.print(pad(16 - tmp.length()));
-            out.println("<" + u + "> .");
+            // NB Starts with a space to ensure a gap.
+            out.println(" <" + u + "> .");
         }
 
     }
@@ -364,7 +369,7 @@ public class N3JenaWriterCommon implements RDFWriter
             {
                 if ( propStr.length() < propertyWidth ) 
                     out.print( pad(propertyWidth-propStr.length()) ) ;
-                out.print(pad(minGap)) ;
+                out.print(minGapStr) ;
             }
             else
                 // Does not fit this line.
