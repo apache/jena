@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.11 2004-03-16 13:26:44 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.12 2004-03-16 16:20:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -203,9 +203,9 @@ public class TestExpressionConstraints extends GraphTestBase
     
     public void testLiterals()
         {
-        assertTrue( Expression.TRUE.isLiteral() );
-        assertTrue( Expression.FALSE.isLiteral() );
-        assertFalse( notEqual( X, Y ).isLiteral() );
+        assertTrue( Expression.TRUE.isConstant() );
+        assertTrue( Expression.FALSE.isConstant() );
+        assertFalse( notEqual( X, Y ).isConstant() );
         assertEquals( Boolean.TRUE, Expression.TRUE.getValue() );
         assertEquals( Boolean.FALSE, Expression.FALSE.getValue() );
         }
