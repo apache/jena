@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.15 2003-12-04 16:38:37 ian_dickinson Exp $
+ * $Id: ReasonerVocabulary.java,v 1.16 2004-05-06 11:02:05 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-12-04 16:38:37 $
+ * @version $Revision: 1.16 $ on $Date: 2004-05-06 11:02:05 $
  */
 public class ReasonerVocabulary {
     
@@ -113,6 +113,10 @@ public class ReasonerVocabulary {
     /** Property to denote the ontology language (OWL, DAML, RDFS) an external reasoner will process. 
      *  Values are URI's, see {@link com.hp.hpl.jena.ontology.ProfileRegistry}. Default is OWL. */
     public static final Property EXT_REASONER_ONT_LANG = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerOntologyLang" );
+    
+    /** Property to denote the axioms file that the reasoner will use for background knowledge. 
+     *  Values are URL's. Default is no axioms. */
+    public static final Property EXT_REASONER_AXIOMS = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerAxioms" );
     
     
 //  --------------------------------------------------------------------
