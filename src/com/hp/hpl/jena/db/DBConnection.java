@@ -19,11 +19,11 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
-* Encapsulate the specification of a jdbc connection, mostly used to
-* simplify the calling pattern for ModelRDB factory methods.
-* *
+* Encapsulate the specification of a jdbc connection.
+* This is mostly used to simplify the calling pattern for ModelRDB factory methods.
+*
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.3 $
+* @version $Revision: 1.4 $
 */
 
 public class DBConnection implements IDBConnection { 
