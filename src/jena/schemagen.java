@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-01 16:26:24 $
+ * Last modified on   $Date: 2003-09-02 14:50:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.24 2003-09-01 16:26:24 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.25 2003-09-02 14:50:29 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -985,11 +985,11 @@ public class schemagen {
 
         // collect any RDFS or DAML comments attached to the node
         for (NodeIterator ni = m_source.listObjectsOfProperty( r, RDFS.comment );  ni.hasNext(); ) {
-            comment.append( ni.next().toString().trim() );
+            comment.append( ((Literal) ni.nextNode()).getLexicalForm().trim() );
         }
 
         for (NodeIterator ni = m_source.listObjectsOfProperty( r, DAML_OIL.comment );  ni.hasNext(); ) {
-            comment.append( ni.next().toString().trim() );
+            comment.append( ((Literal) ni.nextNode()).getLexicalForm().trim() );
         }
 
         return comment.toString();
