@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFList.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 09:41:34 $
+ * Last modified on   $Date: 2003-06-19 08:19:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -54,7 +54,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: RDFList.java,v 1.4 2003-06-17 09:41:34 ian_dickinson Exp $)
+ * @version Release ($Id: RDFList.java,v 1.5 2003-06-19 08:19:38 ian_dickinson Exp $)
  */
 public interface RDFList
     extends Resource
@@ -351,6 +351,15 @@ public interface RDFList
     
     
     /**
+     * <p>Answer an iterator of the elements of this list, to each of which
+     * the given map function has been applied.</p>
+     * @param fn A Map function
+     * @return The iterator of the elements of this list mapped with the given map function.
+     */
+    public ExtendedIterator mapWith( Map1 fn );
+    
+    
+    /**
      * <p>
      * Remove the value from the head of the list.  The tail of the list remains
      * in the model.  Note that no changes are made to list cells that point to
@@ -439,7 +448,7 @@ public interface RDFList
     /**
      * <p>
      * Set a flag to indicate whether to strictly check the well-formedness of
-     * lists at each operation. Default false.  Note that the flag that is
+     * lists at each operation. Default false.  <strong>Note</strong> that the flag that is
      * manipulated is actually a static: it applies to all lists. However, RDFList
      * is a Java interface, and Java does not permit static methods in interfaces.
      * </p>

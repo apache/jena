@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:39:59 $
+ * Last modified on   $Date: 2003-06-19 08:19:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -24,12 +24,14 @@ package com.hp.hpl.jena.rdf.model.test;
 
 // Imports
 ///////////////
-import java.util.Arrays;
+import java.util.*;
+
+import org.apache.log4j.Logger;
 
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.*;
 
 
@@ -42,7 +44,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.1 2003-06-16 13:39:59 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.2 2003-06-19 08:19:46 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase
@@ -95,6 +97,7 @@ public class TestList
         s.addTest( new ApplyTest() );
         s.addTest( new ReduceTest() );
         s.addTest( new RemoveTest() );
+        s.addTest( new Map1Test() );
         s.addTest( new ListEqualsTest() );
         
         return s;
@@ -105,6 +108,35 @@ public class TestList
     // Internal implementation methods
     //////////////////////////////////
 
+    /** Test that an iterator delivers the expected values */
+    protected static void iteratorTest( Iterator i, Object[] expected ) {
+        Logger logger = Logger.getLogger( TestList.class );
+        List expList = new ArrayList();
+        for (int j = 0; j < expected.length; j++) {
+            expList.add( expected[j] );
+        }
+        
+        while (i.hasNext()) {
+            Object next = i.next();
+                
+            // debugging
+            if (!expList.contains( next )) {
+                logger.debug( "TestList - Unexpected iterator result: " + next );
+            }
+                
+            assertTrue( "Value " + next + " was not expected as a result from this iterator ", expList.contains( next ) );
+            assertTrue( "Value " + next + " was not removed from the list ", expList.remove( next ) );
+        }
+        
+        if (!(expList.size() == 0)) {
+            logger.debug( "TestList - Expected iterator results not found" );
+            for (Iterator j = expList.iterator(); j.hasNext(); ) {
+                logger.debug( "TestList - missing: " + j.next() );
+            }
+        }
+        assertEquals( "There were expected elements from the iterator that were not found", 0, expList.size() );
+    }
+    
     
     //==============================================================================
     // Inner class definitions
@@ -667,6 +699,18 @@ public class TestList
        }
     }
     
+    protected static class Map1Test extends ListTest {
+        public Map1Test() {super("Map1Test");}
+        
+        public void runTest() {
+            Model m = ModelFactory.createDefaultModel();
+            m.read( "file:testing/ontology/list5.rdf" );
+           
+            RDFList root = getListRoot( m );
+            iteratorTest( root.mapWith( new Map1() {public Object map1(Object x){return ((Resource) x).getLocalName();} } ), 
+                          new Object[] {"a","b","c","d","e"} );            
+        }
+    }
     
     protected static class RemoveTest extends ListTest {
         public RemoveTest() {super( "RemoveTest" );}

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFListImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 13:47:43 $
+ * Last modified on   $Date: 2003-06-19 08:19:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.5 2003-06-17 13:47:43 ian_dickinson Exp $
+ * @version CVS $Id: RDFListImpl.java,v 1.6 2003-06-19 08:19:46 ian_dickinson Exp $
  */
 public class RDFListImpl
     extends ResourceImpl
@@ -602,6 +602,17 @@ public class RDFListImpl
     }
     
     
+    /**
+     * <p>Answer an iterator of the elements of this list, to each of which
+     * the given map function has been applied.</p>
+     * @param fn A Map function
+     * @return The iterator of the elements of this list mapped with the given map function.
+     */
+    public ExtendedIterator mapWith( Map1 fn ) {
+        return iterator().mapWith( fn );
+    }
+        
+        
     /**
      * <p>
      * Remove the value from the head of the list.  The tail of the list remains
