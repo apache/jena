@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:17:09 $
+ * Last modified on   $Date: 2003-03-25 11:02:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.1 2003-03-12 17:17:09 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.2 2003-03-25 11:02:12 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -63,7 +63,7 @@ public class TestOntDocumentManager
         {  "testing/ontology/testImport2",  cnt(1),             F,          null },
         {  "testing/ontology/testImport3",  cnt(3),             T,          null },
         {  "testing/ontology/testImport4",  cnt(2),             T,          null },
-        {  "testing/ontology/testImport5",  cnt(2),             T,          "file:testing/ontology/testImport5/docmanager.rdf" }
+        {  "testing/ontology/testImport5",  cnt(2),             T,          "file:testing/ontology/testImport5/ont-policy.rdf" }
     };
     
     
