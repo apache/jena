@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLOntologyImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 16:45:18 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-10 12:23:38 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -47,17 +47,13 @@ package com.hp.hpl.jena.ontology.daml.impl;
 ///////////////
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.DAMLOntology;
-import com.hp.hpl.jena.ontology.daml.LiteralAccessor;
+import com.hp.hpl.jena.ontology.daml.*;
 
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedNodeIterator;
 import com.hp.hpl.jena.shared.*;
 
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DAML_OIL_2000_12;
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
+import com.hp.hpl.jena.vocabulary.*;
 
 
 
@@ -65,7 +61,7 @@ import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
  * Encapsulates the properties known for a given source ontology.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLOntologyImpl.java,v 1.3 2003-05-21 16:45:18 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLOntologyImpl.java,v 1.4 2003-06-10 12:23:38 ian_dickinson Exp $
  */
 public class DAMLOntologyImpl
     extends DAMLCommonImpl
@@ -147,8 +143,9 @@ public class DAMLOntologyImpl
      * @return An iterator over the resources representing imported ontologies
      */
     public NodeIterator getImportedOntologies() {
-        return new ConcatenatedNodeIterator( getPropertyValues( DAML_OIL.imports ),
-                                             getPropertyValues( DAML_OIL_2000_12.imports ) );
+        return getPropertyValues( DAML_OIL.imports );
+        //return new ConcatenatedNodeIterator( ,
+        //                                     getPropertyValues( DAML_OIL_2000_12.imports ) );
     }
 
 

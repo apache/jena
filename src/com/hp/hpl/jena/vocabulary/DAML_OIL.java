@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            16 Jan 2001
  * Filename           $RCSfile: DAML_OIL.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 17:19:58 $
- *               by   $Author: jeremy_carroll $
+ * Last modified on   $Date: 2003-06-10 12:22:48 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -45,19 +45,11 @@ package com.hp.hpl.jena.vocabulary;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-
+import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.Log;
-
-import com.hp.hpl.jena.ontology.daml.impl.DAMLClassImpl;
-import com.hp.hpl.jena.ontology.daml.impl.DAMLPropertyImpl;
-import com.hp.hpl.jena.ontology.daml.impl.DAMLListImpl;
-
-import com.hp.hpl.jena.ontology.daml.DAMLClass;
-import com.hp.hpl.jena.ontology.daml.DAMLList;
+import com.hp.hpl.jena.ontology.daml.impl.*;
+import com.hp.hpl.jena.ontology.daml.*;
 
 
 
@@ -84,7 +76,7 @@ import com.hp.hpl.jena.ontology.daml.DAMLList;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAML_OIL.java,v 1.4 2003-04-01 17:19:58 jeremy_carroll Exp $
+ * @version CVS info: $Id: DAML_OIL.java,v 1.5 2003-06-10 12:22:48 ian_dickinson Exp $
  */
 public class DAML_OIL
     implements DAMLVocabulary
@@ -95,238 +87,225 @@ public class DAML_OIL
     /** Singleton instance reference */
     private static DAML_OIL s_instance = new DAML_OIL();
 
+    /** Model to hold the vocab resoures */
+    private static Model s_model = ModelFactory.createDefaultModel();
+    
     /* Resources */
 
     /** DAML namespace resource for the current release */
-    public static final Resource NAMESPACE_DAML = new ResourceImpl( NAMESPACE_DAML_2001_03_URI );
+    public static final Resource NAMESPACE_DAML = s_model.createResource( NAMESPACE_DAML_2001_03_URI );
 
     /** DAML namespace resource for daml:collection. Note: strictly
      * daml:collection is only a string, not a resource in the DAML namespace. */
-    public static final Resource collection = new ResourceImpl( NAMESPACE_DAML_2001_03_URI+"collection" );
+    public static final Resource collection = s_model.createResource( NAMESPACE_DAML_2001_03_URI+"collection" );
 
     /** RDF resource for DAML List class.   */
-    public static final DAMLClass List = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "List", null, s_instance );
+    public static final Resource List = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "List" );
 
     /** RDF resource for DAML UniqueProperty class */
-    public static final DAMLClass UniqueProperty = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "UniqueProperty", null, s_instance );
+    public static final Resource UniqueProperty = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "UniqueProperty" );
 
     /** RDF resource for DAML TransitiveProperty class */
-    public static final DAMLClass TransitiveProperty = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "TransitiveProperty", null, s_instance );
+    public static final Resource TransitiveProperty = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "TransitiveProperty" );
 
     /** RDF resource for DAML UnambiguousProperty class */
-    public static final DAMLClass UnambiguousProperty = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "UnambiguousProperty", null, s_instance );
+    public static final Resource UnambiguousProperty = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "UnambiguousProperty" );
 
     /** RDF resource for DAML Restriction class */
-    public static final DAMLClass Restriction = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "Restriction", null, s_instance );
+    public static final Resource Restriction = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "Restriction" );
 
     /** RDF resource for DAML Ontology class */
-    public static final DAMLClass Ontology = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "Ontology", null, s_instance );
+    public static final Resource Ontology = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "Ontology" );
 
     /** RDF resource for the nil (empty) list.  */
-    public static final DAMLList nil = new DAMLListImpl( NAMESPACE_DAML_2001_03_URI, "nil", null, s_instance );
+    public static final Resource nil = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "nil" );
 
     /** RDF resource for the top type (i.e. the super-type of all types).  */
-    public static final DAMLClass Thing = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "Thing", null, s_instance );
+    public static final Resource Thing = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "Thing" );
 
     /** RDF resource for the bottom type (i.e. the super-type of no types).  */
-    public static final DAMLClass Nothing = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "Nothing", null, s_instance );
+    public static final Resource Nothing = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "Nothing" );
 
     /** Alias for rdfs:Literal in the daml namespace.  */
-    public static final DAMLClass Literal = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "Literal", null, s_instance );
+    public static final Resource Literal = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "Literal" );
 
     /** RDF resource for DAML Class class (a DAML sub-class of rdfs:Class).   */
-    public static final DAMLClass Class = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "Class", null, s_instance );
+    public static final Resource Class = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "Class" );
 
     /** RDF resource for DAML Datatype class (a DAML sub-class of rdfs:Class).   */
-    public static final DAMLClass Datatype = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "Datatype", null, s_instance );
+    public static final Resource Datatype = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "Datatype" );
 
     /** RDF resource for DAML DatatypeProperty class (a DAML sub-class of rdf:Property).   */
-    public static final DAMLClass DatatypeProperty = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "DatatypeProperty", null, s_instance );
+    public static final Resource DatatypeProperty = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "DatatypeProperty" );
 
     /** RDF resource for DAML ObjectProperty class (a DAML sub-class of rdf:Property).   */
-    public static final DAMLClass ObjectProperty = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "ObjectProperty", null, s_instance );
+    public static final Resource ObjectProperty = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "ObjectProperty" );
 
     /** Alias for rdfs:Property in the daml namespace.  From 2001/03 onwards, use of ObjectProperty or DatatypeProperty is suggested. */
-    public static final DAMLClass Property = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "Property", null, s_instance );
-
-
-    /* Deprecated resources */
-
-    /**
-     * RDF resource for DAML Disjoint class. Removed from 2001/03 onwards.
-     * @deprecated Use {@link #disjointWith} or {@link #disjointUnionOf} instead.
-     **/
-    public static final DAMLClass Disjoint = null;
+    public static final Resource Property = s_model.createResource( NAMESPACE_DAML_2001_03_URI + "Property" );
 
 
     /* Properties */
 
     /** RDF Property for the DAML versionInfo property */
-    public static /* final */ Property versionInfo = null;
+    public static Property versionInfo = null;
 
     /** RDF Property for the DAML imports property on Ontologies */
-    public static /* final */ Property imports = null;
+    public static Property imports = null;
 
     /** RDF Property for the DAML disjointWith property on Classes */
-    public static /* final */ Property disjointWith = null;
+    public static Property disjointWith = null;
 
     /** RDF Property for the DAML disjointUnionOf property on Classes */
-    public static /* final */ Property disjointUnionOf = null;
+    public static Property disjointUnionOf = null;
 
     /** RDF Property for the DAML sameClassAs property on Classes */
-    public static /* final */ Property sameClassAs = null;
+    public static Property sameClassAs = null;
 
     /** RDF Property for the DAML samePropertyAs property on Properties */
-    public static /* final */ Property samePropertyAs = null;
+    public static Property samePropertyAs = null;
 
     /** RDF Property for the oneOf property on DAML class expressions */
-    public static /* final */ Property oneOf = null;
+    public static Property oneOf = null;
 
     /** RDF Property for the intersectionOf property on class expressions */
-    public static /* final */ Property intersectionOf = null;
+    public static Property intersectionOf = null;
 
     /** RDF Property for the unionOf property on class expressions  */
-    public static /* final */ Property unionOf = null;
+    public static Property unionOf = null;
 
     /** RDF Property for the complementOf property on class expressions */
-    public static /* final */ Property complementOf = null;
+    public static Property complementOf = null;
 
     /** RDF Property for the equivalentTo property on DAML values */
-    public static /* final */ Property equivalentTo = null;
+    public static Property equivalentTo = null;
 
     /** RDF Property for the DAML onProperty property on Restrictions */
-    public static /* final */ Property onProperty = null;
+    public static Property onProperty = null;
 
     /** RDF Property for the DAML toClass property on Restrictions */
-    public static /* final */ Property toClass = null;
+    public static Property toClass = null;
 
     /** RDF Property for the DAML hasValue property on Restrictions */
-    public static /* final */ Property hasValue = null;
+    public static Property hasValue = null;
 
     /** RDF Property for the DAML hasClass property on Restrictions */
-    public static /* final */ Property hasClass = null;
+    public static Property hasClass = null;
 
     /** RDF Property for the DAML hasClassQ property on Restrictions */
-    public static /* final */ Property hasClassQ = null;
+    public static Property hasClassQ = null;
 
     /** RDF Property for the DAML cardinality property on Restrictions */
-    public static /* final */ Property cardinality = null;
+    public static Property cardinality = null;
 
     /** RDF Property for the DAML minCardinality property on Restrictions */
-    public static /* final */ Property minCardinality = null;
+    public static Property minCardinality = null;
 
     /** RDF Property for the DAML maxCardinality property on Restrictions */
-    public static /* final */ Property maxCardinality = null;
+    public static Property maxCardinality = null;
 
     /** RDF Property for the DAML cardinalityQ property on Restrictions */
-    public static /* final */ Property cardinalityQ = null;
+    public static Property cardinalityQ = null;
 
     /** RDF Property for the DAML minCardinalityQ property on Restrictions */
-    public static /* final */ Property minCardinalityQ = null;
+    public static Property minCardinalityQ = null;
 
     /** RDF Property for the DAML maxCardinalityQ property on Restrictions */
-    public static /* final */ Property maxCardinalityQ = null;
+    public static Property maxCardinalityQ = null;
 
     /** RDF Property for the DAML inverseOf property on Properties */
-    public static /* final */ Property inverseOf = null;
+    public static Property inverseOf = null;
 
     /** RDF Property for the DAML first property on Lists */
-    public static /* final */ Property first = null;
+    public static Property first = null;
 
     /** RDF Property for the DAML rest property on Lists */
-    public static /* final */ Property rest = null;
+    public static Property rest = null;
 
     /** RDF Property for the DAML item property on Lists */
-    public static /* final */ Property item = null;
+    public static Property item = null;
 
     /** Alias for rdfs:subPropertyOf in daml namespace */
-    public static /* final */ Property subPropertyOf = null;
+    public static Property subPropertyOf = null;
 
     /** Alias for rdf:type in daml namespace */
-    public static /* final */ Property type = null;
+    public static Property type = null;
 
     /** Alias for rdf:value in daml namespace */
-    public static /* final */ Property value = null;
+    public static Property value = null;
 
     /** Alias for rdfs:subClassOf in daml namespace */
-    public static /* final */ Property subClassOf = null;
+    public static Property subClassOf = null;
 
     /** Alias for rdfs:domain in daml namespace */
-    public static /* final */ Property domain = null;
+    public static Property domain = null;
 
     /** Alias for rdfs:range in daml namespace */
-    public static /* final */ Property range = null;
+    public static Property range = null;
 
     /** Alias for rdfs:label in daml namespace */
-    public static /* final */ Property label = null;
+    public static Property label = null;
 
     /** Alias for rdfs:comment in daml namespace */
-    public static /* final */ Property comment = null;
+    public static Property comment = null;
 
     /** Alias for rdfs:seeAlso in daml namespace */
-    public static /* final */ Property seeAlso = null;
+    public static Property seeAlso = null;
 
     /** Alias for rdfs:isDefinedBy in daml namespace */
-    public static /* final */ Property isDefinedBy = null;
+    public static Property isDefinedBy = null;
 
     /** RDF Property for the DAML sameIndividualAs property on instances */
-    public static /* final */ Property sameIndividualAs = null;
+    public static Property sameIndividualAs = null;
 
     /** RDF Property for the DAML differentIndvidualFrom property on instances */
-    public static /* final */ Property differentIndividualFrom = null;
+    public static Property differentIndividualFrom = null;
 
 
     // Static variables
     //////////////////////////////////
 
     static {
-        try {
             // properties:
-            versionInfo       = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "versionInfo",                     null, null );
-            imports           = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "imports",                         null, null );
-            disjointWith      = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "disjointWith",                    null, null );
-            disjointUnionOf   = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "disjointUnionOf",                 null, null );
-            sameClassAs       = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "sameClassAs",                     null, null );
-            samePropertyAs    = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "samePropertyAs",                  null, null );
-            equivalentTo      = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "equivalentTo",                    null, null );
-            oneOf             = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "oneOf",                           null, null );
-            intersectionOf    = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "intersectionOf",                  null, null );
-            unionOf           = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "unionOf",                         null, null );
-            complementOf      = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "complementOf",                    null, null );
-            onProperty        = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "onProperty",                      null, null );
-            toClass           = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "toClass",                         null, null );
-            hasValue          = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "hasValue",                        null, null );
-            hasClass          = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "hasClass",                        null, null );
-            hasClassQ         = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "hasClassQ",                       null, null );
-            cardinality       = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "cardinality",                     null, null );
-            cardinalityQ      = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "cardinalityQ",                    null, null );
-            minCardinality    = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "minCardinality",                  null, null );
-            minCardinalityQ   = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "minCardinalityQ",                 null, null );
-            maxCardinality    = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "maxCardinality",                  null, null );
-            maxCardinalityQ   = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "maxCardinalityQ",                 null, null );
-            inverseOf         = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "inverseOf",                       null, null );
-            first             = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "first",                           null, null );
-            rest              = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "rest",                            null, null );
-            item              = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "item",                            null, null );
-            subPropertyOf     = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "subPropertyOf",                   null, null );
-            type              = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "type",                            null, null );
-            value             = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "value",                           null, null );
-            subClassOf        = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "subClassOf",                      null, null );
-            domain            = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "domain",                          null, null );
-            range             = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "range",                           null, null );
-            label             = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "label",                           null, null );
-            comment           = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "comment",                         null, null );
-            seeAlso           = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "seeAlso",                         null, null );
-            isDefinedBy       = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "isDefinedBy",                     null, null );
+            versionInfo       = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "versionInfo" );
+            imports           = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "imports" );
+            disjointWith      = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "disjointWith" );
+            disjointUnionOf   = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "disjointUnionOf" );
+            sameClassAs       = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "sameClassAs" );
+            samePropertyAs    = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "samePropertyAs" );
+            equivalentTo      = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "equivalentTo" );
+            oneOf             = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "oneOf" );
+            intersectionOf    = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "intersectionOf" );
+            unionOf           = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "unionOf" );
+            complementOf      = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "complementOf" );
+            onProperty        = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "onProperty" );
+            toClass           = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "toClass" );
+            hasValue          = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "hasValue" );
+            hasClass          = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "hasClass" );
+            hasClassQ         = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "hasClassQ" );
+            cardinality       = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "cardinality" );
+            cardinalityQ      = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "cardinalityQ" );
+            minCardinality    = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "minCardinality" );
+            minCardinalityQ   = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "minCardinalityQ" );
+            maxCardinality    = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "maxCardinality" );
+            maxCardinalityQ   = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "maxCardinalityQ" );
+            inverseOf         = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "inverseOf" );
+            first             = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "first" );
+            rest              = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "rest" );
+            item              = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "item" );
+            subPropertyOf     = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "subPropertyOf" );
+            type              = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "type" );
+            value             = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "value" );
+            subClassOf        = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "subClassOf" );
+            domain            = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "domain" );
+            range             = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "range" );
+            label             = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "label" );
+            comment           = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "comment" );
+            seeAlso           = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "seeAlso" );
+            isDefinedBy       = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "isDefinedBy" );
 
-            sameIndividualAs        = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "sameIndividualAs", null,    null );
-            differentIndividualFrom = new DAMLPropertyImpl( NAMESPACE_DAML_2001_03_URI, "differentIndividualFrom",   null, null );
-        }
-        catch (Exception e) {
-            // shouldn't happen
-            Log.severe( "Error while creating vocabulary: " + e, e );
-            throw new RuntimeException( "RDF Exception while creating vocabulary: " + e );
-        }
+            sameIndividualAs        = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "sameIndividualAs" );
+            differentIndividualFrom = s_model.createProperty( NAMESPACE_DAML_2001_03_URI, "differentIndividualFrom" );
     }
 
 
@@ -376,46 +355,46 @@ public class DAML_OIL
     public Resource NAMESPACE_DAML() { return NAMESPACE_DAML; }
 
     /** Answer the RDF resource for DAML List class.   */
-    public DAMLClass List() { return List; }
+    public Resource List() { return List; }
 
     /** Answer the RDF resource for DAML UniqueProperty class */
-    public DAMLClass UniqueProperty() { return UniqueProperty; }
+    public Resource UniqueProperty() { return UniqueProperty; }
 
     /** Answer the RDF resource for DAML TransitiveProperty class */
-    public DAMLClass TransitiveProperty() { return TransitiveProperty; }
+    public Resource TransitiveProperty() { return TransitiveProperty; }
 
     /** Answer the RDF resource for DAML UnambiguousProperty class */
-    public DAMLClass UnambiguousProperty() { return UnambiguousProperty; }
+    public Resource UnambiguousProperty() { return UnambiguousProperty; }
 
     /** Answer the RDF resource for DAML Restriction class */
-    public DAMLClass Restriction() { return Restriction; }
+    public Resource Restriction() { return Restriction; }
 
     /** Answer the RDF resource for DAML Ontology class */
-    public DAMLClass Ontology() { return Ontology; }
+    public Resource Ontology() { return Ontology; }
 
     /** Answer the RDF resource for the nil (empty) list.  */
-    public DAMLList nil() { return nil; }
+    public Resource nil() { return nil; }
 
     /** Answer the RDF resource for the top type (i.e. the super-type of all types).  */
-    public DAMLClass Thing() { return Thing; }
+    public Resource Thing() { return Thing; }
 
     /** Answer the RDF resource for the bottom type (i.e. the super-type of no types).  */
-    public DAMLClass Nothing() { return Nothing; }
+    public Resource Nothing() { return Nothing; }
 
     /** Answer the Alias for rdfs:Literal in the daml namespace.  */
-    public DAMLClass Literal() { return Literal; }
+    public Resource Literal() { return Literal; }
 
     /** Answer the RDF resource for DAML Class class (a DAML sub-class of rdfs:Class).   */
-    public DAMLClass Class() { return Class; }
+    public Resource Class() { return Class; }
 
     /** Answer the RDF resource for DAML Datatype class (a DAML sub-class of rdfs:Class).   */
-    public DAMLClass Datatype() { return Datatype; }
+    public Resource Datatype() { return Datatype; }
 
     /** Answer the RDF resource for DAML DatatypeProperty class (a DAML sub-class of rdf:Property).   */
-    public DAMLClass DatatypeProperty() { return DatatypeProperty; }
+    public Resource DatatypeProperty() { return DatatypeProperty; }
 
     /** Answer the RDF resource for DAML ObjectProperty class (a DAML sub-class of rdf:Property).   */
-    public DAMLClass ObjectProperty() { return ObjectProperty; }
+    public Resource ObjectProperty() { return ObjectProperty; }
 
 
     /* Properties */
@@ -535,17 +514,7 @@ public class DAML_OIL
     public Property differentIndividualFrom() { return differentIndividualFrom; }
 
     /** Answer the alias for rdfs:Property in the daml namespace.  From 2001/03 onwards, it is preferable to use either DatatypeProperty or ObjectProperty. */
-    public DAMLClass Property() { return Property; }
-
-
-    /* Deprecated resources and properties */
-
-    /**
-     * RDF resource for DAML Disjoint class. Removed from 2001/03 onwards.
-     * @deprecated Use {@link #disjointWith} or {@link #disjointUnionOf} instead.
-     **/
-    public DAMLClass Disjoint() { return Disjoint; }
-
+    public Resource Property() { return Property; }
 
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-10 12:24:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.15 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.16 2003-06-10 12:24:33 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -573,6 +573,20 @@ public interface OntResource
      * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
      */
     public boolean hasRDFType( Resource ontClass, boolean direct );
+
+    /**
+     * <p>
+     * Answer true if this resource is a member of the class denoted by the
+     * given class resource.  Includes all available types, so is equivalent to
+     * <code><pre>
+     * hasRDF( ontClass, false );
+     * </pre></code>
+     * </p>
+     * 
+     * @param ontClass Denotes a class to which this value may belong
+     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     */
+    public boolean hasRDFType( Resource ontClass );
 
     /**
      * <p>Remove the statement that this resource is of the given RDF type.  If this statement

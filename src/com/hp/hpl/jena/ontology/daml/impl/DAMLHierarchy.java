@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            7 Sept 2001
  * Filename           $RCSfile: DAMLHierarchy.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:29 $
+ * Last modified on   $Date: 2003-06-10 12:23:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -46,14 +46,8 @@ package com.hp.hpl.jena.ontology.daml.impl;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DAML_OIL_2000_12;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
-
-
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.rdf.model.*;
 
 import java.util.*;
 
@@ -65,7 +59,7 @@ import java.util.*;
  * into their model each time. Uses Singleton pattern.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLHierarchy.java,v 1.1 2003-03-12 17:16:29 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLHierarchy.java,v 1.2 2003-06-10 12:23:38 ian_dickinson Exp $
  */
 public class DAMLHierarchy
 {
@@ -98,12 +92,6 @@ public class DAMLHierarchy
         {DAML_OIL.UnambiguousProperty,         DAML_OIL.ObjectProperty},
         {DAML_OIL.UniqueProperty,              RDF.Property},
         {DAML_OIL.List,                        RDF.Seq},
-
-        {DAML_OIL_2000_12.Disjoint,            DAML_OIL_2000_12.List},
-        {DAML_OIL_2000_12.TransitiveProperty,  RDF.Property},
-        {DAML_OIL_2000_12.UniqueProperty,      RDF.Property},
-        {DAML_OIL_2000_12.UnambiguousProperty, RDF.Property},
-        {DAML_OIL_2000_12.List,                RDF.Seq}
     };
 
 
@@ -123,20 +111,6 @@ public class DAMLHierarchy
         {DAML_OIL.comment,                      RDFS.comment},
         {DAML_OIL.seeAlso,                      RDFS.seeAlso},
         {DAML_OIL.isDefinedBy,                  RDFS.isDefinedBy},
-
-        {DAML_OIL_2000_12.subPropertyOf,        RDFS.subPropertyOf},
-        {DAML_OIL_2000_12.Class,                RDFS.Class},
-        {DAML_OIL_2000_12.Literal,              RDFS.Literal},
-        {DAML_OIL_2000_12.Property,             RDF.Property},
-        {DAML_OIL_2000_12.type,                 RDF.type},
-        {DAML_OIL_2000_12.value,                RDF.value},
-        {DAML_OIL_2000_12.subClassOf,           RDFS.subClassOf},
-        {DAML_OIL_2000_12.domain,               RDFS.domain},
-        {DAML_OIL_2000_12.range,                RDFS.range},
-        {DAML_OIL_2000_12.label,                RDFS.label},
-        {DAML_OIL_2000_12.comment,              RDFS.comment},
-        {DAML_OIL_2000_12.seeAlso,              RDFS.seeAlso},
-        {DAML_OIL_2000_12.isDefinedBy,          RDFS.isDefinedBy}
     };
 
 
@@ -148,13 +122,6 @@ public class DAMLHierarchy
         DAML_OIL.sameIndividualAs,
         DAML_OIL.samePropertyAs,
         DAML_OIL.equivalentTo,
-
-        DAML_OIL_2000_12.subClassOf,
-        DAML_OIL_2000_12.subPropertyOf,
-        DAML_OIL_2000_12.sameClassAs,
-        DAML_OIL_2000_12.sameIndividualAs,
-        DAML_OIL_2000_12.samePropertyAs,
-        DAML_OIL_2000_12.equivalentTo,
 
         RDFS.subClassOf,
         RDFS.subPropertyOf

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 15:33:14 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-10 12:23:38 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -46,34 +46,19 @@ package com.hp.hpl.jena.ontology.daml.impl;
 // Imports
 ///////////////
 import java.util.*;
+import java.net.*;
+import java.io.*;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.Reader;
-
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.DAMLClass;
-import com.hp.hpl.jena.ontology.daml.DAMLCommon;
-
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DAML_OIL_2000_12;
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
-
-import com.hp.hpl.jena.rdf.model.impl.Util;
-
-import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.mem.*;
 
 
 
@@ -86,7 +71,7 @@ import com.hp.hpl.jena.mem.ModelMem;
  * of imports on or off overall, or by using
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.3 2003-05-21 15:33:14 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.4 2003-06-10 12:23:38 ian_dickinson Exp $
  */
 public class DAMLLoader
 {
@@ -158,37 +143,26 @@ public class DAMLLoader
     /** Dispatch table to handle different kinds of resource in the RDF model once parsed */
     private ResourceDispatcher[] m_dispatchTable = {
         new ResourceDispatcher( DAML_OIL.Class,                 DAMLClassImpl.class ),
-        new ResourceDispatcher( DAML_OIL_2000_12.Class,         DAMLClassImpl.class ),
         new ResourceDispatcher( RDFS.Class,                     DAMLClassImpl.class ),
 
-        new ResourceDispatcher( DAML_OIL_2000_12.Disjoint,      DAMLDisjointImpl.class ),
 
         new ResourceDispatcher( DAML_OIL.Restriction,           DAMLRestrictionImpl.class ),
-        new ResourceDispatcher( DAML_OIL_2000_12.Restriction,   DAMLRestrictionImpl.class ),
 
         new ResourceDispatcher( DAML_OIL.List,                  DAMLListImpl.class ),
-        new ResourceDispatcher( DAML_OIL_2000_12.List,          DAMLListImpl.class ),
 
         new ResourceDispatcher( DAML_OIL.Ontology,              DAMLOntologyImpl.class ),
-        new ResourceDispatcher( DAML_OIL_2000_12.Ontology,      DAMLOntologyImpl.class ),
 
         new ResourceDispatcher( DAML_OIL.Property,              DAMLPropertyImpl.class ),
-        new ResourceDispatcher( DAML_OIL_2000_12.Property,      DAMLPropertyImpl.class ),
         new ResourceDispatcher( RDF.Property,                   DAMLPropertyImpl.class ),
 
         new ResourceDispatcher( DAML_OIL.DatatypeProperty,      DAMLDatatypePropertyImpl.class ),
         new ResourceDispatcher( DAML_OIL.ObjectProperty,        DAMLObjectPropertyImpl.class ),
-
-        new ResourceDispatcher( DAML_OIL_2000_12.UniqueProperty, DAMLPropertyImpl.class ),
-        new ResourceDispatcher( DAML_OIL_2000_12.TransitiveProperty, DAMLPropertyImpl.class ),
-        new ResourceDispatcher( DAML_OIL_2000_12.UnambiguousProperty, DAMLPropertyImpl.class ),
 
         new ResourceDispatcher( DAML_OIL.UniqueProperty,        DAMLPropertyImpl.class ),
         new ResourceDispatcher( DAML_OIL.TransitiveProperty,    DAMLObjectPropertyImpl.class ),
         new ResourceDispatcher( DAML_OIL.UnambiguousProperty,   DAMLObjectPropertyImpl.class ),
 
         new ResourceDispatcher( DAML_OIL.Thing,                 DAMLInstanceImpl.class ),
-        new ResourceDispatcher( DAML_OIL_2000_12.Thing,         DAMLInstanceImpl.class )
     };
 
 
@@ -573,7 +547,6 @@ public class DAMLLoader
 		// we load any included ontologies (so that they are available when processing the
 		// statements in this document
 		loadImportedOntologies( m, DAML_OIL.Ontology );
-		loadImportedOntologies( m, DAML_OIL_2000_12.Ontology );
 	}
 
     /**
@@ -596,7 +569,6 @@ public class DAMLLoader
         // we load any included ontologies (so that they are available when processing the
         // statements in this document
         loadImportedOntologies( m, DAML_OIL.Ontology );
-        loadImportedOntologies( m, DAML_OIL_2000_12.Ontology );
     }
 
 
@@ -608,7 +580,7 @@ public class DAMLLoader
      * @param ontologyInstanceType Resource denoting the rdf:type of the Ontology element
      *                             that will contain the import statement
      */
-    protected void loadImportedOntologies( Model model, DAMLClass ontologyInstanceType )
+    protected void loadImportedOntologies( Model model, Resource ontologyInstanceType )
         throws RDFException
     {
         // first check that we are loading included ontologies
@@ -625,7 +597,8 @@ public class DAMLLoader
             for (Iterator j = new ConcatenatedIterator( i0, i1 );  j.hasNext();  ) {
                 Resource ontologyRes = (Resource) j.next();
 
-                for (NodeIterator i = model.listObjectsOfProperty( ontologyRes, ontologyInstanceType.getVocabulary().imports() ); i.hasNext(); ) {
+                //TODO for (NodeIterator i = model.listObjectsOfProperty( ontologyRes, ontologyInstanceType.getVocabulary().imports() ); i.hasNext(); ) {
+                for (NodeIterator i = model.listObjectsOfProperty( ontologyRes, VocabularyManager.getDefaultVocabulary().imports() ); i.hasNext(); ) {
                     // add the value of each import, as a string, to the collection
                     imports.add( i.nextNode().toString() );
                 }

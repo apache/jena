@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            3 August 2001
  * Filename           $RCSfile: VocabularyManager.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:28 $
+ * Last modified on   $Date: 2003-06-10 12:23:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -45,12 +45,8 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DAML_OIL_2000_12;
-
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.rdf.model.Resource;
-
 import com.hp.hpl.jena.rdf.model.impl.Util;
 
 
@@ -61,7 +57,7 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
  * with managing the different versions of the namespace.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: VocabularyManager.java,v 1.1 2003-03-12 17:16:28 ian_dickinson Exp $
+ * @version CVS info: $Id: VocabularyManager.java,v 1.2 2003-06-10 12:23:38 ian_dickinson Exp $
  */
 public class VocabularyManager
 {
@@ -111,9 +107,6 @@ public class VocabularyManager
 
             // test the known namespaces
             if (namespace != null) {
-                if (namespace.equals( DAML_OIL.NAMESPACE_DAML_2000_12_URI )) {
-                    return DAML_OIL_2000_12.getInstance();
-                }
 
                 // add further namespace tests here as the namespaces are defined.
             }

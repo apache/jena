@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLListImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 16:45:18 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-10 12:23:37 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -72,7 +72,7 @@ import java.util.Iterator;
  * in the current list interpretation.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLListImpl.java,v 1.3 2003-05-21 16:45:18 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLListImpl.java,v 1.4 2003-06-10 12:23:37 ian_dickinson Exp $
  */
 public class DAMLListImpl
     extends DAMLCommonImpl
@@ -237,7 +237,7 @@ public class DAMLListImpl
 
         if (isNil( rest )) {
             // rest of the list is nil, so ensure we return the right value
-            return getVocabulary().nil();
+            return getNil();
         }
         else {
             if (rest instanceof com.hp.hpl.jena.ontology.daml.DAMLList) {
@@ -320,7 +320,7 @@ public class DAMLListImpl
      * nil list. This correctly terminates the list at this point.
      */
     public void setRestNil() {
-        setRest( getVocabulary().nil() );
+        setRest( getNil() );
     }
 
 
@@ -351,7 +351,8 @@ public class DAMLListImpl
      * @return The resource denoting nil
      */
     public DAMLList getNil() {
-        return getVocabulary().nil();
+        // TODO revisit this
+        return new DAMLListImpl( getVocabulary().nil().getURI(), getDAMLModel(), getVocabulary() );
     }
 
 

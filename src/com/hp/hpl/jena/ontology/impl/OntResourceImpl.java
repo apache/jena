@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:44 $
+ * Last modified on   $Date: 2003-06-10 12:24:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.17 2003-06-08 21:29:44 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.18 2003-06-10 12:24:34 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -815,6 +815,22 @@ public class OntResourceImpl
         
         // we only want each result once
         return new UniqueExtendedIterator( j );
+    }
+
+    /**
+     * <p>
+     * Answer true if this resource is a member of the class denoted by the
+     * given class resource.  Includes all available types, so is equivalent to
+     * <code><pre>
+     * hasRDF( ontClass, false );
+     * </pre></code>
+     * </p>
+     * 
+     * @param ontClass Denotes a class to which this value may belong
+     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     */
+    public boolean hasRDFType( Resource ontClass ) {
+        return hasRDFType( ontClass, "unknown", false );
     }
 
     /**

@@ -6,36 +6,14 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 15:33:14 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-10 12:23:37 $
+ *               by   $Author: ian_dickinson $
  *
- * (c) Copyright Hewlett-Packard Company 2001
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
+ * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
@@ -45,41 +23,30 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
-
 import java.util.*;
 
-import com.hp.hpl.jena.util.Log;
-import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
-
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.DAMLCommon;
-import com.hp.hpl.jena.ontology.daml.LiteralAccessor;
-import com.hp.hpl.jena.ontology.daml.PropertyAccessor;
-import com.hp.hpl.jena.ontology.daml.PropertyIterator;
-import com.hp.hpl.jena.ontology.daml.DAMLClass;
-import com.hp.hpl.jena.ontology.daml.DAMLProperty;
-import com.hp.hpl.jena.ontology.daml.DAMLObjectProperty;
-
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.RDF;
-
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.enhanced.EnhGraph;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.ontology.impl.*;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
+
 /**
- * Abstract super-class for all DAML resources (including properties).  Defines shared
+ * <p>Abstract super-class for all DAML resources (including properties).  Defines shared
  * implementations and common services, such as property manipulation, vocabulary
  * management and <code>rdf:type</code> management.  Also defines accessors for common
- * properties, such as comment, label, and equivalentTo.
+ * properties, including <code>comment</code>, <code>label</code>, and <code>equivalentTo</code>.
+ * </p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.4 2003-05-21 15:33:14 chris-dollin Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.5 2003-06-10 12:23:37 ian_dickinson Exp $
  */
 public abstract class DAMLCommonImpl
-    extends ResourceImpl
+    extends OntResourceImpl
     implements DAMLCommon
 {
     // Constants
@@ -116,8 +83,24 @@ public abstract class DAMLCommonImpl
 
 
     /**
-     * Constructor, takes the URI this value, and the underlying
-     * model it will be attached to.
+     * <p>Constructor, takes the URI this value, and the underlying
+     * model it will be attached to.</p>
+     *
+     * @param res The resource that is being presented as a DAMLCommonImpl
+     * @param model Reference to the DAML model that will contain statements about this DAML value.
+     * @param vocabulary The vocabulary for this value (defines the namespace).  Can be null, in which
+     *                   case the vocabulary defaults to the most recent.
+     */
+    public DAMLCommonImpl( Resource res, EnhGraph g, DAMLVocabulary vocabulary )
+    {
+        super( res.getNode(), g );
+        m_vocabulary = vocabulary;
+    }
+
+
+    /**
+     * <p>Constructor, takes the URI this value, and the underlying
+     * model it will be attached to.</p>
      *
      * @param uri The URI of the DAML value, or null for an anonymous node.
      * @param model Reference to the DAML model that will contain statements about this DAML value.
@@ -126,15 +109,14 @@ public abstract class DAMLCommonImpl
      */
     public DAMLCommonImpl( String uri, DAMLModel model, DAMLVocabulary vocabulary )
     {
-        super( uri, model );
-     //   this.model = model;
-        m_vocabulary = vocabulary;
+        // TODO wrong - fix
+        this( model.getResource( uri ), (EnhGraph) model.getGraph(), vocabulary );
     }
 
 
     /**
-     * Constructor, takes the name and namespace for this value, and the underlying
-     * model it will be attached to.
+     * <p>Constructor, takes the name and namespace for this value, and the underlying
+     * model it will be attached to.</p>
      *
      * @param namespace The namespace the class inhabits, or null
      * @param name The name of the DAML value
@@ -144,7 +126,7 @@ public abstract class DAMLCommonImpl
      */
     public DAMLCommonImpl( String namespace, String name, DAMLModel model, DAMLVocabulary vocabulary )
     {
-        this( namespace + name, model, vocabulary );
+        this( (namespace == null) ? name : (namespace + name), model, vocabulary );
     }
 
 
@@ -153,7 +135,7 @@ public abstract class DAMLCommonImpl
     //////////////////////////////////
 
     /**
-     * Answer the underlying model
+     * <p>Answer the underlying model</p>
      *
      * @return A DAML model
      */
@@ -163,150 +145,52 @@ public abstract class DAMLCommonImpl
 
 
     /**
-     * Set the RDF type property for this node in the underlying model, replacing any
-     * existing type property.  To add a second or subsequent type statement to a resource,
-     * use {@link #setRDFType( com.hp.hpl.jena.rdf.model.Resource, boolean )
-     * setRDFType( Resource, false ) }.
-     *
-     * @param rdfClass The RDF resource denoting the new value for the rdf:type property,
-     *                 which will replace any existing type property.
-     */
-    public void setRDFType( Resource rdfClass ) {
-        setRDFType( rdfClass, true );
-    }
-
-
-    /**
-     * Add an RDF type property for this node in the underlying model. If the replace flag
+     * <p>Add an RDF type property for this node in the underlying model. If the replace flag
      * is true, this type will replace any current type property for the node. Otherwise,
-     * the type will be in addition to any existing type property.  Note that for most normal
-     * uses, a DAML resource should have at most one rdf:type property.  One exception to this,
-     * in the March 2001 release, is when DatatypeProperties are marked as unique, unambiguous
-     * or transitive.  This is achieved by the use of two rdf type properties.
+     * the type will be in addition to any existing type property.</p>
+     * <p>Deprecated in favour of {@link OntResource#addRDFType} for add, or 
+     * {@link OntResource#setRDFType} for replace.</p>
      *
      * @param rdfClass The RDF resource denoting the class that will be new value for the rdf:type property.
      * @param replace  If true, the given class will replace any existing type property for this
      *                 value, otherwise it will be added as an extra type statement.
+     * @deprecated Use {@link OntResource#addRDFType} or {@link OntResource#setRDFType}.
      */
     public void setRDFType( Resource rdfClass, boolean replace ) {
-        // check first that we have a model - classes in the vocabulary don't have a model
-        // but still invoke setRDFType when constructing
-        if (getModel() != null) {
-            if (replace) {
-                replaceProperty( RDF.type, rdfClass );
-            }
-            else {
-                try {
-                    addProperty( RDF.type, rdfClass );
-                }
-                catch (JenaException e) {
-                    Log.severe( "RDF exception " + e, e );
-                    throw new RuntimeException( "RDF Exception " + e );
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Answer true if this DAML value is a member of the class denoted by the given URI.
-     *
-     * @param classURI String denoting the URI of the class to test against
-     * @return true if it can be shown that this DAML value is a member of the class, via
-     *         <code>rdf:type</code>.
-     */
-    public boolean hasRDFType( String classURI ) {
-        // do we know a daml class that matches this uri?
-        DAMLCommon damlVal = ((DAMLModel) getModel()).getDAMLValue( classURI );
-
-        if (damlVal != null  &&  damlVal instanceof com.hp.hpl.jena.ontology.daml.DAMLClass) {
-            // we know a class that matches the URI, so test against it
-            return hasRDFType( (DAMLClass) damlVal );
+        if (replace) {
+            setRDFType( rdfClass );
         }
         else {
-            // last resort, make a temporary resource to hold the uri
-           return hasRDFType( new ResourceImpl( classURI, getModel() ) );
+            addRDFType( rdfClass );
         }
     }
 
 
     /**
-     * Answer true if this DAML value is a member of the class denoted by the
-     * given DAML class object.  This will traverse the class hierarchy, until
-     * every class and super-class for this
-     * DAML value has been examined.  Depending on the depth of the hierarchy,
-     * this may be an expensive operation. Cycles are detected, however, so it
-     * is guaranteed to terminate.
+     * <p>Answer an iterator over all of the types to which this resource belongs. Optionally,
+     * restrict the results to the most specific types, so that any class that is subsumed by
+     * another class in this resource's set of types is not reported.</p>
+     * <p><strong>Note:</strong> that the interpretation of the <code>complete</code> flag has
+     * changed since Jena 1.x. Previously, the boolean flag was to generated the transitive 
+     * closure of the class hierarchy; this is now handled by the underlyin inference graph
+     * (if specified). Now the flag is used to restrict the returned values to the most-specific
+     * types for this resource.</p>
      *
-     * @param damlClass Denotes a class to which this value may belong
-     * @return true if the value is a member of the class (or one of its sub-classes)
-     *         via <code>rdf:type</code>.
+     * @param complete If true, return all known types; if false, return only the most-specific
+     * types.
+     * @return an iterator over the set of this value's classes
      */
-    public boolean hasRDFType( Resource damlClass ) {
-        // see if the given class is in the iteration of this object's types
-        boolean found = false;
-        String damlClassURI = damlClass.getURI();
-
-        for (Iterator i = getRDFTypes( true );  !found  &&  i.hasNext();  ) {
-            Resource c = (Resource) i.next();
-
-            // this class could be equal to the target class, or could be a sub-class of it under the
-            // built-in knowledge of the DAML hierarchy
-            found = c.equals( damlClass ) ||
-                    DAMLHierarchy.getInstance().isDAMLSubClassOf( c.getURI(), damlClassURI );
-        }
-
-        return found;
+    public Iterator getRDFTypes( boolean complete ) {
+        return listRDFTypes( !complete );
     }
 
 
     /**
-     * Answer an iterator over all of the types to which this class belongs. Optionally,
-     * generate a closure by considering the closure of the set of classes over the
-     * class hierarchy (e.g. if 'fido' is the resource, the non-closed set of fido's
-     * classes might be
-     * <code>{Dog, Vaccinated}</code>,
-     * i.e. the set of classes for which rdf:type statements exist for fido,
-     * while the closed set might be
-     * <code>{Dog, Vaccinated, Mammal, Pet, Vertebrate, Thing, MedicallyCertified}</code>
-     *
-     * @param closed If true, generate the closed set by considering the super-classes of
-     *               the known classes of this value.
-     * @return an iterator over the set of this value's classes (note: it is a set, so
-     *         each class will only appear once)
-     */
-    public Iterator getRDFTypes( boolean closed ) {
-        HashSet types = new HashSet();
-
-        // first we get all of the values for rdf:type or daml:type
-        for (Iterator i = prop_type().getAll( false );  i.hasNext(); ) {
-            // add each type to the type set
-            Resource r = (Resource) i.next();
-            types.add( r );
-
-            // for the closed set of types, we also add the super-types of each type
-            if (closed && r instanceof DAMLClass) {
-                for (Iterator j = ((DAMLClass) r).getSuperClasses();  j.hasNext(); ) {
-                    types.add( j.next() );
-                }
-            }
-        }
-
-        // check in case we have a default type to add
-        if (closed && getDefaultType() != null) {
-            types.add( getDefaultType() );
-        }
-
-        return types.iterator();
-    }
-
-
-    /**
-     * Answer the value of a given RDF property for this DAML value, or null
+     * <p>Answer the value of a given RDF property for this DAML value, or null
      * if it doesn't have one.  The value is returned as an RDFNode, from which
      * the value can be extracted for literals.  If there is more than one RDF
      * statement with the given property for the current value, it is not defined
-     * which of the values will be returned.
+     * which of the values will be returned.</p>
      *
      * @param property An RDF property
      * @return An RDFNode whose value is the value, or one of the values, of the
@@ -314,27 +198,23 @@ public abstract class DAMLCommonImpl
      *         returns null.
      */
     public RDFNode getPropertyValue( Property property ) {
-        try {
-            return getProperty( property ).getObject();
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception while getting property " + property + " value was: " + e, e );
-            throw new RuntimeException( "RDF error when getting values for property " + property + ": " + e );
-        }
+        return getProperty( property ).getObject();
     }
 
 
     /**
-     * Answer an iterator over the set of all values for a given RDF property. Each
+     * <p>Answer an iterator over the set of all values for a given RDF property. Each
      * value in the iterator will be an RDFNode, representing the value (object) of
-     * each statement in the underlying model.
+     * each statement in the underlying model.</p>
      *
      * @param property The property whose values are sought
-     * @return An Iterator over the values of the property, each of which will be an
-     *         {@link com.hp.hpl.jena.rdf.model.RDFNode RDFNode}.
+     * @return An Iterator over the values of the property
      */
     public NodeIterator getPropertyValues( Property property ) {
-        return new NodeIteratorImpl( new PropertyIterator( this, property, null, false, false ), null );
+        // TODO
+        return null;
+        /*return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectMapper() );
+        new PropertyIterator( this, property, null, false, false ), null );*/
     }
 
 
@@ -397,7 +277,7 @@ public abstract class DAMLCommonImpl
             addProperty( prop, value );
         }
         catch (JenaException e) {
-            Log.severe( "RDF exception while replacing value of DAML property: " + e, e );
+            // TODO Log.severe( "RDF exception while replacing value of DAML property: " + e, e );
             throw new RuntimeException( "RDF exception while replacing value of DAML property: " + e );
         }
     }
@@ -422,7 +302,7 @@ public abstract class DAMLCommonImpl
             return count;
         }
         catch (JenaException e) {
-            Log.severe( "Exception while listing values: " + e, e );
+            // TODO Log.severe( "Exception while listing values: " + e, e );
             throw new RuntimeException( "RDF failure while listing values: " + e );
         }
     }
@@ -446,6 +326,12 @@ public abstract class DAMLCommonImpl
                                                       getPropertyInverse( property ), (closed && isTransitive( property )), false );
         return iter;
     }
+    public Iterator getAll( Property property) {
+        // get an iterator over all of the values of this property, including equivalent values
+        //TODO PropertyIterator iter = new PropertyIterator( getEquivalentValues(), property,
+                                                      //getPropertyInverse( property ), (closed && isTransitive( property )), false );
+        return null;//iter;
+    }
 
 
     /**
@@ -463,6 +349,22 @@ public abstract class DAMLCommonImpl
         return m_vocabulary;
     }
 
+
+    /**
+     * <p>
+     * Answer true if this resource is a member of the class denoted by the
+     * given class resource.  Includes all available types, so is equivalent to
+     * <code><pre>
+     * hasRDF( ontClass, false );
+     * </pre></code>
+     * </p>
+     * 
+     * @param ontClass Denotes a class to which this value may belong
+     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     */
+    public boolean hasRDFType( String uri ) {
+        return hasRDFType( getModel().getResource( uri ) );
+    }
 
     /**
      * Answer a key that can be used to index collections of this DAML value for
@@ -565,7 +467,7 @@ public abstract class DAMLCommonImpl
             ((DAMLModelImpl) getModel()).unindex( this );
         }
         catch (JenaException e) {
-            Log.severe( "RDF exception while removing object from model: " + e, e );
+            //TODO Log.severe( "RDF exception while removing object from model: " + e, e );
         }
     }
 
@@ -695,7 +597,7 @@ public abstract class DAMLCommonImpl
                     }
                 }
                 catch (JenaException e) {
-                    Log.severe( "Possible RDF error when zapping from model: " + e, e );
+                    //TODO Log.severe( "Possible RDF error when zapping from model: " + e, e );
                 }
             }
         }
@@ -719,7 +621,7 @@ public abstract class DAMLCommonImpl
             }
         }
         catch (JenaException e) {
-            Log.severe( "Possible RDF error when zapping from model: " + e, e );
+            //TODO Log.severe( "Possible RDF error when zapping from model: " + e, e );
         }
     }
 

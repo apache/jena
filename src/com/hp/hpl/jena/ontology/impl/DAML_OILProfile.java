@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-09 16:05:34 $
+ * Last modified on   $Date: 2003-06-10 12:24:35 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.11 2003-05-09 16:05:34 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.12 2003-06-10 12:24:35 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -200,20 +200,6 @@ public class DAML_OILProfile
             {DAML_OIL.comment,                      RDFS.comment},
             {DAML_OIL.seeAlso,                      RDFS.seeAlso},
             {DAML_OIL.isDefinedBy,                  RDFS.isDefinedBy},
-
-            {DAML_OIL_2000_12.subPropertyOf,        RDFS.subPropertyOf},
-            {DAML_OIL_2000_12.Class,                RDFS.Class},
-            {DAML_OIL_2000_12.Literal,              RDFS.Literal},
-            {DAML_OIL_2000_12.Property,             RDF.Property},
-            {DAML_OIL_2000_12.type,                 RDF.type},
-            {DAML_OIL_2000_12.value,                RDF.value},
-            {DAML_OIL_2000_12.subClassOf,           RDFS.subClassOf},
-            {DAML_OIL_2000_12.domain,               RDFS.domain},
-            {DAML_OIL_2000_12.range,                RDFS.range},
-            {DAML_OIL_2000_12.label,                RDFS.label},
-            {DAML_OIL_2000_12.comment,              RDFS.comment},
-            {DAML_OIL_2000_12.seeAlso,              RDFS.seeAlso},
-            {DAML_OIL_2000_12.isDefinedBy,          RDFS.isDefinedBy}
         };
     }
     

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            16 Jan 2001
  * Filename           $RCSfile: DAMLVocabulary.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:13:20 $
+ * Last modified on   $Date: 2003-06-10 12:22:48 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -45,11 +45,8 @@ package com.hp.hpl.jena.vocabulary;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.*;
 
-import com.hp.hpl.jena.ontology.daml.DAMLClass;
-import com.hp.hpl.jena.ontology.daml.DAMLList;
 
 
 
@@ -61,7 +58,7 @@ import com.hp.hpl.jena.ontology.daml.DAMLList;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLVocabulary.java,v 1.2 2003-01-23 15:13:20 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLVocabulary.java,v 1.3 2003-06-10 12:22:48 ian_dickinson Exp $
  */
 public interface DAMLVocabulary
 {
@@ -80,52 +77,49 @@ public interface DAMLVocabulary
     public Resource NAMESPACE_DAML();
 
     /** Answer the RDF resource for DAML List class.   */
-    public DAMLClass List();
+    public Resource List();
 
     /** Answer the RDF resource for DAML UniqueProperty class */
-    public DAMLClass UniqueProperty();
+    public Resource UniqueProperty();
 
     /** Answer the RDF resource for DAML TransitiveProperty class */
-    public DAMLClass TransitiveProperty();
+    public Resource TransitiveProperty();
 
     /** Answer the RDF resource for DAML UnambiguousProperty class */
-    public DAMLClass UnambiguousProperty();
+    public Resource UnambiguousProperty();
 
     /** Answer the RDF resource for DAML Restriction class */
-    public DAMLClass Restriction();
+    public Resource Restriction();
 
     /** Answer the RDF resource for DAML Ontology class */
-    public DAMLClass Ontology();
+    public Resource Ontology();
 
     /** Answer the RDF resource for the nil (empty) list.  */
-    public DAMLList nil();
+    public Resource nil();
 
     /** Answer the RDF resource for the top type (i.e. the super-type of all types).  */
-    public DAMLClass Thing();
+    public Resource Thing();
 
     /** Answer the RDF resource for the bottom type (i.e. the super-type of no types).  */
-    public DAMLClass Nothing();
+    public Resource Nothing();
 
     /** Answer the Alias for rdfs:Literal in the daml namespace.  */
-    public DAMLClass Literal();
+    public Resource Literal();
 
     /** Answer the RDF resource for DAML Class class (a DAML sub-class of rdfs:Class).   */
-    public DAMLClass Class();
+    public Resource Class();
 
     /** Answer the RDF resource for DAML Datatype class (a DAML sub-class of rdfs:Class).   */
-    public DAMLClass Datatype();
+    public Resource Datatype();
 
     /** Answer the RDF resource for DAML DatatypeProperty class (a DAML sub-class of rdf:Property).   */
-    public DAMLClass DatatypeProperty();
+    public Resource DatatypeProperty();
 
     /** Answer the RDF resource for DAML ObjectProperty class (a DAML sub-class of rdf:Property).   */
-    public DAMLClass ObjectProperty();
-
-    /** Answer the RDF resource for DAML Disjoint class. */
-    public DAMLClass Disjoint();
+    public Resource ObjectProperty();
 
     /** Answer the Alias for rdfs:Property in the daml namespace. */
-    public DAMLClass Property();
+    public Resource Property();
 
 
     /* Properties */
