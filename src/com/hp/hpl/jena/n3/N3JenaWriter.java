@@ -4,6 +4,7 @@
  */
 
 // To do:
+//   Better deteched of illegal characters in qnames (? and = for example) 
 //   Split into different writers for fast and pretty with common superclass
 //     Superclass has common operations (formatting), output stream, prefix map
 //   Options
@@ -36,7 +37,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.13 2003-04-29 16:12:16 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.14 2003-05-02 08:15:56 andy_seaborne Exp $
  */
 
 
@@ -361,7 +362,7 @@ public class N3JenaWriter implements RDFWriter
 			StmtIterator pointsToIter = model.listStatements(null, null, obj) ;
 			if ( ! pointsToIter.hasNext() )
 				// Corrupt graph!
-				throw new RuntimeException(this.getClass().getName()+": found object with no arcs!") ;
+				throw new JenaException("N3: found object with no arcs!") ;
 
 			Statement s = pointsToIter.nextStatement() ;
 			if ( ! pointsToIter.hasNext() )
@@ -744,9 +745,22 @@ public class N3JenaWriter implements RDFWriter
 				// then skip output a quoted URIref
 				// (nsprefix should not have a dot in it - got thrown out
 				// earlier).
+
+                // Quick hack = fix properly by consolidating character
+                // set handling with the reader 
 				String localname = uriStr.substring(matchURI.length()) ;
-				if ( localname.indexOf('.') == -1 )
-					return matchPrefix+":"+localname ;
+                for ( int i = 0 ; i < localname.length() ; i++ )
+                {
+                    char ch = localname.charAt(i) ;
+                    switch (ch)
+                    {
+                        case '?': case '=': case ':': case '.':
+                            break ;
+                        default:
+                        return matchPrefix+":"+localname ;
+                    }
+                }
+                // Continue and return quoted URIref
 			}
 		}
 		// Not as a qname - write as a quoted URIref
@@ -883,11 +897,11 @@ public class N3JenaWriter implements RDFWriter
 			list.add(sIter.nextStatement().getObject()) ;
 			if ( sIter.hasNext() )
 				// @@ need to cope with this (unusual) case
-				throw new RuntimeException("Multi valued list item") ;
+				throw new JenaException("N3: Multi valued list item") ;
 			sIter = r.getModel().listStatements(r, RDF.rest, (RDFNode)null) ;
 			r = (Resource)sIter.nextStatement().getObject() ;
 			if ( sIter.hasNext() )
-				throw new RuntimeException("List has two tails") ;
+				throw new JenaException("N3: List has two tails") ;
 		}
 		return list.iterator() ;
 	}
