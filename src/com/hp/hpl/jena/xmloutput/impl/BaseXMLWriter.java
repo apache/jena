@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.41 2005-03-18 13:56:44 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.42 2005-04-03 20:28:04 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -23,6 +23,7 @@ import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 
 import java.io.*;
 import java.util.*;
+import java.nio.charset.Charset;
 
 import org.apache.xerces.util.*;
 import org.apache.oro.text.regex.*;
@@ -49,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.41 $' Date='$Date: 2005-03-18 13:56:44 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.42 $' Date='$Date: 2005-04-03 20:28:04 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -471,13 +472,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
 				//		System.out.println(javaEnc);
 				String xEnc = EncodingMap.getJava2IANAMapping(javaEnc);
-				if (xEnc == null) {
-		            logger.warn("IANA name for Java encoding: "+javaEnc+" is not known. \n"+
-		            "   Not including any encoding declaration in the RDF/XML output.\n" +
-		            "   It is better to use a FileOutputStream, in place of a FileWriter.");
-		        } else {
-				   decl = "<?xml version="+q("1.0")+" encoding=" + q(xEnc) + "?>";
-		        }
+				String yEnc = Charset.forName(javaEnc).name();
+				if (xEnc != null && !yEnc.equalsIgnoreCase(xEnc)) {
+				    logger.warn("xEnc: "+xEnc+ " yEnc: "+ yEnc );
+				}
+				decl = "<?xml version="+q("1.0")+" encoding=" + q(yEnc) + "?>";
 			}
 		}
 		if (decl == null && showXmlDeclaration != null)
