@@ -13,7 +13,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.2 2003-12-04 10:16:35 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.3 2004-04-01 11:13:50 andy_seaborne Exp $
  */ 
  
 abstract class DBcmd
@@ -161,15 +161,34 @@ abstract class DBcmd
 
     }
     
-    protected ModelRDB getRDBModel() 
+protected ModelRDB getRDBModel() 
     {
         if ( dbModel == null )
         {
+            try 
+            {
+                
             if ( argModelName == null )
                 dbModel = ModelRDB.open(getConnection()) ;
             else
-                dbModel = ModelRDB.open(getConnection(), argModelName) ;
+                try {
+                    dbModel = ModelRDB.open(getConnection(), argModelName) ;
+                } catch (com.hp.hpl.jena.shared.DoesNotExistException ex)
+                {
+                    System.out.println("No model '"+argModelName+"' in that database") ;
+                    System.exit(9) ;
+                }
+            }
+            catch (com.hp.hpl.jena.db.RDFRDBException dbEx)
+            {
+                Throwable t = dbEx.getCause() ;
+                if ( t == null )
+                    t = dbEx ;
+                System.out.println("Failed to connect to the database: "+t.getMessage()) ;
+                System.exit(9) ;
+            }
         }
+        
         return dbModel ;   
     }
 
