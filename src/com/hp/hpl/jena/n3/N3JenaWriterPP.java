@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.13 2003-12-05 16:14:34 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.14 2004-07-07 11:19:52 andy_seaborne Exp $
  */
 
 
@@ -363,6 +363,9 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
                 complex.add(obj) ;
         }
         sIter.close() ;
+        // DEBUG
+        int simpleSize = simple.size() ;
+        int complexSize = complex.size() ;
         
         // Write property/simple objects
         
@@ -430,14 +433,25 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             if ( simple.size() > 0 )
                 out.println(" ;");
             
+            int padding = -1 ;
             String padSp = null ;
+            
+            // Can we fit teh start of teh complex object on this line?
+            
+            // DEBUG variable.
+            int tmp = propStr.length() ;
             // Complex objects - do not allow property to be long and alignment to be lost
-            if (propStr.length() < propertyCol)
-                padSp = pad(calcPropertyPadding(propStr)) ;
+            if ((propStr.length()+minGap) <= propertyCol)
+            {
+                padding = calcPropertyPadding(propStr) ;
+                padSp = pad(padding) ;
+            }
 
             for (Iterator iter = complex.iterator(); iter.hasNext();)
             {
-                out.incIndent(indentObject);
+                int thisIndent = indentObject ;
+                //if ( i )
+                out.incIndent(thisIndent);
                 out.print(propStr);
                 if ( padSp != null )
                     out.print(padSp) ;
@@ -446,7 +460,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             
                 RDFNode n = (RDFNode) iter.next();
                 writeObject(n);
-                out.decIndent(indentObject);
+                out.decIndent(thisIndent);
                 if ( iter.hasNext() )
                     out.println(" ;");
             }
@@ -454,14 +468,6 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         return;
 	}
 
-    private int calcPropertyPadding(String propStr)
-    {
-        int padding = propertyCol - propStr.length();
-        if (padding < minGap)
-            padding = minGap;
-        return padding ;
-    }
- 
 
     private boolean isSimpleObject(RDFNode node)
     {

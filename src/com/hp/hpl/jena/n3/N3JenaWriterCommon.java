@@ -22,7 +22,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.23 2004-07-01 10:15:43 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.24 2004-07-07 11:19:52 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -78,13 +78,7 @@ public class N3JenaWriterCommon implements RDFWriter
     // Column for property when an object follows a property on the same line
     int propertyCol = getIntValue("propertyColumn", 8) ;
     
-    // Max width of property to align to.
-    // Property may be longer and still go on same line but the columnization is broken. 
-    // Allow for min gap.
-    // Require propertyWidth < propertyCol (strict less than)
-    int propertyWidth = propertyCol-minGap ;
-
-    //  Gap from property to object when object on a new line.
+    // Minimum gap from property to object when object on a new line.
     int indentObject = propertyCol ;
     
     // If a subject is shorter than this, the first property may go on same line.
@@ -375,9 +369,7 @@ public class N3JenaWriterCommon implements RDFWriter
                 // (which looses alignment - this is intentional.
                 // Ensure there is at least min gap.
                 
-                int padding = propertyCol-propStr.length() ;
-                if ( padding < minGap )
-                    padding = minGap ;
+                int padding = calcPropertyPadding(propStr) ;
                 out.print(pad(padding)) ;
                 
 //                if ( propStr.length() < propertyWidth ) 
@@ -687,6 +679,14 @@ public class N3JenaWriterCommon implements RDFWriter
         }
     }
     
+    protected int calcPropertyPadding(String propStr)
+    {
+        int padding = propertyCol - propStr.length();
+        if (padding < minGap)
+            padding = minGap;
+        return padding ;
+    }
+     
 	protected static String pad(int cols)
 	{
 		StringBuffer sb = new StringBuffer() ;
