@@ -10,7 +10,9 @@
 
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
 
-<h1 style="text-align: center; line-height: 18pt">Migrating from Jena1  to Jena 2</h1>
+<h1 style="text-align: center; line-height: 18pt">
+Migrating from Jena1 to Jena 2
+</h1>
 
 <p>Jena 2 supports the Jena 1 API. However a number of changes have been made
 that will cause existing code not to run out of the box. The Jena team expect
@@ -32,11 +34,13 @@ The old <b>mesa.rdf</b> part of the package names has been eliminated.
 	<li>com.hp.hpl.mesa.rdf.jena.vocabulary -&gt; com.hp.hpl.jena.vocabulary</li>
 </ul>
 
-<h3>logging uses log4j</h3>
+<h3>logging uses Commons logging</h3>
 
 The old logging package in <strong>.util.Log</strong> has been removed. Jena
-now uses <strong>log4j</strong> for its logging. Any users who used the old
-logging package should switch to log4j.
+now uses
+<a href="http://jakarta.apache.org/commons/logging.html">Commons logging</a>
+and, optionally, <a href="http://logging.apache.org">log4j</a> for its logging.
+Any users who used the old logging package should switch to log4j.
 
 <h3>new model factory:</h3>
 
