@@ -39,15 +39,10 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.15 $ on $Date: 2003-08-11 02:45:13 $
+* @version $Revision: 1.16 $ on $Date: 2003-08-25 02:14:51 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
-
-	//=======================================================================
-	// Cutomization variables
-
-	public static String SYS_AS_TNAME = "jena_StmtReified";
 
 	//=======================================================================
 	// Internal variables

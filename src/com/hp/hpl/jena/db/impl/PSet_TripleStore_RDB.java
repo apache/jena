@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.36 2003-08-11 02:45:36 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.37 2003-08-25 02:14:38 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +20,6 @@ import java.util.List;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import org.apache.log4j.Logger;
@@ -44,7 +42,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.36 $ on $Date: 2003-08-11 02:45:36 $
+* @version $Revision: 1.37 $ on $Date: 2003-08-25 02:14:38 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -58,25 +56,14 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	*/
    public String m_tblName = null;
    
-    /** The maximum size of literals that can be added to Statement table */
-    protected int MAX_LITERAL = 0;
-
     /** The SQL type to use for storing ids (compatible with wrapDBID) */
     protected String ID_SQL_TYPE = null;
 
     /** Set to true if the insert operations already check for duplications */
     protected boolean SKIP_DUPLICATE_CHECK = false;
 
-    /** Set to true if the insert operations allocate object IDs themselves */
-    protected boolean SKIP_ALLOCATE_ID = false;
-
-    /** Set to true if the insert operations should be done using the "proc" versions */
-    protected boolean INSERT_BY_PROCEDURE = false;
-
     /** Set to true to enable cache of pre-prepared statements */
     protected boolean CACHE_PREPARED_STATEMENTS = true;
-
-	protected String EMPTY_LITERAL_MARKER = "EmptyLiteral";
 
 	/** The table of sql driver statements */
 	protected SQLCache m_sql = null;
@@ -116,7 +103,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
 
     protected static Logger logger = Logger.getLogger(PSet_TripleStore_RDB.class);
     
-	public void setMaxLiteral(int value) { MAX_LITERAL = value; }
 	public void setSQLType(String value) { ID_SQL_TYPE = value; }
 	public void setSkipDuplicateCheck(boolean value) { SKIP_DUPLICATE_CHECK = value;}
 	public void setSQLCache(SQLCache cache ) { m_sql = cache; }
@@ -171,57 +157,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		}
     		        
     }
-//	=======================================================================
-//	 Support for registering/looking up resources, literals, namespaces
-//	 For most categories we need operations to:
-//		getXID - determine the DBID, if available
-//		allocateXID - allocate a new DBID, if possible
-//		getX   - reconstruct the object from its DBID
-//		addX   - add to the database, finds DBID as side effect
-//	=======================================================================
-	  /**
-	   * General ID allocate stub.
-	   * Calls the given SQL operation to perform the allocation.
-	   */
-	  public IDBID allocateID(String opname) throws RDFRDBException {
-		  try {
-			  ResultSetIterator it = m_sql.runSQLQuery(opname, new Object[] {});
-			  if (it.hasNext()) {
-				  return wrapDBID(it.getSingleton());
-			  } else {
-				  throw new RDFRDBException("Failed to allocate ID");
-			  }
-		  } catch (SQLException e) {
-			  throw new RDFRDBException("Internal sql error", e);
-		  }
-	  }
-	  
-	  
-	/**
-	 * Return the database ID for the literal and allocate one of necessary
-	 */
-	public IDBID allocateLiteralID() throws RDFRDBException {
-		return allocateID("allocateLiteralID");
-	}
-	
-	protected boolean literalIsPlain ( LiteralLabel ll ) {
-		String dtype = ll.getDatatypeURI();
-		String lang = ll.language();
-		String ls = (String)(ll.getValue());
-		
-		return (ls.length() < MAX_LITERAL) && !((literalHasLang(ll) || literalHasType(ll)));
-	}
-	
-	protected static boolean literalHasLang ( LiteralLabel ll ) {
-		String lang = ll.language();		
-		return ((lang != null)  && !lang.equals(""));
-	}
 
-	protected static boolean literalHasType ( LiteralLabel ll ) {
-		String dtype = ll.getDatatypeURI();		
-		return ((dtype != null) && !dtype.equals(""));
-	}
-			
      /**
       * Printable name for the driver configuration
       */
@@ -853,14 +789,6 @@ public void deleteTripleAR(
 					logger.error("Problem removing statements from table: ", e);
 				 }
 		}
-
-		/* (non-Javadoc)
-		 * @see com.hp.hpl.jena.graphRDB.IPSet#tableExists(java.lang.String)
-		 */
-		public boolean tableExists(String tName) {
-			return(m_driver.doesTableExist(tName));
-		}
-
 }
 
 /*
