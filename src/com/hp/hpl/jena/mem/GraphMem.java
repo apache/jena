@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.22 2003-09-22 12:16:34 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.23 2003-09-30 15:34:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -70,26 +70,20 @@ public class GraphMem extends GraphBase implements Graph
         {
         if (getReifier().handledAdd( t ) || triples.contains( t ))
             return;
-        else
-            {
-            triples.add( t );
-            subjects.add( t.getSubject(), t );
+        else if (triples.add( t ))
+            { subjects.add( t.getSubject(), t );
             predicates.add( t.getPredicate(), t );
-            objects.add( t.getObject(), t );
-            }
+            objects.add( t.getObject(), t ); }
         }
 
     public void performDelete( Triple t )
         {
         if (getReifier().handledRemove( t ))
             return;
-        else
-            {
-            triples.remove( t );
-            subjects.remove( t.getSubject(),t );
+        else if (triples.remove( t ))
+            { subjects.remove( t.getSubject(), t );
             predicates.remove( t.getPredicate(), t );
-            objects.remove( t.getObject(), t );
-            }
+            objects.remove( t.getObject(), t ); }
         }
 
     public int size()  
@@ -159,7 +153,7 @@ public class GraphMem extends GraphBase implements Graph
         }
     }
 
-    protected class NodeMap {
+    protected static class NodeMap {
         HashMap map = new HashMap();
 
         protected void add(Node o, Triple t) {

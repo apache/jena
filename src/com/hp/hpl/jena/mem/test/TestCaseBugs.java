@@ -24,21 +24,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBugs.java,v 1.1 2003-09-29 14:08:52 chris-dollin Exp $
+ * $Id: TestCaseBugs.java,v 1.2 2003-09-30 15:34:03 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.mem.test;
 
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.mem.ModelMem;
-import com.hp.hpl.jena.mem.test.*;
 import com.hp.hpl.jena.rdf.model.*;
-
 
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2003-09-29 14:08:52 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-09-30 15:34:03 $
  */
 public class TestCaseBugs 
             extends TestCaseBasic {
