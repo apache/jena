@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.Bound;
+import com.hp.hpl.jena.graph.query.Domain;
 import com.hp.hpl.jena.graph.query.Element;
 import com.hp.hpl.jena.graph.query.Fixed;
 import com.hp.hpl.jena.graph.query.Mapping;
@@ -123,7 +124,7 @@ public class DBPattern  {
 		var.setListing(i);
 	}
 	
-	public boolean joinsWith ( DBPattern jsrc, List varList, boolean onlyStmt, boolean onlyReif ) {
+	public boolean joinsWith ( DBPattern jsrc, List varList, boolean onlyStmt, boolean onlyReif, boolean implJoin ) {
 		// currently, we can only join over the same table.
 		// and, in general, we can't join if the pattern has a predicate variable.
 		// but, if we are only querying asserted stmts and the pattern is
@@ -138,6 +139,9 @@ public class DBPattern  {
 			if ( onlyStmt && isStmt && (P instanceof Free) &&
 					(findVar(varList,((Free)P).var()) >= 0) )
 						return true;
+			if ( implJoin && (S instanceof Fixed) && (jsrc.S instanceof Fixed)
+					&& S.match((Domain)null,jsrc.S.asNodeMatch((Domain)null)   ) )
+				return true;
 		}
 		return false;
 	}

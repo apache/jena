@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.15 2005-02-21 12:02:50 andy_seaborne Exp $
+  $Id: DBQueryHandler.java,v 1.16 2005-03-01 01:04:46 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -25,6 +25,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
 	boolean queryOnlyReif;  // if true, query only reified stmt (ignore asserted)
 	boolean queryFullReif;  // if true, ignore partially reified statements
 	private boolean doFastpath;  // if true, enable fastpath optimization
+	private boolean doImplicitJoin;  // if true, optimize (pushdown) implicit joins
+	// e.g., "(ur1 pred1 ?v1) (uri1 pred2 ?v2)" is an implicit join on uri1
 
 	/** make an instance, remember the graph */
 	public DBQueryHandler ( GraphRDB graph ) {
@@ -41,6 +43,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
 
 	public void setDoFastpath ( boolean val ) { doFastpath = val; }
 	public boolean getDoFastpath () { return doFastpath; }
+	public void setDoImplicitJoin ( boolean val ) { doImplicitJoin = val; }
 
 	public Stage patternStage(
 		Mapping varMap,
@@ -141,7 +144,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
 						foundJoin = false;
 						for (i = 0; i < patternsToDo.size(); i++) {
 							unstaged = source[((Integer)patternsToDo.get(i)).intValue()];
-							if (unstaged.joinsWith(src,varList,queryOnlyStmt,queryOnlyReif)) {
+							if (unstaged.joinsWith(src,varList,queryOnlyStmt,queryOnlyReif,doImplicitJoin)) {
 								qryPat.add(unstaged);
 								patternsToDo.remove(i);
 								unstaged.addFreeVars(varList);
