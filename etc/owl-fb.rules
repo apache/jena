@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.38 2003-10-09 13:27:54 der Exp $
+# $Id: owl-fb.rules,v 1.39 2003-11-08 17:54:29 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -661,6 +661,10 @@
 [validationIndiv: (?v rb:validation on())  ->
 	[validationIndiv: (?X rb:violation error('conflict', 'Two individuals both same and different, may be due to disjoint classes or functional properties', ?Y)) 
 				<- (?X owl:differentFrom ?Y), (?X owl:sameAs ?Y) ] ]
+
+[validationDisjoint: (?v rb:validation on())  ->
+	[validationIndiv: (?X rb:violation error('disjoint', 'Two classes related by both subclass and disjoint relations', ?Y)) 
+				<- (?X owl:disjointWith ?Y), (?X rdfs:subClassOf ?Y) ] ]
 
 [validationDTP: (?v rb:validation on()), (?P rdf:type owl:DatatypeProperty) ->
 	[validationDTP: (?X rb:violation error('range check', 'Object value for datatype property (prop, value)', ?P, ?V))
