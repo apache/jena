@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdql.parser.RDQLParser;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.16 2004-05-28 16:56:15 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.17 2004-06-25 10:17:44 andy_seaborne Exp $
  */
 
 public class Query
@@ -200,6 +200,7 @@ public class Query
 
     /** Programmatic API operation */
     public void addConstraint(Constraint c)         { constraints.add(c) ; }
+    public List getConstraints()                    { return constraints ; }
 
     /** Programmatic API operation */
     public void addTriplePattern(Triple t)  { triplePatterns.add(t) ; }
@@ -231,6 +232,12 @@ public class Query
     		
     	return s ;
     }
+    
+    /** Return the prefix map fro the parsed query */ 
+    public Map getPrefixMap() { return prefixMap ; }
+
+    /** Return the default prefix map */ 
+    public Map getDefaultPrefixMap() { return defaultPrefixMap ; }
 
 
 
