@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.43 $
+ * Revision           $Revision: 1.44 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:04:29 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-21 15:17:25 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.43 2005-02-21 12:04:29 andy_seaborne Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.44 2005-02-21 15:17:25 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -62,7 +62,7 @@ public class OntDocumentManager
 
     /** The anchor char is added to the end of namespace prefix expansions */
     public static final String ANCHOR = "#";
-    
+
 
     // Static variables
     //////////////////////////////////
@@ -133,14 +133,14 @@ public class OntDocumentManager
 
     /** Default prefix mapping to use to seed all models */
     protected PrefixMapping m_prefixMap = new PrefixMappingImpl();
-    
+
     /** Flag to control whether we include the standard prefixes in generated models - default true. */
     protected boolean m_useDeclaredPrefixes = true;
-    
+
     /** The URL of the policy file that was loaded, or null if no external policy file has yet been loaded */
     protected String m_policyURL = null;
-    
-    
+
+
     // Constructors
     //////////////////////////////////
 
@@ -164,7 +164,7 @@ public class OntDocumentManager
      * @param path The search path to search for initial metadata, which will
      * also replace the current search path for this document manager.  Use
      * null to prevent loading of any initial ontology metadata. The path is a series
-     * of URL's, separated by the {@link #PATH_DELIMITER}, which defaults to 
+     * of URL's, separated by the {@link #PATH_DELIMITER}, which defaults to
      * semi-colon (;).
      */
     public OntDocumentManager( String path ) {
@@ -175,7 +175,7 @@ public class OntDocumentManager
 
     /**
      * <p>Initialise a document manager with the given configuration model. This model
-     * is used in place of any model that might be 
+     * is used in place of any model that might be
      * found by searching the meta-data search path.</p>
      * @param config An RDF model containing configuration information for this document manager.
      */
@@ -183,8 +183,8 @@ public class OntDocumentManager
         // we don't need to reset first since this is a new doc mgr
         configure( config, false );
     }
-    
-    
+
+
     // External signature methods
     //////////////////////////////////
 
@@ -235,7 +235,7 @@ public class OntDocumentManager
         initialiseMetadata( path, replace );
     }
 
-    
+
     /**
      * <p>Configure this document manager using the given configuration information, after
      * first resetting the model back to all default values.</p>
@@ -245,8 +245,8 @@ public class OntDocumentManager
     public void configure( Model config ) {
         configure( config, true );
     }
-    
-    
+
+
     /**
      * <p>Configure this document manager according to the configuration options
      * supplied by the given configuration model. If <code>reset</code> is true, the
@@ -260,11 +260,11 @@ public class OntDocumentManager
         if (reset) {
             reset();
         }
-        
+
         loadMetadata( config );
     }
-    
-    
+
+
     /**
      * <p>Reset all state in this document manager back to the default
      * values it would have had when the object was created. Optionally
@@ -281,7 +281,7 @@ public class OntDocumentManager
         m_ignoreImports.clear();
         m_prefixMap = new PrefixMappingImpl();
         m_useDeclaredPrefixes = true;
-        
+
         if (reload) {
             // reload the default values
             setMetadataSearchPath( DEFAULT_METADATA_PATH, true );
@@ -290,7 +290,7 @@ public class OntDocumentManager
             m_searchPath = DEFAULT_METADATA_PATH;
         }
     }
-    
+
     /**
      * <p>Reset all state in this document manager back to the default
      * values it would have had when the object was created. This does
@@ -301,8 +301,8 @@ public class OntDocumentManager
     public void reset() {
         reset( false );
     }
-    
-    
+
+
     /**
      * <p>
      * Answer an iterator over the ontology documents this document mananger is managing.
@@ -389,34 +389,34 @@ public class OntDocumentManager
      * <p>Answer true if, according to the policy expressed by this document manager, newly
      * generated ontology models should include the pre-declared namespace prefixes.
      * </p>
-     * 
+     *
      * @return True if pre-declared prefixes should be added to the models
      */
     public boolean useDeclaredPrefixes() {
         return m_useDeclaredPrefixes;
     }
-    
+
     /**
      * <p>Set the flag that determines whether pre-declared namespace prefixes will be added to newly
      * generated ontology models.</p>
-     * 
+     *
      * @param useDeclaredPrefixes If true, new models will include the pre-declared prefixes set held
      * by this document manager.
      */
     public void setUseDeclaredPrefixes( boolean useDeclaredPrefixes ) {
         m_useDeclaredPrefixes = useDeclaredPrefixes;
     }
-    
+
     /**
      * <p>Answer the namespace prefix map that contains the shared prefixes managed by this
      * document manager.</p>
-     * 
+     *
      * @return The namespace prefix mapping
      */
     public PrefixMapping getDeclaredPrefixMapping() {
         return m_prefixMap;
     }
-    
+
 
     /**
      * <p>
@@ -591,7 +591,7 @@ public class OntDocumentManager
     public void addIgnoreImport( String uri ) {
         m_ignoreImports.add( uri );
     }
-    
+
     /**
      * <p>Remove the given URI from the set of URI's we ignore in imports statements</p>
      * @param uri A URI to ignore no longer when importing
@@ -600,14 +600,14 @@ public class OntDocumentManager
         m_ignoreImports.remove( uri );
     }
 
-    /** 
+    /**
      * <p>Answer an iterator over the set of URI's we're ignoring</p>
      * @return An iterator over ignored imports
      */
     public Iterator listIgnoredImports() {
         return m_ignoreImports.iterator();
     }
-    
+
     /**
      * <p>Answer true if the given URI is one that will be ignored during imports </p>
      * @param uri A URI to test
@@ -616,7 +616,7 @@ public class OntDocumentManager
     public boolean ignoringImport( String uri ) {
         return m_ignoreImports.contains( uri );
     }
-    
+
     /**
      * <p>
      * Remove all entries from the model cache
@@ -651,9 +651,9 @@ public class OntDocumentManager
 
 
     /**
-     * <p>Add the given model from the given URI as an import to the given model.  Any models imported by the given 
+     * <p>Add the given model from the given URI as an import to the given model.  Any models imported by the given
      * URI will also be imported.</p>
-     * 
+     *
      * @param model A model to import into
      * @param uri The URI of a document to import
      */
@@ -664,11 +664,11 @@ public class OntDocumentManager
             loadImports( model, readQueue );
         }
     }
-    
+
 
     /**
      * <p>Remove from the given model the import denoted by the given URI.</p>
-     * 
+     *
      * @param model A model
      * @param uri The URI of a document to no longer import
      */
@@ -679,8 +679,8 @@ public class OntDocumentManager
             unloadImports( model, unloadQueue );
         }
     }
-    
-    
+
+
     /**
      * <p>Answer the URL of the most recently loaded policy URL, or null
      * if no document manager policy has yet been loaded since the metadata
@@ -690,7 +690,7 @@ public class OntDocumentManager
     public String getLoadedPolicyURL() {
         return m_policyURL;
     }
-    
+
 
     // Internal implementation methods
     //////////////////////////////////
@@ -712,7 +712,7 @@ public class OntDocumentManager
         }
     }
 
-    
+
     /**
      * <p>Unload all of the imports in the queue</p>
      * @param model The model to unload the imports from
@@ -725,37 +725,37 @@ public class OntDocumentManager
 
             if (model.hasLoadedImport( importURI )) {
                 // this import has not been unloaded yet
-                
+
                 // look up the cached model - if we can't find it, we can't unload the import
                 Model importModel = getModel( importURI );
                 if (importModel != null) {
                     List imports = new ArrayList();
-                    
+
                     // collect a list of the imports from the model that is scheduled for removal
                     for (StmtIterator i = importModel.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
                         imports.add( i.nextStatement().getResource().getURI() );
                     }
-                    
+
                     // now remove the sub-model
                     model.removeSubModel( importModel, false );
                     model.removeLoadedImport( importURI );
-                    
+
                     // check the list of imports of the model we have removed - if they are not
                     // imported by other imports that remain, we should remove them as well
                     for (StmtIterator i = model.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
                         imports.remove( i.nextStatement().getResource().getURI() );
                     }
-                    
+
                     // any imports that remain are scheduled for removal
                     unloadQueue.addAll( imports );
                 }
             }
         }
-        
+
         model.rebind();
     }
 
-    
+
     /**
      * <p>Add the ontologies imported by the given model to the end of the queue.</p>
      */
@@ -800,7 +800,7 @@ public class OntDocumentManager
 
         // copy the standard prefixes
         m_prefixMap.setNsPrefixes( PrefixMapping.Standard );
-        
+
         // search the path for metadata about locally cached models
         Model metadata = findMetadata( path );
 
@@ -851,12 +851,12 @@ public class OntDocumentManager
         // first we process the general policy statements for this document manager
         for (ResIterator i = metadata.listSubjectsWithProperty( RDF.type, DOC_MGR_POLICY ); i.hasNext(); ) {
             Resource policy = i.nextResource();
-            
+
             // iterate over each policy statement
             for (StmtIterator j = policy.listProperties();  j.hasNext(); ) {
                 Statement s = j.nextStatement();
                 Property pred = s.getPredicate();
-                
+
                 if (pred.equals( CACHE_MODELS )) {
                     setCacheModels( s.getBoolean() );
                 }
@@ -871,7 +871,7 @@ public class OntDocumentManager
                 }
             }
         }
-        
+
         // then we look up individual meta-data for particular ontologies
         for (ResIterator i = metadata.listSubjectsWithProperty( RDF.type, ONTOLOGY_SPEC ); i.hasNext(); ) {
             Resource root = i.nextResource();
@@ -884,14 +884,14 @@ public class OntDocumentManager
                 // there may be a cached copy for this ontology
                 s = root.getProperty( ALT_URL );
                 if (s != null) addAltEntry( publicURI, s.getResource().getURI() );
-                
+
                 // there may be a standard prefix for this ontology
                 s = root.getProperty( PREFIX );
                 if (s != null) {
                     // if the namespace doesn't end with a suitable split point character, add a #
                     boolean endWithNCNameCh = XMLChar.isNCName( publicURI.charAt( publicURI.length() - 1 ) );
                     String prefixExpansion = endWithNCNameCh ? (publicURI + ANCHOR) : publicURI;
-                    
+
                     addPrefixMapping( prefixExpansion, s.getString() );
                 }
 
@@ -920,36 +920,36 @@ public class OntDocumentManager
     protected void loadImport( OntModel model, String importURI, List readQueue ) {
         if (m_processImports) {
             LogFactory.getLog( getClass() ).debug( "OntDocumentManager loading " + importURI );
-            
+
             // add this model to occurs check list
             model.addLoadedImport( importURI );
-    
+
             // if we have a cached version get that, otherwise load from the URI but don't do the imports closure
             Model in = getModel( importURI );
-    
+
             // if not cached, we must load it from source
             if (in == null) {
                 // create a sub ontology model and load it from the source
                 // note that we do this to ensure we recursively load imports
                 ModelMaker maker = model.getSpecification().getImportModelMaker();
                 boolean loaded = maker.hasModel( importURI );
-    
+
                 in = maker.openModel( importURI );
-    
+
                 // if the graph was already in existence, we don't need to read the contents (we assume)!
                 if (!loaded) {
                     read( in, importURI, true );
                 }
             }
-    
+
             // we trap the case of importing ourself (which may happen via an indirect imports chain)
             if (in != model) {
                 // queue the imports from the input model on the end of the read queue
                 queueImports( in, readQueue, model.getProfile() );
-        
+
                 // add to the imports union graph, but don't do the rebind yet
                 model.addSubModel( in, false );
-                
+
                 // we also cache the model if we haven't seen it before (and caching is on)
                 addModel( importURI, in );
             }
@@ -971,18 +971,18 @@ public class OntDocumentManager
         // map to the cache URI if defined
         String resolvableURI = doAltURLMapping( uri );
         String file = resolvableURI.startsWith( "file:" ) ? resolvableURI.substring( 5 ) : resolvableURI;
-    
+
         // try to load the URI
         try {
             // try to use the extension of the url to guess what syntax to use (.n3 => "N3", etc)
             String lang = FileUtils.guessLang( resolvableURI );
-    
+
             // see if we can find the file as a resource
             InputStream is = getClass().getClassLoader().getResourceAsStream( file );
-    
+
             if (is == null) {
-                // we can't get this URI as a system resource, so just try to read 
-                // it in the normal way. Uses the original URI as the base (in case xml:base 
+                // we can't get this URI as a system resource, so just try to read
+                // it in the normal way. Uses the original URI as the base (in case xml:base
                 // is not set in the document itself)
                 model.read( resolvableURI, uri, lang );
             }
@@ -995,7 +995,7 @@ public class OntDocumentManager
                     try {is.close();} catch (IOException ignore) {}
                 }
             }
-    
+
             // success: cache the model against the uri
             addModel( uri, model );
             return true;
@@ -1003,12 +1003,12 @@ public class OntDocumentManager
         catch (JenaException e) {
             if (warn) {
                 String u = "<" + resolvableURI + ">";
-                if (!uri.equals( u )) {
-                    u = u + " (re-directed via the document mgr from <" + uri + ">)"; 
+                if (!resolvableURI.equals( uri )) {
+                    u = u + " (re-directed via the document mgr from <" + uri + ">)";
                 }
-                
+
                 LogFactory.getLog( OntDocumentManager.class )
-                      .warn( "An error occurred while attempting to read from " + u + 
+                      .warn( "An error occurred while attempting to read from " + u +
                              ". Error was '" + e.getMessage() + "'.", e );
             }
             return false;
