@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
     [See end of file]
-    $Id: Regression.java,v 1.10 2003-07-01 12:48:27 chris-dollin Exp $
+    $Id: Regression.java,v 1.11 2003-07-01 14:27:02 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -9,20 +9,20 @@ package com.hp.hpl.jena.regression;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 
-import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
 
 import java.net.*;
 import java.util.*;
+import java.io.*;
 
 import org.apache.log4j.Logger;
 
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-07-01 12:48:27 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-07-01 14:27:02 $'
  */
 public class Regression extends Object {
 
@@ -3738,6 +3738,7 @@ public class Regression extends Object {
                 Throwable th = rdfx.getCause();
                 if ( th instanceof NoRouteToHostException
                  || th instanceof UnknownHostException
+                 || th instanceof IOException
                  || th instanceof ConnectException) {
                     logger.warn( "Cannot access public internet- part of test not executed" );
                 } else {
@@ -4877,5 +4878,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.10 2003-07-01 12:48:27 chris-dollin Exp $
+ * $Id: Regression.java,v 1.11 2003-07-01 14:27:02 chris-dollin Exp $
  */
