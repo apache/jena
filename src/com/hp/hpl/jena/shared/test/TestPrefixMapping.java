@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.10 2003-11-06 17:27:52 ian_dickinson Exp $
+  $Id: TestPrefixMapping.java,v 1.11 2004-04-20 07:32:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -28,23 +28,33 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping
         { return new PrefixMappingImpl(); }        
         
     public void testStandard()
+        { testStandard( PrefixMapping.Standard ); }
+    
+    public void testExtended()
+        { testExtended( PrefixMapping.Extended ); }
+    
+    public void testStandard( PrefixMapping st )
         {
-        PrefixMapping st = PrefixMapping.Standard;
         assertEquals( RDF.getURI(), st.getNsPrefixURI( "rdf" ) );
         assertEquals( RDFS.getURI(), st.getNsPrefixURI( "rdfs" ) );
         assertEquals( DC.getURI(), st.getNsPrefixURI( "dc" ) );
         assertEquals( OWL.getURI(), st.getNsPrefixURI( "owl" ) );
+        assertEquals( DAMLVocabulary.NAMESPACE_DAML_2001_03_URI, st.getNsPrefixURI( "daml" ) );
+        }    
+    
+    public void testExtended( PrefixMapping st )
+        {
+        testStandard( st );
         assertEquals( RSS.getURI(), st.getNsPrefixURI( "rss" ) );
         assertEquals( VCARD.getURI(), st.getNsPrefixURI( "vcard" ) );
         assertEquals( JMS.getURI(), st.getNsPrefixURI( "jms" ) );
-        assertEquals( DAMLVocabulary.NAMESPACE_DAML_2001_03_URI, st.getNsPrefixURI( "daml" ) );
         }
         
     }
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

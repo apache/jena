@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.31 2004-04-06 20:42:10 chris-dollin Exp $
+  $Id: Node.java,v 1.32 2004-04-20 07:30:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -53,13 +53,13 @@ public abstract class Node {
         <li> _XXX :: a bnode with an AnonId built from _XXX
         <li> ?VVV :: a variable with name VVV
         <li> &PPP :: to be done
-        <li> name:stuff :: the URI; name may be expanded using the Standard map
+        <li> name:stuff :: the URI; name may be expanded using the Extended map
         </ul>
         @param x the string describing the node
         @return a node of the appropriate type with the appropriate label
     */
     public static Node create( String x )
-        { return create( PrefixMapping.Standard, x ); }
+        { return create( PrefixMapping.Extended, x ); }
         
     /**
         As for create(String), but the PrefixMapping used to translate URI strings
@@ -341,7 +341,7 @@ public abstract class Node {
 }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
