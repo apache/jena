@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.8 2003-08-26 02:15:05 wkw Exp $
+  $Id: TestBasicOperations.java,v 1.9 2003-08-26 03:01:13 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -23,7 +23,6 @@ package com.hp.hpl.jena.db.test;
 */
 
 import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.db.impl.DriverRDB;
 import com.hp.hpl.jena.db.impl.IRDBDriver;
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -294,9 +293,9 @@ public class TestBasicOperations extends TestCase {
 		IRDBDriver d = conn.getDriver();
 		d.setDoCompressURI(true);
 		model = ModelRDB.createModel(conn);
-		int cacheSize = model.getCompressCacheSize();
+		int cacheSize = d.getCompressCacheSize();
 		cacheSize = 10;
-		model.setCompressCacheSize(cacheSize);
+		d.setCompressCacheSize(cacheSize);
 
 		String pfx = "a123456789";
 		String longPfx = "";
