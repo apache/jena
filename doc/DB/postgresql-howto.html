@@ -1,0 +1,297 @@
+<html>
+<head>
+   <title>Jena 2.0 enhanced node howto</title>
+</head>
+<body>
+
+This version: 0.1<br/> Date: 11 July 2003
+
+<h1>HowTo Use Postgresql Database System with Jena2</h1>
+
+<h2>What is PostgreSQL</h2>
+
+<p>PostgreSQL(pronounced <i>Post-Gres-Q-L</i>.) is an enhancement of the 
+POSTGRES database management system, a <small>DBMS</small> research prototype 
+developed at the University of California - Berkeley in the 1990s.. PostgreSQL 
+is open source and supported by an active developer community.&nbsp; It runs on 
+a variety of hardware and software platforms with excellent performance. See
+<a href="http://www.postfresql.org">http://www.postgresql.org</a> for more 
+information.</p>
+
+<table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; PostgreSQL 7.3.3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td>&nbsp;&nbsp;&nbsp; <b>Driver: </b>&nbsp;pg73jdbc2.jar (JDBC2 for jdk1.3, 
+    1.2, 1.4&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+</table>
+
+<p>Jena2 has been tested with the PostgreSQL Standard binary release. 
+Jena tables are created using InnoDB tables which provide ACID transaction 
+support. Modifications to Jena database models are immediately written to the 
+database. If the application has an open transaction (see <i>model.begin()</i>), 
+the changes are committed (u.e. visible to other Jena applications) when the 
+application does a commit. Otherwise, the changes areimmediately committed to 
+the database (i.e., each modification is its own transaction). Jena 
+communicates with MySQL through a JDBC driver.</p>
+
+<h2>Download and Installation of PostgreSQL</h2>
+
+<p>These instructions assume you are using the binary distribution of PostgreSQL. 
+If you prefer the source code disitribution, see the instructions at
+<a href="http://www.postgresql.org">http://www.postgresql.org</a> for 
+downloading and building from the source. Currently, Jena2 has only been tested 
+with Windows XP.</p>
+
+<font SIZE="2">
+<h3 ALIGN="LEFT">Windows Platforms</h3>
+</font>
+<p ALIGN="LEFT">Jena2 has been tested with PostgreSQL on WindowsXP with the 
+following versions.</p>
+
+<font SIZE="2">
+
+<table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; PostgreSQL 7.3.3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td>&nbsp;&nbsp;&nbsp; <b>Driver: </b>&nbsp;pg73jdbc2.jar (JDBC2 for jdk1.3, 
+    1.2, 1.4&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+</table>
+
+</font>
+<p ALIGN="LEFT">The PostgreSQL server runs on Windows using Cygwin. The Cygwin 
+package provides a UNIX-like API on top of the Win32 API. These notes are taken 
+directly from the FAQ_MSWIN in the doc/postgresql subdirectory of the Cygwin 
+distribution. They are provided here as a convenience. If something goes wrong, 
+please refer to those notes. Any commands mentioned below should be performed in 
+a Cygwin shell.</p>
+<p ALIGN="LEFT">PostgreSQL recommends creating a separate user account for the 
+PostgreSQL server. If it is not required. If you are just experimenting or 
+require only 
+single-user access, you may find it more convenient to simply run the server 
+under your own user account. If you wish to create a separate server account, 
+follow the directions in Section 3.1 of the <i>PostgreSQL 7.3.3 Administrator's 
+Guide</i>. Then, perform the commands below while using that account.</p>
+<ol>
+  <li>
+  <p ALIGN="LEFT">Install the latest Cygwin package, available at
+  <a href="http://cygwin.com/">http://cygwin.com/</a>. A pre-built PostgreSQL is 
+  part of the standard Cygwin distribution and is installed by Cygwin's 
+  setup.exe. You are encouraged to use this version unless it does not meet your 
+  needs. Please read the README file, /usr/doc/Cygwin/postgresql-${version}.README, 
+  where &quot;${version}&quot; is the version (e.g., 7.3.3).</li>
+  <font SIZE="2"></font>
+  <li>
+  <p ALIGN="LEFT">As of this writing, PostgreSQL still depends on cygipc. But 
+  that may change in the future as cygipc is deprecated. Install the latest 
+  cygipc package, available at
+  <a href="http://www.neuro.gatech.edu/users/cwilson/cygutils/V1.1/cygipc/">
+  http://www.neuro.gatech.edu/users/cwilson/cygutils/cygipc/index.html</a>. If 
+  you already have cygipc installed, do not use versions prior to 1.04, they 
+  will not work. Use the following command to install the cygipc package:<font face="Courier New" SIZE="2"><br>
+&nbsp;&nbsp;&nbsp; $ tar -C / -xjf cygipc-${version}.tar.bz2<br>
+  </font>where &quot;${version}&quot; is the version (e.g., 1.14).</li>
+  <li>
+  <p ALIGN="LEFT">The Cygwin bin directory has to be placed in the path before 
+  the Windows program directories, because the sort.exe has to be taken from 
+  Cygwin, not Windows.</li>
+  <li>
+  <p ALIGN="LEFT">Start ipc-daemon from the cygipc package. Use &quot;net start ipc-daemon&quot;, 
+  if ipc-daemon is installed as a service; otherwise, use &quot;ipc-daemon &amp;&quot;. This 
+  program needs to be running anytime you start the PostgreSQL server 
+  (postmaster) or initialize a database (initdb).</li>
+  <li>
+  <p ALIGN="LEFT">Before creating a database, a PostgreSQL <i>database cluster</i> 
+  must be created and initialized. This is simply a data storage area on the 
+  disk to hold a collection of databases accessible by a single instance of a 
+  PostgreSQL server. Use the following command:<tt class="PROMPT"><br>
+&nbsp;&nbsp;&nbsp; </tt><font face="Courier New"><tt class="PROMPT">
+  <font face="Courier New" size="2">$</font></tt></font><font size="2" face="Courier New">
+  </font><font size="2" face="Courier">
+  <tt class="USERINPUT"><font face="Courier New">initdb</font></tt></font><tt class="USERINPUT"><font size="2" face="Courier"><tt class="USERINPUT"><font face="Courier New"> 
+  -D /usr/local/pgsql/data</font></tt></font></tt><font face="Times New Roman"><tt class="USERINPUT"><font face="Courier New" size="2">
+  </font></tt></font><tt class="USERINPUT"><b><br>
+  </b></tt><font face="Times New Roman"><tt class="USERINPUT">
+  <font face="Times New Roman">Any directory may be used although the one given 
+  above is a popular convention. Note, initdb will create the directories if 
+  they do not exist.</font></tt></font></li>
+  <li>
+  <p ALIGN="LEFT">Creating the database cluster also installs a PostgreSQL 
+  configuration file in the cluster directory. The file name is postgresql.conf 
+  and this file holds various runtime configuration parameters for PostgreSQL. 
+  You need to set the following configuration parameter in postgresql.conf:
+  <tt class="LITERAL">tcpip_socket = true</tt>.&nbsp; This configures the 
+  PostgreSQL server to accept TCP/IP connections.</li>
+  <li>
+  <p ALIGN="LEFT"><font face="Times New Roman">Start the PostgreSQL server with 
+  the following command.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><font face="Courier New" size="2">&nbsp;$
+  </font><tt class="USERINPUT"><font size="2" face="Courier New">postmaster -D /usr/local/pgsql/data 
+  &gt; logfile 2&gt;&amp;1 &amp;</font></tt><br>
+  <font face="Times New Roman">Check the logfile to ensure the server started 
+  correctly. Of course, specify the actual location of your database cluster if 
+  you did not use the conventional location in step 5. To stop the server, send 
+  it a signal (SIGTERM disables new transaction but allows current ones to 
+  continue, SIGINT aborts existing transactions, SIGQUIT is immediate shutdown 
+  which will require database recovery to be run upon restart; SIGKILL is not 
+  recommended as PostgreSQL may be unable to release system resources). As an 
+  alternative, the script pg_ctl can be used to start and stop the server, e.g.,
+  </font><font face="Courier New" size="2">pg_ctl start</font><font face="Times New Roman"> 
+  and </font><font size="2" face="Courier New">pg_ctl stop</font><font face="Times New Roman">. 
+  It takes the same options as the postmaster command.</font></li>
+  <li>
+  <p ALIGN="LEFT"><font face="Times New Roman">Start the PostgreSQL interactive 
+  SQL interface.</font><font face="Courier New" size="2"><br>
+&nbsp;&nbsp;&nbsp; $ psql [ database_name ]<br>
+  </font><font face="Times New Roman">Note: to exit the SQL interface, enter 
+  &quot;\q&quot;. See below for other useful commands within psql.</font></li>
+  <li>
+  <p ALIGN="LEFT">Now the JDBC driver must be installed. It may be obtained from
+  <a href="http://jdbc.postgresql.org/">http://jdbc.postgresql.org/</a>. Jena2 
+  has been tested with the JDBC2 (file name pg72jdbc2.jar). Install this on your 
+  machine. Make sure the jar file is accessible on the classpath.</li>
+  <li>
+  <p ALIGN="LEFT">If you use the run the Jena unit/regression tests, you need to 
+  create a PostgreSQL user account named <i>test</i>. To do this, start psql and 
+  enter the command: <font face="Courier New" size="2">create user test;</font></li>
+</ol>
+
+<h2>Connecting Your Jena Program to PostgreSQL</h2>
+
+<p>Jena supports both memory models and database models. In general, a Jena program 
+may use both types of models identically. However, there are some differences 
+in how the models are created. Creating a memory model can be done with a single 
+Jena call. Creating a database model, or opening a previously created one, 
+requires several steps as as follows.</p>
+
+<blockquote>
+  <ol>
+    <li>Load the JDBC driver. This enables the Jena program to communicate with 
+    the database instance.</li>
+    <li>Create a database connection. This creates a Java object for a database 
+    connection.</li>
+    <li>Create or open a model on the connection. This connects to the database 
+    and creates an empty model or opens a previously created model.</li>
+  </ol>
+</blockquote>
+
+<p>These steps are illustrated in the following Java code.</p>
+
+<blockquote>
+  <font SIZE="2" COLOR="#3f7f5f"></font>
+  <dl>
+    <dd><font face="Courier New" size="2">// Load the Driver</font></dd>
+    <font SIZE="2">
+    <dd><font face="Courier New">String className = &quot;org.postgresql.Driver&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // path of driver class</font></dd>
+    <dd><font face="Courier New">Class.forName (className);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // load driver</font></dd>
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">String DB_URL = &quot;jdbc:postgresql://localhost/test&quot;;&nbsp; 
+    // URL of database server</font></dd>
+    <dd><font face="Courier New">String DB_USER = &quot;test&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // database user id</font></dd>
+    <dd><font face="Courier New">String DB_PASSWD = &quot;&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // database password</font></dd>
+    <dd><font face="Courier New">String DB = &quot;PostgreSQL&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // database type</font></dd>
+    <dt>&nbsp;</dt>
+    <dd><font face="Courier New">// Create database connection</font></dd>
+    <dd><font face="Courier New">IDBConnection result&nbsp; =</font></font><font SIZE="2" face="Courier New"><b> 
+    new</b> DBConnection ( URL, DB_USER, DB_PASSWD, DB ); </font></dd>
+    <dd><font SIZE="2"><font face="Courier New">// Create a model in the 
+    database</font></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd><font face="Courier New">ModelMaker maker = 
+    ModelFactory.createModelRDBMaker(conn);</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.createModel ();
+    </font></dd>
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">&lt; your Jena code to work with the model goes 
+    here &gt;</font></dd>
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">// Remove the model. NOTE: this deletes the 
+    model from the database.</font></dd>
+    <dd>/<font face="Courier New">/ Subsequent attempts to open this model will 
+    fail.</font></dd>
+    <dd><font face="Courier New">m.remove();&nbsp;&nbsp;&nbsp;// NOTE: remove 
+    deletes the model from the database</font></dd>
+    </font><font SIZE="2">
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">// Close the database connection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conn.close();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </font></dd>
+    </font><font SIZE="2">
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">// Alternative to creating an unnamed model ...</font></dd>
+    <dd><font face="Courier New">// Create a named model</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.createModel(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;);</font></dd>
+    <dt>&nbsp;</dt>
+    <dd><font face="Courier New" size="2">...&nbsp; later, or in another Jena 
+    application ...</font></dd>
+    <dt>&nbsp;</dt>
+    <font SIZE="2">
+    <dd><font face="Courier New">// Open a named model.</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.open(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;</font><font SIZE="2"><font face="Courier New">);</font></dd>
+  </dl>
+</blockquote>
+<p></p>
+</font>
+
+<p>&nbsp;</p>
+
+<h2>Performance and Usage Notes</h2>
+
+<p>Jena stores all models in a single database using whatever database (name) specified on the database connection. See the <a href="index.html">Jena Database Release Notes</a> for 
+details on the physical layout.</p>
+
+<h4>PostgreSQL Utility Commands</h4>
+
+<p>Some Jena users may wish to occasionally access the PostgreSQL database directly 
+to determine if changes have taken effect. Some useful PostgreSQL commands are listed 
+here (replace the names in italics by names for your database instance). To use them, start the 
+PostgreSQL command line interface:<font face="Courier New"> psql [<i>database</i>]</font></p>
+
+<h4>List All Databases Available: <span style="font-weight: 400">
+<font face="Courier New">\l</font></span></h4>
+
+<h4>Use a Specific Database: <span style="font-weight: 400">
+<font face="Courier New">\c <i>databaseName</i>;</font></span></h4>
+
+<h4><font face="Times New Roman">List All Objects in the Database: </font>
+<span style="font-weight: 400"><font face="Courier New">\d</font></span></h4>
+
+<h4><font face="Times New Roman">List  Tables: </font>
+<span style="font-weight: 400"><font face="Courier New">\dt&nbsp;&nbsp;&nbsp; 
+(or \d[ivsS] to list indexes, views, sequences, Schema objects)</font></span></h4>
+
+<h4><font face="Times New Roman">Count All Rows in a Table: </font>
+<span style="font-weight: 400"><font face="Courier New">select count(*) from <i>
+tableName</i>;</font></span></h4>
+
+<h4><font face="Times New Roman">List All Rows in a Table: </font>
+<span style="font-weight: 400"><font face="Courier New">select * from <i>
+tableName</i>;</font></span></h4>
+
+<h4><font face="Times New Roman">List PSQL commands: </font>
+<span style="font-weight: 400"><font face="Courier New">\?</font></span></h4>
+
+<h4><font face="Times New Roman">Exit PSQL: </font>
+<span style="font-weight: 400"><font face="Courier New">\q</font></span></h4>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+</body>
+</html>
