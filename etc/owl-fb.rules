@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.26 2003-09-18 15:45:47 der Exp $
+# $Id: owl-fb.rules,v 1.27 2003-09-18 21:16:16 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -119,15 +119,6 @@
 -> (rdf:first rdf:type owl:FunctionalProperty).
 -> (rdf:rest rdf:type owl:FunctionalProperty).
 
--> (owl:SymmetricProperty rdfs:domain owl:ObjectProperty).
--> (owl:TransitiveProperty rdfs:domain owl:ObjectProperty).
--> (owl:InverseFunctionalProperty rdfs:domain owl:ObjectProperty).
-
-#-> (owl:ObjectProperty rdfs:range owl:Thing).
-#-> (owl:ObjectProperty rdfs:domain owl:Thing).
-#-> (owl:DatatypeProperty rdfs:domain owl:Thing).
-#-> (owl:DatatypeProperty rdfs:domain rdfs:Literal).
-
 -> (owl:oneOf rdfs:domain owl:Class).
 
 -> (owl:Class rdfs:subClassOf rdfs:Class).
@@ -136,19 +127,44 @@
 -> (owl:Thing rdf:type owl:Class).
 -> (owl:Nothing rdf:type owl:Class).
 
--> (owl:OntologyProperty rdfs:domain owl:Ontology).
--> (owl:OntologyProperty rdfs:range owl:Ontology).
+-> (owl:equivalentClass rdfs:domain owl:Class).
+-> (owl:equivalentClass rdfs:range  owl:Class).
+
+-> (owl:disjointWith rdfs:domain owl:Class).
+-> (owl:disjointWith rdfs:range  owl:Class).
+
+-> (owl:sameAs rdf:type owl:SymmetricProperty).
+-> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).
+
+# These are true but mess up the Ont API's notion of declared properties
+#-> (owl:sameAs rdfs:domain owl:Thing).
+#-> (owl:sameAs rdfs:range  owl:Thing).
+#-> (owl:differentFrom rdfs:domain owl:Thing).
+#-> (owl:differentFrom rdfs:range  owl:Thing).
+
+-> (owl:onProperty rdfs:domain owl:Restriction).
+-> (owl:onProperty rdfs:range  owl:Property).
+
+-> (owl:OntologyProperty rdfs:subClassOf rdf:Property).
 -> (owl:imports rdf:type owl:OntologyProperty).
 -> (owl:imports rdfs:domain owl:Ontology).
 -> (owl:imports rdfs:range  owl:Ontology).
 
-# These might need to be pre-expanded in the initial rule set
+-> (owl:priorVersion rdfs:domain owl:Ontology).
+-> (owl:priorVersion rdfs:range  owl:Ontology).
+
+-> (owl:backwardCompatibleWith rdfs:domain owl:Ontology).
+-> (owl:backwardCompatibleWith rdfs:range  owl:Ontology).
+
+-> (owl:incompatibleWith rdfs:domain owl:Ontology).
+-> (owl:incompatibleWith rdfs:range  owl:Ontology).
+
+# These properties are derivable from the definitions
 #-> (owl:equivalentProperty rdf:type owl:SymmetricProperty).
 #-> (owl:equivalentProperty rdf:type owl:TransitiveProperty).
 #-> (owl:equivalentClass rdf:type owl:SymmetricProperty).
 #-> (owl:equivalentClass rdf:type owl:TransitiveProperty).
--> (owl:sameAs rdf:type owl:SymmetricProperty).
--> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).
+
 -> (owl:differentFrom rdf:type owl:SymmetricProperty).
 -> (owl:disjointWith rdf:type owl:SymmetricProperty).
 

@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.8 2003-09-18 15:45:13 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.9 2003-09-18 21:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
@@ -25,7 +26,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-09-18 15:45:13 $
+ * @version $Revision: 1.9 $ on $Date: 2003-09-18 21:16:46 $
  */
 public class WebOntTestHarness {
 
@@ -72,12 +73,13 @@ public class WebOntTestHarness {
             "I5.26", "I5.3", "I5.5", "I5.8", "InverseFunctionalProperty", "Nothing", 
             "Restriction", "SymmetricProperty", "Thing", "TransitiveProperty", 
             "allValuesFrom", "amp-in-url", "cardinality", "complementOf", "datatypes", 
-            "description-logic", "differentFrom", "disjointWith", "distinctMembers", 
+            "differentFrom", "disjointWith", "distinctMembers", 
             "equivalentClass", "equivalentProperty", "imports", 
             "intersectionOf", "inverseOf", "localtests", "maxCardinality", "miscellaneous",
             "oneOf", "oneOfDistinct", "sameAs", "sameClassAs", "sameIndividualAs", 
             "samePropertyAs", "someValuesFrom", "statement-entailment", "unionOf", 
             "xmlbase",
+            "description-logic", 
 //            "extra-credit", 
         };
     
@@ -97,6 +99,41 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest201#test",
         "http://www.w3.org/2002/03owlt/I5.8/Manifest004#test",
         "http://www.w3.org/2002/03owlt/I5.2/Manifest004#test",
+        
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest008#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest011#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest015#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest019#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest023#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest026#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest027#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest029#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest030#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest032#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest033#test",
+
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest101#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest102#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest103#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest104#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest105#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest106#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest107#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest108#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest109#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest110#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest111#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest502#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest504#test",
+        
+        // Temporary block - incomplete (OOM eventually in some cases)
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest608#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest611#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest615#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest623#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest626#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest627#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest630#test",
     };
             
     /** The list of status values to include. If approvedOnly then only the first
@@ -151,7 +188,7 @@ public class WebOntTestHarness {
     public static void main(String[] args) {
         WebOntTestHarness harness = new WebOntTestHarness();
         harness.runTests();
-//        harness.runTest("http://www.w3.org/2002/03owlt/Nothing/Manifest002#test");
+//        harness.runTest("http://www.w3.org/2002/03owlt/description-logic/Manifest630#test");
     }
     
     /**
@@ -167,6 +204,10 @@ public class WebOntTestHarness {
         runTests(findTestsOfType(OWLTest.TrueTest));
         System.out.println("\nOWL for OWL tests: ");
         runTests(findTestsOfType(OWLTest.OWLforOWLTest));
+        System.out.println("\nImport entailment tests: ");
+        runTests(findTestsOfType(OWLTest.ImportEntailmentTest));
+        System.out.println("\nInconsistency tests: ");
+        runTests(findTestsOfType(OWLTest.InconsistencyTest));
         System.out.println("\nPassed " + passCount + " out of " + testCount);
     }
     
@@ -217,9 +258,11 @@ public class WebOntTestHarness {
         if (test.hasProperty(RDF.type, OWLTest.PositiveEntailmentTest) 
         ||  test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest)
         ||  test.hasProperty(RDF.type, OWLTest.OWLforOWLTest)
+        ||  test.hasProperty(RDF.type, OWLTest.ImportEntailmentTest)
         ||  test.hasProperty(RDF.type, OWLTest.TrueTest) ) {
             // Entailment tests
-            Model premises = getDoc(test, RDFTest.premiseDocument);
+            boolean processImports = test.hasProperty(RDF.type, OWLTest.ImportEntailmentTest);
+            Model premises = getDoc(test, RDFTest.premiseDocument, processImports);
             Model conclusions = getDoc(test, RDFTest.conclusionDocument);
             comprehensionAxioms(premises, conclusions);
             long t1 = System.currentTimeMillis();
@@ -232,11 +275,38 @@ public class WebOntTestHarness {
                 correct = !correct;
             }
             return correct;
+        } else if (test.hasProperty(RDF.type, OWLTest.InconsistencyTest)) {
+//            System.out.println("Starting: " + test);
+            Model input = getDoc(test, RDFTest.inputDocument);
+            long t1 = System.currentTimeMillis();
+            InfGraph graph = reasoner.bind(input.getGraph());
+            boolean correct = ! graph.validate().isValid();
+            long t2 = System.currentTimeMillis();
+            lastTestDuration = t2 - t1; 
+            return correct;
         } else {
             throw new ReasonerException("Unknown test type");
         }
     }
-    
+   
+    /**
+     * Load the premises or conclusions for the test, optional performing
+     * import processing.
+     */
+    public Model getDoc(Resource test, Property docType, boolean processImports) throws IOException {
+        if (processImports) {
+            Model result = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+            StmtIterator si = test.listProperties(docType);
+            while ( si.hasNext() ) {
+                String fname = si.nextStatement().getObject().toString() + ".rdf";
+                loadFile(fname, result);
+            }
+            return result;
+        } else {
+            return getDoc(test, docType);
+        }
+    }
+   
     /**
      * Load the premises or conclusions for the test.
      */
