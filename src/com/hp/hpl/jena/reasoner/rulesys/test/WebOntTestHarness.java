@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.3 2003-09-16 08:06:49 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.4 2003-09-16 16:04:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-09-16 08:06:49 $
+ * @version $Revision: 1.4 $ on $Date: 2003-09-16 16:04:56 $
  */
 public class WebOntTestHarness {
 
@@ -61,6 +61,19 @@ public class WebOntTestHarness {
             "xmlbase",
 //            "extra-credit", 
         };
+    
+    /** List of tests that are blocked because they test language features beyond Lite */
+    public static final String[] BLOCK_TESTS = {
+        "http://www.w3.org/2002/03owlt/complementOf/Manifest001#test", 
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest901#test", 
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest903#test", 
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest902#test", 
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest904#test", 
+        "http://www.w3.org/2002/03owlt/oneOf/Manifest002#test", 
+        "http://www.w3.org/2002/03owlt/oneOf/Manifest003#test", 
+        "http://www.w3.org/2002/03owlt/unionOf/Manifest001#test", 
+        "http://www.w3.org/2002/03owlt/unionOf/Manifest002#test", 
+    };
             
     /** The list of status values to include. If approvedOnly then only the first
      *  entry is allowed */
@@ -113,6 +126,7 @@ public class WebOntTestHarness {
     public static void main(String[] args) {
         WebOntTestHarness harness = new WebOntTestHarness();
         List l = harness.findTestsOfType(OWLTest.PositiveEntailmentTest);
+        harness.findTestsOfType(OWLTest.NegativeEntailmentTest);
     }
     
 //  =======================================================================
@@ -138,9 +152,14 @@ public class WebOntTestHarness {
                     }
                 }
             }
+            // Check for blocked tests
+            for (int i = 0; i < BLOCK_TESTS.length; i++) {
+                if (BLOCK_TESTS[i].equals(test.toString())) {
+                    accept = false; 
+                }
+            }
             // End of filter tests
             if (accept) {
-                System.out.println(" - " + test + " status = " + status + " " + status.getClass()); 
                 result.add(test);
             }
         }
