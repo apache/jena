@@ -139,6 +139,9 @@ public class TestModelSpecFactory extends ModelTestBase
     
     protected static class MockSpec implements ModelSpec
         {
+        public Model getModel()
+            { return null; }
+        
         public Model createModel()
             { return null; }
 

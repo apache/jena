@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.18 2005-02-11 19:23:44 chris-dollin Exp $
+  $Id: TestModelMakerImpl.java,v 1.19 2005-02-14 08:49:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -129,35 +129,11 @@ public class TestModelMakerImpl extends ModelTestBase
         {
         assertTrue( hasAsParent( ModelMaker.class, ModelSource.class ) );
         assertTrue( hasAsParent( ModelSpec.class, ModelSource.class ) );
-        ModelSource s = new ModelSourceImpl();
+        ModelSource s = new TestModelSource.ModelSourceImpl();
         assertNotNull( s.openModel( "henry" ) );
         assertNull( s.getExistingModel( "splendid" ) );
         }
     
-    /**
-     	Minimal test implementation of ModelSource. There should be more of
-     	these.
-     	
-     	@author hedgehog
-    */
-    protected static class ModelSourceImpl implements ModelSource
-    	{
-        public Model openModel( String name )
-            { return ModelFactory.createDefaultModel(); }
-
-        public Model getExistingModel(String name)
-            { return null; }
-
-        /* (non-Javadoc)
-         * @see com.hp.hpl.jena.rdf.model.ModelSource#createModel()
-         */
-        public Model createModel()
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
-    	}
-
     private void checkHistory( List expected )
         { assertEquals( expected, history() ); }
         
