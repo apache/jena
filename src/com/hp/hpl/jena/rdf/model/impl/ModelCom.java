@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.66 $' Date='$Date: 2003-07-21 10:54:06 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.67 $' Date='$Date: 2003-07-23 07:34:50 $'
  */
 
 public class ModelCom 
@@ -922,10 +922,10 @@ implements Model, ModelI, PrefixMapping, ModelLock
         }
 
     private RDFNode asRDF( Node n )
-        { return IteratorFactory.asRDFNode( (Node) n, this ); }
+        { return IteratorFactory.asRDFNode( n, this ); }
         
     public StmtIterator listStatements()  {
-        return IteratorFactory.asStmtIterator(graph.find(null,null,null), this);
+        return IteratorFactory.asStmtIterator( GraphUtil.findAll( graph ), this);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: ReifiedStatementImpl.java,v 1.3 2003-06-06 09:28:22 chris-dollin Exp $
+	$Id: ReifiedStatementImpl.java,v 1.4 2003-07-23 07:34:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -90,7 +90,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         Statement _s_. The mapping is remembered.
     */  
     public static ReifiedStatement create( Statement s )
-        { return create( s.getModel(), (String) null, s ); }
+        { return create( s.getModel(), null, s ); }
 
     /**
         factory method. answer a ReifiedStatement which encodes the

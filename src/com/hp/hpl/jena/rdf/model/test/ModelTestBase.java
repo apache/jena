@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelTestBase.java,v 1.9 2003-07-10 08:29:01 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.10 2003-07-23 07:34:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -85,7 +85,7 @@ public class ModelTestBase extends GraphTestBase
         {
         ArrayList rl = new ArrayList();
         StringTokenizer st = new StringTokenizer( items );
-        while (st.hasMoreTokens()) rl.add( (Resource) resource( m, st.nextToken() ) );  
+        while (st.hasMoreTokens()) rl.add( resource( m, st.nextToken() ) );  
         return (Resource []) rl.toArray( new Resource[rl.size()] );
         }
         

@@ -25,7 +25,7 @@ import com.hp.hpl.jena.shared.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-06-23 15:32:04 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-07-23 07:34:40 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -860,7 +860,7 @@ public class GraphMatcher extends java.lang.Object {
         if ( n.isBlank() ) {
             SomeResource anon = (SomeResource)anonLookup.get(n);
             if ( anon == null ) {
-                anon = new AnonResource((Node)n);
+                anon = new AnonResource( n );
                 anonLookup.put(n,anon);
             }
             return anon;
@@ -938,5 +938,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.3 2003-06-23 15:32:04 jeremy_carroll Exp $
+ * $Id: GraphMatcher.java,v 1.4 2003-07-23 07:34:40 chris-dollin Exp $
  */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.1 2003-07-18 13:59:24 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.2 2003-07-23 07:34:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -135,7 +135,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
                 if (it.get(0).equals( node("bill") ))
                     {
                     if (bindings.hasNext())
-                        System.out.println( "! failed: more than one multiple pattern answer: " + (Domain) bindings.next() );
+                        System.out.println( "! failed: more than one multiple pattern answer: " + bindings.next() );
                     }
                 else
                     System.out.println( "! failed: multiple pattern answer should be 'bill'" );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SeqImpl.java,v 1.11 2003-07-21 11:10:01 chris-dollin Exp $
+  $Id: SeqImpl.java,v 1.12 2003-07-23 07:34:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-07-21 11:10:01 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-07-23 07:34:50 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
@@ -286,7 +286,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }
         
     private Literal literal( String s, String lang )
-        { return new LiteralImpl( Node.createLiteral( s, lang, false ), (Model) getModel() ); }
+        { return new LiteralImpl( Node.createLiteral( s, lang, false ), getModel() ); }
         
     protected void shiftUp(int start, int finish)  {
         Statement stmt = null;

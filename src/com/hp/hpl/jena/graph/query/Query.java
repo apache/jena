@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.14 2003-07-21 08:27:00 chris-dollin Exp $
+  $Id: Query.java,v 1.15 2003-07-23 07:34:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -273,7 +273,7 @@ public class Query
             Map.Entry e = (Map.Entry) it2.next();
             String name = (String) e.getKey();
             Cons triples = (Cons) e.getValue();
-            Graph g = (Graph) arguments.get( name );
+            Graph g = arguments.get( name );
             int nBlocks = Cons.size( triples ), i = nBlocks;
             Triple [] nodes = new Triple[nBlocks];
             while (triples != null)
