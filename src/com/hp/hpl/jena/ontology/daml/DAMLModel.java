@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 13:02:34 $
+ * Last modified on   $Date: 2003-06-18 22:30:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  * information from all loaded ontologies.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.6 2003-06-18 13:02:34 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.7 2003-06-18 22:30:45 ian_dickinson Exp $
  */
 public interface DAMLModel
     extends OntModel
@@ -168,7 +168,7 @@ public interface DAMLModel
     /**
      * <p>Create a new DAML value that is a member of the given class.  The appropriate
      * {@link DAMLCommon} sub-class will be instantiated, so, for example, if the <code>damlClass</code>
-     * is {@link DAML_OIL#Restriction}, a {@link DAMLRestriction}
+     * is <code>daml:Restriction</code>, a {@link DAMLRestriction}
      * object will be returned.  Note that if a URI is given, and a value with that
      * URI already exists in the model, that instance will be returned instead of
      * creating a new DAML value. This is necessary to maintain consistency of the model.</p>

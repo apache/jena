@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:09 $
+ * Last modified on   $Date: 2003-06-18 22:30:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * TODO: these tests are not yet fully migrated to Jena2.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.6 2003-06-18 21:56:09 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.7 2003-06-18 22:30:44 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -836,7 +836,6 @@ public class DAMLTest
 
     /**
      * Test adding a model to an existing model
-     * @
      */
     public void testModelAdd()
         

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClass.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:08 $
+ * Last modified on   $Date: 2003-06-18 22:30:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.ontology.OntClass;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClass.java,v 1.6 2003-06-18 21:56:08 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLClass.java,v 1.7 2003-06-18 22:30:45 ian_dickinson Exp $
  */
 public interface DAMLClass
     extends DAMLCommon, OntClass
@@ -139,7 +139,8 @@ public interface DAMLClass
      * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
      * this iterator includes <em>inferred</em> sub-classes is determined
      * not by a flag at the API level, but by the construction of the DAML
-     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory} 
+     * for details. The boolean parameter
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
@@ -170,7 +171,8 @@ public interface DAMLClass
      * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
      * this iterator includes <em>inferred</em> super-classes is determined
      * not by a flag at the API level, but by the construction of the DAML
-     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory} 
+     * for details. The boolean parameter
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
@@ -236,7 +238,8 @@ public interface DAMLClass
      * this iterator includes the defined properties for <em>inferred</em> 
      * super-classes is determined
      * not by a flag at the API level, but by the construction of the DAML
-     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory} 
+     * for details. The boolean parameter
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>

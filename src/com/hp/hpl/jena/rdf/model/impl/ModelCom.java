@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.49 $' Date='$Date: 2003-06-17 13:47:43 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.50 $' Date='$Date: 2003-06-18 22:30:45 $'
  */
 
 public class ModelCom 
@@ -492,7 +492,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
      * <p> The value is converted to a string using its <CODE>toString</CODE>
      * method. </p>
      * @param v the value of the literal
-     * @ generic RDF exception
+     * 
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(boolean v)  {
@@ -502,7 +502,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     /** create a typed literal from an integer value.
      *
      * @param v the value of the literal
-     * @ generic RDF exception
+     * 
      * @return a new literal representing the value v
      */   
     public Literal createTypedLiteral(int v)   {
@@ -512,7 +512,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     /** create a typed literal from a long integer value.
      *
      * @param v the value of the literal
-     * @ generic RDF exception
+     * 
      * @return a new literal representing the value v
      */   
     public Literal createTypedLiteral(long v)   {
@@ -522,7 +522,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     /** create a typed literal from a char value.
      *
      * @param v the value of the literal
-     * @ generic RDF exception
+     * 
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(char v)  {
@@ -532,7 +532,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     /** create a typed literal from a float value.
      *
      * @param v the value of the literal
-     * @ generic RDF exception
+     * 
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(float v)  {
@@ -542,7 +542,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     /** create a typed literal from a double value.
      *
      * @param v the value of the literal
-     * @ generic RDF exception
+     * 
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(double v)  {
@@ -552,7 +552,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     /** create a typed literal from a String value.
      *
      * @param v the value of the literal
-     * @ generic RDF exception
+     * 
      * @return a new literal representing the value v
      */
     public Literal createTypedLiteral(String v)  {

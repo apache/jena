@@ -49,7 +49,7 @@ import com.hp.hpl.jena.graph.Triple;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-06-17 12:25:04 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-06-18 22:30:44 $
  */
 public interface Statement 
 {
@@ -120,7 +120,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a resource.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The Resource which is the object of the statement.
      */
     public Resource getResource() ;
@@ -128,7 +128,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The Literal which is the object of the statement.
      */
     public Literal getLiteral() ;
@@ -136,7 +136,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -145,7 +145,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -154,7 +154,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -163,7 +163,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -172,7 +172,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown iof the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -181,7 +181,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -190,7 +190,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -199,7 +199,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -208,7 +208,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */ 
@@ -218,7 +218,7 @@ public interface Statement
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
      * @return The object of the statement.
-     * @ Generuc RDF exception.
+     * 
      */    
     public Resource getResource(ResourceF f) ;
     
@@ -226,14 +226,14 @@ public interface Statement
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * @return The object of the statement.
      * @param f A factory used to create the returned object.
-     * @ Generuc RDF exception.
+     * 
      */    
     public Object getObject(ObjectF f) ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -242,7 +242,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -251,7 +251,7 @@ public interface Statement
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
@@ -260,7 +260,7 @@ public interface Statement
     /** Return the language of the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return the language of the object of the statement
      */    
     public String getLanguage() ;
@@ -269,7 +269,7 @@ public interface Statement
      *         from parsing a property element with parseType="Literal".
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @ Generuc RDF exception.
+     * 
      * @return true if the Literal object is well formed
      */    
     public boolean getWellFormed() ;
@@ -277,7 +277,7 @@ public interface Statement
     /** change the object of the statement (S, P, X) to (S, P, o).
      * @return this object to enable cascading of method calls.
      * @param o The new value to be set.
-     .
+     *
      */
     public Statement changeObject(boolean o) ;
     
@@ -285,7 +285,7 @@ public interface Statement
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(long o) ;
@@ -294,7 +294,7 @@ public interface Statement
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(char o) ;
@@ -303,7 +303,7 @@ public interface Statement
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(float o) ;
@@ -312,7 +312,7 @@ public interface Statement
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(double o) ;
@@ -321,7 +321,7 @@ public interface Statement
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(String o) ;  
@@ -331,7 +331,7 @@ public interface Statement
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
      * @param wellFormed true if o is well formed XML
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(String o, boolean wellFormed) ;
@@ -341,7 +341,7 @@ public interface Statement
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @param l the language of the String
-     .
+     *
      * @return the new (S, P, o) statement..
      */
     public Statement changeObject(String o, String l) ;
@@ -351,7 +351,7 @@ public interface Statement
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @param l the language of the String
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(String o, String l, boolean wellFormed) 
@@ -362,7 +362,7 @@ public interface Statement
      *  a new statement with the new value added.</p>
      * @param o The value to be set
      * @param wellFormed true if o is well formed XML
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(RDFNode o) ;
@@ -373,7 +373,7 @@ public interface Statement
      *  The Object o is converted to a string representation by calling its
      *  <CODE>toString()</CODE> method.
      * @param o The value to be set.
-     .
+     *
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(Object o) ;
@@ -383,7 +383,7 @@ public interface Statement
      *  <p>The statement with the same subject, predicate and object as this
      *  statement will be removed from the model associated with this
      *  statement.</p>
-     .
+     *
      * @return this statement.
      */
     public Statement remove() ;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.22 2003-06-17 12:25:04 chris-dollin Exp $
+  $Id: Model.java,v 1.23 2003-06-18 22:30:44 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.22 $Date: 2003/06/16 13:40:13 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.23 $Date: 2003/06/17 12:25:04 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -327,7 +327,6 @@ public interface Model
 	/** Add statements from an RDF/XML serialization.
 	 * @param in the source of the RDF/XML
 	 * @param base the base to use when converting relative to absolute uri's
-	 * @ a generic RDF exception
 	 * @return the current model
 	 */
 	public Model read(InputStream in, String base) ;
@@ -344,7 +343,6 @@ public interface Model
 	 * @param lang the langauge of the serialization <code>null<code>
 	 * selects the default
 	 * @param in the source of the input serialization
-	 * @ generic exception
 	 */
 	public Model read(InputStream in, String base, String lang)
 		;
@@ -357,7 +355,6 @@ public interface Model
      * character encoding of the data in the file.
 	 * @param reader the source of the RDF/XML
 	 * @param base the base to use when converting relative to absolute uri's
-	 * @ a generic RDF exception
 	 * @return the current model
 	 */
 	public Model read(Reader reader, String base) ;
@@ -395,7 +392,6 @@ public interface Model
 	 * @param lang the langauge of the serialization <code>null<code>
 	 * selects the default
 	 * @param reader the source of the input serialization
-	 * @ generic exception
 	 */
 	public Model read(Reader reader, String base, String lang)
 		;
@@ -421,7 +417,6 @@ public interface Model
 	 * represented by <code>null<code> is "RDF/XML".</p>
 	 * @param writer the output writer
 	 * @param lang the output langauge
-	 * @ generic exception
 	 * @return this model
 	 */
 	public Model write(Writer writer, String lang) ;
@@ -466,7 +461,6 @@ public interface Model
 	 * represented by <code>null<code> is "RDF/XML".</p>
 	 * @param out where the RDF is written
 	 * @param lang the output langauge
-	 * @ generic exception
 	 * @return this model
 	 */
 	public Model write(OutputStream out, String lang) ;
@@ -861,5 +855,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.22 2003-06-17 12:25:04 chris-dollin Exp $
+ * $Id: Model.java,v 1.23 2003-06-18 22:30:44 ian_dickinson Exp $
  */

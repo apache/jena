@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLProperty.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:08 $
+ * Last modified on   $Date: 2003-06-18 22:30:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -36,7 +36,7 @@ import java.util.Iterator;
  * as a sub-class of Property), so uniqueness is modelled here as an attribute of a DAMLProperty.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLProperty.java,v 1.3 2003-06-18 21:56:08 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLProperty.java,v 1.4 2003-06-18 22:30:45 ian_dickinson Exp $
  */
 public interface DAMLProperty
     extends DAMLCommon, OntProperty
@@ -169,7 +169,8 @@ public interface DAMLProperty
      * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
      * this iterator includes <em>inferred</em> super-properties is determined
      * not by a flag at the API level, but by the construction of the DAML
-     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory} 
+     * for details. The boolean parameter
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
@@ -194,7 +195,8 @@ public interface DAMLProperty
      * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
      * this iterator includes <em>inferred</em> sub-properties is determined
      * not by a flag at the API level, but by the construction of the DAML
-     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory} 
+     * for details. The boolean parameter
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
