@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxProblem.java,v 1.6 2003-08-27 13:04:44 andy_seaborne Exp $
+  $Id: SyntaxProblem.java,v 1.7 2003-11-14 08:35:32 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -18,7 +18,7 @@ import java.io.*;
  *
 */
 public class SyntaxProblem {
-	static private Model emptyModel = ModelFactory.createDefaultModel();
+	static Model emptyModel = ModelFactory.createDefaultModel();
 	private Graph pgraph;
 	private EnhNode pnode;
 	final int level;

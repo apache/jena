@@ -5,36 +5,38 @@
  
 package com.hp.hpl.jena.ontology.tidy;
 
-import com.hp.hpl.jena.enhanced.EnhGraph;
-import com.hp.hpl.jena.enhanced.GraphPersonality;
-import com.hp.hpl.jena.enhanced.Personality;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
+import java.util.*;
 
-abstract class AbsChecker extends EnhGraph {
+abstract class AbsChecker {
 
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;
 	AbsChecker(boolean lite, GraphMaker gf) {
-		super(gf.createGraph(), personality);
+	//	super(gf.createGraph(), personality);
 		hasBeenChecked = gf.getGraph();
 		wantLite = lite;
 	}
-	static Personality personality =
-		new GraphPersonality()
-			.add(CNodeI.class, CNode.factory)
-			.add(Blank.class, CBlank.factory)
-			.add(One.class, OneImpl.factory)
-			.add(Two.class, TwoImpl.factory);
 
 	Graph hasBeenChecked; // This is a subgraph of the input triples
 	// it can be extended to an OWL Lite/DL graph.
 
 	final boolean add(Triple t, boolean topLevelCall) {
 		return addX(t, topLevelCall) != 0;
+	}
+
+	Map nodeInfo = new HashMap();
+	CNodeI getCNode(Node n) {
+		CNodeI rslt = (CNodeI)nodeInfo.get(n);
+		if ( rslt == null ) {
+			rslt = CNode.create(n, this);
+			nodeInfo.put(n,rslt);
+		}
+		return rslt;
 	}
 	/**0 on failure, 1 on trivial, 2 on refinement.
 		 * @param topLevelCall True if t has not already been checked, false if t is being rechecked, as a result of some other changes
@@ -43,9 +45,9 @@ abstract class AbsChecker extends EnhGraph {
 		 */
 	final int addX(Triple t, boolean topLevelCall) {
 		//		System.err.println("+ " + t.toString() + (topLevelCall?" !":""));
-		CNodeI s = (CNodeI) getNodeAs(t.getSubject(), CNodeI.class);
-		CNodeI p = (CNodeI) getNodeAs(t.getPredicate(), CNodeI.class);
-		CNodeI o = (CNodeI) getNodeAs(t.getObject(), CNodeI.class);
+		CNodeI s = getCNode(t.getSubject());
+		CNodeI p = getCNode(t.getPredicate());
+		CNodeI o = getCNode(t.getObject());
 		boolean success = true;
 		int s0 = -1;
 		int p0 = -1;
@@ -152,9 +154,7 @@ abstract class AbsChecker extends EnhGraph {
 		it.close();
 		return rslt;
 	}
-	CNodeI getCNode(Node n) {
-		return (CNodeI) getNodeAs(n, CNodeI.class);
-	}
+	
 
 	void addProblem(int lvl, Triple t) {
 		setMonotoneLevel(lvl + 1);
@@ -162,6 +162,14 @@ abstract class AbsChecker extends EnhGraph {
 
 	void addProblem(SyntaxProblem sp) {
 		setMonotoneLevel(sp.level + 1);
+	}
+	/**
+	 * @param node
+	 * @param node2
+	 */
+	void addDisjoint(Node node, Node node2) {
+		// do nothing
+		
 	}
 
 }

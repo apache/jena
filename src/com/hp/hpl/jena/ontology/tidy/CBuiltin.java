@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.enhanced.*;
 
 /**
  * @author jjc
@@ -13,7 +12,7 @@ import com.hp.hpl.jena.enhanced.*;
  */
 class CBuiltin extends CNode {
     final int category;
-    CBuiltin(Node n, EnhGraph eg, int i) {
+    CBuiltin(Node n, AbsChecker eg, int i) {
         super(n, eg);
         category = i;
     }

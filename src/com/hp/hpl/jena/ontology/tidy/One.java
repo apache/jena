@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: One.java,v 1.3 2003-08-27 13:04:44 andy_seaborne Exp $
+  $Id: One.java,v 1.4 2003-11-14 08:35:32 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.*;
  *
 */
 interface One extends CNodeI {
-	boolean incomplete();
+	boolean incompleteOne();
 	
 	void first(Triple t);
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Q.java,v 1.3 2003-09-29 16:14:20 jeremy_carroll Exp $
+  $Id: Q.java,v 1.4 2003-11-14 08:35:32 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.rdql.*;
@@ -14,7 +14,7 @@ abstract class Q {
 	private Vector v = new Vector();
 	private Query rdql = null;
 	private int[] a = null;
-
+/*
 	Query asRDQL() {
 		if (rdql == null) {
 			StringBuffer b = new StringBuffer(600);
@@ -33,6 +33,7 @@ abstract class Q {
 		}
 		return rdql;
 	}
+	*/
 
 	int[] asInt() {
 		if (a == null) {
@@ -41,6 +42,7 @@ abstract class Q {
 			int i = 0;
 			while (it.hasNext())
 				a[i++] = ((Integer) it.next()).intValue();
+		  Arrays.sort(a);
 		}
 		return a;
 	}

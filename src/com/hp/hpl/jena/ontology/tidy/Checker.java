@@ -11,7 +11,6 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdql.*;
 import com.hp.hpl.jena.shared.BrokenException;
 
 import java.util.*;
@@ -29,7 +28,6 @@ import java.util.*;
  *  "http://lists.w3.org/Archives/Public/www-webont-wg/2003Mar/0066.html" 
  * >decision on OWL DL
  * Syntax</a>.</li>
- * <li>TODO - check this has been fixed. In the Last Call 
  * <pre>owl:imports rdf:type owl:OntologyProperty .
  * </pre> is permitted only if there is a triple with 
  * owl:imports as predicate.
@@ -69,11 +67,21 @@ public class Checker extends AbsChecker {
 		return new ConcatenatedIterator(getErrors(), warnings.iterator());
 	}
 
+	private void clearCyclicState() {
+		Iterator it = nodeInfo.values().iterator();
+		while (it.hasNext()) {
+			CNodeI info = (CNodeI)it.next();
+			if (info instanceof OneTwoImpl) {
+				((OneTwoImpl)info).setCyclicState(OneTwoImpl.Undefined);
+			}
+		}
+	}
 	private void snapCheck() {
 		if (nonMonotoneProblems == null) {
 			nonMonotoneProblems = new Vector();
 			nonMonotoneLevel = Levels.Lite;
-			Model m = ModelFactory.createModelForGraph(asGraph());
+			//Model m = ModelFactory.createModelForGraph(asGraph());
+			Checker m = this;
 
 			/*
 			 * Easy problems to check.
@@ -82,14 +90,14 @@ public class Checker extends AbsChecker {
 				public void apply(Node n) {
 					nonMonProblem("Untyped node", n);
 				}
-			}, m);
+			});
 			check(CategorySet.orphanSets, new NodeAction() {
 				public void apply(Node n) {
 					nonMonProblem(
 						"Orphaned rdf:List or owl:OntologyProperty node",
 						n);
 				}
-			}, m);
+			});
 
 			check(CategorySet.dlOrphanSets, new NodeAction() {
 				public void apply(Node n) {
@@ -98,27 +106,27 @@ public class Checker extends AbsChecker {
 						n,
 						Levels.Lite);
 				}
-			}, m);
+			});
 
 			/*
 			 * Slightly harder
 			 */
 			check(CategorySet.structuredOne, new NodeAction() {
 				public void apply(Node n) {
-					if (getCNode(n).asOne().incomplete())
+					if (getCNode(n).asOne().incompleteOne())
 						nonMonProblem(
 							"Incomplete blank owl:Class or owl:AllDifferent",
 							n);
 				}
-			}, m);
+			});
 			check(CategorySet.structuredTwo, new NodeAction() {
 				public void apply(Node n) {
-					if (getCNode(n).asTwo().incomplete())
+					if (getCNode(n).asTwo().incompleteTwo())
 						nonMonProblem(
 							"Incomplete rdf:List or owl:Restriction",
 							n);
 				}
-			}, m);
+			});
 
 			/*
 			 * Getting harder ...
@@ -129,7 +137,7 @@ public class Checker extends AbsChecker {
 			 * We check the potentially cyclic
 			 * nodes.
 			 */
-			clearProperty(Vocab.cyclicState);
+		  clearCyclicState();
 			check(CategorySet.cyclicSets, new NodeAction() {
 				public void apply(Node n) {
 					// If this is a description then it's busted.
@@ -161,10 +169,10 @@ public class Checker extends AbsChecker {
 						.member(
 							Grammar.unnamedIndividual,
 							CategorySet.getSet(cn.getCategories()))) {
-						isCyclic((CBlank) cn, n);
+						isCyclic((OneTwoImpl) cn, n);
 					}
 				}
-			}, m);
+			});
 
 			/*
 			* Hardest
@@ -184,26 +192,30 @@ public class Checker extends AbsChecker {
 			check(CategorySet.disjointWithSets, new NodeAction() {
 				public void apply(Node n) {
 
-					Iterator i =
-						asGraph().find(Node.ANY, Vocab.disjointWith, n);
+					Iterator i = disjoints.keySet().iterator();
 					while (i.hasNext()) {
-						Triple ti = (Triple) i.next();
+						Node b = (Node)i.next();
+						if (!b.isBlank()) continue;
+						
 						Iterator j =
-							asGraph().find(n, Vocab.disjointWith, Node.ANY);
+							((Set)disjoints.get(b)).iterator();
 						while (j.hasNext()) {
-							Triple tj = (Triple) j.next();
-							Node tis = ti.getSubject();
-							Node tjo = tj.getObject();
-							if (!(tis.equals(tjo)
-								|| asGraph().contains(
-									new Triple(tis, Vocab.disjointWith, tjo))))
-								nonMonProblem("Ill-formed owl:disjointWith", n);
+							Node a = (Node)j.next();
+							Iterator k = ((Set)disjoints.get(b)).iterator();
+							while (k.hasNext()) {
+								Node c = (Node)k.next();
+								if ( !(a.equals(c) ||((Set)disjoints.get(a)).contains(c))){
+									nonMonProblem("Ill-formed owl:disjointWith", n);
+								}
+							}	
 						}
 					}
+				
 				}
-			}, m);
+			});
 		}
 	}
+	/*
 	private void clearProperty(Node p) {
 		Iterator it = asGraph().find(Node.ANY, p, Node.ANY);
 		List list = new Vector();
@@ -212,42 +224,59 @@ public class Checker extends AbsChecker {
 		asGraph().getBulkUpdateHandler().delete(list);
 
 	}
-
-	private boolean isCyclic(CBlank blk, Node n) {
+  */
+	private boolean isCyclic(OneTwoImpl blk, Node n) {
 		int st = blk.getCyclicState();
 		switch (st) {
-			case CBlank.Checking :
-				blk.setCyclicState(CBlank.IsCyclic);
+			case OneTwoImpl.Checking :
+				blk.setCyclicState(OneTwoImpl.IsCyclic);
 				nonMonProblem("Cyclic unnamed individual", n);
-			case CBlank.IsCyclic :
+			case OneTwoImpl.IsCyclic :
 				return true;
-			case CBlank.Undefined :
-				blk.setCyclicState(CBlank.Checking);
+			case OneTwoImpl.Undefined :
+				blk.setCyclicState(OneTwoImpl.Checking);
 				Triple t = blk.get(2);
 				boolean rslt;
 				if (t == null)
 					rslt = false;
 				else
-					rslt = isCyclic((CBlank) getCNode(t.getSubject()), n);
-				blk.setCyclicState(rslt ? CBlank.IsCyclic : CBlank.NonCyclic);
+					rslt = isCyclic((OneTwoImpl) getCNode(t.getSubject()), n);
+				blk.setCyclicState(rslt ? OneTwoImpl.IsCyclic : OneTwoImpl.NonCyclic);
 				return rslt;
-			case CBlank.NonCyclic :
+			case OneTwoImpl.NonCyclic :
 				return false;
 			default :
 				throw new BrokenException("Impossible case in switch.");
 		}
 
 	}
-	private void check(Q q, NodeAction a, Model m) {
-		Query rdql = q.asRDQL();
-		rdql.setSource(m);
+	private void check(Q q, NodeAction a) {
+		
+		int bad[] = q.asInt();
+		//Query rdql = q.asRDQL();
+		//rdql.setSource(m);
+		
+		Iterator it = nodeInfo.entrySet().iterator();
+		
+		while ( it.hasNext() ) {
+			Map.Entry ent = (Map.Entry)it.next();
+			Node n = (Node)ent.getKey();
+			CNodeI info = (CNodeI)ent.getValue();
+			if (Q.member(info.getCategories(),bad)) {
+				a.apply(n);
+			}
+		}
+		
+		/*
 		QueryExecution qe = new QueryEngine(rdql);
 		QueryResults results = qe.exec();
+		
 		while (results.hasNext()) {
 			ResultBinding rb = (ResultBinding) results.next();
 			RDFNode nn = (RDFNode) rb.get("x");
 			a.apply(nn.asNode());
 		}
+		*/
 	}
 	private void nonMonProblem(String shortD, Node n) {
 		nonMonProblem(shortD, n, Levels.DL);
@@ -342,6 +371,7 @@ public class Checker extends AbsChecker {
 		super.addProblem(lvl, t);
 		if (lvl == Levels.Lite && !wantLite)
 			return;
+			
 		Graph min =
 			new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
 		addProblem(
@@ -349,6 +379,7 @@ public class Checker extends AbsChecker {
 				"Not a " + Levels.toString(lvl) + " subgraph",
 				min,
 				lvl));
+				
 	}
 	void addProblem(SyntaxProblem sp) {
 		super.addProblem(sp);
@@ -450,6 +481,16 @@ public class Checker extends AbsChecker {
 
 	}
 
+  Map disjoints = new HashMap();
+  
+  void addDisjoint(Node a,Node b) {
+  	Set sa = (Set)disjoints.get(a);
+  	if ( sa == null ) {
+  		sa = new HashSet();
+  		disjoints.put(a,sa);
+  	}
+  	sa.add(b);
+  }
 }
 
 /*

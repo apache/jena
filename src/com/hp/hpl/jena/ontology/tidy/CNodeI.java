@@ -6,12 +6,12 @@
 package com.hp.hpl.jena.ontology.tidy;
 
 import com.hp.hpl.jena.graph.*;
+
 /**
  * @author jjc
  *
  */
 interface CNodeI {
-	Node asNode();
     int getCategories();
     /**
      * @param recursive If c is not the current value then recursive processing is performed.
@@ -23,6 +23,11 @@ interface CNodeI {
     Blank asBlank();
     void addDisjoint(CNodeI foo);
     void addDisjoint1(CNodeI foo);
+    AbsChecker getChecker();
+	/**
+	 * 
+	 */
+	 Node asNode();
 }
 
 

@@ -47,7 +47,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import junit.textui.TestRunner;
+import junit.swingui.TestRunner;
 /**
  * .
  *

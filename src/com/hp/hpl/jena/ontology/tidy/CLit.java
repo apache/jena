@@ -8,7 +8,6 @@ package com.hp.hpl.jena.ontology.tidy;
 import java.math.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 
 /**
@@ -18,7 +17,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 class CLit extends CBuiltin {
     static final Integer zero = new Integer(0);
     static final Integer one = new Integer(1);
-	CLit(Node n, EnhGraph eg) {
+	CLit(Node n, AbsChecker eg) {
 		super(n, eg, literalCategory(n));
 	}
     /** 

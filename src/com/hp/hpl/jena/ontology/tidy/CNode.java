@@ -5,19 +5,13 @@
 
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.util.iterator.*;
 
 /**
  * @author jjc
  *
  */
-abstract class CNode extends EnhNode implements CNodeI {
-	final static public Implementation factory = new Implementation() {
-        public boolean canWrap( Node n, EnhGraph eg )
-            { return true; }
-        public EnhNode wrap(Node n, EnhGraph eg) {
+abstract class CNode implements CNodeI {
+	  static public CNode create(Node n, AbsChecker eg) {
 				// work out what sort of node this is.
 	        if (n.isLiteral())
 				return new CLit(n, eg);
@@ -83,79 +77,29 @@ abstract class CNode extends EnhNode implements CNodeI {
                 else
                    return new CURIref(n,eg,type);
 			}
-			return new CBlank(n, eg);
+			return new OneTwoImpl(n, eg);
 		}
-	};
-	CNode(Node n, EnhGraph eg) {
-		super(n, eg);
-	}
-    AbsChecker getChecker() {
-    	return (AbsChecker)getGraph();
-    }
-	Node getAttribute(Node property) {
-		Graph g = getGraph().asGraph();
-		ClosableIterator it = g.find(asNode(), property, null);
-		Node rslt = null;
-		try {
-			if (it.hasNext()) {
-				rslt = ((Triple) it.next()).getObject();
-				if (it.hasNext()) {
-					throw new SyntaxException(
-						"Internal error: <"
-							+ property.getURI()
-							+ "> may have at most one value.");
-				}
-			}
-		} finally {
-			it.close();
-		}
-		return rslt;
-	}
-	void setAttribute(Node property, Node obj) {
-		Graph g = getGraph().asGraph();
-		ClosableIterator it = g.find(asNode(), property, null);
-		Triple old = null;
-		try {
-			if (it.hasNext()) {
-				old = (Triple) it.next();
-				if (it.hasNext()) {
-					throw new SyntaxException(
-						"Internal error: <"
-							+ property.getURI()
-							+ "> may have at most one value.");
-				}
-			}
-		} finally {
-			it.close();
-		}
-		if (old != null)
-			g.delete(old);
-		g.add(new Triple(asNode(), property, obj));
-	}
 
-	int getIntAttribute(Node property, int def) {
-		Node obj = getAttribute(property);
-		if (obj != null) {
-			return ((Number) obj.getLiteral().getValue()).intValue();
-		}
-		return def;
+	final AbsChecker checker;
+	final Node node;
+	CNode(Node n, AbsChecker eg) {
+		checker = eg;
+		node = n;
 	}
-	void setIntAttribute(Node p, int v) {
-		// looks horribly inefficient :(
-		setAttribute(p, Node.createLiteral(new LiteralLabel(new Integer(v))));
+	public Node asNode() {
+		return node;
 	}
-	void incrAttribute(Node property, int diff) {
-		int old = getIntAttribute(property, 0);
-		setIntAttribute(property, old + diff);
-	}
-	public One asOne() {
-		return (One) viewAs(One.class);
+  public  AbsChecker getChecker() {
+    	return checker;
+    }
+  public One asOne() {
+		return (One) this;
 	}
 	public Two asTwo() {
-		return (Two) viewAs(Two.class);
+		return (Two) this;
 	}
 	public Blank asBlank() {
-		return (Blank) viewAs(Blank.class);
+		return (Blank) this;
 	}
 	
 	public void addDisjoint(CNodeI cn){
@@ -163,12 +107,7 @@ abstract class CNode extends EnhNode implements CNodeI {
 		cn.addDisjoint1(this);
 	}
 	public void addDisjoint1(CNodeI cn){
-		getGraph()
-		   .asGraph()
-		   .add(new Triple(
-		        this.asNode(),
-		        Vocab.disjointWith,
-		        cn.asNode()));
+		getChecker().addDisjoint(asNode(),cn.asNode());
 	}
 
 }
