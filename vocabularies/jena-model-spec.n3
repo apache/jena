@@ -1,6 +1,6 @@
 # (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: jena-model-spec.n3,v 1.4 2005-02-18 15:46:02 chris-dollin Exp $
+# $Id: jena-model-spec.n3,v 1.5 2005-03-09 20:00:50 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
@@ -10,6 +10,7 @@
 
 <>  rdfs:comment     "Vocabulary for describing Jena models" ;
     dc:creator       "Andy Seaborne" ;
+    dc:creator       "Chris Dollin" ;
     dc:subject       "" ;
     dc:publisher     "HP" ;
     dc:title         "Jena Model Spec" ;
@@ -36,6 +37,10 @@ jms:DefaultModelSpec rdf:type rdfs:Class
 
 jms:PlainModelSpec rdf:type rdfs:Class
     ; rdfs:comment "the type of a plain memory-based model specification"
+    .
+
+jms:FileModelSpec rdf:type rdfs:Class
+    ; rdfs:comment "the type of a file-based model specification"
     .
 
 jms:InfModelSpec rdf:type rdfs:Class
@@ -81,6 +86,7 @@ jms:maker               rdf:type     rdf:Property .
 jms:reificationMode     rdf:type     rdf:Property .
 jms:reasoner            rdf:type     rdf:Property .
 jms:fileBase            rdf:type     rdf:Property .
+jms:modelName           rdf:type     rdf:Property .
 
 # ==== Relationships
 
@@ -92,12 +98,15 @@ jms:DefaultModelSpec    rdfs:subClassOf     jms:ModelSpec .
 jms:PlainModelSpec      rdfs:subClassOf     jms:ModelSpec .
 jms:InfModelSpec        rdfs:subClassOf     jms:PlainModelSpec .
 jms:OntModelSpec        rdfs:subClassOf     jms:InfModelSpec .
+jms:FileModelSpec       rdfs:subClassOf     jms:PlainModelSpec .
 
 jms:reificationMode     rdfs:domain         jms:MakerSpec .
 jms:maker               rdfs:domain         jms:PlainModelSpec .
 jms:importMaker         rdfs:domain         jms:OntModelSpec .
 jms:ontLanguage         rdfs:domain         jms:OntModelSpec .
 jms:reasonsWith         rdfs:domain         jms:InfModelSpec .
+jms:modelName           rdfs:domain         jms:ModelSpec .
+jms:fileBase            rdfs:domain         jms:FileMakerSpec .
 
 jms:importMaker         rdfs:subPropertyOf  jms:maker .
 

@@ -53,6 +53,7 @@ public class TestVocabJenaModelSpec extends ModelTestBase
         assertEquals( jmsProperty( "reasoner" ), JMS.reasoner );
         assertEquals( jmsProperty( "fileBase" ), JMS.fileBase );
         assertEquals( jmsProperty( "typeCreatedBy" ), JMS.typeCreatedBy );
+        assertEquals( jmsProperty( "modelName" ), JMS.modelName );
         }
     
     public void testResource()
@@ -66,6 +67,7 @@ public class TestVocabJenaModelSpec extends ModelTestBase
         assertEquals( jmsResource( "PlainModelSpec" ), JMS.PlainModelSpec );
         assertEquals( jmsResource( "InfModelSpec" ), JMS.InfModelSpec );
         assertEquals( jmsResource( "OntModelSpec" ), JMS.OntModelSpec );
+        assertEquals( jmsResource( "FileModelSpec" ), JMS.FileModelSpec );
         assertEquals( jmsResource( "rsStandard" ), JMS.rsStandard );
         assertEquals( jmsResource( "rsMinimal" ), JMS.rsMinimal );
         assertEquals( jmsResource( "rsConvenient" ), JMS.rsConvenient );
@@ -83,6 +85,7 @@ public class TestVocabJenaModelSpec extends ModelTestBase
         ensure( JMS.DefaultModelSpec, RDFS.subClassOf, JMS.ModelSpec );
         ensure( JMS.PlainModelSpec, RDFS.subClassOf, JMS.ModelSpec );
         ensure( JMS.InfModelSpec, RDFS.subClassOf, JMS.PlainModelSpec );
+        ensure( JMS.FileModelSpec, RDFS.subClassOf, JMS.PlainModelSpec );
         ensure( JMS.OntModelSpec, RDFS.subClassOf, JMS.InfModelSpec );
         }
     
@@ -90,10 +93,12 @@ public class TestVocabJenaModelSpec extends ModelTestBase
         {        
         ensure( JMS.reificationMode, RDFS.domain, JMS.MakerSpec );
         ensure( JMS.maker, RDFS.domain, JMS.PlainModelSpec );
+        ensure( JMS.modelName, RDFS.domain, JMS.ModelSpec );
     //    
         ensure( JMS.importMaker, RDFS.domain, JMS.OntModelSpec );
         ensure( JMS.ontLanguage, RDFS.domain, JMS.OntModelSpec );
         ensure( JMS.reasonsWith, RDFS.domain, JMS.InfModelSpec );
+        ensure( JMS.fileBase, RDFS.domain, JMS.FileMakerSpec );
         }
     
     protected void ensure( Resource S, Property P, RDFNode O )
