@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.6 2005-01-03 11:50:42 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.7 2005-01-05 13:07:31 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -18,33 +18,67 @@ import com.hp.hpl.jena.shared.BrokenException;
  *  
  */
 class MonotonicErrorAnalyzer implements Constants {
-	final static private int BLANK_PROP = 130;
+	final static private int BLANK_PROP = 1;
 
-	final static private int LITERAL_PROP = 131;
+	final static private int LITERAL_PROP = 2;
 
-	final static private int LITERAL_SUBJ = 132;
+	final static private int LITERAL_SUBJ = 3;
 
-	final static private int BADID_USE = 133;
+	final static private int BADID_USE = 4;
 
-	final static private int BUILTIN_NON_PRED = 134;
+	final static private int BUILTIN_NON_PRED = 5;
 
-	final static private int BUILTIN_NON_SUBJ = 135;
+	final static private int BUILTIN_NON_SUBJ = 6;
 
-	final static private int TYPE_NEEDS_ID = 180;
+	final static private int TYPE_NEEDS_ID = 10;
 
-	final static private int TYPE_NEEDS_BLANK = 181;
+	final static private int TYPE_NEEDS_BLANK = 11;
 
-	final static private int TYPE_OF_CLASS_ONLY_ID = 182;
+	final static private int TYPE_OF_CLASS_ONLY_ID = 12;
 
-	final static private int TYPE_OF_PROPERTY_ONLY_ID = 183;
+	final static private int TYPE_OF_PROPERTY_ONLY_ID = 13;
 
-	final static private int TYPE_FOR_BUILTIN = 184;
+	final static private int TYPE_FOR_BUILTIN = 14;
 
-	final static private int DIFFERENT_CATS = 200;
+	final static private int ST_DOMAIN_RANGE = 20;
 
-	final static private int DC_DOM_RANGE = 223; // 224, 225, 227, 228
+	final static int BAD_DOMAIN = ST_DOMAIN_RANGE + 1;
 
-	final static private int ST_DOMAIN_RANGE = 250; // 251, 252, 253
+	final static int BAD_RANGE = ST_DOMAIN_RANGE + 2;
+
+	final static int BAD_DOMAIN_RANGE = ST_DOMAIN_RANGE + 3;
+
+	final static private int DIFFERENT_CATS = 30;
+
+	final static private int DIFFERENT_CATS_S = DIFFERENT_CATS + 1;
+
+	final static private int DIFFERENT_CATS_P = DIFFERENT_CATS + 2;
+
+	final static private int DIFFERENT_CATS_SP = DIFFERENT_CATS + 3;
+
+	final static private int DIFFERENT_CATS_O = DIFFERENT_CATS + 4;
+
+	final static private int DIFFERENT_CATS_SO = DIFFERENT_CATS + 5;
+
+	final static private int DIFFERENT_CATS_PO = DIFFERENT_CATS + 6;
+
+	final static private int DIFFERENT_CATS_SPO = DIFFERENT_CATS + 7;
+
+	final static private int DC_DOM_RANGE = 40;
+
+	final static private int INCOMPATIBLE_S = DC_DOM_RANGE + 1;
+
+	final static private int INCOMPATIBLE_P = DC_DOM_RANGE + 2;
+
+	final static private int INCOMPATIBLE_SP = DC_DOM_RANGE + 3;
+
+	final static private int INCOMPATIBLE_O = DC_DOM_RANGE + 4;
+
+	final static private int INCOMPATIBLE_SO = DC_DOM_RANGE + 5;
+
+	final static private int INCOMPATIBLE_PO = DC_DOM_RANGE + 6;
+
+	final static private int INCOMPATIBLE_SPO = DC_DOM_RANGE + 7;
 
 	final static private int NOT_CLASSIFIED = -1;
 
@@ -120,98 +154,139 @@ class MonotonicErrorAnalyzer implements Constants {
 			return singleTripleError(sx, px, ox);
 		}
 		int misses = 0;
-		int sz = look.subject(sx, key);
-		int pz = look.prop(px, key);
-		int oz = look.object(ox, key);
+		int given[] = { s, p, o };
+		int general[] = { look.subject(sx, key), look.prop(px, key),
+				look.object(ox, key) };
+		int meet[] = new int[3];
 		int rslt = NOT_CLASSIFIED;
 		int mType = 0;
-		if (look.meet(sz, s) == Failure) {
-			misses |= 1;
-			int r = catMiss(sz, s);
-			if (r != NOT_CLASSIFIED) {
-				rslt = r;
-				mType++;
-			} else {
-				mType += 10;
-			}
-		}
-		if (look.meet(pz, p) == Failure) {
-			misses |= 2;
-			int r = catMiss(pz, p);
-			if (r != NOT_CLASSIFIED) {
-				rslt = r;
-				mType++;
-			} else {
-				mType += 10;
-			}
-		}
-		if (look.meet(oz, o) == Failure) {
-			misses |= 4;
-			int r = catMiss(oz, o);
-			if (r != NOT_CLASSIFIED) {
-				rslt = r;
-				mType++;
-			} else {
-				mType += 10;
+		for (int i = 0; i < 3; i++) {
+			meet[i] = look.meet(general[i], given[i]);
+			if (meet[i] == Failure) {
+				misses |= (1 << i);
+				int r = catMiss(general[i], given[i]);
+				if (r != NOT_CLASSIFIED) {
+					rslt = r;
+					mType++;
+				} else {
+					mType += 10;
+				}
 			}
 		}
 		miss[misses]++;
 		mTypes[mType]++;
 		if (misses == 0) {
-			return difficultCase(s, p, o, sz, pz, oz);
+			return difficultCase(given, general, meet);
 		}
-		return rslt;
+		return DIFFERENT_CATS + misses;
 
+	}
+
+	static private int spo(int f, int old, int key) {
+		switch (f) {
+		case 0:
+			return look.subject(old, key);
+
+		case 1:
+			return look.prop(old, key);
+
+		case 2:
+			return look.object(old, key);
+		}
+		throw new BrokenException("Illegal argument to spo: " + f);
 	}
 
 	static private int diffPreds[] = new int[SZ];
 
-	static private int difficultCase(int s, int p, int o, int sz, int pz, int oz) {
-		int rslt = NOT_CLASSIFIED;
-
-		int given[] = { s, p, o };
-		int general[] = { sz, pz, oz };
+	static private int difficultCase(int given[], int general[], int meet[]) {
 		int givenName[] = { NOT_CLASSIFIED, NOT_CLASSIFIED, NOT_CLASSIFIED };
 		int wantedName[] = { NOT_CLASSIFIED, NOT_CLASSIFIED, NOT_CLASSIFIED };
 
-		int key[] = { look.qrefine(sz, p, o), look.qrefine(s, pz, o),
-				look.qrefine(s, p, oz), };
-		int cats[][] = { nonPseudoCats(s), nonPseudoCats(p), nonPseudoCats(o) };
+		int key[] = new int[3];
+		int key2[] = new int[3];
+		int cats[][] = new int[3][];
 		int failures = 0;
 		boolean bad = false;
-
+		for (int i = 0; i < 3; i++) {
+			key[i] = look.qrefine(i == 0 ? general[0] : given[0],
+					i == 1 ? general[1] : given[1], i == 2 ? general[2]
+							: given[2]);
+			cats[i] = nonPseudoCats(given[i]);
+			key2[i] = look.qrefine(i != 0 ? general[0] : given[0],
+					i != 1 ? general[1] : given[1], i != 2 ? general[2]
+							: given[2]);
+			if (key2[i] == Failure)
+				throw new BrokenException("logic error");
+		}
 		for (int i = 0; i < 3; i++) {
 			if (key[i] == Failure)
 				failures |= (1 << i);
 			else {
-				int n = NOT_CLASSIFIED;
-				switch (i) {
-				case 0:
-					n = look.subject(general[i], key[i]);
-					break;
-				case 1:
-					n = look.prop(general[i], key[i]);
-					break;
-				case 2:
-					n = look.object(general[i], key[i]);
-					break;
-				}
+				int n = spo(i, general[i], key[i]);
 				int nc[] = nonPseudoCats(n);
 				if (Q.intersect(nc, cats[i]))
 					System.err.println("Intersect!");
 				givenName[i] = nameCatSet(cats[i], nc);
-				wantedName[i] = nameCatSet(cats[i], nc);
+				wantedName[i] = nameCatSet(nc,cats[i]);
 				if (givenName[i] == NOT_CLASSIFIED
 						|| wantedName[i] == NOT_CLASSIFIED)
 					bad = true;
 			}
 		}
 
-		// TODO failures = 5 needs better message
-		if (failures != 7 && !bad)
-			return DC_DOM_RANGE + failures;
+		int rslt = DC_DOM_RANGE + (7 ^ failures);
+		switch (rslt) {
+		case INCOMPATIBLE_SO:
+			computeGivenWanted(1,general, key2, cats);
+			break;
+		case INCOMPATIBLE_PO:
+			computeGivenWanted(0,general, key2, cats);
+			break;
+		case INCOMPATIBLE_SP:
+			computeGivenWanted(2,general, key2, cats);
+			break;
+		case INCOMPATIBLE_P:
+			
+			computeGivenWanted(0,general, key2, cats);
+			computeGivenWanted(2,general, key2, cats);
+			
+			break;
+		default:
+			throw new BrokenException(
+					"No code for this case - it doesn't happen.");
+		}
+		return rslt;
+	}
 
-		throw new BrokenException("Unreachable code");
+	private static int[] computeGivenWanted(int unchanged,int[] general, int[] key2, int[][] cats) {
+		int rslt[] = new int[4];
+		int ix = 0;
+		for (int i=0;i<3;i++)
+			if (i!=unchanged) {
+				int want = spo(i,general[i],key2[3-i-unchanged]);
+				int wantC[] = nonPseudoCats(want);
+				rslt[ix++] = nameCatSet(wantC,cats[i]);
+				rslt[ix++] = nameCatSet(cats[i],wantC);
+			}
+		return rslt;
+		/*
+		int wantSubj = look.subject(general[0],key2[1]);
+		int wsc[] = nonPseudoCats(wantSubj);
+		int wantObj = look.object(general[2],key2[1]);
+		int woc[] = nonPseudoCats(wantObj);
+		int wantSPred = look.prop(general[1],key2[0]);
+		int wspc[] = nonPseudoCats(wantSPred);
+		int wantOPred = look.prop(general[1],key2[2]);
+		int wopc[] = nonPseudoCats(wantOPred);
+		nameCatSet(wsc,cats[0]);
+		nameCatSet(cats[0],wsc);
+		nameCatSet(woc,cats[2]);
+		nameCatSet(cats[2],woc);
+		nameCatSet(wspc,cats[1]);
+		nameCatSet(cats[1],wspc);
+		nameCatSet(wopc,cats[1]);
+		nameCatSet(cats[1],wopc);
+		*/
 	}
 
 	static private boolean isLiteral(int o) {
@@ -220,30 +295,25 @@ class MonotonicErrorAnalyzer implements Constants {
 	}
 
 	static private int empty[] = {};
-/**
- * The order of this array encodes a declarative preference:
- *   - the most precise description that fits is preferred
- *   - the shortest describing string is preferred
- * (some strings are short but awkward, in these cases
- *  a second string is given, whose length is also counted)
- * 
- * Exceptions to this declarative preference are:
- * prefer { objectPropID, transPropID }
- * over { objectPropID }
- * 
- * and
- * prefer { objectPropID, transPropID }
- * over { transPropID }
- * 
- * To verify the behaviour set
- *  DEBUG_NAMES to true and run main()
- * (fairly slow: ten, fifteen minutes)
- * 
- */
+
+	/**
+	 * The order of this array encodes a declarative preference: - the most
+	 * precise description that fits is preferred - the shortest describing
+	 * string is preferred (some strings are short but awkward, in these cases a
+	 * second string is given, whose length is also counted)
+	 * 
+	 * Exceptions to this declarative preference are: prefer { objectPropID,
+	 * transPropID } over { objectPropID }
+	 * 
+	 * and prefer { objectPropID, transPropID } over { transPropID }
+	 * 
+	 * To verify the behaviour set DEBUG_NAMES to true and run main() (fairly
+	 * slow: ten, fifteen minutes)
+	 *  
+	 */
 	static private Object names[][] = {
-// use "a blank node" where more precision is not needed.
-			{ CategorySet.getSet(Grammar.blank), "a blank node",
-			"ok"},
+			// use "a blank node" where more precision is not needed.
+			{ CategorySet.getSet(Grammar.blank), "a blank node", "ok" },
 			{ new int[] { Grammar.owlAllDifferent }, "owl:AllDifferent" },
 			{ new int[] { Grammar.owlAnnotationProperty },
 					"owl:AnnotationProperty" },
@@ -301,8 +371,9 @@ class MonotonicErrorAnalyzer implements Constants {
 					"an individual" },
 			{ new int[] { Grammar.unnamedOntology, Grammar.ontologyID },
 					"an ontology" },
-//			{ new int[] { Grammar.unnamedIndividual }, "an unnamed individual" },
-//			{ new int[] { Grammar.unnamedOntology }, "an unnamed ontology" },
+			//			{ new int[] { Grammar.unnamedIndividual }, "an unnamed
+			// individual" },
+			//			{ new int[] { Grammar.unnamedOntology }, "an unnamed ontology" },
 			{ new int[] { Grammar.unnamedIndividual, Grammar.unnamedOntology },
 					"an unnamed individual or unnamed ontology" },
 			{ new int[] { Grammar.allDifferent },
@@ -401,7 +472,7 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.restriction8equivalentClass,
 							Grammar.restriction8object,
 							Grammar.restriction8subClassOf },
-					"a class expression", "fairly complex notion -----------"},
+					"a class expression", "fairly complex notion -----------" },
 			{
 					new int[] { Grammar.description5disjointWith,
 							Grammar.description5equivalentClass,
@@ -549,7 +620,8 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.restriction8subClassOf,
 							Grammar.unnamedDataRange, Grammar.classID,
 							Grammar.dataRangeID, Grammar.datatypeID },
-					"a generalized class or datatype expression", "complex notion, quite" },
+					"a generalized class or datatype expression",
+					"complex notion, quite" },
 
 			{ new int[] { Grammar.listOfDescription },
 					"a list of class expressions", },
@@ -601,8 +673,8 @@ class MonotonicErrorAnalyzer implements Constants {
 					new int[] { Grammar.listOfDescription,
 							Grammar.listOfIndividualID },
 					"a list of class expressions or a list of named individuals" },
-			{ CategorySet.getSet(Grammar.userID), "a user ID", 
-						"much too general, often, except when needed"},
+			{ CategorySet.getSet(Grammar.userID), "a user ID",
+					"much too general, often, except when needed" },
 
 			{
 					new int[] { Grammar.dlInteger, Grammar.liteInteger,
@@ -627,7 +699,8 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.description5subClassOf,
 							Grammar.unnamedDataRange },
 					// TODO check error message with this one
-					"a named class or a class description or a datarange", "prefer not to use"},
+					"a named class or a class description or a datarange",
+					"prefer not to use" },
 			{
 					new int[] { Grammar.classID, Grammar.dlInteger,
 							Grammar.individualID, Grammar.liteInteger,
@@ -637,7 +710,7 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.restriction7object,
 							Grammar.restriction8object },
 					"a possible member of a list (a class expression, a literal, or a named individual)",
-					"really do not want to use this unless needed -------------------------------------"},
+					"really do not want to use this unless needed -------------------------------------" },
 
 			{
 					new int[] { Grammar.classID, Grammar.description5object,
@@ -669,7 +742,7 @@ class MonotonicErrorAnalyzer implements Constants {
 			Arrays.sort((int[]) names[i][0]);
 		}
 	};
-	
+
 	static boolean usedName[] = new boolean[names.length];
 
 	static private int descLength(int nm) {
@@ -680,88 +753,141 @@ class MonotonicErrorAnalyzer implements Constants {
 
 	static private int nameInfo[][] = new int[names.length][names.length];
 
-	static private Vector doneNames = new Vector();
-
-	static private boolean DEBUG_NAMES = true;
+	static private boolean DEBUG_NAMES = false;
 
 	static private String okNames[][] = {
-	//		{ "an individual", "an unnamed individual"},
-	//		{ "an ontology", "an unnamed ontology"},
-			{ "a class description", "a class description participating in an owl:disjointWith construct"},
-			{ "a class description", "a class description participating in an owl:equivalentClass construct"},
-			{ "a class description", "a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a class description", "a datarange or a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a class description", "a class description participating in an rdfs:subClassOf construct"},
-			{ "a non-empty list", "a list of literals"},
-			{ "a non-empty list", "a list of literals or a list of named individuals"},
-			{ "a non-empty list", "a list of class expressions"},
-			{ "a non-empty list", "a list of class expressions or a list of named individuals"},
-			{ "a non-empty list", "a list of named individuals"},
-			{ "a property restriction", "a restriction on a datatype property"},
-			{ "a property restriction", "a restriction on a datatype property or on a non-transitive object property"},
-			{ "a property restriction", "a restriction participating in an owl:disjointWith construct"},
-			{ "a property restriction", "a description or a restriction participating in an owl:disjointWith construct"},
-			{ "a property restriction", "a restriction participating in an owl:equivalentClass construct"},
-			{ "a property restriction", "a description or a restriction participating in an owl:equivalentClass construct"},
-			{ "a property restriction", "a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a property restriction", "a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a property restriction", "a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a property restriction", "a possible member of a list (a class expression, a literal, or a named individual)"},
-			{ "a property restriction", "a restriction participating in an rdfs:subClassOf construct"},
-			{ "a property restriction", "a description or a restriction participating in an rdfs:subClassOf construct"},
-			{ "a property restriction", "a restriction on an object property"},
-			{ "a property restriction", "a restriction on a non-transitive object property"},
-			{ "a property restriction", "a restriction on a transitive object property"},
-			{ "a class description or a property restriction", "a description or a restriction participating in an owl:disjointWith construct"},
-			{ "a class description or a property restriction", "a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a class description or a property restriction", "a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a class description or a property restriction", "a possible member of a list (a class expression, a literal, or a named individual)"},
-			{ "a class description or a property restriction or a datarange", "a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a class description or a property restriction", "a description or a restriction participating in an rdfs:subClassOf construct"},
-			{ "a class description or a property restriction", "a description or a restriction participating in an owl:equivalentClass construct"},
-			{ "a class description or a datarange", "a datarange or a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
-			{ "a property of some sort", "an annotation property, an object property or an ontology property"},
-			{ "a property of some sort", "an annotation property, a datatype property or an object property"},
-			{ "an object property", "a non-transitive object property"},
-			{ "an ontology", "a named ontology"},
-			{ "an object property", "a transitive object property"},
-			{ "an object or datatype property", "a datatype property or a non-transitive object property"},
-			{ "an individual", "a named individual"},
-			{ "a literal", "a non-negative integer"},
-			{ "a literal", "a literal other than a non-negative integer"},
-			{ "a class expression", "a named class or a class description or a datarange"},
-			{ "a class expression", "a possible member of a list (a class expression, a literal, or a named individual)"},
-			{ "a blank node", "a blank node in an owl:AllDifferent construction"},
-			{ "a blank node", "a property restriction"},
-			{ "a blank node", "a class description or a property restriction"},
-			{ "a blank node", "a class expression"},
-			{ "a blank node", "a class description or a property restriction or a datarange"},
-			{ "a blank node", "a generalized class or datatype expression"},
-			{ "a restriction on an object property", "a restriction on a non-transitive object property"},
-			{ "a restriction on an object property", "a restriction on a transitive object property"},
-			{ "a blank node", "a restriction on a datatype property or on a non-transitive object property"},
-			{ "a generalized class or datatype expression", "a named class or a class description or a datarange"},
-			{ "a blank node", "a non-empty list"},
-			{ "a blank node", "a possibly empty list"},
-
+			//		{ "an individual", "an unnamed individual"},
+			//		{ "an ontology", "an unnamed ontology"},
+			{ "a class description",
+					"a class description participating in an owl:disjointWith construct" },
+			{ "a class description",
+					"a class description participating in an owl:equivalentClass construct" },
+			{
+					"a class description",
+					"a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{
+					"a class description",
+					"a datarange or a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{ "a class description",
+					"a class description participating in an rdfs:subClassOf construct" },
+			{ "a non-empty list", "a list of literals" },
+			{ "a non-empty list",
+					"a list of literals or a list of named individuals" },
+			{ "a non-empty list", "a list of class expressions" },
+			{ "a non-empty list",
+					"a list of class expressions or a list of named individuals" },
+			{ "a non-empty list", "a list of named individuals" },
+			{ "a property restriction", "a restriction on a datatype property" },
+			{ "a property restriction",
+					"a restriction on a datatype property or on a non-transitive object property" },
+			{ "a property restriction",
+					"a restriction participating in an owl:disjointWith construct" },
+			{ "a property restriction",
+					"a description or a restriction participating in an owl:disjointWith construct" },
+			{ "a property restriction",
+					"a restriction participating in an owl:equivalentClass construct" },
+			{
+					"a property restriction",
+					"a description or a restriction participating in an owl:equivalentClass construct" },
+			{
+					"a property restriction",
+					"a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{
+					"a property restriction",
+					"a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{
+					"a property restriction",
+					"a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{
+					"a property restriction",
+					"a possible member of a list (a class expression, a literal, or a named individual)" },
+			{ "a property restriction",
+					"a restriction participating in an rdfs:subClassOf construct" },
+			{ "a property restriction",
+					"a description or a restriction participating in an rdfs:subClassOf construct" },
+			{ "a property restriction", "a restriction on an object property" },
+			{ "a property restriction",
+					"a restriction on a non-transitive object property" },
+			{ "a property restriction",
+					"a restriction on a transitive object property" },
+			{ "a class description or a property restriction",
+					"a description or a restriction participating in an owl:disjointWith construct" },
+			{
+					"a class description or a property restriction",
+					"a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{
+					"a class description or a property restriction",
+					"a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{
+					"a class description or a property restriction",
+					"a possible member of a list (a class expression, a literal, or a named individual)" },
+			{
+					"a class description or a property restriction or a datarange",
+					"a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{ "a class description or a property restriction",
+					"a description or a restriction participating in an rdfs:subClassOf construct" },
+			{
+					"a class description or a property restriction",
+					"a description or a restriction participating in an owl:equivalentClass construct" },
+			{
+					"a class description or a datarange",
+					"a datarange or a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith" },
+			{ "a property of some sort",
+					"an annotation property, an object property or an ontology property" },
+			{ "a property of some sort",
+					"an annotation property, a datatype property or an object property" },
+			{ "an object property", "a non-transitive object property" },
+			{ "an ontology", "a named ontology" },
+			{ "an object property", "a transitive object property" },
+			{ "an object or datatype property",
+					"a datatype property or a non-transitive object property" },
+			{ "an individual", "a named individual" },
+			{ "a literal", "a non-negative integer" },
+			{ "a literal", "a literal other than a non-negative integer" },
+			{ "a class expression",
+					"a named class or a class description or a datarange" },
+			{
+					"a class expression",
+					"a possible member of a list (a class expression, a literal, or a named individual)" },
+			{ "a blank node",
+					"a blank node in an owl:AllDifferent construction" },
+			{ "a blank node", "a property restriction" },
+			{ "a blank node", "a class description or a property restriction" },
+			{ "a blank node", "a class expression" },
+			{ "a blank node",
+					"a class description or a property restriction or a datarange" },
+			{ "a blank node", "a generalized class or datatype expression" },
+			{ "a restriction on an object property",
+					"a restriction on a non-transitive object property" },
+			{ "a restriction on an object property",
+					"a restriction on a transitive object property" },
+			{ "a blank node",
+					"a restriction on a datatype property or on a non-transitive object property" },
+			{ "a generalized class or datatype expression",
+					"a named class or a class description or a datarange" },
+			{ "a blank node", "a non-empty list" },
+			{ "a blank node", "a possibly empty list" },
 
 	};
-	static void showNameInfo(boolean shorter,int not, int pref) {
-		String prefix = shorter?"!!":"//";
+
+	static void showNameInfo(boolean shorter, int not, int pref) {
+		String prefix = shorter ? "!!" : "//";
 		if (!shorter) {
-			String p = (String)names[pref][1];
-			String o = (String)names[not][1];
-			
-			for (int i=0; i<okNames.length;i++) {
-				if (p.equals(okNames[i][0])&&o.equals(okNames[i][1]))
+			String p = (String) names[pref][1];
+			String o = (String) names[not][1];
+
+			for (int i = 0; i < okNames.length; i++) {
+				if (p.equals(okNames[i][0]) && o.equals(okNames[i][1]))
 					return;
 			}
-			System.err.println("{ \""+names[pref][1]+"\", \""+  names[not][1] +"\"},");
+			System.err.println("{ \"" + names[pref][1] + "\", \""
+					+ names[not][1] + "\"},");
 		}
-		System.err.println(prefix+"Preferred: \"" + names[pref][1] + "\"");
-		System.err.println(prefix+"Over: \"" + names[not][1] + "\"");
-		System.err.println(prefix+"Array lengths: " + ((int[]) names[pref][0]).length
-				+ " vs " + ((int[]) names[not][0]).length + "    Desc length: "
+		System.err.println(prefix + "Preferred: \"" + names[pref][1] + "\"");
+		System.err.println(prefix + "Over: \"" + names[not][1] + "\"");
+		System.err.println(prefix + "Array lengths: "
+				+ ((int[]) names[pref][0]).length + " vs "
+				+ ((int[]) names[not][0]).length + "    Desc length: "
 				+ descLength(pref) + " vs " + descLength(not));
 
 	}
@@ -789,14 +915,14 @@ class MonotonicErrorAnalyzer implements Constants {
 							&& Q.subset((int[]) names[rslt][0],
 									(int[]) names[i][0])) {
 						System.err.println("Duplicates!!!!");
-						showNameInfo(true,i, rslt);
+						showNameInfo(true, i, rslt);
 					}
 					boolean shorter = descLength(i) < descLength(rslt);
 					int old = nameInfo[i][rslt];
 					nameInfo[i][rslt] |= 1 + (moreSpecific ? 2 : 0)
 							+ (shorter ? 4 : 0);
-					if ((old == 0 || old ==1)&&(moreSpecific||shorter))
-						showNameInfo(shorter,i, rslt);
+					if ((old == 0 || old == 1) && (moreSpecific || shorter))
+						showNameInfo(shorter, i, rslt);
 				}
 			}
 		}
@@ -804,16 +930,7 @@ class MonotonicErrorAnalyzer implements Constants {
 			return rslt;
 
 		throw new BrokenException("Logic error.");
-		/*
-		 * Iterator it = doneNames.iterator(); while (it.hasNext()) { int a[][] =
-		 * (int[][]) it.next(); if (Q.subset(in, a[0]) && Q.subset(a[0], in) &&
-		 * Q.subset(out, a[1]) && Q.subset(a[1], out)) return NOT_CLASSIFIED; }
-		 * System.err.println(doneNames.size() + " nameCatSet(" +
-		 * CategorySet.catString(in) + "," + CategorySet.catString(out));
-		 * doneNames.add(new int[][] { in, out });
-		 * 
-		 * return NOT_CLASSIFIED;
-		 */
+
 	}
 
 	static private int dbgCnt = 0;
@@ -1091,9 +1208,9 @@ class MonotonicErrorAnalyzer implements Constants {
 					throw new BrokenException("Logic error");
 				}
 			}
-		for (int i=0; i<usedName.length;i++)
+		for (int i = 0; i < usedName.length; i++)
 			if (!usedName[i])
-				System.err.println("Unused: \""+names[i][1]+"\"");
+				System.err.println("Unused: \"" + names[i][1] + "\"");
 	}
 
 	static private String fieldName[] = { "subj", "pred", "obj ", "S1  ",
