@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.4 2003-05-03 16:53:22 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.5 2003-05-28 10:28:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -9,6 +9,8 @@ package com.hp.hpl.jena.shared.test;
 import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
+
 import java.util.*;
 
 /**

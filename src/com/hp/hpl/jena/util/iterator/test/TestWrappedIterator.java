@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestWrappedIterator.java,v 1.1 2003-01-30 10:25:17 chris-dollin Exp $
+  $Id: TestWrappedIterator.java,v 1.2 2003-05-28 10:28:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -11,7 +11,7 @@ package com.hp.hpl.jena.util.iterator.test;
     some fake base iterator to do the checking, and _close_, ditto.
 */
 
-import com.hp.hpl.jena.graph.GraphTestBase;
+import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 import junit.framework.*;

@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestDelta.java,v 1.2 2003-04-04 11:31:08 chris-dollin Exp $
+  $Id: TestDelta.java,v 1.3 2003-05-28 10:28:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Delta;
+import com.hp.hpl.jena.graph.test.*;
 
 import junit.framework.*;
 

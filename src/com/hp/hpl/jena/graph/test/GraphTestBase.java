@@ -1,10 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.21 2003-05-23 15:00:18 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.1 2003-05-28 10:28:56 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.test;
 
 /**
 	@author kers
@@ -13,6 +13,9 @@ package com.hp.hpl.jena.graph;
 */
 
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;

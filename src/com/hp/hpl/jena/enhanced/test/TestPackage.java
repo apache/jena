@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.8 2003-05-19 12:21:47 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.9 2003-05-28 10:28:52 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -12,6 +12,7 @@
 package com.hp.hpl.jena.enhanced.test;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.enhanced.*;
 
 import junit.framework.*;

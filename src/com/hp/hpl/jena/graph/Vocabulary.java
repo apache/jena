@@ -1,10 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Vocabulary.java,v 1.1.1.1 2002-12-19 19:13:36 bwm Exp $
+  $Id: Vocabulary.java,v 1.2 2003-05-28 10:28:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
+
+import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.graph.test.*;
 
 /**
 	@author kers

@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestIntersection.java,v 1.4 2003-04-09 20:44:42 jeremy_carroll Exp $
+  $Id: TestIntersection.java,v 1.5 2003-05-28 10:28:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Intersection;
+import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 import junit.framework.*;
 

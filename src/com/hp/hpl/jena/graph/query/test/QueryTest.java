@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.5 2003-04-09 20:44:39 jeremy_carroll Exp $
+  $Id: QueryTest.java,v 1.6 2003-05-28 10:28:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestDyadic.java,v 1.1 2003-03-04 17:51:44 ian_dickinson Exp $
+  $Id: TestDyadic.java,v 1.2 2003-05-28 10:28:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.compose.test;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Dyadic;
+import com.hp.hpl.jena.graph.test.*;
 
 
 import java.util.*;

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestIterators.java,v 1.1 2003-04-10 10:09:45 chris-dollin Exp $
+  $Id: TestIterators.java,v 1.2 2003-05-28 10:28:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.TestSuite;

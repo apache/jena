@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.2 2003-05-12 19:46:31 chris-dollin Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.3 2003-05-28 10:28:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
 
 import java.util.*;
 

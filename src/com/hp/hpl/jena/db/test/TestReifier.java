@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.5 2003-05-10 15:56:39 wkw Exp $
+  $Id: TestReifier.java,v 1.6 2003-05-28 10:28:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
+
 import junit.framework.*;
 
 /**

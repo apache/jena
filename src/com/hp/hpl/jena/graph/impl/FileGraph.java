@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.8 2003-05-27 11:21:41 ian_dickinson Exp $
+  $Id: FileGraph.java,v 1.9 2003-05-28 10:28:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
@@ -131,9 +132,8 @@ public class FileGraph extends GraphMem
         them to the current file. renameTo doesn't have a powerful enough
         semantics, so we anticipate failure and attempt to bypass it ...
     <p>
-        If the rename works, that's fine. If it fails, we attempt to rename the
-        current file to name.old, rename name.new to name, and then
-        delete name.old; if bits of that don't work, we throw an exception.
+        If the rename works, that's fine. If it fails, we delete the old file if it
+        exists, and try again.
     */
     private void updateFrom( File intermediate )
         {
