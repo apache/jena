@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveEngine.java,v 1.6 2004-12-07 09:56:38 andy_seaborne Exp $
+ * $Id: TransitiveEngine.java,v 1.7 2004-12-17 11:27:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * lattice and use them within a larger inference graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2004-12-07 09:56:38 $
+ * @version $Revision: 1.7 $ on $Date: 2004-12-17 11:27:14 $
  */
 public class TransitiveEngine {
     
@@ -53,7 +53,8 @@ public class TransitiveEngine {
     private static final int SUBPROPERTY = 4;
     
     /** Mask for the lattice update cases */
-    private static final int UPDATE_MASK = SUBCLASS | SUBPROPERTY;
+//    private static final int UPDATE_MASK = SUBCLASS | SUBPROPERTY;
+    private static final int UPDATE_MASK = SUBCLASS | SUBPROPERTY | NOT_RELEVANT;
     
     /** Classification flag: subProperty of subClass */
     private static final int REBUILD_SUBCLASS = 8;
