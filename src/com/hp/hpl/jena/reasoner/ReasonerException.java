@@ -1,45 +1,33 @@
 /******************************************************************
- * File:        ReasonerFactory.java
+ * File:        ReasonerException.java
  * Created by:  Dave Reynolds
  * Created on:  09-Jan-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerFactory.java,v 1.2 2003-02-01 13:35:01 der Exp $
+ * $Id: ReasonerException.java,v 1.3 2003-04-15 21:19:01 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
-import com.hp.hpl.jena.rdf.model.Model;
-
 /**
- * The interface through which a reasoner (inference engine) can be
- * instantiated. Instances of this are registered with the global
- * ReasonerRegistry.
+ * Exception signalling some generic problem with the reasoning subsystem.
+ * Subclasses of this exception may be used to report more specific problems.
+ * <p>In the future there may be a top level JenaException which this exception
+ * should extend.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-01 13:35:01 $
+ * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:19:01 $
  */
-public interface ReasonerFactory {
-
-    /**
-     * Constructor method that builds an instance of the associated Reasoner
-     * @param configuration a set of arbitrary configuration information to be 
-     * passed the reasoner encoded within an RDF model.
-     */
-    public Reasoner create(Model configuration);
-
-    /**
-     * Return a description of the capabilities of this reasoner encoded in
-     * RDF. These capabilities may be static or may depend on configuration
-     * information supplied at construction time. May be null if there are
-     * no useful capabilities registered.
-     */
-    public Model getCapabilities();
+public class ReasonerException extends RuntimeException {
     
     /**
-     * Return the URI labelling this type of reasoner
+     * Constructor.
+     * @param msg a free-text message describing the problem
      */
-    public String getURI();
+    public ReasonerException(String msg) {
+        super(msg);
+    }
+
 }
 
 /*
