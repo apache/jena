@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.1 2003-08-11 02:41:52 wkw Exp $
+  $Id: DBQueryHandler.java,v 1.2 2003-08-12 02:39:10 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -84,7 +84,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
 		DBPattern minSrc, unstagedSrc = null;
 		while (patternsToDo > 0) {
 			// rank the patterns by cost
-			minCost = DBPattern.costMax + 1;
+			minCost = DBPattern.costMax;
 			minSrc = null;
 			for (i = 0; i < ptn.length; i++) {
 				src = source[i];
