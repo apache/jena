@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.10 2004-08-07 11:33:32 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.11 2004-08-07 15:45:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -99,9 +99,18 @@ public class InfModelSpec extends ModelSpecImpl
         Resource r = reasonerRoot; // desc.createResource();
         desc.add( self, JMS.reasonsWith, r );
         desc.add( r, JMS.reasoner, reasonerResource );
-        
+        new ModelExtract( notJMS ) .extractInto( desc, r, description );
         return desc;    
         }
+    
+    private final static TripleBoundary notJMSTriple = new TripleBoundary()
+        { public boolean stopAt( Triple t ) { return !t.getPredicate().getNameSpace().equals( JMS.baseURI ); }};
+    
+    private static final StatementBoundary notJMS = new StatementBoundary()
+        {
+        public boolean stopAt( Statement s ) { return notJMSTriple.stopAt( s.asTriple() ); }
+        public TripleBoundary asTripleBoundary( Model ignored ) { return notJMSTriple; }
+        };
 
     /**
          Answer a ReasonerFactory described by the properties of the resource

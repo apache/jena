@@ -1,15 +1,13 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.19 2004-08-07 11:33:32 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.20 2004-08-07 15:45:58 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.util.*;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
@@ -288,7 +286,7 @@ public class TestModelSpecRevised extends ModelTestBase
         String ruleString = "[rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]";
     	Model desc = createInfModelDesc( A, GenericRuleReasonerFactory.URI, ruleString );
     	ModelSpec s = ModelSpecImpl.create( desc );
-    	// assertIsoModels( desc, s.getDescription() );
+    	assertIsoModels( desc, s.getDescription() );
     	}
     
     private ModelSpec createInfModelSpec( String ruleString )

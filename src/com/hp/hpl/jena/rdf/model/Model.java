@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.53 2004-06-25 06:13:42 chris-dollin Exp $
+  $Id: Model.java,v 1.54 2004-08-07 15:45:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.*;
 
 import java.io.*;
@@ -62,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.53 $Date: 2004/06/24 12:11:49 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.54 $Date: 2004/06/25 06:13:42 $'
  */
 public interface Model 
     extends ModelCon, ModelGraphInterface, 
@@ -969,5 +968,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.53 2004-06-25 06:13:42 chris-dollin Exp $
+ * $Id: Model.java,v 1.54 2004-08-07 15:45:58 chris-dollin Exp $
  */

@@ -1,55 +1,30 @@
 /*
       (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: GraphExtract.java,v 1.2 2004-08-07 15:45:29 chris-dollin Exp $
+      $Id: StatementBoundary.java,v 1.1 2004-08-07 15:45:58 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.rdf.model;
 
-import java.util.Iterator;
-
-import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.graph.TripleBoundary;
 
 /**
-     GraphExtract offers a very simple recursive extraction of a subgraph with a
-     specified root in some supergraph. The recursion is terminated by triples
-     that satisfy some supplied boundary condition.
-     
+     An interface for expressing search boundaries in terms of bounding statements.
  	@author hedgehog
 */
-public class GraphExtract
+
+public interface StatementBoundary
     {
-    protected final TripleBoundary b;
-    
-    public GraphExtract( TripleBoundary b )
-        { this.b = b; }
+    /**
+         Answer true if this statement is a boundary of the search.
+    */
+    boolean stopAt( Statement s );
     
     /**
-         Answer a new graph which is the reachable subgraph from <code>node</code>
-         in <code>graph</code> with the terminating condition given by the
-         TripleBoundary passed to the constructor.
+         Answer a TripleBoundary corresponding to this StatementBoundary,
+         where Triples may be converted to Statements using <code>m</code>.
     */
-    public Graph extract( Node node, Graph graph )
-        { return extractInto( new GraphMem(), node, graph ); }
-    
-    /**
-         Answer the graph <code>toUpdate</code> augmented with the sub-graph of
-         <code>extractFrom</code> reachable from <code>root</code> bounded
-         by this instance's TripleBoundary.
-    */
-    public Graph extractInto( Graph toUpdate, Node root, Graph extractFrom )
-        {
-        Iterator it = extractFrom.find( root, Node.ANY, Node.ANY );
-        while (it.hasNext())
-            {
-            Triple t = (Triple) it.next();
-            Node subRoot = t.getObject();
-            toUpdate.add( t );
-            if (toUpdate.contains( subRoot, Node.ANY, Node.ANY ) == false && b.stopAt( t ) == false)
-                extractInto( toUpdate, subRoot, extractFrom );
-            }
-        return toUpdate;
-        }
+    TripleBoundary asTripleBoundary( Model m );
     }
 
 /*
