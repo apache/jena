@@ -36,7 +36,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.12 2003-04-28 14:22:25 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.13 2003-04-29 16:12:16 andy_seaborne Exp $
  */
 
 
@@ -106,7 +106,10 @@ public class N3JenaWriter implements RDFWriter
 		if ( prefix.endsWith(":") )
 			prefix = prefix.substring(0,prefix.length()-1) ;
 		if ( prefix.indexOf('.') != -1 )
-            throw new JenaException("N3JenaWriter.setNsPrefix: N3 prefixes can't contain a '.':: "+prefix) ;
+        {
+            prefix = prefix.replace('.', '_') ;
+            //throw new JenaException("N3JenaWriter.setNsPrefix: N3 prefixes can't contain a '.':: "+prefix) ;
+        }
 		prefixMap.put(prefix, ns) ;
 	}
 
