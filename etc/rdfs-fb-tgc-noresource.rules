@@ -2,14 +2,14 @@
 # RDFS rule set v0.1.
 # This variant is used in the case where the subclass and subproperty
 # lattices have been precomputed by a transitive graph closure cache.
-# $Id: rdfs-fb-tgc-noresource.rules,v 1.2 2003-08-21 12:01:02 der Exp $
+# $Id: rdfs-fb-tgc-noresource.rules,v 1.3 2003-08-21 22:06:42 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
 # Tabling directives
 #------------------------------------------------------------------
 
--> tableAll().
+-> table(rdf:type).
 
 #------------------------------------------------------------------
 # RDFS Axioms
@@ -67,17 +67,16 @@
 [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
 [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
 [rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
-[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] 
+[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> table(?p), table(?q), [ (?a ?q ?b) <- (?a ?p ?b)] ] 
 [rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
 [rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 
 
 [rdfs2-partial: (?p rdfs:domain ?c) -> (?c rdf:type rdfs:Class)]
 [rdfs3-partial: (?p rdfs:range ?c)  -> (?c rdf:type rdfs:Class)]
 
-# Either version should work, pure back one scales better, but a bug (suspected in Brule system)
-# seems to cause problems in some cases. Stick to original version for now.
-[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
-#[rdfs9-alt:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x) ] 
+# Either version should work, pure back one scales better.
+# rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
+[rdfs9-alt:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x) ] 
 
 # Not needed - replaced by TGC front end
 #[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
