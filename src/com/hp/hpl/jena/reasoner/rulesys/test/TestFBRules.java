@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.25 2003-08-27 13:11:16 andy_seaborne Exp $
+ * $Id: TestFBRules.java,v 1.26 2003-09-11 15:47:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2003-08-27 13:11:16 $
+ * @version $Revision: 1.26 $ on $Date: 2003-09-11 15:47:48 $
  */
 public class TestFBRules extends TestCase {
     
@@ -802,21 +802,21 @@ public class TestFBRules extends TestCase {
         int count = 0;
         for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
             Object t = i.next();
-//            System.out.println(" - " + PrintUtil.print(t));
+            System.out.println(" - " + PrintUtil.print(t));
             count++;
         }
 //        listFBGraph("direct databind case", (FBRuleInfGraph)infgraph);
-        assertTrue(count == 7);
+        assertTrue(count == 5);
         
         infgraph = reasoner.bindSchema(data).bind(new GraphMem());
         count = 0;
         for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
             Object t = i.next();
-//            System.out.println(" - " + PrintUtil.print(t));
+            System.out.println(" - " + PrintUtil.print(t));
             count++;
         }
 //        listFBGraph("bindSchema case", (FBRuleInfGraph)infgraph);
-        assertTrue(count == 7);
+        assertTrue(count == 5);
     }
     
     /**
