@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.26 2003-09-24 15:27:01 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.27 2003-09-25 10:35:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2003-09-24 15:27:01 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2003-09-25 10:35:28 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -345,33 +345,30 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
 	static public boolean dbg = false;
     
-	String tag(String uri, String local, int type, boolean localIsQname) {
+	String tag( String namespace, String local, int type, boolean localIsQname)  {
 		if (dbg)
-			System.err.println(uri + " - " + local);
-		String prefix = (String) ns.get(uri);
+			System.err.println(namespace + " - " + local);
+		String prefix = (String) ns.get( namespace );
 		if (type != FAST && type != FASTATTR) {
 			if ((!localIsQname) && !XMLChar.isValidNCName(local))
-				return splitTag(uri + local, type);
-			if (uri.equals(RDFNS)) {
+				return splitTag(namespace + local, type);
+			if (namespace.equals(RDFNS)) {
 				// Description, ID, nodeID, about, aboutEach, aboutEachPrefix, li
 				// bagID parseType resource datatype RDF
 				if (badRDF.contains(local)) {
-					logger.warn(
-						"The URI rdf:"
-							+ local
-							+ " cannot be serialized in RDF/XML.");
+					logger.warn(	"The URI rdf:" + local + " cannot be serialized in RDF/XML." );
 					throw new InvalidPropertyURIException( "rdf:" + local );
 				}
 			}
 		}
 		boolean cookUp = false;
 		if (prefix == null) {
-            checkURI( uri );
+            checkURI( namespace );
 			logger.warn(
 				"Internal error: unexpected QName URI: <"
-					+ uri
+					+ namespace
 					+ ">.  Fixing up with j.cook.up code.",
-				new BrokenException( "unexpected QName URI " + uri ));
+				new BrokenException( "unexpected QName URI " + namespace ));
 			cookUp = true;
 		} else if (prefix.length() == 0) {
 			if (type == ATTR || type == FASTATTR)
@@ -379,36 +376,27 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			else
 				return local;
 		}
-		if (cookUp) {
-			prefix = "j.cook.up";
-			switch (type) {
-				case FASTATTR :
-				case ATTR :
-					return "xmlns:"
-						+ prefix
-						+ "="
-						+ qq(uri)
-						+ " "
-						+ prefix
-						+ ":"
-						+ local;
-				case START :
-					return prefix
-						+ ":"
-						+ local
-						+ " xmlns:"
-						+ prefix
-						+ "="
-						+ qq(uri);
-				case END :
-					break;
-				case FAST :
-					logger.fatal("Unreachable code - reached.");
-					throw new BrokenException( "cookup reached final FAST" );
-			}
-		}
+		if (cookUp) return cookUpAttribution( type, namespace, local );
 		return prefix + ":" + local;
 	}
+    
+    private String cookUpAttribution( int type, String namespace, String local )
+        {
+        String prefix = "j.cook.up";
+        switch (type) {
+            case FASTATTR :
+            case ATTR :
+                return "xmlns:" + prefix + "=" + qq( namespace ) + " " + prefix + ":" + local;
+            case START :
+                return prefix  + ":" + local + " xmlns:" + prefix+ "=" + qq( namespace );
+            default:
+            case END :
+                return prefix + ":" + local;
+            case FAST :
+                logger.fatal("Unreachable code - reached.");
+                throw new BrokenException( "cookup reached final FAST" );
+            }
+        }
 
 	/** Write out an XML serialization of a model.
 	 * @param model the model to be serialized
@@ -479,8 +467,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	/** Set an error handler.
-	 * @param errHandler The new error handler to be used, or null for the
-	 * default handler.
+	 * @param errHandler The new error handler to be used, or null for the default handler.
 	 * @return the old error handler
 	 */
 	synchronized public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler) {
@@ -492,7 +479,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		errorHandler = errHandler == null ? defaultErrorHandler : errHandler;
 		return rslt;
 	}
-
 
 	static private final char ESCAPE = 'X';
     
@@ -523,83 +509,23 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	
-	final synchronized public Object setProperty(
-		String propName,
-		Object propValue)
-		 {
+	final synchronized public Object setProperty( String propName, Object propValue ) {
 		if (propName.equalsIgnoreCase("showXmlDeclaration")) {
-			String oldValue;
-			if (showXmlDeclaration == null)
-				oldValue = null;
-			else
-				oldValue = showXmlDeclaration.toString();
-			if (propValue == null)
-				showXmlDeclaration = null;
-			else if (propValue instanceof Boolean)
-				showXmlDeclaration = (Boolean) propValue;
-			else if (propValue instanceof String) {
-				String propValueStr = (String) propValue;
-				if (propValueStr.equalsIgnoreCase("default")) {
-					showXmlDeclaration = null;
-				}
-				if (propValueStr.equalsIgnoreCase("true"))
-					showXmlDeclaration = Boolean.TRUE;
-				else if (propValueStr.equalsIgnoreCase("false"))
-					showXmlDeclaration = Boolean.FALSE;
-				else
-					// Also overloading the error condition.
-					throw new BadBooleanException( propValueStr );
-			}
-			return oldValue;
+			return setShowXmlDeclaration(propValue);
 		} else if (propName.equalsIgnoreCase("xmlbase")) {
 			String result = xmlBase;
 			xmlBase = (String) propValue;
 			return result;
 		} else if (propName.equalsIgnoreCase("tab")) {
-			Integer result = new Integer(tab);
-			if (propValue instanceof Integer) {
-				tab = ((Integer) propValue).intValue();
-			} else {
-				try {
-					tab = Integer.parseInt((String) propValue);
-				} catch (Exception e) {
-					logger.warn(
-						"Bad value for tab: '"
-							+ propValue
-							+ "' ["
-							+ e.getMessage()
-							+ "]");
-				}
-			}
-			return result;
+			return setTab( propValue );
 		} else if (propName.equalsIgnoreCase("width")) {
-			Integer result = new Integer(width);
-			if (propValue instanceof Integer) {
-				width = ((Integer) propValue).intValue();
-			} else {
-				try {
-					width = Integer.parseInt((String) propValue);
-				} catch (Exception e) {
-					logger.warn(
-						"Bad value for width: '"
-							+ propValue
-							+ "' ["
-							+ e.getMessage()
-							+ "]");
-				}
-			}
-			return result;
+			return setWidth(propValue);
 		} else if (propName.equalsIgnoreCase("longid")) {
 			Boolean result = new Boolean(longId);
 			longId = toboolean(propValue);
 			return result;
 		} else if (propName.equalsIgnoreCase("attributeQuoteChar")) {
-			String result = attributeQuoteChar;
-            if ( "\"".equals(propValue) || "'".equals(propValue) )
-              attributeQuoteChar = (String)propValue;
-            else 
-              logger.warn("attributeQutpeChar must be either \"\\\"\" or \', not \""+propValue+"\"" );
-			return result;
+			return setAttributeQuoteChar(propValue);
 		} else if (propName.equalsIgnoreCase( "allowBadURIs" )) {
 			Boolean result = new Boolean( !demandGoodURIs );
             demandGoodURIs = !toboolean(propValue);
@@ -618,6 +544,69 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		}
 	}
     
+	private String setAttributeQuoteChar(Object propValue) {
+		String result = attributeQuoteChar;
+		if ( "\"".equals(propValue) || "'".equals(propValue) )
+		  attributeQuoteChar = (String)propValue;
+		else 
+		  logger.warn("attributeQutpeChar must be either \"\\\"\" or \', not \""+propValue+"\"" );
+		return result;
+	}
+
+	private Integer setWidth(Object propValue) {
+		Integer result = new Integer(width);
+		if (propValue instanceof Integer) {
+			width = ((Integer) propValue).intValue();
+		} else {
+			try {
+				width = Integer.parseInt((String) propValue);
+			} catch (Exception e) {
+				logger.warn(	"Bad value for width: '" + propValue + "' [" + e.getMessage() + "]" );
+			}
+		}
+		return result;
+	}
+
+	private Integer setTab(Object propValue) {
+		Integer result = new Integer(tab);
+		if (propValue instanceof Integer) {
+			tab = ((Integer) propValue).intValue();
+		} else {
+			try {
+				tab = Integer.parseInt((String) propValue);
+			} catch (Exception e) {
+				logger.warn(	"Bad value for tab: '" + propValue + "' [" + e.getMessage() + "]" );
+			}
+		}
+		return result;
+	}
+
+	private String setShowXmlDeclaration(Object propValue) {
+		String oldValue;
+		if (showXmlDeclaration == null)
+			oldValue = null;
+		else
+			oldValue = showXmlDeclaration.toString();
+		if (propValue == null)
+			showXmlDeclaration = null;
+		else if (propValue instanceof Boolean)
+			showXmlDeclaration = (Boolean) propValue;
+		else if (propValue instanceof String) {
+			String propValueStr = (String) propValue;
+			if (propValueStr.equalsIgnoreCase("default")) {
+				showXmlDeclaration = null;
+			}
+			if (propValueStr.equalsIgnoreCase("true"))
+				showXmlDeclaration = Boolean.TRUE;
+			else if (propValueStr.equalsIgnoreCase("false"))
+				showXmlDeclaration = Boolean.FALSE;
+			else
+				// Also overloading the error condition.
+				throw new BadBooleanException( propValueStr );
+		}
+		return oldValue;
+	}
+
 	static private boolean toboolean(Object o) {
 		if (o instanceof Boolean)
 			return ((Boolean) o).booleanValue();
