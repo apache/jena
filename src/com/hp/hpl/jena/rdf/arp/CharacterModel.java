@@ -21,7 +21,7 @@ public class CharacterModel {
 	 * @param str The string to be tested.
 	 */
 	static public boolean isNormalFormC(String str) {
-	   return Normalizer.isNormalized(str,Normalizer.COMPOSE,0);
+	   return Normalizer.  isNormalized(str,Normalizer.NFC);
 	}
 	
 	/* Does this string start with a composing character as defined
