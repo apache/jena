@@ -1,0 +1,233 @@
+<html>
+<head>
+<title>model specifications &amp; joseki</title>
+<style>
+h1 { background-color: #bbb }
+h2 { background-color: #ccc }
+pre { background-color: #fcc }
+</style>
+</head>
+<body>
+
+<h1>use cases for Joseki model specifications</h1>
+
+<i>Draft for discussion, v0.2, 28th July 2004</i>.
+
+<p>Based on the existing ModelSpec details and put into
+the context of being used in Joseki configurations.
+We assume that the designations of models in the
+configuration take the form
+
+<pre>
+modelID 
+    joseki:attachedModel URI
+    ; joseki:initialContents URI
+    ; joseki:usingSpec modelSpec
+    .
+</pre>
+
+The model is created from the modelSpec by using the
+spec to create a ModelMaker, and then using .createOver()
+to create the model from the URI.
+
+<p>If the initialContents are specified, then the 
+contents of that URI are loaded into the model when it
+has been created. 
+
+<p>Where the modelSpec also contributes to the URIs
+of any models, we need to decide what the interaction between
+the different components is.
+
+<h2>an in-memory model with no inference</h2>
+
+<pre>
+modelSpec
+    rdf:type jms:PlainModelSpec
+</pre>
+
+An in-memory model is created, bound to the content of
+the named URI. 
+
+<p><i>issue: inconsistent with both memory
+models and with file models; must resolve.</i>
+
+<h2>an in-memory model with inference</h2>
+
+<pre>
+modelSpec
+    rdf:type jms:InfModelSpec
+    ; jms:reasonsWith reasonerSpec
+    .
+</pre>
+
+The <code>type</code> assertion is optional, since
+it follows from the domain of <code>reasonsWith</code>.
+The reasoner specification is elsewhere because several
+different models may share the same specification.
+
+<pre>
+reasonerSpec
+    rdfs:type jms:ReasonerSpec
+    ; jms:reasoner SomeRegisteredReasonerURI
+    ; jms:ruleSet theRuleSet
+    ; jms:ruleSetURL URL
+    ; jms:schemaURL URL
+    ; jms:schema aModelSpec
+    .
+</pre>
+
+The reasoner spec describes the reasoner that is used
+by giving the registered URI of that reasoner in the
+Jena reasoner registry. 
+
+<p>Zero or more <code>ruleSetURL</code> assertions may
+be used to specify rules to be loaded into the reasoner.
+The rules will be in the default language (see below).
+
+<p>Zero or more <code>ruleSet</code>
+assertions may be attached to specify rulesets that are
+loaded into the reasoner. This allows rulesets to be
+given in the specification document rather than having to 
+allocate them a separate URL.
+
+<p>Zero or more <code>schemaURL</code> assertions may
+be attached to specify the URLs of schemas to be loaded
+into the reasoner. Zero or more <code>schema</code>
+assertions may be attached to specify models containing
+schemas. (These can initialise the "T-box" of an ontology.) 
+
+<p>The type assertion is optional, since it is implied by
+the <code>reasoner</code> assertion.
+
+<pre>
+theRuleSet
+    rdfs:type jms:RuleSet
+    ; jms:ruleLanguage "some rule language name"
+    ; jms:hasRule "some rule or other"
+    ; jms:hasRule "some other other rule"
+    ; jms:fromRuleURL URL
+    .    
+</pre>
+
+A rule-set may have zero or more <code>hasRule</code>
+assertions, giving strings which encode rules in the
+given <code>ruleLanguage</code>, and zero or more
+<code>fromRuleURL</code> assertions specifying URLs
+which contain rules.
+
+<p>If no language is specified, some default language
+is used (Dave's internal rule language notation,
+presumably). A rule-set may legally be empty. It it
+isn't, the <code>type</code> assertion is optional.
+    
+<h2>an in-memory model with an ontology</h2>
+
+<pre>
+modelSpec
+    rdf:type OntModelSpec
+    ; jms:ontology ontSpec
+    .
+</pre>
+
+The ontSpec allows ontology specifications to be shared 
+among different models. The <code>type</code> assertion
+is optional (implied by being the subject of <code>ontology</code>).
+
+<pre>
+ontSpec
+    jms:ontLanguage ontLanguageURI
+    ; jms:docManager docSpec
+    ; jms:maker aModelSpec
+    .
+</pre>
+
+The <code>ontSpec</code> descibes the ontology properties
+shared by all the ontology models created by this spec.
+The <code>ontLanguage</code> gives the language URI for
+this ontology (from the set of available ontology URIs).
+The <code>docManager</code> specifies the document manager
+to be used; if omitted, the default document manager is
+implied. 
+
+<p>The <code>maker</code> specifies the model maker used
+to construct the base model for the OntModel.
+
+<pre>
+docSpec
+    jms:policyPath policyURL
+    ; jms:policy policySpec
+    ; jms:importMaker aModelSpec
+    .
+</pre>
+
+The <code>policyPath</code> URL names an RDF file
+containing a policySpec, or the policySpec can be given by a
+<code>policy</code> assertion.
+
+<p>The ModelMaker to use for imported models is specified
+by <code>aModelSpec</code>; if no <code>importMaker</code>
+is specified, it defaults to a MemModelMaker.
+
+The <code>policySpec</code> properties and values are those
+defined by the OntDocumentManager metadata specification.
+
+<h2>an in-memory model with inference and ontology</h2>
+
+<pre>
+modelSpec
+    jms:ontology ontSpec
+    ; jms:reasonsWith reasonerSpec
+    .
+</pre>
+
+Providing both a reasoner and an ontology specification
+constructs an OntModel over the results of the reasoner.
+
+<h2>using RDB models</h2>
+
+A model that is persistent within a database can be specified
+by using an RDB model maker.
+
+<pre>
+modelSpec
+    rdf:type RDBMaker
+    ; jms:dbUser "user name"
+    ; jms:dbPassword "password"
+    ; jms:dbType "database type"
+    ; jms:dbURL dbURL
+    ; jms:dbClass "class"
+    .
+</pre>
+
+The <code>dbType</code> identifies the type of the database [details
+to be supplied] and <code>dbClass</code> identifies its class [ditto].
+<code>dbURL</code> is the URL required to make the JDBC connection.
+
+<p>The resulting ModelMaker will open/create models in that database.
+If the <code>attachedModel</code> URI starts with the dbURL, that
+component is stripped before being passed on to the database.
+
+<p>To allow an ontology to operate over database models, its
+OntSpec maker should me an RDBMaker. Each such OntModel will,
+by default, operate over a separate database connection.
+
+<h2>sharing of specifications</h2>
+
+Each specification is interpreted (by the Jena ModelSpec
+handler, not by Joseki) to create the appropriate objects.
+By default, each time a specification is interpreted, a new
+object is constructed. However, if the specification has
+<code>type</code> <code>jms:Shared</code>, then the
+resulting object is cached with the specification, and re-use
+of the specification will deliver the original object.
+
+<p>The identity used for the cache is the resource of the
+specification (so changing the properties of a shared resource
+is a very bad idea).
+
+<p>Thus an ontology, or a reasoner, or a database connection,
+can be marked <code>Shared</code> and not have multiple
+copies in the same JVM.
+
+</body>
+</html>
