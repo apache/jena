@@ -198,6 +198,7 @@ public class Checker extends AbsChecker {
 	//private boolean wantLite = true;
 
 	void addProblem(int lvl, Triple t) {
+		super.addProblem(lvl,t);
 		if ( lvl == Levels.Lite && !wantLite )
 		  return;
 		Graph min =
@@ -209,7 +210,7 @@ public class Checker extends AbsChecker {
 				lvl));
 	}
 	void addProblem(SyntaxProblem sp) {
-		setMonotoneLevel(sp.level+1);
+		super.addProblem(sp);
 		switch ( sp.level ) {
 			case Levels.Warning:
 			warnings.add(sp);

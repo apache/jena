@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.2 2003-04-17 21:40:08 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.3 2003-04-19 03:37:11 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -128,19 +128,7 @@ class MinimalSubGraph extends AbsChecker {
 		// nothing
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hp.hpl.jena.ontology.tidy.AbsChecker#addProblem(int, com.hp.hpl.jena.graph.Triple)
-	 */
-	void addProblem(int lvl, Triple t) {
-		// nothing
-	}
 
-	/* (non-Javadoc)
-	 * @see com.hp.hpl.jena.ontology.tidy.AbsChecker#addProblem(com.hp.hpl.jena.ontology.tidy.SyntaxProblem)
-	 */
-	void addProblem(SyntaxProblem sp) {
-		// nothing
-	}
 
 }
 

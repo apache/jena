@@ -37,7 +37,7 @@ abstract class AbsChecker extends EnhGraph {
 		 * @return 0 on failure, 1 on trivial, 2 on refinement
 		 */
 	final int addX(Triple t, boolean topLevelCall) {
-//		System.err.println("+ " + t.toString() + (topLevelCall?" !":""));
+		//		System.err.println("+ " + t.toString() + (topLevelCall?" !":""));
 		CNodeI s = (CNodeI) getNodeAs(t.getSubject(), CNodeI.class);
 		CNodeI p = (CNodeI) getNodeAs(t.getPredicate(), CNodeI.class);
 		CNodeI o = (CNodeI) getNodeAs(t.getObject(), CNodeI.class);
@@ -62,10 +62,10 @@ abstract class AbsChecker extends EnhGraph {
 		while (success) {
 			if (s1 == s0 && p1 == p0 && o1 == o0)
 				break; // the exit point for success
-				/*
-		    System.err.println("s:" + s0 + " -> " + s1 + "\n" +
-                              " p:" + p0 + " -> " + p1 + "\n" +
-                              " o:" + o0 + " -> " + o1); */
+			/*
+			System.err.println("s:" + s0 + " -> " + s1 + "\n" +
+			              " p:" + p0 + " -> " + p1 + "\n" +
+			              " o:" + o0 + " -> " + o1); */
 			s0 = s1; // record these values, exit when stable
 			p0 = p1;
 			o0 = o1;
@@ -104,14 +104,13 @@ abstract class AbsChecker extends EnhGraph {
 		}
 		int rr;
 		if (!success) {
-			setMonotoneLevel(wantLite?Levels.DL:Levels.Full);
+			setMonotoneLevel(wantLite ? Levels.DL : Levels.Full);
 			rr = 0;
-		} else
-		if (s1 == sOrig && p1 == pOrig && o1 == oOrig)
+		} else if (s1 == sOrig && p1 == pOrig && o1 == oOrig)
 			rr = 1;
 		else
 			rr = 2;
-	//	System.err.println("* " + t.toString() + "[" + rr + "]");
+		//	System.err.println("* " + t.toString() + "[" + rr + "]");
 		return rr;
 	}
 	void setMonotoneLevel(int l) {
@@ -123,15 +122,16 @@ abstract class AbsChecker extends EnhGraph {
 	boolean recursivelyUpdate(Node n) {
 		return rec(n, null, null) && rec(null, n, null) && rec(null, null, n);
 	}
-    //static int call = 0;
+	//static int call = 0;
 	private boolean rec(Node s, Node p, Node o) {
 		boolean rslt = true;
 		//int i =0;
 		//int n = hasBeenChecked.size();
 		//int c = call++;
-		ClosableIterator it = new EarlyBindingIterator(hasBeenChecked.find(s, p, o));
+		ClosableIterator it =
+			new EarlyBindingIterator(hasBeenChecked.find(s, p, o));
 		while (rslt && it.hasNext()) {
-		//	System.err.println("[" + c +"]rec " + i++ + " of " + n);
+			//	System.err.println("[" + c +"]rec " + i++ + " of " + n);
 			rslt = add((Triple) it.next(), false);
 		}
 		//System.err.println("[" + c +"]rec done " + n);
@@ -143,8 +143,12 @@ abstract class AbsChecker extends EnhGraph {
 		return (CNodeI) getNodeAs(n, CNodeI.class);
 	}
 
-	abstract void addProblem(int lvl, Triple t);
+	void addProblem(int lvl, Triple t) {
+		setMonotoneLevel(lvl + 1);
+	}
 
-	abstract void addProblem(SyntaxProblem sp);
+	void addProblem(SyntaxProblem sp) {
+		setMonotoneLevel(sp.level + 1);
+	}
 
 }
