@@ -1,12 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.11 2003-10-14 15:45:44 chris-dollin Exp $
+  $Id: Expression.java,v 1.12 2003-10-15 09:22:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
-import java.util.List;
+import java.util.*;
 
 /**
 	Expression - the interface for expressions that is expected by Query for constraints.
@@ -22,25 +22,43 @@ public interface Expression
     public boolean isVariable();
     public String getName();
     public boolean isApply();
-    public List getArgs();
+    public int argCount();
+    public Expression getArg( int i );
+
+    public static Expression TRUE = new BoolConstant( true );
     
-    public static class EE implements Expression, Valuator
-        {
-        private boolean value;
-        public EE( boolean value ) { this.value = value; }
-        public Valuator prepare( VariableIndexes vi ) { return this; }   
-        public boolean evalBool( VariableValues vv ) { return value; }
-        public boolean evalBool( IndexValues vv ) { return value; }
-        
+    public static Expression FALSE = new BoolConstant( false );
+    
+    public static abstract class Base
+        {        
         public boolean isVariable() { return false; }
         public boolean isApply() { return false; }
         public String getName() { return null; }
-        public List getArgs() { return null; }
+        public int argCount() { return 0; }
+        public Expression getArg( int i ) { return null; }
         }
-        
-    public static Expression TRUE = new EE( true );
     
-    public static Expression FALSE = new EE( false );
+    public static class Util
+        {
+        public static Set variablesOf( Expression e )
+            { 
+            Set result = new HashSet();
+            if (e.isVariable()) result.add( e.getName() );
+            else if (e.isApply())
+                for (int i = 0; i < e.argCount(); i += 1)
+                    result.addAll( variablesOf( (Expression) e.getArg( i ) ) );
+            return result;
+            }           
+        }
+    
+    public static class BoolConstant extends Base implements Expression, Valuator
+        {
+        private boolean value;
+        public BoolConstant( boolean value ) { this.value = value; }
+        public Valuator prepare( VariableIndexes vi ) { return this; }   
+        public boolean evalBool( VariableValues vv ) { return value; }
+        public boolean evalBool( IndexValues vv ) { return value; }
+        }    
     }
 
 /*

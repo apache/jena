@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestEarlyConstraints.java,v 1.1 2003-10-14 15:45:11 chris-dollin Exp $
+  $Id: TestEarlyConstraints.java,v 1.2 2003-10-15 09:23:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -28,20 +28,8 @@ public class TestEarlyConstraints extends GraphTestBase
         
 	public static TestSuite suite()
         { return new TestSuite( TestEarlyConstraints.class ); }
-    
-    public void testSetRemove()
-        {
-    	Set s = new HashSet();
-        s.add( "a" );
-        s.add( "b" );
-        Iterator it = s.iterator();
-        it.next(); it.remove();
-        assertFalse( s.isEmpty() );
-        it.next(); it.remove();
-        assertTrue( s.isEmpty() );
-        }
-    
-    public void testXXX()
+        
+    public void testEarlyConstraint()
         {
         final int [] count = {0};
         Query q = new Query()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.13 2003-10-14 15:45:44 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.14 2003-10-15 09:22:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -37,12 +37,9 @@ public class PatternStage extends Stage
         {
         int length = triples.length;
     	Set [] result = new Set[length];
-        for (int i = 0; i < length; i += 1) result[i] = new HashSet();
+        Set prev = new HashSet();
         for (int i = 0; i < length; i += 1) 
-            {
-            result[i].addAll(i == 0 ? new HashSet() : result[i - 1]);
-            result[i].addAll( variablesOf( triples[i] ) );
-            }
+            prev = result[i] = Util.union( prev, Util.variablesOf( triples[i] ) );
         return result;
         }
     
@@ -50,46 +47,21 @@ public class PatternStage extends Stage
         {        
     	ExpressionSet [] result = new ExpressionSet [length];
         for (int i = 0; i < length; i += 1) result[i] = new ExpressionSet();
-        for (Iterator it = constraints.iterator(); it.hasNext(); /* nuffin */)
-            {
-            Expression e = (Expression) it.next();
-            for (int i = 0; i < length; i += 1)
-                {    
-                if (canEval( e, i )) 
-                    {
-                    // System.err.println( ">> evaluating constraint after matching triple " + i );
-                    result[i].add( e.prepare( map ) ); it.remove(); break; 
-                    }
-                // System.err.println( ">> deferring constraint" );
-                }
-            }    
+        Iterator it = constraints.iterator();
+        while (it.hasNext())
+            plantWhereFullyBound( (Expression) it.next(), it, map, result );
         return result;
+        }
+    
+    protected void plantWhereFullyBound( Expression e, Iterator it, Mapping map, ExpressionSet [] es )
+        {
+        for (int i = 0; i < boundVariables.length; i += 1)
+            if (canEval( e, i )) { es[i].add( e.prepare( map ) ); it.remove(); return; }
         }
     
     private boolean canEval( Expression e, int index )
-        {
-        return false && boundVariables[index].containsAll( variablesOf( e ) );
-        }
-    
-    private Set variablesOf( Expression e )
-        { 
-    	Set result = new HashSet();
-        if (e.isVariable()) result.add( e.getName() );
-        else if (e.isApply())
-            for (int i = 0; i < e.getArgs().size(); i += 1)
-                result.addAll( variablesOf( (Expression) e.getArgs().get( i ) ) );
-        return result;
-        }
-    
-    private Set variablesOf( Triple t )
-        {
-        Set result = new HashSet();
-        if (t.getSubject().isVariable()) result.add( t.getSubject().getName() );
-        if (t.getPredicate().isVariable()) result.add( t.getPredicate().getName() );
-        if (t.getObject().isVariable()) result.add( t.getObject().getName() );
-        return result;
-        }
-    
+        { return boundVariables[index].containsAll( Expression.Util.variablesOf( e ) ); }
+
     protected Pattern [] compile( Mapping map, Triple [] triples )
         { return compile( compiler, map, triples ); }
         
@@ -118,14 +90,11 @@ public class PatternStage extends Stage
         else
             {
             Pattern p = compiled[index];
+            ExpressionSet guard = guards[index];
             ClosableIterator it = graph.find( p.asTripleMatch( current ) );
             while (stillOpen && it.hasNext())
-                if (p.match( current, (Triple) it.next())) 
-                    {
-                    boolean truth = (index == 0 ? guards[index].evalBool( current ) : true);
-                    // System.err.println( ">> [" + index + "] " + current + " truth: " + truth );
-                    if (truth) nest( sink, current, index + 1 );
-                    }
+                if (p.match( current, (Triple) it.next()) && guard.evalBool( current )) 
+                    nest( sink, current, index + 1 );
             it.close();
             }
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BaseExampleExpression.java,v 1.6 2003-10-14 15:45:12 chris-dollin Exp $
+  $Id: BaseExampleExpression.java,v 1.7 2003-10-15 09:23:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -9,25 +9,17 @@ package com.hp.hpl.jena.graph.query.test;
 import com.hp.hpl.jena.graph.query.Expression;
 import com.hp.hpl.jena.graph.query.*;
 
-import java.util.*;
-
 /**
 	BaseExampleExpression - simple expressions
 	@author kers
  */
-public abstract class BaseExampleExpression implements Expression
-    {
-    public boolean isVariable() { return false; }
-    public boolean isApply() { return false; }
-    public String getName() { return null; }
-    public List getArgs() { return null; }
-    
+public abstract class BaseExampleExpression 
+    extends Expression.Base implements Expression
+    {    
     public static abstract class BaseExampleValuator implements Valuator
         {
         public abstract boolean evalBool( IndexValues iv );      
         
-        public Valuator and( Valuator v ) { return and( this, v ); }
-                    
         public static Valuator and( final Valuator L, final Valuator R )
             {
             return new Valuator()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.6 2003-10-14 15:45:12 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.7 2003-10-15 09:23:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -74,13 +74,12 @@ public class ExampleCreate
         
         public boolean isApply() 
             { return true; }
+
+        public int argCount()
+            { return 2; }
         
-        public List getArgs()
-            {
-            if (args == null) 
-                { args = new ArrayList(); args.add( L ); args.add( R ); }
-            return args;
-            }
+        public Expression getArg( int i )
+            { return i == 0 ? L : R; }
 
         public BaseExampleExpression asExpression( final Node x )
             {
@@ -116,9 +115,6 @@ public class ExampleCreate
         {
         return new Dyadic( x, y ) 
             {
-            public String toString()
-                { return "{" + x + " NE " + y + "}"; }
-            
             public boolean evalBool( VariableValues vv )
                 { return !L.eval( vv ).equals( R.eval( vv ) ); }
                 
@@ -129,8 +125,7 @@ public class ExampleCreate
                     public boolean evalBool( IndexValues iv )
                         { return !L.eval( iv ).equals( R.eval( iv ) ); }
                     };    
-                }
-                
+                }                
             };    
         }    
     
