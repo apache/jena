@@ -1,6 +1,6 @@
 #------------------------------------------------------------------
 # Experimental rule set
-# $Id: expt.rules,v 1.3 2003-07-06 12:10:17 der Exp $
+# $Id: expt.rules,v 1.4 2003-08-08 16:07:56 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -50,6 +50,8 @@
 #------------------------------------------------------------------
 # RDFS Closure rules
 #------------------------------------------------------------------
+
+# -> table(rdf:type).
 
 # This one could be omitted since the results are not really very interesting!
 #[rdf1and4: (?x ?p ?y) -> (?p rdf:type rdf:Property), (?x rdf:type rdfs:Resource), (?y rdf:type rdfs:Resource)]
