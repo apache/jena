@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.29 2004-09-15 14:03:35 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.30 2004-09-16 13:47:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -125,6 +125,29 @@ public class SimpleReifier implements Reifier
                 return false;
             else     
                 {
+//                Node tag = t.getSubject();
+//                Triple reified = tripleMap.getTriple( tag );
+//                if (reified == null)
+//                    {
+//                    Fragments partial = nodeMap.getFragments( tag );
+//                    if (partial == null) nodeMap.putFragments( tag, partial = new Fragments( tag ) );
+//                    partial.add( s, t.getObject() );
+//                    if (partial.isComplete())
+//                        {
+//                        tripleMap.putTriple( t.getSubject(), partial.asTriple() );
+//                        nodeMap.removeFragments( t.getSubject() );
+//                        }
+//                    }
+//                else
+//                    {
+//                    if (overspecifies( t, reified ))
+//                        {
+//                        Fragments partial = new Fragments( tag, reified );
+//                        partial.add( s, t.getObject() );
+//                        nodeMap.putFragments( tag, partial );
+//                        tripleMap.removeTriple( tag, reified );
+//                        }
+//                    }
                 Fragments fs = getFragment( t );
                 fs.add( s, t.getObject() );
                 if (fs.isComplete()) 
@@ -132,6 +155,8 @@ public class SimpleReifier implements Reifier
                     tripleMap.putTriple( t.getSubject(), fs.asTriple() );
                     nodeMap.removeFragments( t.getSubject() );
                     }
+                else
+                    tripleMap.removeTriple( t.getSubject() );
                 return concealing;
                 }
             }

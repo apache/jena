@@ -1,11 +1,12 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.13 2004-04-22 12:42:28 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.14 2004-09-16 13:48:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
+import com.hp.hpl.jena.db.impl.DBReifier;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -150,6 +151,26 @@ public abstract class AbstractTestReifier extends GraphTestBase
         assertEquals( "convenient hides quadlets", style == Convenient, g.size() == 0 );
         }
         
+    /**
+         Ensure that over-specifying a reification means that we don't get a triple
+         back. Goodness knows why this test wasn't in right from the beginning.
+    */
+    public void testOverspecificationSuppressesReification()
+        {
+        Graph g = getGraph( Standard );
+        Reifier r = g.getReifier();
+        graphAdd( g, "x rdf:subject A; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement" );
+        assertEquals( triple( "A P O" ), r.getTriple( node( "x" ) ) );
+        try 
+            { graphAdd( g, "x rdf:subject BOOM" ); }
+        catch (AlreadyReifiedException e) 
+            {
+            if (r instanceof DBReifier) { System.err.println( "! Db reifier must fix over-specification problem" ); }
+            else throw e;
+            }
+        assertEquals( null, r.getTriple( node( "x" ) ) );
+        }
+    
     public void testManifestQuadsStandard()
         { testManifestQuads( Standard ); }
         
@@ -316,21 +337,21 @@ public abstract class AbstractTestReifier extends GraphTestBase
         assertIsomorphic( wanted, h );
         }
             
-		public void testQuadRemove()
-			{
-			Graph g = getGraph( Standard );
-			assertEquals( 0, g.size() );
-		
-			Triple s = Triple.create( "x rdf:subject s" );
-			Triple p = Triple.create( "x rdf:predicate p" );
-			Triple o = Triple.create( "x rdf:object o" );
-			Triple t = Triple.create( "x rdf:type rdf:Statement");
-			g.add(s); g.add(p); g.add(o); g.add(t);
-			assertEquals( 4, g.size() );
+	public void testQuadRemove()
+		{
+		Graph g = getGraph( Standard );
+		assertEquals( 0, g.size() );
+	
+		Triple s = Triple.create( "x rdf:subject s" );
+		Triple p = Triple.create( "x rdf:predicate p" );
+		Triple o = Triple.create( "x rdf:object o" );
+		Triple t = Triple.create( "x rdf:type rdf:Statement");
+		g.add(s); g.add(p); g.add(o); g.add(t);
+		assertEquals( 4, g.size() );
 
-			g.delete(s); g.delete(p); g.delete(o); g.delete(t);
-			assertEquals( 0, g.size() );
-			}
+		g.delete(s); g.delete(p); g.delete(o); g.delete(t);
+		assertEquals( 0, g.size() );
+		}
 
 
 //    public void testKevinCaseC()
@@ -373,7 +394,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
