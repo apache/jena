@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraph.java,v 1.6 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: TestFileGraph.java,v 1.7 2003-09-10 15:23:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -54,6 +54,33 @@ public class TestFileGraph extends GraphTestBase
         assertEquals( "RDF/XML", FileGraph.guessLang( "dotless" ) );
         }
 
+    public void testPlausibleGraphname()
+        {
+        assertTrue( FileGraph.isPlausibleGraphName( "agnessi.rdf" ) ); 
+        assertTrue( FileGraph.isPlausibleGraphName( "parabola.nt" ) );    
+        assertTrue( FileGraph.isPlausibleGraphName( "hyperbola.n3" ) );    
+        assertTrue( FileGraph.isPlausibleGraphName( "chris.dollin.n3" ) );    
+        assertTrue( FileGraph.isPlausibleGraphName( "hedgehog.spine.end.rdf" ) );    
+        }
+        
+    public void testisPlausibleUppercaseGraphname()
+        {
+        assertTrue( FileGraph.isPlausibleGraphName( "LOUDER.RDF" ) ); 
+        assertTrue( FileGraph.isPlausibleGraphName( "BRIDGE.NT" ) );    
+        assertTrue( FileGraph.isPlausibleGraphName( "NOTN2.N3" ) );    
+        assertTrue( FileGraph.isPlausibleGraphName( "chris.dollin.N3" ) );    
+        assertTrue( FileGraph.isPlausibleGraphName( "hedgehog.spine.end.RDF" ) );        
+        }
+        
+    public void testImisPlausibleGraphName()
+        {
+        assertFalse( FileGraph.isPlausibleGraphName( "undecorated" ) );    
+        assertFalse( FileGraph.isPlausibleGraphName( "danger.exe" ) );    
+        assertFalse( FileGraph.isPlausibleGraphName( "pretty.jpg" ) );    
+        assertFalse( FileGraph.isPlausibleGraphName( "FileGraph.java" ) );    
+        assertFalse( FileGraph.isPlausibleGraphName( "infix.rdf.c" ) );                
+        }
+        
     /**
         Test that the graph encoded as the test-string content can be
         written out to a temporary file generated from the prefix and suffix,
@@ -86,6 +113,7 @@ public class TestFileGraph extends GraphTestBase
             g2.close();
             }
         }
+        
     }
 
 /*

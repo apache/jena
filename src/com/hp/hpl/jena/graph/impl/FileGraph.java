@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.16 2003-09-10 14:00:00 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.17 2003-09-10 15:23:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -97,9 +97,9 @@ public class FileGraph extends GraphMem
         return "RDF/XML";
         }
         
-    public static boolean plausibleGraphName( String name )
+    public static boolean isPlausibleGraphName( String name )
         {
-        String suffix = name.substring( name.lastIndexOf( '.' ) + 1 );
+        String suffix = name.substring( name.lastIndexOf( '.' ) + 1 ).toLowerCase();
         return suffix.equals( "n3" ) || suffix.equals( "nt" ) || suffix.equals( "rdf" );
         }
         

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.11 2003-09-10 14:00:00 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.12 2003-09-10 15:23:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -209,24 +209,26 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         { assertFalse( gf.listGraphs().hasNext() ); }
         
     public void testListThreeGraphs()
-        { gf.createGraph( "x" ).close();
-        gf.createGraph( "y" ).close();
-        gf.createGraph( "z" ).close();
+        { String x = "x", y = "y/sub", z = "z:boo";
+        gf.createGraph( x ).close();
+        gf.createGraph( y ).close();
+        gf.createGraph( z ).close();
         Set s = iteratorToSet( gf.listGraphs() );
         assertEquals( 3, s.size() ); 
-        assertTrue( s.contains( "x" ) );
-        assertTrue( s.contains( "y" ) );
-        assertTrue( s.contains( "z" ) ); }
+        assertTrue( s.contains( x ) );
+        assertTrue( s.contains( y ) );
+        assertTrue( s.contains( z ) ); }
         
     public void testListAfterDelete()
-        { gf.createGraph( "x" ).close();
-        gf.createGraph( "y" ).close();
-        gf.createGraph( "z" ).close();
-        gf.removeGraph( "x" );
+        { String x = "x_y", y = "y//zub", z = "a:b/c";
+        gf.createGraph( x ).close();
+        gf.createGraph( y ).close();
+        gf.createGraph( z ).close();
+        gf.removeGraph( x );
         Set s = iteratorToSet( gf.listGraphs() );
         assertEquals( 2, s.size() ); 
-        assertTrue( s.contains( "y" ) );
-        assertTrue( s.contains( "z" ) ); }
+        assertTrue( s.contains( y ) );
+        assertTrue( s.contains( z ) ); }
         
     }
 

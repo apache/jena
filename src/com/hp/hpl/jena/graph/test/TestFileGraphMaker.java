@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.5 2003-09-10 14:00:00 chris-dollin Exp $
+  $Id: TestFileGraphMaker.java,v 1.6 2003-09-10 15:23:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -25,6 +25,22 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
     public GraphMaker getGraphMaker()
         { String scratch = getScratchDirectory( "jena-test-FileGraphMaker" ).toString();
         return new FileGraphMaker( scratch, ReificationStyle.Minimal, true ); } 
+        
+    public void testToFilename()
+        { assertEquals( "plain", FileGraphMaker.toFilename( "plain" ) );   
+        assertEquals( "with_Sslash", FileGraphMaker.toFilename( "with/slash" ) );
+        assertEquals( "with_Ccolon", FileGraphMaker.toFilename( "with:colon" ) );
+        assertEquals( "with_Uunderbar", FileGraphMaker.toFilename( "with_underbar" ) );
+        assertEquals( "with_Stwo_Sslashes", FileGraphMaker.toFilename( "with/two/slashes" ) );
+        assertEquals( "with_Sa_Cmixture_U...", FileGraphMaker.toFilename( "with/a:mixture_..." ) ); }
+        
+    public void testToGraphname()
+        { assertEquals( "plain", FileGraphMaker.toGraphname( "plain" ) );
+        assertEquals( "with/slash", FileGraphMaker.toGraphname( "with_Sslash" ) );    
+        assertEquals( "with:colon", FileGraphMaker.toGraphname( "with_Ccolon" ) );    
+        assertEquals( "with_underbar", FileGraphMaker.toGraphname( "with_Uunderbar" ) );    
+        assertEquals( "a/mixture_of:things", FileGraphMaker.toGraphname( "a_Smixture_Uof_Cthings" ) );    
+        assertEquals( "with/two/slashes", FileGraphMaker.toGraphname( "with_Stwo_Sslashes" ) ); }
     }
 
 

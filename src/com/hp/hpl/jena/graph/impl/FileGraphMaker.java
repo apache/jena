@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.14 2003-09-10 14:00:00 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.15 2003-09-10 15:23:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -111,7 +111,7 @@ public class FileGraphMaker extends BaseGraphMaker
         }
 
     private File withRoot( String name )
-        { return new File( fileBase, makeSafe( name ) ); }
+        { return new File( fileBase, toFilename( name ) ); }
         
     /**
         Make <code>name</name> safe for use as a filename. "safe" is a bit weak
@@ -121,9 +121,10 @@ public class FileGraphMaker extends BaseGraphMaker
     	@param name
     	@return
      */
-    private String makeSafe( String name )
+    public static String toFilename( String name )
         {
         return replaceBy( name, "_/:", "USC" );
+// Jave 1.4 please!
 //        return name
 //            .replaceAll( "_", "_U" )
 //            .replaceAll( "/", "_S" )
@@ -131,7 +132,7 @@ public class FileGraphMaker extends BaseGraphMaker
 //            ;    
         }
         
-    private String replaceBy( String x, String from, String to )
+    private static String replaceBy( String x, String from, String to )
         {
         int len = x.length();
         StringBuffer result = new StringBuffer( len + 10 );
@@ -139,11 +140,36 @@ public class FileGraphMaker extends BaseGraphMaker
             {
             char ch = x.charAt( i );
             int where = from.indexOf( ch );
-            result.append( where < 0 ? ch : to.charAt( where ) );
+            if (where < 0) result.append( ch );
+            else result.append( '_' ).append( to.charAt( where ) );
             }
         return result.toString();
         }
-        
+
+    public static String toGraphname( String fileName )
+        { 
+        StringBuffer result = new StringBuffer( fileName.length() );
+        int here = 0;
+        while (true)
+            {
+            int ubar = fileName.indexOf( '_', here );    
+            if (ubar < 0) break;
+            result.append( fileName.substring( here, ubar ) );
+            char ch = fileName.charAt( ubar + 1 );
+            if (ch == 'S') result.append( '/' );
+            else if (ch == 'U') result.append( '_' );
+            else if (ch == 'C') result.append( ':' );
+            here = ubar + 2;
+            }
+        result.append( fileName.substring( here ) );
+        return result.toString();
+// Java 1.4 please!
+//            return fileName
+//            .replaceAll( "_C", ":" )
+//            .replaceAll( "_S", "/" )
+//            .replaceAll( "_U", "_" ); 
+            }
+                
     public void removeGraph( String name )
         { forget( withRoot( name ) ).delete(); }
 
@@ -174,6 +200,11 @@ public class FileGraphMaker extends BaseGraphMaker
             }
         }
         
+    private static Map1 unconvert = new Map1()
+        { public Object map1( Object x )
+            { return toGraphname( (String) x ); }
+        };
+        
     /**
         Answer a FilenameFilter which recognises plausibly RDF filenames; they're not
         directories, and FileGraph likes them. Pass the buck, pass the buck ...
@@ -185,7 +216,7 @@ public class FileGraphMaker extends BaseGraphMaker
             {
             public boolean accept( File file, String name )
                 { return !new File( file, name ).isDirectory()
-                    && FileGraph.plausibleGraphName( name ); }    
+                    && FileGraph.isPlausibleGraphName( name ); }    
             }; }
             
     /**
@@ -200,7 +231,7 @@ public class FileGraphMaker extends BaseGraphMaker
         Set allNames = new HashSet( Arrays.asList( fileNames ) );
         Iterator it = created.keySet().iterator();
         while (it.hasNext()) allNames.add( ((File) it.next()).getName() ); 
-		return WrappedIterator.create( allNames.iterator() ); }
+		return WrappedIterator.create( allNames.iterator() ) .mapWith( unconvert ); }
     }
 
 /*
