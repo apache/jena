@@ -1,0 +1,243 @@
+<project name="jena" default="main" basedir=".">
+
+    <property name="Name"            value="Jena"/>
+    <property name="name"            value="jena2"/>
+    <property name="version"         value="0.1.0"/>
+
+    <property name="dist.name"       value="${Name}-${version}"/>
+
+    <property name="debug"           value="false"/>
+    <property name="deprecation"     value="true"/>
+    <property name="optimize"        value="true"/>
+
+    <property name="src.dir"         value="src"/>
+    <property name="classes.dir"     value="bin"/>
+    <property name="dist.root"       value="dist"/>
+    <property name="dist.dir"        value="${dist.root}/${dist.name}"/>
+    <property name="lib.dir"         value="lib"/>
+
+    <property name="doc.dir"         value="doc"/>
+    <property name="javadoc.dir"     value="javadoc"/>
+    <property name="etc.dir"         value="etc"/>
+
+    <property name="jarfile"         value="${name}.jar"/>
+    <property name="srczipfile"      value="${name}-src.zip"/>
+
+    <property name="javacchome"      value="c:/home/afs/jlib/javacc2.0"/>
+
+    <!-- Sub-system specific -->
+    <property name="rdql.root" value="src/com/hp/hpl/jena/rdql"/>
+
+
+    <path id="classpath">
+      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+      <dirset dir="${classes.dir}" includes="*"/>
+    </path>
+
+<!-- Main external targets -->
+    <target name="main" depends="init,bin"/>
+    <target name="release" depends="init,package"/>
+
+<!-- Section: Grammars, Compilation and JAR -->
+
+    <target name="init">
+        <tstamp/>
+    </target>
+
+
+    <target name="bin" depends="compile,make-jar"/>
+
+    <target name="grammars" depends="rdql-grammar,arp-grammar"/>
+
+    <target name="rdql-grammar">
+        <jjtree target="${rdql.root}/parser/rdql.jjt"
+                outputdirectory="${rdql.root}/parser"
+                javacchome="${javacchome}"
+                buildnodefiles="false"/>
+
+        <javacc target="${rdql.root}/parser/rdql.jj"
+                outputdirectory="${rdql.root}/parser"
+                javacchome="${javacchome}"/>
+    </target>
+
+
+    <target name="arp-grammar"/>
+
+    <target name="pre-compile" >
+        <!-- Ensure a clean compile -->
+        <delete dir="${classes.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+    </target>
+
+    <target name="compile" depends="pre-compile,compile-jena,compile-apps"/>
+
+    <target name="compile-jena" depends="pre-compile">
+        <javac srcdir="${src.dir}"
+               destdir="${classes.dir}"
+               debug="${debug}"
+               deprecation="${deprecation}"
+               optimize="${optimize}">
+            <classpath refid="classpath" />
+        </javac>
+    </target>
+
+    <target name="compile-apps" depends="pre-compile">
+        <javac srcdir="${src.dir}/jena"
+               destdir="${classes.dir}"
+               debug="${debug}"
+               deprecation="${deprecation}"
+               optimize="${optimize}">
+            <classpath refid="classpath" />
+        </javac>
+    </target>
+
+
+
+    <target name="make-jar" depends="compile,copy-etc">
+        <jar jarfile="${lib.dir}/${jarfile}"
+             basedir="${classes.dir}">
+        </jar>
+    </target>
+
+    <!-- copy
+          + rdb configuration files
+          + all data files
+         into class path prior to jar step -->
+    <target name="copy-etc">
+        <copy todir="${classes.dir}/${etc.dir}">
+        <fileset dir="${etc.dir}" includes="**"/>
+         </copy>
+        <copy todir="${classes.dir}">
+        <fileset dir="${src.dir}" includes="**/data/**"/>
+         </copy>
+    </target>
+
+<!-- Section: Javadoc -->
+
+    <target name="javadoc">
+        <delete dir="javadoc"/>
+        <mkdir dir="javadoc"/>
+
+        <!-- sourcefiles="" -->
+        <!-- Overview="overview.html" -->
+
+        <javadoc
+                 sourcepath="${src.dir}"
+                 packagenames="com.hp.hpl.jena.*"
+                 destdir="javadoc"
+                 author="true"
+                 version="true"
+                 windowtitle="${Name} Framework"
+                 doctitle="${Name} Framework"
+                 Public="true"
+                 overview="src/overview.html"
+                 bottom="Copyright &#169; 2001 Hewlett-Packard. All Rights Reserved.">
+            <classpath refid="classpath" />
+        </javadoc>
+    </target>
+
+
+<!-- Section: Create distribution area -->
+
+    <target name="package"
+            depends="bin,javadoc,distribution-init,copy,zip"/>
+
+    <target name="distribution-init">
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <target name="copy" depends="distribution-init">
+        <copy todir="${dist.dir}/${lib.dir}">
+            <fileset dir="${lib.dir}" includes="**/*.jar"/>
+            <fileset dir="${lib.dir}" includes="readme.html"/>
+        </copy>
+
+
+        <!-- Source : We could zip this up -->
+        <copy todir="${dist.dir}/${src.dir}">
+            <fileset dir="${src.dir}"
+                     includes="**"
+                     excludes="org/**"/>
+        </copy>
+
+        <!-- Misc files -->
+        <copy todir="${dist.dir}" file="build.xml"/>
+        <copy todir="${dist.dir}" file="copyright.txt"/>
+        <copy todir="${dist.dir}" file="ReleaseNotes.txt"/>
+        <copy todir="${dist.dir}" file="readme.html"/>
+        <copy todir="${dist.dir}" file="JenaTutorial.html"/>
+
+        <!-- RDQL support files : scripts to build the Java
+        <copy todir="${dist.dir}" file="doExprNodes"/>
+        <copy todir="${dist.dir}">
+            <fileset dir="." includes="Expr*.java"/>
+        </copy>
+        -->
+
+        <!-- Dependences -->
+
+        <!-- lib directory include jena.jar -->
+        <copy todir="${lib.dir}">
+            <fileset dir="lib" includes="*.jar"/>
+        </copy>
+        <!-- Should all be in the lib directory -->
+
+        <!-- Documentation -->
+        <copy todir="${dist.dir}/${javadoc.dir}">
+            <fileset dir="${javadoc.dir}" includes="**"/>
+        </copy>
+
+        <copy todir="${dist.dir}/${doc.dir}">
+            <fileset dir="${doc.dir}" includes="**"/>
+        </copy>
+
+        <copy todir="${dist.dir}/modules">
+            <fileset dir="modules" includes="**"/>
+        </copy>
+
+        <copy todir="${dist.dir}/${etc.dir}">
+            <fileset dir="${etc.dir}" includes="**"/>
+        </copy>
+
+        <!-- Junk that creeps in -->
+        <delete>
+            <fileset dir="${dist.dir}" includes="**/.nbattrs"/>
+        </delete>
+
+    </target>
+
+    <!-- Problem : seems to unpack directories to "no access" on Linux -->
+    <!-- It was an ant 1.3 problem - fixed in ant 1.4 -->
+    <!-- Temp fix is this external zip target -->
+
+    <target name="zip" depends="zip-internal"/>
+
+    <target name="zip-external" >
+        <!--
+             You need to have installed the WinZip
+             command line interface
+             http://www.winzip.com/wzcline.cgi
+             obviously you need to get the path right.
+        -->
+       <exec dir="${dist.root}"
+             output="zip.log"
+             executable="C:\\Program Files\\WinZip\\wzzip.exe"  >
+            <!-- ${dist.name}.zip is the name of the output -->
+            <!-- ${dist.name} is the directory to zip -->
+            <arg line="-r -P ${dist.name}.zip ${dist.name}"/>
+       </exec>
+    </target>
+
+    <target name="zip-internal" >
+        <!-- Build the zip of everything -->
+        <zip zipfile="${dist.root}/${dist.name}.zip">
+            <fileset dir="dist" includes="${dist.name}/**"/>
+        </zip>
+    </target>
+
+    <target name="clean">
+        <delete includeEmptyDir="true">
+            <fileset dir="bin/" includes="*"/>
+        </delete>
+    </target>
+</project>
