@@ -2,6 +2,9 @@
 <head>
 <title>ModelSpec 2.2 howto</title>
 <style>
+p.note {
+    background-color: #eef;
+    }
 pre {
     background-color: #eee;
     margin-top: 2mm;
@@ -15,8 +18,8 @@ pre {
 <body>
 <h1>ModelSpec howto - describing Jena 2.2 models in RDF</h1>
 
-<i>draft for discussion 16th August 2004</i>
-<br><i>version 0.3</i>
+<i>draft for discussion 17th August 2004</i>
+<br><i>version 0.4</i>
 
 <h1>introduction</h1>
 
@@ -27,7 +30,7 @@ been extended to increase flexibility and uniformity.
 
 <p>The intention is to be able to specify how a model is constructed 
 using a configuration file, input stream, URL, or other way of getting 
-RDF into a Jena process, and for this configuration to be capabile of
+RDF into a Jena process, and for this configuration to be capable of
 specifying anything that the ModelFactory class can construct.
 
 <p>A more formal document is available: the 
@@ -42,6 +45,22 @@ Jena defines this vocabulary namespace as
 <blockquote>
 http://jena.hpl.hp.com/2003/08/jms#
 </blockquote>
+
+<h1>differences from the original ModelSpecs</h1>
+
+The revised ModelSpec differs from the original in several minor ways
+and a few major ones, those being:
+
+<ul>
+<li>the additional of specifications for rulesets and schemas.
+
+<li>the separation out of database connection specifications.
+
+<li>the special type <code>Shared</code> to allow values to be
+    shared by specifications.
+
+</ul>
+
 
 <h1>creating a ModelSpec</h1>
 
@@ -82,7 +101,7 @@ on named models. The two important creation methods are:
 	to cast this model to the appropriate type - in particular,
 	if you're expecting an <code>OntModel</code>.
 	
-	<p>[Should we provide createOntModel and createInfModel as
+	<p class=note>[Should we provide createOntModel and createInfModel as
 	wrappers for these cases?]
 
 <li><code>createModelOver(String name)</code>: most <code>ModelSpec</code>s
@@ -149,7 +168,8 @@ _:maker jms:reificationStyle jms:rsMinimal .
 
 This will produce models which have the <i>minimal</i> reification
 style. (For an explanation of the different styles, see <b>THAT DOCUMENT</b>.
-[This fragment may disappear if we can eliminate reification styles
+
+<p class=note>This fragment may disappear if we can eliminate reification styles
 completely.])
 
 <h2>PlainModelSpec, file-based</h2>
@@ -189,27 +209,36 @@ will use it's own database connection.
 <pre>
 _:this jms:maker _:maker .
 _:maker jms:reificationMode jms:rsStandard .
-_:maker jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB" .
-_:maker jms:dbUser "william.blake" .
-_:maker jms:dbPassword "tyger, tyger" .
-_:maker jms:dbType "MySQL" .
+_:maker jms:hasConnection _:conn .
+
+_:conn jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB" .
+_:conn jms:dbUser "william.blake" .
+_:conn jms:dbPassword "tyger, tyger" .
+_:conn jms:dbType "MySQL" .
 </pre>
 
-The URL specifies the database to connect to; the same database can
-support many different Jena models. The user and password are 
-required to (weakly) authenticate the connection. The type is
+The model-maker is specified as being a Jena RDB model-maker by
+the <code>hasConnection</code>. Several models may share the same
+(or similar) connections.
+
+<p>
+The connection URL specifies the database to connect to; the same 
+database can support many different Jena models. The user and password 
+are required to (weakly) authenticate the connection. The type is
 required so that the correct database drivers can be loaded. Note
 the (in-)security implications of the database password being stored
-in plain text in the ModelSpec description document.
+in plain text in the ModelSpec description document - these are
+partly bypassed by using the <code>shared</code> property discussed
+later.
 
-<p>[Consider lifting out connection as independantly specifiable
+<p class=note>[Consider lifting out connection as independantly specifiable
     object, so it can be shared; this then subsumes the current
 	values-as-bnodes hack in ModelSpec.]
 	
-<p>[Should contact Chris Bizer and ask him about the connections to
+<p class=note>[Should contact Chris Bizer and ask him about the connections to
     databases needed for his RDB-to-graph connection.]
 	
-<p>[Leave placeholder for BDB connections?]
+<p class=note>[Leave placeholder for BDB connections?]
 
 <h2>an inference model</h2>
 
@@ -229,13 +258,13 @@ _:this jms:reasonsWith _:reasoner .
 _:reasoner jms:reasoner <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner> .
 </pre>
 
-[check that the URI remains correct]
+<p class=note>[check that the URI remains correct]
 
 <p>This is the simplest reasoner specification - just giving the URL of
 the reasoner. Any other properties of the reasoner take on its usual
 defaults (see [THE REASONER DOCUENTATION]). 
 
-Reasoners may be supplied with a schema or schemas as the "initial 
+<p>Reasoners may be supplied with a schema or schemas as the "initial 
 base" for their reasoning - for example, an RDFS reasoner may be
 given an RDFS schema and do sub-type reasoning in advance of being
 applied to a particular model. Schemas can be specified by giving their
@@ -269,7 +298,7 @@ an appropriate notation. Several <code>ruleSetURL</code>s may be
 given; all the rules are loaded into the reasoner in no particular
 order.
 
-<p>[The weasel-wording about "an appropriate notation" is to cover 
+<p class=note>[The weasel-wording about "an appropriate notation" is to cover 
 that we only have the one rule-based reasoning engine with the 
 single surface syntax, wheras we ought to conver more options.
 The reasoner should be in charge of parsing the rules. Also we
@@ -311,70 +340,67 @@ present as often as required. Since both predicates have
 domain <code>RuleSet</code>, the type declaration may be
 omitted.
 
-<p>[If <code>ruleSet</code> is given range <code>RuleSet</code>,
+<p class=note>[If <code>ruleSet</code> is given range <code>RuleSet</code>,
 then the type declaration is always unnecessary. I'm a bit
 worried that this makes it easy to forget or mislabel a ruleset.]
 
-<p>[Again, we weasel about the notation in which the rules are
+<p class=note>[Again, we weasel about the notation in which the rules are
 expressed. Possibly a <code>jms:ruleLanguage</code> property?]
 
-<hr>
-Unmodified original from here .....
-<h2>an ontology model</h2>
+<h2>ontology models</h2>
 
-Finally, here's the description of an ontology model for OWL Lite over
-a database model, while doing RDFS inference.
-
-<pre>
-    _this jms:importMaker _D
-    _this jms:ontLanguage "http://www.w3.org/TR/owl-features/#term_OWLLite"
-    _this jms:docManager _DM
-    _this jms:reasonsWith _R
-    
-    _D jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB"
-    _D jms:dbUser "william.blake"
-    _D jms:dbPassword "tyger, tyger"
-    _D jms:dbType "MySQL"    
-
-    _R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner
-</pre>
-
-The <code>docManager</code> bnode has no attached properties; in this
-case, the resulting <code>OntModelSpec</code> will use the default
-document manager. Adding the triple
+An OntModel specification has additional properties for specifying
+the ontology language and document-manager details. For example,
+using the same database connection description as our earlier example,
 
 <pre>
-    _DM jms:policyPath "file:/somehere/policy"
+_:this jms:importMaker _:conn .
+_:this jms:ontLanguage "http://www.w3.org/TR/owl-features/#term_OWLLite" .
+_:this jms:docManager _:DM .
+_:this jms:reasonsWith _:R .
+
+_:R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner .
 </pre>
 
-will use a document manager which takes its policy from the specified
-file; see the <a href="../javadoc/com/hp/hpl/jena/ontology/OntDocumentManager.html">
-OntDSocumentManager</a> documentation for more details.
-<h1>GUBBINS TO BE ASSIMILATED</h1>
+specifies OntModels for the OWL Lite language, using the RDFS rule-based
+reasoner. The OntModels will take their base models from the database.
+The document manager has been given no specific properties, so the
+default document manager will be used.
 
-, passing it the Model containing the
-RDF description. The description uses the <a href="../javadoc/com/hp/hpl/jena/vocabulary/JMS.html">JMS (Jena Model Specification)
-vocabulary</a>. The result is a ModelSpec object specialised to the
-description. <code>createSpec</code> finds the unique resource in
-<code>desc</code> with <code>RDF.type</code> <code>JMS.ModelSpec</code>,
-and then find the "most specific" subtype of <code>JMS.ModelSpec</code>
-that resource has. [Fortunately, the current type tree allows this.]
+<p class=note>[More stuff needed for OntModels here]
 
-<p>That type identifies the kind of Java ModelSpec to create. The
-constructor for that type analyses the description to find the
-relevant properties: irrelevant ones are ignored. [The mapping from
-RDF types to ModelSpecCreators is driven from the
-<a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpecCreatorRegistry.html">
-ModelSpecCreatorRegistry
-</a>
-and is extensible.]
+<h1>shared specifications</h1>
 
-<p>The <code>createSpec(Resource,Model)</code> method performs the same function,
-but the ModelSpec resource (which must have type <code>JMS.ModelSpec</code>)
-is passed as the first argument, rather than being the unique ModelSpec
-resource in the description.
+By default, each time a model is constructed using a ModelSpec, new
+instances of all the subcomponents of that description are created.
+This is not always a wise choice, especially if those subcomponents
+consume lots of space or take a long time to prepare - eg, a large
+schema for a reasoner.
 
-<p>In both cases, the <code>Model</code> can be replaced by a [non-bnode]
-<code>Resource</code> whose URI names the model to be loaded.
+<p>Any sub-specification can be made <i>shared</i> by giving it the
+<code>Shared</code> type:
+
+<pre>
+_:conn rdf:type jms:Shared .
+</pre>
+
+When a component of type <code>Shared</code> is requested, if there
+is already a <code>Shared</code> component created from equivalent RDF,
+then that component is returned rather than a new component being
+created. 
+
+<p>The method <code>ModelFactory.share( Resource r, Object o )</code>
+declares that the resource <code>r</code>, which must have RDF type
+<code>Shared</code>, has shared value <code>o</code>. Any modelspec
+component whose description matches <code>r</code> will resolve to
+the value <code>o</code>.
+
+<p>By "equivalent RDF" we mean that the submodels reachable from 
+<code>r</code> are isomorphic.
+
+<p>So, for the database connection example, the resource 
+<code>_:conn</code> can be declared shared in the user's application,
+without the user's database name and password appearing in the ModelSpec.
+
 </body>
 </html>
