@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.34 2003-07-14 14:40:06 chris-dollin Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.35 2003-07-15 03:30:28 hkuno Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.34 $ on $Date: 2003-07-14 14:40:06 $
+* @version $Revision: 1.35 $ on $Date: 2003-07-15 03:30:28 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -156,34 +156,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		return m_driver;
 	}
 
-    
-//=======================================================================
-// Database operations
-
-    
-    /**
-     * Check to see if a table with the specified name exists in the database.
-     * @param tName table name
-     * @return boolean indicating whether or not table is present.
-     */
-    public boolean doesTableExist(String tName) {
-		try {
-			DatabaseMetaData dbmd = m_driver.getConnection().getConnection().getMetaData();
-			String[] tableTypes = { "TABLE" };
-			ResultSet alltables = dbmd.getTables(null, null, "JENA%", tableTypes);
-			List tablesPresent = new ArrayList(10);
-			while (alltables.next()) {
-				tablesPresent.add(alltables.getString("TABLE_NAME"));
-			}
-			alltables.close();
-			boolean ok = true;
-			//TODO get these names from someplace
-			ok &= tablesPresent.contains(tName);
-			return ok;
-		} catch (SQLException e1) {
-			throw new RDFRDBException("Internal SQL error in driver", e1);
-		}
-    }
     
     /**
      * Create a table for storing asserted statements.
@@ -303,12 +275,13 @@ public  class PSet_TripleStore_RDB implements IPSet {
 
 	int result = 0;
 	try {
-		 PreparedStatement ps = m_sql.getPreparedSQLStatement("getRowCount",tName);
+		 String op = "getRowCount";
+		 PreparedStatement ps = m_sql.getPreparedSQLStatement(op,tName);
 	     ResultSet rs = ps.executeQuery();
 	     while ( rs.next() ) {
 		  result = rs.getInt(1);
 	     } 
-	//	m_sql.returnPreparedSQLStatement(ps, "getRowCount");
+		m_sql.returnPreparedSQLStatement(ps, op);
 	} catch (SQLException e) {
 	 		logger.debug("tried to count rows in " + tName);
 		   	logger.debug("Caught exception: ", e);
@@ -430,7 +403,7 @@ public void deleteTripleAR(
 				getASTname(),
 				isBatch,
 				batchedPreparedStatements);
-		ps.clearParameters();
+		//ps.clearParameters();
 
 	} catch (SQLException e1) {
 		logger.debug( "SQLException caught " + e1.getErrorCode(), e1);
@@ -457,6 +430,7 @@ public void deleteTripleAR(
 			ps.addBatch();
 		} else {
 			ps.executeUpdate();
+			m_sql.returnPreparedSQLStatement(ps,stmtStr);
 		}
 	} catch (SQLException e1) {
 		logger.error("Exception executing delete: ", e1);
@@ -506,7 +480,7 @@ public void deleteTripleAR(
 		}
 	 	 
 		if (ps == null) {
-			logger.error("prepared statement not found for insertStatementObjectURI");
+			logger.error("prepared statement not found for " + opname);
 		}
 		return ps;
 	  }
@@ -591,7 +565,7 @@ public void deleteTripleAR(
 					getASTname(),
 					isBatch,
 					batchedPreparedStatements);
-			ps.clearParameters();
+			//ps.clearParameters();
 
 		} catch (SQLException e1) {
 			logger.debug("SQLException caught " + e1.getErrorCode(), e1);
@@ -631,7 +605,9 @@ public void deleteTripleAR(
 				ps.addBatch();
 			} else {
 				ps.executeUpdate();
+				ps.close();
 			}
+			//ps.close();
 		} catch (SQLException e1) {
 			// we let Oracle handle duplicate checking
 			if (!((e1.getErrorCode() == 1)
@@ -670,8 +646,11 @@ public void deleteTripleAR(
 			Triple t;
 			String cmd;
 			try {
-				 Connection con = m_sql.getConnection();
-				 con.setAutoCommit(false);
+				Connection con = m_sql.getConnection();
+				boolean autoState = con.getAutoCommit();
+				if (autoState) 
+					con.setAutoCommit(false);
+				
 				Iterator it = triples.iterator();
 				
 				while (it.hasNext()) {
@@ -684,11 +663,14 @@ public void deleteTripleAR(
 					String op = (String) enum.nextElement();
 					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
 					p.executeBatch();
-				//	m_sql.returnPreparedSQLStatement(p,op);
+					m_sql.returnPreparedSQLStatement(p,op);
 				}
 
-				m_sql.getConnection().commit();
-				m_sql.getConnection().setAutoCommit(true);
+				
+				if (autoState) {
+					m_sql.getConnection().commit();
+					con.setAutoCommit(autoState);
+				}
 				batchedPreparedStatements = new Hashtable();
 				ArrayList c = new ArrayList(triples);
 				triples.removeAll(c);						
@@ -737,7 +719,9 @@ public void deleteTripleAR(
 			String cmd;
 			try {
 				 Connection con = m_sql.getConnection();
-				 con.setAutoCommit(false);
+				 boolean autoCommitState = con.getAutoCommit();
+				 if (autoCommitState)
+				 	con.setAutoCommit(false);
 				Iterator it = triples.iterator();
 				
 				while (it.hasNext()) {
@@ -751,9 +735,13 @@ public void deleteTripleAR(
 					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
 					p.executeBatch();
 				//	m_sql.returnPreparedSQLStatement(p,op);
+				} 
+				
+				if (autoCommitState) {
+					m_sql.getConnection().commit();
+					m_sql.getConnection().setAutoCommit(autoCommitState);
 				}
-				m_sql.getConnection().commit();
-				m_sql.getConnection().setAutoCommit(true);
+				
 				batchedPreparedStatements = new Hashtable();
 				ArrayList c = new ArrayList(triples);
 				triples.removeAll(c);						
@@ -853,6 +841,7 @@ public void deleteTripleAR(
 
 				ps.setInt(args++, gid);
 				m_sql.executeSQL(ps, op, result);
+				//m_sql.returnPreparedSQLStatement(ps,op);
 			} catch (Exception e) {
 				notFound = true;
 				logger.debug( "find encountered exception: args=" + args + " err: ",  e);
@@ -883,7 +872,7 @@ public void deleteTripleAR(
 		 * @see com.hp.hpl.jena.graphRDB.IPSet#tableExists(java.lang.String)
 		 */
 		public boolean tableExists(String tName) {
-			return(doesTableExist(tName));
+			return(m_driver.doesTableExist(tName));
 		}
 
 }
