@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:08 $
+ * Last modified on   $Date: 2003-06-22 19:17:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.15 2003-06-18 21:56:08 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.16 2003-06-22 19:17:25 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -164,7 +164,7 @@ public interface OntClass
      * <p>
      * Answer an iterator over the classes that are declared to be sub-classes of
      * this class. Each element of the iterator will be an {@link OntClass}. The
-     * distinguishing extra parameter for this method is the flag <code>direct<code>
+     * distinguishing extra parameter for this method is the flag <code>direct</code>
      * that allows some selectivity over the classes that appear in the iterator.
      * Consider the following scenario:
      * <code><pre>

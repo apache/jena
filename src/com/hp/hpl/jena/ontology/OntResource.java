@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 15:57:31 $
+ * Last modified on   $Date: 2003-06-22 19:22:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.21 2003-06-18 15:57:31 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.22 2003-06-22 19:22:13 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -471,7 +471,7 @@ public interface OntResource
 
     /**
      * <p>
-     * Answer the <code>rdf:type<code> (ie the class) of this resource. If there
+     * Answer the <code>rdf:type</code> (ie the class) of this resource. If there
      * is more than one type for this resource, the return value will be one of 
      * the values, but it is not specified which one (nor that it will consistently
      * be the same one each time). Equivalent to <code>getRDFType( false )</code>.
@@ -484,7 +484,7 @@ public interface OntResource
 
     /**
      * <p>
-     * Answer the <code>rdf:type<code> (ie the class) of this resource. If there
+     * Answer the <code>rdf:type</code> (ie the class) of this resource. If there
      * is more than one type for this resource, the return value will be one of 
      * the values, but it is not specified which one (nor that it will consistently
      * be the same one each time).

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-19 19:29:22 $
+ * Last modified on   $Date: 2003-06-22 19:21:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.30 2003-06-19 19:29:22 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.31 2003-06-22 19:21:40 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -704,7 +704,7 @@ public class OntResourceImpl
 
     /**
      * <p>
-     * Answer the <code>rdf:type<code> (ie the class) of this resource. If there
+     * Answer the <code>rdf:type</code> (ie the class) of this resource. If there
      * is more than one type for this resource, the return value will be one of 
      * the values, but it is not specified which one (nor that it will consistently
      * be the same one each time). Equivalent to <code>getRDFType( false )</code>.
@@ -719,7 +719,7 @@ public class OntResourceImpl
 
     /**
      * <p>
-     * Answer the <code>rdf:type<code> (ie the class) of this resource. If there
+     * Answer the <code>rdf:type</code> (ie the class) of this resource. If there
      * is more than one type for this resource, the return value will be one of 
      * the values, but it is not specified which one (nor that it will consistently
      * be the same one each time).

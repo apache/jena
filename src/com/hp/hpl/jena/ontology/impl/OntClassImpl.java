@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 10:41:45 $
+ * Last modified on   $Date: 2003-06-22 19:14:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.22 2003-06-21 10:41:45 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.23 2003-06-22 19:14:30 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -288,7 +288,7 @@ public class OntClassImpl
      * <p>
      * Answer an iterator over the classes that are declared to be sub-classes of
      * this class. Each element of the iterator will be an {@link OntClass}. The
-     * distinguishing extra parameter for this method is the flag <code>direct<code>
+     * distinguishing extra parameter for this method is the flag <code>direct</code>
      * that allows some selectivity over the classes that appear in the iterator.
      * Consider the following scenario:
      * <code><pre>
