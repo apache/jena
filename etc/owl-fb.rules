@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.41 2003-12-12 10:15:33 der Exp $
+# $Id: owl-fb.rules,v 1.42 2004-01-08 13:43:03 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -368,8 +368,11 @@
 # Disjointness
 #------------------------------------------------------------------
 
-[distinct1: (?C owl:disjointWith ?D), (?X rdf:type ?C), (?Y rdf:type ?D) 
-						-> (?X owl:differentFrom ?Y) ]
+#[distinct1: (?C owl:disjointWith ?D), (?X rdf:type ?C), (?Y rdf:type ?D) 
+#						-> (?X owl:differentFrom ?Y) ]
+
+[distinct1: (?X owl:differentFrom ?Y) <- 
+    (?C owl:disjointWith ?D), (?X rdf:type ?C), (?Y rdf:type ?D)   ]
 
 # Exploding the pairwise assertions is simply done procedurally here.
 # This is better handled by a dedicated equality reasoner any.
