@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.11 2003-12-09 10:31:08 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.12 2003-12-10 18:03:47 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -293,7 +293,8 @@ IOException {
  * @throws SAXException More serious error during XML or RDF processing; or thrown from the fatalError method of the ErrorHandler.
  * @throws IOException Occurring during XML processing.
  */   
-    public void load(InputStream in) throws SAXException, IOException {
+    public void load(InputStream in) 
+     throws SAXException, IOException {
         load(in,"");
     }
 /** Load RDF/XML from a Reader, using base URL http://unknown.org/.

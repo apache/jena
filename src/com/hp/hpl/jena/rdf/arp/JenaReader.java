@@ -11,7 +11,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.impl.*;
 
 import java.io.*;
 import java.net.*;
@@ -187,9 +186,8 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 	 * @param reader The RDF/XML document.
 	 * @param xmlBase The base URI of the document or "".
 	 */
-	synchronized private void read(Model m, InputSource inputS, String xmlBase)
+	private void read(Model m, InputSource inputS, String xmlBase)
 		throws JenaException {
-		try {
 			model = m;
 			if (xmlBase != null && !xmlBase.equals("")) {
 				try {
@@ -208,13 +206,17 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 				public void endPrefixMapping(String prefix) {
 				}
 			});
-			final Graph g = model.getGraph();
-			
+read(model.getGraph(), inputS, xmlBase);
+	}
+
+	synchronized private void read(final Graph g, InputSource inputS, String xmlBase) {
+		
+			try {
 			final BulkUpdateHandler bulk = g.getBulkUpdateHandler();
 			inputS.setSystemId(xmlBase);
 			JRStatementHandler handler =new JRStatementHandler(bulk); 
 			arpf.setStatementHandler(handler);
-
+		
 			arpf.setErrorHandler(new ARPSaxErrorHandler(errorHandler));
 			arpf.parse(inputS, xmlBase);
 			handler.bulkUpdate();
@@ -236,7 +238,17 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		throws JenaException {
 		read(model, new InputSource(reader), xmlBase);
 	}
-
+	/**
+	 *  Reads from reader, using base URI xmlbase, adding triples to graph.
+	 * If xmlbase is "" then relative URIs may be added to graph.
+	 * @param g A graph to add triples to.
+	 * @param reader The RDF/XML document.
+	 * @param xmlBase The base URI of the document or "".
+	 */
+	public void read(Graph g, Reader reader, String xmlBase)
+		throws JenaException {
+		read(g, new InputSource(reader), xmlBase);
+	}
 	/**
 	 *  Reads from inputStream, using base URI xmlbase, adding triples to model.
 	 * If xmlbase is "" then relative URIs may be added to model.
@@ -248,7 +260,17 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		throws JenaException {
 		read(model, new InputSource(in), xmlBase);
 	}
-
+	/**
+		 *  Reads from inputStream, using base URI xmlbase, adding triples to graph.
+		 * If xmlbase is "" then relative URIs may be added to graph.
+		 * @param g A graph to add triples to.
+		 * @param in The RDF/XML document stream.
+		 * @param xmlBase The base URI of the document or "".
+		 */
+		public void read(Graph g, InputStream in, String xmlBase)
+			 {
+			read(g, new InputSource(in), xmlBase);
+		}
 	RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
 
 	/**
@@ -617,7 +639,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.19 2003-12-10 16:34:14 jeremy_carroll Exp $
+ * * $Id: JenaReader.java,v 1.20 2003-12-10 18:03:47 jeremy_carroll Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */

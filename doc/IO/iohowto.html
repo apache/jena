@@ -36,7 +36,10 @@ subsystem.
 <li><a href="#intro-advanced">4. Introduction to Advanced Jena I/O</a></li>
 <li><a href="#input">5. Advanced RDF/XML Input</a>
 <ul><li><a href="#arp-properties">
-5.1 ARP properties</a></li></ul></li>
+5.1 ARP properties</a></li>
+<li><a href="#arp-interrupt">
+5.2 Interrupting ARP</a></li>
+</ul></li>
 <li><a href="#output">6. Advanced RDF/XML Output</a></li>
 <li><a href="#conformance">7. Conformance</a></li>
 <li><a href="#speed">8. Faster RDF/XML I/O</a></li>
@@ -727,6 +730,38 @@ but allow <code>"daml:collection"</code>, the following works:
 is treated as an error, and so the second call to setProperty overwrites the effect of
 the first.
 </p>
+<h3><a name="arp-interrupt">5.2 Interrupting ARP</a></h3>
+<p>
+ARP can be interrupted using the 
+<code>Thread.interrupt()</code> method.
+It throws a <code>java.io.InterruptedIOException</code>.
+</p>
+<p>
+Here is an illustrative code sample:
+</p>
+<pre>
+  ARP a = new ARP();
+  final Thread arpt = Thread.currentThread();
+  Thread killt = new Thread(new Runnable() {
+       public void run() { 
+  	     try {
+	        Thread.sleep(tim);
+	     } catch (InterruptedException e) {
+	     }
+	     arpt.interrupt();
+       }
+    });
+  killt.start();
+  try {
+    in = new FileInputStream(fileName);
+    a.load(in);
+    in.close();
+    fail("Thread was not interrupted.");
+  } catch (InterruptedIOException e) {
+  }
+</pre>
+
+
 <h2><a name="output">6. Advanced RDF/XML Output</a></h2>
 <p>
 The first RDF/XML output question is whether to use
