@@ -178,21 +178,29 @@
                  doctitle="${Name} Framework"
                  Public="true"
                  overview="src/link2readme.html"
-                 bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved.">
+                 bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
+                 additionalparam="-breakiterator"
+         >
 
             <classpath refid="classpath"/>
-                <package name="com.hp.hpl.jena.enhanced"/>
-                <package name="com.hp.hpl.jena.graph"/>
                 <package name="com.hp.hpl.jena.rdf.model"/>
                 <package name="com.hp.hpl.jena.rdf.arp"/>
+                <package name="com.hp.hpl.jena.rdf.arp.lang"/>
                 <package name="com.hp.hpl.jena.rdql"/>
+                <package name="com.hp.hpl.jena.vocabulary"/>
+                <package name="com.hp.hpl.jena.xmloutput"/>
+                <package name="com.hp.hpl.jena.ontology"/>
+                <package name="com.hp.hpl.jena.enhanced"/>
+                <package name="com.hp.hpl.jena.graph"/>
+                <package name="com.hp.hpl.jena.graph.compose"/>
+                <package name="com.hp.hpl.jena.graph.query"/>
                 <package name="com.hp.hpl.jena.reasoner.rdfsReasoner1"/>
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
-                <package name="com.hp.hpl.jena.vocabulary"/>
-                <package name="com.hp.hpl.jena.xmloutput"/>
-                <package name="com.hp.hpl.jena.rdf.arp.lang"/>
-                
+                <package name="com.hp.hpl.jena.datatypes"/>
+                <package name="com.hp.hpl.jena.util"/>
+                <package name="com.hp.hpl.jena.util.iterator"/>
+
             <group title="API - Application Programming Interface">
                 <package name="com.hp.hpl.jena.rdf.model"/>
                 <package name="com.hp.hpl.jena.rdf.arp"/>
@@ -200,18 +208,24 @@
                 <package name="com.hp.hpl.jena.rdql"/>
                 <package name="com.hp.hpl.jena.vocabulary"/>
                 <package name="com.hp.hpl.jena.xmloutput"/>
+                <package name="com.hp.hpl.jena.ontology"/>
             </group>
             <group title="SPI - System Programming Interface">
                 <package name="com.hp.hpl.jena.enhanced"/>
                 <package name="com.hp.hpl.jena.graph"/>
+                <package name="com.hp.hpl.jena.graph.compose"/>
+                <package name="com.hp.hpl.jena.graph.query"/>
                 <package name="com.hp.hpl.jena.reasoner.rdfsReasoner1"/>
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
+                <package name="com.hp.hpl.jena.datatypes"/>
+                <package name="com.hp.hpl.jena.util"/>
+                <package name="com.hp.hpl.jena.util.iterator"/>
             </group>
         </javadoc>
     </target>
 
-    <target name="javadoc-all">
+    <target name="javadoc-all" depends="build-src">
     	<!-- This is a javadoc task to build the javadoc for developers to look at -->
         <delete dir="javadoc"/>
         <mkdir dir="javadoc"/>
@@ -227,6 +241,7 @@
 	         overview="${src.dir}/link2readme.html"
 	         bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
 	         packagenames="com.hp.hpl.*"
+             additionalparam="-breakiterator"
 		/>
     </target>
 
