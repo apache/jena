@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: TestStatements.java,v 1.2 2003-04-04 11:31:09 chris-dollin Exp $
+	$Id: TestStatements.java,v 1.3 2003-04-10 13:52:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -11,6 +11,8 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.graph.*;
 import junit.framework.*;
 import com.hp.hpl.jena.vocabulary.RDF;
+
+import java.util.*;
 
 public class TestStatements extends GraphTestBase
     {
@@ -65,8 +67,25 @@ public class TestStatements extends GraphTestBase
         A.add( R, RDF.type, RDF.Statement );
         B.add( R, RDF.object, O );
         assertTrue( "X5", A.isIsomorphicWith( B ) );
-        System.err.println( ">> " + A.getGraph() );
-        System.err.println( ">> " + ((ModelCom) A).getHiddenStatements().getGraph() );
+        }
+        
+    public void testSet()
+        {
+        Model A = ModelFactory.createDefaultModel();
+        Model B = ModelFactory.createDefaultModel();
+        Resource S = A.createResource( "jena:S" );
+        Resource R = A.createResource( "jena:R" );
+        Property P = A.createProperty( "jena:P" );
+        RDFNode O = A.createResource( "jena:O" );
+        Statement S1 = A.createStatement( S, P, O );
+        Statement S2 = A.createStatement( S, P, O );
+        assertEquals( S1, S2 );
+        S1.set( S );
+        // assertEquals( S1, S2 );
+        HashMap h = new HashMap();
+        h.put( S2, "pontisbright" );
+        S2.set( S );
+        // System.err.println( h.get( S2 ) );
         }
     }
 
