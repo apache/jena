@@ -15,12 +15,14 @@ architecture together with rule-based reasoners for RDFS and OWL.
 
 Database:
 
-The database layout has changed from preview 3 based on feedback and
-further experimentation. The new layout supports long URIs and enables
-models to share database tables. See <Jena>/doc/DB/index.html for more
-information. Note that existing Jena databases (including preview 3)
-cannot be accessed by preview 4. It will be necessary to dump and
-rebuild them.
+PostgreSQL and Oracle are now supported for persistent models. Note
+that the database layout has changed from preview 3. Preview 3
+and earlier Jena databases cannot be accessed by Jena2-beta. It
+will be necessary to dump and rebuild them. No further changes to
+the database layout are anticipated for the final Jena2 release.
+Remaining work includes: BerkeleyDB support, ability to set
+configuration options, namespace compression for URIs, query fastpath,
+tuning (e.g., bulk update, caching) and property tables (time permitting).
 
 Ontology:
 
