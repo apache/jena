@@ -1,14 +1,3 @@
-To Do
------
-
-Local navigation in #leftnav
-
-Need a new section: <div id="localnav">...</div>
-which may be null.
-
-Copy of sourceforge logo??
-
-
 The Jena Web Site
 =================
 
@@ -65,7 +54,6 @@ linkcheck - check relative links
 finds and checks all the HTML files not in javadoc.)
 
 
-
 Notes
 -----
 
@@ -74,5 +62,13 @@ The light blue colour is: rgb(202,223,244) / #CADFF4
 "Jena red" is rgb(216, 32 0) / #D82000
 
 
+readme.html
+-----------
+
+The main readme.html file lives in doc/. There is a root readme.html that
+redirects to this one.  This menas that the doc/ directory is exactly the
+web site.  If readme.html lives in the root, its links are browken
+whenmoved to the Soureforge web site.
+
 ----------------
-$Id: readme-site.txt,v 1.3 2003-08-26 16:27:48 andy_seaborne Exp $
+$Id: readme-site.txt,v 1.4 2004-02-04 15:39:55 andy_seaborne Exp $

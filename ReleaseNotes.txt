@@ -38,6 +38,10 @@ Jena 2.1 - Main changes from Jena 2.0
       
   Xerces
       Now requires Xerces 2.6.0 or better. The included jars are Xerces 2.6.1.
+
+  Ontology API
+      Big fixes and improvements based on jena-dev feedback.
+
       	 
 Jena 2.1 changes from Jena 2.1-dev-3
   Minor bug fixes in OWL Syntax Checker.
@@ -118,78 +122,16 @@ o Failed to fix bug concerning rdf:parseType="Collection"
      on jena-dev to track down bug.
 o Fixed other bugs on bug list
 
-    
+RDQL
+o Improved handling of character sets in qnames
+
+N3
+o Improved handling of character sets in qnames
+
+
     
 Graph query SPI [NB NOT visible at the model level]
 
 o replaced use of Graph for constraints by new Expression interface as
   part of ongoing query improvement.
 
-Jena 2.0 (August 2003)
-
-This is Jena 2.0.  This version follows on from preview and beta releases
-and is the first full release of Jena2.
-
-Most functionality from Jena1 (core RDF API, readers and writers for
-RDF/XML, N-Triples and N3,together with RDQL) is provided in Jena2 although
-no BerkeleyDB persistence is currently provided.  Jena2 adds new
-functionality with an ontology API, including OWL, a reasoner plug-in
-architecture together with rule-based reasoners for RDFS and OWL.
-
-Release Notes - Jena2
-=============
-
-Changes from Jena2-beta1:
-
-The jar file "antlr.debug.jar" has been replaced by "antlr.jar".
-
-
-Persistent Storage:
-
-1) Fastpath is enabled.
-2) URI prefix compression is implemented.
-3) Configuration and access options are exposed to applications through
-   get/set methods.
-4) The prefix for database table names may be redefined.
-5) Oracle is now fully supported.
-6) New factory methods for persistent models are available, deprecating
-   the existing ModelRDB constructors.
-
-Reasoning subsystem:
-1) Replaced the backward chaining reasoner by a more stable, more space
-   efficient LP engine (loosely based on SLG-WAM).
-2) Updated the RDFS rule sets as a result, with x2 speed improvement on
-   test data.
-3) Updated the OWL rule set to be more complete, fix all reported bugs, add
-   support for hasValue. More development still required.
-4) Added a mechanism for rule-based validation and added validation rules to
-   the OWL rule set.
-5) Replaced the documentation completely.
-6) Fixed various misc bugs report on jena-dev and CVS - many thanks to all
-   those took to time to report these problems.
-
-RDF API:
-1) Replaced the createTypedLiteral calls with versions that do not allow
-   xml:lang tags, in keeping with working group changes.
-   Deprecated the version of createLiteral that takes both xml:lang and
-xml:wellFormed.
-
-
-
-PrefixMappings. Jena models maintain a mapping from namespace
-prefixes to namespaces. This mapping is updated when models are
-read, and used when models are written. Jena code can query and
-update these mappings freely.
-
-Event listeners. Listeners can be attached to models and are notified
-when triples are added to or removed from the model, singly or in
-bulk.
-
-Reification. Jena optimises the storage of complete reified statements, and
-provides classes and methods for manipulating ReifiedStatement objects. By
-default, the treatment of reified statments is in accordance with the
-latest Working Group specifications.
-
-Model construction. Models can be constructed in memory or in
-relational databases. Memory-based models may be reflected in
-files. Models can be named and held in clusters using ModelMakers.

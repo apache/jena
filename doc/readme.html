@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Jena README</title>
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+  <link type="text/css" rel="stylesheet" href="styles/doc.css">
+</head>
+<body bgcolor="#ffffff" lang="en" xml:lang="en">
+<h1>Jena 2<br>
+A Semantic Web Framework</h1>
+<p align="center">
+<b><a href="http://jena.sourceforge.net/">http://jena.sourceforge.net/</a></b>
+</p>
+<p align="center">
+<span style="font-style: italic;">Hewlett Packard Laboratories, Bristol
+</span></p>
+<h2>Overview</h2>
+<p>Jena is a Java framework for writing Semantic Web
+applications.&nbsp; It features:</p>
+<dl>
+  <dt>An RDF API</dt>
+  <dd>
+    <ul>
+      <li>statement centric methods for manipulating an RDF model as a
+set of RDF triples</li>
+      <li>resource centric methods for manipulating an RDF model as a
+set of resources with properties</li>
+      <li>cascading method calls for more convenient programming</li>
+      <li>built in support for RDF containers - bag, alt and seq</li>
+      <li>enhanced resources - the application can extend the behaviour
+of resources</li>
+      <li>integrated parsers and writers for RDF/XML (ARP), N3 and
+N-TRIPLES</li>
+      <li>support for typed literals</li>
+    </ul>
+  </dd>
+  <dd>&nbsp;</dd>
+  <dt>ARP - Jena's RDF/XML Parser</dt>
+  <dd>ARP aims to be fully compliant with the latest decisions of the
+RDF Core WG. The Jena 2.0 version is compliant with the Editor's
+Working Drafts at time of release. ARP is typically invoked using
+Jena's read operations, but can also be used standalone.</dd>
+  <dd>&nbsp;</dd>
+  <dt>Persistence</dt>
+  <dd>The Jena2 persistence subsystem implements an extension to the
+Jena Model class that provides persistence for models through use of a
+back-end database engine. Jena2 is largely backwards-compatible for
+Jena1 applications with the exception of some database configuration
+options. However, the persistence subsystem has been largely
+reimplemented for Jena2. In particular, Jena2 uses a different database
+layout than Jena1 that enables trade-offs between retrieval time and
+disk space usage. Jena2 also supports a Fastpath capability for RDQL
+queries that dynamically generates SQL queries to perform as much of
+the RDQL query as possible within an SQL database engine. See the <a
+ href="DB/index.html"> persistence documentation</a> for more
+details. </dd>
+  <dd>&nbsp;</dd>
+  <dt><b>Reasoning Subsystem</b></dt>
+  <dd>The Jena2 reasoner subsystem includes a generic rule based
+inference engine together with configured rule sets for RDFS and for
+the OWL/Lite subset of OWL Full. These reasoners can be used to
+construct <i>inference models</i> which show the RDF statements
+entailed by the data being reasoned over. The subsystem is designed to
+be extensible so that it should be possible to plug a range of external
+reasoners into Jena, though worked examples of doing so are left to a
+future release. See the <a href="inference/index.html">reasoner
+documentation</a> for more details. <br>
+Of these components, the underlying rule engine and the RDFS
+configuration should be reasonably stable. The OWL configuration is
+preliminary and still under development.</dd>
+  <dd>&nbsp;</dd>
+  <dt><b>Ontology Subsystem</b></dt>
+  <dd>The Jena2 ontology API is intended to support programmers working
+with ontology data based on RDF. Specifically, this means support for
+OWL, DAML+OIL and RDFS. A set of Java abstractions extend the generic
+RDF Resource and Property classes to model more directly the class and
+property expressions found in ontologies using these languages, and the
+relationships between these classes and properties, and the individuals
+created from them. The ontology API works closely with the reasoning
+subsystem to derive additional information that can be inferred from a
+particular ontology source. Given that ontologists typically modularise
+ontologies into individual, re-usable components, and pulish these on
+the web, the Jena2 ontology subsystem also includes a document manager
+that assists with process of managing imported ontology documents. See
+the <a href="ontology/index.html">ontology documentation</a> for
+more details.</dd>
+  <dd>&nbsp;</dd>
+  <dt><b>RDQL query language</b></dt>
+  <dd>RDQL is a query language for RDF data. The implementation in Jena
+is coupled to relational database storage so that optimized query is
+performed over data held in a Jena relational persistene store. </dd>
+  <dd>See <a href="tutorial/RDQL/index.html">RDQL Tutorial</a>.&nbsp;
+Also see <a href="RDQL/RDQL_Usage.html">RDQL_Usage.html</a>, <a
+ href="RDQL/RDQL_Examples.html">RDQL_Examples.html</a> and <a
+ href="RDQL/rdql_grammar.html">rdql_grammar.html</a> for condensed
+documentation.</dd>
+</dl>
+<h2>Documentation</h2>
+<p>Documentation is to be found in the <a href="index.html">doc/
+directory</a> of the Jena download.</p>
+<p>The latest documentation is available at
+<a href="http://jena.sourceforge.net/">http://jena.sourceforge.net/</a>.</p>
+<h2>Installation</h2>
+<ul>
+  <li>unzip the distribution file into a convenient directory, JENAROOT.</li>
+  <li>set the Java classpath to include all the JAR files in the
+JENAROOT/lib/ directory
+    <pre>  JENAROOT/lib/jena.jar<br>  JENAROOT/lib/xercesImpl.jar<br>  JENAROOT/lib/xml-apis.jar<br>  JENAROOT/lib/icu4j.jar<br>  JENAROOT/lib/concurrent.jar<br>  JENAROOT/lib/jakarta-oro-2.0.5.jar<br>  JENAROOT/lib/antlr.jar<br>  JENAROOT/lib/junit.jar<br>  JENAROOT/lib/commons-logging.jar<br>  JENAROOT/lib/log4j-1.2.7.jar<br>  JENAROOT/lib/rdf-api-2001-01-19.jar<br></pre>
+  </li>
+  <li>Test the distribution by running the regression tests, either:
+    <pre>	ant test          // if you have ant configured to run junit<br>	test.bat          // on windows<br>	. test.sh         // on unix<br>	</pre>
+The tests should all pass. If you are behind a firewall, you may have
+to configure a proxy for some of the tests - see below for the
+appropriate properties. </li>
+</ul>
+<h2>Applications</h2>
+<p>The Jena distribution includes some convenience applications.</p>
+<p><code>jena.rdfcopy </code>will read an RDF file in either RDF/XML,
+N3 or
+n-triple format and write it to standard out in either RDF/XML, N3 or
+n-triple
+format. It can be used to translate between different RDF serialization
+formats.</p>
+<p><code>jena.rdfcompare</code> will read two RDF files, in either
+RDF/XML, N3
+or n-triple format and test whether they are equal.</p>
+<p><code>jena.rdfquery </code>will execute an RDQL query on an RDF
+data file,
+in either RDF/XML or n-triple format and print the table of results in
+text or
+HTML. It can also be used to query a Jena model held in a BerkeleyDB
+persistent store.</p>
+<p><code>jena.rdfparse</code> is command line interface to the ARP
+RDF/XML
+parser.</p>
+<p><code>jena.n3</code> is a command line interfacec to Jena's N3
+parser.</p>
+<p><code>jena.schemagen</code> takes and RDF Schema or OWL ontologies
+and generates Java
+source code for a constant class containing constants for all the
+classes and
+properties defined in that schema.</p>
+<p>These programs can be set use use a proxy to traverse a firewall by
+setting
+system properties. To use a socks proxy include the following in the
+command
+line:</p>
+<pre>   -DsocksProxyHost=&lt;your-proxy-domain-name-or-ip-address&gt;</pre>
+<p>To use an http proxy include the following on the command line:</p>
+<pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
+<h2>License</h2>
+<p>Jena is distributed under a BSD-style open source <a
+ href="../copyright.txt">license</a>.</p>
+<p>It includes software developed by the Apache Software Foundation
+(<a href="http://www.apache.org/">http://www.apache.org/</a>), both in
+the form of jar files and source code.</p>
+<h2>Acknowledgements</h2>
+<p>Jena is built on top of other sub-systems which we gratefully
+acknowledge:</p>
+<ul>
+  <li><a href="http://xml.apache.org/xerces-j/index.html">Xerces</a></li>
+  <li><a href="http://www.junit.org/">JUnit</a></li>
+  <li><a href="http://jakarta.apache.org/oro/">Jakarta ORO</a></li>
+  <li><a href="http://oss.software.ibm.com/icu4j/">ICU4J</a></li>
+  <li><a
+ href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/">util.concurrent</a>
+from <a href="http://gee.cs.oswego.edu/dl">Doug Lea</a></li>
+  <li><a href="http://jakarta.apache.org/commons/logging.html">Jakarta
+Commons Logging</a></li>
+  <li><a href="http://logging.apache.org/log4j/docs/">log4j</a></li>
+  <li><a href="http://ant.apache.org/">ant</a><br>
+  </li>
+</ul>
+Some of the developers use <a href="http://www.eclipse.org/">Eclipse</a>.<br>
+<br>
+</body>
+</html>
