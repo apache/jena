@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: PropertyAccessorImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:55:09 $
+ * Last modified on   $Date: 2004-01-15 17:42:26 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.ontology.daml.*;
  * <p>Encapsulates the standard methods of modifying a property on a DAML value.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyAccessorImpl.java,v 1.10 2003-12-11 22:55:09 ian_dickinson Exp $
+ * @version CVS info: $Id: PropertyAccessorImpl.java,v 1.11 2004-01-15 17:42:26 ian_dickinson Exp $
  */
 public class PropertyAccessorImpl
     implements PropertyAccessor
@@ -152,9 +152,24 @@ public class PropertyAccessorImpl
      *         if the property has no value.
      */
     public DAMLCommon getDAMLValue() {
-        RDFNode n = get();
-        
-        return (n == null) ? null : (DAMLCommon) n.as( DAMLCommon.class );
+        NodeIterator i = null;
+        try {
+            for (i = getAll();  i.hasNext(); ) {
+                RDFNode n = (RDFNode) i.next();
+                
+                if (n.canAs( DAMLCommon.class )) {
+                    return (DAMLCommon) n.as( DAMLCommon.class );
+                }
+            }
+            
+            // no DAMLCommon value, so return null for compatability with Jena 1
+            return null;
+        }
+        finally {
+            if (i != null) {
+                i.close();
+            }
+        }
     }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-09 11:45:46 $
+ * Last modified on   $Date: 2004-01-15 17:42:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -31,6 +31,8 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.impl.OntClassImpl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -617,6 +619,19 @@ public class TestBugReports extends TestCase {
             OntClass c = m.getOntClass( classes[i] );
             for (Iterator j = c.listDeclaredProperties(); j.hasNext(); j.next() );
         }
+    }
+    
+    /** Bug report by Paulo Pinheiro da Silva [pp@ksl.stanford.edu] - exception while accessing PropertyAccessor.getDAMLValue */
+    public void test_ppds_01() {
+        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLClass c = m.createDAMLClass( NS + "C" );
+        DAMLInstance x = m.createDAMLInstance( c, NS + "x" );
+        DAMLProperty p = m.createDAMLProperty( NS + "p" );
+        
+        x.addProperty( p, "(s (s 0))" );
+        
+        PropertyAccessor a = x.accessProperty( p );
+        assertNull( "Property accessor value should be null", a.getDAMLValue() );
     }
     
     
