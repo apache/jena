@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.19 2003-06-19 15:51:00 chris-dollin Exp $
+  $Id: TestNode.java,v 1.20 2003-07-02 08:24:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -376,33 +376,29 @@ public class TestNode extends GraphTestBase
         visitExamples( checkValue );
         }
         
+    /**
+        Test that the appropriate elements of the visitor are called exactly once;
+        this relies on the order of the visits in visitExamples.
+    */
     public void testVisitorPatternCalled()
         {
-        final Set strings = new HashSet();
+        final String [] strings = new String [] { "" };
         NodeVisitor checkCalled = new NodeVisitor() 
             {
             public Object visitAny( Node_ANY it ) 
-                { strings.add( "any" ); return null; }
+                { strings[0] += " any"; return null; }
             public Object visitBlank( Node_Blank it, AnonId id ) 
-                { strings.add( "blank" ); return null; }
+                { strings[0] += " blank"; return null; }
             public Object visitLiteral( Node_Literal it, LiteralLabel lit ) 
-                { strings.add( "literal" ); return null; }
+                { strings[0] += " literal"; return null; }
             public Object visitURI( Node_URI it, String uri ) 
-                { strings.add( "uri" ); return null; }
+                { strings[0] += " uri"; return null; }
             public Object visitVariable( Node_Variable it, String name ) 
-                { strings.add( "variable" ); return null; }
+                { strings[0] += " variable"; return null; }
             };
-        Set desired = wordSet( "any blank literal uri variable" );        
+        String desired = " uri variable blank literal any";        
         visitExamples( checkCalled );
-        assertEquals( "all vists must have been made", desired, strings );
-        }
-        
-    private Set wordSet( String words )
-        {
-        Set result = new HashSet();
-        StringTokenizer st = new StringTokenizer( words );
-        while (st.hasMoreTokens()) result.add( st.nextToken() );
-        return result;
+        assertEquals( "all vists must have been made", desired, strings[0] );
         }
         
     public void testSimpleMatches()
