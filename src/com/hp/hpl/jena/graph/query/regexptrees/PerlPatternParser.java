@@ -1,11 +1,11 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PerlPatternParser.java,v 1.1 2004-08-16 14:51:28 chris-dollin Exp $
+  $Id: PerlPatternParser.java,v 1.2 2004-08-16 18:30:57 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
-
+import java.util.*;
 
 public class PerlPatternParser
     {
@@ -15,7 +15,7 @@ public class PerlPatternParser
     public PerlPatternParser( String toParse )
         { this.toParse = toParse; }
     
-    public Object parseAtom()
+    public RegexpTree parseAtom()
         {
         if (pointer < toParse.length())
             {
@@ -59,7 +59,7 @@ public class PerlPatternParser
     public int getPointer()
         { return pointer; }
     
-    public Object parseQuantifier( RegexpTree d )
+    public RegexpTree parseQuantifier( RegexpTree d )
         {
         if (pointer < toParse.length())
             {
@@ -87,6 +87,28 @@ public class PerlPatternParser
             }
         else
             return d;
+        }
+
+    /**
+    	@return
+    */
+    public Object parseSeq()
+        {
+        List operands = new ArrayList();
+        while (true)
+            {
+            RegexpTree next = parseElement();
+            if (next == null) break;
+            operands.add( next );
+            }
+        return Sequence.create( operands );
+        }
+    
+    private RegexpTree parseElement()
+        {
+        RegexpTree atom = parseAtom();
+        if (atom == null) return null;
+        return parseQuantifier( atom );
         }
     }
 

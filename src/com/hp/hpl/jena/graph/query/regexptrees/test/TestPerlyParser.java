@@ -1,22 +1,15 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.1 2004-08-16 14:51:00 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.2 2004-08-16 18:31:44 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
+import java.util.Arrays;
+
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.graph.query.regexptrees.AnySingle;
-import com.hp.hpl.jena.graph.query.regexptrees.EndOfLine;
-import com.hp.hpl.jena.graph.query.regexptrees.OneOrMore;
-import com.hp.hpl.jena.graph.query.regexptrees.Optional;
-import com.hp.hpl.jena.graph.query.regexptrees.PerlPatternParser;
-import com.hp.hpl.jena.graph.query.regexptrees.RegexpTree;
-import com.hp.hpl.jena.graph.query.regexptrees.Repeated;
-import com.hp.hpl.jena.graph.query.regexptrees.StartOfLine;
-import com.hp.hpl.jena.graph.query.regexptrees.Text;
-import com.hp.hpl.jena.graph.query.regexptrees.ZeroOrMore;
+import com.hp.hpl.jena.graph.query.regexptrees.*;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 
 /**
@@ -112,8 +105,25 @@ public class TestPerlyParser extends GraphTestBase
         RegexpTree d = new AnySingle();
         assertEquals( new Optional( d ), new PerlPatternParser( "?" ).parseQuantifier( d ) );
         }
+
+    public void testUnitSeq()
+        {
+        PerlPatternParser p = new PerlPatternParser( "x" );
+        assertEquals( new Text( "x" ), p.parseSeq() );
+        }
     
     public void testSeq()
+        {
+        PerlPatternParser p = new PerlPatternParser( "^.$" );
+        assertEquals( seq3( new StartOfLine(), new AnySingle(), new EndOfLine() ), p.parseSeq() );
+        }
+    
+    protected RegexpTree seq3( RegexpTree a, RegexpTree b, RegexpTree c )
+        {
+        return Sequence.create( Arrays.asList( new RegexpTree[] {a, b, c} ) );
+        }
+    
+    public void testOldSeq()
         {
         PerlPatternParser p = new PerlPatternParser( "hello" );
         assertEquals( new Text( "h" ), p.parseAtom() );
