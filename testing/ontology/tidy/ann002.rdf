@@ -1,0 +1,17 @@
+
+<!--
+Bug report from Holger
+-->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://www.example.org#"
+    xml:base="http://www.example.org" >
+
+ <owl:Ontology rdf:about=""/>
+ <owl:AnnotationProperty rdf:ID="creator"/>
+ <owl:Class rdf:ID="MusicalWork">
+   <creator>Me</creator>
+ </owl:Class>
+
+</rdf:RDF>
