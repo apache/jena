@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.19 $ on $Date: 2003-07-01 12:48:12 $
+* @version $Revision: 1.20 $ on $Date: 2003-07-11 19:21:19 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -111,7 +111,10 @@ public abstract class DriverRDB implements IRDBDriver {
     *  EOS_LEN is the length of EOS (0 or 1).
     */
    
-   
+   protected char	QUOTE_CHAR = '\"';
+   /** the quote character used to delimit characters and strings.
+    */
+
    protected boolean URI_COMPRESS;
    /** true if URI's are to be compressed by storing prefixes (an approximation
     *  of a namespace) in the JENA_PREFIX table. note that "short" prefixes are
@@ -130,8 +133,8 @@ public abstract class DriverRDB implements IRDBDriver {
    /** Set to true if the insert operations already check for duplications */
    protected boolean SKIP_DUPLICATE_CHECK;
 
-   /** Set to true if the insert operations allocate object IDs themselves */
-   protected boolean SKIP_ALLOCATE_ID;
+   /** Set to true if IDs are allocated prior to insert */
+   protected boolean PRE_ALLOCATE_ID;
 	
    /** Holds value of empty literal marker */
    protected String EMPTY_LITERAL_MARKER;
@@ -154,7 +157,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	* Holds base name of AssertedStatement table.
 	* Every triple store has at least one tables for AssertedStatements.
 	*/
-   protected static final String TABLE_BASE_NAME = "JENA_";
+   protected static final String TABLE_BASE_NAME = "jena_";
   
    /** Set to true to enable cache of pre-prepared statements */
    protected boolean CACHE_PREPARED_STATEMENTS = true;
@@ -163,17 +166,19 @@ public abstract class DriverRDB implements IRDBDriver {
    protected String LAYOUT_TYPE = "TripleStore";
 
    /** Default name of the table that holds system property graph asserted statements **/
-   protected final String SYSTEM_STMT_TABLE = TABLE_BASE_NAME + "SYS_STMT";
+   protected final String SYSTEM_STMT_TABLE = TABLE_BASE_NAME + "sys_stmt";
    
    /** Name of the long literal table **/
-   protected final String LONG_LIT_TABLE = "JENA_LONG_LIT";
+   protected final String LONG_LIT_TABLE = "jena_long_lit";
    
    /** Name of the long URI table **/
-   protected final String LONG_URI_TABLE = "JENA_LONG_URI";
+   protected final String LONG_URI_TABLE = "jena_long_uri";
 
    /** Name of the prefix table **/
-   protected final String PREFIX_TABLE = "JENA_PREFIX";
+   protected final String PREFIX_TABLE = "jena_prefix";
 
+   /** Name of the graph table **/
+   protected final String GRAPH_TABLE = "jena_graph";
     
    /** Name of the graph holding default properties (the one's that a newly-created
 	*  graph will have by default **/
@@ -268,12 +273,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		try {
 			String [] params = 	getDbInitTablesParams();
 			m_sql.runSQLGroup("initDBtables", params);
-			if (!SKIP_ALLOCATE_ID) {
-				Iterator seqIt = getSequences().iterator();
-				while (seqIt.hasNext()) {
-						removeSequence((String)seqIt.next());
-				}
-			}
 			m_sql.runSQLGroup("initDBgenerators");
 //			m_sql.runSQLGroup("initDBprocedures");
 		} catch (SQLException e) {
@@ -305,7 +304,6 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	abstract public int graphIdAlloc ( String graphName );	
 	
-	abstract public int getLastInsertID();
 	
 	
 	/**
@@ -365,10 +363,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		lSet.setPSet(pSet);
 		graphProperties.addLSet(lSet);
 
-		// Note - there is an assumption here that the order in which we add
-		// these will be maintained - that's not true for graphs in general,
-		// but our properties are always stored in our persistent graphs and
-		// we know they do maintain ordering.
 		return recreateSpecializedGraphs( graphProperties );
 	}
 	
@@ -381,14 +375,20 @@ public abstract class DriverRDB implements IRDBDriver {
 		List result = new ArrayList();
 		int dbGraphId = graphProperties.getGraphId();
 
-		Iterator it = graphProperties.getAllLSets();
-		while(it.hasNext() ) {
-			DBPropLSet lSetProps = (DBPropLSet)it.next();
-			DBPropPSet pSetProps = lSetProps.getPset();
+		// to ensure that reifier graphs occur before stmt graphs, make two passes
+		String[] lsetTypes = {m_lsetClassName, m_lsetReifierClassName};
+		int i;
+		for(i=0;i<2;i++) {
+			Iterator it = graphProperties.getAllLSets();
+			while(it.hasNext() ) {
+				DBPropLSet lSetProps = (DBPropLSet)it.next();
+				if ( lSetProps.getType().equals(lsetTypes[i]) ) continue;
+				DBPropPSet pSetProps = lSetProps.getPset();
 
-			IPSet pSet = createIPSetInstanceFromName(pSetProps.getType(), pSetProps.getTable());		
-			result.add( createLSetInstanceFromName( lSetProps.getType(), pSet, dbGraphId));		
-		}
+				IPSet pSet = createIPSetInstanceFromName(pSetProps.getType(), pSetProps.getTable());		
+				result.add( createLSetInstanceFromName( lSetProps.getType(), pSet, dbGraphId));		
+			}
+		}		
 		
 		return result;		
 	}
@@ -409,10 +409,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			pSet.setMaxLiteral(LONG_OBJECT_LENGTH);
 			pSet.setSQLType(ID_SQL_TYPE);
 			pSet.setSkipDuplicateCheck(SKIP_DUPLICATE_CHECK);
-			pSet.setSkipAllocateId(SKIP_ALLOCATE_ID);
-			pSet.setEmptyLiteralMarker(EMPTY_LITERAL_MARKER);
 			pSet.setSQLCache(m_sql);
-			pSet.setInsertByProcedure(INSERT_BY_PROCEDURE);
 			pSet.setCachePreparedStatements(CACHE_PREPARED_STATEMENTS);
 			pSet.setASTname(tblName);
 		} catch (Exception e) {
@@ -539,7 +536,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		try {
 			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
 			String[] tableTypes = { "TABLE" };
-			ResultSet alltables = dbmd.getTables(null, null, "JENA%", tableTypes);
+			ResultSet alltables = dbmd.getTables(null, null, "jena%", tableTypes);
 			result = alltables.next();
 			alltables.close();
 		} catch (Exception e1) {
@@ -555,7 +552,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		try {
 			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
 			String[] tableTypes = { "TABLE" };
-			ResultSet alltables = dbmd.getTables(null, null, "JENA%", tableTypes);
+			ResultSet alltables = dbmd.getTables(null, null, "jena%", tableTypes);
 			List tablesPresent = new ArrayList(10);
 			while (alltables.next()) {
 				tablesPresent.add(alltables.getString("TABLE_NAME"));
@@ -564,12 +561,6 @@ public abstract class DriverRDB implements IRDBDriver {
 			Iterator it = tablesPresent.iterator();
 			while (it.hasNext()) {
 				m_sql.runSQLGroup("dropTable", (String) it.next());
-			}
-			if (!SKIP_ALLOCATE_ID) {
-				Iterator seqIt = getSequences().iterator();
-				while (seqIt.hasNext()) {
-					removeSequence((String)seqIt.next());
-				}
 			}
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver", e1);
@@ -755,7 +746,8 @@ public abstract class DriverRDB implements IRDBDriver {
 				  	Connection c = m_sql.getConnection();
 					c.commit();
 					c.setAutoCommit(true);
-					c.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+					// not sure why read_uncommitted is set, below. commented out by kw.
+					// c.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 					inTransaction =  false;
 				   }
 				} catch (SQLException e) {
@@ -1273,9 +1265,14 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
 		try {
+			int argi = 1;
 			String opname = "insertLongObject";           			
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, table);
-			int argi = 1;
+			int dbid = 0; // init only needed to satisy java compiler
+			if ( PRE_ALLOCATE_ID ) {
+				dbid = getInsertID(table);
+				ps.setInt(argi++,dbid);
+			} 
 			 ps.setString(argi++, lobj.head);
 			 if ( lobj.tail.length() > 0 ) {
 			 	ps.setLong(argi++, lobj.hash);
@@ -1308,7 +1305,8 @@ public abstract class DriverRDB implements IRDBDriver {
 			} 
 */            
 			ps.executeUpdate();
-			return wrapDBID(new Integer(getLastInsertID()));
+			if ( !PRE_ALLOCATE_ID ) dbid = getInsertID(table);
+			return wrapDBID(new Integer(dbid));
 		} catch (Exception e1) {
 			/* DEBUG */ System.out.println("Problem on long object (l=" + lobj.head + ") " + e1 );
 			// System.out.println("ID is: " + id);
@@ -1415,8 +1413,34 @@ public abstract class DriverRDB implements IRDBDriver {
 			//return null;
 		}
 	}
-
+	
+	public String genSQLReifQualStmt () {
+		return "stmt = ?";
+	}
+	
+	public String genSQLReifQualAnyObj( boolean objIsStmt) {
+		return "( subj = ? OR prop = ? OR obj = ?" + (objIsStmt ? " OR hasType = " +
+			QUOTE_CHAR + "T" + QUOTE_CHAR + " )" : " )");		
+	}
+	
+	public String genSQLReifQualObj ( char reifProp, boolean hasObj ) {
+		String qual = "";
+		if ( reifProp == 'T' ) {
+			qual = "hasType = " + QUOTE_CHAR + "T" + QUOTE_CHAR;
+		} else {
+			String cmp = (hasObj ? " = ?" : " is not null");
+			String col = null;
+			if ( reifProp == 'S' ) col = "subj";
+			else if ( reifProp == 'P' ) col = "prop";
+			else if ( reifProp == 'O' ) col = "obj";
+			else throw new JenaException("Undefined reification property");
+		
+			qual = col + cmp;
+		}
+		return qual;	
+	}
 }
+
 
 
 /*
