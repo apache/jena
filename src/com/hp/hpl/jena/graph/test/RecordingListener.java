@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RecordingListener.java,v 1.4 2003-07-11 13:34:20 chris-dollin Exp $
+  $Id: RecordingListener.java,v 1.5 2003-07-11 15:22:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -19,34 +19,34 @@ class RecordingListener implements GraphListener
     {
     List history = new ArrayList();
     
-    public void notifyAdd( Triple t )
+    public void notifyAddTriple( Triple t )
         { record( "add", t ); }
         
-    public void notifyAdd( Triple [] triples )
+    public void notifyAddArray( Triple [] triples )
         { record( "add[]", triples ); }
         
-    public void notifyAdd( List triples )
+    public void notifyAddList( List triples )
         { record( "addList", triples ); }
         
-    public void notifyAdd( Iterator it )
+    public void notifyAddIterator( Iterator it )
         { record( "addIterator", GraphTestBase.iteratorToList( it ) ); }
         
-    public void notifyAdd( Graph g )
+    public void notifyAddGraph( Graph g )
         { record( "addGraph", g ); }
         
-    public void notifyDelete( Triple t )
+    public void notifyDeleteTriple( Triple t )
         { record( "delete", t ); }
         
-    public void notifyDelete( Triple [] triples )
+    public void notifyDeleteArray( Triple [] triples )
         { record( "delete[]", triples ); }
         
-    public void notifyDelete( List triples )
+    public void notifyDeleteList( List triples )
         { record( "deleteList", triples ); }
         
-    public void notifyDelete( Iterator it )
+    public void notifyDeleteIterator( Iterator it )
         { record( "deleteIterator", GraphTestBase.iteratorToList( it ) ); }
         
-    public void notifyDelete( Graph g )
+    public void notifyDeleteGraph( Graph g )
         { record( "deleteGraph", g ); }
         
     protected void record( String tag, Object info )

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphEventManager.java,v 1.8 2003-07-11 13:34:20 chris-dollin Exp $
+  $Id: GraphEventManager.java,v 1.9 2003-07-11 15:22:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -10,9 +10,13 @@ import java.util.*;
 
 /**
     The component of a graph responsible for managing events and listeners.
+    The interface extends GraphListener because most of the notificiations are
+    the same; the special case to note is that an event manager expects to be
+    handed iterator events as lists, not as iterators. 
+    
  	@author kers
 */
-public interface GraphEventManager
+public interface GraphEventManager extends GraphListener
     {
     /**
         Attached <code>listener</code> to this manager; notification events
@@ -34,59 +38,23 @@ public interface GraphEventManager
     */
     GraphEventManager unregister( GraphListener listener );
     
+    /**
+        Answer true iff there is at least one attached listener.
+    	@return true iff there is at least one attached listener
+     */
     boolean listening();
-    
-    /**
-        Notify all attached listeners that the triple <code>t</code> has been added,
-        by calling their <code>notifyAdd(Triple)</code> methods.
-    */
-    void notifyAdd( Triple t );
-    
-    /**
-        Notify all attached listeners that the triple array <code>triples</code> has
-        been added, by calling their <code>notifyAdd(Triple [])</code> methods.
-    */
-    void notifyAdd( Triple [] triples );
-    
-    /**
-        Notify all attached listeners that the list [of triples] <code>triples</code> has been
-        added to the graph, by calling their <code>notifyAdd(List)</code> methods.
-    */
-    void notifyAdd( List triples );
     
     /**
         Notify all attached listeners that an iterator [of triples] has been added to
         the graph; its content has been captured in the list <code>triples</code>.
      */
     void notifyAddIterator( List triples );
-    
-    void notifyAdd( Graph g );
-    
-    /**
-        Notify all attached listeners that the triple <code>t</code> has been removed,
-        by calling their <code>notifyDelete(Triple)</code> methods.
-    */
-    void notifyDelete( Triple t );
-    
-    /**
-        Notify all attached listeners that the list [of triples] <code>triples</code> has been 
-        removed from the graph by calling their <code>notifyDelete(List)<code> methods.
-    */
-    void notifyDelete( List triples );
-    
-    /**
-        Notify all attached listeners that the triple array <code>triples</code> has
-        been removed, by calling their <code>notifyDelete(Triple [])</code> methods,
-    */
-    void notifyDelete( Triple [] triples );
-    
+
     /**
         Notify all attached listeners that an iterator [of triples] has been removed from
         the graph; its content has been captured in the list <code>triples</code>.
      */
     void notifyDeleteIterator( List triples );
-    
-    void notifyDelete( Graph g );
     }
 
 /*

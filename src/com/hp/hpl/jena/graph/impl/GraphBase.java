@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.9 2003-07-09 15:27:02 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.10 2003-07-11 15:22:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -67,14 +67,14 @@ public abstract class GraphBase implements Graph {
         Tell the event manager that the triple <code>t</code> has been added to the graph.
     */
     public void notifyAdd( Triple t )
-        { getEventManager().notifyAdd( t ); }
+        { getEventManager().notifyAddTriple( t ); }
         
     /**
         Tell the event manager that the triple <code>t</code> has been deleted from the
         graph.
     */
     public void notifyDelete( Triple t )
-        { getEventManager().notifyDelete( t ); }
+        { getEventManager().notifyDeleteTriple( t ); }
         
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
