@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReasonerFactory.java,v 1.1 2004-08-06 13:39:27 chris-dollin Exp $
+  $Id: WrappedReasonerFactory.java,v 1.2 2004-08-06 13:58:41 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -29,18 +29,33 @@ public final class WrappedReasonerFactory extends BaseRuleReasonerFactory
         { super();
         this.factory = rrf; }
     
-    public Reasoner create(Resource configuration)
+    /**
+         Answer a Reasoner created according to the underlying factory, and then 
+         loaded with this Wrapper's rules (if the Reasoner is a RuleReasoner) and
+         bound to this Wrapper's schemas (in an unspecified order).
+     */
+    public Reasoner create( Resource configuration )
         { Reasoner result = factory.create( configuration );
         if (result instanceof RuleReasoner) ((RuleReasoner) result).setRules( rules );
         for (int i = 0; i < schemas.size(); i += 1) result.bindSchema( (Graph) schemas.get(i) );
         return result; }
     
+    /**
+         Answer the capabilities of the underlying ReasonerFactory.
+    */
     public Model getCapabilities()
         { return factory.getCapabilities(); }
     
+    /**
+         Remember this schema. When a Reasoner is created from this factory,
+         bind all the remembered schemas.
+    */
     public void bindSchema( Graph schema )
     	{ schemas.add( schema ); }
     
+    /**
+         Answer the URI of the underlying ReasonerFactory. 
+    */
     public String getURI()
         { return factory.getURI(); }
     }
