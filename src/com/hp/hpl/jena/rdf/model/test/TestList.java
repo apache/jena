@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 10:48:25 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-08-12 10:35:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -31,7 +31,13 @@ import org.apache.commons.logging.LogFactory;
 
 import junit.framework.*;
 
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.enhanced.EnhGraph;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.RDFListImpl;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -45,7 +51,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.6 2003-12-08 10:48:25 andy_seaborne Exp $
+ * @version CVS $Id: TestList.java,v 1.7 2004-08-12 10:35:28 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase
@@ -100,6 +106,8 @@ public class TestList
         s.addTest( new RemoveTest() );
         s.addTest( new Map1Test() );
         s.addTest( new ListEqualsTest() );
+        s.addTest( new ListSubclassTest() );
+        s.addTest( new UserDefinedListTest() );
         
         return s;
     }
@@ -842,62 +850,123 @@ public class TestList
        }
     }
     
-    /*
-        // Lists
-        new CreateTestCase( "OWL empty list", ProfileRegistry.OWL_LANG, OWL.nil.getURI() ) {
-            public OntResource doCreate( Model m )   { return m.createList(); }
-            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 0;}
-        },
-        new CreateTestCase( "OWL list from iterator", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( Model m )   {
-                OntClass a = m.createClass( NS + "A" ); 
-                OntClass b = m.createClass( NS + "B" ); 
-                OntClass c = m.createClass( NS + "C" );
-                List l = new ArrayList();
-                l.add( a );  l.add( b );  l.add( c );
-                
-                return m.createList( l.iterator() ); 
-            }
-            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 3;}
-        },
-        new CreateTestCase( "OWL list from array", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( Model m )   {
-                OntClass a = m.createClass( NS + "A" ); 
-                OntClass b = m.createClass( NS + "B" ); 
-                OntClass c = m.createClass( NS + "C" );
-                
-                return m.createList( new Resource[] {a, b, c} ); 
-            }
-            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 3;}
-        },
-        
-        new CreateTestCase( "DAML empty list", ProfileRegistry.DAML_LANG, DAML_OIL.nil.getURI() ) {
-            public OntResource doCreate( Model m )   { return m.createList(); }
-            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 0;}
-        },
-        new CreateTestCase( "DAML list from iterator", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( Model m )   {
-                OntClass a = m.createClass( NS + "A" ); 
-                OntClass b = m.createClass( NS + "B" ); 
-                OntClass c = m.createClass( NS + "C" );
-                List l = new ArrayList();
-                l.add( a );  l.add( b );  l.add( c );
-                
-                return m.createList( l.iterator() ); 
-            }
-            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 3;}
-        },
-        new CreateTestCase( "DAML list from array", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( Model m )   {
-                OntClass a = m.createClass( NS + "A" ); 
-                OntClass b = m.createClass( NS + "B" ); 
-                OntClass c = m.createClass( NS + "C" );
-                
-                return m.createList( new Resource[] {a, b, c} ); 
-            }
-            public boolean test( OntResource r )        { return r instanceof RDFList && ((RDFList) r).size() == 3;}
+    protected static class ListSubclassTest extends ListTest {
+        public ListSubclassTest() {
+            super( "ListSubClassTest");
         }
-     */
+        
+        public void runTest() {
+            Model m = ModelFactory.createDefaultModel();
+            
+            String NS = "http://example.org/test#";
+            Resource a = m.createResource( NS + "a" );
+            Resource b = m.createResource( NS + "b" );
+            
+            Resource cell0 = m.createResource();
+            Resource cell1 = m.createResource();
+            cell0.addProperty( RDF.first, a );
+            cell0.addProperty( RDF.rest, cell1 );
+            cell1.addProperty( RDF.first, b );
+            cell1.addProperty( RDF.rest, RDF.nil );
+            
+            UserList ul = new UserListImpl( cell0.getNode(), (EnhGraph) m );
+            
+            assertEquals( "User list length ", 2, ul.size() );
+            assertEquals( "head of user list ", a, ul.getHead() );
+            
+            RDFList l = (RDFList) ul.as( RDFList.class );
+            assertNotNull( "RDFList facet of user-defined list subclass", l );
+        }
+    }
+    
+    /** A simple extension to RDFList to test user-subclassing of RDFList */
+    protected static interface UserList extends RDFList {
+    }
+    
+    /** Impl of a simple extension to RDFList to test user-subclassing of RDFList */
+    protected static class UserListImpl extends RDFListImpl implements UserList {
+        public UserListImpl( Node n, EnhGraph g ) {
+            super( n, g );
+        }
+    }
+
+    
+    protected static class UserDefinedListTest extends ListTest {
+        public UserDefinedListTest() {
+            super( "UserDefinedListTest");
+        }
+        
+        public void runTest() {
+            BuiltinPersonalities.model.add( UserDefList.class, UserDefListImpl.factory );
+            
+            Model m = ModelFactory.createDefaultModel();
+            
+            String NS = "http://example.org/test#";
+            Resource a = m.createResource( NS + "a" );
+            Resource b = m.createResource( NS + "b" );
+            
+            Resource empty = m.createResource( UserDefListImpl.NIL.getURI() );
+            UserDefList ul = (UserDefList) empty.as( UserDefList.class );
+            assertNotNull( "UserList facet of empty list", ul );
+            
+            UserDefList ul0 = (UserDefList) ul.cons( b );
+            ul0 = (UserDefList) ul0.cons( a );
+            assertEquals( "should be length 2", 2, ul0.size() );
+            assertTrue( "first statement", m.contains( ul0, UserDefListImpl.FIRST, a ) );
+        }
+    }
+    
+    protected static interface UserDefList extends RDFList {}
+    
+    protected static class UserDefListImpl extends RDFListImpl implements UserDefList {
+        public static final String NS = "http://example.org/testlist#";
+        public static final Property FIRST = ResourceFactory.createProperty( NS+"first" );
+        public static final Property REST = ResourceFactory.createProperty( NS+"rest" );
+        public static final Resource NIL = ResourceFactory.createResource( NS+"nil" );
+        public static final Resource LIST = ResourceFactory.createResource( NS+"List" );
+        
+        /**
+         * A factory for generating UserDefList facets from nodes in enhanced graphs.
+         */
+        public static Implementation factory = new Implementation() {
+            public EnhNode wrap( Node n, EnhGraph eg ) { 
+                if (canWrap( n, eg )) {
+                    UserDefListImpl impl = new UserDefListImpl( n, eg );
+                    
+                    Model m = impl.getModel();
+                    impl.m_listFirst = (Property) FIRST.inModel( m );
+                    impl.m_listRest = (Property) REST.inModel( m );
+                    impl.m_listNil = (Resource) NIL.inModel( m );
+                    impl.m_listType = (Resource) LIST.inModel( m );
+                    
+                    return impl;
+                }
+                else {
+                    throw new JenaException( "Cannot convert node " + n + " to UserDefList");
+                } 
+            }
+                
+            public boolean canWrap( Node node, EnhGraph eg ) {
+                Graph g = eg.asGraph();
+                
+                return  node.equals( NIL.asNode() ) || 
+                        g.contains( node, FIRST.asNode(), Node.ANY ) ||
+                        g.contains( node, REST.asNode(), Node.ANY ) ||
+                        g.contains( node, RDF.type.asNode(), LIST.asNode() );
+            }
+        };
+
+        /** This method returns the Java class object that defines which abstraction facet is presented */
+        public Class listAbstractionClass() { 
+            return UserDefList.class; 
+        }
+
+        public UserDefListImpl( Node n, EnhGraph g ) {
+            super( n, g );
+        }
+        
+    }
+
 }
 
 
