@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.9 2003-07-25 16:34:34 der Exp $
+ * $Id: RuleClauseCode.java,v 1.10 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-07-25 16:34:34 $
+ * @version $Revision: 1.10 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class RuleClauseCode {
     
@@ -102,7 +102,10 @@ public class RuleClauseCode {
     /** reset an argument to an unbound variable (Ai) */
     public static final byte CLEAR_ARG = 0x10;
     
-    // current next = 0x16
+    /** Allocate a new environment frame */
+    public static final byte ALLOCATE = 0x16;
+    
+    // current next = 0x17
     
     /** The maximum number of permanent variables allowed in a single rule clause. 
      *   Future refactorings will remove this restriction. */
@@ -172,7 +175,7 @@ public class RuleClauseCode {
         }
         state.emitHead((TriplePattern)head);
         
-        // Compilte the body operations
+        // Compile the body operations
         for (int i = 0; i < rule.bodyLength(); i++) {
             ClauseEntry entry = rule.getBodyElement(i);
             if (entry instanceof TriplePattern) {
@@ -284,6 +287,9 @@ public class RuleClauseCode {
                 case CLEAR_ARG:
                     out.println("CLEAR_ARG " + "A" + code[p++]);
                     break;
+                case ALLOCATE:
+                    out.println("ALLOCATE");
+                    break;
                 default:
                     out.println("Unused code: " + instruction);
                     break;
@@ -342,6 +348,7 @@ public class RuleClauseCode {
          * emit the code for the head clause
          */
         void emitHead(TriplePattern head) {
+            if (permanentVars.size() > 0) code[p++] = ALLOCATE;
             emitHeadGet(head.getSubject(), 0);
             // TODO: Add predicate test in variable predicate case
             emitHeadGet(head.getObject(), 2);
@@ -658,7 +665,7 @@ public class RuleClauseCode {
             String test8 = "(?x p ?y) <- (?x p ?z) addOne(?z, ?y).";
             String test9 = "(?x p ?y) <- (?x p ?z) sum(?z, 2, ?y).";
             String test10 = "(?x p ?y) <- (?x p ?v), sum(?v 2 ?y).";
-            store.addRule(Rule.parseRule(test10));
+            store.addRule(Rule.parseRule(test1));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);

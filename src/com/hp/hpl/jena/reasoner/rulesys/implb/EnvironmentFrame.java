@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: EnvironmentFrame.java,v 1.2 2003-07-24 22:07:27 der Exp $
+ * $Id: EnvironmentFrame.java,v 1.3 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.graph.Node;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-24 22:07:27 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class EnvironmentFrame extends FrameObject {
 
@@ -32,10 +32,10 @@ public class EnvironmentFrame extends FrameObject {
     RuleClauseCode clause;
     
     /** The continuation program counter offet in the parent clause's byte code */
-    int cpc = 0;
+    int cpc;
     
     /** The continuation argument counter offset in the parent clause's arg stream */
-    int cac = 0;
+    int cac;
     
     /** 
      * Constructor 
@@ -54,9 +54,26 @@ public class EnvironmentFrame extends FrameObject {
         // Note that the current fixed-frame implementation is just a short cut 
         // the first implementation and will get relaced by a
         // dynamic (and possibly trimmable) implementation in the future
-        pVars = new Node[RuleClauseCode.MAX_PERMANENT_VARS];
+//        pVars = new Node[RuleClauseCode.MAX_PERMANENT_VARS];
     }
     
+    /**
+     * Allocate a vector of permanent variables for use in the rule execution.
+     */
+    public void allocate(int n) {
+            pVars = new Node[n];
+    }
+    
+    /**
+     * Printable string for debugging.
+     */
+    public String toString() {
+        if (clause == null || clause.rule == null) {
+            return "null env";
+        } else {
+            return "env(" + clause.rule.toShortString() + ")";
+        }
+    }
 }
 
 

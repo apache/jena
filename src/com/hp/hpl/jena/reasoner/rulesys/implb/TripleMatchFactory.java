@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TripleMatchFactory.java,v 1.1 2003-07-23 16:24:17 der Exp $
+ * $Id: TripleMatchFactory.java,v 1.2 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -13,7 +13,7 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * Factory for triple match frames.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-23 16:24:17 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class TripleMatchFactory extends FrameObjectFactory {
 
@@ -34,13 +34,15 @@ public class TripleMatchFactory extends FrameObjectFactory {
      * Find or allocate a new frame.
      */
     private TripleMatchFrame getFrame() {
-        TripleMatchFrame env = (TripleMatchFrame)getFree();
-        if (env == null) {
-            env = new TripleMatchFrame(this);
-        } else {
-            env.fastLinkTo(null);
-        }
-        return env;
+        return new TripleMatchFrame(this);
+        // Disable pool management - not enough performance benefit
+//        TripleMatchFrame env = (TripleMatchFrame)getFree();
+//        if (env == null) {
+//            env = new TripleMatchFrame(this);
+//        } else {
+//            env.fastLinkTo(null);
+//        }
+//        return env;
     }
     
 }

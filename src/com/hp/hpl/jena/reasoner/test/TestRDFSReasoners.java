@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.8 2003-07-25 16:32:39 der Exp $
+ * $Id: TestRDFSReasoners.java,v 1.9 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-07-25 16:32:39 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class TestRDFSReasoners extends TestCase {
     
@@ -98,7 +98,8 @@ public class TestRDFSReasoners extends TestCase {
      */
     private static void constructSingleQuerytests(TestSuite suite, String manifest, String test, ReasonerFactory rf, Resource config) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
-        suite.addTest(new TestReasonerFromManifest(tester, test, rf, config));
+        Reasoner r = rf.create(config);
+        suite.addTest(new TestReasonerFromManifest(tester, test, r));
     }
     
     /**
@@ -106,9 +107,10 @@ public class TestRDFSReasoners extends TestCase {
      */
     private static void constructQuerytests(TestSuite suite, String manifest, ReasonerFactory rf, Resource config) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
+        Reasoner r = rf.create(config);
         for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
             String test = (String)i.next();
-            suite.addTest(new TestReasonerFromManifest(tester, test, rf, config));
+            suite.addTest(new TestReasonerFromManifest(tester, test, r));
         }
     }
     
@@ -123,6 +125,18 @@ public class TestRDFSReasoners extends TestCase {
         }
     }
         
+    
+    /**
+     * Build the query tests for the given reasoner.
+     */
+    public static void constructQuerytests(TestSuite suite, String manifest, Reasoner reasoner) throws IOException {
+        ReasonerTester tester = new ReasonerTester(manifest);
+        for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
+            String test = (String)i.next();
+            suite.addTest(new TestReasonerFromManifest(tester, test, reasoner));
+        }
+    }
+    
     /**
      * Inner class defining a test framework for invoking a single locally
      * defined query-over-inference test.
@@ -136,19 +150,14 @@ public class TestRDFSReasoners extends TestCase {
         String test;
         
         /** The factory for the reasoner type under test */
-        ReasonerFactory reasonerFactory;
-        
-        /** An optional configuration model */
-        Resource config;
+        Reasoner reasoner;
         
         /** Constructor */
-        TestReasonerFromManifest(ReasonerTester tester, String test, 
-                                 ReasonerFactory reasonerFactory, Resource config) {
+        TestReasonerFromManifest(ReasonerTester tester, String test, Reasoner reasoner) {
             super(test);
             this.tester = tester;
             this.test = test;
-            this.reasonerFactory = reasonerFactory;
-            this.config = config;
+            this.reasoner = reasoner;
         }
         
     
@@ -156,7 +165,7 @@ public class TestRDFSReasoners extends TestCase {
          * The test runner
          */
         public void runTest() throws IOException {
-            tester.runTest(test, reasonerFactory, this, config);
+            tester.runTest(test, reasoner, this);
         }
 
     }

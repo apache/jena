@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.6 2003-07-25 16:34:34 der Exp $
+ * $Id: TestBasicLP.java,v 1.7 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-07-25 16:34:34 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -63,10 +63,27 @@ public class TestBasicLP  extends TestCase {
         return new TestSuite( TestBasicLP.class );
         
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testBaseRules5" ));
+//        suite.addTest(new TestBasicLP( "testBacktrack7" ));
 //        return suite;
     }  
    
+    /**
+     * Return an inference graph working over the given rule set and raw data.
+     * Can be overridden by subclasses of this test class.
+     * @param rules the rule set to use
+     * @param data the graph of triples to process
+     */
+    public InfGraph makeInfGraph(List rules, Graph data) {
+        FBLPRuleReasoner reasoner = new FBLPRuleReasoner(rules);
+        return reasoner.bind(data);
+//        LPRuleStore store = new LPRuleStore();
+//        for (Iterator i = rules.iterator(); i.hasNext(); ) {
+//            store.addRule((Rule)i.next());
+//        }
+//        InfGraph infgraph =  new LPBackwardRuleInfGraph(null, store, data, null);
+//        return infgraph;
+    }
+    
     /**
      * Test basic rule operations - lookup, no matching rules
      */
@@ -366,17 +383,13 @@ public class TestBasicLP  extends TestCase {
      * Test clause order is right
      */
     public void testClauseOrder() {
-        LPRuleStore store = new LPRuleStore();
         List rules = Rule.parseRules(
             "[r1: (?x r C1) <- (?x p b)]" +
             "[r1: (?x r C2) <- (?x p b)]" +
             "[r2: (?x r C3) <- (?x r C3) (?x p b)]");
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            store.addRule((Rule)i.next());
-        }
         Graph data = new GraphMem();
         data.add(new Triple(a, p, b));
-        InfGraph infgraph =  new LPBackwardRuleInfGraph(null, store, data, null);
+        InfGraph infgraph =  makeInfGraph(rules, data);
         ExtendedIterator i = infgraph.find(Node.ANY, r, Node.ANY);
         assertTrue(i.hasNext());
         assertEquals(i.next(), new Triple(a, r, C1));
@@ -439,6 +452,24 @@ public class TestBasicLP  extends TestCase {
                 } );
     }
     
+    
+    /**
+     * Test simple invocation of a builtin
+     */
+    public void testBuiltin2() {
+        doTest("[r1: (?x r C1) <- (?x p ?v), lessThan(?v 3)]",
+                new Triple[] {
+                    new Triple(a, p, Util.makeIntNode(1)),
+                    new Triple(b, p, Util.makeIntNode(2)),
+                    new Triple(c, p, Util.makeIntNode(3))
+                },
+                new Triple(Node.ANY, r, Node.ANY),
+                new Object[] {
+                    new Triple(a, r, C1),
+                    new Triple(b, r, C1),
+                } );
+    }
+    
     /** 
      * Generic test operation.
      * @param ruleSrc the source of the rules
@@ -447,16 +478,12 @@ public class TestBasicLP  extends TestCase {
      * @param results the array of expected results
      */
     private void doTest(String ruleSrc, Triple[] triples, TripleMatch query, Object[] results) {
-        LPRuleStore store = new LPRuleStore();
         List rules = Rule.parseRules(ruleSrc);
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            store.addRule((Rule)i.next());
-        }
         Graph data = new GraphMem();
         for (int i = 0; i < triples.length; i++) {
             data.add(triples[i]);
         }
-        InfGraph infgraph =  new LPBackwardRuleInfGraph(null, store, data, null);
+        InfGraph infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
 
     }

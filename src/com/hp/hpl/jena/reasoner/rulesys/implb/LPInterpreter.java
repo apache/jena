@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.8 2003-07-25 16:34:34 der Exp $
+ * $Id: LPInterpreter.java,v 1.9 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-07-25 16:34:34 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class LPInterpreter {
 
@@ -78,6 +78,7 @@ public class LPInterpreter {
         // Construct dummy top environemnt which is a call into the clauses for this goal
         envFrame = LPEnvironmentFactory.createEnvironment();
         envFrame.init(RuleClauseCode.returnCodeBlock);
+        envFrame.allocate(RuleClauseCode.MAX_PERMANENT_VARS);
         envFrame.pVars[0] = argVars[0] = standardize(goal.getSubject());
         envFrame.pVars[1] = argVars[1] = standardize(goal.getPredicate());
         envFrame.pVars[2] = argVars[2] = standardize(goal.getObject());
@@ -86,12 +87,14 @@ public class LPInterpreter {
             ChoicePointFrame newChoiceFrame = ChoicePointFactory.create();
             newChoiceFrame.init(this, clauses);
             newChoiceFrame.linkTo(null);
+            newChoiceFrame.setContinuation(0, 0);
             cpFrame = newChoiceFrame;
         }
         
         TripleMatchFrame tmFrame = TripleMatchFactory.create();
         tmFrame.init(this);
         tmFrame.linkTo(cpFrame);
+        tmFrame.setContinuation(0, 0);
         cpFrame = tmFrame;
         
         BBRuleContext bbcontext = new BBRuleContext(engine.getInfGraph());
@@ -129,7 +132,9 @@ public class LPInterpreter {
             return answer;
         } else {
             // TODO: avoid store turn over here in case where answer has been returned by a TripleMatch
-            return new Triple(deref(pVars[0]), deref(pVars[1]), deref(pVars[2]));
+            Triple t = new Triple(deref(pVars[0]), deref(pVars[1]), deref(pVars[2]));
+//            logger.debug("ANS " + t);
+            return t;
         }
     }
 
@@ -148,25 +153,32 @@ public class LPInterpreter {
         int pc = 0;     // Program code counter
         int ac = 0;     // Program arg code counter
         RuleClauseCode clause = null;       // The clause being executed
-        
+        ChoicePointFrame choice = null;
+        byte[] code;
+        Object[] args;
+
         main: while (cpFrame != null) {
             // restore choice point
             if (cpFrame instanceof ChoicePointFrame) {
-                ChoicePointFrame choice = (ChoicePointFrame)cpFrame;
+                choice = (ChoicePointFrame)cpFrame;
                 if (!choice.clauseIterator.hasNext()) {
                     // No more choices left in this choice point
                     cpFrame = choice.getLink();
+                    // Disable pool allocation - not enough performance benefit
+//                    if (cpFrame != null) cpFrame.incRefCount(); // Now a root pointer, so inc ref
+//                    choice.close();
                     continue main;
                 }
                 
-                // Create an execution environment for the new choice of clause
                 clause = (RuleClauseCode)choice.clauseIterator.next();
+                // Create an execution environment for the new choice of clause
                 envFrame = LPEnvironmentFactory.createEnvironment();
                 envFrame.init(clause);
                 envFrame.linkTo(choice.envFrame);
                 envFrame.cpc = choice.cpc;
                 envFrame.cac = choice.cac;
-
+//                logger.debug("Retry rule: " + envFrame);
+                
                 // Restore the choice point state
                 System.arraycopy(choice.argVars, 0, argVars, 0, RuleClauseCode.MAX_ARGUMENT_VARS);
                 int trailMark = choice.trailIndex;
@@ -182,6 +194,7 @@ public class LPInterpreter {
                 
                 // Restore the calling context
                 envFrame = tmFrame.envFrame;
+                clause = envFrame.clause;
                 int trailMark = tmFrame.trailIndex;
                 if (trailMark < trail.size()) {
                     unwindTrail(trailMark);
@@ -191,6 +204,9 @@ public class LPInterpreter {
                 if (!tmFrame.nextMatch(this)) {
                     // No more matches
                     cpFrame = cpFrame.getLink();
+                    // Disable pool allocation - not enough performance benefit
+//                    if (cpFrame != null) cpFrame.incRefCount();  // Now a root pointer, so inc ref
+//                    tmFrame.close();
                     continue main;
                 }
                 pc = tmFrame.cpc;
@@ -206,20 +222,26 @@ public class LPInterpreter {
 
                 // Start of bytecode intepreter loop
                 // Init the state variables
-                byte[] code = envFrame.clause.getCode();
-                Object[] args = envFrame.clause.getArgs();
                 pVars = envFrame.pVars;
                 int yi, ai, ti;
                 Node arg, constant;
                 List predicateCode;
                 TripleMatchFrame tmFrame;
-    
+                code = clause.getCode();
+                args = clause.getArgs();
+
                 // Debug ...
+//                logger.debug("Entering rule: " + envFrame);
 //                System.out.println("Interpeting code (at p = " + pc + "):");
 //                envFrame.clause.print(System.out);
         
                 codeloop: while (true) {
                     switch (code[pc++]) {
+                        case RuleClauseCode.ALLOCATE:
+                            envFrame.allocate(RuleClauseCode.MAX_PERMANENT_VARS);
+                            pVars = envFrame.pVars;
+                            break;
+                            
                         case RuleClauseCode.GET_VARIABLE :
                             yi = code[pc++];
                             ai = code[pc++];
@@ -241,6 +263,7 @@ public class LPInterpreter {
                                 bind(arg, constant);
                             } else {
                                 if (!arg.sameValueAs(constant)) {
+//                                    logger.debug("FAIL: " + envFrame);
                                     continue main;  
                                 }
                             }
@@ -250,6 +273,7 @@ public class LPInterpreter {
                             yi = code[pc++];
                             ai = code[pc++];
                             if (!unify(argVars[ai], pVars[yi])) {
+//                                logger.debug("FAIL: " + envFrame);
                                 continue main;  
                             }
                             break;
@@ -258,6 +282,7 @@ public class LPInterpreter {
                             ti = code[pc++];
                             ai = code[pc++];
                             if (!unify(argVars[ai], tVars[ti])) {
+//                                logger.debug("FAIL: " + envFrame);
                                 continue main;  
                             }
                             break;
@@ -310,6 +335,9 @@ public class LPInterpreter {
                             tmFrame.setContinuation(pc, ac);
                             newChoiceFrame.setContinuation(pc, ac);
                             cpFrame = tmFrame;
+                            // Disable pool allocation - not enough performance benefit
+//                            if (cpFrame != null) cpFrame.incRefCount(); // Now a root pointer, so inc ref
+//                            logger.debug("CALL");
                             continue main;
                                             
                         case RuleClauseCode.CALL_TRIPLE_MATCH:
@@ -319,17 +347,28 @@ public class LPInterpreter {
                             tmFrame.setContinuation(pc, ac);
                             tmFrame.linkTo(cpFrame);
                             cpFrame = tmFrame;
+                            // Disable pool allocation - not enough performance benefit
+//                            if (cpFrame != null) cpFrame.incRefCount(); // Now a root pointer, so inc ref
+//                            logger.debug("CALL triple match: " + 
+//                                            deref(argVars[0]) + " " +
+//                                            deref(argVars[1]) + " " +
+//                                            deref(argVars[2]));
                             continue main;
                                             
                         case RuleClauseCode.PROCEED:
                             pc = envFrame.cpc;
                             ac = envFrame.cac;
+//                            logger.debug("EXIT " + envFrame);
                             envFrame = (EnvironmentFrame) envFrame.link;
+                            if (envFrame != null) clause = envFrame.clause;
                             continue interpreter;
                         
                         case RuleClauseCode.CALL_BUILTIN:
                             Builtin builtin = (Builtin)args[ac++];
-                            builtin.bodyCall(argVars, code[pc++], context);
+                            if (!builtin.bodyCall(argVars, code[pc++], context)) {
+//                                logger.debug("FAIL: " + envFrame.clause.rule.toShortString());
+                                continue main;  
+                            }
                             break;
                             
                         default :

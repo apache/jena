@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ChoicePointFrame.java,v 1.4 2003-07-24 22:07:27 der Exp $
+ * $Id: ChoicePointFrame.java,v 1.5 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-07-24 22:07:27 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class ChoicePointFrame extends FrameObject {
 
@@ -59,6 +59,7 @@ public class ChoicePointFrame extends FrameObject {
      */
     public void init(LPInterpreter interpreter, List predicateClauses) {
         envFrame = interpreter.envFrame;
+//        envFrame.incRefCount();
         trailIndex = interpreter.trail.size();
         System.arraycopy(interpreter.argVars, 0, argVars, 0, argVars.length);
         clauseIterator = predicateClauses.iterator();
@@ -77,11 +78,15 @@ public class ChoicePointFrame extends FrameObject {
      * closing any embedded triple match iterators)
      */
     public void close() {
-        if (envFrame != null)
-            envFrame.close();
-        if (link != null)
-            link.close();
-        free();
+//        if (--refCount == 0) {
+//            if (link != null) {
+//                link.close();
+//            }
+//            if (envFrame != null) {
+//                envFrame.close();
+//            }
+//            free();
+//        }
     }
 }
 

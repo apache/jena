@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FrameObjectFactory.java,v 1.2 2003-07-22 16:41:42 der Exp $
+ * $Id: FrameObjectFactory.java,v 1.3 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -15,15 +15,22 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * a shared pool of reusable frames.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-22 16:41:42 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class FrameObjectFactory {
+    
+    /** The memory pool for frame objects of this class */
+    protected FrameObject pool = null;
 
     /**
      * Return a free frame object if there is one in the pool, otherwise null.
      */
     public FrameObject getFree() {
-        return null;
+        FrameObject result = pool;
+        if (result != null)  {
+            pool = result.link;
+        } 
+        return result;
     }
     
     /**
@@ -31,6 +38,8 @@ public class FrameObjectFactory {
      * Not implemented.
      */
     public void returnFreeFrame(FrameObject frame) {
+        frame.fastLinkTo(pool);
+        pool = frame;
     }
 }
 

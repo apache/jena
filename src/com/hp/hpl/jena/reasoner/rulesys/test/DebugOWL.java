@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.13 2003-07-17 11:01:19 der Exp $
+ * $Id: DebugOWL.java,v 1.14 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,9 +21,11 @@ import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.implb.FBLPRuleReasoner;
 //import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 import org.apache.log4j.Logger;
+import java.util.*;
 
 /**
  * Test harnness for investigating OWL reasoner correctness and performance
@@ -31,7 +33,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-07-17 11:01:19 $
+ * @version $Revision: 1.14 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class DebugOWL {
 
@@ -55,7 +57,7 @@ public class DebugOWL {
     
     /** Instance properties */
     Node[] properties;
-    
+        
     /** log4j logger*/
     static Logger logger = Logger.getLogger(DebugOWL.class);
     
@@ -76,6 +78,9 @@ public class DebugOWL {
     
     /** reasoner config: experimental OWL */
     public static final int OWLExpt = 6;
+    
+    /** reasoner config: LP RDFS exp */
+    public static final int RDFSLPExpt = 7;
     
     
     /**
@@ -123,6 +128,16 @@ public class DebugOWL {
             case OWLExpt:
                 reasoner = OWLExptRuleReasonerFactory.theInstance().create(null);
 //                ((OWLExptRuleReasoner)reasoner).setTraceOn(true);
+                break;
+            
+            case RDFSLPExpt:
+                try {
+                    List rules = Rule.parseRules(Util.loadResourceFile("etc/expt.rules"));
+                    reasoner = new FBLPRuleReasoner(rules);
+                } catch (IOException e) {
+                    System.out.println("Failed to open rules file: " + e);
+                    System.exit(1);
+                }
                 break;
             
         } 
@@ -281,9 +296,9 @@ public class DebugOWL {
         runVolz(3,5,10, false);
         runVolz(4,5,10, false);
         runVolz(5,5,10, false);
-        runVolz(3,5,30, false);
-        runVolz(4,5,30, false);
-        runVolz(5,5,30, false);
+//        runVolz(3,5,30, false);
+//        runVolz(4,5,30, false);
+//        runVolz(5,5,30, false);
 //        run(3,5,10, true);
 //        run(4,5,10, true);
 //        run(5,5,10, true);
@@ -308,7 +323,7 @@ public class DebugOWL {
             String food = "file:testing/reasoners/bugs/food.owl";
 
             // Example from ontology development which takes s rather than ms            
-            new DebugOWL(OWLExpt).listClassesOn(dataFile2);
+//            new DebugOWL(OWLExpt).listClassesOn(dataFile2);
             
             // owl.owl goes into meltdown with even the forward rules
 //            new DebugOWL(OWLFB).run(schemaFile);
@@ -319,10 +334,12 @@ public class DebugOWL {
 //            new DebugOWL(OWLExpt).runVolz();
             
             // Test volz examples on RDFS config
-//            System.out.println("Volz tests on RDFSRule");
-//            new DebugOWL(RDFSExpt).runVolz();
-//            System.out.println("Volz tests on expt, not tgc just type rules");
-//            new DebugOWL(EXPT).runVolz();
+            System.out.println("Volz tests on RDFSRule");
+            new DebugOWL(RDFSExpt).runVolz();
+            System.out.println("Volz tests on expt, not tgc just type rules");
+            new DebugOWL(EXPT).runVolz();
+            System.out.println("Volz tests on lp variant of expt, not tgc just type rules");
+            new DebugOWL(RDFSLPExpt).runVolz();
                         
 //            DebugOWL tester = new DebugOWL(OWLFB);
 //            tester.load(dataFile2);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FrameObject.java,v 1.3 2003-07-23 16:24:17 der Exp $
+ * $Id: FrameObject.java,v 1.4 2003-08-03 09:39:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -14,22 +14,25 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * we might want to allocate from a pool in the future.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-23 16:24:17 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-03 09:39:18 $
  */
 public class FrameObject {
 
     /** Used to link the frame to the prior frame in the (tree) stack or the pool */
     FrameObject link;
     
-    /** The parent factory to which free frames can be returned */
-    protected FrameObjectFactory factory;
+//    /** Reference counter */
+//    int refCount = 0;
+    
+//    /** The parent factory to which free frames can be returned */
+//    protected FrameObjectFactory factory;
     
     /** 
      * Constructor The parent factory to which free frames can be returned
      * @param factory 
      */
     public FrameObject(FrameObjectFactory factory) {
-        this.factory = factory;
+//        this.factory = factory;
     }
     
     /**
@@ -38,6 +41,7 @@ public class FrameObject {
      */
     public void linkTo(FrameObject prior) {
         link = prior;
+//        if (prior != null) prior.incRefCount();
     }
     
     /**
@@ -54,13 +58,25 @@ public class FrameObject {
         return link;
     }
     
+    
+//    /**
+//     * Increment the reference count.
+//     */
+//    public void incRefCount() {
+//        refCount++;
+//    }
+    
     /**
      * Close the frame actively. This frees any internal resources, frees this frame and
      * frees the frame to which this is linked.
      */
     public void close() {
-        if (link != null) link.close();
-        free();
+//        if (--refCount == 0) {
+//            if (link != null) {
+//                link.close();
+//            }
+//            free();
+//        }
     }
     
     /**
@@ -68,7 +84,7 @@ public class FrameObject {
      * reclaimed by garbage collection anyway. Not implemented.
      */
     public void free() {
-        factory.returnFreeFrame(this);
+//        factory.returnFreeFrame(this);
     }
     
 }
