@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.2 2003-02-20 10:57:13 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.3 2003-02-20 16:50:45 bwm Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -23,6 +23,7 @@ public class TestPackage extends TestSuite {
     private TestPackage() {
         super("Model");
         addTest( "TestModel", TestModelFactory.suite() );
+        addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
         addTest( "TestModelPolymorphism", TestModelPolymorphism.suite() );
         addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
         }

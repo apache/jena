@@ -52,8 +52,8 @@ package com.hp.hpl.jena.rdf.model;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.1.1.1 $'
-            Date='$Date: 2002-12-19 19:17:48 $'
+            Revision='$Revision: 1.2 $'
+            Date='$Date: 2003-02-20 16:48:30 $'
  */
 public interface ModelCon {
 
@@ -712,6 +712,152 @@ public interface ModelCon {
  * @throws RDFException Generic RDF Exception
  */ 
     Model remove(Model m) throws RDFException;
+
+/** Find all the statements matching a pattern.
+ * <p>Return an iterator over all the statements in a model
+ *  that match a pattern.  The statements selected are those
+ *  whose subject matches the <code>subject</code> argument,
+ *  whose predicate matches the <code>predicate</code> argument
+ *  and whose object matchesthe <code>object</code> argument.
+ *  If an argument is <code>null</code> it matches anything.</p>
+ * @return an iterator over the subjects
+ * @param subject   The subject sought
+ * @param predicate The predicate sought
+ * @param object    The value sought
+ * @throws RDFException Generic RDF Exception
+ */ 
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                RDFNode  object)
+                                           throws RDFException;
+
+/** Find all the statements matching a pattern.
+ * <p>Return an iterator over all the statements in a model
+ *  that match a pattern.  The statements selected are those
+ *  whose subject matches the <code>subject</code> argument,
+ *  whose predicate matches the <code>predicate</code> argument
+ *  and whose object matchesthe <code>object</code> argument.
+ *  If an argument is <code>null</code> it matches anything.</p>
+ * @return an iterator over the subjects
+ * @param subject   The subject sought
+ * @param predicate The predicate sought
+ * @param object    The value sought
+ * @throws RDFException Generic RDF Exception
+ */ 
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                boolean object)
+                                           throws RDFException;
+
+/** Find all the statements matching a pattern.
+ * <p>Return an iterator over all the statements in a model
+ *  that match a pattern.  The statements selected are those
+ *  whose subject matches the <code>subject</code> argument,
+ *  whose predicate matches the <code>predicate</code> argument
+ *  and whose object matchesthe <code>object</code> argument.
+ *  If an argument is <code>null</code> it matches anything.</p>
+ * @return an iterator over the subjects
+ * @param subject   The subject sought
+ * @param predicate The predicate sought
+ * @param object    The value sought
+ * @throws RDFException Generic RDF Exception
+ */ 
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                long     object)
+                                           throws RDFException;
+
+/** Find all the statements matching a pattern.
+ * <p>Return an iterator over all the statements in a model
+ *  that match a pattern.  The statements selected are those
+ *  whose subject matches the <code>subject</code> argument,
+ *  whose predicate matches the <code>predicate</code> argument
+ *  and whose object matchesthe <code>object</code> argument.
+ *  If an argument is <code>null</code> it matches anything.</p>
+ * @return an iterator over the subjects
+ * @param subject   The subject sought
+ * @param predicate The predicate sought
+ * @param object    The value sought
+ * @throws RDFException Generic RDF Exception
+ */ 
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                char    object)
+                                           throws RDFException;
+
+/** Find all the statements matching a pattern.
+ * <p>Return an iterator over all the statements in a model
+ *  that match a pattern.  The statements selected are those
+ *  whose subject matches the <code>subject</code> argument,
+ *  whose predicate matches the <code>predicate</code> argument
+ *  and whose object matchesthe <code>object</code> argument.
+ *  If an argument is <code>null</code> it matches anything.</p>
+ * @return an iterator over the subjects
+ * @param subject   The subject sought
+ * @param predicate The predicate sought
+ * @param object    The value sought
+ * @throws RDFException Generic RDF Exception
+ */ 
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                float    object)
+                                           throws RDFException;
+
+/** Find all the statements matching a pattern.
+ * <p>Return an iterator over all the statements in a model
+ *  that match a pattern.  The statements selected are those
+ *  whose subject matches the <code>subject</code> argument,
+ *  whose predicate matches the <code>predicate</code> argument
+ *  and whose object matchesthe <code>object</code> argument.
+ *  If an argument is <code>null</code> it matches anything.</p>
+ * @return an iterator over the subjects
+ * @param subject   The subject sought
+ * @param predicate The predicate sought
+ * @param object    The value sought
+ * @throws RDFException Generic RDF Exception
+ */ 
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                double  object)
+                                           throws RDFException;
+
+/** Find all the statements matching a pattern.
+ * <p>Return an iterator over all the statements in a model
+ *  that match a pattern.  The statements selected are those
+ *  whose subject matches the <code>subject</code> argument,
+ *  whose predicate matches the <code>predicate</code> argument
+ *  and whose object matchesthe <code>object</code> argument.
+ *  If an argument is <code>null</code> it matches anything.</p>
+ * @return an iterator over the subjects
+ * @param subject   The subject sought
+ * @param predicate The predicate sought
+ * @param object    The value sought
+ * @throws RDFException Generic RDF Exception
+ */ 
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                String   object)
+                                           throws RDFException;
+
+/** Find all the statements matching a pattern.
+ * <p>Return an iterator over all the statements in a model
+ *  that match a pattern.  The statements selected are those
+ *  whose subject matches the <code>subject</code> argument,
+ *  whose predicate matches the <code>predicate</code> argument
+ *  and whose object matchesthe <code>object</code> argument.
+ *  If an argument is <code>null</code> it matches anything.</p>
+ * @return an iterator over the subjects
+ * @param subject   The subject sought
+ * @param predicate The predicate sought
+ * @param object    The value sought
+ * @param lang      The lang code ofthe string.
+ * @throws RDFException Generic RDF Exception
+ */ 
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                String   object,
+                                String   lang)
+                                           throws RDFException;
 
 /** List all subjects with a given property and property value
  * @return an iterator over the subjects

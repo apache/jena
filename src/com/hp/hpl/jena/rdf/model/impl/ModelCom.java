@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-02-20 10:57:13 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-02-20 16:48:54 $'
  */
 
 import com.hp.hpl.jena.mem.*;
@@ -395,6 +395,71 @@ abstract public class ModelCom extends EnhGraph
         } finally {
             iter.close();
         }
+    }
+    
+    public StmtIterator listStatements(Resource subject,
+                                        Property predicate,
+                                        RDFNode  object)
+      throws RDFException {
+        return listStatements(
+                  new SimpleSelector(subject, predicate, object));
+    }
+    
+    public StmtIterator listStatements(Resource subject,
+                                        Property predicate,
+                                        boolean object)
+      throws RDFException {
+        return listStatements(
+                  new SimpleSelector(subject, predicate, object));
+    }
+    
+    public StmtIterator listStatements(Resource subject,
+                                        Property predicate,
+                                        long    object)
+      throws RDFException {
+        return listStatements(
+                  new SimpleSelector(subject, predicate, object));
+    }
+    
+    public StmtIterator listStatements(Resource subject,
+                                        Property predicate,
+                                        char  object)
+      throws RDFException {
+        return listStatements(
+                  new SimpleSelector(subject, predicate, object));
+    }
+    
+    public StmtIterator listStatements(Resource subject,
+                                        Property predicate,
+                                        float   object)
+      throws RDFException {
+        return listStatements(
+                  new SimpleSelector(subject, predicate, object));
+    }
+    
+    public StmtIterator listStatements(Resource subject,
+                                        Property predicate,
+                                        double  object)
+      throws RDFException {
+        return listStatements(
+                  new SimpleSelector(subject, predicate, object));
+    }
+    
+    public StmtIterator listStatements(Resource subject,
+                                        Property predicate,
+                                        String   object)
+      throws RDFException {
+        return listStatements(
+                  new SimpleSelector(subject, predicate, object));
+    }
+    
+    public StmtIterator listStatements(Resource subject,
+                                        Property predicate,
+                                        String   object,
+                                        String   lang)
+      throws RDFException {
+        return listStatements(
+                  new SimpleSelector(subject, predicate, object, lang));
     }
     
     public ResIterator listSubjectsWithProperty(Property p, boolean o)
