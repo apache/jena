@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.24 2003-09-09 14:47:49 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.25 2003-09-24 11:29:32 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -56,29 +56,48 @@ import org.apache.log4j.Logger;
  * <li>errorHandler
  * </ul>
  *
- * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2003-09-09 14:47:49 $'
+ * @author  jjcnee
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2003-09-24 11:29:32 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
 	protected static Logger logger = Logger.getLogger(BaseXMLWriter.class);
+    
 	static {
 		ARP.initEncoding();
 	}
+    
     String attributeQuoteChar ="\"";
+    
     String q(String s) {
         return attributeQuoteChar +s + attributeQuoteChar;
     }
+    
     String qq(String s) {
         return q(Util.substituteStandardEntities(s));
     }
+
+    /**
+        true means all namespaces defined in the model prefixes will be noted in xmlns
+        declarations; false means only "required" ones will be noted. Hook for configuration.
+        It's up here so that the next maintainer has a fighting chance of finding it. 
+    */
+    private boolean writingAllModelPrefixNamespaces = true;
+        
 	private Relation nameSpaces = new Relation();
+    
 	private Map ns;
+    
 	static private Set badRDF = new HashSet();
+    
 	int count;
+    
 	static String RDFNS = RDF.getURI();
+    
 	static private Perl5Matcher matcher = new Perl5Matcher();
+    
 	static private Pattern jenaNamespace;
+    
 	static {
 		try {
 			jenaNamespace =
@@ -100,15 +119,22 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	String xmlBase = null;
+    
 	boolean longId = false;
+    
 	boolean allowBadURIs = false;
+    
 	int tab = 2;
+    
 	int width = 60;
 
 	HashMap anonMap = new HashMap();
+    
 	int anonCount = 0;
+    
 	static private RDFDefaultErrorHandler defaultErrorHandler =
 		new RDFDefaultErrorHandler();
+        
 	RDFErrorHandler errorHandler = defaultErrorHandler;
 
 	//Map nameSpacePrefices = new HashMap();
@@ -123,6 +149,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		nameSpaces.set11(VCARD.getURI(), "vcard");
 		nameSpaces.set11("http://www.w3.org/2002/07/owl#", "owl");
 	}
+    
 	/*
 	 * There are two sorts of id's for anonymous resources.  Short id's are the
 	 * default, but require a mapping table.  The mapping table means that
@@ -170,60 +197,60 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			return escapedId(rid);
 		}
 	}
+    
 	private Set namespacesNeeded;
+    
 	void addNameSpace(String uri) {
 		namespacesNeeded.add(uri);
 	}
+    
+    private void addNameSpaces( Model model )  {
+        NsIterator nsIter = model.listNameSpaces();
+        while (nsIter.hasNext()) this.addNameSpace( nsIter.nextNs() );
+    }
+    
 	void workOutNamespaces() {
-		if (ns != null)
-			return;
-		ns = new HashMap();
-		Set used = new HashSet(); // prefixes used.
-		Iterator it = namespacesNeeded.iterator();
-
-		// Each uri may be set as a system property,
-		// if so use those.
-		while (it.hasNext()) {
-			String uri = (String) it.next();
-			String val = Util.getProperty(RDFWriter.NSPREFIXPROPBASE + uri);
-			if (val != null && checkPrefix(val) && !used.contains(val)) {
-				ns.put(uri, val);
-				used.add(val);
-			}
-		}
-
-		it = namespacesNeeded.iterator();
-
-		// Repeat for those that are not system properties.
-		while (it.hasNext()) {
-			String uri = (String) it.next();
-			if (ns.containsKey(uri))
-				continue;
-			String val = null;
-			Set s = nameSpaces.forward(uri);
-			if (s != null) {
-				Iterator it2 = s.iterator();
-				if (it2.hasNext())
-					val = (String) it2.next();
-				if (used.contains(val))
-					val = null;
-			}
-			if (val == null) {
-                // just in case the prefix has already been used, look for a free one.
-                // (the usual source of such prefixes is reading in a model we wrote out earlier)
-				do { val = "j." + (count++); } while (used.contains( val ));
-			}
-			ns.put(uri, val);
-
-			used.add(val);
-		}
-	}
-	private void addNameSpaces(Model model)  {
-		NsIterator nsIter = model.listNameSpaces();
-		String uri;
-		while (nsIter.hasNext()) {
-			this.addNameSpace(nsIter.nextNs());
-		}
+		if (ns == null) {
+    		ns = new HashMap();
+    		Set used = new HashSet(); // prefixes used.
+    		Iterator it = namespacesNeeded.iterator();
+            
+    		// Each uri may be set as a system property,
+    		// if so use those.
+    		while (it.hasNext()) {
+    			String uri = (String) it.next();
+    			String val = Util.getProperty(RDFWriter.NSPREFIXPROPBASE + uri);
+    			if (val != null && checkPrefix(val) && !used.contains(val)) {
+    				ns.put(uri, val);
+    				used.add(val);
+    			}
+    		}
+    
+    		it = namespacesNeeded.iterator();
+    
+    		// Repeat for those that are not system properties.
+    		while (it.hasNext()) {
+    			String uri = (String) it.next();
+    			if (ns.containsKey(uri))
+    				continue;
+    			String val = null;
+    			Set s = nameSpaces.forward(uri);
+    			if (s != null) {
+    				Iterator it2 = s.iterator();
+    				if (it2.hasNext())
+    					val = (String) it2.next();
+    				if (used.contains(val))
+    					val = null;
+    			}
+    			if (val == null) {
+                    // just in case the prefix has already been used, look for a free one.
+                    // (the usual source of such prefixes is reading in a model we wrote out earlier)
+    				do { val = "j." + (count++); } while (used.contains( val ));
+    			}
+    			ns.put(uri, val);
+    			used.add(val);
+    		}
+        }
 	}
 
 	String xmlnsDecl() {
@@ -242,50 +269,55 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 					throw new BadURIException( "", e );
 				}
 			if (prefix.length() > 0) {
-				rslt.append(":" + prefix);
+				rslt.append( ":" ).append( prefix );
 			}
-			rslt.append("=" + qq(uri));
-
+			rslt.append( "=" ).append( qq( uri ) );
 		}
 		return rslt.toString();
 	}
 
-	boolean isDefaultNamespace(String uri) {
-		return "".equals(ns.get(uri));
+	boolean isDefaultNamespace( String uri ) {
+		return "".equals( ns.get( uri ) );
 	}
+    
 	static final private int FAST = 1;
 	static final private int START = 2;
 	static final private int END = 3;
 	static final private int ATTR = 4;
 	static final private int FASTATTR = 5;
+    
 	String rdfEl(String local) {
 		return tag(RDFNS, local, FAST, true);
 	}
+    
 	String startElementTag(String uri, String local) {
 		return tag(uri, local, START, false);
 	}
+    
 	String startElementTag(String uriref) {
 		return splitTag(uriref, START);
-
 	}
+    
 	String attributeTag(String uriref) {
 		return splitTag(uriref, ATTR);
-
 	}
+    
 	String attributeTag(String uri, String local) {
 		return tag(uri, local, ATTR, false);
-
 	}
+    
 	String rdfAt(String local) {
 		return tag(RDFNS, local, FASTATTR, true);
-
 	}
+    
 	String endElementTag(String uri, String local) {
 		return tag(uri, local, END, false);
 	}
+    
 	String endElementTag(String uriref) {
 		return splitTag(uriref, END);
 	}
+    
 	String splitTag(String uriref, int type) {
 		int split = Util.splitNamespace(uriref);
 		if (split == uriref.length())
@@ -295,7 +327,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			uriref.substring(split),
 			type,
 			true);
-	}
+    }
+    
 	static public boolean dbg = false;
     
 	String tag(String uri, String local, int type, boolean localIsQname) {
@@ -390,9 +423,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @throws IOException if an io error occurs
 	 */
 	final public void write(Model model, OutputStream out, String base)
-		 {
-		write(model, FileUtils.asUTF8(out), base);
-	}
+		 { write(model, FileUtils.asUTF8(out), base); }
     
     private void primeNamespace( Model model )
         {
@@ -404,7 +435,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             String key = (String) e.getKey();
             String value = (String) e.getValue();
             String already = this.getPrefixFor( value );
-            if (already == null) this.setNsPrefix( key, value );
+            if (already == null) 
+                { this.setNsPrefix( key, value ); 
+                if (writingAllModelPrefixNamespaces) this.addNameSpace( value ); }
             }
         }
         
@@ -416,11 +449,10 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * null</code> means use only absolute URI's.
 	 */
 	final synchronized public void write(Model baseModel, Writer out, String base)
-		 {
-        primeNamespace( baseModel );
-		//ns = new HashMap();
+		 {        
         Model model = ModelFactory.withHiddenStatements( baseModel );
 		this.namespacesNeeded = new HashSet();
+        primeNamespace( baseModel );
 		ns = null;
 		count = 0;
 		addNameSpace(RDF.getURI());
@@ -470,7 +502,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		}
 		pw.flush();
 	}
+    
 	private URI baseURI;
+    
 	private boolean checkPrefix(String prefix) {
 		if (prefix.equals(""))
 			return true;
@@ -485,8 +519,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		else
 			return true;
 		return false;
-
 	}
+    
 	final synchronized public void setNsPrefix(String prefix, String ns) {
 		if (checkPrefix(prefix)) {
 			nameSpaces.set11(ns, prefix);
@@ -670,7 +704,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			"prettyTypes is not a property on the Basic RDF/XML writer.");
 		return null;
 	}
+    
 	private Resource blockedRules[] = new Resource[0];
+    
 	Resource[] setBlockRules(Object o) {
 		Resource rslt[] = blockedRules;
 		unblockAll();
@@ -695,8 +731,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			blockRule(blockedRules[i]);
 		return rslt;
 	}
+    
 	abstract void unblockAll();
+    
 	abstract void blockRule(Resource r);
+    
 	/*
 	private boolean sameDocument = true;
 	private boolean network = false;
