@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.43 2003-08-27 20:20:22 der Exp $
+  $Id: Model.java,v 1.44 2003-09-03 13:41:05 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.43 $Date: 2003/08/27 13:05:52 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.44 $Date: 2003/08/27 20:20:22 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -197,7 +197,7 @@ public interface Model
 
 	/** 
         Create an untyped literal from a String value with a specified language. 
-	   @param v the value of the literal
+	   @param v the lexical form of the literal
 	   @param language the language associated with the literal
 	   @return a new literal representing the value v with the given language
 	 */
@@ -211,7 +211,7 @@ public interface Model
      * 
      *   Create a literal from a String value with a specified language. An existing literal
      *   of the right value may be returned, or a fresh one created. 
-     *  @param v the value of the literal
+     *  @param v the lexical form of the literal
      *  @param language the language associated with the literal
      *  @param wellFormed true if the Literal is well formed XML
      *  @return a new literal representing the value v with the given language
@@ -219,11 +219,16 @@ public interface Model
     public Literal createLiteral(String v, String language, boolean wellFormed);
 
     /** 
-        Create a literal from a String value with a specified language. An existing literal
+        Create a literal from a String value. An existing literal
         of the right value may be returned, or a fresh one created. 
-       @param v the value of the literal
-       @param wellFormed true if the Literal is well formed XML
-       @return a new literal representing the value v with the given language
+        The use of the wellFormed flag is to create typed literals of
+        type rdf:XMLLiteral, without error checking. This should
+        only be use when the lexical form is known to already be
+        in exclusive canonical XML.
+        
+       @param v the lexical form of the literal
+       @param wellFormed true if the Literal is well formed XML, in the lexical space of rdf:XMLLiteral
+       @return a new literal 
      */
     public Literal createLiteral(String v, boolean wellFormed);
 	
@@ -946,5 +951,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.43 2003-08-27 20:20:22 der Exp $
+ * $Id: Model.java,v 1.44 2003-09-03 13:41:05 jeremy_carroll Exp $
  */

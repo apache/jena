@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.8 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: LiteralLabel.java,v 1.9 2003-09-03 13:40:26 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -105,7 +105,9 @@ final public class LiteralLabel {
     }
 
     /**
-     * Build a typed literal label supplying both value and lexical form
+     * Build a typed literal label supplying both value and lexical form.
+     * The caller guarantees that the lexical form is legal, 
+     * and the value corresponds. 
      * 
      * @param lex the lexical form of the literal
      * @param value the value of the literal
@@ -130,6 +132,8 @@ final public class LiteralLabel {
     /**
      * Old style constructor. Creates either a plain literal or an
      * XMLLiteral.
+     *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
+
      */
     public LiteralLabel(String s, String lg, boolean xml) {
         this.lexicalForm = s;
@@ -137,7 +141,8 @@ final public class LiteralLabel {
         if (xml) {
             // XML Literal
             this.dtype = XMLLiteralType.theXMLLiteralType;
-            setValue(s);
+			value = s;
+			wellformed = true;
         } else {
             // Plain literal
             this.value = s;

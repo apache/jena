@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.22 2003-08-29 08:37:59 chris-dollin Exp $
+  $Id: Node.java,v 1.23 2003-09-03 13:41:06 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -116,11 +116,12 @@ public abstract class Node {
         { return create( makeVariable, "?" + name ); }
         
     /** make a literal with specified language and XMLishness.
-        _list_ must *not* be null. This intermediate implementation logs
+        _lit_ must *not* be null. This intermediate implementation logs
         a warning to allow users moving over to Jena2 to correct their
         code. When they've had the opportunity, arrange to throw an
         exception, and delete _nullLiteralsGenerateWarnings_ and
         update the regression tests as directed. 
+        @param isXml If true then lit is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
     */
     public static Node createLiteral( String lit, String lang, boolean isXml )
         {
