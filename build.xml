@@ -103,6 +103,8 @@
             <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/regression/**"/>
             <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/shared/**"/>
+            <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/test/**"/>
             <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/util/**"/>
