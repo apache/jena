@@ -27,7 +27,7 @@ import com.hp.hpl.jena.shared.*;
  * FileManger has one @link{LocatorFile} and one @link{LocatorClassLoader}.
  * 
  * A FileManager works in conjunction with a LocationMapper.  A
- * @link{LocatorMapper} is a set of alternative locations for system
+ * @link{LocationMapper} is a set of alternative locations for system
  * resources and a set of alternative prefix locations.  For example, a local
  * copy of a common RDF dataset may be used whenever the usual URL is used by
  * the application.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.1 2004-08-31 09:49:50 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.2 2004-09-01 08:57:00 andy_seaborne Exp $
  */
  
 public class FileManager
