@@ -11,7 +11,7 @@ are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
 This release does not support persistence of RDF data whther relational
 databases or BerlekleyDB databases.
 
-For guidance on porting code from Jena 1, see docs/migrating1-2.html
+For guidance on porting code from Jena 1, see doc/migrating1-2.html
 
 In this release:
 
@@ -28,3 +28,21 @@ RDQL:
 N3:
 + support for datatypes and language tags on literals based on
   the N-Triples syntax.  e.g. "123"^^xsd:integer
+
+I/O:
++ Lots of bug fixes.
++ Character encoding bug fixes, see the section
+  "Rush Guide - Jena1 Migration (Must Read)" 
+  in doc/IO/iohowto.html
+  Jena2 I/O subsystem uses InputStream's and OutputStream's where 
+  Jena1 used Reader's and Writer's.
++ The RDF/XML Writers now behave more uniformly and can be
+  controlled much better.
++ Improved documentation for both basic and advanced I/O in Jena2
+  is provided in doc/IO/iohowto.html
++ ARP reflects latest WG decisions (including Last Call
+  issue resolutions)
+
+
+
+

@@ -10,7 +10,9 @@
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
 		<h1 style="text-align: center; line-height: 18pt">Migrating from Jena1  to Jena 2</h1>
 		<p>Jena 2 supports the Jena 1 API. However a number of changes have been made that will cause existing code not to run out of the box. The Jena team expect that there will be tools to help with the migration of Jena 1 code, but they don't exist yet, as we are not encouraging folks to migrate.</p>
-		<p>The changes are conceptually minor, mostly just renaming things into a more sensible pattern.</p>
+		<p>The changes are conceptually minor, mostly just renaming things into a more sensible pattern.
+                   A single exception is a bug fix on the I/O API.
+                </p>
 		<h2>What Must be changed:</h2>
 		<h3>package renaming:</h3>
 		<ul>
@@ -25,6 +27,17 @@
 		<ul>
 			<li>which means the .next() method returns an Object rather than a typed object.  You need to either cast the return from the .next() method to the appropriate type or use the .next<i>Type</i>() (where <i>Type</i> is Resource, Literal, Ns, RDFNode or Statement depending on the iterator) to avoid casting.</li>
 		</ul>
+		<h3>I/O bug fix</h3>
+		<ul>
+			<li>java.io.Reader -&gt; java.io.InputStream etc.</li>
+			<li>java.io.Writer -&gt; java.io.OutputStream etc.</li>
+		</ul>
+                <p>Changes in the RDF/XML parser now mean that (the frequent)
+                character encoding problems related to use of java.io.FileReader
+                are reported. Changes in the RDF/XML output means that the
+                not-so-very-portable character encoding used in a java.io.FileWriter
+                is explicit in the XML document. See <a href="IO/iohowto.html#rush">the IO mini HowTo</a>
+                for more explanation.</p>
 		<h2>What Should be Changed</h2>
 		<h3>new SimpleSelector</h3>
 		<ul>
