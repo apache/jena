@@ -1,8 +1,8 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003    
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.14 2003-04-08 14:15:02 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.15 2003-05-04 16:04:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -28,9 +28,9 @@ import java.util.*;
 import java.io.*;
 import com.hp.hpl.jena.util.TestLogger;
 
-/** 
+/**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2003-04-08 14:15:02 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2003-05-04 16:04:46 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -65,6 +65,7 @@ public class TestXMLFeatures extends TestCase {
 		Model m1 = new ModelMem();
 		m1.read(new FileInputStream(fileName), "");
 		assertTrue("Use of FileWriter", m.isIsomorphicWith(m1));
+		f.delete();
 	}
 	public void testXMLBase() throws IOException, MalformedPatternException {
 		check(file1, //any will do
@@ -411,7 +412,7 @@ public class TestXMLFeatures extends TestCase {
                 writer.setProperty("blockrules", "section-Reification");
             }
             }, base);
-        
+
     }
     public void testNoStripes()
         throws IOException, MalformedPatternException {
@@ -620,7 +621,7 @@ public class TestXMLFeatures extends TestCase {
 	static final int NoError = 0;
 	static final int ExtraTriples = 2;
 	static final int BadURI = 3;
-    
+
 	public void checkPropURI(String s, String p, Object val, int behaviour)
 		throws IOException {
 		// create triple and graph.
@@ -710,8 +711,8 @@ public class TestXMLFeatures extends TestCase {
     /*
     public void testBadProperty2() throws IOException {
         checkPropURI("http:/a.b/", "brickley", "http://example.org/b#", ExtraTriples);
-    } 
-    */  
+    }
+    */
 	public void testRelativeAPI() {
 		RDFWriter w = new ModelMem().getWriter(lang);
 		String old = (String) w.setProperty("relativeURIs", "");
@@ -1051,5 +1052,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.14 2003-04-08 14:15:02 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.15 2003-05-04 16:04:46 chris-dollin Exp $
  */
