@@ -1,36 +1,35 @@
 /*
- *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
- *  All rights reserved.
- *
+ * (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP All rights
+ * reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
-   *$Id: ARPFilter.java,v 1.13 2003-12-05 14:47:03 jeremy_carroll Exp $
-   
-   AUTHOR:  Jeremy J. Carroll
-*/
+ * modification, are permitted provided that the following conditions are met: 1.
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. 2. Redistributions in
+ * binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other
+ * materials provided with the distribution. 3. The name of the author may not
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * $Id: ARPFilter.java,v 1.14 2003-12-05 17:46:34 jeremy_carroll Exp $
+ * 
+ * AUTHOR: Jeremy J. Carroll
+ */
 /*
  * ARPFilter.java
- *
+ * 
  * Created on June 21, 2001, 10:01 PM
  */
 
@@ -58,8 +57,9 @@ import java.io.*;
 import org.apache.xerces.util.EncodingMap;
 
 /**
-    updates by kers to handle exporting namespace prefix maps.
- * @author  jjc
+ * updates by kers to handle exporting namespace prefix maps.
+ * 
+ * @author jjc
  */
 class ARPFilter
 	extends XMLFilterImpl
@@ -82,41 +82,46 @@ class ARPFilter
 		rdr.setErrorHandler(this);
 		setErrorHandler(new DefaultErrorHandler());
 	}
-    
-    /**
-        we store all the prefix mappings that are seen during the parse.
-        Each prefix is mapped to the *set* of all its bindings. In the nice case,
-        prefixes that are present will be bound to singleton sets.
-    */
-    private Map prefixMap = new HashMap();
-    
-    /**
-        over-ridden from XMLFilterImpl: catch a namespace prefix mapping
-        as it goes past.
-        
-        @param prefix the name of the prefix (ie the X in xmlns:X=U)
-        @param uri the uri string (ie the U)
-    */
-    public void startPrefixMapping (String prefix, String uri) throws SAXException
-        {
-        super.startPrefixMapping( prefix, uri );
-        Set uris = (Set) prefixMap.get( prefix );
-        if (uris == null) { uris = new HashSet(); prefixMap.put( prefix, uris ); }
-        uris.add( uri );
-        }
-        
-    /**
-        add the prefixes we have remembered to a supplied map x.
-        This way we don't expose our internal map to updates.
-        
-        @param x the map to be updated
-        @return the updated map
-    */
-    public Map getPrefixes( Map x )
-        { 
-        x.putAll( prefixMap ); 
-        return x;
-        }
+
+	/**
+	 * we store all the prefix mappings that are seen during the parse. set* of
+	 * all its bindings. In the nice case, prefixes that are present will be
+	 * bound to singleton sets.
+	 */
+	private Map prefixMap = new HashMap();
+
+	/**
+	 * over-ridden from XMLFilterImpl: catch a namespace prefix mapping as it
+	 * goes past.
+	 * 
+	 * @param prefix
+	 *            the name of the prefix (ie the X in xmlns:X=U)
+	 * @param uri
+	 *            the uri string (ie the U)
+	 */
+	public void startPrefixMapping(String prefix, String uri)
+		throws SAXException {
+		super.startPrefixMapping(prefix, uri);
+		Set uris = (Set) prefixMap.get(prefix);
+		if (uris == null) {
+			uris = new HashSet();
+			prefixMap.put(prefix, uris);
+		}
+		uris.add(uri);
+	}
+
+	/**
+	 * add the prefixes we have remembered to a supplied map x. This way we
+	 * don't expose our internal map to updates.
+	 * 
+	 * @param x
+	 *            the map to be updated
+	 * @return the updated map
+	 */
+	public Map getPrefixes(Map x) {
+		x.putAll(prefixMap);
+		return x;
+	}
 
 	void userWarning(ParseException e) throws SAXException {
 		getErrorHandler().warning(e.rootCause());
@@ -128,10 +133,9 @@ class ARPFilter
 			getErrorHandler().error(e.rootCause());
 	}
 	/*
-	void userFatalError(SAXParseException e) throws SAXException {
-	    getErrorHandler().fatalError(e);
-	}
-	*/
+	 * void userFatalError(SAXParseException e) throws SAXException {
+	 * getErrorHandler().fatalError(e); }
+	 */
 	static private class MySAXParser extends SAXParser {
 		MySAXParser(StandardParserConfiguration c) {
 			super(c);
@@ -146,15 +150,12 @@ class ARPFilter
 			super.xmlDecl(version, encoding, standalone, augs);
 		}
 		/*
-		public void startDocument(XMLLocator locator,
-		                          java.lang.String encoding,
-		                          NamespaceContext namespaceContext,
-		                          Augmentations augs) {
-		     a.setEncoding(encoding);
-		     super.startDocument(locator,encoding,namespaceContext,augs);
-		                          }                      
-		                          
-		*/
+		 * public void startDocument(XMLLocator locator, java.lang.String
+		 * encoding, NamespaceContext namespaceContext, Augmentations augs) {
+		 * a.setEncoding(encoding);
+		 * super.startDocument(locator,encoding,namespaceContext,augs); }
+		 *  
+		 */
 	}
 	static ARPFilter create() {
 		StandardParserConfiguration c = new StandardParserConfiguration();
@@ -190,7 +191,8 @@ class ARPFilter
 				readerXMLEncoding = EncodingMap.getJava2IANAMapping(enc);
 				if (readerXMLEncoding == null)
 					readerXMLEncoding = enc;
-				//     System.err.println("readerXMLEncoding = " + readerXMLEncoding);
+				//     System.err.println("readerXMLEncoding = " +
+				// readerXMLEncoding);
 			}
 			return new XMLInputSource(publicID, systemID, systemID, rdr, null);
 		}
@@ -199,11 +201,11 @@ class ARPFilter
 	boolean parseSome() {
 		try {
 			return pullParser.parse(false);
-		} catch (UTFDataFormatException e) { 
-		    generalError(ERR_UTF_ENCODING,  e);
-		    return false;
-	    }  catch (IOException e) {
-		    generalError(ERR_GENERIC_IO,  e);
+		} catch (UTFDataFormatException e) {
+			generalError(ERR_UTF_ENCODING, e);
+			return false;
+		} catch (IOException e) {
+			generalError(ERR_GENERIC_IO, e);
 			return false;
 		} catch (DontDieYetException e) {
 			return false;
@@ -235,15 +237,12 @@ class ARPFilter
 						+ e
 						+ "]");
 				encodingProblems = true;
-                /*
-				if ((readerXMLEncoding.indexOf("IBM") != -1)
-					!= (xmlEncoding.indexOf("IBM") != -1)) {
-					this.putWarning(
-						ERR_ENCODING_MISMATCH,
-						new Location(locator),
-						"IBM encodings may be wholly incompatible with non-IBM encodings.");
-				}
-*/
+				/*
+				 * if ((readerXMLEncoding.indexOf("IBM") != -1) !=
+				 * (xmlEncoding.indexOf("IBM") != -1)) { this.putWarning(
+				 * ERR_ENCODING_MISMATCH, new Location(locator), "IBM encodings
+				 * may be wholly incompatible with non-IBM encodings."); }
+				 */
 			}
 		}
 	}
@@ -251,8 +250,8 @@ class ARPFilter
 		return pipe == null ? null : pipe.getLocator();
 	}
 	synchronized public void parse(InputSource input)
-	 throws IOException, SAXException  {
-		parse(input,input.getSystemId() );
+		throws IOException, SAXException {
+		parse(input, input.getSystemId());
 	}
 	synchronized public void parse(InputSource input, String base)
 		throws IOException, SAXException {
@@ -262,19 +261,21 @@ class ARPFilter
 		//String base = input.getSystemId();
 		if (base == null) {
 			warning(
-			    IGN_NO_BASE_URI_SPECIFIED,
+				IGN_NO_BASE_URI_SPECIFIED,
 				"Base URI not specified for input file; local URI references will be in error.");
-		    documentContext = new XMLNullContext(this, ERR_RESOLVING_URI_AGAINST_NULL_BASE);
+			documentContext =
+				new XMLNullContext(this, ERR_RESOLVING_URI_AGAINST_NULL_BASE);
 
-		} else if ( base.equals("")) {
+		} else if (base.equals("")) {
 			warning(
-							IGN_NO_BASE_URI_SPECIFIED,
-							"Base URI specified as \"\"; local URI references will not be resolved.");
-						documentContext = new XMLNullContext(this, WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
+				IGN_NO_BASE_URI_SPECIFIED,
+				"Base URI specified as \"\"; local URI references will not be resolved.");
+			documentContext =
+				new XMLNullContext(this, WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
 		} else {
 			base = ParserSupport.truncateXMLBase(base);
 
-		   documentContext = new XMLContext(base);
+			documentContext = new XMLContext(base);
 		}
 		// Start the RDFParser
 		pipe = new TokenPipe(this);
@@ -303,6 +304,23 @@ class ARPFilter
 		}
 
 	}
+	// Add scope handler
+	ExtendedHandler setExtendedHandler(ExtendedHandler sh) {
+		ExtendedHandler old = scopeHandler;
+		scopeHandler = sh;
+		return old;
+	}
+	ExtendedHandler scopeHandler = new ExtendedHandler() {
+
+		public void endBNodeScope(AResource bnode) {
+		}
+
+		public void startRDF() {
+		}
+
+		public void endRDF() {
+		}
+	};
 
 	StatementHandler setStatementHandler(StatementHandler sh) {
 		StatementHandler old = statementHandler;
@@ -368,31 +386,13 @@ class ARPFilter
 	}
 	// The order of these must match their occurrence in grammar rules.
 	static private String specialAtts[] =
-		{
-			"base",
-			"lang",
-			"space",
-			"ID",
-			"about",
-			"nodeID",
-			"resource",
+		{ "base", "lang", "space", "ID", "about", "nodeID", "resource",
 		//	"bagID",
-			"parseType",
-			"datatype",
-			"type" };
+		"parseType", "datatype", "type" };
 	static private String specialNameSpaces[] =
-		{
-			xmlns,
-			xmlns,
-			xmlns,
-			rdfns,
-			rdfns,
-			rdfns,
+		{ xmlns, xmlns, xmlns, rdfns, rdfns, rdfns,
 		//	rdfns,
-			rdfns,
-			rdfns,
-			rdfns,
-			rdfns };
+		rdfns, rdfns, rdfns, rdfns };
 	//  static private int A_XMLSPACE = -1;
 	static private int specialAttValues[] =
 		{
@@ -404,27 +404,24 @@ class ARPFilter
 			A_NODEID,
 			A_RESOURCE,
 		//	A_BAGID,
-			A_PARSETYPE,
-			A_DATATYPE,
-			A_TYPE,
-			};
+		A_PARSETYPE, A_DATATYPE, A_TYPE, };
 
 	private void warning(int id, String s) {
 		try {
-			switch(errorMode[id]) {
-				case EM_IGNORE:
-				break;
-				case EM_WARNING:
-				 getErrorHandler().warning(new ParseException(id, s));
-				 break;
-				case EM_ERROR:
-				 getErrorHandler().error(new ParseException(id, s));
-				 break;
-				case EM_FATAL:
-				 getErrorHandler().fatalError(new ParseException(id, s));
-				 break;
+			switch (errorMode[id]) {
+				case EM_IGNORE :
+					break;
+				case EM_WARNING :
+					getErrorHandler().warning(new ParseException(id, s));
+					break;
+				case EM_ERROR :
+					getErrorHandler().error(new ParseException(id, s));
+					break;
+				case EM_FATAL :
+					getErrorHandler().fatalError(new ParseException(id, s));
+					break;
 			}
-				 
+
 		} catch (SAXException e) {
 			throw new WrappedException(e);
 		}
@@ -463,8 +460,8 @@ class ARPFilter
 				warning = error = EM_FATAL;
 				break;
 		}
-        for (int i = 100; i < 200; i++)
-            setErrorMode(i,error);
+		for (int i = 100; i < 200; i++)
+			setErrorMode(i, error);
 		// setErrorMode(IGN_XMLBASE_USED,warning);
 		// setErrorMode(IGN_XMLBASE_SIGNIFICANT,error);
 		setErrorMode(WARN_MINOR_INTERNAL_ERROR, warning);
@@ -479,7 +476,7 @@ class ARPFilter
 		setErrorMode(WARN_RDF_NN_AS_TYPE, nonErrorMode);
 		setErrorMode(WARN_UNKNOWN_RDF_ELEMENT, warning);
 		setErrorMode(WARN_UNKNOWN_RDF_ATTRIBUTE, warning);
-        setErrorMode(WARN_UNQUALIFIED_RDF_ATTRIBUTE, warning);
+		setErrorMode(WARN_UNQUALIFIED_RDF_ATTRIBUTE, warning);
 		setErrorMode(WARN_UNKNOWN_XML_ATTRIBUTE, nonErrorMode);
 		// setErrorMode(WARN_QNAME_AS_ID, error);
 		//      setErrorMode(WARN_BAD_XML, error);
@@ -857,9 +854,9 @@ class ARPFilter
 		saxError(ERR_SAX_FATAL_ERROR, e);
 		throw new DontDieYetException();
 	}
-	private void generalError(int i,Exception e) {
+	private void generalError(int i, Exception e) {
 		Location where = new Location(locator);
-     //   System.err.println(e.getMessage());
+		//   System.err.println(e.getMessage());
 		pipe.putNextToken(new ExceptionToken(i, where, e));
 
 	}

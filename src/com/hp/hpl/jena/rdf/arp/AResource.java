@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: AResource.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: AResource.java,v 1.3 2003-12-05 17:46:34 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -53,7 +53,7 @@ public interface AResource {
      */
 /** A string distinguishing this anonymous resource, from other anonymous resources.
  * Not defined if <CODE>isAnonymous()</CODE> returns false.
- * @return A gensym String.
+ * @return A gensym String starting "ARP:" or the value of rdf:nodeID.
  */    
     public String getAnonymousID();
     /*  Undefined results (including an exception) if isAnonymous().
@@ -76,6 +76,11 @@ public interface AResource {
  * @param d A user data object which may be retrieved later with getUserData.
  */    
      public void setUserData(Object d);
+     /**
+      * 
+      * @return True, if this is an anonymous resource with an explicit rdf:nodeID
+      */
+     public boolean hasNodeID();
 
 }
 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.5 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: URIReference.java,v 1.6 2003-12-05 17:46:34 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -98,4 +98,10 @@ class URIReference  implements AResource
     public int hashCode() {
         return uri.hashCode();
     }
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.rdf.arp.AResource#hasNodeID()
+	 */
+	public boolean hasNodeID() {
+		return false;
+	}
 }

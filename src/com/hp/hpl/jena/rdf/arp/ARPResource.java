@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.4 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: ARPResource.java,v 1.5 2003-12-05 17:46:34 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -245,7 +245,7 @@ class ARPResource implements  AResource {
     
     public String getAnonymousID() {
         return nodeID==null
-                ? ( "ARP" + Integer.toString(genId) )
+                ? ( "ARP:" + Integer.toString(genId) )
                 : nodeID;
     }
     
@@ -297,5 +297,12 @@ class ARPResource implements  AResource {
         else
             arp.setUserData(nodeID,d);
     }
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.rdf.arp.AResource#hasNodeID()
+	 */
+	public boolean hasNodeID() {
+		return nodeID!=null;
+	}
     
 }
