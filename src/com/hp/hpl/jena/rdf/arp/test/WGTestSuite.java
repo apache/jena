@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.20 2003-11-07 23:44:55 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.21 2003-11-08 17:59:41 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -16,6 +16,7 @@ import java.util.*;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.shared.wg.*;
 import com.hp.hpl.jena.shared.wg.URI;
 
@@ -349,32 +350,34 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     	 ReasoningTest(Resource r) {
     	 	super(r);
     	 }
-		protected void runTest() throws IOException {
-			 int rslt = WGReasonerTester.FAIL;
-			 try {
-			 rslt = wgReasoner.runTestDetailedResponse(testID.getURI(),
-			     RDFSRuleReasonerFactory.theInstance(),this,null);
-			 }
-			 finally {
-			    logResult(testID,rslt);
-			 }
+	 protected void runTest() throws IOException {
+	       int rslt = WGReasonerTester.FAIL;
+	       try {
+                   JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true;
+                    Resource config = ModelFactory.createDefaultModel().createResource()
+                         .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "full");
+	            rslt = wgReasoner.runTestDetailedResponse(testID.getURI(),
+	            RDFSRuleReasonerFactory.theInstance(),this,config);
+                }  finally {
+                    logResult(testID,rslt);
+	        }
 			// assertTrue(rslt>=0);
-			 
-		}
-		/* (non-Javadoc)
-		 * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#createMe()
-		 */
-		String createMe() {
-			throw new UnsupportedOperationException();
-		}
-		/* (non-Javadoc)
-		 * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#reallyRunTest()
-		 */
-		void reallyRunTest() {
-			throw new BrokenException("");
-		}
+	}
+	/* (non-Javadoc)
+         * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#createMe()
+	 */
+	String createMe() {
+		throw new UnsupportedOperationException();
+	}
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#reallyRunTest()
+	 */
+	void reallyRunTest() {
+		throw new BrokenException("");
+	}
     	 
     }
+    
     abstract class Test extends TestCase implements RDFErrorHandler {
         Resource testID;
         String createURI() {
