@@ -344,12 +344,13 @@
         </copy>
         <!-- Should all be in the lib directory -->
 
-        <!-- Documentation -->
+        <!-- Documentation : Try to be clear here -->
         <!-- Javadoc is part of the documentation directory -->
         <copy todir="${dist.dir}/${doc.dir}">
             <fileset dir="${doc.dir}">
               <include name="**"/>
-              <exclude name="*.content.html"/>
+              <exclude name="**/*.content.html"/>
+              <exclude name="template.html"/>
               <!-- Scripts -->
               <exclude name="produce"/>
               <exclude name="merge"/>
