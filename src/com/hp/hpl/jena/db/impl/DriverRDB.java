@@ -35,7 +35,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.7 $ on $Date: 2003-05-03 01:00:25 $
+* @version $Revision: 1.8 $ on $Date: 2003-05-05 11:20:29 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -90,7 +90,6 @@ public abstract class DriverRDB implements IRDBDriver {
    /** Set to true if the insert operations should be done using the "proc" versions */
    protected boolean INSERT_BY_PROCEDURE;
    
-
 // =======================================================================
 //	Common variables
 // =======================================================================
@@ -203,6 +202,12 @@ public abstract class DriverRDB implements IRDBDriver {
 
 		try {
 			m_sql.runSQLGroup("initDBtables");
+			if (!SKIP_ALLOCATE_ID) {
+				Iterator seqIt = getSequences().iterator();
+				while (seqIt.hasNext()) {
+						removeSequence((String)seqIt.next());
+				}
+			}
 			m_sql.runSQLGroup("initDBgenerators");
 			m_sql.runSQLGroup("initDBprocedures");
 		} catch (SQLException e) {
@@ -505,9 +510,66 @@ public abstract class DriverRDB implements IRDBDriver {
 			while (it.hasNext()) {
 				m_sql.runSQLGroup("dropTable", (String) it.next());
 			}
+			if (!SKIP_ALLOCATE_ID) {
+				Iterator seqIt = getSequences().iterator();
+				while (seqIt.hasNext()) {
+					removeSequence((String)seqIt.next());
+				}
+			}
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver", e1);
 		}
+	}
+	
+	/**
+	 * Removes named sequence from the database, if it exists.
+	 * @param seqName
+	 */
+	public void removeSequence(String seqName) {
+		if (sequenceExists(seqName)) {
+			try {
+				m_sql.runSQLGroup("DropSequence",seqName);
+			} catch (Exception e) {
+				Log.warning("Unable to drop sequence " + seqName + ": " + e);
+			}
+		}
+	}
+	/**
+	 * Check database and see if named sequence exists.
+	 * @param seqName
+	 */
+	public boolean sequenceExists(String seqName) {
+		Object[] args = {seqName};
+		ResultSetIterator it = null;
+		try {
+		    it = m_sql.runSQLQuery("SelectSequenceName",args);
+		} catch (Exception e) {
+		  Log.severe("Unable to select sequence " + seqName + ": " + e);
+			}
+		if (it != null) {
+			return (it.hasNext());
+		}		
+		return false;
+	}
+
+	/**
+	 * Check database and see if named sequence exists.
+	 * @param seqName
+	 */
+	public List getSequences() {
+		List results =  new ArrayList(10);
+		Object[] args = {};
+		ResultSetIterator it = null;
+		try {
+		    it = m_sql.runSQLQuery("SelectJenaSequences",args);
+		    while (it.hasNext()) {
+		    	results.add((String)it.getSingleton());
+		    }
+		    it.close();
+		} catch (Exception e) {
+		  Log.severe("Unable to select Jena sequences: " + e);
+		 }
+		return results;
 	}
 	
 	/**
@@ -601,6 +663,14 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 	}
         
+	/**
+	 * Return a string identifying underlying database type.
+	 *
+	 */
+	public String getDatabaseType() {
+		return(DATABASE_TYPE);
+	}
+
 	/**
 	 * Returns true if the underlying database supports transactions.
 	 */
