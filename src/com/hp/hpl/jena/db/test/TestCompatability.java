@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCompatability.java,v 1.1 2003-04-25 02:57:39 wkw Exp $
+  $Id: TestCompatability.java,v 1.2 2003-05-04 17:36:13 hkuno Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,7 +24,7 @@ package com.hp.hpl.jena.db.test;
  * in the cleanup code (it was calling getStore()).
  *
  * @author csayers
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -49,7 +49,7 @@ public class TestCompatability extends TestCase {
     
 
     public static TestSuite suite() { 
-        ConfigTestCaseRDB config = new ConfigTestCaseRDB(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, "Generic", TestPackage.MYDB );
+        ConfigTestCaseRDB config = new ConfigTestCaseRDB(TestPackage.M_DB_URL, TestPackage.M_DB_USER, TestPackage.M_DB_PASSWD, "Generic", TestPackage.M_DB );
         
         TestSuite suite = new TestSuite();
         suite.addTest(new TestCaseRDB("test0", config));
@@ -129,9 +129,9 @@ public class TestCompatability extends TestCase {
 			m_databaseType = database;
 
 			try {
-				Class.forName("com.mysql.jdbc.Driver"); // ADDED  	
+				Class.forName(TestPackage.M_DBDRIVER_CLASS); // ADDED  	
 			} catch (Exception e) {
-				throw new RuntimeException("Unable to instantiate mysql driver.");
+				throw new RuntimeException("Unable to instantiate  driver: " + TestPackage.M_DBDRIVER_CLASS);
 			}
 
 			try { 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.1 2003-04-25 02:57:39 wkw Exp $
+  $Id: TestBasicOperations.java,v 1.2 2003-05-04 17:36:13 hkuno Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -48,8 +48,8 @@ public class TestBasicOperations extends TestCase
 	
     protected void setUp() throws java.lang.Exception {
     	
-        Class.forName("com.mysql.jdbc.Driver");
-		conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
+        Class.forName(TestPackage.M_DBDRIVER_CLASS);
+		conn = new DBConnection(TestPackage.M_DB_URL, TestPackage.M_DB_USER, TestPackage.M_DB_PASSWD, TestPackage.M_DB);
 		conn.cleanDB(); // start with a fresh slate.
 		dbProperties = conn.getDatabaseProperties();
 		model = ModelRDB.createModel(conn); 

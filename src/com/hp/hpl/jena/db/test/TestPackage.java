@@ -12,14 +12,25 @@ import com.hp.hpl.jena.util.Log;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.5 $
+ * @version 	$Revision: 1.6 $
  */
 public class TestPackage extends TestSuite
 {
-	static String MYSQL_URL = "jdbc:mysql://localhost/test";
-	static String MYSQL_USER = "test";
-	static String MYSQL_PASSWD = "";
-	static String MYDB = "MySQL";
+	/*  
+	//oracle settings
+	static String M_DB_URL = "jdbc:oracle:thin:@corfu.hpl.hp.com:1521:db1";
+	static String M_DB_USER = "genesis";
+	static String M_DB_PASSWD = "genesis";
+	static String M_DB = "Oracle";
+	static String M_DBDRIVER_CLASS = "oracle.jdbc.driver.OracleDriver";
+	*/
+	
+	// mysql settings
+	static String M_DB_URL = "jdbc:mysql://localhost/test";
+	static String M_DB_USER = "test";
+	static String M_DB_PASSWD = "";
+	static String M_DB = "MySQL";
+	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
 
     static public TestSuite suite() {
         return new TestPackage();
