@@ -12,7 +12,10 @@ import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.arp.*;
+import com.hp.hpl.jena.regression.testReaderInterface;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.*;
 
@@ -22,6 +25,10 @@ import org.xml.sax.*;
  */
 public class SAX2RDFTest extends TestCase {
 
+	protected static Log logger = LogFactory.getLog( testReaderInterface.class );
+    
+	static final boolean is1_4_1 =
+		System.getProperty("java.version").startsWith("1.4.1");
 	static final private String all[] = {
 
 	"abbreviated/collection.rdf", "abbreviated/container.rdf",
@@ -1151,6 +1158,12 @@ public class SAX2RDFTest extends TestCase {
 		TestSuite s = new TestSuite("SAX2RDF");
 		s.addTestSuite(PushMePullYouTest.class);
 		s.addTestSuite(SAX2RDFMoreTests.class);
+		
+		if (is1_4_1){
+
+            logger.warn("Java version 1.4.1: DOM tests suppressed, believed not to work." );
+            
+		}
 		//for (int j=0; j<20; j++)
 		for (int i = 0; i < all.length; i += 25) {
 			String nm = all[i];
@@ -1184,7 +1197,8 @@ public class SAX2RDFTest extends TestCase {
 		tc = new DOM2RDFTest(dir,base,file);
 		
 		tc.setName("DOM "+tc.getName());
-		//s.addTest(tc);
+		if (!is1_4_1)
+    		s.addTest(tc);
 		
 
 	}
