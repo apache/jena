@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.12 2003-07-21 11:01:32 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.13 2003-08-20 13:15:18 jeremy_carroll Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */
@@ -129,7 +129,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             return model.createLiteral(lit.toString(), lit.getLang());
         else {
          //   System.err.println(lit.getLang());
-            return model.createTypedLiteral(lit.toString(), lit.getLang(), dt);
+            return model.createTypedLiteral(lit.toString(), dt);
         }
     }
     /** Converts an ARP resource into a Jena resource.

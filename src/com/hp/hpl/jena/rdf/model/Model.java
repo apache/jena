@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.38 2003-08-19 09:33:02 der Exp $
+  $Id: Model.java,v 1.39 2003-08-20 13:15:29 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.38 $Date: 2003/08/13 12:11:06 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.39 $Date: 2003/08/19 09:33:02 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -209,7 +209,7 @@ public interface Model
 	   @return a new literal representing the value v with the given language
 	 */
 	public Literal createLiteral(String v, String language, boolean wellFormed);
-
+	
     /**
         Build a typed literal from its lexical form. The
         lexical form will be parsed now and the value stored. If
@@ -946,5 +946,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.38 2003-08-19 09:33:02 der Exp $
+ * $Id: Model.java,v 1.39 2003-08-20 13:15:29 jeremy_carroll Exp $
  */

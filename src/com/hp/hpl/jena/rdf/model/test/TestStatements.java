@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: TestStatements.java,v 1.8 2003-05-21 16:45:18 chris-dollin Exp $
+	$Id: TestStatements.java,v 1.9 2003-08-20 13:15:29 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -106,7 +106,7 @@ public class TestStatements extends ModelTestBase
         String fakeURI = "fake:URI";
         Resource S = m.createResource( ) ; 
         Property P = property( m, "PP" );
-        RDFNode O = m.createTypedLiteral( "42", "", fakeURI);
+        RDFNode O = m.createTypedLiteral( "42",  fakeURI);
         Statement st = m.createStatement( S, P, O );
         assertTrue( st.toString().indexOf( fakeURI ) > 0 );  
         }

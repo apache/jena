@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleReader.java,v 1.8 2003-07-21 11:01:32 chris-dollin Exp $
+ * $Id: NTripleReader.java,v 1.9 2003-08-20 13:15:30 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -42,7 +42,7 @@ import java.util.*;
 /** N-Triple Reader
  *
  * @author  Brian McBride, Jeremy Carroll, Dave Banks
- * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-07-21 11:01:32 $
+ * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-08-20 13:15:30 $
  */
 public class NTripleReader extends Object implements RDFReader {
     static final Logger log = Logger.getLogger(NTripleReader.class);
@@ -268,7 +268,7 @@ public class NTripleReader extends Object implements RDFReader {
                 if (wellFormed) {
                     return model.createLiteral(
                         lit.toString(),
-                        lang,
+                        "",
                         wellFormed);
                 } else if ('^' == in.nextChar()) {
                     String datatypeURI = null;
@@ -279,9 +279,11 @@ public class NTripleReader extends Object implements RDFReader {
                     datatypeURI = readURI();
                     if (datatypeURI == null || !expect(">"))
                         return null;
+					if ( lang.length() > 0 )
+					   deprecated("Language tags are not permitted on typed literals.");
+                    
                     return model.createTypedLiteral(
                         lit.toString(),
-                        lang,
                         datatypeURI);
                 } else {
                     return model.createLiteral(lit.toString(), lang);
