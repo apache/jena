@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.22 2004-12-07 09:56:35 andy_seaborne Exp $
+ * $Id: WebOntTestHarness.java,v 1.23 2004-12-14 09:46:12 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2004-12-07 09:56:35 $
+ * @version $Revision: 1.23 $ on $Date: 2004-12-14 09:46:12 $
  */
 public class WebOntTestHarness {
 
@@ -585,7 +585,7 @@ public class WebOntTestHarness {
 
 
 /*
-    (c) Copyright Hewlett-Packard Development Company, LP 2003
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

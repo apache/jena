@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  21-Mar-2004
  * 
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2004 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMicroReasonerFactory.java,v 1.3 2004-11-30 16:10:15 chris-dollin Exp $
+ * $Id: OWLMicroReasonerFactory.java,v 1.4 2004-12-14 09:46:11 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * should not be relied on at this point.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2004-11-30 16:10:15 $
+ * @version $Revision: 1.4 $ on $Date: 2004-12-14 09:46:11 $
  */
 public class OWLMicroReasonerFactory implements ReasonerFactory {
     
@@ -105,7 +105,7 @@ public class OWLMicroReasonerFactory implements ReasonerFactory {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Development Company, LP 2004
+    (c) Copyright 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
