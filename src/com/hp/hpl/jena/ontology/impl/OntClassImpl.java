@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 15:30:37 $
+ * Last modified on   $Date: 2003-07-31 20:19:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.27 2003-07-24 15:30:37 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.28 2003-07-31 20:19:30 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -538,7 +538,7 @@ public class OntClassImpl
             Resource supClass = (Resource) i.next();
             
             // is this super-class a restriction?
-            if (supClass.canAs( Restriction.class )) {
+            if (getProfile().RESTRICTION() != null && supClass.canAs( Restriction.class )) {
                 // look up the property that this restriction applies to
                 Restriction r = (Restriction) supClass.as( Restriction.class );
                 Property p = r.getOnProperty();
