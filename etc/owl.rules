@@ -158,7 +158,7 @@
 [restrictionProc4: (?X rdf:type all(?P, ?C)), (?X ?P ?Y), notEqual(?P, rdf:type) 
 						-> (?X rdf:type some(?P, ?C)), (?Y rdf:type ?C)]
 
-[restrictionProc5: (?P rdfs:range ?C), (?X ?P *), notFunctor(?C) -> (?X rdf:type some(?P, ?C))]
+[restrictionProc5: (?P rdfs:range ?C), (?X ?P ?W), notFunctor(?C) -> (?X rdf:type some(?P, ?C))]
 
 [restrictionProc6: (?P rdfs:range ?C), (?D owl:equivalentClass all(?P, ?C)) 
 						-> (owl:Thing rdfs:subClassOf ?D)]
@@ -167,7 +167,7 @@
 
 [restrictionProc8: (?X rdf:type min(?P, 1)), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
 
-[restrictionProc9: (?X ?P *), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
+[restrictionProc9: (?X ?P ?W), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
 
 [restrictionProc10: (?X rdf:type some(?P, ?C)), noValue(?X, ?P), notEqual(?P, owl:sameIndividualAs),
 					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
@@ -206,7 +206,7 @@
 # This one is best done backwards or with a dedicated equality reasoner
 # Hacked for now just for completeness
 
-[distinct2: (* owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
+[distinct2: (?W owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
 
 # To be improved when resolve how to record contradictions
 
