@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFList.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:05:52 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-10-22 09:34:36 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: RDFList.java,v 1.6 2003-08-27 13:05:52 andy_seaborne Exp $)
+ * @version Release ($Id: RDFList.java,v 1.7 2003-10-22 09:34:36 ian_dickinson Exp $)
  */
 public interface RDFList
     extends Resource
@@ -375,7 +375,10 @@ public interface RDFList
     
     
     /**
-     * Remove all of the elements of this list from the model.
+     * <p>Remove all of the components of this list from the model.  Note that this
+     * is operation is only removing the list cells themselves, not the resources
+     * referenced by the list - unless being the object of an <code>rdf:first</code>
+     * statement is the only mention of that resource in the model. 
      */
     public void removeAll();
     
