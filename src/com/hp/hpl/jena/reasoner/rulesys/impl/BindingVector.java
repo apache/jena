@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.4 2003-05-12 07:58:24 der Exp $
+ * $Id: BindingVector.java,v 1.5 2003-05-14 16:50:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -18,10 +18,12 @@ import java.util.*;
 /**
  * An implementation of a binding environment that maintains
  * a single array of bound values for the variables in a rule.
- * Stack management is done externally.
+ * Stack management is done externally. This is intended for use in
+ * the Brule system and so also supports variable-variable bindings by
+ * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-12 07:58:24 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-14 16:50:19 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -46,7 +48,8 @@ public class BindingVector implements BindingEnvironment {
     }
     
     /**
-     * Return the current array of bindings
+     * Return the current array of bindings. Useful for fast access to
+     * serveral bindings, not useful for doing updates.
      */
     public Node[] getEnvironment() {
         return environment;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.2 2003-05-13 08:18:13 der Exp $
+ * $Id: RuleState.java,v 1.3 2003-05-14 16:50:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-13 08:18:13 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-14 16:50:19 $
  */
 public class RuleState {
 
@@ -197,6 +197,7 @@ public class RuleState {
                 GoalState gs = generator.getEngine().findGoal(subgoal);
                 RuleState rs = new RuleState(ri, env, gs, clauseIndex);
                 rs.initMapping(subgoal);
+//                BRuleEngine.logger.debug("Created " + rs + ", for goal(" + goal +")");
                 return rs;
             } else {
                 if (!generator.getEngine().processBuiltin(clause, rule, env)) {
@@ -205,7 +206,7 @@ public class RuleState {
             }
         }
         // If we get to here there are no rule body clause to process
-        return new RuleState(ri, env, null, 0); 
+        return new RuleState(ri, env, null, 0);
     }
     
     /**
