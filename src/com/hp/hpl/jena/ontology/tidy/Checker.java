@@ -103,7 +103,7 @@ public class Checker extends EnhGraph {
             nkey >>= Shift;
             int action = nkey & AMask;
             nkey >>= AShift;
-            switch ( nkey & AMask ) {
+            switch ( action ) {
                 // nothing
                 // restriction-part-1
                 // restriction-part-2

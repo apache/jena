@@ -9,7 +9,7 @@
 #define null 0
 #define MAX_SYM 1024
 #define MAX_SET 5000
-#define MAX_TRIPLES 2000
+#define MAX_TRIPLES 5000
 #define O(x)  ((x)&1023)
 #define P(x)  (((x)>>10)&1023)
 #define S(x)  (((x)>>20)&1023)
@@ -26,6 +26,27 @@ int rdffirst;
 int rdfrest;
 int rdftype;
 int orphanSet = -1;
+int notypeSet = -1;
+int rdfList;
+int owlOntologyProperty;
+
+int notType[5];
+
+#define DIM(array) (sizeof(array)/sizeof(array[0]))
+struct { char * str; int * sym; } specials[] = {
+  { "orphan", &orphan },
+  { "rdf:type", &rdftype },
+  { "rdf:first", &rdffirst },
+  { "rdf:rest", &rdfrest },
+  { "rdf:List", &rdfList },
+  { "owl:OntologyProperty", &owlOntologyProperty },
+  { "rdf:Property", notType },
+  { "rdfs:Class", notType+1 },
+  { "owl:FunctionalProperty", notType+2 },
+  { "owl:DeprecatedProperty", notType+3 },
+  { "owl:DeprecatedClass", notType+4 },
+  };
+  
 
 
 
@@ -69,6 +90,16 @@ int istriple(int i) {
   return 1;
 }
 
+void specialCases(char * s) {
+  int i;
+  for (i=0; i<DIM(specials) ;i++) 
+   
+  if (!strcmp(s,specials[i].str)) {
+     *specials[i].sym = symCnt;
+     return;
+   }
+}
+
 int setCmp(const void * a, const void * b) {
     Set aa = *(Set*)a;
     Set bb = *(Set*)b;
@@ -90,6 +121,7 @@ int saveSet(const int * set,int sz) {
     qsort(sets[setCnt]->syms,sz,sizeof(int),tcmp);
     sortedSets[setCnt] = sets[setCnt];
     if ( set[0] == orphan && sz==1) orphanSet = setCnt;
+   /* if ( set[0] == notype && sz==1) notypeSet = setCnt; */
 	return setCnt++;
 }
 /*
@@ -141,17 +173,6 @@ int symlookup(const char * str) {
 	printf("Bad input '%s'\n",str);
 	assert(!"Bad input");
 	return -1;
-}
-
-void specialCases(char * s) {
-  if (!strcmp(s,"orphan"))
-    orphan = symCnt;
-  if (!strcmp(s,"rdf:type"))
-    rdftype = symCnt;
-  if (!strcmp(s,"rdf:first"))
-    rdffirst = symCnt;
-  if (!strcmp(s,"rdf:rest"))
-    rdfrest = symCnt;
 }
 
 void read(void) {
@@ -227,8 +248,26 @@ void dump(void) {
   (may occur as object of annotation triple
    or as property)
 */
-int orphanProp(int sym) {
-   return sym==rdftype || sym==rdfrest || sym==rdffirst;
+
+int pseudotriple( int subj, int prop,int obj) {
+   if ( subj == orphan ) {
+      return obj != orphan && 
+              ( prop == rdfrest || prop == rdffirst
+                || ( prop = rdftype && 
+                        ( obj == rdfList || 
+                          obj == owlOntologyProperty ) ) );
+   } 
+   /*
+   if ( subj == notype ) {
+      if ( prop != rdftype ) return 1;
+      for (i = 0; i< DIM(notType); i++)
+        if ( obj == notType[i] )
+           return 1;
+      return 0;
+   }
+   return prop == notype || obj == notype;
+   */
+   return 0; 
 }
 
 void xform(int s, int p, int o) {
@@ -246,9 +285,7 @@ void xform(int s, int p, int o) {
     for (j=0; j<prop->sz;j++)
      for (k=0; k<obj->sz; k++) 
       if ( !(oks[i]&&okp[j]&&oko[k]) ) {
-         if ( ( subj->syms[i]==orphan 
-               && orphanProp(prop->syms[j])
-               && obj->syms[i]!=orphan )
+         if ( pseudotriple( subj->syms[i],prop->syms[j],obj->syms[i])
             || istriple(SPO(subj->syms[i],
                            prop->syms[j],
                            obj->syms[k])) ) {
@@ -260,6 +297,12 @@ void xform(int s, int p, int o) {
       return;
    if ( ss == orphanSet )
       return;
+      /*
+   if ( ss == notypeSet )
+      return;
+   if ( ss = orphanNotypeSet )
+      return;
+      */
    pp = saveSubSet(prop,okp);
    assert( pp != -1 );
    oo = saveSubSet(obj,oko);
