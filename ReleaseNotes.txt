@@ -8,18 +8,48 @@ Thrid preview release of Jena2.
 It is a preview release, not intended for serious development.  Developers
 are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
 
-This release does not support persistence of RDF data whether relational
-First release of ontology APIdatabases or BerlekleyDB databases.
-
-For guidance on porting code from Jena 1, see doc/migrating1-2.html
-
+This release does adds the first release of the relational database-backed
+persistence for Jena2. Jena1 database models are not compatible with Jena2
+databse models.  See <Jena>/doc/DB/ for further detauils.
 
 
+Database:
+See the directory <Jena>/doc/DB/ for prelimiinary documentation.
+
++ Bulk update interface supported (performance impact
+  not yet evaluated).
++ Reification storage optimized to avoid quad bloat.
++ Table layout changed to use a "denormalized" schema
+  for faster response time (but uses more space).
++ Configuration options specifed as RDF statements;
+  config files (e.g., Mysql.config) no longer used.
++ MySQL supported. Oracle, Postgresql, BDB coming soon.
+
+   Known Issues:
+- Database consistency for reification triples: Jena
+  applications that add and delete reification
+  triples explicitly should do this within a
+  transaction. If a transaction is not used
+  and a failure occurs during the Jena update,
+  the database may be left in an inconsistent
+  state.
+
+
+OWL Syntax Checker: pre-alpha
++ The OWL Syntax Checker is a 95% complete implementation 
+  as defined in the OWL Tests WD.
+  There is currently very little documentation, and there
+  is a 3-5 second start-up delay.
++ To run the syntax checker, try:
+  java -cp *jena-jars* com.hp.hpl.jena.ontology.tidy.Checker URL [Level]
+     where *jena-jars* is all (some of) the jars in the
+     lib directory in the distribution and
+     URL is the data to be checked, and [Level] can be used
+     to get an explanation as to why [Level] is incorrect.
+     Level is Lite DL or Full
+     If [Level] is correct then this option has no effect.
 
 Vocabularies:
 + Dublin Core vocabulary updated to currnet version
 + Added vocabulary classes for DV terms and DC types
 + Class DC is the current (1.1) Dublin Core - Old DC available via class DC_10
-
-
-

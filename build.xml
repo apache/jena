@@ -3,7 +3,7 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="2p2+delta"/>
+    <property name="version"         value="2p3-RC1"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
 
