@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.1 2003-01-30 18:31:11 der Exp $
+ * $Id: TestPackage.java,v 1.2 2003-01-31 08:51:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -15,7 +15,7 @@ import junit.framework.*;
  * Aggregate tester that runs all the test associated with the reasoner package.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:11 $
+ * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:51:11 $
  */
 
 public class TestPackage extends TestSuite {
@@ -27,7 +27,7 @@ public class TestPackage extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage() {
         super("reasoners");
-        addTest( "TestTransitiveGraphCace", TestTransitiveGraphCache.suite() );
+        addTest( "TestTransitiveGraphCache", TestTransitiveGraphCache.suite() );
         addTest( "TestReasoners", TestReasoners.suite() );
         }
 
