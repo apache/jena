@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.2 2003-10-09 09:46:08 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.3 2003-10-09 14:07:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -58,16 +58,16 @@ public class TestExpressionConstraints extends GraphTestBase
         
     private Expression notEqual( Node x, Node y )
         {
-        return Expression.Create.NE( x, y );
+        return ExampleCreate.NE( x, y );
         }
 
     private Expression areEqual( Node x, Node y )
         {
-        return Expression.Create.EQ( x, y );
+        return ExampleCreate.EQ( x, y );
         }
         
     protected Expression matches( Node x, Node y )
-        { return Expression.Create.MATCHES( x, y ); }
+        { return ExampleCreate.MATCHES( x, y ); }
 
     public void testConstraintNE1()
         {        

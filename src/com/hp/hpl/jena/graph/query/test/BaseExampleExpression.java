@@ -1,31 +1,42 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.5 2003-10-09 14:06:13 chris-dollin Exp $
+  $Id: BaseExampleExpression.java,v 1.1 2003-10-09 14:07:43 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.query;
+package com.hp.hpl.jena.graph.query.test;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.query.Expression;
+import com.hp.hpl.jena.graph.query.VariableValues;
 
 /**
-	Expression - the interface for expressions that is expected by Query for constraints.
-
+	BaseExampleExpression - simple expressions
 	@author kers
-*/
-public interface Expression 
-    { 
-    public boolean evalBool( VariableValues vv );
+ */
+public abstract class BaseExampleExpression implements Expression
+    {
+    public Expression and( Expression e ) { return and( this, e ); }
     
-    public static Expression TRUE = new Expression() 
-        { 
-        public boolean evalBool( VariableValues vv ) { return true; }
-        };
-    
-    public static Expression FALSE = new Expression() 
-        { 
-        public boolean evalBool( VariableValues vv ) { return false; }
-        };
+    public boolean evalBool( VariableValues vv )
+        { throw new RuntimeException( "bleagh" ); }
+        
+    protected Object eval( Node x, VariableValues vv )
+        {
+        if (x.isVariable()) return vv.get( x.getName() );
+        else return x;    
+        }
+                                                    
+    public static Expression and( final Expression L, final Expression R )
+        {
+        return new BaseExampleExpression()
+            {                
+            public boolean evalBool( VariableValues vv )
+                { return L.evalBool( vv ) && R.evalBool( vv ); }
+                 
+            };     
+        }
     }
-
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     All rights reserved.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.11 2003-10-08 15:14:55 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.12 2003-10-09 14:06:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -24,6 +24,20 @@ public class ConstraintStage extends Stage
     {
     protected ExpressionSet constraint;
     protected Mapping map;
+    protected Valof valof;
+    
+    static class Valof implements VariableValues
+        {
+        private Mapping map;
+        private Domain dom;
+        
+        Valof( Mapping map ) { this.map = map; }
+        
+        public Object get( String name )
+             { return dom.get( map.indexOf( Node.createVariable( name ) ) );  }
+                 
+        public Valof setDomain( Domain d ) { dom = d; return this; }  
+        }
         
     /**
         constructor: compile the graph _g_ into a Predicate using the
@@ -31,13 +45,14 @@ public class ConstraintStage extends Stage
     */
     public ConstraintStage( Mapping map, ExpressionSet constraint )
         { this.constraint = constraint; 
-        checkConstraint( map, constraint );
-        this.map = map; }
+        this.map = map; 
+        this.valof = new Valof( map );
+        checkConstraint( map, constraint ); }
         
     protected void checkConstraint( Mapping map, ExpressionSet constraint )
         { // TODO this properly
         Node n = Node.create( "deadwood" );
-        constraint.evalBool( map, new Domain( new Node [] {n,n,n,n,n,n,n,n,n,n,n} ) );    
+        constraint.evalBool( valof.setDomain( new Domain( new Node [] {n,n,n,n,n,n,n,n,n,n,n} ) ) );    
         }
         
     /**
@@ -127,7 +142,8 @@ public class ConstraintStage extends Stage
         
    private boolean evalConstraint( Domain d, ExpressionSet e )
         {
-        return e.evalBool( map, d );
+        return e.evalBool( valof.setDomain( d ) );
+        // return e.evalBool( map, d );
         }
     
     /**

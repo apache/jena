@@ -1,31 +1,59 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.5 2003-10-09 14:06:13 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.1 2003-10-09 14:07:43 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.query;
+package com.hp.hpl.jena.graph.query.test;
+
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.VariableValues;
 
 /**
-	Expression - the interface for expressions that is expected by Query for constraints.
+    Test code for creating some expressions.
+	ExampleCreate
 
 	@author kers
-*/
-public interface Expression 
-    { 
-    public boolean evalBool( VariableValues vv );
+ */
+public class ExampleCreate
+    {
+    public static BaseExampleExpression NE( final Node x, final Node y )
+        {
+        return new BaseExampleExpression() 
+            {
+            public boolean evalBool( VariableValues vv )
+                { return !eval( x, vv ).equals( eval( y, vv ) ); }
+            };    
+        }    
     
-    public static Expression TRUE = new Expression() 
-        { 
-        public boolean evalBool( VariableValues vv ) { return true; }
-        };
-    
-    public static Expression FALSE = new Expression() 
-        { 
-        public boolean evalBool( VariableValues vv ) { return false; }
-        };
+    public static BaseExampleExpression EQ( final Node x, final Node y )
+        {
+        return new BaseExampleExpression() 
+            {
+            public boolean evalBool( VariableValues vv )
+                { return eval( x, vv ).equals( eval( y, vv ) ); }
+            };    
+        }         
+        
+    public static BaseExampleExpression MATCHES( final Node x, final Node y )
+        {
+        return new BaseExampleExpression() 
+            {
+            private String asString( Object n )
+                {
+                if (n instanceof Node_Literal) return ((Node) n).getLiteral().getLexicalForm();
+                else return n.toString();    
+                }
+        
+            public boolean matches( Object L, Object R )
+                { String x = asString( L ), y = asString( R );
+                return x.indexOf( y ) > -1; }       
+                         
+            public boolean evalBool( VariableValues vv )
+                { return matches( eval( x, vv ), eval( y, vv ) ); }
+            };    
+        }
     }
-
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     All rights reserved.
