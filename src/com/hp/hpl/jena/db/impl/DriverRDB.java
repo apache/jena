@@ -51,7 +51,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.42 $ on $Date: 2004-07-25 14:39:43 $
+* @version $Revision: 1.43 $ on $Date: 2004-07-25 16:19:10 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -656,7 +656,10 @@ public abstract class DriverRDB implements IRDBDriver {
 					alltables.close();
 					result = i >= 5;
 			} catch (Exception e1) {
-                            throw new JenaException("DB connection problem while testing formating", e1);
+                            // An exception might be a totally unformatted db (why??)
+                            // or a real connection problem.
+                            return false;  
+                            // throw new JenaException("DB connection problem while testing formating", e1);
 			}
 			return result;
 	}
