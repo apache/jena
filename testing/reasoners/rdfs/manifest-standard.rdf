@@ -133,7 +133,7 @@
     <tbox>rdfs/tbox1.rdf</tbox>
     <data>rdfs/data2.rdf</data>
     <query>rdfs/query16.nt</query>
-    <result>rdfs/result16.rdf</result>
+    <result>rdfs/result16-noresource.rdf</result>
   </Test>
    
   <Test rdf:about="test17">

@@ -53,4 +53,37 @@
    <rdfs:Resource rdf:about="&rdfs;Container" />
    <rdfs:Resource rdf:about="&rdfs;label" />
 
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#int" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#gDay" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#unsignedByte" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#hexBinary" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#long" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#gMonthDay" />
+   <rdfs:Resource rdf:about="urn:x-hp-jena:rubrik/xsdRange" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#negativeInteger" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#unsignedInt" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#short" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#time" />
+   <rdfs:Resource rdf:about="urn:x-hp-jena:rubrik/xsdBase" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#dateTime" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#unsignedShort" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#double" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#boolean" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#duration" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#positiveInteger" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#integer" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#unsignedLong" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#string" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#float" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#date" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#nonPositiveInteger" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#byte" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#decimal" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#nonNegativeInteger" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#base64Binary" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#anyURI" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#gMonth" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#gYearMonth" />
+   <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#gYear" />
+  
 </rdf:RDF>
