@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-04-17 20:14:00 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-05-20 10:10:22 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -121,6 +121,9 @@ public class ResourceImpl extends EnhNode implements Resource {
         this( Node.createURI( nameSpace + localName ), nameSpace.length(), m );
     }
 
+    public Object visitWith( RDFVisitor rv )
+        { return isAnon() ? rv.visitBlank( this, getId() ) : rv.visitURI( this, getURI() ); }
+        
     public RDFNode inModel( Model m )
         { 
         return 

@@ -41,7 +41,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-05-19 16:06:52 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-05-20 10:10:22 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
 //    private Node node;
@@ -68,6 +68,9 @@ public class LiteralImpl extends EnhNode implements Literal {
         this( n, (Model)m );
     }
     
+    public Object visitWith( RDFVisitor rv )
+        { return rv.visitLiteral( this ); }
+        
     /**
         Literals are not in any particular model, and so inModel can return this.
         @param m a model to move the literal into

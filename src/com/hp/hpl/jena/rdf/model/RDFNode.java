@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.Node;
  * <p>Chris added the _as_ method to allow RDFNodes to participate in polymorphic
  * conversions.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-14 10:56:11 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-05-20 10:09:16 $'
  */
 public interface RDFNode {
     /** Return a String representation of the node.  The form of the string depends
@@ -77,4 +77,13 @@ public interface RDFNode {
         @return this, if it's already in m (or no model), a copy in m otherwise
     */
     public RDFNode inModel( Model m );
+    
+    /**
+        Apply the appropriate method of the visitor to this node's content and
+        return the result.
+        
+        @param rv an RDFVisitor with a method for URI/blank/literal nodes
+        @return the result returned by the selected method
+    */
+    public Object visitWith( RDFVisitor rv );
 }
