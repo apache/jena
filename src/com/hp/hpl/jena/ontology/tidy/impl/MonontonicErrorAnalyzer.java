@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: MonontonicErrorAnalyzer.java,v 1.3 2003-12-09 15:38:02 jeremy_carroll Exp $
+  $Id: MonontonicErrorAnalyzer.java,v 1.4 2003-12-09 18:57:23 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
@@ -31,8 +31,16 @@ class MonontonicErrorAnalyzer implements Constants {
 	final static int LITERAL_PROP = 131;
 	final static int LITERAL_SUBJ = 132;
 	final static int BADID_USE    = 133;
-
-	static Lookup look = LookupTable.get();
+	final static int BUILTIN_NON_PRED = 134;
+	final static int BUILTIN_NON_SUBJ = 135;
+	final static int CLASS_AS_PROP    = 136;
+	final static int DATA_ANN_PROP_BAD_OBJ = 137;
+	final static int BUILTIN_WITH_RANGE_CLASS = 138;
+	final static int BUILTIN_WITH_DOMAIN_CLASS = 139;
+	final static int BUILTIN_WITH_RANGE_PROPERTY = 140;
+	final static int BUILTIN_WITH_DOMAIN_PROPERTY = 141;
+	
+	static LookupTable look = (LookupTable)LookupTable.get();
 	static final int SZ = CategorySet.unsorted.size();
 	static final boolean isClassOnly[] = new boolean[SZ];
 	static final boolean isPropertyOnly[] = new boolean[SZ];
@@ -66,7 +74,17 @@ class MonontonicErrorAnalyzer implements Constants {
 			}
 			if (ix == 0) {
 				s[ix++] = i;
-				System.err.println("Builtin: " + Grammar.catNames[i]);
+				switch (i){
+					case Grammar.badID:
+					case Grammar.dlInteger:
+					case Grammar.liteInteger:
+					case Grammar.literal:
+					case Grammar.userTypedLiteral:
+					  break;
+					default:
+					System.err.println("Builtin: " + Grammar.catNames[i]);
+					isBuiltin[i]=true;
+				}
 			}
 			start[i] = new int[ix];
 			System.arraycopy(s, 0, start[i], 0, ix);
@@ -168,6 +186,17 @@ class MonontonicErrorAnalyzer implements Constants {
 	private static boolean isOntologyProp(int p) {
 		return p == Grammar.ontologyPropertyID || p == ontp2;
 	}
+
+	static int class2 =
+		CategorySet.find(
+			new int[] { Grammar.notype, Grammar.classID },
+			false);
+	/**
+	 * @param p
+	 */
+	private static boolean isClassID(int p) {
+		return p == Grammar.classID || p == class2;
+	}
 	static int dp1 = Grammar.dataPropID;
 	static int dp2 =
 		CategorySet.find(
@@ -238,10 +267,15 @@ class MonontonicErrorAnalyzer implements Constants {
 	static final int ontos[] =
 		new int[] { Grammar.ontologyID, Grammar.unnamedOntology };
 
+	static final int owlProps[] =
+		new int[] { Grammar.transitivePropID, Grammar.objectPropID,
+			Grammar.dataPropID };
+
 static {
 	Arrays.sort(annOrOnt);
 	Arrays.sort(indv);
 	Arrays.sort(ontos);
+	Arrays.sort(owlProps);
 }
 /**
  * @param s
@@ -266,6 +300,106 @@ static void dumpc(String x, int c, int d) {
 	if (d!=0)
 	  System.out.println(x + "(b)" + CategorySet.catString(d));
 }
+
+private static boolean badBuiltinDomain(int p,int s){
+	switch (p){
+		// classID
+		case Grammar.rdfsrange:
+		case Grammar.rdfsdomain:
+		  return isNotClassID(s);
+		
+    // description restriction or classID
+		case Grammar.owlequivalentClass:
+		case Grammar.rdfssubClassOf:
+		case Grammar.owldisjointWith:
+		return isNotDescription(s) && isNotClassID(s)
+		   && isNotRestriction(s);
+		
+		// description or classID
+		case Grammar.owlcomplementOf:
+		case Grammar.owlintersectionOf:
+		case Grammar.owlunionOf:
+		case Grammar.owloneOf:
+		  return isNotDescription(s) && isNotClassID(s);
+		
+		// propertyID (obj, trans or data)
+		case Grammar.rdfssubPropertyOf:
+		case Grammar.owlequivalentProperty:
+		case Grammar.owlinverseOf:
+		  return isNotOWLPropertyID(s);
+		
+    // list node
+		case Grammar.rdffirst:
+		case Grammar.rdfrest:
+		  return isNotListNode(s);
+		// indivID
+		case Grammar.owldifferentFrom:
+		case Grammar.owlsameAs:
+		  return isNotIndividualID(s);
+		  
+		// alldifferent
+		case Grammar.owldistinctMembers:
+      return isNotAllDifferent(s);
+      
+		// restriction
+		case Grammar.owlhasValue:
+		case Grammar.owlmaxCardinality:
+		case Grammar.owlonProperty:
+		case Grammar.owlsomeValuesFrom:
+		  return isNotRestriction(s);
+		default:
+		  return false;
+	}
+}
+/**
+ * @param s
+ * @return
+ */
+private static boolean isNotRestriction(int s) {
+	return look.meet(s,Grammar.restrictions)==Failure;
+}
+/**
+ * @param s
+ * @return
+ */
+private static boolean isNotAllDifferent(int s) {
+	return !Q.member(Grammar.allDifferent,CategorySet.getSet(s));
+}
+/**
+ * @param s
+ * @return
+ */
+private static boolean isNotIndividualID(int s) {
+	return !Q.member(Grammar.individualID,CategorySet.getSet(s));
+}
+/**
+ * @param s
+ * @return
+ */
+private static boolean isNotListNode(int s) {
+	return look.meet(s,Grammar.lists)==Failure;
+}
+/**
+ * @param s
+ * @return
+ */
+private static boolean isNotOWLPropertyID(int s) {
+	return !Q.intersect(owlProps, CategorySet.getSet(s));
+}
+/**
+ * @param s
+ * @return
+ */
+private static boolean isNotDescription(int s) {
+	return look.meet(s,Grammar.descriptions)==Failure;
+}
+/**
+ * @param s
+ * @return
+ */
+private static boolean isNotClassID(int s) {
+	return !Q.member(Grammar.classID,CategorySet.getSet(s));
+}
 /**
  * @param sx
  * @param px
@@ -280,6 +414,21 @@ private static int singleTripleError(int sx, int px, int ox) {
 	if (isLiteral(sx))
 	  return LITERAL_SUBJ;
 
+  if (sx==Grammar.badID
+     || px ==Grammar.badID)
+     return BADID_USE;
+  if (ox==Grammar.badID)
+     return BADID_USE;
+     
+  if (isBuiltin[sx]&&!look.canBeSubj(sx))
+    return BUILTIN_NON_SUBJ;
+  if (isBuiltin[px]&&!look.canBeProp(px))
+    return BUILTIN_NON_PRED;
+  if (isClassID(px))
+     return CLASS_AS_PROP;
+  if ( px == Grammar.dataAnnotationPropID && isNotLiteral(ox))
+     return DATA_ANN_PROP_BAD_OBJ;
+  
 	if (debug()) {
 		dumpc("DC-subj", sx, 0);
 		dumpc("DC-prop", px, 0);
@@ -322,13 +471,19 @@ static void allCases(int s, int p, int o) {
 			}
 }
 public static void main(String args[]) {
+
+	for (int j = 1; j < SZ; j++) {
+		if (Grammar.isPseudoCategory(j))
+			continue;
+	  if (isBlank[j])
+	    continue;
+	  if (isLiteral(j))
+	    continue;
 	for (int i = 1; i < SZ; i++) {
 		if (Grammar.isPseudoCategory(i))
 			continue;
-		for (int j = 1; j < SZ; j++) {
-			if (Grammar.isPseudoCategory(j))
-				continue;
-
+   if (isLiteral(i))
+     continue;
 			for (int k = 1; k < SZ; k++) {
 				if (Grammar.isPseudoCategory(k))
 					continue;

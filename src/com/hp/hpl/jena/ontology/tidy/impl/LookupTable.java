@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LookupTable.java,v 1.7 2003-12-04 14:48:42 der Exp $
+  $Id: LookupTable.java,v 1.8 2003-12-09 18:57:23 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
@@ -210,6 +210,14 @@ public class LookupTable
 			theInstance = restore();
 		}
 		return theInstance;
+	}
+	
+	boolean canBeSubj(int c){
+		return refinedSubject[c]!=null && refinedSubject[c].length>0;
+	}
+	boolean canBeProp(int c){
+		return refinedProperty[c]!=null && refinedProperty[c].length>0;
+		
 	}
 
 }
