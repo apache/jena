@@ -138,7 +138,10 @@
     operations are atomic. MySQL has both transactional and non-transactional 
     configurations. This option can be used to set the transaction mode. Since 
     it affects the physical database structure, it can only be set prior to 
-    database initialization.</dd>
+    database initialization. Applications must be careful when using 
+    non-transactional configurations because the database may be left in an 
+    inconsistent state if an application is interrupted in the middle of a 
+    database operation.</dd>
     <dt>DoCompressURI</dt>
     <dd>By default, resource URIs are stored fully expanded in the database. If 
     DoCompressURI is true, URIs will be compressed by storing a prefix of the 
@@ -327,6 +330,19 @@
     the specified model but to any model subsequently created in the database 
     during the user's session (the life of the database connection). The setting 
     for existing models is not affected.</dd>
+    <dd>&nbsp;&nbsp;&nbsp; When duplicate checking is disabled, if an 
+    application attempts to insert a duplicate statement in a model, the result 
+    depends on the database engine and configuration. In general, the insert 
+    will succeed, no indication will be provided to the application and the 
+    database will contain duplicate statements. If this is undesirable, one 
+    option is to create a unique index on the subject, predicate and object 
+    columns of the statement table. This can easily be done by modifying the 
+    templates for creating statement tables in the database-specific SQL 
+    template files, e.g., see <i>CreateStatementTable</i> and <i>
+    CreateReifStatementTable</i> in the file <font size="2">'etc/mysql.sql'</font>. 
+    If this is done then the database engine will generate an error when a 
+    duplicate statement is added and an exception will be thrown to the 
+    application.</dd>
     <dt>&nbsp;</dt>
 </dl>
 <p>&nbsp;</p>
