@@ -2,7 +2,7 @@
   ???? (c) Copyright 2003, Plugged In Software ????
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ExtendedHandler.java,v 1.3 2003-12-09 10:31:08 jeremy_carroll Exp $
+  $Id: ExtendedHandler.java,v 1.4 2003-12-09 15:36:52 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -19,8 +19,10 @@ package com.hp.hpl.jena.rdf.arp;
 public interface ExtendedHandler {
 	/** After this call, no more triples will be reported
 	 * which use <code>bnode</code>.
-	 * This is called exactly once for each blank nodes, 
-	 * including those with a blank node identifier.
+	 * This is called exactly once for each blank nodes. 
+	 * Whether this includes nodes  with an <code>rdf:nodeID</code>
+	 * is controlled by {@link #discardNodesWithNodeID}.
+	 *
 	 *<p>
 	 *The contract is robust against syntax errors in input, 
 	 *and exceptions being thrown by the StatementHandler.
@@ -32,8 +34,8 @@ public interface ExtendedHandler {
 	 * of ARP concerning its reporting of bnode scope
 	 * {@link #endBNodeScope}.
 	 * <p>
-	 * If this returns true then blank nodes with a blank node
-	 * ID are not reported as they go out of scope at the end
+	 * If this returns true then blank nodes with an <code>rdf:nodeID</code>
+	 *  are not reported as they go out of scope at the end
 	 * of file. This eliminates the unbounded memory cost
 	 * of remembering such nodes.
 	 * <p>

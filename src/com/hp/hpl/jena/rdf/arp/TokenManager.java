@@ -37,7 +37,7 @@ package com.hp.hpl.jena.rdf.arp;
  * of their choice.
  */
 
-public interface TokenManager {
+interface TokenManager {
 
   /** This gets the next token from the input stream.
    *  A token of kind 0 (<EOF>) should be returned on EOF.

@@ -2,7 +2,7 @@
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: DAMLTailCollection.java,v 1.4 2003-12-08 20:21:32 jeremy_carroll Exp $
+  $Id: DAMLTailCollection.java,v 1.5 2003-12-09 15:36:52 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -10,7 +10,7 @@ package com.hp.hpl.jena.rdf.arp;
  * @author Jeremy J. Carroll
  *
  */
-public class DAMLTailCollection extends DAMLCollection {
+class DAMLTailCollection extends DAMLCollection {
 	DAMLTailCollection(ParserSupport x,ARPResource cell) {
 		super(x);
 		last = cell;
