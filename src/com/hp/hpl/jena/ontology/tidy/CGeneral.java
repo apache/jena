@@ -24,13 +24,14 @@ class CGeneral extends CNode {
     /**
      * @see CNodeI#setCategories(int)
      */
-    public void setCategories(int cat) {
-    	int old = getCategories();
+    public boolean setCategories(int cat, boolean rec) {
+    	int old = rec?getCategories():-1;
     	setIntAttribute(Vocab.category,cat);
     	c = cat;
-    	if ( old != cat ) {
-    		getChecker().recursivelyUpdate(asNode());
+    	if ( rec && old != cat ) {
+    		return getChecker().recursivelyUpdate(asNode());
     	}
+    	return true;
     	
     }
 }

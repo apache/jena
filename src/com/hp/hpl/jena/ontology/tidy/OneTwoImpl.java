@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: OneTwoImpl.java,v 1.1 2003-04-16 14:53:25 jeremy_carroll Exp $
+  $Id: OneTwoImpl.java,v 1.2 2003-04-17 10:50:02 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -14,71 +14,71 @@ import com.hp.hpl.jena.util.iterator.*;
  *
 */
 class OneTwoImpl extends CGeneral {
-// local *cache*, on cache miss must always go to graph.
+	// local *cache*, on cache miss must always go to graph.
 
-     private Triple seen[] = new Triple[3];
-     
-     OneTwoImpl(Node n, EnhGraph g){
-     	 super(n,g);
-     }
-     
-     public void first(Triple t) {
-         check(0,t);
-     }
-	 public void second(Triple t) {
-		check(1,t);
-	 }
-	 static private String shortMsg[] = {
-	 	"Illegal description/restriction/list/alldifferent structure",
-		"Illegal restriction/list structure",
-		"Node may not be object of multiple triples"
-	 };
-	 private void check(int i, Triple t){
-	 	Triple old = get(i);
-	 	if ( old != null ) {
-	 		if (old.equals(t))
-	 		  return;
-	 		Graph problem = ModelFactory.createDefaultModel().getGraph();
-	 		problem.add(old);
-	 		problem.add(t);
-	 		
-	 		
-	 		Checker chk = (Checker)getGraph();
-	 		chk.addProblem(new SyntaxProblem(
-	 		  shortMsg[i],
-	 		  problem,
-	 		  Levels.DL
-	 		));
-	 		
-	 	} else {
+	private Triple seen[] = new Triple[3];
+
+	OneTwoImpl(Node n, EnhGraph g) {
+		super(n, g);
+	}
+
+	public void first(Triple t) {
+		check(0, t);
+	}
+	public void second(Triple t) {
+		check(1, t);
+	}
+	static private String shortMsg[] =
+		{
+			"Illegal description/restriction/list/alldifferent structure",
+			"Illegal restriction/list structure",
+			"Node may not be object of multiple triples" };
+	private void check(int i, Triple t) {
+		Triple old = get(i);
+		if (old != null) {
+			if (old.equals(t))
+				return;
+			Graph problem = ModelFactory.createDefaultModel().getGraph();
+			problem.add(old);
+			problem.add(t);
+
+			Checker chk = (Checker) getGraph();
+			chk.addProblem(new SyntaxProblem(shortMsg[i], problem, Levels.DL));
+
+		} else {
 
 			Graph G = getGraph().asGraph();
 			Reifier R = G.getReifier();
 			Node n = Node.createAnon();
-			R.reifyAs(n,t);
+			R.reifyAs(n, t);
 			getGraph().asGraph().add(
-			  new Triple(asNode(),Vocab.objectOfTriple,n)
-			  );
+				new Triple(asNode(), Vocab.objectOfTriple, n));
 			seen[i] = t;
-			
-	 	}
-	 }
-	 public void addObjectTriple(Triple t) {
+
+		}
+	}
+	public void addObjectTriple(Triple t) {
 		check(2, t);
-	 }
-	 
-	 private Triple get(int i) {
-	 	if ( seen[i] == null ) {
-	 		Graph G = getGraph().asGraph();
-	 		ClosableIterator it = G.find(asNode(),
-	 		   Vocab.objectOfTriple,
-	 		   null);
-	 		if ( it.hasNext())
-	 		  seen[i] = G.getReifier().getTriple(((Triple)it.next()).getObject());
-	 		it.close();
-	 	}
-	 	return seen[i];
-	 }
+	}
+
+	private Triple get(int i) {
+		if (seen[i] == null) {
+			Graph G = getGraph().asGraph();
+			ClosableIterator it = G.find(asNode(), Vocab.objectOfTriple, null);
+			if (it.hasNext())
+				seen[i] =
+					G.getReifier().getTriple(((Triple) it.next()).getObject());
+			it.close();
+		}
+		return seen[i];
+	}
+
+	boolean incomplete(int i) {
+		for (int j = 0; j < i; j++)
+			if (get(j) == null)
+				return true;
+		return false;
+	}
 
 }
 

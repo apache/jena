@@ -1,7 +1,7 @@
 package com.hp.hpl.jena.ontology.tidy;
 
-import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.enhanced.*;
 import java.util.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
@@ -43,14 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * @author jjc
  *
  */
-public class Checker extends EnhGraph {
-	static private Personality personality =
-		new GraphPersonality()
-        .add(CNodeI.class, CNode.factory)
-        .add(Blank.class,CBlank.factory)
-        .add(One.class,OneImpl.factory)
-        .add(Two.class,TwoImpl.factory);
-	private Graph hasBeenChecked;
+public class Checker extends AbsChecker {
 	private GraphFactory gf;
 	private Vector monotoneProblems = new Vector();
 
@@ -66,27 +59,94 @@ public class Checker extends EnhGraph {
 	private void snapCheck() {
 		if (nonMonotoneProblems == null) {
 			nonMonotoneProblems = new Vector();
-			// TODO points checks ...
+		
+		/*
+		 * Easy problems to check.
+		 */	
+			check(CategorySet.untypedSets,new NodeAction() {
+				public void apply(Node n){
+					nonMonProblem("Untyped node",n);
+				}
+			});
+			check(CategorySet.orphanSets,new NodeAction() {
+			public void apply(Node n){
+				nonMonProblem("Orphaned rdf:List or owl:OntologyProperty node",n);
+			}
+		});
+		if ( wantLite )
+		check(CategorySet.dlOrphanSets,new NodeAction() {
+		public void apply(Node n){
+			nonMonProblem("Orphaned blank owl:Class or owl:Restriction is in OWL DL",n,Levels.Lite);
+		}
+	});
+		/*
+		 * Slightly harder
+		 */
+		 check(CategorySet.structuredOne,new NodeAction() {
+			 public void apply(Node n){
+			 	if (getCNode(n).asOne().incomplete())
+				  nonMonProblem("Incomplete blank owl:Class or owl:AllDifferent",n);
+			 }
+		 });
+		 check(CategorySet.structuredTwo,new NodeAction() {
+			 public void apply(Node n){
+				if (getCNode(n).asTwo().incomplete())
+				  nonMonProblem("Incomplete rdf:List or owl:Restriction",n);
+			 }
+		 });
+		 
+		 /*
+		  * Getting harder ...
+		  * We first find non-cyclic orphaned unnamed individuals,
+		  * mark those as non-cyclic, then check the remaining cyclic
+		  * nodes and then unmark the non-cyclic orphaned unnamed individuals
+		  */
+		 
+			// TODO unnamed individual cycle 
+			/*
+			* Hardest (well exlcuding Hamiltonian paths)
+			* Check the disjointUnion blank nodes
+			*/
+		    
+			  // TODO disjointUnion blank nodes
+			
+			
 		}
 	}
-
-	private int errorCnt = 0;
-
-	Checker(Graph g, GraphFactory gf) {
-		super(g, personality);
-		this.gf = gf;
-		hasBeenChecked = gf.getGraph();
+	
+	private void check(Q q,NodeAction a){
+		// TODO check(Q,NodeAction)
 	}
-    Checker(Graph g) {
-      this(g, new DefaultGraphFactory()); 
-    }
-	void add(Graph g) {
+	private void nonMonProblem(String shortD,Node n) {
+		nonMonProblem(shortD, n,Levels.DL);
+	}
+	private void nonMonProblem(String shortD,Node n, int lvl) {
+		Model m = ModelFactory.createDefaultModel();
+		Graph mg = m.getGraph();
+		EnhNode enh = ((EnhGraph)m).getNodeAs(n,RDFNode.class);
+		Iterator it = this.hasBeenChecked.find(n,null,null);
+		while ( it.hasNext() )
+		  mg.add((Triple)it.next());
+		   
+		this.nonMonotoneProblems.add(
+		  new SyntaxProblem(shortD,enh,lvl)
+		);
+	}
+
+	Checker(boolean lite, GraphFactory gf) {
+		super(lite, gf);
+		this.gf = gf;
+	}
+	Checker(boolean lite) {
+		this(lite, new DefaultGraphFactory());
+	}
+	public void add(Graph g) {
 		// Add every triple
 		ClosableIterator it = null;
 		try {
 			it = g.find(null, null, null);
 			while (it.hasNext()) {
-				add((Triple) it.next());
+				add((Triple) it.next(), true);
 			}
 		} finally {
 			if (it != null)
@@ -94,81 +154,39 @@ public class Checker extends EnhGraph {
 		}
 	}
 	private boolean wantLite = true;
-	
-	// TODO Find minimal closure
+
 	void addProblem(int lvl, Triple t) {
-		
+		Graph min =
+			new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
+		monotoneProblems.add(
+			new SyntaxProblem(
+				"Not a " + Levels.toString(lvl) + " subgraph",
+				min,
+				lvl));
 	}
-	void addProblem(SyntaxProblem sp){
+	void addProblem(SyntaxProblem sp) {
 		monotoneProblems.add(sp);
-	}
-	/**
-	 * 
-	 * @param t A triple from a graph being checked.
-	 */
-	private void add(Triple t) {
-		CNodeI s = (CNodeI) getNodeAs(t.getSubject(), CNodeI.class);
-		CNodeI p = (CNodeI) getNodeAs(t.getPredicate(), CNodeI.class);
-		CNodeI o = (CNodeI) getNodeAs(t.getObject(), CNodeI.class);
-		int s0 =
-		s.getCategories();
-		int p0 =
-		p.getCategories();
-		int o0 =
-		o.getCategories();
-		final long key =
-			SubCategorize.refineTriple(s0,p0,o0);
-		if (key == Grammar.Failure) {
-			addProblem(Levels.DL,t);
-		} else {
-			if ( wantLite && SubCategorize.dl(key))
-			      addProblem(Levels.Lite,t);
-			   
-			   
-			// On recursive calls this triple might be in-place.
-			// we keep it on the call stack in order to reduce
-			// the amount of checking we have to do.
-			hasBeenChecked.delete(t);
-			
-			o.setCategories(SubCategorize.object(key,o0));
-			p.setCategories(SubCategorize.prop(key,p0));
-			s.setCategories(SubCategorize.subject(key,s0));
-			
-			hasBeenChecked.add(t);
-			
-			if ( SubCategorize.tripleForObject(key))
-			   o.asBlank().addObjectTriple(t);
-			
-			switch (SubCategorize.action(key)   ) {
-				case SubCategorize.FirstOfOne:
-				    s.asOne().first(t);
-				    break;
-				    case SubCategorize.FirstOfTwo:
-				    s.asTwo().first(t);
-				    break;
-				    case SubCategorize.SecondOfTwo:
-				    s.asTwo().second(t);
-				    break;
-			}
-		}
-	}
-	
-	void recursivelyUpdate(Node n ) {
-		rec(n,null,null);
-		rec(null,n,null);
-		rec(null,null,n);
-	}
-	void rec(Node s,Node p, Node o) {
-		ClosableIterator it = hasBeenChecked.find(s,p,o);
-		while ( it.hasNext())
-		   add((Triple)it.next());
-		it.close();
 	}
 	// TODO getSubLanguage()
 	public String getSubLanguage() {
 		return null;
 	}
+	void actions(long key, CNodeI s, CNodeI o, Triple t) {
+		if (SubCategorize.tripleForObject(key))
+			o.asBlank().addObjectTriple(t);
 
+		switch (SubCategorize.action(key)) {
+			case SubCategorize.FirstOfOne :
+				s.asOne().first(t);
+				break;
+			case SubCategorize.FirstOfTwo :
+				s.asTwo().first(t);
+				break;
+			case SubCategorize.SecondOfTwo :
+				s.asTwo().second(t);
+				break;
+		}
+	}
 	static public void main(String argv[]) {
 		OntDocumentManager dm = new OntDocumentManager();
 
@@ -181,7 +199,7 @@ public class Checker extends EnhGraph {
 		// m.getDocumentManager();
 		GraphFactory gf = dm.getDefaultGraphFactory();
 
-		Checker chk = new Checker(gf.getGraph());
+		Checker chk = new Checker(false, gf);
 
 		chk.add(m.getGraph());
 

@@ -8,7 +8,11 @@ import com.hp.hpl.jena.graph.*;
 interface CNodeI {
 	Node asNode();
     int getCategories();
-    void setCategories(int c);
+    /**
+     * @param recursive If c is not the current value then recursive processing is performed.
+     * @param c
+     */
+    boolean setCategories(int c, boolean recursive);
     One asOne();
     Two asTwo();
     Blank asBlank();

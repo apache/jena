@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TwoImpl.java,v 1.2 2003-04-16 21:08:34 jeremy_carroll Exp $
+  $Id: TwoImpl.java,v 1.3 2003-04-17 10:50:01 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -26,6 +26,9 @@ class TwoImpl extends OneTwoImpl implements Two {
 	};
 	public TwoImpl(Node n, EnhGraph g) {
 		super(n, g);
+	}
+	public boolean incomplete() {
+		return incomplete(2);
 	}
 
 }

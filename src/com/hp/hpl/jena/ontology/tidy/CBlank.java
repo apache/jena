@@ -22,7 +22,7 @@ class CBlank extends OneTwoImpl implements Blank {
 	public CBlank(Node n, EnhGraph eg) {
 		super(n, eg);
 		if ( getCategories() == -1 )
-		      setCategories(Grammar.blank);
+		      setCategories(Grammar.blank,false);
 	}
 	
 

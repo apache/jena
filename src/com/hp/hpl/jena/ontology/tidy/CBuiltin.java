@@ -15,9 +15,10 @@ class CBuiltin extends CNode {
     public int getCategories() {
         return category;
     }
-    public void setCategories(int c) {
+    public boolean setCategories(int c, boolean rec) {
         if (c!=category)
           throw new SyntaxException("Internal error in syntax checker.");
+        return true;
     }
     
 }

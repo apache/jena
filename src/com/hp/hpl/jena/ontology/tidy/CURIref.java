@@ -20,7 +20,7 @@ class CURIref extends CGeneral {
 	public CURIref(Node n, EnhGraph eg, int c) {
 		super(n, eg);
 		if ( getCategories() == -1 )
-			  setCategories(c);
+			  setCategories(c,false);
 	}
 
 }

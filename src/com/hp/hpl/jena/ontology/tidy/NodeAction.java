@@ -1,19 +1,18 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Two.java,v 1.2 2003-04-17 10:50:02 jeremy_carroll Exp $
+  $Id: NodeAction.java,v 1.1 2003-04-17 10:50:04 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
+
 import com.hp.hpl.jena.graph.*;
 
 /**
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
+ * @author jjc
  *
-*/
-interface Two extends CNodeI {
-	void first(Triple t);
-	void second(Triple t);
-	boolean incomplete();
+ */
+interface NodeAction {
+	void apply(Node n);
 }
 
 /*
