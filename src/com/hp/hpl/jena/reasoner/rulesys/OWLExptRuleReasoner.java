@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLExptRuleReasoner.java,v 1.1 2003-07-10 17:05:14 der Exp $
+ * $Id: OWLExptRuleReasoner.java,v 1.2 2003-08-14 07:51:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -15,15 +15,17 @@ import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.OWLRuleTranslationHook;
+import com.hp.hpl.jena.reasoner.rulesys.implb.FBLPRuleInfGraph;
+import com.hp.hpl.jena.reasoner.rulesys.implb.FBLPRuleReasoner;
 import com.hp.hpl.jena.graph.*;
 
 /**
  * A hybrid forward/backward implementation of the OWL closure rules - experimental variant.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-10 17:05:14 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-14 07:51:11 $
  */
-public class OWLExptRuleReasoner extends FBRuleReasoner  {
+public class OWLExptRuleReasoner extends FBLPRuleReasoner  {
     
     /** The location of the OWL rule definitions on the class path */
     protected static final String RULE_FILE = "etc/owl-fb-test.rules";
@@ -32,7 +34,7 @@ public class OWLExptRuleReasoner extends FBRuleReasoner  {
     protected static List ruleSet;
     
     /** The precomputed axiom closure and compiled rule set */
-    protected static FBRuleInfGraph preload; 
+    protected static FBLPRuleInfGraph preload; 
     
     /** log4j logger */
     protected static Logger logger = Logger.getLogger(OWLRuleReasoner.class);
@@ -76,7 +78,7 @@ public class OWLExptRuleReasoner extends FBRuleReasoner  {
         if (schemaGraph != null) {
             throw new ReasonerException("Can only bind one schema at a time to an OWLRuleReasoner");
         }
-        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, getPreload(), tbox);
+        FBLPRuleInfGraph graph = new FBLPRuleInfGraph(this, rules, getPreload(), tbox);
         graph.addPreprocessingHook(new OWLRuleTranslationHook());
         graph.prepare();
         return new OWLExptRuleReasoner(this, graph);
@@ -94,13 +96,13 @@ public class OWLExptRuleReasoner extends FBRuleReasoner  {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        FBRuleInfGraph graph =  null;
-        InfGraph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph)schemaGraph; 
-        List baseRules = ((FBRuleInfGraph)schemaArg).getRules();
-        graph = new FBRuleInfGraph(this, baseRules, schemaArg);
+        FBLPRuleInfGraph graph =  null;
+        InfGraph schemaArg = schemaGraph == null ? getPreload() : (FBLPRuleInfGraph)schemaGraph; 
+        List baseRules = ((FBLPRuleInfGraph)schemaArg).getRules();
+        graph = new FBLPRuleInfGraph(this, baseRules, schemaArg);
         graph.addPreprocessingHook(new OWLRuleTranslationHook());
         graph.setDerivationLogging(recordDerivations);
-        graph.setTraceOn(traceOn);
+//        graph.setTraceOn(traceOn);
         graph.rebind(data);
                 
         return graph;
@@ -112,7 +114,7 @@ public class OWLExptRuleReasoner extends FBRuleReasoner  {
     public InfGraph getPreload() {
         synchronized (OWLFBRuleReasoner.class) {
             if (preload == null) {
-                preload = new FBRuleInfGraph(this, rules, null);
+                preload = new FBLPRuleInfGraph(this, rules, null);
                 preload.prepare();
             }
             return preload;

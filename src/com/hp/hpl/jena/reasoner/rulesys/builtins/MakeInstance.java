@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: MakeInstance.java,v 1.5 2003-07-25 12:16:46 der Exp $
+ * $Id: MakeInstance.java,v 1.6 2003-08-14 07:51:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,14 +16,14 @@ import com.hp.hpl.jena.graph.*;
 /**
  * Create or lookup an anonymous instance of a property value. Syntax of the call is:
  * <pre>
- *    getTemp(X, P, D, T) or getTemp(X, P, T)
+ *    makeInstance(X, P, D, T) or makeInstance(X, P, T)
  * </pre>
  * where X is the instance and P the property for which a temporary
  * value is required, T will be bound to the temp value (a bNode) and D is
  * an optional type cor the T value.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-07-25 12:16:46 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-14 07:51:11 $
  */
 public class MakeInstance extends BaseBuiltin {
 

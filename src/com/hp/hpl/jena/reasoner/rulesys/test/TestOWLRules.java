@@ -5,10 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.12 2003-06-08 17:49:51 der Exp $
+ * $Id: TestOWLRules.java,v 1.13 2003-08-14 07:51:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
+import com.hp.hpl.jena.reasoner.ReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 
 import junit.framework.TestCase;
@@ -19,15 +20,18 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-14 07:51:10 $
  */
 public class TestOWLRules extends TestCase {
 
     /** The name of the manifest file to test */
     protected String manifest;
        
-    /** Flag to control which reasoner to test */
+    /** Set to true to test the pure forward instead of a hybrid reasoner */
     protected static boolean testForward = false;
+    
+    /** Set to true to test the experimental hybrid instead of the released one */
+    protected static boolean testExpt = false;
     
     /** Flag to control whether tracing and logging enabled */
     protected static boolean enableTracing = false;
@@ -169,7 +173,9 @@ public class TestOWLRules extends TestCase {
             tester.runTests(manifest, enableTracing, printStats);
 //            OWLRuleReasoner.printStats();
         } else {
-            OWLWGTester tester = new OWLWGTester(OWLFBRuleReasonerFactory.theInstance(), this, null);
+            ReasonerFactory rf = testExpt ? OWLExptRuleReasonerFactory.theInstance() 
+                                          : OWLFBRuleReasonerFactory.theInstance();
+            OWLWGTester tester = new OWLWGTester(rf, this, null);
             tester.runTests(manifest, enableTracing, printStats);
         }
     }

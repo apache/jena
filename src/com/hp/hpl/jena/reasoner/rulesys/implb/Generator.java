@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Generator.java,v 1.8 2003-08-13 08:02:40 der Exp $
+ * $Id: Generator.java,v 1.9 2003-08-14 07:51:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-13 08:02:40 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-14 07:51:10 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -194,6 +194,11 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      */
     public synchronized void pump(LPInterpreterState context) {
         if (isComplete()) return;
+        if (consumingCPs.isEmpty()) {
+            System.out.println("*** Cleaning up unused generator"); // Temp
+            setComplete();
+            return;
+        }
         interpreter.setState(context);
         int priorNresults = results.size();
         while (true) {

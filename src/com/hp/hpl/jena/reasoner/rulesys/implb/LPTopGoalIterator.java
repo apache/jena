@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.7 2003-08-13 10:45:55 der Exp $
+ * $Id: LPTopGoalIterator.java,v 1.8 2003-08-14 07:51:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * inference graph if the iterator hits the end of the result set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-13 10:45:55 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-14 07:51:10 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
@@ -60,22 +60,24 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
      * lookahead buffer.
      */
     private void moveForward() {
-        started = true;
-        lookAhead = interpreter.next();
-        if (lookAhead == StateFlag.FAIL) {
-            if (choicePoints.isEmpty()) {
-                // Nothing left to try
-                close();
-            } else {
-                // Some options open, continue pumping
-                nextToRun = null;
-                interpreter.getEngine().pump(this);
-                if (nextToRun == null) {
-                    // Reached final closure
+        synchronized (interpreter.getEngine().getInfGraph()) {
+            started = true;
+            lookAhead = interpreter.next();
+            if (lookAhead == StateFlag.FAIL) {
+                if (choicePoints.isEmpty()) {
+                    // Nothing left to try
                     close();
                 } else {
-                    interpreter.setState(nextToRun);
-                    moveForward();
+                    // Some options open, continue pumping
+                    nextToRun = null;
+                    interpreter.getEngine().pump(this);
+                    if (nextToRun == null) {
+                        // Reached final closure
+                        close();
+                    } else {
+                        interpreter.setState(nextToRun);
+                        moveForward();
+                    }
                 }
             }
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.22 2003-07-25 12:16:47 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.23 2003-08-14 07:51:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-07-25 12:16:47 $
+ * @version $Revision: 1.23 $ on $Date: 2003-08-14 07:51:10 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -53,7 +53,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
     protected BBRuleContext context;
     
     /** Cache of temporary property values inferred through getTemp calls */
-    protected TempNodeCache tempNodecache = new TempNodeCache();
+    protected TempNodeCache tempNodecache;
     
     /** performance stats - number of rules passing initial trigger */
     int nRulesTriggered = 0;
@@ -94,6 +94,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
         rules = ruleStore.getAllRules();
         // Set up the backchaining engine
         engine = new BRuleEngine(this, ruleStore);
+        tempNodecache = new TempNodeCache(this);
     }    
 
     /**

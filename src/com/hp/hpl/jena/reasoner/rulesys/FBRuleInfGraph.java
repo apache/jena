@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.27 2003-08-04 14:01:32 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.28 2003-08-14 07:51:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2003-08-04 14:01:32 $
+ * @version $Revision: 1.28 $ on $Date: 2003-08-14 07:51:10 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -68,7 +68,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     protected List preprocessorHooks;
     
     /** Cache of temporary property values inferred through getTemp calls */
-    protected TempNodeCache tempNodecache = new TempNodeCache();
+    protected TempNodeCache tempNodecache;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(FBRuleInfGraph.class);
@@ -84,6 +84,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public FBRuleInfGraph(Reasoner reasoner, Graph schema) {
         super(reasoner, schema);
         bEngine = new BRuleEngine(this);
+        tempNodecache = new TempNodeCache(this);
     }
 
     /**
@@ -96,6 +97,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         super(reasoner, rules, schema);
         this.rawRules = rules;
         bEngine = new BRuleEngine(this);
+        tempNodecache = new TempNodeCache(this);
     }
 
     /**
@@ -109,6 +111,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         super(reasoner, rules, schema, data);
         this.rawRules = rules;        
         bEngine = new BRuleEngine(this);
+        tempNodecache = new TempNodeCache(this);
     }
 
     /**

@@ -5,24 +5,25 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TempNodeCache.java,v 1.3 2003-07-11 16:39:29 der Exp $
+ * $Id: TempNodeCache.java,v 1.4 2003-08-14 07:51:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.util.OneToManyMap;
 
 /**
  * In some rules we need to be able to create temporary property values 
  * which are inferred from ontology constraints but not present in the ground
  * data. This structure is used to manage a pool of such temporary nodes.
- * It is only needed in situations where the data can be added directly
+ * It is only needed in situations where the data can not be added directly
  * to a deductions graph due to the risk of concurrent access.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-11 16:39:29 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-14 07:51:10 $
  */
 
 // Implementation note: We need to map from a pair of values (instance and prop).
@@ -36,6 +37,14 @@ public class TempNodeCache {
     
     /** Map from temp to RDF class, if any */
     protected Map classMap = new HashMap(); 
+    
+    /**
+     * Cosntructor.
+     * @param infgraph Parent inference graph, used to be needed for synchronization, don't think
+     * we need it any more 
+     */
+    public TempNodeCache(InfGraph infgraph) {
+    }
     
     /**
      * Retrieve or create a bNode representing an inferred property value.
