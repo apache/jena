@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.17 2003-07-30 13:28:48 chris-dollin Exp $
+  $Id: Node.java,v 1.18 2003-08-01 13:25:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -71,7 +71,7 @@ public abstract class Node {
             throw new JenaException( "GraphTestBase::node does not accept an empty string as argument" );
         char first = x.charAt( 0 );
         if (first == '\'')
-            return Node.createLiteral( new LiteralLabel(  x, "en-UK", false ) );
+            return Node.createLiteral( newString( x ) );
         if (Character.isDigit( first )) 
             return Node.createLiteral( new LiteralLabel( x, "nn-NN", false ) );
         if (first == '_')
@@ -83,15 +83,15 @@ public abstract class Node {
         if (first == '&')
             return Node.createURI( "q:" + x.substring( 1 ) );        
         int colon = x.indexOf( ':' );
-        if (colon < 0)
-            return Node.createURI( "eh:" + x );
-        // String prefix = x.substring( 0, colon );
-        return Node.createURI( pm.expandPrefix( x ) );
-//        if (prefix.equals( "rdf") )
-//            return Node.createURI( RDFprefix + x.substring( colon + 1 ) );
-//        return Node.createURI( x );
+        return Node.createURI( colon < 0 ? "eh:" + x : pm.expandPrefix( x ) );
         }
         
+    private static LiteralLabel newString( String literal )
+        {
+        int closeQuote = literal.indexOf( '\'', 1 );
+        String x = literal.substring( 1, closeQuote );
+        return new LiteralLabel(  x, "en-UK", false );    
+        }
         
     /** make a blank node with the specified label */
     public static Node createAnon( AnonId id )
@@ -283,16 +283,30 @@ public abstract class Node {
         { return equals( other ); }
 
     /** 
-        Return the N-Triple representation of this node. hedgehog hack: just use 
-        the label's string.
+        Answer a human-readable representation of this Node. It will not compress URIs, 
+        nor quote literals (because at the moment too many places use toString() for 
+        something machine-oriented).
     */   
-    public String toString() {
-    	return label.toString();
-    }
+    public String toString()
+    	{ return toString( null ); }
+    
+    /**
+        Answer a human-readable representation of the Node, leaving literals unquoted
+        but compressing URIs.
+    */
+    public String toString( PrefixMapping pm )
+        { return toString( pm, false ); }
+        
+    /**
+        Answer a human readable representation of this Node, quoting literals if specified,
+        and compressing URIs using the prefix mapping supplied.
+    */
+    public String toString( PrefixMapping pm, boolean quoting )
+        { return label.toString(); }
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.4 2003-08-01 09:46:17 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.5 2003-08-01 13:25:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -193,17 +193,19 @@ final public class LiteralLabel {
         Answer a human-acceptable representation of this literal value.
         This is NOT intended for a machine-processed result. 
     */
-    public String toString() {
+    public String toString( boolean quoting ) {
         StringBuffer b = new StringBuffer();
-        // b.append( '"' );
+        if (quoting) b.append( '"' );
         b.append( getLexicalForm() );
-        // b.append( '"' );
-        if (lang != null && !lang.equals( "" )) { b.append( "@" ); b.append( lang ); }
-        if (dtype != null) { b.append( "^^" ); b.append( dtype.getURI()); }
+        if (quoting) b.append( '"' );
+        if (lang != null && !lang.equals( "" )) { b.append( "~" ); b.append( lang ); }
+        if (dtype != null) { b.append( ":" ); b.append( dtype.getURI()); }
         return b.toString();
-            
     }
     
+    public String toString()
+        { return toString( false ); }
+        
     /**
      *  Returns the string component of the LiteralLabel.
      *  Note that different LiteralLabels may have the

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.16 2003-07-31 15:22:20 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.17 2003-08-01 13:25:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -217,6 +217,7 @@ public abstract class GraphBase implements Graph {
         
     public static String toString( String prefix, Graph that )
         {
+        PrefixMapping pm = that.getPrefixMapping();
 		StringBuffer b = new StringBuffer( prefix + " {" );
 		String gap = "";
 		ClosableIterator it = GraphUtil.findAll( that );
@@ -224,7 +225,7 @@ public abstract class GraphBase implements Graph {
             {
 			b.append( gap );
 			gap = "; ";
-			b.append( it.next() );
+			b.append( ((Triple) it.next()).toString( pm ) );
 		    } 
 		b.append( "}" );
 		return b.toString();

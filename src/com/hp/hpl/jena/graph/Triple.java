@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Triple.java,v 1.10 2003-07-17 15:34:05 chris-dollin Exp $
+  $Id: Triple.java,v 1.11 2003-08-01 13:25:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -30,9 +30,15 @@ final public class Triple implements TripleMatch {
     /**
         return a human-readable string "subject @predicate object" describing the triple
     */
-	public String toString() {
-		return subj + " @" + pred + " " + obj;
-	}
+	public String toString()
+        { return toString( PrefixMapping.Standard ); }
+    
+    public String toString( PrefixMapping pm )
+       {
+	   return subj.toString( pm, true ) 
+            + " @" + pred.toString( pm, true ) 
+            + " " + obj.toString( pm, true );
+	   }
     
     /**
         @return the subject of the triple

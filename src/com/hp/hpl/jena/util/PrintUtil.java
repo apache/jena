@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PrintUtil.java,v 1.5 2003-06-24 16:55:45 der Exp $
+ * $Id: PrintUtil.java,v 1.6 2003-08-01 13:25:41 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-24 16:55:45 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-01 13:25:41 $
  */
 public class PrintUtil {
 
@@ -83,11 +83,8 @@ public class PrintUtil {
             }
         } else if (node instanceof Node_Literal) {
             LiteralLabel ll = node.getLiteral();
-            if (ll.getDatatype() == null) {
-                return "'" + ll + "'";
-            } else {
-                return ll.toString();
-            }
+            String lf = ll.getLexicalForm();
+            return ll.getDatatype() == null ? "'" + lf + "'" : lf + "^^" + ll.getDatatypeURI();
         } else if (node instanceof Node_ANY) {
             return "*";
         }

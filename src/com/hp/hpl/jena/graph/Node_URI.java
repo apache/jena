@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_URI.java,v 1.4 2003-07-18 15:14:00 chris-dollin Exp $
+  $Id: Node_URI.java,v 1.5 2003-08-01 13:25:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
+
+import com.hp.hpl.jena.shared.*;
 
 /**
     RDF nodes with a global identity given by a URI.
@@ -23,6 +25,14 @@ public class Node_URI extends Node_Concrete
         
     public boolean isURI()
         { return true; }
+        
+    /**
+        Answer a String representing the node, taking into account the PrefixMapping.
+        The horrible test against null is a stopgap to avoid a circularity issue.
+        TODO fix the circularity issue
+    */
+    public String toString( PrefixMapping pm, boolean quoting )
+        { return pm == null ? (String) label : pm.usePrefix( (String) label ); }
         
     public boolean equals( Object other )
         { return other instanceof Node_URI && label.equals( ((Node_URI) other).label ); }

@@ -40,7 +40,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.20 $ $Date: 2003-07-23 07:20:02 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.21 $ $Date: 2003-08-01 13:25:41 $
  */
 public class StatementImpl  implements Statement {
     
@@ -282,10 +282,11 @@ public class StatementImpl  implements Statement {
         
     private String objectString()
         {
-        return object instanceof Resource
-            ? "Resource<" + ((Resource)object).toString() + ">"
-            : "Literal<" + ((Literal)object).toString() + ">"
-            ;
+        return object.asNode().toString( null, true );
+//        return object instanceof Resource
+//            ? "Resource<" + ((Resource)object).toString() + ">"
+//            : "Literal<" + ((Literal)object).toString() + ">"
+//            ;
         }
     
     /**

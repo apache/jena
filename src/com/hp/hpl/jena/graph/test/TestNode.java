@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.23 2003-07-24 09:10:18 chris-dollin Exp $
+  $Id: TestNode.java,v 1.24 2003-08-01 13:25:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -312,6 +312,15 @@ public class TestNode extends GraphTestBase
         /* TODO Node n = */ Node.create( pm, "xyz" );
         }
         
+    public void testToStringWithPrefixMapping()
+        {
+        PrefixMapping pm = PrefixMapping.Factory.create();
+        String prefix = "spoo", ns = "abc:def/ghi#";
+        pm.setNsPrefix( prefix, ns );
+        String suffix = "bamboozle";
+        assertEquals( prefix + ":" + suffix, Node.create( ns + suffix ).toString( pm ) );    
+        }
+        
     public void testNodeHelp()
         {
         assertTrue( "node() making URIs", node( "hello" ).isURI() );
@@ -423,6 +432,18 @@ public class TestNode extends GraphTestBase
         assertDiffer( "types must make a difference", a, b );
         assertTrue( "A and B must express the same value", a.sameValueAs( b ) );
         assertTrue( "matching literals must respect sameValueAs", a.matches( b ) );
+        }
+        
+    public void testLiteralToString()
+        {
+        TypeMapper tm = TypeMapper.getInstance();
+        RDFDatatype dtInt = tm.getTypeByValue( new Integer( 10 ) );
+        Node plain = Node.createLiteral( "rhubarb", "", false );    
+        Node english = Node.createLiteral( "eccentric", "en_UK", false );
+        Node typed = Node.createLiteral( "10", "", dtInt );
+        assertEquals( "rhubarb", plain.toString() );
+        assertEquals( "eccentric~en_UK", english.toString() );
+        assertEquals( "10:http://www.w3.org/2001/XMLSchema#int", typed.toString() );
         }
         
     public void testConcrete()

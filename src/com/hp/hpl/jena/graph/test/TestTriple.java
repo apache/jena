@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.12 2003-07-24 09:10:18 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.13 2003-08-01 13:25:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -225,6 +225,32 @@ public class TestTriple extends GraphTestBase
         assertFalse( Triple.create( "?S P 11").isConcrete() );
         assertFalse( Triple.create( "S ?P 11").isConcrete() );
         assertFalse( Triple.create( "S P ?O").isConcrete() );
+        }
+        
+    /**
+        Primarily to make sure that literals get quoted and stuff comes out in some
+        kind of coherent order.
+    */
+    public void testTripleToStringOrdering()
+        {
+        Triple t1 = Triple.create( "subject predicate object" );
+        assertTrue( "subject must be present",  t1.toString().indexOf( "subject" ) >= 0 );    
+        assertTrue( "subject must preceed predicate", t1.toString().indexOf( "subject" ) < t1.toString().indexOf( "predicate" ) );
+        assertTrue( "predicate must preceed object", t1.toString().indexOf( "predicate" ) < t1.toString().indexOf( "object" ) );
+        }
+        
+    public void testTripleToStringQuoting()
+        {
+        Triple t1 = Triple.create( "subject predicate 'object'" );
+        assertTrue( t1.toString().indexOf( "\"object\"") > 0 );
+        }
+        
+    public void testTripleToStringWithPrefixing()
+        {
+        PrefixMapping pm = PrefixMapping.Factory.create();
+        pm.setNsPrefix( "spoo", "eg://domain.dom/spoo#" );
+        Triple t1 = Triple.create( "eg://domain.dom/spoo#a b c" );
+        assertEquals( "spoo:a @eh:b eh:c", t1.toString( pm ) );
         }
 }
 /*
