@@ -11,7 +11,7 @@ CREATE TABLE JENA_SYS_STMTASSERTED (
  ObjLiteral    INTEGER,
  GraphID       VARCHAR(250),
  CONSTRAINT uniq_jena_sys_stmtasserted_spo 
-   UNIQUE ( SubjRes, PropRes, ObjRes, ObjLiteral, GraphID )
+   UNIQUE ( SubjRes, PropRes, ObjRes, ObjStr, ObjLiteral, GraphID )
 );;
 CREATE TABLE JENA_LITERALS (
  LiteralId     INTEGER NOT NULL PRIMARY KEY,
@@ -42,7 +42,7 @@ CREATE TABLE ${a} (
  ObjLiteral    INTEGER,
  GraphID       VARCHAR(250),
  CONSTRAINT ${a}_uspo 
-   UNIQUE (SubjRes, PropRes, ObjRes, ObjLiteral, GraphID)
+   UNIQUE (SubjRes, PropRes, ObjRes, ObjStr, ObjLiteral, GraphID)
 );;
 CREATE INDEX ${a}_ISP ON ${a}(SubjRes, PropRes);;
 CREATE INDEX ${a}_IO ON ${a}(ObjRes);;
