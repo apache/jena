@@ -193,6 +193,7 @@
             <classpath refid="classpath"/>
                 <package name="com.hp.hpl.jena.db"/>
                 <package name="com.hp.hpl.jena.rdf.model"/>
+		<package name="com.hp.hpl.jena.rdf.listeners"/>
                 <package name="com.hp.hpl.jena.rdf.arp"/>
                 <package name="com.hp.hpl.jena.rdf.arp.lang"/>
                 <package name="com.hp.hpl.jena.rdql"/>
@@ -216,6 +217,7 @@
             <group title="API - Application Programming Interface">
                 <package name="com.hp.hpl.jena.db"/>
                 <package name="com.hp.hpl.jena.rdf.model"/>
+		<package name="com.hp.hpl.jena.rdf.listeners"/>
                 <package name="com.hp.hpl.jena.rdf.arp"/>
                 <package name="com.hp.hpl.jena.rdf.arp.lang"/>
                 <package name="com.hp.hpl.jena.rdql"/>
