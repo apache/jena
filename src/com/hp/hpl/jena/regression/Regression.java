@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.3 2003-02-11 15:17:08 chris-dollin Exp $
+ * $Id: Regression.java,v 1.4 2003-03-26 12:39:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.graph.*;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-11 15:17:08 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-03-26 12:39:08 $'
  */
 public class Regression extends Object {
 
@@ -1192,31 +1192,32 @@ public class Regression extends Object {
                 if (! stmtf[i]) error(test, 160+i);
             }
 
-            {
-            System.err.println( "WARNING: reification testing suppressed for the moment" );
-/* Reification is not working properly
-
-                for (int i=0; i<num; i++) {
-                    stmtf[i] = false;
-                    m.add(stmts[i], predicate[i], i);
-                }
-                sIter = m.listReifiedStatements();
-                while (sIter.hasNext()) {
-                    Statement stmt = sIter.next();
-                    found = false;
-                    for (int i=0; i<num; i++) {
-                        if (stmt.equals(stmts[i])) {
-                            found = true;
-                            if (stmtf[i]) error(test, 200);
-                            stmtf[i] = true;
-                        }
-                    }
-                    if (! found) error(test, 210);
-                }
-                for (int i=0; i<num; i++) {
-                    if (! stmtf[i]) error(test, 220+i);
-                } */
-            }
+// SEE the tests in model.test: TestReifiedStatements and TestStatementResources
+//            {
+//            System.err.println( "WARNING: reification testing suppressed for the moment" );
+///* Reification is not working properly
+//
+//                for (int i=0; i<num; i++) {
+//                    stmtf[i] = false;
+//                    m.add(stmts[i], predicate[i], i);
+//                }
+//                sIter = m.listReifiedStatements();
+//                while (sIter.hasNext()) {
+//                    Statement stmt = sIter.next();
+//                    found = false;
+//                    for (int i=0; i<num; i++) {
+//                        if (stmt.equals(stmts[i])) {
+//                            found = true;
+//                            if (stmtf[i]) error(test, 200);
+//                            stmtf[i] = true;
+//                        }
+//                    }
+//                    if (! found) error(test, 210);
+//                }
+//                for (int i=0; i<num; i++) {
+//                    if (! stmtf[i]) error(test, 220+i);
+//                } */
+//            }
 
             {
                 NodeIterator iter;

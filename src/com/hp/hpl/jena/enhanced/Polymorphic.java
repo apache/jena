@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Polymorphic.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: Polymorphic.java,v 1.3 2003-03-26 12:39:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -52,9 +52,8 @@ public abstract class Polymorphic {
     */
     public boolean supports( Class t )
         {
-        // System.err.println( "| Polymorphic.supports() called" );
-        // new RuntimeException( "" ).printStackTrace( System.err ); 
-        return t.isInstance( this ); 
+        Polymorphic supporter = findExistingView( t );
+        return supporter != null || this.canSupport( t );
         }
         
     /** 
@@ -79,11 +78,17 @@ public abstract class Polymorphic {
         Polymorphic r = this;
         for (;;)
             {
-            if (t.isInstance( r )) return r;
+            if (t.isInstance( r ) && r.isValid()) return r;
             r = r.ring;
             if (r == this) return null;
             }
         }
+        
+    /**
+        answer true iff this enhanced node is still underpinned in the graph
+        by triples appropriate to its type.
+    */
+    public abstract boolean isValid();
         
     /**
         subclasses must provide a method for converting _this_, if
@@ -91,6 +96,12 @@ public abstract class Polymorphic {
         doesn't already have (or be) a suitable ring-sibling.
     */    
     protected abstract Polymorphic convertTo( Class t );
+    
+    /**
+        subclasses must provide a method for testing if _this_ can be
+        converted to an instance of _t_. 
+    */
+    protected abstract boolean canSupport( Class t );
     
     /**
         subclasses must override equals. Actually they may not have

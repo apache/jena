@@ -20,6 +20,7 @@ public class TestModelPolymorphism extends GraphTestBase
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource( "http://www.electric-hedgehog.net/a-o-s.html" );
         assertFalse( "the Resouce should not be null", r == null );
+        assertTrue( "the Resource can be a Property", r.canAs( Property.class ) );
         Property p = (Property) r.as( Property.class );
         assertFalse( "the Property should not be null", p == null );
         assertFalse( "the Resource and Property should not be identical", r == p );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Implementation.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: Implementation.java,v 1.3 2003-03-26 12:39:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -27,8 +27,17 @@ public abstract class Implementation {
       * @return A new enhanced node which wraps node but presents the interface(s)
       *         that this factory encapsulates.
       */
-     public abstract EnhNode wrap(Node node,EnhGraph eg);
-    
+     public abstract EnhNode wrap( Node node,EnhGraph eg );
+     
+     /**
+        true iff wrapping (node, eg) would succeed.
+        @param node the node to test for suitability
+        @param eg the enhanced graph the node appears in
+        @return true iff the node can represent our type in that graph
+     */
+     public boolean canWrap( Node node, EnhGraph eg )
+        { return true; }
+     
 }
 
 /*

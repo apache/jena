@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.3 2003-02-20 10:56:52 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.4 2003-03-26 12:39:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.enhanced;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.cache.*;
-
+import com.hp.hpl.jena.graph.compose.*;
 
 /**
  * <p>
@@ -34,20 +34,21 @@ public class EnhGraph
     /** Cache of enhanced nodes that have been created */
     private Cache enhNodes = CacheManager.createCache("RAND","EnhGraph-"+cnt++,1000);
     
-    /** The unique personality that is bound to this polymophic instace */
+    /** The unique personality that is bound to this polymorphic instace */
     private Personality personality;
 
+    public boolean isValid()
+        { return true; }
     
     // Constructors
     /**
-     * Construct an enhanced graph from the given underlying graph, a factory for generating
-     * enhanced nodes, and a probably spurious types array.
+     * Construct an enhanced graph from the given underlying graph, and
+     * a factory for generating enhanced nodes.
      * 
      * @param g The underlying plain graph, may be null to defer binding to a given graph until later.
      * @param p The personality factory, that maps types to realisations
-     * @param myTypes An array of types @todo explain better or remove
      */
-    protected EnhGraph( Graph g, Personality p, Class myTypes[]) {
+    public EnhGraph( Graph g, Personality p ) {
         super();
         graph = g;
         personality = p;
@@ -129,7 +130,6 @@ public class EnhGraph
         return graph.isIsomorphicWith(eg.graph);
     }
 
-
     /**
      * Answer an enhanced node that wraps the given node and conforms to the given
      * interface type.
@@ -179,7 +179,13 @@ public class EnhGraph
         // @todo stub
         throw new PersonalityConfigException( "Alternative perspectives on graphs has not been implemented yet" );
     }
-
+    
+    /**
+        we can't convert to anything. 
+    */
+    protected boolean canSupport( Class t )
+        { return false; }
+        
     /**
      * Answer the personality object bound to this polymorphic instance
      * 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhNode.java,v 1.3 2003-02-20 10:56:52 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.4 2003-03-26 12:39:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -74,6 +74,12 @@ public class EnhNode
         { return (RDFNode) viewAs( t ); }
       
     /**
+        API-level method for polymorphic testing
+    */
+    public boolean canAs( Class t )
+        { return canSupport( t ); }
+        
+    /**
      * The hash code of an enhanced node is defined to be the same as the underlying node.
      * @return The hashcode as an int
      */
@@ -95,29 +101,34 @@ public class EnhNode
      * @return True if o is equal to this node.
      */
     final public boolean equals( Object o )
-        {
-     	return o instanceof EnhNode && node.equals(((EnhNode) o).asNode());
-        }
+        { return o instanceof EnhNode && node.equals(((EnhNode) o).asNode()); }
     
-//    final private boolean sameAs( EnhNode n )
-//        { return asNode().equals( n.asNode() ) && sameGraph( getGraph(), n.getGraph() ); }
-//        
-//    final private boolean sameGraph( EnhGraph a, EnhGraph b ) 
-//        { return a == null ? b == null : a.equals( b ); }
-
-    // Internal implementation
-
+    public boolean isValid()
+        { return true; }
+        
     /** 
      * Answer an enhanced node object that presents <i>this</i> in a way which satisfies type
      * t.
      * @param t A type
      * @return A polymorphic instance that conforms to t.
      */
-    protected Polymorphic convertTo( Class t ) {
-            Polymorphic result = getPersonality().getImplementation(t).wrap( asNode(), getGraph() );          
-            this.addView( result );
-            return result;
-    }
+    protected Polymorphic convertTo( Class t ) 
+        {
+        Polymorphic result = getPersonality().getImplementation( t ).wrap( asNode(), getGraph() );          
+        this.addView( result );
+        return result;
+        }
+    
+    /**
+        answer true iff this enhanced node can support the class _t_, ie, it can be
+        converted to an instance of t.
+        @param t the (interface) class being tested
+        @return true iff the implementation can wrap this enhanced node
+    */
+    protected boolean canSupport( Class t )
+        {
+        return getPersonality().getImplementation( t ).canWrap( asNode(), getGraph() );
+        }
 
     /**
      * Answer the personality object bound to this enhanced node, which we obtain from 
