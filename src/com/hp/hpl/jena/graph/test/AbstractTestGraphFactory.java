@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphFactory.java,v 1.1 2003-05-03 09:09:43 chris-dollin Exp $
+  $Id: AbstractTestGraphFactory.java,v 1.2 2003-05-03 11:40:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -23,17 +23,24 @@ public abstract class AbstractTestGraphFactory extends GraphTestBase
     private GraphFactory gf;
     
     public void setUp()
-        {
-        gf = getGraphFactory();
-        }
+        { gf = getGraphFactory(); }
+        
+    public void tearDown()
+        { gf.close(); }
 
+    /**
+        A trivial test that getGraph delivers a proper graph, not cheating with null.
+    */
     public void testGetGraph()
         {
         Graph g1 = gf.getGraph();
         assertFalse( "should deliver a Graph", g1 == null );
         g1.close();
         }
-        
+    
+    /**
+        Test that we can't create a graph with the same name twice. 
+    */    
     public void testCannotCreateTwice()
         {
         String name = "bonsai";
@@ -46,19 +53,40 @@ public abstract class AbstractTestGraphFactory extends GraphTestBase
         catch (AlreadyExistsException e)
             {}
         }
-        
+    
+    /**
+        Test that we cannot open a graph that does not exist.
+    */    
     public void testCannotOpenUncreated()
         {
-        String name = "noSuchGraph";
-        try
-            {
-            Graph g1 = gf.openGraph( name );
-            fail( "should not be able to open " + name );
-            }
-        catch (DoesNotExistException e)
-            {}
+        testDoesNotExist( "noSuchGraph" );
+        }
+    
+    /**
+        Utility - test that a graph with the given name exists. Hackwork.
+     */    
+    private void testExists( String name )
+        { 
+        try { gf.openGraph( name ); }
+        catch (DoesNotExistException e) { fail( name + " should exist" ); }
         }
         
+    /**
+        Utility - test that no graphb with the given name eixsts. Hackwork.
+     */
+    private void testDoesNotExist( String name )
+        { 
+        try { gf.createGraph( name ); }
+        catch (AlreadyExistsException e) { fail( name + " should not exist" ); }
+        }
+            
+    /**
+        Test that we can find a graph once its been created. We need to know
+        if two graphs are "the same" here, which is tricky, because the RDB
+        factory produces non-== graphs that are "the same": we have a temporary
+        work-around but it is not sound.
+     *
+     */
     public void testCanFindCreatedGraph()
         {
         String alpha = "alpha", beta = "beta";
@@ -66,8 +94,37 @@ public abstract class AbstractTestGraphFactory extends GraphTestBase
         Graph h1 = gf.createGraph( beta );
         Graph g2 = gf.openGraph( alpha );
         Graph h2 = gf.openGraph( beta );
-        assertTrue( "should find alpha", g1 == g2 );
-        assertTrue( "should find beta", h1 == h2 );
+        assertTrue( "should find alpha", sameGraph( g1, g2 ) );
+        assertTrue( "should find beta", sameGraph( h1, h2 ) );
+        }
+        
+    /**
+        Weak test for "same graph": adding this to one is visible in t'other.
+        Stopgap for use in testCanFindCreatedGraph.
+        TODO: clean that test up (need help from DB group)
+    */
+    private boolean sameGraph( Graph g1, Graph g2 )
+        {
+        Node S = node( "S" ), P = node( "P" ), O = node( "O" );
+        g1.add( new Triple( S, P, O ) );
+        g2.add( new Triple( O, P, S ) );
+        return g2.contains( S, P, O ) && g1.contains( O, P, S );
+        }
+        
+    /**
+        Test that we can remove a graph from the factory without disturbing
+        another graph's binding.
+     */
+    public void testCanRemoveGraph()
+        {
+        String alpha = "bingo", beta = "brillo";
+        Graph g1 = gf.createGraph( alpha );
+        Graph g2 = gf.createGraph( beta );
+        testExists( alpha );
+        testExists( beta );
+        gf.removeGraph( alpha );
+        testExists( beta );
+        testDoesNotExist( alpha );
         }
     }
 

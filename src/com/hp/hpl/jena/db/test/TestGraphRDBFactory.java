@@ -1,40 +1,59 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFactory.java,v 1.6 2003-05-03 11:40:31 chris-dollin Exp $
+  $Id: TestGraphRDBFactory.java,v 1.1 2003-05-03 11:40:30 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.test;
+package com.hp.hpl.jena.db.test;
 
-/**
- 	@author kers
-*/
-
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
-import com.hp.hpl.jena.db.test.*;
-import com.hp.hpl.jena.shared.*;
-
-import java.util.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
 
 import junit.framework.*;
 
-public class TestFactory extends GraphTestBase
-    {
-    public TestFactory( String name )
-        { super( name ); };
-        
-    public static TestSuite suite()
-        { return new TestSuite( TestFactory.class ); }   
-        
-    public void testFactory()
-        {
-        Graph g = Factory.createDefaultGraph();
-        }
-        
-    }
+/**
+ 	@author hedgehog
+    
+    Test the RDB graph factory, based on the abstract test class. We track the
+    current graph factory so that we can discard all the graphs we create during
+    the test.
+*/
 
+public class TestGraphRDBFactory extends AbstractTestGraphFactory
+    {
+    /**
+        A clean test connection for all the graph factories.
+    */
+    IDBConnection connection = TestConnection.makeAndCleanTestConnection();
+    
+    public TestGraphRDBFactory( String name )
+        { super( name ); }
+
+    public static TestSuite suite()
+        { return new TestSuite( TestGraphRDBFactory.class ); }
+
+    /**
+        The current factory object, or null when there isn't one.
+     */
+    private GraphRDBFactory current;
+    
+    /**
+        Invent a new factory on the connection, record it, and return it.    
+    */
+    public GraphFactory getGraphFactory()
+        { return current = new GraphRDBFactory( connection ); }    
+        
+    /**
+        Run the parent teardown, and then remove all the freshly created graphs.
+    */
+    public void tearDown()
+        {
+        super.tearDown();
+        if (current != null) current.removeAll();
+        }
+    }
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

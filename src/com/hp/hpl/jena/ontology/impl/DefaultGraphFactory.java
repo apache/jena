@@ -1,35 +1,25 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DefaultGraphFactory.java,v 1.3 2003-05-03 09:24:28 chris-dollin Exp $
+  $Id: DefaultGraphFactory.java,v 1.4 2003-05-03 11:40:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.impl;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphFactory;
-import com.hp.hpl.jena.mem.GraphMem;
-
+import com.hp.hpl.jena.graph.impl.*;
 
 /**
  * I pulled this out of the OntDocumentManager file (method
  * getDefaultGraphFactory, in order to reuse it.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  * 
- * @deprecated Subsumed by SimpleGraphFactory
+ * @deprecated Subsumed by SimpleGraphFactory - Chris.
  *
  */
 
-public class DefaultGraphFactory implements GraphFactory {
-	public Graph getGraph() {
-	     return new GraphMem();
-	 }
-     
-     public Graph createGraph( String name )
-        { throw new UnsupportedOperationException( "" ); }
-       
-    public Graph openGraph( String name )
-        { throw new UnsupportedOperationException( "" ); }
-}
+public class DefaultGraphFactory extends SimpleGraphFactory 
+    {
+	public DefaultGraphFactory() { super();} 
+    }
 /*
 	(c) Copyright Hewlett-Packard Company 2003
 	All rights reserved.

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: GraphFactory.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-02 15:29:47 $
+ * Last modified on   $Date: 2003-05-03 11:40:31 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ package com.hp.hpl.jena.graph;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: GraphFactory.java,v 1.2 2003-05-02 15:29:47 chris-dollin Exp $
+ * @version CVS $Id: GraphFactory.java,v 1.3 2003-05-03 11:40:31 chris-dollin Exp $
  */
 public interface GraphFactory 
 {
@@ -55,14 +55,37 @@ public interface GraphFactory
         Create a new graph associated with the given name. If this factory
         already knows about a graph with this name, throw an AlreadyExistsException.
         Otherwise create and return the new graph.
+        
+        @param name the name to give to the new graph
+        @exception AlreadyExistsException if that name is already bound.
     */
     public Graph createGraph( String name );
     
     /**
         Find an existing graph that this factory knows about under the given
         name. If no such graph exists, throw a DoesNotExistException.
+        
+        @param name the name of the graph to find and return
+        @exception DoesNotExistException if there's no such named graph
     */
     public Graph openGraph( String name );
+    
+    /**
+        Remove the association between the name and the graph. create
+        will now be able to create a graph with that name, and open will no
+        longer be able to find it. Throws an exception if there's no such graph.
+        The graph itself is not touched.
+        
+        @param name the name to disassociate
+        @exception DoesNotExistException if the name is unbound
+    */
+    public void removeGraph( String name );
+    
+    /**
+        Close the factory - no more requests need be honoured, and any clean-up
+        can be done.
+    */
+    public void close();
 }
 
 

@@ -1,18 +1,22 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBFactory.java,v 1.1 2003-05-02 15:28:29 chris-dollin Exp $
+  $Id: GraphRDBFactory.java,v 1.2 2003-05-03 11:39:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphFactory;
+import com.hp.hpl.jena.graph.*;
+
+import java.util.*;
 
 /**
-    A GraphFactory that produces Graphs from database connections.
+    A GraphFactory that produces Graphs from database connections. 
+    The connection is supplied when the factory is constructed. All the
+    created graphs are tracked so that we can supply a removeAll call
+    to dispose of them.
 
     @author kers 
 */
@@ -21,20 +25,59 @@ public class GraphRDBFactory implements GraphFactory
     {
     private IDBConnection c;
     private int counter = 0;
+    private Set created = new HashSet();
     
+    /**
+        Construct a new GraphRDB factory based on the supplied DB connection.
+        @param c the database connection
+    */
     public GraphRDBFactory( IDBConnection c ) { this.c = c; }
      
+    /**
+     	@see com.hp.hpl.jena.graph.GraphFactory#getGraph()
+     */
     public Graph getGraph()
-        { return createGraph( "<anon" + counter++ + ">" ); }
+        { return createGraph( "anon_" + counter++ + "" ); }
     
+    /**
+     	Create an RDB graph and remember its name.
+     	@see com.hp.hpl.jena.graph.GraphFactory#createGraph(java.lang.String)
+     */
     public Graph createGraph( String name )
         {
         Graph p = c.getDefaultModelProperties().getGraph();
+        created.add( name );
         return new GraphRDB( c, name, p, true );
         }
     
     public Graph openGraph( String name )
         { return new GraphRDB( c, name, null, false ); }
+        
+    /**
+     	Remove a graph from the database - at present, this has to be done by
+        opening it first.
+        
+     	@see com.hp.hpl.jena.graph.GraphFactory#removeGraph(java.lang.String)
+     */
+    public void removeGraph( String name )
+        {
+        GraphRDB toDelete = (GraphRDB) openGraph( name );
+        toDelete.remove();
+        toDelete.close();
+        created.remove( name );
+        }
+        
+    /**
+        Remove all the graphs that have been created by this factory.
+    */
+    public void removeAll()
+        {
+        Iterator it = new HashSet( created ).iterator();
+        while (it.hasNext()) removeGraph( (String) it.next() );
+        }
+        
+    public void close()
+        { /* should consider - do we close the connection or not? */ }
     }
 
 /*

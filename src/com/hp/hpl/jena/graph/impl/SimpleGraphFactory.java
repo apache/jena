@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleGraphFactory.java,v 1.1 2003-05-03 09:08:30 chris-dollin Exp $
+  $Id: SimpleGraphFactory.java,v 1.2 2003-05-03 11:40:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -14,7 +14,9 @@ import java.util.*;
 
 /**
 	@author hedgehog
-
+    
+    A SimpleGraphFactory produces memory-based graphs and records them
+    in a local map.
 */
 
 public class SimpleGraphFactory implements GraphFactory 
@@ -22,9 +24,16 @@ public class SimpleGraphFactory implements GraphFactory
     private int counter = 0;
     private Map graphs = new HashMap();
     
+    /**
+        Get "a" graph - create a new one with a unique (within this factory) name,
+        which we generate by counting up.
+    */
 	public Graph getGraph()
-        { return createGraph( "<anon" + counter++ + ">" ); }
+        { return createGraph( "anon_" + counter++ + "" ); }
         
+    /**
+        Create a graph and record it with the given name in the local map.
+     */
     public Graph createGraph( String name )
         {
         Graph already = (Graph) graphs.get( name );
@@ -38,12 +47,31 @@ public class SimpleGraphFactory implements GraphFactory
             throw new AlreadyExistsException( name );
         }
         
+    /**
+        Open (aka find) a graph with the given name in the local map.
+     */
     public Graph openGraph( String name )
         {
         Graph already = (Graph) graphs.get( name );
         if (already == null) throw new DoesNotExistException( name );
         return already;
         }
+        
+    /**
+        Remove the mapping from name to any graph from the local map.
+     */
+    public void removeGraph( String name )
+        {
+        Graph already = (Graph) graphs.get( name );
+        if (already == null) throw new DoesNotExistException( name );
+        graphs.remove( name );
+        }
+     
+    /**
+        Close this factory - we choose to do nothing.
+     */
+    public void close()
+        { /* nothing to do */ }
 	}
 
 
