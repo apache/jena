@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.13 2003-07-18 15:14:00 chris-dollin Exp $
+  $Id: Reifier.java,v 1.14 2003-07-21 14:26:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -76,6 +76,12 @@ public interface Reifier extends GetTriple
         this reifier.
     */
     ExtendedIterator allNodes();
+    
+    /**
+        return an iterator over all the nodes that are reifiying t in 
+        this reifier.
+    */    
+    ExtendedIterator allNodes( Triple t );
     
     /**
         remove any existing binding for _n_; hasNode(n) will return false
