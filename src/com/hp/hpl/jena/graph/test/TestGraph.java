@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraph.java,v 1.4 2003-04-15 09:55:28 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.5 2003-04-22 15:03:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -72,6 +72,32 @@ public class TestGraph extends GraphTestBase
         g2.add( triple( "x rdf:object O" ) );
         assertEquals( "", 1, g1.size() );
         assertEquals( "", 1, g2.size() );
+        }
+
+    public void testHasTransactions()
+        { testHasTransactions( Factory.createDefaultGraph() ); }
+                
+    /**
+        Test that Graphs have transaction support methods, and that if they fail
+        on some g they fail because they do not support the operation.
+    */
+    public static void testHasTransactions( Graph g )
+        {
+        TransactionHandler th = g.getTransactionHandler();
+        th.transactionsSupported();
+        try { th.begin(); } catch (UnsupportedOperationException x) {}
+        try { th.abort(); } catch (UnsupportedOperationException x) {}
+        try { th.commit(); } catch (UnsupportedOperationException x) {}
+        }
+        
+    public static void testHasBulkUpdates( Graph g )
+        {
+        BulkUpdateHandler bu = g.getBulkUpdateHandler();
+        }
+        
+    public static void testHasCapabilities( Graph g )
+        {
+        Capabilities c = g.getCapabilities();
         }
     }
 

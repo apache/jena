@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.5 2003-04-16 20:19:08 jeremy_carroll Exp $
+  $Id: Graph.java,v 1.6 2003-04-22 15:02:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -29,6 +29,15 @@ public interface Graph  {
     
     /** returns this Graph's query handler */
     QueryHandler queryHandler();
+    
+    /** returns this Graph's transaction handler */
+    TransactionHandler getTransactionHandler();
+    
+    /** returns this Graph's bulk-update handler */
+    BulkUpdateHandler getBulkUpdateHandler();
+    
+    /** returns this Graph's capabilities */
+    Capabilities getCapabilities();
     
     /** 
         returns this Graph's reifier. Each call on a given Graph gets the same

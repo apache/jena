@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.9 2003-04-16 20:19:09 jeremy_carroll Exp $
+  $Id: GraphBase.java,v 1.10 2003-04-22 15:02:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -35,6 +35,15 @@ public abstract class GraphBase implements Graph {
 	public QueryHandler queryHandler() {
 		return new SimpleQueryHandler(this);
 	}
+    
+    public TransactionHandler getTransactionHandler()
+        { return new SimpleTransactionHandler(); }
+        
+    public BulkUpdateHandler getBulkUpdateHandler()
+        { return null; }
+        
+    public Capabilities getCapabilities()
+        { return null; }
 
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#add(Triple)

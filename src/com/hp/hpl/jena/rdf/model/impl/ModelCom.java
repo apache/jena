@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2003-04-22 12:43:25 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2003-04-22 15:03:43 $'
  */
 
 public class ModelCom 
@@ -1036,18 +1036,18 @@ implements Model, ModelI, PrefixMapping
         }
         return IteratorFactory.asStmtIterator(iter,this);
     }
-	
-    public Model begin() throws RDFException {
-        throw new RDFException(RDFException.UNSUPPORTEDOPERATION);
-    }
+
+    public boolean supportsTransactions() 
+        { return getGraph().getTransactionHandler().transactionsSupported(); }
+    	
+    public Model begin() 
+        { getGraph().getTransactionHandler().begin(); return this; }
     
-    public Model abort() throws RDFException {
-        throw new RDFException(RDFException.UNSUPPORTEDOPERATION);
-    }
+    public Model abort() 
+        { getGraph().getTransactionHandler().abort(); return this; }
     
-    public Model commit() throws RDFException {
-        throw new RDFException(RDFException.UNSUPPORTEDOPERATION);
-    }
+    public Model commit() 
+        { getGraph().getTransactionHandler().commit(); return this; }
     
     public boolean independent() {
         return true;
@@ -1183,8 +1183,6 @@ implements Model, ModelI, PrefixMapping
     public void close() {
         graph.close();
     }
-    
-    public boolean supportsTransactions() {return false;}
     
     public boolean supportsSetOperations() {return true;}
     
