@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.29 2004-08-13 17:12:58 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.30 2004-08-31 13:17:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -447,8 +447,8 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Query q = new Query( getGraphWith( "?X ?? foo; ?Y ?? bar" ) );
         List bindings = ebList( g, q, nodes( "?X ?Y" ) );
         assertEquals( 1, bindings.size() );
-        assertEquals( node( "x" ), ((List) bindings.get(0)).get(0) );
-        assertEquals( node( "y" ), ((List) bindings.get(0)).get(1) );
+        assertEquals( node( "x" ), ((Domain) bindings.get(0)).get(0) );
+        assertEquals( node( "y" ), ((Domain) bindings.get(0)).get(1) );
         }
         
      /**
