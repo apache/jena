@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.5 2003-04-09 10:24:41 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.6 2003-04-09 11:04:12 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -75,7 +75,7 @@ public class ARP implements ARPErrorNumbers {
 
     static private class Fake extends EncodingMap {
         static {
-            EncodingMap.fJava2IANAMap.put("ISO8859_15_FDIS","ISO-8859-15");
+        //    EncodingMap.fJava2IANAMap.put("ISO8859_15_FDIS","ISO-8859-15");
             Iterator it = EncodingMap.fJava2IANAMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry me = (Map.Entry) it.next();
