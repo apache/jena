@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.23 2003-11-29 15:07:52 jeremy_carroll Exp $
+    $Id: testWriterAndReader.java,v 1.24 2003-12-04 20:50:51 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -17,7 +17,7 @@ import java.io.*;
 import java.util.*;
 
 import junit.framework.*;
-//import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * This will test any Writer and Reader pair.
@@ -26,7 +26,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2003-11-29 15:07:52 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2003-12-04 20:50:51 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -37,7 +37,7 @@ public class testWriterAndReader
 	static private int lastTest = 9;
 	static private int repetitionsJ = 6;
     
- //   protected static Logger logger = Logger.getLogger( testWriterAndReader.class );
+  protected static Logger logger = Logger.getLogger( testWriterAndReader.class );
     
 	String lang;
 	String test;
@@ -394,7 +394,22 @@ public class testWriterAndReader
 				//       System.err.println("OK");
 
 				if (!keepFiles) {
-					tmpFile1.delete();
+					try {
+				  	tmpFile1.delete();
+					}
+					catch (RuntimeException e) {
+						// Avoid 1.4 dependency for catching java.nio.BufferOverflowException
+						if (e.getClass().getName().endsWith("BufferOverflowException")) {
+						  if (!linuxFileDeleteErrorFlag) {
+							    linuxFileDeleteErrorFlag = true;
+							    logger.error(tmpFile1.getAbsolutePath() + " File deletion problem - known to occur on RedHat 9 with Java 1.4.1_03",e);
+							    logger.error("Further occurrences will be ignored.");
+						  }
+						  // else nothing.
+						} else {
+							throw e;
+						}
+					}
 				}
 
 			}
@@ -407,7 +422,7 @@ public class testWriterAndReader
 		if (showProgress)
 			System.out.println("End of " + test);
 	}
-    
+  static boolean linuxFileDeleteErrorFlag = false;
 	/**Deletes cnt edges from m chosen by random.
 	 * @param cnt The number of statements to delete.
 	 * @param m A model with more than cnt statements.
@@ -542,5 +557,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.23 2003-11-29 15:07:52 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.24 2003-12-04 20:50:51 jeremy_carroll Exp $
  */
