@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.36 $
+ * Revision           $Revision: 1.37 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-21 15:00:00 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-07-16 13:15:01 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.36 2004-06-21 15:00:00 chris-dollin Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.37 2004-07-16 13:15:01 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -105,7 +105,7 @@ public class OntDocumentManager
     public static final Property USE_DECLARED_NS_PREFIXES = vocab.createProperty( NS, "useDeclaredNsPrefixes" );
 
     /** Default document manager instance */
-    private static OntDocumentManager s_instance = new OntDocumentManager();
+    private static OntDocumentManager s_instance = null;
 
 
     // Instance variables
@@ -201,6 +201,9 @@ public class OntDocumentManager
      * @return The default, global instance of a document manager
      */
     public static OntDocumentManager getInstance() {
+        if (s_instance == null) {
+            s_instance = new OntDocumentManager();
+        }
         return s_instance;
     }
 
