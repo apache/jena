@@ -86,6 +86,8 @@
             <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/graph/**"/>
             <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/datatypes/**"/>
+            <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/mem/**"/>
             <fileset dir="${orig-src.dir}"
                      includes="com/hp/hpl/jena/n3/**"/>
@@ -215,7 +217,7 @@
 	         doctitle="${Name} Framework"
 	         overview="${src.dir}/link2readme.html"
 	         bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
-	         packagenames="com.hp.hpl.*" 
+	         packagenames="com.hp.hpl.*"
 		/>
     </target>
 
@@ -272,7 +274,7 @@
         </copy>
 
         <copy todir="${dist.dir}/${doc.dir}">
-            <fileset dir="${doc.dir}" includes="**"/>
+            <fileset dir="${doc.dir}" includes="**" excludes="tutorial/**"/>
         </copy>
 
         <copy todir="${dist.dir}/modules">
