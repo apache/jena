@@ -21,6 +21,7 @@ public class FileUtils
     public static final String langXMLAbbrev    = "RDF/XML-ABBREV" ;
     public static final String langNTriple      = "N-TRIPLE" ;
     public static final String langN3           = "N3" ;
+    public static final String langTurtle       = "TURTLE" ;
     // Non-standard
     public static final String langBDB          = "RDF/BDB" ;
     public static final String langSQL          = "RDF/SQL" ;
@@ -81,10 +82,11 @@ public class FileUtils
             return langSQL ;
         
         String suffix = getFilenameExt( name );
-        if (suffix.equals( "n3" )) return langN3;
-        if (suffix.equals( "nt" )) return langNTriple;
-        if (suffix.equals( "rdf" )) return langXML;
-        if (suffix.equals( "owl" )) return langXML;
+        if (suffix.equals( "n3" ))   return langN3;
+        if (suffix.equals( "nt" ))   return langNTriple;
+        if (suffix.equals( "ttl" ))  return langTurtle ;
+        if (suffix.equals( "rdf" ))  return langXML;
+        if (suffix.equals( "owl" ))  return langXML;
         return otherwise; 
     }    
    
