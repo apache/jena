@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.n3;
 
-//import org.apache.log4j.Logger;
+//import org.apache.commons.logging.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 /** A simple N3 writer - writes N3 out as triples with prefixes done.
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *  Very simple.  
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTriples.java,v 1.3 2003-08-27 13:01:45 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterTriples.java,v 1.4 2003-12-04 12:03:21 andy_seaborne Exp $
  */
 
 public class N3JenaWriterTriples extends N3JenaWriterCommon

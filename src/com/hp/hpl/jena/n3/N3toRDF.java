@@ -11,15 +11,16 @@ import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.vocabulary.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.18 2003-10-24 11:07:49 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.19 2003-12-04 12:03:22 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
-    protected static Logger logger = Logger.getLogger( N3toRDF.class );
+    protected static Log logger = LogFactory.getLog( N3toRDF.class );
 	static public boolean VERBOSE = false ;
 	
 	Model model ;

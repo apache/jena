@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: QueryTestScripts.java,v 1.16 2003-11-27 17:46:24 andy_seaborne Exp $
+ * $Id: QueryTestScripts.java,v 1.17 2003-12-04 12:07:38 andy_seaborne Exp $
  */
 
 
@@ -20,14 +20,15 @@ import com.hp.hpl.jena.rdql.*;
 
 import com.hp.hpl.jena.vocabulary.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /** Test scripts for RDQL - loads, executes and checks (with JUnit) a collection of
  *  queries.  New tests added as new featues appera and bugs are reported by
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.16 2003-11-27 17:46:24 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.17 2003-12-04 12:07:38 andy_seaborne Exp $
  */
 
 
@@ -42,7 +43,7 @@ public class QueryTestScripts extends TestSuite
     static public boolean printDetails = false ;
     static public boolean displayTime = false ;
 
-    static protected Logger logger = Logger.getLogger( QueryTestScripts.class );
+    static protected Log logger = LogFactory.getLog( QueryTestScripts.class );
 
     // Instance variables.
     String controlFilename = null ;
