@@ -45,7 +45,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -150,6 +150,29 @@ public class GraphRDB extends GraphBase implements Graph {
 		
 	}
 
+	/** Add a list of triples.
+	 * As each triple is added, it is removed from the List, 
+	 * so upon a successful return the List will be empty.
+	 * 
+	 * @param triples List to be added. This is modified by the call.
+	 */
+	public void add(List triples) {
+		if(m_specializedGraphs == null)
+			throw new RDFRDBException("Error - attempt to call add on a GraphRDB that has already been closed");
+
+		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		Iterator it = m_specializedGraphs.iterator();
+		while( it.hasNext() ) {
+			SpecializedGraph sg = (SpecializedGraph) it.next();
+			sg.add( triples, complete);
+			if( complete.isDone())
+				return;
+		}
+		
+		throw new RuntimeException("Error - GraphRDB.add(List) failed to find a suitable store for at least one triple:"+triples.get(0).toString());
+		
+	}
+
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#delete(com.hp.hpl.jena.graph.Triple)
 	 */
@@ -166,6 +189,28 @@ public class GraphRDB extends GraphBase implements Graph {
 		}
 		
 		throw new RuntimeException("Error - GraphRDB.delete(Triple) failed to find a suitable store for the triple:"+t.toString());
+
+	}
+
+	/** Delete a list of triples.
+	 * As each triple is deleted, it is removed from the List, 
+	 * so upon a successful return the List will be empty.
+	 * 
+	 * @param triples List to be deleted. This is modified by the call.
+	 */
+	public void delete(List triples) {
+		if(m_specializedGraphs == null)
+			throw new RDFRDBException("Error - attempt to call delete on a GraphRDB that has already been closed");
+		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		Iterator it = m_specializedGraphs.iterator();
+		while( it.hasNext() ) {
+			SpecializedGraph sg = (SpecializedGraph) it.next();
+			sg.delete( triples, complete);
+			if( complete.isDone())
+				return;
+		}
+		
+		throw new RuntimeException("Error - GraphRDB.delete(Triple) failed to find a suitable store for at least one triple:"+triples.get(0).toString());
 
 	}
 
@@ -230,6 +275,14 @@ public class GraphRDB extends GraphBase implements Graph {
 		}
 		return result;
 	}
+
+	/* TODO - uncomment this to activate after implementation complete
+	 * (non-Javadoc)
+	 * @see com.hp.hpl.jena.graph.Graph#getBulkUpdateHandler()
+	 *
+	 public BulkUpdateHandler getBulkUpdateHandler()
+		{ return new SimpleBulkUpdateHandler( this ); }
+	 *******/
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#close()

@@ -7,6 +7,8 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import java.util.List;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -27,29 +29,46 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * in the list.
  *
  * @author csayers
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  */
 public interface SpecializedGraph {
         
-    /** 
-     * Attempt to add a triple to the specialized graph
-     * 
-     * Node that when calling add, the call will either fail (complete=false)
-     * indicating the graph can not store the triple, or succeed (complete=true)
-     * indicating that a subsequent call to contains(triple) will return true
-     * and that the add operation is complete.
-     * Adding the same triple twice is not an error and should still cause
-     * complete to be true.
-     * 
-     * If the triple can't be stored for any reason other than incompatability
-     * (for example, a lack of disk space) then the implemenation should throw
-     * a runtime exception.
-     * 
+	/** 
+	 * Attempt to add a triple to the specialized graph
+	 * 
+	 * Note that when calling add, the call will either fail (complete=false)
+	 * indicating the graph can not store the triple, or succeed (complete=true)
+	 * indicating that a subsequent call to contains(triple) will return true
+	 * and that the add operation is complete.
+	 * Adding the same triple twice is not an error and should still cause
+	 * complete to be true.
+	 * 
+	 * If the triple can't be stored for any reason other than incompatability
+	 * (for example, a lack of disk space) then the implemenation should throw
+	 * a runtime exception.
+	 * 
 	 * @param t is the triple to be added
 	 * @param complete is true if a subsequent call to contains(triple) will return true.
-     */
-    public void add(Triple t, CompletionFlag complete);
+	 */
+	public void add(Triple t, CompletionFlag complete);
+    
+	/** 
+	 * Attempt to add a list of triples to the specialized graph
+	 * 
+	 * As each triple is successfully added it is removed from the List.
+	 * If complete is true then the entire List was added and the List will 
+	 * be empty upon return.  if complete is false, then at least one triple 
+	 * remains in the List.
+	 * 
+	 * If a triple can't be stored for any reason other than incompatability
+	 * (for example, a lack of disk space) then the implemenation should throw
+	 * a runtime exception.
+	 * 
+	 * @param triples List of triples to be added.  This is modified by the call.
+	 * @param complete is true if a subsequent call to contains(triple) will return true for all triples originally in the List.
+	 */
+	public void add(List triples, CompletionFlag complete);
     
     /** 
      * Attempt to add all the triples from a graph to the specialized graph
@@ -57,7 +76,7 @@ public interface SpecializedGraph {
      * Caution - this call changes the graph passed in, deleting from 
      * it each triple that is successfully added.
      * 
-     * Node that when calling add, if complete is true, then the entire
+     * Note that when calling add, if complete is true, then the entire
      * graph was added successfully and the graph g will be empty upon
      * return.  If complete is false, then some triples in the graph could 
      * not be added.  Those triples remain in g after the call returns.
@@ -70,15 +89,31 @@ public interface SpecializedGraph {
 	 * @param complete is true if a subsequent call to contains(triple) will return true for any triple in g.
      */
     public void add(Graph g, CompletionFlag complete);
+
     /** 
      * Attempt to delete a triple from the specialized graph
      * 
 	 * @param t is the triple to be deleted
-	 * @param complete is true if the graph can guarantee that no other specialized graph 
-     * could hold any matching triples.
+	 * @param complete is true if either (i) the triple was in the graph and was deleted, or 
+	 * (ii) the triple was not in the graph the graph can guarantee that a call to add(Triple)
+	 * would have succeeded, had it been made for that same triple.
      */
     public void delete(Triple t, CompletionFlag complete);
     
+	/** 
+	 * Attempt to delete a list of triples from the specialized graph
+	 * 
+	 * As each triple is successfully deleted it is removed from the List.
+	 * If complete is true then the entire List was deleted and the List will 
+	 * be empty upon return.  If complete is false, then at least one triple 
+	 * remains in the List.
+	 * 
+	 * @param triples List of triples to be deleted.  This is modified by the call.
+	 * @param complete is true iff delete(Triple, complete) would have set 
+	 * complete==true for all triples in the List.
+	 */
+	public void delete(List triples, CompletionFlag complete);
+
     /** 
      * Compute the number of unique triples added to the Specialized Graph.
      * 
