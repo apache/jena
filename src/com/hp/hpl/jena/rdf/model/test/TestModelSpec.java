@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.26 2003-11-27 16:16:37 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.27 2004-03-16 15:00:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -66,6 +66,15 @@ public class TestModelSpec extends ModelTestBase
         assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.FileMakerSpec ) );   
         assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.MemMakerSpec ) );   
         assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.RDBMakerSpec ) );    
+        }
+    
+    public void testDefaultMaker()
+        {
+        Model spec = modelWithStatements( "_x jms:maker _y;  _y jms:reificationMode jms:rsMinimal" );
+        spec.write( System.out, "N3" );
+        ModelSpec ms = ModelFactory.createSpec( spec ) ;
+        Model m = ModelFactory.createModel( ms ) ;
+        assertTrue( m.getGraph() instanceof GraphMem );
         }
         
     public void testNotFindCreator()

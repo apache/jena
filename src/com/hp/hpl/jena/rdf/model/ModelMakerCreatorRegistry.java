@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerCreatorRegistry.java,v 1.3 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: ModelMakerCreatorRegistry.java,v 1.4 2004-03-16 15:00:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,12 +53,21 @@ public class ModelMakerCreatorRegistry
     */
     public static void register( Resource type, ModelMakerCreator mmc )
         { creators.put( type, mmc ); }        
-        
+    
+    /**
+        The default maker-creator, hauled out here as a constant in case we
+        consider changing it [and so it has an identifying name].
+    */
+    private static final ModelMakerCreator defaultMakerCreator =  new MemMakerCreator();
+    
     /**
         Register the three standard MakerCreators under their JMS Resources.  
+        We also recognise a non-specific MakerSpec as meaning a default
+        maker type.
     */
     static
         {
+        register( JMS.MakerSpec, defaultMakerCreator );    
         register( JMS.FileMakerSpec, new FileMakerCreator() );    
         register( JMS.MemMakerSpec, new MemMakerCreator() );    
         register( JMS.RDBMakerSpec, new RDBMakerCreator() );    

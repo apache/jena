@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.23 2004-03-16 13:26:45 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.24 2004-03-16 15:00:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -249,8 +249,6 @@ public abstract class ModelSpecImpl implements ModelSpec
         
     public static ModelMaker createMakerByRoot( Resource root, Model fullDesc )
         { Resource type = findSpecificType( fullDesc, root, JMS.MakerSpec );
-//        System.err.println( ">> " + root + " has specific type: " + type );
-//        fullDesc.write( System.out, "N3" );
         ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
         if (mmc == null) throw new RuntimeException( "no maker type" );  
         return mmc.create( fullDesc, root ); }

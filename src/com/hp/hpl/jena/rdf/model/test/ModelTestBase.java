@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.19 2004-01-16 16:06:18 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.20 2004-03-16 15:00:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -45,9 +45,9 @@ public class ModelTestBase extends GraphTestBase
     public static Statement statement( Model m, String fact )
          {
          StringTokenizer st = new StringTokenizer( fact );
-         Resource sub = resource( m, st.nextToken() );
-         Property pred = property( m, st.nextToken() );
-         RDFNode obj = rdfNode( m, st.nextToken() ); // m.createResource( st.nextToken() );
+         Resource sub = resource( st.nextToken() );
+         Property pred = property( st.nextToken() );
+         RDFNode obj = rdfNode( aModel, st.nextToken() );
          return m.createStatement( sub, pred, obj );    
          }    
          
