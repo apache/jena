@@ -11,7 +11,7 @@
 		<h1 style="text-align: center; line-height: 18pt">Migrating from Jena1  to Jena 2</h1>
 		<p>Jena 2 supports the Jena 1 API. However a number of changes have been made that will cause existing code not to run out of the box. The Jena team expect that there will be tools to help with the migration of Jena 1 code, but they don't exist yet, as we are not encouraging folks to migrate.</p>
 		<p>The changes are conceptually minor, mostly just renaming things into a more sensible pattern.
-                   A single exception is a bug fix on the I/O API.
+        Exceptions are reification and a bug fix on the I/O API.
                 </p>
 		<h2>What Must be changed:</h2>
 		<h3>package renaming:</h3>
@@ -38,6 +38,13 @@
                 not-so-very-portable character encoding used in a java.io.FileWriter
                 is explicit in the XML document. See <a href="IO/iohowto.html#rush">the IO mini HowTo</a>
                 for more explanation.</p>
+
+		<h3>reification changes</h3>
+			Statements are no longer Resources. Instead Statements can be
+			converted into Resources using the asResource() method. These
+			new Resources are <i>ReifiedStatement</i> objects. See
+			<a href="reify-api.html">the API proposal</a> document for
+			the moment.
 		<h2>What Should be Changed</h2>
 		<h3>new SimpleSelector</h3>
 		<ul>

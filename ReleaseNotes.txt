@@ -9,7 +9,7 @@ It is a preview release, not intended for serious development.  Developers
 are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
 
 This release does not support persistence of RDF data whether relational
-databases or BerlekleyDB databases.
+First release of ontology APIdatabases or BerlekleyDB databases.
 
 For guidance on porting code from Jena 1, see doc/migrating1-2.html
 

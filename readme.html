@@ -55,11 +55,16 @@ reification in line with the WG specification. The Jena team intend to
 restore the missing functionality as soon as possible. </p>
 
 <blockquote>
-	<strong>changes since preview 1</strong>
-	<p>
-	a new interface for <strong>reified statements</strong> has been
+	<strong>changes since preview 1</strong> [see also ReleaseNotes.txt]
+	<ul>
+	<li>a new interface for <strong>reified statements</strong> has been
 	added.	
-	</p>
+	<li>RDQL has support for typed values and built-in standard namespaces,
+	and uses the fast-path query interface.
+	<li>N3 has support for typed literal syntax.
+	<li>IO has many bug-fixes and conformance with latest WG decisions.
+	<li>Ontology API first release
+	</ul>
 </blockquote>
 
 <p>The Jena team do not recommend migrating from Jena 1 to Jena 2 at this
@@ -113,8 +118,10 @@ queries on to database engines.
 	test.bat          // on windows
 	. test.sh         // on unix
 	</pre>
-	You may see some warnings about some tests being suppressed,
-	but the remaining 1000+ tests should run successfully.
+	You may see a warning about "DAML tests suppressed for the moment",
+	but the (approximately 1400) tests should all pass. If you are
+	behind a firewall, you may have to configure a proxy - see below
+	for details.
 	</li>
 
 </ul>
