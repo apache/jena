@@ -10,7 +10,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.util.*;
 
 import java.util.*;
 
@@ -48,7 +47,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
