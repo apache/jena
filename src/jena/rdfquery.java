@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.2 2003-01-28 10:39:26 chris-dollin Exp $
+ * @version $Id: rdfquery.java,v 1.3 2003-01-29 13:53:34 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -60,6 +60,8 @@ public class rdfquery
 
     public static void main (String [] argv)
     {
+        System.err.println("Jena2 RDQL") ;
+        
         //Log.getInstance().setConsoleHandler();
         Log.getInstance().setHandler(new PlainLogHandler());
 
