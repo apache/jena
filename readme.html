@@ -5,7 +5,7 @@
 <head>
   <title>Jena README</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-  <link href="doc/styles/usermanual.css" rel="stylesheet" type="text/css">
+  <link href="doc/styles/doc.css" rel="stylesheet" type="text/css">
 </head>
 
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
@@ -53,22 +53,14 @@ features:</p>
   <dd>The Jena2 persistence subsystem implements an extension to the Jena Model 
   class that provides persistence for models through use of a back-end database 
   engine. Jena2 is largely backwards-compatible for Jena1 applications with the 
-  exception of some database configuration options. The default Jena2 database 
-  layout uses a denormalized schema in which literals and resource URIs are 
-  stored directly in statement tables. This differs from Jena1 in which all 
-  literals and resources were stored in common tables that were referenced by 
-  statements. Thus, the Jena2 layout enables faster insertion and retrieval but 
-  uses more storage than Jena1. Configuration options are available that give 
-  Jena2 users some control over the degree of denormalization in order to reduce 
-  storage consumption.</dd>
-<dd>&nbsp;</dd>
-  <dd>
-  The persistence subsystem supports a Fastpath capability for RDQL queries that 
+  exception of some database configuration options. However, the persistence 
+  subsystem has been largely reimplemented for Jena2. In particular, Jena2 uses 
+  a different database layout than Jena1 that enables trade-offs between 
+  retrieval time and  disk space usage. Jena2 also supports a Fastpath capability for RDQL queries that 
   dynamically generates SQL queries to perform as much of the RDQL query as 
-  possible within an SQL database engine. Currently, Jena2 can use three SQL 
-  database engines, MySQL, Oracle and PostgreSQL. These are supported on Linux 
-  and WindowsXP. As with Jena1, the persistence subsystem is designed to be 
-  portable to other SQL database engines.</dd>
+  possible within an SQL database engine. See the <a href="doc/DB/index.html">
+  persistence documentation</a> for more details.
+  </dd>
 <dd>&nbsp;</dd>
     <dt><b>Reasoning Subsystem</b></dt>
     <dd>The Jena2 reasoner subsystem includes a generic rule based inference
