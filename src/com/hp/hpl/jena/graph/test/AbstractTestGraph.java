@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.15 2003-07-10 09:01:33 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.16 2003-07-10 09:35:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -52,6 +52,41 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertTrue( g.find( triple( "?? y z" ) ).hasNext() );
         assertTrue( g.find( triple( "x ?? z" ) ).hasNext() );
         assertTrue( g.find( triple( "x y ??" ) ).hasNext() );
+        }
+        
+    public void testContainsConcrete()
+        {
+        Graph g = getGraph();
+        graphAdd( g, "s P o; _x _R _y; x S 0" );
+        assertTrue( g.contains( triple( "s P o" ) ) );
+        assertTrue( g.contains( triple( "_x _R _y" ) ) );
+        assertTrue( g.contains( triple( "x S 0" ) ) );
+    /* */
+        assertFalse( g.contains( triple( "s P Oh" ) ) );
+        assertFalse( g.contains( triple( "S P O" ) ) );
+        assertFalse( g.contains( triple( "s p o" ) ) );
+        assertFalse( g.contains( triple( "_x _r _y" ) ) );
+        assertFalse( g.contains( triple( "x S 1" ) ) );
+        }
+        
+    public void testContainsFluid()
+        {
+        Graph g = getGraph();
+        graphAdd( g, "x R y; a P b" );
+        assertTrue( g.contains( triple( "?? R y" ) ) );
+        assertTrue( g.contains( triple( "x ?? y" ) ) );
+        assertTrue( g.contains( triple( "x R ??" ) ) );
+        assertTrue( g.contains( triple( "?? P b" ) ) );
+        assertTrue( g.contains( triple( "a ?? b" ) ) );
+        assertTrue( g.contains( triple( "a P ??" ) ) );
+        assertTrue( g.contains( triple( "?? R y" ) ) );
+    /* */
+        assertFalse( g.contains( triple( "?? R b" ) ) );
+        assertFalse( g.contains( triple( "a ?? y" ) ) );
+        assertFalse( g.contains( triple( "x P ??" ) ) );
+        assertFalse( g.contains( triple( "?? R x" ) ) );
+        assertFalse( g.contains( triple( "x ?? R" ) ) );
+        assertFalse( g.contains( triple( "a S ??" ) ) );
         }
         
     public void testAGraph()
