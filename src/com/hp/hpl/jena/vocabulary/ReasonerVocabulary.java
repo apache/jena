@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.3 2003-06-18 07:58:37 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.4 2003-06-18 08:41:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.reasoner.ReasonerRegistry;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-18 07:58:37 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-18 08:41:05 $
  */
 public class ReasonerVocabulary {
     
@@ -107,8 +107,8 @@ public class ReasonerVocabulary {
             PROPtraceOn = ResourceFactory.createProperty(PropURI+"#", "traceOn");
             PROPruleMode = ResourceFactory.createProperty(PropURI+"#", "ruleMode");
             PROPruleSet = ResourceFactory.createProperty(PropURI+"#", "ruleSet");
-            PROPenableOWLTranslation= ResourceFactory.createProperty(PropURI+"#", "enableOWLTranslation");
-            PROPenableOWLTranslation= ResourceFactory.createProperty(PropURI+"#", "enableTGCCaching");
+            PROPenableOWLTranslation = ResourceFactory.createProperty(PropURI+"#", "enableOWLTranslation");
+            PROPenableTGCCaching = ResourceFactory.createProperty(PropURI+"#", "enableTGCCaching");
         } catch (Exception e) {
             System.err.println("Initialization error: " + e);
             e.printStackTrace(System.err);
