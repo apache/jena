@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.9 2003-08-26 03:01:13 wkw Exp $
+  $Id: TestBasicOperations.java,v 1.10 2003-08-26 17:47:21 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -286,7 +286,7 @@ public class TestBasicOperations extends TestCase {
 		addRemove(model.createStatement(s, p, o));
 	}
 	
-	public void testPerfixCache() throws java.lang.Exception {
+	public void testPrefixCache() throws java.lang.Exception {
 		// in this test, add a number of long prefixes until the cache
 		// overflows and then make sure they can be retrieved.
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
