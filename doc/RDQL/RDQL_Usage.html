@@ -2,67 +2,77 @@
 <HTML>
 <HEAD>
 <TITLE>RDQL Usage</TITLE>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css">
+<style>
+.box { margin-left : 5% ;
+       margin-right : 7% ;
+       border: 1px solid ;
+       background-color: #F0F0F0; 
+       padding: 10;
+       page-break-inside: avoid 
+       }
+</style>
 </HEAD>
 <BODY>
 <h1>Usage</h1>
 <p>There are two ways to use RDQL : from the command line and in Java programs.</p>
 <h2><b>Command Line</b></h2>
 <p>The main class is jena.rdfquery:</p>
-<p>java -cp ... jena.rdfquery [--data modelFile] [--query File | queryString]</p>
+<pre>java -cp ... jena.rdfquery [--data modelFile] [--query File | queryString]</pre>
 <p>With no arguments, it prints a usage message.</p>
 <h2><b>Java</b></h2>
 <p><b>Example code fragment 1 (basic template)</b></p>
-<pre>    Query query = new Query(queryString) ;
-    // Need to set the source if the query does not.
-    // This provided this override any query named source.
-    query.setSource(model);
-    QueryExecution qe = new QueryEngine(query) ;
-    QueryResults results = qe.exec() ;
-    for ( Iterator iter = results ; iter.hasNext() ; )
-    {
-        ResultBinding rbind = (ResultBinding)iter.next() ;
-        // Return from get is null if not found
-        Object obj = rbind.get(&quot;x&quot;) ;
-        // obj will be a Jena object: resource, property or RDFNode.
-    }
-    results.close() ;</pre>
+<pre class="box">Query query = new Query(queryString) ;
+// Need to set the source if the query does not.
+// This provided this override any query named source.
+query.setSource(model);
+QueryExecution qe = new QueryEngine(query) ;
+QueryResults results = qe.exec() ;
+for ( Iterator iter = results ; iter.hasNext() ; )
+{
+    ResultBinding rbind = (ResultBinding)iter.next() ;
+    // Return from get is null if not found
+    Object obj = rbind.get(&quot;x&quot;) ;
+    // obj will be a Jena object: resource, property or RDFNode.
+}
+results.close() ;</pre>
 <p>The ResultBinding class allows an alternative form which can be used to get quoted strings:</p>
-<pre>        Value v = rbind.getValue(&quot;x&quot;) ;
-        String s = (v == null) ? &quot;&lt;<NULL>null&gt;&quot; : v.asQuotedString() ;</pre>
+<pre  class="box">Value v = rbind.getValue(&quot;x&quot;) ;
+String s = (v == null) ? &quot;&lt;<NULL>null&gt;&quot; : v.asQuotedString() ;</pre>
 <p>    <b>Example code fragment 2 (using the results formatter)</b></p>
-<pre>    Query query = new Query(queryString) ;
-    query.setSource(model);
-    QueryExecution qe = new QueryEngine(query) ;
-    QueryResults results = qe.exec() ;
-    QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
-    PrintWriter pw = new PrintWriter(System.out) ;
-    fmt.printAll(pw, &quot; | &quot;) ;
-    pw.flush() ;
-    fmt.close() ;	
-    results.close() ;</pre>
+<pre  class="box">Query query = new Query(queryString) ;
+query.setSource(model);
+QueryExecution qe = new QueryEngine(query) ;
+QueryResults results = qe.exec() ;
+QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
+PrintWriter pw = new PrintWriter(System.out) ;
+fmt.printAll(pw, &quot; | &quot;) ;
+pw.flush() ;
+fmt.close() ;	
+results.close() ;</pre>
 <p>The command line usage is a wrapper around the Java interface.</p>
 <h2>Query Templates</h2>
 <p>Query templates are the ability to have a single query as a string and reuse it by setting the initial values for 
 some variables.</p>
 <p><b>Example</b></p>
-<pre>    // This query would select everything
-    Query query = new Query(&quot;SELECT * WHERE (?x, ?y, ?z)&quot;) ;
-    query.setSource(model);
-    QueryExecution qe = new QueryEngine(query) ;
+<pre  class="box">// This query would select everything
+Query query = new Query(&quot;SELECT * WHERE (?x, ?y, ?z)&quot;) ;
+query.setSource(model);
+QueryExecution qe = new QueryEngine(query) ;
 
-    ResultBinding <b>initialBinding</b> = new ResultBinding() ;
-    <b>initialBinding.add</b>(&quot;x&quot;, model.createResource(&quot;<a href="http://never/r-1">http://never/r-1</a>&quot;)) ;
-    <b>initialBinding.add</b>(&quot;y&quot;, model.createResource(&quot;<a href="http://never/p-1">http://never/p-1</a>&quot;)) ;
-    QueryResults results = qe.exec(<b>initialBinding</b> ) ;
-    // Now the query is like &quot;SELECT * WHERE (&lt;<a href="http://never/r-1">http://never/r-1</a>&gt;, &lt;<a href="http://never/p-1">http://never/p-1</a>&gt;, ?z)&quot;
-    // except ?x and ?y are bound in the result set.
+ResultBinding <b>initialBinding</b> = new ResultBinding() ;
+<b>initialBinding.add</b>(&quot;x&quot;, model.createResource(&quot;<a href="http://never/r-1">http://never/r-1</a>&quot;)) ;
+<b>initialBinding.add</b>(&quot;y&quot;, model.createResource(&quot;<a href="http://never/p-1">http://never/p-1</a>&quot;)) ;
+QueryResults results = qe.exec(<b>initialBinding</b> ) ;
+// Now the query is like &quot;SELECT * WHERE (&lt;<a href="http://never/r-1">http://never/r-1</a>&gt;, &lt;<a href="http://never/p-1">http://never/p-1</a>&gt;, ?z)&quot;
+// except ?x and ?y are bound in the result set.
 
-    for ( Iterator iter = results ; iter.hasNext() ; )
-    {
-        ResultBinding rbind = (ResultBinding)iter.next() ;
-        Object obj_x = rbind.get(&quot;x&quot;) ;
-        Object obj_z = rbind.get(&quot;z&quot;) ;
-    }
-    results.close() ;</pre>
+for ( Iterator iter = results ; iter.hasNext() ; )
+{
+    ResultBinding rbind = (ResultBinding)iter.next() ;
+    Object obj_x = rbind.get(&quot;x&quot;) ;
+    Object obj_z = rbind.get(&quot;z&quot;) ;
+}
+results.close() ;</pre>
 </BODY>
 </HTML>
