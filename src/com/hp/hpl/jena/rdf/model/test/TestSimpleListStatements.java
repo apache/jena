@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.6 2003-04-15 21:15:52 jeremy_carroll Exp $
+  $Id: TestSimpleListStatements.java,v 1.7 2003-04-15 21:56:08 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -13,7 +13,6 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
-import java.util.*;
 
 import junit.framework.*;
 

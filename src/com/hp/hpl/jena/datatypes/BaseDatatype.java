@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseDatatype.java,v 1.3 2003-04-15 20:31:55 jeremy_carroll Exp $
+ * $Id: BaseDatatype.java,v 1.4 2003-04-15 21:56:08 jeremy_carroll Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes;
 
-import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
@@ -18,7 +17,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * can inherit.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 20:31:55 $
+ * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:56:08 $
  */
 public class BaseDatatype implements RDFDatatype {
     
