@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.50 2005-02-18 15:33:35 der Exp $
+# $Id: owl-fb.rules,v 1.51 2005-02-20 11:48:28 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -106,6 +106,9 @@
 
 [rdfs12b: (rdfs:subClassOf rdfs:subPropertyOf ?z), (?z rdfs:range ?y) -> (rdfs:Class rdfs:subClassOf ?y)]
 [rdfs12b: (rdfs:subPropertyOf rdfs:subPropertyOf ?z), (?z rdfs:range ?y) -> (rdf:Property rdfs:subClassOf ?y)]
+
+[rdfsder1: (?p rdfs:range ?z) <- (?p rdfs:subPropertyOf ?q), notEqual(?p, ?q), (?q rdfs:range ?z)]
+[rdfsder2: (?p rdfs:domain ?z) <- (?p rdfs:subPropertyOf ?q), notEqual(?p, ?q), (?q rdfs:domain ?z)]
 
 #------------------------------------------------------------------
 # OWL axioms
@@ -678,6 +681,10 @@
 [validationMaxN: (?v rb:validation on()), (?C rdfs:subClassOf max(?P, ?N)) ->
     [max2b: (?X rb:violation error('too many values', 'Too many values on max-N property (prop, class)', ?P, ?C))
     			<- (?X rdf:type ?C), countLiteralValues(?X, ?P, ?M), lessThan(?N, ?M)  ] ]
+
+[validationFP: (?v rb:validation on()), (?P rdf:type owl:FunctionalProperty) ->
+    [fpb: (?X rb:violation error('too many values', 'Clashing literal values for functional property', ?P, ?V, ?U))
+    			<- (?X ?P ?V), countLiteralValues(?X, ?P, ?M), greaterThan(?M, 1) ] ]
 
 [validationIndiv: (?v rb:validation on())  ->
 	[validationIndiv: (?X rb:violation error('conflict', 'Two individuals both same and different, may be due to disjoint classes or functional properties', ?Y)) 

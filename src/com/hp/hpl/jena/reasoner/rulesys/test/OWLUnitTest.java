@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.7 2005-02-18 15:33:34 der Exp $
+ * $Id: OWLUnitTest.java,v 1.8 2005-02-20 11:49:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -24,7 +24,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-18 15:33:34 $
+ * @version $Revision: 1.8 $ on $Date: 2005-02-20 11:49:13 $
  */
 public class OWLUnitTest extends TestCase {
     
@@ -56,6 +56,7 @@ public class OWLUnitTest extends TestCase {
 
     /** The set of test cases to be used */
     public static TestDef[] testDefs = {
+        //  /*
         // subClass
         new TestDef("localtests/ManifestSubclass001.rdf", FB | MICRO | MINI),
         
@@ -141,6 +142,9 @@ public class OWLUnitTest extends TestCase {
         new TestDef("localtests/Manifest003.rdf", FB | MICRO | MINI),
         new TestDef("localtests/Manifest004.rdf", FB | MINI), // Requires equality
         new TestDef("localtests/Manifest006.rdf", FB ), // a oneOF case
+        
+        // Inheritance of domain/range by subProperties
+        new TestDef("localtests/Manifest007.rdf", FB | MICRO | MINI),
 
         // Consistency tests
         // clean case
@@ -154,6 +158,8 @@ public class OWLUnitTest extends TestCase {
         new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent3.rdf", INCONSISTENT, null), FB | MINI),
         // Distinct values for functional property
         new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent4.rdf", INCONSISTENT, null), FB |  MINI),
+        // Distinct literal values for functional property
+        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent6.rdf", INCONSISTENT, null), FB |  MINI),
         // Type clash - allValuesFrom rdfs:Literal
         new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent5.rdf", INCONSISTENT, null), FB | MICRO | MINI),
         // Intersection of disjoint classes                                     

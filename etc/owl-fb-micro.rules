@@ -107,6 +107,9 @@
 [rdfs12b: (rdfs:subClassOf rdfs:subPropertyOf ?z), (?z rdfs:range ?y) -> (rdfs:Class rdfs:subClassOf ?y)]
 [rdfs12b: (rdfs:subPropertyOf rdfs:subPropertyOf ?z), (?z rdfs:range ?y) -> (rdf:Property rdfs:subClassOf ?y)]
 
+[rdfsder1: (?p rdfs:range ?z) <- (?p rdfs:subPropertyOf ?q), notEqual(?p, ?q), (?q rdfs:range ?z)]
+[rdfsder2: (?p rdfs:domain ?z) <- (?p rdfs:subPropertyOf ?q), notEqual(?p, ?q), (?q rdfs:domain ?z)]
+
 #------------------------------------------------------------------
 # OWL axioms
 #------------------------------------------------------------------
