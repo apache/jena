@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JMS.java,v 1.11 2003-08-25 10:26:25 chris-dollin Exp $
+  $Id: JMS.java,v 1.12 2003-08-26 15:16:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -27,6 +27,8 @@ public class JMS
     public static final Property docManager = property( "docManager" );
     public static final Property importMaker = property( "importMaker" );
     public static final Property reasonsWith = property( "reasonsWith" );
+    
+    public static final Property policyPath = property( "policyPath" );
     
     public static final Property dbUser = property( "dbUser" );
     public static final Property dbPassword = property( "dbPassword" );

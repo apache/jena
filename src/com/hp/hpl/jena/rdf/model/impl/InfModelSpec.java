@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: InfModelSpec.java,v 1.2 2003-08-25 10:26:19 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.3 2003-08-26 15:16:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -43,12 +43,27 @@ public class InfModelSpec extends ModelSpecImpl
         @return a new InfModel reasoning over a new base graph.
     */
     public Model createModel()
+        { return createModel( maker.getGraphMaker().createGraph() ); }
+        
+    /**
+        Answer a new InfModel based over the graph named in the underlying ModelMaker. 
+     	@see com.hp.hpl.jena.rdf.model.ModelSpec#createModelOver(java.lang.String)
+     */
+    public Model createModelOver( String name )
+        { return createModel( maker.getGraphMaker().createGraph( name ) ); }
+        
+    /**
+        Answer an InfModel based on the given Graph which does reasoning as required
+        by this Specs reasonerResource.
+        
+     	@param base the base graph that the inference is done over
+     	@return an inference model that does this spec's reasoning over the base
+     */
+    protected Model createModel( Graph base )
         {
         String URI = reasonerResource.getURI();
         Reasoner reasoner = ReasonerRegistry.theRegistry().create( URI, null );
-        Graph baseGraph = maker.getGraphMaker().createGraph();
-        InfGraph graph = reasoner.bind( baseGraph );
-        return new InfModelImpl( graph );
+        return new InfModelImpl( reasoner.bind( base ) );     
         }
     
     /**

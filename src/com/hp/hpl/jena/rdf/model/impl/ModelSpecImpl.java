@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.15 2003-08-26 09:55:20 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.16 2003-08-26 15:16:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -64,7 +64,7 @@ public abstract class ModelSpecImpl implements ModelSpec
          
      	@see com.hp.hpl.jena.rdf.model.ModelSpec#createModel(java.lang.String)
      */
-    public Model createModel( String name )  { return null; }
+    public abstract Model createModelOver( String name );
     
     /**
         Answer the JMS subproperty of JMS.maker that describes the relationship 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.24 2003-08-22 14:34:02 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.25 2003-08-26 15:16:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,6 +61,17 @@ public class ModelFactory extends ModelFactoryBase
     */
     public static Model createModel( ModelSpec desc )
         { return desc.createModel(); }
+        
+    /**
+        Answer a fresh Model created according to the given specifictaion and based on
+        any underlying model with the given name.
+        
+     	@param desc the ModelSpec which describes the kind of model to create
+     	@param name the name of the base model in the underlying ModelMaker
+     	@return a fresh model based over the named model
+     */
+    public static Model createModelOver( ModelSpec desc, String name )
+        { return desc.createModelOver( name ); }
     
     /** 
         Answer a fresh Model with the default specification and Standard reification style

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpec.java,v 1.6 2003-08-26 09:55:35 chris-dollin Exp $
+  $Id: ModelSpec.java,v 1.7 2003-08-26 15:16:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -19,10 +19,11 @@ public interface ModelSpec
     Model createModel();
     
     /**
-        Answer a Model that fits the specification of this ModelSpec and is known by
-        the given name.
+        Answer a Model that fits the specification of this ModelSpec and is built over some
+        underlying model with the given name. [It is not necessary for the resulting model
+        to be known by that name.]
     */
-    Model createModel( String name );
+    Model createModelOver( String name );
     
     /**
         Answer an RDF description of this ModelSpec using the JMS vocabulary. The
