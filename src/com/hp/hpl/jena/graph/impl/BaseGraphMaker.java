@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.2 2003-05-13 19:18:56 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.3 2003-08-15 10:37:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -27,10 +27,21 @@ public abstract class BaseGraphMaker implements GraphMaker
     protected Reifier.Style style;
     
     /**
-        [WILL BE OBSOLETE]
-        Make a graph with an irrelevant name
+        Answer the default graph for this maker. If we haven't already made it, make it
+        now.
      */
     public Graph getGraph()
+        { 
+        if (defaultGraph == null) defaultGraph = createGraph();
+        return defaultGraph;
+        }
+        
+    private Graph defaultGraph;
+    
+    /**
+        Make a fresh anonymous graph.
+    */
+    public Graph createGraph()
         { return createGraph( "anon_" + counter++ + "", false ); }
          
      /**

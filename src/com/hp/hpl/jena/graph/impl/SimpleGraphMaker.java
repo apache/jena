@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.3 2003-07-24 15:29:31 chris-dollin Exp $
+  $Id: SimpleGraphMaker.java,v 1.4 2003-08-15 10:37:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -29,6 +29,9 @@ public class SimpleGraphMaker extends BaseGraphMaker
         { this( Reifier.Minimal ); }
         
     private Map graphs = new HashMap();
+    
+    public Graph create()
+        { return new GraphMem(); }
     
     /**
         Create a graph and record it with the given name in the local map.

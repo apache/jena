@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.8 2003-07-24 15:29:31 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.9 2003-08-15 10:37:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -44,7 +44,13 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         {
         Graph g1 = gf.getGraph();
         assertFalse( "should deliver a Graph", g1 == null );
+        assertSame( g1, gf.getGraph() );
         g1.close();
+        }
+        
+    public void testCreateGraph()
+        {
+        assertDiffer( "each created graph must differ", gf.createGraph(), gf.createGraph() );    
         }
     
     public void testAnyName()

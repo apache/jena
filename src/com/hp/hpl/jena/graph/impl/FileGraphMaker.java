@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.7 2003-07-24 15:29:31 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.8 2003-08-15 10:37:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -59,10 +59,10 @@ public class FileGraphMaker extends BaseGraphMaker
         this.root = root;
         this.deleteOnClose = deleteOnClose;       
         }
-        
-    public Graph getGraph()
-        { return FileGraph.create(); }
 
+    public Graph createGraph()
+        { return FileGraph.create(); }
+        
     public Graph createGraph( String name, boolean strict )
         {
         File f = withRoot( name );

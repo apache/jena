@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMaker.java,v 1.2 2003-08-04 11:17:50 chris-dollin Exp $
+  $Id: GraphMaker.java,v 1.3 2003-08-15 10:37:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -23,6 +23,15 @@ public interface GraphMaker
         @return a new or existing graph.
      */
     public Graph getGraph();
+    
+    /**
+        Answer a graph who's name isn't interesting. Each call delivers a different graph.
+        The GraphMaker may reserve a bunch of names for this purpose, of the form
+        "anon_<digits>", if it cannot support truly anonymous graphs.
+        
+        @return a fresh anonymous graph
+    */
+    public Graph createGraph();
     
     /**
         Create a new graph associated with the given name. If there is no such
@@ -92,7 +101,7 @@ public interface GraphMaker
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  *
- * Last modified on   $Date: 2003-08-04 11:17:50 $
+ * Last modified on   $Date: 2003-08-15 10:37:32 $
  *               by   $Author: chris-dollin $
 
  *****************************************************************************/

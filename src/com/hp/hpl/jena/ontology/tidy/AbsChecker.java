@@ -14,7 +14,7 @@ abstract class AbsChecker extends EnhGraph {
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;
 	AbsChecker(boolean lite, GraphMaker gf) {
-		super(gf.getGraph(), personality);
+		super(gf.createGraph(), personality);
 		hasBeenChecked = gf.getGraph();
 		wantLite = lite;
 	}

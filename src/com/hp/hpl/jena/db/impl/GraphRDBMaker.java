@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.8 2003-08-05 14:34:08 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.9 2003-08-15 10:37:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -41,6 +41,9 @@ public class GraphRDBMaker extends BaseGraphMaker
         }
      
     public Graph getGraph()
+        { return consGraph( null, true ); }
+        
+    public Graph createGraph()
         { return createGraph( "anon_" + counter++ + "", false ); }
     
     /**
