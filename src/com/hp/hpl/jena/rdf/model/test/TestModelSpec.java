@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.33 2004-08-13 08:42:51 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.34 2004-11-16 16:01:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -186,9 +186,8 @@ public class TestModelSpec extends ModelTestBase
         {
         OntModelSpec oms = OntModelSpec.DAML_MEM_RULE_INF;
         Model d = oms.getDescription();
-        String daml = ProfileRegistry.DAML_LANG;
     /* */
-        assertTrue( "", d.listStatements( null, JMS.ontLanguage, daml ).hasNext() );
+        assertTrue( "", d.contains( null, JMS.ontLanguage, TestModelFactory.DAMLLangResource ) );
     /* */
         StmtIterator si = d.listStatements( null, JMS.docManager, (RDFNode) null );
         Resource manager = si.nextStatement().getResource();
@@ -228,7 +227,7 @@ public class TestModelSpec extends ModelTestBase
         {
         OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
         Model spec = ModelFactory.createDefaultModel();
-        String lang = oms.getLanguage();
+        Resource lang = spec.createResource( oms.getLanguage() );
         Resource me = resource();
         Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
         spec.add( me, JMS.ontLanguage, lang );
@@ -246,7 +245,7 @@ public class TestModelSpec extends ModelTestBase
         spec.add( me, JMS.docManager, dm );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
-        assertEquals( lang, ms.getLanguage() );
+        assertEquals( lang.getURI(), ms.getLanguage() );
         assertEquals( factory.getURI(), ms.getReasonerFactory().getURI() );
         assertIsoModels( modelMaker, ms.getImportModelMaker().getDescription() );
         assertSame( odm, ms.getDocumentManager() );
@@ -256,7 +255,7 @@ public class TestModelSpec extends ModelTestBase
         {
         OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
         Model spec = ModelFactory.createDefaultModel();
-        String lang = oms.getLanguage();
+        Resource lang = spec.createResource( oms.getLanguage() );
         Resource me = resource();
         Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
         spec.add( me, JMS.ontLanguage, lang );
@@ -268,7 +267,7 @@ public class TestModelSpec extends ModelTestBase
         spec.add( me, JMS.docManager, dm );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
-        assertEquals( lang, ms.getLanguage() );
+        assertEquals( lang.getURI(), ms.getLanguage() );
         assertEquals( factory.getURI(), ms.getReasonerFactory().getURI() );
         assertSame( odm, ms.getDocumentManager() );
         }
@@ -277,7 +276,7 @@ public class TestModelSpec extends ModelTestBase
         {
         OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
         Model spec = ModelFactory.createDefaultModel();
-        String lang = oms.getLanguage();
+        Resource lang = spec.createResource( oms.getLanguage() );
         Resource me = resource();
         Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
         spec.add( me, JMS.ontLanguage, lang );
@@ -292,7 +291,7 @@ public class TestModelSpec extends ModelTestBase
         spec.add( modelMaker );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
-        assertEquals( lang, ms.getLanguage() );
+        assertEquals( lang.getURI(), ms.getLanguage() );
         assertEquals( factory.getURI(), ms.getReasonerFactory().getURI() );
         assertIsoModels( modelMaker, ms.getImportModelMaker().getDescription() );
         }
@@ -301,7 +300,7 @@ public class TestModelSpec extends ModelTestBase
         {
         OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
         Model spec = ModelFactory.createDefaultModel();
-        String lang = oms.getLanguage();
+        Resource lang = spec.createResource( oms.getLanguage() );
         Resource me = resource();
         spec.add( me, JMS.ontLanguage, lang );
         Resource m = spec.createResource();
@@ -315,7 +314,7 @@ public class TestModelSpec extends ModelTestBase
         spec.add( me, JMS.docManager, dm );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
-        assertEquals( lang, ms.getLanguage() );
+        assertEquals( lang.getURI(), ms.getLanguage() );
         assertIsoModels( modelMaker, ms.getImportModelMaker().getDescription() );
         assertSame( odm, ms.getDocumentManager() );
         }

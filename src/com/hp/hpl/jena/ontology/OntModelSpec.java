@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 12:03:13 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-11-16 16:01:47 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.32 2004-08-12 12:03:13 ian_dickinson Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.33 2004-11-16 16:01:47 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -483,7 +483,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     */
     public static String getLanguage( Model description, Resource root ) {
         Statement langStatement = description.getRequiredProperty( root, JMS.ontLanguage );
-        return langStatement.getString();
+        return langStatement.getResource().getURI();
     }
     
     /**
@@ -555,7 +555,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @param langURI the language URI 
     */
     protected void addLanguageDescription( Model d, Resource me, String langURI ) {
-        d.add( me, JMS.ontLanguage, d.createLiteral( langURI ) );
+        d.add( me, JMS.ontLanguage, d.createResource( langURI ) );
     }
     
     protected void addImportsDescription( Model d, Resource me, ModelMaker m ) {

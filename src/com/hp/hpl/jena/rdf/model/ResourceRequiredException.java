@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceRequiredException.java,v 1.3 2003-09-08 15:05:44 chris-dollin Exp $
+  $Id: ResourceRequiredException.java,v 1.4 2004-11-16 16:01:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
     Exception to throw when an RDFNode required to be a Resource isn't, or when a Node
@@ -16,10 +17,10 @@ import com.hp.hpl.jena.graph.*;
 public class ResourceRequiredException extends RDFException
     {
     public ResourceRequiredException( RDFNode n )
-        { super( OBJECTNOTRESOURCE, n.toString() ); }
+        { this( n.asNode() ); }
         
     public ResourceRequiredException( Node n )
-        { super( OBJECTNOTRESOURCE, n.toString() ); }
+        { super( OBJECTNOTRESOURCE, n.toString( PrefixMapping.Extended, true) ); }
     }
 
 /*
