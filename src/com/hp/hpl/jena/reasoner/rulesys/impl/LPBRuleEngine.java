@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.1 2003-08-21 12:04:45 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.2 2003-08-21 22:12:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-21 22:12:39 $
  */
 public class LPBRuleEngine {
     
@@ -213,8 +213,8 @@ public class LPBRuleEngine {
             ArrayList toClose = new ArrayList();
             for (Iterator i = activeInterpreters.iterator(); i.hasNext(); ) {
                 LPInterpreter interpreter = (LPInterpreter)i.next();
-                if (interpreter.iContext instanceof LPTopGoalIterator) {
-                    toClose.add(interpreter.iContext);
+                if (interpreter.getContext() instanceof LPTopGoalIterator) {
+                    toClose.add(interpreter.getContext());
                 }
             }
             for (Iterator i = toClose.iterator(); i.hasNext(); ) {
@@ -324,8 +324,8 @@ public class LPBRuleEngine {
         ArrayList contexts = new ArrayList(activeInterpreters.size());
         for (Iterator i = activeInterpreters.iterator(); i.hasNext(); ) {
             LPInterpreter interpreter = (LPInterpreter)i.next();
-            if (interpreter.iContext instanceof Generator) {
-                contexts.add(interpreter.iContext);     
+            if (interpreter.getContext() instanceof Generator) {
+                contexts.add(interpreter.getContext());     
             }
         }
         Generator.checkForCompletions(contexts);
