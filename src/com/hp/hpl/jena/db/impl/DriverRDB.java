@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.11 $ on $Date: 2003-05-07 01:04:50 $
+* @version $Revision: 1.12 $ on $Date: 2003-05-07 23:10:57 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -45,10 +45,15 @@ public abstract class DriverRDB implements IRDBDriver {
     */
    protected DBPropDatabase m_dbProps;
     
-	/**
-	* Name of this class's PSet_TripleStore_XXX class
-	*/
-   protected String m_psetClassName;
+   /**
+   * Name of this class's PSet_TripleStore_XXX class
+   */
+  protected String m_psetClassName;
+
+  /**
+  * Name of this class's PSet_TripleStore_XXX class
+  */
+ protected String m_psetReifierClassName;
 
    /**
 	* Cached name of this class's SpecializedGraph_XXX class
@@ -233,13 +238,11 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public List createSpecializedGraphs(DBPropGraph graphProperties) {
 		
-		/** TODO Uncomment this once the reifier is ready
 		// Add the reifier first
-		DBPropPSet pSetReifier = new DBPropPSet(m_sysProperties, "PSET_"+graphProperties.getName()+"_REIFIER", m_psetClassName);
+		DBPropPSet pSetReifier = new DBPropPSet(m_sysProperties, m_psetReifierClassName);
 		DBPropLSet lSetReifier = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName()+"_REIFIER", m_lsetReifierClassName);
 		lSetReifier.setPSet(pSetReifier);
 		graphProperties.addLSet(lSetReifier);
-		**/
 		
 		// Now add support all all non-reified triples
 		DBPropPSet pSet = new DBPropPSet(m_sysProperties, m_psetClassName);

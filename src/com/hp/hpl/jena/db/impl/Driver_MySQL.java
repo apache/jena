@@ -41,8 +41,10 @@ public class Driver_MySQL extends DriverRDB {
 		SQL_FILE = "etc/mysql.sql";
 		
 		m_psetClassName = myPackageName + ".PSet_TripleStore_RDB";
+		m_psetReifierClassName = myPackageName + ".PSet_ReifStore_RDB";
 		
 		m_lsetClassName = myPackageName + ".SpecializedGraph_TripleStore_RDB";						
+		m_lsetReifierClassName = myPackageName + ".SpecializedGraphReifier_RDB";							
 	}
 	
 	/**

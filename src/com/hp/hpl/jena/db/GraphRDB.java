@@ -47,7 +47,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -59,6 +59,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	protected List m_specializedGraphs = null;
 	protected List m_specializedGraphReifiers = null;
 	protected boolean m_hideReifiers = true; // Jena 1 behaviour is to hide reification triples
+	protected Reifier m_reifier = null;
 	
 	/**
 	 * Construct a new GraphRDB
@@ -299,18 +300,20 @@ public class GraphRDB extends GraphBase implements Graph {
 	 public BulkUpdateHandler getBulkUpdateHandler()
 		{ return new DBBulkUpdateHandler( this ); }
 
-	/* TODO - unoomment this to activate after implementation complete
+	/* 
 	 * (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getReifier()
-	 *
-	 * public Reifier getReifier() {
-	 * if( m_hideReifiers )
-	 *		return new DBReifier(this, m_specializedGraphReifiers, m_specializedGraphReifiers);
-	 *	else
-	 *		return new DBReifier(this, m_specializedGraphReifiers, new ArrayList());
-	 *}
 	 */
-
+	public Reifier getReifier() {
+		if (m_reifier == null) {
+			if (m_hideReifiers)
+				m_reifier = new DBReifier(this, m_specializedGraphReifiers, m_specializedGraphReifiers);
+			else
+				m_reifier = new DBReifier(this, m_specializedGraphReifiers, new ArrayList());
+		}
+		return m_reifier;
+	}
+	 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getPrefixMapping()
 	 */
