@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <!-- $Id: concurrency.html,v 1.4 2003-12-15 16:21:25 andy_seaborne Exp $ -->
+  <!-- $Id: concurrency.html,v 1.5 2004-03-22 14:27:20 andy_seaborne Exp $ -->
   <title>Concurrency in Jena</title>
   <link href="../styles/doc.css" rel="stylesheet" type="text/css">
   
@@ -77,7 +77,8 @@ threads reading the model concurrently.</p>
 
 <p>Care must be taken with iterators: unless otherwise stated, all iterators 
 must be assumed to be iterating over the datastructures in the model or graph 
-implmentation itself.&nbsp; It is not possible to safely pass these </p>
+implmentation itself.&nbsp; It is not possible to safely pass these out of
+criticial sections.</p>
 
 <h2>RDQL Query</h2>
 <p>RDQL query results are iterators and no different from other iterators in 
