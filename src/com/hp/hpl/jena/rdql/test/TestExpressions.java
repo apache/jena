@@ -26,7 +26,8 @@ public class TestExpressions extends TestSuite
     private TestExpressions(String name)
     {
     	super(name) ;
-    	
+        String xsd = "http://www.w3.org/2001/XMLSchema#" ;
+
         addTest(new TestNumeric("7", 7)) ;
         addTest(new TestNumeric("-3", -3)) ;
         addTest(new TestNumeric("3+4+5", 3+4+5)) ;
@@ -78,6 +79,20 @@ public class TestExpressions extends TestSuite
         addTest(new TestBoolean("\"fred\" eq 'fred'", false, true )) ;
         addTest(new TestBoolean("\"fred\" eq 'fr\\ed'", false, true )) ;
         addTest(new TestBoolean("\"fred\" ne \"fred\"", false, false )) ;
+        
+        // Typed literals
+        // Same types.
+        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'^^<type1>", false, true )) ;
+        addTest(new TestBoolean("'fred'^^<type1> ne 'joe'^^<type1>",  false, true )) ;
+        // Different types.
+        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'^^<type2>", false, false )) ;
+        addTest(new TestBoolean("'fred'^^<type1> ne 'fred'^^<type2>", false, true )) ;
+        
+        // true: xsd:string is sameValueAs plain (classic) RDf literal
+        addTest(new TestBoolean("'fred'^^<"+xsd+"string> eq 'fred'", false, true )) ;
+        // false: parsing created two RDF literals and these are different 
+        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'", false, false )) ;
+        addTest(new TestBoolean("'fred'^^<type1> ne 'fred'", false, true )) ;
 
         // Escapes in strings
         addTest(new TestBoolean("\"fred\\1\" eq 'fred1'", false, true )) ;
@@ -167,7 +182,9 @@ public class TestExpressions extends TestSuite
             //System.out.println("Time: "+parseTime+"ms") ;
 
             //parser.top().dump(" ");
+            parser.top().fixup(null) ;
             Expr e = (Expr)parser.top() ;
+            
 
             assertTrue("Expression is not ExprNumeric: "+e.getClass().getName() ,
                        (e instanceof ExprNumeric)) ;
@@ -220,10 +237,8 @@ public class TestExpressions extends TestSuite
             parseTime = stopTime - startTime;
             //System.out.println("Time: "+parseTime+"ms") ;
 
-            SimpleNode topNode = parser.top() ;
-            //topNode.dump("--");
-
-            Expr e = (Expr)topNode ;
+            parser.top().fixup(null) ;
+            Expr e = (Expr)parser.top() ;
 
             assertTrue("Expression is not ExprBoolean: "+e.getClass().getName(),
                        (e instanceof ExprBoolean) ) ;

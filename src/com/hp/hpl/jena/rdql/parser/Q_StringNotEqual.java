@@ -6,89 +6,29 @@
 package com.hp.hpl.jena.rdql.parser;
 
 import com.hp.hpl.jena.rdql.* ;
-import java.io.PrintWriter;
 
-class Q_StringNotEqual extends SimpleNode implements Expr, ExprBoolean
+class Q_StringNotEqual extends Q_StringEqual implements Expr, ExprBoolean
 {
-    Expr left ;
-    Expr right ;
-
-    private String printName = "str!=" ;
-    private String opSymbol = "ne" ;
-
+    static {
+        printName = "str!=" ;
+        opSymbol = "ne" ;
+    }
+    
     Q_StringNotEqual(int id) { super(id); }
 
     Q_StringNotEqual(RDQLParser p, int id) { super(p, id); }
 
-    public Value eval(Query q, ResultBinding env)
+    protected boolean rawEval(Value x, Value y)
     {
-        // There is a decision here : do we allow anything to be
-        // tested as string or do restrict ourselves to things
-        // that started as strings.  Example: A URI is not string
-        // so should be it be possible to have:
-        //      ?x ne <uri>
-        // Decision here is to allow string tests on anything.
-
-        Value x = left.eval(q, env) ;
-        Value y = right.eval(q, env) ;
-
-        // Allow anything to be forced to be a string.
-        /*
-        if ( ! x.isString() )
-            throw new EvalTypeException("Q_StringNotEqual: Wanted a string: "+x) ;
-        if ( ! y.isString() )
-            throw new EvalTypeException("Q_StringNotEqual: Wanted a string: "+y) ;
-        String xx = x.getString() ;
-        String yy = y.getString() ;
-        */
-
-        String xx = x.valueString() ;
-        String yy = y.valueString() ;
-
-        Settable result ;
-        if ( x instanceof Settable )
-            result = (Settable)x ;
-        else if ( y instanceof Settable )
-            result = (Settable)y ;
-        else
-            result = new WorkingVar() ;
-
-        // The only difference with Q_StringEqual.eval
-        boolean b = ! (xx.equals(yy)) ;
-
-        result.setBoolean(b) ;
-        return result ;
-
-    }
+        return ! super.rawEval(x, y) ;
+   }
 
     public void jjtClose()
     {
         int n = jjtGetNumChildren() ;
         if ( n != 2 )
             throw new QueryException("Q_StringNotEqual: Wrong number of children: "+n) ;
-
-        left = (Expr)jjtGetChild(0) ;
-        right = (Expr)jjtGetChild(1) ;
-    }
-
-    public String asInfixString()
-    {
-        return QueryPrintUtils.asInfixString2(left, right, printName, opSymbol) ;
-    }
-
-    public String asPrefixString()
-    {
-        return QueryPrintUtils.asPrefixString(left, right, printName, opSymbol) ;
-    }
-
-    public void print(PrintWriter pw, int level)
-    {
-        QueryPrintUtils.print(pw, left, right, printName, opSymbol, level) ;
-    }
-
-    public String toString()
-    {
-        return asInfixString() ;
+        super.jjtClose() ;
     }
 }
 

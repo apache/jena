@@ -5,65 +5,27 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: WorkingVar.java,v 1.3 2003-02-20 16:45:51 andy_seaborne Exp $
+ * @version  $Id: WorkingVar.java,v 1.4 2003-03-11 18:03:17 andy_seaborne Exp $
  */
 
 
 package com.hp.hpl.jena.rdql;
 
-import java.io.PrintWriter ;
+import com.hp.hpl.jena.rdql.parser.ParsedLiteral ;
 
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-/** Query engine working variable - different from variables in the query language.
- *  Working variables are settable values for holding intermediate results.
+/**  Working variables are settable values for holding intermediate results.
  */
 
-public class WorkingVar implements /*Value,*/ Printable, Settable, Cloneable
+public class WorkingVar extends ParsedLiteral implements Value, Printable, Settable, Cloneable
 {
-    boolean isSet = false ;
-
-    boolean isInt = false ;
-    boolean isBoolean = false ;
-    boolean isDouble = false ;
-    boolean isURI = false ;
-    boolean isString = false ;
-
-    long valInt ;
-    boolean valBoolean ;
-    double valDouble;
-    String valString ;
-    String valURI ;
-
-
-    public WorkingVar() { unset() ; }
-
-    private void unset()
-    {
-        isSet = false ;
-        // Throw away any old values
-
-        if ( isString )
-            valString = null ;
-
-        if ( isURI )
-            valURI = null ;
-
-        isInt = false ;
-        isBoolean = false ;
-        isDouble = false ;
-        isURI = false ;
-        isString = false ;
-    }
-
-    public void setInt(long i)        { unset() ; isSet = true ; isInt = true ; valInt = i ; }
-    public void setDouble(double d)   { unset() ; isSet = true ; isDouble = true ; valDouble = d ; }
-    public void setBoolean(boolean b) { unset() ; isSet = true ; isBoolean = true ; valBoolean = b ; }
-    public void setString(String s)   { unset() ; isSet = true ; isString = true ; valString = s ; }
-    public void setURI(String uri)    { unset() ; isSet = true ; isURI = true ; valURI = uri ; }
-
+    public WorkingVar() { super() ; }
+    public WorkingVar(Value v) { super(v) ; } 
+    
     //public boolean isNumber()   { return isSet && (isInt || isDouble) ; }
+    
+    // Unlike ParsedLiterals, trying to get a WorkingVar as a number (say)
+    // invokes an attempt to make it a number.
+     
     public boolean isNumber()
     {
         forceInt() ;
@@ -75,9 +37,6 @@ public class WorkingVar implements /*Value,*/ Printable, Settable, Cloneable
 
     public boolean isInt()      { forceInt() ;     return isSet && isInt ; }
     public boolean isDouble()   { forceDouble() ;  return isSet && isDouble ; }
-    public boolean isBoolean()  {                  return isSet && isBoolean ; }
-    public boolean isString()   {                  return isSet && isString ; }
-    public boolean isURI()      {                  return isSet && isURI ; }
 
     private void forceInt()
     {
@@ -112,94 +71,6 @@ public class WorkingVar implements /*Value,*/ Printable, Settable, Cloneable
         forceDouble() ;
         if ( ! isSet || ! isDouble ) throw new ValueException("Not a long: "+this) ;
         return valDouble ;
-    }
-
-    public boolean getBoolean()
-    {
-        if ( ! isSet || ! isBoolean ) throw new ValueException("Not a boolean: "+this) ;
-        return valBoolean ;
-    }
-
-    // No quoting or escape processing done
-    public String getString()
-    {
-        if ( ! isSet ) return "<<unset>>" ;
-        if ( isInt ) return Long.toString(valInt) ;
-        if ( isDouble ) return Double.toString(valDouble) ;
-        if ( isURI ) return valURI ;
-        if ( isBoolean ) return (valBoolean?"true":"false") ;
-        if ( isString ) return valString ;
-
-        return "<<unknown>>" ;
-    }
-
-    public String getURI()
-    {
-        if ( ! isSet || ! isURI ) throw new ValueException("Not a URI: "+this) ;
-        return valURI ;
-    }
-
-    public String asInfixString() { return asQuotedString() ; }
-
-    public String asQuotedString()
-    {
-        if ( ! isSet ) return "<<unset>>" ;
-        if ( isInt ) return Long.toString(valInt) ;
-        if ( isDouble ) return Double.toString(valDouble) ;
-        // Escaping needed
-        if ( isURI ) return "<"+valURI+">" ;
-        if ( isBoolean ) return (valBoolean?"true":"false") ;
-        // Escaping needed
-        if ( isString ) return "\""+valString+"\"" ;
-
-        return "<<unknown>>" ;
-    }
-
-    public String asPrefixString() { return asStringWithType() ; }
-
-    private String asStringWithType()
-    {
-        if ( ! isSet ) return "<<unset>>" ;
-        if ( isInt ) return "int:"+Long.toString(valInt) ;
-        if ( isDouble ) return "long:"+Double.toString(valDouble) ;
-        if ( isURI ) return "URI:"+valURI ;
-        if ( isBoolean ) return "boolean:"+(valBoolean?"true":"false") ;
-        if ( isString ) return "string:"+valString ;
-
-        return "<<unknown>>" ;
-    }
-
-    // Print prefix notation (multiline) for debugging
-    public void print(PrintWriter pw, int level)
-    {
-        QueryPrintUtils.indent(pw, level) ;
-        pw.println(this.asPrefixString()) ;
-    }
-
-    public String asUnquotedString()  { return getString() ; }
-    public String valueString()       { return getString() ; }
-    public String toString()          { return getString() ; }
-
-    public boolean isRDFLiteral()
-    {
-        return false;
-    }
-
-    public boolean isRDFResource()
-    {
-        return false;
-    }
-
-    public Literal getRDFLiteral()
-    {
-        throw new RDQL_InternalErrorException("A WorkingVar is never an RDF Literal") ;
-        //return null;
-    }
-
-    public Resource getRDFResource()
-    {
-        throw new RDQL_InternalErrorException("A WorkingVar is never an RDF Resource") ;
-        //return null;
     }
 }
 

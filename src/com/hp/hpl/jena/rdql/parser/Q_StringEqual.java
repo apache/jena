@@ -6,6 +6,8 @@
 package com.hp.hpl.jena.rdql.parser;
 
 import com.hp.hpl.jena.rdql.* ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+
 import java.io.PrintWriter;
 
 class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
@@ -13,14 +15,16 @@ class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
     Expr left ;
     Expr right ;
 
-    private String printName = "str=" ;
-    private String opSymbol = "eq" ;
+    static protected boolean enableRDFLiteralSameValueAs = true ;
+
+    protected static String printName = "str=" ;
+    protected static String opSymbol = "eq" ;
 
     Q_StringEqual(int id) { super(id); }
 
     Q_StringEqual(RDQLParser p, int id) { super(p, id); }
 
-    public Value eval(Query q, ResultBinding env)
+    protected boolean rawEval(Value x, Value y)
     {
         // There is a decision here : do we allow anything to be
         // tested as string or do restrict ourselves to things
@@ -28,9 +32,28 @@ class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
         // so should be it be possible to have:
         //      ?x ne <uri>
         // Decision here is to allow string tests on anything.
+        
+        // Jena2 - another decision point.
+        // If we know left and right are types/lang-tagged literals,
+        // do we apply a stricter test of "equal"?
 
-        Value x = left.eval(q, env) ;
-        Value y = right.eval(q, env) ;
+        if ( enableRDFLiteralSameValueAs && x.isRDFLiteral() && y.isRDFLiteral() )
+        {
+            Literal xLit = x.getRDFLiteral() ;
+            Literal yLit = y.getRDFLiteral() ;
+            
+//            String xDT = xLit.getDatatypeURI() ;
+//            if ( xDT == null )
+//                xDT = "<<null>>" ;
+//            String yDT = yLit.getDatatypeURI() ;
+//            if ( yDT == null )
+//                yDT = "<<null>>" ;
+//            
+//            System.err.println("StringEq: "+xLit+"^^"+xDT+" eq "+yLit+"^^"+yDT) ;
+            
+            boolean b = xLit.sameValueAs(yLit) ;  
+            return b ;
+        }
 
         // Allow anything to be forced to be a string.
         /*
@@ -45,6 +68,16 @@ class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
         String xx = x.valueString() ;
         String yy = y.valueString() ;
 
+        return (xx.equals(yy)) ;
+    }
+
+    public Value eval(Query q, ResultBinding env)
+    {
+        Value x = left.eval(q, env) ;
+        Value y = right.eval(q, env) ;
+        
+        boolean b = rawEval(x, y) ;
+                
         Settable result ;
         if ( x instanceof Settable )
             result = (Settable)x ;
@@ -53,8 +86,6 @@ class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
         else
             result = new WorkingVar() ;
 
-        // The only difference with Q_StringEqual.eval
-        boolean b = (xx.equals(yy)) ;
         result.setBoolean(b) ;
         return result ;
     }

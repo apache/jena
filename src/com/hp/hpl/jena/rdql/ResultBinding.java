@@ -11,7 +11,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.3 2003-02-20 16:45:50 andy_seaborne Exp $
+ * @version  $Id: ResultBinding.java,v 1.4 2003-03-11 18:03:16 andy_seaborne Exp $
  */
 
 
@@ -158,25 +158,14 @@ public class ResultBinding
         {
             String uri = ((Resource)arg).getURI() ;
             WorkingVar w = new WorkingVar() ;
-            if ( uri == null || uri.length() == 0 )
-            {
-                // BNode.
-                // Create a pseudo-uri for it so that filter functions
-                // can distinguish it from other bNodes resources.
-                try {
-                    uri = "anon:"+((Resource)arg).getId() ;
-                } catch (RDFException rdfEx) { throw new RDQL_InternalErrorException("ResultBinding: error on anon resource") ; }
-            }
-            w.setURI(uri) ;
+            w.setRDFResource((Resource)arg) ;
             return w ;
         }
 
-        // Literal.
-        if ( arg instanceof RDFNode )
+        if ( arg instanceof Literal )
         {
             WorkingVar w = new WorkingVar() ;
-            // Simple appearance.  Without lang tag or datatype
-            w.setString(arg.toString()) ;
+            w.setRDFLiteral((Literal)arg) ;
             return w ;
         }
 

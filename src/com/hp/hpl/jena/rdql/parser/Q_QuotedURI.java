@@ -53,6 +53,13 @@ class Q_QuotedURI extends Q_URI {
 
     private void absolute(Q_Query qnode)
     {
+        if ( qnode == null )
+        {
+            // Only occurs during testing when we jump straight into the parser.
+            isAbsolute = true ;
+            return ;
+        }
+            
         int i = seen.indexOf(prefixOperator) ;
         if ( i < 0 )
         {

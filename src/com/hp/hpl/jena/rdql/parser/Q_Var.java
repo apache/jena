@@ -30,9 +30,10 @@ class Q_Var extends SimpleNode implements Var, Expr
     {
         // Result is a copy as a bound variable.
         Value v = env.getValue(varName) ;
-        WorkingVar v2 = new WorkingVar() ;
-        v2.setString(v.getString());
+        WorkingVar v2 = new WorkingVar(v) ;
         return v2 ;
+        //v2.setString(v.getString());
+        //return v2 ;
     }
 
     public String toString() { return "?"+varName ; }

@@ -10,32 +10,31 @@ import com.hp.hpl.jena.rdf.model.*;
 
 import java.io.PrintWriter;
 
-// An implementation of value that is created
-// from the parsing process.
+// An implementation of value that is created from the parsing process.
 
 
-public class ParsedLiteral extends SimpleNode implements Value, Expr
+public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
 {
     // Used to create resources and literals
     static Model model = ModelFactory.createDefaultModel() ;
 
-    boolean isSet = false ;
+    protected boolean isSet = false ;
 
-    boolean isInt = false ;
-    boolean isBoolean = false ;
-    boolean isDouble = false ;
-    boolean isURI = false ;
-    boolean isString = false ;
-    boolean isRDFResource = false ;
-    boolean isRDFLiteral = false ;
+    protected boolean isInt = false ;
+    protected boolean isBoolean = false ;
+    protected boolean isDouble = false ;
+    protected boolean isURI = false ;
+    protected boolean isString = false ;
+    protected boolean isRDFResource = false ;
+    protected boolean isRDFLiteral = false ;
 
-    long valInt ;
-    boolean valBoolean ;
-    double valDouble ;
-    String valString ;
-    String valURI ;
-    Literal valRDFLiteral ;
-    Resource valRDFResource ;  
+    protected long valInt ;
+    protected boolean valBoolean ;
+    protected double valDouble ;
+    protected String valString ;
+    protected String valURI ;
+    protected Literal valRDFLiteral ;
+    protected Resource valRDFResource ;  
     
     //RDFNode rdfNode ;
 
@@ -43,6 +42,55 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr
     ParsedLiteral(int id) { super(id); }
 
     ParsedLiteral(RDQLParser p, int id) { super(p, id); }
+
+    public ParsedLiteral() { super(-1) ; unset() ; }
+    public ParsedLiteral(Value v)
+    {
+        super(-1) ;
+        if ( v.isBoolean() )
+        {
+            setBoolean(v.getBoolean()) ;
+            return ;
+        }
+            
+        if ( v.isInt() )
+        {
+            setInt(v.getInt()) ;
+            return ;
+        }
+
+        if ( v.isDouble() )
+        {
+            setDouble(v.getDouble()) ;
+            return ;
+        }
+
+        if ( v.isURI() )
+        {
+            setURI(v.getURI()) ;
+            return ;
+        }
+
+        if ( v.isRDFLiteral() )
+        {
+            setRDFLiteral(v.getRDFLiteral()) ;
+            return ;
+        }
+
+        if ( v.isRDFResource())
+        {
+            setRDFResource(v.getRDFResource()) ;
+            return ;
+        }
+        
+        if ( v.isString() )
+        {
+            setString(v.getString()) ;
+            return ;
+        }
+
+    }
+        
 
 
     protected void unset()
@@ -89,13 +137,13 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr
     public boolean isRDFLiteral()   { return isSet && isRDFLiteral ; }
     
 
-    protected void setInt(long i)               { unset() ; isSet = true ; isInt = true ; valInt = i ; }
-    protected void setDouble(double d)          { unset() ; isSet = true ; isDouble = true ; valDouble = d ; }
-    protected void setBoolean(boolean b)        { unset() ; isSet = true ; isBoolean = true ; valBoolean = b ; }
-    protected void setString(String s)          { unset() ; isSet = true ; isString = true ; valString = s ; }
-    protected void setURI(String uri)           { unset() ; isSet = true ; isURI = true ; isString = true ; valURI = uri ; valString = uri ; }
+    public void setInt(long i)               { unset() ; isSet = true ; isInt = true ; valInt = i ; }
+    public void setDouble(double d)          { unset() ; isSet = true ; isDouble = true ; valDouble = d ; }
+    public void setBoolean(boolean b)        { unset() ; isSet = true ; isBoolean = true ; valBoolean = b ; }
+    public void setString(String s)          { unset() ; isSet = true ; isString = true ; valString = s ; }
+    public void setURI(String uri)           { unset() ; isSet = true ; isURI = true ; isString = true ; valURI = uri ; valString = uri ; }
     
-    protected void setRDFLiteral(Literal l)
+    public void setRDFLiteral(Literal l)
     {
         unset();
         isSet = true;
@@ -105,7 +153,7 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr
         valRDFLiteral = l;
     }
     
-    protected void setRDFResource(Resource r)
+    public void setRDFResource(Resource r)
     {
         unset();
         isSet = true;
