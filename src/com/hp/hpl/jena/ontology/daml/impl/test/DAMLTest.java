@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:19 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-10 11:00:31 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -35,6 +35,7 @@ import java.util.*;
 
 import java.io.*;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
@@ -42,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.24 2004-12-06 13:50:19 andy_seaborne Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.25 2005-02-10 11:00:31 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -54,6 +55,8 @@ public class DAMLTest
     // Static variables
     //////////////////////////////////
 
+    private static Log log = LogFactory.getLog( DAMLTest.class );
+    
 
     // Instance variables
     //////////////////////////////////
@@ -105,8 +108,7 @@ public class DAMLTest
     public void testLoadOntology()
         
     {
-        DAMLModel m = ModelFactory.createDAMLModel();
-        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        DAMLModel m = getCleanModel();
         
         // first do the model read with all options turned on
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -118,7 +120,7 @@ public class DAMLTest
         //dumpModel( m );
 
         // now turn off importing - should only get the classes and properties in the source doc
-        m = ModelFactory.createDAMLModel();
+        m = getCleanModel();
         m.getLoader().setLoadImportedOntologies( false );
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
@@ -126,7 +128,7 @@ public class DAMLTest
 
         // test case for bug reported by Charlie Abela: must be able to load instance files that import
         // their own class declarations
-        m = ModelFactory.createDAMLModel();
+        m = getCleanModel();
         m.read( "file:testing/ontology/daml/test-instance-load.daml" );
         assertTrue( "Load status should be true", m.getLoadSuccessful() );
         Resource pugh = m.getResource( "http://dickinson-i-4/daml/tests/test-instance-load.daml#pugh" );
@@ -137,7 +139,7 @@ public class DAMLTest
         // test case for bug report by Michael Sintek
         // try to ascertain the most specific class we can at load time -
         // case in point is shoesize in standard example ontology
-        m = ModelFactory.createDAMLModel();
+        m = getCleanModel();
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
         DAMLProperty shoesize = (DAMLProperty) m.getProperty( "http://www.daml.org/2001/03/daml+oil-ex#shoesize" ).as( DAMLProperty.class );
@@ -154,9 +156,7 @@ public class DAMLTest
     {
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
-        DAMLModel m = ModelFactory.createDAMLModel();
-        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
-        
+        DAMLModel m = getCleanModel();
         m.read( "file:testing/ontology/daml/test-cases.daml" );
 
         //dumpModel( m );
@@ -223,8 +223,7 @@ public class DAMLTest
      * Test some of the properties of DAML classes
      */
     public void testClass() {
-        DAMLModel m = ModelFactory.createDAMLModel();
-        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        DAMLModel m = getCleanModel();
         
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -285,7 +284,7 @@ public class DAMLTest
         assertEquals( "Height should be an enumeration of 3 elements", 3, height.prop_oneOf().getList().getCount() );
 
         // daml:subClassOf is processed as rdfs:subClassOf
-        DAMLModel m0 = ModelFactory.createDAMLModel();
+        DAMLModel m0 = getCleanModel();
         m0.getLoader().setLoadImportedOntologies( true );
         m0.read( "file:testing/ontology/daml/test-cases.daml", "http://dickinson-i-4/daml/tests/test-cases.daml", null );
         String tcNs = "http://dickinson-i-4/daml/tests/test-cases.daml#";
@@ -342,7 +341,7 @@ public class DAMLTest
     public void testEquivalence() {
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
-        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLModel m = getCleanModel();
 
         // don't allow any additional info to load
         m.read( "file:testing/ontology/daml/test-cases.daml", "http://dickinson-i-4/daml/tests/test-cases.daml", null );
@@ -412,8 +411,7 @@ public class DAMLTest
      * Unit tests on DAMLProperty and its subclasses
      */
     public void testProperty() {
-        DAMLModel m = ModelFactory.createDAMLModel();
-        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        DAMLModel m = getCleanModel();
         
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -544,7 +542,7 @@ public class DAMLTest
      * Tests on lists
      */
     public void testList()    {
-        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLModel m = getCleanModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -592,7 +590,7 @@ public class DAMLTest
      * Tests on instances
      */
     public void testInstance() {
-        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLModel m = getCleanModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -614,7 +612,7 @@ public class DAMLTest
      * Tests on DAML datatypes
      */
     public void testDatatype() {
-        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLModel m = getCleanModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -638,7 +636,7 @@ public class DAMLTest
 
     
     public void testDataInstance() {
-        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLModel m = getCleanModel();
         DAMLDataInstance di = m.createDAMLDataInstance( new Integer( 9 ) );
         assertNotNull( "Failed to create data instance ", di );
         assertEquals( "data instance URI not correct ", TypeMapper.getInstance().getTypeByName( XSD.xint.getURI() ), di.getDatatype() );
@@ -657,16 +655,14 @@ public class DAMLTest
      * Test the removal of DAML objects. We'll load a model, then
      * delete everything in it one step at a time.
      */
-    public void testRemove()
-        
-    {
-        OntDocumentManager.getInstance().setProcessImports( false );
+    public void testRemove() {
         DAMLModel m = ModelFactory.createDAMLModel();
-
+        m.getDocumentManager().setProcessImports( false );
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
 
         List cache = new ArrayList();
+        checkValidLists( m, "baseline" );
         
         // remove classes, properties and instances
         for (Iterator i = m.listDAMLClasses();  i.hasNext(); ) {
@@ -674,7 +670,9 @@ public class DAMLTest
         }
         while (!cache.isEmpty()) {
             DAMLClass c = (DAMLClass) cache.remove( 0 );
+            log.debug( "Removing class " + c );
             c.remove();
+            checkValidLists( m, "remove class" );
         } 
         
         for (Iterator i = m.listDAMLInstances();  i.hasNext(); ) {
@@ -682,7 +680,9 @@ public class DAMLTest
         }
         while (!cache.isEmpty()) {
             DAMLInstance c = (DAMLInstance) cache.remove( 0 );
+            log.debug( "Removing instance " + c );
             c.remove();
+            checkValidLists( m, "remove instance" );
         } 
         
         for (Iterator i = m.listDAMLProperties();  i.hasNext(); ) {
@@ -690,16 +690,28 @@ public class DAMLTest
         }
         while (!cache.isEmpty()) {
             DAMLProperty c = (DAMLProperty) cache.remove( 0 );
+            log.debug( "Removing property " + c );
             c.remove();
+            checkValidLists( m, "remove property" );
         } 
         
-        boolean notThing = false;
+        boolean notBuiltin = false;
         for (Iterator i = m.listDAMLClasses(); i.hasNext();  ) {
-            if (!i.next().equals( DAML_OIL.Thing )) {
-                notThing = true;
+            Resource x = (Resource) i.next();
+            if (x.equals( DAML_OIL.Thing ) ||
+                x.equals( DAML_OIL.Nothing ) ||
+                x.hasProperty( DAML_OIL.complementOf, DAML_OIL.Nothing )) {
+                // is a builtin
+            }
+            else {
+                log.debug( "Unexpected class remains: " + x );
+                for (StmtIterator j = ((Resource) x).listProperties(); j.hasNext(); ) {
+                    log.debug( " ... has prop " + j.next() );
+                }
+                notBuiltin = true;
             }
         }
-        assertFalse( "Should be no more classes", notThing );
+        assertFalse( "Should be no more classes", notBuiltin );
         assertFalse( "Should be no more properties", m.listDAMLProperties().hasNext() );
         assertFalse( "Should be no more instances", m.listDAMLInstances().hasNext() );
     }
@@ -711,7 +723,7 @@ public class DAMLTest
     public void testCreate()
         
     {
-        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLModel m = getCleanModel();
 
         String cURI = "http://dickinson-i-4/daml/tests/gen#A";
         DAMLClass c = m.createDAMLClass( cURI );
@@ -745,7 +757,7 @@ public class DAMLTest
      * Testing restrictions
      */
     public void testRestriction() {
-        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLModel m = getCleanModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
@@ -782,7 +794,7 @@ public class DAMLTest
      * Test adding a model to an existing model
      */
     public void testModelAdd() {
-        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLModel m = getCleanModel();
 
         // create a daml model
         m.read( "file:testing/ontology/daml/test-add-0.daml" );
@@ -897,7 +909,7 @@ public class DAMLTest
      *
      */
     private void eqTest(EqualityTest test) {
-        DAMLModel m1 = ModelFactory.createDAMLModel();
+        DAMLModel m1 = getCleanModel();
         test.java(m1);
 
         Model m2 = ModelFactory.createDefaultModel();
@@ -976,7 +988,35 @@ public class DAMLTest
         return countIteration( m.listDAMLProperties(), true, "property = " );
     }
 
-
+    private DAMLModel getCleanModel() {
+        DAMLModel m = ModelFactory.createDAMLModel();
+        m.getDocumentManager().setProcessImports(true);
+        m.getDocumentManager().clearCache();
+        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        List ll = new ArrayList();
+        for (Iterator i = m.getImportModelMaker().listModels(); i.hasNext(); ll.add( i.next() ) );
+        for (Iterator i = ll.iterator(); i.hasNext(); ) {
+            String mName = (String) i.next();
+            m.getImportModelMaker().removeModel(mName);
+            log.debug( "Removing " + mName ); 
+        }
+        return m;
+    }
+    
+    private void checkValidLists( Model m, String label ) {
+        log.debug( "Checking lists in DAMLTest - " + label );
+        for (StmtIterator i = m.listStatements(); i.hasNext(); ) {
+            Statement s = i.nextStatement();
+            RDFNode n = s.getObject();
+            if (n instanceof Resource && ((Resource) n).canAs( RDFList.class )) {
+                if (!((RDFList) n.as(RDFList.class)).isValid()) {
+                    log.debug( "!!Found invalid list in " + label + " - " + n );
+                    assertTrue( "DAML list not valid ", false );
+                }
+            }
+        }
+    }
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
