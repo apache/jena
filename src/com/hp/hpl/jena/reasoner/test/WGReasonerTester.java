@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.4 2003-02-14 14:27:33 der Exp $
+ * $Id: WGReasonerTester.java,v 1.5 2003-04-08 09:31:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -40,7 +40,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-02-14 14:27:33 $
+ * @version $Revision: 1.5 $ on $Date: 2003-04-08 09:31:25 $
  */
 public class WGReasonerTester {
 
@@ -251,7 +251,7 @@ public class WGReasonerTester {
         
         // Signal the results        
         if (testcase != null) {
-            testcase.assertTrue(description, correct);
+            testcase.assertTrue("Test: " + test + "\n" +  description, correct);
         }
         return correct;
     }

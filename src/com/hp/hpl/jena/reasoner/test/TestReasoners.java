@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.6 2003-02-14 14:27:33 der Exp $
+ * $Id: TestReasoners.java,v 1.7 2003-04-08 09:31:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-02-14 14:27:33 $
+ * @version $Revision: 1.7 $ on $Date: 2003-04-08 09:31:25 $
  */
 public class TestReasoners extends TestCase {
     
@@ -114,7 +114,7 @@ public class TestReasoners extends TestCase {
     public void testWGRDFStests() throws IOException {
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
-        /*
+        // /*
         tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#semantic-equivalence-within-type-2", rf, this, null);
         tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#semantic-equivalence-between-datatypes", rf, this, null);
         tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#semantic-equivalence-within-type-1", rf, this, null);
@@ -130,20 +130,21 @@ public class TestReasoners extends TestCase {
         tester.runTest(tester.BASE_URI + "rdfs-no-cycles-in-subClassOf/Manifest.rdf#test001", rf, this, null);
         tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#range-clash", rf, this, null);
         tester.runTest(tester.BASE_URI + "rdfs-domain-and-range/Manifest.rdf#intensionality-range", rf, this, null);
-        tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test004", rf, this, null);
+        // tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test004", rf, this, null);
         tester.runTest(tester.BASE_URI + "rdfs-domain-and-range/Manifest.rdf#intensionality-domain", rf, this, null);
         tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test003", rf, this, null);
-        tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test002", rf, this, null);
+        // tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test002", rf, this, null);
         tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test001", rf, this, null);
         tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#non-well-formed-literal-2", rf, this, null);
         tester.runTest(tester.BASE_URI + "rdfs-container-membership-superProperty/Manifest.rdf#test001", rf, this, null);
         tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#test009", rf, this, null);
-        */
+        // */
         // Suppressed until we figure how to turn off datatype entailments and why we should want to
         //tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-2", rf, this, null);
         //tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-1", rf, this, null);
-
-        tester.runTests(rf, this, null);
+        
+        // Run all test found
+        // tester.runTests(rf, this, null);
     }
     // */
     
