@@ -1,7 +1,7 @@
 /*
   (c) (c) Copyright 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMixedGraphMem.java,v 1.1 2004-07-19 08:31:58 chris-dollin Exp $
+  $Id: TestMixedGraphMem.java,v 1.2 2004-07-19 13:50:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.mem.test;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.mem.MixedGraphMem;
 
 
 /**
