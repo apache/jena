@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.37 $
+ * Revision           $Revision: 1.38 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 15:30:37 $
+ * Last modified on   $Date: 2003-08-19 09:17:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,7 +24,6 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
@@ -49,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.37 2003-07-24 15:30:37 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.38 2003-08-19 09:17:45 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -380,7 +379,7 @@ public class OntResourceImpl
      */ 
     public void addVersionInfo( String info ) {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
-        addProperty( getProfile().VERSION_INFO(), getModel().createTypedLiteral( info, null, XSDDatatype.XSDstring ) );
+        addProperty( getProfile().VERSION_INFO(), getModel().createLiteral( info ) );
     }
 
     /**
@@ -459,7 +458,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
      */ 
     public void addLabel( String label, String lang ) {
-        addLabel( getModel().createTypedLiteral( label, lang, XSDDatatype.XSDstring ) );
+        addLabel( getModel().createLiteral( label, lang ) );
     }
 
     /**
@@ -516,7 +515,7 @@ public class OntResourceImpl
      * @return True if this resource has <code>label</code> as a label.
      */
     public boolean hasLabel( String label, String lang ) {
-        return hasLabel( getModel().createTypedLiteral( label, lang, XSDDatatype.XSDstring ) );
+        return hasLabel( getModel().createLiteral( label, lang ) );
     }
     
     /**
@@ -544,7 +543,7 @@ public class OntResourceImpl
      * @param lang A lang tag
      */
     public void removeLabel( String label, String lang ) {
-        removeLabel( getModel().createTypedLiteral( label, lang, XSDDatatype.XSDstring ) );
+        removeLabel( getModel().createLiteral( label, lang ) );
     }
     
     /**
@@ -579,7 +578,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
      */ 
     public void addComment( String comment, String lang ) {
-        addComment( getModel().createTypedLiteral( comment, lang, XSDDatatype.XSDstring ) );
+        addComment( getModel().createLiteral( comment, lang ) );
     }
 
     /**
@@ -637,7 +636,7 @@ public class OntResourceImpl
      * @return True if this resource has <code>comment</code> as a comment.
      */
     public boolean hasComment( String comment, String lang ) {
-        return hasComment( getModel().createTypedLiteral( comment, lang, XSDDatatype.XSDstring ) );
+        return hasComment( getModel().createLiteral( comment, lang ) );
     }
     
     /**
@@ -665,7 +664,7 @@ public class OntResourceImpl
      * @param lang A lang tag
      */
     public void removeComment( String comment, String lang ) {
-        removeComment( getModel().createTypedLiteral( comment, lang, XSDDatatype.XSDstring ) );
+        removeComment( getModel().createLiteral( comment, lang ) );
     }
     
     /**
