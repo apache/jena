@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryEngine.java,v 1.4 2004-12-06 13:50:13 andy_seaborne Exp $
+  $Id: SimpleQueryEngine.java,v 1.5 2004-12-09 21:52:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -44,12 +44,20 @@ public class SimpleQueryEngine
                                   
     private ExtendedIterator filter( final Stage allStages )
         {
-        final Pipe complete = allStages.deliver( new BufferPipe() );
+        // final Pipe complete = allStages.deliver( new BufferPipe() );
         return new NiceIterator()
             {
+            private Pipe complete;
+            
+            private void ensurePipe()
+                { if (complete == null) complete = allStages.deliver( new BufferPipe() ); }
+            
             public void close() { allStages.close(); clearPipe(); }
-            public Object next() { return complete.get(); }
-            public boolean hasNext() { return complete.hasNext(); }
+            
+            public Object next() { ensurePipe(); return complete.get(); }
+            
+            public boolean hasNext() { ensurePipe(); return complete.hasNext(); }
+            
             private void clearPipe()
                 { 
                 int count = 0; 
