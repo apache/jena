@@ -31,11 +31,10 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.8 $
+* @version $Revision: 1.9 $
 */
 
 public interface IRDBDriver {
-	
 	
 	/**
 	 * Set the database connection
@@ -208,10 +207,11 @@ public interface IRDBDriver {
 	 public void graphIdDealloc ( int graphId );
 
 	/**
- 	* Return the identifier of the most recently inserted auto-incremented row.
- 	* @return the identifier of the most recently inserted auto-increment row.
+ 	* Return an auto-generated identifier for a table row.
+ 	* @param tableName The name of the table for the insert.
+ 	* @return the auto-generated identifier..
  	*/
-	 public int getLastInsertID ();
+	 public int getInsertID ( String tableName );
 
     
 	/**
@@ -229,7 +229,35 @@ public interface IRDBDriver {
 	* @return The node.
 	*/
 	
-	public Node RDBStringToNode ( String RDBString );	
+	public Node RDBStringToNode ( String RDBString );
+	
+	/**
+	 * Generate an SQL string for a reified statement to match on the stmt URI. 
+	 * @return qualifier string
+	 */	
+	
+	public String genSQLReifQualStmt ();
+	
+	/**
+	 * Generate an SQL string for a reified statement to match on any subject,
+	 * predicate or object column.
+	 * @param objIsStmt If true, the object value is rdf:Statement so also match
+	 * on the hasType column. 
+	 * @return qualifier string
+	 */	
+
+	public String genSQLReifQualAnyObj( boolean objIsStmt);
+	
+	/**
+	 * Generate an SQL string for a reified statement to match on a property column.
+	 * @param reifProp The property column to match, one of S,P,O,T for subject,
+	 * predicate, object or type, respectively.
+	 * @param hasObj If true, the object value is known so do equality match. Otherwise,
+	 * just check for non-null value.
+	 * @return qualifier string
+	 */	
+	
+	public String genSQLReifQualObj ( char reifProp, boolean hasObj );
 
 
 }
