@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: ModelReifier.java,v 1.5 2003-06-23 14:59:44 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.6 2003-07-21 13:50:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -11,6 +11,12 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.util.iterator.*;
 
+/**
+    This class impedance-matches the reification requests of Model[Com] to the operations
+    supplied by it's Graph's Reifier.
+    
+    @author kers 
+*/
 public class ModelReifier
     {
     private ModelCom model;
@@ -34,8 +40,10 @@ public class ModelReifier
         }
         
     /**
-        return a version of the model, but with all its reifiying statements
+        Answer a version of the model, but with all its reifiying statements
         added.
+        @param m a model that may have reified statements
+        @return a new model, the union of m and the reification statements of m
     */
     public static Model withHiddenStatements( Model m )
         { 
@@ -43,26 +51,38 @@ public class ModelReifier
         Graph hiddenTriples = mGraph.getReifier().getHiddenTriples();
         return new ModelCom( new Union( mGraph, hiddenTriples ) );
         }
-        
+    
+    /**
+        Answer a model that consists of the hidden reification statements of this model.
+        @return a new model containing the hidden statements of this model
+    */    
     public Model getHiddenStatements()
         { return new ModelCom( reifier.getHiddenTriples() ); }
         
     /**
-        create a fresh reification of _s_ based on a fresh bnode.
+        Answer a fresh reification of a statement associated with a fresh bnode.
+        @param s a Statement to reifiy
+        @return a reified statement object who's name is a new bnode
     */
     public ReifiedStatement createReifiedStatement( Statement s )
         { return createReifiedStatement( null, s ); }
 
     /**
-        create a reification of _s_ with the given _uri_. If that _uri_ 
-        already reifies a distinct Statement, throw an AlreadyReifiedException
+        Answer a reification of  a statement with a given uri. If that uri 
+        already reifies a distinct Statement, throw an AlreadyReifiedException.
+        @param uri the URI of the resource which will reify <code>s</code>
+        @param s the Statement to reify
+        @return a reified statement object associating <code>uri</code> with <code>s</code>.
+        @throws AlreadyReifiedException if uri already reifies something else. 
     */
     public ReifiedStatement createReifiedStatement( String uri, Statement s )
         { return ReifiedStatementImpl.create( model, uri, s ); }
    
     /**
-        find any existing reified statement that reifies _s_. If there isn't one,
+        Find any existing reified statement that reifies a givem statement. If there isn't one,
         create one.
+        @param s a Statement for which to find [or create] a reification
+        @return a reification for s, re-using an existing one if possible
     */
     public Resource getAnyReifiedStatement( Statement s ) 
         {
@@ -74,43 +94,45 @@ public class ModelReifier
         }
          
     /**
-        @return true iff _s_ has a reification in this model
+        Answer true iff a given statement is reified in this model
+        @param s the statement for which a reification is sought
+        @return true iff s has a reification in this model
     */
     public boolean isReified( Statement s ) 
         { return reifier.hasTriple( s.asTriple() ); }
 
     /**
-        remove all the reifications of _s_ in this model, whatever
+        Remove all the reifications of a given statement in this model, whatever
         their associated resources.
+        @param s the statement whose reifications are to be removed
     */
     public void removeAllReifications( Statement s ) 
         { reifier.remove( s.asTriple() ); }
       
     /**
-        remove only this reification from this model.
+        Remove a given reification from this model. Other reifications of the same statement
+        are untouched.
+        @param rs the reified statement to be removed
     */  
     public void removeReification( ReifiedStatement rs )
         { reifier.remove( rs.asNode(), rs.getStatement().asTriple() ); }
         
     /**
-        return an iterator that iterates over all the reified statements
+        Answer an iterator that iterates over all the reified statements
         in this model.
+        @return an iterator over all the reifications of the model.
     */
     public RSIterator listReifiedStatements()
-        { return listReifiedStatements( Filter.any ); }
+        { return new RSIteratorImpl( findReifiedStatements() ); }
    
     /**
-        return an iterator that iterates over all the reified statements in
-        this model that reify _s_.
+        Answer an iterator that iterates over all the reified statements in
+        this model that reify a given statement.
+        @param s the statement whose reifications are sought.
+        @return an iterator over the reifications of s.
     */
     public RSIterator listReifiedStatements( Statement s )
-        { return listReifiedStatements( matching( s ) ); }
-   
-    /**
-        we need to push the filter into findReifiedStatements.
-    */
-    public RSIterator listReifiedStatements( Filter f )
-        { return new RSIteratorImpl( findReifiedStatements() .filterKeep ( f ) ); }
+        { return new RSIteratorImpl( findReifiedStatements( s.asTriple() ) ); }      
       
     /**
         the triple (s, p, o) has been asserted into the model. Any reified statements
@@ -138,33 +160,39 @@ public class ModelReifier
             createReifiedStatement( rs.getURI(), rs.getStatement() );
             }
         }
-
+        
     /**
-        a Filter that accepts only RDFNodes that correspond to ReifiedStatements
+        Answer a filter that only accepts nodes that are bound to the given triple.
+        @param t the triple that the node must be bound to
+        @return a filter that accepts only those nodes
     */
-    private Filter matching( final Statement st )
+    private Filter matching( final Triple t )
         {
         return new Filter()
             {
-            public boolean accept( Object o )
-                {
-                ReifiedStatement rs = (ReifiedStatement) ((RDFNode) o).as( ReifiedStatement.class );
-                return rs.getStatement().equals( st );
-                }
+            public boolean accept( Object o ) { return t.equals( reifier.getTriple( (Node) o ) ); }
             };
-        }
-                       
-    private ExtendedIterator findReifiedStatements()
-        {
-        Map1 map = new Map1()
-            {
-            public Object map1( Object node ) { return getRS( (Node) node ); }
-            };
-        return reifier .allNodes() .mapWith( map );
         }
         
     /**
-        return a ReifiedStatement that is based on the node _n_. 
+        A mapper that maps modes to their corresponding ReifiedStatement objects. This
+        cannot be static: getRS cannot be static, because the mapping is model-specific.
+    */
+    protected final Map1 mapToRS = new Map1()
+        {
+        public Object map1( Object node ) { return getRS( (Node) node ); }
+        };
+
+    private ExtendedIterator findReifiedStatements()
+        { return reifier .allNodes() .mapWith( mapToRS ); }
+
+    private ExtendedIterator findReifiedStatements( Triple t )
+        { return reifier .allNodes() .filterKeep( matching( t ) ).mapWith( mapToRS ); }
+        
+    /**
+        Answer a ReifiedStatement that is based on the given node. 
+        @param n the node which represents the reification (and is bound to some triple t)
+        @return a ReifiedStatement associating the resource of n with the statement of t.    
     */
     private ReifiedStatement getRS( Node n )
         {
