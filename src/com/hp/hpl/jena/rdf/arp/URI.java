@@ -96,7 +96,7 @@ import org.apache.commons.logging.LogFactory;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.13 2003-12-08 10:48:25 andy_seaborne Exp $
+* @version  $Id: URI.java,v 1.14 2004-02-18 09:17:54 chris-dollin Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -390,7 +390,7 @@ public class URI implements Serializable {
 			if (p_base == null // del jjc: && fragmentIdx != 0
 			) {
 				// Nothing to be relative against.
-				throw new RelativeURIException("No scheme found in URI." + p_uriSpec );
+				throw new RelativeURIException("No scheme found in URI '" + p_uriSpec + "'" );
 			} else {
 				if ((!p_base.isGenericURI()) && fragmentIdx != 0)
 					// Can't be relative against opaque URI (except using the #frag).
@@ -557,7 +557,7 @@ public class URI implements Serializable {
 		int index = p_uriSpec.indexOf(':');
 
 		if (index < 1)
-			throw new MalformedURIException("No scheme found in URI.");
+			throw new MalformedURIException("No scheme found in URI '" + p_uriSpec + "'" );
 
 		if (index == uriSpecLen - 1)
 			throw new MalformedURIException("A bare scheme name is not a URI.");
