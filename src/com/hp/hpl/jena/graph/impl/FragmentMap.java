@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentMap.java,v 1.9 2004-09-03 15:05:04 chris-dollin Exp $
+  $Id: FragmentMap.java,v 1.10 2004-09-06 12:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -40,6 +40,11 @@ public class FragmentMap
     public Object get( Node tag )
         { return forwardMap.get( tag ); }
     
+    public void removeFragments( Node key )
+        {
+        forwardMap.remove( key );
+        }
+    
     /**
      * @param value
      * @param key
@@ -59,6 +64,13 @@ public class FragmentMap
         {
         forwardMap.remove( key );
         inverseRemove( value, key );
+        }
+    
+    public void removeTriple( Node key )
+        {
+        Object t = forwardMap.get( key );
+        forwardMap.remove( key );
+        if (t instanceof Triple) inverseRemove( (Triple) t, key );
         }
         
     /**

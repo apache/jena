@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.22 2004-09-03 15:05:04 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.23 2004-09-06 12:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -14,6 +14,7 @@ package com.hp.hpl.jena.graph.impl;
 */
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
@@ -27,7 +28,18 @@ public class SimpleReifier implements Reifier
     private boolean intercepting = false;
     private boolean concealing = false;
     private ReificationStyle style;
+    
+    static class TMap extends FragmentMap
+        {
+        }
+    
+    static class FMap extends FragmentMap
+        {
+        }
+    
     private FragmentMap nodeMap;
+    private FragmentMap tripleMap;
+    
     private Graph reificationTriples;
     
     /** 
@@ -39,7 +51,8 @@ public class SimpleReifier implements Reifier
     public SimpleReifier( GraphBase parent, ReificationStyle style )
         {
         this.parent = parent;
-        this.nodeMap = new FragmentMap();
+        this.nodeMap = new FMap();
+        this.tripleMap = new TMap();
         this.intercepting = style.intercepts();
         this.concealing = style.conceals();
         this.style = style;
@@ -54,18 +67,19 @@ public class SimpleReifier implements Reifier
         
     /** return the triple bound to _n_ */
     public Triple getTriple( Node n )        
-        {
-        Object partial = nodeMap.get( n );
-        return
-            partial == null ? null
-            : partial instanceof Triple ? (Triple) partial
-            : getTriple( n, (Fragments) partial )
-            ;
+        { 
+        return (Triple) tripleMap.get( n );
+//        Object partial = nodeMap.get( n );
+//        return
+//            partial == null ? null
+//            : partial instanceof Triple ? (Triple) partial
+//            : getTriple( n, (Fragments) partial )
+//            ;
         }
         
-    private Triple getTriple( Node n, Fragments f )
-        { // if (f.isComplete()) System.err.println( ">> this is not supposed to happen" );
-            return f.isComplete() ? nodeMap.putTriple( n, f.asTriple() ) : null; }
+//    private Triple getTriple( Node n, Fragments f )
+//        { // if (f.isComplete()) System.err.println( ">> this is not supposed to happen" );
+//            return f.isComplete() ? nodeMap.putTriple( n, f.asTriple() ) : null; }
         
     /** true iff there is a triple bound to _n_ */
     public boolean hasTriple( Node n )
@@ -74,12 +88,12 @@ public class SimpleReifier implements Reifier
     /** */
     public ExtendedIterator allNodes()
         {
-        return WrappedIterator.create( nodeMap.tagIterator() ) .filterKeep ( completeFragment );
+        return WrappedIterator.create( tripleMap.tagIterator() );
         }
         
     public ExtendedIterator allNodes( Triple t )
         { 
-        Set s = (Set) nodeMap.inverseMap.get( t );
+        Set s = (Set) tripleMap.inverseMap.get( t );
         if (s == null)
             return NullIterator.instance;
         else
@@ -104,8 +118,9 @@ public class SimpleReifier implements Reifier
         
     protected boolean isComplete( Node n )
         {
-        Object x = nodeMap.get( n );
-        return x instanceof Triple || ((Fragments) x) .isComplete();
+        return tripleMap.get( n ) != null;
+//        Object x = nodeMap.get( n );
+//        return x instanceof Triple || ((Fragments) x) .isComplete();
         }
         
     /** 
@@ -114,13 +129,14 @@ public class SimpleReifier implements Reifier
     */
     public Node reifyAs( Node tag, Triple t )
     	{
+        Triple existing = (Triple) tripleMap.get( tag );
         Object partial = nodeMap.get( tag );
-        if (partial instanceof Triple)
-            { if (!t.equals( partial )) throw new AlreadyReifiedException( tag ); }
+        if (existing != null)
+            { if (!t.equals( existing )) throw new AlreadyReifiedException( tag ); }
         else if (partial == null)
-            nodeMap.putTriple( tag, t );
+            tripleMap.putTriple( tag, t );
         else
-            {
+            { // TODO
             FragmentMap.graphAddQuad( parent, tag, t );
             Triple t2 = getTriple( tag );
             if (t2 == null) throw new CannotReifyException( tag );
@@ -135,14 +151,14 @@ public class SimpleReifier implements Reifier
     */    	
     public void remove( Node n, Triple t )
         {
-        Object x = nodeMap.get( n );
-        if (t.equals( nodeMap.get( n ) )) 
-            { nodeMap.removeTriple( n, t ); 
+        Triple x = (Triple) tripleMap.get( n );
+        if (t.equals( x )) 
+            { tripleMap.removeTriple( n, t ); 
             if (!concealing) parentRemoveQuad( n, t ); }
         }
         
     public boolean hasTriple( Triple t )
-        { return nodeMap.hasTriple( t ); }
+        { return tripleMap.hasTriple( t ); }
           
     public boolean handledAdd( Triple t )
         {
@@ -155,7 +171,11 @@ public class SimpleReifier implements Reifier
                 {
                 Fragments fs = getFragment( t );
                 fs.add( s, t.getObject() );
-                if (fs.isComplete()) nodeMap.putTriple( t.getSubject(), fs.asTriple() );
+                if (fs.isComplete()) 
+                    {
+                    tripleMap.putTriple( t.getSubject(), fs.asTriple() );
+                    nodeMap.removeFragments( t.getSubject() );
+                    }
                 return concealing;
                 }
             }
@@ -174,7 +194,16 @@ public class SimpleReifier implements Reifier
                 {
                 Fragments fs = getFragment( t );
                 fs.remove( s, t.getObject() );
-                if (fs.isComplete()) nodeMap.putTriple( t.getSubject(), fs.asTriple() );
+                if (fs.isComplete()) 
+                    {
+                    tripleMap.putTriple( t.getSubject(), fs.asTriple() );
+                    nodeMap.removeFragments( t.getSubject() );
+                    }
+                else 
+                    {
+                    tripleMap.removeTriple( t.getSubject() );
+                    if (fs.isEmpty()) nodeMap.removeFragments( t.getSubject() );
+                    }
                 return concealing;
                 }
             }
@@ -185,11 +214,12 @@ public class SimpleReifier implements Reifier
     private Fragments getFragment( Triple t )
         {
         Node s = t.getSubject();
-        Object x = nodeMap.get( s );
+        Triple already = (Triple) tripleMap.get( s );
+        Object partial = nodeMap.get( s );
         return
-            x instanceof Triple ? explode( s, (Triple) x )
-            : x == null ? nodeMap.putFragments( s, new Fragments( s ) )
-            : (Fragments) x;
+            already != null ? explode( s, already )
+            : partial == null ? nodeMap.putFragments( s, new Fragments( s ) )
+            : (Fragments) partial;
         }
         
     private Fragments explode( Node s, Triple t )
@@ -212,8 +242,8 @@ public class SimpleReifier implements Reifier
     public Graph getHiddenTriples()
         { return style == ReificationStyle.Standard ? Graph.emptyGraph : getReificationTriples(); }
     
-    public Graph getReificationTriples()
-        { if (reificationTriples == null) reificationTriples = nodeMap.asGraph(); 
+    public Graph getReificationTriples() // TODO use DisjointUnion
+        { if (reificationTriples == null) reificationTriples = new Union( tripleMap.asGraph(), nodeMap.asGraph() ); 
         return reificationTriples; }
         
     /**
@@ -233,7 +263,7 @@ public class SimpleReifier implements Reifier
         of our node map.
     */
     public String toString()
-        { return "<R " + nodeMap + ">"; }
+        { return "<R " + nodeMap + "|" + tripleMap + ">"; }
     }
     
 /*
