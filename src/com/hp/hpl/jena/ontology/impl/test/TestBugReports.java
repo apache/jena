@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.48 $
+ * Revision           $Revision: 1.49 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 17:03:22 $
+ * Last modified on   $Date: 2004-08-12 22:31:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -1223,6 +1223,20 @@ public class TestBugReports
         
         assertEquals( m.getResource( "http://jena.hpl.hp.com/test#p1"), invQ1 );
         assertTrue( "Should be an ObjectProperty facet", invQ1 instanceof ObjectProperty );
+    }
+    
+    /** Test case for SF bug 978259 - missing supports() checks in OWL DL and Lite profiles */
+    public void test_sf_978259() {
+        OntModel md = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM );
+        OntModel ml = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM );
+        
+        DataRange drd = md.createDataRange( md.createList( new Resource[] {OWL.Thing}) );
+        
+        assertNotNull( drd );
+        
+        HasValueRestriction hvrd = md.createHasValueRestriction( null, RDFS.seeAlso, OWL.Thing );
+        
+        assertNotNull( hvrd );
     }
     
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-10 13:50:28 $
+ * Last modified on   $Date: 2004-08-12 22:31:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -30,6 +30,9 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.impl.*;
+import com.hp.hpl.jena.ontology.impl.OWLDLProfile;
+import com.hp.hpl.jena.ontology.impl.OWLProfile;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -45,7 +48,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.11 2004-05-10 13:50:28 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.12 2004-08-12 22:31:40 ian_dickinson Exp $
  */
 public class TestOntModel 
     extends ModelTestBase
@@ -530,6 +533,26 @@ public class TestOntModel
         assertNull( "Import model a should be null", m4 );
     }
     
+    /**
+     * Test that the supports checks that are defined in the OWL full profile are not
+     * missing in the DL and Lite profiles, unless by design. 
+     * Not strictly a model test, but it has to go somewhere */
+    public void testProfiles() {
+        List notInDL = Arrays.asList( new Class[] {} );
+        List notInLite = Arrays.asList( new Class[] {DataRange.class, HasValueRestriction.class} );
+        
+        Map fullProfileMap = new OWLProfileExt().getSupportsMap();
+        Map dlProfileMap = new OWLDLProfileExt().getSupportsMap();
+        Map liteProfileMap = new OWLLiteProfileExt().getSupportsMap();
+        
+        for (Iterator i = fullProfileMap.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry kv = (Map.Entry) i.next();
+            Class c = (Class) kv.getKey();
+            assertTrue( "Key in OWL DL profile: " + c.getName(), dlProfileMap.containsKey( c ) || notInDL.contains( c ));
+            assertTrue( "Key in OWL lite profile: " + c.getName(), liteProfileMap.containsKey( c ) || notInLite.contains( c ));
+        }
+    }
+    
     
     /**
         Added by kers to ensure that bulk update works; should really be a test
@@ -667,6 +690,26 @@ public class TestOntModel
     // Inner class definitions
     //==============================================================================
 
+    protected class OWLProfileExt extends OWLProfile
+    {
+        public Map getSupportsMap() {
+            return getCheckTable();
+        }
+    }
+
+    protected class OWLDLProfileExt extends OWLDLProfile
+    {
+        public Map getSupportsMap() {
+            return getCheckTable();
+        }
+    }
+
+    protected class OWLLiteProfileExt extends OWLLiteProfile
+    {
+        public Map getSupportsMap() {
+            return getCheckTable();
+        }
+    }
 }
 
 
