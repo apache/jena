@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternStage.java,v 1.8 2003-08-08 14:29:13 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.9 2003-08-15 09:45:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -58,6 +58,7 @@ public class PatternStage extends Stage
             ClosableIterator it = graph.find( p.asTripleMatch( current ) );
             while (stillOpen && it.hasNext())
                 if (p.match( current, (Triple) it.next())) nest( sink, current, index + 1 );
+            it.close();
             }
         }
     }
