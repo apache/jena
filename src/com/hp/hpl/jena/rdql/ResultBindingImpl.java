@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBindingImpl.java,v 1.2 2004-06-22 14:02:06 andy_seaborne Exp $
+ * @version  $Id: ResultBindingImpl.java,v 1.3 2004-07-30 17:36:27 andy_seaborne Exp $
  */
 
 
@@ -169,7 +169,37 @@ public class ResultBindingImpl implements ResultBinding
 //            return null ;
 //        return convert(tmp) ;
 //    }
-    
+//
+//    static private Value convert(Object arg)
+//    {
+//        if ( arg == null ) return null ;
+//
+//        if ( arg instanceof Value ) return (Value)arg ;
+//
+//        // Try to turn an RDFNode into a Value.
+//        // RDFNodes are RDF Literals, Resources, Properties or a container.
+//        // But containers are Resources.
+//
+//        // Properties and Resources
+//        if ( arg instanceof Resource )
+//        {
+//            WorkingVar w = new WorkingVar() ;
+//            w.setRDFResource((Resource)arg) ;
+//            return w ;
+//        }
+//
+//        if ( arg instanceof Literal )
+//        {
+//            WorkingVar w = new WorkingVar() ;
+//            w.setRDFLiteral((Literal)arg) ;
+//            return w ;
+//        }
+//
+//        // Opps!
+//        throw new RDQL_InternalErrorException("ResultBinding: unexpected object class: "+arg.getClass().getName()) ;
+//        //return null ;
+//    }
+
 
     /** Set the parent ResultBindingImpl.  This is only needed for testing of parts of the query engine */
     
