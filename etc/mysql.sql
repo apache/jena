@@ -150,8 +150,8 @@ insertLongObject
 INSERT INTO ${a} (Head, ChkSum, Tail) VALUES (?, ?, ?)
 
 #-------------------------------------------------------------------
-# Get the ID of the object that was just inserted
-getLastInsertID
+# Get the ID of an object that was just inserted
+getInsertID
 Select Last_Insert_ID()
 
 #-------------------------------------------------------------------
