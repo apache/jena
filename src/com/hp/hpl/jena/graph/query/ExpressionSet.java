@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionSet.java,v 1.5 2003-10-10 15:04:49 chris-dollin Exp $
+  $Id: ExpressionSet.java,v 1.6 2003-10-13 15:04:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -15,8 +15,6 @@ import java.util.*;
 */
 public class ExpressionSet 
     {
-    private Expression x = Expression.TRUE;
-
     private Set expressions = new HashSet();
     /**
         Initialise an expression set with no members.

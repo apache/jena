@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.23 2003-09-03 13:41:06 jeremy_carroll Exp $
+  $Id: Node.java,v 1.24 2003-10-13 15:02:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -37,9 +37,7 @@ public abstract class Node {
         constructor.
     */       
     public static final Node ANY = new Node_ANY();
-
-
-        
+       
     static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     
     /**
@@ -113,7 +111,7 @@ public abstract class Node {
         
     /** make a variable node with a given name */
     public static Node createVariable( String name )
-        { return create( makeVariable, "?" + name ); }
+        { return create( makeVariable, Node_Variable.variable( name ) ); }
         
     /** make a literal with specified language and XMLishness.
         _lit_ must *not* be null. This intermediate implementation logs

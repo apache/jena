@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.25 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: TestNode.java,v 1.26 2003-10-13 15:09:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -29,7 +29,7 @@ public class TestNode extends GraphTestBase
     
     public static TestSuite suite()
         { return new TestSuite( TestNode.class ); }   
-            
+    
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
     private static final LiteralLabel L = new LiteralLabel( "ashes are burning", "en", false );
@@ -225,14 +225,21 @@ public class TestNode extends GraphTestBase
     public void testGetLiteralFails( Node n )
         { try { n.getLiteral(); fail( n.getClass() + " should fail getLiteral()" ); } catch (UnsupportedOperationException e) {} }
         
+    public void testVariableSupport()
+        {
+        assertEquals( Node_Variable.variable( "xxx" ), Node_Variable.variable( "xxx" ) );
+        assertDiffer( Node_Variable.variable( "xxx" ), Node_Variable.variable( "yyy" ) );
+        assertEquals( Node_Variable.variable( "aaa" ), Node_Variable.variable( "aaa" ) );
+        assertDiffer( Node_Variable.variable( "aaa" ), Node_Variable.variable( "yyy" ) );
+        }
+    
     public void testCache()
         {
+        assertEquals( Node_Variable.variable( "xxx" ), Node_Variable.variable( "xxx" ) );
         assertTrue( "remembers URI", Node.createURI( U ) == Node.createURI( U ) );   
         assertTrue( "remembers literal", Node.createLiteral( L ) == Node.createLiteral( L ) );
         assertTrue( "remembers blanks", Node.createAnon( A ) == Node.createAnon( A ) );
         assertTrue( "remembers variables", Node.createVariable( N ) == Node.createVariable( N ) );
-        // assertTrue( "remembers valued", Node.createValued( voidTriple ) == Node.createValued( voidTriple ) );
-    /* */
         assertFalse( "is not confused", Node.createVariable( N ) == Node.createURI( N ) );
         }
         

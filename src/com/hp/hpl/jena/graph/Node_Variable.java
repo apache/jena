@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Variable.java,v 1.7 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Node_Variable.java,v 1.8 2003-10-13 15:02:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,8 +19,8 @@ public class Node_Variable extends Node_Fluid
         { super( name ); }
 
     public String getName()
-        { return ((String) label).substring( 1 ); }
-
+        { return ((VariableName) label).name; }
+    
     public Object visitWith( NodeVisitor v )
         { return v.visitVariable( this, getName() ); }
         
@@ -28,10 +28,26 @@ public class Node_Variable extends Node_Fluid
         { return true; }
         
     public String toString()
-        { return ((String) label); }
-        
+        { return "?" + ((VariableName) label).name; }
+    
     public boolean equals( Object other )
         { return other instanceof Node_Variable && label.equals( ((Node_Variable) other).label ); }
+    
+    public static Object variable( String name )
+        { return new VariableName( name ); }
+    
+    public static class VariableName
+        {
+        String name;
+        VariableName( String name ) 
+            { this.name = name; }
+        
+        public int hashCode()
+            { return name.hashCode(); }
+        
+        public boolean equals( Object other )
+            { return other instanceof VariableName && name.equals( ((VariableName) other).name );  }
+        }
     }
 
 /*
