@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on the Jena1 version of IRDBDriver by Dave Reynolds
 * 
 * @author hkuno
-* @version $Revision: 1.5 $
+* @version $Revision: 1.6 $
 */
 
 public interface IPSet {
@@ -39,9 +39,6 @@ public interface IPSet {
 	public void setMaxLiteral(int value);
 	public void setSQLType(String value);
 	public void setSkipDuplicateCheck(boolean value);
-	public void setSkipAllocateId(boolean value );
-	public void setEmptyLiteralMarker(String value );
-	public void setInsertByProcedure(boolean value);
 	public void setCachePreparedStatements(boolean value);
 
     /**
