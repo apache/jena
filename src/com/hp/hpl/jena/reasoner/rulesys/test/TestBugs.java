@@ -5,17 +5,19 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.11 2003-10-03 08:54:37 der Exp $
+ * $Id: TestBugs.java,v 1.12 2003-10-03 13:20:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import java.io.ByteArrayInputStream;
+import java.io.PrintWriter;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
+import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasonerFactory;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -30,7 +32,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-10-03 08:54:37 $
+ * @version $Revision: 1.12 $ on $Date: 2003-10-03 13:20:33 $
  */
 public class TestBugs extends TestCase {
 
@@ -289,6 +291,37 @@ public class TestBugs extends TestCase {
 //        System.out.flush();
     }
     
+    /**
+     * Test bug with leaking variables which results in an incorrect "range = Nothing" deduction.
+     */
+    public void hiddenTestRangeBug() {
+        Model model = ModelLoader.loadModel("file:testing/reasoners/bugs/rangeBug.owl");
+        Model m = ModelFactory.createDefaultModel();
+        Resource configuration =  m.createResource();
+        configuration.addProperty(ReasonerVocabulary.PROPruleMode, "hybrid");
+        configuration.addProperty(ReasonerVocabulary.PROPruleSet,  "testing/reasoners/bugs/owl-debug.rules");
+        Reasoner r = GenericRuleReasonerFactory.theInstance().create(configuration);
+//        Reasoner r = ReasonerRegistry.getOWLReasoner();
+        InfModel omodel = ModelFactory.createInfModel(r, model);
+        ((FBRuleInfGraph)omodel.getGraph()).setTraceOn(true);
+        String baseuri = "http://decsai.ugr.es/~ontoserver/bacarex2.owl#";
+        Resource js = omodel.getResource(baseuri + "JS");
+        Resource surname = omodel.getResource(baseuri + "surname");
+        omodel.setDerivationLogging(true);
+        Statement s = omodel.createStatement(surname, RDFS.range, OWL.Nothing);
+        PrintWriter out = new PrintWriter(System.out);
+        if (omodel.contains(s)) {
+            System.out.println("Found: " + s);
+            for (Iterator id = omodel.getDerivation(s); id.hasNext(); ) {
+                Derivation deriv = (Derivation) id.next();
+                deriv.printTrace(out, true);
+            }
+        } else {
+            System.out.println("NOT found: " + s);
+        }
+        out.flush();
+    }
+    
     // debug assistant
     private void tempList(Model m, Resource s, Property p, RDFNode o) {
         System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));
@@ -299,7 +332,7 @@ public class TestBugs extends TestCase {
     
     public static void main(String[] args) {
         TestBugs test = new TestBugs("test");
-        test.hiddenTestOWLLoop();
+        test.hiddenTestRangeBug();
     } 
 }
 
