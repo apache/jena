@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.5 $ on $Date: 2003-07-10 18:37:37 $
+* @version $Revision: 1.6 $ on $Date: 2003-07-11 19:17:04 $
 */
 
 public class SQLCache {
@@ -731,6 +731,7 @@ public class SQLCache {
 
 		String stmtStr = getSQLStatement("selectReified");
 		String qual = "";
+		IRDBDriver driver = m_connection.getDriver();
 		
 		if ( args.equals("") ) {
 			// case 1 <-,-,->  nothing to do.
@@ -760,49 +761,25 @@ public class SQLCache {
 			if ( !hasProp ) {
 				if ( hasSubj ) {
 					// cases 2 and 3
-					qual += genSQLFindReifStmtQual();
+					qual += driver.genSQLReifQualStmt();
 					if ( hasObj ) {
 						// case 3 above
-						qual += " AND " + genSQLFindReifObjQual(objIsStmt);
+						qual += " AND " + driver.genSQLReifQualAnyObj(objIsStmt);
 					}			
 				} else {
 					// case 4 above
-					qual += genSQLFindReifObjQual(objIsStmt);
+					qual += driver.genSQLReifQualAnyObj(objIsStmt);
 				}
 			} else {
 				// have a reified property
-				if ( hasSubj ) qual += genSQLFindReifStmtQual() + " AND ";
-				qual += genSQLFindReifPropQual(reifProp,hasObj);
+				if ( hasSubj ) qual += driver.genSQLReifQualStmt() + " AND ";
+				qual += driver.genSQLReifQualObj(reifProp,hasObj);
 			}
 			stmtStr += " AND " + qual;		
 		}
 		return stmtStr;
 	}
 	
-	protected String genSQLFindReifStmtQual () {
-		return "stmt = ?";
-	}
-	
-	protected String genSQLFindReifObjQual( boolean objIsStmt) {
-		return "( subj = ? OR prop = ? OR obj = ?" + (objIsStmt ? " OR hasType = \"T\")" : " )");
-		
-	}
-	protected String genSQLFindReifPropQual ( char reifProp, boolean hasObj ) {
-		String qual = "";
-		if ( reifProp == 'T' ) {
-			qual = "hasType = \"T\"";
-		} else {
-			String cmp = (hasObj ? " = ?" : " is not null");
-			String col = null;
-			if ( reifProp == 'S' ) col = "subj";
-			else if ( reifProp == 'P' ) col = "prop";
-			else if ( reifProp == 'O' ) col = "obj";
-			else throw new JenaException("Undefined reification property");
-		
-			qual = col + cmp;
-		}
-		return qual;	
-	}
 }
 
 /*
