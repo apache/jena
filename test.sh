@@ -1,5 +1,37 @@
 #!/bin/bash
 # run Jena tests; try and guess path separator.
-export S=":"
-if [ "$OSTYPE" == "cygwin" ]; then export S=";"; fi
-java -classpath "lib/antlr.jar${S}lib/concurrent.jar${S}lib/db3-3-11.jar${S}lib/icu4j.jar${S}lib/jakarta-oro-2.0.5.jar${S}lib/jena.jar${S}lib/junit.jar${S}lib/log4j-1.2.7.jar${S}lib/commons-logging-api.jar${S}lib/commons-logging.jar${S}lib/rdf-api-2001-01-19.jar${S}lib/xercesImpl.jar${S}lib/xmlParserAPIs.jar" junit.textui.TestRunner com.hp.hpl.jena.test.TestPackage
+
+S=":"
+if [ "$OSTYPE" == "cygwin" ]; then S=";"; fi
+
+LIBS="$(cat<<EOF
+antlr.jar
+commons-logging-api.jar
+commons-logging.jar
+concurrent.jar
+icu4j.jar
+jakarta-oro-2.0.5.jar
+jena.jar
+junit.jar
+log4j-1.2.7.jar
+rdf-api-2001-01-19.jar
+xercesImpl.jar
+xmlParserAPIs.jar
+EOF
+)"
+
+CP=""
+for jar in $LIBS
+do
+  jar="lib/${jar}"
+  if [ "$CP" == "" ]
+  then
+      CP="${jar}"
+  else
+      CP="$CP${S}${jar}"
+      fi
+  done
+
+##echo $CP
+
+java -classpath "$CP"  junit.textui.TestRunner ${1:-com.hp.hpl.jena.test.TestPackage}
