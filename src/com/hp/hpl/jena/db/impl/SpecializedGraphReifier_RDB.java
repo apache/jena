@@ -268,17 +268,14 @@ public class SpecializedGraphReifier_RDB
 		if (fragMask.hasNada())
 			return;
 			
-		boolean fragHasType = fragMask.hasType();
 		Node stmtURI = frag.getSubject();
 		
-		ResultSetTripleIterator it = m_reif.findFrag(stmtURI, frag, fragMask, my_GID);
+		ResultSetReifIterator it = m_reif.findFrag(stmtURI, frag, fragMask, my_GID);
 		if ( it.hasNext() ) {
-			it.next();
-			Triple dbFrag = it.m_triple;
-			StmtMask dbMask = new StmtMask(dbFrag);
-			if ( dbMask.equals(fragMask) ) {
+			if ( it.getFragCount() == 1 ) {
 				/* last fragment in this tuple; can just delete it */
-				it.deleteRow(); it.close();
+				m_reif.deleteFrag(frag, fragMask, my_GID);
+				it.close();
 			} else {
 				/* remove fragment from row */
 				m_reif.nullifyFrag(stmtURI, fragMask, my_GID);
@@ -286,7 +283,7 @@ public class SpecializedGraphReifier_RDB
 				/* compact remaining fragments, if possible */
 				it.close();
 				fragCompact(stmtURI);
-			}
+			}			
 			// remove cache entry, if any
 			ReifCache cachedFrag = m_reifCache.lookup(stmtURI);
 			if ( cachedFrag != null ) m_reifCache.flush(cachedFrag);		
@@ -328,7 +325,7 @@ public class SpecializedGraphReifier_RDB
 				// at this point, we can merge in the current fragment
 				m_reif.updateFrag(stmtURI, t, fm, my_GID);
 				htMask.setMerge(fm);
-				itFrag.deleteRow();
+				m_reif.deleteFrag(t, fm, my_GID);
 			}
 		}
 	}
