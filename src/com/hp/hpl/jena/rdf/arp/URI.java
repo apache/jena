@@ -96,7 +96,7 @@ import org.apache.commons.logging.LogFactory;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.14 2004-02-18 09:17:54 chris-dollin Exp $
+* @version  $Id: URI.java,v 1.15 2004-07-07 14:59:11 chris-dollin Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -666,7 +666,7 @@ public class URI implements Serializable {
 				if (index + 2 >= end
 					|| !isHex(p_uriSpec.charAt(index + 1))
 					|| !isHex(p_uriSpec.charAt(index + 2))) {
-					throw new MalformedURIException("Path contains invalid escape sequence!");
+					throw new MalformedURIException( "Path contains invalid escape sequence: " + p_uriSpec );
 				}
 			} else if (
 				!isReservedCharacter(testChar)
