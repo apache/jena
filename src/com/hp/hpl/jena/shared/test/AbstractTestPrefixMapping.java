@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.11 2003-08-27 13:07:29 andy_seaborne Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.12 2003-09-23 13:04:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -29,6 +29,16 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     static final String ropeURI = "scheme:rope/string#";
     static final String butterURI = "ftp://ftp.nowhere.at.all/cream#";
         
+    /**
+        The empty prefix is specifically allowed [for the default namespace].
+    */
+    public void testEmptyPrefix()
+        {
+        PrefixMapping pm = getMapping();
+        pm.setNsPrefix( "", crispURI );    
+        assertEquals( crispURI, pm.getNsPrefixURI( "" ) );
+        }
+
     static final String [] badNames =
         {
         "<hello>",
@@ -36,7 +46,10 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         "with a space",
         "-argument"
         };
-        
+    
+    /**
+        Test that various illegal names are trapped.
+    */    
     public void testCheckNames()
         {
         PrefixMapping ns = getMapping();
@@ -48,7 +61,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
                 ns.setNsPrefix( bad, crispURI ); 
                 fail( "'" + bad + "' is an illegal prefix and should be trapped" ); 
                 }
-            catch (PrefixMapping.IllegalPrefixException e) {}
+            catch (PrefixMapping.IllegalPrefixException e) { pass(); }
             }
         }
                  
@@ -234,7 +247,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         }
         
     /**
-        Test that adding a new prefix mapping with the same URI as the old
+        Test that adding a new non-empty prefix mapping with the same URI as the old
         one throws that old one away.
     */
     public void testSameURI()
@@ -246,6 +259,17 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( crispURI, pm.getNsPrefixURI( "sharp" ) );
         }
         
+    /**
+        Test that the empty prefix does not wipe an existing prefix for the same URI.
+    */    
+    public void testEmptyDoesNotWipeURI()
+        {
+        PrefixMapping pm = getMapping();
+        pm.setNsPrefix( "frodo", ropeURI );
+        pm.setNsPrefix( "", ropeURI );
+        assertEquals( ropeURI, pm.getNsPrefixURI( "frodo" ) );    
+        }   
+                 
     /**
         Test that adding a new prefix mapping for U from another prefix
         map throws away any existing prefix for U.
@@ -275,13 +299,13 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertSame( A, A.lock() );
     /* */    
         try { A.setNsPrefix( "crisp", crispURI ); fail( "mapping should be frozen" ); }
-        catch (PrefixMapping.JenaLockedException e) { /* correct */ }
+        catch (PrefixMapping.JenaLockedException e) { pass(); }
     /* */    
         try { A.setNsPrefixes( A ); fail( "mapping should be frozen" ); }
-        catch (PrefixMapping.JenaLockedException e) { /* correct */ }
+        catch (PrefixMapping.JenaLockedException e) { pass(); }
     /* */
         try { A.setNsPrefixes( new HashMap() ); fail( "mapping should be frozen" ); }
-        catch (PrefixMapping.JenaLockedException e) { /* correct */ }
+        catch (PrefixMapping.JenaLockedException e) { pass(); }
         }
     }
 
