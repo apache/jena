@@ -12,7 +12,7 @@ import com.hp.hpl.jena.util.Log;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.8 $
+ * @version 	$Revision: 1.9 $
  */
 public class TestPackage extends TestSuite
 {
@@ -23,7 +23,7 @@ public class TestPackage extends TestSuite
 	static String M_DB_PASSWD = "genesis";
 	static String M_DB = "Oracle";
 	static String M_DBDRIVER_CLASS = "oracle.jdbc.driver.OracleDriver";
-	*/
+	// */
 	
 	// mysql settings
 	static String M_DB_URL = "jdbc:mysql://localhost/test";
@@ -31,7 +31,8 @@ public class TestPackage extends TestSuite
 	static String M_DB_PASSWD = "";
 	static String M_DB = "MySQL";
 	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
-
+	// */
+	
     static public TestSuite suite() {
         return new TestPackage();
     }
@@ -49,7 +50,7 @@ public class TestPackage extends TestSuite
 		addTest( "TestGraphRDB", TestGraphRDB.suite());
 		addTest( "TestNsPrefix", TestNsPrefix.suite());
 		addTest( "TestPrefixMapping", TestPrefixMapping.suite());
-		addTest( "TestTransactions", TestBasicOperations.suite() );
+		addTest( "TestTransactions", TestTransactions.suite() );
 		addTest( "TestReifier", TestReifier.suite() );
 		addTest( "TestReifierCompareToMem", TestReifierCompareToMem.suite());
 
