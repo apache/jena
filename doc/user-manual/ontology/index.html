@@ -354,7 +354,12 @@ OntModelSpec.OWL_MEM_RDFS_INF</pre>
   add the entailments from the source data using the semantic rules of RDFS only. 
   This will include entailments from subclass and sub-property hierarchies, and 
   domain and range constraints, but not, for example, entailments from the disjoint-ness 
-  of classes. </p>
+  of classes. For details of reasoner capabilities, see the <a href="../inference/index.html">inference 
+  documentation</a> and the Javadoc for OntModelSpec, which contains a complete 
+  listing of pre-defined model specs and their reasoners. Note that future versions 
+  of Jena2 are likely to have a more flexible means of specifying the reasoner 
+  to use with a given ontology model, so this is one area in which the current 
+  API is expected to change.</p>
 <p><b>Note:</b> it is the choice of reasoner, <b>not</b> the choice of language 
   profile that determines which entailments are seen by the ontology model. Obviously 
   using the OWL reasoner with DAML source data will result in few additional entailments 
@@ -1361,6 +1366,6 @@ ont.addProperty( DC.creator, &quot;John Smith&quot; );</pre>
   details. </p>
 <h2 id="builtinReasoners">FAQ, common problems and other tips</h2>
 <p><i>To be completed.</i></p>
-<p class="footnote">End of document. CVS: $Id: index.html,v 1.7 2003-06-28 21:23:42 ian_dickinson Exp $</p>
+<p class="footnote">End of document. CVS: $Id: index.html,v 1.8 2003-06-28 21:35:41 ian_dickinson Exp $</p>
 </body>
 </html>
