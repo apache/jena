@@ -6,15 +6,18 @@
 
 package com.hp.hpl.jena.util.test;
 
+import java.util.Iterator ;
 import junit.framework.*;
 import org.apache.commons.logging.*;
 
 import com.hp.hpl.jena.util.LocationMapper;
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.rdf.model.Model ;
 
-/** com.hp.hpl.jena.brql.util.test.TestFileManager
+/** TestLocationMapper
  * 
  * @author Andy Seaborne
- * @version $Id: TestLocationMapper.java,v 1.3 2005-02-21 12:19:22 andy_seaborne Exp $
+ * @version $Id: TestLocationMapper.java,v 1.4 2005-03-18 21:47:06 andy_seaborne Exp $
  */
 
 public class TestLocationMapper extends TestCase
@@ -61,6 +64,31 @@ public class TestLocationMapper extends TestCase
         assertNotNull(alt) ;
         assertEquals(alt, "file:"+testingDir+"/location-mapping-test-file") ;
     }
+    
+    public void testLocationMappingFromModel()
+    {
+        Model model = FileManager.get().loadModel(testingDir+"/location-mapping-test.n3") ;
+        LocationMapper loc = new LocationMapper(model) ; 
+        
+        // Light test that the two location mappers are "the same"
+        LocationMapper locMap = new LocationMapper(mapping) ;
+        for ( Iterator iter = loc.listAltEntries() ; iter.hasNext() ; )
+        {
+            String e = (String)iter.next() ;
+            String v1 = locMap.getAltEntry(e) ;
+            String v2 = loc.getAltEntry(e) ;
+            assertEquals("Different entries", v1, v2) ;
+        }
+        for ( Iterator iter = loc.listAltPrefixes() ; iter.hasNext() ; )
+        {
+            String e = (String)iter.next() ;
+            String v1 = locMap.getAltPrefix(e) ;
+            String v2 = loc.getAltPrefix(e) ;
+            assertEquals("Different entries", v1, v2) ;
+        }
+    }
+
+
     
 }
 
