@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.9 2003-07-15 11:00:58 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.10 2003-07-16 15:29:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -68,9 +68,12 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
         
     public void add( Graph g )
+        { add( g, false ); }
+        
+    public void add( Graph g, boolean withReifications )
         { 
         addIterator( GraphUtil.findAll( g ), false );  
-        addReifications( graph, g );
+        if (withReifications) addReifications( graph, g );
         manager.notifyAddGraph( g );
         }
         
@@ -135,12 +138,15 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
             
     public void delete( Graph g )
+        { delete( g, false ); }
+        
+    public void delete( Graph g, boolean withReifications )
         { 
         if (g.dependsOn( graph ))
             delete( triplesOf( g ) );
         else
             deleteIterator( GraphUtil.findAll( g ), false );
-        deleteReifications( graph, g );
+        if (withReifications) deleteReifications( graph, g );
         manager.notifyDeleteGraph( g );
         }
     }

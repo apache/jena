@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.63 $' Date='$Date: 2003-07-11 14:32:51 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.64 $' Date='$Date: 2003-07-16 15:29:42 $'
  */
 
 public class ModelCom 
@@ -161,8 +161,11 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return this;
     }
     
-    public Model add( Model m )  {
-        getBulkUpdateHandler().add( m.getGraph() );
+    public Model add( Model m )  
+        { return add( m, false ); }
+        
+    public Model add( Model m, boolean suppressReifications ) {
+        getBulkUpdateHandler().add( m.getGraph(), !suppressReifications );
         return this;
     }
     
@@ -287,9 +290,12 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return this;
         }
     
-    public Model remove( Model m ) 
+    public Model remove( Model m )
+        { return remove( m, false ); }
+        
+    public Model remove( Model m, boolean suppressReifications ) 
         {
-        getBulkUpdateHandler().delete( m.getGraph() );
+        getBulkUpdateHandler().delete( m.getGraph(), !suppressReifications );
         return this;
         }
         
@@ -1381,7 +1387,10 @@ implements Model, ModelI, PrefixMapping, ModelLock
     }
     
     public String toString()
-        { return "<ModelCom  " + getGraph() + ">"; }
+        { return "<ModelCom  " + getGraph() + " | " + reifiedToString() + ">"; }
+        
+    public String reifiedToString()
+        { return getGraph().getReifier().getHiddenTriples().toString(); }
         
 	/**
 		a read-only Model with all the statements of this Model and any

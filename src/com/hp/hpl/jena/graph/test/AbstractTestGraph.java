@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.20 2003-07-15 11:01:15 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.21 2003-07-16 15:29:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -222,6 +222,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testBulkAddWithReification()
         {        
         testBulkAddWithReification( true );
+        testBulkAddWithReification( false );
         }
         
     public void testBulkAddWithReification( boolean withReifications )
@@ -230,15 +231,31 @@ public abstract class AbstractTestGraph extends GraphTestBase
         BulkUpdateHandler bu = g.getBulkUpdateHandler();
         Graph items = graphWith( "pigs might fly; dead can dance" );
         Reifier gr = g.getReifier(), ir = items.getReifier();
-        ir.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) );
-        ir.reifyAs( Node.create( "y" ), Triple.create( "X Y Z" ) );
-        bu.add( items );
-        assertIsomorphic( ir.getHiddenTriples(), gr.getHiddenTriples() );
+        xSPOyXYZ( ir );
+        bu.add( items, withReifications );
+        assertIsomorphic
+            ( 
+            withReifications ? ir.getHiddenTriples() : graphWith( "" ), 
+            gr.getHiddenTriples() 
+            );
+        }
+        
+    protected void xSPOyXYZ( Reifier r )
+        {
+        xSPO( r );
+        r.reifyAs( Node.create( "y" ), Triple.create( "X Y Z" ) );       
         }
 
+    protected void aABC( Reifier r )
+        { r.reifyAs( Node.create( "a" ), Triple.create( "A B C" ) ); }
+        
+    protected void xSPO( Reifier r )
+        { r.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) ); }
+        
     public void testBulkRemoveWithReification()
         {        
         testBulkUpdateRemoveWithReification( true );
+        testBulkUpdateRemoveWithReification( false );
         }
         
     public void testBulkUpdateRemoveWithReification( boolean withReifications )
@@ -247,14 +264,19 @@ public abstract class AbstractTestGraph extends GraphTestBase
         BulkUpdateHandler bu = g.getBulkUpdateHandler();
         Graph items = graphWith( "pigs might fly; dead can dance" );
         Reifier gr = g.getReifier(), ir = items.getReifier();
-        ir.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) );
-        ir.reifyAs( Node.create( "y" ), Triple.create( "X Y Z" ) );
-        gr.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) );
-        gr.reifyAs( Node.create( "a" ), Triple.create( "A B C" ) );
-        bu.delete( items );
+        xSPOyXYZ( ir );
+        xSPO( gr ); aABC( gr ); 
+        bu.delete( items, withReifications );
         Graph answer = graphWith( "" );
-        answer.getReifier().reifyAs( Node.create( "a" ), Triple.create( "A B C" ) );
-        assertIsomorphic( answer.getReifier().getHiddenTriples(), gr.getHiddenTriples() );
+        Reifier ar = answer.getReifier();
+        if (withReifications)
+            aABC( ar ); 
+        else
+            {
+            xSPO( ar );
+            aABC( ar );
+            }
+        assertIsomorphic( ar.getHiddenTriples(), gr.getHiddenTriples() );
         }
                                         
     public void testHasCapabilities()

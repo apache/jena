@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelBulkUpdate.java,v 1.2 2003-04-23 13:07:51 chris-dollin Exp $
+  $Id: TestModelBulkUpdate.java,v 1.3 2003-07-16 15:29:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -95,6 +95,46 @@ public class TestModelBulkUpdate extends ModelTestBase
         assertEquals( "", 0, m.size() );
         }
         
+    public void testBulkByModelReifying()
+        {
+        testBulkByModelReifying( false );
+        testBulkByModelReifying( true );
+        }
+        
+    public void testBulkByModelReifying( boolean suppress )
+        {
+        Model m = modelWithStatements( "a P b" );
+        addReification( m, "x", "S P O" );
+        addReification( m, "a", "x R y" );
+        Model target = modelWithStatements( "" );
+        target.add( m, suppress );
+        assertIsoModels( "", (suppress ? modelWithStatements("a P b") : m), target );
+        }
+        
+    public void testBulkDeleteByModelReifying()
+        { 
+        testBulkDeleteByModelReifying( false ); 
+        testBulkDeleteByModelReifying( true ); 
+        }
+        
+    public void testBulkDeleteByModelReifying( boolean suppress )
+        {
+        Model target = modelWithStatements( "" );
+        addReification( target, "x", "S P O" );
+        addReification( target, "y", "A P B" ); 
+        Model remove = modelWithStatements( "" );
+        addReification( remove, "y", "A P B" );
+        Model answer = modelWithStatements( "" );
+        addReification( answer, "x", "S P O" );
+        if (suppress) addReification( answer, "y", "A P B" );
+        target.remove( remove, suppress );
+        assertIsoModels( "", answer, target );
+        }
+        
+    public void addReification( Model m, String tag, String statement )
+        {
+        m.createReifiedStatement( tag, statement( m, statement ) );
+        }
     }
 
 

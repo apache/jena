@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.10 2003-07-15 11:00:30 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.11 2003-07-16 15:29:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.db.*;
     handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.10 $
+ 	@version $Revision: 1.11 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -76,17 +76,20 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		ArrayList list = new ArrayList(CHUNK_SIZE);
 		while (it.hasNext()) {
 			while (it.hasNext() && list.size() < CHUNK_SIZE) {
-				list.add(it.next());
+				list.add( it.next() );
 			}
 			graph.add(list);
 			list.clear();
 		}
-	}
-
-	public void add( Graph g ) {
+    }
+        
+    public void add( Graph g )
+        { add( g, false ); }
+        
+	public void add( Graph g, boolean withReifications ) {
 		ExtendedIterator triplesToAdd = GraphUtil.findAll( g );
 		try { addIterator( triplesToAdd ); } finally { triplesToAdd.close(); }
-        SimpleBulkUpdateHandler.addReifications( graph, g );
+        if (withReifications) SimpleBulkUpdateHandler.addReifications( graph, g );
         manager.notifyAddGraph( g );
 	}
 
@@ -140,10 +143,13 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		}
 	}
 
-	public void delete(Graph g) {
+	public void delete(Graph g)
+        { delete( g, false ); }
+        
+    public void delete( Graph g, boolean withReifications ) {
 		ExtendedIterator triplesToDelete = GraphUtil.findAll( g );
 		try { deleteIterator( triplesToDelete ); } finally { triplesToDelete.close(); }
-        SimpleBulkUpdateHandler.deleteReifications( graph, g );
+        if (withReifications) SimpleBulkUpdateHandler.deleteReifications( graph, g );
         manager.notifyDeleteGraph( g );
    	}
 }

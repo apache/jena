@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.30 2003-07-15 14:44:17 chris-dollin Exp $
+  $Id: Model.java,v 1.31 2003-07-16 15:29:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.30 $Date: 2003/07/09 13:10:56 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.31 $Date: 2003/07/15 14:44:17 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -312,16 +312,24 @@ public interface Model
 	/** Add all the statements returned by an iterator to this model.
 	 * @return this model
 	 * @param iter An iterator which returns the statements to be added.
-	 
 	 */
 	Model add(StmtIterator iter) ;
 
-	/** Add all the statements in another model to this model.
+	/** Add all the statements in another model to this model, including the
+     * reified statements.
 	 * @return this model
 	 * @param m The model whose statements are to be added.
-	 
 	 */
 	Model add(Model m) ;
+    
+    /**
+        Add all the statements of the given model m to this model.
+        Optionally supress the addition of reified statements.
+        @param m the model containing the statements to add
+        @param suppressReifications true to suppress adding reified statements
+        @return this model for cascading 
+    */
+    Model add( Model m, boolean suppressReifications );
 
 	/** Add the RDF statements from an XML document.
 	 *
@@ -898,5 +906,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.30 2003-07-15 14:44:17 chris-dollin Exp $
+ * $Id: Model.java,v 1.31 2003-07-16 15:29:42 chris-dollin Exp $
  */
