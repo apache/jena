@@ -41,7 +41,7 @@ import com.hp.hpl.jena.reasoner.* ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.4 2003-02-03 15:51:20 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.5 2003-03-10 09:51:34 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -360,6 +360,7 @@ public class rdfquery
     // Execute one query, with stats etc., print results
     static public void query(String s, String dataURL, String language)
     {
+        try {
         boolean doBlank = false ;
 
         if ( messageLevel >= 2 )
@@ -448,15 +449,27 @@ public class rdfquery
         else
         {
             if ( doBlank ) System.out.println() ;
-            PrintWriter pw = new PrintWriter(System.out) ;
-            switch(outputFormat)
+            
+            if ( outputFormat == FMT_DUMP )
             {
-                case FMT_TEXT:   fmt.printAll(pw) ; break ;
-                case FMT_HTML:   fmt.printHTML(pw) ; break ;
-                case FMT_TUPLES: fmt.dump(pw, true) ; break ;
-                case FMT_DUMP:   fmt.dump(pw, false) ; break ;
+                Model m = fmt.toModel() ;
+                RDFWriter rdfw = m.getWriter("N3") ; 
+                rdfw.setNsPrefix("rs", QueryResultsFormatter.resultsNamespace) ;
+                rdfw.write(m, System.out, null) ; 
             }
-            pw.flush() ;
+            else
+            {
+            
+                PrintWriter pw = new PrintWriter(System.out) ;
+                switch(outputFormat)
+                {
+                    case FMT_TEXT:   fmt.printAll(pw) ; break ;
+                    case FMT_HTML:   fmt.printHTML(pw) ; break ;
+                    case FMT_TUPLES: fmt.dump(pw, true) ; break ;
+                    default: break ; 
+                }
+                pw.flush() ;
+            }
             doBlank = true ;
         }
 
@@ -492,6 +505,11 @@ public class rdfquery
         resultsIter.print(pw) ;
         pw.flush() ;
         */
+        } catch (QueryException qEx)
+        {
+            System.err.println(qEx.getMessage()) ;
+            System.exit(9) ;
+        }
     }
 
     static String formatlong(long x)
