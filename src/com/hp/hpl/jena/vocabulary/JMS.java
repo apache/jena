@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.21 2004-07-28 15:33:46 chris-dollin Exp $
+  $Id: JMS.java,v 1.22 2004-08-04 14:54:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -64,6 +64,16 @@ public class JMS
          The property of a reasoner spec that specifies a rule-set URL.
     */
     public static final Property ruleSetURL = property( "ruleSetURL" );
+    
+    /**
+         The property of a reasoner spec that specifies in-line rule-sets.
+    */
+    public static final Property ruleSet = property( "ruleSet" );
+    
+    /**
+         The property of a RuleSet that specifies a rule.
+    */
+    public static final Property hasRule = property( "hasRule" );
     
     /**
         The property of a document manager that gives its policy path string.
