@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:39 $
+ * Last modified on   $Date: 2003-08-20 09:41:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.10 2003-06-21 12:35:39 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.11 2003-08-20 09:41:06 ian_dickinson Exp $
  */
 public interface AllDifferent
     extends OntResource
@@ -65,28 +65,28 @@ public interface AllDifferent
      * @param members A list of the members that are declared to be distinct.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
-    public void setDistinct( RDFList members );
+    public void setDistinctMembers( RDFList members );
 
     /**
      * <p>Add the given individual to the list of distinct members of this AllDifferent declaration.</p>
      * @param res A resource that will be added to the list of all different members.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
-    public void addDistinct( Resource res );
+    public void addDistinctMember( Resource res );
 
     /**
      * <p>Add the given individuals to the list of distinct members of this AllDifferent declaration.</p>
      * @param individuals An iterator over the distinct invididuals that will be added 
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
-    public void addDistinct( Iterator individuals );
+    public void addDistinctMembers( Iterator individuals );
 
     /**
      * <p>Answer the list of distinct members for this AllDifferent declaration.</p>
      * @return The list of individuals declared distinct by this AllDifferent declaration.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
-    public RDFList getDistinct();
+    public RDFList getDistinctMembers();
 
     /**
      * <p>Answer an iterator over all of the individuals that are declared to be distinct by
@@ -94,7 +94,7 @@ public interface AllDifferent
      * @return An iterator over distinct individuals.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
-    public ExtendedIterator listDistinct();
+    public ExtendedIterator listDistinctMembers();
 
     /**
      * <p>Answer true if this AllDifferent declaration includes <code>res</code> as one of the distinct individuals.</p>

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestAllDifferent.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:20:44 $
+ * Last modified on   $Date: 2003-08-20 09:40:41 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAllDifferent.java,v 1.4 2003-06-22 19:20:44 ian_dickinson Exp $
+ * @version CVS $Id: TestAllDifferent.java,v 1.5 2003-08-20 09:40:41 ian_dickinson Exp $
  */
 public class TestAllDifferent
     extends OntTestBase 
@@ -76,22 +76,22 @@ public class TestAllDifferent
                     OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
                     OntResource c = (OntResource) m.getResource( NS + "c" ).as( OntResource.class );
                     
-                    a.addDistinct( b );
+                    a.addDistinctMember( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
-                    assertEquals( "List size should be 1", 1, a.getDistinct().size() );
+                    assertEquals( "List size should be 1", 1, a.getDistinctMembers().size() );
                     assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
                     
-                    a.addDistinct( c );
+                    a.addDistinctMember( c );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
-                    assertEquals( "List size should be 2", 2, a.getDistinct().size() );
-                    iteratorTest( a.listDistinct(), new Object[] {b, c} );
+                    assertEquals( "List size should be 2", 2, a.getDistinctMembers().size() );
+                    iteratorTest( a.listDistinctMembers(), new Object[] {b, c} );
                     
                     assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
                     assertTrue( "a should have c as distinct", a.hasDistinctMember( c ) );
                     
-                    a.setDistinct( m.createList( new RDFNode[] {b} ) );
+                    a.setDistinctMembers( m.createList( new RDFNode[] {b} ) );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
-                    assertEquals( "List size should be 1", 1, a.getDistinct().size() );
+                    assertEquals( "List size should be 1", 1, a.getDistinctMembers().size() );
                     assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
                     assertTrue( "a should not have c as distinct", !a.hasDistinctMember( c ) );
                     
