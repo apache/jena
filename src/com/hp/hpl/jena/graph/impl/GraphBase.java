@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.13 2003-07-21 10:54:11 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.14 2003-07-24 15:29:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -22,7 +22,9 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
     implementations of the other methods, including the other finds (on top of that one), 
     a simple-minded prepare, and contains. GraphBase also handles the event-listening
     and registration interfaces.
-<p>    
+<p>
+    When a GraphBase is closed, future operations on it may throw an exception.
+    
 	@author kers
 */
 
@@ -30,12 +32,23 @@ public abstract class GraphBase implements Graph {
 
     private Reifier.Style style;
     
+    protected boolean closed = false;
+    
     public GraphBase( Reifier.Style style )
         { this.style = style; }
         
     public GraphBase()
         { this( Reifier.Minimal ); }
         
+    protected void checkOpen()
+        { if (closed) throw new ClosedException( "already closed", this ); }
+
+    /**
+     * @see com.hp.hpl.jena.graph.Graph#close()
+     */
+    public void close() 
+        { closed = true; }
+            
 	public boolean dependsOn(Graph other) {
 		return this == other;
 	}
@@ -100,6 +113,7 @@ public abstract class GraphBase implements Graph {
 	*/
 	public void add( Triple t ) 
         {
+        checkOpen();
         performAdd( t );
         notifyAdd( t );
         }
@@ -113,6 +127,7 @@ public abstract class GraphBase implements Graph {
     
     public void delete( Triple t )
         {
+        checkOpen();
         performDelete( t );
         notifyDelete( t );
         }
@@ -130,6 +145,7 @@ public abstract class GraphBase implements Graph {
 		contains( t ) - return true iff the triple t is in this graph
 	*/
 	public boolean contains(Triple t) {
+        checkOpen();
 		return contains( t.getSubject(), t.getPredicate(), t.getObject() );
 	}
 
@@ -139,6 +155,7 @@ public abstract class GraphBase implements Graph {
         containsByFind utility.
 	*/
 	public boolean contains( Node s, Node p, Node o ) {
+        checkOpen();
 		return containsByFind( Triple.create( s, p, o ) );
 	}
     
@@ -159,15 +176,10 @@ public abstract class GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#find(Node, Node, Node)
 	 */
 	public ExtendedIterator find(Node s, Node p, Node o) {
+        checkOpen();
 		return find( Triple.createMatch( s, p, o ) );
 	}
 
-	/**
-	 * @see com.hp.hpl.jena.graph.Graph#close()
-	 */
-	public void close() {
-	}
-	
 	protected Reifier reifier = null;
 	
 	public Reifier getReifier() {
@@ -179,6 +191,7 @@ public abstract class GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#size()
 	 */
 	public int size() {
+        checkOpen();
 		throw new UnsupportedOperationException("GraphBase::size");
 	}
 
@@ -190,17 +203,18 @@ public abstract class GraphBase implements Graph {
 	}
 
 	public boolean isIsomorphicWith( Graph g ) {
+        checkOpen();
 		return g != null && GraphMatcher.equals( this, g );
 	}
 
 	/** for little graphs only ... */
 
 	public String toString() 
-        { return toString( this ); }
+        { return toString( (closed ? "closed " : ""), this ); }
         
-    public static String toString( Graph that )
+    public static String toString( String prefix, Graph that )
         {
-		StringBuffer b = new StringBuffer( "{" );
+		StringBuffer b = new StringBuffer( prefix + " {" );
 		String gap = "";
 		ClosableIterator it = GraphUtil.findAll( that );
 		while (it.hasNext()) 
@@ -218,7 +232,9 @@ public abstract class GraphBase implements Graph {
         inbound reification triples)
     */
     public static Graph withReification( Graph g )
-        { return new ReifyingCaptureGraph( g ); }
+        {
+        return new ReifyingCaptureGraph( g ); 
+        }
         
 }
 

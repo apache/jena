@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.10 2003-07-24 09:09:35 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.11 2003-07-24 15:29:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -18,7 +18,7 @@ import java.io.*;
 /**
     A FileGraph is a memory-based graph that is optionally read in from a file
     when it is created, and is written back when it is closed. It is not 
-    particularly robust, alas.
+    particularly robust, alas. 
     
     TODO: consider a version which saves "every now and then"
     
@@ -26,13 +26,9 @@ import java.io.*;
 */
 public class FileGraph extends GraphMem
     {
-    File name;
-    Model model;
-    String lang;
-    
     /**
-        See FileCraph( f, create, strict, Reifier.Style ).
-     */
+        See FileGraph( f, create, strict, Reifier.Style ).
+    */
     public FileGraph( File f, boolean create, boolean strict )
         { this( f, create, strict, Reifier.Minimal ); }
         
@@ -61,7 +57,7 @@ public class FileGraph extends GraphMem
             readModel( this.model, strict );
         }
         
-    private void readModel( Model m, boolean strict )
+    protected void readModel( Model m, boolean strict )
         {
         FileInputStream in = null;
         try
@@ -109,7 +105,7 @@ public class FileGraph extends GraphMem
         parent close is invoked. The write-out goes to an intermediate file
         first, which is then renamed to the correct name, to try and ensure
         that the output is either done completely or not at all.
-
+ 
      	@see com.hp.hpl.jena.graph.Graph#close()
      */
     public void close()
@@ -153,6 +149,22 @@ public class FileGraph extends GraphMem
             throw new JenaException( "could not rename " + from + " to " + to ); 
         }
         
+    /**
+        The File-name of this graph, used to name it in the filing system 
+    */
+    protected File name;
+    
+    /**
+        A model used to wrap the graph for the IO operations (since these are not
+        yet available at the graph level).
+    */
+    protected Model model;
+    
+    /**
+        The language used to read and write the graph, guessed from the filename's
+        suffix.
+    */
+    protected String lang;
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.7 2003-07-24 09:10:18 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.8 2003-07-24 15:29:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -184,6 +184,16 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         assertFalse( "john has been removed", gf.hasGraph( "john" ) );
         assertTrue( "paul still exists", gf.hasGraph( "paul" ) );
         assertFalse( "no such graph", gf.hasGraph( "george" ) );
+        }
+        
+    public void testCarefulClose()
+        {
+        Graph x = gf.createGraph( "x" );
+        Graph y = gf.openGraph( "x" );
+        x.add( triple( "a BB c" ) );
+        x.close();
+        y.add( triple( "p RR q" ) );
+        y.close();
         }
     }
 

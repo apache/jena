@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.2 2003-05-13 19:18:56 chris-dollin Exp $
+  $Id: SimpleGraphMaker.java,v 1.3 2003-07-24 15:29:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -35,7 +35,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
      */
     public Graph createGraph( String name, boolean strict )
         {
-        Graph already = (Graph) graphs.get( name );
+        GraphMem already = (GraphMem) graphs.get( name );
         if (already == null)
             {
             Graph result = new GraphMem( style );
@@ -45,7 +45,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
         else if (strict)
             throw new AlreadyExistsException( name );
         else
-            return already;
+            return already.openAgain();
         }
         
     /**
@@ -53,12 +53,12 @@ public class SimpleGraphMaker extends BaseGraphMaker
      */
     public Graph openGraph( String name, boolean strict )
         {
-        Graph already = (Graph) graphs.get( name );
+        GraphMem already = (GraphMem) graphs.get( name );
         if (already == null) 
             if (strict) throw new DoesNotExistException( name );
             else return createGraph( name, true );
         else
-            return already;
+            return already.openAgain();
         }
         
     /**

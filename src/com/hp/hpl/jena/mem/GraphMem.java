@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.17 2003-07-09 09:34:38 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.18 2003-07-24 15:29:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -14,10 +14,15 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import java.util.*;
 
-
 /**
- *
- * @author  bwm
+    A memory-backed graph with S/P/O indexes. A GraphMem maintains a 
+    reference count, set to one when it is created, and incremented by the method
+    <code>openAgain()</code>. When the graph is closed, the count is decrememented,
+    and when it reaches 0, the tables are trashed and GraphBase.close() called.
+    Thus in normal use one close is enough, but GraphMakers using GraphMems
+    can arrange to re-use the same named graph.
+    
+ * @author  bwm, kers
  */
 public class GraphMem extends GraphBase implements Graph {
 
@@ -32,8 +37,29 @@ public class GraphMem extends GraphBase implements Graph {
         { this( Reifier.Minimal ); }
     
     public GraphMem( Reifier.Style style )
-        { super( style ); }
+        { 
+        super( style );
+        count = 1; 
+        }
 
+    protected int count;
+    
+    public void close()
+        {
+        if (--count == 0)
+            {
+            triples = null;
+            subjects = predicates = objects = null;
+            super.close();
+            }
+        }
+        
+    public GraphMem openAgain()
+        { 
+        count += 1; 
+        return this;
+        }
+        
     public void performAdd( Triple t )
         {
         if (getReifier().handledAdd( t ) || triples.contains( t ))
@@ -61,6 +87,7 @@ public class GraphMem extends GraphBase implements Graph {
         }
 
     public int size()  {
+        checkOpen();
         return triples.size();
     }
 
@@ -87,6 +114,7 @@ public class GraphMem extends GraphBase implements Graph {
         method using find.
     */
     public boolean contains( Triple t ) {
+        checkOpen();
         return t.isConcrete() ? triples.contains( t ) : containsByFind( t );
     }
 
@@ -95,6 +123,7 @@ public class GraphMem extends GraphBase implements Graph {
         Ensures that nulls are not present and then defers to contains(Triple). 
     */
     public boolean contains( Node s, Node p, Node o ) {
+        checkOpen();
         if (s == null || p == null || o == null) throw new JenaException( "null not allowed" );
         return contains( Triple.create( s, p, o ) );
     }
@@ -102,8 +131,8 @@ public class GraphMem extends GraphBase implements Graph {
     /** Returns an iterator over Triple.
      */
     public ExtendedIterator find( TripleMatch m ) {
+        checkOpen();
         Triple tm = m.asTriple();
-        Node s = m.getMatchSubject();
         Node p = m.getMatchPredicate();
         Node o = m.getMatchObject();
         Node ms = tm.getSubject();
@@ -151,6 +180,8 @@ public class GraphMem extends GraphBase implements Graph {
             }
         }
     }
+    
+
 }
 
 /*

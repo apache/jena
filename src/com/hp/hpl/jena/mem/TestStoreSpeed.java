@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestStoreSpeed.java,v 1.2 2003-05-28 10:28:57 chris-dollin Exp $
+  $Id: TestStoreSpeed.java,v 1.3 2003-07-24 15:29:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -66,7 +66,7 @@ public class TestStoreSpeed extends GraphTestBase
         {
         int count = 0;
         ClosableIterator it = g.find( node("s500"), null, null );
-        while (it.hasNext()) { Triple t = (Triple) it.next(); count += 1; /* if (count %1000 == 0) System.err.print( (count / 1000) %10 ); */}
+        while (it.hasNext()) { it.next(); count += 1; /* if (count %1000 == 0) System.err.print( (count / 1000) %10 ); */}
         // System.err.println( "| we have " + count + " triples." );
         // assertEquals( g.size(), count );
         }
