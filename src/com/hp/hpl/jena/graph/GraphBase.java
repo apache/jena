@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.8 2003-04-16 15:33:30 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.9 2003-04-16 20:19:09 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
 
-import java.util.*;
 
 /**
     GraphBase is an implementation of Graph that provides some convenient

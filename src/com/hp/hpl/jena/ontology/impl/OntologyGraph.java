@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Apr-2003
  * Filename           $RCSfile: OntologyGraph.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-16 15:33:53 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-04-16 20:22:56 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -32,7 +32,6 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-import java.util.*;
 
 
 /**
@@ -42,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyGraph.java,v 1.4 2003-04-16 15:33:53 chris-dollin Exp $
+ * @version CVS $Id: OntologyGraph.java,v 1.5 2003-04-16 20:22:56 jeremy_carroll Exp $
  */
 public class OntologyGraph
     implements Graph 

@@ -118,6 +118,7 @@ public class Checker extends EnhGraph {
 		} else {
 			if ( wantLite && SubCategorize.dl(key))
 			      addProblem(Levels.Lite,t);
+			      // TODO recursive
 			o.setCategories(SubCategorize.object(key,o0));
 			p.setCategories(SubCategorize.prop(key,p0));
 			s.setCategories(SubCategorize.subject(key,s0));
