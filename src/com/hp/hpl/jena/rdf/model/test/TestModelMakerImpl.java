@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.13 2004-07-27 08:07:47 chris-dollin Exp $
+  $Id: TestModelMakerImpl.java,v 1.14 2004-07-28 07:44:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -129,7 +129,25 @@ public class TestModelMakerImpl extends ModelTestBase
         {
         assertTrue( isExtensionOf( ModelMaker.class, ModelSource.class ) );
         assertTrue( isExtensionOf( ModelSpec.class, ModelSource.class ) );
+        ModelSource s = new ModelSourceImpl();
+        assertNotNull( s.openModel( "henry" ) );
+        assertNull( s.getExistingModel( "splendid" ) );
         }
+    
+    /**
+     	Minimal test implementation of ModelSource. There should be more of
+     	these.
+     	
+     	@author hedgehog
+    */
+    protected static class ModelSourceImpl implements ModelSource
+    	{
+        public Model openModel( String name )
+            { return ModelFactory.createDefaultModel(); }
+
+        public Model getExistingModel(String name)
+            { return null; }
+    	}
     
     public boolean isExtensionOf( Class subClass, Class superClass )
         {

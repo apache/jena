@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSource.java,v 1.1 2004-07-27 08:07:46 chris-dollin Exp $
+  $Id: ModelSource.java,v 1.2 2004-07-28 07:44:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -21,11 +21,22 @@ public interface ModelSource
      	other than the result is a proper Model. A ModelSource may
      	use the name to identify an existing Model and re-use it,
      	or it may create a fresh Model each time. However it *is*
-     	expected that uses of different names will answer different models.
+     	expected that uses of different names will answer different models
+     	(different in the strong sense of not having the same underlying
+     	graph, too).
      	
      	TODO implement that last sentence as a test.
     */
     Model openModel( String name );
+
+    /**
+     	If this ModelSource admits to having a Model with the given
+     	<code>name</code>, answer that Model, otherwise answer null.
+     	A ModelSource may freely forget existing Models, even ones 
+     	that have just be created via openModel. (ModelMakers are not
+     	allowed to do that - as a subinterface they satisfy extra constraints.)
+    */
+    Model getExistingModel( String name );
     }
 
 /*
