@@ -47,10 +47,20 @@ following versions.</p>
 <font SIZE="2">
 <h3 ALIGN="LEFT">Linux Platforms</h3>
 </font>
-<p ALIGN="LEFT">Jena2 has been tested with Oracle on Linux AS with the 
-following versions.</p>
-
-<font SIZE="2">
+<p ALIGN="LEFT">Oracle is certified for RedHat Linux versions AS and ES. No 
+other RedHat versions are supported by Oracle (for details, see
+<a href="http://otn.oracle.com/tech/linux/index.html">
+http://otn.oracle.com/tech/linux/index.html</a>). Unfortunately, AS and ES are 
+not free. However, we were able to run the Jena2 test suite with Oracle using 
+two free RedHat distributions, 7.2 and 9.0. All tests passed however there is a 
+minor warning that we do not think will affect Jena2 users (see
+<a href="#Warning">Known Bugs</a>). Consequently, we can recommend the following 
+Oracle version with Jena2. Note that installing Oracle under Linux can be 
+tricky. For tips on installing and running Oracle under RedHat Linux, see
+<a href="http://www.puschitz.com/InstallingOracle9i.html">
+http://www.puschitz.com/InstallingOracle9i.html</a> and
+<a href="http://linux.oreillynet.com/lpt/a/4141">
+http://linux.oreillynet.com/lpt/a/4141</a>.</p>
 
 <table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
   <tr>
@@ -61,7 +71,6 @@ following versions.</p>
   </tr>
 </table>
 
-</font>
 <p ALIGN="LEFT">A user account and password are required to access the Oracle server. 
 Typically, Oracle is installed with a demo database and user account that may be 
 used for testing and experimentation. In the examples below, we assume the use 
@@ -213,8 +222,17 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
 details on the physical layout.</p>
 
 <h2>Known Bugs</h2>
-<p>We encountered problems with BLOBs when using the Oracle thin driver to access an Oracle database running on the Linux 
+<ol>
+  <li>We encountered problems with BLOBs when using the Oracle thin driver to access an Oracle database running on the Linux 
 operating system, so we recommend use of the oci driver when using Linux.
+
+  </li>
+  <li><a name="Warning"></a>Under Linux, in running the database TestPackage, we 
+  get a Java warning that an SQLException was thrown when a thread attempts a 
+  next operation on a database iterator over a closed database connection. This 
+  appears to be a timing problem involving interaction with a finalize routine. 
+  The test returns the correct result. The warning does not occur under WinXP.</li>
+  </ol>
 
 <h4>Oracle Utility Commands</h4>
 
