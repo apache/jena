@@ -5,19 +5,25 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XMLLiteralType.java,v 1.6 2003-08-27 12:54:12 andy_seaborne Exp $
+ * $Id: XMLLiteralType.java,v 1.7 2003-09-03 15:07:30 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.rdf.arp.*;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
+import com.hp.hpl.jena.shared.BrokenException;
+import java.io.*;
 
 /**
  * Builtin data type to represent XMLLiteral (i.e. items created
  * by use of <code>rdf:parsetype='literal'</code>.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-27 12:54:12 $
+ * @version $Revision: 1.7 $ on $Date: 2003-09-03 15:07:30 $
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */
@@ -43,6 +49,8 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
      * @throws DatatypeFormatException if the lexical form is not legal
      */
     public Object parse(String lexicalForm) throws DatatypeFormatException {
+        if ( !isValid(lexicalForm))
+          throw new DatatypeFormatException("Bad rdf:XMLLiteral");
         return lexicalForm;
     }
     
@@ -50,8 +58,74 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
      * Test whether the given string is a legal lexical form
      * of this datatype.
      */
-    public boolean isValid(String lexicalForm) {
-        return true;
+    public boolean isValid(final String lexicalForm) {
+        /*
+         * To check the lexical form we construct
+         * a dummy RDF/XML document and parse it with
+         * ARP. ARP performs an exclusive canonicalization,
+         * the dummy document has exactly one triple.
+         * If the lexicalForm is valid then the resulting
+         * literal found by ARP is unchanged.
+         * All other scenarios are either impossible
+         * or occur because the lexical form is invalid.
+         */
+        final boolean status[] = new boolean[]{false,false,false};
+        // status[0] true on error or other reason to know that this is not well-formed
+        // status[1] true once first triple found
+        // status[2] the result (good if status[1] and not status[0]).
+        
+        ARP arp = new ARP();
+        arp.setErrorHandler(new ErrorHandler(){
+        	public void fatalError(SAXParseException e){
+        		status[0] = true;
+        	}
+			public void error(SAXParseException e){
+				status[0] = true;
+			}
+			public void warning(SAXParseException e){
+				status[0] = true;
+			}
+        });
+        arp.setStatementHandler(new StatementHandler(){
+        public void statement(AResource a, AResource b, ALiteral l){
+        	/* this method is invoked exactly once
+        	 * while parsing the dummy document.
+        	 * The l argument is in exclusive canonical XML and
+        	 * corresponds to where the lexical form has been 
+        	 * in the dummy document. The lexical form is valid
+        	 * iff it is unchanged.
+        	 */
+        	if (status[1] || !l.isWellFormedXML()) {
+				status[0] = true;
+			}
+			//throw new BrokenException("plain literal in XMLLiteral code.");
+            status[1] = true;
+            status[2] = l.toString().equals(lexicalForm);
+        }
+		public void statement(AResource a, AResource b, AResource l){
+	      status[0] = true;
+	      //throw new BrokenException("resource valued RDF/XML in XMLLiteral code.");
+	    }
+        });
+        try {
+        
+        arp.load(new StringReader(
+        "<rdf:RDF  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>\n"
+        +"<rdf:Description><rdf:value rdf:parseType='Literal'>"
+        +lexicalForm+"</rdf:value>\n"
+        +"</rdf:Description></rdf:RDF>"
+        ));
+        
+        }
+        catch (IOException ioe){
+           throw new BrokenException(ioe);	
+        }
+        catch (SAXException s){
+        	return false;
+        }
+        
+        
+        return (!status[0])&&status[1]&&status[2];
     }    
 
 }

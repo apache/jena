@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.27 2003-08-27 13:00:37 andy_seaborne Exp $
+ * $Id: TestTypedLiterals.java,v 1.28 2003-09-03 15:07:30 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
+import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
@@ -18,6 +19,7 @@ import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.vocabulary.XSD;
+import com.hp.hpl.jena.enhanced.EnhNode;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -31,7 +33,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2003-08-27 13:00:37 $
+ * @version $Revision: 1.28 $ on $Date: 2003-09-03 15:07:30 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -138,8 +140,21 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("Extract xml tag", l1.getWellFormed(), false);
     }
 
+    public void testXMLLiteral() {
+    	Literal ll;
+    	
+    	ll = m.createLiteral("<bad",true);
+    	
+    	assertTrue("Error checking must be off.",((EnhNode)ll).asNode().getLiteral().isXML());
+		ll = m.createTypedLiteral("<bad/>",XMLLiteralType.theXMLLiteralType);
+		assertFalse("Error checking must be on.",((EnhNode)ll).asNode().getLiteral().isXML());
+		ll = m.createTypedLiteral("<good></good>",XMLLiteralType.theXMLLiteralType);
+		assertTrue("Well-formed XMLLiteral.",((EnhNode)ll).asNode().getLiteral().isXML());
+    
+    }
+
     /**
-     * Tests basic XSD integer types
+     * Tests basic XSD integer types()
      */
     public void testXSDbasics() {
         String xsdIntURI = "http://www.w3.org/2001/XMLSchema#int";
