@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.50 $
+ * Revision           $Revision: 1.51 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-10-22 09:39:51 $
+ * Last modified on   $Date: 2003-11-06 17:36:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.ontology.*;
-//import com.hp.hpl.jena.ontology.event.*;
+import com.hp.hpl.jena.ontology.event.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.graph.query.*;
@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.50 2003-10-22 09:39:51 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.51 2003-11-06 17:36:38 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -88,7 +88,7 @@ public class OntModelImpl
     protected ImportsListener m_importsListener = null;
     
     /** The event manager for ontology events on this model */
-    //protected OntEventManager m_ontEventMgr = null;
+    protected OntEventManager m_ontEventMgr = null;
     
     
     
@@ -1969,34 +1969,14 @@ public class OntModelImpl
      * <p>Answer the ontology event manager attached to this model.  If there is no event
      * manager currently attached, a new one will be created.</p>
      * @return The current, or a new, ontology event mananger
-     * /
-    public OntEventManager getOntEventManager() {
+     */
+    public OntEventManager getEventManager() {
         if (m_ontEventMgr == null) {
-            m_ontEventMgr = new OntEventManager();
+            m_ontEventMgr = new OntEventManager( this );
         }
         
         return m_ontEventMgr;
-    }*/
-    
-    
-    /**
-     * <p>Set the ontology event manager attached to this model to be the given object.
-     * Ontology events provide a higher-level view of the chagnes to the model than
-     * the model events, which report only changed statements.</p>
-     * 
-     * @param mgr The new ontology event mgr
-     * /
-    public void setOntEventManager( OntEventManager mgr ) {
-        // clear the old handler before we dump it
-        if (m_ontEventMgr != null) {
-            for (Iterator i = m_ontEventMgr.listRegisteredEvents();  i.hasNext(); ) {
-                Resource event = (Resource) i.next();
-                m_ontEventMgr.removeHandler( event );
-            }
-        }
-        
-        m_ontEventMgr = mgr;
-    }*/
+    }
     
     
     /**

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-08 16:18:01 $
+ * Last modified on   $Date: 2003-11-06 17:36:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.ontology;
 // Imports
 ///////////////
 import com.hp.hpl.jena.graph.query.BindingQueryPlan;
+import com.hp.hpl.jena.ontology.event.OntEventManager;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -69,7 +70,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.33 2003-09-08 16:18:01 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.34 2003-11-06 17:36:38 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1481,6 +1482,12 @@ public interface OntModel
      */
     public Model writeAll( OutputStream out, String lang, String base );
 
+
+    /**
+     * <p>Answer the ontology event manager for this model.</p>
+     * @return This model's event manager
+     */
+    public OntEventManager getEventManager();
 }
 
 
