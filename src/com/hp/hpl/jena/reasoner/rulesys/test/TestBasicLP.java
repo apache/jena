@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.4 2003-09-22 08:12:41 der Exp $
+ * $Id: TestBasicLP.java,v 1.5 2003-09-23 08:57:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-09-22 08:12:41 $
+ * @version $Revision: 1.5 $ on $Date: 2003-09-23 08:57:32 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1150,7 +1150,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test 3-arg builtins such as arithmetic.
      */
-    public void testBuiltins() {
+    public void testArithBuiltins() {
         doBuiltinTest(
             "[(a,r,0) <- (a,p,?x), (a,q,?y), lessThan(?x,?y)]" +
             "[(a,r,1) <- (a,p,?x), (a,q,?y), ge(?x, ?y)]",
@@ -1182,6 +1182,62 @@ public class TestBasicLP  extends TestCase {
             "[(a,r,?z) <- (a,p,?x), (a,q,?y), max(?x,?y,?z)]",
             Util.makeIntNode(4),Util.makeIntNode(3), Util.makeIntNode(4)
         );
+    }
+    
+    /**
+     * Test the temporary list builtins
+     */
+    public void testListBuiltins() {
+        String ruleSrc = "[(a r ?n) <- (a p ?l), listLength(?l, ?n)]";
+        List rules = Rule.parseRules(ruleSrc);
+        Graph data = new GraphMem();
+        data.add(new Triple(a, p, Util.makeList(new Node[]{C1,C2,C3},data)));
+        InfGraph infgraph =  makeInfGraph(rules, data);
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(new Triple(a, r, Node.ANY)), 
+            new Triple[] {
+                new Triple(a, r, Util.makeIntNode(3))
+            }); 
+
+        rules = Rule.parseRules(
+        "[(a s b) <- (a p ?l), (a, q, ?j) listEqual(?l, ?j)]" +
+        "[(a s c) <- (a p ?l), (a, q, ?j) listNotEqual(?l, ?j)]" +
+        "[(a s d) <- (a p ?l), (a, r, ?j) listEqual(?l, ?j)]" +
+        "[(a s e) <- (a p ?l), (a, r, ?j) listNotEqual(?l, ?j)]"
+            );
+        data = new GraphMem();
+        data.add(new Triple(a, p, 
+            Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
+        data.add(new Triple(a, q, 
+            Util.makeList( new Node[]{C3, C1, Util.makeLongNode(3)}, data) ));
+        data.add(new Triple(a, r, 
+            Util.makeList( new Node[]{C3, C1, Util.makeLongNode(2)}, data) ));
+        infgraph =  makeInfGraph(rules, data);
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(new Triple(a, s, Node.ANY)), 
+            new Triple[] {
+                new Triple(a, s, b),
+                new Triple(a, s, e),
+            }); 
+
+        rules = Rule.parseRules(
+        "[(b r ?j) <- (a p ?l), (a, q, ?j) listContains(?l, ?j)]" +
+        "[(b s ?j) <- (a p ?l), (a, q, ?j) listNotContains(?l, ?j)]"
+            );
+        data = new GraphMem();
+        data.add(new Triple(a, p, 
+            Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
+        data.add(new Triple(a, q, C1));
+        data.add(new Triple(a, q, Util.makeLongNode(3)));;
+        data.add(new Triple(a, q, C2));
+        infgraph =  makeInfGraph(rules, data);
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(new Triple(b, Node.ANY, Node.ANY)), 
+            new Triple[] {
+                new Triple(b, r, C1),
+                new Triple(b, r, Util.makeIntNode(3)),
+                new Triple(b, s, C2),
+            }); 
     }
     
     /** 

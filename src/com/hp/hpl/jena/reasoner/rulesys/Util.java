@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.14 2003-08-27 14:16:18 der Exp $
+ * $Id: Util.java,v 1.15 2003-09-23 08:57:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-08-27 14:16:18 $
+ * @version $Revision: 1.15 $ on $Date: 2003-09-23 08:57:32 $
  */
 public class Util {
 
@@ -153,6 +153,28 @@ public class Util {
      */
     public static Node makeDoubleNode(double value) {
         return Node.createLiteral(new LiteralLabel(new Double(value)));
+    }
+    
+    /**
+     * Construct an RDF list from the given array of nodes and assert it
+     * in the graph returning the head of the list.
+     */
+    public static Node makeList(Node[] nodes, Graph graph) {
+        return doMakeList(nodes, 0, graph);
+    }
+    
+    /**
+     * Internals of makeList.
+     */
+    private static Node doMakeList(Node[] nodes, int next, Graph graph) {
+        if (next < nodes.length) {
+            Node listNode = Node.createAnon();
+            graph.add(new Triple(listNode, RDF.Nodes.first, nodes[next]));
+            graph.add(new Triple(listNode, RDF.Nodes.rest, doMakeList(nodes, next+1, graph)));
+            return listNode;
+        } else {
+            return RDF.Nodes.nil;
+        }
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.28 2003-09-17 15:49:25 der Exp $
+ * $Id: TestFBRules.java,v 1.29 2003-09-23 08:57:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2003-09-17 15:49:25 $
+ * @version $Revision: 1.29 $ on $Date: 2003-09-23 08:57:32 $
  */
 public class TestFBRules extends TestCase {
     
@@ -765,12 +765,27 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(n1, p, Util.makeIntNode(3)) );
         data.add(new Triple(n1, p, n2) );
         infgraph = createReasoner(ruleList).bind(data);
-        
         TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
             new Triple[] {
                 new Triple(n1, s, Util.makeIntNode(2)),
             });
-            
+        
+        // Map list operation
+        rules = "[r1: (n1 p ?l) -> listMapAsSubject(?l, q, C1)]" +
+                "[r2: (n1 p ?l) -> listMapAsObject ( a, q, ?l)]";
+        ruleList = Rule.parseRules(rules);
+        data = new GraphMem();
+        data.add(new Triple(n1, p, Util.makeList(new Node[]{b, c, d}, data) ));
+        infgraph = createReasoner(ruleList).bind(data);
+        TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
+            new Triple[] {
+                new Triple(b, q, C1),
+                new Triple(c, q, C1),
+                new Triple(d, q, C1),
+                new Triple(a, q, b),
+                new Triple(a, q, c),
+                new Triple(a, q, d),
+            });
     }
          
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BuiltinRegistry.java,v 1.13 2003-09-22 08:12:35 der Exp $
+ * $Id: BuiltinRegistry.java,v 1.14 2003-09-23 08:57:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.
  * 
- * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.13 $ on $Date: 2003-09-22 08:12:35 $ */
+ * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.14 $ on $Date: 2003-09-23 08:57:32 $ */
 public class BuiltinRegistry {
 
     /** The single global static registry */
@@ -60,6 +60,14 @@ public class BuiltinRegistry {
         theRegistry.register(new CountLiteralValues());
         theRegistry.register(new Max());
         theRegistry.register(new Min());
+        theRegistry.register(new ListLength());
+        theRegistry.register(new ListEqual());
+        theRegistry.register(new ListNotEqual());
+        theRegistry.register(new ListContains());
+        theRegistry.register(new ListNotContains());
+        theRegistry.register(new ListMapAsSubject());
+        theRegistry.register(new ListMapAsObject());
+        
         theRegistry.register(new MakeInstance());
         theRegistry.register(new Table());
         theRegistry.register(new TableAll());
