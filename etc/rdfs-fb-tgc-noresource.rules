@@ -2,7 +2,7 @@
 # RDFS rule set v0.1.
 # This variant is used in the case where the subclass and subproperty
 # lattices have been precomputed by a transitive graph closure cache.
-# $Id: rdfs-fb-tgc.rules,v 1.4 2003-06-23 08:07:11 der Exp $
+# $Id: rdfs-fb-tgc-noresource.rules,v 1.1 2003-06-23 08:07:11 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -54,7 +54,7 @@
 #------------------------------------------------------------------
 
 # This one could be omitted since the results are not really very interesting!
-[rdf1and4: (?x ?p ?y) -> (?p rdf:type rdf:Property), (?x rdf:type rdfs:Resource), (?y rdf:type rdfs:Resource)]
+#[rdf1and4: (?x ?p ?y) -> (?p rdf:type rdf:Property), (?x rdf:type rdfs:Resource), (?y rdf:type rdfs:Resource)]
 
 [rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
 
