@@ -1,111 +1,67 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelMakerCreatorRegistry.java,v 1.1 2003-08-25 14:08:48 chris-dollin Exp $
+  $Id: ModelMakerCreatorRegistry.java,v 1.2 2003-08-25 14:54:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.rdf.model.impl.*;
 
 import java.util.*;
 
 /**
+    A registry of ways of creating ModelMakers, keyed by their JMS type. A
+    ModelMakerCreator registered by type here will be used by a ModelSpec
+    description which needs a ModelMaker and supplies a registered type for
+    that maker.
+<p>
+    The Registry is pre-loaded with the three standard ModelMakerCreator's,
+    for Mem, File, and RDB ModelMakers.
+ 
  	@author hedgehog
 */
 public class ModelMakerCreatorRegistry
     {
     /**
-     	
+     	No instances of this class exist- it's all static.
     */
-    public ModelMakerCreatorRegistry()
+    private ModelMakerCreatorRegistry()
         {}
 
+    /**
+        The map from JMS ModelMakerSpecs to the ModelMakerCreator.
+    */
     private static Map creators = new HashMap();
     
+    /**
+        Answer the Creator which has been registred with the given type, or null
+        if there's no such registered Creator
+        
+    	@param type the JMS type of the Creator
+    	@return that Creator, or null
+    */
     public static ModelMakerCreator findCreator( Resource type )
         { return (ModelMakerCreator) creators.get( type ); }
         
+    /**
+        Register the given ModelMakerCreator under the given JMS type.
+        
+    	@param type the type to register it as
+    	@param mmc the Creator to register
+    */
     public static void register( Resource type, ModelMakerCreator mmc )
         { creators.put( type, mmc ); }        
         
+    /**
+        Register the three standard MakerCreators under their JMS Resources.  
+    */
     static
         {
         register( JMS.FileMakerSpec, new FileMakerCreator() );    
         register( JMS.MemMakerSpec, new MemMakerCreator() );    
         register( JMS.RDBMakerSpec, new RDBMakerCreator() );    
-        }
-        
-    static class MakerCreator
-        {
-        Reifier.Style style( Model desc, Resource root )
-            {
-            Reifier.Style style = Reifier.Standard;
-            Statement st = desc.getProperty( root, JMS.reificationMode );
-            if (st != null) style = JMS.findStyle( st.getObject() );  
-            return style; 
-            } 
-        }
-        
-    static class FileMakerCreator extends MakerCreator implements ModelMakerCreator
-        {
-        public ModelMaker create( Model desc, Resource root ) 
-            { 
-            Statement fb = desc.getProperty( root, JMS.fileBase );
-            String fileBase = fb == null ? "/tmp" : fb.getString();
-            return ModelFactory.createFileModelMaker( fileBase, style( desc, root ) );
-            }
-        }
-        
-    static class MemMakerCreator extends MakerCreator implements ModelMakerCreator
-        {
-        public ModelMaker create( Model desc, Resource root ) 
-            { return ModelFactory.createMemModelMaker( style( desc, root ) ); }
-        }
-                
-    static class RDBMakerCreator implements ModelMakerCreator
-        {                     
-        public ModelMaker create( Model desc, Resource root ) 
-            {
-            return ModelFactory.createModelRDBMaker( createConnection( desc ) );
-            }
-            
-        public static IDBConnection createConnection( Model description )
-            {
-            Resource root = ModelSpecImpl.findRootByType( description, JMS.RDBMakerSpec );
-            String url = getString( description, root, JMS.dbURL );
-            String user = getString( description, root, JMS.dbUser );
-            String password = getString( description, root , JMS.dbPassword );
-            String className = getClassName( description, root );
-            String dbType = getString( description, root, JMS.dbType );
-            loadDrivers( dbType, className );
-            return ModelFactory.createSimpleRDBConnection( url, user, password, dbType );    
-            }
-
-        public static String getClassName( Model description, Resource root )
-            {
-            Statement cnStatement = description.getProperty( root, JMS.dbClass );
-            return cnStatement == null ? null : cnStatement.getString();
-            }                            
-            
-        public static String getString( Model description, Resource root, Property p )
-            {
-            return description.getRequiredProperty( root, p ).getString();  
-            }        
-        public static void loadDrivers( String dbType, String className )
-            {
-            try
-                {   
-                Class.forName( "com.hp.hpl.jena.db.impl.Driver_" + dbType );
-                if (className != null) Class.forName( className );
-                }
-            catch (ClassNotFoundException c)
-                { throw new JenaException( c ); }
-            }   
         }
     }
 

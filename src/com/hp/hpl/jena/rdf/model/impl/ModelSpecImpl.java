@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.13 2003-08-25 14:09:11 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.14 2003-08-25 14:55:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -87,22 +86,15 @@ public abstract class ModelSpecImpl implements ModelSpec
         return sc.create( desc );
         }
 
-
-    static void showModel( String title, Model m )
-        {
-        System.err.println( "-->> " + title + " <<--" );
-        StmtIterator it = m.listStatements();    
-        while (it.hasNext())
-            {
-            System.err.println( "]] " + it.nextStatement().asTriple().toString( PrefixMapping.Standard ) );    
-            }
-        StmtIterator types = m.listStatements( null, RDF.type, (RDFNode) null );
-        while (types.hasNext())
-            {
-            System.err.println( ")) " +types.nextStatement().asTriple().toString( PrefixMapping.Standard ) )   ; 
-            }
-        }
-    
+    /**
+        Answer the "most specific" type of root in desc which is an instance of type.
+        We assume a single inheritance thread starting with that type. 
+        
+    	@param desc the model the search is conducted in
+    	@param root the subject whos type is to be found
+    	@param type the base type for the search
+    	@return T such that (root type T) and if (root type T') then (T' subclassof T)
+     */
     static Resource findSpecificType( Model desc, Resource root, Resource type )
         {
         StmtIterator it = desc.listStatements( root, RDF.type, (RDFNode) null );
@@ -187,17 +179,18 @@ public abstract class ModelSpecImpl implements ModelSpec
         }
     
     /**
-        Answer a ModelMaker that conforms to the supplied description.
-        <i>work in progress</i>.
+        Answer a ModelMaker that conforms to the supplied description. The Maker
+        is found from the ModelMakerCreatorRegistry by looking up the most 
+        specifiy type of the unique object with type JMS.MakerSpec.
+        
+        @param d the model containing the description
+        @return a ModelMaker fitting that description
     */
     public static ModelMaker createMaker( Model d )
         {
         Model description = withSchema( d );
         Resource root = findRootByType( description, JMS.MakerSpec );
         Resource type = findSpecificType( description, root, JMS.MakerSpec );
-        Reifier.Style style = Reifier.Standard;
-        Statement st = description.getProperty( root, JMS.reificationMode );
-        if (st != null) style = JMS.findStyle( st.getObject() );
         ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
         if (mmc == null) throw new RuntimeException( "no maker type" );  
         return mmc.create( description, root ); 
