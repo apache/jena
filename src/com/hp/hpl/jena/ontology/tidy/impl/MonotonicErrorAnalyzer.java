@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.8 2005-01-05 14:42:15 chris-dollin Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.9 2005-01-05 15:31:15 chris-dollin Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -159,17 +159,15 @@ class MonotonicErrorAnalyzer implements Constants {
 		int given[] = { s, p, o };
 		int general[] = { look.subject(sx, key), look.prop(px, key),
 				look.object(ox, key) };
-		int meet[] = new int[3];
 		for (int i = 0; i < 3; i++) {
-			meet[i] = look.meet(general[i], given[i]);
-			if (meet[i] == Failure) {
+			if (look.meet(general[i], given[i]) == Failure) {
 				misses |= (1 << i);
 				int r = catMiss(general[i], given[i]);
 			}
 		}
 		miss[misses]++;
 		if (misses == 0) {
-			return difficultCase(given, general, meet);
+			return difficultCase(given, general );
 		}
 		return DIFFERENT_CATS + misses;
 
@@ -191,95 +189,51 @@ class MonotonicErrorAnalyzer implements Constants {
 
 	static private int diffPreds[] = new int[SZ];
 
-	static private int difficultCase(int given[], int general[], int meet[]) {
+	static private int difficultCase(int given[], int general[] ) {
 		int givenName[] = { NOT_CLASSIFIED, NOT_CLASSIFIED, NOT_CLASSIFIED };
 		int wantedName[] = { NOT_CLASSIFIED, NOT_CLASSIFIED, NOT_CLASSIFIED };
 
-		int key[] = new int[3];
-		int key2[] = new int[3];
+		int key[] = 
+                { look.qrefine( general[0], given[1], given[2] ),
+                look.qrefine( given[0], general[1], given[2] ),
+                look.qrefine( given[0], given[1], general[2] ) };
+
+        int key2[] = 
+                { look.qrefine( given[0], general[1], general[2] ),
+                look.qrefine( general[0], given[1], general[2] ),
+                look.qrefine( general[0], general[1], given[2] ) };
+        
 		int cats[][] = new int[3][];
 		int failures = 0;
-		boolean bad = false;
+        
+        for (int i = 0; i < 3; i++) cats[i] = nonPseudoCats(given[i]);
+        
 		for (int i = 0; i < 3; i++) {
-			key[i] = look.qrefine(i == 0 ? general[0] : given[0],
-					i == 1 ? general[1] : given[1], i == 2 ? general[2]
-							: given[2]);
-			cats[i] = nonPseudoCats(given[i]);
-			key2[i] = look.qrefine(i != 0 ? general[0] : given[0],
-					i != 1 ? general[1] : given[1], i != 2 ? general[2]
-							: given[2]);
 			if (key2[i] == Failure)
 				throw new BrokenException("logic error");
 		}
+        // TODO should we just use key2 ??? no
 		for (int i = 0; i < 3; i++) {
-			if (key[i] == Failure)
+			if (key[i] == Failure) {
 				failures |= (1 << i);
-			else {
-				int n = spo(i, general[i], key[i]);
-				int nc[] = nonPseudoCats(n);
-				if (Q.intersect(nc, cats[i]))
-					System.err.println("Intersect!");
-				givenName[i] = nameCatSet(cats[i], nc);
-				wantedName[i] = nameCatSet(nc,cats[i]);
-				if (givenName[i] == NOT_CLASSIFIED
-						|| wantedName[i] == NOT_CLASSIFIED)
-					bad = true;
-			}
+               computeGivenWanted(i,general, key2, cats);
+            }
 		}
 
-		int rslt = DC_DOM_RANGE + (7 ^ failures);
-		switch (rslt) {
-		case INCOMPATIBLE_SO:
-			computeGivenWanted(1,general, key2, cats);
-			break;
-		case INCOMPATIBLE_PO:
-			computeGivenWanted(0,general, key2, cats);
-			break;
-		case INCOMPATIBLE_SP:
-			computeGivenWanted(2,general, key2, cats);
-			break;
-		case INCOMPATIBLE_P:
-			
-			computeGivenWanted(0,general, key2, cats);
-			computeGivenWanted(2,general, key2, cats);
-			
-			break;
-		default:
-			throw new BrokenException(
-					"No code for this case - it doesn't happen.");
-		}
-		return rslt;
+		return DC_DOM_RANGE + (7 ^ failures);
 	}
 
-	private static int[] computeGivenWanted(int unchanged,int[] general, int[] key2, int[][] cats) {
+	private static int[] computeGivenWanted(int unchanged,int[] general, int[] key2, int[][] givenCats) {
 		int rslt[] = new int[4];
 		int ix = 0;
 		for (int i=0;i<3;i++)
 			if (i!=unchanged) {
 				int want = spo(i,general[i],key2[3-i-unchanged]);
 				int wantC[] = nonPseudoCats(want);
-				rslt[ix++] = nameCatSet(wantC,cats[i]);
-				rslt[ix++] = nameCatSet(cats[i],wantC);
+				rslt[ix++] = nameCatSet(wantC,givenCats[i]);
+				rslt[ix++] = nameCatSet(givenCats[i],wantC);
 			}
 		return rslt;
-		/*
-		int wantSubj = look.subject(general[0],key2[1]);
-		int wsc[] = nonPseudoCats(wantSubj);
-		int wantObj = look.object(general[2],key2[1]);
-		int woc[] = nonPseudoCats(wantObj);
-		int wantSPred = look.prop(general[1],key2[0]);
-		int wspc[] = nonPseudoCats(wantSPred);
-		int wantOPred = look.prop(general[1],key2[2]);
-		int wopc[] = nonPseudoCats(wantOPred);
-		nameCatSet(wsc,cats[0]);
-		nameCatSet(cats[0],wsc);
-		nameCatSet(woc,cats[2]);
-		nameCatSet(cats[2],woc);
-		nameCatSet(wspc,cats[1]);
-		nameCatSet(cats[1],wspc);
-		nameCatSet(wopc,cats[1]);
-		nameCatSet(cats[1],wopc);
-		*/
 	}
 
 	static private boolean isLiteral(int o) {
@@ -289,6 +243,7 @@ class MonotonicErrorAnalyzer implements Constants {
 
 	static private int empty[] = {};
 
+    // TODO update comment
 	/**
 	 * The order of this array encodes a declarative preference: - the most
 	 * precise description that fits is preferred - the shortest describing
@@ -895,6 +850,7 @@ class MonotonicErrorAnalyzer implements Constants {
 			if (Q.subset(in, cats) && !Q.intersect(cats, out)) {
 				if (rslt == NOT_CLASSIFIED)
 					usedName[i] = true;
+                // TODO refactor debugging to hide it.
 				if (!DEBUG_NAMES)
 					return i;
 				if (rslt == NOT_CLASSIFIED)
@@ -1109,12 +1065,17 @@ class MonotonicErrorAnalyzer implements Constants {
 		return rslt;
 
 	}
-
-	static private int catMiss(int oz, int o) {
-		if (isBlank[oz] != isBlank[o])
+/**
+ * precondition !Q.intersect(wantedC,givenC)
+ * @param wantedC from this triple only
+ * @param givenC from other triples
+ * @return
+ */
+	static private int catMiss(int wantedC, int givenC) {
+		if (isBlank[wantedC] != isBlank[givenC])
 			throw new RuntimeException("Logic error");
-		int a[] = nonPseudoCats(oz);
-		int b[] = nonPseudoCats(o);
+		int a[] = nonPseudoCats(wantedC);
+		int b[] = nonPseudoCats(givenC);
 
 		int given = nameCatSet(a, b);
 		int wanted = nameCatSet(b, a);
