@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 15:33:26 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-10 12:11:03 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.17 2003-05-21 15:33:26 chris-dollin Exp $
+ * @version CVS $Id: schemagen.java,v 1.18 2003-06-10 12:11:03 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -226,7 +226,7 @@ public class schemagen {
         {OPT_INCLUDE,             new OptionDefinition( "--include", "include" ) },
         {OPT_CLASSNAME_SUFFIX,    new OptionDefinition( "--classnamesuffix", "classnamesuffix" )},
         {OPT_NOHEADER,            new OptionDefinition( "--noheader", "noheader" )},
-        {OPT_SYNTAX,              new OptionDefinition( "-s", "syntax" )},
+        {OPT_SYNTAX,              new OptionDefinition( "-e", "encoding" )},
         {OPT_HELP,                new OptionDefinition( "--help", null )},
     };
 
