@@ -186,7 +186,9 @@ Post Jena 2.1 change list
         global FileManager (or create your own).
         Create new model with FileManager.get().loadModel
         Read into an existing model with FileManager.get().readModel
-
+      o In schemagen, inference is now *not* used by default on input models; a
+        new option --inference has been added to allow inference to be turned on.
+        
    Creating sets/maps
       o util.CollectionFactory has static methods for creating hashed Maps
         and hashed Sets. These are used in the internals to allow the

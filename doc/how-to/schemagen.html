@@ -59,6 +59,8 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>--include &lt;uri&gt;</td> <td>sgen:include</td> <td>Option for including non-local URI's in vocabulary</td> </tr>
   <tr> <td>--individualsSection &lt;string&gt;</td> <td>sgen:individualsSection</td> <td>Section declaration comment for individuals section.</td> </tr>
   <tr> <td>--individualTemplate &lt;string&gt;</td> <td>sgen:individualTemplate</td> <td>Template for writing out declarations of individuals.</td> </tr>
+  <tr> <td>--inference</td> <td>sgen:inference</td> <td>Causes the model that loads the document prior to being processed to apply inference rules
+    appropriate to the language. E.g. OWL inference rules will be used on a <code>.owl</code> file.</td> </tr>
   <tr> <td>--marker &lt;string&gt;</td> <td>sgen:marker</td> <td>Specify the marker string for substitutions, default is '%'</td> </tr>
   <tr> <td>-n &lt;string&gt;</td> <td>sgen:classname</td> <td>The name of the generated class. The default is to synthesise a name based on input document name.</td> </tr>
   <tr> <td>--noclasses</td> <td>sgen:noclasses</td> <td>Option to suppress classes in the generated vocabulary file</td> </tr>
@@ -118,7 +120,7 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
   <code>Java jena.schemagen -i deputy.rdf -a http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen.html,v 1.10 2004-08-13 09:51:58 ian_dickinson Exp $ */
+/* CVS $Id: schemagen.html,v 1.11 2005-01-05 22:52:12 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -157,7 +159,7 @@ public class Deputy {
   to get:</p>
 <p>
   <pre><code>
-/* CVs $Id: schemagen.html,v 1.10 2004-08-13 09:51:58 ian_dickinson Exp $ */
+/* CVs $Id: schemagen.html,v 1.11 2005-01-05 22:52:12 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -475,7 +477,7 @@ Options can be specified on the command line (when invoking schemagen), or may b
   </tr>
   <tr> 
     <td width="140" class="syntaxPrompt">Config file</td>
-    <td class="syntax">&lt;sgen:daml rdf:datatype=&quot;&amp;xsd;Boolean&quot;&gt;true&lt;/sgen:daml&gt;</td>
+    <td class="syntax">&lt;sgen:daml rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:daml&gt;</td>
   </tr>
 </table>
 <p></p>
@@ -486,7 +488,7 @@ Options can be specified on the command line (when invoking schemagen), or may b
   </tr>
   <tr> 
     <td width="140" class="syntaxPrompt">Config file</td>
-    <td class="syntax">&lt;sgen:owl rdf:datatype=&quot;&amp;xsd;Boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
+    <td class="syntax">&lt;sgen:owl rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
   </tr>
 </table>
 <p></p>
@@ -497,7 +499,28 @@ Options can be specified on the command line (when invoking schemagen), or may b
   </tr>
   <tr> 
     <td width="140" class="syntaxPrompt">Config file</td>
-    <td class="syntax">&lt;sgen:rdfs rdf:datatype=&quot;&amp;xsd;Boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
+    <td class="syntax">&lt;sgen:rdfs rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
+  </tr>
+</table>
+<p>Prior to Jena 2.2, schemagen used a Jena model to load the input document that also applied
+  some <em>rules of inference</em> to the input data. So, for example, a resource that is mentioned as
+  the <code>owl:range</code> of a property can be inferred to be <code>rdf:type&nbsp;owl:Class</code>, 
+  and hence listed in the class constants in the generated Java class, even if
+  that fact is not directly asserted in the input model. 
+  From Jena 2.2 onwards, this option is now <strong>off by default</strong>.
+  If correct handling of an input document by schemagen requires the use of inference rules, this must 
+  be specified by the <code>inference</code> option. In particular, some DAML+OIL input files may 
+  require the use of this option, to ensure that synonyms such as <code>daml:Class</code> and <code>rdfs:Class</code>
+  are recognised correctly.</p>
+<p></p>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--inference</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:inference rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
   </tr>
 </table>
 <p></p>
@@ -562,9 +585,9 @@ Options can be specified on the command line (when invoking schemagen), or may b
   </tr>
   <tr> 
     <td width="140" class="syntaxPrompt">Config file</td>
-    <td class="syntax">&lt;sgen:noclassses rdf:datatype=&quot;&amp;xsd;Boolean&quot;&gt;true&lt;/sgen:noclassses&gt;<br>
-      &lt;sgen:noproperties rdf:datatype=&quot;&amp;xsd;Boolean&quot;&gt;true&lt;/sgen:noproperties&gt;<br>
-      &lt;sgen:noindividuals rdf:datatype=&quot;&amp;xsd;Boolean&quot;&gt;true&lt;/sgen:noindividuals&gt; 
+    <td class="syntax">&lt;sgen:noclassses rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:noclassses&gt;<br>
+      &lt;sgen:noproperties rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:noproperties&gt;<br>
+      &lt;sgen:noindividuals rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:noindividuals&gt; 
     </td>
   </tr>
 </table>
@@ -683,18 +706,18 @@ Options can be specified on the command line (when invoking schemagen), or may b
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.10 2004-08-13 09:51:58 ian_dickinson Exp $
+	CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.11 2005-01-05 22:52:12 ian_dickinson Exp $
 --&gt;
 
 <span class="xmlText">&lt;sgen:Config&gt;
  &nbsp;&nbsp;&nbsp;&lt;!-- specifies that the &nbsp;source document uses OWL --&gt;
- &nbsp;&nbsp;&nbsp;&lt;sgen:owl rdf:datatype="&amp;xsd;Boolean"&gt;</span>true<span class="xmlText">&lt;/sgen:owl&gt;
+ &nbsp;&nbsp;&nbsp;&lt;sgen:owl rdf:datatype="&amp;xsd;boolean"&gt;</span>true<span class="xmlText">&lt;/sgen:owl&gt;
 
  &nbsp;&nbsp;&nbsp;&lt;!-- specifies that we want the generated vocab to use OntClass, OntProperty, etc, not Resource and Property --&gt;
- &nbsp;&nbsp;&nbsp;&lt;sgen:ontology rdf:datatype="&amp;xsd;Boolean"&gt;</span>true<span class="xmlText">&lt;/sgen:ontology&gt;
+ &nbsp;&nbsp;&nbsp;&lt;sgen:ontology rdf:datatype="&amp;xsd;boolean"&gt;</span>true<span class="xmlText">&lt;/sgen:ontology&gt;
 
  &nbsp;&nbsp;&nbsp;&lt;!-- specifies that we want names mapped to uppercase (as standard Java constants) --&gt;
- &nbsp;&nbsp;&nbsp;&lt;sgen:uppercase rdf:datatype="&amp;xsd;Boolean"&gt;</span>true<span class="xmlText">&lt;/sgen:uppercase&gt;
+ &nbsp;&nbsp;&nbsp;&lt;sgen:uppercase rdf:datatype="&amp;xsd;boolean"&gt;</span>true<span class="xmlText">&lt;/sgen:uppercase&gt;
 
  &nbsp;&nbsp;&nbsp;&lt;!-- append Vocab to class name, so input beer.owl becomes BeerVocab.java --&gt;
  &nbsp;&nbsp;&nbsp;&lt;sgen:classnamesuffix rdf:datatype="&amp;xsd;string"&gt;</span>Vocab<span class="xmlText">&lt;/sgen:classnamesuffix&gt;
@@ -715,10 +738,10 @@ Options can be specified on the command line (when invoking schemagen), or may b
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.10 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.11 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2004-08-13 09:51:58 $
+ * Last modified on &nbsp;&nbsp;$Date: 2005-01-05 22:52:12 $
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
@@ -785,6 +808,6 @@ Options can be specified on the command line (when invoking schemagen), or may b
 </code></pre>
 </p>
 <hr />
-<p><small>CVS $Id: schemagen.html,v 1.10 2004-08-13 09:51:58 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: schemagen.html,v 1.11 2005-01-05 22:52:12 ian_dickinson Exp $</small></p>
 </body>
 </html>
