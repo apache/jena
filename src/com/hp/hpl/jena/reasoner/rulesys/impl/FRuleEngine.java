@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.3 2003-06-02 09:04:33 der Exp $
+ * $Id: FRuleEngine.java,v 1.4 2003-06-02 16:53:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-02 09:04:33 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-02 16:53:46 $
  */
 public class FRuleEngine {
     
@@ -50,12 +50,6 @@ public class FRuleEngine {
     
     /** performance stats - number of rules fired during axiom initialization */
     long nAxiomRulesFired = -1;
-    
-    /** threshold on the numbers of rule firings allowed in a single operation */
-    long nRulesThreshold = DEFAULT_RULES_THRESHOLD;
-        
-    /** Default setting for rules threshold */
-    public static final long DEFAULT_RULES_THRESHOLD = 500000;
     
     /** True if we have processed the axioms in the rule set */
     boolean processedAxioms = false;
@@ -113,15 +107,6 @@ public class FRuleEngine {
     }
     
     /**
-     * Change the threshold on the number of rule firings 
-     * allowed during a single operation.
-     * @param threshold the new cutoff on the number rules firings per external op
-     */
-    public void setRuleThreshold(long threshold) {
-        nRulesThreshold = threshold;
-    }
-    
-    /**
      * Return the number of rules fired since this rule engine instance
      * was created and initialized
      */
@@ -156,7 +141,6 @@ public class FRuleEngine {
      * @param context a context containing a set of new triples to be added
      */
     public void addSet(BFRuleContext context) {
-        long cutoff = nRulesFired + nRulesThreshold;
         Triple t;
         while ((t = context.getNextTriple()) != null) {
             if (infGraph.shouldTrace()) {
@@ -180,10 +164,6 @@ public class FRuleEngine {
                         nRulesFired++;
                     }
                 }
-            }
-            if (nRulesFired > cutoff) {
-                throw new BFRException("Add operation aborted - too many rule firings required, assuming stuck in a reasoning loop."
-                                      + "\nWarning - graph may be in an indeterminate state");
             }
         }
     }

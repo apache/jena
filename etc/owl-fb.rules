@@ -144,7 +144,7 @@
        [restrictionSubclass1b: (?X rdf:type ?D) <- (?X rdf:type ?R)] ]
        
 [restrictionSubclass2: (?D owl:equivalentClass ?R), isFunctor(?R) ->
-       [restrictinSubclass2b: (?X rdf:type ?R) <- (?X rdf:type ?D)] ]
+       [restrictionSubclass2b: (?X rdf:type ?R) <- (?X rdf:type ?D)] ]
        
 # Temp trial - might replace above       
 #[restrictionSubclass1: (?D owl:equivalentClass ?R), isFunctor(?R) , (?X rdf:type ?R) -> (?X rdf:type ?D)]
@@ -169,8 +169,12 @@
 [restrictionFT-M: (?P rdf:type owl:FunctionalProperty) ->
          [restrictionFTMb: (?X rdf:type max(?P, '1')) <- (?X rdf:type owl:Thing)] ]
 
-[restrictionR-A: (?P rdfs:range ?C), (?D rdf:type owl:Class), notFunctor(?C)  
-						-> (?D rdfs:subClassOf all(?P, ?C)) ]
+# If leave this forward get #ranges * #classes deductions 
+# The backward one is only safe if there are no interactions with other forward rules
+#[restrictionR-A: (?P rdfs:range ?C), (?D rdf:type owl:Class), notFunctor(?C)  
+#						-> (?D rdfs:subClassOf all(?P, ?C)) ]
+[restrictionR-A: (?D rdfs:subClassOf all(?P, ?C))
+					<- (?P rdfs:range ?C), (?D rdf:type owl:Class), notFunctor(?C) ]
 		
 [restrictionA-R: (owl:Thing rdfs:subClassOf all(?P, ?C)) 
 						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty) ]
@@ -186,23 +190,33 @@
 #[restrictionA-S:  (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type) ->
 #		[restrictionA-Sb: (?X rdf:type some(?P, ?D)) <- (?X rdf:type ?C), (?X ?P ?Y)] ]
 
-[restrictionProc7: (?B owl:sameIndividualAs ?C) <- (?A rdf:type max(?P, '1')), (?A ?P ?B), (?A ?P ?C) ]
+[restrictionM-sI: (?B owl:sameIndividualAs ?C) <- (?A rdf:type max(?P, '1')), (?A ?P ?B), (?A ?P ?C) ]
 
-[restrictionProc8: (?X rdf:type owl:Nothing) <- (?X rdf:type min(?P, '1')), (?X rdf:type max(?P, 0)) ]
+[restrictionMM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type min(?P, '1')), (?X rdf:type max(?P, 0)) ]
 
-# This one needs a bRule version of makeTemp
-#[restrictionProc10: (?X rdf:type some(?P, ?C)), noValue(?X, ?P), notEqual(?P, owl:sameIndividualAs),
-#					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), makeTemp(?T)
-#   	  						-> (?X ?P ?T), (?T rdf:type ?C)]
+#------------------------------------------------------------------
+# Using some(P,C) restriction to infer P values for instances.
+# Since this is instance reasoning we should be doing this backwards.
+# But we have a problem with makeInstance that we can't create new triples
+# during b-rule processing because the deductions graph doesn't support
+# concurrent update. We will solve this eventually but for now we revert
+# to a forward rule solution.
+#------------------------------------------------------------------
+
+#[restrictionS-in: (?C rdfs:subClassOf some(?P, ?D)), notEqual(?P, owl:sameIndividualAs), notEqual(?D, owl:Class), notEqual(?D, rdfs:Class) ->
+#           [restrictionS-inb: (?x ?P ?t) <- (?x rdf:type some(?P, ?D)), makeInstance(?x, ?P, ?D, ?t), print('inb', ?x, ?P, ?t) ] 
+#           [restrictionS-inb2: (?t rdf:type ?D) <- (?x ?P ?t), noValue(?t, rdf:type), print('inb2', ?t, ?D, ?x) ]
+#           ]
+           
+[restrictionS-in: (?D rdfs:subClassOf some(?P,?C)) (?X rdf:type ?D), noValue(?X, ?P), notEqual(?P, owl:sameIndividualAs),
+					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), makeTemp(?T)
+   	  						-> (?X ?P ?T), (?T rdf:type ?C)]
 
 #------------------------------------------------------------------
 # Create prototypical instances for each class and infer any subclass relations
 # This is better done as part of an explicit taxonomy building phase.
-# Not that prototype1 requires instance style reasoning so we need derivations
+# Note that prototype1 requires instance style reasoning so we need derivations
 # of type owl:Class to work forwards, hence the special type propagation rules.
-# Prototype1 currently always schedules a full prototype check with is a little
-# expensive. Haven't yet found a way to skip some boring checks without missing
-# out important ones for the owl test cases.
 #------------------------------------------------------------------
 
 [typeProp1: (?C rdf:type owl:Restriction) -> (?C rdf:type owl:Class) ]
@@ -281,12 +295,12 @@
                     -> (?X owl:sameIndividualAs ?Y) ]
                     
 
-[sameIndividualAs4: (?Y ?P ?V) <- unbound(?V), (?X owl:sameIndividualAs ?Y), (?X ?P ?V) ]
-[sameIndividualAs4: (?Y ?P ?V) <- bound(?V), unbound(?P), (?X owl:sameIndividualAs ?Y), (?X ?P ?V) ]
-[sameIndividualAs4: (?Y ?P ?V) <- bound(?V), bound(?P), (?X ?P ?V) (?X owl:sameIndividualAs ?Y)  ]
-[sameIndividualAs5: (?V ?P ?Y) <- unbound(?V), (?X owl:sameIndividualAs ?Y), (?V ?P ?X)  ]
-[sameIndividualAs5: (?V ?P ?Y) <- bound(?V), unbound(?P), (?X owl:sameIndividualAs ?Y), (?V ?P ?X)  ]
-[sameIndividualAs5: (?V ?P ?Y) <- bound(?V), bound(?P), (?V ?P ?X), (?X owl:sameIndividualAs ?Y)  ]
+[sameIndividualAs4: (?Y ?P ?V) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?X ?P ?V) ]
+[sameIndividualAs4: (?Y ?P ?V) <- bound(?V), unbound(?P), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?X ?P ?V) ]
+[sameIndividualAs4: (?Y ?P ?V) <- bound(?V), bound(?P), (?X ?P ?V) (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y)  ]
+[sameIndividualAs5: (?V ?P ?Y) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?V ?P ?X)  ]
+[sameIndividualAs5: (?V ?P ?Y) <- bound(?V), unbound(?P), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?V ?P ?X)  ]
+[sameIndividualAs5: (?V ?P ?Y) <- bound(?V), bound(?P), (?V ?P ?X), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y)  ]
 
 [sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 [sameIndividualAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]

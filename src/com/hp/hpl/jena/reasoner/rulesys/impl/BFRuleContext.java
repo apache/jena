@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.3 2003-05-30 16:26:14 der Exp $
+ * $Id: BFRuleContext.java,v 1.4 2003-06-02 16:53:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-30 16:26:14 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-02 16:53:46 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -198,7 +198,14 @@ public class BFRuleContext implements RuleContext {
     public void resetEnv() {
         env.reset();
     }
-          
+    
+    /**
+     * Assert a new triple in the deduction graph, bypassing any processing machinery.
+     */
+    public void silentAdd(Triple t) {
+        ((SilentAddI)graph).silentAdd(t);
+    }
+
 }
 
 /*

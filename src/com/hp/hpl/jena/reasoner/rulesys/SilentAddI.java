@@ -1,55 +1,31 @@
 /******************************************************************
- * File:        ForwardRuleInfGraphI.java
+ * File:        SilentAddI.java
  * Created by:  Dave Reynolds
- * Created on:  28-May-2003
+ * Created on:  02-Jun-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ForwardRuleInfGraphI.java,v 1.3 2003-06-02 16:52:31 der Exp $
+ * $Id: SilentAddI.java,v 1.1 2003-06-02 16:52:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.graph.Triple;
 
 /**
- * This interface collects together the operations on the InfGraph which
- * are needed to support the forward rule engine. 
+ * Interface supported by each of the rule system interpreters that
+ * allow triples to added directly to the deductions cache, by-passing
+ * any processing machinery.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-02 16:52:31 $
+ * @version $Revision: 1.1 $ on $Date: 2003-06-02 16:52:31 $
  */
-public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
+public interface SilentAddI {
     
     /**
-     * Return true if tracing should be acted on - i.e. if traceOn is true
-     * and we are past the bootstrap phase.
+     * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
-    public boolean shouldTrace();
-        
-    /**
-     * Adds a new Backward rule as a rules of a forward rule process. Only some
-     * infgraphs support this.
-     */
-    public void addBRule(Rule brule);
-    
-    /**
-     * Return the Graph containing all the static deductions available so far.
-     */
-    public Graph getDeductionsGraph();
-    
-    /**
-     * Search the combination of data and deductions graphs for the given triple pattern.
-     * This may different from the normal find operation in the base of hybrid reasoners
-     * where we are side-stepping the backward deduction step.
-     */
-    public ExtendedIterator findDataMatches(Node subject, Node predicate, Node object);
+    public void silentAdd(Triple t);
 
-    /**
-     * Log a dervivation record against the given triple.
-     */
-    public void logDerivation(Triple t, Object derivation);
 }
 
 

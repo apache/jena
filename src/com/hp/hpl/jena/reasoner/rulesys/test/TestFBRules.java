@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.3 2003-06-02 09:04:31 der Exp $
+ * $Id: TestFBRules.java,v 1.4 2003-06-02 16:53:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,18 +15,22 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import java.io.IOException;
 import java.util.*;
 
 /**
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-02 09:04:31 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-02 16:53:46 $
  */
 public class TestFBRules extends TestCase {
     // Useful constants
@@ -64,6 +68,9 @@ public class TestFBRules extends TestCase {
      */
     public static TestSuite suite() {
         return new TestSuite( TestFBRules.class ); 
+//        TestSuite suite = new TestSuite();
+//        suite.addTest(new TestFBRules( "temp" ));
+//        return suite;
     }  
 
     /**
@@ -452,6 +459,84 @@ public class TestFBRules extends TestCase {
               } );
     }
 
+    /**
+     * Test access to makeInstance machinery from a Brule.
+     */
+    public void testMakeInstance() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, ty, C1));
+        data.add(new Triple(b, ty, C1));
+        data.add(new Triple(b, p, c));
+        List rules = Rule.parseRules(
+    "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
+                          "" );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        // Should not have triggered on b
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(b, p, null), new Object[] {
+                  new Triple(b, p, c)
+              } );
+        // Should have added an value instance to a
+        Node instance = getValue(infgraph, a, p);
+        // No longer creates the type assertion until we can support concurrent update
+//        Node instClass = getValue(infgraph, instance, ty);
+//        assertEquals(instClass, C2);
+    }
+    
+    /**
+     * Helper - returns the single object value for an s/p pair, asserts an error
+     * if there is more than one.
+     */
+    private Node getValue(Graph g, Node s, Node p) {
+        ExtendedIterator i = g.find(s, p, null);
+        assertTrue(i.hasNext());
+        Node result = ((Triple)i.next()).getObject();
+        if (i.hasNext()) {
+            assertTrue("multiple values not expected", false);
+            i.close();
+        }
+        return result;
+    }
+
+    /**
+     * Investigate a suspicious case in the OWL ruleset, is the backchainer 
+     * returning duplication values?
+     */
+    public void testDuplicatesEC4() throws IOException {
+        Model premisesM = ModelLoader.loadModel("file:testing/wg/equivalentClass/premises004.rdf");
+        Graph data = premisesM.getGraph();
+        Reasoner reasoner =  new OWLFBRuleReasoner();
+        InfGraph infgraph = reasoner.bind(data);
+        Node rbPrototypeProp = Node.createURI(Rule.RBNamespace+"prototype");
+        int count = 0;
+        for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
+            Object t = i.next();
+//            System.out.println(" - " + PrintUtil.print(t));
+            count++;
+        }
+        assertTrue(count == 7);
+    }
+    
+    /**
+     * Check cost of creating an empty OWL closure.
+     */
+    public void temp() {
+        Graph data = new GraphMem();
+        Graph data2 = new GraphMem();
+        Reasoner reasoner =  new OWLFBRuleReasoner();
+        FBRuleInfGraph infgraph = (FBRuleInfGraph)reasoner.bind(data);
+        FBRuleInfGraph infgraph2 = (FBRuleInfGraph)reasoner.bind(data2);
+        long t1 = System.currentTimeMillis();
+        infgraph.prepare();
+        long t2 = System.currentTimeMillis();
+        System.out.println("Prepare on empty graph = " + (t2-t1) +"ms");
+        t1 = System.currentTimeMillis();
+        infgraph2.prepare();
+        t2 = System.currentTimeMillis();
+        System.out.println("Prepare on empty graph = " + (t2-t1) +"ms");
+    }
+    
 }
 
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.3 2003-06-02 16:52:31 der Exp $
+ * $Id: FBRuleReasoner.java,v 1.4 2003-06-02 16:55:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-02 16:52:31 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-02 16:55:53 $
  */
 public class FBRuleReasoner implements Reasoner {
     
@@ -50,10 +50,6 @@ public class FBRuleReasoner implements Reasoner {
     /** Property used to configure the tracing behaviour of the reasoner.
      *  Set to "true" to enable internal trace message to be sent to Logger.info . */
     public static final Property PROPtraceOn = ResourceFactory.createProperty(URI+"#", "traceOn");
-    
-    /** Property used to configure the maximum number of rule firings allowed in 
-     * a single operation. Should be an xsd:int. */
-    public static final Property PROPrulesThreshold = ResourceFactory.createProperty(URI+"#", "rulesThreshold");
     
     /**
      * Constructor. This is the raw version that does not reference a ReasonerFactory

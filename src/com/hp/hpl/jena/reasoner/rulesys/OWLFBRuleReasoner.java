@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.1 2003-06-02 09:03:50 der Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.2 2003-06-02 16:52:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-02 09:03:50 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-02 16:52:31 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -106,7 +106,6 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
         }
         
         graph.setDerivationLogging(recordDerivations);
-        graph.setRuleThreshold(nRulesThreshold);
         graph.setTraceOn(traceOn);
         graph.rebind(data);
                 

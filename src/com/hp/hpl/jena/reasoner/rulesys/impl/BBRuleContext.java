@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BBRuleContext.java,v 1.2 2003-05-30 16:26:13 der Exp $
+ * $Id: BBRuleContext.java,v 1.3 2003-06-02 16:53:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * interpret variable bindings to access the static triple data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:13 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-02 16:53:46 $
  */
 public class BBRuleContext implements RuleContext {
     
@@ -103,6 +103,13 @@ public class BBRuleContext implements RuleContext {
      */
     public void setRule(Rule rule) {
         this.rule = rule;
+    }
+    
+    /**
+     * Assert a new triple in the deduction graph, bypassing any processing machinery.
+     */
+    public void silentAdd(Triple t) {
+        ((SilentAddI)graph).silentAdd(t);
     }
 
 }

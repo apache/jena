@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.10 2003-06-02 09:04:30 der Exp $
+ * $Id: TestOWLRules.java,v 1.11 2003-06-02 16:53:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -19,7 +19,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-02 09:04:30 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-02 16:53:45 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -83,7 +83,7 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("disjointWith/Manifest002.rdf"));
         suite.addTest(new TestOWLRules("AllDifferent/Manifest001.rdf")); // bx gets lost
 
-        // Restriction tests - ok
+        // Restriction tests
         suite.addTest(new TestOWLRules("allValuesFrom/Manifest001.rdf"));    // bx - long but terminates
         suite.addTest(new TestOWLRules("allValuesFrom/Manifest002.rdf"));   // bx - slow
         suite.addTest(new TestOWLRules("someValuesFrom/Manifest002.rdf"));   // bx - slow
@@ -98,14 +98,12 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("cardinality/Manifest003-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("cardinality/Manifest004-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("I5.24/Manifest003-mod.rdf"));
-        
-        // Problems
         suite.addTest(new TestOWLRules("cardinality/Manifest005-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("cardinality/Manifest006-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("equivalentClass/Manifest004.rdf"));  // bx - timeout
         
         // Needs prototype creation rule
-//        suite.addTest(new TestOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
+        suite.addTest(new TestOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
         
         // Duplications of tests included earlier
 //        suite.addTest(new TestOWLRules("differentFrom/Manifest002.rdf"));  // Duplication of AllDifferent#1
