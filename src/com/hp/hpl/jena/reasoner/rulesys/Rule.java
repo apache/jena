@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.22 2004-03-19 16:33:36 chris-dollin Exp $
+ * $Id: Rule.java,v 1.23 2004-03-22 17:10:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,7 +14,6 @@ import java.util.*;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.Tokenizer;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 
@@ -57,7 +56,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.22 $ on $Date: 2004-03-19 16:33:36 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.23 $ on $Date: 2004-03-22 17:10:12 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.19 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: OWLWGTester.java,v 1.20 2004-03-22 17:10:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -39,7 +39,7 @@ import java.util.*;
  * some code rationalization might be once once that stabilizes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-12-08 10:48:27 $
+ * @version $Revision: 1.20 $ on $Date: 2004-03-22 17:10:11 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -210,15 +210,13 @@ public class OWLWGTester {
 //                System.out.println("Error: deductions graph was ...");
 //                FBRuleInfGraph fbGraph = (FBRuleInfGraph)graph;
 //                Graph deductions = fbGraph.getDeductionsGraph();
-//                for (Iterator i = deductions.find(null,null,null); i.hasNext();) {
-//                    logger.info(" - " + PrintUtil.print(i.next()));
-//                }
+//                com.hp.hpl.jena.util.PrintUtil.printOut(deductions.find(null,null,null));
 //            }
         }
         
         // Signal the results        
         if (testcase != null) {
-            TestCase.assertTrue("Test: " + test + "\n" +  description, correct);
+            TestCase.assertTrue("Test: " + test + "\n" +  reasonerF.getURI() + "\n" + description, correct);
         }
         return correct;
     }
