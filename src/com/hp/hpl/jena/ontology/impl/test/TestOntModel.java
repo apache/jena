@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:27 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 11:48:29 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.14 2004-12-06 13:50:27 andy_seaborne Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.15 2004-12-07 11:48:29 ian_dickinson Exp $
  */
 public class TestOntModel 
     extends ModelTestBase
@@ -703,6 +703,26 @@ public class TestOntModel
         assertTrue( "Should have raised exception to get owl lang level on non-owl model", ex );
     }
     
+    public void testRead() {
+        String base0 = "http://example.com/test0"; 
+        String ns0 = base0 + "#";
+        String base1 = "http://example.com/test1"; 
+        String ns1 = base1 + "#";
+        
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        m.getDocumentManager().reset();
+        m.getDocumentManager().addAltEntry( base0, "file:testing/ontology/relativenames.rdf" );
+        m.read( base0, "RDF/XML" );
+        assertNotNull( "Should be a class ns0:A", m.getOntClass( ns0 + "A" ) );
+        assertNull( "Should not be a class ns1:A", m.getOntClass( ns1 + "A" ) );
+        
+        m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        m.getDocumentManager().reset();
+        m.getDocumentManager().addAltEntry( base0, "file:testing/ontology/relativenames.rdf" );
+        m.read( base0, base1, "RDF/XML" );
+        assertNull( "Should not be a class ns0:A", m.getOntClass( ns0 + "A" ) );
+        assertNotNull( "Should be a class ns1:A", m.getOntClass( ns1 + "A" ) );
+    }
     
     // Internal implementation methods
     //////////////////////////////////

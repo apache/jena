@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.75 $
+ * Revision           $Revision: 1.76 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:08 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 11:47:56 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -28,7 +28,6 @@ import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.ontology.*;
@@ -40,8 +39,10 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.enhanced.*;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 
@@ -53,7 +54,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.75 2004-12-06 13:50:08 andy_seaborne Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.76 2004-12-07 11:47:56 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -66,6 +67,8 @@ public class OntModelImpl
     // Static variables
     //////////////////////////////////
 
+    static private Log s_log = LogFactory.getLog( OntModelImpl.class );
+    
 
     // Instance variables
     //////////////////////////////////
@@ -1983,32 +1986,30 @@ public class OntModelImpl
      * @return This model, to allow chaining calls
      */
     public Model read( String uri, String syntax ) {
-        String sourceURL = getDocumentManager().doAltURLMapping( uri );
-        
-        // we have to duplicate the encoding translation here, since there's no method on Model
-        // to read from a URL with a separate baseURI
-        // TODO clean this up when bug 791843 is fixed
-        try {
-            URLConnection conn = new URL( sourceURL ).openConnection();
-            String encoding = conn.getContentEncoding();
-            
-            if (encoding == null) {
-                super.read( conn.getInputStream(), uri, syntax );
-            }
-            else {
-                super.read( new InputStreamReader(conn.getInputStream(), encoding), uri, syntax );
-            }
-        } 
-        catch (IOException e) {
-            throw new JenaException( e);
+        return read( uri, uri, syntax );
+    }
+    
+    /**
+     * <p>Read statements into the model from the given source, and then load
+     * imported ontologies (according to the document manager policy).</p>
+     * @param uri URI to read from, may be mapped to a local source by the document manager
+     * @param base The base URI for this model
+     * @param syntax The source syntax
+     * @return This model, to allow chaining calls
+     */
+    public Model read( String uri, String base, String syntax ) {
+        // we don't want to load this document again if imported by one of the imports
+        if (s_log.isDebugEnabled()) {
+            s_log.debug( "Noting already loaded import URI " + uri );
         }
+        addLoadedImport( uri );
+        
+        String sourceURL = getDocumentManager().doAltURLMapping( uri );
+        super.read( sourceURL, base, syntax );
 
         // cache this model against the public uri (if caching enabled)
         getDocumentManager().addModel( uri, this );
 
-        // we don't want to load this document again if imported by one of the imports
-        addLoadedImport( uri );
-        
         // now load the imported documents
         getDocumentManager().loadImports( this );
         rebind();
