@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 
 /** Bunch of programmatic uses of query to complrment the script tests.
  * @author Andy Seaborne
- * @version $Id: QueryTestProgrammatic.java,v 1.5 2003-05-28 14:49:09 andy_seaborne Exp $
+ * @version $Id: QueryTestProgrammatic.java,v 1.6 2003-08-27 12:26:14 andy_seaborne Exp $
  */
 
 public class QueryTestProgrammatic extends TestSuite
@@ -228,7 +228,7 @@ public class QueryTestProgrammatic extends TestSuite
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

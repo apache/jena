@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 
 /** 
  * @author Automatically generated class: Operator: NotEqual
- * @version $Id: Q_NotEqual.java,v 1.4 2003-06-19 08:42:44 andy_seaborne Exp $
+ * @version $Id: Q_NotEqual.java,v 1.5 2003-08-27 12:26:14 andy_seaborne Exp $
  */
 
 public class Q_NotEqual extends SimpleNode implements Expr, ExprBoolean
@@ -94,7 +94,7 @@ public class Q_NotEqual extends SimpleNode implements Expr, ExprBoolean
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003, 2001-2003
+ *  (c) Copyright 2001, 2002, 2003, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

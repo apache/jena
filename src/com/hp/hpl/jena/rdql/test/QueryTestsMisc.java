@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  *   Workign with associated triples
  *  
  * @author Andy Seaborne
- * @version $Id: QueryTestsMisc.java,v 1.1 2003-05-28 14:49:10 andy_seaborne Exp $
+ * @version $Id: QueryTestsMisc.java,v 1.2 2003-08-27 12:26:14 andy_seaborne Exp $
  */
 
 public class QueryTestsMisc extends TestSuite
@@ -115,7 +115,7 @@ public class QueryTestsMisc extends TestSuite
             {
                 i++ ;
                 ResultBinding rb = (ResultBinding)results.next() ;
-                assertTrue(getName()+": getTriples(loop "+i+")",                           rb.getTriples().size() == 1) ; 
+                assertTrue(getName()+": getTriples(loop "+i+")",                           rb.getTriples().size() == 1) ; 
             }
             results.close() ;
         }
@@ -154,7 +154,7 @@ public class QueryTestsMisc extends TestSuite
 }
     
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

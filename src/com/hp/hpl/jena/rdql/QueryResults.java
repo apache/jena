@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -18,7 +18,7 @@ import java.util.*;
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResults.java,v 1.5 2003-08-26 16:29:33 andy_seaborne Exp $
+ * @version  $Id: QueryResults.java,v 1.6 2003-08-27 12:25:58 andy_seaborne Exp $
  */
 
 public interface QueryResults extends java.util.Iterator
@@ -68,7 +68,7 @@ public interface QueryResults extends java.util.Iterator
 
 }
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

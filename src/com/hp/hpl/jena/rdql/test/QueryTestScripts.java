@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.12 2003-07-18 12:50:49 chris-dollin Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.13 2003-08-27 12:26:14 andy_seaborne Exp $
  */
 
 
@@ -393,7 +393,7 @@ public class QueryTestScripts extends TestSuite
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003, 2001-2003
+ *  (c) Copyright 2001, 2002, 2003, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

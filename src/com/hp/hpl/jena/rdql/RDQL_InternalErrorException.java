@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
  
 /** Hopefully, you won't see this!
  * @author   Andy Seaborne
- * @version  $Id: RDQL_InternalErrorException.java,v 1.4 2003-08-26 20:23:15 andy_seaborne Exp $
+ * @version  $Id: RDQL_InternalErrorException.java,v 1.5 2003-08-27 12:25:58 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -17,7 +17,7 @@ public class RDQL_InternalErrorException extends QueryException
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
