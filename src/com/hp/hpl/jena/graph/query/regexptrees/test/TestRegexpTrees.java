@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestRegexpTrees.java,v 1.2 2004-08-18 11:32:53 chris-dollin Exp $
+  $Id: TestRegexpTrees.java,v 1.3 2004-09-01 19:19:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees.test;
@@ -31,6 +31,8 @@ public class TestRegexpTrees extends GraphTestBase
             { new StartOfLine(), "SOL" },
             { new AnySingle(), "ANY" },
             { new AnySingle(), "ANY" },
+            { new Paren( new AnySingle() ), "(ANY)" },
+            { new Paren( new EndOfLine() ), "(EOL)" },
             { new Text( "hello" ), "hello" },
             { new Text( "goodbye" ), "goodbye" },
             { new AnyOf( "abcde" ), "any[abcde]" },

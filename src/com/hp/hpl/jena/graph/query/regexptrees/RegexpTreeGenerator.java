@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTreeGenerator.java,v 1.5 2004-08-18 11:31:54 chris-dollin Exp $
+  $Id: RegexpTreeGenerator.java,v 1.6 2004-09-01 19:18:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -82,6 +82,11 @@ public interface RegexpTreeGenerator
          or rejects (reject=true) any (all) of the characters in <code>chars</code>.
     */
     public abstract RegexpTree getClass( String chars, boolean reject );
+    
+    /**
+         Answer a RegexpTree that wraps parentheses around an operand.
+    */
+    public abstract RegexpTree getParen( RegexpTree operand );
     }
 
 /*

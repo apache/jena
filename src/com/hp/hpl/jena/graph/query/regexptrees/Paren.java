@@ -1,48 +1,32 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Sequence.java,v 1.3 2004-09-01 19:18:18 chris-dollin Exp $
+  $Id: Paren.java,v 1.1 2004-09-01 19:18:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
 
-import java.util.List;
 
 /**
-     A sequence of regular expressions. The only access to the constructor is
-     through the <code>create</code> method, which does not construct unit
-     sequences.
-     
+     Class which represents parenthesised [group-capturing] regular expressions.
      @author hedgehog
 */
-public class Sequence extends MultiOperandTree
+public class Paren extends RegexpTree
     {
-    protected Sequence( RegexpTree [] operands )
-        { super( operands ); }
+    protected RegexpTree operand;
     
-    public static RegexpTree create( List operands )
-        {
-        if (operands.size() == 0)
-            return NON;
-        else if (operands.size() == 1) 
-            return (RegexpTree) operands.get(0);
-        else
-            return new Sequence( (RegexpTree []) operands.toArray( new RegexpTree [operands.size()] ));
-        }
-    
+    public Paren( RegexpTree tree ) 
+        { this.operand = tree; }
+
     public boolean equals( Object other )
-        {
-        return other instanceof Sequence && sameOperands( (MultiOperandTree) other );
-        }
+        { return other instanceof Paren && operand.equals( ((Paren) other).operand ); }
 
     public int hashCode()
-        { return hashCode( 0 ); }
-    
+        { return operand.hashCode(); }
+
     public String toString()
-        { return toString( "seq" ); }
-
+        { return "(" + operand + ")"; }
     }
-
 
 /*
     (c) Copyright 2004, Hewlett-Packard Development Company, LP

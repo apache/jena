@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.8 2004-08-18 11:32:53 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.9 2004-09-01 19:19:15 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -184,12 +184,36 @@ public class TestPerlyParser extends GraphTestBase
         assertEquals( seq3( new StartOfLine(), new AnySingle(), new EndOfLine() ), p.parseSeq() );
         }
     
+    public void testBracketConstruction()
+        {
+        PerlPatternParser p = new PerlPatternParser( "(x)" );
+        assertEquals( new Paren( new Text( "x" ) ), p.parseAlts() );
+        }
+    
+    public void testBracketClosure()
+        {
+        PerlPatternParser p = new PerlPatternParser( "()y" );
+        assertEquals( seq2( new Paren( new Nothing() ), new Text( "y" ) ), p.parseAlts() );
+        }
+    
+    public void testDetectsMissingClosingBracket()
+        {
+        PerlPatternParser p = new PerlPatternParser( "(x" );
+        try { p.parseAlts(); fail( "should detect missing close bracket" ); }
+        catch (PerlPatternParser.SyntaxException e) { pass(); }
+        }
+    
     public void testAlt()
         {
         PerlPatternParser L = new PerlPatternParser( "abc" );
         PerlPatternParser R = new PerlPatternParser( "def" );
         PerlPatternParser p = new PerlPatternParser( "abc|def" );
         assertEquals( alt( L.parseSeq(), R.parseSeq() ), p.parseAlts() );
+        }
+        
+    protected RegexpTree seq2( RegexpTree a, RegexpTree b )
+        {
+        return Sequence.create( Arrays.asList( new RegexpTree[] {a, b} ) );
         }
     
     protected RegexpTree seq3( RegexpTree a, RegexpTree b, RegexpTree c )

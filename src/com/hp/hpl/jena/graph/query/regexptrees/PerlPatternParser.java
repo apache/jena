@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PerlPatternParser.java,v 1.8 2004-08-18 11:31:54 chris-dollin Exp $
+  $Id: PerlPatternParser.java,v 1.9 2004-09-01 19:18:18 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -116,8 +116,8 @@ public class PerlPatternParser
                 case '^':   return generator.getStartOfLine();
                 case '$':   return generator.getEndOfLine();
                 case '|':   pointer -= 1; return generator.getNothing();
-                case ')':   throw new PerlPatternParser.SyntaxException( "unmatched bracket " + ch );
-                case '(':   throw new PerlPatternParser.SyntaxException( "can't do (E) yet" );
+                case ')':   pointer -= 1; return generator.getNothing(); 
+                case '(':   return parseParens();
                 case '[':   throw new PerlPatternParser.SyntaxException( "can't do [C] yet" );
                 case '\\':  return parseBackslash(); 
                 case '*':
@@ -132,6 +132,19 @@ public class PerlPatternParser
         return generator.getNothing();
         }
     
+    /**
+    	Parse a parenthesised expression. Throw a SyntaxException if the closing
+        bracket is missing. Answer the wrapped sub-expression. Does not cater
+        for the (? ...) stuff.
+    */
+    private RegexpTree parseParens()
+        {
+        RegexpTree operand = parseAlts();
+        if (pointer < limit && toParse.charAt( pointer ) == ')') pointer += 1;
+        else throw new SyntaxException( "missing closing bracket" );
+        return generator.getParen( operand );
+        }
+
     /**
          Parse a backslash-escape and answer the appropriate regexp tree.
          Unhandled escapes throw an exception.
