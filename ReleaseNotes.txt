@@ -54,3 +54,15 @@ OWL/Lite subset of OWL/full. This implementation is not yet stable or scalable
 and is not recommended for non-trivial use at this stage.
 
 Some early documentation is in <Jena>/doc/user-manual/inference.
+
+Model API changes:
+
+The Model::add(Model) and Model::remove(Model) methods now add [or remove]
+reified statements to [from] the updated model, as well as the "ordinary"
+statements. In Jena 2.0 an optional boolean argument will allow the user
+to choose whether reified statements are copied in this way.
+
+The new method Model::isEmpty() tests a model to see if it is empty (contains
+no [no-reified] statements). This is equivalent to size()==0 but it (a) more
+convenient and (b) can be implemented more efficiently by some models.
+
