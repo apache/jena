@@ -735,9 +735,9 @@ that is not compatible with 13</pre>
 <p>This reasoner is still undergoing development. The current release is more 
   stable and a little more scalable than those in the Jena2 previews and should 
   be suitable for early experimental investigations. However, we expect that performance 
-  and scaling issues remain and recommend that developers approach the current 
-  implementation with modest expectations. Further performance tuning and evaluation 
-  work is planned.</p>
+  and scaling issues remain along with possible omissions. We recommend that developers 
+  approach the current implementation with caution. Further performance tuning 
+  and evaluation work is planned.</p>
 <p>See also <a href="#OWLnotes">subsection 5</a> for notes on more specific limitations 
   of the current implementation. </p>
 <h2><a name="OWLcoverage"></a>OWL coverage</h2>
@@ -921,11 +921,7 @@ that is not compatible with 13</pre>
 <p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="OWLexamples"></a>OWL Example</h2>
-<p>TODO</p>
-<p>- recognition example</p>
-<p>- class extension example</p>
-<p>- deduction example</p>
-<p>- validation example</p>
+<p>To be completed.</p>
 <p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="OWLnotes"></a>OWL notes and limitations</h2>
@@ -994,13 +990,13 @@ class B = cardinality(P,1)</pre>
   of rule use and a substantial slow down - the OWL axioms that the reasoner can 
   handle are already built in and don't need to be redeclared.</p>
 <p>To repeat the comment in the introduction, we recommend that developers approach 
-  the current implementation with modest expectations.</p>
+  the current implementation with caution.</p>
 <h3>Incompleteness</h3>
 <p>The rule based approach cannot offer a complete solution for OWL/Lite, let 
   alone the OWL/Full fragment corresponding to the OWL/Lite constructs. In addition 
-  the current implementation is not guaranteed to be bug-free. We intend that 
-  the reasoner should be sound (all inferred triples should be valid) but not 
-  complete. </p>
+  the current implementation is still under development and may well have ommisions 
+  and oversights. We intend that the reasoner should be sound (all inferred triples 
+  should be valid) but not complete. </p>
 <h3></h3>
 <p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
@@ -1626,7 +1622,7 @@ while (list.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.8 2003-08-27 16:35:24 der Exp $</i>
+  Last modification: $Id: index.html,v 1.9 2003-08-28 08:31:42 der Exp $</i>
 </p>
 </body>
 </html>
