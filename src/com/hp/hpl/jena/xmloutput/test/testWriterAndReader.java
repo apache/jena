@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterAndReader.java,v 1.4 2003-03-28 13:23:15 jeremy_carroll Exp $
+  $Id: testWriterAndReader.java,v 1.5 2003-03-28 19:21:10 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-03-28 13:23:15 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-03-28 19:21:10 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     static private boolean showProgress = false;
@@ -58,8 +58,8 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
         langsuite.addTest(new testWriterInterface("testWriting", lang));
         /* */
         for (int k = firstTest; k <= lastTest; k++) {
-            if ( k==7 )
-              continue;
+          //  if ( k==7 )
+          //    continue;
             /* */
             langsuite.addTest(new testWriterAndReader("testRandom", lang, k));
             /* */
@@ -392,5 +392,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.4 2003-03-28 13:23:15 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.5 2003-03-28 19:21:10 jeremy_carroll Exp $
  */

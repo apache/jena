@@ -29,11 +29,12 @@ public interface RDFParserConstants {
   int AV_RESOURCE = 23;
   int A_RESOURCE = 24;
   int A_DATATYPE = 25;
-  int A_XMLNS = 26;
-  int A_XMLBASE = 27;
-  int A_XMLLANG = 28;
-  int X_WARNING = 29;
-  int A_ABOUTEACH = 30;
+  int A_XMLSPACE = 26;
+  int A_XMLNS = 27;
+  int A_XMLBASE = 28;
+  int A_XMLLANG = 29;
+  int X_WARNING = 30;
+  int A_ABOUTEACH = 31;
 
   String[] tokenImage = {
     "<EOF>",
@@ -62,6 +63,7 @@ public interface RDFParserConstants {
     "<AV_RESOURCE>",
     "<A_RESOURCE>",
     "<A_DATATYPE>",
+    "<A_XMLSPACE>",
     "<A_XMLNS>",
     "<A_XMLBASE>",
     "<A_XMLLANG>",

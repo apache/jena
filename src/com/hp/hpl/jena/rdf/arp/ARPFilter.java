@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   *$Id: ARPFilter.java,v 1.2 2003-01-13 18:22:49 jeremy_carroll Exp $
+   *$Id: ARPFilter.java,v 1.3 2003-03-28 19:18:14 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -267,7 +267,7 @@ class ARPFilter
             rdfns,
             rdfns,
             rdfns };
-    static private int A_XMLSPACE = -1;
+  //  static private int A_XMLSPACE = -1;
     static private int specialAttValues[] =
         {
             A_XMLBASE,

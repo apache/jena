@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.1.1.1 2002-12-19 19:16:30 bwm Exp $
+ * * $Id: rdf.jj,v 1.2 2003-03-28 19:18:14 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -80,6 +80,7 @@ class RDFParser implements ARPErrorNumbers {
      tokenImage[A_DATATYPE] = "attribute rdf:datatype";
      tokenImage[A_RDF_N] = "attribute rdf:rdf_NNN";
      tokenImage[A_XMLLANG] = "attribute xml:lang";
+     tokenImage[A_XMLSPACE] = "attribute xml:space";
      tokenImage[A_XMLBASE] = "attribute xml:base";
      tokenImage[AV_RESOURCE] = "'Resource'";
      tokenImage[AV_LITERAL] = "'Literal'";
@@ -664,10 +665,14 @@ Token string1(Vector rslts)          : { Token rslt; }
 XMLContext xmlAttrs(XMLContext ctxt) : {}
 {                                      { startAttr = getToken(1); }
    ( warning() | ctxt=xmlns(ctxt) ) *
+
    [ ctxt=xmlBase(ctxt) 
      ( warning() ) * 
    ] 
    [ ctxt=xmlLang(ctxt) 
+     ( warning() ) * 
+   ]
+   [ <A_XMLSPACE> <AV_STRING> 
      ( warning() ) * 
    ]                                   { return ctxt; }
 }
@@ -793,11 +798,14 @@ Token litAttrName()                  : { Token t; }
   | t=<A_ID>                           { return t; }
   | t=<A_OTHER>                        { return t; }
   | t=<A_PARSETYPE>                    { return t; }
+  | t=<A_DATATYPE>                     { return t; }
+  | t=<A_NODEID>                       { return t; }
   | t=<A_RDF_N>                        { return t; }
   | t=<A_RESOURCE>                     { return t; }
   | t=<A_TYPE>                         { return t; }
   | t=<A_XMLBASE>                      { return t; }
   | t=<A_XMLLANG>                      { return t; }
+  | t=<A_XMLSPACE>                     { return t; }
   // not A_XMLNS
 }
 
@@ -812,6 +820,8 @@ void attrName()                      : {}
   | <A_RDF_N> 
   | <A_RESOURCE> 
   | <A_TYPE> 
+  | <A_NODEID>
+  | <A_DATATYPE>
  /* Not <A_XMLBASE> or <A_XMLLANG> or <A_XMLNS>
  */
 }

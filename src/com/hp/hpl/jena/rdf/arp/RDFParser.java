@@ -42,6 +42,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
      tokenImage[A_DATATYPE] = "attribute rdf:datatype";
      tokenImage[A_RDF_N] = "attribute rdf:rdf_NNN";
      tokenImage[A_XMLLANG] = "attribute xml:lang";
+     tokenImage[A_XMLSPACE] = "attribute xml:space";
      tokenImage[A_XMLBASE] = "attribute xml:base";
      tokenImage[AV_RESOURCE] = "'Resource'";
      tokenImage[AV_LITERAL] = "'Literal'";
@@ -1202,6 +1203,27 @@ Notice the action within the kleene star.
       jj_la1[50] = jj_gen;
       ;
     }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case A_XMLSPACE:
+      jj_consume_token(A_XMLSPACE);
+      jj_consume_token(AV_STRING);
+      label_29:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case X_WARNING:
+          ;
+          break;
+        default:
+          jj_la1[51] = jj_gen;
+          break label_29;
+        }
+        warning();
+      }
+      break;
+    default:
+      jj_la1[52] = jj_gen;
+      ;
+    }
                                          {if (true) return ctxt;}
     throw new Error("Missing return statement in function");
   }
@@ -1264,7 +1286,7 @@ Notice the action within the kleene star.
       element(ctxt);
       break;
     default:
-      jj_la1[51] = jj_gen;
+      jj_la1[53] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1273,40 +1295,42 @@ Notice the action within the kleene star.
 // For parsing before we find an rdf:RDF element.
   final public void element(XMLContext ctxt) throws ParseException {
     startElement();
-    label_29:
+    label_30:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[52] = jj_gen;
-        break label_29;
+        jj_la1[54] = jj_gen;
+        break label_30;
       }
       nowarning();
     }
     ctxt = xmlAttrsNoWarnings(ctxt);
-    label_30:
+    label_31:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_ID:
       case A_ABOUT:
+      case A_NODEID:
       case A_BAGID:
       case A_OTHER:
       case A_RDF_N:
       case A_TYPE:
       case A_PARSETYPE:
       case A_RESOURCE:
+      case A_DATATYPE:
       case A_ABOUTEACH:
         ;
         break;
       default:
-        jj_la1[53] = jj_gen;
-        break label_30;
+        jj_la1[55] = jj_gen;
+        break label_31;
       }
       attr();
     }
-    label_31:
+    label_32:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CD_STRING:
@@ -1321,8 +1345,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[54] = jj_gen;
-        break label_31;
+        jj_la1[56] = jj_gen;
+        break label_32;
       }
       content(ctxt);
     }
@@ -1332,15 +1356,15 @@ Notice the action within the kleene star.
   final public void attr() throws ParseException {
     attrName();
     attrValue();
-    label_32:
+    label_33:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[55] = jj_gen;
-        break label_32;
+        jj_la1[57] = jj_gen;
+        break label_33;
       }
       nowarning();
     }
@@ -1353,7 +1377,7 @@ Notice the action within the kleene star.
 
   final public XMLContext xmlAttrsNoWarnings(XMLContext ctxt) throws ParseException {
                                          startAttr = getToken(1);
-    label_33:
+    label_34:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_XMLNS:
@@ -1361,8 +1385,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[56] = jj_gen;
-        break label_33;
+        jj_la1[58] = jj_gen;
+        break label_34;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
@@ -1372,7 +1396,7 @@ Notice the action within the kleene star.
         ctxt = xmlns(ctxt);
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[59] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1380,26 +1404,6 @@ Notice the action within the kleene star.
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case A_XMLBASE:
       ctxt = xmlBase(ctxt);
-      label_34:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case X_WARNING:
-          ;
-          break;
-        default:
-          jj_la1[58] = jj_gen;
-          break label_34;
-        }
-        nowarning();
-      }
-      break;
-    default:
-      jj_la1[59] = jj_gen;
-      ;
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case A_XMLLANG:
-      ctxt = xmlLang(ctxt);
       label_35:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1415,6 +1419,26 @@ Notice the action within the kleene star.
       break;
     default:
       jj_la1[61] = jj_gen;
+      ;
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case A_XMLLANG:
+      ctxt = xmlLang(ctxt);
+      label_36:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case X_WARNING:
+          ;
+          break;
+        default:
+          jj_la1[62] = jj_gen;
+          break label_36;
+        }
+        nowarning();
+      }
+      break;
+    default:
+      jj_la1[63] = jj_gen;
       ;
     }
                                          {if (true) return ctxt;}
@@ -1445,7 +1469,7 @@ Notice the action within the kleene star.
       saxEx();
       break;
     default:
-      jj_la1[62] = jj_gen;
+      jj_la1[64] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1466,7 +1490,7 @@ Notice the action within the kleene star.
       jj_consume_token(E_RDF_N);
       break;
     default:
-      jj_la1[63] = jj_gen;
+      jj_la1[65] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1498,7 +1522,7 @@ Notice the action within the kleene star.
                                          {if (true) return t;}
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[66] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1533,6 +1557,14 @@ Notice the action within the kleene star.
       t = jj_consume_token(A_PARSETYPE);
                                          {if (true) return t;}
       break;
+    case A_DATATYPE:
+      t = jj_consume_token(A_DATATYPE);
+                                         {if (true) return t;}
+      break;
+    case A_NODEID:
+      t = jj_consume_token(A_NODEID);
+                                         {if (true) return t;}
+      break;
     case A_RDF_N:
       t = jj_consume_token(A_RDF_N);
                                          {if (true) return t;}
@@ -1553,8 +1585,12 @@ Notice the action within the kleene star.
       t = jj_consume_token(A_XMLLANG);
                                          {if (true) return t;}
       break;
+    case A_XMLSPACE:
+      t = jj_consume_token(A_XMLSPACE);
+                                         {if (true) return t;}
+      break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[67] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1590,8 +1626,14 @@ Notice the action within the kleene star.
     case A_TYPE:
       jj_consume_token(A_TYPE);
       break;
+    case A_NODEID:
+      jj_consume_token(A_NODEID);
+      break;
+    case A_DATATYPE:
+      jj_consume_token(A_DATATYPE);
+      break;
     default:
-      jj_la1[66] = jj_gen;
+      jj_la1[68] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1618,7 +1660,7 @@ Notice the action within the kleene star.
                                          {if (true) return t;}
       break;
     default:
-      jj_la1[67] = jj_gen;
+      jj_la1[69] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1640,55 +1682,58 @@ Notice the action within the kleene star.
                                          t = (Token)t.clone();
                                          t.next = null;
                                          startAttr = getToken(1);
-    label_36:
+    label_37:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[68] = jj_gen;
-        break label_36;
+        jj_la1[70] = jj_gen;
+        break label_37;
       }
       nowarning();
     }
-    label_37:
+    label_38:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_XMLNS:
         ;
         break;
       default:
-        jj_la1[69] = jj_gen;
-        break label_37;
+        jj_la1[71] = jj_gen;
+        break label_38;
       }
       allNs = litXmlns(allNs, visiblyUsed);
     }
-    label_38:
+    label_39:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case A_ID:
       case A_ABOUT:
+      case A_NODEID:
       case A_BAGID:
       case A_OTHER:
       case A_RDF_N:
       case A_TYPE:
       case A_PARSETYPE:
       case A_RESOURCE:
+      case A_DATATYPE:
+      case A_XMLSPACE:
       case A_XMLBASE:
       case A_XMLLANG:
       case A_ABOUTEACH:
         ;
         break;
       default:
-        jj_la1[70] = jj_gen;
-        break label_38;
+        jj_la1[72] = jj_gen;
+        break label_39;
       }
       litAttr(attrs,visiblyUsed);
     }
                                           ns=X.litAttributes(val,attrs,visiblyUsed,ns,allNs,t);
                                           val.append('>');
-    label_39:
+    label_40:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CD_STRING:
@@ -1703,8 +1748,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[71] = jj_gen;
-        break label_39;
+        jj_la1[73] = jj_gen;
+        break label_40;
       }
       litContent(val,allNs,ns);
     }
@@ -1716,15 +1761,15 @@ Notice the action within the kleene star.
                                          Token prefix, uri;
     prefix = jj_consume_token(A_XMLNS);
     uri = jj_consume_token(AV_STRING);
-    label_40:
+    label_41:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[72] = jj_gen;
-        break label_40;
+        jj_la1[74] = jj_gen;
+        break label_41;
       }
       nowarning();
     }
@@ -1739,15 +1784,15 @@ Notice the action within the kleene star.
                                                 visiblyUsed);
     val = attrValue();
                                          attrs.put(key,X.litAttribute(attr,val));
-    label_41:
+    label_42:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case X_WARNING:
         ;
         break;
       default:
-        jj_la1[73] = jj_gen;
-        break label_41;
+        jj_la1[75] = jj_gen;
+        break label_42;
       }
       nowarning();
     }
@@ -1785,7 +1830,7 @@ Notice the action within the kleene star.
       saxEx();
       break;
     default:
-      jj_la1[74] = jj_gen;
+      jj_la1[76] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1793,7 +1838,7 @@ Notice the action within the kleene star.
 
   final public String litValue(Map allNs) throws ParseException {
                                          StringBuffer buf = new StringBuffer();
-    label_42:
+    label_43:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CD_STRING:
@@ -1808,8 +1853,8 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[75] = jj_gen;
-        break label_42;
+        jj_la1[77] = jj_gen;
+        break label_43;
       }
       litContent(buf,allNs,X.xmlNameSpace());
     }
@@ -1883,7 +1928,7 @@ Notice the action within the kleene star.
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_43()) { jj_scanpos = xsp; break; }
+      if (jj_3R_44()) { jj_scanpos = xsp; break; }
       if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     }
     if (jj_scan_token(E_END)) return true;
@@ -1891,7 +1936,7 @@ Notice the action within the kleene star.
     return false;
   }
 
-  final private boolean jj_3R_45() {
+  final private boolean jj_3R_46() {
     if (jj_scan_token(COMMENT)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
@@ -1913,7 +1958,7 @@ Notice the action within the kleene star.
     return false;
   }
 
-  final private boolean jj_3R_47() {
+  final private boolean jj_3R_48() {
     if (jj_scan_token(X_SAX_EX)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
@@ -1927,22 +1972,22 @@ Notice the action within the kleene star.
     return false;
   }
 
-  final private boolean jj_3R_46() {
+  final private boolean jj_3R_47() {
     if (jj_scan_token(PROCESSING_INSTRUCTION)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
-  final private boolean jj_3R_43() {
+  final private boolean jj_3R_44() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_44()) {
-    jj_scanpos = xsp;
     if (jj_3R_45()) {
     jj_scanpos = xsp;
     if (jj_3R_46()) {
     jj_scanpos = xsp;
-    if (jj_3R_47()) return true;
+    if (jj_3R_47()) {
+    jj_scanpos = xsp;
+    if (jj_3R_48()) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     } else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     } else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
@@ -1950,7 +1995,7 @@ Notice the action within the kleene star.
     return false;
   }
 
-  final private boolean jj_3R_44() {
+  final private boolean jj_3R_45() {
     if (jj_scan_token(CD_STRING)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
@@ -1964,8 +2009,8 @@ Notice the action within the kleene star.
   public boolean lookingAhead = false;
   private boolean jj_semLA;
   private int jj_gen;
-  final private int[] jj_la1 = new int[76];
-  final private int[] jj_la1_0 = {0x700a0,0x1e,0x1e,0x14,0x14,0x70080,0x700,0x1000,0xe000,0x70000,0x70080,0x700,0x20000000,0x20000000,0x20000000,0x20000000,0x20000000,0x20000000,0xe000,0x20000000,0x70000,0x100,0x20000000,0x20000000,0x20000000,0x20000000,0x70000,0x1000,0xe000,0xe000,0xe000,0x308f400,0x70080,0x70080,0x700,0x1000,0xe000,0x70000,0x70000,0x7009e,0x20000000,0x20000000,0x1000400,0x1e,0x1e,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x700a0,0x20000000,0x4108f300,0x700be,0x20000000,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x700be,0x70080,0x700a0,0x5908f300,0x4108f300,0xb00800,0x20000000,0x4000000,0x5908f300,0x700be,0x20000000,0x20000000,0x700be,0x700be,};
+  final private int[] jj_la1 = new int[78];
+  final private int[] jj_la1_0 = {0x700a0,0x1e,0x1e,0x14,0x14,0x70080,0x700,0x1000,0xe000,0x70000,0x70080,0x700,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0xe000,0x40000000,0x70000,0x100,0x40000000,0x40000000,0x40000000,0x40000000,0x70000,0x1000,0xe000,0xe000,0xe000,0x308f400,0x70080,0x70080,0x700,0x1000,0xe000,0x70000,0x70000,0x7009e,0x40000000,0x40000000,0x1000400,0x1e,0x1e,0x48000000,0x48000000,0x40000000,0x10000000,0x40000000,0x20000000,0x40000000,0x4000000,0x700a0,0x40000000,0x8308f700,0x700be,0x40000000,0x48000000,0x48000000,0x40000000,0x10000000,0x40000000,0x20000000,0x700be,0x70080,0x700a0,0xb708f700,0x8308f700,0xb00800,0x40000000,0x8000000,0xb708f700,0x700be,0x40000000,0x40000000,0x700be,0x700be,};
   final private JJCalls[] jj_2_rtns = new JJCalls[4];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
@@ -1976,7 +2021,7 @@ Notice the action within the kleene star.
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1985,7 +2030,7 @@ Notice the action within the kleene star.
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2092,15 +2137,15 @@ Notice the action within the kleene star.
 
   final public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[31];
-    for (int i = 0; i < 31; i++) {
+    boolean[] la1tokens = new boolean[32];
+    for (int i = 0; i < 32; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 76; i++) {
+    for (int i = 0; i < 78; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -2109,7 +2154,7 @@ Notice the action within the kleene star.
         }
       }
     }
-    for (int i = 0; i < 31; i++) {
+    for (int i = 0; i < 32; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
