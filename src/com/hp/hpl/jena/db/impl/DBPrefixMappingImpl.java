@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.6 2004-07-16 15:51:39 chris-dollin Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.7 2005-02-10 14:35:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -15,11 +15,11 @@ import java.util.*;
  *  Implementation of prefix mapping specific to databases.
  *  This extends the base implementation, effectively turning it into
  *  a write-through cache - each new namespace is written to
- *  the database as it's added to the prefix map.
+ *  the database as it is added to the prefix map.
  * 
  *
  	@author csayers
- 	@version $Revision: 1.6 $
+ 	@version $Revision: 1.7 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -65,6 +65,8 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefix(java.lang.String, java.lang.String)
 	 */
 	public PrefixMapping setNsPrefix(String prefix, String uri) {
+        // this avoids touching the 
+        if (uri.equals( super.getNsPrefixURI( prefix ) )) return this;
 		// Ordering is important here - we need to add it to the prefixMappingImpl
 		// first since it checks the validity of the prefix (it will throw
 		// an exception if there's any problem).

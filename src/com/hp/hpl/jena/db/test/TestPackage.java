@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.27 $
+ * @version 	$Revision: 1.28 $
  */
 public class TestPackage extends TestSuite
 {
@@ -43,11 +43,11 @@ public class TestPackage extends TestSuite
 	// */
 	
 	// */ mysql settings
-	static String M_DB_URL = "jdbc:mysql://localhost/test";
-	static String M_DB_USER = "test";
-	static String M_DB_PASSWD = "";
-	static String M_DB = "MySQL";
-	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
+//	static String M_DB_URL = "jdbc:mysql://localhost/test";
+//	static String M_DB_USER = "test";
+//	static String M_DB_PASSWD = "";
+//	static String M_DB = "MySQL";
+//	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
 	// */
 		
 	/*/ postgresql settings
@@ -58,13 +58,13 @@ public class TestPackage extends TestSuite
 	static String M_DBDRIVER_CLASS = "org.postgresql.Driver";
 	// */
         
-	/*/
+	
 	static String M_DB_URL = ModelFactoryBase.guessDBURL();
     static String M_DB_USER = ModelFactoryBase.guessDBUser();
     static String M_DB_PASSWD = ModelFactoryBase.guessDBPassword();
     static String M_DB = ModelFactoryBase.guessDBType();
     static String M_DBDRIVER_CLASS = ModelFactoryBase.guessDBDriver();  
-    // */      
+          
 
     static public TestSuite suite() {
         return new TestPackage();
