@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -195,28 +195,33 @@ public class GraphRDB extends GraphBase implements Graph {
 			
 		// Find the driver
 		m_driver = con.getDriver();
+		SpecializedGraph sysGraph = m_driver.getSystemSpecializedGraph(true);
 		
 		// Look for properties for this graphID
-		m_properties = DBPropGraph.findPropGraphByName( m_driver.getSystemSpecializedGraph(), graphID );
+		m_properties = DBPropGraph.findPropGraphByName( sysGraph, graphID );
 		
 		if( m_properties != null) {
 			if( isNew )
 				throw new AlreadyExistsException( graphID );
 			if( requestedProperties != null )
-				throw new RDFRDBException("Error,attempt to change a graph's properties after it has been used.");			
+				throw new RDFRDBException("Error: attempt to change a graph's properties after it has been used.");			
 			m_specializedGraphs = m_driver.recreateSpecializedGraphs( m_properties );	
 		}
 		else {	
 			if( !isNew )
-				throw new DoesNotExistException( graphID );
-			
+				throw new DoesNotExistException( graphID );			
 			if( requestedProperties == null )
-				throw new RDFRDBException("Error requested properties is null");
+				throw new RDFRDBException("Error: requested properties is null");
 			
-			m_properties = new DBPropGraph( m_driver.getSystemSpecializedGraph(), graphID, requestedProperties);
-			DBPropDatabase dbprop = new DBPropDatabase( m_driver.getSystemSpecializedGraph());
+			/*
+			m_properties = new DBPropGraph( m_driver.getSystemSpecializedGraph(true), graphID, requestedProperties);
+			DBPropDatabase dbprop = new DBPropDatabase( m_driver.getSystemSpecializedGraph(true));
 			dbprop.addGraph(m_properties);
-			m_specializedGraphs = m_driver.createSpecializedGraphs( m_properties );
+			*/
+			m_specializedGraphs = m_driver.createSpecializedGraphs( graphID, requestedProperties );
+			m_properties = DBPropGraph.findPropGraphByName( sysGraph, graphID );
+			if ( m_properties == null )
+				throw new RDFRDBException("Graph properties not found after creating graph.");
 		}
 		
 		// Keep a list of the specialized graphs that handle reification
