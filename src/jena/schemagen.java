@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-31 13:15:00 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-02-02 15:19:34 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.27 2004-01-31 13:15:00 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.28 2004-02-02 15:19:34 der Exp $
  */
 public class schemagen {
     // Constants
@@ -907,23 +907,27 @@ public class schemagen {
             Statement candidate = i.nextStatement();
 
             if (candidate.getObject() instanceof Resource) {
-                String uri = ((Resource) candidate.getObject()).getURI();
-
-                for (Iterator j = m_includeURI.iterator();  j.hasNext(); ) {
-                    if (uri.startsWith( (String) j.next() )) {
-                        // the subject has an included type
-                        Resource ind = candidate.getSubject();
-
-                        // do we have a local class resource
-                        String varName = (String) m_resourcesToNames.get( candidate.getObject() );
-                        String valType = (varName != null) ? varName : "m_model.createClass( \"" + uri + "\" )";
-
-                        // push the individuals type onto the stack
-                        addReplacementPattern( "valtype", valType );
-                        writeValue( ind, template, "Individual", "createIndividual", "_INSTANCE" );
-                        pop( 1 );
-
-                        break;
+                Resource candObj = (Resource)candidate.getObject();
+                
+                if (!candObj.isAnon()) {
+                    String uri = candObj.getURI();
+    
+                    for (Iterator j = m_includeURI.iterator();  j.hasNext(); ) {
+                        if (uri.startsWith( (String) j.next() )) {
+                            // the subject has an included type
+                            Resource ind = candidate.getSubject();
+    
+                            // do we have a local class resource
+                            String varName = (String) m_resourcesToNames.get( candidate.getObject() );
+                            String valType = (varName != null) ? varName : "m_model.createClass( \"" + uri + "\" )";
+    
+                            // push the individuals type onto the stack
+                            addReplacementPattern( "valtype", valType );
+                            writeValue( ind, template, "Individual", "createIndividual", "_INSTANCE" );
+                            pop( 1 );
+    
+                            break;
+                        }
                     }
                 }
             }
