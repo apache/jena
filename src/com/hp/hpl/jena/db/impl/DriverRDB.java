@@ -29,7 +29,6 @@ import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.*;
 
 import org.apache.log4j.Logger;
@@ -49,7 +48,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.30 $ on $Date: 2003-08-26 02:13:30 $
+* @version $Revision: 1.31 $ on $Date: 2003-08-26 03:01:48 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
