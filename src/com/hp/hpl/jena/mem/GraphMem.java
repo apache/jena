@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.21 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.22 2003-09-22 12:16:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -22,28 +22,34 @@ import java.util.*;
     Thus in normal use one close is enough, but GraphMakers using GraphMems
     can arrange to re-use the same named graph.
     
- * @author  bwm, kers
- */
-public class GraphMem extends GraphBase implements Graph {
-
+    @author  bwm, kers
+*/
+public class GraphMem extends GraphBase implements Graph 
+    {
+    /** the set storing all the triples in this GraphMem */
     HashSet triples = new HashSet();
 
     NodeMap subjects = new NodeMap();
     NodeMap predicates = new NodeMap();
     NodeMap objects = new NodeMap();
 
-    /** Creates new Store */
+    protected int count;
+    
+    /**
+        Initialises a GraphMem with the Minimal reification style
+    */
     public GraphMem() 
         { this( ReificationStyle.Minimal ); }
     
+    /**
+        Initialises a GraphMem with the given reification style.
+    */
     public GraphMem( ReificationStyle style )
         { 
         super( style );
         count = 1; 
         }
 
-    protected int count;
-    
     public void close()
         {
         if (--count == 0)

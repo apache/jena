@@ -1,15 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.9 2003-09-17 12:14:05 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.10 2003-09-22 12:16:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 /**
+    An extension of JenaTestBase (which see) with Graph-specific methods.
 	@author kers
-<br>
-    A version of TestCase with assorted extra goodies.
 */
 
 import com.hp.hpl.jena.util.iterator.*;
@@ -19,8 +18,8 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.test.*;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
-import java.io.*;
 
 public class GraphTestBase extends JenaTestBase
     {
@@ -167,63 +166,36 @@ public class GraphTestBase extends JenaTestBase
         }
 
     /**
-        create a temporary file that will be deleted on exit, and do something
-        sensible with any IO exceptions - namely, throw them up wrapped in
-        a JenaException.
-    
-        @param prefix the prefix for File.createTempFile
-        @param suffix the suffix for File.createTempFile
-        @return the temporary File
-    */
-    public static  File tempFileName( String prefix, String suffix )
-        {
-        File result = new File( getTempDirectory(), prefix + randomNumber() + suffix );
-        if (result.exists()) return tempFileName( prefix, suffix );
-        result.deleteOnExit();
-        return result;
-        }  
-
-    private static int counter = 0;
-
-    private static int randomNumber()
-        {
-        return ++counter;
-        }
- 
-    /**
-        Answer a File naming a freshly-created directory in the temporary directory. This
-        directory should be deleted on exit.
-        TODO handle threading issues, mkdir failure, and better cleanup
+        Answer an instance of <code>graphClass</code>. If <code>graphClass</code> has
+        a constructor that takes a <code>ReificationStyle</code> argument, then that
+        constructor is run on <code>style</code> to get the instance. Otherwise, if it has a #
+        constructor that takes an argument of <code>wrap</code>'s class before the
+        <code>ReificationStyle</code>, that constructor is used; this allows non-static inner
+        classes to be used for <code>graphClass</code>, with <code>wrap</code> being
+        the outer class instance. If no suitable constructor exists, a JenaException is thrown.
         
-     	@param prefix the prefix for the directory name
-     	@return a File naming the new directory
+        @param wrap the outer class instance if graphClass is an inner class
+        @param graphClass a class implementing Graph
+        @param style the reification style to use
+        @return an instance of graphClass with the given style
+        @throws RuntimeException or JenaException if construction fails
      */
-    public static File getScratchDirectory( String prefix )
+    public static Graph getGraph( Object wrap, Class graphClass, ReificationStyle style ) 
         {
-        File result = new File( getTempDirectory(), prefix + randomNumber() );
-        if (result.exists()) return getScratchDirectory( prefix );
-        assertTrue( "make temp directory", result.mkdir() );
-        result.deleteOnExit();
-        return result;   
-        } 
-        
-    public static String getTempDirectory()
-        { return temp; }
-    
-    private static String temp = constructTempDirectory();
-
-    private static String constructTempDirectory()
-        {
-        try 
-            { 
-            File x = File.createTempFile( "xxx", ".none" );
-            x.delete();
-            return x.getParent(); 
+        try
+            {
+            Constructor cons = getConstructor( graphClass, new Class[] {ReificationStyle.class} );
+            if (cons != null) return (Graph) cons.newInstance( new Object[] { style } );
+            Constructor cons2 = getConstructor( graphClass, new Class [] {wrap.getClass(), ReificationStyle.class} );
+            if (cons2 != null) return (Graph) cons2.newInstance( new Object[] { wrap, style } );
+            throw new JenaException( "no suitable graph constructor found for " + graphClass );
             }
-        catch (IOException e) 
+        catch (RuntimeException e)
+            { throw e; }
+        catch (Exception e)
             { throw new JenaException( e ); }
         }
-         
+
         
     }
 

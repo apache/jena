@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.36 2003-09-17 12:14:05 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.37 2003-09-22 12:16:28 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -233,7 +233,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         
     public void testBulkAddWithReification()
         {        
-        // testBulkAddWithReification( false );
+        testBulkAddWithReification( false );
         testBulkAddWithReification( true );
         }
         
@@ -241,7 +241,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getGraph();
         xSPO( g.getReifier() );
-        assertFalse( g.getReifier().getHiddenTriples().isEmpty() );    
+        assertFalse( g.getReifier().getReificationTriples().isEmpty() );    
         }
         
     public void testBulkAddWithReification( boolean withReifications )
@@ -254,8 +254,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
         bu.add( items, withReifications );
         assertIsomorphic
             ( 
-            withReifications ? ir.getHiddenTriples() : graphWith( "" ), 
-            gr.getHiddenTriples() 
+            withReifications ? ir.getReificationTriples() : graphWith( "" ), 
+            gr.getReificationTriples() 
             );
         }
         
@@ -295,7 +295,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
             xSPO( ar );
             aABC( ar );
             }
-        assertIsomorphic( ar.getHiddenTriples(), gr.getHiddenTriples() );
+        assertIsomorphic( ar.getReificationTriples(), gr.getReificationTriples() );
         }
                                         
     public void testHasCapabilities()

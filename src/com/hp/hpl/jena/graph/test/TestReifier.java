@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.18 2003-09-17 12:14:05 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.19 2003-09-22 12:16:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -37,16 +37,9 @@ public class TestReifier extends AbstractTestReifier
     public static TestSuite suite()
         { 
         TestSuite result = new TestSuite();
-        // result.addTest( new TestSuite( TestReifier.class ) );
-        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem.class, ReificationStyle.Minimal ) );
+        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem.class ) );
         return result; 
         }   
-        
-    public static Constructor getConstructor( Class c, Class [] args )
-        {
-        try { return c.getConstructor( args ); }
-        catch (NoSuchMethodException e) { return null; }
-        }
         
     public Graph getGraph( ReificationStyle style ) 
         {

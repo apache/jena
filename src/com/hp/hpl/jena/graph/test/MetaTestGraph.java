@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: MetaTestGraph.java,v 1.3 2003-09-17 12:14:05 chris-dollin Exp $
+  $Id: MetaTestGraph.java,v 1.4 2003-09-22 12:16:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.*;
 
 	@author kers
 */
-public class MetaTestGraph extends GraphTestBase 
+public class MetaTestGraph extends AbstractTestGraph 
     {
     protected final Class graphClass;
     protected final ReificationStyle style;
@@ -72,40 +72,10 @@ public class MetaTestGraph extends GraphTestBase
         try { return (TestCase) cons.newInstance( new Object [] {graphClass, name, style} ); }
         catch (Exception e) { throw new JenaException( e ); }
         }
-        
-    public static Constructor getConstructor( Class c, Class [] args )
-        {
-        try { return c.getConstructor( args ); }
-        catch (NoSuchMethodException e) { return null; }
-        }
 
-    public static boolean isPublicTestMethod(Method m) {
-        return isTestMethod(m) && Modifier.isPublic(m.getModifiers());
-     }
-     
-    public static boolean isTestMethod(Method m) {
-        String name= m.getName();
-        Class[] parameters= m.getParameterTypes();
-        Class returnType= m.getReturnType();
-        return parameters.length == 0 && name.startsWith("test") && returnType.equals(Void.TYPE);
-     }
-        
 	public Graph getGraph() 
-        {
-        try
-            {
-            Constructor cons = getConstructor( graphClass, new Class[] {ReificationStyle.class} );
-            if (cons != null) return (Graph) cons.newInstance( new Object[] { style } );
-            Constructor cons2 = getConstructor( graphClass, new Class [] {this.getClass(), ReificationStyle.class} );
-            if (cons2 != null) return (Graph) cons2.newInstance( new Object[] { this, style } );
-            throw new JenaException( "no suitable graph constructor found for " + graphClass );
-            }
-        catch (RuntimeException e)
-            { throw e; }
-        catch (Exception e)
-            { throw new JenaException( e ); }
-        }
-
+        { return getGraph( this, graphClass, style ); }
+        
     }
 
 /*

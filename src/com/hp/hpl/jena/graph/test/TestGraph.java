@@ -1,18 +1,20 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.18 2003-09-17 12:14:05 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.19 2003-09-22 12:16:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 /**
+    Tests that check GraphMem and WrappedGraph for correctness against the Graph
+    and reifier test suites.
+ 
     @author kers
-<br>
-    even more extended testcase code
 */
 
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 
@@ -23,38 +25,46 @@ public class TestGraph extends GraphTestBase
 	public TestGraph( String name )
 		{ super( name ); }
         
+    /**
+        Answer a test suite that runs the Graph and Reifier tests on GraphMem and on
+        WrappedGraphMem, the latter standing in for testing WrappedGraph.
+     */
     public static TestSuite suite()
         { 
-        TestSuite result = new TestSuite();
-        result.addTest( TestDefaultGraph.suite() );
-        result.addTest( MetaTestGraph.suite( MetaTestGraph.class, GraphMem.class ) );
-        result.addTest( TestWrappedGraph.suite() );
+        TestSuite result = new TestSuite( TestGraph.class );
+        result.addTest( suite( MetaTestGraph.class, GraphMem.class ) );
+        result.addTest( suite( TestReifier.class, GraphMem.class ) );
+        result.addTest( suite( MetaTestGraph.class, WrappedGraphMem.class ) );
+        result.addTest( suite( TestReifier.class, WrappedGraphMem.class ) );
         return result;
         }
         
-    public static class TestWrappedGraph extends AbstractTestGraph
-        {
-        public TestWrappedGraph( String name ) { super( name ); }
-        public static TestSuite suite() { return new TestSuite( TestWrappedGraph.class ); }
-        public Graph getGraph() { return new WrappedGraph( new GraphMem() ); }
+    public static TestSuite suite( Class classWithTests, Class graphClass )
+        { return MetaTestGraph.suite( classWithTests, graphClass ); }
         
-        public void testSame()
-            {
-            Graph m = new GraphMem();
-            Graph w = new WrappedGraph( m );
-            graphAdd( m, "a trumps b; c eats d" );
-            assertIsomorphic( m, w );
-            graphAdd( w, "i write this; you read that" );
-            assertIsomorphic( w, m );
-            }
-        }      
-
-    public static class TestDefaultGraph extends AbstractTestGraph
+    /**
+        Trivial [incomplete] test that a Wrapped graph pokes through to the underlying
+        graph. Really want something using mock classes. Will think about it. 
+    */
+    public void testWrappedSame()
         {
-        public TestDefaultGraph( String name ) { super( name ); }
-        public static TestSuite suite() { return new TestSuite( TestDefaultGraph.class ); }
-        public Graph getGraph() { return new GraphMem(); }
-        }       
+        Graph m = new GraphMem();
+        Graph w = new WrappedGraph( m );
+        graphAdd( m, "a trumps b; c eats d" );
+        assertIsomorphic( m, w );
+        graphAdd( w, "i write this; you read that" );
+        assertIsomorphic( w, m );
+        }        
+        
+    /**
+        Class to provide a constructor that produces a wrapper round a GraphMem.    
+    	@author kers
+    */
+    public static class WrappedGraphMem extends WrappedGraph
+        {
+        public WrappedGraphMem( ReificationStyle style ) 
+            { super( new GraphMem( style ) ); }  
+        }
     }
 
 /*

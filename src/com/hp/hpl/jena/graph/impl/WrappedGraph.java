@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedGraph.java,v 1.4 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: WrappedGraph.java,v 1.5 2003-09-22 12:15:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -18,9 +18,11 @@ import com.hp.hpl.jena.util.iterator.*;
 public class WrappedGraph implements Graph
     {
     protected Graph base;
+    protected Reifier reifier;
     
     public WrappedGraph( Graph base )
-        { this.base = base; }
+        { this.base = base; 
+        this.reifier = new WrappedReifier( base.getReifier(), this ); }
 
     public boolean dependsOn( Graph other )
         { return base.dependsOn( other ); }
@@ -41,7 +43,7 @@ public class WrappedGraph implements Graph
         { return base.getEventManager(); }
 
     public Reifier getReifier()
-        {return base.getReifier(); }
+        {return reifier; }
 
     public PrefixMapping getPrefixMapping()
         { return base.getPrefixMapping(); }

@@ -1,10 +1,15 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.5 2003-08-27 13:11:14 andy_seaborne Exp $
+  $Id: JenaTestBase.java,v 1.6 2003-09-22 12:16:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
+
+import com.hp.hpl.jena.shared.JenaException;
+
+import java.io.*;
+import java.lang.reflect.*;
 
 import junit.framework.*;
 
@@ -42,10 +47,95 @@ public class JenaTestBase extends TestCase
         
     /**
         Do nothing; a way of notating that a test has succeeded, useful in the body of a
-        catch-block to silence excessively helpful disgnostics. 
+        catch-block to silence excessively [un]helpful disgnostics. 
     */
     public static void pass()
         {}
+        
+    /**
+        create a temporary file that will be deleted on exit, and do something
+        sensible with any IO exceptions - namely, throw them up wrapped in
+        a JenaException.
+    
+        @param prefix the prefix for File.createTempFile
+        @param suffix the suffix for File.createTempFile
+        @return the temporary File
+    */
+    public static  File tempFileName( String prefix, String suffix )
+        {
+        File result = new File( getTempDirectory(), prefix + randomNumber() + suffix );
+        if (result.exists()) return tempFileName( prefix, suffix );
+        result.deleteOnExit();
+        return result;
+        }  
+
+    private static int counter = 0;
+
+    private static int randomNumber()
+        {
+        return ++counter;
+        }
+ 
+    /**
+        Answer a File naming a freshly-created directory in the temporary directory. This
+        directory should be deleted on exit.
+        TODO handle threading issues, mkdir failure, and better cleanup
+        
+        @param prefix the prefix for the directory name
+        @return a File naming the new directory
+     */
+    public static File getScratchDirectory( String prefix )
+        {
+        File result = new File( getTempDirectory(), prefix + randomNumber() );
+        if (result.exists()) return getScratchDirectory( prefix );
+        assertTrue( "make temp directory", result.mkdir() );
+        result.deleteOnExit();
+        return result;   
+        } 
+        
+    public static String getTempDirectory()
+        { return temp; }
+    
+    private static String temp = constructTempDirectory();
+
+    private static String constructTempDirectory()
+        {
+        try 
+            { 
+            File x = File.createTempFile( "xxx", ".none" );
+            x.delete();
+            return x.getParent(); 
+            }
+        catch (IOException e) 
+            { throw new JenaException( e ); }
+        }
+                 
+    /**
+        Answer the constructor of the class <code>c</code> which takes arguments of the
+        type(s) in <code>args</code>, or <code>null</code> if there isn't one.
+     */
+    public static Constructor getConstructor( Class c, Class [] args )
+        {
+        try { return c.getConstructor( args ); }
+        catch (NoSuchMethodException e) { return null; }
+        }
+
+    /**
+        Answer true iff the method <code>m</code> is a public method which fits the
+        pattern of being a test method, ie, test*() returning void.
+     */
+    public static boolean isPublicTestMethod( Method m ) 
+        { return Modifier.isPublic( m.getModifiers() ) && isTestMethod( m ); }
+     
+    /**
+        Answer true iff the method <code>m</code> has a name starting "test", takes no
+        arguments, and returns void; must catch junit tests, in other words.
+    */
+    public static boolean isTestMethod( Method m ) 
+        { return 
+            m.getName().startsWith( "test" ) 
+            && m.getParameterTypes().length == 0 
+            && m.getReturnType().equals( Void.TYPE ); }                        
     }
 
 
