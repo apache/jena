@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.4 2003-07-10 12:53:08 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.5 2003-07-10 13:45:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.db.*;
     An implementation of the bulk update interface.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.4 $
+ 	@version $Revision: 1.5 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -30,6 +30,10 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         this.manager = graph.getEventManager();
 	}
 
+    /**
+        add a list of triples to the graph; the add is done as a list with notify off,
+        and then the array-notify invoked.
+    */
 	public void add(Triple[] triples) {
 		add( Arrays.asList(triples), false );
         manager.notifyAdd( triples );
@@ -38,6 +42,9 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 	public void add( List triples ) 
         { add( triples, true ); }
         
+    /**
+        add a list of triples to the graph, notifying only if requested.
+    */
     protected void add( List triples, boolean notify ) {
 		graph.add(triples);
         if (notify) manager.notifyAdd( triples );
@@ -60,6 +67,10 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		triplesToAdd.close();
 	}
 
+    /**
+        remove a list of triples from the graph; the remove is done as a list with notify off,
+        and then the array-notify invoked.
+    */
 	public void delete( Triple[] triples ) {
 		delete( Arrays.asList(triples), false );
         manager.notifyDelete( triples );
@@ -68,6 +79,9 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
     public void delete( List triples )
         { delete( triples, true ); }
         
+    /**
+        Add a list of triples to the graph, notifying only if requested.
+    */
 	protected void delete(List triples, boolean notify ) {
 		graph.delete( triples );
         if (notify) manager.notifyDelete( triples );

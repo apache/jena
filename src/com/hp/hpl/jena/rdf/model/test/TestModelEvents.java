@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.6 2003-07-10 10:56:43 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.7 2003-07-10 13:45:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -37,16 +37,25 @@ public class TestModelEvents extends ModelTestBase
         List history = new ArrayList();
         
         public void addedStatement( Statement s )
-            { history.add( "add" ); history.add( s ); }
+            { record( "add", s ); }
             
         public void addedStatements( Statement [] statements )
-            { history.add( "add[]" ); history.add( Arrays.asList( statements ) ); }
+            { record( "add[]", Arrays.asList( statements ) ); }
+            
+        public void addedStatements( List statements )
+            { record( "addList", statements ); }
             
         public void removedStatements( Statement [] statements )
-            { history.add( "remove[]" ); history.add( Arrays.asList( statements ) ); }
+            { record( "remove[]", Arrays.asList( statements ) ); }
         
        public void removedStatement( Statement s )
-            { history.add( "remove" ); history.add( s ); }
+            { record( "remove", s ); }
+            
+        public void removedStatements( List statements )
+            { record( "removeList", statements ); }
+            
+        protected void record( String tag, Object info )
+            { history.add( tag ); history.add( info ); }
             
         boolean has( Object [] things ) 
             { return history.equals( Arrays.asList( things ) ); }
@@ -132,7 +141,22 @@ public class TestModelEvents extends ModelTestBase
         model.remove( s );
         SL.assertHas( new Object[] {"remove[]", Arrays.asList( s )} );            
         }
-    }
+        
+    public void testAddStatementList()
+        {
+        model.register( SL );
+        List L = Arrays.asList( statements( model, "b I g; m U g" ) );
+        model.add( L );
+        SL.assertHas( new Object[] {"addList", L} );
+        }
+        
+    public void testDeleteStatementList()
+        {
+        model.register( SL );
+        List L = Arrays.asList( statements( model, "b I g; m U g" ) );
+        model.remove( L );
+        SL.assertHas( new Object[] {"removeList", L} );        }
+        }
 
 
 /*

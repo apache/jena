@@ -1,13 +1,20 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelChangedListener.java,v 1.5 2003-07-10 12:53:33 chris-dollin Exp $
+  $Id: ModelChangedListener.java,v 1.6 2003-07-10 13:45:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
+import java.util.*;
+
 /**
-    The interface for classes that listen for model-changed events
+    The interface for classes that listen for model-changed events. In all cases,
+    the argument is [a copy of] the item that has been presented to the model,
+    or its underlying graph, for addition or removal. For an add, the item [or parts
+    of that item] may have already been present in the model; for remove, the
+    item [or parts of it] need not have been absent from the item.
+    
  	@author kers (design by andy & the team)
 */
 public interface ModelChangedListener
@@ -20,11 +27,17 @@ public interface ModelChangedListener
     
     /**
         Method to call when an array of statements has been added to the attached model.
-        NOTE. This array need not be == to the array added using Model::add(Statement[]).
-        
+        NOTE. This array need not be == to the array added using Model::add(Statement[]).       
         @param statements the array of added statements
     */
     void addedStatements( Statement [] statements );
+    
+    /**
+        Method to call when a list of statements has been added to the attached model.
+        NOTE. This list need not be == to the list added using Model::add(List).
+        @param statements the list of statements that has been removed.
+    */
+    void addedStatements( List statements );
     
     /**
         Method to call when a single statement has been removed from the attached model.
@@ -36,10 +49,16 @@ public interface ModelChangedListener
         Method to call when an array of statements has been removed from the attached 
         model. NOTE. This array need not be == to the array added using 
         Model::remove(Statement[]).
-        
         @param statements the array of removed statements
     */    
     void removedStatements( Statement [] statements );
+    
+    /**
+        Method to call when a list of statements has been deleted from the attached model.
+        NOTE. This list need not be == to the list added using Model::remov(List).
+        @param statements the list of statements that have been removed.
+    */
+    void removedStatements( List statements );
     }
 
 
