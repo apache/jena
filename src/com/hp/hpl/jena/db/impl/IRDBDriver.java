@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.9 $
+* @version $Revision: 1.10 $
 */
 
 public interface IRDBDriver {
@@ -258,6 +258,13 @@ public interface IRDBDriver {
 	 */	
 	
 	public String genSQLReifQualObj ( char reifProp, boolean hasObj );
+
+	/**
+	 * Indicate whether or not table with name is present in database.
+	 * @param tName name of the table.
+	 * @return true if the table exists.
+	 */
+	public boolean doesTableExist(String tName);
 
 
 }
