@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:16:22 $
+ * Last modified on   $Date: 2003-06-26 19:26:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -60,7 +60,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.25 2003-06-22 19:16:22 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.26 2003-06-26 19:26:44 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -340,6 +340,253 @@ public interface OntModel
     public ExtendedIterator listAllDifferent();
     
    
+    /**
+     * <p>
+     * Answer a resource that represents an ontology description node in this model. If a resource
+     * with the given uri exists in the model, and can be viewed as an Ontology, return the
+     * Ontology facet, otherwise return null. 
+     * </p>
+     * 
+     * @param uri The uri for the ontology node. Conventionally, this corresponds to the base URI
+     * of the document itself.
+     * @return An Ontology resource or null.
+     */
+    public Ontology getOntology( String uri );
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an Individual node in this model. If a resource
+     * with the given uri exists in the model, and can be viewed as an Individual, return the
+     * Individual facet, otherwise return null. 
+     * </p>
+     * 
+     * @param uri The URI for the requried individual 
+     * @return An Individual resource or null.
+     */
+    public Individual getIndividual( String uri );
+    
+   
+    /**
+     * <p>
+     * Answer a resource representing an generic property in this model. If a property
+     * with the given uri exists in the model, return the
+     * OntProperty facet, otherwise return null. 
+     * </p>
+     * 
+     * @param uri The uri for the property.
+     * @return An OntProperty resource or null.
+     */
+    public OntProperty getOntProperty( String uri );
+    
+   
+    /**
+     * <p>
+     * Answer a resource representing an object property in this model. If a resource
+     * with the given uri exists in the model, and can be viewed as an ObjectProperty, return the
+     * ObjectProperty facet, otherwise return null. 
+     * </p>
+     * 
+     * @param uri The uri for the object property. May not be null.
+     * @return An ObjectProperty resource or null.
+     */
+    public ObjectProperty getObjectProperty( String uri );
+    
+   
+    /**
+     * <p>Answer a resource representing a transitive property. If a resource
+     * with the given uri exists in the model, and can be viewed as a TransitiveProperty, return the
+     * TransitiveProperty facet, otherwise return null. </p>
+     * @param uri The uri for the property. May not be null.
+     * @return A TransitiveProperty resource or null
+     */
+    public TransitiveProperty getTransitiveProperty( String uri );
+    
+    
+    /**
+     * <p>Answer a resource representing a symmetric property. If a resource
+     * with the given uri exists in the model, and can be viewed as a SymmetricProperty, return the
+     * SymmetricProperty facet, otherwise return null. </p>
+     * @param uri The uri for the property. May not be null.
+     * @return A SymmetricProperty resource or null
+     */
+    public SymmetricProperty getSymmetricProperty( String uri );   
+    
+    
+    /**
+     * <p>Answer a resource representing an inverse functional property. If a resource
+     * with the given uri exists in the model, and can be viewed as a InverseFunctionalProperty, return the
+     * InverseFunctionalProperty facet, otherwise return null. </p>
+     * @param uri The uri for the property. May not be null.
+     * @return An InverseFunctionalProperty resource or null
+     */
+    public InverseFunctionalProperty getInverseFunctionalProperty( String uri );
+    
+    
+    /**
+     * <p>
+     * Answer a resource that represents datatype property in this model. . If a resource
+     * with the given uri exists in the model, and can be viewed as a DatatypeProperty, return the
+     * DatatypeProperty facet, otherwise return null. 
+     * </p>
+     * 
+     * @param uri The uri for the datatype property. May not be null.
+     * @return A DatatypeProperty resource or null
+     */
+    public DatatypeProperty getDatatypeProperty( String uri );
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an annotation property in this model. If a resource
+     * with the given uri exists in the model, and can be viewed as an AnnotationProperty, return the
+     * AnnotationProperty facet, otherwise return null. 
+     * </p>
+     * 
+     * @param uri The uri for the annotation property. May not be null.
+     * @return An AnnotationProperty resource or null
+     */
+    public AnnotationProperty getAnnotationProperty( String uri );
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents a class description node in this model. If a resource
+     * with the given uri exists in the model, and can be viewed as an OntClass, return the
+     * OntClass facet, otherwise return null. 
+     * </p>
+     * 
+     * @param uri The uri for the class node, or null for an anonymous class.
+     * @return An OntClass resource or null.
+     */
+    public OntClass getOntClass( String uri );
+    
+   
+    /**
+     * <p>Answer a resource representing the class that is the complement of another class. If a resource
+     * with the given uri exists in the model, and can be viewed as a ComplementClass, return the
+     * ComplementClass facet, otherwise return null. </p>
+     * @param uri The URI of the new complement class.
+     * @return A complement class or null
+     */
+    public ComplementClass getComplementClass( String uri );
+    
+   
+    /**
+     * <p>Answer a resource representing the class that is the enumeration of a list of individuals. If a resource
+     * with the given uri exists in the model, and can be viewed as an EnumeratedClass, return the
+     * EnumeratedClass facet, otherwise return null. </p>
+     * @param uri The URI of the new enumeration class.
+     * @return An enumeration class or null
+     */
+    public EnumeratedClass getEnumeratedClass( String uri );
+    
+   
+    /**
+     * <p>Answer a resource representing the class that is the union of a list of class desctiptions. If a resource
+     * with the given uri exists in the model, and can be viewed as a UnionClass, return the
+     * UnionClass facet, otherwise return null. </p>
+     * @param uri The URI of the new union class.
+     * @return A union class description or null
+     */
+    public UnionClass getUnionClass( String uri );
+    
+   
+    /**
+     * <p>Answer a resource representing the class that is the intersection of a list of class descriptions. If a resource
+     * with the given uri exists in the model, and can be viewed as a IntersectionClass, return the
+     * IntersectionClass facet, otherwise return null. </p>
+     * @param uri The URI of the new intersection class.
+     * @return An intersection class description or null
+     */
+    public IntersectionClass getIntersectionClass( String uri );
+
+
+    /**
+     * <p>
+     * Answer a resource that represents a property restriction in this model. If a resource
+     * with the given uri exists in the model, and can be viewed as a Restriction, return the
+     * Restriction facet, otherwise return null. 
+     * </p>
+     * 
+     * @param uri The uri for the restriction node.
+     * @return A Restriction resource or null
+     */
+    public Restriction getRestriction( String uri );
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have the given
+     * resource as the value of the given property. If a resource
+     * with the given uri exists in the model, and can be viewed as a HasValueRestriction, return the
+     * HasValueRestriction facet, otherwise return null. </p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a has-value restriction or null
+     */
+    public HasValueRestriction getHasValueRestriction( String uri );
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at least
+     * one property with a value belonging to the given class. If a resource
+     * with the given uri exists in the model, and can be viewed as a SomeValuesFromRestriction, return the
+     * SomeValuesFromRestriction facet, otherwise return null. </p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a some-values-from restriction, or null
+     */
+    public SomeValuesFromRestriction getSomeValuesFromRestriction( String uri );
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals for which all values
+     * of the given property belong to the given class. If a resource
+     * with the given uri exists in the model, and can be viewed as an AllValuesFromResriction, return the
+     * AllValuesFromRestriction facet, otherwise return null. </p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing an all-values-from restriction or null
+     */
+    public AllValuesFromRestriction getAllValuesFromRestriction( String uri );
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have exactly
+     * the given number of values for the given property. If a resource
+     * with the given uri exists in the model, and can be viewed as a CardinalityRestriction, return the
+     * CardinalityRestriction facet, otherwise return null. </p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a has-value restriction, or null
+     */
+    public CardinalityRestriction getCardinalityRestriction( String uri );
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at least
+     * the given number of values for the given property. If a resource
+     * with the given uri exists in the model, and can be viewed as a MinCardinalityRestriction, return the
+     * MinCardinalityRestriction facet, otherwise return null. </p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a min-cardinality restriction, or null
+     */
+    public MinCardinalityRestriction getMinCardinalityRestriction( String uri );
+    
+    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at most
+     * the given number of values for the given property. If a resource
+     * with the given uri exists in the model, and can be viewed as a MaxCardinalityRestriction, return the
+     * MaxCardinalityRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a mas-cardinality restriction, or null
+     */
+    public MaxCardinalityRestriction getMaxCardinalityRestriction( String uri );
+
+
     /**
      * <p>
      * Answer a resource that represents an ontology description node in this model. If a resource

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 15:12:50 $
+ * Last modified on   $Date: 2003-06-26 19:26:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,6 +28,7 @@ import java.io.*;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 import junit.framework.*;
 
@@ -40,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.1 2003-06-21 15:12:50 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.2 2003-06-26 19:26:44 ian_dickinson Exp $
  */
 public class TestOntModel 
     extends TestCase
@@ -167,7 +168,252 @@ public class TestOntModel
         assertTrue( "Writer write/read cycle failed (2)", mIn2.isIsomorphicWith( m.getBaseModel() ) );
     }
     
+    public void testGetOntology() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createOntology( NS + "s" );
+        assertEquals( "Result of get s", s, m.getOntology( NS + "s" ) );
+        assertNull( "result of get q", m.getOntology( NS+"q") );
+        assertNull( "result of get r", m.getOntology( NS+"r"));
+    }
     
+   
+    public void testGetIndividual() {
+        OntModel m = ModelFactory.createOntologyModel();
+        OntClass c = m.createClass( NS +"c" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createIndividual( NS + "s", c );
+        assertEquals( "Result of get s", s, m.getIndividual( NS + "s" ) );
+        assertNull( "result of get q", m.getIndividual( NS+"q") );
+    }
+    
+   
+    public void testGetOntProperty() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createOntProperty( NS + "s" );
+        assertEquals( "Result of get s", s, m.getOntProperty( NS + "s" ) );
+        assertNull( "result of get q", m.getOntProperty( NS+"q") );
+        assertNull( "result of get r", m.getOntProperty( NS+"r"));
+    }
+    
+   
+    public void testGetObjectProperty() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createObjectProperty( NS + "s" );
+        assertEquals( "Result of get s", s, m.getObjectProperty( NS + "s" ) );
+        assertNull( "result of get q", m.getObjectProperty( NS+"q") );
+        assertNull( "result of get r", m.getObjectProperty( NS+"r"));
+    }
+    
+   
+    public void testGetTransitiveProperty() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createTransitiveProperty( NS + "s" );
+        assertEquals( "Result of get s", s, m.getTransitiveProperty( NS + "s" ) );
+        assertNull( "result of get q", m.getTransitiveProperty( NS+"q") );
+        assertNull( "result of get r", m.getTransitiveProperty( NS+"r"));
+    }
+    
+
+    public void testGetSymmetricProperty() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createSymmetricProperty( NS + "s" );
+        assertEquals( "Result of get s", s, m.getSymmetricProperty( NS + "s" ) );
+        assertNull( "result of get q", m.getSymmetricProperty( NS+"q") );
+        assertNull( "result of get r", m.getSymmetricProperty( NS+"r"));
+    }   
+    
+    
+    public void testGetInverseFunctionalProperty() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createInverseFunctionalProperty( NS + "s" );
+        assertEquals( "Result of get s", s, m.getInverseFunctionalProperty( NS + "s" ) );
+        assertNull( "result of get q", m.getInverseFunctionalProperty( NS+"q") );
+        assertNull( "result of get r", m.getInverseFunctionalProperty( NS+"r"));
+    }
+    
+    
+    public void testGetDatatypeProperty() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createDatatypeProperty( NS + "s" );
+        assertEquals( "Result of get s", s, m.getDatatypeProperty( NS + "s" ) );
+        assertNull( "result of get q", m.getDatatypeProperty( NS+"q") );
+        assertNull( "result of get r", m.getDatatypeProperty( NS+"r"));
+    }
+    
+   
+    public void testGetAnnotationProperty() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createAnnotationProperty( NS + "s" );
+        assertEquals( "Result of get s", s, m.getAnnotationProperty( NS + "s" ) );
+        assertNull( "result of get q", m.getAnnotationProperty( NS+"q") );
+        assertNull( "result of get r", m.getAnnotationProperty( NS+"r"));
+    }
+    
+   
+    public void testGetOntClass() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createClass( NS + "s" );
+        assertEquals( "Result of get s", s, m.getOntClass( NS + "s" ) );
+        assertNull( "result of get q", m.getOntClass( NS+"q") );
+        assertNull( "result of get r", m.getOntClass( NS+"r"));
+    }
+    
+   
+    public void testGetComplementClass() {
+        OntModel m = ModelFactory.createOntologyModel();
+        OntClass c = m.createClass( NS +"c" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createComplementClass( NS + "s", c );
+        assertEquals( "Result of get s", s, m.getComplementClass( NS + "s" ) );
+        assertNull( "result of get q", m.getComplementClass( NS+"q") );
+        assertNull( "result of get r", m.getComplementClass( NS+"r"));
+    }
+    
+   
+    public void testGetEnumeratedClass() {
+        OntModel m = ModelFactory.createOntologyModel();
+        RDFList l = m.createList();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createEnumeratedClass( NS + "s", l );
+        assertEquals( "Result of get s", s, m.getEnumeratedClass( NS + "s" ) );
+        assertNull( "result of get q", m.getEnumeratedClass( NS+"q") );
+        assertNull( "result of get r", m.getEnumeratedClass( NS+"r"));
+    }
+    
+   
+    public void testGetUnionClass() {
+        OntModel m = ModelFactory.createOntologyModel();
+        RDFList l = m.createList();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createUnionClass( NS + "s", l );
+        assertEquals( "Result of get s", s, m.getUnionClass( NS + "s" ) );
+        assertNull( "result of get q", m.getUnionClass( NS+"q") );
+        assertNull( "result of get r", m.getUnionClass( NS+"r"));
+    }
+    
+   
+    public void testGetIntersectionClass() {
+        OntModel m = ModelFactory.createOntologyModel();
+        RDFList l = m.createList();
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createIntersectionClass( NS + "s", l );
+        assertEquals( "Result of get s", s, m.getIntersectionClass( NS + "s" ) );
+        assertNull( "result of get q", m.getIntersectionClass( NS+"q") );
+        assertNull( "result of get r", m.getIntersectionClass( NS+"r"));
+    }
+
+
+    public void testGetRestriction() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Property p = m.createProperty( NS + "p" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createRestriction( NS + "s", p );
+        assertEquals( "Result of get s", s, m.getRestriction( NS + "s" ) );
+        assertNull( "result of get q", m.getRestriction( NS+"q") );
+        assertNull( "result of get r", m.getRestriction( NS+"r"));
+    }
+    
+    
+    public void testGetHasValueRestriction() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Property p = m.createProperty( NS + "p" );
+        OntClass c = m.createClass( NS + "c" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createHasValueRestriction( NS + "s", p, c );
+        assertEquals( "Result of get s", s, m.getHasValueRestriction( NS + "s" ) );
+        assertNull( "result of get q", m.getHasValueRestriction( NS+"q") );
+        assertNull( "result of get r", m.getHasValueRestriction( NS+"r"));
+    }
+    
+    
+    public void testGetSomeValuesFromRestriction() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Property p = m.createProperty( NS + "p" );
+        OntClass c = m.createClass( NS + "c" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createSomeValuesFromRestriction( NS + "s", p, c );
+        assertEquals( "Result of get s", s, m.getSomeValuesFromRestriction( NS + "s" ) );
+        assertNull( "result of get q", m.getSomeValuesFromRestriction( NS+"q") );
+        assertNull( "result of get r", m.getSomeValuesFromRestriction( NS+"r"));
+    }
+    
+    
+    public void testGetAllValuesFromRestriction() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Property p = m.createProperty( NS + "p" );
+        OntClass c = m.createClass( NS + "c" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createAllValuesFromRestriction( NS + "s", p, c );
+        assertEquals( "Result of get s", s, m.getAllValuesFromRestriction( NS + "s" ) );
+        assertNull( "result of get q", m.getAllValuesFromRestriction( NS+"q") );
+        assertNull( "result of get r", m.getAllValuesFromRestriction( NS+"r"));
+    }
+    
+    
+    public void testGetCardinalityRestriction() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Property p = m.createProperty( NS + "p" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createCardinalityRestriction( NS + "s", p, 1 );
+        assertEquals( "Result of get s", s, m.getCardinalityRestriction( NS + "s" ) );
+        assertNull( "result of get q", m.getCardinalityRestriction( NS+"q") );
+        assertNull( "result of get r", m.getCardinalityRestriction( NS+"r"));
+    }
+    
+    
+    public void testGetMinCardinalityRestriction() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Property p = m.createProperty( NS + "p" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createMinCardinalityRestriction( NS + "s", p, 1 );
+        assertEquals( "Result of get s", s, m.getMinCardinalityRestriction( NS + "s" ) );
+        assertNull( "result of get q", m.getMinCardinalityRestriction( NS+"q") );
+        assertNull( "result of get r", m.getMinCardinalityRestriction( NS+"r"));
+    }
+    
+    
+    public void testGetMaxCardinalityRestriction() {
+        OntModel m = ModelFactory.createOntologyModel();
+        Property p = m.createProperty( NS + "p" );
+        Resource r = m.getResource( NS + "r" );
+        m.add( r, RDF.type, r );
+        Resource s = m.createMaxCardinalityRestriction( NS + "s", p, 1 );
+        assertEquals( "Result of get s", s, m.getMaxCardinalityRestriction( NS + "s" ) );
+        assertNull( "result of get q", m.getMaxCardinalityRestriction( NS+"q") );
+        assertNull( "result of get r", m.getMaxCardinalityRestriction( NS+"r"));
+    }
+
+
+
     // Internal implementation methods
     //////////////////////////////////
 
