@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.30 2003-11-10 14:47:10 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.31 2003-11-13 16:36:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -14,6 +14,7 @@ import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.daml.impl.DAMLModelImpl;
@@ -49,6 +50,8 @@ public class ModelFactory extends ModelFactoryBase
         and are visible to listStatements(). 
     */
     public static final ReificationStyle Minimal = ReificationStyle.Minimal;
+    
+    private static PrefixMapping defaultPrefixMapping = new PrefixMappingImpl();
     
     /**
         Answer a ModelSpec which can create models to the specifications in the RDF
@@ -93,7 +96,7 @@ public class ModelFactory extends ModelFactoryBase
         Answer a new memory-based model with the given reification style
     */
     public static Model createDefaultModel( ReificationStyle style )
-        { return new ModelCom( new GraphMem( style ) ); }   
+        { return new ModelCom( new GraphMem( style ), defaultPrefixMapping ); }   
 
     /**
         Answer a read-only Model with all the statements of this Model and any
@@ -116,7 +119,7 @@ public class ModelFactory extends ModelFactoryBase
      * @return A model presenting an API view of graph g
      */
     public static Model createModelForGraph( Graph g ) {
-        return new ModelCom( g ); 
+        return new ModelCom( g, defaultPrefixMapping ); 
     }
     
     /**
@@ -187,7 +190,6 @@ public class ModelFactory extends ModelFactoryBase
         ( IDBConnection c, ReificationStyle style )
         { return new ModelMakerImpl( new GraphRDBMaker( c, style ) ); }
         
-        
     /**
         Answer a plain IDBConnection to a database with the given URL, with
         the given user having the given password. For more complex ways of
@@ -229,8 +231,8 @@ public class ModelFactory extends ModelFactoryBase
      */
     public static InfModel createRDFSModel(Model model) {
          Reasoner reasoner = ReasonerRegistry.getRDFSReasoner();
-         InfGraph graph     = reasoner.bind(model.getGraph());
-         return new InfModelImpl(graph);
+         InfGraph graph = reasoner.bind( model.getGraph() );
+         return new InfModelImpl( graph );
     }
                
     /**
@@ -242,10 +244,10 @@ public class ModelFactory extends ModelFactoryBase
      * @param model a Model containing instance data assertions 
      * @param schema a Model containing RDFS schema data
      */
-    public static InfModel createRDFSModel(Model schema, Model model) {
+    public static InfModel createRDFSModel( Model schema, Model model ) {
          Reasoner reasoner = ReasonerRegistry.getRDFSReasoner();
-         InfGraph graph     = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
-         return new InfModelImpl(graph);
+         InfGraph graph  = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
+         return new InfModelImpl( graph );
     }
     
     /**
@@ -254,8 +256,8 @@ public class ModelFactory extends ModelFactoryBase
      * @param reasoner the reasoner to use to process the data
      * @param model the Model containing both instance data and schema assertions to be inferenced over
      */
-    public static InfModel createInfModel(Reasoner reasoner, Model model) {
-         InfGraph graph     = reasoner.bind(model.getGraph());
+    public static InfModel createInfModel( Reasoner reasoner, Model model ) {
+         InfGraph graph = reasoner.bind(model.getGraph());
          return new InfModelImpl(graph);
     }
                
@@ -267,11 +269,10 @@ public class ModelFactory extends ModelFactoryBase
      * @param schema a Model containing RDFS schema data
      */
     public static InfModel createInfModel(Reasoner reasoner, Model schema, Model model) {
-         InfGraph graph     = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
-         return new InfModelImpl(graph);
+         InfGraph graph = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
+         return new InfModelImpl( graph );
     }
-    
-
+   
     /**
      * <p>
      * Answer a new ontology model which will process in-memory models of

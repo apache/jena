@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.46 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: Model.java,v 1.47 2003-11-13 16:36:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.46 $Date: 2003/09/08 10:54:58 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.47 $Date: 2003/09/08 11:28:23 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -618,8 +618,8 @@ public interface Model
 	 *  and property.
 	 * @return true if there exists within this model a statement with
 	 * subject s and property p, false otherwise
-	 * @param s The subject sought.
-	 * @param p The predicate sought.
+	 * @param s The subject sought (null for any).
+	 * @param p The predicate sought (null for any).
 	 
 	 */
 	boolean contains(Resource s, Property p) ;
@@ -634,12 +634,13 @@ public interface Model
     */
     boolean containsResource( RDFNode r );
 
-	/** Determine if a statement is present in this model.
+	/** Determine if an (S, P, O) pattern is present in this model, with null allowed
+     * to represent a wildcard match.
 	 * @return true if the statement with subject s, property p and object o
 	 * is in the model, false otherwise
-	 * @param s The subject of the statment tested.
-	 * @param p The predicate of the statement tested.
-	 * @param o The object of the statement tested.
+	 * @param s The subject of the statment tested (null as wildcard).
+	 * @param p The predicate of the statement tested (null as wildcard).
+	 * @param o The object of the statement tested (null as wildcard).
 	 
 	 */
 	boolean contains(Resource s, Property p, RDFNode o) ;
@@ -957,5 +958,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.46 2003-09-08 11:28:23 chris-dollin Exp $
+ * $Id: Model.java,v 1.47 2003-11-13 16:36:32 chris-dollin Exp $
  */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestContains.java,v 1.6 2003-11-10 14:47:33 chris-dollin Exp $
+  $Id: TestContains.java,v 1.7 2003-11-13 16:36:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -64,10 +64,7 @@ public class TestContains extends ModelTestBase
         }
     
     public void testCWN( boolean yes, String facts, Resource S, Property P, RDFNode O )
-        {
-        Model m = modelWithStatements( facts );
-        assertEquals( yes, m.contains( S, P, O ) );
-        }
+        { assertEquals( yes, modelWithStatements( facts ).contains( S, P, O ) ); }
     }
 
 

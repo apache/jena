@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.82 2003-11-10 14:47:32 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.83 2003-11-13 16:36:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,7 +29,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.82 $' Date='$Date: 2003-11-10 14:47:32 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.83 $' Date='$Date: 2003-11-13 16:36:32 $'
  */
 
 public class ModelCom 
@@ -44,15 +44,18 @@ implements Model, PrefixMapping, ModelLock
     /**
     	make a model based on the specified graph
     */
-	public ModelCom( Graph base ) {
-		this( base, BuiltinPersonalities.model );
-	}
+	public ModelCom( Graph base ) 
+        { this( base, BuiltinPersonalities.model ); }
+    
+    public ModelCom( Graph base, Personality personality )
+        { super( base, personality ); }
+    
+    public ModelCom( Graph base, PrefixMapping pm )
+        { this( base ); 
+        setNsPrefixes( pm ); }
 	
     public QueryHandler queryHandler()
     	{ return getGraph().queryHandler(); }
-	
-	public ModelCom( Graph base, Personality personality )
-		{ super( base, personality ); }
 		
     public Graph getGraph()
         { return graph; }
