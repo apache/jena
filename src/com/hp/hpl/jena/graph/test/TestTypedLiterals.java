@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.10 2003-02-11 15:17:02 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.11 2003-03-05 17:42:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-02-11 15:17:02 $
+ * @version $Revision: 1.11 $ on $Date: 2003-03-05 17:42:10 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -261,6 +261,30 @@ public class TestTypedLiterals extends TestCase {
         assertSame("Int lex form", l1, l3);
         assertSame("Ignore language in integer", l1, l2);
         assertSame("Ignore language in integer", l1, l4);
+    }
+    
+    /**
+     * Test plain literal/xsd:string/xsd:int equality operations
+     */
+    public void testPlainSameValueAs() {
+        Literal lString = m.createTypedLiteral("10", "", XSDDatatype.XSDstring );
+        Literal lPlain = m.createTypedLiteral("10", "", (RDFDatatype)null );
+        Literal lPlain2 = m.createLiteral("10");
+        Literal lInt =  m.createTypedLiteral("10", "", XSDDatatype.XSDint );
+        
+        assertSame("Null type = plain literal", lPlain, lPlain2);
+        assertDiffer("String != int", lString, lInt);
+        assertDiffer("Plain != int", lPlain, lInt);
+        assertDiffer("Plain != int", lPlain2, lInt);
+        
+        // The correct answer to this is currently up to us
+        if (LiteralLabel.enablePlainSameAsString) {
+            assertSame("String != plain??", lString, lPlain);
+            assertSame("String != plain??", lString, lPlain2);
+        } else {
+            assertDiffer("String != plain??", lString, lPlain);
+            assertDiffer("String != plain??", lString, lPlain2);
+        }
     }
     
     /**

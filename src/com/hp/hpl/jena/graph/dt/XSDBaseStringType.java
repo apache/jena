@@ -58,7 +58,24 @@ public class XSDBaseStringType extends XSDDatatype {
             return false;
         }
     }
-}
+    
+    /**
+     * Compares two instances of values of the given datatype. 
+     * This ignores lang tags and optionally allows plain literals to
+     * equate to strings. The latter option is currently set by a static
+     * global flag in LiteralLabel.
+     */
+    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
+        // value1 will have been used to dispatch here so we know value1 is an xsdstring or extension
+        if ((value2.getDatatype() == null && LiteralLabel.enablePlainSameAsString) ||
+             (value2.getDatatype() instanceof XSDBaseStringType)) {
+                return value1.getValue().equals(value2.getValue());
+        } else {
+                return false;
+        }
+    }
+
+ }
 
 /*
     (c) Copyright Hewlett-Packard Company 2002
