@@ -1,6 +1,35 @@
 Release Notes
 =============
 
+Jena2-pre4 (June 2003)
+
+Fourth previw release of Jena2.
+
+It is a preview release, not intended for serious development.  Developers
+are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
+
+This release adds a substantially revised and improved ontology API along
+with improved reasoning support for RDFS and many small improvements to 
+the graph SPI. <database?>
+
+Reasoners:
+
+The previous default RDFS reasoner (RDFSReasoner1) has been replaced by
+a new implementation (RDFSRuleReasoner) which in turn is based on a generic
+hybrid rules engine which is included with Jena. This implementation is
+faster, more scalable and more configurable than the earlier version.
+
+The release also includes a very preliminary rule set which implements the
+OWL/Lite subset of OWL/full. This implementation is not yet stable or scalable 
+and is not recommended for use at this stage.
+
+Some very preliminary documentation is in <Jena>/doc/user-manual/infernce.
+
+
+
+Previous release notes
+======================
+
 Jena2-pre3 (May 2003)
 
 Third preview release of Jena2.
