@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.1 2003-04-17 14:43:42 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.2 2003-04-22 12:43:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -19,9 +19,7 @@ public class PrefixMappingImpl implements PrefixMapping
     private Map map;
     
     public PrefixMappingImpl()
-        {
-        map = new HashMap();
-        }
+        { map = new HashMap(); }
            
     public void setNsPrefix( String prefix, String uri ) 
         { map.put( prefix, uri ); }
@@ -31,7 +29,44 @@ public class PrefixMappingImpl implements PrefixMapping
         
     public Map getNsPrefixMap()
         { return new HashMap( map ); }
-
+        
+    /**
+        Expand a prefixed URI. There's an assumption that any URI of the form
+        Head:Tail is subject to mapping if Head is in the prefix mapping. So, if
+        someone takes it into their heads to define eg "http" or "ftp" we have problems.
+    */
+    public String expandPrefix( String prefixed )
+        {
+        int colon = prefixed.indexOf( ':' );
+        if (colon < 0) 
+            return prefixed;
+        else
+            {
+            String prefix = prefixed.substring( 0, colon );
+            String uri = (String) map.get( prefix );
+            return uri == null ? prefixed : uri + prefixed.substring( colon + 1 );
+            } 
+        }
+        
+    /**
+        Compress the URI using the prefix mapping. This version of the code looks
+        through all the maplets and checks each candidate prefix URI for being a
+        leading substring of the argument URI. There's probably a much more
+        efficient algorithm available, preprocessing the prefix strings into some
+        kind of search table, but for the moment we don't need it.
+    */
+    public String usePrefix( String uri )
+        {
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext())
+            {
+            Map.Entry e = (Map.Entry) it.next();
+            String ss = (String) e.getValue();
+            int where = uri.indexOf( ss );
+            if (where == 0) return e.getKey() + ":" + uri.substring( ss.length() );
+            } 
+        return uri; 
+        }
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNamespace.java,v 1.2 2003-04-17 14:43:42 chris-dollin Exp $
+  $Id: TestNamespace.java,v 1.3 2003-04-22 12:43:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -96,44 +96,134 @@ public class TestNamespace extends ModelTestBase
         s.add( element );
         return s;
         }
-        
+            
+    static final String crispURI = "http://crisp.nosuch.net/";
+    static final String ropeURI = "scheme:rope/string#";
+                    
     /**
         test that a PrefixMapping maps names to URIs. The names and URIs are
         all fully distinct - overlapping names/uris are dealt with in other tests.
     */
     public void testPrefixMappingMapping()
         {
-        String crisp = "http://crisp.nosuch.net/";
         String toast = "ftp://ftp.nowhere.not/";
-        assertDiffer( "crisp and toast must differ", crisp, toast );
+        assertDiffer( "crisp and toast must differ", crispURI, toast );
     /* */
         PrefixMapping ns = new PrefixMappingImpl();
         assertEquals( "crisp should be unset", null, ns.getNsPrefixURI( "crisp" ) );
         assertEquals( "toast should be unset", null, ns.getNsPrefixURI( "toast" ) );
         assertEquals( "butter should be unset", null, ns.getNsPrefixURI( "butter" ) );
     /* */
-        ns.setNsPrefix( "crisp", crisp );
-        assertEquals( "crisp should be set", crisp, ns.getNsPrefixURI( "crisp" ) );
+        ns.setNsPrefix( "crisp", crispURI );
+        assertEquals( "crisp should be set", crispURI, ns.getNsPrefixURI( "crisp" ) );
         assertEquals( "toast should still be unset", null, ns.getNsPrefixURI( "toast" ) );
         assertEquals( "butter should still be unset", null, ns.getNsPrefixURI( "butter" ) );
     /* */
         ns.setNsPrefix( "toast", toast );
-        assertEquals( "crisp should be set", crisp, ns.getNsPrefixURI( "crisp" ) );
+        assertEquals( "crisp should be set", crispURI, ns.getNsPrefixURI( "crisp" ) );
         assertEquals( "toast should be set", toast, ns.getNsPrefixURI( "toast" ) );
         assertEquals( "butter should still be unset", null, ns.getNsPrefixURI( "butter" ) );
         }
         
+    /**
+        test that we can extract a proper Map from a PrefixMapping
+    */
     public void testPrefixMappingMap()
         {
         PrefixMapping ns = new PrefixMappingImpl();
-        ns.setNsPrefix( "crisp", "crisp.nosuch.net" );
-        ns.setNsPrefix( "rope", "scheme:rope/string#" );
+        ns.setNsPrefix( "crisp", crispURI );
+        ns.setNsPrefix( "rope", ropeURI );
         Map map = ns.getNsPrefixMap();
         assertEquals( "map should have two elements", 2, map.size() );
-        assertEquals( "", "crisp.nosuch.net", map.get( "crisp" ) );
+        assertEquals( "", crispURI, map.get( "crisp" ) );
         assertEquals( "", "scheme:rope/string#", map.get( "rope" ) );
         }
         
+     /**
+        test that the Map returned by getNsPrefixMap does not alias (parts of)
+        the secret internal map of the PrefixMapping
+        
+        TODO reduce duplication between this test and the previous one
+    */
+    public void testPrefixMappingSecret()
+        {
+        PrefixMapping ns = new PrefixMappingImpl();
+        ns.setNsPrefix( "crisp", crispURI);
+        ns.setNsPrefix( "rope", ropeURI );
+        Map map = ns.getNsPrefixMap();
+    /* */
+        map.put( "crisp", "with/onions" );
+        map.put( "sandwich", "with/cheese" );
+        assertEquals( "", crispURI, ns.getNsPrefixURI( "crisp" ) );
+        assertEquals( "", ropeURI, ns.getNsPrefixURI( "rope" ) );
+        assertEquals( "", null, ns.getNsPrefixURI( "sandwich" ) );
+        }
+
+    /**
+        these are strings that should not change when they are prefix-expanded
+        with crisp and rope as legal prefixes.
+    */
+    static final String [] dontChange = 
+        { 
+        "",
+        "http://www.somedomain.something/whatever#",
+        "crispy:cabbage",
+        "cris:isOnInfiniteEarths",
+        "rop:tangled/web",
+        "roped:abseiling"
+        };
+        
+    /**
+        these are the required mappings which the test cases below should
+        satisfy: an array of 2-arrays, where element 0 is the string to expand
+        and element 1 is the string it should expand to. 
+    */
+    static final String [][] expansions =
+        {
+            { "crisp:pathPart", crispURI + "pathPart" },
+            { "rope:partPath", ropeURI + "partPath" },
+            { "crisp:path:part", crispURI + "path:part" },
+        };
+                
+    public void testExpandPrefix()
+        {
+        PrefixMapping ns = new PrefixMappingImpl();
+        ns.setNsPrefix( "crisp", crispURI );
+        ns.setNsPrefix( "rope", ropeURI );
+    /* */
+        for (int i = 0; i < dontChange.length; i += 1)
+            assertEquals
+                ( 
+                "should be unchanged", 
+                dontChange[i], 
+                ns.expandPrefix( dontChange[i] ) 
+                );    
+    /* */
+        for (int i = 0; i < expansions.length; i += 1)
+            assertEquals
+                ( 
+                "should expand correctly", 
+                expansions[i][1], 
+                ns.expandPrefix( expansions[i][0] ) 
+                );
+        }
+        
+    public void testUseEasyPrefix()
+        {
+        testUseEasyPrefix( "prefix mapping impl", new PrefixMappingImpl() );
+        testUseEasyPrefix( "default model", ModelFactory.createDefaultModel() );
+        }
+        
+    public void testUseEasyPrefix( String title, PrefixMapping ns )
+        {
+        String butterURI = "ftp://ftp.nowhere.at.all/cream#";
+        ns.setNsPrefix( "crisp", crispURI );
+        ns.setNsPrefix( "butter", butterURI );
+        assertEquals( title, "", ns.usePrefix( "" ) );
+        assertEquals( title, ropeURI, ns.usePrefix( ropeURI ) );
+        assertEquals( title, "crisp:tail", ns.usePrefix( crispURI + "tail" ) );
+        assertEquals( title, "butter:here:we:are", ns.usePrefix( butterURI + "here:we:are" ) );
+        }
     }
 
 

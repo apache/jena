@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2003-04-18 09:46:11 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2003-04-22 12:43:25 $'
  */
 
 public class ModelCom 
@@ -856,6 +856,12 @@ implements Model, ModelI, PrefixMapping
         
     public Map getNsPrefixMap()
         { return pm.getNsPrefixMap(); }
+        
+    public String expandPrefix( String prefixed )
+        { return pm.expandPrefix( prefixed ); }
+        
+    public String usePrefix( String uri )
+        { return pm.usePrefix( uri ); }
         
     /**
         Service method to update the namespaces of  a Model given the
