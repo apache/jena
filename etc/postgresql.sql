@@ -245,7 +245,35 @@ FROM ${a} S WHERE S.Stmt = ? AND HasType = ? AND S.GraphID = ?
 # and taking URI's as arguments
 deleteReified
 Delete FROM ${a} WHERE (Subj = ? AND Prop = ? AND Obj = ? AND GraphID = ?
-AND Stmt = ?)
+AND Stmt = ? AND HasType = ?)
+
+#-------------------------------------------------------------------
+# Delete a fragment of a reified statement in the reified statements table
+# that has only a subject.
+deleteReifiedS
+Delete FROM ${a} WHERE (Subj = ? AND Prop is null AND Obj is null AND GraphID = ?
+AND Stmt = ? AND HasType is null)
+
+#-------------------------------------------------------------------
+# Delete a fragment of a reified statement in the reified statements table
+# that has only a predicate.
+deleteReifiedP
+Delete FROM ${a} WHERE (Subj is null AND Prop = ? AND Obj is null AND GraphID = ?
+AND Stmt = ? AND HasType is null)
+
+#-------------------------------------------------------------------
+# Delete a fragment of a reified statement in the reified statements table
+# that has only an object.
+deleteReifiedO
+Delete FROM ${a} WHERE (Subj is null AND Prop is null AND Obj = ? AND GraphID = ?
+AND Stmt = ? AND HasType is null)
+
+#-------------------------------------------------------------------
+# Delete a fragment of a reified statement in the reified statements table
+# that has only a type.
+deleteReifiedT
+Delete FROM ${a} WHERE (Subj is null AND Prop is null AND Obj is null AND GraphID = ?
+AND Stmt = ? AND HasType = "T")
 
 #-------------------------------------------------------------------
 # Insert an all-URI triple into a Statement table,
