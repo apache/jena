@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -122,7 +122,10 @@ public class DBPropGraph extends DBProp {
 	public String getType() { return getPropString( graphType); }
 	public String getStmtTable() { return getPropString(stmtTable); }
 	public String getReifTable() { return getPropString(reifTable); }
-	public int getGraphId() { return Integer.parseInt(getPropString(graphId)); }	
+	public int getGraphId() {
+		String i = getPropString(graphId);
+		return i == null ? -1 : Integer.parseInt(i);
+	}	
 	
 	public ExtendedIterator getAllLSets() {
 		return 
@@ -196,6 +199,21 @@ public class DBPropGraph extends DBProp {
 			return new DBPropGraph( graph, ((Triple)it.next()).getSubject());
 		else
 			return null;
+	}
+	
+	/*
+	 * return true if the DBPropGraph has the required
+	 * properties for the named, stored graph.
+	 */
+	
+	public boolean isDBPropGraphOk ( String name ) {
+		String s = getName();
+		boolean res = (s == null) ? false : s.equals(name);		
+		res = res & (getGraphId() != -1);
+		res = res & (getType() != null);
+		res = res & (getStmtTable() != null);
+		res = res & (getReifTable() != null);
+		return res;
 	}
 	
 	public void remove() {
