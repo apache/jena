@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.10 2004-12-19 17:59:23 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.11 2005-02-13 15:36:27 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -352,22 +352,22 @@ public class FileManager
         return uri ;
     }
     
-    /** Slurp up a whole file: map filename as necessary */
+    /** Slurp up a whole file */
     public String readWholeFileAsUTF8(InputStream in)
     {
         try {
-        Reader r = FileUtils.asBufferedUTF8(in) ;
-        StringWriter sw = new StringWriter(1024);
-        char buff[] = new char[1024];
-        while (r.ready()) {
-            int l = r.read(buff);
-            if (l <= 0)
-                break;
-            sw.write(buff, 0, l);
-        }
-        r.close();
-        sw.close();
-        return sw.toString();
+            Reader r = FileUtils.asBufferedUTF8(in) ;
+            StringWriter sw = new StringWriter(1024);
+            char buff[] = new char[1024];
+            while (r.ready()) {
+                int l = r.read(buff);
+                if (l <= 0)
+                    break;
+                sw.write(buff, 0, l);
+            }
+            r.close();
+            sw.close();
+            return sw.toString();
         } catch (IOException ex)
         {
             throw new WrappedIOException(ex) ;
@@ -378,6 +378,8 @@ public class FileManager
     public String readWholeFileAsUTF8(String filename)
     {
         InputStream in = open(filename) ;
+        if ( in == null )
+            throw new JenaException("File not found: "+filename) ;
         return readWholeFileAsUTF8(in) ;
     }
         
