@@ -327,6 +327,15 @@ public class CheckerImpl extends AbsChecker {
 	 * @param url Load the ontology from this URL.
 	 */
 	public void load(String url) {
+		load(url,"RDF/XML");
+	}	
+	/**
+	 * Include an ontology and its imports
+	 * in the check.
+	 * @param url Load the ontology from this URL.
+	 * @param lang The language (RDF/XML, N3 or N-TRIPLE) in which the ontology is written.
+	 */
+	public void load(String url,String lang) {
 		// create an ontology model with no reasoner and the default doc manager
 		OntModel m =
 			ModelFactory.createOntologyModel(
@@ -335,7 +344,7 @@ public class CheckerImpl extends AbsChecker {
 		//OntModel m = ModelFactory.createOntologyModel();
 		m.getDocumentManager().setProcessImports(true);
 
-		m.read(url);
+		m.read(url,lang);
 
 		// since we specified the null reasoner, the graph of the model is the union graph
 		addRaw(m.getGraph());

@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Checker.java,v 1.47 2004-05-06 13:33:49 jeremy_carroll Exp $
+  $Id: Checker.java,v 1.48 2004-12-01 14:20:29 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -75,6 +75,15 @@ public class Checker extends CheckerImpl implements CheckerResults {
 	 */
 	public void load(String url) {
 		super.load(url);
+	}
+	/**
+	 * Include an ontology and its imports
+	 * in the check.
+	 * @param url Load the ontology from this URL.
+	 * @param lang The language (RDF/XML, N3 or N-TRIPLE) in which the ontology is written.
+	 */
+	public void load(String url,String lang) {
+		super.load(url,lang);
 	}
 
 
