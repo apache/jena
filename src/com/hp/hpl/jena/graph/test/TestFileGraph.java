@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFileGraph.java,v 1.2 2003-05-03 16:53:21 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.3 2003-05-04 18:51:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -16,7 +16,7 @@ import junit.framework.*;
 /**
     Test FileGraph by seeing if we can make some file graphs and then read
     them back.
-    
+
  	@author hedgehog
 */
 
@@ -24,70 +24,68 @@ public class TestFileGraph extends GraphTestBase
     {
     public TestFileGraph( String name )
         { super( name ); }
-        
+
+    // TODO want a wider variety of cases, now we've discovered how to abstract.
     public static TestSuite suite()
-        { return new TestSuite( TestFileGraph.class ); }
-        
+        {
+        TestSuite result = new TestSuite( TestFileGraph.class );
+        result.addTest( new Case( "x /R y", "xxxA", ".rdf" ) );
+        result.addTest( new Case( "x /R y", "xxxB", ".n3" ) );
+        result.addTest( new Case( "x /R y", "xxxC", ".nt" ) );
+        result.addTest( new Case( "x /R y; p /R q", "xxxD", ".rdf" ) );
+        result.addTest( new Case( "x /R y; p /R q", "xxxE", ".n3" ) );
+        result.addTest( new Case( "x /R y; p /R q", "xxxF", ".nt" ) );
+        result.addTest( new Case( "http://domain/S ftp:ftp/P O", "xxxG", ".rdf" ) );
+        result.addTest( new Case( "http://domain/S ftp:ftp/P O", "xxxH", ".nt" ) );
+        result.addTest( new Case( "http://domain/S ftp:ftp/P O", "xxxI", ".n3" ) );
+        return result;
+        }
+
     /**
         Test that the language code is guessed "correctly".
     */
     public void testGuessLang()
         {
+        assertEquals( "N3", FileGraph.guessLang( "simple.n3") );
         assertEquals( "N3", FileGraph.guessLang( "hello.there.n3") );
+        assertEquals( "N-TRIPLE", FileGraph.guessLang( "simple.nt" ) );
         assertEquals( "N-TRIPLE", FileGraph.guessLang( "whats.up.nt" ) );
+        assertEquals( "RDF/XML", FileGraph.guessLang( "poggle.rdf") );
         assertEquals( "RDF/XML", FileGraph.guessLang( "dotless" ) );
         }
-        
-    public void testA()
-        { testReadback( "x /R y", "xxxA", ".rdf" ); }
-        
-    public void testB()
-        { testReadback( "x /R y", "xxxB", ".n3" ); }
-        
-    public void testC()
-        { testReadback( "x /R y", "xxxC", ".nt" ); }
-    
-    public void testD()
-        { testReadback( "x /R y; p /R q", "xxxD", ".rdf" ); }
-    
-    public void testE()
-        { testReadback( "x /R y; p /R q", "xxxE", ".n3" ); }
-    
-    public void testF()
-        { testReadback( "x /R y; p /R q", "xxxF", ".nt" ); }
-    
-    public void testG()
-        { testReadback( "http://domain/S ftp:ftp/P O", "xxxG", ".rdf" ); }
-    
-    public void testH()
-        { testReadback( "http://domain/S ftp:ftp/P O", "xxxH", ".nt" ); }
-    
-    public void testI()
-        { testReadback( "http://domain/S ftp:ftp/P O", "xxxI", ".n3" ); }
-    
+
     /**
         Test that the graph encoded as the test-string content can be
         written out to a temporary file generated from the prefix and suffix,
         and then read back correctly. The temporary files are marked as
         delete-on-exit to try and avoid cluttering the user's filespace ...
-               
-    	@param content a graph encoded in GraphTestBase format
-    	@param prefix the prefix for File.createTempFile
-    	@param suffix the suffix for File.createTempFile
      */
-    public void testReadback( String content, String prefix, String suffix )
+    private static class Case extends TestFileGraph
         {
-        File foo = tempFileName( prefix, suffix );
-        Graph original = graphWith( content );
-        Graph g = new FileGraph( foo, true );
-        g.getBulkUpdateHandler().add( original );
-        g.close();
-        Graph g2 = new FileGraph( foo, false );
-        assertEquals( "", original, g2 );
-        g2.close();
-        }
-        
+        String content;
+        String prefix;
+        String suffix;
 
+        Case( String content, String prefix, String suffix )
+            {
+            super( "Case: " + content + " in " + prefix + "*" + suffix );
+            this.content = content;
+            this.prefix = prefix;
+            this.suffix = suffix;
+            }
+            
+        public void runTest()
+            {
+            File foo = tempFileName( prefix, suffix );
+            Graph original = graphWith( content );
+            Graph g = new FileGraph( foo, true );
+            g.getBulkUpdateHandler().add( original );
+            g.close();
+            Graph g2 = new FileGraph( foo, false );
+            assertEquals( "", original, g2 );
+            g2.close();
+            }
+        }
     }
 
 /*
