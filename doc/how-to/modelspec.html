@@ -2,8 +2,164 @@
 <head>
 <title>ModelSpec howto</title>
 <link href="../styles/usermanual.css" rel="stylesheet" type="text/css">
+<style>
+pre {
+    background-color: #eee;
+    margin-top: 2mm;
+    margin-bottom: 2mm;
+    margin-left: 0;
+    }
+</style>
 </head>
 <body>
 <h1>ModelSpec howto - describing models in RDF</h1>
+
+<h1>introduction</h1>
+
+This note briefly describes a new, <i style="color: red">experimental</i>
+feature of Jena 2: the ability to specify models in RDF. The intention is
+to be able to specify how a model is constructed using a configuration
+file, input stream, URL, or other way of getting RDF into a Jena process.
+
+<p>A more formal document is available: the <a href="modelspec-details.html">
+ModelSpec design document</a>. Here we concentrate on how to use 
+ModelSpecs in general.
+
+<h1>creating a ModelSpec</h1>
+
+<code>ModelSpec</code>s are created by calling the ModelFactory method 
+<code>createSpec(desc)</code>, passing it the Model containing the
+RDF description. The description uses the <a href="../javadoc/com/hp/hpl/jena/vocabulary/JMS.html">JMS (Jena Model Specification)
+vocabulary</a>. The result is a ModelSpec object specialised to the
+description. <code>createSpec</code> finds the unique resource in
+<code>desc</code> with <code>RDF.type</code> <code>JMS.ModelSpec</code>,
+and then find the "most specific" subtype of <code>JMS.ModelSpec</code>
+that resource has. [Fortunately, the current type tree allows this.]
+
+<p>That type identifies the kind of Java ModelSpec to create. The
+constructor for that type analyses the description to find the
+relevant properties: irrelevant ones are ignored. [The mapping from
+RDF types to ModelSpecCreators is driven from 
+<a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpecCreatorRegistry.html">
+and is extensible.]</a>
+
+<h1>using a ModelSpec</h1>
+
+<code>ModelSpec</code>s can be used to create models, and they can
+regenerate their descriptions. The full set of methods is described
+in <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpec.html">ModelSpec's #
+javadoc</a>, but the three directly useful to users are:
+
+<ul>
+<li><code>createModel()</code>: create a new model according to
+    the specification. This method is used by 
+    <code>ModelFactory.createModel(ModelSpec)</code>.
+
+<li><code>createModelOver(String name)</code>: most <code>ModelSpec</code>s
+    have an underlying <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelMaker">
+    <code>ModelMaker</code></a>. This method creates a new Model where
+    any underlying Model has the given <code>name</code> in that ModelMaker.
+    For particularly simple <code>ModelSpec</code>s, the result is that
+    Model.
+
+<li><code>getDescription()</code>: returns an RDF description which
+    describes this ModelSpec. If the original RDF description had no
+    superfluous statements, this model is likely "the same" as that
+    original, ie isomorphic. This is a useful way to save an RDF
+    description to be used in a later <code>createSpec</code>.
+
+</ul>
+
+<h1>Some simple ModelSpec descriptions</h1>
+
+In these descriptions, we write triples one per line, using the Jena
+standard prefixes and <code>_A, _B</code> etc being bnodes. The root 
+subject of the description we call <code>_this</code>.
+
+<h2>PlainModelSpec, no frills</h2>
+
+A <code>PlainModelSpec</code> is described by a ModelMaker specification.
+For a memory-based model, that just describes a reification mode.
+
+<pre>
+    _this jms:maker _A
+    _A jms:reificationMode jms:rsMinimal
+</pre>
+
+The ModelSpec construction uses RDFS reasoning over the supplied model,
+so that using <code>jms:maker</code> is sufficient to say that
+<code>_this</code> is a <code>jms:ModelSpec</code>.
+
+<h2>PlainModelSpec, file-based</h2>
+
+A FileModelMaker needs a fileBase to be specified as well.
+
+<pre>
+    _this jms:maker _A
+    _A jms:reificationMode jms:rsConvenient
+    _A jms:fileBase "/tmp"
+</pre>
+
+The resulting <code>PlainModelSpec</code> makes models backed by
+files found in "/tmp" (file-system names are implementation-specific).
+
+<h2>PlainModelSpec from a database</h2>
+
+Database model makers need to have their connection specified. Each
+such <code>ModelSpec</code> will create its own connection. 
+
+<pre>
+    _this jms:maker _A
+    _A jms:reificationMode jms:rsStandard
+    _A jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB"
+    _A jms:dbUser "william.blake"
+    _A jms:dbPassword "tyger, tyger"
+    _A jms:dbType "MySQL"
+</pre>
+
+<h2>an inference model</h2>
+
+Inference models require a reasoner specification as well as a
+base ModelMaker. In the current ModelSpec implementation, the
+reasoner only requires the URI describing the necessary inference.
+
+<pre>
+    _this jms:maker _M
+    _this jms:reasonsWith _R
+    _M jms:reificationMode jms:rsMinimal
+    _R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner
+</pre>
+
+<h2>an ontology model</h2>
+
+Finally, here's the description of an ontology model for OWL Lite over
+a database model, while doing RDFS inference.
+
+<pre>
+    _this jms:importMaker _D
+    _this jms:ontLanguage "http://www.w3.org/TR/owl-features/#term_OWLLite"
+    _this jms:docManager _DM
+    _this jms:reasonsWith _R
+    
+    _D jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB"
+    _D jms:dbUser "william.blake"
+    _D jms:dbPassword "tyger, tyger"
+    _D jms:dbType "MySQL"    
+
+    _R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner
+</pre>
+
+The <code>docManager</code> bnode has no attached properties; in this
+case, the resulting <code>OntModelSpec</code> will use the default
+document manager. Adding the triple
+
+<pre>
+    _DM jms:policyPath "file:/somehere/policy"
+</pre>
+
+will use a document manager which takes its policy from the specified
+file; see the <a href="../javadoc/com/hp/hpl/jena/ontology/OntDocumentManager.html">
+OntDSocumentManager</a> documentation for more details.
+
 </body>
 </html>
