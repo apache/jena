@@ -99,8 +99,7 @@ public abstract class SpecializedGraph_TripleStore implements SpecializedGraph {
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public void add(List triples, CompletionFlag complete) {
-		// TODO Auto-generated method stub
-		
+		m_pset.storeTripleList(triples,my_GID);
 	}
 
 	/* (non-Javadoc)
@@ -115,9 +114,9 @@ public abstract class SpecializedGraph_TripleStore implements SpecializedGraph {
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public void delete(List triples, CompletionFlag complete) {
-		// TODO Auto-generated method stub
-		
+		m_pset.deleteTripleList(triples,my_GID);
 	}
+	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#tripleCount()
 	 */
