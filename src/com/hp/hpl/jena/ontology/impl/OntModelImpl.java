@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:57 $
+ * Last modified on   $Date: 2003-04-16 11:36:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.8 2003-04-08 22:11:57 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.9 2003-04-16 11:36:55 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -481,9 +481,16 @@ public class OntModelImpl
      * @see Profile#getAnnotationProperties()
      */
     public Iterator listAnnotationProperties() {
-        return findByType( getProfile().ANNOTATION_PROPERTY() )
-               .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
-               .mapWith( new SubjectNodeAs( AnnotationProperty.class ) );
+        Resource r = (Resource) getProfile().ANNOTATION_PROPERTY();
+        
+        if (r == null) {
+            return new ArrayList().iterator(); 
+        }
+        else {
+            return findByType( r )
+                   .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
+                   .mapWith( new SubjectNodeAs( AnnotationProperty.class ) );
+        }
     }
     
    
@@ -896,7 +903,7 @@ public class OntModelImpl
      * @return The base-graph for this ontology model
      */
     public Graph getBaseGraph() {
-        return ((MultiUnion) getGraph()).getBaseGraph();
+        return ((OntologyGraph) getGraph()).getUnion().getBaseGraph();
     }
     
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-07 09:33:42 $
+ * Last modified on   $Date: 2003-04-16 11:37:41 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -27,6 +27,8 @@ package com.hp.hpl.jena.ontology;
 import com.hp.hpl.jena.ontology.path.PathSet;
 import com.hp.hpl.jena.rdf.model.*;
 
+import java.util.Iterator;
+
 
 
 /**
@@ -37,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.4 2003-04-07 09:33:42 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.5 2003-04-16 11:37:41 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -169,6 +171,114 @@ public interface OntResource
      * @return An abstract accessor for the rdfs:isDefinedBy annotation property
      */
     public PathSet p_isDefinedBy();
+    
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the given
+     * property of any ontology value. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @param p A property
+     * @return An abstract accessor for the property p
+     */
+    public PathSet accessor( Property p );
+    
+    
+    /**
+     * <p>
+     * Set the value of the given property of this ontology resource to the given
+     * value, encoded as an RDFNode.  Maintains the invariant that there is
+     * at most one value of the property for a given resource, so existing
+     * property values are first removed.  To add multiple properties, use
+     * {@link #addProperty( Property, RDFNode ) addProperty}.
+     * </p>
+     * 
+     * @param property The property to update
+     * @param value The new value of the property as an RDFNode, or null to
+     *              effectively remove this property.
+     */
+    public void setPropertyValue( Property property, RDFNode value );
+
+
+    /**
+     * <p>
+     * Remove any values for a given property from this resource.
+     * </p>
+     *
+     * @param property The RDF resource that defines the property to be removed
+     */
+    public void removeAll( Property property );
+
+
+    /**
+     * <p>Set the RDF type property for this node in the underlying model, replacing any
+     * existing <code>rdf:type</code> property.  
+     * To add a second or subsequent type statement to a resource,
+     * use {@link #setRDFType( Resource, boolean ) setRDFType( Resource, false ) }.
+     * </p>
+     * 
+     * @param ontClass The RDF resource denoting the new value for the rdf:type property,
+     *                 which will replace any existing type property.
+     */
+    public void setRDFType( Resource ontClass );
+
+
+    /**
+     * <p>
+     * Add an RDF type property for this node in the underlying model. If the replace flag
+     * is true, this type will replace any current type property for the node. Otherwise,
+     * the type will be in addition to any existing type property.
+     * </p>
+     * 
+     * @param ontClass The RDF resource denoting the class that will be the value 
+     * for a new <code>rdf:type</code> property.
+     * @param replace  If true, the given class will replace any existing 
+     * <code>rdf:type</code> property for this
+     *                 value, otherwise it will be added as an extra type statement.
+     */
+    public void setRDFType( Resource ontClass, boolean replace );
+
+
+    /**
+     * <p>
+     * Answer true if this DAML value is a member of the class denoted by the given URI.
+     * </p>
+     *
+     * @param classURI String denoting the URI of the class to test against
+     * @return True if it can be shown that this DAML value is a member of the class, via
+     *         <code>rdf:type</code>.
+     */
+    public boolean hasRDFType( String classURI );
+
+
+    /**
+     * <p>
+     * Answer true if this ontology value is a member of the class denoted by the
+     * given class resource.
+     * </p>
+     * 
+     * @param ontClass Denotes a class to which this value may belong
+     * @return True if <code><i>this</i> rdf:type <i>ontClass</i></code> is
+     * a valid entailment in the model.
+     */
+    public boolean hasRDFType( Resource ontClass );
+
+
+    /**
+     * <p>
+     * Answer an iterator over all of the RDF types to which this class belongs.
+     * </p>
+     *
+     * @param closed TODO Not used in the current implementation  - fix
+     * @return an iterator over the set of this ressource's classes
+     */
+    public Iterator getRDFTypes( boolean closed );
+
+
+
+
 }
 
 

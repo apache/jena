@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-07 09:34:34 $
+ * Last modified on   $Date: 2003-04-16 11:36:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,8 +28,15 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.path.*;
-import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import com.hp.hpl.jena.vocabulary.*;
+
+import java.util.*;
 
 
 /**
@@ -40,7 +47,7 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.3 2003-04-07 09:34:34 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.4 2003-04-16 11:36:55 ian_dickinson Exp $
  */
 public abstract class OntResourceImpl
     extends ResourceImpl
@@ -211,6 +218,158 @@ public abstract class OntResourceImpl
         return asPathSet( getProfile().IS_DEFINED_BY() );
     }
     
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the given
+     * property of any ontology value. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @param p A property
+     * @return An abstract accessor for the property p
+     */
+    public PathSet accessor( Property p ) {
+        return asPathSet( p );
+    }
+    
+    
+    /**
+     * <p>
+     * Set the value of the given property of this ontology resource to the given
+     * value, encoded as an RDFNode.  Maintains the invariant that there is
+     * at most one value of the property for a given resource, so existing
+     * property values are first removed.  To add multiple properties, use
+     * {@link #addProperty( Property, RDFNode ) addProperty}.
+     * </p>
+     * 
+     * @param property The property to update
+     * @param value The new value of the property as an RDFNode, or null to
+     *              effectively remove this property.
+     */
+    public void setPropertyValue( Property property, RDFNode value ) {
+        // if there is an existing property, remove it
+        removeAll( property );
+
+        // now set the new value
+        addProperty( property, value );
+    }
+
+
+    /**
+     * <p>
+     * Remove any values for a given property from this resource.
+     * </p>
+     *
+     * @param property The RDF resource that defines the property to be removed
+     */
+    public void removeAll( Property property ) {
+        for (StmtIterator i = listProperties( property );  i.hasNext();  ) {
+            i.next();
+            i.remove();
+        }
+    }
+
+
+    /**
+     * <p>Set the RDF type property for this node in the underlying model, replacing any
+     * existing <code>rdf:type</code> property.  
+     * To add a second or subsequent type statement to a resource,
+     * use {@link #setRDFType( Resource, boolean ) setRDFType( Resource, false ) }.
+     * </p>
+     * 
+     * @param ontClass The RDF resource denoting the new value for the rdf:type property,
+     *                 which will replace any existing type property.
+     */
+    public void setRDFType( Resource ontClass ) {
+        setRDFType( ontClass, true );
+    }
+
+
+    /**
+     * <p>
+     * Add an RDF type property for this node in the underlying model. If the replace flag
+     * is true, this type will replace any current type property for the node. Otherwise,
+     * the type will be in addition to any existing type property.
+     * </p>
+     * 
+     * @param ontClass The RDF resource denoting the class that will be the value 
+     * for a new <code>rdf:type</code> property.
+     * @param replace  If true, the given class will replace any existing 
+     * <code>rdf:type</code> property for this
+     *                 value, otherwise it will be added as an extra type statement.
+     */
+    public void setRDFType( Resource ontClass, boolean replace ) {
+        // first remove any existing values, if required
+        if (replace) {
+            removeAll( RDF.type );
+            
+            Property typeAlias = (Property) getProfile().getAliasFor( RDF.type );
+            if (typeAlias != null) {
+                removeAll( typeAlias );
+            }
+        }
+        
+        
+        addProperty( RDF.type, ontClass );
+    }
+
+
+    /**
+     * <p>
+     * Answer true if this DAML value is a member of the class denoted by the given URI.
+     * </p>
+     *
+     * @param classURI String denoting the URI of the class to test against
+     * @return True if it can be shown that this DAML value is a member of the class, via
+     *         <code>rdf:type</code>.
+     */
+    public boolean hasRDFType( String classURI ) {
+        return hasRDFType( getModel().getResource( classURI ) );
+    }
+
+
+    /**
+     * <p>
+     * Answer true if this ontology value is a member of the class denoted by the
+     * given class resource.
+     * </p>
+     * 
+     * @param ontClass Denotes a class to which this value may belong
+     * @return True if <code><i>this</i> rdf:type <i>ontClass</i></code> is
+     * a valid entailment in the model.
+     */
+    public boolean hasRDFType( Resource ontClass ) {
+        return getModel().listStatements( this, RDF.type, ontClass ).hasNext() ||
+               (getProfile().hasAliasFor( RDF.type ) && 
+                getModel().listStatements( this, (Property) getProfile().getAliasFor( RDF.type), ontClass ).hasNext() );
+    }
+
+
+    /**
+     * <p>
+     * Answer an iterator over all of the RDF types to which this class belongs.
+     * </p>
+     *
+     * @param closed TODO Not used in the current implementation  - fix
+     * @return an iterator over the set of this ressource's classes
+     */
+    public Iterator getRDFTypes( boolean closed ) {
+        Map1 mObject = new Map1() {  public Object map1( Object x ) { return ((Statement) x).getObject();  } };
+        
+        // make sure that we have an extneded iterator
+        Iterator i = listProperties( RDF.type );
+        ExtendedIterator ei = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
+        
+        // aliases to cope with?
+        if (getProfile().hasAliasFor( RDF.type )) {
+            ei = ei.andThen( WrappedIterator.create( listProperties( (Property) getProfile().getAliasFor( RDF.type ) ) ) );
+        }
+        
+        // we only want the objects of the statements, and we only want one of each
+        return new UniqueExtendedIterator( ei.mapWith( mObject ) );
+    }
+
     
 
     // Internal implementation methods
