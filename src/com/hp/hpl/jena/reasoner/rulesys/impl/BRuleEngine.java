@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.4 2003-05-14 16:50:19 der Exp $
+ * $Id: BRuleEngine.java,v 1.5 2003-05-15 21:34:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-14 16:50:19 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-15 21:34:32 $
  */
 public class BRuleEngine {
 
@@ -203,7 +203,7 @@ public class BRuleEngine {
                     Rule rule = current.ruleInstance.rule;
                     boolean foundGoal = false;
                     int maxClause = rule.bodyLength();
-                    int clauseIndex = current.clauseIndex;
+                    int clauseIndex = current.nextClauseIndex();
                     while (clauseIndex < maxClause && !foundGoal) {
                         Object clause = rule.getBodyElement(clauseIndex++);
                         if (clause instanceof TriplePattern) {

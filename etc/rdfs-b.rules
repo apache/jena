@@ -52,36 +52,12 @@
 #[rdf4: (?x ?p ?y) -> (?p rdf:type rdf:Property)]
 #[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
 
-[rdfs2:  bound(?c)   (?p rdfs:domain ?c) (?x ?p ?y)  -> (?x rdf:type ?c)] 
-[rdfs2:  unbound(?c) (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)] 
-
-[rdfs3:  bound(?c)   (?p rdfs:range ?c) (?x ?p ?y) -> (?y rdf:type ?c)] 
-[rdfs3:  unbound(?c) (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)] 
-
-[rdfs5a: unbound(?c) (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
-[rdfs5a: bound(?c)   (?b rdfs:subPropertyOf ?c)  (?a rdfs:subPropertyOf ?b)-> (?a rdfs:subPropertyOf ?c)] 
-
+[rdfs2:  (?p rdfs:domain ?c) (?x ?p ?y) -> (?x rdf:type ?c)] 
+[rdfs3:  (?p rdfs:range ?c) (?x ?p ?y)  -> (?y rdf:type ?c)] 
+[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
 [rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
-
-[rdfs6:  unbound(?q) (?a ?p ?b) (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
-[rdfs6:  bound(?q)   (?p rdfs:subPropertyOf ?q) (?a ?p ?b) -> (?a ?q ?b)] 
-
+[rdfs6:  (?p rdfs:subPropertyOf ?q) (?a ?p ?b) -> (?a ?q ?b)] 
 [rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
-
-[rdfs8:  unbound(?c) (?a rdfs:subClassOf ?b) (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
-[rdfs8:  bound(?c)   (?b rdfs:subClassOf ?c) (?a rdfs:subClassOf ?b) -> (?a rdfs:subClassOf ?c)] 
-
-[rdfs9:  bound(?y)   (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)] 
-[rdfs9:  unbound(?y) (?a rdf:type ?x) (?x rdfs:subClassOf ?y) -> (?a rdf:type ?y)] 
-
+[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
+[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)] 
 [rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 
-
-#[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)] 
-#[rdfs3:  (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)] 
-#[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
-#[rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
-#[rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
-#[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
-#[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
-#[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)] 
-#[rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 

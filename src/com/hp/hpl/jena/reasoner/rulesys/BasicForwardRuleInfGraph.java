@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.7 2003-05-13 21:34:43 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.8 2003-05-15 21:33:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,6 +18,8 @@ import java.util.*;
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -30,7 +32,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-13 21:34:43 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-15 21:33:35 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph {
 
@@ -568,18 +570,22 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
     }
 
     /**
-     * Score a Node in terms of groundedness.
+     * Score a Node in terms of groundedness - heuristic.
      * Treats a variable as better than a wildcard because it constrains
-     * later clauses.
+     * later clauses. Treats rdf:type as worse than any other ground node
+     * because that tends to link to lots of expensive rules.
      */
-    private static int scoreNodeBoundness(Node n, BindingStack env) {
+    public static int scoreNodeBoundness(Node n, BindingEnvironment env) {
         if (n instanceof Node_ANY) {
             return 0;
         } else if (n instanceof Node_RuleVariable) {
-            if (env.getBinding(n) != null) {
-                return 3;
-            } else {
+            Node val = env.getGroundVersion(n);
+            if (val == null) {
                 return 1;
+            } else if (val.equals(RDF.type.asNode())) {
+                return 2;
+            } else {
+                return 3;
             }
         } else {
             return 3;

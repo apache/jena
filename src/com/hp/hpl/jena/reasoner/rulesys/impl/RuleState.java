@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.5 2003-05-15 17:01:57 der Exp $
+ * $Id: RuleState.java,v 1.6 2003-05-15 21:34:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-15 17:01:57 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-15 21:34:32 $
  */
 public class RuleState {
 
@@ -156,6 +156,22 @@ public class RuleState {
     }
     
     /**
+     * Return the index of the next body clause to try.
+     * Takes clause reordering into account.
+     */ 
+    protected int nextClauseIndex() {
+        if (ruleInstance.clausesReordered) {
+            if (clauseIndex == (ruleInstance.secondClause + 1) ) {
+                // go back to do first clause
+                return ruleInstance.secondClause - 1;
+            } else if (clauseIndex == ruleInstance.secondClause) {
+                return clauseIndex + 1;
+            }
+        }
+        return clauseIndex;
+    }
+    
+    /**
      * Create the first RuleState for using a given rule to satisfy a goal.
      * @param rule the rule being instantiated
      * @param generator the GoalTable entry that this rule should generate results for
@@ -176,6 +192,26 @@ public class RuleState {
         while (clauseIndex < maxClause) {
             Object clause = rule.getBodyElement(clauseIndex++);
             if (clause instanceof TriplePattern) {
+                // Check for possible clause reorder ...
+                Object secondClause = null;
+                boolean foundSecondClause = false;
+                if (clauseIndex < maxClause) {
+                    secondClause = rule.getBodyElement(clauseIndex);
+                    if (secondClause instanceof TriplePattern) {
+                        foundSecondClause = true;
+                    }
+                }
+                if (foundSecondClause) {
+                    int score1 = scoreClauseBoundness((TriplePattern)clause, head, env);
+                    int score2 = scoreClauseBoundness((TriplePattern)secondClause, head, env);
+                    if (score2 > score1) {
+                        ri.clausesReordered = true;
+                        ri.secondClause = clauseIndex;
+                        clause = secondClause;
+                        clauseIndex++;
+                    }
+                }
+                // ... end of clause reorder
                 TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
                 GoalState gs = generator.getEngine().findGoal(subgoal);
                 RuleState rs = new RuleState(ri, env, gs, clauseIndex);
@@ -191,6 +227,35 @@ public class RuleState {
         return new RuleState(ri, env, null, 0);
     }
     
+    
+    /**
+     * Score a clause in terms of groundedness using simple heurisitcs.
+     * For this case we are only considering head variables which occur
+     * in the clause and score on boundedness of these.
+     */
+    private static int scoreClauseBoundness(TriplePattern clause,
+                                               TriplePattern head, 
+                                               BindingVector env) {
+        return 
+                scoreNodeBoundness(clause.getSubject(), head, env) +
+                scoreNodeBoundness(clause.getPredicate(), head, env)  +
+                scoreNodeBoundness(clause.getObject(), head, env);
+
+    }
+    
+    /**
+     * Score a node from a pattern as part of scoreClauseBoundedness.
+     */
+    private static int scoreNodeBoundness(Node n, TriplePattern head, BindingVector env) {
+        if (n.isVariable() &&  (n == head.getSubject() 
+                             || n == head.getPredicate() 
+                             || n == head.getObject()) ) {
+            Node val = env.getBinding(n);
+            if (n == null || n.isVariable()) return -5;
+            return 5;
+        }
+        return 0;
+    }
     
     /**
      * Printable string
