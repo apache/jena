@@ -1,9 +1,9 @@
 ReleaseNotes
 ============
 
-Jena2-pre2 (April 2003)
+Jena2-pre3 (May 2003)
 
-Second preview release of Jena2.
+Thrid preview release of Jena2.
 
 It is a preview release, not intended for serious development.  Developers
 are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
@@ -13,60 +13,13 @@ First release of ontology APIdatabases or BerlekleyDB databases.
 
 For guidance on porting code from Jena 1, see doc/migrating1-2.html
 
-In this release:
 
-RDQL:
-+ support for datatypes and language tags on literals based on the
-  N-Triples syntax.  e.g. "123"^^xsd:integer
-+ all commas in queries are optional
-+ qnames do not need to be quoted by <>
-+ Standard namespace built-in: rdf:, rdfs:, owl:, xsd:  An application
-  may override these with explicit declarations.
-+ Uses the SPI-level query mechansism - this is preparation for
-  improved performance with relational databases.
 
-N3:
-+ support for datatypes and language tags on literals based on
-  the N-Triples syntax.  e.g. "123"^^xsd:integer
 
-I/O:
-+ Lots of bug fixes.
-+ Character encoding bug fixes, see the section
-  "Rush Guide - Jena1 Migration (Must Read)"
-  in doc/IO/iohowto.html
-  Jena2 I/O subsystem uses InputStream's and OutputStream's where
-  Jena1 used Reader's and Writer's.
-+ There is still a problem under Linux with FileWriter
-  and OutputStreamWriter. The test suite prints a warning
-  message describing the problem and the workaround.
-   "IANA name for Java encoding: ISO-8859-15 is not known. 
-    Not including any encoding declaration in the RDF/XML output.
-    It is better to use a FileOutputStream, in place of a FileWriter."
-+ The RDF/XML Writers now behave more uniformly and can be
-  controlled much better.
-+ Improved documentation for both basic and advanced I/O in Jena2
-  is provided in doc/IO/iohowto.html
-+ ARP reflects latest WG decisions, as of 7th April 2003, including
-  Last Call issue resolutions:
-    williams-01, reagle-01, reagle-02, tbl-01
-  Note: bagID is dead.
+Vocabularies:
++ Dublin Core vocabulary updated to currnet version
++ Added vocabulary classes for DV terms and DC types
++ Class DC is the current (1.1) Dublin Core - Old DC available via class DC_10
 
-Reification:
-+ new reification API as described on the SourceForge web pages
-    (a copy is included in doc/reify-api.html)
-+ RDF/XML readers/writers will round-trip reified statements
-+ reification statements normally invisible but can be seen for
-  WG conformance
 
-Ontology API:
-+ first release of the new ontology API, which provides language
-  neutral (specfically DAML+OIL, OWL and - soon - RDFS)
-  convenience API
-+ addresses the limitations of the Jena 1 DAML API though
-  RDF resource polymorphism, allowing resources to be viewed via
-  different abstract views
-+ ontology document manager constructs imports closure of a model
-  and allows redirection of imported URL's to locally cached copies
-+ computes the transitive closure of the class and property
-  hierarchies, as a pre-cursor to supporting flexible reasoner
-  plugins for OWL and DAML reasoning.
+
