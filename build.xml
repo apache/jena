@@ -168,7 +168,7 @@
                  windowtitle="${Name} Framework"
                  doctitle="${Name} Framework"
                  Public="true"
-                 overview="src/Overview.html"
+                 overview="src/link2readme.html"
                  bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved.">
             <classpath refid="classpath"/>
                 <package name="com.hp.hpl.jena.graph"/>
