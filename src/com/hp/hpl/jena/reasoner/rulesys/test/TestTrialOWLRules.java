@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTrialOWLRules.java,v 1.3 2003-07-10 17:06:15 der Exp $
+ * $Id: TestTrialOWLRules.java,v 1.4 2003-07-11 16:39:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.ModelLoader;
-//import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
 import junit.framework.TestCase;
@@ -27,7 +27,7 @@ import java.util.*;
  * included in the master regression test suite.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-10 17:06:15 $
+ * @version $Revision: 1.4 $ on $Date: 2003-07-11 16:39:44 $
  */
 public class TestTrialOWLRules extends TestCase {
 
@@ -180,7 +180,7 @@ public class TestTrialOWLRules extends TestCase {
      * for use during debugging.
      */
     public static void main(String[] args) {
-        Model premises = ModelLoader.loadModel("file:testing/wg/I5.24/premises004-mod.rdf");
+        Model premises = ModelLoader.loadModel("file:testing/wg/someValuesFrom/premises001.rdf");
         Reasoner reasoner = GenericRuleReasonerFactory.theInstance().create(configuration);
         InfModel conclusions = ModelFactory.createInfModel(reasoner, premises);
         
@@ -189,13 +189,20 @@ public class TestTrialOWLRules extends TestCase {
             System.out.println(" - " + i.next());
         }
         
-        Resource c = conclusions.getResource("http://www.w3.org/2002/03owlt/cardinality/premises006#c");
-//        Property prototype = conclusions.createProperty(ReasonerVocabulary.RBNamespace, "prototype");
-//        Resource cPrototype = (Resource) c.getProperty(prototype).getObject();
-//        System.out.println("Types of cPrototype");
-//        for (Iterator i = cPrototype.listProperties(RDF.type); i.hasNext(); ) {
-//            System.out.println(" - " + i.next());
-//        }
+        Resource i = conclusions.getResource("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#i");
+        Property p = conclusions.getProperty("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#p");
+        Resource c = conclusions.getResource("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#c");
+        Resource v = (Resource)i.getProperty(p).getObject();
+        System.out.println("Value if i.p = " + v);
+        System.out.println("Types of i are: ");
+        for (Iterator it = conclusions.listStatements(i, RDF.type, (RDFNode)null); it.hasNext(); ) {
+            System.out.println(" - " + it.next());
+        }
+        System.out.println("Types of v are: ");
+        for (Iterator it2 = conclusions.listStatements(v, RDF.type, (RDFNode)null); it2.hasNext(); ) {
+            System.out.println(" - " + it2.next());
+        }
+        
     }
 }
 

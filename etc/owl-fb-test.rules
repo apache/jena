@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.3 2003-07-10 17:06:50 der Exp $
+# $Id: owl-fb-test.rules,v 1.4 2003-07-11 16:37:40 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -248,8 +248,8 @@
 					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
 					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass),
    ->
-    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
-    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), print('some1b1', ?X, ?C), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), print('some1bb',?X, ?C, ?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
     ]
     
 [someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) ->
