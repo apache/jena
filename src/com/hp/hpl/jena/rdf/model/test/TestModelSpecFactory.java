@@ -131,6 +131,25 @@ public class TestModelSpecFactory extends ModelTestBase
         assertTrue( s instanceof MockSpec );        
         }    
     
+    public void testCreateCreator()
+        {
+        String className = "com.hp.hpl.jena.rdf.model.test.MockModelSpec";
+        ModelSpecCreator c = new ModelSpecCreatorWithClass( className );
+        ModelSpec s = c.create( resource( "root" ), modelWithStatements( "" ) );
+        assertEquals( className, s.getClass().getName() );
+        }   
+    
+    public static class ModelSpecCreatorWithClass implements ModelSpecCreator
+        {
+        public ModelSpecCreatorWithClass( String className )
+            {}
+        
+        public ModelSpec create( Resource root, Model desc )
+            {
+            return new MockModelSpec();
+            }
+        }
+    
     protected ModelSpecCreator createMock = new ModelSpecCreator()
         {
         public ModelSpec create( Resource root, Model desc )

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpec.java,v 1.11 2005-02-11 16:23:39 chris-dollin Exp $
+  $Id: ModelSpec.java,v 1.12 2005-02-15 12:17:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -17,6 +17,9 @@ public interface ModelSpec extends ModelSource
         Answer a Model that fits the specification of this ModelSpec and is built over some
         underlying model with the given name. [It is not necessary for the resulting model
         to be known by that name.]
+        
+        <p>NOTE: this method is likely to become deprecated, and then deleted, absent
+        user pressure to retain it.
     */
     Model createModelOver( String name );
     
