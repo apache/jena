@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.21 2003-09-30 13:34:33 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.22 2004-03-19 13:32:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -47,7 +47,7 @@ public class FileGraph extends GraphMem
         super( style );
         this.name = f;
         this.model = new ModelCom( this );
-        this.lang = guessLang( this.name.toString() );
+        this.lang = FileUtils.guessLang( this.name.toString() );
         if (create)
             { 
             if (f.exists()  && strict) throw new AlreadyExistsException( f.toString() );
@@ -82,20 +82,13 @@ public class FileGraph extends GraphMem
         { return new FileGraph( FileUtils.tempFileName( "xxx", ".rdf" ), true, true ); }
         
     /**
-        Guess the language of the specified file by looking at the suffix.
-        If it ends in .n3, assume N3; if it ends in .nt, assume N-TRIPLE;
-        otherwise assume RDF/XML.
-        
+        Guess the language of the specified file by looking at the suffix
+        @deprecated - use FileUtils.guessLang instead
     	@param name the pathname of the file to guess from
     	@return "N3", "N-TRIPLE", or "RDF/XML"
      */
     public static String guessLang( String name )
-        {
-        String suffix = name.substring( name.lastIndexOf( '.' ) + 1 );
-        if (suffix.equals( "n3" )) return "N3";
-        if (suffix.equals( "nt" )) return "N-TRIPLE";
-        return "RDF/XML";
-        }
+        { return FileUtils.guessLang( name ); }
         
     /**
         Answer true iff the filename string given is plausibly the name of a graph, ie, may

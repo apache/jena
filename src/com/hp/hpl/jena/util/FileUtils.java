@@ -12,6 +12,45 @@ import com.hp.hpl.jena.shared.JenaException;
 
 public class FileUtils {
     
+    public static final String langXML  = "RDF/XML" ;
+    public static final String langXMLAbbrev = "RDF/XML-ABBREV" ;
+    public static final String langNTriple = "N-TRIPLE" ;
+    public static final String langN3 = "N3" ;
+    
+        /**
+        Guess the language of the specified file [or URL] by looking at the suffix.
+        If it ends in .n3, assume N3; if it ends in .nt, assume N-TRIPLE;
+        otherwise assume RDF/XML.
+        
+        @param name the pathname of the file to guess from
+        @return "N3", "N-TRIPLE", or "RDF/XML"
+     */
+    public static String guessLang( String name )
+        { return guessLang( name, langXML ); }
+    
+    
+    public static String guessLang( String name, String otherwise )
+        { 
+        String suffix = getFilenameExt( name );
+        if (suffix.equals( "n3" )) return langN3;
+        if (suffix.equals( "nt" )) return langNTriple;
+        if (suffix.equals( "rdf" )) return langXML;
+        if (suffix.equals( "owl" )) return langXML;
+        return otherwise; 
+        }    
+    
+    /**
+         Get the suffix part of a file name or a URL in file-like format.
+    */
+    private static String getFilenameExt( String filename)
+        {
+        int iSlash = filename.lastIndexOf( '/' );      
+        int iBack = filename.lastIndexOf( '\\' );
+        int iExt = filename.lastIndexOf( '.' ); 
+        if (iBack > iSlash) iSlash = iBack;
+        return iExt > iSlash ? filename.substring( iExt+1 ).toLowerCase() : "";
+        }
+    
 	public static String readWholeFileAsUTF8(String filename) throws IOException {
 		Reader r = new BufferedReader(asUTF8(new FileInputStream(filename)),1024) ;
 		StringWriter sw = new StringWriter(1024);

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.4 2003-08-27 13:07:55 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.5 2004-03-19 13:32:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -26,6 +26,7 @@ public class TestPackage extends TestSuite {
         super("util");
         addTest( "TestCache",   com.hp.hpl.jena.util.test.TestCache.suite() );
         addTest( "TestTokenzier", TestTokenizer.suite());
+        addTest( "TestFileUtils", TestFileUtils.suite() );
     }
 
     private void addTest(String name, TestSuite tc) {

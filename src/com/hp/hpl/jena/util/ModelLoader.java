@@ -21,17 +21,17 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.17 2004-01-21 18:18:08 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.18 2004-03-19 13:32:54 chris-dollin Exp $
  */
 
 public class ModelLoader
 {
     static Log logger = LogFactory.getLog(ModelLoader.class) ;
 
-    public static final String langXML         = "RDF/XML" ;
-    public static final String langXMLAbbrev   = "RDF/XML-ABBREV" ;
-    public static final String langNTriple     = "N-TRIPLE" ;
-    public static final String langN3          = "N3" ;
+    public static final String langXML         = FileUtils.langXML ;
+    public static final String langXMLAbbrev   = FileUtils.langXMLAbbrev ;
+    public static final String langNTriple     = FileUtils.langNTriple ;
+    public static final String langN3          = FileUtils.langN3 ;
 
     // Non-standard
     public static final String langBDB          = "RDF/BDB" ;
@@ -257,13 +257,14 @@ public class ModelLoader
             }
         }
 
-    /** Guess the language/type of model data
+    /** Guess the language/type of model data. Updated by Chris, hived off the
+     * model-suffix part to FileUtils as part of unifying it with similar code in FileGraph.
      * 
      * <ul>
      * <li> If the URI of the model starts jdbc: it is assumed to be an RDB model</li>
      * <li> If the URI ends ".rdf", it is assumed to be RDF/XML</li>
      * <li> If the URI end .nt, it is assumed to be N-Triples</li>
-     * <li> If the URI end .bdb, it is assumed to be BerkeleyDB model</li>
+     * <li> If the URI end .bdb, it is assumed to be BerkeleyDB model [suppressed at present]</li>
      * </ul>
      * @param urlStr    URL to base the guess on
      * @param defaultLang Default guess
@@ -272,30 +273,10 @@ public class ModelLoader
 
     public static String guessLang(String urlStr, String defaultLang)
     {
-        String lang = defaultLang ;
-
         if ( urlStr.startsWith("jdbc:") || urlStr.startsWith("JDBC:") )
             return langSQL ;
-
-        String ext = getFilenameExt(urlStr) ;
-
-        if ( ext != null && ext.length() > 0 )
-        {
-            // Types that can be detected from file extensions
-            if ( ext.equalsIgnoreCase("rdf") )
-                lang = langXML ;
-            else if ( ext.equalsIgnoreCase("nt") )
-                lang = langNTriple ;
-            else if ( ext.equalsIgnoreCase("n3") )
-                lang = langN3 ;
-            else if ( ext.equalsIgnoreCase("bdb") )
-                lang = langBDB ;
-            // But not ..
-            //else if ( ext.equalsIgnoreCase("rdb") )
-            //    lang = langSQL ;
-            // else no idea.
-        }
-        return lang ;
+        else
+        	return FileUtils.guessLang( urlStr, defaultLang );
     }
     
 	/** Guess the language/type of model data
@@ -321,26 +302,6 @@ public class ModelLoader
 	 */
 
     public static void setFileBase(String _basename) { basename = _basename ; } 
-
-    private static String getFilenameExt(String filename)
-    {
-        // Works on URLs
-
-        int iSep = 0 ;      // Last separator: either / or \ (covers all OSes?)
-        int iExt = 0 ;      // File extension
-
-        iSep = filename.lastIndexOf('/') ;
-        int iTmp = filename.lastIndexOf('\\') ;  // NB \ is not an escape character in URLs
-        if ( iTmp > iSep ) iSep = iTmp ;
-
-        iExt = filename.lastIndexOf('.') ;
-        if ( iExt > iSep )
-        {
-            String ext = filename.substring(iExt+1).toLowerCase() ;
-            return ext ;
-        }
-        return "" ;
-    }
 
     private static String getDirname(String filename)
     {

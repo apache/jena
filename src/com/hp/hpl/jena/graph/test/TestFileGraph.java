@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraph.java,v 1.10 2003-09-29 14:54:07 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.11 2004-03-19 13:32:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -42,19 +42,6 @@ public class TestFileGraph extends GraphTestBase
         return result;
         }
         
-    /**
-        Test that the language code is guessed "correctly".
-    */
-    public void testGuessLang()
-        {
-        assertEquals( "N3", FileGraph.guessLang( "simple.n3") );
-        assertEquals( "N3", FileGraph.guessLang( "hello.there.n3") );
-        assertEquals( "N-TRIPLE", FileGraph.guessLang( "simple.nt" ) );
-        assertEquals( "N-TRIPLE", FileGraph.guessLang( "whats.up.nt" ) );
-        assertEquals( "RDF/XML", FileGraph.guessLang( "poggle.rdf") );
-        assertEquals( "RDF/XML", FileGraph.guessLang( "dotless" ) );
-        }
-
     public void testPlausibleGraphname()
         {
         assertTrue( FileGraph.isPlausibleGraphName( "agnessi.rdf" ) ); 
