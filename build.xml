@@ -7,7 +7,7 @@
   <property name="version-major"   value="2"/>
   <property name="version-minor"   value="2"/>
   <!-- e.g. -beta1, or empty string for stable releases -->
-  <property name="version-status"  value="-beta-2-RC-0"/>
+  <property name="version-status"  value="-beta-2"/>
   <property name="version"
 	    value="${version-major}.${version-minor}${version-status}"/>
 
