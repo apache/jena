@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.10 2003-05-15 17:01:57 der Exp $
+ * $Id: TestBackchainer.java,v 1.11 2003-05-16 16:46:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  *  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-05-15 17:01:57 $
+ * @version $Revision: 1.11 $ on $Date: 2003-05-16 16:46:39 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -155,6 +155,8 @@ public class TestBackchainer extends TestCase {
         doTestUnify(gf, hf1, true, new Node[] {null, null, yh});
         doTestUnify(gf, hf2, false, null);
         doTestUnify(gf, hf3, true, new Node[] {null, b});
+        doTestUnify(new TriplePattern(xg, p, Functor.makeFunctorNode("all", new Node[] {xg, yg })),
+                    new TriplePattern(xh, p, yh), true, new Node[]{null, null});
         
         // Check binding environment use
         BindingVector env = BindingVector.unify(g2, h1);
