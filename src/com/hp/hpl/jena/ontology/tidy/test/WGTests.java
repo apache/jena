@@ -31,7 +31,7 @@
  */
 
 package com.hp.hpl.jena.ontology.tidy.test;
-import com.hp.hpl.jena.ontology.tidy.impl.*;
+//import com.hp.hpl.jena.ontology.tidy.impl.*;
 
 import com.hp.hpl.jena.shared.wg.*;
 import com.hp.hpl.jena.shared.*;

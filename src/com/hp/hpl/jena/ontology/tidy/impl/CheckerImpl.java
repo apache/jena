@@ -77,7 +77,7 @@ public class CheckerImpl extends AbsChecker {
 		}
 	}
 	//static public int cyCnt = 0;
-	private void snapCheck() {
+	synchronized private void snapCheck() {
 		if (nonMonotoneProblems == null) {
 			nonMonotoneProblems = new Vector();
 			nonMonotoneLevel = Levels.Lite;
@@ -85,14 +85,19 @@ public class CheckerImpl extends AbsChecker {
 			CheckerImpl m = this;
       
       final Set toAdd = new HashSet();
+      
+   
    // Make sure there is a node for every user defined datatype.
-			check(CategorySet.userTypedLiterals, new NodeAction() {
-				public void apply(Node n) {
-					// System.err.println("Found: " + n.getLiteral().toString(true));
-					toAdd.add(Node.createURI(n.getLiteral().getDatatypeURI()) );
-				}
-			});
+//			check(CategorySet.userTypedLiterals, new NodeAction() {
+//				public void apply(Node n) {
+//					// System.err.println("Found: " + n.getLiteral().toString(true));
+//					toAdd.add(Node.createURI(n.getLiteral().getDatatypeURI()) );
+//				}
+//			});
 	
+	/*
+	 * 
+	 */
 	// We have to separate the two phases of this (above and below)
 	// because otherwise we get a concurrent modification of nodes.		
 			Iterator it = toAdd.iterator();
@@ -153,6 +158,8 @@ public class CheckerImpl extends AbsChecker {
 			 * We check the potentially cyclic
 			 * nodes.
 			 */
+			// TODO refactor cyclic code
+			// temporarily set orphan as non-cylcic and we are done
 		  clearCyclicState();
 			check(CategorySet.cyclicSets, new NodeAction() {
 				public void apply(Node n) {
@@ -208,8 +215,8 @@ public class CheckerImpl extends AbsChecker {
 				t.getObject() ) );
 			}
 			*/
-			check(CategorySet.disjointWithSets, new NodeAction() {
-				public void apply(Node n) {
+			//check(CategorySet.disjointWithSets, new NodeAction() {
+			//	public void apply(Node n) {
 
 					Iterator i = disjoints.keySet().iterator();
 					while (i.hasNext()) {
@@ -223,15 +230,16 @@ public class CheckerImpl extends AbsChecker {
 							Iterator k = ((Set)disjoints.get(b)).iterator();
 							while (k.hasNext()) {
 								Node c = (Node)k.next();
+								// TODO improve owl:disjointWith error msg
 								if ( !(a.equals(c) ||((Set)disjoints.get(a)).contains(c))){
-									nonMonProblem("Ill-formed owl:disjointWith", n);
+									nonMonProblem("Ill-formed owl:disjointWith", b);
 								}
 							}	
 						}
 					}
 				
-				}
-			});
+			//	}
+			//});
 		}
 	}
 	/*

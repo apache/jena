@@ -67,7 +67,7 @@ class CLit extends CBuiltin {
     static final Integer zero = new Integer(0);
     static final Integer one = new Integer(1);
 	CLit(Node n, AbsChecker eg) {
-		super(n, eg, literalCategory(n));
+		super(n, eg, literalCategory(n,eg));
 	}
 	static private String rdfXMLLiteral = RDF.getURI()+"XMLLiteral";
     /** 
@@ -77,7 +77,7 @@ class CLit extends CBuiltin {
      * @param n    Must be a Literal node.
      * @return int
      */
-    static int literalCategory(Node n) {
+    static int literalCategory(Node n,AbsChecker eg) {
         LiteralLabel l = n.getLiteral();
         Object v = l.getValue();
         if (XSDDatatype.XSDnonNegativeInteger.isValidValue(v)) {
@@ -98,6 +98,7 @@ class CLit extends CBuiltin {
         	}
         	if ( dt.equals( rdfXMLLiteral))
         	  return Grammar.literal;
+        	eg.getCNode(Node.createURI(n.getLiteral().getDatatypeURI()));
         	return Grammar.userTypedLiteral;
         }
         return Grammar.literal;
