@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.24 2005-02-21 11:52:10 andy_seaborne Exp $
+  $Id: FileGraph.java,v 1.25 2005-03-10 14:33:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
@@ -30,7 +31,24 @@ public class FileGraph extends GraphMem
     */
     public FileGraph( File f, boolean create, boolean strict )
         { this( f, create, strict, ReificationStyle.Minimal ); }
-        
+    
+    /**
+        The File-name of this graph, used to name it in the filing system 
+    */
+    protected File name;
+    
+    /**
+        A model used to wrap the graph for the IO operations (since these are not
+        yet available at the graph level).
+    */
+    protected Model model;
+    
+    /**
+        The language used to read and write the graph, guessed from the filename's
+        suffix.
+    */
+    protected String lang;
+    
     /**
         Construct a new FileGraph who's name is given by the specified File,
         If create is true, this is a new file, and any existing file will be destroyed;
@@ -41,7 +59,7 @@ public class FileGraph extends GraphMem
      	@param create true to create a new one, false to read an existing one
         @param strict true to throw exceptions for create: existing, open: not found
         @param style the reification style for the graph
-     */
+    */
     public FileGraph( File f, boolean create, boolean strict, ReificationStyle style )
         {
         super( style );
@@ -50,13 +68,16 @@ public class FileGraph extends GraphMem
         this.lang = FileUtils.guessLang( this.name.toString() );
         if (create)
             { 
-            if (f.exists()  && strict) throw new AlreadyExistsException( f.toString() );
+            if (f.exists() && strict) throw new AlreadyExistsException( f.toString() );
             }
         else
             readModel( this.model, strict );
         }
         
     protected void readModel( Model m, boolean strict )
+        { readModelFrom( m, strict, name ); }
+    
+    protected void readModelFrom( Model m, boolean strict, File name )
         {
         FileInputStream in = null;
         try
@@ -82,49 +103,43 @@ public class FileGraph extends GraphMem
         { return new FileGraph( FileUtils.tempFileName( "xxx", ".rdf" ), true, true ); }
         
     /**
-        Guess the language of the specified file by looking at the suffix
-        @deprecated - use FileUtils.guessLang instead
-    	@param name the pathname of the file to guess from
-    	@return "N3", "N-TRIPLE", or "RDF/XML"
-     */
-    public static String guessLang( String name )
-        { return FileUtils.guessLang( name ); }
-        
-    /**
-        Answer true iff the filename string given is plausibly the name of a graph, ie, may
-        have RDF content. The current feeble approximation is that the name ends in
-        one of .n3, .nt, or .rdf [in any mixture of cases].
+        Answer true iff the filename string given is plausibly the name of a 
+        graph, ie, may have RDF content. We appeal to FileUtils - if it can 
+        guess an RDF language name, we deliver true, otherwise false.
         
      	@param name the leaf component of a filename
      	@return true if it is likely to be an RDF file
-     */
+    */
     public static boolean isPlausibleGraphName( String name )
-        {
-        String suffix = name.substring( name.lastIndexOf( '.' ) + 1 ).toLowerCase();
-        return suffix.equals( "n3" ) || suffix.equals( "nt" ) || suffix.equals( "rdf" );
-        }
+        { return FileUtils.guessLang( name, null ) != null; }
         
     /**
-        Write out and then close this FileGraph. The graph is written out to the 
+        Write out and then close this FileGraph. 
+    */
+    public void close()
+        {
+        saveContents( name );
+        super.close();
+        }
+
+    /**
+        The graph is written out to the 
         named file in the language guessed from the suffix, and then the 
         parent close is invoked. The write-out goes to an intermediate file
         first, which is then renamed to the correct name, to try and ensure
         that the output is either done completely or not at all.
- 
-     	@see com.hp.hpl.jena.graph.Graph#close()
-     */
-    public void close()
+    */
+    protected void saveContents( File targetName ) 
         {
         try
             {
-            File intermediate = new File( name.getPath() + ".new" );
+            File intermediate = new File( targetName.getPath() + ".new" );
             FileOutputStream out = new FileOutputStream( intermediate );
-            model.write( out, lang ); 
+            model.write( out, lang );
             out.close();
-            updateFrom( intermediate );
-            super.close();
+            updateFrom( targetName, intermediate );
             }
-        catch (IOException e) 
+        catch (Exception e)
             { throw new JenaException( e ); }
         }
         
@@ -136,12 +151,12 @@ public class FileGraph extends GraphMem
         If the rename works, that's fine. If it fails, we delete the old file if it
         exists, and try again.
     */
-    private void updateFrom( File intermediate )
+    protected void updateFrom( File targetName, File intermediate )
         {
-        if (intermediate.renameTo( name ) == false)
+        if (intermediate.renameTo( targetName ) == false)
             {
-            if (name.exists()) mustDelete( name );
-            mustRename( intermediate, name );
+            if (targetName.exists()) mustDelete( targetName );
+            mustRename( intermediate, targetName );
             }
         }    
         
@@ -153,23 +168,12 @@ public class FileGraph extends GraphMem
         if (from.renameTo( to ) == false) 
             throw new JenaException( "could not rename " + from + " to " + to ); 
         }
-        
-    /**
-        The File-name of this graph, used to name it in the filing system 
-    */
-    protected File name;
+
+    public TransactionHandler getTransactionHandler()
+        { if (th == null) th = new FileGraphTransactionHandler( this ); 
+        return th; }
     
-    /**
-        A model used to wrap the graph for the IO operations (since these are not
-        yet available at the graph level).
-    */
-    protected Model model;
-    
-    /**
-        The language used to read and write the graph, guessed from the filename's
-        suffix.
-    */
-    protected String lang;
+    protected TransactionHandler th;
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.10 2005-02-21 12:14:47 andy_seaborne Exp $
+  $Id: PlainModelSpec.java,v 1.11 2005-03-10 14:35:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -45,11 +45,13 @@ public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
     
     /**
         Answer the Model obtained from the underlying ModelMaker with the given name. 
+        We use <code>open</code>, not create, because it's non-strict in any case,
+        and we want to ensure that persistent models will look at their stores.
         
      	@see com.hp.hpl.jena.rdf.model.ModelSpec#createModelOver(java.lang.String)
      */
     public Model createModelOver( String name )
-        { return maker.createModel( name, false ); }
+        { return maker.openModel( name, false ); }
 
     /**
         Answer the sub-property of JMS.maker that describes how this ModelSpec uses the

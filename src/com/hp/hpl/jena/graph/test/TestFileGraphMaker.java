@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.10 2005-02-21 11:52:46 andy_seaborne Exp $
+  $Id: TestFileGraphMaker.java,v 1.11 2005-03-10 14:35:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -16,7 +16,7 @@ import junit.framework.*;
 /**
     Test a FileGraphMaker; use the abstract tests, plus specialised ones for the name
     conversion routines.
-    
+
  	@author hedgehog
 */
 public class TestFileGraphMaker extends AbstractTestGraphMaker
@@ -28,24 +28,37 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         { return new TestSuite( TestFileGraphMaker.class ); }
 
     public GraphMaker getGraphMaker()
-        { String scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker" ).toString();
-        return new FileGraphMaker( scratch, ReificationStyle.Minimal, true ); } 
-        
+        { String scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker" ).getPath();
+        return new FileGraphMaker( scratch, ReificationStyle.Minimal, true ); }
+
     public void testToFilename()
-        { assertEquals( "plain", FileGraphMaker.toFilename( "plain" ) );   
+        { assertEquals( "plain", FileGraphMaker.toFilename( "plain" ) );
         assertEquals( "with_Sslash", FileGraphMaker.toFilename( "with/slash" ) );
         assertEquals( "with_Ccolon", FileGraphMaker.toFilename( "with:colon" ) );
         assertEquals( "with_Uunderbar", FileGraphMaker.toFilename( "with_underbar" ) );
         assertEquals( "with_Stwo_Sslashes", FileGraphMaker.toFilename( "with/two/slashes" ) );
         assertEquals( "with_Sa_Cmixture_U...", FileGraphMaker.toFilename( "with/a:mixture_..." ) ); }
-        
+
     public void testToGraphname()
         { assertEquals( "plain", FileGraphMaker.toGraphname( "plain" ) );
-        assertEquals( "with/slash", FileGraphMaker.toGraphname( "with_Sslash" ) );    
-        assertEquals( "with:colon", FileGraphMaker.toGraphname( "with_Ccolon" ) );    
-        assertEquals( "with_underbar", FileGraphMaker.toGraphname( "with_Uunderbar" ) );    
-        assertEquals( "a/mixture_of:things", FileGraphMaker.toGraphname( "a_Smixture_Uof_Cthings" ) );    
+        assertEquals( "with/slash", FileGraphMaker.toGraphname( "with_Sslash" ) );
+        assertEquals( "with:colon", FileGraphMaker.toGraphname( "with_Ccolon" ) );
+        assertEquals( "with_underbar", FileGraphMaker.toGraphname( "with_Uunderbar" ) );
+        assertEquals( "a/mixture_of:things", FileGraphMaker.toGraphname( "a_Smixture_Uof_Cthings" ) );
         assertEquals( "with/two/slashes", FileGraphMaker.toGraphname( "with_Stwo_Sslashes" ) ); }
+
+    public void testDetectsExistingFiles()
+        {
+        String scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-already" ).getPath();
+        Graph content = graphWith( "something hasProperty someValue" );
+        FileGraphMaker A = new FileGraphMaker( scratch );
+        FileGraphMaker B = new FileGraphMaker( scratch );
+        Graph gA = A.createGraph( "already", true );
+        gA.getBulkUpdateHandler().add( content );
+        gA.close();
+        Graph gB = B.openGraph( "already", false );
+        assertIsomorphic( content, gB );
+        }
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.21 2005-02-21 12:15:13 andy_seaborne Exp $
+  $Id: TestModelMakerImpl.java,v 1.22 2005-03-10 14:35:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -20,214 +20,214 @@ import junit.framework.*;
 /**
     Test ModelMakerImpl using a mock GraphMaker. This is as much an
     exercise in learning testing technique as it is in actually doing the test ....
-    
+
  	@author hedgehog
 */
 public class TestModelMakerImpl extends ModelTestBase
     {
     public TestModelMakerImpl(String name)
         { super(name); }
-        
+
     public static TestSuite suite()
         { return new TestSuite( TestModelMakerImpl.class ); }
 
     private ModelMaker maker;
     private Graph graph;
     private GraphMaker graphMaker;
-    
+
     public void setUp()
         {
         graph = GraphTestBase.graphWith( "" );
         graphMaker = new MockGraphMaker( graph );
         maker = new ModelMakerImpl( graphMaker );
         }
-        
+
     public void testClose()
         {
         maker.close();
         checkHistory( one( "close()") );
         }
-        
+
     public void testRemove()
         {
         maker.removeModel( "London" );
         checkHistory( one( "remove(London)" ) );
         }
-        
+
     public void testCreate()
         {
         maker.createModel();
         checkHistory( one( "create()" ) );
         }
-        
+
     public void testGet()
         {
         maker.getModel();
-        checkHistory( one( "get()" ) );  
+        checkHistory( one( "get()" ) );
         }
-        
+
     public void testCreateNamed()
         {
         Model m = maker.createModel( "petal" );
         checkHistory( one("create(petal,false)" ) );
         assertTrue( m.getGraph() == graph );
         }
-        
+
     public void testCreateTrue()
         {
         Model m = maker.createModel( "stem", true );
         checkHistory( one("create(stem,true)" ) );
-        assertTrue( m.getGraph() == graph );        
+        assertTrue( m.getGraph() == graph );
         }
-        
+
     public void testCreateFalse()
         {
         Model m = maker.createModel( "leaf", false );
         checkHistory( one("create(leaf,false)" ) );
-        assertTrue( m.getGraph() == graph );        
+        assertTrue( m.getGraph() == graph );
         }
-        
+
     public void testOpen()
         {
         Model m = maker.openModel( "trunk" );
         checkHistory( one("open(trunk,false)" ) );
-        assertTrue( m.getGraph() == graph );    
+        assertTrue( m.getGraph() == graph );
         }
-        
+
     public void testOpenFalse()
         {
         Model m = maker.openModel( "branch", false );
         checkHistory( one("open(branch,false)" ) );
-        assertTrue( m.getGraph() == graph );    
+        assertTrue( m.getGraph() == graph );
         }
-        
+
     public void testOpenTrue()
         {
         Model m = maker.openModel( "bark", true );
         checkHistory( one("open(bark,true)" ) );
-        assertTrue( m.getGraph() == graph );    
+        assertTrue( m.getGraph() == graph );
         }
-        
+
     public void testListGraphs()
         {
         maker.listModels().close();
-        checkHistory( one("listModels()" ) );    
+        checkHistory( one("listModels()" ) );
         }
-        
+
     public void testGetGraphMaker()
         {
         assertTrue( maker.getGraphMaker() == graphMaker );
         }
-        
+
     public void testGetDescription()
         {
         maker.getDescription();
-        checkHistory( one( "getDescription()" ) ); 
+        checkHistory( one( "getDescription()" ) );
         }
-    
+
     private void checkHistory( List expected )
         { assertEquals( expected, history() ); }
-        
+
     private List history()
         { return ((MockGraphMaker) maker.getGraphMaker()).history; }
-        
+
     private List one( String s )
         {
         List result = new ArrayList();
         result.add( s );
         return result;
         }
-        
+
     static class MockGraphMaker implements GraphMaker
         {
         List history = new ArrayList();
         Graph graph;
-        
+
         public MockGraphMaker( Graph graph )
             { this.graph = graph; }
-            
+
         public ReificationStyle getReificationStyle()
             {
             history.add( "getReificationStyle()" );
-            return null; 
+            return null;
             }
-            
+
         public Graph getGraph()
             {
             history.add( "get()" );
             return graph;
             }
-            
-        public Graph createGraph()  
+
+        public Graph createGraph()
             {
             history.add( "create()" );
-            return graph;    
+            return graph;
             }
-            
+
         public Graph createGraph( String name, boolean strict )
             {
             history.add( "create(" + name + "," + strict + ")" );
             return graph;
             }
-    
+
         public Graph createGraph( String name )
             {
             history.add( "create(" + name + ")" );
             return graph;
-            }        
-    
+            }
+
         public Graph openGraph( String name, boolean strict )
             {
             history.add( "open(" + name + "," + strict + ")" );
             return graph;
             }
-            
+
         public Graph openGraph( String name )
             {
             history.add( "open(" + name + ")" );
             return graph;
-            }   
-    
+            }
+
         public void removeGraph( String name )
             {
             history.add( "remove(" + name + ")" );
             }
-    
+
         public boolean hasGraph( String name )
             {
-            history.add( "has(" + name + ")" ); 
+            history.add( "has(" + name + ")" );
             return false;
             }
-    
+
         public Graph getDescription()
             {
             history.add( "getDescription()" );
-            return graphWith( "" );    
+            return graphWith( "" );
             }
-                
+
         public Graph getDescription( Node root )
             {
             history.add( "getDescription(Node)" );
-            return graphWith( "" );    
+            return graphWith( "" );
             }
-            
+
         public Graph addDescription( Graph desc, Node self )
             {
-            history.add( "addDescription()" );  
-            return desc;  
+            history.add( "addDescription()" );
+            return desc;
             }
-            
+
         public void close()
             {
             history.add( "close()" );
             }
-            
+
         public ExtendedIterator listGraphs()
             {
             history.add( "listModels()" );
-            return NullIterator.instance;    
+            return NullIterator.instance;
             }
-        }        
+        }
     }
 
 
