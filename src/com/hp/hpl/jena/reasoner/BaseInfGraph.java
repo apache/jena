@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.9 2003-05-12 15:17:26 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.10 2003-05-12 15:20:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-12 15:17:26 $
+ * @version $Revision: 1.10 $ on $Date: 2003-05-12 15:20:24 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -29,6 +29,9 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
     /** Flag, if set to true then derivations are recorded */
     protected boolean recordDerivations;
+    
+    /** Flag to record if the preparation call has been made and so the graph is ready for queries */
+    protected boolean isPrepared = false;
 
     /**
      * Constructor
@@ -54,6 +57,42 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      */
     public Reasoner getReasoner() {
         return reasoner;
+    }
+
+    /**
+     * Replace the underlying data graph for this inference graph and start any
+     * inferences over again. This is primarily using in setting up ontology imports
+     * processing to allow an imports multiunion graph to be inserted between the
+     * inference graph and the raw data, before processing.
+     * @param data the new raw data graph
+     */
+    public void rebind(Graph data) {
+        fdata = new FGraph(data);
+        isPrepared = false;
+    }
+    
+    /**
+     * Cause the inference graph to reconsult the underlying graph to take
+     * into account changes. Normally changes are made through the InfGraph's add and
+     * remove calls are will be handled appropriately. However, in some cases changes
+     * are made "behind the InfGraph's back" and this forces a full reconsult of
+     * the changed data. 
+     */
+    public void rebind() {
+        isPrepared = false;
+    }
+    
+    /**
+     * Perform any initial processing and caching. This call is optional. Most
+     * engines either have negligable set up work or will perform an implicit
+     * "prepare" if necessary. The call is provided for those occasions where
+     * substantial preparation work is possible (e.g. running a forward chaining
+     * rule system) and where an application might wish greater control over when
+     * this prepration is done.
+     */
+    public void prepare() {
+        // Default is to do no preparation
+        isPrepared = true;
     }
 
     /**

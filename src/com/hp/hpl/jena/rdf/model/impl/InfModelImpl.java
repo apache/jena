@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: InfModelImpl.java,v 1.1 2003-05-08 15:08:54 der Exp $
+ * $Id: InfModelImpl.java,v 1.2 2003-05-12 15:20:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -18,7 +18,7 @@ import java.util.Iterator;
  * an InfGraph.
 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-08 15:08:54 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-12 15:20:23 $
  */
 public class InfModelImpl extends ModelCom implements InfModel {
 
@@ -50,6 +50,29 @@ public class InfModelImpl extends ModelCom implements InfModel {
      */
     public Reasoner getReasoner() {
         return getInfGraph().getReasoner();
+    }
+
+    /**
+     * Cause the inference model  to reconsult the underlying data to take
+     * into account changes. Normally changes are made through the InfModel's add and
+     * remove calls are will be handled appropriately. However, in some cases changes
+     * are made "behind the InfModels's back" and this forces a full reconsult of
+     * the changed data. 
+     */
+    public void rebind() {
+        getInfGraph().rebind();
+    }
+    
+    /**
+     * Perform any initial processing and caching. This call is optional. Most
+     * engines either have negligable set up work or will perform an implicit
+     * "prepare" if necessary. The call is provided for those occasions where
+     * substantial preparation work is possible (e.g. running a forward chaining
+     * rule system) and where an application might wish greater control over when
+     * this prepration is done rather than just leaving to be done at first query time.
+     */
+    public void prepare() {
+        getInfGraph().prepare();
     }
     
     /**

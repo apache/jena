@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.5 2003-04-29 16:54:12 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.6 2003-05-12 15:20:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -29,7 +29,7 @@ import java.util.HashSet;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-04-29 16:54:12 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-12 15:20:22 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -55,6 +55,17 @@ public class TransitiveInfGraph extends BaseInfGraph {
     public TransitiveInfGraph(Graph data, TransitiveReasoner reasoner) {
         super(data, reasoner);
         
+    }
+    
+    /**
+     * Perform any initial processing and caching. This call is optional. Most
+     * engines either have negligable set up work or will perform an implicit
+     * "prepare" if necessary. The call is provided for those occasions where
+     * substantial preparation work is possible (e.g. running a forward chaining
+     * rule system) and where an application might wish greater control over when
+     * this prepration is done.
+     */
+    public void prepare() {
         // Initialize the predicate switch table.
         specialPredicates = new HashSet();
         specialPredicates.add(TransitiveReasoner.directSubClassOf);
@@ -63,14 +74,14 @@ public class TransitiveInfGraph extends BaseInfGraph {
         specialPredicates.add(TransitiveReasoner.subClassOf);
         
         // Initially just point to the reasoner's precached information
-        this.subClassCache = reasoner.subClassCache;
-        this.subPropertyCache = reasoner.subPropertyCache;
-        this.tbox = reasoner.tbox;
+        this.subClassCache = ((TransitiveReasoner)reasoner).subClassCache;
+        this.subPropertyCache = ((TransitiveReasoner)reasoner).subPropertyCache;
+        this.tbox = ((TransitiveReasoner)reasoner).tbox;
 
         // But need to check if the data graph defines schema data as well
-        if (data != null && 
-            (TransitiveReasoner.checkOccurance(TransitiveReasoner.subPropertyOf, data, subPropertyCache) ||
-             TransitiveReasoner.checkOccurance(TransitiveReasoner.subClassOf, data, subPropertyCache))) {
+        Graph data = fdata.getGraph();
+        if ((TransitiveReasoner.checkOccurance(TransitiveReasoner.subPropertyOf, data, subPropertyCache) ||
+              TransitiveReasoner.checkOccurance(TransitiveReasoner.subClassOf, data, subPropertyCache))) {
             // Need to include data in the tbox so create a new reasoner which
             // become the parent of this InfGraph
             if (tbox != null) {
@@ -78,6 +89,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
             } else {
                 tbox = fdata;
             }
+            // TODO modify this when we refactor TransitiveReasoner construction
             TransitiveReasoner newTR = new TransitiveReasoner();
             this.reasoner = newTR.bindSchema(tbox);
             subClassCache = newTR.subClassCache;
@@ -86,6 +98,8 @@ public class TransitiveInfGraph extends BaseInfGraph {
         // Cache the closures of subPropertyOf because these are likely to be
         // small and accessed a lot
         subPropertyCache.setCaching(true);
+        
+        isPrepared = true;
     }
     
     /**
@@ -100,6 +114,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        if (!isPrepared) prepare();
         Node predicate = pattern.getPredicate();
         Finder resultF = null;
         if (predicate.isVariable()) {

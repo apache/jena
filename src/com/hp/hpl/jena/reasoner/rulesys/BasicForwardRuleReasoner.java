@@ -5,26 +5,20 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleReasoner.java,v 1.2 2003-05-08 15:08:53 der Exp $
+ * $Id: BasicForwardRuleReasoner.java,v 1.3 2003-05-12 15:20:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
-
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
-/**
- * Reasoner implementation which augments or transforms an RDF graph
+/** * Reasoner implementation which augments or transforms an RDF graph
  * according to a set of rules. This trivial version does not support
  * separate schema processing. The actual work is done in the inference
  * graph implementation.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-08 15:08:53 $
- */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.3 $ on $Date: 2003-05-12 15:20:23 $ */
 public class BasicForwardRuleReasoner implements Reasoner {
-
     /** The rules to be used by this instance of the forward engine */
     protected List rules;
     

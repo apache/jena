@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.2 2003-05-12 07:58:25 der Exp $
+ * $Id: TestRDFSRules.java,v 1.3 2003-05-12 15:20:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.2 $ on $Date: 2003-05-12 07:58:25 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.3 $ on $Date: 2003-05-12 15:20:23 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -58,6 +58,15 @@ public class TestRDFSRules extends TestCase {
     }
 
     /**
+     * Test the basic functioning of an RDFS reasoner
+     */
+    public void testRDFSBReasoner() throws IOException {
+        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect.rdf");
+        ReasonerFactory rf = RDFSBRuleReasonerFactory.theInstance();
+        assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
+    }
+
+    /**
      * Simple timing test used to just a broad feel for how performance of the
      * pure FPS rules compares with the hand-crafted version.
      * The test ontology and data is very small. The test query is designed to
@@ -71,6 +80,7 @@ public class TestRDFSRules extends TestCase {
             Model data = ModelLoader.loadModel("testing/reasoners/rdfs/timing-data.rdf");
             Resource C1 = ResourceFactory.createResource("http://www.hpl.hp.com/semweb/2003/eg#C1");
             Reasoner rdfsRule = RDFSRuleReasonerFactory.theInstance().create(null);
+            Reasoner rdfsBRule = RDFSBRuleReasonerFactory.theInstance().create(null);
             Reasoner rdfs1    = RDFSReasonerFactory.theInstance().create(null);
             
             long t1 = System.currentTimeMillis();
@@ -88,6 +98,14 @@ public class TestRDFSRules extends TestCase {
             //for (Iterator i = inf2.listStatements(); i.hasNext(); i.next()) count++;
             t2 = System.currentTimeMillis();
             System.out.println("RDFSrule: " + count +" results in " + (t2-t1) +"ms");
+
+            t1 = System.currentTimeMillis();
+            Model inf3 = ModelFactory.createModelForGraph(rdfsBRule.bindSchema(tbox.getGraph()).bind(data.getGraph()));
+            count = 0;
+            for (Iterator i = inf2.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
+            //for (Iterator i = inf2.listStatements(); i.hasNext(); i.next()) count++;
+            t2 = System.currentTimeMillis();
+            System.out.println("RDFSBrule: " + count +" results in " + (t2-t1) +"ms");
 
         } catch (Exception e) {
             System.out.println(e.toString());

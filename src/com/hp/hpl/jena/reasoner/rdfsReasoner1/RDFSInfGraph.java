@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.8 2003-05-08 15:08:54 der Exp $
+ * $Id: RDFSInfGraph.java,v 1.9 2003-05-12 15:20:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,7 +35,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-08 15:08:54 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-12 15:20:23 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -58,6 +58,9 @@ public class RDFSInfGraph extends BaseInfGraph {
     /** Cache of axiomatci triples to be included in the tripleCache */
     protected FGraph axioms = new FGraph(new GraphMem());
 
+    /** The data supplied as a tbox, may be null, will be included as part of tripleCache if not null */
+    protected Finder tbox;
+    
     /** Cache of precomputed triples which are added to data - this includes 
      * the tbox, axioms and forward deductions */
     protected Finder tripleCache;
@@ -159,81 +162,7 @@ public class RDFSInfGraph extends BaseInfGraph {
         this.subPropertyCache = sPropertyCache.deepCopy();
         this.subClassCache = sClassCache;
         this.scanProperties = reasoner.scanProperties;
-        
-        // Combine a place to hold axioms and local deductions and the tbox into single cache
-        if (tbox == null) {
-            tripleCache = axioms;
-        } else {
-            tripleCache = FinderUtil.cascade(axioms, tbox);
-        }
-        fdata = new FGraph(data);
-        
-        // Check for vocabulary definitions in the data graph
-        if (data != null && 
-            (RDFSReasoner.checkOccurance(RDFSReasoner.subPropertyOf, data, subPropertyCache) ||
-             RDFSReasoner.checkOccurance(RDFSReasoner.subClassOf, data, subPropertyCache) ||
-             RDFSReasoner.checkOccurance(RDFSReasoner.domainP, data, subPropertyCache) ||
-             RDFSReasoner.checkOccurance(RDFSReasoner.rangeP, data, subPropertyCache) )) {
-            
-            // The data graph contains some ontology knowledge so split the caches
-            // now and rebuild them using merged data
-            Finder tempTbox = tbox == null ? fdata : FinderUtil.cascade(tbox, fdata);
-
-            splitSubClassCache();
-            TransitiveReasoner.cacheSubProp(tempTbox, subPropertyCache);
-            TransitiveReasoner.cacheSubClass(tempTbox, subPropertyCache, subClassCache);
-            // Cache the closures of subPropertyOf because these are likely to be
-            // small and accessed a lot
-            subPropertyCache.setCaching(true);
-        }     
-        
-        // add axioms
-        for (int i = 0; i < baseAxioms.length; i++) {
-            axioms.getGraph().add(baseAxioms[i]);
-        }
-        TransitiveReasoner.cacheSubProp(axioms, subPropertyCache);
-        
-        // identify all properties and collection properties
-        // This can be disabled in which case queries of the form (*,type,Property) will be
-        // slower and no ContainerMembershipProperty assertions will be detected
-        if (scanProperties) {
-            ExtendedIterator it = tripleCache.findWithContinuation(new TriplePattern(null, null, null), fdata);
-            HashSet properties = new HashSet();
-            String memberPrefix = RDF.getURI() + "_";
-            while (it.hasNext()) {
-                Triple triple = (Triple)it.next();
-                Node prop = triple.getPredicate();
-                if (prop.equals(RDF.type.getNode()) && prop.equals(RDF.Property.getNode()) ) {
-                    prop = triple.getSubject();
-                }
-                if (properties.add(prop)) {
-                    // Unseen property - add the subPropertyOf statement
-                    subPropertyCache.addRelation(prop, prop);
-                    if (prop.getURI().startsWith(memberPrefix)) {
-                        // A container property
-                        axioms.getGraph().add(new Triple(prop, RDF.type.getNode(), RDFS.ContainerMembershipProperty.getNode()));
-                        subPropertyCache.addRelation(prop, RDFS.member.getNode());
-                    }
-                }
-            }
-        }
-        
-        // set up the router which connect queries to the appropriate processing element
-        router = new PatternRouter();
-        router.register(subPropertyCache);
-        router.register(subClassCache);
-        
-        // Run the forward rules to preload the tripleCache and build the backward rules
-        checkAllForwardRules();
-        
-        // Add fixed backward rules
-        for (int i = 0; i < brules.length; i++) {
-            addBRule(brules[i]);
-        }
-        
-        //logger.debug("Bound RDFS reasoner state at end of constructor");
-        //logger.debug(this);
-        
+        this.tbox = tbox;
     }
     
 //=======================================================================
@@ -273,26 +202,90 @@ public class RDFSInfGraph extends BaseInfGraph {
 
 //=======================================================================
 // methods
-
-     
-    /**
-     * This reasoner does not allow dynamic rebinding of rule sets.
-     * 
-     * @param tbox schema containing the property and class declarations
-     */
-    public Reasoner bindSchema(Graph tbox) throws ReasonerException {
-        throw new ReasonerException("Attempt to bind multiple schemas - disallowed for now");
-    }
-     
-    /**
-     * This reasoner does not allow dynamic rebinding of data sets.
-     * 
-     * @param data the raw data to be processed
-     */
-    public InfGraph bind(Graph data) throws ReasonerException {
-        throw new ReasonerException("Attempt to bind multiple datasets - disallowed for now");
-    }
     
+   /**
+    * Perform any initial processing and caching. This call is optional. Most
+    * engines either have negligable set up work or will perform an implicit
+    * "prepare" if necessary. The call is provided for those occasions where
+    * substantial preparation work is possible (e.g. running a forward chaining
+    * rule system) and where an application might wish greater control over when
+    * this prepration is done.
+    */
+   public void prepare() {
+       // Combine a place to hold axioms and local deductions and the tbox into single cache
+       if (tbox == null) {
+           tripleCache = axioms;
+       } else {
+           tripleCache = FinderUtil.cascade(axioms, tbox);
+       }
+        
+       // Check for vocabulary definitions in the data graph
+       Graph data = fdata.getGraph();
+       if (
+           (RDFSReasoner.checkOccurance(RDFSReasoner.subPropertyOf, data, subPropertyCache) ||
+            RDFSReasoner.checkOccurance(RDFSReasoner.subClassOf, data, subPropertyCache) ||
+            RDFSReasoner.checkOccurance(RDFSReasoner.domainP, data, subPropertyCache) ||
+            RDFSReasoner.checkOccurance(RDFSReasoner.rangeP, data, subPropertyCache) )) {
+            
+           // The data graph contains some ontology knowledge so split the caches
+           // now and rebuild them using merged data
+           Finder tempTbox = tbox == null ? fdata : FinderUtil.cascade(tbox, fdata);
+
+           splitSubClassCache();
+           TransitiveReasoner.cacheSubProp(tempTbox, subPropertyCache);
+           TransitiveReasoner.cacheSubClass(tempTbox, subPropertyCache, subClassCache);
+           // Cache the closures of subPropertyOf because these are likely to be
+           // small and accessed a lot
+           subPropertyCache.setCaching(true);
+       }     
+        
+       // add axioms
+       for (int i = 0; i < baseAxioms.length; i++) {
+           axioms.getGraph().add(baseAxioms[i]);
+       }
+       TransitiveReasoner.cacheSubProp(axioms, subPropertyCache);
+        
+       // identify all properties and collection properties
+       // This can be disabled in which case queries of the form (*,type,Property) will be
+       // slower and no ContainerMembershipProperty assertions will be detected
+       if (scanProperties) {
+           ExtendedIterator it = tripleCache.findWithContinuation(new TriplePattern(null, null, null), fdata);
+           HashSet properties = new HashSet();
+           String memberPrefix = RDF.getURI() + "_";
+           while (it.hasNext()) {
+               Triple triple = (Triple)it.next();
+               Node prop = triple.getPredicate();
+               if (prop.equals(RDF.type.getNode()) && prop.equals(RDF.Property.getNode()) ) {
+                   prop = triple.getSubject();
+               }
+               if (properties.add(prop)) {
+                   // Unseen property - add the subPropertyOf statement
+                   subPropertyCache.addRelation(prop, prop);
+                   if (prop.getURI().startsWith(memberPrefix)) {
+                       // A container property
+                       axioms.getGraph().add(new Triple(prop, RDF.type.getNode(), RDFS.ContainerMembershipProperty.getNode()));
+                       subPropertyCache.addRelation(prop, RDFS.member.getNode());
+                   }
+               }
+           }
+       }
+        
+       // set up the router which connect queries to the appropriate processing element
+       router = new PatternRouter();
+       router.register(subPropertyCache);
+       router.register(subClassCache);
+        
+       // Run the forward rules to preload the tripleCache and build the backward rules
+       checkAllForwardRules();
+        
+       // Add fixed backward rules
+       for (int i = 0; i < brules.length; i++) {
+           addBRule(brules[i]);
+       }
+        
+       isPrepared = true;
+   }
+
     /**
      * Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. It will
@@ -305,7 +298,7 @@ public class RDFSInfGraph extends BaseInfGraph {
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
-        logger.debug("Reasoner called on pattern: " + pattern);
+        if (!isPrepared) prepare();
         return new UniqueExtendedIterator(router.find(pattern, tripleCache, continuation,this));
     }
     
@@ -315,7 +308,6 @@ public class RDFSInfGraph extends BaseInfGraph {
      * run-away rule firing.
      */
     public ExtendedIterator findNested(TriplePattern pattern, Finder continuation, HashSet firedRules) {
-        logger.debug("Reasoner called on pattern: " + pattern);
         return router.find(pattern, tripleCache, continuation,this, firedRules);
     }
     
@@ -324,7 +316,6 @@ public class RDFSInfGraph extends BaseInfGraph {
      * access the raw data and axioms and bypass further rules
      */
     public ExtendedIterator findRawWithContinuation(TriplePattern pattern, Finder continuation) {
-        logger.debug("Reasoner raw called on pattern: " + pattern);
         return tripleCache.findWithContinuation(pattern, continuation);
     }
     
@@ -334,7 +325,6 @@ public class RDFSInfGraph extends BaseInfGraph {
      * not triples.
      */
     public ExtendedIterator findProperties() {
-        logger.debug("Reasoner called on findProperties");
         return subPropertyCache.listAllProperties();
     }
     
@@ -343,7 +333,6 @@ public class RDFSInfGraph extends BaseInfGraph {
      * to list check for a specific preregistered property.
      */
     public boolean isProperty(Node prop) {
-        logger.debug("Reasoner called on isProperty");
         return subPropertyCache.isProperty(prop);
     }
     

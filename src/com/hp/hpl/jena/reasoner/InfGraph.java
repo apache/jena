@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: InfGraph.java,v 1.5 2003-04-15 21:17:58 jeremy_carroll Exp $
+ * $Id: InfGraph.java,v 1.6 2003-05-12 15:20:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
  * form more complex queries.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-04-15 21:17:58 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-12 15:20:24 $
  */
 public interface InfGraph extends Graph {
 
@@ -42,6 +42,34 @@ public interface InfGraph extends Graph {
      */
     public Reasoner getReasoner();
 
+    /**
+     * Replace the underlying data graph for this inference graph and start any
+     * inferences over again. This is primarily using in setting up ontology imports
+     * processing to allow an imports multiunion graph to be inserted between the
+     * inference graph and the raw data, before processing.
+     * @param data the new raw data graph
+     */
+    public void rebind(Graph data);
+    
+    /**
+     * Cause the inference graph to reconsult the underlying graph to take
+     * into account changes. Normally changes are made through the InfGraph's add and
+     * remove calls are will be handled appropriately. However, in some cases changes
+     * are made "behind the InfGraph's back" and this forces a full reconsult of
+     * the changed data. 
+     */
+    public void rebind();
+    
+    /**
+     * Perform any initial processing and caching. This call is optional. Most
+     * engines either have negligable set up work or will perform an implicit
+     * "prepare" if necessary. The call is provided for those occasions where
+     * substantial preparation work is possible (e.g. running a forward chaining
+     * rule system) and where an application might wish greater control over when
+     * this prepration is done.
+     */
+    public void prepare();
+    
     /**
      * Test a global boolean property of the graph. This might included
      * properties like consistency, OWLSyntacticValidity etc.
