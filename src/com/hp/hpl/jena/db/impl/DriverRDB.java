@@ -49,7 +49,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.29 $ on $Date: 2003-08-26 01:49:23 $
+* @version $Revision: 1.30 $ on $Date: 2003-08-26 02:13:30 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -237,9 +237,9 @@ public abstract class DriverRDB implements IRDBDriver {
     
     protected IDBConnection m_dbcon = null;
     
-    protected LRUCache prefixCache;
+    protected LRUCache prefixCache = null;
     
-    public static final int PREFIX_CACHE_SIZE = 10;
+    public static final int PREFIX_CACHE_SIZE = 50;
     
     //===================================
     // for transaction support
@@ -1835,12 +1835,21 @@ public abstract class DriverRDB implements IRDBDriver {
 		return !SKIP_DUPLICATE_CHECK;
 	}
 	
-	public void setDoDuplicateCheck ( boolean bool ) {
+	public void setDoDuplicateCheck(boolean bool) {
 		SKIP_DUPLICATE_CHECK = !bool;
 	}
+
+	protected boolean dbIsOpen() {
+		return (m_sysProperties != null);
+	}
+
+	protected void checkDbIsOpen() {
+		if ( !dbIsOpen() )
+			throw new JenaException("Database not open");
+	}
 	
-	protected void checkDbUninitialized () {
-		if ( (m_sysProperties != null) || (isDBFormatOK() == true) )
+	protected void checkDbUninitialized() {
+		if ( dbIsOpen() || (isDBFormatOK() == true))
 			throw new JenaException("Database configuration option cannot be set after database is formatted");
 	}
 
@@ -1852,13 +1861,13 @@ public abstract class DriverRDB implements IRDBDriver {
 		if ( (prefix.length() + JENA_LONGEST_TABLE_NAME_LENGTH) >
 										TABLE_NAME_LENGTH_MAX )
 			throw new JenaException("TableNamePrefix exceeds maximum length for database: "				+ TABLE_NAME_LENGTH_MAX);
-		if ( m_sysProperties != null )
+		if ( dbIsOpen() )
 			throw new JenaException("Table name prefix must be set before opening or connecting to a model.");
 		setTableNames(prefix);
 	}
 
 	private void setTableNames ( String prefix ) {
-		TABLE_NAME_PREFIX = prefix;
+		TABLE_NAME_PREFIX = stringToDBname(prefix);
 		SYSTEM_STMT_TABLE = TABLE_NAME_PREFIX + "sys_stmt";
 		LONG_LIT_TABLE = TABLE_NAME_PREFIX + "long_lit";
 		LONG_URI_TABLE = TABLE_NAME_PREFIX + "long_uri";
@@ -1870,11 +1879,21 @@ public abstract class DriverRDB implements IRDBDriver {
 		return STORE_WITH_MODEL;
 	}
 
-	public void setStoreWithModel ( String modelName ) {
+	public void setStoreWithModel(String modelName) {
 		String name = null;
-		if ( (modelName != null) && !modelName.equals("") )
-				name = modelName;
+		if ((modelName != null) && !modelName.equals(""))
+			name = modelName;
 		STORE_WITH_MODEL = name;
+	}
+
+	public int getCompressCacheSize() {
+		checkDbIsOpen();
+		return prefixCache.getLimit();
+	}
+
+	public void setCompressCacheSize(int count) {
+		checkDbIsOpen();
+		prefixCache.setLimit(count);
 	}
 
 }

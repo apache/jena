@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.7 2003-08-25 16:36:18 wkw Exp $
+  $Id: TestBasicOperations.java,v 1.8 2003-08-26 02:15:05 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -292,9 +292,12 @@ public class TestBasicOperations extends TestCase {
 		// overflows and then make sure they can be retrieved.
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		IRDBDriver d = conn.getDriver();
-		int cacheSize = DriverRDB.PREFIX_CACHE_SIZE;
 		d.setDoCompressURI(true);
 		model = ModelRDB.createModel(conn);
+		int cacheSize = model.getCompressCacheSize();
+		cacheSize = 10;
+		model.setCompressCacheSize(cacheSize);
+
 		String pfx = "a123456789";
 		String longPfx = "";
 		long longLen = dbDriver.getLongObjectLength();
@@ -318,7 +321,6 @@ public class TestBasicOperations extends TestCase {
 		}
 
 	}
-
 
 	public void testAddRemoveDatatype() {
 		Resource s = model.createResource("test#subject");

@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.13 $
+* @version $Revision: 1.14 $
 */
 
 public interface IRDBDriver {
@@ -452,6 +452,18 @@ public interface IRDBDriver {
 	* @param String
 	*/
 	public void setStoreWithModel( String modelName );
+	
+	/**
+	* Get the value of CompressCacheSize
+	* @return int
+	*/
+	public int getCompressCacheSize();
+
+	/**
+	* Set the value of CompressCacheSize.
+	* @param int
+	*/
+	public void setCompressCacheSize(int count);
 
 }
 
