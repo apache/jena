@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.3 2003-06-10 10:17:52 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.4 2003-06-16 11:05:24 andy_seaborne Exp $
  */
 
 
@@ -353,45 +353,98 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             propStr = (String) wellKnownPropsMap.get(property.getURI());
         else
             propStr = formatProperty(property);
-            
         
-        // Write object lists as "property obj, obj, obj ;"
+        // Find which objects are simple (i.e. not nested structures)             
 
-        out.incIndent(indentObject);
-        out.print(propStr);
-        
-        if ( propStr.length() < widePropertyLen )
-        {
-            if ( propStr.length() < propertyWidth ) 
-                out.print( pad(propertyWidth-propStr.length()) ) ;
-            out.print(pad(minGap)) ;
-        }
-        else
-            // Does not fit this line.
-            out.println();
-            
-        // Do all the statements with the same property.
-        // Need some control for very long object lists
-        // Better might be to format all the objects (if simple)
-        // and see if they fit on a line.
-        // Any non-simple objects causes fall back to a simpler format.
-        
-        
         StmtIterator sIter = resource.listProperties(property);
+        Set simple = new HashSet() ;
+        Set complex = new HashSet() ;
 
         for (; sIter.hasNext();)
         {
             Statement stmt = sIter.nextStatement();
-            writeObject(stmt.getObject());
-
-            // As an object list
-            if (sIter.hasNext())
-                out.print(objectListSep) ;
+            RDFNode obj = stmt.getObject() ;
+            if ( isSimpleObject(obj) )
+                simple.add(obj) ;
+            else
+                complex.add(obj) ;
         }
-        sIter.close();
-        out.decIndent(indentObject);
+        sIter.close() ;
+        
+        // Write property/simple objects
+        
+        if ( simple.size() > 0 )
+        {
+            String padSp = null ;
+            // Simple objects - allow property to be long and alignment to be lost
+            if (propStr.length() < widePropertyLen)
+                padSp = pad(calcPropertyPadding(propStr)) ;
+
+            
+            out.print(propStr);
+            if ( padSp != null )
+                out.print(padSp) ;
+            else
+                out.println() ;
+            
+            for (Iterator iter = simple.iterator(); iter.hasNext();)
+            {
+                RDFNode n = (RDFNode) iter.next();
+                writeObject(n);
+                
+                // As an object list
+                if (iter.hasNext())
+                    out.print(objectListSep);
+            }
+        }        
+        // Now do complex objects.
+        // Write property each time for a complex object.
+        // Do not allow over long properties but same line objects.
+
+        if (complex.size() > 0)
+        {
+            String padSp = null ;
+            // Complex objects - do not allow property tobe long and alignment to be lost
+            if (propStr.length() < propertyCol)
+                padSp = pad(calcPropertyPadding(propStr)) ;
+
+            for (Iterator iter = complex.iterator(); iter.hasNext();)
+            {
+                out.incIndent(indentObject);
+                out.print(propStr);
+                if ( padSp != null )
+                    out.print(padSp) ;
+                else
+                    out.println() ;
+            
+                RDFNode n = (RDFNode) iter.next();
+                writeObject(n);
+                out.decIndent(indentObject);
+                if ( iter.hasNext() )
+                    out.println(" ;");
+            }
+        }
         return;
 	}
+
+    private int calcPropertyPadding(String propStr)
+    {
+        int padding = propertyCol - propStr.length();
+        if (padding < minGap)
+            padding = minGap;
+        return padding ;
+    }
+ 
+
+    private boolean isSimpleObject(RDFNode node)
+    {
+        if (node instanceof Literal)
+            return true ;
+        Resource rObj = (Resource) node;
+        if ( allowDeep && oneRefObjects.contains(rObj) )
+            return false ;
+        return true ;
+    }
 
     protected void writeObject(RDFNode node)
 	{
@@ -402,24 +455,24 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 		}
 
 		Resource rObj = (Resource) node;
-		if ( allowDeep && oneRefObjects.contains(rObj))
+		if ( allowDeep && ! isSimpleObject(rObj))
 		{
 			oneRefDone.add(rObj);
-			int oldIndent = out.getIndent();
-			out.setIndent(out.getCol());
+			//int oldIndent = out.getIndent();
+			//out.setIndent(out.getCol());
 
 			//out.incIndent(4);
 			//out.println();
 			out.print("[ ");
 			out.incIndent(2);
 			writePropertiesForSubject(rObj);
-			out.decIndent(2);
+            out.decIndent(2);
             out.println() ;
             // Line up []
 			out.print("]");
 			//out.decIndent(4);
 
-			out.setIndent(oldIndent);
+			//out.setIndent(oldIndent);
 			return ;
 		}
 

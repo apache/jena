@@ -18,7 +18,7 @@ import java.io.* ;
 /** Common framework for implemening N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.4 2003-06-11 14:34:31 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.5 2003-06-16 11:05:24 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -64,18 +64,27 @@ public class N3JenaWriterCommon implements RDFWriter
 
     // Gap from subject to property
 	int indentProperty = 6 ;
+    
     // Width of property before wrapping.
     // This is not necessarily a control of total width
     // e.g. the pretty writer may be writing properties inside indented one ref bNodes 
     int widePropertyLen = 20 ;
     
     // Column for property when an object follows a property on the same line
-    int propertyWidth = 8 ;
+    int propertyCol = 8 ;
+    
+    // Max width of property to align to.
+    // Property may be longer and still go on same line but the columnization is broken. 
+    // Allow for min gap.
+    // Require propertyWidth < propertyCol (strict less than)
+    int propertyWidth = propertyCol-minGap ;
 
     //  Gap from property object
-    int indentObject = propertyWidth ;
+    int indentObject = propertyCol ;
     
     // If a subject is shorter than this, the first property may go on same line.
+    int subjectCol = indentProperty ; 
+    // Require shortSubject < subjectCol (strict less than)
     int shortSubject = indentProperty-minGap;
 
     // ----------------------------------------------------
@@ -255,7 +264,6 @@ public class N3JenaWriterCommon implements RDFWriter
 
     protected void writePropertiesForSubject(Resource subj)
     {
-
         ClosableIterator iter = preparePropertiesForSubject(subj);
         // For each property.
         for (; iter.hasNext();)
@@ -282,15 +290,15 @@ public class N3JenaWriterCommon implements RDFWriter
     
     protected void writeSubject(Resource subject)
     {
-        String tmp = formatResource(subject);
-        out.print(tmp);
+        String subjStr = formatResource(subject);
+        out.print(subjStr);
         // May be very short : if so, stay on this line.
         
         // Currently at end of subject.
-        if (tmp.length() <= shortSubject )
+        // NB shortSubject is (indentProperty-minGap) so there is a gap.
+        if (subjStr.length() <= shortSubject )
         {
-            out.print( pad(shortSubject - tmp.length()) );
-            out.print(minGapStr) ;
+            out.print(pad(subjectCol - subjStr.length()) );
         }
         else
             // Does not fit this line.
@@ -351,9 +359,18 @@ public class N3JenaWriterCommon implements RDFWriter
 
             if ( propStr.length() < widePropertyLen )
             {
-                if ( propStr.length() < propertyWidth ) 
-                    out.print( pad(propertyWidth-propStr.length()) ) ;
-                out.print(minGapStr) ;
+                // Property col allows for min gap but widePropertyLen > propertyCol 
+                // (which looses alignment - this is intentional.
+                // Ensure there is at least min gap.
+                
+                int padding = propertyCol-propStr.length() ;
+                if ( padding < minGap )
+                    padding = minGap ;
+                out.print(pad(padding)) ;
+                
+//                if ( propStr.length() < propertyWidth ) 
+//                    out.print( pad(propertyCol-minGap-propStr.length()) ) ;
+//                out.print(minGapStr) ;
             }
             else
                 // Does not fit this line.
