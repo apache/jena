@@ -3,9 +3,9 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="j2p1"/>
+    <property name="version"         value="2p1"/>
 
-    <property name="dist.name"       value="${name}-${version}"/>
+    <property name="dist.name"       value="${Name}-${version}"/>
 
     <property name="debug"           value="false"/>
     <property name="deprecation"     value="true"/>
@@ -34,7 +34,7 @@
 
     <path id="classpath">
       <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-      <dirset dir="${classes.dir}" includes="*"/> 
+      <dirset dir="${classes.dir}" includes="*"/>
     </path>
 
 <!-- Main external targets -->
@@ -71,7 +71,7 @@
         <delete dir="${classes.dir}"/>
         <mkdir dir="${classes.dir}"/>
     </target>
-    
+
     <target name="build-src">
         <!-- Ensure clean source build -->
         <delete dir="${src.dir}"/>
@@ -110,7 +110,7 @@
             <fileset dir="${orig-src.dir}"
                      includes="jena/**"/>
         </copy>
-    
+
     </target>
 
     <target name="compile" depends="pre-compile,build-src,compile-jena,compile-apps"/>
@@ -123,6 +123,7 @@
                optimize="${optimize}">
             <classpath refid="classpath" />
         </javac>
+        <copy todir="${classes.dir}" file="${src.dir}/log4j.properties"/>
     </target>
 
     <target name="compile-apps" depends="pre-compile">
@@ -164,7 +165,7 @@
 
         <!-- sourcefiles="" -->
         <!-- Overview="overview.html" -->
- 
+
         <javadoc
                  sourcepath="${src.dir}"
                  destdir="javadoc"
@@ -303,27 +304,27 @@
             <fileset dir="dist" includes="${dist.name}/**"/>
         </zip>
     </target>
-    
+
     <target name="test">
         <echo>install test</echo>
         <junit fork="yes" printsummary="yes">
         <classpath>
             <fileset dir="${lib.dir}" includes="*.jar"/>
-        </classpath>  
-        <test name="com.hp.hpl.jena.test.TestPackage"/>      
-      </junit>    
+        </classpath>
+        <test name="com.hp.hpl.jena.test.TestPackage"/>
+      </junit>
     </target>
- 
- <!-- uses the latest built jena code - not the jar in the lib -->   
+
+ <!-- uses the latest built jena code - not the jar in the lib -->
     <target name="dev-test">
         <echo>developer test</echo>
         <junit fork="yes" printsummary="yes">
         <classpath>
             <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
             <pathelement location="${classes.dir}"/>
-        </classpath>  
-        <test name="com.hp.hpl.jena.test.TestPackage"/>      
-      </junit>    
+        </classpath>
+        <test name="com.hp.hpl.jena.test.TestPackage"/>
+      </junit>
     </target>
 
 
