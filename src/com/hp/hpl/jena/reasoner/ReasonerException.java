@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerException.java,v 1.4 2003-05-29 16:47:10 der Exp $
+ * $Id: ReasonerException.java,v 1.5 2003-05-30 16:26:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.shared.JenaException;
  * should extend.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-29 16:47:10 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-30 16:26:14 $
  */
 public class ReasonerException extends JenaException {
     
@@ -28,6 +28,15 @@ public class ReasonerException extends JenaException {
      */
     public ReasonerException(String msg) {
         super(msg);
+    }
+    
+    /**
+     * Constructor.
+     * @param msg a free-text message describing the problem
+     * @param cause a nested exception which prompted this error
+     */
+    public ReasonerException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 
 }

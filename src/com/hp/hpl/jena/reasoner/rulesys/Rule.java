@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.6 2003-05-28 11:13:54 chris-dollin Exp $
+ * $Id: Rule.java,v 1.7 2003-05-30 16:26:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -53,7 +53,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.6 $ on $Date: 2003-05-28 11:13:54 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.7 $ on $Date: 2003-05-30 16:26:12 $ */
 public class Rule {
     
 //=======================================================================
@@ -70,6 +70,9 @@ public class Rule {
     
     /** The number of distinct variables used in the rule */
     protected int numVars = -1;
+    
+    /** Flags whether the rule was written as a forward or backward rule */
+    protected boolean isBackward;
     
     /** A namespace used for Rubic specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubik/";
@@ -154,6 +157,13 @@ public class Rule {
     }
     
     /**
+     * Return true if the rule was written as a backward (as opposed to forward) rule.
+     */
+    public boolean isBackward() {
+        return isBackward;
+    }
+    
+    /**
      * Get the name for the rule - can be null.
      */
     public String getName() {
@@ -169,16 +179,16 @@ public class Rule {
     }
     
     /**
-     * Return the number of distinct variables in the rule.
+     * Return the number of distinct variables in the rule. Or more precisely, the
+     * size of a binding environment needed to represent the rule.
      */
     public int getNumVars() {
         if (numVars == -1) {
             // only have to do this if the rule was generated programatically
             // the parser will have prefilled this in for normal rules
-            HashSet vars = new HashSet();
-            findVars(body, vars);
-            findVars(head, vars);
-            numVars = vars.size();
+            int max = findVars(body, -1);
+            max = findVars(head, max);
+            numVars = max + 1;
         }
         return numVars;
     }
@@ -186,39 +196,66 @@ public class Rule {
     /**
      * Find all the variables in a clause array.
      */
-    private void findVars(Object[] nodes, HashSet vars) {
+    private int findVars(Object[] nodes, int maxIn) {
+        int max = maxIn;
         for (int i = 0; i < nodes.length; i++) {
             Object node = nodes[i];
             if (node instanceof TriplePattern) {
-                findVars((TriplePattern)node, vars);
+                max = findVars((TriplePattern)node, max);
             } else {
-                findVars((Functor)node, vars); 
+                max = findVars((Functor)node, max); 
             }
         }
+        return max;
     }
     
     /**
      * Find all the variables in a TriplePattern.
      */
-    private void findVars(TriplePattern t, HashSet vars) {
-        if (t.getSubject().isVariable()) vars.add(t.getSubject());
-        if (t.getPredicate().isVariable()) vars.add(t.getPredicate());
+    private int findVars(TriplePattern t, int maxIn) {
+        int max = maxIn;
+        max = maxVarIndex(t.getSubject(), max);
+        max = maxVarIndex(t.getPredicate(), max);
         Node obj = t.getObject();
         if (obj instanceof Node_RuleVariable) {
-            vars.add(((Node_RuleVariable)obj).getRepresentative());
+            max = maxVarIndex(obj, max);
         } else if (Functor.isFunctor(obj)) {
-            findVars((Functor)obj.getLiteral().getValue(), vars);
+            max = findVars((Functor)obj.getLiteral().getValue(), max);
         }
+        return max;
     }
         
     /**
      * Find all the variables in a Functor.
      */
-    private void findVars(Functor f, HashSet vars) {
+    private int findVars(Functor f, int maxIn) {
+        int max = maxIn;
         Node[] args = f.getArgs();
         for (int i = 0; i < args.length; i++) {
-            if (args[i].isVariable()) vars.add(((Node_RuleVariable)args[i]).getRepresentative());
+            if (args[i].isVariable()) max = maxVarIndex(args[i], max);
         }
+        return max;
+    }
+    
+    /**
+     * Return the maximum node index of the variable and the max so far. 
+     */
+    private int maxVarIndex(Node var, int max) {
+        if (var instanceof Node_RuleVariable) {
+            int index = ((Node_RuleVariable)var).index;
+            if (index > max) return index;            
+        }
+        return max;
+    }
+    
+    /**
+     * Instantiate a rule given a variable binding environment.
+     * This will clone any non-bound variables though that is only needed
+     * for trail implementations.
+     */
+    public Rule instantiate(BindingEnvironment env) {
+        HashMap vmap = new HashMap();
+        return new Rule(name, cloneClauseArray(head, vmap, env), cloneClauseArray(body, vmap, env));
     }
     
     /**
@@ -227,7 +264,7 @@ public class Rule {
     public Rule cloneRule() {
         if (getNumVars() > 0) {
             HashMap vmap = new HashMap();
-            return new Rule(name, cloneClauseArray(head, vmap), cloneClauseArray(body, vmap));
+            return new Rule(name, cloneClauseArray(head, vmap, null), cloneClauseArray(body, vmap, null));
         } else {
             return this;
         }
@@ -236,10 +273,10 @@ public class Rule {
     /**
      * Clone a clause array.
      */
-    private Object[] cloneClauseArray(Object[] clauses, Map vmap) {
+    private Object[] cloneClauseArray(Object[] clauses, Map vmap, BindingEnvironment env) {
         Object[] cClauses = new Object[clauses.length];
         for (int i = 0; i < clauses.length; i++ ) {
-            cClauses[i] = cloneClause(clauses[i], vmap);
+            cClauses[i] = cloneClause(clauses[i], vmap, env);
         }
         return cClauses;
     }
@@ -247,27 +284,27 @@ public class Rule {
     /**
      * Clone a clause, cloning any embedded variables.
      */
-    private Object cloneClause(Object clause, Map vmap) {
+    private Object cloneClause(Object clause, Map vmap, BindingEnvironment env) {
         if (clause instanceof TriplePattern) {
             TriplePattern tp = (TriplePattern)clause;
             return new TriplePattern (
-                            cloneNode(tp.getSubject(), vmap),
-                            cloneNode(tp.getPredicate(), vmap),
-                            cloneNode(tp.getObject(), vmap)
+                            cloneNode(tp.getSubject(), vmap, env),
+                            cloneNode(tp.getPredicate(), vmap, env),
+                            cloneNode(tp.getObject(), vmap, env)
                         );
         } else {
-            return cloneFunctor((Functor)clause, vmap);
+            return cloneFunctor((Functor)clause, vmap, env);
         }
     }
     
     /**
      * Clone a functor, cloning any embedded variables.
      */
-    private Functor cloneFunctor(Functor f, Map vmap) {
+    private Functor cloneFunctor(Functor f, Map vmap, BindingEnvironment env) {
         Node[] args = f.getArgs();
         Node[] cargs = new Node[args.length];
         for (int i = 0; i < args.length; i++) {
-            cargs[i] = cloneNode(args[i], vmap);
+            cargs[i] = cloneNode(args[i], vmap, env);
         }
         Functor fn = new Functor(f.getName(), cargs);
         fn.setImplementor(f.getImplementor());
@@ -277,7 +314,8 @@ public class Rule {
     /**
      * Close a single node.
      */
-    private Node cloneNode(Node n, Map vmap) {
+    private Node cloneNode(Node nIn, Map vmap, BindingEnvironment env) {
+        Node n = (env == null) ? nIn : env.getGroundVersion(nIn);
         if (n instanceof Node_RuleVariable) {
             Node_RuleVariable nv = (Node_RuleVariable)n;
             Object rep = nv.getRepresentative();
@@ -289,7 +327,7 @@ public class Rule {
             return c;
         } else if (Functor.isFunctor(n)) {
             Functor f = (Functor)n.getLiteral().getValue();
-            return Functor.makeFunctorNode(cloneFunctor(f, vmap));
+            return Functor.makeFunctorNode(cloneFunctor(f, vmap, env));
         } else {
             return n;
         }
@@ -503,12 +541,17 @@ public class Rule {
             } else if (token.startsWith("'")) {
                 // A literal - either plain or integer
                 token = token.substring(1);
-                token = token.substring(0, token.length()-1); // string ', no checking yet
+                String lit = token;
+                while (! token.endsWith("'")) {
+                    token = nextToken();
+                    lit = lit+token;
+                }
+                lit = lit.substring(0, lit.length()-1);
                 try {
-                    Integer.parseInt(token);
-                    return Node.createLiteral(token, "", XSDDatatype.XSDint);
+                    Integer.parseInt(lit);
+                    return Node.createLiteral(lit, "", XSDDatatype.XSDint);
                 } catch (NumberFormatException e) {
-                    return Node.createLiteral(token, "", false);
+                    return Node.createLiteral(lit, "", false);
                 }
             } else {
                 // A uri
@@ -549,7 +592,7 @@ public class Rule {
                 return new TriplePattern((Node)nodes.get(0), (Node)nodes.get(1), (Node)nodes.get(2));
             } else if (token.equals("[")) {
                 nextToken();
-                return parseRule();
+                return doParseRule(true);
             } else {
                 String name = nextToken();
                 List args = parseNodeList();
@@ -557,10 +600,20 @@ public class Rule {
             }
         }
         
+        
         /**
          * Parse a rule, terminated by a "]" or "." character.
          */
         Rule parseRule() {
+            return doParseRule(false);
+        }
+        
+        /**
+         * Parse a rule, terminated by a "]" or "." character.
+         * @param retainVarMap set to true to ccause the existing varMap to be left in place, which
+         * is required for nested rules.
+         */
+        private Rule doParseRule(boolean retainVarMap) {
             try {
                 // Skip initial '[' if present
                 if (peekToken().equals("[")) {
@@ -574,7 +627,7 @@ public class Rule {
                     nextToken();
                 }
                 // Start rule parsing with empty variable table
-                varMap = new HashMap();
+                if (!retainVarMap) varMap = new HashMap();
                 // Body
                 List body = new ArrayList();
                 token = peekToken();
@@ -597,6 +650,7 @@ public class Rule {
                     r = new Rule(name, head, body);
                 }
                 r.numVars = varMap.keySet().size();
+                r.isBackward = backwardRule;
                 return r;
             } catch (NoSuchElementException e) {
                 throw new ParserException("Malformed rule", this);

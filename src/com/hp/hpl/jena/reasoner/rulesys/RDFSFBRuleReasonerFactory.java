@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSBRuleReasonerFactory.java,v 1.3 2003-05-27 15:50:24 der Exp $
+ * $Id: RDFSFBRuleReasonerFactory.java,v 1.1 2003-05-30 16:26:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,14 +14,14 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
- * Factory class for creating blank instances of the backchaining RDFS reasoner. 
+ * Factory class for creating blank instances of the hybrid rule RDFS reasoner. 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-27 15:50:24 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-30 16:26:12 $
  */
-public class RDFSBRuleReasonerFactory implements ReasonerFactory {
+public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
     
     /** Single global instance of this factory */
-    private static ReasonerFactory theInstance = new RDFSBRuleReasonerFactory();
+    private static ReasonerFactory theInstance = new RDFSFBRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
     public static final String URI = "http://www.hpl.hp.com/semweb/2003/RDFSBRuleReasoner";
@@ -43,7 +43,7 @@ public class RDFSBRuleReasonerFactory implements ReasonerFactory {
      * is not configurable and will ignore this parameter.
      */
     public Reasoner create(Model configuration) {
-        return new RDFSBRuleReasoner();
+        return new RDFSFBRuleReasoner();
     }
    
     /**

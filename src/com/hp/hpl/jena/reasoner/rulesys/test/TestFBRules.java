@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.1 2003-05-29 16:47:10 der Exp $
+ * $Id: TestFBRules.java,v 1.2 2003-05-30 16:26:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -14,6 +14,10 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.vocabulary.*;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.util.*;
@@ -22,7 +26,7 @@ import java.util.*;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-29 16:47:10 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:15 $
  */
 public class TestFBRules extends TestCase {
     // Useful constants
@@ -33,6 +37,19 @@ public class TestFBRules extends TestCase {
     Node n3 = Node.createURI("n3");
     Node n4 = Node.createURI("n4");
     Node res = Node.createURI("res");
+    Node r = Node.createURI("r");
+    Node s = Node.createURI("s");
+    Node t = Node.createURI("t");
+    Node a = Node.createURI("a");
+    Node b = Node.createURI("b");
+    Node c = Node.createURI("c");
+    Node d = Node.createURI("d");
+    Node C1 = Node.createURI("C1");
+    Node C2 = Node.createURI("C2");
+    Node C3 = Node.createURI("C3");
+    Node sP = RDFS.subPropertyOf.getNode();
+    Node sC = RDFS.subClassOf.getNode();
+    Node ty = RDF.type.getNode();
      
     /**
      * Boilerplate for junit
@@ -49,6 +66,15 @@ public class TestFBRules extends TestCase {
         return new TestSuite( TestFBRules.class ); 
     }  
 
+    /**
+     * Check parser extension for f/b distinction.
+     */
+    public void testParser() {
+        String rf = "(?a rdf:type ?t) -> (?t rdf:type rdfs:Class).";
+        String rb = "(?t rdf:type rdfs:Class) <- (?a rdf:type ?t).";
+        assertTrue( ! Rule.parseRule(rf).isBackward() );
+        assertTrue(   Rule.parseRule(rb).isBackward() );
+    }
      
     /**
      * Minimal rule tester to check basic pattern match, forward style.
@@ -77,7 +103,73 @@ public class TestFBRules extends TestCase {
                 new Triple(n4, n4, p),
             });
     }
-     
+    
+    /**
+     * Test functor handling
+     */
+    public void testEmbeddedFunctors() {
+        String rules = "(?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
+                       "[ -> (eg:foo eg:prop functor(eg:bar, '1')) ]" +
+                       "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
+                       "[ (?x eg:prop functor(?v, *)) -> (?x eg:propfunc ?v) ]" +
+                       "";
+        List ruleList = Rule.parseRules(rules);
+        
+        Model data = ModelFactory.createDefaultModel();
+        Resource R1 = data.createResource(PrintUtil.egNS + "R1");
+        Resource D = data.createResource(PrintUtil.egNS + "D");
+        Property p = data.createProperty(PrintUtil.egNS, "p");
+        Property prop = data.createProperty(PrintUtil.egNS, "prop");
+        Property propbar = data.createProperty(PrintUtil.egNS, "propbar");
+        Property propfunc = data.createProperty(PrintUtil.egNS, "propfunc");
+        Property rbr = data.createProperty(Rule.RBNamespace, "restriction");
+        R1.addProperty(RDF.type, OWL.Restriction)
+          .addProperty(OWL.onProperty, p)
+          .addProperty(OWL.allValuesFrom, D);
+        
+        Reasoner reasoner =  new FBRuleReasoner(ruleList);
+        InfGraph infgraph = reasoner.bind(data.getGraph());
+        Model infModel = ModelFactory.createModelForGraph(infgraph);
+        Resource foo = infModel.createResource(PrintUtil.egNS + "foo");
+        Resource bar = infModel.createResource(PrintUtil.egNS + "bar");
+        
+        RDFNode flit = infModel.getResource(R1.getURI()).getProperty(rbr).getObject();
+        assertNotNull(flit);
+        assertTrue(flit instanceof Literal);
+        Functor func = (Functor)((Literal)flit).getValue();
+        assertEquals("all", func.getName());
+        assertEquals(p.getNode(), func.getArgs()[0]);
+        assertEquals(D.getNode(), func.getArgs()[1]);
+        
+        Literal one = (Literal)foo.getProperty(propbar).getObject();
+        assertEquals(new Integer(1), one.getValue());
+    }
+    
+    /**
+     * The the minimal machinery for supporting builtins
+     */
+    public void testBuiltins() {
+        String rules =  //"[testRule1: (n1 ?p ?a) -> print('rule1test', ?p, ?a)]" +
+                       "[r1: (n1 p ?x), addOne(?x, ?y) -> (n1 q ?y)]" +
+                       "[r2: (n1 p ?x), lessThan(?x, '3') -> (n2 q ?x)]" +
+                       "[axiom1: -> (n1 p '1')]" +
+                       "[axiom2: -> (n1 p '4')]" +
+                       "";
+        List ruleList = Rule.parseRules(rules);
+        
+        InfGraph infgraph = new FBRuleReasoner(ruleList).bind(new GraphMem());
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, q, null),
+            new Triple[] {
+                new Triple(n1, q, Util.makeIntNode(2)),
+                new Triple(n1, q, Util.makeIntNode(5))
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n2, q, null),
+            new Triple[] {
+                new Triple(n2, q, Util.makeIntNode(1))
+            });
+        
+    }
+         
     /**
      * Test schmea partial binding machinery, forward subset.
      */
@@ -154,6 +246,190 @@ public class TestFBRules extends TestCase {
             });
     }
     
+
+    /**
+     * Test example pure backchaining rules
+     */
+    public void testBackchain1() {    
+        Graph data = new GraphMem();
+        data.add(new Triple(p, sP, q));
+        data.add(new Triple(q, sP, r));
+        data.add(new Triple(C1, sC, C2));
+        data.add(new Triple(C2, sC, C3));
+        data.add(new Triple(a, ty, C1));
+        List rules = Rule.parseRules(
+        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" + 
+        "[rdfs9:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
+        "[-> (rdf:type rdfs:range rdfs:Class)]" +
+        "[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c)]" +
+        "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]"
+                        );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(a, ty, null), 
+            new Object[] {
+                new Triple(a, ty, C1),
+                new Triple(a, ty, C2),
+                new Triple(a, ty, C3)
+            } );
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(C1, sC, a), 
+            new Object[] {
+            } );
+    }
+
+    /**
+     * Test complex rule head unification
+     */
+    public void testBackchain2() {    
+        Graph data = new GraphMem();
+        data.add(new Triple(c, q, d));
+        List rules = Rule.parseRules(
+            "[r1: (c r ?x) <- (?x p f(?x b))]" +
+            "[r2: (?y p f(a ?y)) <- (c q ?y)]"
+                          );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(c, r, null), new Object[] { } );
+              
+        data.add(new Triple(c, q, a));
+        rules = Rule.parseRules(
+        "[r1: (c r ?x) <- (?x p f(?x a))]" +
+        "[r2: (?y p f(a ?y)) <- (c q ?y)]"
+                          );        
+        reasoner =  new FBRuleReasoner(rules);
+        infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(c, r, null), 
+              new Object[] {
+                  new Triple(c, r, a)
+              } );
+            
+        data = new GraphMem();
+        data.add(new Triple(a, q, a));
+        data.add(new Triple(a, q, b));
+        data.add(new Triple(a, q, c));
+        data.add(new Triple(b, q, d));
+        data.add(new Triple(b, q, b));
+        rules = Rule.parseRules(
+          "[r1: (c r ?x) <- (?x p ?x)]" +
+          "[r2: (?x p ?y) <- (a q ?x), (b q ?y)]"
+                          );        
+        reasoner =  new FBRuleReasoner(rules);
+        infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(c, r, null), 
+              new Object[] {
+                  new Triple(c, r, b)
+              } );
+              
+        rules = Rule.parseRules(
+          "[r1: (c r ?x) <- (?x p ?x)]" +
+          "[r2: (a p ?x) <- (a q ?x)]"
+                          );        
+        reasoner =  new FBRuleReasoner(rules);
+        infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(c, r, null), 
+              new Object[] {
+                  new Triple(c, r, a)
+              } );
+    }
+
+    /**
+     * Test restriction example
+     */
+    public void testBackchain3() {    
+        Graph data = new GraphMem();
+        data.add(new Triple(a, ty, r));
+        data.add(new Triple(a, p, b));
+        data.add(new Triple(r, sC, C1));
+        data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
+        data.add(new Triple(C1, OWL.onProperty.asNode(), p));
+        data.add(new Triple(C1, OWL.allValuesFrom.asNode(), c));
+        List rules = Rule.parseRules(
+    "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y) (?a rdf:type ?x)]" +
+    "[restriction2: (?C owl:equivalentClass all(?P, ?D)) <- (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)]" +
+    "[rs2: (?X rdf:type all(?P,?C)) <- (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D)]" +
+    "[rp4: (?Y rdf:type ?C) <- (?X rdf:type all(?P, ?C)), (?X ?P ?Y)]"
+                          );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(b, ty, c), new Object[] {
+                  new Triple(b, ty, c)
+              } );
+    }
+    
+    /**
+     * Test example hybrid rule.
+     */
+    public void testHybrid1() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, p, b));
+        data.add(new Triple(p, ty, s));
+        List rules = Rule.parseRules(
+        "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]"
+                          );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(null, p, null), new Object[] {
+                  new Triple(a, p, b),
+                  new Triple(b, p, a)
+              } );
+    }
+    
+    /**
+     * Test example hybrid rule.
+     */
+    public void testHybrid2() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, r, b));
+        data.add(new Triple(p, ty, s));
+        List rules = Rule.parseRules(
+        "[a1: -> (a rdf:type t)]" +
+        "[r0: (?x r ?y) -> (?x p ?y)]" +
+        "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]" +
+        "[r2: (?p rdf:type s) -> [r2b: (?x ?p ?x) <- (?x rdf:type t)]]"
+                          );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(null, p, null), new Object[] {
+                  new Triple(a, p, a),
+                  new Triple(a, p, b),
+                  new Triple(b, p, a)
+              } );
+    }
+    
+    /**
+     * Test example hybrid rules for rdfs.
+     */
+    public void testHybridRDFS() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, p, b));
+        data.add(new Triple(p, RDFS.range.asNode(), C1));
+        List rules = Rule.parseRules(
+    "[rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ]" +
+    "[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]" + 
+    "[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)]" + 
+    "[rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)]" + 
+    "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]" + 
+    "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]" +
+    "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
+    "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]" +
+                          "" );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+//        ((FBRuleInfGraph)infgraph).setTraceOn(true);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(b, ty, null), new Object[] {
+                  new Triple(b, ty, C1)
+              } );
+    }
 
 }
 

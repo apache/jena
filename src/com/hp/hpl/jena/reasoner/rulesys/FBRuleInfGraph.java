@@ -5,17 +5,18 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.1 2003-05-29 16:44:57 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.2 2003-05-30 16:26:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
+import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
 import com.hp.hpl.jena.util.iterator.*;
-//import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * An inference graph that uses a mixture of forward and backward
@@ -26,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-29 16:44:57 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:13 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -35,6 +36,15 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      
     /** A finder that searches across the data, schema, axioms and forward deductions*/
     protected Finder dataFind;
+    
+    /** The core backward rule engine which includes all the memoized results */
+    protected BRuleEngine bEngine;
+    
+    /** The original rule set as supplied */
+    protected List rules;
+    
+    /** log4j logger*/
+    static Logger logger = Logger.getLogger(FBRuleInfGraph.class);
 
 //  =======================================================================
 //  Constructors
@@ -47,6 +57,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph(Reasoner reasoner, List rules, Graph schema) {
         super(reasoner, rules, schema);
+        this.rules = rules;
+        bEngine = new BRuleEngine(this);
     }
 
     /**
@@ -58,14 +70,26 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph(Reasoner reasoner, List rules, Graph schema, Graph data) {
         super(reasoner, rules, schema, data);
+        this.rules = rules;        bEngine = new BRuleEngine(this);
     }
     
 //  =======================================================================
 //   Interface between infGraph and the goal processing machinery
 
+    
     /**
-     * Match a pattern just against the stored data (raw data, schema,
-     * axioms) but no derivation.
+     * Search the combination of data and deductions graphs for the given triple pattern.
+     * This may different from the normal find operation in the base of hybrid reasoners
+     * where we are side-stepping the backward deduction step.
+     */
+    public ExtendedIterator findDataMatches(Node subject, Node predicate, Node object) {
+        return dataFind.find(new TriplePattern(subject, predicate, object));
+    }
+    
+    /**
+     * Search the combination of data and deductions graphs for the given triple pattern.
+     * This may different from the normal find operation in the base of hybrid reasoners
+     * where we are side-stepping the backward deduction step.
      */
     public ExtendedIterator findDataMatches(TriplePattern pattern) {
         return dataFind.find(pattern);
@@ -87,7 +111,128 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             throw new ReasonerException("Illegal builtin predicate: " + clause + " in rule " + rule);
         }
     }
+    
+    /**
+     * Adds a new Backward rule as a rules of a forward rule process. Only some
+     * infgraphs support this.
+     */
+    public void addBRule(Rule brule) {
+        logger.debug("Adding rule " + brule);
+        bEngine.addRule(brule);
+        bEngine.reset();
+    }
+    
+//  =======================================================================
+//  Core inf graph methods
+    
+    /**
+     * Perform any initial processing and caching. This call is optional. Most
+     * engines either have negligable set up work or will perform an implicit
+     * "prepare" if necessary. The call is provided for those occasions where
+     * substantial preparation work is possible (e.g. running a forward chaining
+     * rule system) and where an application might wish greater control over when
+     * this prepration is done.
+     */
+    public void prepare() {
+        if (!isPrepared) {
+            isPrepared = true;
+            // initilize the deductions graph
+            deductions = new FGraph( new GraphMem() );
+            dataFind = (fdata == null) ? deductions :  FinderUtil.cascade(deductions, fdata);
+            if (schemaGraph != null) {
+                preloadDeductions(schemaGraph);
+            }
+            extractPureBackwardRules();
+            engine.init(true);
+            context = new BBRuleContext(this, dataFind);
+        }
+    }
+    
+    /**
+     * Cause the inference graph to reconsult the underlying graph to take
+     * into account changes. Normally changes are made through the InfGraph's add and
+     * remove calls are will be handled appropriately. However, in some cases changes
+     * are made "behind the InfGraph's back" and this forces a full reconsult of
+     * the changed data. 
+     */
+    public void rebind() {
+        if (bEngine != null) bEngine.reset();
+        isPrepared = false;
+    }
+    
+    /**
+     * Set the state of the trace flag. If set to true then rule firings
+     * are logged out to the Logger at "INFO" level.
+     */
+    public void setTraceOn(boolean state) {
+        super.setTraceOn(state);
+        bEngine.setTraceOn(state);
+    }
+   
+    /**
+     * Extended find interface used in situations where the implementator
+     * may or may not be able to answer the complete query. It will
+     * attempt to answer the pattern but if its answers are not known
+     * to be complete then it will also pass the request on to the nested
+     * Finder to append more results.
+     * @param pattern a TriplePattern to be matched against the data
+     * @param continuation either a Finder or a normal Graph which
+     * will be asked for additional match results if the implementor
+     * may not have completely satisfied the query.
+     */
+    public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        if (!isPrepared) prepare();
+        
+        if (continuation == null) {
+            return WrappedIterator.create( new TopGoalIterator(bEngine, pattern) );
+        } else {
+            return WrappedIterator.create( new TopGoalIterator(bEngine, pattern) )
+                            .andThen(continuation.find(pattern));
+        }
+    }
+   
+    /** 
+     * Returns an iterator over Triples.
+     * This implementation assumes that the underlying findWithContinuation 
+     * will have also consulted the raw data.
+     */
+    public ExtendedIterator find(Node subject, Node property, Node object) {
+        return findWithContinuation(new TriplePattern(subject, property, object), null);
+    }
 
+    /**
+     * Basic pattern lookup interface.
+     * This implementation assumes that the underlying findWithContinuation 
+     * will have also consulted the raw data.
+     * @param pattern a TriplePattern to be matched against the data
+     * @return a ExtendedIterator over all Triples in the data set
+     *  that match the pattern
+     */
+    public ExtendedIterator find(TriplePattern pattern) {
+        return findWithContinuation(pattern, null);
+    }
+
+    /**
+     * Flush out all cached results. Future queries have to start from scratch.
+     */
+    public void reset() {
+        bEngine.reset();
+        isPrepared = false;
+    }
+
+    /**
+     * Scan the initial rule set and pick out all the backward-only rules with non-null bodies,
+     * and transfer these rules to the backward engine. 
+     */
+    private void extractPureBackwardRules() {
+        for (Iterator i = rules.iterator(); i.hasNext(); ) {
+            Rule r = (Rule)i.next();
+            if (r.isBackward() && r.bodyLength() > 0) {
+                bEngine.addRule(r);
+            }
+        }
+    }
+    
 }
 
 

@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns="&eg;">
+
+  <rdfs:Resource rdf:about="&eg;a" />
+  <rdfs:Resource rdf:about="&eg;b" />
+  <rdfs:Resource rdf:about="&eg;c" />
+  <rdfs:Resource rdf:about="&eg;d" />
+  <rdfs:Resource rdf:about="&eg;p" />
+  <rdfs:Resource rdf:about="&eg;q" />
+  <rdfs:Resource rdf:about="&eg;r" />
+  <rdfs:Resource rdf:about="&eg;C1" />
+  <rdfs:Resource rdf:about="&eg;C2" />
+  <rdfs:Resource rdf:about="&eg;C3" />
+  <rdfs:Resource rdf:about="&eg;D" />
+<!--  <rdfs:Resource rdf:about="&eg;fubar" />  -->
+  
+   <rdfs:Resource rdf:about="&rdf;type" />
+   <rdfs:Resource rdf:about="&rdf;Statement" />
+   <rdfs:Resource rdf:about="&rdf;nil" />
+   <rdfs:Resource rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Resource rdf:about="&rdf;List" />
+   <rdfs:Resource rdf:about="&rdf;Property" />
+   <rdfs:Resource rdf:about="&rdf;subject" />
+   <rdfs:Resource rdf:about="&rdf;predicate" />
+   <rdfs:Resource rdf:about="&rdf;object" />
+   <rdfs:Resource rdf:about="&rdf;first" />
+   <rdfs:Resource rdf:about="&rdf;rest" />
+   
+   <rdfs:Resource rdf:about="&rdfs;Resource" />
+   <rdfs:Resource rdf:about="&rdfs;Literal" />
+   <rdfs:Resource rdf:about="&rdfs;Class" />
+   <rdfs:Resource rdf:about="&rdfs;Datatype" />
+   <rdfs:Resource rdf:about="&rdfs;range" />
+   <rdfs:Resource rdf:about="&rdfs;domain" />
+   <rdfs:Resource rdf:about="&rdfs;subPropertyOf" />
+   <rdfs:Resource rdf:about="&rdfs;subClassOf" />
+   
+  <rdf:Property rdf:about="&eg;p" />
+  <rdf:Property rdf:about="&eg;q" />
+  <rdf:Property rdf:about="&eg;r" />
+<!--  <rdf:Property rdf:about="&eg;fubar" />  -->
+  
+   <rdf:Property rdf:about="&rdf;subject" />
+   <rdf:Property rdf:about="&rdf;predicate" />
+   <rdf:Property rdf:about="&rdf;object" />
+   <rdf:Property rdf:about="&rdf;first" />
+   <rdf:Property rdf:about="&rdf;rest" />
+   <rdf:Property rdf:about="&rdf;type" />
+   
+   <rdf:Property rdf:about="&rdfs;range" />
+   <rdf:Property rdf:about="&rdfs;domain" />
+   <rdf:Property rdf:about="&rdfs;subPropertyOf" />
+   <rdf:Property rdf:about="&rdfs;subClassOf" />
+
+  <rdfs:Class rdf:about="&eg;D" />
+  <rdfs:Class rdf:about="&eg;C1" />
+  <rdfs:Class rdf:about="&eg;C2" />
+  <rdfs:Class rdf:about="&eg;C3" />
+  
+  <rdfs:Class rdf:about="&rdfs;Resource" />
+  <rdfs:Class rdf:about="&rdf;Property" />
+  <rdfs:Class rdf:about="&rdf;List" />
+  <rdfs:Class rdf:about="&rdfs;Class" />
+  <rdfs:Class rdf:about="&rdfs;Datatype" />
+  <rdfs:Class rdf:about="&rdfs;Literal" />
+  <rdfs:Class rdf:about="&rdf;Statement" />
+  
+  <D rdf:about="&eg;a" />
+  <D rdf:about="&eg;c" />
+
+  <C3 rdf:about="&eg;b" />
+  <C2 rdf:about="&eg;b" />
+  <C1 rdf:about="&eg;b" />
+
+  <C3 rdf:about="&eg;d" />
+  <C2 rdf:about="&eg;d" />
+  <C1 rdf:about="&eg;d" />
+
+  <rdfs:Datatype rdf:about="&rdf;XMLLiteral" />
+  <rdf:List rdf:about="&rdf;nil" />
+
+   <rdf:Property rdf:about="&rdfs;seeAlso" />
+   <rdf:Property rdf:about="&rdfs;label" />
+   <rdf:Property rdf:about="&rdfs;isDefinedBy" />
+   <rdf:Property rdf:about="&rdfs;comment" />
+
+   <rdfs:Resource rdf:about="&rdf;Seq" />
+   <rdfs:Resource rdf:about="&rdf;Bag" />
+   <rdfs:Resource rdf:about="&rdf;Alt" />
+   <rdfs:Resource rdf:about="&rdfs;isDefinedBy" />
+   <rdfs:Resource rdf:about="&rdfs;seeAlso" />
+   <rdfs:Resource rdf:about="&rdfs;comment" />
+   <rdfs:Resource rdf:about="&rdfs;ContainerMembershipProperty" />
+   <rdfs:Resource rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Resource rdf:about="&rdfs;Container" />
+   <rdfs:Resource rdf:about="&rdfs;label" />
+
+   <rdfs:Class rdf:about="&rdf;Seq" />
+   <rdfs:Class rdf:about="&rdf;Bag" />
+   <rdfs:Class rdf:about="&rdf;Alt" />
+   <rdfs:Class rdf:about="&rdfs;ContainerMembershipProperty" />
+   <rdfs:Class rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Class rdf:about="&rdfs;Container" />
+
+</rdf:RDF>

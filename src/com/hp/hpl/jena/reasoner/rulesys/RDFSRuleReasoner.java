@@ -5,28 +5,27 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.3 2003-05-27 15:50:23 der Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.4 2003-05-30 16:26:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import java.io.*;
-import org.apache.log4j.Logger;
 import java.util.*;
+
+import com.hp.hpl.jena.reasoner.ReasonerException;
 /** * An pure forward chaining implementation of the RDFS closure rules
  * based upon the basic forward rule interpreter. The normal mixed
  * forward/backward implementation is generally preferred but this has 
  * two possible uses. First, it is a test and demonstration of the forward
  * chainer. Second, if you want all the RDFS entailments for an entire 
  * dataset the forward chainer will be more efficient.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.3 $ on $Date: 2003-05-27 15:50:23 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-05-30 16:26:13 $ */
 public class RDFSRuleReasoner extends BasicForwardRuleReasoner {    
     /** The location of the OWL rule definitions on the class path */
     public static final String RULE_FILE = "etc/rdfs.rules";
+//    public static final String RULE_FILE = "etc/rdfs-noresource.rules";
     
     /** The parsed rules */
     protected static List ruleSet;
-    
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(RDFSRuleReasoner.class);
     
     /**
      * Constructor
@@ -43,7 +42,7 @@ public class RDFSRuleReasoner extends BasicForwardRuleReasoner {
             try {
                 ruleSet = Rule.parseRules(Util.loadResourceFile(RULE_FILE));
             } catch (IOException e) {
-                logger.error("Can't load rules file: " + RULE_FILE);
+                throw new ReasonerException("Can't load rules file: " + RULE_FILE, e);
             }
         }
         return ruleSet;

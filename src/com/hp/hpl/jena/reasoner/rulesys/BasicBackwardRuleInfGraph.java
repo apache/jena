@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.11 2003-05-29 16:44:57 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.12 2003-05-30 16:26:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-05-29 16:44:57 $
+ * @version $Revision: 1.12 $ on $Date: 2003-05-30 16:26:13 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -88,7 +88,6 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
             fschema = new FGraph(reasoner.schemaGraph);
         }
         
-        // Set up the chain of searches for triple matches in the raw data
         rules = reasoner.getRules();
         // Set up the backchaining engine
         engine = new BRuleEngine(this, ruleStore);
@@ -158,9 +157,13 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         if (!isPrepared) prepare();
-        return WrappedIterator.create(
-             new TopGoalIterator( engine.findGoal(pattern) )
-        );
+        if (continuation == null) {
+            return WrappedIterator.create( new TopGoalIterator(engine, pattern) );
+        } else {
+            return WrappedIterator.create( new TopGoalIterator(engine, pattern) )
+                            .andThen(continuation.find(pattern));
+        }
+
     }
    
     /** 
@@ -212,7 +215,11 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
      * The derivation is a List of DerivationRecords
      */
     public Iterator getDerivation(Triple t) {
-        return derivations.getAll(t);
+        if (derivations == null) {
+            return new NullIterator();
+        } else {
+            return derivations.getAll(t);
+        }
     }
     
     /**
@@ -298,80 +305,8 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
             }
         }
     }
-    
-//  =======================================================================
-//   Inner classes
 
-    /**
-     * Top level result iterator. Pumps the top level GoalState until
-     * it hits fail or the agenda is empty and it hits suspend.
-     */
-    class TopGoalIterator implements ClosableIterator {
-        
-        /** The GoalState which is traversing the top level derivation tree */
-        GoalState goalState;
-        
-        /** The next result to be returned, or null if we have finished */
-        Object lookAhead;
-        
-        /**
-         * Constructor. Wraps a top level goal state as an iterator
-         */
-        TopGoalIterator(GoalState goalState) {
-            this.goalState = goalState;
-            moveForward();
-        }
-        
-        /**
-         * Find the next result in the goal state and put it in the
-         * lookahead buffer.
-         */
-        private void moveForward() {
-            lookAhead = goalState.next();
-            if (lookAhead == StateFlag.SUSPEND) {
-                if (engine.next(goalState) != null) {
-                    lookAhead = goalState.next();
-                } else {
-                    lookAhead = null;
-                }
-            } else if (lookAhead == StateFlag.FAIL) {
-                lookAhead = null;
-            }
-            if (lookAhead == null) close();
-        }
-        
-        /**
-         * @see com.hp.hpl.jena.util.iterator.ClosableIterator#close()
-         */
-        public void close() {
-            goalState.close();
-            engine.halt();
-        }
-    
-        /**
-         * @see java.util.Iterator#hasNext()
-         */
-        public boolean hasNext() {
-            return (lookAhead != null);
-        }
-    
-        /**
-         * @see java.util.Iterator#next()
-         */
-        public Object next() {
-            Object result = lookAhead;
-            moveForward();
-            return result;
-        }
-    
-        /**
-         * @see java.util.Iterator#remove()
-         */
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
 
-    }
 }
 
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BackwardRuleInfGraphI.java,v 1.1 2003-05-29 16:44:56 der Exp $
+ * $Id: BackwardRuleInfGraphI.java,v 1.2 2003-05-30 16:26:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * to exploit the same core backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-29 16:44:56 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:12 $
  */
 public interface BackwardRuleInfGraphI {
             
@@ -33,7 +33,7 @@ public interface BackwardRuleInfGraphI {
 
     /**
      * Match a pattern just against the stored data (raw data, schema,
-     * axioms) but no derivation.
+     * axioms) but no backchaining derivation.
      */
     public ExtendedIterator findDataMatches(TriplePattern pattern);
 

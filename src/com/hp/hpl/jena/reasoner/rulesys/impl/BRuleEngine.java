@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.14 2003-05-29 16:46:27 der Exp $
+ * $Id: BRuleEngine.java,v 1.15 2003-05-30 16:26:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-05-29 16:46:27 $
+ * @version $Revision: 1.15 $ on $Date: 2003-05-30 16:26:14 $
  */
 public class BRuleEngine {
 
@@ -69,11 +69,30 @@ public class BRuleEngine {
     }
     
     /**
+     * Constructor. Creates an empty engine to which rules must be added.
+     * @param infGraph the parent inference graph which is using this engine
+     */
+    public BRuleEngine(BackwardRuleInfGraphI infGraph) {
+        this.infGraph = infGraph;
+        goalTable = new GoalTable(this);
+        ruleStore = new RuleStore();
+    }
+    
+    /**
      * Clear all tabled results.
      */
     public synchronized void reset() {
         agenda.clear();
         goalTable.reset();
+    }
+    
+    /**
+     * Add a single rule to the store.
+     * N.B. This will invalidate current partial results and the engine
+     * should be reset() before future queries. 
+     */
+    public void addRule(Rule rule) {
+        ruleStore.addRule(rule);
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.2 2003-05-29 16:46:27 der Exp $
+ * $Id: BFRuleContext.java,v 1.3 2003-05-30 16:26:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-29 16:46:27 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-30 16:26:14 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -175,7 +175,7 @@ public class BFRuleContext implements RuleContext {
      */
     public ClosableIterator find(Node s, Node p, Node o) {
         //return graph.find(s, p, o).andThen(pendingCache.find(s, p, o));
-        return graph.findForward(s, p, o);
+        return graph.findDataMatches(s, p, o);
     }
     
     /**

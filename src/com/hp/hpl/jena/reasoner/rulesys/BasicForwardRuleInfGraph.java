@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.9 2003-05-29 16:44:57 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.10 2003-05-30 16:26:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-29 16:44:57 $
+ * @version $Revision: 1.10 $ on $Date: 2003-05-30 16:26:12 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -127,7 +127,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         if (schemaGraph != null) {
             preloadDeductions(schemaGraph);
         }
-        engine.init();
+        engine.init(false);
     }
 
     /**
@@ -255,7 +255,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * This may different from the normal find operation in the base of hybrid reasoners
      * where we are side-stepping the backward deduction step.
      */
-    public ExtendedIterator findForward(Node subject, Node predicate, Node object) {
+    public ExtendedIterator findDataMatches(Node subject, Node predicate, Node object) {
         return find(subject, predicate, object);
     }
    
@@ -288,7 +288,11 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * The derivation is a List of DerivationRecords
      */
     public Iterator getDerivation(Triple t) {
-        return derivations.getAll(t);
+        if (derivations == null) {
+            return new NullIterator();
+        } else {
+            return derivations.getAll(t);
+        }
     }
     
     /**

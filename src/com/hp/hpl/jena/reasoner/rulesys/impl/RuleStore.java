@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleStore.java,v 1.5 2003-05-16 16:39:56 der Exp $
+ * $Id: RuleStore.java,v 1.6 2003-05-30 16:26:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,44 +26,56 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-16 16:39:56 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-30 16:26:14 $
  */
 public class RuleStore {
 
     /** The set of rules indexed by head predicate */
-    protected OneToManyMap goalMap;
+    protected OneToManyMap goalMap = new OneToManyMap();
     
     /** The list of all rules in the store */
     protected List allRules;
     
     /**
+     * Constructor. Create an empty rule store.
+     */
+    public RuleStore() {
+    };
+    
+    /**
      * Constructor. Stores and indexes a list of rules.
      */
     public RuleStore(List rules) {
-        allRules = rules;
-        goalMap = new OneToManyMap();
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule rule = (Rule)i.next();
-            if (rule.headLength() != 1) {
-                for (int j = 0; j < rule.headLength(); j++) {
-                    Rule newRule = new Rule(rule.getName(), 
-                                        new Object[] {rule.getHeadElement(j)}, 
-                                        rule.getBody() );
-                    newRule.setNumVars(rule.getNumVars());
-                    addRule(newRule);
-                }
-                
-            } else {
-                addRule(rule);
-            }
+            addRule( (Rule)i.next() );
         }
+        allRules = rules;
+    }
+    
+    /**
+     * Add a single rule to the store. 
+     */
+    public void addRule(Rule rule) {
+        if (rule.headLength() != 1) {
+            for (int j = 0; j < rule.headLength(); j++) {
+                Rule newRule = new Rule(rule.getName(), 
+                                    new Object[] {rule.getHeadElement(j)}, 
+                                    rule.getBody() );
+                newRule.setNumVars(rule.getNumVars());
+                doAddRule(newRule);
+            }
+                
+        } else {
+            doAddRule(rule);
+        }
+        if (allRules != null) allRules.add(rule);
     }
     
     /**
      * Add a single rule to the store. It assumes the rule
      * has a single head element.
      */
-    public void addRule(Rule rule) {
+    private void doAddRule(Rule rule) {
         Object headClause = rule.getHeadElement(0);
         if (headClause instanceof TriplePattern) {
             TriplePattern headpattern = (TriplePattern)headClause;

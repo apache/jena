@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.1 2003-05-29 16:46:27 der Exp $
+ * $Id: FRuleEngine.java,v 1.2 2003-05-30 16:26:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-29 16:46:27 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:14 $
  */
 public class FRuleEngine {
     
@@ -75,7 +75,6 @@ public class FRuleEngine {
     public FRuleEngine(ForwardRuleInfGraphI parent, List rules) {
         infGraph = parent;
         this.rules = rules;
-        buildClauseIndex();
     }
     
 //  =======================================================================
@@ -85,8 +84,10 @@ public class FRuleEngine {
      * Process all available data. This should be called once a deductions graph
      * has be prepared and loaded with any precomputed deductions. It will process
      * the rule axioms and all relevant existing exiting data entries.
+     * @param ignoreBrules set to true if rules written in backward notation should be ignored
      */
-    public void init() {
+    public void init(boolean ignoreBrules) {
+        buildClauseIndex(ignoreBrules);
         findAndProcessAxioms();
         nAxiomRulesFired = nRulesFired;
         logger.debug("Axioms fired " + nAxiomRulesFired + " rules");
@@ -189,12 +190,14 @@ public class FRuleEngine {
     
     /**
      * Index the rule clauses by predicate.
+     * @param ignoreBrules set to true if rules written in backward notation should be ignored
      */
-    protected void buildClauseIndex() {
+    protected void buildClauseIndex(boolean ignoreBrules) {
         clauseIndex = new OneToManyMap();
         
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
             Rule r = (Rule)i.next();
+            if (ignoreBrules && r.isBackward()) continue;
             Object[] body = r.getBody();
             for (int j = 0; j < body.length; j++) {
                 if (body[j] instanceof TriplePattern) {
@@ -353,7 +356,14 @@ public class FRuleEngine {
                     if (imp != null) {
                         imp.headAction(f.getBoundArgs(env), context);
                     } else {
-                        logger.warn("Invoking undefined Functor " + f.getName() +" in " + rule.toShortString());
+                        throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + rule.toShortString());
+                    }
+                } else if (hClause instanceof Rule) {
+                    Rule r = (Rule)hClause;
+                    if (r.isBackward()) {
+                        infGraph.addBRule(r.instantiate(env));
+                    } else {
+                        throw new ReasonerException("Found non-backward subrule : " + r); 
                     }
                 }
             }
@@ -367,7 +377,7 @@ public class FRuleEngine {
             // Can't search on functor patterns so leave that as a wildcard
             objPattern = null;
         }
-        Iterator i = infGraph.findForward(
+        Iterator i = infGraph.findDataMatches(
                             env.getBinding(clause.getSubject()),
                             env.getBinding(clause.getPredicate()),
                             env.getBinding(objPattern));

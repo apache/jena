@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLRuleReasoner.java,v 1.6 2003-05-29 16:44:57 der Exp $
+ * $Id: OWLRuleReasoner.java,v 1.7 2003-05-30 16:26:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-29 16:44:57 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-30 16:26:13 $
  */
 public class OWLRuleReasoner extends BasicForwardRuleReasoner {
     
@@ -71,7 +71,7 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
             try {
                 ruleSet = Rule.parseRules(Util.loadResourceFile(RULE_FILE));
             } catch (IOException e) {
-                logger.error("Can't load rules file: " + RULE_FILE);
+                throw new ReasonerException("Can't load rules file: " + RULE_FILE, e);
             }
         }
         return ruleSet;

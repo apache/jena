@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: InfGraph.java,v 1.6 2003-05-12 15:20:24 der Exp $
+ * $Id: InfGraph.java,v 1.7 2003-05-30 16:26:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
  * form more complex queries.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-12 15:20:24 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-30 16:26:14 $
  */
 public interface InfGraph extends Graph {
 
@@ -69,6 +69,14 @@ public interface InfGraph extends Graph {
      * this prepration is done.
      */
     public void prepare();
+    
+    /**
+     * Reset any internal caches. Some systems, such as the tabled backchainer, 
+     * retain information after each query. A reset will wipe this information preventing
+     * unbounded memory use at the expense of more expensive future queries. A reset
+     * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
+     */
+    public void reset();
     
     /**
      * Test a global boolean property of the graph. This might included

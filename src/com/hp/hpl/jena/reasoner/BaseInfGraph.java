@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.12 2003-05-28 11:13:54 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.13 2003-05-30 16:26:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -18,7 +18,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-05-28 11:13:54 $
+ * @version $Revision: 1.13 $ on $Date: 2003-05-30 16:26:14 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -81,6 +81,15 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      */
     public void rebind() {
         isPrepared = false;
+    }
+    
+    /**
+     * Reset any internal caches. Some systems, such as the tabled backchainer, 
+     * retain information after each query. A reset will wipe this information preventing
+     * unbounded memory use at the expense of more expensive future queries. A reset
+     * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
+     */
+    public void reset() {
     }
     
     /**

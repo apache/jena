@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BBRuleContext.java,v 1.1 2003-05-05 15:15:59 der Exp $
+ * $Id: BBRuleContext.java,v 1.2 2003-05-30 16:26:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * interpret variable bindings to access the static triple data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:59 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-30 16:26:13 $
  */
 public class BBRuleContext implements RuleContext {
     
@@ -32,7 +32,7 @@ public class BBRuleContext implements RuleContext {
     protected Rule rule;
     
     /** The enclosing inference graph. */
-    protected BasicBackwardRuleInfGraph graph;
+    protected InfGraph graph;
     
     /** The set of ground triples to be searched by the find operations */
     protected Finder searchpath;
@@ -41,7 +41,7 @@ public class BBRuleContext implements RuleContext {
      * Construct an empty context. It can't be used until
      * the rule and environment have been set.
      */
-    public BBRuleContext(BasicBackwardRuleInfGraph graph, Finder searchpath) {
+    public BBRuleContext(InfGraph graph, Finder searchpath) {
         this.graph = graph;
         this.searchpath = searchpath;
     }
