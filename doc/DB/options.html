@@ -160,21 +160,23 @@
     should be compressed. Resource URI's shorter than this value will be stored 
     fully expanded.</dd>
     <dt>TableNamePrefix</dt>
-    <dd>Every database table created by Jena uses a common prefix. This option 
-    allows users to specify the prefix. This option affects all Jena tables, 
+    <dd>Every database table created by Jena has a common prefix. This option 
+    allows users to specify the prefix. It affects all Jena tables and indexes, 
     including the Jena system table. Consequently, with this option it is 
     possible to have multiple Jena persistent stores, each with different 
     formatting options (e.g., LongObjectLength, DoCompressURI, etc.) in a single 
     database instance, with each store having a distinct prefix.</dd>
     <dd>&nbsp;&nbsp;&nbsp; Note that this option differs from the previous 
-    options in that it must be set on every connection that access the store. 
+    options in that it must be set on <i>every</i> connection that access the store. 
     Otherwise, the subsystem will assume the default prefix and will not be able 
     to locate the Jena system table which contains the configuration.</dd>
     <dd>&nbsp;&nbsp;&nbsp; The maximum 
     length of the prefix is database-dependent and an exception may be thrown if 
     the prefix is too long. Otherwise, it is the user's responsibility to ensure 
     that the prefix name conforms to the naming conventions for the underlying 
-    database engine (e.g., certain prohibited special characters).</dd>
+    database engine (e.g., certain prohibited special characters). Also, if the 
+    database requires upper case table names (or lower case), the prefix will be 
+    automatically (silently) converted to that convention.</dd>
     <dd>&nbsp;&nbsp;&nbsp; This option has subtle semantics and should be used 
     with care. Always use the following code sequence to ensure that the prefix 
     is set correctly for the database connection.<font SIZE="2"><blockquote>
