@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.44 $
+ * Revision           $Revision: 1.45 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-25 08:31:30 $
+ * Last modified on   $Date: 2003-08-26 13:46:51 $
  *               by   $Author: der $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,6 +24,7 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -50,7 +51,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.44 2003-08-25 08:31:30 der Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.45 2003-08-26 13:46:51 der Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -81,6 +82,9 @@ public class OntModelImpl
     
     /** The union graph that contains the imports closure - there is always one of these, which may also be _the_ graph for the model */
     protected MultiUnion m_union = new MultiUnion();
+    
+    /** The listener that detects dynamically added or removed imports statments */
+    protected ImportsListener m_importsListener = null;
     
     
     // Constructors
@@ -1457,6 +1461,19 @@ public class OntModelImpl
     
     /**
      * <p>
+     * Record that this model no longer imports the document with the given
+     * URI.
+     * </p>
+     * 
+     * @param uri A document URI that is no longer imported into the model.
+     */
+    public void removeLoadedImport( String uri ) {
+        m_imported.remove( uri );
+    }
+    
+    
+    /**
+     * <p>
      * Answer a list of the imported URI's in this ontology model. Detection of <code>imports</code>
      * statments will be according to the local language profile
      * </p>
@@ -1546,6 +1563,7 @@ public class OntModelImpl
         
         // we have to duplicate the encoding translation here, since there's no method on Model
         // to read from a URL with a separate baseURI
+        // TODO clean this up when bug 791843 is fixed
         try {
             URLConnection conn = new URL( sourceURL ).openConnection();
             String encoding = conn.getContentEncoding();
@@ -1678,6 +1696,38 @@ public class OntModelImpl
     
     /**
      * <p>
+     * Remove the given model as one of the sub-models of the enclosed ontology union model.    Will 
+     * cause the associated infererence engine (if any) to update, so this may be
+     * an expensive operation in some cases. 
+     * </p>
+     *
+     * @param model A sub-model to remove 
+     * @see #addSubModel( Model, boolean )
+     */
+    public void removeSubModel( Model model ) {
+        removeSubModel( model, true );
+    }
+    
+    
+    /**
+     * <p>
+     * Remove the given model as one of the sub-models of the enclosed ontology union model.
+     * </p>
+     *
+     * @param model A sub-model to remove
+     * @param rebind If true, rebind any associated inferencing engine to the new data (which
+     * may be an expensive operation) 
+     */
+    public void removeSubModel( Model model, boolean rebind ) {
+        getUnionGraph().removeGraph( model.getGraph() );
+        if (rebind) {
+            rebind();
+        }
+    }
+    
+    
+    /**
+     * <p>
      * Answer true if this model is currently in <i>strict checking mode</i>. Strict
      * mode means
      * that converting a common resource to a particular language element, such as
@@ -1702,6 +1752,42 @@ public class OntModelImpl
      */
     public void setStrictMode( boolean strict ) {
         m_strictMode = strict;
+    }
+    
+    
+    /**
+     * <p>Set the flag that controls whether adding or removing <i>imports</i>
+     * statements into the 
+     * model will result in the imports closure changing dynamically.</p>
+     * @param dynamic If true, adding or removing an imports statement to the
+     * model will result in a change in the imports closure.  If false, changes
+     * to the imports are not monitored dynamically. Default false.
+     */
+    public void setDynamicImports( boolean dynamic ) {
+        if (dynamic) {
+            if (m_importsListener == null) {
+                // turn on dynamic processing
+                m_importsListener = new ImportsListener();
+                register( m_importsListener );
+            }
+        }
+        else {
+            if (m_importsListener != null) {
+                // turn off dynamic processing
+                unregister( m_importsListener );
+                m_importsListener = null;
+            }
+        }
+    }
+    
+    
+    /**
+     * <p>Answer true if the imports closure of the model will be dynamically 
+     * updated as imports statements are added and removed.</p>
+     * @return True if the imports closure is updated dynamically.
+     */
+    public boolean getDynamicImports() {
+        return m_importsListener != null;
     }
     
     
@@ -2168,6 +2254,23 @@ public class OntModelImpl
             }
             else {
                 return acc;
+            }
+        }
+    }
+    
+    /** Listener for model changes that indicate a change in the imports to the model */
+    protected class ImportsListener
+        extends StatementListener
+    {
+        public void addedStatement( Statement added ) {
+            if (added.getPredicate().equals( getProfile().IMPORTS() )) {
+                getDocumentManager().loadImport( OntModelImpl.this, added.getResource().getURI() );
+            }
+        }
+        
+        public void removedStatement( Statement removed ) {
+            if (removed.getPredicate().equals( getProfile().IMPORTS() )) {
+                getDocumentManager().unloadImport( OntModelImpl.this, removed.getResource().getURI() );
             }
         }
     }

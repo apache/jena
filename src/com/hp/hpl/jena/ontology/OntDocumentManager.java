@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-20 11:38:44 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 13:46:51 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -24,8 +24,11 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
+import java.io.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.*;
+import java.net.URLConnection;
 import java.util.*;
 
 import org.apache.log4j.*;
@@ -47,7 +50,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.25 2003-08-20 11:38:44 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.26 2003-08-26 13:46:51 der Exp $
  */
 public class OntDocumentManager
 {
@@ -549,23 +552,106 @@ public class OntDocumentManager
 
             // add the imported statements from the given model to the processing queue
             queueImports( model, readQueue, model.getProfile() );
-
-            while (!readQueue.isEmpty()) {
-                // we process the import statements as a FIFO queue
-                String importURI = (String) readQueue.remove( 0 );
-
-                if (!model.hasLoadedImport( importURI )  &&  !ignoringImport( importURI )) {
-                    // this file has not been processed yet
-                    loadImport( model, importURI, readQueue );
-                }
-            }
+            loadImports( model, readQueue );
         }
     }
 
 
+    /**
+     * <p>Add the given model from the given URI as an import to the given model.  Any models imported by the given 
+     * URI will also be imported.</p>
+     * 
+     * @param model A model to import into
+     * @param uri The URI of a document to import
+     */
+    public void loadImport( OntModel model, String uri ) {
+        if (m_processImports) {
+            List readQueue = new ArrayList();
+            readQueue.add( uri );
+            loadImports( model, readQueue );
+        }
+    }
+    
+
+    /**
+     * <p>Remove from the given model the import denoted by the given URI.</p>
+     * 
+     * @param model A model
+     * @param uri The URI of a document to no longer import
+     */
+    public void unloadImport( OntModel model, String uri ) {
+        if (m_processImports) {
+            List unloadQueue = new ArrayList();
+            unloadQueue.add( uri );
+            unloadImports( model, unloadQueue );
+        }
+    }
+    
+
     // Internal implementation methods
     //////////////////////////////////
 
+    /**
+     * <p>Load all of the imports in the queue</p>
+     * @param model The model to load the imports into
+     * @param readQueue The queue of imports to load
+     */
+    protected void loadImports( OntModel model, List readQueue ) {
+        while (!readQueue.isEmpty()) {
+            // we process the import statements as a FIFO queue
+            String importURI = (String) readQueue.remove( 0 );
+
+            if (!model.hasLoadedImport( importURI )  &&  !ignoringImport( importURI )) {
+                // this file has not been processed yet
+                loadImport( model, importURI, readQueue );
+            }
+        }
+    }
+
+    
+    /**
+     * <p>Unload all of the imports in the queue</p>
+     * @param model The model to unload the imports from
+     * @param readQueue The queue of imports to unload
+     */
+    protected void unloadImports( OntModel model, List unloadQueue ) {
+        while (!unloadQueue.isEmpty()) {
+            // we process the import statements as a FIFO queue
+            String importURI = (String) unloadQueue.remove( 0 );
+
+            if (model.hasLoadedImport( importURI )) {
+                // this import has not been unloaded yet
+                
+                // look up the cached model - if we can't find it, we can't unload the import
+                Model importModel = getModel( importURI );
+                if (importModel != null) {
+                    List imports = new ArrayList();
+                    
+                    // collect a list of the imports from the model that is scheduled for removal
+                    for (StmtIterator i = importModel.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
+                        imports.add( i.nextStatement().getResource().getURI() );
+                    }
+                    
+                    // now remove the sub-model
+                    model.removeSubModel( importModel, false );
+                    model.removeLoadedImport( importURI );
+                    
+                    // check the list of imports of the model we have removed - if they are not
+                    // imported by other imports that remain, we should remove them as well
+                    for (StmtIterator i = model.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
+                        imports.remove( i.nextStatement().getResource().getURI() );
+                    }
+                    
+                    // any imports that remain are scheduled for removal
+                    unloadQueue.addAll( imports );
+                }
+            }
+        }
+        
+        model.rebind();
+    }
+
+    
     /**
      * <p>Add the ontologies imported by the given model to the end of the queue.</p>
      */
@@ -791,7 +877,25 @@ public class OntDocumentManager
 
             if (is == null) {
                 // we can't get this URI as a system resource, so just try to read it in the normal way
-                model.read( resolvableURI, lang );
+                // we have to duplicate the encoding translation here, since there's no method on Model
+                // to read from a URL with a separate baseURI
+                // TODO clean this up when bug 791843 is fixed
+                try {
+                    URLConnection conn = new URL( resolvableURI ).openConnection();
+                    String encoding = conn.getContentEncoding();
+            
+                    if (encoding == null) {
+                        model.read( conn.getInputStream(), uri, lang );
+                    }
+                    else {
+                        model.read( new InputStreamReader(conn.getInputStream(), encoding), uri, lang );
+                    }
+                } 
+                catch (IOException e) {
+                    throw new JenaException( e);
+                }
+
+                // TODO remove model.read( resolvableURI, lang );
             }
             else {
                 try {
