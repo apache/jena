@@ -1,10 +1,15 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.22 2003-09-11 14:09:55 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.23 2003-09-12 10:30:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -33,10 +38,13 @@ public class TestModelSpec extends ModelTestBase
     public static TestSuite suite()
         { return new TestSuite( TestModelSpec.class ); }
         
-    protected Model aModel = ModelFactory.createDefaultModel();
+    protected static final Model aModel = ModelFactory.createDefaultModel();
         
-    protected Resource resource( String URI )
+    protected static Resource resource( String URI )
         { return aModel.createResource( URI ); }
+        
+    protected static Resource resource()
+        { return ResourceFactory.createResource(); }
         
     public void testNotFindMaker()
         {
@@ -124,7 +132,7 @@ public class TestModelSpec extends ModelTestBase
                                   
     public void testCreateByName()
         {
-        Resource plain = ResourceFactory.createResource();
+        Resource plain = resource();
         Model desc = createPlainModelDesc( plain );
         ModelSpec ms = ModelSpecImpl.create( plain, desc );  
         assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
@@ -132,8 +140,8 @@ public class TestModelSpec extends ModelTestBase
         
     public void testCreateByNameChoice()
         {
-        Resource plain = ResourceFactory.createResource();
-        Resource inf = ResourceFactory.createResource();
+        Resource plain = resource();
+        Resource inf = resource();
         String URI = DAMLMicroReasonerFactory.URI;
         Model desc = createPlainModelDesc( plain ).add( createInfModelDesc( inf, URI ) );
         ModelSpec ms = ModelSpecImpl.create( plain, desc );  
@@ -198,7 +206,7 @@ public class TestModelSpec extends ModelTestBase
         OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
         Model spec = ModelFactory.createDefaultModel();
         String lang = oms.getLanguage();
-        Resource me = ResourceFactory.createResource();
+        Resource me = resource();
         Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
         spec.add( me, JMS.ontLanguage, lang );
         Resource r = spec.createResource();
@@ -230,6 +238,32 @@ public class TestModelSpec extends ModelTestBase
             { pass(); } 
         }
         
+    public void testCreateFromResource() throws FileNotFoundException, IOException
+        {
+        File temp = tempFileName( "pre", ".rdf" );   
+        Model desc = createPlainModelDesc();
+        writeModel( temp, desc );
+        ModelSpec ms = ModelSpecImpl.create( resource( "file:" + temp ) );
+        assertIsoModels( desc, ms.getDescription() );
+        }
+    
+    public void testCreateRootedFromResource() throws FileNotFoundException, IOException
+        {
+        File temp = tempFileName( "pre", ".rdf" );  
+        Resource root = resource( "eh:gibberish" ); 
+        Model desc = createPlainModelDesc( root );
+        writeModel( temp, desc );
+        ModelSpec ms = ModelSpecImpl.create( root, resource( "file:" + temp ) );
+        assertIsoModels( desc, ms.getDescription( root ) );
+        }
+        
+    protected void writeModel( File f, Model m ) throws FileNotFoundException, IOException
+        {
+        FileOutputStream fos = new FileOutputStream( f );
+        m.write( fos );
+        fos.close();    
+        }
+                
     public void testCreateMemModelMaker()
         {
         Resource mem = JMS.MemMakerSpec;
@@ -249,7 +283,7 @@ public class TestModelSpec extends ModelTestBase
     public void testCreateFileModelMakerRooted()
         {
         String fileBase = "/somewhere";
-        Resource me = ResourceFactory.createResource();
+        Resource me = resource();
         Model spec = ModelFactory.createDefaultModel()
             .add( me, RDF.type, JMS.FileMakerSpec )
             .add( me, JMS.fileBase, fileBase )
@@ -259,13 +293,12 @@ public class TestModelSpec extends ModelTestBase
         assertEquals( fileBase, fgm.getFileBase() );
     /* */
         Model desc = ModelFactory.createModelForGraph( fgm.getDescription() );
-        assertTrue( desc.listStatements( null, JMS.fileBase, fileBase ).hasNext() );
-        
+        assertTrue( desc.listStatements( null, JMS.fileBase, fileBase ).hasNext() );        
         }
         
     public void testCreateModelMaker( Resource style, Resource cl, Class required )
         {
-        Resource me = ResourceFactory.createResource();
+        Resource me = resource();
         ReificationStyle wanted = JMS.findStyle( style );
         Model spec = modelWithStatements( "" )
             .add( me, RDF.type, cl )
@@ -277,7 +310,7 @@ public class TestModelSpec extends ModelTestBase
                 
     public void testCreatePlainMemModel()
         {
-        Resource me = ResourceFactory.createResource();
+        Resource me = resource();
         Model spec = createPlainModelDesc( me );
         PlainModelSpec pms = new PlainModelSpec( me, spec );
         ModelMaker mm = pms.getModelMaker();
@@ -290,8 +323,8 @@ public class TestModelSpec extends ModelTestBase
         
     public void testCreatePlainFileModel()
         {
-        Resource me = ResourceFactory.createResource();
-        Resource maker = ResourceFactory.createResource();
+        Resource me = resource();
+        Resource maker = resource();
         Model spec = createPlainModelDesc( me, maker, JMS.FileMakerSpec ); 
         PlainModelSpec pms = new PlainModelSpec( me, spec );
         ModelMaker mm = pms.getModelMaker();
@@ -307,14 +340,14 @@ public class TestModelSpec extends ModelTestBase
         resource is a fresh bnode.
 	*/
 	public static Model createPlainModelDesc()
-	    { return createPlainModelDesc( ResourceFactory.createResource() ); }
+	    { return createPlainModelDesc( resource() ); }
 
     /**
         Answer a description of a plain memory Model with Minimal reification; the root
         resource is supplied.
     */        
     public static Model createPlainModelDesc( Resource root )
-        { return createPlainModelDesc( root, ResourceFactory.createResource() ); }
+        { return createPlainModelDesc( root, resource() ); }
         
     public static Model createPlainModelDesc( Resource root, Resource maker )
         { return createPlainModelDesc( root, maker, JMS.MemMakerSpec ); }
@@ -328,13 +361,13 @@ public class TestModelSpec extends ModelTestBase
         }
                                                                 
     public static Model createInfModelDesc( String URI )
-        { return createInfModelDesc( ResourceFactory.createResource(), URI ); }
+        { return createInfModelDesc( resource(), URI ); }
         
     public static Model createInfModelDesc( Resource root, String URI )
         {
-        Resource maker = ResourceFactory.createResource();
-        Resource reasoner = ResourceFactory.createResource();
-        Resource res = ResourceFactory.createResource( URI );
+        Resource maker = resource();
+        Resource reasoner = resource();
+        Resource res = resource( URI );
         return ModelFactory.createDefaultModel()
             .add( root, JMS.reasonsWith, reasoner )
             .add( reasoner, JMS.reasoner, res )

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.21 2003-09-11 14:09:35 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.22 2003-09-12 10:30:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -54,7 +55,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         
     public ModelSpecImpl( Resource root, Model description )
         { this( createMaker( root, description ) ); }
-
+        
     /**
         Answer a Model created according to this ModelSpec; left abstract for subclasses
         to implement.
@@ -78,7 +79,30 @@ public abstract class ModelSpecImpl implements ModelSpec
     public abstract Property getMakerProperty();
     
     /**
-        @see createByRoot
+        Answer a ModelSpec created from the RDF model to be found using the URI of
+        the (non-bnode) Resource.
+        
+        see com.hp.hpl.jena.rdf.model.impl.createByRoot
+     	@param desc the resource who's URI names the model to read
+     	@return a ModelSpec as described by the resource
+    */
+    public static ModelSpec create( Resource desc )
+        { return create( readModel( desc ) ); }
+        
+    /**
+        Answer a ModelSpec created from the RDF model to be found using the URI of
+        the (non-bnode) Resource and starting from the given root.
+        
+        see com.hp.hpl.jena.rdf.model.impl.createByRoot
+        @param root the root of the description within the model
+        @param desc the resource who's URI names the model to read
+        @return a ModelSpec as described by the resource
+    */        
+    public static ModelSpec create( Resource root, Resource desc )
+        { return create( root, readModel( desc ) ); }
+        
+    /**
+        see com.hp.hpl.jena.rdf.model.impl.createByRoot
         @param desc a model containing a JMS description
         @return a ModelSpec fitting that description
     */
@@ -87,7 +111,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         return createByRoot( findRootByType( d, JMS.ModelSpec ), d ); }
         
     /**
-        @see createByRoot
+        see com.hp.hpl.jena.rdf.model.impl.createByRoot
         @param root theJMS:ModelSpec resource that roots the description
         @param desc a model containing a JMS description
         @return a ModelSpec fitting that description
@@ -228,7 +252,18 @@ public abstract class ModelSpecImpl implements ModelSpec
         ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
         if (mmc == null) throw new RuntimeException( "no maker type" );  
         return mmc.create( fullDesc, root ); }
-
+        
+    /**
+        Read a model from a given URI.
+     	@param source the resource who's URI specifies what to laod
+     	@return the model as loaded from the resource URI
+     */
+    public static Model readModel( Resource source )
+        {
+        String uri = source.getURI();
+        return ModelLoader.loadModel( uri );
+        }
+        
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.16 2003-09-10 15:31:26 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.17 2003-09-12 10:30:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -119,7 +119,7 @@ public class FileGraphMaker extends BaseGraphMaker
         systems will be reasonably liberal. We'll see ...
         
     	@param name
-    	@return
+    	@return name with underbar, slash, and colon escaped as _U, _S, _C
      */
     public static String toFilename( String name )
         {
