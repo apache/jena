@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:12:01 $
+ * Last modified on   $Date: 2003-04-30 15:15:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -25,7 +25,7 @@ package com.hp.hpl.jena.graph.compose;
 // Imports
 ///////////////
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.util.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.3 2003-04-08 22:12:01 ian_dickinson Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.4 2003-04-30 15:15:22 ian_dickinson Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -111,8 +111,7 @@ public class MultiUnion
             getBaseGraph().add( t );
         }
         catch (NullPointerException e) {
-            // TODO: this should be changed to JenaException when it gets done
-            throw new RDFException( "Tried to add to a union graph that has no component graphs." );
+            throw new JenaException( "Tried to add to a union graph that has no component graphs." );
         }
     }
 
@@ -131,8 +130,7 @@ public class MultiUnion
             getBaseGraph().delete( t );
         }
         catch (NullPointerException e) {
-            // TODO: this should be changed to JenaException when it gets done
-            throw new RDFException( "Tried to delete from a union graph that has no component graphs." );
+            throw new JenaException( "Tried to delete from a union graph that has no component graphs." );
         }
     }
 
