@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.5 2005-02-21 12:17:56 andy_seaborne Exp $
+ * $Id: LPTopGoalIterator.java,v 1.6 2005-03-23 14:04:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * inference graph if the iterator hits the end of the result set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-02-21 12:17:56 $
+ * @version $Revision: 1.6 $ on $Date: 2005-03-23 14:04:24 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
@@ -143,6 +143,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
                 // Close this top goal
                 lookAhead = null;
                 interpreter.close();
+                // was TEMP experiment: interpreter.getEngine().detach(interpreter);
                 interpreter = null;
                 isReady = false;
                 checkReadyNeeded = false;

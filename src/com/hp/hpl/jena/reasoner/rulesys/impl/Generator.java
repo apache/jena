@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Generator.java,v 1.5 2005-02-23 11:41:57 der Exp $
+ * $Id: Generator.java,v 1.6 2005-03-23 14:04:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-02-23 11:41:57 $
+ * @version $Revision: 1.6 $ on $Date: 2005-03-23 14:04:24 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -180,9 +180,9 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     public void removeConsumer(ConsumerChoicePointFrame ccp) {
         consumingCPs.remove(ccp);
         // We used to set it complete if there were no consumers left.
-        // However, a generator might be part of one query, in completely consumed
-        // and then opened again on a different query it seems safe to omit this
-        // TODO review
+        // However, a generator might be part of one query, incompletely consumed
+        // and then opened again on a different query,
+        // it seems better to omit this. TODO review
 //        if (!isComplete() &&consumingCPs.isEmpty()) {
 //            setComplete();
 //        }

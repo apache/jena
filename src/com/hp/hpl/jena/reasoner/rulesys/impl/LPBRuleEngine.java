@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.7 2005-02-23 11:41:57 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.8 2005-03-23 14:04:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-23 11:41:57 $
+ * @version $Revision: 1.8 $ on $Date: 2005-03-23 14:04:24 $
  */
 public class LPBRuleEngine {
     
@@ -208,7 +208,7 @@ public class LPBRuleEngine {
      * an unclosed iterator. So instead we try to close the iterators and assume the
      * rest of the context will be reset by the add call.
      * 
-     * <p>Should be called from with a synchronized block.
+     * <p>Should be called from within a synchronized block.
      */
     public void checkSafeToUpdate() {
         if (!activeInterpreters.isEmpty()) {
