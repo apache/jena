@@ -15,7 +15,7 @@
 	<owl:Class rdf:ID="A">
 
         <owl:disjointWith>
-           <rdf:Description rdf:ID="B"/>
+           <rdf:Description rdf:about="#B"/>
         </owl:disjointWith>
 
 	     <rdfs:subClassOf>

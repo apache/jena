@@ -27,6 +27,6 @@
     	<dp rdf:datatype="&xsd;int">1</dp>
     </A>
     
-    <B rdf:ID="ia" />
+    <B rdf:about="#ia" />
     
 </rdf:RDF>
