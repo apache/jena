@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.22 2003-08-27 14:15:22 der Exp $
+ * $Id: DebugOWL.java,v 1.23 2003-09-15 22:15:14 ksmathers Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-08-27 14:15:22 $
+ * @version $Revision: 1.23 $ on $Date: 2003-09-15 22:15:14 $
  */
 public class DebugOWL {
 
@@ -113,8 +113,8 @@ public class DebugOWL {
                 break;
             
             case OWL:
-                reasoner = OWLRuleReasonerFactory.theInstance().create(null);
-//                ((OWLRuleReasoner)reasoner).setTraceOn(true);
+                reasoner = OWLExptRuleReasonerFactory.theInstance().create(null);
+//                ((OWLExptRuleReasoner)reasoner).setTraceOn(true);
                 break;
             
             case RDFSFB:
