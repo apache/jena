@@ -1,15 +1,12 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphMemBase.java,v 1.1 2004-07-09 11:02:43 chris-dollin Exp $
+  $Id: GraphMemBase.java,v 1.2 2004-08-03 08:32:02 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.17 2004-07-22 10:11:47 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.18 2004-08-03 08:32:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -9,10 +9,8 @@ package com.hp.hpl.jena.graph.query.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.query.Expression.Util;
-import com.hp.hpl.jena.graph.test.*;
 
 import com.hp.hpl.jena.util.HashUtils;
-import com.hp.hpl.jena.util.iterator.Map1;
 
 import junit.framework.*;
 import java.util.*;

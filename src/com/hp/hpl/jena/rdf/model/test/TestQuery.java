@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestQuery.java,v 1.8 2004-06-17 10:47:25 chris-dollin Exp $
+  $Id: TestQuery.java,v 1.9 2004-08-03 08:32:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.graph.*;

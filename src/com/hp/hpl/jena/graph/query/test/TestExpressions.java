@@ -1,16 +1,14 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.6 2004-07-22 10:11:47 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.7 2004-08-03 08:32:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import junit.framework.*;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.graph.test.GraphTestBase;
 
 /**
  	@author hedgehog

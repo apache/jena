@@ -1,11 +1,10 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.9 2004-07-30 15:23:09 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.10 2004-08-03 08:32:03 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
-import java.net.URL;
 import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;

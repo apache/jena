@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestReaderEvents.java,v 1.2 2004-06-30 09:52:18 chris-dollin Exp $
+  $Id: TestReaderEvents.java,v 1.3 2004-08-03 08:32:03 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.io.StringReader;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.test.RecordingListener;
 import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.TestSuite;

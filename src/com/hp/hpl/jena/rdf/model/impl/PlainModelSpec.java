@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.7 2004-06-18 14:18:44 chris-dollin Exp $
+  $Id: PlainModelSpec.java,v 1.8 2004-08-03 08:32:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**

@@ -1,24 +1,15 @@
 /*
 	(c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: TestSmallGraphMem.java,v 1.2 2004-07-09 11:02:43 chris-dollin Exp $
+	$Id: TestSmallGraphMem.java,v 1.3 2004-08-03 08:32:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
 
-import java.util.Set;
-
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
-import com.hp.hpl.jena.mem.GraphMem;
-import com.hp.hpl.jena.mem.GraphMemBulkUpdateHandler;
 import com.hp.hpl.jena.mem.SmallGraphMem;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.HashUtils;
-import com.hp.hpl.jena.util.iterator.*;
 
 
 /**

@@ -1,11 +1,10 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.4 2004-08-02 15:09:03 chris-dollin Exp $
+  $Id: Rewrite.java,v 1.5 2004-08-03 08:30:32 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
-import com.hp.hpl.jena.rdql.parser.Q_PatternLiteral;
 import com.hp.hpl.jena.shared.JenaException;
 
 /**
