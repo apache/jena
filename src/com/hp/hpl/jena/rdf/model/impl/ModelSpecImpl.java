@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.18 2003-08-27 15:17:45 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.19 2003-09-11 09:29:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -51,6 +51,9 @@ public abstract class ModelSpecImpl implements ModelSpec
     */
     public ModelSpecImpl( Model description )
         { this( createMaker( description ) ); }
+        
+    public ModelSpecImpl( Resource root, Model description )
+        { this( createMaker( root, description ) ); }
 
     /**
         Answer a Model created according to this ModelSpec; left abstract for subclasses
@@ -93,6 +96,15 @@ public abstract class ModelSpecImpl implements ModelSpec
         if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
         return sc.create( desc );
         }
+        
+//    public static ModelSpec create( Resource root, Model desc )
+//        {
+//        Model d = withSchema( desc );
+//        Resource type = findSpecificType( d, root, JMS.ModelSpec );
+//        ModelSpecCreator sc = ModelSpecCreatorRegistry.findCreator( type );
+//        if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
+//        return sc.create( root, desc );    
+//        }
 
     /**
         Answer the "most specific" type of root in desc which is an instance of type.
@@ -176,14 +188,16 @@ public abstract class ModelSpecImpl implements ModelSpec
         @param m the model in which the typed subject is sought
         @param type the RDF type the subject must have
         @return the unique S such that (S rdf:type type)
-        @exception SomeException[s] if there's not exactly one subject
+        @exception BadDescriptionException if there's not exactly one subject
     */        
-    public static Resource findRootByType( Model description, Resource r )
+    public static Resource findRootByType( Model description, Resource type )
         { 
         Model d = withSchema( description );
-        ResIterator rs  = d.listSubjectsWithProperty( RDF.type, r );
-        if (rs.hasNext()) return rs.nextResource();
-        throw new BadDescriptionException( "no " + r + " thing found", description );
+        ResIterator rs  = d.listSubjectsWithProperty( RDF.type, type );
+        if (!rs.hasNext()) throw new BadDescriptionException( "no " + type + " thing found", description );
+        Resource result = rs.nextResource();
+        if (rs.hasNext()) throw new BadDescriptionException( "ambiguous " + type + " thing found", description );
+        return result;
         }
     
     /**
@@ -199,6 +213,18 @@ public abstract class ModelSpecImpl implements ModelSpec
         Model description = withSchema( d );
         Resource root = findRootByType( description, JMS.MakerSpec );
         Resource type = findSpecificType( description, root, JMS.MakerSpec );
+        ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
+        if (mmc == null) throw new RuntimeException( "no maker type" );  
+        return mmc.create( description, root ); 
+        }
+        
+    public static ModelMaker createMaker( Resource root, Model d )
+        {
+        Model description = withSchema( d );
+        // Resource root = findRootByType( description, JMS.MakerSpec );
+        Resource type = findSpecificType( description, root, JMS.MakerSpec );
+        System.err.println( ">> type " + type );
+        d.write( System.err, "N-TRIPLE" );
         ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
         if (mmc == null) throw new RuntimeException( "no maker type" );  
         return mmc.create( description, root ); 

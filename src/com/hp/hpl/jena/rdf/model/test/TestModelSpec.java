@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.19 2003-09-08 12:13:17 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.20 2003-09-11 09:29:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -74,7 +74,8 @@ public class TestModelSpec extends ModelTestBase
         {
         Resource type = resource( "jms:SomeType" );    
         ModelSpecCreator c = new ModelSpecCreator() 
-            { public ModelSpec create( Model m ) { return null; } };
+            { public ModelSpec create( Model m ) { return null; }
+            public ModelSpec create( Resource root, Model m ) { return null; } };
         ModelSpecCreatorRegistry.register( type, c );
         assertSame( c, ModelSpecCreatorRegistry.findCreator( type ) );    
         }
@@ -84,9 +85,11 @@ public class TestModelSpec extends ModelTestBase
         Resource type1 = resource( "jms:SomeType1" );    
         Resource type2 = resource( "jms:SomeType2" );    
         ModelSpecCreator c1 = new ModelSpecCreator()
-            { public ModelSpec create( Model m ) { return null; } };
+            { public ModelSpec create( Model m ) { return null; }
+             public ModelSpec create( Resource root, Model m ) { return null; }  };
         ModelSpecCreator c2 = new ModelSpecCreator() 
-            { public ModelSpec create( Model m ) { return null; } };
+            { public ModelSpec create( Model m ) { return null; }
+             public ModelSpec create( Resource root, Model m ) { return null; }  };
         ModelSpecCreatorRegistry.register( type1, c1 );
         ModelSpecCreatorRegistry.register( type2, c2 );
         assertSame( c1, ModelSpecCreatorRegistry.findCreator( type1 ) );   
@@ -114,6 +117,23 @@ public class TestModelSpec extends ModelTestBase
         Model m = ms.createModelOver( "iName" );
         assertTrue( m.getGraph() instanceof InfGraph );
         }   
+        
+    public void testDetectRootAmbiguity()
+        {
+        Model desc = createPlainModelDesc().add( createPlainModelDesc() );
+        try { ModelSpecImpl.create( desc ); fail( "must trap ambiguous description" ); }
+        catch (BadDescriptionException b) { pass(); }
+        }
+                                  
+    public void testCreateByName()
+        {
+//        Resource plain = ResourceFactory.createResource();
+//        Resource inf = ResourceFactory.createResource();
+//        String URI = DAMLMicroReasonerFactory.URI;
+//        Model desc = createPlainModelDesc( plain ).add( createInfModelDesc( inf, URI ) );
+//        ModelSpec ms = ModelSpecImpl.create( plain, desc );  
+//        assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
+        }
                           
     public void testOntModeSpecIsaModelSpec()
         {
@@ -286,21 +306,30 @@ public class TestModelSpec extends ModelTestBase
         }
 
 	/**
-	    Answer a description of a plain memory Model with Minimal reification.
-	 */
+	    Answer a description of a plain memory Model with Minimal reification; the root
+        resource is a fresh bnode.
+	*/
 	public static Model createPlainModelDesc()
-	    {
-	    Resource root = ResourceFactory.createResource();
-	    Resource maker = ResourceFactory.createResource();
-	    return ModelFactory.createDefaultModel()
-	        .add( root, JMS.maker, maker )
-	        .add( maker, RDF.type, JMS.MemMakerSpec )
-	        .add( maker, JMS.reificationMode, JMS.rsMinimal );
-	    }
-        
-    public static Model createInfModelDesc( String URI )
+	    { return createPlainModelDesc( ResourceFactory.createResource() ); }
+
+    /**
+        Answer a description of a plain memory Model with Minimal reification; the root
+        resource is supplied.
+    */        
+    public static Model createPlainModelDesc( Resource root )
         {
-        Resource root = ResourceFactory.createResource();
+        Resource maker = ResourceFactory.createResource();
+        return ModelFactory.createDefaultModel()
+            .add( root, JMS.maker, maker )
+            .add( maker, RDF.type, JMS.MemMakerSpec )
+            .add( maker, JMS.reificationMode, JMS.rsMinimal );
+        }
+                
+    public static Model createInfModelDesc( String URI )
+        { return createInfModelDesc( ResourceFactory.createResource(), URI ); }
+        
+    public static Model createInfModelDesc( Resource root, String URI )
+        {
         Resource maker = ResourceFactory.createResource();
         Resource reasoner = ResourceFactory.createResource();
         Resource res = ResourceFactory.createResource( URI );
