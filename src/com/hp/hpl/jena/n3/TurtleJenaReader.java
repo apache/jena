@@ -7,7 +7,7 @@ package com.hp.hpl.jena.n3;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TurtleJenaReader.java,v 1.1 2004-11-04 16:59:40 andy_seaborne Exp $
+ * @version 	$Id: TurtleJenaReader.java,v 1.2 2004-11-29 11:48:01 andy_seaborne Exp $
  */
 
 
@@ -15,7 +15,11 @@ package com.hp.hpl.jena.n3;
 public class TurtleJenaReader extends N3JenaReader
 {
 	public TurtleJenaReader()
-    { super() ; super.converter.allowPropertySymbols = false ; }
+    {
+	    super() ;
+        super.converter.allowPropertySymbols = false ;
+        super.converter.allowKeywordA = true ;
+    }
 	
 }
 

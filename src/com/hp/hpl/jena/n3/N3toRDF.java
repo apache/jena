@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.22 2004-11-04 16:59:40 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.23 2004-11-29 11:48:01 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -34,6 +34,7 @@ public class N3toRDF implements N3ParserEventHandler
     Map myPrefixMapping = new HashMap() ;
     
     boolean allowPropertySymbols = true ;
+    boolean allowKeywordA        = true ;
 	
 	// Well known namespaces
 	
@@ -175,7 +176,7 @@ public class N3toRDF implements N3ParserEventHandler
                     pNode = OWL.sameAs ;
 					break;
 				case N3Parser.KW_A :
-                    if ( ! allowPropertySymbols )
+                    if ( ! allowKeywordA )
                         error("Line "+line+": N3toRDF: Propertry symbol 'a' not allowed") ;
                     pNode = RDF.type ;
 					break ;
