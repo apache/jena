@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.5 2003-06-17 14:39:31 chris-dollin Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.6 2003-06-19 16:12:03 andy_seaborne Exp $
  */
 
 
@@ -379,9 +379,10 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             // Simple objects - allow property to be long and alignment to be lost
             if (propStr.length() < widePropertyLen)
                 padSp = pad(calcPropertyPadding(propStr)) ;
-
             
+            out.incIndent(indentObject) ; 
             out.print(propStr);
+
             if ( padSp != null )
                 out.print(padSp) ;
             else
@@ -396,6 +397,8 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
                 if (iter.hasNext())
                     out.print(objectListSep);
             }
+            
+            out.decIndent(indentObject) ;
         }        
         // Now do complex objects.
         // Write property each time for a complex object.
@@ -403,6 +406,10 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
         if (complex.size() > 0)
         {
+            // Finish the simple list if there was one
+            if ( simple.size() > 0 )
+                out.println(" ;");
+            
             String padSp = null ;
             // Complex objects - do not allow property tobe long and alignment to be lost
             if (propStr.length() < propertyCol)
