@@ -1,42 +1,33 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: MonontonicErrorAnalyzer.java,v 1.2 2003-12-04 10:49:15 jeremy_carroll Exp $
+  $Id: AbsLookup.java,v 1.1 2003-12-04 10:49:15 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
 /**
- * 
- * This class looks at particular triples and tries to
- * work out what went wrong, giving a specific anaylsis.
+ * Impelements the methods for accessing the bits
+ * within the ALL-ACTIONS part of a lookup result.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-class MonontonicErrorAnalyzer {
-	static Lookup look = LookupTable.get();
-	static final int SZ = CategorySet.unsorted.size();
-  static final boolean isClassOnly[] = new boolean[SZ];
-  static final boolean isPropertyOnly[] = new boolean[SZ];
-  static final boolean isUserID[] = new boolean[SZ];
-  static final boolean isBlank[] = new boolean[SZ];
-  static final boolean isBuiltin[] = new boolean[SZ];
-	static {
-		for (int i=7;i<SZ;i++) {
-			if (look.meet(i,Grammar.classOnly)==i) {
-				isClassOnly[i] = true;
-			}
-			if (look.meet(i,Grammar.propertyOnly)==i) {
-				isPropertyOnly[i] = true;
-			}
-			if (look.meet(i,Grammar.userID)==i) {
-				isUserID[i] = true;
-			}
-			if (look.meet(i,Grammar.blank)==i) {
-				isBlank[i] = true;
-			}
-		}
+abstract public class AbsLookup implements Lookup,Constants {
+	public int action(int k) {
+		return  allActions( k) & ~(DL | ObjectAction|SubjectAction|RemoveTriple);
 	}
 
+	public boolean tripleForObject(int k) {
+		return (allActions( k) & ObjectAction) == ObjectAction;
+	}
+	public boolean tripleForSubject(int k) {
+		return (allActions( k) & SubjectAction) == SubjectAction;
+	}
+	public boolean removeTriple(int k) {
+		return (allActions( k) & RemoveTriple) == RemoveTriple;
+	}	
+   public boolean dl(int k) {
+	   return (allActions( k) & DL) == DL;
+   }
 }
 
 /*

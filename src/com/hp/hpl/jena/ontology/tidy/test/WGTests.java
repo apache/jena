@@ -83,7 +83,7 @@ public class WGTests extends java.lang.Object {
 
 	static public Test suite() {
 		TestSuite s = new TestSuite("OWL-Syntax");
-		s.addTest(Extra.suite());
+//		s.addTest(Extra.suite());
 		InputStream manifest;
 		if (factory == null) {
 			if (internet) {

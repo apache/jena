@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.6 2003-12-03 21:30:41 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.7 2003-12-04 10:49:14 jeremy_carroll Exp $
 */
 package owlcompiler;
 
 import java.util.*;
 
 import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
-import com.hp.hpl.jena.ontology.tidy.impl.Lookup;
+import com.hp.hpl.jena.ontology.tidy.impl.AbsLookup;
 import com.hp.hpl.jena.shared.BrokenException;
 
 /**
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.shared.BrokenException;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-public class SubCategorize implements Constants,Lookup {
+public class SubCategorize extends AbsLookup implements Constants  {
 	static final int ActionMask = (1<<ActionShift)-1;
 	static final private int notType[] =
 		{
@@ -438,7 +438,7 @@ public class SubCategorize implements Constants,Lookup {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#subject(int)
 	 */
-	public int subject(int k) {
+	public int subject(int old, int k) {
 		
 		return (int)(lookups[k]>>(2*W))&M;
 	}
@@ -446,38 +446,18 @@ public class SubCategorize implements Constants,Lookup {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#prop(int)
 	 */
-	public int prop(int k) {
+	public int prop(int old, int k) {
 		return (int)(lookups[k]>>(W))&M;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#object(int)
 	 */
-	public int object(int k) {
+	public int object(int old, int k) {
 		return (int)(lookups[k])&M;
 	}
 
-	public int action(int k) {
-		return  allActions( k) & ~(DL | ObjectAction|SubjectAction|RemoveTriple);
-	}
 
-	public boolean tripleForObject(int k) {
-		return (allActions( k) & ObjectAction) == ObjectAction;
-	}
-	public boolean tripleForSubject(int k) {
-		return (allActions( k) & SubjectAction) == SubjectAction;
-	}
-	public boolean removeTriple(int k) {
-		return //false;
-		(allActions( k) & RemoveTriple) == RemoveTriple;
-	}	
-	/**
-	*@param refinement The result of {@link #refineTriple(int,int,int)}
-	* @return Is this triple in DL?.
-	*/
-   public boolean dl(int k) {
-	   return (allActions( k) & DL) == DL;
-   }
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#allActions(int)
 	 */

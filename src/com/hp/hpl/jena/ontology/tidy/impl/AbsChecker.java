@@ -16,7 +16,7 @@ import java.util.*;
 abstract class AbsChecker implements Constants {
 	//Lookup look = new owlcompiler.SubCategorize();
 	
-	Lookup look = new LookupTable();
+	Lookup look = LookupTable.get();
 	
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;
@@ -131,9 +131,9 @@ abstract class AbsChecker implements Constants {
 						setMonotoneLevel(Levels.DL);
 					}
 				}
-				s0 = look.subject(key);
-				p0 = look.prop(key);
-				o0 = look.object(key);
+				s0 = look.subject(s0, key);
+				p0 = look.prop(p0, key);
+				o0 = look.object(o0, key);
 				int meet;
 				switch (meetCase) {
 					case 0:

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Lookup.java,v 1.2 2003-11-30 23:39:17 jeremy_carroll Exp $
+  $Id: Lookup.java,v 1.3 2003-12-04 10:49:14 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -25,21 +25,21 @@ public interface Lookup {
 	  * @param subj The old subcategory for the subject.
 	  * @return The new subcategory for the subject.
 	  */
-	public abstract int subject(int refinement);
+	public abstract int subject(int old, int refinement);
 	/**
 	  * 
 	  * @param refinement The result of {@link #refineTriple(int,int,int)}
 	  * @param prop The old subcategory for the property.
 	  * @return The new subcategory for the property.
 	  */
-	public abstract int prop(int refinement);
+	public abstract int prop(int old, int refinement);
 	/**
 	  * 
 	  * @param refinement The result of {@link #refineTriple(int,int,int)}
 	  * @param obj The old subcategory for the object.
 	  * @return The new subcategory for the object.
 	  */
-	public abstract int object(int refinement);
+	public abstract int object(int old, int refinement);
 	/**
 	  * 
 	  * @param refinement The result of {@link #refineTriple(int,int,int)}

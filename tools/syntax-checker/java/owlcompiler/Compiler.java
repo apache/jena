@@ -17,6 +17,8 @@
 package owlcompiler;
 
 import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
+import com.hp.hpl.jena.ontology.tidy.impl.LookupTable;
+import com.hp.hpl.jena.ontology.tidy.impl.LookupLimits;
 //import com.hp.hpl.jena.ontology.tidy.impl.Grammar;
 //import com.hp.hpl.jena.ontology.tidy.impl.Q;
 import com.hp.hpl.jena.shared.*;
@@ -28,7 +30,7 @@ import java.io.*;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class Compiler implements Constants {
+public class Compiler implements Constants, LookupLimits {
 
 	final private String SAVEFILE = "tmp/huge.ser";
 	static private long lookup[][];
@@ -61,39 +63,80 @@ public class Compiler implements Constants {
 	}
 	*/
 	private void saveResults() {
-		int key[] = new int[huge.size()];
-		int value[] = new int[huge.size()];
-		byte action[] = new byte[huge.size()];
-		if (1 << WW <= possible.size())
-			throw new BrokenException("Compiler failure: WW is not big enough");
+		final int NCATS = CategorySet.unsorted.size();
+		byte propId[] = new byte[NCATS];
+		byte propertiesUsedWithObject[][] = new byte[NCATS][];
+		int keysByObjectAndPropertyIndex[][][] = new int[NCATS][][];
+		
+		Map objectValues[] = new Map[NCATS];
+		
+		int refinedSubject[][] = new int[NCATS][];
+		int refinedProperty[][] = new int[NCATS][];
+		int refinedObject[][] = new int[NCATS][];
+		
+		subjInfo.save(refinedSubject,false,NSUBJMAX);
+		propInfo.save(refinedProperty,true,NPROPMAX);
+		objInfo.save(refinedObject,false,NOBJMAX);
+		
+		propInfo.compressBefore(propId);
+		
 		Iterator it = huge.entrySet().iterator();
-		int i = 0;
 		while (it.hasNext()) {
-			Map.Entry ent = (Map.Entry) it.next();
-			long k = ((Long) ent.getKey()).longValue();
-			long v = ((Long) ent.getValue()).longValue();
-			short spo[] = expand(k);
-			key[i] = (spo[0] << (WW * 2)) | (spo[1] << WW) | spo[2];
-			spo = expand(v);
-			value[i] = (spo[0] << (WW * 2)) | (spo[1] << WW) | spo[2];
-			action[i] = (byte) spo[3];
-			if (i > 0 && key[i] <= key[i - 1])
-				throw new BrokenException("Sort error");
-			i++;
+			Map.Entry ent = (Map.Entry)it.next();
+			short key[] = expand(((Long)ent.getKey()).longValue());
+			short val[] = expand(((Long)ent.getValue()).longValue());
+			Map vals = objectValues[key[2]];
+			if (vals == null) {
+				vals = new TreeMap();
+				objectValues[key[2]] = vals;
+			}
+			if (key[0]>SUBJMAX)
+			  throw new BrokenException("Field width limit for SUBJECT exceeded");
+			if (val[3]>ACTIONMAX)
+  			throw new BrokenException("Field width limit for ACTION exceeded");
+  	  Byte pId = new Byte(propId[key[1]]);
+  		Set refine = (Set)vals.get(pId);
+  		if ( refine == null ) {
+  			refine = new HashSet();
+  			vals.put(pId,refine);
+  		}
+			refine.add(new Integer(
+			  ( key[0] << SUBJSHIFT )
+			  | (subjInfo.newId(key[0],val[0])<<NSUBJSHIFT)
+			  | (propInfo.newId(key[1],val[1])<<NPROPSHIFT)
+			  | (objInfo.newId(key[2],val[2])<<NOBJSHIFT)
+			  | (val[3]<<ACTIONSHIFT)
+			  ));
 		}
-
-		try {
-			FileOutputStream ostream = new FileOutputStream(DATAFILE);
-			ObjectOutputStream p = new ObjectOutputStream(ostream);
-			p.writeObject(key);
-			p.writeObject(value);
-			p.writeObject(action);
-			p.writeObject(CategorySet.unsorted);
-			p.flush();
-			ostream.close();
-		} catch (IOException e) {
-			throw new BrokenException(e);
+		for (int i=0;i<NCATS;i++) {
+			if (objectValues[i]!=null) {
+				Map vals = objectValues[i];
+				propertiesUsedWithObject[i] = new byte[vals.size()];
+				keysByObjectAndPropertyIndex[i] = new int[vals.size()][];
+				int ix = 0;
+				Iterator mit = vals.entrySet().iterator();
+				while (mit.hasNext()) {
+					Map.Entry ent = (Map.Entry)mit.next();
+					propertiesUsedWithObject[i][ix] = ((Byte)ent.getKey()).byteValue();
+					Set refine = (Set)ent.getValue();
+					int a[] = new int[refine.size()];
+					Iterator rit = refine.iterator();
+					int aix = 0;
+					while (rit.hasNext())
+					  a[aix++] = ((Integer)rit.next()).intValue();
+					Arrays.sort(a);
+					keysByObjectAndPropertyIndex[i][ix] = intern(a);
+					ix++;
+				}
+			}
 		}
+		new LookupTable(
+		propId,
+		propertiesUsedWithObject,
+		keysByObjectAndPropertyIndex,
+		refinedSubject,
+		refinedProperty,
+		refinedObject).save();
 	}
 
 	private void initLookup() {
@@ -120,6 +163,7 @@ public class Compiler implements Constants {
 			return 0;
 		};
 	};
+	/*
 	static {
 		Compiler c = new Compiler();
 		c.restore();
@@ -129,6 +173,7 @@ public class Compiler implements Constants {
 				throw new BrokenException("lookup init");
 			}
 	}
+	*/
 	static long qrefine(int s, int p, int o) {
 		long key[] = { SubCategorize.toLong(s, p, o), 0 };
 		int rslt = Arrays.binarySearch(lookup, key, comp);
@@ -137,7 +182,7 @@ public class Compiler implements Constants {
 		else
 			return lookup[rslt][1];
 	}
-
+/*
 	private boolean restore() {
 		try {
 			FileInputStream istream = new FileInputStream(SAVEFILE);
@@ -172,10 +217,41 @@ public class Compiler implements Constants {
 			throw new BrokenException(e);
 		}
 	}
+	*/
 	class Info {
 		final String name;
 		Info(String n) {
 			name = n;
+		}
+		/**
+		 * {@link save} must be called before this can be used.
+		 * @param oldCat
+		 * @param newCat
+		 * @return
+		 */
+		int newId(short oldCat, short newCat) {
+			int a[] = (int[])before.get(new Integer(oldCat));
+			int rslt = Arrays.binarySearch(a,newCat);
+			if (rslt < 0)
+			  throw new IllegalArgumentException("compiler error");
+			return rslt;
+		}
+		/**
+		 * gives a mapping from the category set number
+		 * to a new number, or -1 if category not in before
+		 * @param propId
+		 */
+		void compressBefore(byte[] propId) {
+			int i;
+			for (i=0;i<propId.length;i++)
+			  propId[i] = -1;
+			int v = 1;
+			Iterator it = before.keySet().iterator();
+			while (it.hasNext()) {
+				propId[((Integer)it.next()).intValue()] = (byte)v++;
+			}
+			if (v>127)
+			  throw new BrokenException("Width limit exceeded - propId?");
 		}
 		Map before = new HashMap();
 		Set after = new HashSet();
@@ -212,6 +288,66 @@ public class Compiler implements Constants {
 				System.out.println(CategorySet.catString(((Integer)it.next()).intValue()));
 			}
 		}
+		/**
+		 * This is destructive.
+		 * It can only be called once.
+		 * It must be called before {@link #newId}.
+		 * @param refine  An array to be initialized
+		 * @param isProp  Is this the property field 
+		 * @param max     Max that must be checked.
+		 */
+		void save(int refine[][],boolean isProp, int max) {
+			Iterator it = before.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry ent = (Map.Entry)it.next();
+				int k = ((Integer)ent.getKey()).intValue();
+				Set values = (Set)ent.getValue();
+				int a[] = new int[values.size()+(isProp?1:0)];
+				if (a.length>max)
+				  throw new BrokenException("Field width limit exceeded");
+				int ix = 0;
+				if ( isProp )
+				  a[ix++]=-1;
+				Iterator vit = values.iterator();
+				while (vit.hasNext()) {
+					a[ix++] = ((Integer)vit.next()).intValue();
+				}
+				Arrays.sort(a);
+				refine[k] = intern(a);
+				ent.setValue(refine[k]);
+			}
+		}
+	}
+	
+	int internedCalled = 0;
+	long internedCalledLength = 0;
+	long internedAddedLength = 0;
+	Map internedIntArrays = new TreeMap(new Comparator(){
+
+		public int compare(Object o1, Object o2) {
+			int a1[] = (int[])o1;
+			int a2[] = (int[])o2;
+			for (int i=0; true; i++) {
+				if (i==a1.length)
+				  return i==a2.length?0:-1;
+				if (i==a2.length)
+				  return 1;
+				int diff = a1[i] - a2[i];
+				if ( diff != 0)
+				  return diff;
+			}
+		}
+	});
+	int[] intern(int a[]) {
+		internedCalled++;
+		internedCalledLength+=a.length;
+		int r[] = (int[])internedIntArrays.get(a);
+		if ( r==null ) {
+			r = a;
+			internedIntArrays.put(a,a);
+			internedAddedLength += a.length;
+		}
+		return r;
 	}
 	Info dummyInfo = new Info("dummy");
 	Info subjInfo = new Info("subject");
@@ -378,8 +514,8 @@ public class Compiler implements Constants {
 			}
 			oldMorePossible = morePossible;
 		}
-		System.err.println("Saving");
-		save();
+	//	System.err.println("Saving");
+	//	save();
 		log("GX", 0);
 		subjInfo.dump();
 		propInfo.dump();
@@ -397,12 +533,12 @@ public class Compiler implements Constants {
 	}
 	*/
 	private void go() {
-		if (restore())
-			System.err.println("Restore successful");
-		else {
-			System.err.println("Restore unsuccessful: recomputing");
+	//	if (restore())
+	//		System.err.println("Restore successful");
+	//	else {
+	//		System.err.println("Restore unsuccessful: recomputing");
 			compute();
-		}
+	//	}
 		log("GX", 0);
 		makeLessThan();
 		//	roy();

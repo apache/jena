@@ -26,7 +26,24 @@ public class Extra extends TestCase {
 		s.setName("More OWL syntax");
 		return s;
    }
-
+   /*
+   public void testNum() {
+   	int a = 35;
+   	int A = 64;
+   	int B = 24*5*23;
+   	int b = 24*5*23 / 3;
+   	int C = 356*52;
+   	int c = C - 1;
+   	int x = (c*B+b)*A+a;
+	System.out.println(a);
+	System.out.println(b);
+	System.out.println(c);
+   	System.out.println(x);
+   	System.out.println(((x%A)+A)%A);
+   	System.out.println(((x/A)%B+B)%B);
+   	System.out.println(((x/(A*B)+C)%C));
+   }
+*/
    public void testdisjointWith001() {
 	 runTest("disjointWith001", OWLTest.Full);
    }
@@ -70,23 +87,6 @@ public class Extra extends TestCase {
    public void testsubClassOf001() {
    	 runTest("subClassOf001", OWLTest.Full);
    }
-   /*
-   public void testsubClassOf001a() {
-	 runTest("subClassOf001", OWLTest.Full);
-   }
-   public void testsubClassOf001b() {
-	 runTest("subClassOf001", OWLTest.Full);
-   }
-   public void testsubClassOf001c() {
-	 runTest("subClassOf001", OWLTest.Full);
-   }
-   public void testsubClassOf001d() {
-	 runTest("subClassOf001", OWLTest.Full);
-   }
-   public void testsubClassOf001e() {
-	 runTest("subClassOf001", OWLTest.Full);
-   }
-   */
    
    public void testsubClassOf002() {
    	runTest("subClassOf002", OWLTest.Full);

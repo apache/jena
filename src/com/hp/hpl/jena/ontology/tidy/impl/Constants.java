@@ -39,7 +39,6 @@ public interface Constants {
 	static final int Failure = -1;
 
 	//static final int ActionMask = (1 << ActionShift) - 1;
-	final String DATAFILE = "etc/owl-syntax.ser";
 /*
 	static final int W = 16;
 	//static final int WW = 9;
