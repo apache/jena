@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReifier.java,v 1.3 2004-11-03 19:54:53 chris-dollin Exp $
+  $Id: WrappedReifier.java,v 1.4 2004-11-04 12:27:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -24,11 +24,6 @@ public class WrappedReifier implements Reifier
 	*/
 	public WrappedReifier( Reifier base, Graph parent )  
         { this.base = base; this.parent = parent; }
-
-	/** 
-	 	@see com.hp.hpl.jena.graph.Reifier#getHiddenTriples()
-	*/
-	public Graph getHiddenTriples() { return base.getHiddenTriples(); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#getReificationTriples()

@@ -1,15 +1,17 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.18 2004-11-02 14:10:08 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.19 2004-11-04 12:27:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.db.impl.DBReifier;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -21,7 +23,9 @@ public abstract class AbstractTestReifier extends GraphTestBase
     protected static final ReificationStyle Minimal = ReificationStyle.Minimal;
     protected static final ReificationStyle Standard = ReificationStyle.Standard;
     protected static final ReificationStyle Convenient = ReificationStyle.Convenient;
-        
+
+    protected static final Triple ALL = Triple.create( "?? ?? ??" );
+    
     public AbstractTestReifier(String name)
         { super(name); }
         
@@ -55,8 +59,8 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testEmptyReifiers()
         {
-        assertEquals( "no reified triples", 0, getGraphWith( "x R y" ).getReifier().getHiddenTriples().size() );
-        assertEquals( "no reified triples", 0, getGraphWith( "x R y; p S q" ).getReifier().getHiddenTriples().size() );
+        assertFalse( getGraphWith( "x R y" ).getReifier().find( ALL ).hasNext() );
+        assertFalse( getGraphWith( "x R y; p S q" ).getReifier().find( ALL ).hasNext() );
         }
         
     public void testSameReifier()
@@ -245,7 +249,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph g = getGraph( style );
         Reifier r = g.getReifier();
         r.reifyAs( node( "A" ), triple( "S P O" ) );
-        assertEquals( style == Standard, r.getHiddenTriples().isEmpty() );    
+        assertEquals( style == Standard, r.find( ALL, false ).hasNext() );    
         }
       
     public void testRetrieveTriplesByNode()
@@ -369,7 +373,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         {
         Graph g = getGraph();
         Reifier r = g.getReifier();
-        Graph h = r.getHiddenTriples();
+        Graph h = getHiddenTriples( r );
         Graph wanted = graphWith
             ( 
             "x rdf:type rdf:Statement" 
@@ -380,6 +384,14 @@ public abstract class AbstractTestReifier extends GraphTestBase
         assertTrue( h.isEmpty() );
         r.reifyAs( node( "x" ), triple( "a B c" ) );
         assertIsomorphic( wanted, h );
+        }
+    
+    protected Graph getHiddenTriples( final Reifier r )
+        {
+        return new GraphBase() 
+            {
+            public ExtendedIterator graphBaseFind( TripleMatch m ) { return r.find( m, true ); }
+            };
         }
             
 	public void testQuadRemove()

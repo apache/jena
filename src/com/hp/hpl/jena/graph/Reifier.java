@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Reifier.java,v 1.26 2004-11-03 19:54:52 chris-dollin Exp $
+  $Id: Reifier.java,v 1.27 2004-11-04 12:27:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -18,11 +18,6 @@ import com.hp.hpl.jena.util.iterator.*;
 
 public interface Reifier extends GetTriple
     {
-    /**
-         return a read-only Graph of the triples used for reification.
-    */    
-    Graph getHiddenTriples();
-    
     /**
         Answer a read-only graph of all the reification quadlets in this reifier. 
     */

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.93 2004-06-30 12:58:00 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.94 2004-11-04 12:27:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -1317,8 +1317,14 @@ public class ModelCom
         { return "<ModelCom  " + getGraph() + " | " + reifiedToString() + ">"; }
         
     public String reifiedToString()
-        { return getGraph().getReifier().getHiddenTriples().toString(); }
+        { return statementsToString( getHiddenStatements().listStatements() ); }
         
+    protected String statementsToString( StmtIterator it )
+        {
+        StringBuffer b = new StringBuffer();
+        while (it.hasNext()) b.append( " " ).append( it.nextStatement() );
+        return b.toString();
+        }
 	/**
 		a read-only Model with all the statements of this Model and any
 		statements "hidden" by reification. That model is dynamic, ie

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.41 2004-11-03 19:54:52 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.42 2004-11-04 12:27:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -214,7 +214,13 @@ public class SimpleReifier implements Reifier
         { return concealing ? NullIterator.instance : tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); }
     
     public ExtendedIterator find( TripleMatch m, boolean showHidden )
-        { return showHidden != concealing ? NullIterator.instance : tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); }
+        {
+        return !showHidden 
+            ? (concealing ? NullIterator.instance : tripleMap.find( m ).andThen( fragmentsMap.find( m ) ))
+            : (concealing ? tripleMap.find( m ).andThen( fragmentsMap.find( m ) ) : NullIterator.instance)
+            ;
+        // return showHidden != concealing ? NullIterator.instance : tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); 
+        }
         
     public int size()
         { return concealing ? 0 : tripleMap.size() + fragmentsMap.size(); }

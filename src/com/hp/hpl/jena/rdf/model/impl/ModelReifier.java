@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.15 2004-11-03 19:54:53 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.16 2004-11-04 12:27:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -54,7 +54,7 @@ public class ModelReifier
     public static Model withHiddenStatements( Model m )
         { 
         Graph mGraph = m.getGraph();
-        Graph hiddenTriples = hiddenTriples( mGraph );
+        Graph hiddenTriples = getHiddenTriples( m );
         return new ModelCom( new DisjointUnion( mGraph, hiddenTriples ) );
         }
     
@@ -62,10 +62,10 @@ public class ModelReifier
     	@param mGraph
     	@return
     */
-    protected static Graph hiddenTriples( Graph mGraph )
+    protected static Graph getHiddenTriples( Model m )
         {
+        Graph mGraph = m.getGraph();
         final Reifier r = mGraph.getReifier();
-        if (false) return mGraph.getReifier().getHiddenTriples();
         return new GraphBase()
             {
             public ExtendedIterator graphBaseFind( TripleMatch m ) 
@@ -78,7 +78,7 @@ public class ModelReifier
         @return a new model containing the hidden statements of this model
     */    
     public Model getHiddenStatements()
-        { return new ModelCom( reifier.getHiddenTriples() ); }
+        { return new ModelCom( getHiddenTriples( model ) ); }
         
     /**
         Answer a fresh reification of a statement associated with a fresh bnode.
