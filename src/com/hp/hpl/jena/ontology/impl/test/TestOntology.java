@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestOntology.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:13:05 $
+ * Last modified on   $Date: 2003-05-23 23:05:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -27,8 +27,6 @@ package com.hp.hpl.jena.ontology.impl.test;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.*;
-import com.hp.hpl.jena.vocabulary.*;
 
 
 /**
@@ -38,10 +36,10 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntology.java,v 1.4 2003-05-23 11:13:05 ian_dickinson Exp $
+ * @version CVS $Id: TestOntology.java,v 1.5 2003-05-23 23:05:13 ian_dickinson Exp $
  */
 public class TestOntology
-    extends PathTestCase 
+    extends OntTestBase 
 {
     // Constants
     //////////////////////////////////
@@ -57,318 +55,104 @@ public class TestOntology
     // Constructors
     //////////////////////////////////
 
-    public TestOntology( String s ) {
-        super( s );
+    static public TestSuite suite() {
+        return new TestOntology( "TestOntology" );
     }
     
-    protected String getTestName() {
-        return "TestOntology";
-    }
-    
-    public static TestSuite suite() {
-        return new TestOntology( "TestOntology" ).getSuite();
+    public TestOntology( String name ) {
+        super( name );
     }
     
     
-    /** Fields are testID, pathset, property, profileURI, sourceData, expected, count, valueURI, rdfTypeURI, valueLit */
-    protected Object[][] psTestData() {
-        return new Object[][] {
-            {   
-                "OWL Ontology.imports",
-                new PS() { 
-                    public PathSet ps( OntModel m ) {
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_imports(); } 
-                },
-                OWL.imports,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                "http://www.w3.org/2000/01/rdf-schema",
-                null,
-                null
-            },
-            {
-                "OWL Ontology.versionInfo",
-                new PS() { 
-                   public PathSet ps( OntModel m ) { 
-                       return ((Ontology) m.getResource( BASE )
-                              .as( Ontology.class )).p_versionInfo(); } 
-                },
-                OWL.versionInfo,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "test version info"
-            },
-            {
-                "OWL Ontology.priorVersion",
-                new PS() { 
-                  public PathSet ps( OntModel m ) { 
-                      return ((Ontology) m.getResource( BASE )
-                             .as( Ontology.class )).p_priorVersion(); } 
-                },
-                OWL.priorVersion,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                "http://jena.hpl.hp.com/testing/test-ontology-1a",
-                null,
-                null
-            },
-            {
-                "OWL Ontology.backwardCompatibleWith",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_backwardCompatibleWith(); } 
-                },
-                OWL.backwardCompatibleWith,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                "http://jena.hpl.hp.com/testing/test-ontology-1b",
-                null,
-                null
-            },
-            {   
-                "OWL Ontology.incompatibleWith",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_incompatibleWith(); } 
-                },
-                OWL.incompatibleWith,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                "http://jena.hpl.hp.com/testing/test-ontology-1c",
-                null,
-                null
-            },
-/*            {   
-                "OWL Ontology.comment",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_comment(); } 
-                },
-                RDFS.comment,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "a comment"
-            },
-            {   
-                "OWL Ontology.label",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_label(); } 
-                },
-                RDFS.label,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "a label"
-            },
-            {   
-                "OWL Ontology.seeAlso",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_seeAlso(); } 
-                },
-                RDFS.seeAlso,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "xyz"
-            },
-            {   
-                "OWL Ontology.isDefinedBy",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_isDefinedBy(); } 
-                },
-                RDFS.isDefinedBy,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "abc"
-            },
-*/            {   
-                "DAML Ontology.imports",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_imports(); } 
-                },
-                DAML_OIL.imports,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                "http://www.w3.org/2000/01/rdf-schema",
-                null,
-                null
-            },
-            {
-                "DAML Ontology.versionInfo",
-                new PS() { 
-                   public PathSet ps( OntModel m ) { 
-                       return ((Ontology) m.getResource( BASE )
-                              .as( Ontology.class )).p_versionInfo(); } 
-                },
-                DAML_OIL.versionInfo,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "test version info"
-            },
-            {
-                "DAML Ontology.priorVersion",
-                new PS() { 
-                  public PathSet ps( OntModel m ) { 
-                      return ((Ontology) m.getResource( BASE )
-                             .as( Ontology.class )).p_priorVersion(); } 
-                },
-                null,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                F,
-                null,
-                null,
-                null,
-                null
-            },
-            {
-                "DAML Ontology.backwardCompatibleWith",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_backwardCompatibleWith(); } 
-                },
-                null,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                F,
-                null,
-                null,
-                null,
-                null
-            },
-            {   
-                "DAML Ontology.incompatibleWith",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_incompatibleWith(); } 
-                },
-                null,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                F,
-                null,
-                null,
-                null,
-                null
-            },
-/*            {   
-                "DAML Ontology.comment",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_comment(); } 
-                },
-                RDFS.comment,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "a comment"
-            },
-            {   
-                "DAML Ontology.label",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_label(); } 
-                },
-                RDFS.label,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "a label"
-            },
-            {   
-                "DAML Ontology.seeAlso",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_seeAlso(); } 
-                },
-                RDFS.seeAlso,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "xyz"
-            },
-            {   
-                "DAML Ontology.isDefinedBy",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((Ontology) m.getResource( BASE )
-                               .as( Ontology.class )).p_isDefinedBy(); } 
-                },
-                RDFS.isDefinedBy,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Ontology/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                null,
-                "abc"
-            },
-*/      };
-    }
     
     
     // External signature methods
     //////////////////////////////////
 
-    
+    public OntTestCase[] getTests() {
+        return new OntTestCase[] {
+            new OntTestCase( "Ontology.imports", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    Ontology x = m.createOntology( NS + "x" );
+                    Ontology y = m.createOntology( NS + "y" );
+                    Ontology z = m.createOntology( NS + "z" );
+                        
+                    x.addImport( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.IMPORTS() ) );
+                    assertEquals( "x should import y", y, x.getImport() );
+                        
+                    x.addImport( z );
+                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.IMPORTS() ) );
+                    iteratorTest( x.listImports(), new Object[] {y,z} );
+                        
+                    x.setImport( z );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.IMPORTS() ) );
+                    assertEquals( "x should import z", z, x.getImport() );
+                }
+            },
+            new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    Ontology x = m.createOntology( NS + "x" );
+                    Ontology y = m.createOntology( NS + "y" );
+                    Ontology z = m.createOntology( NS + "z" );
+                        
+                    x.addBackwardCompatibleWith( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
+                    assertEquals( "x should be back comp with y", y, x.getBackwardCompatibleWith() );
+                        
+                    x.addBackwardCompatibleWith( z );
+                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
+                    iteratorTest( x.listBackwardCompatibleWith(), new Object[] {y,z} );
+                        
+                    x.setBackwardCompatibleWith( z );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
+                    assertEquals( "x should be back comp with z", z, x.getBackwardCompatibleWith() );
+                }
+            },
+            new OntTestCase( "Ontology.priorVersion", true, true, false ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    Ontology x = m.createOntology( NS + "x" );
+                    Ontology y = m.createOntology( NS + "y" );
+                    Ontology z = m.createOntology( NS + "z" );
+                        
+                    x.addPriorVersion( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.PRIOR_VERSION() ) );
+                    assertEquals( "x should have prior y", y, x.getPriorVersion() );
+                        
+                    x.addPriorVersion( z );
+                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.PRIOR_VERSION() ) );
+                    iteratorTest( x.listPriorVersion(), new Object[] {y,z} );
+                        
+                    x.setPriorVersion( z );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.PRIOR_VERSION() ) );
+                    assertEquals( "x should have prior z", z, x.getPriorVersion() );
+                }
+            },
+            new OntTestCase( "Ontology.incompatibleWith", true, true, false ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    Ontology x = m.createOntology( NS + "x" );
+                    Ontology y = m.createOntology( NS + "y" );
+                    Ontology z = m.createOntology( NS + "z" );
+                        
+                    x.addIncompatibleWith( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
+                    assertEquals( "x should be in comp with y", y, x.getIncompatibleWith() );
+                        
+                    x.addIncompatibleWith( z );
+                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
+                    iteratorTest( x.listIncompatibleWith(), new Object[] {y,z} );
+                        
+                    x.setIncompatibleWith( z );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
+                    assertEquals( "x should be incomp with z", z, x.getIncompatibleWith() );
+                }
+            },
+        };
+    }
     
     // Internal implementation methods
     //////////////////////////////////
