@@ -1,8 +1,12 @@
 #------------------------------------------------------------------
 # OWL rule set v0.2
-# This rule set is design to implement owl(f)lite using the hybrid
+# This rule set is designed to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining).
-# $Id: owl-fb.rules,v 1.11 2003-07-01 08:34:52 der Exp $
+#
+# Warning: This version is under active development and the moment
+# and should NOT be regard as stable or usable.
+#
+# $Id: owl-fb.rules,v 1.12 2003-07-01 09:04:41 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
