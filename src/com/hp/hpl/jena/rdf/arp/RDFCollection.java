@@ -2,7 +2,7 @@
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: RDFCollection.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
+  $Id: RDFCollection.java,v 1.3 2003-12-07 10:17:48 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -44,7 +44,12 @@ class RDFCollection extends CollectionAction {
 	void terminate() {
 		rslt[0] = nil;
 	}
-
+	public void cleanUp() {
+		if (rslt[0]!=null) {
+			X.arp.endLocalScope(rslt[0]);
+			rslt[0] = null;
+		}
+	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.CollectionAction#next(com.hp.hpl.jena.rdf.arp.AResource)
 	 */

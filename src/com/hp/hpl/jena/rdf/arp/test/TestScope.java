@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestScope.java,v 1.1 2003-12-06 21:46:59 jeremy_carroll Exp $
+  $Id: TestScope.java,v 1.2 2003-12-07 10:18:44 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
@@ -22,7 +22,7 @@ public class TestScope extends TestCase {
   public	TestScope(String nm){
 		super(nm);
 	}
-	/*
+	
 	public void test01() throws Exception {
 		check("testing/arp/scope/test01.rdf");
 	}
@@ -32,7 +32,7 @@ public class TestScope extends TestCase {
 	public void test03() throws Exception {
 		check("testing/arp/scope/test03.rdf");
 	}
-	*/
+	
 	
 	public void test04() throws Exception {
 		check("testing/arp/scope/test04.rdf");

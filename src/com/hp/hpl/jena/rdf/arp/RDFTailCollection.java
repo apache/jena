@@ -2,7 +2,7 @@
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: RDFTailCollection.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
+  $Id: RDFTailCollection.java,v 1.3 2003-12-07 10:17:48 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -26,6 +26,9 @@ public class RDFTailCollection extends RDFCollection {
 		last.setPredicateObject(rest, nil, null);
 		endLastScope();
 	}
+	public void cleanUp() {
+	  endLastScope();
+  }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.CollectionAction#next(com.hp.hpl.jena.rdf.arp.AResource)

@@ -43,7 +43,7 @@ class RDFParser implements ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.10 2003-12-06 21:46:59 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.11 2003-12-07 10:17:48 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -456,7 +456,7 @@ Object propEltValue(XMLContext ctxt) : { String xml;
    <A_PARSETYPE> 
    <AV_COLLECTION>                      { daml = new AResourceInternal[1]; }
    ( warning() ) * 
-   white() 
+   white()                              
    collection(ctxt, 
         X.collectionAction(daml) )      { return daml[0]; }
 
@@ -490,17 +490,31 @@ Object propEltValue(XMLContext ctxt) : { String xml;
 
 
 void collection(XMLContext ctxt, CollectionAction act) 
-                                     : {}
-{                                      
+                                     : { CollectionAction firstAct = act; }
+{                     try { (                      
    ( act=objInCollection(ctxt,act) ) * { act.terminate(); 
                                        }
+                      ) }
+                      catch (RuntimeException e) {
+                        firstAct.cleanUp();
+                        act.cleanUp();
+                        throw e;
+                      }
+                      catch (ParseException e) {
+                        firstAct.cleanUp();
+                        act.cleanUp();
+                        throw e;
+                      }
 }
 
 CollectionAction objInCollection(XMLContext ctxt, CollectionAction act )
                                      : { ARPResource head;
+                                         CollectionAction rslt;
                                        }
-{  head=obj(ctxt) 
-   white()                           { return act.next( head ); }
+{  head=obj(ctxt)                    { rslt = act.next( head ); }
+// The subtlety here is if the file ends suddenly durign the whitespace
+// we want to clean up the head.
+   white()                           { return rslt; }
 }
 /*
  [6.13] typedNode      ::= '<' typeName idAboutAttr?  propAttr* '/>'

@@ -2,7 +2,7 @@
   (c) Copyright 2003,  Hewlett-Packard Development Company, LP
   all rights reserved.
   [See end of file]
-  $Id: CollectionAction.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
+  $Id: CollectionAction.java,v 1.3 2003-12-07 10:17:48 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -26,6 +26,10 @@ abstract class CollectionAction {
 	abstract void terminate();
 	
 	abstract CollectionAction next(AResourceInternal r);
+	/**
+	 * 
+	 */
+	abstract public void cleanUp();
 	
 
 }

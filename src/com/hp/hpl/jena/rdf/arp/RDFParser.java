@@ -31,7 +31,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: RDFParser.java,v 1.11 2003-12-06 21:46:59 jeremy_carroll Exp $
+ * * $Id: RDFParser.java,v 1.12 2003-12-07 10:17:48 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -860,29 +860,42 @@ E_END.
   }
 
   final public void collection(XMLContext ctxt, CollectionAction act) throws ParseException {
-    label_21:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case E_DESCRIPTION:
-      case E_OTHER:
-      case E_LI:
-      case E_RDF_N:
-        ;
-        break;
-      default:
-        jj_la1[32] = jj_gen;
-        break label_21;
+                                         CollectionAction firstAct = act;
+    try {
+      label_21:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case E_DESCRIPTION:
+        case E_OTHER:
+        case E_LI:
+        case E_RDF_N:
+          ;
+          break;
+        default:
+          jj_la1[32] = jj_gen;
+          break label_21;
+        }
+        act = objInCollection(ctxt,act);
       }
-      act = objInCollection(ctxt,act);
-    }
                                          act.terminate();
+    } catch (RuntimeException e) {
+                        firstAct.cleanUp();
+                        act.cleanUp();
+                        {if (true) throw e;}
+    } catch (ParseException e) {
+                        firstAct.cleanUp();
+                        act.cleanUp();
+                        {if (true) throw e;}
+    }
   }
 
   final public CollectionAction objInCollection(XMLContext ctxt, CollectionAction act) throws ParseException {
                                          ARPResource head;
+                                         CollectionAction rslt;
     head = obj(ctxt);
+                                       rslt = act.next( head );
     white();
-                                       {if (true) return act.next( head );}
+                                       {if (true) return rslt;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1955,22 +1968,6 @@ Notice the action within the kleene star.
     finally { jj_save(3, xla); }
   }
 
-  final private boolean jj_3R_45() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(1)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(3)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(2)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(4)) return true;
-    }
-    }
-    }
-    return false;
-  }
-
   final private boolean jj_3_4() {
     Token xsp;
     while (true) {
@@ -1990,6 +1987,22 @@ Notice the action within the kleene star.
   final private boolean jj_3_2() {
     if (jj_scan_token(A_PARSETYPE)) return true;
     if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_45() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(1)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(3)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(2)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(4)) return true;
+    }
+    }
+    }
     return false;
   }
 

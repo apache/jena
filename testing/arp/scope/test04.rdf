@@ -2,7 +2,7 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:eg="http://example.org/">
   <rdf:Description eg:prop="a" rdf:nodeID="x">
-    <eg:prop rdf:parseType="daml:collection">
+    <eg:prop rdf:parseType="Collection">
        <eg:x rdf:nodeID="x"/>
        <eg:y rdf:nodeID="y"/>
        <eg:z rdf:nodeID="z">
