@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFListImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
+ * Last modified on   $Date: 2003-06-17 09:41:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.3 2003-06-16 13:40:13 ian_dickinson Exp $
+ * @version CVS $Id: RDFListImpl.java,v 1.4 2003-06-17 09:41:34 ian_dickinson Exp $
  */
 public class RDFListImpl
     extends ResourceImpl
@@ -75,14 +75,14 @@ public class RDFListImpl
         }
     };
 
+    /** Flag to indicate whether we are checking for valid lists during list operations. Default false. */
+    protected static boolean s_checkValid = false;
+    
 
 
     // Instance variables
     //////////////////////////////////
 
-    /** Flag to indicate whether we are checking for valid lists during list operations. Default false. */
-    protected boolean m_checkValid = false;
-    
     /** Error message if validity check fails */
     protected String m_errorMsg = null;
     
@@ -126,7 +126,7 @@ public class RDFListImpl
      * @return The length of the list as an integer
      */
     public int size() {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -148,7 +148,7 @@ public class RDFListImpl
      * @exception EmptyListException if this list is the empty list
      */
     public RDFNode getHead() {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -168,7 +168,7 @@ public class RDFListImpl
      * @exception EmptyListException if this list is the empty list
      */
     public RDFNode setHead( RDFNode value ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -195,7 +195,7 @@ public class RDFListImpl
      * @exception EmptyListException if this list is the empty list
      */
     public RDFList getTail() {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -216,7 +216,7 @@ public class RDFListImpl
      * @return The old tail.
      */
     public RDFList setTail( RDFList tail ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -232,7 +232,7 @@ public class RDFListImpl
      * @return True if this is the empty (nil) list, otherwise false.
      */
     public boolean isEmpty() {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -250,7 +250,7 @@ public class RDFListImpl
      * @return The new list, whose head is <code>value</code>
      */
     public RDFList cons( RDFNode value ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -277,7 +277,7 @@ public class RDFListImpl
      * <code>add</code> to the empty list.
      */
     public void add( RDFNode value ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -309,7 +309,7 @@ public class RDFListImpl
      * @return The list that results from adding a value to the end of this list 
      */
     public RDFList with( RDFNode value ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -340,7 +340,7 @@ public class RDFListImpl
      * elements.
      */
     public RDFNode get( int i ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -363,7 +363,7 @@ public class RDFListImpl
      * elements.
      */
     public RDFNode replace( int i, RDFNode value ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -417,7 +417,7 @@ public class RDFListImpl
      * length of the list.
      */
     public int indexOf( RDFNode value, int start ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -475,7 +475,7 @@ public class RDFListImpl
      * followed by all of the elements of the given list.
      */
     public RDFList append( RDFList list ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -510,7 +510,7 @@ public class RDFListImpl
      * @exception EmptyListUpdateException if this list is the nil list
      */
     public void concatenate( RDFList list ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -549,7 +549,7 @@ public class RDFListImpl
      * @return A copy of the current list
      */
     public RDFList copy() {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -565,7 +565,7 @@ public class RDFListImpl
      * @param fn The function to apply to each list node.
      */
     public void apply( ApplyFn fn ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -587,7 +587,7 @@ public class RDFListImpl
      * @return The final value of the accumulator.
      */
     public Object reduce( ReduceFn fn, Object initial ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -614,7 +614,7 @@ public class RDFListImpl
      * pre-removal list tail)
      */
     public RDFList removeHead() {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -639,7 +639,7 @@ public class RDFListImpl
      * cases, except when <code>val</code> occurs at the head of the list.
      */
     public RDFList remove( RDFNode val ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -695,7 +695,7 @@ public class RDFListImpl
      * 
      * @return A closable iterator over the elements of the list.
      */
-    public ClosableIterator iterator() {
+    public ExtendedIterator iterator() {
         return new RDFListIterator( this );
     }
     
@@ -732,7 +732,7 @@ public class RDFListImpl
      * contain equal elements in the same order.
      */
     public boolean sameListAs( RDFList list ) {
-        if (m_checkValid) {
+        if (s_checkValid) {
             checkValid();
         }
         
@@ -766,27 +766,29 @@ public class RDFListImpl
     
     /**
      * <p>
-     * Answer true if this list is operating in strict mode, in which the
+     * Answer true lists are operating in strict mode, in which the
      * well- formedness of the list is checked at every operation.
      * </p>
      * 
-     * @return True if the list is being strictly checked.
+     * @return True lists are being strictly checked.
      */
-    public boolean isStrict() {
-        return m_checkValid;
+    public boolean getStrict() {
+        return s_checkValid;
     }
     
     
     /**
      * <p>
      * Set a flag to indicate whether to strictly check the well-formedness of
-     * the list at each operation. Default false.
+     * lists at each operation. Default false.  Note that the flag that is
+     * manipulated is actually a static: it applies to all lists. However, RDFList
+     * is a Java interface, and Java does not permit static methods in interfaces.
      * </p>
      * 
-     * @param strict If true, list will be checked strictly.
+     * @param strict The <b>static</b> flag for whether lists will be checked strictly.
      */
     public void setStrict( boolean strict ) {
-        m_checkValid = strict;
+        s_checkValid = strict;
     }
     
     
@@ -853,14 +855,19 @@ public class RDFListImpl
      * <p>
      * Answer true if this is a valid list cell, which means either that it
      * is nil, or it has the appropriate type and a first and next relation.
+     * Updated 17-06-2003: RDFCore last comments process has decided that the
+     * rdf:type of a list is implied by the domain constraints on rdf:first
+     * and rdf:rest, so no longer needs to be asserted directly.  The test
+     * for rdf:type has therefore been removed.
      * </p>
      * 
      * @return True if this list cell passes basic validity checks
      */
     protected void checkValid() {
         if (!equals( listNil() )) {
-            // note that the rdf:type of nil is implied by the RDF M&S
-            checkValidProperty( RDF.type, listType() );
+            // note that the rdf:type of list cells is now implied by the RDF M&S
+            // so we don't check explicitly
+            // checkValidProperty( RDF.type, listType() );
             
             checkValidProperty( listFirst(), null );
             checkValidProperty( listRest(), null );
@@ -880,11 +887,10 @@ public class RDFListImpl
                                             p.toString() + 
                                             (expected == null ? "" : ( " with value " + expected )) );
         }
-        /* removed temporarily - ijd TODO 
         else if (count > 1) {
             throw new InvalidListException( "List node " + toString() + " is not valid: it has more than one value for " +
                                             p.toString() );
-        }*/
+        }
     }
     
     
@@ -1026,7 +1032,7 @@ public class RDFListImpl
      * </p>
      */
     protected class RDFListIterator
-        implements ClosableIterator
+        extends NiceIterator
     {
         // Instance variables
         
@@ -1051,13 +1057,6 @@ public class RDFListImpl
         // External contract methods
         ////////////////////////////
         
-        /**
-         * @see ClosableIterator#close
-         */
-        public void close() {
-            // this iterator does not need to be closed
-        }
-
         /**
          * @see Iterator#hasNext
          */

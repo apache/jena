@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFList.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
+ * Last modified on   $Date: 2003-06-17 09:41:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -24,7 +24,7 @@ package com.hp.hpl.jena.rdf.model;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
 
@@ -54,7 +54,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: RDFList.java,v 1.3 2003-06-16 13:40:13 ian_dickinson Exp $)
+ * @version Release ($Id: RDFList.java,v 1.4 2003-06-17 09:41:34 ian_dickinson Exp $)
  */
 public interface RDFList
     extends Resource
@@ -396,7 +396,7 @@ public interface RDFList
      * 
      * @return A closable iterator over the elements of the list.
      */
-    public ClosableIterator iterator();
+    public ExtendedIterator iterator();
     
     
     /**
@@ -427,22 +427,24 @@ public interface RDFList
     
     /**
      * <p>
-     * Answer true if this list is operating in strict mode, in which the
+     * Answer true lists are operating in strict mode, in which the
      * well- formedness of the list is checked at every operation.
      * </p>
      * 
-     * @return True if the list is being strictly checked.
+     * @return True lists are being strictly checked.
      */
-    public boolean isStrict();
+    public boolean getStrict();
     
     
     /**
      * <p>
      * Set a flag to indicate whether to strictly check the well-formedness of
-     * the list at each operation. Default false.
+     * lists at each operation. Default false.  Note that the flag that is
+     * manipulated is actually a static: it applies to all lists. However, RDFList
+     * is a Java interface, and Java does not permit static methods in interfaces.
      * </p>
      * 
-     * @param strict If true, list will be checked strictly.
+     * @param strict The <b>static</b> flag for whether lists will be checked strictly.
      */
     public void setStrict( boolean strict );
     
