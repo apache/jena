@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RDBMakerCreator.java,v 1.5 2005-03-04 12:51:03 ian_dickinson Exp $
+  $Id: RDBMakerCreator.java,v 1.6 2005-03-14 16:01:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -27,9 +27,9 @@ public class RDBMakerCreator implements ModelMakerCreator
 
     public static IDBConnection createConnection( Model description, Resource root )
         {
-        if (root == null) {
-            root = ModelSpecImpl.findRootByType( description, JMS.RDBMakerSpec );
-        }
+//        if (root == null) {
+//            root = ModelSpecImpl.findRootByType( description, JMS.RDBMakerSpec );
+//        }
         String url = getString( description, root, JMS.dbURL );
         String user = getString( description, root, JMS.dbUser );
         String password = getString( description, root , JMS.dbPassword );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestContains.java,v 1.8 2005-02-21 12:15:00 andy_seaborne Exp $
+  $Id: TestContains.java,v 1.9 2005-03-14 16:01:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -48,10 +48,10 @@ public class TestContains extends ModelTestBase
         }
     
     private Resource res( String uri )
-        { return ResourceFactory.createResource( "eh:" + uri ); }
+        { return ResourceFactory.createResource( "eh:/" + uri ); }
     
     private Property prop( String uri )
-        { return ResourceFactory.createProperty( "eh:" + uri ); }
+        { return ResourceFactory.createProperty( "eh:/" + uri ); }
         
     public void testContainsWithNull()
         {

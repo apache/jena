@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.44 2005-02-21 11:51:56 andy_seaborne Exp $
+  $Id: Node.java,v 1.45 2005-03-14 15:57:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -89,7 +89,7 @@ public abstract class Node {
         int colon = x.indexOf( ':' );
         String d = pm.getNsPrefixURI( "" );
         return colon < 0 
-            ? Node.createURI( (d == null ? "eh:" : d) + x )
+            ? Node.createURI( (d == null ? "eh:/" : d) + x )
             : Node.createURI( pm.expandPrefix( x ) )
             ;
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTriple.java,v 1.17 2005-02-21 11:52:48 andy_seaborne Exp $
+  $Id: TestTriple.java,v 1.18 2005-03-14 16:01:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -250,7 +250,7 @@ public class TestTriple extends GraphTestBase
         PrefixMapping pm = PrefixMapping.Factory.create();
         pm.setNsPrefix( "spoo", "eg://domain.dom/spoo#" );
         Triple t1 = Triple.create( "eg://domain.dom/spoo#a b c" );
-        assertEquals( "spoo:a @eh:b eh:c", t1.toString( pm ) );
+        assertEquals( "spoo:a @eh:/b eh:/c", t1.toString( pm ) );
         }
 
     }

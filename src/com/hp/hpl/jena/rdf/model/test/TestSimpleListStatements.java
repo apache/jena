@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.11 2005-02-21 12:15:18 andy_seaborne Exp $
+  $Id: TestSimpleListStatements.java,v 1.12 2005-03-14 16:01:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -194,7 +194,7 @@ public class TestSimpleListStatements extends ModelTestBase
                         st.getSubject().toString().length() 
                         + st.getPredicate().toString().length()
                         + st.getObject().toString().length()
-                        == 12; /* eh:S + eh:P + eh:O */
+                        == 15; /* eh:/S + eh:/P + eh:/O */
                 }
                 
             public boolean isSimple()

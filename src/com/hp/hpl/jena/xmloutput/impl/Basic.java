@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.11 2005-02-21 12:22:31 andy_seaborne Exp $
+  $Id: Basic.java,v 1.12 2005-03-14 16:01:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2005-02-21 12:22:31 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2005-03-14 16:01:56 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -25,8 +25,10 @@ public class Basic extends BaseXMLWriter {
 
 	public Basic() {
 	}
+    
     private String space;
-	void writeBody(
+	
+    void writeBody(
 		Model model,
 		PrintWriter pw,
 		String base,
@@ -42,6 +44,9 @@ public class Basic extends BaseXMLWriter {
 		pw.flush();
 		
 	}
+    
+    protected void writeSpace( PrintWriter writer )
+        { writer.print( space ); }
 
 	private void writeRDFHeader(Model model, PrintWriter writer) {
 		String xmlns = xmlnsDecl();
@@ -81,7 +86,7 @@ public class Basic extends BaseXMLWriter {
 		while (sIter.hasNext()) {
 			writePredicate(sIter.nextStatement(), writer);
 		}
-		writeDescriptionTrailer(writer);
+		writeDescriptionTrailer( subject, writer);
 
 	}
 
@@ -130,9 +135,17 @@ public class Basic extends BaseXMLWriter {
            logger.warn("Cannot block rule <"+r.getURI()+">");
     }
 
-	protected void writeDescriptionTrailer(PrintWriter writer) {
+	protected void writeDescriptionTrailer( Resource subject, PrintWriter writer) {
 		writer.println(space + "</" + rdfEl("Description") + ">");
 	}
+    
+    /**
+        @deprecated - use writeDescriptionTrailer( Resource subject, PrintWriter writer )
+        @param writer
+    */
+    protected void writeDescriptionTrailer( PrintWriter writer )
+        { writeDescriptionTrailer( null, writer ); }
+    
 	protected void writeResourceId(Resource r, PrintWriter writer)
 		 {
 		if (r.isAnon()) {
