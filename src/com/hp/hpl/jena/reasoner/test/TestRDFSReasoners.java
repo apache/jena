@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.5 2003-06-26 08:11:58 der Exp $
+ * $Id: TestRDFSReasoners.java,v 1.6 2003-06-26 10:54:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-26 08:11:58 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-26 10:54:30 $
  */
 public class TestRDFSReasoners extends TestCase {
     
@@ -74,7 +74,7 @@ public class TestRDFSReasoners extends TestCase {
 
             Resource configSimple = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_SIMPLE);
             constructQuerytests(suite, "rdfs/manifest-simple.rdf", RDFSRuleReasonerFactory.theInstance(), configSimple);
-            
+
             // Single test case used in debugging, subsumed by above
 //            constructSingleQuerytests(suite, 
 //                                      "rdfs/manifest.rdf", 

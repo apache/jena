@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.15 2003-06-22 16:10:50 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.16 2003-06-26 10:54:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.16 $ on $Date: 2003-06-26 10:54:19 $
  */
 public class ReasonerRegistry {
 
@@ -175,6 +175,21 @@ public class ReasonerRegistry {
      public static Reasoner getRDFSReasoner() {
          if (theRDFSReasoner == null) theRDFSReasoner = RDFSRuleReasonerFactory.theInstance().create(null);
          return theRDFSReasoner;
+     }
+    
+    
+    /** Prebuilt standard configuration for the default RDFS reasoner. */
+    protected static Reasoner theRDFSSimpleReasoner = null;
+    
+    /**
+     * Return a prebuilt simplified configuration for the default RDFS reasoner
+     */
+     public static Reasoner getRDFSSimpleReasoner() {
+         if (theRDFSSimpleReasoner == null) {
+             theRDFSSimpleReasoner = RDFSRuleReasonerFactory.theInstance().create(null);
+             theRDFSSimpleReasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel.getURI(), ReasonerVocabulary.RDFS_SIMPLE);
+         } 
+         return theRDFSSimpleReasoner;
      }
      
     /** Prebuilt standard configuration for the default subclass/subproperty transitive closure reasoner. */
