@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.15 2004-07-30 15:16:02 chris-dollin Exp $
+  $Id: TestModelMakerImpl.java,v 1.16 2004-11-02 15:57:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -249,7 +249,7 @@ public class TestModelMakerImpl extends ModelTestBase
         public ExtendedIterator listGraphs()
             {
             history.add( "listModels()" );
-            return new NiceIterator();    
+            return NullIterator.instance;    
             }
         }        
     }

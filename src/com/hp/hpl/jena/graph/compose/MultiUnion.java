@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-02 14:10:07 $
+ * Last modified on   $Date: 2004-11-02 15:57:11 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.15 2004-11-02 14:10:07 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.16 2004-11-02 15:57:11 chris-dollin Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -175,7 +175,7 @@ public class MultiUnion
         // anything in this model?
         if (m_subGraphs.size() == 0) {
             // the default NiceIterator has no elements
-            return new NiceIterator();
+            return NullIterator.instance;
         }
         else {
             // start building the iterator chain

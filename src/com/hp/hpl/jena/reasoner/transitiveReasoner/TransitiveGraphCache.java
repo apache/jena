@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.14 2004-03-17 12:04:25 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.15 2004-11-02 15:57:29 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -37,7 +37,7 @@ import java.util.*;
  * <p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2004-03-17 12:04:25 $
+ * @version $Revision: 1.15 $ on $Date: 2004-11-02 15:57:29 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -166,29 +166,29 @@ public class TransitiveGraphCache implements Finder {
                 } else {
                     // list all backwards from o
                     GraphNode gn_o = (GraphNode)nodeMap.get(o);
-                    if (gn_o == null) return new NiceIterator();
+                    if (gn_o == null) return NullIterator.instance;
                     return new GraphWalker(gn_o, false, closed, pred);
                 }
             } else {
                 GraphNode gn_s = (GraphNode)nodeMap.get(s);
-                if (gn_s == null) return new NiceIterator();
+                if (gn_s == null) return NullIterator.instance;
                 if (o.isVariable()) {
                     // list forward from s
                     return new GraphWalker(gn_s, true, closed, pred);
                 } else {
                     // Singleton test
                     GraphNode gn_o = (GraphNode)nodeMap.get(o);
-                    if (gn_o == null) return new NiceIterator();
+                    if (gn_o == null) return NullIterator.instance;
                     if (gn_s.linksTo(gn_o)) {
                         return new SingletonIterator(new Triple(s, pred, o));
                     } else {
-                        return new NiceIterator();
+                        return NullIterator.instance;
                     }
                 }
             }
         } else {
             // No matching triples in this cache
-            return new NiceIterator();
+            return NullIterator.instance;
         }
     }
 

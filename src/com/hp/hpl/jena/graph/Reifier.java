@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Reifier.java,v 1.24 2004-11-02 14:10:07 chris-dollin Exp $
+  $Id: Reifier.java,v 1.25 2004-11-02 15:55:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -34,6 +34,9 @@ public interface Reifier extends GetTriple
     */
     ExtendedIterator find( TripleMatch m );
     
+    /**
+         Answer the number of reification quadlets held in this reifier.
+    */
     int size();
     
     /**

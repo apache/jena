@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BRWRule.java,v 1.7 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: BRWRule.java,v 1.8 2004-11-02 15:57:12 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * the corresponding parts of the query being processed.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.8 $ on $Date: 2004-11-02 15:57:12 $
  */
 public class BRWRule {
 
@@ -91,7 +91,7 @@ public class BRWRule {
         BRWRule iRule = new BRWRule(head, iBody);
         if (firedRules.contains(iRule)) {
             // No additional answers to be found
-            return new NiceIterator();
+            return NullIterator.instance;
         } 
         firedRules.add(iRule);
         Iterator it = ((RDFSInfGraph) infGraph).findNested(iBody, data, firedRules);
