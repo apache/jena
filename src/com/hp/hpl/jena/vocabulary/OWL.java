@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            3 Mar 2003
  * Filename           $RCSfile: OWL.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-04 11:07:10 $
+ * Last modified on   $Date: 2003-03-04 11:18:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWL.java,v 1.2 2003-03-04 11:07:10 ian_dickinson Exp $
+ * @version CVS $Id: OWL.java,v 1.3 2003-03-04 11:18:12 ian_dickinson Exp $
  */
 public class OWL
 {
@@ -48,7 +48,7 @@ public class OWL
     private static Model m_vocabModel = ModelFactory.createDefaultModel();
     
     /** URI denoting the OWL namespace, currently <code>http://www.w3c.org/2002/07/owl#</code> */
-    public static final String NAMESPACE = "http://www.w3c.org/2002/07/owl#";
+    public static final String NAMESPACE = "http://www.w3.org/2002/07/owl#";
     
     /** Resource denoting the class of OWL classes */
     public static final Resource Class                        = m_vocabModel.createResource( OWL.NAMESPACE + "Class"                     );
