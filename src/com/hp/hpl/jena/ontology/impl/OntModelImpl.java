@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.26 $
+ * Revision           $Revision: 1.27 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:07:02 $
+ * Last modified on   $Date: 2003-06-10 18:57:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.26 2003-06-06 11:07:02 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.27 2003-06-10 18:57:58 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -717,7 +717,8 @@ public class OntModelImpl
      * @return An Axiom resource.
      */
     public Axiom createAxiom( Resource cls, String uri ) {
-        return (Axiom) createOntResource( Axiom.class, cls, uri );
+        // TODO
+        return null; 
     }
     
    
