@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: RuleMap.java,v 1.1 2004-03-04 10:38:44 der Exp $
+ * $Id: RuleMap.java,v 1.2 2004-04-16 13:19:44 der Exp $
  *****************************************************************/
 package jena;
 
@@ -41,7 +41,7 @@ import java.io.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2004-03-04 10:38:44 $
+ * @version $Revision: 1.2 $ on $Date: 2004-04-16 13:19:44 $
  */
 public class RuleMap {
     
@@ -56,7 +56,10 @@ public class RuleMap {
             fname = fname.substring(8);
         } else if (fname.startsWith("file:/")) {
             fname = fname.substring(6);
+        } else if (fname.startsWith("file:")) {
+            fname = fname.substring(5);
         }
+
         BufferedReader src = FileUtils.openResourceFile(fname);
         return loadRules(src, prefixes);
     }
