@@ -67,11 +67,14 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 				  bulk.add(triples);
 				else 
 				  bulk.add(Arrays.asList(triples).subList(0,ix));
-				ix = 0;
+				
 			}
 			catch (JenaException e) {
 			errorHandler.error(e);
 		  }
+			finally {
+				ix = 0;
+			}
 		}
 	}
 
@@ -644,7 +647,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.24 2004-06-30 09:52:17 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.25 2004-10-05 15:49:52 jeremy_carroll Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */
