@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.30 2003-09-22 14:59:28 der Exp $
+# $Id: owl-fb.rules,v 1.31 2003-09-23 15:45:00 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -520,6 +520,10 @@
 				
 [oneOfIFP: (?P rdfs:domain ?C) (?C owl:oneOf ?l) (?l rdf:first ?x) (?l rdf:rest rdf:nil)
 				-> (?P rdf:type owl:InverseFunctionalProperty) ]
+
+[oneOf1: (?C owl:oneOf ?l) -> listMapAsSubject(?l, rdf:type, ?C) ]
+				
+[oneOf2: (?C owl:oneOf ?l1) (?D owl:oneOf ?l2) notEqual(?l1, ?l2) listEqual(?l1, ?l2) -> (?C owl:equivalentClass ?D) ]
 				
 #------------------------------------------------------------------
 # Declaration of main XSD datatypes
@@ -591,6 +595,8 @@
 -> (xsd:unsignedInt     rb:xsdRange xsd(xsd:integer,0,32)).
 -> (xsd:unsignedLong    rb:xsdRange xsd(xsd:integer,0,64)).
 -> (xsd:nonNegativeInteger rb:xsdRange xsd(xsd:integer,0,65)).
+
+# Some XSD support may be disabled temporarily during performance checking
 
 [xsd1: (?X rdfs:subClassOf ?Y) <- 
         (?X rb:xsdRange xsd(?B, 0, ?L)) (?Y rb:xsdRange xsd(?B, ?S, ?L2)) le(?L, ?L2)]
@@ -669,4 +675,9 @@
 [validationRangeNothing: (?v rb:validation on()), (?P rdfs:range owl:Nothing) -> 
 	(?C rb:violation error('Inconsistent property', 'Property cannot be instantiated, probably due to multiple disjoint range declarations'))
 ]
-				
+
+[validationOneOf: (?v rb:validation on()) (?C owl:oneOf ?L) ->
+	[validationIndiv: (?X rb:violation warn('possible oneof violation', 'Culprit is deduced to be of enumerated type (implicicated class) but is not one of the enumerations\n This may be due to aliasing.', ?Y)) 
+				<- (?X rdf:type ?C), notBNode(?X), listNotContains(?L, ?X) ] ]
+
+

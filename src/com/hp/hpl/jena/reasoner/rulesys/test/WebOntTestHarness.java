@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.14 2003-09-23 08:56:54 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.15 2003-09-23 15:44:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-09-23 08:56:54 $
+ * @version $Revision: 1.15 $ on $Date: 2003-09-23 15:44:34 $
  */
 public class WebOntTestHarness {
 
@@ -37,7 +37,7 @@ public class WebOntTestHarness {
     public static boolean includeModified = false;
     
     /** Set to true to use approved tests only */
-    public static boolean approvedOnly = true;
+    public static boolean approvedOnly = false;
     
 //  =======================================================================
 //  Internal state
@@ -100,10 +100,13 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest903#test", 
         "http://www.w3.org/2002/03owlt/description-logic/Manifest902#test", 
         "http://www.w3.org/2002/03owlt/description-logic/Manifest904#test", 
-        "http://www.w3.org/2002/03owlt/oneOf/Manifest002#test", 
-        "http://www.w3.org/2002/03owlt/oneOf/Manifest003#test", 
+//        "http://www.w3.org/2002/03owlt/oneOf/Manifest002#test", 
+//        "http://www.w3.org/2002/03owlt/oneOf/Manifest003#test", 
+        "http://www.w3.org/2002/03owlt/oneOf/Manifest004#test", 
         "http://www.w3.org/2002/03owlt/unionOf/Manifest001#test", 
         "http://www.w3.org/2002/03owlt/unionOf/Manifest002#test",
+        "http://www.w3.org/2002/03owlt/unionOf/Manifest003#test",
+        "http://www.w3.org/2002/03owlt/unionOf/Manifest004#test",
         "http://www.w3.org/2002/03owlt/equivalentClass/Manifest006#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest201#test",
         "http://www.w3.org/2002/03owlt/I5.8/Manifest004#test",
@@ -200,7 +203,7 @@ public class WebOntTestHarness {
         jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena2");
         jena2.addProperty(RDFS.comment, 
             testResults.createLiteral(
-                "<a href=\"http://jena.sourceforce.net/\">Jena2</a> includes a rule-based inference engine for RDF processing, " +
+                "<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://jena.sourceforce.net/\">Jena2</a> includes a rule-based inference engine for RDF processing, " +
                 "supporting both forward and backward chaining rules. Its OWL rule set is designed to provide sound " +
                 "but not complete instance resasoning for that fragment of OWL/Full limited to the OWL/lite vocabulary. In" +
                 "particular it does not support unionOf/complementOf.",
@@ -219,14 +222,12 @@ public class WebOntTestHarness {
             resultFile = args[0];
         }
         WebOntTestHarness harness = new WebOntTestHarness();
-//        harness.runTests();
-        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest006#test");
-        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest008#test");
-        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest009#test");
-        harness.runTest("http://www.w3.org/2002/03owlt/I5.3/Manifest015#test");
+        harness.runTests();
+//        harness.runTest("http://www.w3.org/2002/03owlt/oneOf/Manifest002#test");
         RDFWriter writer = harness.testResults.getWriter("RDF/XML-ABBREV");
         OutputStream stream = new FileOutputStream(resultFile);
         writer.setProperty("showXmlDeclaration", "true");
+        harness.testResults.setNsPrefix("", "http://www.w3.org/1999/xhtml");
         writer.write(harness.testResults, stream, BASE_RESULTS_URI);
     }
     
@@ -272,6 +273,7 @@ public class WebOntTestHarness {
      * and error reporting.
      */
     public void runTest(Resource test) {
+        System.out.println("Running " + test);
         boolean success = false;
         boolean fail = false;
         try {
