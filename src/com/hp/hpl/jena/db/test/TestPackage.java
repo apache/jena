@@ -12,7 +12,7 @@ import com.hp.hpl.jena.util.Log;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.1 $
+ * @version 	$Revision: 1.2 $
  */
 public class TestPackage extends TestSuite
 {
@@ -35,6 +35,7 @@ public class TestPackage extends TestSuite
         addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
 		addTest( "TestCompatability", TestCompatability.suite() );
 		addTest( "TestCompareToMem", TestCompareToMem.suite() );
+		addTest( "TestGraphRDB", TestGraphRDB.suite());
 		// TODO remove the dmoz test for now - it fails because of invalid
 		// characters in the Resource URIs in the DMOZ file.
 		// addTest( "TestCompareDMOZ", TestCompareDMOZ.suite() );
