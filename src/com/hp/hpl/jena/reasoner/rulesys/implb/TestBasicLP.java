@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.17 2003-08-12 17:01:27 der Exp $
+ * $Id: TestBasicLP.java,v 1.18 2003-08-12 23:11:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-08-12 17:01:27 $
+ * @version $Revision: 1.18 $ on $Date: 2003-08-12 23:11:04 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -70,6 +70,7 @@ public class TestBasicLP  extends TestCase {
 //        return new TestSuite( TestBasicLP.class );
         
         TestSuite suite = new TestSuite();
+        suite.addTest(new TestBasicLP( "testProblem2" ));
         suite.addTest(new TestBasicLP( "testProblem7" ));
         return suite;
     }  

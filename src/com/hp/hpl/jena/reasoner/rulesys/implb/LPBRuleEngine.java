@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.8 2003-08-12 09:31:56 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.9 2003-08-12 23:11:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-12 09:31:56 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-12 23:11:04 $
  */
 public class LPBRuleEngine {
     
@@ -220,6 +220,7 @@ public class LPBRuleEngine {
             LPInterpreter interpreter = new LPInterpreter(this, goal, clauses, false);
             activeInterpreters.add(interpreter);
             generator = new Generator(interpreter);
+            generator.goal = goal;      // Debug aid
             schedule(generator);
             tabledGoals.put(goal, generator);
         }
@@ -237,6 +238,7 @@ public class LPBRuleEngine {
             LPInterpreter interpreter = new LPInterpreter(this, goal, false);
             activeInterpreters.add(interpreter);
             generator = new Generator(interpreter);
+            generator.goal = goal;      // Debug aid
             schedule(generator);
             tabledGoals.put(goal, generator);
         }

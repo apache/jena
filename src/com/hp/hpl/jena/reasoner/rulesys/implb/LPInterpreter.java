@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.21 2003-08-12 17:01:27 der Exp $
+ * $Id: LPInterpreter.java,v 1.22 2003-08-12 23:11:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-08-12 17:01:27 $
+ * @version $Revision: 1.22 $ on $Date: 2003-08-12 23:11:04 $
  */
 public class LPInterpreter {
 
@@ -66,6 +66,9 @@ public class LPInterpreter {
     /** Trick to allow the very top level triple lookup to return results with reduced store turnover */
     protected TopLevelTripleMatchFrame topTMFrame;
     
+    /** Original set up goal, only used for debugging */
+    protected TriplePattern goal;
+    
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPInterpreter.class);
 
@@ -103,6 +106,15 @@ public class LPInterpreter {
      */
     public LPInterpreter(LPBRuleEngine engine, TriplePattern goal, List clauses, boolean isTop) {
         this.engine = engine;
+        this.goal = goal;       // Used for debug only
+        // Temp ...
+        // TODO: remove
+        if (goal.getSubject().isVariable() 
+            && goal.getPredicate().equals(com.hp.hpl.jena.vocabulary.RDFS.Nodes.subClassOf)
+            && goal.getObject().isVariable()) {
+                System.out.println("Creating interpreter: " + goal);
+            }
+        // ... end temp
         
         // Construct dummy top environemnt which is a call into the clauses for this goal
         envFrame = new EnvironmentFrame(RuleClauseCode.returnCodeBlock);
@@ -176,6 +188,14 @@ public class LPInterpreter {
      * @return either a StateFlag or  a result Triple
      */
     public synchronized Object next() {
+        // Temp ...
+        if (cpFrame == topTMFrame && argVars[0].isURI() && argVars[0].getURI().equals("C1") &&
+                argVars[1].equals(com.hp.hpl.jena.vocabulary.RDF.Nodes.type) &&
+                argVars[2].equals(com.hp.hpl.jena.vocabulary.RDFS.Nodes.Class)) {
+                    System.out.println("Starting strange case ...");
+                    // TODO: remove
+                }
+        // ... end temp
         StateFlag answer = run();
         if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
@@ -225,6 +245,15 @@ public class LPInterpreter {
         ChoicePointFrame choice = null;
         byte[] code;
         Object[] args;
+        
+        // Temp ...
+        // TODO: remove
+        if (goal.getSubject().isVariable() 
+            && goal.getPredicate().equals(com.hp.hpl.jena.vocabulary.RDFS.Nodes.subClassOf)
+            && goal.getObject().isVariable()) {
+                System.out.println("Running interpreter: " + goal);
+            }
+        // ... end temp
 
         main: while (cpFrame != null) {
             // restore choice point
@@ -237,6 +266,18 @@ public class LPInterpreter {
                 }
                 
                 clause = (RuleClauseCode)choice.nextClause();
+                // Temp ...
+                // TODO: remove
+//                if (clause.rule.getName().equals("rdfs7") && deref(argVars[2]).isURI() &&
+//                        deref(argVars[2]).getURI().equals("C1")) {
+                if (clause.rule.getName() != null && clause.rule.getName().equals("rdfs7") ) {
+                    System.out.println("Starting choice on suspect rule. args = " + deref(argVars[0]) + " " + deref(argVars[1]) + " " + deref(argVars[2]));
+                    System.out.println("Interpreter invocation goal was: " + goal);
+                    if (iContext instanceof Generator) {
+                        System.out.println("Invoked by generator with goal: " + ((Generator)iContext).goal);
+                    }
+                }
+                // ... end temp
                 // Create an execution environment for the new choice of clause
                 envFrame = new EnvironmentFrame(clause);
                 envFrame.linkTo(choice.envFrame);
@@ -511,7 +552,9 @@ public class LPInterpreter {
                             ac = envFrame.cac;
 //                            logger.debug("EXIT " + envFrame);
                             envFrame = (EnvironmentFrame) envFrame.link;
-                            if (envFrame != null) clause = envFrame.clause;
+                            if (envFrame != null) {
+                                clause = envFrame.clause;
+                            }
                             continue interpreter;
                         
                         case RuleClauseCode.CALL_BUILTIN:
@@ -569,6 +612,14 @@ public class LPInterpreter {
      * Set up a tabled choice point as part of a CALL.
      */
     private void setupTabledCall(int pc, int ac) {
+        // Temp ...
+        // TODO: remove
+        if (deref(argVars[0]).isURI() && deref(argVars[0]).getURI().equals("C1") &&
+                deref(argVars[1]).equals(com.hp.hpl.jena.vocabulary.RDF.Nodes.type) &&
+                deref(argVars[2]).equals(com.hp.hpl.jena.vocabulary.RDFS.Nodes.Class)) {
+                    System.out.println("Seting up call ...");
+                }
+        // ... end temp
         ConsumerChoicePointFrame ccp = new ConsumerChoicePointFrame(this);
         ccp.linkTo(cpFrame);
         ccp.setContinuation(pc, ac);
@@ -718,7 +769,13 @@ public class LPInterpreter {
         if (node == Node.ANY || node == Node_RuleVariable.WILD) {
             return new Node_RuleVariable(null, 0);
         } else {
-            return node;
+            // TEmp...
+            // TODO: remove
+            Node_RuleVariable temp = new Node_RuleVariable(null, 0);
+            unify(node, temp);
+            return temp;
+            // ... end temp
+//            return node;
         }
     }
 }
