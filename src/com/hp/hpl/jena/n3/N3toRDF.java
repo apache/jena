@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.14 2003-08-07 13:08:24 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.15 2003-08-18 10:50:57 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -229,6 +229,8 @@ public class N3toRDF implements N3ParserEventHandler
                 
 			case N3Parser.LITERAL :
 				// Literals have three part: value (string), lang tag, datatype
+                // Can't have a lang tag and a data type - if both, just use the datatype
+                
                 AST a1 = thing.getNextSibling() ;
                 AST a2 = (a1==null?null:a1.getNextSibling()) ;
                 AST datatype = null ;
@@ -252,38 +254,46 @@ public class N3toRDF implements N3ParserEventHandler
 
                 // Chop leading '@'
                 String langTag = (lang!=null)?lang.getText().substring(1):null ;
-                String typeURI = null ;
-                if (datatype != null)
+                
+                if ( datatype == null )   
+                    return model.createTypedLiteral(text, langTag, (String)null) ;
+                
+                // If there is a datatype, it takes predence over lang tag.
+                String typeURI = datatype.getText();
+
+                if ( datatype.getType() != N3Parser.QNAME &&
+                     datatype.getType() != N3Parser.URIREF )
                 {
-                    typeURI = datatype.getText();
-                    // Can't have bNodes here so the code is slightly different.
-                    switch (datatype.getType())
-                    {
-                        case N3Parser.QNAME :
-                            if (typeURI.startsWith("_:") || typeURI.startsWith("=:"))
-                            {
-                                error("Line "+ line+ ": N3toRDF: Use bNode for datatype URI: "
-                                        + text+ "^^"+ typeURI);
-                                return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
-                            }
-
-                            String typeURI2 = expandPrefix(model, typeURI) ;
-                            if ( typeURI2 == typeURI )
-                            {
-                                error("Line "+line+": N3toRDF: Undefined qname namespace in datatype: " + typeURI);
-                            }
-                            // Fall through
-                            typeURI = typeURI2 ;
-
-                        case N3Parser.URIREF :
-                            typeURI = expandHereURIRef(typeURI);
-                            break ;
-                        default :
-                            error("Line "+ line+ ": N3toRDF: Must use URIref or QName datatype URI: "
-                                    + text+ "^^"+ typeURI+"("+N3Parser.getTokenNames()[datatype.getType()]+")");
-                            return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
-                    }
+                    error("Line "+ line+ ": N3toRDF: Must use URIref or QName datatype URI: "
+                            + text+ "^^"+ typeURI+"("+N3Parser.getTokenNames()[datatype.getType()]+")");
+                    return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
+ 
                 }
+                
+                // Can't have bNodes here so the code is slightly different for expansion
+                
+                if ( datatype.getType() == N3Parser.QNAME )
+                {
+                    if (typeURI.startsWith("_:") || typeURI.startsWith("=:"))
+                    {
+                        error("Line "+ line+ ": N3toRDF: Can't use bNode for datatype URI: "
+                                + text+ "^^"+ typeURI);
+                        return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
+                    }
+
+                    String typeURI2 = expandPrefix(model, typeURI) ;
+                    if ( typeURI2 == typeURI )
+                    {
+                        error("Line "+line+": N3toRDF: Undefined qname namespace in datatype: " + typeURI);
+                    }
+                    
+                    typeURI = typeURI2 ;
+                }
+
+                typeURI = expandHereURIRef(typeURI);
+                // 2003-08
+                // NB This will change when we don't allow XMLLIterals to have both 
+                // lang tag and datatype (RDF spec decision).
                 return model.createTypedLiteral(text, langTag, typeURI) ;
 
 			case N3Parser.QNAME :

@@ -60,7 +60,10 @@ public class Q_TextLiteral extends ParsedLiteral {
                 datatype.fixup(qnode) ;
             tmp_datatype = datatype.valueString() ;
         }
-                 
+        
+        // 2003-08
+        // This will change when we stop literals (XMLLiterals) having
+        // both lang tag and datatype (subject to WG decision)         
         Literal l = model.createTypedLiteral(super.getString(), langTag, tmp_datatype) ;
         super.setRDFLiteral(l) ; 
     }
