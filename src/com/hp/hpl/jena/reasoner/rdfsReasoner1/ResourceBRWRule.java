@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ResourceBRWRule.java,v 1.2 2003-02-10 10:14:14 der Exp $
+ * $Id: ResourceBRWRule.java,v 1.3 2003-02-11 15:17:13 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of "anything mentioned in any triple is a Resource".
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:14:14 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-11 15:17:13 $
  */
 public class ResourceBRWRule extends BRWRule {
     
@@ -72,7 +72,7 @@ public class ResourceBRWRule extends BRWRule {
                     it = bRr.findRawWithContinuation(pattern, data);
                 }
             }
-            BRWRule rwrule = new BRWRule(new TriplePattern(Node.makeVariable(var), TYPE, RESOURCE), body);
+            BRWRule rwrule = new BRWRule(new TriplePattern(Node.createVariable(var), TYPE, RESOURCE), body);
             return new RewriteIterator(it, rwrule);
         }
     }    

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-03 22:49:39 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-02-11 15:16:30 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -82,8 +82,8 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
+import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.rdf.model.impl.SelectorImpl;
 
 import com.hp.hpl.jena.mem.ModelMem;
 
@@ -98,7 +98,7 @@ import com.hp.hpl.jena.mem.ModelMem;
  * of imports on or off overall, or by using
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.4 2003-02-03 22:49:39 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.5 2003-02-11 15:16:30 chris-dollin Exp $
  */
 public class DAMLLoader
 {
@@ -626,9 +626,9 @@ public class DAMLLoader
         // first check that we are loading included ontologies
         if (getLoadImportedOntologies()) {
             // first find if there is an Ontology resource
-            ResIterator i0 = model.query( new SelectorImpl( null, RDF.type, ontologyInstanceType ) )
+            ResIterator i0 = model.query( new SimpleSelector( null, RDF.type, ontologyInstanceType ) )
                                   .listSubjects();
-            ResIterator i1 = model.query( new SelectorImpl( null, DAML_OIL.type, ontologyInstanceType ) )
+            ResIterator i1 = model.query( new SimpleSelector( null, DAML_OIL.type, ontologyInstanceType ) )
                                   .listSubjects();
 
             // we collect the imported URI's first, then load them ... otherwise we're

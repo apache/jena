@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRWRule.java,v 1.2 2003-02-10 10:14:13 der Exp $
+ * $Id: BRWRule.java,v 1.3 2003-02-11 15:17:13 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * the corresponding parts of the query being processed.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:14:13 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-11 15:17:13 $
  */
 public class BRWRule {
 
@@ -147,22 +147,22 @@ public class BRWRule {
      */
     public static Node parseNode(String token) {
         if (token.startsWith("?")) {
-            return Node.makeVariable(token.substring(1));
+            return Node.createVariable(token.substring(1));
         } else if (token.equals("_")) {
-            return Node.makeVariable("*");
+            return Node.createVariable("*");
         } else if (token.indexOf(':') != -1) {
             int split = token.indexOf(':');
             String nsPrefix = token.substring(0, split);
             String localname = token.substring(split+1);
             if (nsPrefix.equalsIgnoreCase("rdf")) {
-                return Node.makeURI(RDF.getURI() + localname);
+                return Node.createURI(RDF.getURI() + localname);
             } else if (nsPrefix.equalsIgnoreCase("rdfs")) {
-                return Node.makeURI(RDFS.getURI() + localname);
+                return Node.createURI(RDFS.getURI() + localname);
             } else {
-                return Node.makeURI(token);
+                return Node.createURI(token);
             }
         } else {
-            return Node.makeURI(token);
+            return Node.createURI(token);
         }
     }
     

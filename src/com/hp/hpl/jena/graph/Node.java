@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.1.1.1 2002-12-19 19:13:30 bwm Exp $
+  $Id: Node.java,v 1.2 2003-02-11 15:17:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -34,35 +34,45 @@ public abstract class Node {
     public static final Node ANY = new Node_ANY();
         
     /** make a blank node with the specified label */
-    public static Node makeAnon( AnonId id )
-        { return make( makeAnon, id ); }
+    public static Node createAnon( AnonId id )
+        { return create( makeAnon, id ); }
         
     /** make a literal node with the specified literal value */
-    public static Node makeLiteral( LiteralLabel lit )
-        { return make( makeLiteral, lit ); }
+    public static Node createLiteral( LiteralLabel lit )
+        { return create( makeLiteral, lit ); }
         
     /** make a URI node with the specified URIref string */
-    public static Node makeURI( String uri )
-        { return make( makeURI, uri ); }
+    public static Node createURI( String uri )
+        { return create( makeURI, uri ); }
        
     /** make a blank node with a fresh anon id */ 
-    public static Node makeAnon()
-        { return makeAnon( new AnonId() ); }
+    public static Node createAnon()
+        { return createAnon( new AnonId() ); }
         
     /** make a variable node with a given name */
-    public static Node makeVariable( String name )
-        { return make( makeVariable, "?" + name ); }
+    public static Node createVariable( String name )
+        { return create( makeVariable, "?" + name ); }
         
-    /** make a literal with specified language and XMLishness */
-    public static Node makeLiteral( String lit, String lang, boolean isXml )
+    /** make a literal with specified language and XMLishness.
+        _list_ must *not* be null. This intermediate implementation logs
+        a warning to allow users moving over to Jena2 to correct their
+        code. When they've had the opportunity, arrange to throw an
+        exception, and delete _nullLiteralsGenerateWarnings_ and
+        update the regression tests as directed. 
+    */
+    public static Node createLiteral( String lit, String lang, boolean isXml )
         {
         if (lit == null) 
             {
-            log.warn( "null treated as empty string in makeLiteral: this will become illegal." );
+            // throw new SomeSuitableException( "null in createLiteral" );
+            log.warn( "null treated as empty string in createLiteral: this will become illegal." );
             lit = "";
             } 
-        return makeLiteral( new LiteralLabel( lit, lang, isXml ) ); 
-        }      
+        return createLiteral( new LiteralLabel( lit, lang, isXml ) ); 
+        }    
+        
+    public static void nullLiteralsGenerateWarnings()
+        {}  
         
     /**
      * Build a typed literal node from its lexical form. The
@@ -74,9 +84,9 @@ public abstract class Node {
      * @param dtype the type of the literal, null for old style "plain" literals
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
-    public static Node makeLiteral(String lex, String lang, RDFDatatype dtype) 
+    public static Node createLiteral(String lex, String lang, RDFDatatype dtype) 
                                             throws DatatypeFormatException {        
-        return makeLiteral( new LiteralLabel(lex, lang, dtype) );
+        return createLiteral( new LiteralLabel(lex, lang, dtype) );
     }
                                                                             
     /** is this a literal node - overridden in Node_Literal */
@@ -155,7 +165,7 @@ public abstract class Node {
         from the recent cache if we can. Otherwise, the maker knows how to construct a new
         node of the correct class (and the Node constructor will then add it to the cache).
     */
-    public static Node make( NodeMaker maker, Object label )
+    public static Node create( NodeMaker maker, Object label )
         {
         if (label == null) throw new RuntimeException( "Node.make: null label" );
         Node node = (Node) present.get( label );

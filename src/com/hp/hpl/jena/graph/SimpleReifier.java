@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.2 2003-01-09 15:27:03 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.3 2003-02-11 15:17:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -55,7 +55,7 @@ public class SimpleReifier implements Reifier
         
     /** reify a triple _t_, allocating a new blank node to represent it */
     public Node reify( Triple t )
-        { return reifyAs( Node.makeAnon(), t ); }        
+        { return reifyAs( Node.createAnon(), t ); }        
         
     /** 
         reifiy a triple _t_ with tag _tag_. If a different triple is already

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.3 2003-01-30 10:25:18 chris-dollin Exp $
+  $Id: TestNode.java,v 1.4 2003-02-11 15:17:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -40,39 +40,39 @@ public class TestNode extends TestCase
 
     public void testBlanks()
         {
-        assertTrue( "anonymous nodes are blank", Node.makeAnon().isBlank() );
-        assertFalse( "anonymous nodes aren't literal", Node.makeAnon().isLiteral() );
-        assertFalse( "anonymous nodes aren't URIs", Node.makeAnon().isURI() );
-        assertFalse( "anonymous nodes aren't variables", Node.makeAnon().isVariable() );
-        assertEquals( "anonymous nodes have the right id", Node.makeAnon(A).getBlankNodeId(), A );
+        assertTrue( "anonymous nodes are blank", Node.createAnon().isBlank() );
+        assertFalse( "anonymous nodes aren't literal", Node.createAnon().isLiteral() );
+        assertFalse( "anonymous nodes aren't URIs", Node.createAnon().isURI() );
+        assertFalse( "anonymous nodes aren't variables", Node.createAnon().isVariable() );
+        assertEquals( "anonymous nodes have the right id", Node.createAnon(A).getBlankNodeId(), A );
         }
         
     public void testLiterals()
         {
-        assertFalse( "literal nodes aren't blank", Node.makeLiteral( L ).isBlank() );
-        assertTrue( "literal nodes are literal", Node.makeLiteral( L ).isLiteral() );
-        assertFalse( "literal nodes aren't variables", Node.makeLiteral( L ).isVariable() );
-        assertFalse( "literal nodes aren't URIs", Node.makeLiteral( L ).isURI() );
-        assertEquals( "literal nodes preserve value", Node.makeLiteral( L ).getLiteral(), L );
+        assertFalse( "literal nodes aren't blank", Node.createLiteral( L ).isBlank() );
+        assertTrue( "literal nodes are literal", Node.createLiteral( L ).isLiteral() );
+        assertFalse( "literal nodes aren't variables", Node.createLiteral( L ).isVariable() );
+        assertFalse( "literal nodes aren't URIs", Node.createLiteral( L ).isURI() );
+        assertEquals( "literal nodes preserve value", Node.createLiteral( L ).getLiteral(), L );
         }
         
     public void testURIs()
         {
-        assertFalse( "URI nodes aren't blank", Node.makeURI( U ).isBlank() );
-        assertFalse( "URI nodes aren't literal", Node.makeURI( U ).isLiteral() );
-        assertFalse( "URI nodes aren't variables", Node.makeURI( U ).isVariable() );
-        assertTrue( "URI nodes are URIs", Node.makeURI( U ).isURI() );
-        assertEquals( "URI nodes preserve URI", Node.makeURI( U ).getURI(), U );
+        assertFalse( "URI nodes aren't blank", Node.createURI( U ).isBlank() );
+        assertFalse( "URI nodes aren't literal", Node.createURI( U ).isLiteral() );
+        assertFalse( "URI nodes aren't variables", Node.createURI( U ).isVariable() );
+        assertTrue( "URI nodes are URIs", Node.createURI( U ).isURI() );
+        assertEquals( "URI nodes preserve URI", Node.createURI( U ).getURI(), U );
         }
         
     public void testVariables()
         {
-        assertFalse( "variable nodes aren't blank", Node.makeVariable( N ).isBlank() );
-        assertFalse( "variable nodes aren't literal", Node.makeVariable( N ).isLiteral() );        
-        assertFalse( "variable nodes aren't URIs", Node.makeVariable( N ).isURI() );
-        assertTrue( "variable nodes are variable", Node.makeVariable( N ).isVariable() );
-        assertEquals( "variable nodes keep their name", N, Node.makeVariable( N ).getName() );
-        assertEquals( "variable nodes keep their name", N + "x", Node.makeVariable( N + "x" ).getName() );
+        assertFalse( "variable nodes aren't blank", Node.createVariable( N ).isBlank() );
+        assertFalse( "variable nodes aren't literal", Node.createVariable( N ).isLiteral() );        
+        assertFalse( "variable nodes aren't URIs", Node.createVariable( N ).isURI() );
+        assertTrue( "variable nodes are variable", Node.createVariable( N ).isVariable() );
+        assertEquals( "variable nodes keep their name", N, Node.createVariable( N ).getName() );
+        assertEquals( "variable nodes keep their name", N + "x", Node.createVariable( N + "x" ).getName() );
         }
         
     public void testANY()
@@ -97,10 +97,10 @@ public class TestNode extends TestCase
             
             Node[] nodes = new Node[] {
               Node.ANY,
-              Node.makeAnon(id),    Node.makeAnon(),       Node.makeAnon(id),
-              Node.makeLiteral(L),  Node.makeLiteral(L2),  Node.makeLiteral(L),
-              Node.makeURI(U),      Node.makeURI(U2),      Node.makeURI(U),
-              Node.makeVariable(N), Node.makeVariable(N2), Node.makeVariable(N)
+              Node.createAnon(id),    Node.createAnon(),       Node.createAnon(id),
+              Node.createLiteral(L),  Node.createLiteral(L2),  Node.createLiteral(L),
+              Node.createURI(U),      Node.createURI(U2),      Node.createURI(U),
+              Node.createVariable(N), Node.createVariable(N2), Node.createVariable(N)
             };
             
             String[] types= {
@@ -156,15 +156,15 @@ public class TestNode extends TestCase
         try
             {
             Node.cache( false );
-            assertDiffer( "different variables", Node.makeVariable( "xx" ), Node.makeVariable( "yy" ) );
-            assertEquals( "same vars", Node.makeVariable( "aa" ), Node.makeVariable( "aa" ) );
-            assertEquals( "same URI", Node.makeURI( U ), Node.makeURI( U ) );
-            assertEquals( "same anon", Node.makeAnon( A ), Node.makeAnon( A ) );
-            assertEquals( "same literal", Node.makeLiteral( L ), Node.makeLiteral( L ) );
-            assertFalse( "distinct URIs", Node.makeURI( U ) == Node.makeURI( U ) );
-            assertFalse( "distinct blanks", Node.makeAnon( A ) == Node.makeAnon( A ) );
-            assertFalse( "distinct literals", Node.makeLiteral( L ) == Node.makeLiteral( L ) );
-            assertFalse( "distinct vars", Node.makeVariable( "aa" ) == Node.makeVariable( "aa" ) );
+            assertDiffer( "different variables", Node.createVariable( "xx" ), Node.createVariable( "yy" ) );
+            assertEquals( "same vars", Node.createVariable( "aa" ), Node.createVariable( "aa" ) );
+            assertEquals( "same URI", Node.createURI( U ), Node.createURI( U ) );
+            assertEquals( "same anon", Node.createAnon( A ), Node.createAnon( A ) );
+            assertEquals( "same literal", Node.createLiteral( L ), Node.createLiteral( L ) );
+            assertFalse( "distinct URIs", Node.createURI( U ) == Node.createURI( U ) );
+            assertFalse( "distinct blanks", Node.createAnon( A ) == Node.createAnon( A ) );
+            assertFalse( "distinct literals", Node.createLiteral( L ) == Node.createLiteral( L ) );
+            assertFalse( "distinct vars", Node.createVariable( "aa" ) == Node.createVariable( "aa" ) );
             }
         finally
             { Node.cache( true ); }
@@ -189,10 +189,10 @@ public class TestNode extends TestCase
             };
             Node[] nodes = {
                 Node.ANY,
-                Node.makeAnon((AnonId) labels[1]),
-                Node.makeLiteral((LiteralLabel) labels[2]),
-                Node.makeURI((String) labels[3]),
-                Node.makeVariable((String) labels[4])
+                Node.createAnon((AnonId) labels[1]),
+                Node.createLiteral((LiteralLabel) labels[2]),
+                Node.createURI((String) labels[3]),
+                Node.createVariable((String) labels[4])
             };
             boolean[] expectedBlk = new boolean[nodes.length];
             boolean[] expectedLit = new boolean[nodes.length];
@@ -253,12 +253,12 @@ public class TestNode extends TestCase
         
     public void testCache()
         {
-        assertTrue( "remembers URI", Node.makeURI( U ) == Node.makeURI( U ) );   
-        assertTrue( "remembers literal", Node.makeLiteral( L ) == Node.makeLiteral( L ) );
-        assertTrue( "remembers blanks", Node.makeAnon( A ) == Node.makeAnon( A ) );
-        assertTrue( "remembers variables", Node.makeVariable( N ) == Node.makeVariable( N ) );
+        assertTrue( "remembers URI", Node.createURI( U ) == Node.createURI( U ) );   
+        assertTrue( "remembers literal", Node.createLiteral( L ) == Node.createLiteral( L ) );
+        assertTrue( "remembers blanks", Node.createAnon( A ) == Node.createAnon( A ) );
+        assertTrue( "remembers variables", Node.createVariable( N ) == Node.createVariable( N ) );
     /* */
-        assertFalse( "is not confused", Node.makeVariable( N ) == Node.makeURI( N ) );
+        assertFalse( "is not confused", Node.createVariable( N ) == Node.createURI( N ) );
         }
     }
 

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-01 14:35:33 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-02-11 15:17:12 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -66,7 +66,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.3 2003-02-01 14:35:33 bwm Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.4 2003-02-11 15:17:12 chris-dollin Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -839,7 +839,7 @@ public class DAMLTest
 
                 // shouldn't be in the model either
                 int n = 0;
-                for (StmtIterator j = m.listStatements( new SelectorImpl( r, null, (RDFNode) null ) );  j.hasNext();  n++);
+                for (StmtIterator j = m.listStatements( new SimpleSelector( r, null, (RDFNode) null ) );  j.hasNext();  n++);
                 assertEquals( "DAML value " + rURI + " should have been removed from the model", 0, n );
             }
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.3 2003-01-30 10:25:18 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.4 2003-02-11 15:17:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -51,10 +51,10 @@ public class TestTriple extends TestCase
             
             Node[] nodes = new Node[] {
               Node.ANY,
-              Node.makeAnon(id),    Node.makeAnon(),
-              Node.makeLiteral(L),  Node.makeLiteral(L2),
-              Node.makeURI(U),      Node.makeURI(U2),
-              Node.makeVariable(N), Node.makeVariable(N2)
+              Node.createAnon(id),    Node.createAnon(),
+              Node.createLiteral(L),  Node.createLiteral(L2),
+              Node.createURI(U),      Node.createURI(U2),
+              Node.createVariable(N), Node.createVariable(N2)
             };
             
             String[] types= {

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-03 22:49:39 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-02-11 15:17:03 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.1 2003-02-03 22:49:39 ian_dickinson Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.2 2003-02-11 15:17:03 chris-dollin Exp $
  */
 public class OntListImpl
     extends ResourceImpl
@@ -759,7 +759,7 @@ public class OntListImpl
     private void checkValidProperty( Property p, RDFNode expected ) {
         int count = 0;
         
-        for (StmtIterator j = getModel().listStatements( new SelectorImpl( this, p, expected ) );  j.hasNext();  j.next()) { 
+        for (StmtIterator j = getModel().listStatements( new SimpleSelector( this, p, expected ) );  j.hasNext();  j.next()) { 
             count++;
         }
         

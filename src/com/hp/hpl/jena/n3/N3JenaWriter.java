@@ -27,7 +27,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.4 2003-02-11 15:17:15 chris-dollin Exp $
  */
 
 
@@ -775,7 +775,7 @@ public class N3JenaWriter implements RDFWriter
 	private StmtIterator listStatements(Model model, Resource subj, Property prop, RDFNode obj)
 		throws RDFException
 	{
-		return model.listStatements(new SelectorImpl(subj, prop, obj)) ;
+		return model.listStatements(new SimpleSelector(subj, prop, obj)) ;
 	}
 
 

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-01 14:35:32 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-02-11 15:16:29 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -56,7 +56,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
-import com.hp.hpl.jena.rdf.model.impl.SelectorImpl;
+import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
 
 import java.util.Iterator;
 import java.util.HashSet;
@@ -87,7 +87,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * properties, such as comment, label, and equivalentTo.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.4 2003-02-11 15:16:29 chris-dollin Exp $
  */
 public abstract class DAMLCommonImpl
     extends ResourceImpl
@@ -701,7 +701,7 @@ public abstract class DAMLCommonImpl
                 Property p = (Property) i.next();
 
                 try {
-                    for (StmtIterator j = getModel().listStatements( new SelectorImpl( this, p, n ) );  j.hasNext(); ) {
+                    for (StmtIterator j = getModel().listStatements( new SimpleSelector( this, p, n ) );  j.hasNext(); ) {
                         j.nextStatement().remove();
                     }
                 }
@@ -724,7 +724,7 @@ public abstract class DAMLCommonImpl
             while (preds.hasNext()) {
                 Property p = (Property) preds.next();
 
-                for (StmtIterator i = getModel().listStatements( new SelectorImpl( this, p, (RDFNode) null ) );  i.hasNext(); ) {
+                for (StmtIterator i = getModel().listStatements( new SimpleSelector( this, p, (RDFNode) null ) );  i.hasNext(); ) {
                     i.nextStatement().remove();
                 }
             }

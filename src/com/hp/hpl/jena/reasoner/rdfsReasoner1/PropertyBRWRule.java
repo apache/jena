@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PropertyBRWRule.java,v 1.2 2003-02-10 10:14:11 der Exp $
+ * $Id: PropertyBRWRule.java,v 1.3 2003-02-11 15:17:13 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of "anything mentioned in predicated position is a Property".
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:14:11 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-11 15:17:13 $
  */
 public class PropertyBRWRule extends BRWRule {
 
@@ -29,8 +29,8 @@ public class PropertyBRWRule extends BRWRule {
      * Constructor
      */
     public PropertyBRWRule() {
-        super(new TriplePattern(Node.makeVariable("p"), RDF.type.getNode(), RDF.Property.getNode()),   
-               new TriplePattern(null, Node.makeVariable("s"), null));
+        super(new TriplePattern(Node.createVariable("p"), RDF.type.getNode(), RDF.Property.getNode()),   
+               new TriplePattern(null, Node.createVariable("s"), null));
     }
     
     /**

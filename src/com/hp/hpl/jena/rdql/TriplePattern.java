@@ -5,7 +5,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.2 2003-02-01 14:35:33 bwm Exp $
+ * @version  $Id: TriplePattern.java,v 1.3 2003-02-11 15:17:09 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -343,7 +343,7 @@ public class TriplePattern
             o = _o ;
             currentBinding = binding ;
             try {
-                Selector selector = new SelectorImpl(s, p, o) ;
+                Selector selector = new SimpleSelector(s, p, o) ;
                 sIter = m.listStatements(selector) ;
             } catch (RDFException rdfEx)
             {

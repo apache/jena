@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.2 2003-02-10 10:58:23 der Exp $
+ * $Id: WGReasonerTester.java,v 1.3 2003-02-11 15:17:03 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -40,7 +40,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:58:23 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-11 15:17:03 $
  */
 public class WGReasonerTester {
 
@@ -291,7 +291,7 @@ public class WGReasonerTester {
                if (i > varnames.length()) {
                    throw new ReasonerException("Too many bnodes in query");
                }
-               t = Node.makeVariable(varnames.substring(i, i+1));
+               t = Node.createVariable(varnames.substring(i, i+1));
                bnodeToVar.put(node, t);
             } 
             return t;

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testNTripleReader.java,v 1.2 2003-02-01 14:35:13 bwm Exp $
+ * $Id: testNTripleReader.java,v 1.3 2003-02-11 15:17:07 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class testNTripleReader extends Object {
    
@@ -58,7 +58,7 @@ public class testNTripleReader extends Object {
                  if (m1.size() != 5) error(test, n);
                  StmtIterator iter = 
                      m1.listStatements(
-                             new SelectorImpl(null, null, "foo\"\\\n\r\tbar"));
+                             new SimpleSelector(null, null, "foo\"\\\n\r\tbar"));
             n++; if (! iter.hasNext()) error(test, n);
         } catch (Exception e) {
             inError = true;

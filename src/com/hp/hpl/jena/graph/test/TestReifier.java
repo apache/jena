@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.2 2003-01-28 16:20:48 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.3 2003-02-11 15:16:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -69,7 +69,7 @@ public class TestReifier extends GraphTestBase
     	assertTrue( "node is known bound", R.hasTriple( M ) );
     	assertTrue( "node is known bound", R.hasTriple( N ) );
     	assertFalse( "node is known unbound", R.hasTriple( Node.ANY ) );
-    	assertFalse( "node is known unbound", R.hasTriple( Node.makeURI( "any:thing" ) ) );
+    	assertFalse( "node is known unbound", R.hasTriple( Node.createURI( "any:thing" ) ) );
     /* */
     	Graph GR = R.getReifiedTriples();
     	assertTrue( "reified triples", graphWith( "x R y; p S q" ).isIsomorphicWith(GR) );
@@ -80,7 +80,7 @@ public class TestReifier extends GraphTestBase
     	{
     	Graph G = graphWith( "" );
     	Reifier R = G.getReifier();
-    	Node X = Node.makeURI( "some:uri" );
+    	Node X = Node.createURI( "some:uri" );
     	assertEquals( "node used", X, R.reifyAs( X, triple( "x R y" ) ) );
     	assertEquals( "retrieves correctly", triple( "x R y" ), R.getTriple( X ) );
     	}

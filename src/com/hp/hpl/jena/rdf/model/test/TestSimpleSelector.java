@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleSelector.java,v 1.2 2003-02-02 13:06:36 bwm Exp $
+  $Id: TestSimpleSelector.java,v 1.3 2003-02-11 15:17:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -11,6 +11,7 @@ package com.hp.hpl.jena.rdf.model.test;
 */
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestCase;

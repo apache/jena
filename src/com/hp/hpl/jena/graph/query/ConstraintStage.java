@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ConstraintStage.java,v 1.1.1.1 2002-12-19 19:13:52 bwm Exp $
+  $Id: ConstraintStage.java,v 1.2 2003-02-11 15:16:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -85,7 +85,7 @@ public class ConstraintStage extends Stage
     */
     static public void addFactory( String uri, PredicateFactory f )
         {
-        Node n = Node.makeURI( uri );
+        Node n = Node.createURI( uri );
         if (factories.containsKey( n ))
             throw new UnsupportedOperationException( "cannot redefine: " + f );
         else

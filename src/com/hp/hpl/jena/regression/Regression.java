@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.2 2003-02-01 14:35:13 bwm Exp $
+ * $Id: Regression.java,v 1.3 2003-02-11 15:17:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.graph.*;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:13 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-11 15:17:08 $'
  */
 public class Regression extends Object {
 
@@ -2202,7 +2202,7 @@ public class Regression extends Object {
             n=100;
             int count = 0;
             n++; iter = m.listStatements(
-                                  new SelectorImpl(null, null, (RDFNode)null));
+                                  new SimpleSelector(null, null, (RDFNode)null));
             while (iter.hasNext()) {
                 iter.nextStatement();
                 count++;
@@ -2215,7 +2215,7 @@ public class Regression extends Object {
 
 
 
-            class foo extends SelectorImpl
+            class foo extends SimpleSelector
             {
                 public foo(Resource s, Property p, RDFNode o) {
                     super(s,p,o);
@@ -2226,7 +2226,7 @@ public class Regression extends Object {
             n=110;
             count = 0;
             n++; iter = m.listStatements(
-                           new SelectorImpl(subject[0], null, (RDFNode) null));
+                           new SimpleSelector(subject[0], null, (RDFNode) null));
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
                 if (! stmt.getSubject().equals(subject[0])) error(test, n);
@@ -2238,7 +2238,7 @@ public class Regression extends Object {
             n=120;
             count = 0;
             n++; iter = m.listStatements(
-                           new SelectorImpl(null, predicate[1], (RDFNode) null));
+                           new SimpleSelector(null, predicate[1], (RDFNode) null));
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
                 if (! stmt.getPredicate().equals(predicate[1])) error(test, n);
@@ -2250,7 +2250,7 @@ public class Regression extends Object {
             n=130;
             count = 0;
             n++; iter = m.listStatements(
-                            new SelectorImpl(null, null, tvResObj[1]));
+                            new SimpleSelector(null, null, tvResObj[1]));
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
                 if (! stmt.getObject().equals(tvResObj[1])) error(test, n);
@@ -2262,7 +2262,7 @@ public class Regression extends Object {
             n=140;
             count = 0;
             n++; iter = m.listStatements(
-                            new SelectorImpl(null, null, false));
+                            new SimpleSelector(null, null, false));
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
                 if (  stmt.getBoolean()) error(test, n);
@@ -2274,7 +2274,7 @@ public class Regression extends Object {
             n=150;
             count=0;
             n++; iter=m.listStatements(
-                          new SelectorImpl(null, null, tvString[1], lang[1]));
+                          new SimpleSelector(null, null, tvString[1], lang[1]));
             n++; while (iter.hasNext()) {
                     stmt = iter.nextStatement();
                     if (! stmt.getLanguage().equals(lang[1])) error(test,n);
@@ -2369,7 +2369,7 @@ public class Regression extends Object {
             StmtIterator iter;
             n=100;
             int count = 0;
-            n++; mm = m.query(new SelectorImpl(null, null, (RDFNode)null));
+            n++; mm = m.query(new SimpleSelector(null, null, (RDFNode)null));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
                 iter.nextStatement();
@@ -2382,7 +2382,7 @@ public class Regression extends Object {
             n=110;
             count = 0;
             n++; mm = m.query(
-                           new SelectorImpl(subject[0], null, (RDFNode) null));
+                           new SimpleSelector(subject[0], null, (RDFNode) null));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
@@ -2396,7 +2396,7 @@ public class Regression extends Object {
             n=120;
             count = 0;
             n++; mm = m.query(
-                        new SelectorImpl(null, predicate[1], (RDFNode) null));
+                        new SimpleSelector(null, predicate[1], (RDFNode) null));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
@@ -2409,7 +2409,7 @@ public class Regression extends Object {
 
             n=130;
             count = 0;
-            n++; mm = m.query(new SelectorImpl(null, null, tvResObj[1]));
+            n++; mm = m.query(new SimpleSelector(null, null, tvResObj[1]));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
@@ -2422,7 +2422,7 @@ public class Regression extends Object {
 
             n=140;
             count = 0;
-            n++; mm = m.query(new SelectorImpl(null, null, false));
+            n++; mm = m.query(new SimpleSelector(null, null, false));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
@@ -2434,7 +2434,7 @@ public class Regression extends Object {
             n++; if (! (mm.size()==count)) error(test,n);
 
             n=150;
-            n++; mm=m.query(new SelectorImpl(null, null, tvString[1], lang[0]));
+            n++; mm=m.query(new SimpleSelector(null, null, tvString[1], lang[0]));
             n++; if (! (mm.size()==1)) error(test,n);
             n++; iter=mm.listStatements();
             n++; while (iter.hasNext()) {
@@ -2669,7 +2669,7 @@ public class Regression extends Object {
            n++; if (count != 12) error(test,n);
 
            n++; r.removeProperties();
-           n++; Model mm = m.query(new SelectorImpl(r, null, (RDFNode) null));
+           n++; Model mm = m.query(new SimpleSelector(r, null, (RDFNode) null));
                 if (! (mm.size()==0)) error(test,n);
 
         } catch (Exception e) {
@@ -3890,7 +3890,7 @@ public class Regression extends Object {
                 n++; if (! (m2.size() == size2)) error(test,n);
 
                 sIter = m1.listStatements(
-                                    new SelectorImpl(r11, RDF.value, r12));
+                                    new SimpleSelector(r11, RDF.value, r12));
                 n++; if (! sIter.hasNext()) error(test, n);
                 n++; stmt = sIter.nextStatement();
                 n++; if (! (stmt.getSubject().getModel() == m1)) error(test,n);
@@ -3972,17 +3972,34 @@ public class Regression extends Object {
                     the _null_ argument to LiteralImpl is preserved only for backward
                     compatability. It should be logged and later on become an exception.
                     (Brian and Chris had a discussion about this and agreed).
+                    
+                    When the method below is deleted, the test code can be installed.
+                    Replace RuntimeException with whatever the appropriate exception
+                    type is. If we can't decide, perhaps we should delete the test entirely ...
                 */
-               n=100; m.query(new SelectorImpl(null,
-                                               null,
-                                               new LiteralImpl( Node.makeLiteral( null, "", false ), m)));
-
-               n=101; m.query(new SelectorImpl(null,
-                                               null,
-                                               new LiteralImpl( Node.makeLiteral( null, "en", false ), m)));
+                Node.nullLiteralsGenerateWarnings();
+//                try
+//                    {
+//                   n=100; m.query(new SimpleSelector(null,
+//                                                   null,
+//                                                   new LiteralImpl( Node.createLiteral( null, "", false ), m)));
+//                    error( test, n );
+//                    }
+//                catch (RuntimeException e)
+//                        {}
+//                try
+//                    {
+//                   n=101; m.query(new SimpleSelector(null,
+//                                                   null,
+//                                                   new LiteralImpl( Node.createLiteral( null, "en", false ), m)));
+//                    error( test, n );
+//                    }
+//                catch (RuntimeException e)
+//                    {}
+                    
                n=102;
                StmtIterator iter
-                            = m.listStatements(new SelectorImpl(null,
+                            = m.listStatements(new SimpleSelector(null,
                                                                 null,
                                                                 (String) null));
                while (iter.hasNext()) {
@@ -3990,7 +4007,7 @@ public class Regression extends Object {
                }
 
                n=103;
-               iter = m.listStatements(new SelectorImpl(null,
+               iter = m.listStatements(new SimpleSelector(null,
                                                         null,
                                                         (Object) null));
                while (iter.hasNext()) {
@@ -4114,7 +4131,7 @@ public class Regression extends Object {
            n++; if (count != (12+numProps)) error(test,n);
 
            n++; r.removeProperties();
-           n++; Model mm = m.query(new SelectorImpl(r, null, (RDFNode) null));
+           n++; Model mm = m.query(new SimpleSelector(r, null, (RDFNode) null));
                 if (! (mm.size()==0)) error(test,n);
 
         } catch (Exception e) {

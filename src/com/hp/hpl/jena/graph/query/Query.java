@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.2 2003-01-28 10:39:26 chris-dollin Exp $
+  $Id: Query.java,v 1.3 2003-02-11 15:16:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -25,12 +25,12 @@ public class Query
      
     public static final Node ANY = Node.ANY;
     
-    public static final Node S = Node.makeVariable( "S" );
-    public static final Node P = Node.makeVariable( "P" );
-    public static final Node O = Node.makeVariable( "O" );
-    public static final Node X = Node.makeVariable( "X" );
-    public static final Node Y = Node.makeVariable( "Y" );
-    public static final Node Z = Node.makeVariable( "Z" );
+    public static final Node S = Node.createVariable( "S" );
+    public static final Node P = Node.createVariable( "P" );
+    public static final Node O = Node.createVariable( "O" );
+    public static final Node X = Node.createVariable( "X" );
+    public static final Node Y = Node.createVariable( "Y" );
+    public static final Node Z = Node.createVariable( "Z" );
     
     public static final Node NE = GraphTestBase.node( "&ne" );
         

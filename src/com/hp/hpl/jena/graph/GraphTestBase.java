@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.2 2003-01-28 16:21:40 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.3 2003-02-11 15:17:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -41,17 +41,17 @@ public class GraphTestBase extends TestCase
         if (x.length() > 0)
             {
             if (x.charAt( 0 ) == '\'')
-                return Node.makeLiteral( new LiteralLabel(  x, "en-UK", false ) );
+                return Node.createLiteral( new LiteralLabel(  x, "en-UK", false ) );
             if (Character.isDigit( x.charAt( 0 ) )) 
-                return Node.makeLiteral( new LiteralLabel( x, "nn-NN", false ) );
+                return Node.createLiteral( new LiteralLabel( x, "nn-NN", false ) );
             if (x.charAt( 0 ) == '_')
-                return Node.makeAnon( new AnonId( x ) );
+                return Node.createAnon( new AnonId( x ) );
             if (x.charAt( 0 ) == '?')
-                return Node.makeVariable( x.substring( 1 ) );
+                return Node.createVariable( x.substring( 1 ) );
             if (x.charAt( 0 ) == '&')
-                return Node.makeURI( "q:" + x.substring( 1 ) );
+                return Node.createURI( "q:" + x.substring( 1 ) );
             }
-        return Node.makeURI( x.indexOf( ':' ) < 0 ? "eh/" + x : x );
+        return Node.createURI( x.indexOf( ':' ) < 0 ? "eh/" + x : x );
         }
         
     public Set iteratorToSet( ClosableIterator L )

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.9 2003-02-10 10:01:14 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.10 2003-02-11 15:17:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -14,7 +14,8 @@ import com.hp.hpl.jena.graph.dt.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.SelectorImpl;
+import com.hp.hpl.jena.rdf.model.impl.*;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -27,7 +28,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-02-10 10:01:14 $
+ * @version $Revision: 1.10 $ on $Date: 2003-02-11 15:17:02 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -449,7 +450,7 @@ public class TestTypedLiterals extends TestCase {
         Iterator qi = model.getGraph().queryHandler().prepareBindings(q, new Node[] {}).executeBindings();
         assertTrue(qi.hasNext());
         // Similar tests at Model API level
-        Selector s1 = new SelectorImpl(a, p, l2);
+        Selector s1 = new SimpleSelector(a, p, l2);
         assertTrue(model.listStatements(s1).hasNext());
     }
     

@@ -2,12 +2,12 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
+  $Id: Basic.java,v 1.4 2003-02-11 15:17:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput;
 
-import com.hp.hpl.jena.rdf.model.impl.SelectorImpl;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-01 14:35:32 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-02-11 15:17:11 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -80,7 +80,7 @@ public class Basic extends BaseXMLWriter {
 		throws RDFException {
 		StmtIterator sIter =
 			model.listStatements(
-				new SelectorImpl(subject, null, (RDFNode) null));
+				new SimpleSelector(subject, null, (RDFNode) null));
 
 		writeDescriptionHeader(subject, writer);
 		if ((subject instanceof Statement)
