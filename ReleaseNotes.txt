@@ -1,7 +1,7 @@
 ReleaseNotes
 ============
 
-    Jena j2p1  (January 2003)
+Jena j2p1  (February 2003)
 
 
 This is the first release of Jena 2.
