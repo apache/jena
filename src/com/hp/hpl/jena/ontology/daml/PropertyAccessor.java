@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: PropertyAccessor.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-17 14:29:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * <p>Encapsulates the standard methods of modifying a property on a DAML value.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyAccessor.java,v 1.2 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS info: $Id: PropertyAccessor.java,v 1.3 2003-06-17 14:29:25 ian_dickinson Exp $
  */
 public interface PropertyAccessor
 {
@@ -82,6 +82,18 @@ public interface PropertyAccessor
      *         if the property has no value.
      */
     public RDFNode get();
+
+
+    /**
+     * <p>Answer the value of the encapsulated property, presented as a DAML list. If it has no values, answer
+     * null. If it has one value, answer that value (as a list). Otherwise, answer an undetermined
+     * member of the set of values. See also {@link #getDAMLValue}.
+     *
+     * @return A value for the encapsulated property in the RDF model, or null
+     *         if the property has no value.
+     * @exception com.hp.hpl.jena.ontology.ConversionException if the value is not a list
+     */
+    public DAMLList getList();
 
 
     /**

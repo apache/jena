@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 20:45:52 $
+ * Last modified on   $Date: 2003-06-17 14:29:19 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,6 +28,7 @@ package com.hp.hpl.jena.ontology.daml.impl.test;
 import junit.framework.*;
 
 import com.hp.hpl.jena.ontology.daml.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
 
@@ -39,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.2 2003-06-13 20:45:52 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.3 2003-06-17 14:29:19 ian_dickinson Exp $
  */
 public class TestDAMLClass 
     extends DAMLTestBase
@@ -247,6 +248,110 @@ public class TestDAMLClass
                     iteratorTest( A.getInstances(), new Object[] {a,b,c} );
                 }
             },
+            new OntTestCase( "DAMLClass.disjointUnionOf" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                    DAMLClass C = m.createDAMLClass( NS + "C" );
+                    DAMLClass D = m.createDAMLClass( NS + "D" );
+                   
+                    assertEquals( "prop_disjointUnionOf property", DAML_OIL.disjointUnionOf, A.prop_disjointUnionOf().getProperty() );
+                    
+                    assertEquals( "disjointUnionOf cardinality", 0, A.prop_disjointUnionOf().count() );
+                    A.prop_disjointUnionOf().add( m.createDAMLList( new RDFNode[] {B,C} ) );
+                    
+                    assertEquals( "disjointUnionOf cardinality", 1, A.prop_disjointUnionOf().count() );
+                    
+                    iteratorTest( A.prop_disjointUnionOf().getList().getAll(), new Object[] {B,C} );
+                    A.prop_disjointUnionOf().getList().add( D );
+                    iteratorTest( A.prop_disjointUnionOf().getList().getAll(), new Object[] {B,C,D} );
+                    
+                    assertTrue( "contains", A.prop_disjointUnionOf().getList().contains( D ) );
+                    assertTrue( "contains", A.prop_disjointUnionOf().getList().contains( B ) );
+                    assertTrue( "contains", A.prop_disjointUnionOf().getList().contains( C ) );
+                }
+            },
+            new OntTestCase( "DAMLClass.unionOf" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                    DAMLClass C = m.createDAMLClass( NS + "C" );
+                    DAMLClass D = m.createDAMLClass( NS + "D" );
+                   
+                    assertEquals( "prop_unionOf property", DAML_OIL.unionOf, A.prop_unionOf().getProperty() );
+                    
+                    assertEquals( "unionOf cardinality", 0, A.prop_unionOf().count() );
+                    A.prop_unionOf().add( m.createDAMLList( new RDFNode[] {B,C} ) );
+                    
+                    assertEquals( "unionOf cardinality", 1, A.prop_unionOf().count() );
+                    
+                    iteratorTest( A.prop_unionOf().getList().getAll(), new Object[] {B,C} );
+                    A.prop_unionOf().getList().add( D );
+                    iteratorTest( A.prop_unionOf().getList().getAll(), new Object[] {B,C,D} );
+                    
+                    assertTrue( "contains", A.prop_unionOf().getList().contains( D ) );
+                    assertTrue( "contains", A.prop_unionOf().getList().contains( B ) );
+                    assertTrue( "contains", A.prop_unionOf().getList().contains( C ) );
+                }
+            },
+            new OntTestCase( "DAMLClass.intersectionOf" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                    DAMLClass C = m.createDAMLClass( NS + "C" );
+                    DAMLClass D = m.createDAMLClass( NS + "D" );
+                   
+                    assertEquals( "prop_intersectionOf property", DAML_OIL.intersectionOf, A.prop_intersectionOf().getProperty() );
+                    
+                    assertEquals( "intersectionOf cardinality", 0, A.prop_intersectionOf().count() );
+                    A.prop_intersectionOf().add( m.createDAMLList( new RDFNode[] {B,C} ) );
+                    
+                    assertEquals( "intersectionOf cardinality", 1, A.prop_intersectionOf().count() );
+                    
+                    iteratorTest( A.prop_intersectionOf().getList().getAll(), new Object[] {B,C} );
+                    A.prop_intersectionOf().getList().add( D );
+                    iteratorTest( A.prop_intersectionOf().getList().getAll(), new Object[] {B,C,D} );
+                    
+                    assertTrue( "contains", A.prop_intersectionOf().getList().contains( D ) );
+                    assertTrue( "contains", A.prop_intersectionOf().getList().contains( B ) );
+                    assertTrue( "contains", A.prop_intersectionOf().getList().contains( C ) );
+                }
+            },
+            new OntTestCase( "DAMLClass.oneOf" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                    DAMLClass C = m.createDAMLClass( NS + "C" );
+                    DAMLClass D = m.createDAMLClass( NS + "D" );
+                   
+                    assertEquals( "prop_oneOf property", DAML_OIL.oneOf, A.prop_oneOf().getProperty() );
+                    
+                    assertEquals( "oneOf cardinality", 0, A.prop_oneOf().count() );
+                    A.prop_oneOf().add( m.createDAMLList( new RDFNode[] {B,C} ) );
+                    
+                    assertEquals( "oneOf cardinality", 1, A.prop_oneOf().count() );
+                    
+                    iteratorTest( A.prop_oneOf().getList().getAll(), new Object[] {B,C} );
+                    A.prop_oneOf().getList().add( D );
+                    iteratorTest( A.prop_oneOf().getList().getAll(), new Object[] {B,C,D} );
+                    
+                    assertTrue( "contains", A.prop_oneOf().getList().contains( D ) );
+                    assertTrue( "contains", A.prop_oneOf().getList().contains( B ) );
+                    assertTrue( "contains", A.prop_oneOf().getList().contains( C ) );
+                }
+            },
+            new OntTestCase( "DAMLClass.getDefinedProperties" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
+                    DAMLObjectProperty q = m.createDAMLObjectProperty( NS + "q" );
+                    DAMLObjectProperty r = m.createDAMLObjectProperty( NS + "r" );
+
+                    // TODO once daml property has been migrated          
+                             
+                    iteratorTest( A.getDefinedProperties(), new Object[] {} );
+                }
+            },
             new OntTestCase( "DAMLClass.getDefinedProperties" ) {
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLClass A = m.createDAMLClass( NS + "A" );
@@ -300,11 +405,4 @@ public class TestDAMLClass
     THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* TODO delete me
-public class TestDAMLClass{
-
-}
-
 */
