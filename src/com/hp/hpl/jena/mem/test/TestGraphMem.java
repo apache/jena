@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.6 2004-07-09 11:27:01 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.7 2004-07-19 18:45:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -40,7 +40,7 @@ public class TestGraphMem extends AbstractTestGraph
             
     public void testBrokenSubject()
         {
-        Graph g = getGraphWith( "x R y" );
+        Graph g = getGraphWith( "x brokenSubject y" );
         ExtendedIterator it = g.find( node( "x" ), Node.ANY, Node.ANY );
         it.next(); it.remove();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
@@ -48,7 +48,7 @@ public class TestGraphMem extends AbstractTestGraph
         
     public void testBrokenPredicate()
         {
-        Graph g = getGraphWith( "x R y" );
+        Graph g = getGraphWith( "x brokenPredicate y" );
         ExtendedIterator it = g.find( Node.ANY, node( "R"), Node.ANY );
         it.next(); it.remove();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
@@ -56,7 +56,7 @@ public class TestGraphMem extends AbstractTestGraph
         
     public void testBrokenObject()
         {
-        Graph g = getGraphWith( "x R y" );
+        Graph g = getGraphWith( "x brokenObject y" );
         ExtendedIterator it = g.find( Node.ANY, Node.ANY, node( "y" ) );
         it.next(); it.remove();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );

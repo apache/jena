@@ -1,7 +1,7 @@
 /*
   (c) Copyright Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.1 2004-07-19 13:48:49 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.2 2004-07-19 18:46:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -64,6 +64,42 @@ public class MixedGraphMem extends GraphMemBase implements Graph
             {
             Set s = (Set) map.get( t.getSubject() );
             return s != null && s.contains( t );
+            }
+        
+        public ExtendedIterator iterator( final Node key, Triple pattern )
+            {
+            Set s = (Set) map.get( key );
+            if (s == null)
+                return NullIterator.instance;
+            else
+                {
+                final Iterator it = s.iterator();
+                return new NiceIterator()
+                	{
+                    private Triple remember = null;
+                    
+                    public Object next()
+                        { return remember = (Triple) it.next(); }
+                    
+                    public boolean hasNext()
+                        { return it.hasNext(); }
+
+                    public void excise( Node k, Triple triple )
+                        {
+                        if (k != key) Thing.this.remove( k, triple );
+                        }
+                    
+                    public void remove()
+                        {
+                        it.remove();
+                        size -= 1;
+                        excise( remember.getSubject(), remember );
+                        excise( remember.getPredicate(), remember );
+                        excise( remember.getObject(), remember );
+                        }
+                    
+                	}  .filterKeep( new TripleMatchFilter( pattern ) );
+                }
             }
         
         public ExtendedIterator iterator( final Triple pattern )
@@ -197,7 +233,14 @@ public class MixedGraphMem extends GraphMemBase implements Graph
     public ExtendedIterator find( TripleMatch m ) 
         {
         checkOpen();
-        return thing.iterator( m.asTriple() ); 
+        Triple t = m.asTriple();
+        Node S = t.getSubject(), P = t.getPredicate(), O = t.getObject();
+        return 
+        	S.isConcrete() ? thing.iterator( S, t )
+            : P.isConcrete() ? thing.iterator( P, t )
+            : O.isURI() || O.isBlank() ? thing.iterator( O, t )
+            : thing.iterator( m.asTriple() )
+            ; 
         }
 
     }
