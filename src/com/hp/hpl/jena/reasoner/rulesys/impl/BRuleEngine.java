@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.11 2003-05-21 07:58:22 der Exp $
+ * $Id: BRuleEngine.java,v 1.12 2003-05-21 11:13:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-05-21 07:58:22 $
+ * @version $Revision: 1.12 $ on $Date: 2003-05-21 11:13:49 $
  */
 public class BRuleEngine {
 
@@ -229,7 +229,7 @@ public class BRuleEngine {
                 } else if (result == StateFlag.SUSPEND) {
                     // Can do no more with this goal
                     if (traceOn) {
-                        logger.debug("Suspend " + current);
+//                        logger.debug("Suspend " + current);
                     }
                     current.goalState.results.addDependent(current);
                     current.unwindBindings();

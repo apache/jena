@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Trail.java,v 1.2 2003-05-21 07:58:22 der Exp $
+ * $Id: Trail.java,v 1.3 2003-05-21 11:13:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * own trail segment which is an instance of this class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-21 07:58:22 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-21 11:13:49 $
  */
 public class Trail implements BindingEnvironment {
     
@@ -181,6 +181,18 @@ public class Trail implements BindingEnvironment {
         } else {
             return node;
         }
+    }
+   
+    /**
+     * Return the most ground version of the functor. Only used for pretty printing.
+     */
+    public Functor getMostGroundVersion(Functor f) {
+            Node[] args = f.getArgs();
+            Node[] cargs = new Node[args.length];
+            for (int i = 0; i < args.length; i++) {
+                cargs[i] = getGroundVersion(args[i]);
+            }
+            return new Functor(f.getName(), cargs);
     }
     
     /**

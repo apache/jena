@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.13 2003-05-21 07:58:22 der Exp $
+ * $Id: RuleState.java,v 1.14 2003-05-21 11:13:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.graph.*;
 
 /**
@@ -26,7 +27,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-05-21 07:58:22 $
+ * @version $Revision: 1.14 $ on $Date: 2003-05-21 11:13:49 $
  */
 public class RuleState {
     
@@ -171,10 +172,42 @@ public class RuleState {
      * Printable string
      */
     public String toString() {
-        return "RuleState " 
-                + ruleInstance.rule.toShortString()
-                + "("+ (clauseIndex-1) +")"
-                + ", gs=" + goalState;
+        Rule rule = ruleInstance.rule;
+        // Convert the rule to an instantiated rule    
+            StringBuffer buff = new StringBuffer();
+            buff.append("[ ");
+            if (rule.getName() != null) {
+                buff.append(rule.getName());
+                buff.append(": ");
+            }
+            for (int i = 0; i < rule.bodyLength(); i++) {
+                if (i == (clauseIndex-1) ) {
+                    buff.append(" ^^ ");
+                }
+                Object clause = rule.getBodyElement(i);
+                if (clause instanceof TriplePattern) {
+                    buff.append(PrintUtil.print(trail.partInstantiate((TriplePattern)clause)));
+                } else {
+                    buff.append(trail.getMostGroundVersion((Functor)clause).toString());
+                }
+                buff.append(" ");
+            }
+            buff.append("-> ");
+            for (int i = 0; i < rule.headLength(); i++) {
+                Object clause = rule.getHeadElement(i);
+                if (clause instanceof TriplePattern) {
+                    buff.append(PrintUtil.print(trail.partInstantiate((TriplePattern)clause)));
+                } else {
+                    buff.append(trail.getMostGroundVersion((Functor)clause).toString());
+                }
+                buff.append(" ");
+            }
+            buff.append("]");
+            return "RuleState: " + buff;
+//        return "RuleState " 
+//                + ruleInstance.rule.toShortString()
+//                + "("+ (clauseIndex-1) +")"
+//                + ", gs=" + goalState;
     }
     
 //  =======================================================================
@@ -229,6 +262,7 @@ public class RuleState {
                 }
                 GoalState gs = generator.getEngine().findGoal(subgoal);
                 RuleState rs = new RuleState(ri, trail, gs, clauseIndex);
+                trail.unwindBindings();
                 return rs;
             } else {
                 if (!generator.getEngine().processBuiltin(clause, rule, trail)) {
@@ -238,6 +272,7 @@ public class RuleState {
             }
         }
         // If we get to here there are no rule body clause to process
+        trail.unwindBindings();
         return new RuleState(ri, trail, null, 0);
     }
     
