@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestQueryRDB.java,v 1.1 2003-07-18 14:13:58 chris-dollin Exp $
+  $Id: TestQueryRDB.java,v 1.2 2003-08-11 02:51:10 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
 
+import com.hp.hpl.jena.graph.query.Query;
 import com.hp.hpl.jena.graph.query.test.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.db.*;
@@ -20,17 +21,24 @@ import junit.framework.*;
 public class TestQueryRDB extends AbstractTestQuery
     {
     public TestQueryRDB( String name )
-        { super( name ); }
+        {
+        	super( name );
+        }
 
-   public static TestSuite suite()
-        { return new TestSuite( TestGraphRDB.class ); }
 
+	public static TestSuite suite()
+        { return new TestSuite( TestQueryRDB.class ); }     
+
+        
     private IDBConnection theConnection;
     private int count = 0;
     
     public void setUp()
         {
         theConnection = TestConnection.makeAndCleanTestConnection();
+		Q = new Query();
+		empty = getGraphWith( "" );
+		single = getGraphWith( "spindizzies drive cities" );
         }
         
     public void tearDown()
@@ -52,6 +60,9 @@ public class TestQueryRDB extends AbstractTestQuery
         }
 
     }
+
+        
+
 
 
 /*
