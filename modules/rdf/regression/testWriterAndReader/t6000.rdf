@@ -78,7 +78,7 @@
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">12.78E-2</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">12</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">INF</e:p>
-<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">NaN</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double" xml:lang="en">NaN</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</e:p>
 

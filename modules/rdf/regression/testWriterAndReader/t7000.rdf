@@ -22,18 +22,16 @@
           Note the second parseType below was my error.
           With the first one above, it should no longer be an error.
           RDFReader blows up with any use of namespaces!
-<!-- UNCOMMENT ME FOR BUG
-          <NCX:nsIMsgIdentity 
+         <NCX:nsIMsgIdentity 
     xmlns:NCX="http://home.netscape.com/NC-rdf#"
     xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
              RDF:parseType="Literal"
           >
             Ho hum,
             <NCX:composeHtml>false</NCX:composeHtml>
-            <RDF:Description about="I am not what I seem"/>
+            <RDF:Description about="I am not what I seem" RDF:about="x" nodeID="foo"/>
              Ha
           </NCX:nsIMsgIdentity>
--->
 <NCXznsIMsgIdentity 
     xmlnszNCX="http://home.netscape.com/NC-rdf#"
     xmlnszRDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
