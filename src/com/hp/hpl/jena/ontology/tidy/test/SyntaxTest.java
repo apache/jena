@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.15 2004-12-06 13:50:22 andy_seaborne Exp $
+  $Id: SyntaxTest.java,v 1.16 2005-01-10 11:52:52 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -12,15 +12,16 @@ import com.hp.hpl.jena.ontology.*;
 import java.util.*;
 import java.io.*;
 import com.hp.hpl.jena.rdf.model.*;
-//import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.OWLTest;
 import com.hp.hpl.jena.shared.wg.*;
+import com.hp.hpl.jena.graph.*;
 /**
  *  @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
 *
 */
 class SyntaxTest extends TestCase {
-	static public boolean HP = true;
+	static public boolean HP = false;
 	static public Vector cnts = new Vector();
 	static public Vector files = new Vector();
 	static public Vector first = new Vector();
@@ -152,6 +153,33 @@ class SyntaxTest extends TestCase {
 				System.err.println(msg);
 				WGTests.logResult(uri, false);
 				fail(msg);
+			}
+			if (level.equals(OWLTest.Full)
+			        && !HP
+			        ) {
+				Iterator it = chk.getProblems();
+				while (it.hasNext()) {
+					SyntaxProblem sp = (SyntaxProblem) it.next();
+				    Graph g = sp.problemSubGraph();
+				    if (g==null)
+				        continue;
+				    Iterator ii = g.find(Node.ANY,Node.ANY,Node.ANY);
+				    Set s = new HashSet();
+				    while (ii.hasNext())
+				        s.add(ii.next());
+				    ii = s.iterator();
+				    while (ii.hasNext()){
+				        Triple t = (Triple)ii.next();
+				        g.delete(t);
+				        chk = new Checker(false);
+				        chk.addRaw(g);
+				        if (chk.getSubLanguage().equals("Full"))
+				            fail("Non-minimal solution");
+				        g.add(t);
+				    }
+				    
+				    
+				}
 			}
 		}
 		WGTests.logResult(uri, true);

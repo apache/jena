@@ -75,8 +75,11 @@ public class WGTests extends java.lang.Object {
 	static private TestInputStreamFactory factory;
 
 	static private String skipThese[] =
-		{ "http://www.w3.org/2002/03owlt/I5.8/Manifest016#test" };
+		{ 
+	        //"http://www.w3.org/2002/03owlt/I5.8/Manifest016#test" 
+	        };
 	static boolean doLargeTests = false;
+	static boolean onlyFullTests = false;
 
 	static private String manifestURI = "OWLManifest.rdf";
 	static private boolean manifestInFactory = true;
@@ -151,6 +154,9 @@ public class WGTests extends java.lang.Object {
 			&& testResource.hasProperty(OWLTest.size, OWLTest.Large)) {
 			return;
 		}
+		if (onlyFullTests && 
+		        !level.equals(OWLTest.Full))
+		    return;
 
 		TestSuite st =
 			(TestSuite) getTest(s, ((Literal) status).getLexicalForm(), null);
