@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.15 2003-10-15 10:56:30 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.16 2003-10-16 15:30:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -22,7 +22,7 @@ public class PatternStage extends Stage
     {
     protected Graph graph;
     protected Pattern [] compiled;
-    protected ExpressionSet [] guards;
+    protected ValuatorSet [] guards;
     protected Set [] boundVariables;
     
     public PatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
@@ -61,10 +61,10 @@ public class PatternStage extends Stage
      	@param length the number of evaluation slots available
      	@return the array of prepared ExpressionSets
     */
-    protected ExpressionSet [] makeGuards( Mapping map, ExpressionSet constraints, int length )
+    protected ValuatorSet [] makeGuards( Mapping map, ExpressionSet constraints, int length )
         {        
-    	ExpressionSet [] result = new ExpressionSet [length];
-        for (int i = 0; i < length; i += 1) result[i] = new ExpressionSet();
+    	ValuatorSet [] result = new ValuatorSet [length];
+        for (int i = 0; i < length; i += 1) result[i] = new ValuatorSet();
         Iterator it = constraints.iterator();
         while (it.hasNext())
             plantWhereFullyBound( (Expression) it.next(), it, map, result );
@@ -76,7 +76,7 @@ public class PatternStage extends Stage
         to the appropriate expression set, and remove it from the original via the
         iterator.
     */
-    protected void plantWhereFullyBound( Expression e, Iterator it, Mapping map, ExpressionSet [] es )
+    protected void plantWhereFullyBound( Expression e, Iterator it, Mapping map, ValuatorSet [] es )
         {
         for (int i = 0; i < boundVariables.length; i += 1)
             if (canEval( e, i )) { es[i].add( e.prepare( map ) ); it.remove(); return; }
@@ -117,7 +117,7 @@ public class PatternStage extends Stage
         else
             {
             Pattern p = compiled[index];
-            ExpressionSet guard = guards[index];
+            ValuatorSet guard = guards[index];
             ClosableIterator it = graph.find( p.asTripleMatch( current ) );
             while (stillOpen && it.hasNext())
                 if (p.match( current, (Triple) it.next()) && guard.evalBool( current )) 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.15 2003-10-16 09:45:08 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.16 2003-10-16 15:30:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -20,7 +20,7 @@ public class ConstraintStage extends Stage
     /**
         The set of prepared Valuators representing the constraint.
     */
-    protected ExpressionSet prepared;
+    protected ValuatorSet prepared;
 
     /**
         Initialise this ConstraintStage with the mapping [from names to indexes] and
@@ -35,7 +35,7 @@ public class ConstraintStage extends Stage
         Answer true if the constraint evaluates to true, and false if it evaluates to
         false or throws an exception.
     */
-   private boolean evalConstraint( Domain d, ExpressionSet e )
+   private boolean evalConstraint( Domain d, ValuatorSet e )
         { try 
             { return e.evalBool( d ); } 
         catch (Exception ex) 

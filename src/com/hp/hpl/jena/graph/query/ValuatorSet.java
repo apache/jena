@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionSet.java,v 1.8 2003-10-16 15:30:42 chris-dollin Exp $
+  $Id: ValuatorSet.java,v 1.1 2003-10-16 15:30:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,71 +9,39 @@ package com.hp.hpl.jena.graph.query;
 import java.util.*;
 
 /**
-	ExpressionSet: represent a set of (boolean) expressions ANDed together.
+	ValuatorSet - a set of Valuators, which can be added to and evaluated [only].
 
 	@author kers
 */
-public class ExpressionSet 
+public class ValuatorSet 
     {
-    private Set expressions = new HashSet();
-    /**
-        Initialise an expression set with no members.
-    */
-	public ExpressionSet() 
+    private Set valuators = new HashSet();
+    
+    public ValuatorSet() 
         {}
     
     /**
-        Answer this expressionset after e has been anded into it.
-     	@param e the expression to and into the set
-     	@return this ExpressionSet
+         Answer this ValuatorSet after adding the Valuator <code>e</code> to it.
     */
-    public ExpressionSet add( Expression e )
+    public ValuatorSet add( Valuator e )
         {
-        expressions.add( e );
+        valuators.add( e );
         return this;    
         }
-
-    /**
-         Answer true iff this ExpressionSet is non-trivial (ie non-empty).
-    */
-    public boolean isComplex()
-        { return !expressions.isEmpty(); }
-    
-    /**
-        Evaluate this expression set, delivering true iff no member of the set evaluates
-        to false.
         
-     	@param vv the mapping from variables to values
-     	@return true iff no member evaluates to false
-     */    
-    public boolean evalBool( VariableValues vv )
+    /**
+         Answer true iff no Valuator in this set evaluates to <code>false</code>. The
+         Valuators are evaluated in an unspecified order, and evaluation ceases as
+         soon as any Valuator has returned false.
+    */
+    public boolean evalBool( IndexValues vv )
         { 
-        Iterator it = expressions.iterator();
+        Iterator it = valuators.iterator();
         while (it.hasNext()) 
-            if (((Expression) it.next()).evalBool( vv ) == false) return false;
+            if (((Valuator) it.next()).evalBool( vv ) == false) return false;
         return true;
         }
-
-    /**
-         Answer a ValuatorSet which contains exactly the valuators for each
-         Expression in this ExpressionSet, prepared against the VariableIndexes vi.
-    */
-    public ValuatorSet prepare( VariableIndexes vi )
-        {
-        ValuatorSet result = new ValuatorSet();
-        Iterator it = expressions.iterator();
-        while (it.hasNext()) result.add( ((Expression) it.next()).prepare( vi ) );
-        return result;    
-        }
-    
-    /**
-         Answer an iterator over all the Expressions in this ExpressionSet.
-    */
-    public Iterator iterator()
-        { return expressions.iterator(); }
-    
-    public String toString()
-        { return expressions.toString(); }
+                    
     }
 
 /*
