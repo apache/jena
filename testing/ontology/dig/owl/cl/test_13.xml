@@ -6,18 +6,24 @@
   xsi:schemaLocation="http://dl.kr.org/dig/lang http://potato.cs.man.ac.uk/dig/level0/dig.xsd">
   <defconcept name="http://example.org/foo#A" />
   <defconcept name="http://example.org/foo#B" />
+  <defconcept name="anon:" />
   <defrole name="http://example.org/foo#p" />
   <defindividual name="http://example.org/foo#b" />
   
   <impliesc>
   	<catom name="http://example.org/foo#A" />
+  	<catom name="anon:" />
+  </impliesc>
+  
+  <equalc>
+  	<catom name="anon:" />
   	<some>
 		  <ratom name="http://example.org/foo#p" />
 		  <iset>
 		  	<individual name="http://example.org/foo#b" />
 		  </iset>
   	</some>
-  </impliesc>
+  </equalc>
   
   <instanceof>
     <individual name="http://example.org/foo#b"/>

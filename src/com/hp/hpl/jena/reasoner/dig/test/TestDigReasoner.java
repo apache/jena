@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-09 13:02:40 $
+ * Last modified on   $Date: 2003-12-11 22:59:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.6 2003-12-09 13:02:40 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.7 2003-12-11 22:59:10 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -101,9 +101,12 @@ public class TestDigReasoner
         m.read( "file:testing/ontology/dig/owl/test1.xml" );
         
         TestUtil.assertIteratorValues( this, m.listClasses(), 
-                                       new Resource[] {m.getResource( NS + "A" ), m.getResource( NS + "B" ), 
-                                                       m.getResource( NS + "C"), m.getResource( NS + "D"), 
-                                                       m.getResource( NS + "E"),m.getResource( NS + "BB"), } );
+                                       new Resource[] {
+                                           m.getResource( NS + "A" ), m.getResource( NS + "B" ), 
+                                           m.getResource( NS + "C"),  m.getResource( NS + "D"), 
+                                           m.getResource( NS + "E"),  m.getResource( NS + "BB"), 
+                                           m.getResource( NS + "F0"), m.getResource( NS + "F1"), m.getResource( NS + "F2"), 
+                                       }, 2 );
     }
     
     
@@ -205,6 +208,9 @@ public class TestDigReasoner
         OntClass C = m.getOntClass( NS + "C" );
         OntClass D = m.getOntClass( NS + "D" );
         OntClass E = m.getOntClass( NS + "E" );
+        OntClass F0 = m.getOntClass( NS + "F0" );
+        OntClass F1 = m.getOntClass( NS + "F1" );
+        OntClass F2 = m.getOntClass( NS + "F2" );
         
         TestUtil.assertIteratorValues( this, m.listStatements( null, RDFS.subClassOf, (RDFNode) null ), 
                                        new Statement[] {
@@ -219,8 +225,106 @@ public class TestDigReasoner
                                            m.createStatement( D, RDFS.subClassOf, C ),
                                            m.createStatement( E, RDFS.subClassOf, C ),
                                            m.createStatement( E, RDFS.subClassOf, E ),
-                                       } );
+                                           m.createStatement( F0, RDFS.subClassOf, F0 ),
+                                           m.createStatement( F1, RDFS.subClassOf, F1 ),
+                                           m.createStatement( F2, RDFS.subClassOf, F2 ),
+                                       }, 2 );
     }
+
+    public void testQueryDisjoint1() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass A = m.getOntClass( NS + "A" );
+        OntClass C = m.getOntClass( NS + "C" );
+        
+        assertTrue( "A should be disjoint with C", A.isDisjointWith( C ) );
+        assertTrue( "C should be disjoint with A", C.isDisjointWith( A ) );
+    }
+    
+
+    public void testQueryDisjoint2() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass F0 = m.getOntClass( NS + "F0" );
+        OntClass F1 = m.getOntClass( NS + "F1" );
+        
+        assertTrue( "F0 should be disjoint with F1", F0.isDisjointWith( F1 ) );
+        assertTrue( "F1 should be disjoint with F0", F1.isDisjointWith( F0 ) );
+    }
+    
+    public void testParents() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass A = m.getOntClass( NS + "A" );
+        OntClass B = m.getOntClass( NS + "B" );
+        
+        // note - direct super class
+        TestUtil.assertIteratorValues( this, A.listSuperClasses( true ), 
+                                       new Resource[] {B} );
+    }
+
+    public void testChildren() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass B = m.getOntClass( NS + "B" );
+        OntClass BB = m.getOntClass( NS + "BB" );
+        
+        // note direct sub-class
+        TestUtil.assertIteratorValues( this, BB.listSubClasses(true), 
+                                       new Resource[] {B} );
+    }
+
+    public void testEquivalents() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass F0 = m.getOntClass( NS + "F0" );
+        OntClass F2 = m.getOntClass( NS + "F2" );
+        OntClass F1 = m.getOntClass( NS + "F1" );
+        
+        // note - direct super class
+        TestUtil.assertIteratorValues( this, F0.listEquivalentClasses(), 
+                                       new Resource[] {F2, F0}, 1 );
+        TestUtil.assertIteratorValues( this, F2.listEquivalentClasses(), 
+                                       new Resource[] {F0, F2}, 1 );
+        TestUtil.assertIteratorValues( this, F1.listEquivalentClasses(), 
+                                       new Resource[] {F1}, 1 );
+    }
+
 
     // Internal implementation methods
     //////////////////////////////////
@@ -269,6 +373,8 @@ public class TestDigReasoner
     private static class AbstractDigTest
         extends TestCase
     {
+        private boolean debug = true;
+        
         public AbstractDigTest( String name ) {
             super( name );
         }
@@ -276,8 +382,29 @@ public class TestDigReasoner
         /** This is a simple test that test xml structure isomorphism on elements and attributes */
         protected void xmlEqualityTest( Document source, Document target ) {
             // test both ways round to ensure compatability
-            assertTrue( "Failed to match source to target documents", xmlEqualityTest( source.getDocumentElement(), target.getDocumentElement() ) );
-            assertTrue( "Failed to match target to source documents", xmlEqualityTest( target.getDocumentElement(), source.getDocumentElement() ) );
+            boolean test = xmlEqualityTest( source.getDocumentElement(), target.getDocumentElement() );
+            if (debug && !test) {
+                PrintWriter out = new PrintWriter( System.err );
+                out.println( getName() +  " expected:" );
+                new DIGConnection().serialiseDocument( target, out );
+                out.println();
+                out.println( "Saw:" );
+                new DIGConnection().serialiseDocument( source, out );
+                out.println();
+            }
+            assertTrue( "Failed to match source to target documents", test );
+
+            test = xmlEqualityTest( target.getDocumentElement(), source.getDocumentElement() );
+            if (debug && !test) {
+                PrintWriter out = new PrintWriter( System.err );
+                out.println( getName() +  " expected:" );
+                new DIGConnection().serialiseDocument( source, out );
+                out.println();
+                out.println( "Saw:" );
+                new DIGConnection().serialiseDocument( target, out );
+                out.println();
+            }
+            assertTrue( "Failed to match target to source documents", test );
         }
     
         private boolean xmlEqualityTest( Element source, Element target ) {
@@ -321,7 +448,11 @@ public class TestDigReasoner
     
     
         private boolean findAttributeMatch( Attr child, Element target ) {
-            return child.getValue().equals( target.getAttribute( child.getName() ) );
+            String chValue = child.getValue();
+            String targetValue = target.getAttribute( child.getName() );
+            
+            return (chValue.startsWith( DIGAdapter.ANON_MARKER ) && targetValue.startsWith( DIGAdapter.ANON_MARKER)) || 
+                   chValue.equals( targetValue );
         }
     }
     

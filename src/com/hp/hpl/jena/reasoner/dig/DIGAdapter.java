@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-09 13:02:30 $
+ * Last modified on   $Date: 2003-12-11 22:59:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.4 2003-12-09 13:02:30 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.5 2003-12-11 22:59:10 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -66,6 +66,7 @@ public class DIGAdapter
     private static final int INTERSECTION = 2;
     private static final int COMPLEMENT = 3;
     private static final int ENUMERATED = 4;
+    private static final int RESTRICTION = 5;
 
     /** Mark a bNode identifier */
     public static final String ANON_MARKER = "anon:";
@@ -85,15 +86,28 @@ public class DIGAdapter
         new DIGQuerySubsumesTranslator( RDFS.subClassOf.getURI() ),
         new DIGQuerySubsumesTranslator( DAML_OIL.subClassOf.getURI() ),
         
+        // testing for disjoint between two known class expressions
+        new DIGQueryDisjointTranslator( OWL.disjointWith.getURI() ),
+        new DIGQueryDisjointTranslator( DAML_OIL.disjointWith.getURI() ),
+        
         // ancestors and parents when testing for a named and variable node
         new DIGQueryAncestorsTranslator( RDFS.subClassOf.getURI(), true ),
         new DIGQueryAncestorsTranslator( RDFS.subClassOf.getURI(), false ),
         new DIGQueryAncestorsTranslator( DAML_OIL.subClassOf.getURI(), true ),
         new DIGQueryAncestorsTranslator( DAML_OIL.subClassOf.getURI(), false ),
         
+        new DIGQueryParentsTranslator( ReasonerVocabulary.directSubClassOf.getURI(), true ),
+        new DIGQueryParentsTranslator( ReasonerVocabulary.directSubClassOf.getURI(), false ),
+        
         // the entire class hierarchy
         new DIGQueryClassHierarchyTranslator( RDFS.subClassOf.getURI() ),
         new DIGQueryClassHierarchyTranslator( DAML_OIL.subClassOf.getURI() ),
+        
+        // equivalent classes
+        new DIGQueryEquivalentsTranslator( OWL.equivalentClass.getURI(), true ),
+        new DIGQueryEquivalentsTranslator( OWL.equivalentClass.getURI(), false ),
+        new DIGQueryEquivalentsTranslator( DAML_OIL.sameClassAs.getURI(), true ),
+        new DIGQueryEquivalentsTranslator( DAML_OIL.sameClassAs.getURI(), false ),
     };
     
     
@@ -279,7 +293,7 @@ public class DIGAdapter
         ExtendedIterator i = (remote == null) ? local : remote.andThen( local );
         
         // make sure we don't have duplicates
-        return new UniqueExtendedIterator( i );
+        return UniqueExtendedIterator.create( i );
     }
 
 
@@ -344,7 +358,7 @@ public class DIGAdapter
      * @param node An RDF graph node representing a class we wish to describe.
      */
     public void addClassDescription( Element elem, com.hp.hpl.jena.graph.Node node ) {
-        translateClass( elem, (Resource) m_sourceData.getRDFNode( node ), true );
+        translateClassIdentifier( elem, (Resource) m_sourceData.getRDFNode( node ) );
     }
 
 
@@ -366,11 +380,11 @@ public class DIGAdapter
         HashSet concepts = new HashSet();
         HashSet individuals = new HashSet();
         
-        addAll( m_sourceData.listNamedClasses(), concepts );
+        addAll( m_sourceData.listClasses(), concepts );
         addAll( m_sourceData.listDatatypeProperties(), attributes );
         addAll( m_sourceData.listIndividuals(), individuals );
         
-        collectRoleProperties(roles);
+        collectRoleProperties( roles );
         
         // collect the DIG definitions at the beginning of the document
         addNamedDefs( tell, concepts.iterator(), DIGProfile.DEFCONCEPT );
@@ -397,9 +411,9 @@ public class DIGAdapter
      */
     protected void addNamedDefs( Element tell, Iterator i, String defType ) {
         while (i.hasNext()) {
-            RDFNode concept = (Resource) i.next();
-            if (concept instanceof Resource && !((Resource) concept).isAnon()) {
-                addNamedElement( tell, defType, ((Resource) concept).getURI() );
+            RDFNode n = (Resource) i.next();
+            if (n instanceof Resource) {
+                addNamedElement( tell, defType, getNodeID( n.asNode() ) );
             }
         }
     }
@@ -444,6 +458,14 @@ public class DIGAdapter
         translateSubClassAxioms( tell );
         translateClassEquivalences( tell );
         translateClassDisjointAxioms( tell );
+        
+        translateRestrictions( tell );
+        
+        // now the implicit equivalences
+        translateClassExpressions( tell, m_sourceData.getProfile().INTERSECTION_OF(), INTERSECTION );
+        translateClassExpressions( tell, m_sourceData.getProfile().UNION_OF(), UNION );
+        translateClassExpressions( tell, m_sourceData.getProfile().COMPLEMENT_OF(), COMPLEMENT );
+        translateClassExpressions( tell, m_sourceData.getProfile().ONE_OF(), ENUMERATED );
     }
     
     /**
@@ -456,8 +478,8 @@ public class DIGAdapter
         while (i.hasNext()) {
             Statement sc = i.nextStatement();
             Element impliesc = addElement( tell, DIGProfile.IMPLIESC );
-            translateClass( impliesc, sc.getSubject(), true );
-            translateClass( impliesc, sc.getResource(), true );
+            translateClassIdentifier( impliesc, sc.getSubject() );
+            translateClassIdentifier( impliesc, sc.getResource() );
         }
     }
     
@@ -473,15 +495,36 @@ public class DIGAdapter
         while (i.hasNext()) {
             Statement sc = i.nextStatement();
             Element impliesc = addElement( tell, DIGProfile.EQUALC );
-            translateClass( impliesc, sc.getSubject(), true );
-            translateClass( impliesc, sc.getResource(), true );
+            translateClassIdentifier( impliesc, sc.getSubject() );
+            translateClassIdentifier( impliesc, sc.getResource() );
         }
-        
-        // now the implicit equivalences
-        translateImplicitClassEquivalences( tell, m_sourceData.getProfile().INTERSECTION_OF(), INTERSECTION );
-        translateImplicitClassEquivalences( tell, m_sourceData.getProfile().UNION_OF(), UNION );
-        translateImplicitClassEquivalences( tell, m_sourceData.getProfile().COMPLEMENT_OF(), COMPLEMENT );
-        translateImplicitClassEquivalences( tell, m_sourceData.getProfile().ONE_OF(), ENUMERATED );
+    }
+    
+    
+    /**
+     * <p>Translate class expressions, such as union classes, intersection classes, etc, into the DIG.</p>
+     * concept language. The translations are attached to the given tell node.</p>
+     * @param tell The node representing the DIG tell verb
+     * @param p A property that will require an implicit equivalence to be made explicit
+     * in a correct translation to DIG
+     * @param classExprType Denotes the type of class expression we are translating
+     */
+    protected void translateClassExpressions( Element tell, Property p, int classExprType ) {
+        translateClassExpressions( tell, m_sourceData.listStatements( null, p, (RDFNode) null ), classExprType);
+    }
+    
+    
+    /**
+     * <p>Translate the restrictions in the source model into the DIG concept language.</p>
+     * @param tell The node representing the DIG tell verb
+     * @param p A property that will require an implicit equivalence to be made explicit
+     * in a correct translation to DIG
+     * @param classExprType Denotes the type of class expression we are translating
+     */
+    protected void translateRestrictions( Element tell ) {
+        translateClassExpressions( tell, 
+                                   m_sourceData.listStatements( null, RDF.type, m_sourceData.getProfile().RESTRICTION() ), 
+                                   RESTRICTION );
     }
     
     
@@ -489,24 +532,22 @@ public class DIGAdapter
      * <p>A named owl:class with a class-construction axiom directly attached is implicitly
      * an equivalence axiom with the anonymous class that has the given class construction.</p>
      * @param tell The node representing the DIG tell verb
-     * @param p A property that will require an implicit equivalence to be made explicit
-     * in a correct translation to DIG
+     * @param i A statement iterator whose subjects denote the class expressions to be translated
+     * @param classExprType Denotes the type of class expression we are translating
      */
-    protected void translateImplicitClassEquivalences( Element tell, Property p, int classExprType ) {
-        StmtIterator i = m_sourceData.listStatements( null, p, (RDFNode) null ); 
+    protected void translateClassExpressions( Element tell, StmtIterator i, int classExprType ) {
         while (i.hasNext()) {
             OntClass cls = (OntClass) i.nextStatement().getSubject().as( OntClass.class );
             
-            if (!cls.isAnon()) {
-                Element impliesc = addElement( tell, DIGProfile.EQUALC );
-                translateClass( impliesc, cls, true );
-                
-                switch (classExprType) {
-                    case UNION:          translateUnionClass( impliesc, cls );        break;
-                    case INTERSECTION:   translateIntersectionClass( impliesc, cls ); break;
-                    case COMPLEMENT:     translateComplementClass( impliesc, cls );   break;
-                    case ENUMERATED:     translateEnumeratedClass( impliesc, cls );   break;
-                }
+            Element equalc = addElement( tell, DIGProfile.EQUALC );
+            translateClassIdentifier( equalc, cls );
+            
+            switch (classExprType) {
+                case UNION:          translateUnionClass( equalc, cls );        break;
+                case INTERSECTION:   translateIntersectionClass( equalc, cls ); break;
+                case COMPLEMENT:     translateComplementClass( equalc, cls );   break;
+                case ENUMERATED:     translateEnumeratedClass( equalc, cls );   break;
+                case RESTRICTION:    translateRestrictionClass( equalc, cls );   break;
             }
         }
     }
@@ -523,8 +564,8 @@ public class DIGAdapter
         while (i.hasNext()) {
             Statement sc = i.nextStatement();
             Element impliesc = addElement( tell, DIGProfile.DISJOINT );
-            translateClass( impliesc, sc.getSubject(), true );
-            translateClass( impliesc, sc.getResource(), true );
+            translateClassIdentifier( impliesc, sc.getSubject() );
+            translateClassIdentifier( impliesc, sc.getResource() );
         }
     }
     
@@ -534,9 +575,8 @@ public class DIGAdapter
      * of the given expression element</p>
      * @param expr The parent expression element
      * @param c The concept resource
-     * @param allowCAtom If true, named classes will be represented by a &lt;catom&gt; element.
      */
-    protected void translateClass( Element expr, Resource c, boolean allowCAtom ) {
+    protected void translateClassIdentifier( Element expr, Resource c ) {
         if (c.equals( m_sourceData.getProfile().THING())) {
             // this is TOP in DIG
             addElement( expr, DIGProfile.TOP );
@@ -547,68 +587,60 @@ public class DIGAdapter
             addElement( expr, DIGProfile.BOTTOM );
             return;
         }
-        
-        OntClass cls = (OntClass) c.as( OntClass.class );
-        
-        if (allowCAtom && !cls.isAnon()) {
+        else {
             // a named class is represented as a catom element
             Element catom = addElement( expr, DIGProfile.CATOM );
-            catom.setAttribute( DIGProfile.NAME, cls.getURI() );
+            catom.setAttribute( DIGProfile.NAME, getNodeID( c.asNode() ) );
         }
-        else if (cls.isComplementClass()) {
-            translateComplementClass(expr, cls);
+    }
+    
+    
+    /**
+     * <p>Translate a given restriction resource into a DIG concept description, as a child
+     * of the given expression element</p>
+     * @param expr The parent expression element
+     * @param c The restriction concept resource
+     */
+    protected void translateRestrictionClass( Element expr, Resource c ) {
+        Restriction r = (Restriction) c.as( Restriction.class );
+        
+        if (r.isAllValuesFromRestriction()) {
+            // all values from restriction translates to a DIG <all>R E</all> axiom
+            Element all = addElement( expr, DIGProfile.ALL );
+            addNamedElement( all, DIGProfile.RATOM, r.getOnProperty().getURI() );
+            translateClassIdentifier( all, r.asAllValuesFromRestriction().getAllValuesFrom() );
         }
-        else if (cls.isIntersectionClass()) {
-            translateIntersectionClass(expr, cls);
+        else if (r.isSomeValuesFromRestriction()) {
+            // some values from restriction translates to a DIG <some>R E</some> axiom
+            Element some = addElement( expr, DIGProfile.SOME );
+            addNamedElement( some, DIGProfile.RATOM, r.getOnProperty().getURI() );
+            translateClassIdentifier( some, r.asSomeValuesFromRestriction().getSomeValuesFrom() );
         }
-        else if (cls.isUnionClass()) {
-            translateUnionClass(expr, cls);
+        else if (r.isHasValueRestriction()) {
+            // special case
+            translateHasValueRestriction( expr, r.asHasValueRestriction() );
         }
-        else if (cls.isEnumeratedClass()) {
-            translateEnumeratedClass(expr, cls);
+        else if (r.isMinCardinalityRestriction()) {
+            // unqualified, so we make the qualification class TOP
+            translateCardinalityRestriction( expr, r.asMinCardinalityRestriction().getMinCardinality(), r, 
+                                             DIGProfile.ATLEAST, m_sourceData.getProfile().THING() );
         }
-        else if (cls.isRestriction()) {
-            // an anonymous restriction
-            Restriction r = cls.asRestriction();
+        else if (r.isMaxCardinalityRestriction()) {
+            // unqualified, so we make the qualification class TOP
+            translateCardinalityRestriction( expr, r.asMaxCardinalityRestriction().getMaxCardinality(), r, 
+                                             DIGProfile.ATMOST, m_sourceData.getProfile().THING() );
+        }
+        else if (r.isCardinalityRestriction()) {
+            // we model a cardinality restriction as the intersection of min and max resrictions
+            Element and = addElement( expr, DIGProfile.AND );
             
-            if (r.isAllValuesFromRestriction()) {
-                // all values from restriction translates to a DIG <all>R E</all> axiom
-                Element all = addElement( expr, DIGProfile.ALL );
-                addNamedElement( all, DIGProfile.RATOM, r.getOnProperty().getURI() );
-                translateClass( all, r.asAllValuesFromRestriction().getAllValuesFrom(), true );
-            }
-            else if (r.isSomeValuesFromRestriction()) {
-                // some values from restriction translates to a DIG <some>R E</some> axiom
-                Element some = addElement( expr, DIGProfile.SOME );
-                addNamedElement( some, DIGProfile.RATOM, r.getOnProperty().getURI() );
-                translateClass( some, r.asSomeValuesFromRestriction().getSomeValuesFrom(), true );
-            }
-            else if (r.isHasValueRestriction()) {
-                // special case
-                translateHasValueRestriction( expr, r.asHasValueRestriction() );
-            }
-            else if (r.isMinCardinalityRestriction()) {
-                // unqualified, so we make the qualification class TOP
-                translateCardinalityRestriction( expr, r.asMinCardinalityRestriction().getMinCardinality(), r, 
-                                                 DIGProfile.ATLEAST, m_sourceData.getProfile().THING() );
-            }
-            else if (r.isMaxCardinalityRestriction()) {
-                // unqualified, so we make the qualification class TOP
-                translateCardinalityRestriction( expr, r.asMaxCardinalityRestriction().getMaxCardinality(), r, 
-                                                 DIGProfile.ATMOST, m_sourceData.getProfile().THING() );
-            }
-            else if (r.isCardinalityRestriction()) {
-                // we model a cardinality restriction as the intersection of min and max resrictions
-                Element and = addElement( expr, DIGProfile.AND );
-                
-                // unqualified, so we make the qualification class TOP
-                translateCardinalityRestriction( and, r.asCardinalityRestriction().getCardinality(), r, 
-                                                 DIGProfile.ATMOST, m_sourceData.getProfile().THING() );
-                translateCardinalityRestriction( and, r.asCardinalityRestriction().getCardinality(), r, 
-                                                 DIGProfile.ATLEAST, m_sourceData.getProfile().THING() );
-            }
-            // TODO qualified cardinality restrictions
+            // unqualified, so we make the qualification class TOP
+            translateCardinalityRestriction( and, r.asCardinalityRestriction().getCardinality(), r, 
+                                             DIGProfile.ATMOST, m_sourceData.getProfile().THING() );
+            translateCardinalityRestriction( and, r.asCardinalityRestriction().getCardinality(), r, 
+                                             DIGProfile.ATLEAST, m_sourceData.getProfile().THING() );
         }
+        // TODO qualified cardinality restrictions
     }
     
     
@@ -626,7 +658,7 @@ public class DIGAdapter
     protected void translateComplementClass(Element expr, OntClass cls) {
         // an anonymous complement of another class expression
         Element not = addElement( expr, DIGProfile.NOT );
-        translateClass( not, cls.asComplementClass().getOperand(), true );
+        translateClassIdentifier( not, cls.asComplementClass().getOperand() );
     }
 
 
@@ -658,7 +690,7 @@ public class DIGAdapter
         Element restrict = addElement( parent, exprName );
         restrict.setAttribute( DIGProfile.NUM, Integer.toString( card ) );
         addNamedElement( restrict, DIGProfile.RATOM, r.getOnProperty().getURI() );
-        translateClass( restrict, qualType, true );
+        translateClassIdentifier( restrict, qualType );
     }
 
 
@@ -703,7 +735,7 @@ public class DIGAdapter
      */
     protected void translateClassList( Element expr, RDFList operands ) {
         for (Iterator i = operands.iterator(); i.hasNext(); ) {
-            translateClass( expr, (Resource) i.next(), true );
+            translateClassIdentifier( expr, (Resource) i.next() );
         }
     }
     
@@ -871,7 +903,7 @@ public class DIGAdapter
         while (i.hasNext()) {
             Element drAxiom = addElement( expr, axiomType );
             addNamedElement( drAxiom, propType, propURI );
-            translateClass( drAxiom, (Resource) i.next(), true );
+            translateClassIdentifier( drAxiom, (Resource) i.next() );
         }
     }
     

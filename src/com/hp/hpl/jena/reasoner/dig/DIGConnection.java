@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGConnection.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-09 13:02:30 $
+ * Last modified on   $Date: 2003-12-11 22:59:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import org.w3c.dom.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGConnection.java,v 1.6 2003-12-09 13:02:30 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGConnection.java,v 1.7 2003-12-11 22:59:10 ian_dickinson Exp $)
  */
 public class DIGConnection {
     // Constants
@@ -334,7 +334,7 @@ public class DIGConnection {
      */
     protected OutputFormat createXMLFormatter( Document doc ) {
         OutputFormat format = new OutputFormat( doc );
-        format.setIndenting( false );
+        format.setIndenting( true );
         format.setLineWidth( 0 );             
         format.setPreserveSpace( false );
         

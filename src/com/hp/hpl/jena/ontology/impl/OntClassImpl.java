@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-21 21:53:45 $
+ * Last modified on   $Date: 2003-12-11 22:59:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.33 2003-11-21 21:53:45 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.34 2003-12-11 22:59:10 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -180,8 +180,9 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
     public ExtendedIterator listSuperClasses( boolean direct ) {
-        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
-               .filterDrop( new SingleEqualityFilter( this ) );
+        return UniqueExtendedIterator.create(
+                listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
+                .filterDrop( new SingleEqualityFilter( this ) ) );
     }
 
     /**
@@ -339,8 +340,9 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
     public ExtendedIterator listSubClasses( boolean direct ) {
-        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
-               .filterDrop( new SingleEqualityFilter( this ) );
+        return UniqueExtendedIterator.create(
+                listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
+                .filterDrop( new SingleEqualityFilter( this ) ) );
     }
 
 
@@ -418,7 +420,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
      */ 
     public ExtendedIterator listEquivalentClasses() {
-        return listAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class );
+        return UniqueExtendedIterator.create( listAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class ) );
     }
 
     /**
@@ -480,7 +482,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
      */ 
     public ExtendedIterator listDisjointWith() {
-        return listAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class );
+        return UniqueExtendedIterator.create( listAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class ) );
     }
 
     /**
@@ -600,7 +602,7 @@ public class OntClassImpl
      *         the classes to which they belong
      */
     public ExtendedIterator listInstances() {
-        return new UniqueExtendedIterator( 
+        return UniqueExtendedIterator.create( 
                         getModel()
                             .listStatements( null, RDF.type, this )
                             .mapWith( new SubjectAsMapper( Individual.class ) )

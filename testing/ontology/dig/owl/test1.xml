@@ -32,4 +32,28 @@
 	</owl:unionOf>
 	<owl:disjointWith rdf:resource="#A" />
 </owl:Class>
+
+<owl:ObjectProperty rdf:ID="p">
+</owl:ObjectProperty>
+
+<owl:Class rdf:ID="F1">
+	<owl:equivalentClass>
+		<owl:Restriction>
+			<owl:onProperty rdf:resource="#p" />
+			<owl:minCardinality rdf:datatype="&xsd;int">1</owl:minCardinality>
+		</owl:Restriction>
+	</owl:equivalentClass>
+</owl:Class>
+<owl:Class rdf:ID="F0">
+	<owl:equivalentClass>
+		<owl:Restriction>
+			<owl:onProperty rdf:resource="#p" />
+			<owl:maxCardinality rdf:datatype="&xsd;int">0</owl:maxCardinality>
+		</owl:Restriction>
+	</owl:equivalentClass>
+</owl:Class>
+<owl:Class rdf:ID="F2">
+	<owl:equivalentClass rdf:resource="#F0" />
+</owl:Class>
+
 </rdf:RDF>

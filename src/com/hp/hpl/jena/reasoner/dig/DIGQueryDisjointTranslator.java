@@ -6,8 +6,8 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Dec-2003
- * Filename           $RCSfile: DIGIteratedQueryTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Filename           $RCSfile: DIGQueryDisjointTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-11 22:59:10 $
@@ -21,27 +21,29 @@
 ///////////////
 package com.hp.hpl.jena.reasoner.dig;
 
+import java.util.*;
+import java.util.List;
 
-
-// Imports
-///////////////
-import java.util.Iterator;
-
+import org.w3c.dom.*;
 import org.w3c.dom.Document;
 
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
+
+// Imports
+///////////////
 
 /**
  * <p>
- * A specialisation of DIG query translator that aggregates iterated queries
+ * Translator for queries about the disjoint-ness of two ground concepts
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGIteratedQueryTranslator.java,v 1.2 2003-12-11 22:59:10 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryDisjointTranslator.java,v 1.1 2003-12-11 22:59:10 ian_dickinson Exp $
  */
-public abstract class DIGIteratedQueryTranslator 
+public class DIGQueryDisjointTranslator 
     extends DIGQueryTranslator
 {
 
@@ -58,67 +60,52 @@ public abstract class DIGIteratedQueryTranslator
     //////////////////////////////////
 
     /**
-     * <p>Construct a query translator for the given query parameters.</p>
-     * @param subject Represents the incoming subject to trigger against
-     * @param predicate Represents the incoming predicate to trigger against
-     * @param object Represents the incoming object to trigger against
+     * <p>Construct a translator to test whether two concepts are disjoint</p>
+     * @param predicate The predicate we are matching on
      */
-    public DIGIteratedQueryTranslator( String subject, String predicate, String object ) {
-        super( subject, predicate, object );
+    public DIGQueryDisjointTranslator( String predicate ) {
+        super( null, predicate, null );
     }
-
 
 
     // External signature methods
     //////////////////////////////////
 
     /**
-     * <p>Takes the incoming query pattern and expands it out to a series of subsidary
-     * triple patterns that will be taken as queries in their own right.</p> 
-     * @param pattern The incomimg query pattern
-     * @param da The DIG adapter currently being used to communicate with the DIG reasoner
-     * @return An iterator over a series of {@link TriplePattern}'s that represent
-     * the expanded query
+     * <p>Answer a query that will test disjointness between two classes</p>
      */
-    protected abstract Iterator expandQuery( TriplePattern pattern, DIGAdapter da );
-    
-    
-    /**
-     * <p>Expand the given pattern to a series of more grounded patterns, and collate
-     * the results of querying with each of these expanded patterns. This is used in
-     * cases where the incoming query is too ungrounded to pass to DIG in one go, e.g. 
-     * <code>*&nbsp;rdfs:subClassOf&nbsp;*</code>. The strategy is to expand one of 
-     * the ungrounded terms to form a series of queries, then solve each of these
-     * queries separately.</p>
-     * @param pattern The pattern to translate to a DIG query
-     * @param da The DIG adapter through which we communicate with a DIG reasoner
-     */
-    public ExtendedIterator find( TriplePattern pattern, DIGAdapter da ) {
-        ExtendedIterator all = null;
-        
-        for (Iterator i = expandQuery( pattern, da );  i.hasNext(); ) {
-            ExtendedIterator results = da.find( (TriplePattern) i.next() );
-            all = (all == null) ? results : all.andThen( results );
-        }
-        
-        return UniqueExtendedIterator.create( all );
-    }
-    
-    
-    /**
-     * Not needed in this class - delegated to the specific query handlers
-     */
-    public Document translatePattern( TriplePattern query, DIGAdapter da ) {
-        return null;
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
+        DIGConnection dc = da.getConnection();
+        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
+        Element subsumes = da.addElement( query.getDocumentElement(), DIGProfile.DISJOINT );
+        da.addClassDescription( subsumes, pattern.getObject() );
+        da.addClassDescription( subsumes, pattern.getSubject() );
+
+        return query;
     }
 
+
     /**
-     * Not needed in this class - delegated to the specific query handlers
+     * <p>Answer an iterator of triples that match the original find query.</p>
      */
-    public ExtendedIterator translateResponse(Document Response, TriplePattern query, DIGAdapter da) {
-        return null;
+    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+        List answer = new ArrayList();
+        if (isTrue( response )) {
+            // if response is true, the subsumption relationship holds
+            answer.add( query.asTriple() );
+        }
+        
+        return WrappedIterator.create( answer.iterator() );
     }
     
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject ) {
+        return subject.isConcrete();
+    }
+    
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object ) {
+        return object.isConcrete();
+    }
+
 
     // Internal implementation methods
     //////////////////////////////////

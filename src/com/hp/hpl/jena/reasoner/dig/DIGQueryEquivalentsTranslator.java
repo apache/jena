@@ -5,9 +5,9 @@
  * Author email       ian.dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            09-Dec-2003
- * Filename           $RCSfile: DIGIteratedQueryTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            10-Dec-2003
+ * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-11 22:59:10 $
@@ -22,29 +22,26 @@
 package com.hp.hpl.jena.reasoner.dig;
 
 
-
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 /**
  * <p>
- * A specialisation of DIG query translator that aggregates iterated queries
+ * Translator to map owl:equivalentClass to the DIG &lt;equivalents&gt; query.
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGIteratedQueryTranslator.java,v 1.2 2003-12-11 22:59:10 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.1 2003-12-11 22:59:10 ian_dickinson Exp $
  */
-public abstract class DIGIteratedQueryTranslator 
+public class DIGQueryEquivalentsTranslator 
     extends DIGQueryTranslator
 {
-
     // Constants
     //////////////////////////////////
 
@@ -54,71 +51,57 @@ public abstract class DIGIteratedQueryTranslator
     // Instance variables
     //////////////////////////////////
 
+    /** Flag for whether the free variable is on the lhs or the rhs */
+    protected boolean m_subjectFree;
+    
+    
     // Constructors
     //////////////////////////////////
 
     /**
-     * <p>Construct a query translator for the given query parameters.</p>
-     * @param subject Represents the incoming subject to trigger against
-     * @param predicate Represents the incoming predicate to trigger against
-     * @param object Represents the incoming object to trigger against
+     * <p>Construct a translator for the DIG query 'equivalents'.</p>
+     * @param predicate The predicate URI to trigger on
+     * @param lhs If true, the free variable is the subject of the triple
      */
-    public DIGIteratedQueryTranslator( String subject, String predicate, String object ) {
-        super( subject, predicate, object );
+    public DIGQueryEquivalentsTranslator( String predicate, boolean subjectFree ) {
+        super( null, predicate, null );
+        m_subjectFree = subjectFree;
     }
-
-
+    
 
     // External signature methods
     //////////////////////////////////
 
     /**
-     * <p>Takes the incoming query pattern and expands it out to a series of subsidary
-     * triple patterns that will be taken as queries in their own right.</p> 
-     * @param pattern The incomimg query pattern
-     * @param da The DIG adapter currently being used to communicate with the DIG reasoner
-     * @return An iterator over a series of {@link TriplePattern}'s that represent
-     * the expanded query
+     * <p>Answer a query that will generate the class hierachy for a concept</p>
      */
-    protected abstract Iterator expandQuery( TriplePattern pattern, DIGAdapter da );
-    
-    
-    /**
-     * <p>Expand the given pattern to a series of more grounded patterns, and collate
-     * the results of querying with each of these expanded patterns. This is used in
-     * cases where the incoming query is too ungrounded to pass to DIG in one go, e.g. 
-     * <code>*&nbsp;rdfs:subClassOf&nbsp;*</code>. The strategy is to expand one of 
-     * the ungrounded terms to form a series of queries, then solve each of these
-     * queries separately.</p>
-     * @param pattern The pattern to translate to a DIG query
-     * @param da The DIG adapter through which we communicate with a DIG reasoner
-     */
-    public ExtendedIterator find( TriplePattern pattern, DIGAdapter da ) {
-        ExtendedIterator all = null;
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
+        DIGConnection dc = da.getConnection();
+        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         
-        for (Iterator i = expandQuery( pattern, da );  i.hasNext(); ) {
-            ExtendedIterator results = da.find( (TriplePattern) i.next() );
-            all = (all == null) ? results : all.andThen( results );
-        }
+        Element equivalents = da.addElement( query.getDocumentElement(), DIGProfile.EQUIVALENTS );
+        da.addClassDescription( equivalents, m_subjectFree ? pattern.getObject() : pattern.getSubject() );
         
-        return UniqueExtendedIterator.create( all );
-    }
-    
-    
-    /**
-     * Not needed in this class - delegated to the specific query handlers
-     */
-    public Document translatePattern( TriplePattern query, DIGAdapter da ) {
-        return null;
+        return query;
     }
 
+
     /**
-     * Not needed in this class - delegated to the specific query handlers
+     * <p>Answer an iterator of triples that match the original find query.</p>
      */
-    public ExtendedIterator translateResponse(Document Response, TriplePattern query, DIGAdapter da) {
-        return null;
+    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+        return translateConceptSetResponse( response, query, da, !m_subjectFree );
     }
     
+    
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject ) {
+        return m_subjectFree || subject.isConcrete();
+    }
+    
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object ) {
+        return !m_subjectFree || object.isConcrete();
+    }
+
 
     // Internal implementation methods
     //////////////////////////////////
@@ -156,3 +139,10 @@ public abstract class DIGIteratedQueryTranslator
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* TODO delete me
+public class DIGQueryEquivalentsTranslator{
+
+}
+
+*/

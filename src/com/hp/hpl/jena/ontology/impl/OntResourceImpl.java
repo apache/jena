@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.41 $
+ * Revision           $Revision: 1.42 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 10:48:24 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-12-11 22:59:10 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,6 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
-import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
@@ -51,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.41 2003-12-08 10:48:24 andy_seaborne Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.42 2003-12-11 22:59:10 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -758,7 +757,7 @@ public class OntResourceImpl
         ExtendedIterator j = WrappedIterator.create( i );
         
         // we only want each result once
-        return new UniqueExtendedIterator( j );
+        return UniqueExtendedIterator.create( j );
     }
 
     /**
@@ -850,7 +849,7 @@ public class OntResourceImpl
      */
     public int getCardinality( Property p ) {
         int n = 0;
-        for (Iterator i = new UniqueExtendedIterator( listProperties( p ) );  i.hasNext(); n++) {
+        for (Iterator i = UniqueExtendedIterator.create( listProperties( p ) );  i.hasNext(); n++) {
             i.next(); 
         }
         
@@ -1270,7 +1269,7 @@ public class OntResourceImpl
             i = getModel().listStatements( subject, sc, object );
     
             // we only want the subjects or objects of the statements
-            return new UniqueExtendedIterator( i ).mapWith( mapper );
+            return UniqueExtendedIterator.create( i ).mapWith( mapper );
         }
         else {
             // graph does not support direct directly
@@ -1291,7 +1290,7 @@ public class OntResourceImpl
                 s.add( this );
             }
             
-            return new UniqueExtendedIterator( s.iterator() ).mapWith( mapper );
+            return UniqueExtendedIterator.create( s.iterator() ).mapWith( mapper );
         }
     }
     

@@ -7,13 +7,24 @@
   <defconcept name="http://example.org/foo#A" />
   <defconcept name="http://example.org/foo#B" />
   <defconcept name="http://example.org/foo#C" />
+  <defconcept name="anon:" />
   <impliesc>
   	<catom name="http://example.org/foo#A" />
-  	<not>
-  		<or>
-			  <catom name="http://example.org/foo#B"/>
-			  <catom name="http://example.org/foo#C"/>
-  		</or>
-  	</not>
+  	<catom name="anon:" />
   </impliesc>
+
+  <equalc>
+  	<catom name="anon:" />
+  	<not>
+  		<catom name="anon:" />
+  	</not>
+  </equalc>
+
+  <equalc>
+  	<catom name="anon:" />
+	<or>
+		<catom name="http://example.org/foo#B"/>
+		<catom name="http://example.org/foo#C"/>
+	</or>
+  </equalc>
 </tells>

@@ -6,12 +6,9 @@
   xsi:schemaLocation="http://dl.kr.org/dig/2003/02/lang      http://dl-web.man.ac.uk/dig/2003/02/dig.xsd">
   <conceptSet id="q0">
   	<synonyms>
+  		<catom name="http://example.org/foo#A" />
   		<catom name="http://example.org/foo#B" />
-  		<catom name="anon:" />
-  	</synonyms>
-  	<synonyms>
   		<catom name="http://example.org/foo#C" />
   	</synonyms>
   </conceptSet>
-  <false id="q1" />
 </responses>

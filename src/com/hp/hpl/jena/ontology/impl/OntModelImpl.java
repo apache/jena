@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.53 $
+ * Revision           $Revision: 1.54 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-20 17:43:16 $
+ * Last modified on   $Date: 2003-12-11 22:59:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.53 2003-11-20 17:43:16 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.54 2003-12-11 22:59:10 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -179,7 +179,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listOntologies() {
         checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
-        return findByTypeAs( getProfile().ONTOLOGY(), Ontology.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().ONTOLOGY(), Ontology.class ) );
     }
     
 
@@ -204,7 +205,8 @@ public class OntModelImpl
      * @return An iterator over property resources. 
      */
     public ExtendedIterator listOntProperties() {
-        return findByTypeAs( RDF.Property, OntProperty.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( RDF.Property, OntProperty.class ) );
     }
     
 
@@ -230,7 +232,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listObjectProperties() {
         checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
-        return findByTypeAs( getProfile().OBJECT_PROPERTY(), ObjectProperty.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().OBJECT_PROPERTY(), ObjectProperty.class ) );
     }
     
 
@@ -256,7 +259,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listDatatypeProperties() {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
-        return findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class ) );
     }
     
 
@@ -277,7 +281,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listFunctionalProperties() {
         checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
-        return findByTypeAs( getProfile().FUNCTIONAL_PROPERTY(), FunctionalProperty.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().FUNCTIONAL_PROPERTY(), FunctionalProperty.class ) );
     }
     
 
@@ -296,7 +301,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listTransitiveProperties() {
         checkProfileEntry( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
-        return findByTypeAs( getProfile().TRANSITIVE_PROPERTY(), TransitiveProperty.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().TRANSITIVE_PROPERTY(), TransitiveProperty.class ) );
     }
     
 
@@ -315,7 +321,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listSymmetricProperties() {
         checkProfileEntry( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
-        return findByTypeAs( getProfile().SYMMETRIC_PROPERTY(), SymmetricProperty.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().SYMMETRIC_PROPERTY(), SymmetricProperty.class ) );
     }
     
 
@@ -334,7 +341,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listInverseFunctionalProperties() {
         checkProfileEntry( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
-        return findByTypeAs( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), InverseFunctionalProperty.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), InverseFunctionalProperty.class ) );
     }
     
 
@@ -353,7 +361,7 @@ public class OntModelImpl
      * @return An iterator over Individuals. 
      */
     public ExtendedIterator listIndividuals() {
-        return new UniqueExtendedIterator( queryFor( m_individualsQuery, null, Individual.class ) );
+        return UniqueExtendedIterator.create( queryFor( m_individualsQuery, null, Individual.class ) );
     }
     
 
@@ -374,7 +382,8 @@ public class OntModelImpl
      * @return An iterator over class description resources. 
      */
     public ExtendedIterator listClasses() {
-        return findByTypeAs( getProfile().getClassDescriptionTypes(), OntClass.class );
+        return UniqueExtendedIterator.create( 
+            findByTypeAs( getProfile().getClassDescriptionTypes(), OntClass.class ) );
     }
     
 
@@ -395,7 +404,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listEnumeratedClasses()  {
         checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
-        return findByDefiningPropertyAs( getProfile().ONE_OF(), EnumeratedClass.class );
+        return UniqueExtendedIterator.create(
+            findByDefiningPropertyAs( getProfile().ONE_OF(), EnumeratedClass.class ) );
     }
     
 
@@ -416,7 +426,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listUnionClasses() {
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
-        return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class );
+        return UniqueExtendedIterator.create(
+            findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class ) );
     }
     
 
@@ -437,7 +448,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listComplementClasses() {
         checkProfileEntry( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
-        return findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ComplementClass.class );
+        return UniqueExtendedIterator.create( 
+            findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ComplementClass.class ) );
     }
     
 
@@ -458,7 +470,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listIntersectionClasses() {
         checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
-        return findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), IntersectionClass.class );
+        return UniqueExtendedIterator.create(
+            findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), IntersectionClass.class ) );
     }
     
 
@@ -504,7 +517,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listRestrictions() {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        return findByTypeAs( getProfile().RESTRICTION(), Restriction.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().RESTRICTION(), Restriction.class ) );
     }
 
 
@@ -523,7 +537,8 @@ public class OntModelImpl
      */
     public ExtendedIterator listAllDifferent() {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
-        return findByTypeAs( getProfile().ALL_DIFFERENT(), AllDifferent.class );
+        return UniqueExtendedIterator.create(
+            findByTypeAs( getProfile().ALL_DIFFERENT(), AllDifferent.class ) );
     }
     
    
@@ -547,12 +562,13 @@ public class OntModelImpl
         Resource r = getProfile().ANNOTATION_PROPERTY();
         
         if (r == null) {
-            return WrappedIterator.create( new ArrayList().iterator() ); 
+            return NullIterator.instance; 
         }
         else {
-            return findByType( r )
-                   .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
-                   .mapWith( new SubjectNodeAs( AnnotationProperty.class ) );
+            return UniqueExtendedIterator.create(
+                        findByType( r )
+                          .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
+                          .mapWith( new SubjectNodeAs( AnnotationProperty.class ) ) );
         }
     }
     
@@ -2355,7 +2371,7 @@ public class OntModelImpl
             }
         }
         
-        return i;
+        return UniqueExtendedIterator.create( i );
     }
     
 
