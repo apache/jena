@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.11 2003-06-08 17:49:52 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.12 2003-06-10 13:50:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -32,7 +32,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-08 17:49:52 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-10 13:50:48 $
  */
 public class ReasonerRegistry {
 
@@ -177,12 +177,12 @@ public class ReasonerRegistry {
      */
     public static final Reasoner TRANSITIVE = TransitiveReasonerFactory.theInstance().create(null);
     
-    /**
-     * Prebuilt stanard configuration for the default OWL reasoner. This configuration is
-     * a pure forward rule-based reasoner that will compute all entailments from the ontology + instamnce
-     * data at bind time.
-     */
-    public static final Reasoner OWL = OWLFBRuleReasonerFactory.theInstance().create(null);
+    // Suppressed to avoid the start up overhead. The above two will also disappear and 
+    // be replaced by lazilly constructed instances.
+//    /**
+//     * Prebuilt stanard configuration for the default OWL reasoner. 
+//     */
+//    public static final Reasoner OWL = OWLFBRuleReasonerFactory.theInstance().create(null);
     
 }
 
