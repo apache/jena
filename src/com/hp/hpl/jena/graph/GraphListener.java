@@ -1,21 +1,18 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphListener.java,v 1.1.1.1 2002-12-19 19:13:21 bwm Exp $
+  $Id: GraphListener.java,v 1.2 2003-07-09 07:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
-import java.util.EventListener;
-
 /**
- * @author Jeremy Carroll
- *
- * 
- */
-public interface GraphListener extends EventListener {
+    @author Jeremy Carroll, extensions by kers
+*/
+public interface GraphListener 
+    {
 
-}
+    }
 
 /*
     (c) Copyright Hewlett-Packard Company 2002

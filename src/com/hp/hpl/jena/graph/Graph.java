@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.12 2003-06-25 13:23:36 chris-dollin Exp $
+  $Id: Graph.java,v 1.13 2003-07-09 07:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -41,6 +41,11 @@ public interface Graph  {
     /** returns this Graph's capabilities */
     Capabilities getCapabilities();
     
+    /**
+        Answer this Graph's event manager.
+    */
+    GraphEventManager getEventManager(); 
+   
     /** 
         returns this Graph's reifier. Each call on a given Graph gets the same
         Reifier object.

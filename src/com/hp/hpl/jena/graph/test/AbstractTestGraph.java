@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.8 2003-07-08 09:15:43 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.9 2003-07-09 07:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -209,6 +209,18 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertFalse( q.isEmpty() );
         g.delete( Triple.create( "A B C" ) );
         assertTrue( q.isEmpty() );
+        }
+        
+    
+    static class HistoryListener implements GraphListener
+        {
+        }
+        
+    public void testEventRegister()
+        {
+        Graph g = getGraph();
+        GraphEventManager gem = g.getEventManager();
+        assertSame( g, g.getEventManager().register( new HistoryListener() ) );
         }
     }
 

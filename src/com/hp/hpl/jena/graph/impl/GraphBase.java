@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.4 2003-06-24 15:28:04 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.5 2003-07-09 07:54:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -43,10 +43,19 @@ public abstract class GraphBase implements Graph {
 		@see com.hp.hpl.jena.graph.Graph#queryHandler
 	*/
 
-	public QueryHandler queryHandler() {
-		return new SimpleQueryHandler(this);
-	}
+	public QueryHandler queryHandler() 
+        { return new SimpleQueryHandler(this); }
     
+    public GraphEventManager getEventManager()
+        { return new SimpleManager( this ); }
+        
+    static class SimpleManager implements GraphEventManager
+        {
+        protected Graph graph;
+        SimpleManager( Graph graph ) { this.graph = graph; }
+        public Graph register( GraphListener listener ) { return graph; }
+        }
+        
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
         
