@@ -4,7 +4,8 @@
  */
 
 // To do:
-//   Split into different writers for fast and pretty
+//   Split into different writers for fast and pretty with common superclass
+//     Superclass has common operations (formatting), output stream, prefix map
 //   Options
 //     Make some of the config variable depend on system properties
 //     Document the environment variables including I/O howto.
@@ -35,7 +36,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.11 2003-04-24 09:43:43 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.12 2003-04-28 14:22:25 andy_seaborne Exp $
  */
 
 

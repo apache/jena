@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.6 2003-03-19 17:16:53 andy_seaborne Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.7 2003-04-28 14:24:22 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter
@@ -137,7 +137,8 @@ public class QueryResultsFormatter
                 Object tmp = env.get(rVar) ;
                 RDFNode n = null ;
                 if ( tmp == null )
-                    //Unbound!
+                    // This variable was not found in the results.
+                    // Encode the result set with an explicit "not defined" 
                     n = ResultSet.undefined ;
                 else if ( ! (tmp instanceof RDFNode) )
                 {

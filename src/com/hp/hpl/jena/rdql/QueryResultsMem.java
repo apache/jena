@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.*;
 
 /**
  * @author      Andy Seaborne
- * @version     $Id: QueryResultsMem.java,v 1.5 2003-03-19 17:16:53 andy_seaborne Exp $
+ * @version     $Id: QueryResultsMem.java,v 1.6 2003-04-28 14:24:23 andy_seaborne Exp $
  */
 
 
@@ -192,7 +192,7 @@ public class QueryResultsMem implements QueryResultsRewindable
                 String varName = rVarsIter.nextStatement().getString() ;
                 varNames.add(varName) ;
             }
-            
+            rVarsIter.close() ;
             // Now the results themselves
             int count = 0 ;
             StmtIterator solnIter = root.listProperties(ResultSet.solution) ;
@@ -209,10 +209,19 @@ public class QueryResultsMem implements QueryResultsRewindable
                     Resource binding = bindingIter.nextStatement().getResource() ;
                     String var = binding.getProperty(ResultSet.variable).getString() ;
                     RDFNode val = binding.getProperty(ResultSet.value).getObject() ;
+                    // We include the value even if it is the marker term "rs:undefined"
+                    //if ( val.equals(ResultSet.undefined))
+                    //    continue ;
+                    // The QueryResultFormatter code equates null (not found) with
+                    // rs:undefined.  When Jena JUnit testing, it does not matter if the 
+                    // recorded result has the term absent or explicitly undefined.
+                     
                     rb.add(var, val) ;
                 }
+                bindingIter.close() ;
                 rows.add(rb) ;
             }
+            solnIter.close() ;
             
             if ( root.hasProperty(ResultSet.size))
             {
@@ -222,7 +231,7 @@ public class QueryResultsMem implements QueryResultsRewindable
                         System.err.println("Warning: Declared size = "+size+" : Count = "+count) ;
                 } catch (RDFException rdfEx) {}
             }
-            reset();
+            sIter.close() ;
         }
         
         reset() ;
