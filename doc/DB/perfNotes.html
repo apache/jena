@@ -84,58 +84,117 @@ objects
 
 
 
-<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="852" id="AutoNumber3">
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="831" id="AutoNumber3">
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="858" id="AutoNumber3">
   <tr>
-    <td style="text-align: left" width="260"><b>Option Settings</b></td>
-    <td width="138"><b>Database Space</b></td>
+    <td style="text-align: left" width="303"><b>Option Settings</b></td>
+    <td width="101"><b>Database Space</b></td>
     <td width="111"><b>Load Time</b></td>
     <td width="426" style="text-align: left"><b>Comments</b></td>
   </tr>
   <tr>
-    <td style="text-align: left" width="260">Default option settings (long
+    <td style="text-align: left" width="303">Default option settings (long
       object length = 250 bytes, URI compression disabled, duplicate checked
       enabled)</td>
-    <td width="138" style="text-align: right">16.38 MB</td>
+    <td width="101" style="text-align: right">16.38 MB</td>
     <td width="111" style="text-align: right">29.5 sec.</td>
     <td width="426" style="text-align: left">Default long object length of 250, 
     dup checking enabled, no compression.</td>
   </tr>
   <tr>
-    <td style="text-align: left" width="260">Duplicate checking disabled</td>
-    <td width="138" style="text-align: right">16.38 MB</td>
+    <td style="text-align: left" width="303">Duplicate checking disabled</td>
+    <td width="101" style="text-align: right">16.38 MB</td>
     <td width="111" style="text-align: right">16.3 sec.</td>
     <td width="426" style="text-align: left">Use only if no duplicates in 
     load set.</td>
   </tr>
   <tr>
-    <td style="text-align: left" width="260">Long object length = 25 bytes</td>
-    <td width="138" style="text-align: right">9.62 MB</td>
+    <td style="text-align: left" width="303">Long object length = 25 bytes</td>
+    <td width="101" style="text-align: right">9.62 MB</td>
     <td width="111" style="text-align: right">58.7 sec.</td>
     <td width="426" style="text-align: left">Heavy use of literals and resources 
     table.</td>
   </tr>
   <tr>
-    <td style="text-align: left" width="260">Long object length = 50 bytes</td>
-    <td width="138" style="text-align: right">13.40 MB</td>
+    <td style="text-align: left" width="303">Long object length = 50 bytes</td>
+    <td width="101" style="text-align: right">13.40 MB</td>
     <td width="111" style="text-align: right">35.3 sec.</td>
     <td width="426" style="text-align: left">Moderate increased time and reduced
       space.</td>
   </tr>
   <tr>
-    <td style="text-align: left" width="260">Long object length = 100 bytes</td>
-    <td width="138" style="text-align: right">15.50 MB</td>
+    <td style="text-align: left" width="303">Long object length = 100 bytes</td>
+    <td width="101" style="text-align: right">15.50 MB</td>
     <td width="111" style="text-align: right">29.5 sec.</td>
     <td width="426" style="text-align: left">Similar to default case.</td>
   </tr>
   <tr>
-    <td style="text-align: left" width="260">URI compression enabled, length = 20 bytes,
+    <td style="text-align: left" width="303">URI compression enabled, length = 20 bytes,
       cache size = 100</td>
-    <td width="138" style="text-align: right">9.01 MB</td>
+    <td width="101" style="text-align: right">9.01 MB</td>
     <td width="111" style="text-align: right">24.0 sec.</td>
     <td width="426" style="text-align: left">Use of memory cache for URIs is 
     beneficial.</td>
   </tr>
 </table>
+
+
+
+  <p>Some preliminary experiments were done to determine the impact of indexes 
+  during database loading. It was speculated that dropping the indexes prior to 
+  loading and recreating them afterward would be faster than loading with 
+  indexes. The thinking was that database engines (some of them, at least) have 
+  good algorithms for creating indexes as a batch operation so that creating an 
+  entire index at once would be significantly less expensive than updating the 
+  indexes for each statement added.</p>
+
+
+
+  <p>However, our initial experiments with MySQL showed no significant benefit 
+  to dropping and recreating the indexes. The load without indexes was 
+  significantly faster than loading with indexes. However the overhead and 
+  dropping the index (there was significant overhead to dropping the index when 
+  the table was already populated) and recreating the index approximately 
+  equaled the savings. We will continue these experiments with different engines 
+  and database configurations but for now we can provide no recommendations.</p>
+
+
+
+  <h2>Reification Performance</h2>
+<p>The Jena2 persistent reification code is new and typical application usage 
+patterns are not yet known. However, based on preliminary testing, we can make 
+some recommendations for improved application performance. <br>
+<br>
+Recall that Jena supports two mechanisms for adding a reified statement (see the
+<a href="../how-to/reification.html">Reification HowTo</a>). The RDF 
+standard represents a reified statement as four individual statements and these 
+statements may be added individually to a model. Jena will internally convert 
+these back to the original reified statement. Alternatively, Jena supports a 
+createReifiedStatement method (on the Model class) that adds a complete reified 
+statement with one call. We recommend using this method for persistent models. It is significantly faster to add reified statements 
+using createReifiedStatement rather than adding the four statements 
+individually. If one is using the Graph interface rather than Model, the Reifier 
+interface for graphs supports a method similar to createReifiedStatement. Adding 
+a fully reified statement using these optimized methods takes approximately the 
+same amount of time as adding a single non-reified statement - it is four times 
+faster than individually adding the four reification statements.<br>
+<br>
+When creating a new Model, Jena2 now provides several different reification 
+styles. For persistent models, we recommend using the <a href="../how-to/reification.html">
+Standard</a> reification style if you have a choice. There is very little 
+performance difference between the styles. However, Standard is more powerful (supports 
+queries over the reified statements), is consistent with the RDF standard (has 
+no unexpected behaviour), uses no more space than the other styles and operates 
+at similar speeds.<br>
+<br>
+If you have a mix of reified and non-reified statements it may be convenient to 
+simply create two models, using one for just the reified statements. This allows 
+you to query while ignoring the reified statements and may give a small 
+performance gain in future implementations. We are looking at optimizing the 
+special cases of models with only reified statements, or only non-reified 
+statements. In fact, <a href="fastpath.html">Fastpath</a> already 
+supports this optimization for RDQL query processing as an option.<br>
+&nbsp;</p>
 
 
 
