@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 17:34:53 $
+ * Last modified on   $Date: 2003-05-27 20:46:54 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.8 2003-05-27 17:34:53 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.9 2003-05-27 20:46:54 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -873,17 +873,22 @@ public class OntResourceImpl
                (target.length() > desired.length() && desired.equalsIgnoreCase( target.substring( desired.length() ) ));
     }
     
+    /** Answer the object of a statement with the given property, .as() the given class */
+    protected Object objectAs( Property p, String name, Class asClass ) {
+        checkProfile( p, name );
+        return getProperty( p ).getObject().as( asClass );
+    }
+
+    
     /** Answer the object of a statement with the given property, .as() an OntResource */
     protected OntResource objectAsResource( Property p, String name ) {
-        checkProfile( p, name );
-        return (OntResource) getProperty( p ).getObject().as( OntResource.class );
+        return (OntResource) objectAs( p, name, OntResource.class );
     }
 
     
     /** Answer the object of a statement with the given property, .as() an OntProperty */
     protected OntProperty objectAsProperty( Property p, String name ) {
-        checkProfile( p, name );
-        return (OntProperty) getProperty( p ).getObject().as( OntProperty.class );
+        return (OntProperty) objectAs( p, name, OntProperty.class );
     }
 
     

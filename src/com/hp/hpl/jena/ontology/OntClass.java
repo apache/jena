@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 16:57:11 $
+ * Last modified on   $Date: 2003-05-27 20:46:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -26,7 +26,6 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.path.PathSet;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import java.util.Iterator;
@@ -39,7 +38,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.5 2003-05-08 16:57:11 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.6 2003-05-27 20:46:50 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -53,54 +52,169 @@ public interface OntClass
 
     // Enumerated class constructor
     
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>subClassOf</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the sub-class class axiom
-     */
-    public PathSet p_subClassOf();
+    // subClassOf
     
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>equivalentClass</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the class equivalance class axiom
+     * <p>Assert that this class is sub-class of the given class. Any existing 
+     * statements for <code>subClassOf</code> will be removed.</p>
+     * @param cls The class that this class is a sub-class of
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */ 
+    public void setSuperClass( Resource cls );
+
+    /**
+     * <p>Add a super-class of this class.</p>
+     * @param cls A class that is a super-class of this class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */ 
+    public void addSuperClass( Resource cls );
+
+    /**
+     * <p>Answer a class that is the super-class of this class. If there is
+     * more than one such class, an arbitrary selection is made.</p>
+     * @return A super-class of this class
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */ 
+    public OntClass getSuperClass();
+
+    /**
+     * <p>Answer an iterator over all of the classes that are declared to be super-classes of
+     * this class. Each element of the iterator will be an {@link #OntClass}.</p>
+     * @return An iterator over the super-classes of this class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSuperClasses();
+
+    /**
+     * <p>Answer true if the given class is a super-class of this class.</p>
+     * @param cls A class to test.
+     * @return True if the given class is a super-class of this class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
-    public PathSet p_equivalentClass();
+    public boolean hasSuperClass( Resource cls );
     
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>disjointWith</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the disjoint-with class axiom
-     */
-    public PathSet p_disjointWith();
-
+     * <p>Assert that this class is super-class of the given class. Any existing 
+     * statements for <code>subClassOf</code> on <code>prop</code> will be removed.</p>
+     * @param cls The class that is a sub-class of this class
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */ 
+    public void setSubClass( Resource cls );
 
     /**
-     * <p>
-     * Answer an iterator over the class descriptions
-     * that mention this class as one of its super-classes.  Will iterate over the
-     * closure of the sub-class relationship.
-     * </p>
-     * 
-     * @return an iterator over the resources representing this class's sub-classes.
-     */
-    public Iterator getSubClasses();
+     * <p>Add a sub-class of this class.</p>
+     * @param cls A class that is a sub-class of this class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */ 
+    public void addSubClass( Resource cls );
 
+    /**
+     * <p>Answer a class that is the sub-class of this class. If there is
+     * more than one such class, an arbitrary selection is made.</p>
+     * @return A sub-class of this class
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */ 
+    public OntClass getSubClass();
+
+    /**
+     * <p>Answer an iterator over all of the classes that are declared to be sub-classes of
+     * this class. Each element of the iterator will be an {@link #OntClass}.</p>
+     * @return An iterator over the sub-classes of this class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSubClasses();
+
+    /**
+     * <p>Answer true if the given class is a sub-class of this class.</p>
+     * @param cls A class to test.
+     * @return True if the given class is a sub-class of this class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public boolean hasSubClass( Resource cls );
+    
+    // equivalentClass
+    
+    /**
+     * <p>Assert that the given class is equivalent to this class. Any existing 
+     * statements for <code>equivalentClass</code> will be removed.</p>
+     * @param cls The class that this class is a equivalent to.
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
+     */ 
+    public void setEquivalentClass( Resource cls );
+
+    /**
+     * <p>Add a class that is equivalent to this class.</p>
+     * @param cls A class that is equivalent to this class.
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
+     */ 
+    public void addEquivalentClass( Resource cls );
+
+    /**
+     * <p>Answer a class that is equivalent to this class. If there is
+     * more than one such class, an arbitrary selection is made.</p>
+     * @return A class equivalent to this class
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
+     */ 
+    public OntClass getEquivalentClass();
+
+    /**
+     * <p>Answer an iterator over all of the classes that are declared to be equivalent classes to
+     * this class. Each element of the iterator will be an {@link #OntClass}.</p>
+     * @return An iterator over the classes equivalent to this class.
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listEquivalentClasses();
+
+    /**
+     * <p>Answer true if the given class is equivalent to this class.</p>
+     * @param class A class to test for
+     * @return True if the given property is equivalent to this class.
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
+     */
+    public boolean hasEquivalentClass( Resource cls );
+    
+
+    // disjointWith
+    
+    /**
+     * <p>Assert that this class is disjoint with the given class. Any existing 
+     * statements for <code>disjointWith</code> will be removed.</p>
+     * @param cls The property that this class is disjoint with.
+     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
+     */ 
+    public void setDisjointWith( Resource cls );
+
+    /**
+     * <p>Add a class that this class is disjoint with.</p>
+     * @param cls A class that has no instances in common with this class.
+     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
+     */ 
+    public void addDisjointWith( Resource cls );
+
+    /**
+     * <p>Answer a class with which this class is disjoint. If there is
+     * more than one such class, an arbitrary selection is made.</p>
+     * @return A class disjoint with this class
+     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
+     */ 
+    public OntClass getDisjointWith();
+
+    /**
+     * <p>Answer an iterator over all of the classes that this class is declared to be disjoint with.
+     * Each element of the iterator will be an {@link #OntClass}.</p>
+     * @return An iterator over the classes disjoint with this class.
+     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listDisjointWith();
+
+    /**
+     * <p>Answer true if this class is disjoint with the given class.</p>
+     * @param cls A class to test
+     * @return True if the this class is disjoint with the the given class.
+     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
+     */
+    public boolean isDisjointWith( Resource cls );
+    
 
     /**
      * <p>
@@ -121,18 +235,6 @@ public interface OntClass
     /**
      * <p>
      * Answer an iterator over the class descriptions
-     * for which this class is a sub-class. Will generate the
-     * closure of the iteration over the super-class relationship.
-     * <p>
-     * 
-     * @return an iterator over the resources representing this class's super-classes.
-     */
-    public Iterator getSuperClasses();
-
-
-    /**
-     * <p>
-     * Answer an iterator over the class descriptions
      * for which this class is a sub-class. 
      * </p>
      * <p>
@@ -146,27 +248,6 @@ public interface OntClass
     public Iterator getSuperClasses( boolean closed );
 
 
-    /**
-     * <p>
-     * Answer true if the given class is a sub-class of this class.
-     * </p>
-     * 
-     * @param cls A resource representing a class
-     * @return True if this class is a super-class of the given class <code>cls</code>.
-     */
-    public boolean hasSubClass( Resource cls );
-
-
-    /**
-     * <p>
-     * Answer true if the given class is a super-class of this class.
-     * </p>
-     * 
-     * @param cls A resource representing a class
-     * @return True if this class is a sub-class of the given class <code>cls</code>.
-     */
-    public boolean hasSuperClass( Resource cls );
-    
     /** 
      * <p>Answer a view of this class as an enumerated class</p>
      * @return This class, but viewed as an EnumeratedClass node

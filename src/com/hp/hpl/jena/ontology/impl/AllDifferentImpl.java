@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: AllDifferentImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 17:34:53 $
+ * Last modified on   $Date: 2003-05-27 20:46:53 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferentImpl.java,v 1.7 2003-05-27 17:34:53 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferentImpl.java,v 1.8 2003-05-27 20:46:53 ian_dickinson Exp $
  */
 public class AllDifferentImpl
     extends OntResourceImpl
@@ -134,7 +134,7 @@ public class AllDifferentImpl
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
     public OntList getDistinct() {
-        return (OntList) objectAsResource( getProfile().DISTINCT_MEMBERS(), "DISTINCT_MEMBERS" ).as( OntList.class );
+        return (OntList) objectAs( getProfile().DISTINCT_MEMBERS(), "DISTINCT_MEMBERS", OntList.class );
     }
 
     /**
