@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.11 2005-03-10 14:35:34 chris-dollin Exp $
+  $Id: TestFileGraphMaker.java,v 1.12 2005-03-10 14:57:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
+
+import java.io.File;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
@@ -49,15 +51,18 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
 
     public void testDetectsExistingFiles()
         {
-        String scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-already" ).getPath();
+        File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-already" );
         Graph content = graphWith( "something hasProperty someValue" );
-        FileGraphMaker A = new FileGraphMaker( scratch );
-        FileGraphMaker B = new FileGraphMaker( scratch );
-        Graph gA = A.createGraph( "already", true );
+        FileGraphMaker A = new FileGraphMaker( scratch.getPath() );
+        FileGraphMaker B = new FileGraphMaker( scratch.getPath() );
+        FileGraph gA = (FileGraph) A.createGraph( "already", true );
         gA.getBulkUpdateHandler().add( content );
         gA.close();
-        Graph gB = B.openGraph( "already", false );
+        FileGraph gB = (FileGraph) B.openGraph( "already", false );
         assertIsomorphic( content, gB );
+        gB.close();
+        gB.delete();
+        gA.delete();
         }
     }
 

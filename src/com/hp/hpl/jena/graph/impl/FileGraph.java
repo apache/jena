@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.25 2005-03-10 14:33:48 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.26 2005-03-10 14:54:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -17,10 +17,8 @@ import java.io.*;
 
 /**
     A FileGraph is a memory-based graph that is optionally read in from a file
-    when it is created, and is written back when it is closed. It is not 
-    particularly robust, alas. 
-    
-    TODO: consider a version which saves "every now and then"
+    when it is created, and is written back when it is closed. It supports
+    (weak) transactions by using checkpoint files.
     
  	@author hedgehog
 */
@@ -121,6 +119,12 @@ public class FileGraph extends GraphMem
         saveContents( name );
         super.close();
         }
+    
+    /**
+       Delete the backing file. Primarily intended for test cleanup.
+    */
+    public void delete()
+        { name.delete(); }
 
     /**
         The graph is written out to the 
@@ -160,10 +164,10 @@ public class FileGraph extends GraphMem
             }
         }    
         
-    private void mustDelete( File f )
+    protected void mustDelete( File f )
         { if (f.delete() == false) throw new JenaException( "could not delete " + f ); }
         
-    private void mustRename( File from, File to )
+    protected void mustRename( File from, File to )
         { 
         if (from.renameTo( to ) == false) 
             throw new JenaException( "could not rename " + from + " to " + to ); 
