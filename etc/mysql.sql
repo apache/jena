@@ -118,7 +118,7 @@ DELETE FROM ${a} WHERE (GraphID = ?)
 #-------------------------------------------------------------------
 # Store the name of a new graph and create a unique identifier for it.
 insertGraph
-INSERT INTO JENA_GRAPH (Name) VALUES (?)
+INSERT INTO jena_graph (Name) VALUES (?)
 
 #-------------------------------------------------------------------
 # Remove the name of a graph.
