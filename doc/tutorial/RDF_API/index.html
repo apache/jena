@@ -750,8 +750,13 @@ while (iter.hasNext()) {
 }</code></pre>
 </blockquote>
 
-<p>This code can be found in <a href="code/Tutorial06.java"> tutorial 6</a>,
-which produces the following output when run:</p>
+<p>This code can be found in <a href="code/Tutorial06.java"> tutorial 6</a>.
+The statement iterator <code>iter</code> produces each and every statement
+with subject <code>vcard</code> and predicate <code>VCARD.NICKNAME</code>,
+so looping over it allows us to fetch each statement by using 
+<code>nextStatement()</code>, get the object field, and convert it to
+a string. 
+The code produces the following output when run:</p>
 
 <blockquote>
   <pre><code>The nicknames of "John Smith" are:
@@ -760,7 +765,9 @@ which produces the following output when run:</p>
 </blockquote>
 
 <p>All the properties of a resource can be listed by using the
-<code>listStatements()</code> method without an argument.</p>
+<code>listProperties()</code> method without an argument.
+</p>
+
 <hr>
 
 <h2><a name="ch-Querying a Model">Querying a Model</a></h2>
@@ -779,17 +786,8 @@ statement.</p>
 
 <p><code>Model.listSubjectsWithProperty(Property p, RDFNode
 o)</code><code></code> will return an iterator over all the resources which
-have property <code>p</code> with value <code>o</code>. We might expect
-to be able to use the rdf:type property to retrieve all the vcard resources
-by searching for their type property:</p>
-
-<blockquote>
-  <pre><code>// retrieve all resource of type Vcard.
-ResIterator iter = model.listSubjectsWithProperty(RDF.type, VCARD.Vcard);</code></pre>
-</blockquote>
-
-<p>Unfortunately, however, the vcard schema we are using does not define a
-type for vcards!  However, if we assume that only resources of type vcard
+have property <code>p</code> with value <code>o</code>. If we assume that 
+only vcard resources 
 will have <code>vcard:FN</code> property, and that in our data, all such
 resources have such a property, then we can find all the vcards like this:</p>
 
@@ -819,7 +817,7 @@ necessary to use a specific class rather than an interface.  The
 
 <p>This selector will select all statements with a subject that matches
 <code>subject</code>, a predicate that matches <code>predicate</code> and an
-object that matches <code>object</code>.  If a <code>null</code>is supplied
+object that matches <code>object</code>.  If a <code>null</code> is supplied
 in any of the positions, it matches anything; otherwise they match corresponding
 equal resources or literals. (Two resources are equal if they have equal URIs
 or are the same blank node; two literals are the same if all their components
@@ -1007,7 +1005,13 @@ model.write(system.out, "RDF/XML-ABBREV");</code></pre>
 <p>Even if you are unfamiliar with the details of the RDF/XML syntax, it
 should be reasonably clear that the Models have merged as expected.  The
 intersection and difference of the Models can be computed in a similar
-manner.</p>
+manner, using the methods <code>.intersection(Model)</code> and
+<code>.difference(Model)</code>; see the 
+<a href="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#difference(com.hp.hpl.jena.rdf.model.Model)">difference</a> 
+and
+<a href="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html#intersection(com.hp.hpl.jena.rdf.model.Model)">intersection</a> 
+Javadocs for more details.
+</p>
 <hr>
 
 <h2><a name="ch-Containers" id="ch-Containers">Containers</a></h2>
@@ -1072,7 +1076,7 @@ StmtIterator iter = model.listStatements(
     });
 // add the Smith's to the bag
 while (iter.hasNext()) {
-    smiths.add(iter.next().getSubject());
+    smiths.add(iter.nextStatement().getSubject());
 }</code></pre>
 </blockquote>
 
@@ -1104,7 +1108,7 @@ if (iter2.hasNext()) {
     System.out.println("The bag contains:");
     while (iter2.hasNext()) {
         System.out.println("  " +
-            (Resource) iter2.next())
+            ((Resource) iter2.next())
                             .getProperty(VCARD.FN)
                             .getString());
     }
@@ -1122,7 +1126,8 @@ if (iter2.hasNext()) {
 </blockquote>
 
 <p>Executable example code can be found in <a href="code/Tutorial10.java">
-tutorial 10</a>.</p>
+tutorial 10</a>, which glues together the fragments above into a complete
+example.</p>
 
 <p>The Jena classes offer methods for manipulating containers including
 adding new members, inserting new members into the middle of a container and
@@ -1280,4 +1285,4 @@ Another term for a statement.
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
 <br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>
-<br> $Id: index.html,v 1.13 2004-07-05 16:56:36 chris-dollin Exp $</small></i></body></html>
+<br> $Id: index.html,v 1.14 2004-07-09 14:57:33 chris-dollin Exp $</small></i></body></html>
