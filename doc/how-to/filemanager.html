@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <!-- $Id: filemanager.html,v 1.1 2004-08-29 19:45:36 andy_seaborne Exp $ -->
+  <title>The Jena FileManager</title>
+  <link href="../styles/doc.css" rel="stylesheet" type="text/css">
+
+<style>
+.box { margin-left : 5% ;
+       margin-right : 7% ;
+       border: 1px solid ;
+       background-color: #F0F0F0;
+       padding: 10;
+       page-break-inside: avoid ;
+       }
+</style>
+</head>
+<body>
+<h1>The Jena FileManager and LocationMapper</h1>
+
+<p>
+The FileManager is a utility to find and read files into models.
+There is a standard global FileManager and applications may also define
+specific ones by constructing addition FileManagers.</p>
+
+<p>The LocationMapper provides alternative locations for RDF data.</p>
+
+<h2>The File Manager</h2>
+
+<p>Files are named by a string, according to the conventions of their
+storage system. Typically this is by URI.  There are a number of storage
+system adapters provided:
+<ul>
+<li>File locator</li>
+<li>URL locator</li>
+<li>Class loader locator</li>
+<li>Zip file locator</li>
+</ul>
+The global file manager has a file location, a URL locator and a
+class loader (tried in that order).</p>
+
+
+<p>A FileManager can have an associated LocationMapper that transforms
+names before use.  This means local copies of documents can be used
+transparently to the rest of the application.</p>
+
+<p>There are two categories of operations: loadModel, readModel. Load
+operations fetch and parse the data into a new memory model.  Read
+operations fetch and parse the data into an existing model.  For more
+complex ways to create a new model see ModelSpec
+(<a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpec.html">ModelSpec javadoc</a>).
+</p>
+
+<p>Each FileManager has an optional in-memory cache of models.
+When on, loading models will look in the cache first and return
+a cached model if possible.  This cached model is not copied -
+updates <i>will</i> change the cached version.  The default is that cache is off.</p>
+
+<p>In fetching and parsing a file, the file manager will attempt to guess
+the serialization format, if not explicitly supplied.  This is by name
+extension:
+<ul>
+<li><code>.rdf</code> and <code>.owl</code> : RDF/XML</li>
+<li><code>.n3</code> : N3</li>
+<li><code>.nt</code> : N-Triples</li>
+<li>Anything else: RDF/XML</li>
+</ul>
+
+<h2>The LocationMapper configuration file</h2>
+
+<p>This example uses the RDF subset of
+<a href="http://www.w3.org/2000/10/swap/Primer">N3</a>.
+Jena has an RDF reader and RDF writer for N3.
+This is nearly the same as
+<a href="http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/">Turtle</a>
+but allowing international characters and some restrictions due to N3.</p>
+
+<p>Location mapping files are RDF - they may be written in RDF/XML, N3
+(file suffix <code>.n3</code>) or N-Triples (file suffix <code>.nt</code>).
+The default is RDF/XML unless one of these suffices is found.</p>
+
+<pre class="box">
+[] lm:mapping
+   [ lm:name "file:foo.n3" ;     lm:altName "file:etc/foo.n3" ] ,
+   [ lm:prefix "file:etc/" ;     lm:altPrefix "file:ETC/" ] ,
+   [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ]
+   .
+</pre>
+
+<p>There are two types of location mapping: exact match renaming and
+prefix renaming.  When trying to find an alternative location, a LocationMapper
+first tries for an exact match; if none is found, the LocationMapper
+will search for the longest matching prefix.  If two are the same length,
+there is no guarantee on order tried; there is no implied order in a location
+mapper configuration file (it sets up two hash tables).
+</p>
+
+<p>In the example above, <code>file:etc/foo.n3</code> becomes
+<code>file:DIR/foo.n3</code> because that is an exact match.  The prefix
+match of </code>file:/etc/</code> is ignored.</p>
+
+<p>All string tests are done case sensitively because the primary use
+is for URLs.</p>
+
+
+<p>Notes:
+<ul>
+<li>Property values are not URIs, but strings.  This is a system feature,
+not an RDF feature. Prefix mapping is name rewriting;
+alternate names are not treated as equivalent resources in the rest
+of Jena. While application writers are encouraged to use URIs to identify
+files, this is not always possible.</li>
+<li>There is no check to see if the alternative system resource is
+equivalent to the original.</li>
+</ul>
+</p>
+
+
+<p>A LocationMapper finds its configuration file by looking for the
+following files, in order:
+<ul>
+<li><code>file:etc/location-mapping.rdf</code></li>
+<li><code>file:etc/location-mapping.n3</code></li>
+<li><code>file:location-mapping.rdf</code></li>
+<li><code>file:location-mapping.n3</code></li>
+</ul>
+
+<p>This is a specified as a path - note the path separator is always
+the character ';' regardless of operating system because URLs contain ':'.
+</p>
+
+<p>Applications can also set mappings programmatically.  No configuration
+file is necessary.</p>
+
+<p>The base URI for reading models with the FileManager
+will be the original URI, not the alternative location.</p>
+
+<h3>Debugging</h3>
+
+<p>Using log4j, set the logging level of the classes:
+<pre class="box">
+com.hp.hpl.jena.util.FileManager=ALL
+com.hp.hpl.jena.util.LocationManager=ALL
+</pre>
+
+<h3>See also</h3>
+<p>
+Javadoc:<br/>
+<a href="../javadoc/com/hp/hpl/jena/util/FileManager.html">FileManager</a><br/>
+<a href="../javadoc/com/hp/hpl/jena/util/LocationMapper.html">LocationMapper</a>
+</p>
+
+</body>
+</html>
+
+
