@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: WrappedGraph.java,v 1.2 2003-08-22 14:34:02 chris-dollin Exp $
+  $Id: WrappedGraph.java,v 1.3 2003-08-25 16:54:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -75,10 +75,6 @@ public class WrappedGraph implements Graph
         
     public int size() throws UnsupportedOperationException
         { return base.size(); }
-
-    public int capabilities()
-        { return base.capabilities(); }
-
     }
 
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.21 2003-08-25 16:41:27 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.22 2003-08-25 16:54:45 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-08-25 16:41:27 $
+ * @version $Revision: 1.22 $ on $Date: 2003-08-25 16:54:45 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -45,6 +45,29 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         this.fdata = new FGraph(data);
         this.reasoner = reasoner;
     }
+        
+    /**
+        Answer the InfCapabilities of this InfGraph.
+     */
+    public Capabilities getCapabilities()
+        {
+        if (capabilities == null) capabilities = new InfCapabilities();    
+        return capabilities;
+        }
+        
+    /**
+        An InfCapabilities notes that size may not be accurate, and some
+        triples may be irremovable.
+        
+        TODO accomodate the properties of the base graph, too.
+    
+     	@author hedgehog
+    */
+    static class InfCapabilities extends AllCapabilities
+        {
+        public boolean sizeAccurate() { return false; }
+        public boolean deleteAllowed( boolean every ) { return !every; }    
+        }
         
     /**
      * Return the raw RDF data Graph being processed (i.e. the argument

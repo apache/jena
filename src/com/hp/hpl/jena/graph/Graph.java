@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.20 2003-08-25 16:41:26 chris-dollin Exp $
+  $Id: Graph.java,v 1.21 2003-08-25 16:54:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -124,23 +124,7 @@ public interface Graph  extends GraphAdd
      * might infer additional triples it results an estimated lower bound of the number of triples.
      * For example, an inference graph might return the number of triples in the raw data graph. 
      */
-	 int size() throws UnsupportedOperationException;
-
-	 /**
-	  * Returns the bitwise or of ADD, DELETE, SIZE,
-	  * to show the capabilities of this implementation of Graph.
-	  * So a read-only graph that can tell you how many triples are in the graph 
-        returns
-	  * SIZE.
-	  */
-	 int capabilities();
-	 /** Issue listSubjects() listNameSpaces().
-	  *  Old code noted that stores could easily
-	  *  give one of each filler for subject or property.
-	  * Current code uses brute force in ModelCom to achieve
-	  * same effect.
-	  * Also consider Model.listSubjectsWithProperty()
-	  */
+	 int size();
 
 }
 
