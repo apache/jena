@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JenaTestBase.java,v 1.2 2003-06-10 08:09:16 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.3 2003-06-12 08:00:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -19,21 +19,6 @@ public class JenaTestBase extends TestCase
     {
     public JenaTestBase( String name )
         { super( name ); }
-        
-    /**
-        assert that the specified boolean must be false.
-        @param title a labelling string for the assertion failure text
-        @param b the boolean to test
-    */
-    public void assertFalse( String title, boolean b )
-        { assertTrue( title, !b ); }
-        
-    /**
-        Assert that the specified boolean must be false.
-        @param b the boolean to test
-    */
-    public void assertFalse( boolean b )
-        { assertTrue( !b ); }
         
     /**
         assert that the two objects must be unequal according to .equals().

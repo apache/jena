@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCache.java,v 1.2 2003-01-28 16:21:38 chris-dollin Exp $
+  $Id: TestCache.java,v 1.3 2003-06-12 08:01:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -26,14 +26,7 @@ public class TestCache extends TestCase
         suite.addTest( new CacheTestCase(CacheManager.RAND));
         return suite;
     }   
-            
-    public void assertFalse( String name, boolean b )
-        { assertTrue( name, !b ); }
-    
-    private void assertDiffer( String title, Object x, Object y )
-        { assertFalse( title, x.equals( y ) ); }
-        
-    
+           
     static class CacheTestCase extends TestCase {
         String cacheType;
         
