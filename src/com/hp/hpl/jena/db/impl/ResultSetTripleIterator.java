@@ -25,7 +25,7 @@ import com.hp.hpl.jena.db.impl.PSet_TripleStore_RDB;
 * Version of ResultSetIterator that extracts database rows as Triples.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.2 $ on $Date: 2003-05-07 21:30:43 $
+* @version $Revision: 1.3 $ on $Date: 2003-05-07 22:17:44 $
 */
 public class ResultSetTripleIterator extends ResultSetIterator {
 
@@ -51,7 +51,7 @@ public class ResultSetTripleIterator extends ResultSetIterator {
 	public ResultSetTripleIterator(IPSet p, IDBID graphID) {
 		m_pset = p;
 		setGraphID(graphID);
-		m_isReif = true;
+		m_isReif = false;
 	}
 
 	// Constructor for iterating over reified statements
