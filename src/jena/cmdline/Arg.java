@@ -5,12 +5,10 @@
 
 package jena.cmdline ;
 
-import java.util.* ;
-
 /** A command line argument that has been foundspecification.
  *
  * @author  Andy Seaborne
- * @version $Id: Arg.java,v 1.1.1.1 2002-12-19 19:22:16 bwm Exp $
+ * @version $Id: Arg.java,v 1.2 2003-01-06 15:32:12 andy_seaborne Exp $
  */
 public class Arg
 {
