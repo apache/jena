@@ -2,10 +2,11 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial10.java,v 1.5 2004-01-09 17:16:30 andy_seaborne Exp $
+ * $Id: Tutorial10.java,v 1.6 2005-02-16 10:04:26 chris-dollin Exp $
  */
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.io.InputStream;
@@ -15,7 +16,7 @@ import java.io.PrintWriter;
 /** Tutorial 10 - demonstrate a container
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2004-01-09 17:16:30 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2005-02-16 10:04:26 $'
  */
 public class Tutorial10 extends Object {
     
@@ -26,12 +27,9 @@ public class Tutorial10 extends Object {
         Model model = ModelFactory.createDefaultModel();
        
         // use the class loader to find the input file
-        InputStream in = Tutorial10.class
-                                   .getClassLoader()
-                                   .getResourceAsStream(inputFileName);
+        InputStream in = FileManager.get().open( inputFileName );
         if (in == null) {
-            throw new IllegalArgumentException(
-                                   "File: " + inputFileName + " not found");
+            throw new IllegalArgumentException( "File: " + inputFileName + " not found");
         }
         
         // read the RDF/XML file

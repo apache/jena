@@ -2,17 +2,18 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial05.java,v 1.5 2004-01-09 17:16:30 andy_seaborne Exp $
+ * $Id: Tutorial05.java,v 1.6 2005-02-16 10:04:12 chris-dollin Exp $
  */
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileManager;
 
 import java.io.*;
 
 /** Tutorial 5 - read RDF XML from a file and write it to standard out
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2004-01-09 17:16:30 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2005-02-16 10:04:12 $'
  */
 public class Tutorial05 extends Object {
 
@@ -22,19 +23,15 @@ public class Tutorial05 extends Object {
         class, must be added to the class-path when running this and
         subsequent examples.
     */    
-    static final String inputFileName 
-                             = "vc-db-1.rdf";
+    static final String inputFileName  = "vc-db-1.rdf";
                               
     public static void main (String args[]) {
         // create an empty model
         Model model = ModelFactory.createDefaultModel();
 
-        InputStream in = Tutorial05.class
-                                   .getClassLoader()
-                                   .getResourceAsStream(inputFileName);
+        InputStream in = FileManager.get().open( inputFileName );
         if (in == null) {
-            throw new IllegalArgumentException(
-                                   "File: " + inputFileName + " not found");
+            throw new IllegalArgumentException( "File: " + inputFileName + " not found");
         }
         
         // read the RDF/XML file

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.7 2005-02-15 16:04:36 chris-dollin Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.8 2005-02-16 10:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -15,9 +15,12 @@ import com.hp.hpl.jena.vocabulary.*;
 import java.util.*;
 
 /**
-    The registry of creators appropriate for different ModelSpec types.
+    The registry of creators appropriate for different ModelSpec types; it maps RDF types
+    (subtypes of jms:ModelSpec) to ModelSpecCreators which, when requested, will
+    deliver ModelSpecs.
+    
  	@author hedgehog
- */
+*/
 public class ModelSpecCreatorRegistry
     {
     protected Map creators = new HashMap();     

@@ -2,10 +2,11 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial07.java,v 1.5 2004-01-09 17:16:30 andy_seaborne Exp $
+ * $Id: Tutorial07.java,v 1.6 2005-02-16 10:04:26 chris-dollin Exp $
  */
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.io.*;
@@ -13,7 +14,7 @@ import java.io.*;
 /** Tutorial 7 - selecting the VCARD resources
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2004-01-09 17:16:30 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2005-02-16 10:04:26 $'
  */
 public class Tutorial07 extends Object {
     
@@ -23,17 +24,14 @@ public class Tutorial07 extends Object {
         // create an empty model
         Model model = ModelFactory.createDefaultModel();
        
-        // use the class loader to find the input file
-        InputStream in = Tutorial07.class
-                                   .getClassLoader()
-                                   .getResourceAsStream(inputFileName);
+        // use the FileManager to find the input file
+        InputStream in = FileManager.get().open(inputFileName);
         if (in == null) {
-            throw new IllegalArgumentException(
-                                   "File: " + inputFileName + " not found");
+            throw new IllegalArgumentException( "File: " + inputFileName + " not found");
         }
         
         // read the RDF/XML file
-        model.read(new InputStreamReader(in), "");
+        model.read( in, "");
         
         // select all the resources with a VCARD.FN property
         ResIterator iter = model.listSubjectsWithProperty(VCARD.FN);

@@ -16,6 +16,9 @@ import com.hp.hpl.jena.rdf.model.*;
 */
 public class MockModelSpec implements ModelSpec
     {
+    public MockModelSpec( Resource root, Model spec )
+        {}
+    
     public Model createModelOver( String name )
         {
         return null;

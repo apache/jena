@@ -20,8 +20,7 @@ import com.hp.hpl.jena.shared.JenaException;
 */
 public class ModelSpecCreatorByClassname implements ModelSpecCreator
     {
-    protected static final Object[] emptyObjectArray = new Object [] {};
-    protected static final Class[] emptyClassArray = new Class[] {};
+    protected static final Class[] constructorArguments = new Class[] { Resource.class, Model.class };
     
     Constructor c;
     String className;
@@ -32,8 +31,9 @@ public class ModelSpecCreatorByClassname implements ModelSpecCreator
     public ModelSpec create( Resource root, Model desc )
         {
         try
-            { if (c == null) c = Class.forName( className ).getDeclaredConstructor( emptyClassArray );
-            return (ModelSpec) c.newInstance( emptyObjectArray ); }
+            { Object [] arguments = new Object[] { root, desc }; 
+            if (c == null) c = Class.forName( className ).getDeclaredConstructor( constructorArguments );
+            return (ModelSpec) c.newInstance( arguments ); }
         catch (Exception e)
             { throw new JenaException( e ); }
         }

@@ -2,17 +2,18 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial09.java,v 1.4 2004-01-09 17:16:30 andy_seaborne Exp $
+ * $Id: Tutorial09.java,v 1.5 2005-02-16 10:04:26 chris-dollin Exp $
  */
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileManager;
 
 import java.io.*;
 
 /** Tutorial 9 - demonstrate graph operations
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2004-01-09 17:16:30 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2005-02-16 10:04:26 $'
  */
 public class Tutorial09 extends Object {
     
@@ -25,24 +26,18 @@ public class Tutorial09 extends Object {
         Model model2 = ModelFactory.createDefaultModel();
        
         // use the class loader to find the input file
-        InputStream in1 = Tutorial09.class
-                                   .getClassLoader()
-                                   .getResourceAsStream(inputFileName1);
+        InputStream in1 = FileManager.get().open(inputFileName1);
         if (in1 == null) {
-            throw new IllegalArgumentException(
-                                   "File: " + inputFileName1 + " not found");
+            throw new IllegalArgumentException( "File: " + inputFileName1 + " not found");
         }
-        InputStream in2 = Tutorial09.class
-                                   .getClassLoader()
-                                   .getResourceAsStream(inputFileName2);
+        InputStream in2 = FileManager.get().open(inputFileName2);
         if (in2 == null) {
-            throw new IllegalArgumentException(
-                                   "File: " + inputFileName2 + " not found");
+            throw new IllegalArgumentException( "File: " + inputFileName2 + " not found");
         }
         
         // read the RDF/XML files
-        model1.read(new InputStreamReader(in1), "");
-        model2.read(new InputStreamReader(in2), "");
+        model1.read( in1, "" );
+        model2.read( in2, "" );
         
         // merge the graphs
         Model model = model1.union(model2);

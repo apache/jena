@@ -6,9 +6,6 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import java.lang.reflect.*;
-import java.lang.reflect.InvocationTargetException;
-
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -179,7 +176,7 @@ public class TestModelSpecFactory extends ModelTestBase
     protected ModelSpecCreator createMock = new ModelSpecCreator()
         {
         public ModelSpec create( Resource root, Model desc )
-            { return new MockModelSpec(); }
+            { return new MockModelSpec( root, desc ); }
         };
     
     /**
