@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.32 2003-11-25 10:51:39 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.33 2004-01-13 19:28:00 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -303,7 +303,7 @@ public class ModelFactory extends ModelFactoryBase
      * </p>
      * 
      * @return A new ontology model
-     * @see OntModelSpec
+     * @see OntModelSpec#getDefaultSpec
      */
     public static OntModel createOntologyModel() {
         return createOntologyModel( ProfileRegistry.OWL_LANG );
@@ -320,7 +320,7 @@ public class ModelFactory extends ModelFactoryBase
      * 
      * @param languageURI The URI specifying the ontology language we want to process
      * @return A new ontology model
-     * @see OntModelSpec
+     * @see OntModelSpec#getDefaultSpec
      */
     public static OntModel createOntologyModel( String languageURI ) {
         return createOntologyModel( OntModelSpec.getDefaultSpec( languageURI ), null );

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-04 09:54:20 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-01-13 19:28:09 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.23 2003-11-04 09:54:20 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.24 2004-01-13 19:28:09 ian_dickinson Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -202,6 +202,13 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     /**
      * <p>Answer a default specification for the given language URI. This default
      * will typically use a memory model and have minimal inferencing capabilities.
+     * Specifically, OWL and RDFS languages will have RDFS level inferencing 
+     * capability (chosen to give a reasonable balance between power and efficiency
+     * of computation), and DAML language will have the minimal DAML rule reasoner.
+     * To get other (more powerful or less powerful) reasoning capabilities, users 
+     * should create ontology models by passing an explicit <code>OntModelSpec</code>
+     * parameter to the 
+     * {@link ModelFactory#createOntologyModel( OntModelSpec, Model ) model factory}.
      * </p>
      * @param languageURI The ontology language we want a default model spec for
      * @return The default model spec for that language
