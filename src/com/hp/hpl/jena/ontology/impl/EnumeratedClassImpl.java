@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClassImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-24 15:28:05 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-28 20:15:00 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClassImpl.java,v 1.11 2003-06-24 15:28:05 chris-dollin Exp $
+ * @version CVS $Id: EnumeratedClassImpl.java,v 1.12 2003-06-28 20:15:00 ian_dickinson Exp $
  */
 public class EnumeratedClassImpl 
     extends OntClassImpl
@@ -148,7 +148,7 @@ public class EnumeratedClassImpl
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public ExtendedIterator listOneOf() {
-        return getOneOf().iterator();
+        return getOneOf().iterator().mapWith( new AsMapper( OntResource.class ) );
     }
 
     /**
