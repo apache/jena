@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.40 $
+ * Revision           $Revision: 1.41 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-26 18:28:14 $
+ * Last modified on   $Date: 2004-06-22 22:50:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -35,8 +35,10 @@ import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.impl.OntClassImpl;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
+import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -291,6 +293,53 @@ public class TestBugReports
         assertFalse(
             "B rdf:type owl:Class should not be in the base model",
             ontModel.isInBaseModel(ontModel.createStatement(B, RDF.type, OWL.Class)));
+    }
+
+    public void test_hk_importCache() {
+        final String BASE = "http://protege.stanford.edu/plugins/owl/testdata/";
+        OntModelSpec spec = new OntModelSpec(OntModelSpec.OWL_MEM);
+        spec.setReasoner(null);
+        OntDocumentManager dm = OntDocumentManager.getInstance();
+        dm.reset();
+        dm.setCacheModels(false);
+        dm.addAltEntry( "http://protege.stanford.edu/plugins/owl/testdata/Import-normalizerBug.owl", 
+                        "file:testing/ontology/bugs/test_hk_import/Import-normalizerBug.owl" );
+        dm.addAltEntry( "http://protege.stanford.edu/plugins/owl/testdata/normalizerBug.owl", 
+                        "file:testing/ontology/bugs/test_hk_import/normalizerBug.owl" );
+        spec.setDocumentManager(dm);
+
+        OntModel oldOntModel = ModelFactory.createOntologyModel(spec, null);
+        oldOntModel.read(BASE + "Import-normalizerBug.owl", ModelLoader.langXMLAbbrev);
+        Graph oldSubGraph = (Graph) oldOntModel.getSubGraphs().iterator().next();
+        final int oldTripleCount = getTripleCount(oldSubGraph);
+        OntClass ontClass = oldOntModel.getOntClass(BASE + "normalizerBug.owl#SuperClass");
+        oldSubGraph.add(new Triple(ontClass.getNode(), RDF.type.getNode(), OWL.DeprecatedClass.getNode()));
+        assertEquals(oldTripleCount + 1, getTripleCount(oldSubGraph));
+
+        // TODO this workaround to be removed
+        SimpleGraphMaker sgm = (SimpleGraphMaker) ((ModelMakerImpl) spec.getModelMaker()).getGraphMaker();
+        List toGo = new ArrayList();
+        for (Iterator i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() ));
+        for (Iterator i = toGo.iterator(); i.hasNext(); sgm.removeGraph( (String) i.next() ));
+        dm.clearCache();
+        
+        OntModel newOntModel = ModelFactory.createOntologyModel(spec, null);
+        newOntModel.read(BASE + "Import-normalizerBug.owl", ModelLoader.langXMLAbbrev);
+        Graph newSubGraph = (Graph) newOntModel.getSubGraphs().iterator().next();
+        assertFalse(newOntModel == oldOntModel);  // OK!
+        assertFalse(newSubGraph == oldSubGraph);  // FAILS!
+        final int newTripleCount = getTripleCount(newSubGraph);
+        assertEquals(oldTripleCount, newTripleCount);
+    }
+
+
+    private int getTripleCount(Graph graph) {
+        int count = 0;
+        for (Iterator it = graph.find(null, null, null); it.hasNext();) {
+            it.next();
+            count++;
+        }
+        return count;
     }
 
     /**
