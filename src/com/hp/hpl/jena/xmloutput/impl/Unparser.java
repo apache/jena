@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.12 2003-06-12 09:18:55 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.13 2003-06-12 15:10:31 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-06-12 09:18:55 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-06-12 15:10:31 $'
 
  */
 class Unparser {
@@ -194,7 +194,7 @@ class Unparser {
 				u.setFragment(null);
 				localName = u.getURIString();
 			} catch (MalformedURIException e) {
-				throw new RDFException(e);
+				throw new RDFException( e );
 			}
 	}
 	/** Should be called exactly once for each Unparser.

@@ -9,9 +9,8 @@ import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -26,7 +25,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -49,23 +48,22 @@ public class DBReifierGraph implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#add(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void add(Triple t) {
-		throw new RuntimeException("Error - attempt to modify a read-only graph");		
+	public void add( Triple t ) {
+		throw new JenaAddDeniedException( "cannot add to DB reifier", t );		
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#delete(com.hp.hpl.jena.graph.Triple)
 	 */
 	public void delete(Triple t) {
-		throw new RuntimeException("Error - attempt to modify a read-only graph");
+		throw new JenaDeleteDeniedException( "cannot delete from a BD reifier", t );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#size()
 	 */
 	public int size() {
-		if(m_specializedGraphs == null)
-			throw new RDFRDBException("Error - attempt to call size on a Graph that has already been closed");
+        checkUnclosed();
 		int result =0;		
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
@@ -75,19 +73,23 @@ public class DBReifierGraph implements Graph {
 		return result;
 	}
 
+    private void checkUnclosed()
+        {
+        if (m_specializedGraphs == null)
+            throw new JenaClosedException( "this DB Reifier has been closed", this );
+        }
+        
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#contains(com.hp.hpl.jena.graph.Triple)
 	 */
 	public boolean contains(Triple t) {
-		if(m_specializedGraphs == null)
-			throw new RDFRDBException("Error - attempt to call contains on a Graph that has already been closed");
+        checkUnclosed();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
-			boolean result = sg.contains( t, complete);
-			if( result == true || complete.isDone() == true )
-				return result;
+			boolean result = sg.contains( t, complete );
+			if (result || complete.isDone()) return result;
 		}
 		return false;
 	}
@@ -104,8 +106,7 @@ public class DBReifierGraph implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)
 	 */
 	public ExtendedIterator find(TripleMatch m) {
-		if(m_specializedGraphs == null)
-			throw new RDFRDBException("Error - attempt to call find on a Graph that has already been closed");
+        checkUnclosed();
 		ExtendedIterator result = new NiceIterator();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
@@ -174,7 +175,7 @@ public class DBReifierGraph implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#getReifier()
 	 */
 	public Reifier getReifier() {
-		throw new RuntimeException("Error - read-only hidden triple graphs don't support reifiers");
+		throw new JenaException( "DB Reifier graphs have no reifiers" );
 	}
 
 	/* (non-Javadoc)

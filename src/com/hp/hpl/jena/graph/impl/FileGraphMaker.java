@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.5 2003-05-19 13:16:05 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.6 2003-06-12 15:10:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -98,11 +98,25 @@ public class FileGraphMaker extends BaseGraphMaker
      */
     private String makeSafe( String name )
         {
-        return name
-            .replaceAll( "_", "_U" )
-            .replaceAll( "/", "_S" )
-            .replaceAll( ":", "_C" )
-            ;    
+        return replaceBy( name, "_/:", "USC" );
+//        return name
+//            .replaceAll( "_", "_U" )
+//            .replaceAll( "/", "_S" )
+//            .replaceAll( ":", "_C" )
+//            ;    
+        }
+        
+    private String replaceBy( String x, String from, String to )
+        {
+        int len = x.length();
+        StringBuffer result = new StringBuffer( len + 10 );
+        for (int i = 0; i < len; i += 1)
+            {
+            char ch = x.charAt( i );
+            int where = from.indexOf( ch );
+            result.append( where < 0 ? ch : to.charAt( where ) );
+            }
+        return result.toString();
         }
         
     public void removeGraph( String name )

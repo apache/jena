@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.7 2003-05-21 15:33:16 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.8 2003-06-12 15:10:27 chris-dollin Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */
@@ -94,7 +94,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     }
     private ARPFilter arpf;
     private Model model;
-    public void read(Model model, String url) throws RDFException {
+    public void read(Model model, String url) throws JenaException {
 
         try {
             URLConnection conn = new URL(url).openConnection();
@@ -109,7 +109,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         } catch (JenaException e) {
             throw e;
         } catch (IOException e) {
-            throw new RDFException( e);
+            throw new JenaException( e);
         }
         updateModel();
     }
@@ -134,7 +134,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             lit.isWellFormedXML(),
             null);
     }
-    Literal convert(ALiteral lit) throws RDFException {
+    Literal convert(ALiteral lit) throws JenaException {
         String dt = lit.getDatatypeURI();
         if (dt == null)
             return model.createLiteral(lit.toString(), lit.getLang());
@@ -161,7 +161,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             return new ResourceImpl(r.getURI());
         }
     }
-    Resource convert(AResource r) throws RDFException {
+    Resource convert(AResource r) throws JenaException {
         if (r.isAnonymous()) {
             String id = r.getAnonymousID();
             Resource rr = (Resource) r.getUserData();
@@ -176,14 +176,14 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     }
     /** Converts an ARP resource into a Jena property.
      * @param r The ARP resource.
-     * @throws RDFException If r is anonymous, or similarly ill-formed.
+     * @throws JenaException If r is anonymous, or similarly ill-formed.
      * @return The Jena property.
      * @deprecated Should never have been public.
      */
-    static public Property translatePred(AResource r) throws RDFException {
+    static public Property translatePred(AResource r) throws JenaException {
         return new PropertyImpl(r.getURI());
     }
-    Property convertPred(AResource r) throws RDFException {
+    Property convertPred(AResource r) throws JenaException {
         return model.createProperty(r.getURI());
     }
     /**
@@ -194,7 +194,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @param xmlBase The base URI of the document or "".
      */
     synchronized private void read(Model m, InputSource inputS, String xmlBase)
-        throws RDFException {
+        throws JenaException {
         try {
             model = m;
             if (xmlBase == null) {
@@ -246,7 +246,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         } catch (IOException e) {
             throw new JenaException(e);
         } catch (SAXException e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         }
         updateModel();
     }
@@ -259,7 +259,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @param xmlBase The base URI of the document or "".
      */
     public void read(final Model model, Reader reader, String xmlBase)
-        throws RDFException {
+        throws JenaException {
         read(model, new InputSource(reader), xmlBase);
     }
     /**
@@ -270,7 +270,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @param xmlBase The base URI of the document or "".
      */
     public void read(final Model model, InputStream in, String xmlBase)
-        throws RDFException {
+        throws JenaException {
         read(model, new InputSource(in), xmlBase);
     }
 
@@ -399,10 +399,10 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @param str The property to set.
      * @param value The new value; values of class String will be converted into appropriate classes. Values of
      * class Boolean or Integer will be used for appropriate properties.
-     * @throws RDFException For bad values.
+     * @throws JenaException For bad values.
      * @return The old value, or null if none, or old value is inaccesible.
      */
-    public Object setProperty(String str, Object value) throws RDFException {
+    public Object setProperty(String str, Object value) throws JenaException {
         Object obj = value;
         if (str.startsWith("http:")) {
             if (str.startsWith(arpPropertiesURL)) {
@@ -425,7 +425,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 try {
                     arpf.setProperty(str, obj);
                 } catch (SAXNotSupportedException ns) {
-                    errorHandler.error(new RDFException(ns));
+                    errorHandler.error(new JenaException(ns));
                 } catch (SAXNotRecognizedException nr) {
                     errorHandler.error(
                         new RDFException(RDFException.UNKNOWNPROPERTY));
@@ -449,14 +449,14 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 try {
                     arpf.setFeature(str, ((Boolean) obj).booleanValue());
                 } catch (SAXNotSupportedException ns) {
-                    errorHandler.error(new RDFException(ns));
+                    errorHandler.error(new JenaException(ns));
                 } catch (SAXNotRecognizedException nr) {
                     errorHandler.error(
                         new RDFException(RDFException.UNKNOWNPROPERTY));
                     return null;
                 } catch (ClassCastException cc) {
                     errorHandler.error(
-                        new RDFException(
+                        new JenaException(
                             new SAXNotSupportedException(
                                 "Feature: '"
                                     + str

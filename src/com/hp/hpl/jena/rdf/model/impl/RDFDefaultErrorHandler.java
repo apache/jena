@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFDefaultErrorHandler.java,v 1.1.1.1 2002-12-19 19:18:29 bwm Exp $
+ * $Id: RDFDefaultErrorHandler.java,v 1.2 2003-06-12 15:10:30 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -32,13 +32,14 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.Log;
+import com.hp.hpl.jena.shared.*;
 
 /**
  * The default error handler for I/O.
  * This uses the Log utility.
  * @see     com.hp.hpl.jena.util.Log
  * @author  jjc,bwm
- * @version $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:18:29 $
+ * @version $Revision: 1.2 $ $Date: 2003-06-12 15:10:30 $
  */
 public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 
@@ -59,6 +60,6 @@ public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
         if ( e instanceof RuntimeException)
            throw (RuntimeException)e;
            
-        throw new RDFException(e);
+        throw new JenaException(e);
     }
 }

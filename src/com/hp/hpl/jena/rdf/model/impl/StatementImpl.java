@@ -33,13 +33,14 @@ package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.graph.*;
 
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2003-06-12 08:59:15 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2003-06-12 15:10:30 $
  */
 public class StatementImpl  implements Statement {
     
@@ -60,7 +61,7 @@ public class StatementImpl  implements Statement {
     public StatementImpl(Resource subject,
                          Property predicate,
                          RDFNode object,
-                         Model model) throws RDFException {
+                         Model model)  {
         this.model = model;
         this.subject = (Resource) subject.inModel( model ); 
         this.predicate = (Property) predicate.inModel( model ); 
@@ -92,7 +93,7 @@ public class StatementImpl  implements Statement {
         return object;
     }    
     
-    public Statement getStatementProperty(Property p) throws RDFException {
+    public Statement getStatementProperty(Property p)  {
         return asResource().getProperty(p);
     }
     
@@ -113,7 +114,7 @@ public class StatementImpl  implements Statement {
     public Resource getResource( ResourceF f )
         { return f.createResource( getResource() ); }
     
-    public Statement getProperty(Property p) throws RDFException {
+    public Statement getProperty(Property p)  {
         return getResource().getProperty( p );
     }    
         
@@ -121,7 +122,7 @@ public class StatementImpl  implements Statement {
         get the object field of this statement, insisting that it be a Literal.
         If it isn't, throw RDFException.OBJECTNOTLITERAL.
     */
-    public Literal getLiteral() throws RDFException {        
+    public Literal getLiteral()  {        
         if (object instanceof Literal) {
             return (Literal) object;
         } else {    
@@ -129,47 +130,47 @@ public class StatementImpl  implements Statement {
         }
     }
     
-    public boolean getBoolean() throws RDFException {
+    public boolean getBoolean()  {
         return getLiteral().getBoolean();
     }
     
-    public byte getByte() throws RDFException {
+    public byte getByte()  {
         return getLiteral().getByte();
     }
     
-    public short getShort() throws RDFException {
+    public short getShort()  {
         return getLiteral().getShort();
     }
     
-    public int getInt() throws RDFException {
+    public int getInt()  {
         return getLiteral().getInt();
     }
     
-    public long getLong() throws RDFException {
+    public long getLong()  {
         return getLiteral().getLong();
     }
     
-    public char getChar() throws RDFException {
+    public char getChar()  {
         return getLiteral().getChar();
     }
     
-    public float getFloat() throws RDFException {
+    public float getFloat()  {
         return getLiteral().getFloat();
     }
     
-    public double getDouble() throws RDFException {
+    public double getDouble()  {
         return getLiteral().getDouble();
     }
     
-    public String getString() throws RDFException {
+    public String getString()  {
         return getLiteral().getLexicalForm();
     }
     
-    public Object getObject(ObjectF f) throws RDFException {
+    public Object getObject(ObjectF f)  {
         try {
             return f.createObject(((Literal) object).toString());
         } catch (Exception e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         }
     }
     
@@ -178,67 +179,67 @@ public class StatementImpl  implements Statement {
         return (EnhNode) object.as( interf );
     }
         
-    public Bag getBag() throws RDFException {
+    public Bag getBag()  {
         return (Bag) get(Bag.class);
     }
     
-    public Alt getAlt() throws RDFException {
+    public Alt getAlt()  {
         return (Alt)get(Alt.class);
     }
     
-    public Seq getSeq() throws RDFException {
+    public Seq getSeq()  {
         return (Seq)get(Seq.class);
     }    
     
-    public String getLanguage() throws RDFException {
+    public String getLanguage()  {
         return getLiteral().getLanguage();
     }      
     
-    public boolean getWellFormed() throws RDFException {
+    public boolean getWellFormed()  {
         return getLiteral().getWellFormed();
     }      
     
-    public Statement changeObject(boolean o) throws RDFException {
+    public Statement changeObject(boolean o)  {
         return stringReplace( String.valueOf( o ) ); 
     }
     
-    public Statement changeObject(long o) throws RDFException {
+    public Statement changeObject(long o)  {
         return stringReplace( String.valueOf( o ) );
     }
     
-    public Statement changeObject(char o) throws RDFException {
+    public Statement changeObject(char o)  {
         return stringReplace( String.valueOf( o ) );
     }
     
-    public Statement changeObject(float o) throws RDFException {
+    public Statement changeObject(float o)  {
         return stringReplace( String.valueOf( o ) );
     }
     
-    public Statement changeObject(double o) throws RDFException {
+    public Statement changeObject(double o)  {
         return stringReplace( String.valueOf( o ) );
     }
     
-    public Statement changeObject(String o) throws RDFException {
+    public Statement changeObject(String o)  {
         return stringReplace( String.valueOf( o ) );
     }  
     
-    public Statement changeObject(String o, boolean wellFormed) throws RDFException {
+    public Statement changeObject(String o, boolean wellFormed)  {
         return stringReplace( String.valueOf( o ), "", wellFormed );
     }  
     
-    public Statement changeObject(String o, String l) throws RDFException {
+    public Statement changeObject(String o, String l)  {
         return stringReplace( String.valueOf( o ), l, false );
     }    
     
-    public Statement changeObject(String o, String l, boolean wellFormed) throws RDFException {
+    public Statement changeObject(String o, String l, boolean wellFormed)  {
         return stringReplace( String.valueOf( o ), l, wellFormed );
     }    
     
-    public Statement changeObject(RDFNode o) throws RDFException {
+    public Statement changeObject(RDFNode o)  {
         return replace(o);
     }    
     
-    public Statement changeObject(Object o) throws RDFException {
+    public Statement changeObject(Object o)  {
         return o instanceof RDFNode
             ? replace( (RDFNode) o )
             : stringReplace( o.toString() )
@@ -308,7 +309,7 @@ public class StatementImpl  implements Statement {
     	return asTriple().hashCode();
     }
     
-    public Statement remove() throws RDFException {
+    public Statement remove()  {
     	mustHaveModel().remove( this );
     	return this;
     }
@@ -342,7 +343,7 @@ public class StatementImpl  implements Statement {
         return triples;
         }
     
-    public boolean isReified() throws RDFException {
+    public boolean isReified()  {
         return mustHaveModel().isReified( this );
     }
         

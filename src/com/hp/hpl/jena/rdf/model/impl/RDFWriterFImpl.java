@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterFImpl.java,v 1.3 2003-06-09 16:04:33 andy_seaborne Exp $
+ * $Id: RDFWriterFImpl.java,v 1.4 2003-06-12 15:10:30 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -32,12 +32,13 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.util.Properties;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.n3.N3JenaWriter;
 
 /**
  *
  * @author  bwm
- * @version $Revision: 1.3 $ $Date: 2003-06-09 16:04:33 $
+ * @version $Revision: 1.4 $ $Date: 2003-06-12 15:10:30 $
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
 
@@ -88,11 +89,11 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     public RDFWriterFImpl() {
     }
 
-    public RDFWriter getWriter() throws RDFException {
+    public RDFWriter getWriter()  {
         return getWriter(DEFAULTLANG);
     }
 
-    public RDFWriter getWriter(String lang) throws RDFException {
+    public RDFWriter getWriter(String lang)  {
 
         // setup default language
         if (lang == null || lang.equals("")) {
@@ -106,7 +107,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         try {
             return (RDFWriter) Class.forName(className).newInstance();
         } catch (Exception e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         }
     }
 

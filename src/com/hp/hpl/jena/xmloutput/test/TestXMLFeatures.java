@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.20 2003-06-11 13:29:19 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.21 2003-06-12 15:10:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -15,10 +15,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.Log;
+import com.hp.hpl.jena.shared.*;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 import org.apache.oro.text.awk.AwkCompiler;
 import org.apache.oro.text.awk.AwkMatcher;
@@ -30,7 +29,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.20 $ $Date: 2003-06-11 13:29:19 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.21 $ $Date: 2003-06-12 15:10:31 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -690,6 +689,8 @@ public class TestXMLFeatures extends TestCase {
                   return;
             }
 				throw e;
+        } catch (JenaException e) {
+            throw e;
 		} finally {
           //          BaseXMLWriter.dbg = false;
           Log.getInstance().setLevel(oldLogLevel);
@@ -1064,5 +1065,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.20 2003-06-11 13:29:19 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.21 2003-06-12 15:10:31 chris-dollin Exp $
  */

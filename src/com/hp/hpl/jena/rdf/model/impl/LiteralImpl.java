@@ -33,6 +33,7 @@ package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.datatypes.DatatypeFormatException;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -41,7 +42,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-05-20 12:42:09 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-06-12 15:10:28 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
 //    private Node node;
@@ -204,7 +205,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         return asNode().getLiteral().getLexicalForm();
     }
 
-    public boolean getBoolean() throws RDFException {
+    public boolean getBoolean()  {
         Object value = asNode().getLiteral().getValue();
         if (isPlainLiteral()) {
             // old style plain literal - try parsing the string
@@ -225,7 +226,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
     
-    public byte getByte() throws RDFException {
+    public byte getByte()  {
         if (isPlainLiteral()) {
             return Byte.parseByte(getLexicalForm());
         } else {
@@ -233,7 +234,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
     
-    public short getShort() throws RDFException {
+    public short getShort()  {
         if (isPlainLiteral()) {
             return Short.parseShort(getLexicalForm());
         } else {
@@ -241,7 +242,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
-    public int getInt() throws RDFException {
+    public int getInt()  {
         if (isPlainLiteral()) {
             return Integer.parseInt(getLexicalForm());
         } else {
@@ -249,7 +250,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
-    public long getLong() throws RDFException {
+    public long getLong()  {
         if (isPlainLiteral()) {
             return Long.parseLong(getLexicalForm());
         } else {
@@ -257,7 +258,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
-    public char getChar() throws RDFException {
+    public char getChar()  {
         if (isPlainLiteral()) {
             if (getString().length()==1) {
                 return (getString().charAt(0));
@@ -274,7 +275,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
     
-    public float getFloat() throws RDFException {
+    public float getFloat()  {
         if (isPlainLiteral()) {
             return Float.parseFloat(getLexicalForm());
         } else {
@@ -282,7 +283,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
-    public double getDouble() throws RDFException {
+    public double getDouble()  {
         if (isPlainLiteral()) {
             return Double.parseDouble(getLexicalForm());
         } else {
@@ -290,16 +291,16 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
-    public String getString() throws RDFException {
+    public String getString()  {
         return asNode().getLiteral().getLexicalForm();
     }
     
-    public Object getObject(ObjectF f) throws RDFException {
+    public Object getObject(ObjectF f)  {
         if (isPlainLiteral()) {
             try {
                 return f.createObject(getString());
             } catch (Exception e) {
-                throw new RDFException(e);
+                throw new JenaException(e);
             }
         } else {
             return getValue();

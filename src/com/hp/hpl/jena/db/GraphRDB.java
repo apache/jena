@@ -9,7 +9,6 @@ import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -48,7 +47,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -246,7 +245,7 @@ public class GraphRDB extends GraphBase implements Graph {
 				return;
 		}
 		
-		throw new RuntimeException("Error - GraphRDB.add(Triple) failed to find a suitable store for the triple:"+t.toString());
+		throw new JenaException("Error - GraphRDB.add(Triple) failed to find a suitable store for the triple:"+t.toString());
 		
 	}
 
@@ -270,7 +269,7 @@ public class GraphRDB extends GraphBase implements Graph {
 				return;
 		}
 		
-		throw new RuntimeException("Error - GraphRDB.add(List) failed to find a suitable store for at least one triple:"+triples.get(0).toString());
+		throw new JenaException("Error - GraphRDB.add(List) failed to find a suitable store for at least one triple:"+triples.get(0).toString());
 		
 	}
 
@@ -291,7 +290,7 @@ public class GraphRDB extends GraphBase implements Graph {
 				return;
 		}
 		
-		throw new RuntimeException("Error - GraphRDB.delete(Triple) failed to find a suitable store for the triple:"+t.toString());
+		throw new JenaException("Error - GraphRDB.delete(Triple) failed to find a suitable store for the triple:"+t.toString());
 
 	}
 
@@ -314,7 +313,7 @@ public class GraphRDB extends GraphBase implements Graph {
 				return;
 		}
 		
-		throw new RuntimeException("Error - GraphRDB.delete(Triple) failed to find a suitable store for at least one triple:"+triples.get(0).toString());
+		throw new JenaException("Error - GraphRDB.delete(Triple) failed to find a suitable store for at least one triple:"+triples.get(0).toString());
 
 	}
 

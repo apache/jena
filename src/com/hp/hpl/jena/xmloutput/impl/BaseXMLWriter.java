@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.12 2003-06-12 09:18:52 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.13 2003-06-12 15:10:31 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-06-12 09:18:52 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-06-12 15:10:31 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -133,7 +133,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * mapping table, but are less readable.
 	 */
 
-	String anonId(Resource r) throws RDFException {
+	String anonId(Resource r)  {
 		if (longId) {
 			return longAnonId(r);
 		} else {
@@ -146,7 +146,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * id's of anon resources.  The short id is the index into the table of the
 	 * internal id.
 	 */
-	private String shortAnonId(Resource r) throws RDFException {
+	private String shortAnonId(Resource r)  {
 		String result = (String) anonMap.get(r.getId());
 		if (result == null) {
 			result = "A" + Integer.toString(anonCount++);
@@ -164,7 +164,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * characters and escapes the id if not.
 	 */
 
-	private String longAnonId(Resource r) throws RDFException {
+	private String longAnonId(Resource r)  {
 		String rid = r.getId().toString();
 		if (XMLChar.isValidNCName(rid)) {
 			//System.err.println("OK: "+rid);
@@ -219,7 +219,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			used.add(val);
 		}
 	}
-	private void addNameSpaces(Model model) throws RDFException {
+	private void addNameSpaces(Model model)  {
 		NsIterator nsIter = model.listNameSpaces();
 		String uri;
 		while (nsIter.hasNext()) {
@@ -324,7 +324,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				try {
 					new URI(uri);
 				} catch (MalformedURIException e) {
-					throw new RDFException(e);
+					throw new JenaException(e);
 				}
 			logger.warn(
 				"Internal error: unexpected QName URI: <"
@@ -389,10 +389,10 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param out the OutputStream to receive the serialization
 	 * @param base The URL at which the file will be placed.
 	 * @throws IOException if an io error occurs
-	 * @throws RDFException if any other exception occurs
+	 * @ if any other exception occurs
 	 */
 	final public void write(Model model, OutputStream out, String base)
-		throws RDFException {
+		 {
 		write(model, FileUtils.asUTF8(out), base);
 	}
     
@@ -418,10 +418,10 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param model The model to be written.
 	 * @param base the base URI for relative URI calculations.  <code>
 	 * null</code> means use only absolute URI's.
-	 * @throws RDFException Generic RDF exception.
+	 * @ Generic RDF exception.
 	 */
 	final synchronized public void write(Model baseModel, Writer out, String base)
-		throws RDFException {
+		 {
         primeNamespace( baseModel );
 		//ns = new HashMap();
         Model model = ModelCom.withHiddenStatements( baseModel );
@@ -512,7 +512,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			else if (!allowBadURIs)
 				new URI(uri);
 		} catch (MalformedURIException e) {
-			throw new RDFException(e);
+			throw new JenaException(e);
 		}
 		return uri;
 	}
@@ -586,7 +586,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	final synchronized public Object setProperty(
 		String propName,
 		Object propValue)
-		throws RDFException {
+		 {
 		if (propName.equalsIgnoreCase("showXmlDeclaration")) {
 			String oldValue;
 			if (showXmlDeclaration == null)

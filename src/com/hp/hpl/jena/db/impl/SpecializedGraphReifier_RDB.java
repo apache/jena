@@ -12,9 +12,8 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.MapFiller;
-import com.hp.hpl.jena.util.iterator.MapMany;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.shared.*;
 
 /**
  * @author hkuno
@@ -140,8 +139,8 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public boolean contains(Node n, Triple t, CompletionFlag complete) {
-		if ( true )
-			throw new RuntimeException("SpecializedGraphReifier.contains called");
+		if (true)
+			throw new JenaException("SpecializedGraphReifier.contains called");
 		return false;
 	}
 
@@ -209,8 +208,8 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 * @param g is a graph containing triples to be added
 	 * @param complete is true if a subsequent call to contains(triple) will return true for any triple in g.
 	 */
-	public void add(Graph g, CompletionFlag complete) {
-		throw new RuntimeException("sorry, not implemented");
+	public void add( Graph g, CompletionFlag complete ) {
+		throw new JenaAddDeniedException( "sorry, not implemented" );
 	}
 
 	/* (non-Javadoc)
@@ -313,7 +312,8 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 		if ( itHasType.hasNext() ) {
 			/* something to do */
 			itHasType.next();
-			if ( itHasType.hasNext() ) throw new RuntimeException("Multiple HasType fragments for URI");			
+			if ( itHasType.hasNext() ) 
+                throw new JenaException("Multiple HasType fragments for URI");			
 			StmtMask htMask = new StmtMask(itHasType.m_triple);
 			itHasType.close();
 					
@@ -356,7 +356,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 			valCnt++;	
 		}
 		if ( valCnt != 1 )
-			throw new RuntimeException("Partially reified row must have exactly one value");
+			throw new JenaException("Partially reified row must have exactly one value");
 		
 		return new Triple(stmtURI, pred, obj);
 	}
@@ -604,7 +604,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 				hasType = it.getHasType();
 
 				n.setMask( hasSubj, hasPred, hasObj, hasType );
-				if ( n.hasNada() ) throw new RuntimeException("Fragment has no data");
+				if ( n.hasNada() ) throw new JenaException("Fragment has no data");
 				m.setMerge(n);
 			}
 			if ( cnt == 0 )

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleReader.java,v 1.4 2003-04-16 15:33:56 chris-dollin Exp $
+ * $Id: NTripleReader.java,v 1.5 2003-06-12 15:10:29 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -33,19 +33,16 @@ import org.apache.log4j.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.shared.*;
 
 import java.net.URL;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /** N-Triple Reader
  *
  * @author  Brian McBride, Jeremy Carroll, Dave Banks
- * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-04-16 15:33:56 $
+ * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-06-12 15:10:29 $
  */
 public class NTripleReader extends Object implements RDFReader {
     static final Logger log = Logger.getLogger(NTripleReader.class);
@@ -68,12 +65,12 @@ public class NTripleReader extends Object implements RDFReader {
     NTripleReader() {
     }
     public void read(Model model, InputStream in, String base)
-        throws RDFException {
+         {
         // N-Triples must be in ASCII, we permit UTF-8.
         read(model, FileUtils.asUTF8(in), base);
     }
     public void read(Model model, Reader reader, String base)
-        throws RDFException {
+         {
 
         if (!(reader instanceof BufferedReader)) {
             reader = new BufferedReader(reader);
@@ -88,14 +85,14 @@ public class NTripleReader extends Object implements RDFReader {
         }
     }
 
-    public void read(Model model, String url) throws RDFException {
+    public void read(Model model, String url)  {
         try {
             read(
                 model,
                 new InputStreamReader(((new URL(url))).openStream()),
                 url);
         } catch (Exception e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         } finally {
             if (errCount != 0) {
                 throw new RDFException(RDFException.SYNTAXERROR);
@@ -104,7 +101,7 @@ public class NTripleReader extends Object implements RDFReader {
     }
 
     public Object setProperty(String propName, Object propValue)
-        throws RDFException {
+         {
         errorHandler.error(new RDFException(RDFException.UNKNOWNPROPERTY));
         return null;
     }
@@ -115,7 +112,7 @@ public class NTripleReader extends Object implements RDFReader {
         return old;
     }
 
-    protected void readRDF() throws RDFException {
+    protected void readRDF()  {
         Resource subject;
         Property predicate = null;
         RDFNode object;
@@ -168,7 +165,7 @@ public class NTripleReader extends Object implements RDFReader {
         }
     }
 
-    public Resource readResource() throws RDFException {
+    public Resource readResource()  {
         char inChar = in.readChar();
         if (badEOF())
             return null;
@@ -200,7 +197,7 @@ public class NTripleReader extends Object implements RDFReader {
         }
     }
 
-    public RDFNode readNode() throws RDFException {
+    public RDFNode readNode()  {
         skipWhiteSpace();
         switch (in.nextChar()) {
             case '"' :
@@ -216,7 +213,7 @@ public class NTripleReader extends Object implements RDFReader {
         }
     }
 
-    protected Literal readLiteral(boolean wellFormed) throws RDFException {
+    protected Literal readLiteral(boolean wellFormed)  {
 
         StringBuffer lit = new StringBuffer(sbLength);
 
@@ -412,7 +409,7 @@ public class NTripleReader extends Object implements RDFReader {
         }
     }
 
-    protected Resource lookupResource(String name) throws RDFException {
+    protected Resource lookupResource(String name)  {
         Resource r;
         r = (Resource) anons.get(name);
         if (r == null) {
@@ -454,7 +451,7 @@ class IStream {
             this.in = in;
             eof = (in.read(thisChar, 0, 1) == -1);
         } catch (IOException e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         }
     }
 
@@ -472,7 +469,7 @@ class IStream {
             }
             return rv;
         } catch (java.io.IOException e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         }
     }
 

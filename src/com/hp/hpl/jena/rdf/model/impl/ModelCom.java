@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
  *  All rights reserved.
 *
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.44 $' Date='$Date: 2003-06-06 09:28:21 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.45 $' Date='$Date: 2003-06-12 15:10:29 $'
  */
 
 public class ModelCom 
@@ -88,45 +88,45 @@ implements Model, ModelI, PrefixMapping, ModelLock
     */
     protected ModelReifier modelReifier = new ModelReifier( this ); 
 	
-    public Resource getResource(String uri, ResourceF f) throws RDFException {
+    public Resource getResource(String uri, ResourceF f)  {
         try {
             return f.createResource(getResource(uri));
         } catch (Exception e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         }
     }
     
-    public Model add(Resource s, Property p, boolean o) throws RDFException {
+    public Model add(Resource s, Property p, boolean o)  {
         return add(s, p, String.valueOf( o ) );
     }
     
-    public Model add(Resource s, Property p, long o) throws RDFException {
+    public Model add(Resource s, Property p, long o)  {
         return add(s, p, String.valueOf( o ) );
     }
     
-    public Model add(Resource s, Property p, char o) throws RDFException {
+    public Model add(Resource s, Property p, char o)  {
         return add(s, p, String.valueOf( o ) );
     }
     
-    public Model add(Resource s, Property p, float o) throws RDFException {
+    public Model add(Resource s, Property p, float o)  {
         return add(s, p, String.valueOf( o ) );
     }
     
-    public Model add(Resource s, Property p, double o) throws RDFException {
+    public Model add(Resource s, Property p, double o)  {
         return add(s, p, String.valueOf( o ) );
     }
     
-    public Model add(Resource s, Property p, String o) throws RDFException {
+    public Model add(Resource s, Property p, String o)  {
         return add( s, p, o, "", false );
     }
     
     public Model add(Resource s, Property p, String o, boolean wellFormed)
-      throws RDFException {
+       {
         return add( s, p, o, "", wellFormed );
     }
     
     public Model add(Resource s, Property p, String o, String lang,
-      boolean wellFormed) throws RDFException {
+      boolean wellFormed)  {
         add(s, p, literal(o, lang, wellFormed));
         return this;
     }
@@ -135,7 +135,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         { return new LiteralImpl( Node.createLiteral( s, lang, wellFormed), (Model) this ); }
     
     public Model add(Resource s, Property p, String o, String l)
-       throws RDFException {
+        {
         return add( s, p, o, l, false );
     }
     
@@ -152,11 +152,11 @@ implements Model, ModelI, PrefixMapping, ModelLock
             ;
         }
         
-    public Model add(Resource s, Property p, Object o) throws RDFException {
+    public Model add(Resource s, Property p, Object o)  {
         return add( s, p, ensureRDFNode( o ) );
     }
     
-    public Model add(StmtIterator iter) throws RDFException {
+    public Model add(StmtIterator iter)  {
         try {
             while (iter.hasNext()) {
                 add(iter.nextStatement());
@@ -167,15 +167,15 @@ implements Model, ModelI, PrefixMapping, ModelLock
         }
     }
     
-    public Model add(Model m) throws RDFException {
+    public Model add(Model m)  {
         return add(m.listStatements());
     }
     
-    public RDFReader getReader() throws RDFException {
+    public RDFReader getReader()  {
         return readerFactory.getReader();
     }
     
-    public RDFReader getReader(String lang) throws RDFException {
+    public RDFReader getReader(String lang)  {
         return readerFactory.getReader(lang);
     }
     
@@ -183,34 +183,34 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return readerFactory.setReaderClassName(lang, className);
     } 
     
-    public Model read(String url) throws RDFException {
+    public Model read(String url)  {
         readerFactory .getReader() .read(this, url);
         return this;
     }
     
-    public Model read(Reader reader, String base) throws RDFException {
+    public Model read(Reader reader, String base)  {
         readerFactory .getReader() .read(this, reader, base);
         return this;
     }
     
-  	public Model read(InputStream reader, String base) throws RDFException {
+  	public Model read(InputStream reader, String base)  {
   		readerFactory .getReader() .read(this, reader, base);
   		return this;
   	} 
     
-    public Model read(String url, String lang) throws RDFException {
+    public Model read(String url, String lang)  {
         readerFactory. getReader(lang) .read(this, url);
         return this;
     }
     
     public Model read(Reader reader, String base, String lang)
-      throws RDFException {
+       {
         readerFactory .getReader(lang) .read(this, reader, base);
         return this;
     }
     
   	public Model read(InputStream reader, String base, String lang)
-  	  throws RDFException {
+  	   {
   		readerFactory .getReader(lang) .read(this, reader, base);
   		return this;
   	}
@@ -219,7 +219,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         Get the model's writer after priming it with the model's namespace
         prefixes.
     */
-    public RDFWriter getWriter() throws RDFException {
+    public RDFWriter getWriter()  {
         return writerFactory.getWriter();
     }
     
@@ -227,7 +227,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         Get the model's writer after priming it with the model's namespace
         prefixes.
     */
-    public RDFWriter getWriter(String lang) throws RDFException {
+    public RDFWriter getWriter(String lang)  {
         return writerFactory.getWriter(lang);
     }
     
@@ -281,7 +281,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     public static Model withHiddenStatements( Model m )
         { return ModelReifier.withHiddenStatements( m ); }
     
-    public Model remove(Statement s) throws RDFException {
+    public Model remove(Statement s)  {
         graph.delete(s.asTriple());
         return this;
     }
@@ -378,7 +378,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         finally { iter.close(); }
     }
     
-    public boolean containsAll(Model model) throws RDFException {
+    public boolean containsAll(Model model)  {
         StmtIterator iter = model.listStatements();
         try { return containsAll(iter); } 
         finally { iter.close(); }
@@ -426,63 +426,63 @@ implements Model, ModelI, PrefixMapping, ModelLock
         { return listStatements( new SimpleSelector(subject, predicate, object, lang ) ); }
     
     public ResIterator listSubjectsWithProperty(Property p, boolean o)
-    throws RDFException {
+     {
         return listSubjectsWithProperty(p, String.valueOf( o ) );
     }
     
     public ResIterator listSubjectsWithProperty(Property p, long o)
-    throws RDFException {
+     {
         return listSubjectsWithProperty(p, String.valueOf( o ) );
     }
     
     public ResIterator listSubjectsWithProperty(Property p, char o)
-    throws RDFException {
+     {
         return listSubjectsWithProperty(p, String.valueOf( o ) );
     }
     
     public ResIterator listSubjectsWithProperty(Property p, float o)
-    throws RDFException {
+     {
         return listSubjectsWithProperty(p, String.valueOf( o ) );
     }
     
     public ResIterator listSubjectsWithProperty(Property p, double o)
-    throws RDFException {
+     {
         return listSubjectsWithProperty(p, String.valueOf( o ) );
     }
     
     public ResIterator listSubjectsWithProperty(Property p, String o)
-    throws RDFException {
+     {
         return listSubjectsWithProperty( p, o, "" );
     }
     
     public ResIterator listSubjectsWithProperty(Property p, String o, String l)
-    throws RDFException {
+     {
         return listSubjectsWithProperty(p, literal( o, l, false ) );
     }
     
     public ResIterator listSubjectsWithProperty(Property p, Object o)
-    throws RDFException {
+     {
         return listSubjectsWithProperty( p, ensureRDFNode( o ) );
     }
     
-    public Resource createResource(Resource type) throws RDFException {
+    public Resource createResource(Resource type)  {
         return createResource().addProperty(RDF.type, type);
     }
     
     public Resource createResource(String uri,Resource type)
-    throws RDFException {
+     {
         return getResource(uri)
                    .addProperty(RDF.type, type);
     }
     
-    public Resource createResource(ResourceF f) throws RDFException {
+    public Resource createResource(ResourceF f)  {
         return createResource(null, f);
     }
     
     public Resource createResource( AnonId id )
         { return new ResourceImpl( id, this ); }
         
-    public Resource createResource(String uri, ResourceF f) throws RDFException {
+    public Resource createResource(String uri, ResourceF f)  {
        return f.createResource( createResource( uri ) );
     }
     
@@ -492,70 +492,70 @@ implements Model, ModelI, PrefixMapping, ModelLock
      * <p> The value is converted to a string using its <CODE>toString</CODE>
      * method. </p>
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     * @ generic RDF exception
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(boolean v) throws RDFException {
+    public Literal createTypedLiteral(boolean v)  {
         return createTypedLiteral(new Boolean(v));
     }
     
     /** create a typed literal from an integer value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     * @ generic RDF exception
      * @return a new literal representing the value v
      */   
-    public Literal createTypedLiteral(int v) throws RDFException  {
+    public Literal createTypedLiteral(int v)   {
         return createTypedLiteral(new Integer(v));
     }
     
     /** create a typed literal from a long integer value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     * @ generic RDF exception
      * @return a new literal representing the value v
      */   
-    public Literal createTypedLiteral(long v) throws RDFException  {
+    public Literal createTypedLiteral(long v)   {
         return createTypedLiteral(new Long(v));
     }
     
     /** create a typed literal from a char value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     * @ generic RDF exception
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(char v) throws RDFException {
+    public Literal createTypedLiteral(char v)  {
         return createTypedLiteral(new Character(v));
     }
     
     /** create a typed literal from a float value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     * @ generic RDF exception
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(float v) throws RDFException {
+    public Literal createTypedLiteral(float v)  {
         return createTypedLiteral(new Float(v));
     }
     
     /** create a typed literal from a double value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     * @ generic RDF exception
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(double v) throws RDFException {
+    public Literal createTypedLiteral(double v)  {
         return createTypedLiteral(new Double(v));
     }
     
     /** create a typed literal from a String value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     * @ generic RDF exception
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(String v) throws RDFException {
+    public Literal createTypedLiteral(String v)  {
         LiteralLabel ll = new LiteralLabel(v);
         return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
@@ -599,7 +599,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
      * @param typeURI the uri of the type of the literal, null for old style "plain" literals
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
-    public Literal createTypedLiteral(String lex, String lang, String typeURI) throws RDFException {
+    public Literal createTypedLiteral(String lex, String lang, String typeURI)  {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = new LiteralLabel(lex, lang, dt);
         return new LiteralImpl(Node.createLiteral(ll), (Model)this);
@@ -630,35 +630,35 @@ implements Model, ModelI, PrefixMapping, ModelLock
     }
 
 
-    public Literal createLiteral(boolean v) throws RDFException {
+    public Literal createLiteral(boolean v)  {
         return createLiteral(String.valueOf(v), "");
     }
     
-    public Literal createLiteral(int v) throws RDFException {
+    public Literal createLiteral(int v)  {
         return createLiteral(String.valueOf(v), "");
     }
     
-    public Literal createLiteral(long v) throws RDFException {
+    public Literal createLiteral(long v)  {
         return createLiteral(String.valueOf(v), "");
     }
     
-    public Literal createLiteral(char v) throws RDFException {
+    public Literal createLiteral(char v)  {
         return createLiteral(String.valueOf(v), "");
     }
     
-    public Literal createLiteral(float v) throws RDFException {
+    public Literal createLiteral(float v)  {
         return createLiteral(String.valueOf(v), "");
     }
     
-    public Literal createLiteral(double v) throws RDFException {
+    public Literal createLiteral(double v)  {
         return createLiteral(String.valueOf(v), "");
     }
     
-    public Literal createLiteral(String v) throws RDFException {
+    public Literal createLiteral(String v)  {
         return createLiteral(v, "");
     }
     
-    public Literal createLiteral(String v, String l) throws RDFException {
+    public Literal createLiteral(String v, String l)  {
         return createLiteral( v,l, false );
     }
     
@@ -666,100 +666,100 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return literal(v, l, wellFormed);
     }
     
-    public Literal createLiteral(Object v) throws RDFException {
+    public Literal createLiteral(Object v)  {
         return createLiteral(v.toString(), "");
     }
     
     public Statement createStatement(Resource r, Property p, boolean o)
-    throws RDFException {
+     {
         return createStatement(r, p, createLiteral(o));
     }
     
     public Statement createStatement(Resource r, Property p, long o)
-    throws RDFException {
+     {
         return createStatement(r, p, createLiteral(o));
     }
     
     public Statement createStatement(Resource r, Property p, char o)
-    throws RDFException {
+     {
         return createStatement(r, p, createLiteral(o));
     }
     
     public Statement createStatement(Resource r, Property p, float o)
-    throws RDFException {
+     {
         return createStatement(r, p, createLiteral(o));
     }
     
     public Statement createStatement(Resource r, Property p, double o)
-    throws RDFException {
+     {
         return createStatement(r, p, createLiteral(o));
     }
     
     public Statement createStatement(Resource r, Property p, String o)
-    throws RDFException {
+     {
         return createStatement(r, p, createLiteral(o));
     }
     
     public Statement createStatement(Resource r, Property p, Object o)
-    throws RDFException {
+     {
         return createStatement( r, p, ensureRDFNode( o ) );
     }
     
     public Statement createStatement(Resource r, Property p, String o,
-                                     boolean wellFormed) throws RDFException {
+                                     boolean wellFormed)  {
         return createStatement( r, p, o, "", wellFormed );
     }
     
     public Statement createStatement(Resource r, Property p, String o, String l)
-      throws RDFException {
+       {
         return createStatement( r, p, o, l, false );
     }
     
     public Statement createStatement(Resource r, Property p, String o, String l,
-                                     boolean wellFormed) throws RDFException {
+                                     boolean wellFormed)  {
         return createStatement(r, p, literal(o,l,wellFormed));
     }
     
-    public Bag createBag() throws RDFException {
+    public Bag createBag()  {
         return createBag(null);
     }
     
-    public Alt createAlt() throws RDFException {
+    public Alt createAlt()  {
         return createAlt(null);
     }
     
-    public Seq createSeq() throws RDFException {
+    public Seq createSeq()  {
         return createSeq(null);
     }
     
-    public Resource getResource(String uri) throws RDFException {
+    public Resource getResource(String uri)  {
         return IteratorFactory.asResource(makeURI(uri),this);
     }
     
-    public Property getProperty(String uri) throws RDFException {
+    public Property getProperty(String uri)  {
         if ( uri == null )
              throw new RDFException(RDFException.INVALIDPROPERTYURI);
         return IteratorFactory.asProperty(makeURI(uri),this);
     }
     
     public Property getProperty(String nameSpace,String localName)
-      throws RDFException {
+       {
         return getProperty(nameSpace+localName);
     }
     
-    public Seq getSeq(String uri) throws RDFException {
+    public Seq getSeq(String uri)  {
       return (Seq)IteratorFactory.asResource(makeURI(uri),Seq.class, this);
     }
     
-    public Seq getSeq(Resource r) throws RDFException {
+    public Seq getSeq(Resource r)  {
         return (Seq) r.as( Seq.class );
     }
     
-    public Bag getBag(String uri) throws RDFException {
+    public Bag getBag(String uri)  {
       return (Bag)IteratorFactory.asResource(makeURI(uri),Bag.class, this);
     }
     
-    public Bag getBag(Resource r) throws RDFException {
+    public Bag getBag(Resource r)  {
         return (Bag) r.as( Bag.class );
     }
     
@@ -770,15 +770,15 @@ implements Model, ModelI, PrefixMapping, ModelLock
             return Node.createURI(uri);
     }
     
-    public Alt getAlt(String uri) throws RDFException {
+    public Alt getAlt(String uri)  {
       return (Alt)IteratorFactory.asResource(makeURI(uri),Alt.class, this);
     }
     
-    public Alt getAlt(Resource r) throws RDFException {
+    public Alt getAlt(Resource r)  {
         return (Alt) r.as( Alt.class );
     }
     
-    public long size() throws RDFException {
+    public long size()  {
         return graph.size();
     }
 
@@ -813,7 +813,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return types.iterator();
         }
      
-    public NsIterator listNameSpaces() throws RDFException {
+    public NsIterator listNameSpaces()  {
         HashSet nameSpaces = new HashSet();
         updateNamespace( nameSpaces, listPredicates() );
         updateNamespace( nameSpaces, listTypes() );
@@ -896,14 +896,14 @@ implements Model, ModelI, PrefixMapping, ModelLock
     private RDFNode asRDF( Node n )
         { return IteratorFactory.asRDFNode( (Node) n, this ); }
         
-    public StmtIterator listStatements() throws RDFException {
+    public StmtIterator listStatements()  {
         return IteratorFactory.asStmtIterator(graph.find(null,null,null), this);
     }
 
     /**
         add a Statement to this Model by adding its SPO components.
     */
-    public Model add(Statement s) throws RDFException {
+    public Model add(Statement s)  {
         return add( s.getSubject(), s.getPredicate(), s.getObject() );
     }
     
@@ -945,7 +945,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return remove(  (Statement []) statements.toArray( new Statement[statements.size()] ) );
         }
            
-    public Model add(Resource s,Property p,RDFNode o) throws RDFException {
+    public Model add(Resource s,Property p,RDFNode o)  {
         modelReifier.noteIfReified( s, p, o );
         graph.add( new Triple( s.asNode(), p.asNode(), o.asNode() ) );
         return this;
@@ -1005,7 +1005,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     public boolean containsResource( RDFNode r )
         { return graph.queryHandler().containsNode( r.asNode() ); }
   
-    public boolean contains(Resource s, Property p) throws RDFException {
+    public boolean contains(Resource s, Property p)  {
         ClosableIterator it = graph.find( s.asNode(), p.asNode(), null );
         try { return it.hasNext(); } finally { it.close(); }
     }
@@ -1013,7 +1013,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     public boolean contains( Resource s, Property p, RDFNode o )
         { return graph.contains( s.asNode(), p.asNode(), o.asNode() ); }
         
-    public Statement getProperty(Resource s,Property p) throws RDFException {
+    public Statement getProperty(Resource s,Property p)  {
         StmtIterator iter = listStatements( s, p, (RDFNode) null );
         try {
             if (iter.hasNext()) {
@@ -1041,30 +1041,30 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return IteratorFactory.asResIterator( xit, this );
         }
                 
-    public ResIterator listSubjects() throws RDFException {
+    public ResIterator listSubjects()  {
         return listSubjectsFor( null, null );
     }
     
     public ResIterator listSubjectsWithProperty(Property p)
-    throws RDFException {
+     {
         return listSubjectsFor( p, null );
     }
     
     public ResIterator listSubjectsWithProperty(Property p, RDFNode o)
-    throws RDFException {
+     {
         return listSubjectsFor( p, o );
     }
     
-    public NodeIterator listObjects() throws RDFException {
+    public NodeIterator listObjects()  {
         return listObjectsFor( null, null );
     }
     
-    public NodeIterator listObjectsOfProperty(Property p) throws RDFException {
+    public NodeIterator listObjectsOfProperty(Property p)  {
         return listObjectsFor( null, p );
     }
     
     public NodeIterator listObjectsOfProperty(Resource s, Property p)
-      throws RDFException {
+       {
         return listObjectsFor( s, p );
     }
             
@@ -1125,20 +1125,20 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return true;
     }
     
-    public Resource createResource() throws RDFException {
+    public Resource createResource()  {
         return IteratorFactory.asResource(Node.createAnon(new AnonId()),this);
     }
     
-    public Resource createResource(String uri) throws RDFException {
+    public Resource createResource(String uri)  {
         return getResource(uri);
     }
     
-    public Property createProperty(String uri) throws RDFException {
+    public Property createProperty(String uri)  {
         return getProperty(uri);
     }
     
     public Property createProperty(String nameSpace, String localName)
-    throws RDFException {
+     {
         return getProperty(nameSpace, localName);
     }
     
@@ -1146,25 +1146,25 @@ implements Model, ModelI, PrefixMapping, ModelLock
         create a Statement from the given r, p, and o.
     */
     public Statement createStatement(Resource r, Property p, RDFNode o)
-    throws RDFException {
+     {
         return new StatementImpl( r, p, o, this ); 
     }
     
-    public Bag createBag(String uri) throws RDFException {
+    public Bag createBag(String uri)  {
         return (Bag) getBag(uri).addProperty(RDF.type, RDF.Bag);
     }
     
-    public Alt createAlt(String uri) throws RDFException {
+    public Alt createAlt(String uri)  {
         return (Alt) getAlt(uri).addProperty(RDF.type, RDF.Alt);
     }
     
-    public Seq createSeq(String uri) throws RDFException {
+    public Seq createSeq(String uri)  {
         return (Seq) getSeq(uri).addProperty(RDF.type, RDF.Seq);
     }
     
     public NodeIterator listContainerMembers(Container cont,
                                              NodeIteratorFactory f)
-                                                  throws RDFException {
+                                                   {
         Iterator iter = listBySubject(cont);
         Statement    stmt;
         String       rdfURI = RDF.getURI();
@@ -1186,12 +1186,12 @@ implements Model, ModelI, PrefixMapping, ModelLock
         try {
              return f.createIterator(result.iterator(), result, cont);
         } catch (Exception e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         }
     }
 	
 	
-    public int containerSize(Container cont) throws RDFException {
+    public int containerSize(Container cont)  {
         int result = 0;
         Iterator iter = listBySubject(cont);
         Property     predicate;
@@ -1226,7 +1226,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
 		return asStatements( graph.find( cont.asNode(), null, null ) );
 	}
 	
-    public int containerIndexOf(Container cont, RDFNode n) throws RDFException {
+    public int containerIndexOf(Container cont, RDFNode n)  {
         int result = 0;
         Iterator iter = listBySubject(cont);
         Property     predicate;
@@ -1248,7 +1248,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     }
     
    public boolean containerContains(Container cont, RDFNode n)
-    throws RDFException {
+     {
         return containerIndexOf(cont, n) != 0;
     }
     
@@ -1258,7 +1258,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     
     public boolean supportsSetOperations() {return true;}
     
-    public Model query(Selector selector) throws RDFException {
+    public Model query(Selector selector)  {
         ModelMem model = new ModelMem();
         StmtIterator iter = null;
         try {
@@ -1274,12 +1274,12 @@ implements Model, ModelI, PrefixMapping, ModelLock
         }
     }
     
-    public Model union(Model model) throws RDFException {
+    public Model union(Model model)  {
         return (new ModelMem()).add(this)
                                .add(model);
     }
     
-    public Model intersection(Model model) throws RDFException {
+    public Model intersection(Model model)  {
         Model largerModel = this;
         Model smallerModel  = model;
         ModelMem resultModel = new ModelMem();
@@ -1303,7 +1303,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         }
     }
     
-    public Model difference(Model model) throws RDFException {
+    public Model difference(Model model)  {
         ModelMem resultModel = new ModelMem();
         StmtIterator iter = null;
         Statement stmt;
