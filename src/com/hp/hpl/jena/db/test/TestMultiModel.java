@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestMultiModel.java,v 1.1 2003-06-18 20:57:40 wkw Exp $
+  $Id: TestMultiModel.java,v 1.2 2003-08-25 16:36:49 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -23,6 +23,7 @@ package com.hp.hpl.jena.db.test;
 */
 
 import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.impl.IRDBDriver;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.DB;
 
@@ -32,7 +33,9 @@ import junit.framework.TestSuite;
 
 
 public class TestMultiModel extends TestCase
-    {    
+    {
+	String DefModel = GraphRDB.DEFAULT;    
+
         
     public TestMultiModel( String name )
         { super( name ); }
@@ -46,20 +49,20 @@ public class TestMultiModel extends TestCase
 	ModelRDB nmod1 = null; 
 	ModelRDB nmod2 = null; 
 	IDBConnection conn = null;
-	Model dbProperties = null;    
+	IRDBDriver dbDriver;
 	
     protected void setUp() throws java.lang.Exception {
     	conn = TestConnection.makeAndCleanTestConnection();
-		Model props = ModelRDB.getDefaultModelProperties(conn);
-		dmod1 = ModelRDB.createModel(conn);
-		addToDBGraphProp(props,DB.graphDBSchema,"DEFAULT");
-		dmod2 = ModelRDB.createModel(conn, "Def_Model_2",props);
+    	dbDriver = conn.getDriver();
+		model = ModelRDB.createModel(conn);
+		conn.getDriver().setStoreWithModel(DefModel);
+		dmod1 = ModelRDB.createModel(conn,"Def_Model_1");
+		conn.getDriver().setStoreWithModel("Def_Model_1");
+		dmod2 = ModelRDB.createModel(conn, "Def_Model_2");
+		conn.getDriver().setStoreWithModel(null);
 		nmod1 = ModelRDB.createModel(conn,"Named_Model_1");
-		props = ModelRDB.getDefaultModelProperties(conn);
-		addToDBGraphProp(props,DB.graphDBSchema,"Named_Model_1");
-		nmod2 = ModelRDB.createModel(conn,"Named_Model_2",props);
-		model = ModelFactory.createDefaultModel();
-		dbProperties = conn.getDatabaseProperties();	
+		conn.getDriver().setStoreWithModel("Named_Model_1");
+		nmod2 = ModelRDB.createModel(conn,"Named_Model_2");
     }
     
     protected void tearDown() throws java.lang.Exception {
@@ -134,71 +137,85 @@ public class TestMultiModel extends TestCase
     	addRemove( model.createStatement(s,p,l));    	
     } 
 
-	public long getMaxLiteral() {
-		Property p = DB.maxLiteral;
-		StmtIterator iter = dbProperties.listStatements(
-			new SimpleSelector(null, p, (RDFNode) null));
-		assertTrue(iter.hasNext());
-		
-		Statement stmt = iter.nextStatement();
-		assertTrue(iter.hasNext() == false);
-		String maxLitStr = stmt.getString();
-		/* String maxLitStr = "250"; */
-		assertTrue(maxLitStr != null);		
-		long maxLit = Integer.parseInt(maxLitStr);
+	public void testSetLongObjectLenFailure() {
+		try {
+			int len = dbDriver.getLongObjectLength();
+			dbDriver.setLongObjectLength(len / 2);
+			assertTrue(false);
+		} catch (Exception e) {
+		}
+	}
 
-		return maxLit;
-	}
-	
-	public void testGetMaxLiteral() {
-		long maxLit = getMaxLiteral();
-		assertTrue(maxLit > 0 && maxLit < 100000);
-		/* note: 100000 is a soft limit; some DBMS may allow larger max literals */
-	}
-	
-	public void testMaxLiteral() {
-		long maxLit = getMaxLiteral();
-		assertTrue(maxLit > 0 && maxLit < 100000);
+	public void testLongObjectLen() {
+		long longLen = dbDriver.getLongObjectLength();
+		assertTrue(longLen > 0 && longLen < 100000);
 
 		String base = ".";
-		StringBuffer buffer = new StringBuffer(1024+(int)maxLit);
-		/* long minMaxLit = maxLit < 1024 ? maxLit - (maxLit/2) : maxLit - 512; */
-		/* long maxMaxLit = maxLit + 1024; */
+		StringBuffer buffer = new StringBuffer(1024 + (int) longLen);
+		/* long minLongLen = longLen < 1024 ? longLen - (longLen/2) : longLen - 512; */
+		/* long maxLongLen = longLen + 1024; */
 		/* TODO: find out why this test takes sooooo long (minutes!) with the above bounds */
-		long minMaxLit = maxLit - 32;
-		long maxMaxLit = maxLit + 32;
-		assertTrue (minMaxLit > 0);
-
+		long minLongLen = longLen - 32;
+		long maxLongLen = longLen + 32;
+		assertTrue(minLongLen > 0);
 
 		Resource s = model.createResource("test#subject");
 		Property p = model.createProperty("test#predicate");
 		Literal l;
 		Statement stmt;
-		while(buffer.length() < minMaxLit) { /*( build base string */
-			buffer.append(base);	
+		while (buffer.length() < minLongLen) { /*( build base string */
+			buffer.append(base);
 		}
 		/* add stmts with long literals */
 		long modelSizeBeg = model.size();
-		while(buffer.length() < maxMaxLit) {
+		while (buffer.length() < maxLongLen) {
 			l = model.createLiteral(buffer.toString());
-			stmt = model.createStatement(s,p,l);
+			stmt = model.createStatement(s, p, l);
 			model.add(stmt);
 			assertTrue(model.contains(stmt));
 			assertTrue(stmt.getObject().equals(l));
 			buffer.append(base);
 		}
-		assertTrue ( model.size() == (modelSizeBeg + maxMaxLit - minMaxLit) ); 
+		assertTrue(model.size() == (modelSizeBeg + maxLongLen - minLongLen));
 		/* remove stmts with long literals */
-		while(buffer.length() > minMaxLit ) {
+		while (buffer.length() > minLongLen) {
 			buffer.deleteCharAt(0);
 			l = model.createLiteral(buffer.toString());
-			stmt = model.createStatement(s,p,l);
-			assertTrue( model.contains(stmt) );
+			stmt = model.createStatement(s, p, l);
+			assertTrue(model.contains(stmt));
 			model.remove(stmt);
-			assertTrue( !model.contains(stmt));    	
+			assertTrue(!model.contains(stmt));
 		}
-		assertTrue ( model.size() == modelSizeBeg ); 
-	} 
+		assertTrue(model.size() == modelSizeBeg);
+	}
+
+	public void testSetLongObjectLen() {
+		int len = dbDriver.getLongObjectLength();
+		try {
+			tearDown();
+			conn = TestConnection.makeTestConnection();
+			dbDriver = conn.getDriver();
+			len = dbDriver.getLongObjectLength();
+			dbDriver.setLongObjectLength(len / 2);
+			model = ModelRDB.createModel(conn);
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+		testLongObjectLen();
+
+		// now make sure longObjectValue persists
+		model.close();
+		try {
+			conn.close();
+			conn = TestConnection.makeTestConnection();
+			dbDriver = conn.getDriver();
+			assertTrue(len == dbDriver.getLongObjectLength());
+			model = ModelRDB.open(conn);
+			assertTrue(len / 2 == dbDriver.getLongObjectLength());
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+	}
 	
 	public void testAddRemoveHugeLiteral() {
     	String base = "This is a huge string that repeats.";

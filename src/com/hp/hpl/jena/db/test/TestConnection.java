@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.8 2003-07-22 07:19:45 chris-dollin Exp $
+  $Id: TestConnection.java,v 1.9 2003-08-25 16:36:38 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -21,6 +21,7 @@ package com.hp.hpl.jena.db.test;
 */
 
 import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.impl.IRDBDriver;
 
 import junit.framework.*;
 
@@ -28,7 +29,9 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.DB;
 
-public class TestConnection extends TestCase {    
+public class TestConnection extends TestCase {
+	
+	String DefModel = GraphRDB.DEFAULT;    
         
     public TestConnection( String name )
         { super( name ); }
@@ -88,6 +91,7 @@ public class TestConnection extends TestCase {
         return result;
         }
         
+    
     public void testDBConnect() throws java.lang.Exception {
 		IDBConnection conn = makeTestConnection();
     	conn.close();
@@ -115,6 +119,17 @@ public class TestConnection extends TestCase {
 		m.remove();
     	conn.close();
     }
+    
+	public void testBadNamedModel() throws java.lang.Exception {
+		IDBConnection conn = makeAndCleanTestConnection();
+		ModelRDB m = null;
+		try {
+			m = ModelRDB.createModel(conn, DefModel);
+			assertTrue(false);
+		} catch (Exception e) {
+		}
+		conn.close();
+	}
     
 	public void testReconstructDefaultModel() throws java.lang.Exception {
 		IDBConnection conn = makeAndCleanTestConnection();
@@ -233,19 +248,31 @@ public class TestConnection extends TestCase {
 	
 	public void testConstructDefSchemaModel() throws java.lang.Exception {
 		IDBConnection conn = makeAndCleanTestConnection();
-		Model props = ModelRDB.getDefaultModelProperties(conn);
-		addToDBGraphProp(props,DB.graphDBSchema,"DEFAULT");
-		ModelRDB m = ModelRDB.createModel(conn, props);
+		conn.getDriver().setStoreWithModel("");
+		// Model props = ModelRDB.getDefaultModelProperties(conn);
+		// addToDBGraphProp(props,DB.graphDBSchema,DefModel);
+		// ModelRDB m = ModelRDB.createModel(conn, props);
+		ModelRDB m = ModelRDB.createModel(conn);
 		m.remove();
 		conn.close();
 	}
 	
 	public void testConstructBadSchemaModel() throws java.lang.Exception {
 		IDBConnection conn = makeAndCleanTestConnection();
-		Model props = ModelRDB.getDefaultModelProperties(conn);
-		addToDBGraphProp(props,DB.graphDBSchema,"SCHEMA_DOES_NOT_EXIST");
+		// Model props = ModelRDB.getDefaultModelProperties(conn);
+		// addToDBGraphProp(props,DB.graphDBSchema,"SCHEMA_DOES_NOT_EXIST");
+		conn.getDriver().setStoreWithModel(DefModel);
 		try {
-			ModelRDB m = ModelRDB.createModel(conn, props);
+			// ModelRDB m = ModelRDB.createModel(conn, props);
+			ModelRDB m = ModelRDB.createModel(conn);
+			m.remove();
+			assertFalse("Created model with non-existent schema",true);
+		} catch (RDFRDBException e) {
+		}
+		conn.getDriver().setStoreWithModel("MODEL_DOES_NOT_EXIST");
+		try {
+			// ModelRDB m = ModelRDB.createModel(conn, props);
+			ModelRDB m = ModelRDB.createModel(conn);
 			m.remove();
 			assertFalse("Created model with non-existent schema",true);
 		} catch (RDFRDBException e) {
@@ -256,32 +283,113 @@ public class TestConnection extends TestCase {
 	public void testConstructNamedModelDefSchema() throws java.lang.Exception {
 		// this named model uses the default schema
 		IDBConnection conn = makeAndCleanTestConnection();
-		Model props = ModelRDB.getDefaultModelProperties(conn);
-		addToDBGraphProp(props,DB.graphDBSchema,"DEFAULT");
-		ModelRDB m = ModelRDB.createModel(conn, "myName", props);
+		// Model props = ModelRDB.getDefaultModelProperties(conn);
+		// addToDBGraphProp(props,DB.graphDBSchema,DefModel);
+		conn.getDriver().setStoreWithModel(null);
+		// ModelRDB m = ModelRDB.createModel(conn, "myName", props);
+		ModelRDB m = ModelRDB.createModel(conn, "myName");
 		m.remove();
 		conn.close();
 	}
 
 	public void testConstructNamedModelDefSchema1() throws java.lang.Exception {
-		// same as testConstructNamedModelDefSchema1 except the default model already exists
+		// same as testConstructNamedModelDefSchema except the default model already exists.
+		// should new model should share tables with default. no way now to verify this
+		// from the API though. have to check it manually.
 		IDBConnection conn = makeAndCleanTestConnection();
-		ModelRDB mdef = ModelRDB.createModel(conn, ModelRDB.getDefaultModelProperties(conn));
-		Model props = ModelRDB.getDefaultModelProperties(conn);
-		addToDBGraphProp(props,DB.graphDBSchema,"DEFAULT");
-		ModelRDB m = ModelRDB.createModel(conn, "myName", props);
+		// ModelRDB mdef = ModelRDB.createModel(conn, ModelRDB.getDefaultModelProperties(conn));
+		// Model props = ModelRDB.getDefaultModelProperties(conn);
+		// addToDBGraphProp(props,DB.graphDBSchema,DefModel);
+		// ModelRDB m = ModelRDB.createModel(conn, "myName", props);
+		ModelRDB mdef = ModelRDB.createModel(conn);
+		conn.getDriver().setStoreWithModel(DefModel);
+		ModelRDB m = ModelRDB.createModel(conn, "myName");
 		mdef.remove(); m.remove();
 		conn.close();
 	}
 	
+	public void testConstructNamedModelDefSchema2() throws java.lang.Exception {
+		// similar to testConstructNamedModelDefSchema1 except the newly created
+		// model should not share the default schema.
+		IDBConnection conn = makeAndCleanTestConnection();
+		// ModelRDB mdef = ModelRDB.createModel(conn, ModelRDB.getDefaultModelProperties(conn));
+		// Model props = ModelRDB.getDefaultModelProperties(conn);
+		// addToDBGraphProp(props,DB.graphDBSchema,DefModel);
+		// ModelRDB m = ModelRDB.createModel(conn, "myName", props);
+		ModelRDB mdef = ModelRDB.createModel(conn);
+		conn.getDriver().setStoreWithModel(null);
+		ModelRDB m = ModelRDB.createModel(conn, "myName");
+		mdef.remove(); m.remove();
+		conn.close();
+	}
+
 	public void testConstructNamedModelSchema() throws java.lang.Exception {
 		// construct two named models that share a schema
 		IDBConnection conn = makeAndCleanTestConnection();
-		ModelRDB m1 = ModelRDB.createModel(conn, "model1", ModelRDB.getDefaultModelProperties(conn));
-		Model props = ModelRDB.getDefaultModelProperties(conn);
-		addToDBGraphProp(props,DB.graphDBSchema,"model1");
-		ModelRDB m2 = ModelRDB.createModel(conn, "model2", props);
+		// ModelRDB m1 = ModelRDB.createModel(conn, "model1", ModelRDB.getDefaultModelProperties(conn));
+		ModelRDB m1 = ModelRDB.createModel(conn, "model1");
+		// Model props = ModelRDB.getDefaultModelProperties(conn);
+		// addToDBGraphProp(props,DB.graphDBSchema,"model1");
+		// ModelRDB m2 = ModelRDB.createModel(conn, "model2", props);
+		conn.getDriver().setStoreWithModel("model1");
+		ModelRDB m2 = ModelRDB.createModel(conn, "model2");
 		m1.remove(); m2.remove();
+		conn.close();
+	}
+	
+	public void testNamedPrefixedModel() throws java.lang.Exception {
+		IDBConnection conn = makeAndCleanTestConnection();
+		IRDBDriver d = conn.getDriver();
+		d.setTableNamePrefix("foo_");
+		conn.cleanDB();  // just in case any crud lying about from previous test
+		ModelRDB m = ModelRDB.createModel(conn, "myName");
+		m.remove();
+		conn.cleanDB();
+		conn.close();
+	}
+	
+	public void testNamedPrefixedPersists() throws java.lang.Exception {
+		IDBConnection conn = makeTestConnection();
+		IRDBDriver d = conn.getDriver();
+		String pfx = "foo_";
+		d.setTableNamePrefix(pfx);
+		conn.cleanDB();  // just in case any crud lying about from previous test
+		ModelRDB m = ModelRDB.createModel(conn, "myName");
+		m.close();
+		conn.close();
+		conn = makeTestConnection();
+		d = conn.getDriver();
+		d.setTableNamePrefix(pfx);
+		m = ModelRDB.open(conn, "myName");
+		assertTrue(d.getTableNamePrefix().equals(pfx));
+		conn.cleanDB();
+	}
+
+	public void testNamedPrefixFailure() throws java.lang.Exception {
+		IDBConnection conn = makeAndCleanTestConnection();
+		IRDBDriver d = conn.getDriver();
+		String longPfx =
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+		try {
+			d.setTableNamePrefix(longPfx);
+			assertTrue(false);  // should not get here
+		} catch (Exception e) {
+		}
+		ModelRDB m = ModelRDB.createModel(conn);
+		try {
+			d.setTableNamePrefix("foo_");
+			assertTrue(false);  // should not get here
+		} catch (Exception e) {
+		}
+		m.close();
 		conn.close();
 	}
 
