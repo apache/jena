@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Triple.java,v 1.6 2003-06-13 10:10:13 chris-dollin Exp $
+  $Id: Triple.java,v 1.7 2003-06-20 08:56:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.shared.*;
 import java.util.*;
 
 /**
@@ -130,13 +131,22 @@ final public class Triple implements TripleMatch {
         Utility factory method for creating a triple based on the content of an
         "S P O" string. The S, P, O are processed by Node.create, see which for
         details of the supported syntax. This method exists to support test code.
+        Nodes are interpreted using the Standard prefix mapping.
     */
+    
     public static Triple create( String fact )
+        { return create( PrefixMapping.Standard, fact ); }
+        
+    /**
+        Utility factory as for create(String), but allowing the PrefixMapping to
+        be specified explicitly.
+    */
+    public static Triple create( PrefixMapping pm, String fact )
         {
         StringTokenizer st = new StringTokenizer( fact );
-        Node sub = Node.create( st.nextToken() );
-        Node pred = Node.create( st.nextToken() );
-        Node obj = Node.create( st.nextToken() );
+        Node sub = Node.create( pm, st.nextToken() );
+        Node pred = Node.create( pm, st.nextToken() );
+        Node obj = Node.create( pm, st.nextToken() );
         return new Triple( sub, pred, obj );
         }
             
