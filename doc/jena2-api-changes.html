@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head><title>API changes in Jena2</title></head>
+<body>
+
+<h1>introduction</h1>
+
+This document summarises API changes in Jena2. Many of these changes are
+additions, but there are some removals and incompatible changes.
+
+<h1>Statement.set</h1>
+
+The <i>Statement.set(X)</i> methods have been removed. In its place we have
+the <i>Statement.changeObject(X)</i> methods. These methods update the model
+in the same way, but they do <i>not</i> alter the Statement object - they
+construct a new one and return it. This avoids certain technical difficulties
+which arose from having mutable Statement objects.
+
+<h1>the DAML interface</h1>
+
+[To Be Done]
+
+<h1>namespace prefixes</h1>
+
+Models now have associated prefix-namespace mappings. The readers notice any
+mappings in their input streams and add them to the model; the writers use
+those namespace prefixes (if appropriate) in their output.
+
+The user may read and write the namespace mappings, or extract all of them as
+a <i>Map</i>. Operations are provided that convert a URI to a QName (if
+possible) using the namespace prefixes, and back the other way.
+
+<i>Model</i> extends the interface <i>PrefixMapping</i> for the namespace
+methods; see the Javadoc for more details.
+
+<h1>bulk update</h1>
+
+The model API has been extended with "bulk update" operations which
+implementations of <i>Model</i> are expected to implement efficiently.
+
+<ul>
+    <li><i>add(Statement [])</i> adds all of the statements in the array to
+    the model.
+
+    <li><i>add(List)</i> adds all of the statements in the List to
+    the model. It is an error if any of the elements are not
+    <i>Statement</i>s.
+
+    <li><i>remove(Statement [])</i> removes all of the statements in the
+    array to the model.
+
+    <li><i>remove(List)</i> removes all of the statements in the List to
+    the model. It is an error if any of the elements are not
+    <i>Statement</i>s.
+</ul>
+
+In addition, the existing <i>add(Model)</i> and <i>remove(Model)</i>
+implementations have been modified to use the bulk update interface if
+possible.
+
+<h1>inference support</h1>
+
+[To Be Done]
+
+<h1>listStatements(S, P, O)</h1>
+
+An extra version of <i>listStatements</i> taking separate subject, predicate,
+and object arguments is available. This avoids the user having to create a
+<i>SimpleSelector</i> in many cases.
+
+<h1>createResource(AnonId)</h1>
+
+An extra <i>createResource</i> method is availble that creates a blank
+(anonymous) node with a specified <i>AnonId</i>.
+
+<h1>ModelFactory</h1>
+
+[To Be Done]
+
+<h1>reification</h1>
+
+Statements are no longer Resources. Instead Statements can be converted into
+Resources using the asResource() method. These new Resources are
+<i>ReifiedStatement</i> objects. See <a href="reify-api.html">the API
+proposal</a> document for the moment.
+
+<h1>typed literals</h1>
+
+[To Be Done]
+
+<h1>query<h1>
+
+[To Be Done - Chris is going to add a API for some of the fast-track query]
+
+<h1>iterators</h1>
+
+Iterators now implement <i>java.util.iterator</i>, which means the
+<i>.next()</i> method returns an Object rather than a typed object.  You need
+to either cast the return from the <i>.next()</i> method to the appropriate
+type or use the .next<i>Type</i>() (where <i>Type</i> is <i>Resource</i>,
+<i>Literal</i>, <i>Ns</i>, <i>RDFNode</i> or <i>Statement</i> depending on the
+iterator) to avoid casting.
+
+<h1>I/O</h1>
+
+See <a href=IO/iohowto.html#rush">the IO mini HowTo</a>.
+
+</body>
+</html>
