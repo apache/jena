@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TriplePattern.java,v 1.7 2003-05-20 10:21:55 der Exp $
+ * $Id: TriplePattern.java,v 1.8 2003-05-20 17:31:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-20 10:21:55 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-20 17:31:37 $
  */
 public class TriplePattern {
 
@@ -59,6 +59,16 @@ public class TriplePattern {
      * for separately.
      */
     public TriplePattern(TripleMatch match) {
+        this.subject   = normalize(match.getSubject());
+        this.predicate = normalize(match.getPredicate());
+        this.object    = normalize(match.getObject());
+    }
+    
+    /**
+     * Constructor - builds a dgenerate pattern from a simple triple.
+     * This would be much easier if we merged Triples and TriplePatterns!
+     */
+    public TriplePattern(Triple match) {
         this.subject   = normalize(match.getSubject());
         this.predicate = normalize(match.getPredicate());
         this.object    = normalize(match.getObject());

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.11 2003-05-20 10:21:55 der Exp $
+ * $Id: RuleState.java,v 1.12 2003-05-20 17:31:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,9 +26,12 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-05-20 10:21:55 $
+ * @version $Revision: 1.12 $ on $Date: 2003-05-20 17:31:37 $
  */
 public class RuleState {
+    
+//  =======================================================================
+//   variables
 
     /** Reference to a package of information on the rule being processed */
     protected RuleInstance ruleInstance;
@@ -36,9 +39,9 @@ public class RuleState {
     /**  the parent RuleState for backtracking */
     protected RuleState prev;
     
-    /** The binding environment for the rule so far */
-    protected BindingVector env;
-    
+    /** A trail of variable bindings made during the processing of this state */
+    protected Trail trail;
+        
     /** The continuation point for the rule clause being processed */
     protected GoalState goalState;
     
@@ -48,48 +51,40 @@ public class RuleState {
     /** The clause number in the rule to be processed next. */
     int clauseIndex;
     
-    /** binding offset for subject field, -1 if none */
-    int subjectBind;
-    
-    /** binding offset for predicate field, -1 if none */
-    int predicateBind;
-    
-    /** binding offset for object field, -1 if none */
-    int objectBind;
-    
-    /** functor node for object binding */
-    protected Functor functorMatch = null;
+//  =======================================================================
+//   constructors
     
     /**
      * Normal constructor. Creates a new RuleState as an extension to an existing one.
      * @param parent the parent RuleState being expanded, can't be null
+     * @param trail the trail extension containing trail bindings for the match that forked this state
      * @param clause the TriplePattern which forms the goal for this state
      * @param index the index of the clause in the parent rule
-     * @param env the prebound enviornment to use
      */
-    public RuleState(RuleState parent, TriplePattern clause, int index, BindingVector env) {
+    public RuleState(RuleState parent, Trail trail, TriplePattern clause, int index) {
         prev = parent;
+        this.trail = trail;
         ruleInstance = parent.ruleInstance;
         clauseIndex = index;
-        this.env = env;
-        TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
+        TriplePattern subgoal = parent.trail.partInstantiate((TriplePattern)clause);
         goalState = ruleInstance.engine.findGoal(subgoal);
-        initMapping(subgoal);
         ruleInstance.generator.incRefCount();
     }
     
     /**
      * Constructor used when creating the first RuleState for a rule.
-     * The caller is responsible for initializing the mapping.
      */
-    private RuleState(RuleInstance ruleInstance, BindingVector env, GoalState goalState, int index) {
+    private RuleState(RuleInstance ruleInstance, Trail trail, GoalState goalState, int index) {
         prev = null;
+        this.trail = trail;
         this.ruleInstance = ruleInstance; 
-        this.env = env;
         this.goalState = goalState;
         this.clauseIndex = index;
         ruleInstance.generator.incRefCount();
     }
+    
+//  =======================================================================
+//  main operations
     
     /**
      * Return the next match for this clause (or FAIL or SUSPEND)
@@ -98,64 +93,16 @@ public class RuleState {
         if (goalState == null) {
             return StateFlag.SATISFIED;
         } else {
-            return goalState.next();
+            Object result = goalState.next();
+            return result;
         }
     }
-    
+        
     /**
-     * Return a new binding environment based on this one but extended
-     * by the matches resulting from the given triple result for this state.
+     * Return the final goal result.
      */
-    public BindingVector newEnvironment(Triple result) {
-        BindingVector newenv = new BindingVector(env);
-        if (subjectBind != -1)   newenv.bind(subjectBind, result.getSubject());
-        if (predicateBind != -1) newenv.bind(predicateBind, result.getPredicate());
-        if (objectBind != -1)    newenv.bind(objectBind, result.getObject());
-        // Functor matches are not precompiled but intepreted
-        if (functorMatch != null) {
-            Node obj = result.getObject();
-            if (Functor.isFunctor(obj)) {
-                Functor objValue = (Functor)obj.getLiteral().getValue();
-                if (objValue.getName().equals(functorMatch.getName())) {
-                    Node[] margs = functorMatch.getArgs();
-                    Node[] args = objValue.getArgs();
-                    if (margs.length != args.length) return null;
-                    for (int i = 0; i < margs.length; i++) {
-                        Node match = margs[i];
-                        if (match instanceof Node_RuleVariable) {
-                            Node val = args[i];
-                            if (Functor.isFunctor(val)) return null;
-                            if (!newenv.bind(match, val)) return null;
-                        }
-                    }
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        }
-        return newenv;
-    }
-    
-    /**
-     * Return the final goal result, based on the given binding environment
-     */
-    public Triple getResult(BindingVector newenv) {
-        return newenv.instantiate(ruleInstance.head);
-    }
-    
-    /**
-     * Initialize the mapping pointers that map result values to environment bindings
-     */
-    private void initMapping(TriplePattern goal) {
-        Node n = goal.getSubject();
-        subjectBind = (n instanceof Node_RuleVariable) ? ((Node_RuleVariable)n).getIndex() : -1 ;
-        n = goal.getPredicate();
-        predicateBind = (n instanceof Node_RuleVariable) ? ((Node_RuleVariable)n).getIndex() : -1 ;
-        n = goal.getObject();
-        objectBind = (n instanceof Node_RuleVariable) ? ((Node_RuleVariable)n).getIndex() : -1 ;
-        if (Functor.isFunctor(n)) functorMatch = (Functor)n.getLiteral().getValue();
+    public Triple getResult() {
+        return trail.instantiate(ruleInstance.head);
     }
     
     /**
@@ -181,9 +128,44 @@ public class RuleState {
      * iterators in the goal state.
      */
     public void close() {
+        unwindBindings();
         if (goalState != null) goalState.close();
         ruleInstance.generator.decRefCount();
     }
+    
+    /**
+     * Unwind all of the bindings associated with this rule state. 
+     */
+    public void unwindBindings() {
+        trail.unwindBindings();
+    }
+    
+    /**
+     * Restore all the bindings associated with this rule state.
+     */
+    public void restoreBindings() {
+        trail.activate();
+    }
+    
+    /**
+     * Return the clause currently being processed.
+     */
+    public TriplePattern getCurrentClause() {
+        return (TriplePattern)ruleInstance.rule.getBodyElement(clauseIndex-1);
+    }
+    
+    /**
+     * Printable string
+     */
+    public String toString() {
+        return "RuleState " 
+                + ruleInstance.rule.toShortString()
+                + "("+ (clauseIndex-1) +")"
+                + ", gs=" + goalState;
+    }
+    
+//  =======================================================================
+//  Support for creating a first rule state in a search tree
         
     /**
      * Create the first RuleState for using a given rule to satisfy a goal.
@@ -193,11 +175,12 @@ public class RuleState {
      * @return the instantiated initial RuleState or null if a guard predicate
      * fails so the rule is not applicable.
      */
-    public static RuleState createInitialState(Rule rule, GoalResults generator) {
+    public static RuleState createInitialState(Rule orule, GoalResults generator) {
+        Rule rule = orule.cloneRule();
         TriplePattern goal = generator.goal;
         TriplePattern head = (TriplePattern) rule.getHeadElement(0);
-        BindingVector env = BindingVector.unify(goal, head, rule.getNumVars());
-        if (env == null) return null;
+        Trail trail = new Trail();
+        if ( ! trail.unify(goal, head)) return null;
         
         // Find the first goal clause
         RuleInstance ri = new RuleInstance(generator, rule, head);
@@ -216,8 +199,8 @@ public class RuleState {
                     }
                 }
                 if (foundSecondClause) {
-                    int score1 = scoreClauseBoundness((TriplePattern)clause, head, env);
-                    int score2 = scoreClauseBoundness((TriplePattern)secondClause, head, env);
+                    int score1 = scoreClauseBoundness((TriplePattern)clause, head);
+                    int score2 = scoreClauseBoundness((TriplePattern)secondClause, head);
                     if (score2 > score1) {
                         ri.clausesReordered = true;
                         ri.secondClause = clauseIndex;
@@ -226,20 +209,19 @@ public class RuleState {
                     }
                 }
                 // ... end of clause reorder
-                TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
+                TriplePattern subgoal = trail.partInstantiate((TriplePattern)clause);
                 if (!subgoal.isLegal()) return null;
                 GoalState gs = generator.getEngine().findGoal(subgoal);
-                RuleState rs = new RuleState(ri, env, gs, clauseIndex);
-                rs.initMapping(subgoal);
+                RuleState rs = new RuleState(ri, trail, gs, clauseIndex);
                 return rs;
             } else {
-                if (!generator.getEngine().processBuiltin(clause, rule, env)) {
+                if (!generator.getEngine().processBuiltin(clause, rule, trail)) {
                     return null;
                 }
             }
         }
         // If we get to here there are no rule body clause to process
-        return new RuleState(ri, env, null, 0);
+        return new RuleState(ri, trail, null, 0);
     }
     
     
@@ -248,23 +230,21 @@ public class RuleState {
      * For this case we are only considering head variables which occur
      * in the clause and score on boundedness of these.
      */
-    private static int scoreClauseBoundness(TriplePattern clause,
-                                               TriplePattern head, 
-                                               BindingVector env) {
+    private static int scoreClauseBoundness(TriplePattern clause, TriplePattern head) {
         return 
-                scoreNodeBoundness(clause.getSubject(), head, env) +
-                scoreNodeBoundness(clause.getPredicate(), head, env)  +
-                scoreNodeBoundness(clause.getObject(), head, env);
+                scoreNodeBoundness(clause.getSubject(), head) +
+                scoreNodeBoundness(clause.getPredicate(), head)  +
+                scoreNodeBoundness(clause.getObject(), head);
 
     }
     
     /**
      * Score a node from a pattern as part of scoreClauseBoundedness.
      */
-    private static int scoreNodeBoundness(Node n, TriplePattern head, BindingVector env) {
+    private static int scoreNodeBoundness(Node n, TriplePattern head) {
         if (n.isVariable()) {
             if (n == head.getSubject() || n == head.getPredicate() || n == head.getObject() ) {
-                Node val = env.getBinding(n);
+                Node val = ((Node_RuleVariable)n).deref();
                 if (n == null || n.isVariable()) return -5;
                 return 5;
             } else {
@@ -274,18 +254,7 @@ public class RuleState {
             return 1;
         }
     }
-    
-    /**
-     * Printable string
-     */
-    public String toString() {
-        return "RuleState " 
-                + ruleInstance.rule.toShortString()
-                + "("+ (clauseIndex-1) +")"
-                + ", env=" + env 
-                + ", gs=" + goalState;
-    }
-    
+
 }
 
 /*

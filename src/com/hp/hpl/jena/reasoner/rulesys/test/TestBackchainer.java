@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.16 2003-05-20 10:21:53 der Exp $
+ * $Id: TestBackchainer.java,v 1.17 2003-05-20 17:30:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,10 +25,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- *  
+ * Test harness for the backward chainer. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-05-20 10:21:53 $
+ * @version $Revision: 1.17 $ on $Date: 2003-05-20 17:30:47 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -78,346 +78,346 @@ public class TestBackchainer extends TestCase {
         return new TestSuite( TestBackchainer.class ); 
     }  
 
-    /**
-     * Test parser modes to support backarrow notation are working
-     */
-    public void testParse() {
-        List rules = Rule.parseRules(testRules1);
-        assertEquals("BRule parsing", 
-                        "[ (?p rdfs:subPropertyOf ?q) (?x ?p ?y) -> (?x ?q ?y) ]", 
-                        rules.get(0).toString());
-        assertEquals("BRule parsing", 
-                        "[ (?a rdfs:subPropertyOf ?b) (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c) ]", 
-                        rules.get(1).toString());
-    }
-    
-    /**
-     * Test goal/head unify operation.
-     */
-    public void testUnify() {
-        Node_RuleVariable xg = new Node_RuleVariable("?x", 0);
-        Node_RuleVariable yg = new Node_RuleVariable("?y", 1);
-        Node_RuleVariable zg = new Node_RuleVariable("?z", 2);
-        
-        Node_RuleVariable xh = new Node_RuleVariable("?x", 0);
-        Node_RuleVariable yh = new Node_RuleVariable("?y", 1);
-        Node_RuleVariable zh = new Node_RuleVariable("?z", 2);
-        
-        TriplePattern g1 = new TriplePattern(xg, p, yg);
-        TriplePattern g2 = new TriplePattern(xg, p, xg);
-        TriplePattern g3 = new TriplePattern( a, p, xg);
-        TriplePattern g4 = new TriplePattern( a, p,  b);
-        
-        TriplePattern h1 = new TriplePattern(xh, p, yh);
-        TriplePattern h2 = new TriplePattern(xh, p, xh);
-        TriplePattern h3 = new TriplePattern( a, p, xh);
-        TriplePattern h4 = new TriplePattern( a, p,  b);
-        TriplePattern h5 = new TriplePattern(xh, p,  a);
-        
-        doTestUnify(g1, h1, true, new Node[] {null, null});
-        doTestUnify(g1, h2, true, new Node[] {null, null});
-        doTestUnify(g1, h3, true, new Node[] {null, null});
-        doTestUnify(g1, h4, true, new Node[] {null, null});
-        doTestUnify(g1, h5, true, new Node[] {null, null});
-        
-        doTestUnify(g2, h1, true, new Node[] {null, xh});
-        doTestUnify(g2, h2, true, new Node[] {null, null});
-        doTestUnify(g2, h3, true, new Node[] {a, null});
-        doTestUnify(g2, h4, false, null);
-        doTestUnify(g2, h5, true, new Node[] {a, null});
-        
-        doTestUnify(g3, h1, true, new Node[] {a, null});
-        doTestUnify(g3, h2, true, new Node[] {a, null});
-        doTestUnify(g3, h3, true, new Node[] {null, null});
-        doTestUnify(g3, h4, true, new Node[] {null, null});
-        doTestUnify(g3, h5, true, new Node[] {a, null});
-        
-        doTestUnify(g4, h1, true, new Node[] {a, b});
-        doTestUnify(g4, h2, false, null);
-        doTestUnify(g4, h3, true, new Node[] {b});
-        doTestUnify(g4, h4, true, null);
-        doTestUnify(g4, h5, false, null);
-        
-        // Recursive case
-        doTestUnify(h1, h1, true, new Node[] {null, null});
-        
-        // Wildcard case
-        doTestUnify(new TriplePattern(null, null, null), h2, true, new Node[] {null, null});
-
-        // Test functor cases as well!
-        TriplePattern gf = new TriplePattern(xg, p, 
-                                Functor.makeFunctorNode("f", new Node[]{xg, b}));
-        TriplePattern hf1 = new TriplePattern(yh, p, 
-                                Functor.makeFunctorNode("f", new Node[]{zh, b}));
-        TriplePattern hf2 = new TriplePattern(yh, p, 
-                                Functor.makeFunctorNode("f", new Node[]{a, yh}));
-        TriplePattern hf3 = new TriplePattern(yh, p, 
-                                Functor.makeFunctorNode("f", new Node[]{b, yh}));
-        doTestUnify(gf, hf1, true, new Node[] {null, null, yh});
-        doTestUnify(gf, hf2, false, null);
-        doTestUnify(gf, hf3, true, new Node[] {null, b});
-        
-        // Check binding environment use
-        BindingVector env = BindingVector.unify(g2, h1);
-        env.bind(xh, c);
-        assertEquals(env.getBinding(yh), c);
-        env = BindingVector.unify(g2, h1);
-        env.bind(yh, c);
-        assertEquals(env.getBinding(xh), c);
-    }
-    
-    /**
-     * Helper for testUnify.
-     * @param goal goal triple pattern
-     * @param head head triple pattern
-     * @param succeed whether match should succeeed or fail
-     * @param env list list of expected environment bindings
-     * 
-     */
-    private void doTestUnify(TriplePattern goal, TriplePattern head, boolean succeed, Node[] env) {
-        BindingVector result = BindingVector.unify(goal, head);
-        if (succeed) {
-            assertNotNull(result);
-            if (env != null) {
-                for (int i = 0; i < env.length; i++) {
-                    Node n = result.getEnvironment()[i];
-                    if (env[i] != null) {
-                        assertEquals(env[i], n);
-                    } else {
-                        assertNull(n);
-                    }
-                }
-            }
-        } else {
-            assertNull(result);
-        }
-    }
-    
-    /**
-     * Check that a reasoner over an empty rule set accesses
-     * the raw data successfully.
-     */
-    public void testListData() {
-        Graph data = new GraphMem();
-        for (int i = 0; i < dataElts.length; i++) {
-            data.add(dataElts[i]);
-        }
-        Graph schema = new GraphMem();
-        schema.add(new Triple(c, p, c));
-        
-        // Case of schema and data but no rule axioms
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(new ArrayList());
-        InfGraph infgraph = reasoner.bindSchema(schema).bind(data);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, null, null), 
-            new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(c, p, c)});
-                
-        // Case of data and rule axioms but no schema
-        List rules = Rule.parseRules("-> (d p d).");
-        reasoner =  new BasicBackwardRuleReasoner(rules);
-        infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, null, null), 
-            new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(d, p, d)});
-                
-        // Case of data and rule axioms and schema
-        infgraph = reasoner.bindSchema(schema).bind(data);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, null, null), 
-            new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(c, p, c),
-                new Triple(d, p, d)});
-                
-    }
-   
-    /**
-     * Test basic rule operations - simple AND rule 
-     */
-    public void testBaseRules1() {    
-        List rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
-        Graph data = new GraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(b, p, c));
-        data.add(new Triple(b, p, d));
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, r, null), 
-            new Object[] {
-                new Triple(a, r, c),
-                new Triple(a, r, d)
-            } );
-    }
-   
-    /**
-     * Test basic rule operations - simple OR rule 
-     */
-    public void testBaseRules2() {    
-        List rules = Rule.parseRules(
-                "[r1: (?a r ?b) <- (?a p ?b)]" +
-                "[r2: (?a r ?b) <- (?a q ?b)]" +
-                "[r3: (?a r ?b) <- (?a s ?c), (?c s ?b)]"
-        );        
-        Graph data = new GraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(b, q, c));
-        data.add(new Triple(a, s, b));
-        data.add(new Triple(b, s, d));
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, r, null), 
-            new Object[] {
-                new Triple(a, r, b),
-                new Triple(b, r, c),
-                new Triple(a, r, d)
-            } );
-    }
-   
-    /**
-     * Test basic rule operations - simple OR rule with chaining 
-     */
-    public void testBaseRules2b() {    
-        List rules = Rule.parseRules(
-                "[r1: (?a r ?b) <- (?a p ?b)]" +
-                "[r2: (?a r ?b) <- (?a q ?b)]" +
-                "[r3: (?a r ?b) <- (?a t ?c), (?c t ?b)]" +
-                "[r4: (?a t ?b) <- (?a s ?b)]"
-        );        
-        Graph data = new GraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(b, q, c));
-        data.add(new Triple(a, s, b));
-        data.add(new Triple(b, s, d));
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, r, null), 
-            new Object[] {
-                new Triple(a, r, b),
-                new Triple(b, r, c),
-                new Triple(a, r, d)
-            } );
-    }
-    
-    /**
-     * Test basic rule operations - simple AND rule check with tabling.
-     */
-    public void testBaseRules3() {    
-        List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
-        Graph data = new GraphMem();
-        data.add(new Triple(p, sP, q) );
-        data.add(new Triple(q, sP, r) );
-        data.add(new Triple(p, sP, s) );
-        data.add(new Triple(s, sP, t) );
-        data.add(new Triple(a,  p, b) );
-        InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
-            new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(p, sP, s),
-                new Triple(s, sP, t),
-                new Triple(p, sP, t),
-                new Triple(p, sP, r)
-            } );
-    }
-    
-    /**
-     * Test basic rule operations - simple AND rule check with tabling.
-     */
-    public void testBaseRules3b() {    
-        List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
-        Graph data = new GraphMem();
-        data.add(new Triple(p, sP, q) );
-        data.add(new Triple(q, sP, r) );
-        data.add(new Triple(r, sP, t) );
-        data.add(new Triple(q, sP, s) );
-        InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
-            new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(r, sP, t),
-                new Triple(q, sP, s),
-                new Triple(p, sP, s),
-                new Triple(p, sP, r),
-                new Triple(p, sP, t),
-                new Triple(q, sP, t),
-                new Triple(p, sP, r)
-            } );
-    }
-
-    /**
-     * Test basic rule operations - simple AND/OR with tabling.
-     */
-    public void testBaseRules4() {    
-        Graph data = new GraphMem();
-        data.add(new Triple(a, r, b));
-        data.add(new Triple(b, r, c));
-        data.add(new Triple(b, r, b));
-        data.add(new Triple(b, r, d));
-        List rules = Rule.parseRules(
-                        "[r1: (?x p ?y) <- (?x r ?y)]" +
-                        "[r2: (?x p ?z) <- (?x p ?y), (?y r ?z)]" 
-                        );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(a, p, null), 
-            new Object[] {
-                new Triple(a, p, b),
-                new Triple(a, p, d),
-                new Triple(a, p, c)
-            } );
-    }
-
-    /**
-     * Test basic rule operations - simple AND/OR with tabling.
-     */
-    public void testBaseRulesXSB1() {    
-        Graph data = new GraphMem();
-        data.add(new Triple(p, c, q));
-        data.add(new Triple(q, c, r));
-        data.add(new Triple(p, d, q));
-        data.add(new Triple(q, d, r));
-        List rules = Rule.parseRules(
-            "[r1: (?x a ?y) <- (?x c ?y)]" +
-            "[r2: (?x a ?y) <- (?x b ?z), (?z c ?y)]" +
-            "[r3: (?x b ?y) <- (?x d ?y)]" +
-            "[r4: (?x b ?y) <- (?x a ?z), (?z d ?y)]"
-        );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(p, a, null), 
-            new Object[] {
-                new Triple(p, a, q),
-                new Triple(p, a, r)
-            } );
-    }
+//    /**
+//     * Test parser modes to support backarrow notation are working
+//     */
+//    public void testParse() {
+//        List rules = Rule.parseRules(testRules1);
+//        assertEquals("BRule parsing", 
+//                        "[ (?p rdfs:subPropertyOf ?q) (?x ?p ?y) -> (?x ?q ?y) ]", 
+//                        rules.get(0).toString());
+//        assertEquals("BRule parsing", 
+//                        "[ (?a rdfs:subPropertyOf ?b) (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c) ]", 
+//                        rules.get(1).toString());
+//    }
+//    
+//    /**
+//     * Test goal/head unify operation.
+//     */
+//    public void testUnify() {
+//        Node_RuleVariable xg = new Node_RuleVariable("?x", 0);
+//        Node_RuleVariable yg = new Node_RuleVariable("?y", 1);
+//        Node_RuleVariable zg = new Node_RuleVariable("?z", 2);
+//        
+//        Node_RuleVariable xh = new Node_RuleVariable("?x", 0);
+//        Node_RuleVariable yh = new Node_RuleVariable("?y", 1);
+//        Node_RuleVariable zh = new Node_RuleVariable("?z", 2);
+//        
+//        TriplePattern g1 = new TriplePattern(xg, p, yg);
+//        TriplePattern g2 = new TriplePattern(xg, p, xg);
+//        TriplePattern g3 = new TriplePattern( a, p, xg);
+//        TriplePattern g4 = new TriplePattern( a, p,  b);
+//        
+//        TriplePattern h1 = new TriplePattern(xh, p, yh);
+//        TriplePattern h2 = new TriplePattern(xh, p, xh);
+//        TriplePattern h3 = new TriplePattern( a, p, xh);
+//        TriplePattern h4 = new TriplePattern( a, p,  b);
+//        TriplePattern h5 = new TriplePattern(xh, p,  a);
+//        
+//        doTestUnify(g1, h1, true, new Node[] {null, null});
+//        doTestUnify(g1, h2, true, new Node[] {null, null});
+//        doTestUnify(g1, h3, true, new Node[] {null, null});
+//        doTestUnify(g1, h4, true, new Node[] {null, null});
+//        doTestUnify(g1, h5, true, new Node[] {null, null});
+//        
+//        doTestUnify(g2, h1, true, new Node[] {null, xh});
+//        doTestUnify(g2, h2, true, new Node[] {null, null});
+//        doTestUnify(g2, h3, true, new Node[] {a, null});
+//        doTestUnify(g2, h4, false, null);
+//        doTestUnify(g2, h5, true, new Node[] {a, null});
+//        
+//        doTestUnify(g3, h1, true, new Node[] {a, null});
+//        doTestUnify(g3, h2, true, new Node[] {a, null});
+//        doTestUnify(g3, h3, true, new Node[] {null, null});
+//        doTestUnify(g3, h4, true, new Node[] {null, null});
+//        doTestUnify(g3, h5, true, new Node[] {a, null});
+//        
+//        doTestUnify(g4, h1, true, new Node[] {a, b});
+//        doTestUnify(g4, h2, false, null);
+//        doTestUnify(g4, h3, true, new Node[] {b});
+//        doTestUnify(g4, h4, true, null);
+//        doTestUnify(g4, h5, false, null);
+//        
+//        // Recursive case
+//        doTestUnify(h1, h1, true, new Node[] {null, null});
+//        
+//        // Wildcard case
+//        doTestUnify(new TriplePattern(null, null, null), h2, true, new Node[] {null, null});
+//
+//        // Test functor cases as well!
+//        TriplePattern gf = new TriplePattern(xg, p, 
+//                                Functor.makeFunctorNode("f", new Node[]{xg, b}));
+//        TriplePattern hf1 = new TriplePattern(yh, p, 
+//                                Functor.makeFunctorNode("f", new Node[]{zh, b}));
+//        TriplePattern hf2 = new TriplePattern(yh, p, 
+//                                Functor.makeFunctorNode("f", new Node[]{a, yh}));
+//        TriplePattern hf3 = new TriplePattern(yh, p, 
+//                                Functor.makeFunctorNode("f", new Node[]{b, yh}));
+//        doTestUnify(gf, hf1, true, new Node[] {null, null, yh});
+//        doTestUnify(gf, hf2, false, null);
+//        doTestUnify(gf, hf3, true, new Node[] {null, b});
+//        
+//        // Check binding environment use
+//        BindingVector env = BindingVector.unify(g2, h1);
+//        env.bind(xh, c);
+//        assertEquals(env.getBinding(yh), c);
+//        env = BindingVector.unify(g2, h1);
+//        env.bind(yh, c);
+//        assertEquals(env.getBinding(xh), c);
+//    }
+//    
+//    /**
+//     * Helper for testUnify.
+//     * @param goal goal triple pattern
+//     * @param head head triple pattern
+//     * @param succeed whether match should succeeed or fail
+//     * @param env list list of expected environment bindings
+//     * 
+//     */
+//    private void doTestUnify(TriplePattern goal, TriplePattern head, boolean succeed, Node[] env) {
+//        BindingVector result = BindingVector.unify(goal, head);
+//        if (succeed) {
+//            assertNotNull(result);
+//            if (env != null) {
+//                for (int i = 0; i < env.length; i++) {
+//                    Node n = result.getEnvironment()[i];
+//                    if (env[i] != null) {
+//                        assertEquals(env[i], n);
+//                    } else {
+//                        assertNull(n);
+//                    }
+//                }
+//            }
+//        } else {
+//            assertNull(result);
+//        }
+//    }
+//    
+//    /**
+//     * Check that a reasoner over an empty rule set accesses
+//     * the raw data successfully.
+//     */
+//    public void testListData() {
+//        Graph data = new GraphMem();
+//        for (int i = 0; i < dataElts.length; i++) {
+//            data.add(dataElts[i]);
+//        }
+//        Graph schema = new GraphMem();
+//        schema.add(new Triple(c, p, c));
+//        
+//        // Case of schema and data but no rule axioms
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(new ArrayList());
+//        InfGraph infgraph = reasoner.bindSchema(schema).bind(data);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, null, null), 
+//            new Object[] {
+//                new Triple(p, sP, q),
+//                new Triple(q, sP, r),
+//                new Triple(a,  p, b), 
+//                new Triple(c, p, c)});
+//                
+//        // Case of data and rule axioms but no schema
+//        List rules = Rule.parseRules("-> (d p d).");
+//        reasoner =  new BasicBackwardRuleReasoner(rules);
+//        infgraph = reasoner.bind(data);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, null, null), 
+//            new Object[] {
+//                new Triple(p, sP, q),
+//                new Triple(q, sP, r),
+//                new Triple(a,  p, b), 
+//                new Triple(d, p, d)});
+//                
+//        // Case of data and rule axioms and schema
+//        infgraph = reasoner.bindSchema(schema).bind(data);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, null, null), 
+//            new Object[] {
+//                new Triple(p, sP, q),
+//                new Triple(q, sP, r),
+//                new Triple(a,  p, b), 
+//                new Triple(c, p, c),
+//                new Triple(d, p, d)});
+//                
+//    }
+//   
+//    /**
+//     * Test basic rule operations - simple AND rule 
+//     */
+//    public void testBaseRules1() {    
+//        List rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
+//        Graph data = new GraphMem();
+//        data.add(new Triple(a, p, b));
+//        data.add(new Triple(b, p, c));
+//        data.add(new Triple(b, p, d));
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+//        InfGraph infgraph = reasoner.bind(data);
+//        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, r, null), 
+//            new Object[] {
+//                new Triple(a, r, c),
+//                new Triple(a, r, d)
+//            } );
+//    }
+//   
+//    /**
+//     * Test basic rule operations - simple OR rule 
+//     */
+//    public void testBaseRules2() {    
+//        List rules = Rule.parseRules(
+//                "[r1: (?a r ?b) <- (?a p ?b)]" +
+//                "[r2: (?a r ?b) <- (?a q ?b)]" +
+//                "[r3: (?a r ?b) <- (?a s ?c), (?c s ?b)]"
+//        );        
+//        Graph data = new GraphMem();
+//        data.add(new Triple(a, p, b));
+//        data.add(new Triple(b, q, c));
+//        data.add(new Triple(a, s, b));
+//        data.add(new Triple(b, s, d));
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+//        InfGraph infgraph = reasoner.bind(data);
+//        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, r, null), 
+//            new Object[] {
+//                new Triple(a, r, b),
+//                new Triple(b, r, c),
+//                new Triple(a, r, d)
+//            } );
+//    }
+//   
+//    /**
+//     * Test basic rule operations - simple OR rule with chaining 
+//     */
+//    public void testBaseRules2b() {    
+//        List rules = Rule.parseRules(
+//                "[r1: (?a r ?b) <- (?a p ?b)]" +
+//                "[r2: (?a r ?b) <- (?a q ?b)]" +
+//                "[r3: (?a r ?b) <- (?a t ?c), (?c t ?b)]" +
+//                "[r4: (?a t ?b) <- (?a s ?b)]"
+//        );        
+//        Graph data = new GraphMem();
+//        data.add(new Triple(a, p, b));
+//        data.add(new Triple(b, q, c));
+//        data.add(new Triple(a, s, b));
+//        data.add(new Triple(b, s, d));
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+//        InfGraph infgraph = reasoner.bind(data);
+//        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, r, null), 
+//            new Object[] {
+//                new Triple(a, r, b),
+//                new Triple(b, r, c),
+//                new Triple(a, r, d)
+//            } );
+//    }
+//    
+//    /**
+//     * Test basic rule operations - simple AND rule check with tabling.
+//     */
+//    public void testBaseRules3() {    
+//        List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+//        Graph data = new GraphMem();
+//        data.add(new Triple(p, sP, q) );
+//        data.add(new Triple(q, sP, r) );
+//        data.add(new Triple(p, sP, s) );
+//        data.add(new Triple(s, sP, t) );
+//        data.add(new Triple(a,  p, b) );
+//        InfGraph infgraph = reasoner.bind(data);
+//        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
+//            new Object[] {
+//                new Triple(p, sP, q),
+//                new Triple(q, sP, r),
+//                new Triple(p, sP, s),
+//                new Triple(s, sP, t),
+//                new Triple(p, sP, t),
+//                new Triple(p, sP, r)
+//            } );
+//    }
+//    
+//    /**
+//     * Test basic rule operations - simple AND rule check with tabling.
+//     */
+//    public void testBaseRules3b() {    
+//        List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+//        Graph data = new GraphMem();
+//        data.add(new Triple(p, sP, q) );
+//        data.add(new Triple(q, sP, r) );
+//        data.add(new Triple(r, sP, t) );
+//        data.add(new Triple(q, sP, s) );
+//        InfGraph infgraph = reasoner.bind(data);
+//        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
+//            new Object[] {
+//                new Triple(p, sP, q),
+//                new Triple(q, sP, r),
+//                new Triple(r, sP, t),
+//                new Triple(q, sP, s),
+//                new Triple(p, sP, s),
+//                new Triple(p, sP, r),
+//                new Triple(p, sP, t),
+//                new Triple(q, sP, t),
+//                new Triple(p, sP, r)
+//            } );
+//    }
+//
+//    /**
+//     * Test basic rule operations - simple AND/OR with tabling.
+//     */
+//    public void testBaseRules4() {    
+//        Graph data = new GraphMem();
+//        data.add(new Triple(a, r, b));
+//        data.add(new Triple(b, r, c));
+//        data.add(new Triple(b, r, b));
+//        data.add(new Triple(b, r, d));
+//        List rules = Rule.parseRules(
+//                        "[r1: (?x p ?y) <- (?x r ?y)]" +
+//                        "[r2: (?x p ?z) <- (?x p ?y), (?y r ?z)]" 
+//                        );        
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+//        InfGraph infgraph = reasoner.bind(data);
+//        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(a, p, null), 
+//            new Object[] {
+//                new Triple(a, p, b),
+//                new Triple(a, p, d),
+//                new Triple(a, p, c)
+//            } );
+//    }
+//
+//    /**
+//     * Test basic rule operations - simple AND/OR with tabling.
+//     */
+//    public void testBaseRulesXSB1() {    
+//        Graph data = new GraphMem();
+//        data.add(new Triple(p, c, q));
+//        data.add(new Triple(q, c, r));
+//        data.add(new Triple(p, d, q));
+//        data.add(new Triple(q, d, r));
+//        List rules = Rule.parseRules(
+//            "[r1: (?x a ?y) <- (?x c ?y)]" +
+//            "[r2: (?x a ?y) <- (?x b ?z), (?z c ?y)]" +
+//            "[r3: (?x b ?y) <- (?x d ?y)]" +
+//            "[r4: (?x b ?y) <- (?x a ?z), (?z d ?y)]"
+//        );
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+//        InfGraph infgraph = reasoner.bind(data);
+//        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(p, a, null), 
+//            new Object[] {
+//                new Triple(p, a, q),
+//                new Triple(p, a, r)
+//            } );
+//    }
     
     /**
      * Test basic functor usage.

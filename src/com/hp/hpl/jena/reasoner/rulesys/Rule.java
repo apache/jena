@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.4 2003-05-16 16:39:57 der Exp $
+ * $Id: Rule.java,v 1.5 2003-05-20 17:31:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-05-16 16:39:57 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.5 $ on $Date: 2003-05-20 17:31:36 $ */
 public class Rule {
     
 //=======================================================================
@@ -203,8 +203,8 @@ public class Rule {
         if (t.getSubject().isVariable()) vars.add(t.getSubject());
         if (t.getPredicate().isVariable()) vars.add(t.getPredicate());
         Node obj = t.getObject();
-        if (obj.isVariable()) {
-            vars.add(obj);
+        if (obj instanceof Node_RuleVariable) {
+            vars.add(((Node_RuleVariable)obj).getRepresentative());
         } else if (Functor.isFunctor(obj)) {
             findVars((Functor)obj.getLiteral().getValue(), vars);
         }
@@ -216,7 +216,81 @@ public class Rule {
     private void findVars(Functor f, HashSet vars) {
         Node[] args = f.getArgs();
         for (int i = 0; i < args.length; i++) {
-            if (args[i].isVariable()) vars.add(args[i]);
+            if (args[i].isVariable()) vars.add(((Node_RuleVariable)args[i]).getRepresentative());
+        }
+    }
+    
+    /**
+     * Clone a rule, cloning any embedded variables.
+     */
+    public Rule cloneRule() {
+        if (getNumVars() > 0) {
+            HashMap vmap = new HashMap();
+            return new Rule(name, cloneClauseArray(head, vmap), cloneClauseArray(body, vmap));
+        } else {
+            return this;
+        }
+    }
+    
+    /**
+     * Clone a clause array.
+     */
+    private Object[] cloneClauseArray(Object[] clauses, Map vmap) {
+        Object[] cClauses = new Object[clauses.length];
+        for (int i = 0; i < clauses.length; i++ ) {
+            cClauses[i] = cloneClause(clauses[i], vmap);
+        }
+        return cClauses;
+    }
+    
+    /**
+     * Clone a clause, cloning any embedded variables.
+     */
+    private Object cloneClause(Object clause, Map vmap) {
+        if (clause instanceof TriplePattern) {
+            TriplePattern tp = (TriplePattern)clause;
+            return new TriplePattern (
+                            cloneNode(tp.getSubject(), vmap),
+                            cloneNode(tp.getPredicate(), vmap),
+                            cloneNode(tp.getObject(), vmap)
+                        );
+        } else {
+            return cloneFunctor((Functor)clause, vmap);
+        }
+    }
+    
+    /**
+     * Clone a functor, cloning any embedded variables.
+     */
+    private Functor cloneFunctor(Functor f, Map vmap) {
+        Node[] args = f.getArgs();
+        Node[] cargs = new Node[args.length];
+        for (int i = 0; i < args.length; i++) {
+            cargs[i] = cloneNode(args[i], vmap);
+        }
+        Functor fn = new Functor(f.getName(), cargs);
+        fn.setImplementor(f.getImplementor());
+        return fn;
+    }
+    
+    /**
+     * Close a single node.
+     */
+    private Node cloneNode(Node n, Map vmap) {
+        if (n instanceof Node_RuleVariable) {
+            Node_RuleVariable nv = (Node_RuleVariable)n;
+            Object rep = nv.getRepresentative();
+            Node c = (Node)vmap.get(rep);
+            if (c == null) {
+                c = ((Node_RuleVariable)n).cloneNode();
+                vmap.put(rep, c);
+            }
+            return c;
+        } else if (Functor.isFunctor(n)) {
+            Functor f = (Functor)n.getLiteral().getValue();
+            return Functor.makeFunctorNode(cloneFunctor(f, vmap));
+        } else {
+            return n;
         }
     }
     
@@ -297,7 +371,7 @@ public class Rule {
      * Inner class which provides minimalist parsing support based on
      * tokenisation with depth 1 lookahead. No sensible error reporting on offer.
      * No embedded spaces supported.
-     * TODO: Add propert literal support
+     * TODO: Add proper literal support
      */
     static class Parser {
         
