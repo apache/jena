@@ -170,6 +170,8 @@
 [restrictionProc9: (?X ?P *), (?X rdf:type max(?P, '0')) -> (?X rdf:type owl:Nothing)]
 
 [restrictionProc10: (?X rdf:type some(?P, ?C)), noValue(?X, ?P), notEqual(?P, owl:sameIndividualAs),
+					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
+					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass), 
 					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), makeTemp(?T)
    	  						-> (?X ?P ?T), (?T rdf:type ?C)]
 

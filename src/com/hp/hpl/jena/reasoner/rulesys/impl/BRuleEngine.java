@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.18 2003-06-13 16:31:44 der Exp $
+ * $Id: BRuleEngine.java,v 1.19 2003-06-16 08:21:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -29,7 +29,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-06-13 16:31:44 $
+ * @version $Revision: 1.19 $ on $Date: 2003-06-16 08:21:31 $
  */
 public class BRuleEngine {
     
@@ -62,7 +62,7 @@ public class BRuleEngine {
     
     /** The size of the result batch permitted before a rule should 
      * reschedule itself lower on the agenda */
-    protected int batchSize = 10;
+    protected int batchSize = 100000;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(BRuleEngine.class);

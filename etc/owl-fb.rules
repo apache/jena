@@ -2,7 +2,7 @@
 # OWL rule set v0.2
 # This rule set is design to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining).
-# $Id: owl-fb.rules,v 1.6 2003-06-13 16:26:57 der Exp $
+# $Id: owl-fb.rules,v 1.7 2003-06-16 08:20:41 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -192,14 +192,16 @@
 
 [restrictionM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type max(?P, '0')), (?X ?P *) ]
 
-[restrictionA-Ty: (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type) ->
+[restrictionA-Ty: (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type), notEqual(?C, ?D) ->
 		[restrictionA-tyb: (?Y rdf:type ?D) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
 
 # A-Ty + -S implies this so it is redundant (?)
 #[restrictionA-S:  (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type) ->
 #		[restrictionA-Sb: (?X rdf:type some(?P, ?D)) <- (?X rdf:type ?C), (?X ?P ?Y)] ]
 
-[restrictionM-sI: (?B owl:sameIndividualAs ?C) <- (?A rdf:type max(?P, '1')), (?A ?P ?B), (?A ?P ?C) ]
+#[restrictionM-sI: (?B owl:sameIndividualAs ?C) <- (?A rdf:type max(?P, '1')), (?A ?P ?B), (?A ?P ?C) ]
+[restrictionM-sI: (?C rdfs:subClassOf max(?P, '1')) ->
+	[restrictionM-sIb: (?B owl:sameIndividualAs ?C) <- (?A rdf:type ?C), (?A ?P ?B), (?A ?P ?C) ] ]
 
 [restrictionMM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type min(?P, '1')), (?X rdf:type max(?P, 0)) ]
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.10 2003-06-12 14:13:40 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.11 2003-06-16 08:21:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-12 14:13:40 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-16 08:21:35 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -230,9 +230,13 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             }
             // Prepare the context for builtins run in backwards engine
             context = new BBRuleContext(this, dataFind);
-            // Process any scheduled prototype checks
-            // Prototype processing is currently disabled until we can support concurrently updatable graphs
-            // processPrototypeChecks();
+            
+            // Temp ...
+//            List l = bEngine.rulesFor(new TriplePattern(null, com.hp.hpl.jena.vocabulary.RDF.type.asNode(), null));
+//            for (Iterator i = l.iterator(); i.hasNext(); ) {
+//                System.out.println("type rule: " + i.next());
+//            }
+            // ... end temp
         }
     }
     
