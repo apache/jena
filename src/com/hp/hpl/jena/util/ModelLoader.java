@@ -20,12 +20,12 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.14 2003-09-09 14:24:33 chris-dollin Exp $
+ * @version $Id: ModelLoader.java,v 1.15 2003-12-03 18:21:28 andy_seaborne Exp $
  */
 
 public class ModelLoader
 {
-    static Logger logger = Logger.getLogger(ModelLoader.class.getName()) ;
+    static Logger logger = Logger.getLogger(ModelLoader.class) ;
 
     public static final String langXML         = "RDF/XML" ;
     public static final String langXMLAbbrev   = "RDF/XML-ABBREV" ;
