@@ -5,7 +5,6 @@
      xmlns:e="http://www.example.org/dt#"
      xmlns:NS205="http://www.mozilla.org/rdf/chrome#" >
 
-
    <NS205:className  RDF:about="#Test610"> 
         <NS205:dtTest RDF:datatype="http://www.w3.org/2001/XMLSchema#int">4</NS205:dtTest>
     
@@ -60,9 +59,9 @@
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedShort">12678</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-1.23</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0</e:p>
-<!--  I18N BUG in Jena
+
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">123.4</e:p>
--->
+
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1000.00</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-INF</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-1E4</e:p>
@@ -82,21 +81,19 @@
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">NaN</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</e:p>
-<!--
+
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#time">13:20:00.000-05:00</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#time">13:20:00.000</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1999-05-31T13:20:00.000-05:00</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#duration">P1Y2M3DT10H30M12.3S</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1999-05-31</e:p>
--->
-<!--
-Delete X's when  uncommenting.
-<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gMonth">-X-05-X-</e:p>
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gMonth">--05--</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">1999</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gYearMonth">1999-02</e:p>
-<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gDay">-X-X-31</e:p>
-<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gMonthDay">-X-05-31</e:p>
--->
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gDay">---31</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gMonthDay">--05-31</e:p>
+
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#Name">shipTo</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName">USAddress</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.example.com/</e:p>
@@ -105,7 +102,7 @@ Delete X's when  uncommenting.
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#language">fr</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NMTOKEN">US</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NMTOKEN">Br&#233;sil</e:p>
-<!--
+<!-- Do not support list types
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NMTOKENS">US UK</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NMTOKENS">Br&#233;sil Canada Mexique</e:p>
 -->

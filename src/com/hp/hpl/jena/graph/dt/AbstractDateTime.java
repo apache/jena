@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.1.1.1 2002-12-19 19:13:37 bwm Exp $
+ * $Id: AbstractDateTime.java,v 1.2 2003-01-31 11:32:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
@@ -21,7 +21,7 @@ import org.apache.xerces.impl.dv.xs.AbstractDateTimeDV;
  * conventient access to the date values.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:37 $
+ * @version $Revision: 1.2 $ on $Date: 2003-01-31 11:32:02 $
  */
 public class AbstractDateTime {
 
@@ -90,6 +90,31 @@ public class AbstractDateTime {
             int exp = 1 + (int)(log10 / 10);
             fractionalSeconds = ((double)fs) / Math.pow(10.0, (double)exp);
         }
+    }
+    
+    /**
+     * Equality function
+     */
+    public boolean equals(Object obj) {
+        if (obj instanceof AbstractDateTime) {
+            AbstractDateTime adt = (AbstractDateTime) obj;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i] != adt.data[i]) return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * hash function
+     */
+    public int hashCode() {
+        int hash = 0;
+        for (int i = 0; i < data.length; i++) {
+            hash = (hash << 1) ^ data[i];
+        }
+        return hash;
     }
 }
 
