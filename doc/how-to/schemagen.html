@@ -17,7 +17,7 @@
   </style>
 </head>
 
-<body bgcolor="#FFFFFF">
+<body>
 
 <h1>Jena schemagen HOWTO</h1>
 
@@ -27,11 +27,11 @@ that may be used to control the output.
 </p>
 <p>
 Schemagen is typeically invoked from the command line or from a built script (such as Ant).
-Synopsis of the command:<br />
-<code><pre>
+Synopsis of the command:</p>
+<pre>
 java jena.schemagen -i &lt;input&gt; [-a &lt;namespaceURI&gt;] [-o &lt;output file&gt;] [-c &lt;config uri&gt;] [-s &lt;syntax&gt;] ...
-</pre></code>
-Schemagen is highly configurable, either with command line options or by RDF information read from a configuration file.
+</pre>
+<p>Schemagen is highly configurable, either with command line options or by RDF information read from a configuration file.
 <b>Many</b> other options are defined, and these are described in detail below.  Note that the <code>CLASSPATH</code> environment variable must
 be set to include the Jena <code>.jar</code> libraries.
 </p>
@@ -109,7 +109,7 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen.html,v 1.4 2004-01-30 23:58:59 ian_dickinson Exp $ */
+/* CVS $Id: schemagen.html,v 1.5 2004-01-31 13:15:07 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -146,7 +146,7 @@ public class Deputy {
 <p>We noted earlier that schemagen is highly configurable. One additional argument generates a vocabulary file that uses Jena's ontology API, rather than the RDF model API. We change <code>rdfs:Class</code> to <code>owl:Class</code>, and invoke<br />
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg# --ontology</code><br />to get:</p>
 <p><code><pre>
-/* CVS $Id: schemagen.html,v 1.4 2004-01-30 23:58:59 ian_dickinson Exp $ */
+/* CVS $Id: schemagen.html,v 1.5 2004-01-31 13:15:07 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -307,7 +307,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
   </tr>
   <tr> 
     <td width="140" class="syntaxPrompt">Config file</td>
-    <td  class="syntax">&lt;sgen:output rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i><br>
+    <td  class="syntax">&lt;sgen:output rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>
       output-path-or-dir</i>&lt;/sgen:output&gt;</td>
   </tr>
 </table>
@@ -328,7 +328,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
   </tr>
   <tr> 
     <td width="140" class="syntaxPrompt">Config file</td>
-    <td  class="syntax">&lt;sgen:classname rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i><br>
+    <td  class="syntax">&lt;sgen:classname rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>
       classname</i>&lt;/sgen:classname&gt;</td>
   </tr>
 </table>
@@ -348,7 +348,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
   </tr>
   <tr> 
     <td width="140" class="syntaxPrompt">Config file</td>
-    <td  class="syntax">&lt;sgen:classnamesuffix rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i><br>
+    <td  class="syntax">&lt;sgen:classnamesuffix rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>
       suffix</i>&lt;/sgen:classnamesuffix&gt;</td>
   </tr>
 </table>
@@ -380,16 +380,121 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
   option or in the configuration file.</p>
 <h3 id="output"></h3>
 <p>Schemagen does not, in the present version, permit more than one primary namespace 
-  per generated Java class. If an input ontology has more than one namespace for 
-  which Java constants should be generated, users are advised to run schemagen 
-  multiple times with different <code>-a</code> arguments, and thus to generate 
-  more than one output Java class.</p>
+  per generated Java class. However, constants from namespaces other than the 
+  primary namespace may be included in the generated Java class by the include 
+  option:</p>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--include &lt;<i>namespace-URI</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:include rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>namespace</i>&lt;/sgen:include&gt;</td>
+  </tr>
+</table>
+<p></p>
+<p>The include option may repeated multiple times to include a variety of constants 
+  from other namespaces in the output class.</p>
+<h3 id="input_syntax">Specifying the syntax (encoding) of the input document</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">-e &lt;<i>encoding</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:encoding rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>encoding</i>&lt;/sgen:encoding&gt;</td>
+  </tr>
+</table>
+<p>Jena can parse a number of different presentation syntaxes for RDF documents, 
+  including RDF/XML, N3 and NTRIPLE. By default, the encoding will be derived 
+  from the name of the input document (e.g. a document <code>xyz.n3</code> will 
+  be parsed in N3 format), or, if the extension is non-obvious the default is 
+  RDF/XML. The encoding, and hence the parser, to use on the input document may 
+  be specified by the encoding configuration option.</p>
+<h3 id="ontology">Choosing the style of the generated class: ontology or plain RDF</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--ontology</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:ontology rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;<i>true 
+      or false</i>&lt;/sgen:ontology&gt;</td>
+  </tr>
+</table>
+<p>By defaut, the Java class generated by schemagen will generate constants that 
+  are plain RDF Resource, Property or Literal constants. When working with OWL 
+  or DAML ontologies, it may be more convenient to have constants that are OntClass, 
+  ObjectProperty, DatatypeProperty and Individual Java objects. To generate these 
+  ontology constants, rather than plain RDF constants, set the ontology configuration 
+  option. </p>
+<p>Furthermore, since Jena can handle input ontologies in both DAML+OIL and OWL, 
+  it is necessary to be able to specify which language is being processed. This 
+  will affect both the parsing of the input documents, and the language profile 
+  selected for the constants in the generated Java class.</p>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--daml</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:daml rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:daml&gt;</td>
+  </tr>
+</table>
+<p></p>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--owl</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:owl rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
+  </tr>
+</table>
+<p></p>
+<h3 id="package">Specifying the Java package</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--package &lt;<i>package-name</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:package rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>package-name</i>&lt;/sgen:package&gt;</td>
+  </tr>
+</table>
+<p>By defaut, the Java class generated by schemagen will not be in a Java package. 
+  Set the package configuration option to specify the Java package name. Note 
+  that setting the package name does not affect the directory into which the generated 
+  class will be written. The user should specify the appropriate <a href="#output">output 
+  directory</a> to match the Java package.</p>
+<h3 id="classdec">Additional declarations for the generated class</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--classdec &lt;<i>class-declaration</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:classdec rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>class-declaration</i>&lt;/sgen:classdec&gt;</td>
+  </tr>
+</table>
+<p>In some applications, it may be convenient to add additional information to 
+  the declaration of the Java class, for example that the class implements a given 
+  interface (such as java.lang.Serializable). Any string given as the value of 
+  the class-declaration option will be written immediately after &quot;<code>public&nbsp;class&nbsp;<i>ClassName</i></code>&quot;.</p>
 <p>&nbsp;</p>
 
 <h2 id="appendixA">Appendix A: Complete example configuration file</h2>
 <p>The source of this example is provided in the Jena download as <code>etc/schemagen.rdf</code>.</p>
-<p><code><pre>
-&lt;?xml version='1.0'?&gt;
+<p>
+  <pre>
+<code>&lt;?xml version='1.0'?&gt;
 
 &lt;!DOCTYPE rdf:RDF [
  &nbsp;&nbsp;&nbsp;&lt;!ENTITY jena &nbsp;&nbsp;&nbsp;'http://jena.hpl.hp.com/'&gt;
@@ -406,8 +511,8 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  &nbsp;xmlns:rdf &nbsp;&nbsp;="&amp;rdf;"
  &nbsp;xmlns:rdfs &nbsp;="&amp;rdfs;"
  &nbsp;xmlns:owl &nbsp;&nbsp;="&amp;owl;"
- &nbsp;xmlns:vocab ="&amp;vocab;"
- &nbsp;xmlns &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;="&amp;vocab;"
+ &nbsp;xmlns:sgen  ="&amp;sgen;"
+ &nbsp;xmlns &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;="&amp;sgen;"
  &nbsp;xml:base &nbsp;&nbsp;&nbsp;="&amp;base;"
 &gt;
 
@@ -416,7 +521,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.4 2004-01-30 23:58:59 ian_dickinson Exp $
+	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.5 2004-01-31 13:15:07 ian_dickinson Exp $
 --&gt;
 
 &lt;sgen:Config&gt;
@@ -448,10 +553,10 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.4 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.5 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2004-01-30 23:58:59 $
+ * Last modified on &nbsp;&nbsp;$Date: 2004-01-31 13:15:07 $
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
@@ -515,8 +620,9 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
 &lt;/sgen:Config&gt;
 
 &lt;/rdf:RDF&gt;
-</pre></code></p>
+</code></pre>
+</p>
 <hr />
-<p><small>CVS $Id: schemagen.html,v 1.4 2004-01-30 23:58:59 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: schemagen.html,v 1.5 2004-01-31 13:15:07 ian_dickinson Exp $</small></p>
 </body>
 </html>
