@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.2 2003-05-05 21:52:42 der Exp $
+ * $Id: BindingVector.java,v 1.3 2003-05-07 06:56:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * Stack management is done externally.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-07 06:56:34 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -125,7 +125,7 @@ public class BindingVector implements BindingEnvironment {
             return var.sameValueAs(value);
         }
     }
-    
+   
     /**
      * Bind a variable in the current envionment to the given value.
      * Overrides and ignores any current binding.
@@ -134,6 +134,16 @@ public class BindingVector implements BindingEnvironment {
      */
     public void bindNoCheck(Node_RuleVariable var, Node value) {
         environment[var.getIndex()] = value;
+    }
+   
+    /**
+     * Bind a variable in the current envionment to the given value.
+     * Overrides and ignores any current binding.
+     * @param index the index of the variable to bind
+     * @param value the value to bind
+     */
+    public void bindNoCheck(int index, Node value) {
+        environment[index] = value;
     }
     
     /**

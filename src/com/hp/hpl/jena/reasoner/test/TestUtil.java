@@ -5,20 +5,24 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestUtil.java,v 1.4 2003-04-22 14:17:56 der Exp $
+ * $Id: TestUtil.java,v 1.5 2003-05-07 06:57:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import junit.framework.TestCase;
 import java.util.Iterator;
+import org.apache.log4j.Logger;
 
 /**
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-22 14:17:56 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-07 06:57:30 $
  */
 public class TestUtil {
+    
+    /** log4j logger*/
+    static Logger logger = Logger.getLogger(TestUtil.class);
 
     /** Helper function test an iterator against a list of objects - order independent */
     public static void assertIteratorValues(TestCase testCase, Iterator it, Object[] vals) {
@@ -33,9 +37,15 @@ public class TestUtil {
                     found[i] = true;
                 }
             }
+            if (!gotit) {
+                logger.debug("TestUtil found unexpected value: " + n);
+            }
             TestCase.assertTrue(gotit);
         }
         for (int i = 0; i < vals.length; i++) {
+            if (!found[i]) {
+                logger.debug("TestUtil failed to find expected value: " + vals[i]);
+            }
             TestCase.assertTrue(found[i]);
         }
     }
