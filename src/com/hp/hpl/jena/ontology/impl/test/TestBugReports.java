@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.38 $
+ * Revision           $Revision: 1.39 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-16 23:47:21 $
+ * Last modified on   $Date: 2004-04-22 10:22:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -881,6 +881,51 @@ public class TestBugReports
         //TestUtil.assertIteratorValues( this, dummy.listDeclaredProperties(), 
         //                               new Object[] {m.getObjectProperty( NS+"hasPublications")} );
     }
+    
+    /**
+     * Bug report by pierluigi.damadio@katamail.com: raises conversion exception
+     */
+    public void test_pd_01() {
+        String SOURCE =
+            "<?xml version='1.0'?>" +
+            "<rdf:RDF" +
+            "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+            "    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'" +
+            "    xmlns:owl='http://www.w3.org/2002/07/owl#'" +
+            "    xml:base='http://iasi.cnr.it/leks/localSchema1#'" +
+            "    xmlns:test='http://iasi.cnr.it/test/test1#'" +
+            "    xmlns='http://iasi.cnr.it/test/test1#'>" +
+            "    <owl:Ontology rdf:about=''/>" +
+            "    <owl:Class rdf:ID='Hotel'/>" +
+            "    <owl:Class rdf:ID='Hotel5Stars'>" +
+            "        <rdfs:subClassOf>" +
+            "            <owl:Restriction>" +
+            "                <owl:onProperty rdf:resource='#hasCategory'/>" +
+            "                <owl:hasValue rdf:resource='#Category5'/>" +
+            "            </owl:Restriction>" +
+            "        </rdfs:subClassOf>" +
+            "    </owl:Class>" +
+            "    <owl:DatatypeProperty rdf:ID='hasCategory'>" +
+            "        <rdfs:range rdf:resource='http://www.w3.org/2001/XMLSchema#string'/>" +
+            "        <rdfs:domain rdf:resource='#Hotel'/>" +
+            "        <rdf:type rdf:resource='http://www.w3.org/2002/07/owl#FunctionalProperty'/>" +
+            "    </owl:DatatypeProperty>" +
+            "    <owl:Thing rdf:ID='Category5'/>" +
+            "</rdf:RDF>";
+        String NS = "http://iasi.cnr.it/leks/localSchema1#";
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM, null);
+        m.read(new ByteArrayInputStream( SOURCE.getBytes()), NS );
+        
+        for (ExtendedIterator j = m.listRestrictions(); j.hasNext(); ) {
+              Restriction r = (Restriction) j.next();
+              if (r.isHasValueRestriction()) {
+                  HasValueRestriction hv = r.asHasValueRestriction();
+                  String s = hv.getHasValue().toString();
+                  //System.out.println( s );
+              }
+        }
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////
