@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-02 20:33:28 $
+ * Last modified on   $Date: 2003-04-03 15:20:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.2 2003-04-02 20:33:28 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.3 2003-04-03 15:20:44 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -469,6 +469,202 @@ public class OntModelImpl
                .mapWith( new SubjectNodeAs( AnnotationProperty.class ) );
     }
     
+   
+    /**
+     * <p>
+     * Answer a resource that represents an ontology description node in this model. If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param uri The uri for the ontology node. Conventionally, this corresponds to the base URI
+     * of the document itself.
+     * @return An Ontology resource.
+     */
+    public Ontology createOntology( String uri ) {
+        return (Ontology) createOntResource( Ontology.class, getProfile().ONTOLOGY(), uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an Indvidual node in this model. A new anonymous resource
+     * will be created in the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param cls The ontology class to which the individual belongs
+     * @return A new anoymous Individual of the given class.
+     */
+    public Individual createIndividual( OntClass cls ) {
+        return (Individual) createOntResource( Individual.class, cls, null );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an Individual node in this model. If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param uri The uri for the individual, or null for an anonymous individual.
+     * @return An Individual resource.
+     */
+    public Individual createIndividual( OntClass cls, String uri ) {
+        return (Individual) createOntResource( Individual.class, cls, uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an object property in this model.  An object property
+     * is defined to have a range of individuals, rather than datatypes. 
+     * If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param uri The uri for the object property. May not be null.
+     * @return An ObjectProperty resource.
+     */
+    public ObjectProperty createObjectProperty( String uri ) {
+        return (ObjectProperty) createOntResource( ObjectProperty.class, getProfile().OBJECT_PROPERTY(), uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents datatype property in this model. A datattype property
+     * is defined to have a range that is a concrete datatype, rather than an individual. 
+     * If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param uri The uri for the datatype property. May not be null.
+     * @return A DatatypeProperty resource.
+     */
+    public DatatypeProperty createDatatypeProperty( String uri ) {
+        return (DatatypeProperty) createOntResource( DatatypeProperty.class, getProfile().DATATYPE_PROPERTY(), uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an annotation property in this model. If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param uri The uri for the annotation property.
+     * @return An AnnotationProperty resource.
+     */
+    public AnnotationProperty createAnnotationProperty( String uri ) {
+        return (AnnotationProperty) createOntResource( AnnotationProperty.class, getProfile().ANNOTATION_PROPERTY(), uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an axiom in this model. If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param cls The class of axiom (e&#046;g&#046; <code>owl:AllDifferent</code>).
+     * @param uri The uri for the axiom, or null for an anonymous axiom.
+     * @return An Axiom resource.
+     */
+    public Axiom createAxiom( Resource cls, String uri ) {
+        return (Axiom) createOntResource( Axiom.class, cls, uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an anonymous class description in this model. A new
+     * anonymous resource of <code>rdf:type C</code>, where C is the class type from the
+     * language profile.
+     * </p>
+     * 
+     * @return An anonymous Class resource.
+     */
+    public OntClass createClass() {
+        return (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), null );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents a class description node in this model. If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param uri The uri for the class node, or null for an anonymous class.
+     * @return A Class resource.
+     */
+    public OntClass createClass( String uri ) {
+        return (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents an anonymous property restriction in this model. A new
+     * anonymous resource of <code>rdf:type R</code>, where R is the restriction type from the
+     * language profile.
+     * </p>
+     * 
+     * @return An anonymous Restriction resource.
+     */
+    public Restriction createRestriction() {
+        return (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), null );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents a property restriction in this model. If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * 
+     * @param uri The uri for the restriction node, or null for an anonymous restriction.
+     * @return A Restriction resource.
+     */
+    public Restriction createRestriction( String uri ) {
+        return (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents a generic ontology node in this model. If a resource
+     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * the updateable sub-graph of the ontology model. 
+     * </p>
+     * <p>
+     * This is a generic method for creating any known ontology value.  The selector that determines
+     * which resource to create is the same as as the argument to the {@link RDFNode#as() as()} 
+     * method: the Java class object of the desired abstraction.  For example, to create an
+     * ontology class via this mechanism, use:
+     * <code><pre>
+     *     OntClass c = (OntClass) myModel.createOntResource( OntClass.class, null,
+     *                                                        "http://example.org/ex#Parrot" );
+     * </pre></code>
+     * </p>
+     * 
+     * @param javaClass The Java class object that represents the ontology abstraction to create
+     * @param rdfType Optional resource denoting the ontology class to which an individual or 
+     * axiom belongs, if that is the type of resource being created.
+     * @param uri The uri for the ontology resource, or null for an anonymous resource.
+     * @return An ontology resource, of the type specified by the <code>javaClass</code>
+     */
+    public OntResource createOntResource( Class javaClass, Resource rdfType, String uri ) {
+        return (OntResource) getResourceWithType( uri, rdfType ).as( javaClass );
+    }
+    
     
     /**
      * <p>
@@ -882,6 +1078,22 @@ public class OntModelImpl
     protected ExtendedIterator findByDefiningPropertyAs( Property p, Class asKey ) {
         return findByDefiningProperty( p ).mapWith( new SubjectNodeAs( asKey ) );
     }
+    
+    
+    /**
+     * <p>
+     * Answer the resource with the given uri and that has the given rdf:type -
+     * creating the resource if necessary.
+     * </p>
+     * 
+     * @param uri The uri to use, or null
+     * @param rdfType The resource to assert as the rdf:type
+     * @return A new or existing Resource
+     */
+    protected Resource getResourceWithType( String uri, Resource rdfType ) {
+        return getResource( uri ).addProperty( RDF.type, rdfType );
+    }
+    
     
     
     //==============================================================================
