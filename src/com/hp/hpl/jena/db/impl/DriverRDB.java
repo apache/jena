@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.12 $ on $Date: 2003-05-07 23:10:57 $
+* @version $Revision: 1.13 $ on $Date: 2003-05-11 00:35:46 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -655,6 +655,18 @@ public abstract class DriverRDB implements IRDBDriver {
     public boolean supportsJenaReification() {
     	return false;
     }
+    
+	/**
+	 * Convert a string into a form suitable for a legal identifier
+	 * name for the database type.
+	 * @author hkuno
+	 *
+	 */
+	public String toDBIdentifier(String aString) {
+		return aString.toUpperCase();
+	}
+
+
 }
 
 /*
