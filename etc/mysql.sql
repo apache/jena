@@ -21,11 +21,19 @@ CREATE TABLE JENA_LITERALS (
  AsInt         INTEGER,
  ObjXSDType    VARCHAR(250)
 ) TYPE = INNODB;;
-CREATE TABLE JENA_GRAPH(
- GraphId     VARCHAR(250) NOT NULL PRIMARY KEY,
- ReifierGraph        VARCHAR(250),
- ParentGraph         VARCHAR(250)
-) TYPE = INNODB;;
+CREATE TABLE JENA_SYS_STMTREIFIED (
+ SubjRes       VARCHAR(250),
+ PropRes       VARCHAR(250),
+ ObjRes        VARCHAR(250),
+ ObjStr       TINYBLOB,
+ ObjLiteral    INT,
+ GraphID       VARCHAR(250),
+ StmtRes		VARCHAR(250) NOT NULL,
+ HasType		INTEGER
+) TYPE  = INNODB;;
+CREATE UNIQUE INDEX JENA_IDX_STMT ON JENA_SYS_STMTREIFIED(StmtRes, HasType);;
+CREATE INDEX JENA_IDX_SUBJ_PROP ON JENA_SYS_STMTREIFIED(SubjRes, PropRes);;
+CREATE INDEX JENA_IDX_OBJ ON JENA_SYS_STMTREIFIED(ObjRes);;
 CREATE INDEX JENA_IDX_SUBJ_PROP ON JENA_SYS_STMTASSERTED(SubjRes, PropRes);;
 CREATE INDEX JENA_IDX_OBJ ON JENA_SYS_STMTASSERTED(ObjRes);;
 
@@ -43,6 +51,23 @@ CREATE TABLE ${a} (
 CREATE INDEX ${a}_IDX_SUBJ_PROP ON ${a}(SubjRes, PropRes);;
 CREATE INDEX ${a}_IDX_OBJ ON ${a}(ObjRes);;
 
+#-------------------------------------------------------------------
+# Create a blank reified statement table - and indexes - compound statement group
+createReifStatementTable
+CREATE TABLE ${a} (
+ SubjRes       VARCHAR(250) NOT NULL,
+ PropRes       VARCHAR(250) NOT NULL,
+ ObjRes        VARCHAR(250),
+ ObjStr        TINYBLOB,
+ ObjLiteral    INT,
+ GraphID       VARCHAR(250),
+ StmtRes		VARCHAR(250) NOT NULL,
+ HasType		INTEGER
+) TYPE  = INNODB;;
+CREATE UNIQUE INDEX JENA_IDX_STMT ON JENA_SYS_STMTREIFIED(StmtRes, HasType);;
+CREATE INDEX JENA_IDX_SUBJ_PROP ON JENA_SYS_STMTREIFIED(SubjRes, PropRes);;
+CREATE INDEX JENA_IDX_OBJ ON JENA_SYS_STMTREIFIED(ObjRes);;
+ 
 #-------------------------------------------------------------------
 # Delete all rows from named AST table
 dropTable
@@ -292,6 +317,71 @@ FROM ${a} S WHERE S.ObjLiteral = ? AND S.GraphID = ?
 SelectStatementP
 SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
 FROM ${a} S WHERE S.PropRes = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Select all the statements in an Asserted Statement (triple store) graph
+SelectAllReifStatement
+SELECT DISTINCT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Select all the statements in an Asserted Statement (triple store) graph
+# with the given statement URI
+SelectReifStatement
+SELECT DISTINCT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.StmtURI = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Select all the statements in an Asserted Statement (triple store) graph
+# with the given statement URI and that have the HasType property defined
+SelectReifTypeStatement
+SELECT DISTINCT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.StmtURI = ? AND HasType = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Delete an all-URI triple into a Statement table, 
+# substituting Statement table name 
+# and taking URI's as arguments
+deleteReifStatementObjectURI
+Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjRes = ? AND GraphID = ?
+AND StmtRes = ?)
+
+#-------------------------------------------------------------------
+# Delete an triple with a Simple String literal into a Statement table, 
+# substituting Statement table name 
+# and taking values as arguments
+deleteReifStatementLiteralRef
+Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjLiteral = ? AND GraphID = ?
+AND StmtRes = ?)
+
+#-------------------------------------------------------------------
+# Delete an triple with a Simple String literal into a Statement table, 
+# substituting Statement table name 
+# and taking values as arguments
+deleteReifStatementLiteralRef
+Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjLiteral = ? AND GraphID = ?
+AND StmtRes = ?)
+
+#-------------------------------------------------------------------
+# Insert an all-URI triple into a Statement table, 
+# substituting Statement table name 
+# and taking URI's as arguments
+insertReifStatementObjectURI
+INSERT INTO ${a} (SubjRes, PropRes, ObjRes, GraphID, StmtRes, HasType) VALUES (?, ?, ?, ?, ?, ?)
+
+#-------------------------------------------------------------------
+# Insert an triple with a Simple String literal into a Statement table, 
+# substituting Statement table name 
+# and taking values as arguments
+insertReifStatementLiteralRef
+INSERT INTO ${a} (SubjRes, PropRes, ObjLiteral, ObjStr, GraphID, StmtRes, HasType) VALUES (?, ?, ?, ?, ?, ?, ?)
+
+#-------------------------------------------------------------------
+# Insert an triple with a Simple String literal into a Statement table, 
+# substituting Statement table name 
+# and taking values as arguments
+insertReifStatementLiteralVal
+INSERT INTO ${a} (SubjRes, PropRes, ObjStr, GraphID, StmtRes, HasType) VALUES (?, ?, ?, ?, ?, ?)
 
 #-------------------------------------------------------------------
 # Drop all RDF generators from a database
