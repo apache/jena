@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-08 16:18:11 $
+ * Last modified on   $Date: 2004-10-31 11:52:36 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -25,11 +25,10 @@ package com.hp.hpl.jena.ontology.impl.test;
 
 // Imports
 ///////////////
-import java.util.ArrayList;
-
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.EmptyIterator;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.XSD;
 
@@ -43,7 +42,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.25 2003-09-08 16:18:11 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.26 2004-10-31 11:52:36 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -285,7 +284,7 @@ public class TestClassExpression
                     assertTrue( "Should fail to add to a complement", ex );
                     
                     ex = false;
-                    try { A.addOperands( new ArrayList().iterator() ); } catch (UnsupportedOperationException e) {ex = true;}
+                    try { A.addOperands( EmptyIterator.INSTANCE ); } catch (UnsupportedOperationException e) {ex = true;}
                     assertTrue( "Should fail to add to a complement", ex );
                     
                     ex = false;

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-09-25 18:45:47 $
+ * Last modified on   $Date: 2004-10-31 11:52:35 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
@@ -25,6 +25,8 @@ package com.hp.hpl.jena.util;
 ///////////////
 import java.util.*;
 
+import com.hp.hpl.jena.util.iterator.EmptyIterator;
+
 
 
 /**
@@ -32,7 +34,7 @@ import java.util.*;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.6 2004-09-25 18:45:47 ian_dickinson Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.7 2004-10-31 11:52:35 ian_dickinson Exp $
  */
 public class OneToManyMap
     implements Map
@@ -176,13 +178,7 @@ public class OneToManyMap
      */
     public Iterator getAll( Object key ) {
         ArrayList entry = (ArrayList) m_table.get( key );
-
-        if (entry != null) {
-            return entry.iterator();
-        }
-        else {
-            return new ArrayList().iterator();
-        }
+        return (entry != null) ? entry.iterator() : EmptyIterator.INSTANCE;
     }
 
 
