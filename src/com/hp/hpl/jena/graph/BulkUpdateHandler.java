@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BulkUpdateHandler.java,v 1.6 2003-09-16 13:13:19 chris-dollin Exp $
+  $Id: BulkUpdateHandler.java,v 1.7 2003-09-30 13:33:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -36,7 +36,9 @@ public interface BulkUpdateHandler
     
     /**
         Add all the elements from the iterator into the graph this is handler for.
-        Each element of the iterator must be a Triple. 
+        Each element of the iterator must be a Triple.  WARNING. An implementation may
+        have to expand the iterator into a data structure containing all the component
+        elements; hence long iterators may be expensive on store. 
         @param it an Iterator delivering Triples
     */
     void add( Iterator it );
@@ -71,7 +73,10 @@ public interface BulkUpdateHandler
     
     /**
         Remove all the triples in the iterator from the graph this is handler for.
-        Each element from the iterator must be a Triple.
+        Each element from the iterator must be a Triple. WARNING. An implementation may
+        have to expand the iterator into a data structure containing all the component
+        elements; hence long iterators may be expensive on store. 
+        
         @param it an iterator over Triple
     */
     void delete( Iterator it );

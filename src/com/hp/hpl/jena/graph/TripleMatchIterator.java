@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TripleMatchIterator.java,v 1.4 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: TripleMatchIterator.java,v 1.5 2003-09-30 13:33:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -20,6 +20,9 @@ public class TripleMatchIterator
     {
    public TripleMatchIterator( Triple m, Iterator iter ) 
         { super( new TripleMatchFilter( m ), iter); }
+        
+//    public void remove()
+//        { throw new UnsupportedOperationException(); }
     }
 
 /*
