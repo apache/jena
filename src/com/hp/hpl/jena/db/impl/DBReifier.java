@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBReifier.java,v 1.1 2003-05-02 16:54:55 csayers Exp $
+  $Id: DBReifier.java,v 1.2 2003-05-02 22:31:53 csayers Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
+
+import com.hp.hpl.jena.db.*;
 
 /**
  *  Implementation of Reifier for graphs stored in a database.
@@ -12,28 +14,37 @@ package com.hp.hpl.jena.db.impl;
  * @author csayers based in part on SimpleReifier by kers.
 */
 
+import java.util.List;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class DBReifier implements Reifier
     {
-    private Graph m_parent = null;
+    protected GraphRDB m_parent = null;
+    protected DBReifierGraph m_hiddenTriples = null;    
+	protected List m_reifiers = null;
+
+	// For now, we just deal with a single specializedGraphReifier,
+	// but in the future we could replace this with a list of
+	// those and operate much as the GraphRDB implementation
+	// does with it's list of SpecializedGraphs.
+	protected SpecializedGraphReifier m_reifier = null;
     
-    // For now, we just deal with a single specializedGraphReifier,
-    // but in the future we could replace this with a list of
-    // those and operate much as the GraphRDB implementation
-    // does with it's list of SpecializedGraphs.
-    private SpecializedGraphReifier m_reifier = null;
-    
-    /** 
-        Construct a reifier for GraphRDB's.
-        
-        @param parent the Graph which we're reifiying for
-    */
-    public DBReifier( Graph parent, SpecializedGraphReifier specializedReifierGraph) {
-        m_parent = parent;
-        m_reifier = specializedReifierGraph;
-    }
+	/** 
+	 *  Construct a reifier for GraphRDB's.
+	 *  
+	 *  @param parent the Graph for which we will expose reified triples.
+	 *  @param specializedGraphs a List of SpecializedGraphReifiers which reifiy triples in that graph.
+	 */
+	public DBReifier(GraphRDB parent, List specializedGraphs) {
+		m_parent = parent;
+		m_reifiers = specializedGraphs;
+		// For now, just take the first specializedGraphReifier
+		if (m_reifiers.size() != 1)
+			throw new RuntimeException("Internal error - DBReifier requires exactly one SpecializedGraphReifier");
+		m_reifier = (SpecializedGraphReifier) m_reifiers.get(0);
+	}
             
     /* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#getParentGraph()
@@ -45,8 +56,11 @@ public class DBReifier implements Reifier
 	 * @see com.hp.hpl.jena.graph.Reifier#getHiddenTriples()
 	 */
 	public Graph getHiddenTriples() {
-		// TODO Auto-generated method stub
-		return null;
+		if( m_hiddenTriples == null) {
+			m_hiddenTriples = new DBReifierGraph(m_parent, m_reifiers);
+		}
+		
+		return m_hiddenTriples;
 	}
 
 	/* (non-Javadoc)
