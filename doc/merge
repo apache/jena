@@ -1,6 +1,6 @@
 #!/bin/perl
 
-# $Id: merge,v 1.1 2003-08-22 17:25:26 andy_seaborne Exp $
+# $Id: merge,v 1.2 2003-08-25 16:20:15 andy_seaborne Exp $
 # Take a template file and a file with content and merge them.
 # Content is defined as the stuff between certain <div id=""> markers
 # NB The id=, not class=
@@ -58,19 +58,29 @@ close(TARGET) ;
 @sections =  ("header", "footer", "trail", "content") ;
 %sections = () ;
 
+# Bug.  Does not cope with nested sections
+## for $s (@sections)
+## {
+##     if ( m!<div\s*id="${s}"\s*>(.*?)</div>!s )
+##     {
+## 	my $t = $& ;
+## 	$sections{$s} = $t ;
+##     }
+##     else
+##     {
+## 	#print STDERR "No section '$section'\n" ;
+## 	;
+##     }
+## }
+## 
+
 for $s (@sections)
 {
-    if ( m!<div\s*id="${s}"\s*>(.*?)</div>!s )
-    {
-	my $t = $& ;
-	$sections{$s} = $t ;
-    }
-    else
-    {
-	#print STDERR "No section '$section'\n" ;
-	;
-    }
+    $t = &doSectionNamed($_,$s) ;
+    $sections{$s} = $t if ( $t ne '' ) ;
 }
+
+
 # And the HTML title.
 $title='' ;
 if ( m!<title>(.*?)</title>! )
@@ -150,3 +160,57 @@ binmode STDOUT ;
 # Fix up ... UNIX newlines
 s/\r//g ;
 print ;
+
+
+# -------------------------------------------
+
+sub doSectionNamed
+{
+    my $all = $_[0] ;
+    my $sectName = $_[1] ;
+    my $sect = '' ;
+
+    # Break in sections
+    # Need to count nesting.
+
+    # Find start (then count nestings)
+
+    if ( $all =~ m!<div\s*id="${s}"\s*>! )
+    {
+	$sect = $& ;
+	# English is discouraged (see man perlre!)
+	# $rest = $POSTMATCH ;
+	$rest = $' ;
+	$sect = $sect.&doSection($rest) ;
+    }
+    return $sect ;
+}
+
+sub doSection
+{
+    my $all = $_[0] ;
+    my $divText = '' ;
+
+    $i = 1 ;
+    while($i > 0 )
+    {
+	# Bit crude : happens to work even if the <div has a string with > in!
+	if ( ! ( $all =~ m!<div[^>]*>|</div>! ) )
+	{
+	    # Early end.  Didn't find closing </div>
+	    $divText = $divText.$all ;
+	    last ;
+	}
+	
+	$divText = $divText.$`.$& ; # $divText.$PREMATCH.$MATCH
+	$r = $' ; # POSTMATCH
+	$m = $& ; # MATCH
+	
+	# Count up or down (could recurse here for finding nested text)
+	$i++ if ( $m =~ m!^<div! ) ;
+	$i-- if ( $m =~ m!^</div! ) ;
+	# Process chars
+	$all = $r ;
+    }
+    return $divText ;
+}
