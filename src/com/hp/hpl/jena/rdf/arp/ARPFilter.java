@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: ARPFilter.java,v 1.17 2003-12-09 10:31:09 jeremy_carroll Exp $
+ * $Id: ARPFilter.java,v 1.18 2003-12-10 11:58:48 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -949,6 +949,10 @@ class ARPFilter
 	 */
 	public void startRDF() {
 		scopeHandler.startRDF();
+	}
+
+	public boolean ignoring(int eCode) {
+		return errorMode[eCode]==EM_IGNORE;
 	}
 
 }

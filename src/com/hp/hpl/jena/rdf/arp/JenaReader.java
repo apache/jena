@@ -8,10 +8,11 @@ package com.hp.hpl.jena.rdf.arp;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import java.io.*;
 import java.net.*;
-//import java.util.*;
+import java.util.*;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXNotSupportedException;
@@ -31,6 +32,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		m.setReaderClassName("RDF/XML", JenaReader.class.getName());
 		m.setReaderClassName("RDF/XML-ABBREV", JenaReader.class.getName());
 	}
+  Map prefixMap = new HashMap();
 
 	static private final String saxFeaturesURL = "http://xml.org/sax/features/";
 	static private final String saxPropertiesURL =
@@ -71,10 +73,10 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 	/**
 	    update the model by informing it of all the namespace declarations that
 	    we have seen.
-	* /
-	private void updateModel()
-	    { ModelCom.addNamespaces( model, arpf.getPrefixes( new HashMap() ) ); }
 	*/
+	private void updateModel()
+	    { ModelCom.addNamespaces( model, prefixMap ); }
+	
 
 	/** Converts an ARP literal into a Jena Literal.
 	 * @param lit The ARP literal.
@@ -170,7 +172,14 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 			arpf.setNamespaceHandler(new NamespaceHandler() {
 
 				public void startPrefixMapping(String prefix, String uri) {
-			  		model.setNsPrefix(prefix, uri);
+			  	if (PrefixMappingImpl.isNiceURI(uri))
+			  	   model.setNsPrefix(prefix, uri);
+				/*	Set uris = (Set) prefixMap.get(prefix);
+					if (uris == null) {
+						uris = new HashSet();
+						prefixMap.put(prefix, uris);
+					}
+					uris.add(uri); */
 				}
 
 				public void endPrefixMapping(String prefix) {
@@ -213,7 +222,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		} catch (SAXException e) {
 			throw new JenaException(e);
 		}
-		//  updateModel();
+//		updateModel();
 	}
 
 	/**
@@ -608,7 +617,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.17 2003-12-06 21:46:59 jeremy_carroll Exp $
+ * * $Id: JenaReader.java,v 1.18 2003-12-10 11:58:48 jeremy_carroll Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */

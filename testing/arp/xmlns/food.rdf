@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+     <!ENTITY vin  "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#" >
+     <!ENTITY food "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+   ]>
+
+<rdf:RDF
+  xmlns     = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#"
+  xmlns:food= "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#"
+  xml:base  = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#"
+  xmlns:vin = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#"
+  xmlns:owl = "http://www.w3.org/2002/07/owl#"
+  xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs= "http://www.w3.org/2000/01/rdf-schema#">
+
+  <owl:Ontology rdf:about="">
+    <rdfs:comment>
+      Derived from the DAML Wine ontology at 
+      http://ontolingua.stanford.edu/doc/chimaera/ontologies/wines.daml
+      Substantially modified.
+    </rdfs:comment>
+    <owl:imports rdf:resource="file:testing/arp/xmlns/wine.rdf"/>
+  </owl:Ontology>
+
+</rdf:RDF>

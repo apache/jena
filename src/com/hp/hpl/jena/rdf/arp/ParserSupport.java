@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.13 2003-12-06 21:46:59 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.14 2003-12-10 11:58:48 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -276,7 +276,9 @@ class ParserSupport
 		try {
 			URIReference rslt = new URIReference(t.location, ctxt, val);
 			if (val.indexOf(':') == -1) {
-				if (!ctxt.isSameAsDocument()) {
+				if ((!arp.ignoring(IGN_XMLBASE_SIGNIFICANT))
+				  &&
+				!ctxt.isSameAsDocument()) {
 					boolean bad = false;
 					try {
 						URIReference other =

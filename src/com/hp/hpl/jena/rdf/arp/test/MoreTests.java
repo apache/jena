@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.9 2003-12-06 21:46:59 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.10 2003-12-10 11:58:48 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -29,6 +29,7 @@ public class MoreTests
 	suite.addTest(new MoreTests("testNullBaseParamError"));
 	suite.addTest(new MoreTests("testEmptyBaseParamOK"));
 	suite.addTest(new MoreTests("testEmptyBaseParamError"));
+	suite.addTest(new MoreTests("testWineDefaultNS"));
     return suite;
    }
    
@@ -39,6 +40,18 @@ public class MoreTests
     protected Model createMemModel() {
         return ModelFactory.createDefaultModel();
     }
+    
+    public void testWineDefaultNS() throws IOException {
+    	testWineNS(createMemModel());
+		  testWineNS(ModelFactory.createOntologyModel()); 
+    }
+
+	private void testWineNS(Model m) throws FileNotFoundException, IOException {
+		InputStream in =new FileInputStream("testing/arp/xmlns/wine.rdf");
+		  m.read(in,"");  
+		  in.close();
+		  assertEquals("http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#",m.getNsPrefixURI(""));
+	}
   
    public void testEncodingMismatch1() throws IOException {
       Model m = createMemModel();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.18 2003-11-06 17:28:32 ian_dickinson Exp $
+  $Id: PrefixMapping.java,v 1.19 2003-12-10 11:58:39 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -26,7 +26,7 @@ public interface PrefixMapping
     /**
         Specify the prefix name for a URI prefix string. Any existing use of that prefix
         name is overwritten. Any existing prefix for the same URI is removed, unless
-        the prefix is the empty string.  (We still have to decide what happens if there are 
+        either prefix is the empty string.  (We still have to decide what happens if there are 
         *overlapping* URIs.) The result is this same prefixMapping.
   <p>      
         A prefix name must be a valid NCName, or the empty string. The empty string
