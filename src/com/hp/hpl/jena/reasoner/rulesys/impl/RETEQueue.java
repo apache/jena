@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEQueue.java,v 1.5 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RETEQueue.java,v 1.6 2004-02-20 10:36:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * against.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.6 $ on $Date: 2004-02-20 10:36:33 $
  */
 public class RETEQueue implements RETESinkNode, RETESourceNode {
     
@@ -89,6 +89,9 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
                 count.inc();
             } else {
                 count.dec();
+                if (count.getCount() == 0) {
+                    queue.remove(env);
+                }
             }
         }
         

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.10 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: TestGenericRules.java,v 1.11 2004-02-20 10:35:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-12-08 10:48:27 $
+ * @version $Revision: 1.11 $ on $Date: 2004-02-20 10:35:42 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -75,10 +75,10 @@ public class TestGenericRules extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestGenericRules.class ); 
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestGenericRules( "testAddRemove" ));
-//        return suite;
+//        return new TestSuite( TestGenericRules.class ); 
+        TestSuite suite = new TestSuite();
+        suite.addTest(new TestGenericRules( "testAddRemove2" ));
+        return suite;
     }  
     
      
@@ -306,6 +306,32 @@ public class TestGenericRules extends TestCase {
                   new Triple(b, p, C2),
                   new Triple(C2, sC, C3),
                   new Triple(C1, sC, C3)
+              } );
+    }
+    
+    /**
+     * Resolve a bug using remove in rules themselves.
+     */
+    public void testAddRemove2() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, p, Util.makeIntNode(0)));
+        List rules = Rule.parseRules(
+        "(?x p ?v) noValue(a r 1) -> (?x p inc(1, a)) (?x r 1).\n" +
+        "(?x p ?v) noValue(a r 2) -> (?x p inc(1, b)) (?x r 2).\n" +
+        "(?x p ?v) (?x p inc(?i, ?t)) sum(?v, ?i, ?s) -> remove(0,1), (?x p ?s).\n");
+        
+        // This version doesn't work but its not clear if it should
+//        List rules = Rule.parseRules(
+//        "(?x p ?v) noValue(a r 1) addOne(?v, ?v2) -> remove(0) (?x p ?v2) (?x r 1).\n" +
+//        "(?x p ?v) noValue(a r 2) addOne(?v, ?v2) -> remove(0) (?x p ?v2) (?x r 2).\n");
+        GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
+        reasoner.setRules(rules);
+        reasoner.setMode(GenericRuleReasoner.FORWARD_RETE);
+        
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(a, p, null), new Object[] {
+                  new Triple(a, p, Util.makeIntNode(2))
               } );
     }
 }
