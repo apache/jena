@@ -18,7 +18,7 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.3 2004-11-20 21:35:43 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.4 2004-12-07 18:51:18 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
@@ -122,7 +122,13 @@ public class LocatorFile implements Locator
             return null ;
         }
     }
-    public String getName() { return "LocatorFile" ; } 
+    public String getName()
+    {
+        String tmp = "LocatorFile" ;
+        if ( altDir != null )
+            tmp = tmp+"("+altDir+")" ;
+        return tmp ;
+    }
 }
 /*
  * (c) Copyright 2004 Hewlett-Packard Development Company, LP

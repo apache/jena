@@ -39,7 +39,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.7 2004-11-20 21:35:43 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.8 2004-12-07 18:51:18 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -99,7 +99,10 @@ public class FileManager
     public Iterator locators() { return handlers.listIterator() ; }
 
     /** Add a locator to the end of the locators list */ 
-    public void addLocator(Locator loc) { handlers.add(loc) ; }
+    public void addLocator(Locator loc)
+    {
+        log.debug("Add location: "+loc.getName()) ;
+        handlers.add(loc) ; }
 
     /** Add a file locator */ 
     public void addLocatorFile() { addLocatorFile(null) ; } 
