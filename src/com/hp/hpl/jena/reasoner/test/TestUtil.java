@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.9 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: TestUtil.java,v 1.10 2003-12-11 22:55:56 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -14,23 +14,55 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Resource;
+
 /**
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-12-08 10:48:27 $
+ * @version $Revision: 1.10 $ on $Date: 2003-12-11 22:55:56 $
  */
 public class TestUtil {
     
-    /** Helper function test an iterator against a list of objects - order independent */
+    /**
+     * Helper method to test an iterator against a list of objects - order independent
+     * @param testCase The JUnit test case that is invoking this helper
+     * @param it The iterator to test
+     * @param vals The expected values of the iterator
+     */
     public static void assertIteratorValues(TestCase testCase, Iterator it, Object[] vals) {
+        assertIteratorValues( testCase, it, vals, 0 );
+    }
+    
+    /**
+     * Helper method to test an iterator against a list of objects - order independent, and
+     * can optionally check the count of anonymous resources.  This allows us to test a 
+     * iterator of resource values which includes both URI nodes and bNodes. 
+     * @param testCase The JUnit test case that is invoking this helper
+     * @param it The iterator to test
+     * @param vals The expected values of the iterator
+     * @param anonCount If non zero, count the number of anonymous resources returned by <code>it</code>,
+     * and don't check these resources against the expected <code>vals</code>.
+     */
+    public static void assertIteratorValues(TestCase testCase, Iterator it, Object[] vals, int countAnon ) {
         Log logger = LogFactory.getLog( testCase.getClass() );
         
         boolean[] found = new boolean[vals.length];
+        int anonFound = 0;
+        
         for (int i = 0; i < vals.length; i++) found[i] = false;
         while (it.hasNext()) {
             Object n = it.next();
+            System.err.println( "Iterator " + n );
             boolean gotit = false;
+            
+            // do bNodes separately
+            if (countAnon > 0 && isAnonValue( n )) {
+                anonFound++;
+                continue;
+            }
+            
             for (int i = 0; i < vals.length; i++) {
                 if (n.equals(vals[i])) {
                     gotit = true;
@@ -42,12 +74,17 @@ public class TestUtil {
             }
             TestCase.assertTrue( testCase.getName() + " found unexpected iterator value", gotit);
         }
+        
+        // check that no expected values were unfound
         for (int i = 0; i < vals.length; i++) {
             if (!found[i]) {
                 logger.debug( testCase.getName() + " failed to find expected iterator value: " + vals[i]);
             }
             TestCase.assertTrue(testCase.getName() + " failed to find expected iterator value", found[i]);
         }
+        
+        // check we got the right no. of anons
+        TestCase.assertEquals( testCase.getName() + " iterator test did not find the right number of anon. nodes", countAnon, anonFound );
     }
     
 
@@ -86,6 +123,20 @@ public class TestUtil {
             length++;
         }
         TestCase.assertEquals(expectedLength, length);
+    }
+    
+    
+    /**
+     * For the purposes of counting, a value is anonymous if (a) it is an anonymous resource,
+     * or (b) it is a statement with a bNode subject or (c) it is a statement with a bNode
+     * object.  This is because we cannot check bNode identity against fixed expected data values.
+     * @param n A value
+     * @return True if n is anonymous
+     */
+    protected static boolean isAnonValue( Object n ) {
+        return ((n instanceof Resource) && ((Resource) n).isAnon()) ||
+               ((n instanceof Statement) && ((Statement) n).getSubject().isAnon()) ||
+               ((n instanceof Statement) && isAnonValue( ((Statement) n).getObject() ));
     }
 }
 
