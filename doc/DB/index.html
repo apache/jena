@@ -60,9 +60,9 @@ database engine. Jena2 is largely backwards-compatible for Jena1 applications
 with the exception of some database configuration options. The default Jena2 
 database layout uses a denormalized schema in which literals and resource URIs 
 are stored directly in statement tables. This differs from Jena1 in which all 
-literals and resources were stored in a common table that was referenced by 
+literals and resources were stored in  common tables that were referenced by 
 statements. The Jena2 layout  enables faster insertion and 
-retrieval but uses more storage than Jena1. Options are available that give 
+retrieval but uses more storage than Jena1. Configuration options are available that give 
 Jena2 users some control over the degree of normalization in order to reduce 
 storage consumption. The persistence subsystem supports a Fastpath capability for RDQL 
 queries that dynamically generates SQL queries to perform as much of the RDQL 
