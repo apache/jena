@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.5 2003-09-17 07:53:34 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.6 2003-09-17 15:49:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-09-17 07:53:34 $
+ * @version $Revision: 1.6 $ on $Date: 2003-09-17 15:49:25 $
  */
 public class WebOntTestHarness {
 
@@ -52,6 +52,9 @@ public class WebOntTestHarness {
     
     /** The time cost in ms of the last test to be run */
     public long lastTestDuration = 0;
+    
+    /** Number of tests passed */
+    public int passCount = 0;
     
 //  =======================================================================
 //  Internal constants
@@ -80,6 +83,7 @@ public class WebOntTestHarness {
     
     /** List of tests that are blocked because they test language features beyond Lite */
     public static final String[] BLOCKED_TESTS = {
+        // Explicitly testing non-lite features
         "http://www.w3.org/2002/03owlt/complementOf/Manifest001#test", 
         "http://www.w3.org/2002/03owlt/description-logic/Manifest901#test", 
         "http://www.w3.org/2002/03owlt/description-logic/Manifest903#test", 
@@ -88,7 +92,15 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/oneOf/Manifest002#test", 
         "http://www.w3.org/2002/03owlt/oneOf/Manifest003#test", 
         "http://www.w3.org/2002/03owlt/unionOf/Manifest001#test", 
-        "http://www.w3.org/2002/03owlt/unionOf/Manifest002#test", 
+        "http://www.w3.org/2002/03owlt/unionOf/Manifest002#test",
+        "http://www.w3.org/2002/03owlt/equivalentClass/Manifest006#test",
+        // Less direct use of non-lite - implement sufficient for these?
+        // These two need singletons defined via oneOf
+        "http://www.w3.org/2002/03owlt/FunctionalProperty/Manifest004#test", 
+        "http://www.w3.org/2002/03owlt/InverseFunctionalProperty/Manifest004#test",
+        // These two need hasValue
+        "http://www.w3.org/2002/03owlt/equivalentProperty/Manifest004#test",
+        "http://www.w3.org/2002/03owlt/equivalentProperty/Manifest005#test",
     };
             
     /** The list of status values to include. If approvedOnly then only the first
@@ -100,6 +112,7 @@ public class WebOntTestHarness {
     
     public WebOntTestHarness() {
         testDefinitions = loadAllTestDefinitions();
+        reasoner = ReasonerRegistry.getOWLReasoner();
     }
 
     /** Load all of the known manifest files into a single model */
@@ -148,8 +161,11 @@ public class WebOntTestHarness {
      * Run all relevant tests.
      */
     public void runTests() {
+        System.out.println("Positive entailment: ");
         runTests(findTestsOfType(OWLTest.PositiveEntailmentTest));
+        System.out.println("\nNegative entailment: ");
         runTests(findTestsOfType(OWLTest.NegativeEntailmentTest));
+        System.out.println("\nPassed " + passCount + " out of " + testCount);
     }
     
     /**
@@ -176,6 +192,7 @@ public class WebOntTestHarness {
         if (success) {
             System.out.print( (testCount % 40 == 0) ? ".\n" : ".");
             System.out.flush();
+            passCount++;
         } else {
             System.out.println("\nFAIL: " + test);
         }
@@ -191,10 +208,11 @@ public class WebOntTestHarness {
             // Entailment tests
             Model premises = getDoc(test, RDFTest.premiseDocument);
             Model conclusions = getDoc(test, RDFTest.conclusionDocument);
+            comprehensionAxioms(premises, conclusions);
             long t1 = System.currentTimeMillis();
             InfGraph graph = reasoner.bind(premises.getGraph());
             Model result = ModelFactory.createModelForGraph(graph);
-            boolean correct = testConclusions(conclusions.getGraph(), result.getGraph());
+            boolean correct = testEntailment(conclusions.getGraph(), result.getGraph());
             long t2 = System.currentTimeMillis();
             lastTestDuration = t2 - t1; 
             if (test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest)) {
@@ -246,11 +264,67 @@ public class WebOntTestHarness {
      * translating the conclusions graph into a find query which contains one
      * variable for each distinct bNode in the conclusions graph.
      */
-    private boolean testConclusions(Graph conclusions, Graph result) {
+    public boolean testEntailment(Graph conclusions, Graph result) {
         QueryHandler qh = result.queryHandler();
         Query query = WGReasonerTester.graphToQuery(conclusions);
         Iterator i = qh.prepareBindings(query, new Node[] {}).executeBindings();
         return i.hasNext();
+    }
+    
+    /**
+     * Example the conclusions graph for introduction of restrictions which
+     * require a comprehension rewrite and declare new (anon) classes
+     * for those restrictions.
+     */
+    public void comprehensionAxioms(Model premises, Model conclusions) {
+        // Comprehend all restriction declarations and note them in a map
+        Map comprehension = new HashMap();
+        StmtIterator ri = conclusions.listStatements(null, RDF.type, OWL.Restriction);
+        while (ri.hasNext()) {
+            Resource restriction = ri.nextStatement().getSubject();
+            StmtIterator pi = restriction.listProperties(OWL.onProperty);
+            while (pi.hasNext()) {
+                Resource prop = (Resource)pi.nextStatement().getObject();
+                StmtIterator vi = restriction.listProperties();
+                while (vi.hasNext()) {
+                    Statement rs = vi.nextStatement();
+                    if ( ! rs.getPredicate().equals(OWL.onProperty)) {
+                        // Have a restriction on(prop) of type rs in the conclusions
+                        // So assert a premise that such a restriction could exisit
+                        Resource comp = premises.createResource()
+                            .addProperty(RDF.type, OWL.Restriction)
+                            .addProperty(OWL.onProperty, prop)
+                            .addProperty(rs.getPredicate(), rs.getObject());
+                        comprehension.put(restriction, comp);
+                    }
+                }
+            }
+        }
+        // Comphend any intersectionOf lists
+        StmtIterator ii = conclusions.listStatements(null, OWL.intersectionOf, (RDFNode)null);
+        while (ii.hasNext()) {
+            Statement is = ii.nextStatement();
+            Resource comp = premises.createResource()
+                   .addProperty(RDF.type, OWL.Class)
+                   .addProperty(OWL.intersectionOf, mapList(premises, (Resource)is.getObject(), comprehension));
+        }
+    }
+
+    /**
+     * Helper. Adds to the target model a translation of the given RDF list
+     * with each element replaced according to the map.
+     */
+    private Resource mapList(Model target, Resource list, Map map) {
+        if (list.equals(RDF.nil)) {
+            return RDF.nil;
+        } else {
+            Resource head = (Resource) list.getRequiredProperty(RDF.first).getObject();
+            Resource rest = (Resource) list.getRequiredProperty(RDF.rest).getObject();
+            Resource mapElt = target.createResource();
+            mapElt.addProperty(RDF.first, map.get(head));
+            mapElt.addProperty(RDF.rest, mapList(target, rest, map));
+            return mapElt;
+        }
     }
     
 //  =======================================================================

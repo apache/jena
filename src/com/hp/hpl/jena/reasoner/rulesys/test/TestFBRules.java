@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.27 2003-09-12 15:15:39 der Exp $
+ * $Id: TestFBRules.java,v 1.28 2003-09-17 15:49:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2003-09-12 15:15:39 $
+ * @version $Revision: 1.28 $ on $Date: 2003-09-17 15:49:25 $
  */
 public class TestFBRules extends TestCase {
     
@@ -806,7 +806,7 @@ public class TestFBRules extends TestCase {
             count++;
         }
 //        listFBGraph("direct databind case", (FBRuleInfGraph)infgraph);
-        assertTrue(count == 5);
+        assertEquals(6, count);
         
         infgraph = reasoner.bindSchema(data).bind(new GraphMem());
         count = 0;
@@ -816,7 +816,7 @@ public class TestFBRules extends TestCase {
             count++;
         }
 //        listFBGraph("bindSchema case", (FBRuleInfGraph)infgraph);
-        assertTrue(count == 5);
+        assertEquals(6, count);
     }
     
     /**

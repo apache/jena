@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.23 2003-09-16 12:39:19 der Exp $
+# $Id: owl-fb.rules,v 1.24 2003-09-17 15:48:35 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -130,12 +130,8 @@
 -> (owl:Class rdfs:subClassOf rdfs:Class).
 -> (owl:Restriction rdfs:subClassOf owl:Class).
 
-# The distinction between rdfs and owl class will disappear. 
-# Adding this in introduces rather a lot of duplicate reasoning paths
-# which slow things down for no purpose.
-#-> (rdfs:Class rdfs:subClassOf owl:Class).
-
 -> (owl:Thing rdf:type owl:Class).
+-> (owl:Nothing rdf:type owl:Class).
 
 # These might need to be pre-expanded in the initial rule set
 #-> (owl:equivalentProperty rdf:type owl:SymmetricProperty).
@@ -143,8 +139,6 @@
 #-> (owl:equivalentClass rdf:type owl:SymmetricProperty).
 #-> (owl:equivalentClass rdf:type owl:TransitiveProperty).
 -> (owl:sameAs rdf:type owl:SymmetricProperty).
-#-> (owl:sameIndividualAs rdf:type owl:SymmetricProperty).
-#-> (owl:sameIndividualAs rdf:type owl:TransitiveProperty).
 -> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).
 -> (owl:differentFrom rdf:type owl:SymmetricProperty).
 -> (owl:disjointWith rdf:type owl:SymmetricProperty).
@@ -164,6 +158,8 @@
 [earlyTypeProp1: (?C rdf:type owl:Restriction) -> (?C rdf:type owl:Class) ]
 
 [earlyTypeProp2: (?C owl:intersectionOf ?X) -> (?C rdf:type owl:Class) ]
+
+[earlyTypeProp3: (?C rdf:type owl:Class) -> (?C rdf:type rdfs:Class) ]
 
 [prototype1: (?c rdf:type owl:Class), noValue(?c, rb:prototype), makeTemp(?t)
   	    				-> (?c rb:prototype ?t), (?t rdf:type ?c) ]
@@ -233,8 +229,8 @@
 
 # Rule move to sameInstance block below to ease experimentation
 #[max1: (?C rdfs:subClassOf max(?P, 1)) ->
-#    [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- bound(?Y1),   (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notEqual(?Y1, ?Y2)]
-#    [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- unbound(?Y1), (?X ?P ?Y2), (?X rdf:type ?C), (?X ?P ?Y1), notEqual(?Y1, ?Y2)]
+#    [max1b: (?Y1 owl:sameAs ?Y2) <- bound(?Y1),   (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notEqual(?Y1, ?Y2)]
+#    [max1b: (?Y1 owl:sameAs ?Y2) <- unbound(?Y1), (?X ?P ?Y2), (?X rdf:type ?C), (?X ?P ?Y1), notEqual(?Y1, ?Y2)]
 #    ]
     
 [maxRec: (?C owl:equivalentClass max(?P, 1)), (?P rdf:type owl:FunctionalProperty) ->
@@ -269,7 +265,7 @@
 #------------------------------------------------------------------
 
 # Are all the guards still necessary?
-[some1: (?C rdfs:subClassOf some(?P, ?D)), notEqual(?P, owl:sameIndividualAs),
+[some1: (?C rdfs:subClassOf some(?P, ?D)), notEqual(?P, owl:sameAs),
 					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), 
 					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
 					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass),
@@ -318,6 +314,18 @@
 #						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty) ]
     
 #------------------------------------------------------------------
+# Nothing
+#------------------------------------------------------------------
+    
+[nothing1: (?C rdfs:subClassOf min(?P, ?n)) (?C rdfs:subClassOf max(?P, ?x))
+           lessThan(?x, ?n)  ->  (?C owl:equivalentClass owl:Nothing) ]
+           
+[nothing2: (?C rdfs:subClassOf ?D) (?C rdfs:subClassOf ?E) (?D owl:disjointWith ?E)
+           ->  (?C owl:equivalentClass owl:Nothing) ]
+           
+[nothing3: (?C rdfs:subClassOf owl:Nothing) ->  (?C owl:equivalentClass owl:Nothing) ]
+           
+#------------------------------------------------------------------
 # Disjointness
 #------------------------------------------------------------------
 
@@ -345,62 +353,62 @@
 # Instance equality
 #------------------------------------------------------------------
 
-# sameIndividualAs
+# sameAs
 
-#[sameIndividualAs1: (?P rdf:type owl:FunctionalProperty) ->
-#      [sameIndividualAs1b: (?B owl:sameIndividualAs ?C) <- unbound(?C), (?A ?P ?B), (?A ?P ?C) ] 
-#      [sameIndividualAs1b: (?B owl:sameIndividualAs ?C) <-   bound(?C), (?A ?P ?C), (?A ?P ?B) ] 
+#[sameAs1: (?P rdf:type owl:FunctionalProperty) ->
+#      [sameAs1b: (?B owl:sameAs ?C) <- unbound(?C), (?A ?P ?B), (?A ?P ?C) ] 
+#      [sameAs1b: (?B owl:sameAs ?C) <-   bound(?C), (?A ?P ?C), (?A ?P ?B) ] 
 #      ]
 #                    
-#[sameIndividualAs2: (?P rdf:type owl:InverseFunctionalProperty) -> 
-#      [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <- unbound(?C), (?A ?P ?B), (?C ?P ?B) ] 
-#      [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <-   bound(?C), (?C ?P ?B), (?A ?P ?B) ] 
+#[sameAs2: (?P rdf:type owl:InverseFunctionalProperty) -> 
+#      [sameAs2b: (?A owl:sameAs ?C) <- unbound(?C), (?A ?P ?B), (?C ?P ?B) ] 
+#      [sameAs2b: (?A owl:sameAs ?C) <-   bound(?C), (?C ?P ?B), (?A ?P ?B) ] 
 #      ]
 #      
-##[sameIndividualAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type owl:Thing) 
-##                    -> (?X owl:sameIndividualAs ?Y) ]                    
+##[sameAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type owl:Thing) 
+##                    -> (?X owl:sameAs ?Y) ]                    
 #
-#[sameIndividualAs4a: (?Y ?P ?V) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?X ?P ?V) ]
-#[sameIndividualAs4c: (?Y ?P ?V) <- bound(?V), (?X ?P ?V), notEqual(?X,?Y), (?X owl:sameIndividualAs ?Y)  ]
-#[sameIndividualAs5a: (?V ?P ?Y) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?V ?P ?X)  ]
-#[sameIndividualAs5c: (?V ?P ?Y) <- bound(?V), (?V ?P ?X), notEqual(?X,?Y), (?X owl:sameIndividualAs ?Y) ]
+#[sameAs4a: (?Y ?P ?V) <- unbound(?V), (?X owl:sameAs ?Y), notEqual(?X,?Y), (?X ?P ?V) ]
+#[sameAs4c: (?Y ?P ?V) <- bound(?V), (?X ?P ?V), notEqual(?X,?Y), (?X owl:sameAs ?Y)  ]
+#[sameAs5a: (?V ?P ?Y) <- unbound(?V), (?X owl:sameAs ?Y), notEqual(?X,?Y), (?V ?P ?X)  ]
+#[sameAs5c: (?V ?P ?Y) <- bound(?V), (?V ?P ?X), notEqual(?X,?Y), (?X owl:sameAs ?Y) ]
 #
-#[sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
-##[sameIndividualAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
+#[sameAs6: (?X rdf:type owl:Thing) <- (?X owl:sameAs ?Y) ]
+##[sameAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameAs ?Y) ]
 
 #------------------------------------------------------------------
 # Experimental forward version of instance equality
 #------------------------------------------------------------------
 
-# sameIndividualAs recognition rules - forward version
+# sameAs recognition rules - forward version
 
 [fp1: (?P rdf:type owl:FunctionalProperty), (?A ?P ?B), notLiteral(?B), (?A ?P ?C), notLiteral(?C)
-					notEqual(?B, ?C) -> (?B owl:sameIndividualAs ?C) ]
+					notEqual(?B, ?C) -> (?B owl:sameAs ?C) ]
 
 [ifp1: (?P rdf:type owl:InverseFunctionalProperty), (?A ?P ?B), (?C ?P ?B) 
-					notEqual(?A, ?C) -> (?A owl:sameIndividualAs ?C) ]
+					notEqual(?A, ?C) -> (?A owl:sameAs ?C) ]
 
 # This rule is not sufficient if the type inference is being done backwards
 [max1: (?C rdfs:subClassOf max(?P, 1)), (?X ?P ?Y1), notLiteral(?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notLiteral(?Y2),
-					notEqual(?Y1, ?Y2) -> (?Y1 owl:sameIndividualAs ?Y2) ]					
+					notEqual(?Y1, ?Y2) -> (?Y1 owl:sameAs ?Y2) ]					
 
 # Subclass inheritance not normally availabe forward which causes problems for max1,
 # patch this but just for restrictions to limit costs
 [subClassTemp: (?C rdfs:subClassOf ?R), isFunctor(?R), (?B rdfs:subClassOf ?C) -> (?B rdfs:subClassOf ?R) ]
 					
-# sameIndividualAs propagation rules - forward version
+# sameAs propagation rules - forward version
 
-[sameIndividualAs1: (?A owl:sameIndividualAs ?B) -> (?B owl:sameIndividualAs ?A) ]
+[sameAs1: (?A owl:sameAs ?B) -> (?B owl:sameAs ?A) ]
 
-[sameIndividualAs2: (?A owl:sameIndividualAs ?B) (?B owl:sameIndividualAs ?C) -> (?A owl:sameIndividualAs ?C) ]
+[sameAs2: (?A owl:sameAs ?B) (?B owl:sameAs ?C) -> (?A owl:sameAs ?C) ]
 
-[sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
+[sameAs6: (?X rdf:type owl:Thing) <- (?X owl:sameAs ?Y) ]
 
-[sameIndividualAs7: (?X owl:sameIndividualAs ?X) <- bound(?X) (?X rdf:type owl:Thing) ]
+[sameAs7: (?X owl:sameAs ?X) <- bound(?X) (?X rdf:type owl:Thing) ]
 
 # Equality processing rules
 
-[equality1: (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y) ->
+[equality1: (?X owl:sameAs ?Y), notEqual(?X,?Y) ->
 		[(?X ?P ?V) <- (?Y ?P ?V)]
 		[(?V ?P ?X) <- (?V ?P ?Y)] ]
 		
@@ -510,7 +518,7 @@
 
 [validationIndiv: (?v rb:validation on())  ->
 	[validationIndiv: (?X rb:violation error('conflict', 'Two individuals both same and different, may be due to disjoint classes or functional properties', ?Y)) 
-				<- (?X owl:differentFrom ?Y), (?X owl:sameIndividualAs ?Y) ] ]
+				<- (?X owl:differentFrom ?Y), (?X owl:sameAs ?Y) ] ]
 
 [validationDTP: (?v rb:validation on()), (?P rdf:type owl:DatatypeProperty) ->
 	[validationDTP: (?X rb:violation error('range check', 'Object value for datatype property (prop, value)', ?P, ?V))
@@ -535,5 +543,9 @@
 [validationAllFrom: (?v rb:validation on()), (?C owl:equivalentClass all(?P, rdfs:Literal)) -> 
 	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to allValuesFrom rdfs:Literal (prop, value)', ?P, ?V))
 				<- (?X ?P ?V), (?X rdf:type ?C), notDType(?V, rdfs:Literal) ] ]
+
+[validationNothing: (?v rb:validation on()), (?C owl:equivalentClass owl:Nothing) -> 
+	(?C rb:violation error('Inconsistent class', 'Class cannot be instantiated, probably subclass of a disjoint classes or of an empty restriction'))
+]
 
 				
