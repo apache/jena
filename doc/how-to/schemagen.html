@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>HOWTO for Jena schemagen</title>
+  <title>HOWTO for Jena 2 schemagen</title>
   <link rev="made" href="mailto:ian.dickinson@hp.com" />
   <meta name="generator" content="NoteTab Pro 4.92" />
   <meta name="author" content="Ian Dickinson" />
   <meta name="description" content="" />
   <meta name="keywords" content="" />
+  <link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -102,7 +103,7 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen.html,v 1.1 2003-06-26 08:24:49 ian_dickinson Exp $ */
+/* CVS $Id: schemagen.html,v 1.1 2003-08-27 13:06:14 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -139,7 +140,7 @@ public class Deputy {
 <p>We noted earlier that schemagen is highly configurable. One additional argument generates a vocabulary file that uses Jena's ontology API, rather than the RDF model API. We change <code>rdfs:Class</code> to <code>owl:Class</code>, and invoke<br />
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg# --ontology</code><br />to get:</p>
 <p><code><pre>
-/* CVS $Id: schemagen.html,v 1.1 2003-06-26 08:24:49 ian_dickinson Exp $ */
+/* CVS $Id: schemagen.html,v 1.1 2003-08-27 13:06:14 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -239,7 +240,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.1 2003-06-26 08:24:49 ian_dickinson Exp $
+	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.1 2003-08-27 13:06:14 ian_dickinson Exp $
 --&gt;
 
 &lt;sgen:Config&gt;
@@ -274,7 +275,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.1 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2003-06-26 08:24:49 $
+ * Last modified on &nbsp;&nbsp;$Date: 2003-08-27 13:06:14 $
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
@@ -340,6 +341,6 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
 &lt;/rdf:RDF&gt;
 </pre></code></p>
 <hr />
-<p><small>CVS $Id: schemagen.html,v 1.1 2003-06-26 08:24:49 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: schemagen.html,v 1.1 2003-08-27 13:06:14 ian_dickinson Exp $</small></p>
 </body>
 </html>

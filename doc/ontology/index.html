@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>
-      Jena 2 User Manual - Ontology
+      The Jena 2 Ontology API
     </title>
     <link rev="made" href="mailto:ian.dickinson@hp.com" />
     <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
     <link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
     <!--
-      CVS: $Id: index.html,v 1.5 2003-08-26 17:32:46 der Exp $
+      CVS: $Id: index.html,v 1.6 2003-08-27 13:06:14 ian_dickinson Exp $
      (c) Copyright 2003, Hewlett-Packard Development Company LP
     -->
   </head>
@@ -21,18 +21,23 @@
     <h1 class="sectionHeading">
       Jena 2 Ontology API
     </h1>
-    <p>
-      This section describes the Jena2 ontology API in detail, and covers a range of common user tasks. Not all of the fine details of the API are covered here: the reader should expect to refer to the Jena2 Javadoc [TODO] to get the full details of the capabilities of the API.
-    </p>
+    
+<p> This section describes the Jena2 ontology API in detail, and covers a range 
+  of common user tasks. Not all of the fine details of the API are covered here: 
+  the reader should expect to refer to the <a href="../javadoc/index.html">Jena2 
+  Javadoc</a> to get the full details of the capabilities of the API. </p>
     <p>
       Note that this is a preliminary version of this document. Readers should expect that some errors or inconsistencies are possible, and that feedback to the author (via the <a href="http://groups.yahoo.com/group/jena-dev">jena-dev</a> support list) is welcomed.
     </p>
     <h2>
       Prerequisites
     </h2>
-    <p>
-      A basic familiarity with RDF and with Jena is assumed; these topics are covered in other documentation if required [TODO]. Jena is a programming toolkit, using the Java programming language. Familiarity with Java programming is also assumed, and is not covered by this documentation.
-    </p>
+    
+<p> A basic familiarity with RDF and with Jena is assumed; these topics are covered 
+  in other documentation if required (see the <a href="../tutorial/index.html">Jena 
+  tutorial</a>, for example). Jena is a programming toolkit, using the Java programming 
+  language. Familiarity with Java programming is also assumed, and is not covered 
+  by this documentation. </p>
     <h2>
       Overview
     </h2>
@@ -59,7 +64,8 @@
   <li> <a href="#inferenceIntro">Ontology inference: introduction</a> </li>
   <li><a href="#legacyDAML">Handling DAML+OIL ontologies</a></li>
   <li><a href="#persistence">Working with persistent ontologies</a></li>
-  <li> <a href="#faq">FAQ, common problems and other tips</a> </li>
+  <li> <a href="common-problems.html">Common ontology application problems</a> 
+    and sample programs</li>
 </ol>
     <h3>
       Further assistance
@@ -1442,12 +1448,8 @@ spec.setModelMaker( getMaker() );</pre>
   has been loaded once into the database, it can be re-used by other ontologies
   that import it. Thus a given database will only contain at most one copy of
   each imported ontology.</p>
-<p>The <a href="examples/persistent-ont-model/index.html">sample program</a>
-  shows both of the above steps combined, to create an ontology in which both
-  base model and imports are stored in a persistent database.</p>
-<h2 id="builtinReasoners">FAQ, common problems and other tips </h2>
-    <p>
-      <i>To be completed.</i>
-    </p>
-  </body>
+<p>A <a href="examples/persistent-ont-model/index.html">sample program</a> shows 
+  both of the above steps combined, to create an ontology in which both base model 
+  and imports are stored in a persistent database.</p>
+</body>
 </html>
