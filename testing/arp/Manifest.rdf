@@ -532,6 +532,31 @@
 
 </test:PositiveParserTest>
 
+<test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/fileURI">
+
+   
+
+   <test:status>ARP</test:status>
+
+   
+
+   <test:inputDocument>
+
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/fileURI.rdf" />
+
+   </test:inputDocument>
+
+
+
+   <test:outputDocument>
+
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/fileURI.nt" />
+
+   </test:outputDocument>
+
+
+
+</test:PositiveParserTest>
 
 
 

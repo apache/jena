@@ -96,7 +96,7 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.3 2003-03-31 20:17:21 jeremy_carroll Exp $
+* @version  $Id: URI.java,v 1.4 2003-04-01 12:10:29 jeremy_carroll Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -1156,6 +1156,10 @@ public class URI implements Serializable {
 		return uriSpecString.toString();
 	}
 
+    public int hashCode() {
+        return toString().hashCode();
+    }
+    
 	/**
 	 * Get the indicator as to whether this URI uses the "generic URI"
 	 * syntax.

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.1.1.1 2002-12-19 19:16:50 bwm Exp $
+ * * $Id: URIReference.java,v 1.2 2003-04-01 12:10:29 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -95,4 +95,7 @@ class URIReference  implements AResource
         && uri.equals(((URIReference)o).uri );
     }
     
+    public int hashCode() {
+        return uri.hashCode();
+    }
 }
