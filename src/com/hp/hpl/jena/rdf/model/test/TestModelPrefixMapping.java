@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelPrefixMapping.java,v 1.4 2003-11-25 10:51:39 chris-dollin Exp $
+  $Id: TestModelPrefixMapping.java,v 1.5 2004-07-02 11:39:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -72,7 +72,8 @@ public class TestModelPrefixMapping extends AbstractTestPrefixMapping
        Test that existing prefixes are not over-ridden by the default ones.
     */
     private void doOnlyFreshPrefixes()
-        { String newURI = "abc:def";
+        { 
+        String newURI = "abc:def/";
         Graph g = Factory.createDefaultGraph();
         PrefixMapping pm = g.getPrefixMapping();
         pm.setNsPrefix( alphaPrefix, newURI );
