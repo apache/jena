@@ -1,55 +1,51 @@
 /*
-      (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
-      [See end of file]
-      $Id: ModelExtract.java,v 1.2 2004-08-09 13:30:58 chris-dollin Exp $
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  [See end of file]
+  $Id: StatementBoundaryBase.java,v 1.1 2004-08-09 13:31:10 chris-dollin Exp $
 */
-
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphExtract;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleBoundary;
 
 /**
-     ModelExtract - a wrapper for GraphExtract, allowing rooted sub-models to be
-     extracted from other models with some boundary condition.
- 	@author hedgehog
+    StatementBoundaryBase - a base class for StatementBoundarys, with
+    built-in converstion to triples and a continueWith as well as a stopAt.
+    
+    @author kers
 */
-public class ModelExtract
+public abstract class StatementBoundaryBase implements StatementBoundary
     {
     /**
-         The statement boundary used to bound the extraction.
+         Method to over-ride to define what stops the boundary search; default
+         definition is !continueWith(s). <i>exactly one</code> of these two methods
+         must be defined.
     */
-    protected StatementBoundary boundary;
+    public boolean stopAt( Statement s ) 
+        { return !continueWith( s ); }
+
+    /**
+         Method to over-ride to define what continues the boundary search; default
+         definition is !stopAt(s). <i>exactly one</code> of these two methods
+         must be defined.
+    */
+    public boolean continueWith( Statement s ) 
+        { return !stopAt( s ); }
     
     /**
-         Initialise this ModelExtract with a boundary condition.
+         Expresses this StatementBoundary as a TripleBoundary.
     */
-    public ModelExtract( StatementBoundary b )
-        { boundary = b; }
-    
+    public final TripleBoundary asTripleBoundary( Model m ) 
+        { return convert( m, this ); }
+
     /**
-         Answer the rooted sub-model.
+         Answer a TripleBoundary that is implemented in terms of a StatementBoundary. 
     */
-    public Model extract( Resource r, Model s )
-        { return extractInto( ModelFactory.createDefaultModel(), r, s ); }
-    
-    /**
-         Answer <code>model</code> after updating it with the sub-graph of
-         <code>s</code> rooted at <code>r</code>, bounded by this instances
-         <code>boundary</code>.
-    */
-    public Model extractInto( Model model, Resource r, Model s )
-        { TripleBoundary tb = boundary.asTripleBoundary( s );
-        Graph g = getGraphExtract( tb ) .extractInto( model.getGraph(), r.asNode(), s.getGraph() );
-        return ModelFactory.createModelForGraph( g ); }
-    
-    /**
-         Answer a GraphExtract initialised with <code>tb</code>; extension point
-         for sub-classes (specifically TestModelExtract's mocks).
-    */
-    protected GraphExtract getGraphExtract( TripleBoundary tb )
-        { return new GraphExtract( tb ); }
+    public static TripleBoundary convert( final Model s, final StatementBoundary b )
+        {
+        return new TripleBoundary()
+            { public boolean stopAt( Triple t ) { return b.stopAt( s.asStatement( t ) ); } };
+        }
     }
 
 /*

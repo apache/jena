@@ -1,55 +1,40 @@
 /*
-      (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
-      [See end of file]
-      $Id: ModelExtract.java,v 1.2 2004-08-09 13:30:58 chris-dollin Exp $
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  [See end of file]
+  $Id: StatementTripleBoundary.java,v 1.1 2004-08-09 13:31:10 chris-dollin Exp $
 */
-
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphExtract;
 import com.hp.hpl.jena.graph.TripleBoundary;
 
 /**
-     ModelExtract - a wrapper for GraphExtract, allowing rooted sub-models to be
-     extracted from other models with some boundary condition.
- 	@author hedgehog
+    StatementTripleBoundary - a StatementBoundary that just wraps a
+    TripleBoundary.
+    
+    @author kers
 */
-public class ModelExtract
+public class StatementTripleBoundary implements StatementBoundary
     {
-    /**
-         The statement boundary used to bound the extraction.
-    */
-    protected StatementBoundary boundary;
+    protected TripleBoundary tb;
     
     /**
-         Initialise this ModelExtract with a boundary condition.
+         Initialise this StatementTripleBoundary with the TripleBoundary <code>tb</code>.
+     * @param tb
+     */
+    public StatementTripleBoundary( TripleBoundary tb )
+        { this.tb = tb; }
+
+    /**
+         Answer whatever the triple-boundary answers for the triple of <code>s</code>.
     */
-    public ModelExtract( StatementBoundary b )
-        { boundary = b; }
+    public boolean stopAt( Statement s )
+        { return tb.stopAt( s.asTriple() ); }
     
     /**
-         Answer the rooted sub-model.
+         Answer the supplied-to-constructor TripleBoundary.
     */
-    public Model extract( Resource r, Model s )
-        { return extractInto( ModelFactory.createDefaultModel(), r, s ); }
-    
-    /**
-         Answer <code>model</code> after updating it with the sub-graph of
-         <code>s</code> rooted at <code>r</code>, bounded by this instances
-         <code>boundary</code>.
-    */
-    public Model extractInto( Model model, Resource r, Model s )
-        { TripleBoundary tb = boundary.asTripleBoundary( s );
-        Graph g = getGraphExtract( tb ) .extractInto( model.getGraph(), r.asNode(), s.getGraph() );
-        return ModelFactory.createModelForGraph( g ); }
-    
-    /**
-         Answer a GraphExtract initialised with <code>tb</code>; extension point
-         for sub-classes (specifically TestModelExtract's mocks).
-    */
-    protected GraphExtract getGraphExtract( TripleBoundary tb )
-        { return new GraphExtract( tb ); }
+    public TripleBoundary asTripleBoundary( Model ignored )
+        { return tb; }
     }
 
 /*

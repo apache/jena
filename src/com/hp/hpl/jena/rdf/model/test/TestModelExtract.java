@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Chris Dollin
   [See end of file]
-  $Id: TestModelExtract.java,v 1.1 2004-08-07 15:45:58 chris-dollin Exp $
+  $Id: TestModelExtract.java,v 1.2 2004-08-09 13:31:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -16,19 +16,17 @@ import junit.framework.TestSuite;
 */
 public class TestModelExtract extends ModelTestBase
     {
-    protected static final StatementBoundary sbTrue = new StatementBoundary()
+    protected static final StatementBoundary sbTrue = new StatementBoundaryBase()
         { 
         public boolean stopAt( Statement s ) { return true; } 
-        public TripleBoundary asTripleBoundary( Model m ) { return ModelExtract.convert( m, this ); }
         };
         
-    protected static final StatementBoundary sbFalse = new StatementBoundary()
+    protected static final StatementBoundary sbFalse = new StatementBoundaryBase()
         { 
         public boolean stopAt( Statement s ) { return false; }
-        public TripleBoundary asTripleBoundary( Model m ) { return ModelExtract.convert( m, this ); }
         };
 
-    public TestModelExtract(String name)
+    public TestModelExtract( String name )
         { super( name ); }
     
     public static TestSuite suite()
@@ -66,6 +64,28 @@ public class TestModelExtract extends ModelTestBase
         assertFalse( sbFalse.asTripleBoundary( m ).stopAt( triple( "x R y" ) ) );
         }
     
+    public void testStatementTripleBoundaryAnon()
+        {
+        TripleBoundary anon = TripleBoundary.stopAtAnonObject;
+        assertSame( anon, new StatementTripleBoundary( anon ).asTripleBoundary( null ) );
+        assertFalse( new StatementTripleBoundary( anon ).stopAt( statement( "s P o" ) ) );
+        assertTrue( new StatementTripleBoundary( anon ).stopAt( statement( "s P _o" ) ) );
+        }
+    
+    public void testStatementContinueWith()
+        {
+        StatementBoundary sb = new StatementBoundaryBase()
+             { public boolean continueWith( Statement s ) { return false; } };
+        assertTrue( sb.stopAt( statement( "x pings y" ) ) );
+        }
+    
+    public void testStatementTripleBoundaryNowhere()
+        {
+        TripleBoundary nowhere = TripleBoundary.stopNowhere;
+        assertSame( nowhere, new StatementTripleBoundary( nowhere ).asTripleBoundary( null ) );
+        assertFalse( new StatementTripleBoundary( nowhere ).stopAt( statement( "s P _o" ) ) );
+        assertFalse( new StatementTripleBoundary( nowhere ).stopAt( statement( "s P o" ) ) );
+        }
     public void testRemembersBoundary()
         {
         assertSame( sbTrue, new MockModelExtract( sbTrue ).getStatementBoundary() );
@@ -80,6 +100,24 @@ public class TestModelExtract extends ModelTestBase
         assertEquals( node( "a" ), mock.root );
         assertSame( mock.result, m.getGraph() );
         assertSame( mock.subject, source.getGraph() );
+        }
+
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.rdf.model.StatementBoundary#stopAt(com.hp.hpl.jena.rdf.model.Statement)
+     */
+    public boolean stopAt( Statement s )
+        {
+        // TODO Auto-generated method stub
+        return false;
+        }
+
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.rdf.model.StatementBoundary#asTripleBoundary(com.hp.hpl.jena.rdf.model.Model)
+     */
+    public TripleBoundary asTripleBoundary( Model m )
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }
 
