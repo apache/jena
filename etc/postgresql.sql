@@ -4,7 +4,9 @@
 # Initialize a blank database - create system tables and indexes
 #
 # Parameters:
-# a - column type for subj, prop, obj and for head of long objects
+# a - column type for subj, prop, obj
+#     VARCHAR(nn)
+# b - column type for head of long objects
 #     VARCHAR(nn)
 #
 # Note that the tables JENA_LONG_LIT, JENA_LONG_URI, JENA_PREFIX
@@ -22,19 +24,19 @@ CREATE TABLE JENA_SYS_STMT (
 ) ;;
 CREATE TABLE JENA_LONG_LIT (
  ID      	SERIAL PRIMARY KEY,
- Head    	${a} NOT NULL,
+ Head    	${b} NOT NULL,
  ChkSum		BIGINT,
  Tail    	TEXT
 ) ;;
 CREATE TABLE JENA_LONG_URI (
  ID      	SERIAL PRIMARY KEY,
- Head    	${a} NOT NULL,
+ Head    	${b} NOT NULL,
  ChkSum 	BIGINT,
  Tail    	TEXT
 ) ;;
 CREATE TABLE JENA_PREFIX (
  ID      	SERIAL PRIMARY KEY,
- Head    	${a} NOT NULL,
+ Head    	${b} NOT NULL,
  ChkSum		BIGINT,
  Tail    	TEXT
 ) ;;
@@ -153,11 +155,6 @@ SELECT ID FROM ${a} WHERE Head = ? and ChkSum is NULL
 #-------------------------------------------------------------------
 # Return the ID of a long object, if it exists, based on the Head and ChkSum
 getLongObjectIDwithChkSum
-SELECT ID FROM ${a} WHERE Head = ? and ChkSum = ?
-
-#-------------------------------------------------------------------
-# Return the ID of a long object, if it exists
-getLongObjectID
 SELECT ID FROM ${a} WHERE Head = ? and ChkSum = ?
 
 #-------------------------------------------------------------------

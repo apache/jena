@@ -11,7 +11,12 @@
 # b - table implementation type
 #     INNODB if DBHasXact is true;
 #     else MyISAM
-# c - index key length, set to DBIndexKeyLen, default 250
+# c - SPO key length, set to DBLongObjectLen, default 250
+# d - column type for head
+#     VARCHAR(nn) BINARY if DBHasXact is true,
+#        where nn is DBIndexKeyLen (requires that nn <= 250)
+#     else TINYBLOB if DBIndexKeyLen <= 250; else MEDIUMBLOB
+# e - head key length, set to DBIndexKeyLen, default 250
 #
 # Note that the tables jena_long_lit, jena_long_uri, jena_prefix
 # all have the same structure. These are used to store long objects.
@@ -30,21 +35,21 @@ CREATE TABLE jena_sys_stmt (
 DROP TABLE IF EXISTS jena_long_lit;;
 CREATE TABLE jena_long_lit (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
- Head    	${a} NOT NULL,
+ Head    	${d} NOT NULL,
  ChkSum		BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
 DROP TABLE IF EXISTS jena_long_uri;;
 CREATE TABLE jena_long_uri (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
- Head    	${a} NOT NULL,
+ Head    	${d} NOT NULL,
  ChkSum 	BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
 DROP TABLE IF EXISTS jena_prefix;;
 CREATE TABLE jena_prefix (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
- Head    	${a} NOT NULL,
+ Head    	${d} NOT NULL,
  ChkSum		BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
@@ -53,9 +58,9 @@ CREATE TABLE jena_graph (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Name    TINYBLOB
 ) Type = ${b};;
-CREATE UNIQUE INDEX JENA_IXLIT ON jena_long_lit(Head(${c}),ChkSum);;
-CREATE UNIQUE INDEX JENA_IXURI ON jena_long_uri(Head(${c}),ChkSum);;
-CREATE UNIQUE INDEX JENA_IXBND ON jena_prefix(Head(${c}),ChkSum);;
+CREATE UNIQUE INDEX JENA_IXLIT ON jena_long_lit(Head(${e}),ChkSum);;
+CREATE UNIQUE INDEX JENA_IXURI ON jena_long_uri(Head(${e}),ChkSum);;
+CREATE UNIQUE INDEX JENA_IXBND ON jena_prefix(Head(${e}),ChkSum);;
 CREATE INDEX JENA_IXSP ON jena_sys_stmt(Subj(${c}), Prop(${c}));;
 CREATE INDEX JENA_IXO ON jena_sys_stmt(Obj(${c}));;
 
@@ -66,7 +71,7 @@ CREATE INDEX JENA_IXO ON jena_sys_stmt(Obj(${c}));;
 # a - table name
 # b - column type for subj, prop, obj (see param a in InitDBtables)
 # c - table implementation type (see param b in InitDBtables)
-# d - index key length (see param c in InitDBtables)
+# d - SPO key length (see param c in InitDBtables)
 #
 createStatementTable
 CREATE TABLE ${a} (
@@ -85,7 +90,7 @@ CREATE INDEX ${a}_IXO ON ${a}(Obj(${d}));;
 # a - table name
 # b - column type for subj, prop, obj (see param a in InitDBtables)
 # c - table implementation type (see param b in InitDBtables)
-# d - index key length (see param c in InitDBtables)
+# d - SPO key length (see param c in InitDBtables)
 createReifStatementTable
 CREATE TABLE ${a} (
  Subj       ${b},
@@ -167,11 +172,6 @@ SELECT ID FROM ${a} WHERE Head = ? and ChkSum is NULL
 #-------------------------------------------------------------------
 # Return the ID of a long object, if it exists, based on the Head and ChkSum
 getLongObjectIDwithChkSum
-SELECT ID FROM ${a} WHERE Head = ? and ChkSum = ?
-
-#-------------------------------------------------------------------
-# Return the ID of a long object, if it exists
-getLongObjectID
 SELECT ID FROM ${a} WHERE Head = ? and ChkSum = ?
 
 #-------------------------------------------------------------------

@@ -8,6 +8,7 @@
 #     VARCHAR(nn) BINARY if DBHasXact is true,
 #        where nn is DBLongObjectLen (requires that nn <= 250)
 #     else TINYBLOB if DBLongObjectLen <= 250; else MEDIUMBLOB
+# b - column type for head
 #
 # Note that the tables JENA_LONG_LIT, JENA_LONG_URI, JENA_PREFIX
 # all have the same structure. These are used to store long objects.
@@ -42,7 +43,7 @@ CREATE SEQUENCE jena_long_uri_ID_seq;;
 #DROP TABLE jena_prefix;;
 CREATE TABLE jena_prefix (
  ID      	INTEGER NOT NULL PRIMARY KEY,
- Head    	${a} NOT NULL,
+ Head    	${b} NOT NULL,
  ChkSum		INTEGER,
  Tail    	BLOB
 ) ;;
