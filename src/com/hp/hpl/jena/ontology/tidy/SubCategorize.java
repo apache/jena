@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.7 2003-09-25 16:01:52 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.8 2003-09-26 18:47:41 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -66,7 +66,7 @@ class SubCategorize {
 			|| prop == Grammar.owlequivalentClass;
 	}
 	static private boolean SPECIALSYM(int i) {
-		return i < 6;
+		return i < 7;
 		// i in { orphan, notype, cycle, cyclicRest, cyclicFirst, badRestriction } 
 	}
 
@@ -94,7 +94,7 @@ class SubCategorize {
 
 				if (subj == Grammar.badRestriction) {
 					if (prop == Grammar.rdftype)
-						return obj != Grammar.owlRestriction;
+						return obj == Grammar.owlClass;
 
 					if (prop == Grammar.owlonProperty
 						|| prop == Grammar.owlcardinality
@@ -182,11 +182,20 @@ class SubCategorize {
 		boolean oks[] = new boolean[s.length];
 		boolean okp[] = new boolean[p.length];
 		boolean oko[] = new boolean[o.length];
-		boolean dbgMe = Arrays.binarySearch(o, Grammar.badRestriction) >= 0;
+	/*	boolean dbgMe = Arrays.binarySearch(o, Grammar.badRestriction) >= 0;
 		boolean dbgMe2 = Arrays.binarySearch(s, Grammar.badRestriction) >= 0;
 
-		if (dbgMe || dbgMe2)
-			System.err.println("XX");
+		if (dbgMe ) {
+			for (int zz = 0; zz < p.length; zz++)
+					System.err.print(p[zz] + " ");
+			System.err.println("XX " + obj);
+		}		
+		if ( dbgMe2) {
+		for (int zz = 0; zz < p.length; zz++)
+				System.err.print(p[zz] + " ");
+		System.err.println("XX2 " + subj);
+	}
+	*/
 		int i, j, k;
 		boolean bad = true;
 		boolean dl = true;
@@ -230,8 +239,10 @@ class SubCategorize {
 					bad = false;
 				}
 		if (bad) {
+			/*
 			if (dbgMe)
 				System.err.println("Z");
+				*/
 			return FAILURE;
 		}
 		for (i = 0; i < s.length; i++)
@@ -251,23 +262,30 @@ class SubCategorize {
 			(dl ? DL : 0)
 				| (objectAction ? ObjectAction : 0)
 				| structuredAction;
-
-		if (dbgMe && Arrays.binarySearch(o, Grammar.badRestriction) < 0) {
+/*
+		if (dbgMe && Arrays.binarySearch(CategorySet.getSet(o2), Grammar.badRestriction) < 0) {
 			for (int zz = 0; zz < p.length; zz++)
 				if (okp[zz])
 					System.err.print(p[zz] + " ");
 			System.err.println();
 		} else if (dbgMe) {
-			System.err.println("OK");
+			for (int zz = 0; zz < p.length; zz++)
+				if (okp[zz])
+					System.err.print(p[zz] + " ");
+			System.err.println(" OK " + o2);
 		}
-		if (dbgMe2 && Arrays.binarySearch(s, Grammar.badRestriction) < 0) {
+		if (dbgMe2 && Arrays.binarySearch(CategorySet.getSet(s2), Grammar.badRestriction) < 0) {
 			for (int zz = 0; zz < p.length; zz++)
 				if (okp[zz])
 					System.err.print(p[zz] + "*");
 			System.err.println();
 		} else if (dbgMe2) {
-			System.err.println("OK2");
+			for (int zz = 0; zz < p.length; zz++)
+				if (okp[zz])
+					System.err.print(p[zz] + " ");
+			System.err.println(" OK2 " + s2);
 		}
+		*/
 		return (((long) action) << (3 * W))
 			| (((long) s2) << (2 * W))
 			| (((long) p2) << (1 * W))
