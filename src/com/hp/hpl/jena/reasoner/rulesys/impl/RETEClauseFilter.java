@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEClauseFilter.java,v 1.4 2003-06-10 17:10:38 der Exp $
+ * $Id: RETEClauseFilter.java,v 1.5 2003-06-11 17:08:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * and bindings are implemented using a simple byte-coded interpreter.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-10 17:10:38 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-11 17:08:28 $
  */
 public class RETEClauseFilter implements RETESourceNode {
     
@@ -242,6 +242,22 @@ public class RETEClauseFilter implements RETESourceNode {
         }
         return null;
     }
+    
+    /**
+     * Clone this node in the network.
+     * @param netCopy a map from RETENode to cloned instance
+     * @param context the new context to which the network is being ported
+     */
+    public RETENode clone(Map netCopy, RETERuleContext context) {
+        RETEClauseFilter clone = (RETEClauseFilter)netCopy.get(this);
+        if (clone == null) {
+            clone = new RETEClauseFilter(instructions, args);
+            clone.setContinuation((RETESinkNode)continuation.clone(netCopy, context));
+            netCopy.put(this, clone);
+        }
+        return clone;
+    }
+    
 }
 
 

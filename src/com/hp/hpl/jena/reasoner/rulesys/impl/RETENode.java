@@ -1,28 +1,33 @@
 /******************************************************************
- * File:        RETESourceNode.java
+ * File:        RETENode.java
  * Created by:  Dave Reynolds
- * Created on:  10-Jun-2003
+ * Created on:  11-Jun-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETESourceNode.java,v 1.2 2003-06-11 17:08:28 der Exp $
+ * $Id: RETENode.java,v 1.4 2003-06-11 17:08:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
+import java.util.Map;
+
 /**
- * Interface for all non-terminal nodes in the network.
+ * Interface for all nodes in the network.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-11 17:08:28 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-11 17:08:27 $
  */
-public interface RETESourceNode extends RETENode {
+public interface RETENode {
     
     /**
-     * Set the continuation node for this node.
+     * Clone this node in the network across to a different context.
+     * @param netCopy a map from RETENodes to cloned instance so far.
+     * @param context the new context to which the network is being ported
      */
-    public void setContinuation(RETESinkNode continuation);
+    public RETENode clone(Map netCopy, RETERuleContext context);
 
 }
+
 
 
 /*

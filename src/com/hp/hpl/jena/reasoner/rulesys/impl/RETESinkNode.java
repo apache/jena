@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETESinkNode.java,v 1.1 2003-06-10 17:10:38 der Exp $
+ * $Id: RETESinkNode.java,v 1.2 2003-06-11 17:08:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -15,9 +15,9 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * if we don't overlap the networks for different rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-10 17:10:38 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-11 17:08:27 $
  */
-public interface RETESinkNode {
+public interface RETESinkNode extends RETENode {
 
     /** 
      * Propagate a token to this node.

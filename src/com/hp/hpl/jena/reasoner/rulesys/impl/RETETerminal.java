@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETETerminal.java,v 1.4 2003-06-10 22:26:36 der Exp $
+ * $Id: RETETerminal.java,v 1.5 2003-06-11 17:08:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-10 22:26:36 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-11 17:08:28 $
  */
 public class RETETerminal implements RETESinkNode {
 
@@ -39,6 +39,16 @@ public class RETETerminal implements RETESinkNode {
     public RETETerminal(Rule rule, RETEEngine engine, ForwardRuleInfGraphI graph) {
         context = new RETERuleContext(graph, engine);
         context.rule = rule;
+    }
+    
+    /**
+     * Constructor. Used internally for cloning.
+     * @param rule the rule which this terminal should fire.
+     * @param engine the parent rule engine through which the deductions and recursive network can be reached.
+     * @param graph the wider encompasing infGraph needed to for the RuleContext
+     */
+    private RETETerminal(RETERuleContext context) {
+        this.context = context;
     }
     
     /**
@@ -93,14 +103,14 @@ public class RETETerminal implements RETESinkNode {
             for (int i = 0; i < rule.bodyLength(); i++) {
                 Object clause = rule.getBodyElement(i);
                 if (clause instanceof TriplePattern) {
-                    matchList.add(instantiate((TriplePattern)clause, env));
+                    matchList.add(env.instantiate((TriplePattern)clause));
                 } 
             }
         }
         for (int i = 0; i < rule.headLength(); i++) {
             Object hClause = rule.getHeadElement(i);
             if (hClause instanceof TriplePattern) {
-                Triple t = instantiate((TriplePattern) hClause, env);
+                Triple t = env.instantiate((TriplePattern) hClause);
                 if (!t.getSubject().isLiteral()) {
                     // Only add the result if it is legal at the RDF level.
                     // E.g. RDFS rules can create assertions about literals
@@ -137,22 +147,21 @@ public class RETETerminal implements RETESinkNode {
     }
     
     /**
-     * Instantiate a triple pattern against the current environment.
-     * This version handles unbound varibles by turning them into bNodes.
-     * @param clause the triple pattern to match
-     * @param env the current binding environment
-     * @return a new, instantiated triple
+     * Clone this node in the network.
+     * @param netCopy a map from RETENode to cloned instance
+     * @param context the new context to which the network is being ported
      */
-    public static Triple instantiate(TriplePattern pattern, BindingEnvironment env) {
-        Node s = env.getGroundVersion(pattern.getSubject());
-        if (s == null) s = Node.createAnon();
-        Node p = env.getGroundVersion(pattern.getPredicate());
-        if (p == null) p = Node.createAnon();
-        Node o = env.getGroundVersion(pattern.getObject());
-        if (o == null) o = Node.createAnon();
-        return new Triple(s, p, o);
+    public RETENode clone(Map netCopy, RETERuleContext contextIn) {
+        RETETerminal clone = (RETETerminal)netCopy.get(this);
+        if (clone == null) {
+            RETERuleContext newContext = new RETERuleContext((ForwardRuleInfGraphI)contextIn.getGraph(), contextIn.getEngine());
+            newContext.setRule(context.getRule());
+            clone = new RETETerminal(newContext);
+            netCopy.put(this, clone);
+        }
+        return clone;
     }
-     
+    
 }
 
 

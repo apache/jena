@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRETE.java,v 1.3 2003-06-10 22:26:38 der Exp $
+ * $Id: TestRETE.java,v 1.4 2003-06-11 17:06:29 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-10 22:26:38 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-11 17:06:29 $
  */
 public class TestRETE  extends TestCase {
      
@@ -144,6 +144,17 @@ public class TestRETE  extends TestCase {
             this.env = env;
             this.isAdd = isAdd;
         }
+        
+        /**
+         * Clone this node in the network across to a different context.
+         * @param netCopy a map from RETENodes to cloned instance so far.
+         * @param context the new context to which the network is being ported
+         */
+        public RETENode clone(Map netCopy, RETERuleContext context) {
+            // Dummy, not used in testing
+            return this;
+        }
+        
     }
       
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.11 2003-06-08 17:49:51 der Exp $
+ * $Id: TestBasics.java,v 1.12 2003-06-11 17:06:29 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-11 17:06:29 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -301,7 +301,7 @@ public class TestBasics extends TestCase  {
     }
      
     /**
-     * Test schmea partial binding machinery
+     * Test schema partial binding machinery
      */
     public void testSchemaBinding() {
         String rules = "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +

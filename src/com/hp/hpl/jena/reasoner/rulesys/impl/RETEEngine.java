@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEEngine.java,v 1.5 2003-06-11 08:14:36 der Exp $
+ * $Id: RETEEngine.java,v 1.6 2003-06-11 17:08:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-11 08:14:36 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-11 17:08:28 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -169,11 +169,18 @@ public class RETEEngine implements FRuleEngineI {
      * Set the internal rule from from a precomputed state.
      */
     public void setRuleStore(Object ruleStore) {
-        // TODO need to clone the network here
         RuleStore rs = (RuleStore)ruleStore;
-        clauseIndex = rs.clauseIndex;
         predicatesUsed = rs.predicatesUsed;
         wildcardRule = rs.wildcardRule;
+        
+        // Clone the RETE network to this engine
+        RETERuleContext context = new RETERuleContext(infGraph, this);
+        Map netCopy = new HashMap();
+        clauseIndex = new OneToManyMap();
+        for (Iterator i = rs.clauseIndex.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry entry = (Map.Entry)i.next();
+            clauseIndex.put(entry.getKey(), ((RETENode)entry.getValue()).clone(netCopy, context));
+        }
     }
     
 //  =======================================================================

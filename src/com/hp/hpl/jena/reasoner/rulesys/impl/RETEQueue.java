@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEQueue.java,v 1.3 2003-06-10 17:10:38 der Exp $
+ * $Id: RETEQueue.java,v 1.4 2003-06-11 17:08:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * against.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-10 17:10:38 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-11 17:08:28 $
  */
 public class RETEQueue implements RETESinkNode, RETESourceNode {
     
@@ -149,6 +149,22 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
         public void setCount(int count) {
             this.count = count;
         }
+    }
+    
+    /**
+     * Clone this node in the network.
+     * @param context the new context to which the network is being ported
+     */
+    public RETENode clone(Map netCopy, RETERuleContext context) {
+        RETEQueue clone = (RETEQueue)netCopy.get(this);
+        if (clone == null) {
+            clone = new RETEQueue(matchIndices);
+            netCopy.put(this, clone);
+            clone.setSibling((RETEQueue)sibling.clone(netCopy, context));
+            clone.setContinuation((RETESinkNode)continuation.clone(netCopy, context));
+            clone.queue.putAll(queue);
+        }
+        return clone;
     }
 }
 
