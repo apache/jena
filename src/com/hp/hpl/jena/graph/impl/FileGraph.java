@@ -1,12 +1,11 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.14 2003-09-08 11:28:03 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.15 2003-09-08 12:14:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.Model;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.16 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.17 2003-09-08 12:14:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.shared.*;
 import junit.framework.*;
 
 /**
-    Thie class tests the reifiers of ordinary GraphMem graphs.
+    This class tests the reifiers of ordinary GraphMem graphs.
 	@author kers
 */
 

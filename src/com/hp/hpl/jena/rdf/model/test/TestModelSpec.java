@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.18 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.19 2003-09-08 12:13:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;

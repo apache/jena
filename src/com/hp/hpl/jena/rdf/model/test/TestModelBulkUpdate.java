@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelBulkUpdate.java,v 1.8 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: TestModelBulkUpdate.java,v 1.9 2003-09-08 12:13:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.graph.*;
 
 import java.util.*;
 import junit.framework.*;
