@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.45 $
+ * Revision           $Revision: 1.46 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-11 22:31:26 $
+ * Last modified on   $Date: 2004-08-12 14:46:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.45 2004-08-11 22:31:26 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.46 2004-08-12 14:46:05 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -483,7 +483,7 @@ public class OntResourceImpl
      */ 
     public String getLabel( String lang ) {
         checkProfile( getProfile().LABEL(), "LABEL" );
-        if (lang == null) {
+        if (lang == null || lang.length() == 0) {
             // don't care which language version we get
             try {
                 return getRequiredProperty( getProfile().LABEL() ).getString();
@@ -1245,7 +1245,7 @@ public class OntResourceImpl
                     found = l.getString();
                     break;
                 }
-                else if (lang.equalsIgnoreCase( lLang.substring( 0, 2 ) )) {
+                else if (lLang != null && lLang.length() > 1 && lang.equalsIgnoreCase( lLang.substring( 0, 2 ) )) {
                     // partial match - want EN, found EN-GB
                     // keep searching in case there's a better
                     found = l.getString();

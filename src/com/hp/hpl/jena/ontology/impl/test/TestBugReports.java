@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.44 $
+ * Revision           $Revision: 1.45 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 12:03:15 $
+ * Last modified on   $Date: 2004-08-12 14:46:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -40,6 +40,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
+import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
@@ -1112,6 +1113,43 @@ public class TestBugReports
         }
     }
     
+    /** Test case for SF bug 940570 - listIndividuals not working with RDFS_INF
+     * TODO Temporarily disabled - need to talk to Dave about a robust solution 
+     */
+    public void xxx_test_sf_940570() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
+        OntClass C = m.createClass( NS + "C" );
+        Resource a = m.createResource( NS + "a", C );
+        
+        int count = 0;
+        TestUtil.assertIteratorValues( this, m.listIndividuals(), new Object[] {a} );
+    }
+    
+    public void test_sf_945436() {
+        String SOURCE=
+            "<?xml version='1.0'?>" +
+            "<!DOCTYPE owl [" +
+            "      <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#' >" +
+            "      <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#' >" +
+            "      <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#' >" +
+            "      <!ENTITY owl  'http://www.w3.org/2002/07/owl#' >" +
+            "      <!ENTITY dc   'http://purl.org/dc/elements/1.1/' >" +
+            "      <!ENTITY base  'http://jena.hpl.hp.com/test' >" +
+            "    ]>" +
+            "<rdf:RDF xmlns:owl ='&owl;' xmlns:rdf='&rdf;' xmlns:rdfs='&rdfs;' xmlns:dc='&dc;' xmlns='&base;#' xml:base='&base;'>" +
+            "  <C rdf:ID='x'>" +
+            "    <rdfs:label xml:lang=''>a_label</rdfs:label>" +
+            "  </C>" +
+            "  <owl:Class rdf:ID='C'>" +
+            "  </owl:Class>" +
+            "</rdf:RDF>";
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        m.read( new StringReader( SOURCE ), null );
+        Individual x = m.getIndividual( "http://jena.hpl.hp.com/test#x" );
+        assertEquals( "Label on resource x", "a_label", x.getLabel( null) );
+        assertEquals( "Label on resource x", "a_label", x.getLabel( "" ) );
+        assertSame( "fr label on resource x", null, x.getLabel( "fr" ) );
+    }
     
     // Internal implementation methods
     //////////////////////////////////
