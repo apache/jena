@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.6 2003-10-05 15:38:01 der Exp $
+ * $Id: TestBasicLP.java,v 1.7 2003-11-06 17:31:45 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-10-05 15:38:01 $
+ * @version $Revision: 1.7 $ on $Date: 2003-11-06 17:31:45 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1144,7 +1144,8 @@ public class TestBasicLP  extends TestCase {
     /**
      * A suspect problem, originally derived from the OWL rules - risk of unbound variables escaping.
      * Not managed to isolate are reproduce the problem yet.
-     */
+     */ 
+    /** !!!!!!!!!! TODO commented out - ijd - sameIndividualAs no longer in OWL
     public void testProblem9() {
         String ruleSrc = 
         "[test:   (?x owl:sameIndividualAs ?x) <- (?x rdf:type owl:Thing) ]" +
@@ -1168,7 +1169,7 @@ public class TestBasicLP  extends TestCase {
 //                    new Triple(a, ty, OWL.Thing.asNode()),
 //                    new Triple(b, ty, OWL.Thing.asNode())
 //                } );
-    }
+    } end ijd edit */
     
     /**
      * Test 3-arg builtins such as arithmetic.
