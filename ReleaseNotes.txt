@@ -1,0 +1,15 @@
+ReleaseNotes
+============
+
+    Jena j2p1  (January 2003)
+
+
+This is the first release of Jena 2.
+
+It is a preview release, not intended for serious development.  Developers
+are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
+
+It has less functionality than previous Jena releases (1.6.1) and more.
+For more information see readme.html
+
+For guidance on porting code from Jena 1, see docs/migrating1-2.html
