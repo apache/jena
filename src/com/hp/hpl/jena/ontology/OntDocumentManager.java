@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 15:30:37 $
+ * Last modified on   $Date: 2003-07-30 19:17:21 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import org.apache.log4j.*;
+import org.apache.xml.utils.XMLChar;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.ModelLoader;
@@ -46,7 +47,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.22 2003-07-24 15:30:37 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.23 2003-07-30 19:17:21 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -59,6 +60,9 @@ public class OntDocumentManager
     /** Namespace for ontology metadata resources and properties */
     public static final String NS = "http://jena.hpl.hp.com/schemas/2003/03/ont-manager#";
 
+    /** The anchor char is added to the end of namespace prefix expansions */
+    public static final String ANCHOR = "#";
+    
 
     // Static variables
     //////////////////////////////////
@@ -693,7 +697,12 @@ public class OntDocumentManager
                 // there may be a standard prefix for this ontology
                 try {
                     s = root.getRequiredProperty( PREFIX );
-                    addPrefixMapping( publicURI, s.getString() );
+                    
+                    // if the namespace doesn't end with a suitable split point character, add a #
+                    boolean endWithNCNameCh = XMLChar.isNCName( publicURI.charAt( publicURI.length() - 1 ) );
+                    String prefixExpansion = endWithNCNameCh ? (publicURI + "ANCHOR") : publicURI;
+                    
+                    addPrefixMapping( prefixExpansion, s.getString() );
                 } catch (JenaException ignore) {}
 
                 // there may be a language specified for this ontology
