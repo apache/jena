@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.29 2005-02-18 12:19:28 der Exp $
+ * $Id: TestBugs.java,v 1.30 2005-02-20 14:50:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2005-02-18 12:19:28 $
+ * @version $Revision: 1.30 $ on $Date: 2005-02-20 14:50:43 $
  */
 public class TestBugs extends TestCase {
 
@@ -52,7 +52,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "xxtest_der_validation" ));
+//        suite.addTest(new TestBugs( "xxtest_oh_01" ));
 //        return suite;
     }  
 
@@ -507,12 +507,17 @@ public class TestBugs extends TestCase {
     }
     
     /** Bug report from Ole Hjalmar - direct subClassOf not reporting correct result with rule reasoner */
-    public void xxtest_oh_01() {
+    public void test_oh_01() {
         String NS = "http://www.idi.ntnu.no/~herje/ja/";
         Resource[] expected = new Resource[] {
-            ResourceFactory.createResource( NS+"reiseliv.owl#Reiseliv" ),
-            ResourceFactory.createResource( NS+"restaurant.owl#Restaurant" ),
-        };
+                ResourceFactory.createResource( NS+"reiseliv.owl#Reiseliv" ),
+                ResourceFactory.createResource( NS+"hotell.owl#Hotell" ),
+                ResourceFactory.createResource( NS+"restaurant.owl#Restaurant" ),
+                ResourceFactory.createResource( NS+"restaurant.owl#UteRestaurant" ),
+                ResourceFactory.createResource( NS+"restaurant.owl#UteBadRestaurant" ),
+                ResourceFactory.createResource( NS+"restaurant.owl#UteDoRestaurant" ),
+                ResourceFactory.createResource( NS+"restaurant.owl#SkogRestaurant" ),
+            };
         
         test_oh_01scan( OntModelSpec.OWL_MEM, "No inf", expected );
         test_oh_01scan( OntModelSpec.OWL_MEM_MINI_RULE_INF, "Mini rule inf", expected );
@@ -536,16 +541,11 @@ public class TestBugs extends TestCase {
     private void test_oh_01scan( OntModelSpec s, String prompt, Resource[] expected ) {
         String NS = "http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#";
         OntModel m = ModelFactory.createOntologyModel(s, null);
-        m.read( "file:testing/ontology/bugs/test_oh_01b.owl");
+        m.read( "file:testing/ontology/bugs/test_oh_01.owl");
 
-        System.out.println( prompt );
+//        System.out.println( prompt );
         OntClass r = m.getOntClass( NS + "Reiseliv" );
         
-        // Simple subclasses check
-        System.out.println("SubClasses are:");
-        for (Iterator i = m.listStatements(null, RDFS.subClassOf, r); i.hasNext(); ) {
-            System.out.println(" - " + i.next());
-        }
         List q = new ArrayList();
         Set seen = new HashSet();
         q.add( r );
@@ -561,7 +561,7 @@ public class TestBugs extends TestCase {
                 }
             }
             
-            System.out.println( "  Seen class " + c );
+//            System.out.println( "  Seen class " + c );
         }
 
         // check we got all classes
@@ -572,7 +572,7 @@ public class TestBugs extends TestCase {
                 mask &= ~(1 << j);
             }
             else {
-                System.out.println( "Expected but did not see " + expected[j] );
+//                System.out.println( "Expected but did not see " + expected[j] );
             }
         }
         
@@ -583,7 +583,7 @@ public class TestBugs extends TestCase {
                 isExpected = expected[j].equals( res );
             }
             if (!isExpected) {
-                System.out.println( "Got unexpected result " + res );
+//                System.out.println( "Got unexpected result " + res );
             }
         }
         
