@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2002  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2004  Hewlett-Packard Development Company, LP
  * See end of file.
  */
 
@@ -17,11 +17,12 @@ import com.ibm.icu.text.Normalizer;
  * 
  */
 public class CharacterModel {
+	static private final boolean SWITCH_OFF = false;
 	/** Is this string in Unicode Normal Form C.
 	 * @param str The string to be tested.
 	 */
 	static public boolean isNormalFormC(String str) {
-	   return Normalizer.  isNormalized(str,Normalizer.NFC,0);
+	   return SWITCH_OFF || Normalizer.  isNormalized(str,Normalizer.NFC,0);
 	}
 	
 	/* Does this string start with a composing character as defined
@@ -31,7 +32,7 @@ public class CharacterModel {
 	 * @param str The string to be tested.
 	 */
 	static public boolean startsWithComposingCharacter(String str) {
-		return str.length()==0?false:isComposingChar(str.charAt(0));
+		return SWITCH_OFF ? false :  (str.length()==0?false:isComposingChar(str.charAt(0)));
 	}
 /** Is this string fully normalized as defined
 	 * by the 
@@ -40,7 +41,7 @@ public class CharacterModel {
 	 * @param str The string to be tested.
 	 */
 	static public boolean isFullyNormalizedConstruct(String str) {
-		return isNormalFormC(str) && !startsWithComposingCharacter(str);
+		return SWITCH_OFF || (isNormalFormC(str) && !startsWithComposingCharacter(str));
 	}
 	/** Is the character a composing character as defined
 	 * by the 
@@ -49,6 +50,8 @@ public class CharacterModel {
 	 * @param x The character to be tested.
 	 */
    static public boolean isComposingChar(char x) {
+   	if ( SWITCH_OFF )
+   		return false;
    	switch (x) { 
 // Brahmi-derived scripts
 case 0X09BE: // BENGALI VOWEL SIGN AA 
@@ -132,7 +135,7 @@ case 0X11C2: // HANGUL JONGSEONG HIEUH
 }
 
 /*
- *  (c) Copyright 2002  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2004  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
