@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.8 2003-05-21 16:52:36 der Exp $
+ * $Id: TestOWLRules.java,v 1.9 2003-05-21 17:01:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -19,7 +19,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-21 16:52:36 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-21 17:01:02 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -41,14 +41,14 @@ public class TestOWLRules extends TestCase {
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         suite.addTest(new TestOWLRules("SymmetricProperty/Manifest001.rdf"));
-//        suite.addTest(new TestOWLRules("allValuesFrom/Manifest001.rdf"));    // bx - long but terminates
+        suite.addTest(new TestOWLRules("allValuesFrom/Manifest001.rdf"));    // bx - long but terminates
 //        suite.addTest(new TestOWLRules("allValuesFrom/Manifest002.rdf"));   // bx - slow
 //        suite.addTest(new TestOWLRules("someValuesFrom/Manifest002.rdf"));   // bx - slow
 //        suite.addTest(new TestOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
 //        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest001.rdf"));
 //        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest002.rdf"));
 //        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest003.rdf"));
-//        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest005-mod.rdf"));
+        suite.addTest(new TestOWLRules("FunctionalProperty/Manifest005-mod.rdf"));
 //        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest001.rdf"));
 //        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest002.rdf"));
 //        suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest003.rdf"));
@@ -92,7 +92,7 @@ public class TestOWLRules extends TestCase {
 //        suite.addTest(new TestOWLRules("equivalentProperty/Manifest006.rdf"));
 //        suite.addTest(new TestOWLRules("localtests/Manifest001.rdf"));      // bx - long but terminates
 //        suite.addTest(new TestOWLRules("localtests/Manifest002.rdf"));   // bx - long but terminates
-//        suite.addTest(new TestOWLRules("intersectionOf/Manifest001.rdf")); // takes a long time
+        suite.addTest(new TestOWLRules("intersectionOf/Manifest001.rdf")); // takes a long time
 
 //        suite.addTest(new TestOWLRules("cardinality/Manifest001-mod.rdf")); // bx gets lost
 //        suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.16 2003-05-21 16:53:26 der Exp $
+ * $Id: RuleState.java,v 1.17 2003-05-21 17:01:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-05-21 16:53:26 $
+ * @version $Revision: 1.17 $ on $Date: 2003-05-21 17:01:47 $
  */
 public class RuleState {
 
@@ -203,6 +203,9 @@ public class RuleState {
      * fails so the rule is not applicable.
      */
     public static RuleState createInitialState(Rule rule, GoalResults generator) {
+        // Axioms are alredy handled by the infGraph so this first guard should be helpful but
+        // in practice it doesn't seem to.
+//        if (rule.bodyLength() == 0) return null;
         TriplePattern goal = generator.goal;
         TriplePattern head = (TriplePattern) rule.getHeadElement(0);
         BindingVector env = BindingVector.unify(goal, head, rule.getNumVars());
