@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Generator.java,v 1.11 2003-08-17 20:09:18 der Exp $
+ * $Id: Generator.java,v 1.12 2003-08-18 13:50:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-17 20:09:18 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-18 13:50:31 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -216,16 +216,18 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
     /**
      * Start this generator running for the first time.
+     * Should be called from within an appropriately synchronized block.
      */
-    public synchronized void pump() {
+    public void pump() {
         pump(this);
     }
     
     /**
      * Start this generator running from the given previous blocked generating
      * choice point.
+     * Should be called from within an appropriately synchronized block.
      */
-    public synchronized void pump(LPInterpreterState context) {
+    public void pump(LPInterpreterState context) {
         if (isComplete()) return;
         interpreter.setState(context);
         int priorNresults = results.size();

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.13 2003-08-17 21:02:31 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.14 2003-08-18 13:50:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-08-17 21:02:31 $
+ * @version $Revision: 1.14 $ on $Date: 2003-08-18 13:50:31 $
  */
 public class LPBRuleEngine {
     
@@ -176,6 +176,13 @@ public class LPBRuleEngine {
      */
     public void setDerivationLogging(boolean recordDerivations) {
         this.recordDerivations = recordDerivations;
+    }
+    
+    /**
+     * Return true in derivations should be logged.
+     */
+    public boolean getDerivationLogging() {
+        return recordDerivations;
     }
 
     /** Return the rule store associated with the inference graph */

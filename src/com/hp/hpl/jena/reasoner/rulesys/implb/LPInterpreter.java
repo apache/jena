@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.27 2003-08-17 20:09:17 der Exp $
+ * $Id: LPInterpreter.java,v 1.28 2003-08-18 13:50:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2003-08-17 20:09:17 $
+ * @version $Revision: 1.28 $ on $Date: 2003-08-18 13:50:31 $
  */
 public class LPInterpreter {
 
@@ -37,9 +37,6 @@ public class LPInterpreter {
     /** The execution context that should be notified of suspended branches */
     protected LPInterpreterContext iContext;
     
-    /** Set to true to flag that derivations should be logged */
-    protected boolean recordDerivations;
-
     /** True if the engine has terminated */
     protected boolean isComplete = false;
 
@@ -69,7 +66,7 @@ public class LPInterpreter {
     
     /** Original set up goal, only used for debugging */
     protected TriplePattern goal;
-    
+        
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPInterpreter.class);
 
@@ -116,6 +113,9 @@ public class LPInterpreter {
         envFrame.pVars[0] = argVars[0] = standardize(goal.getSubject(), mappedVars);
         envFrame.pVars[1] = argVars[1] = standardize(goal.getPredicate(), mappedVars);
         envFrame.pVars[2] = argVars[2] = standardize(goal.getObject(), mappedVars);
+        if (engine.getDerivationLogging()) {
+            envFrame.initDerivationRecord(argVars);
+        }
         
         if (clauses != null && clauses.size() > 0) {
             if (isTop && engine.getRuleStore().isTabled(goal)) {
@@ -152,17 +152,12 @@ public class LPInterpreter {
      * Stop the current work. This is called if the top level results iterator has
      * either finished or the calling application has had enough. 
      */
-    public synchronized void close() {
-        isComplete = true;
-        engine.detach(this);
-        if (cpFrame != null) cpFrame.close();
-    }
-
-    /**
-     * Set to true to enable derivation caching
-     */
-    public void setDerivationLogging(boolean recordDerivations) {
-        this.recordDerivations = recordDerivations;
+    public void close() {
+        synchronized (engine) {
+            isComplete = true;
+            engine.detach(this);
+            if (cpFrame != null) cpFrame.close();
+        }
     }
     
     /**
@@ -177,11 +172,12 @@ public class LPInterpreter {
     }
     /**
      * Return the next result from this engine, no further initialization.
+     * Should be called from within an appropriately synchronized block.
      * @param context the generator choice point or top level iterator which 
      * is requesting this result and might have preserved state to restore
      * @return either a StateFlag or  a result Triple
      */
-    public synchronized Object next() {
+    public Object next() {
         boolean traceOn = engine.isTraceOn();
         
 //        System.out.println("next() on interpeter for goal " + goal); 
@@ -238,6 +234,7 @@ public class LPInterpreter {
         byte[] code;
         Object[] args;
         boolean traceOn = engine.isTraceOn();
+        boolean recordDerivations = engine.getDerivationLogging();
         
         main: while (cpFrame != null) {
             // restore choice point
@@ -264,6 +261,9 @@ public class LPInterpreter {
                     unwindTrail(trailMark);
                 }
                 pc = ac = 0;
+                if (recordDerivations) {
+                    envFrame.initDerivationRecord(argVars);
+                }
                 
                 if (traceOn) logger.info("ENTER " + clause + " : " + getArgTrace());
                 
@@ -292,6 +292,10 @@ public class LPInterpreter {
                     logger.info("RENTER " + clause);
                 }
                      
+                if (recordDerivations) {
+                    envFrame.getDerivationRecord().noteMatch(tmFrame.goal);
+                }
+                
                 pc = tmFrame.cpc;
                 ac = tmFrame.cac;
 
@@ -338,6 +342,10 @@ public class LPInterpreter {
                     cpFrame = cpFrame.getLink();
                     if (traceOn)logger.info("SUSPEND " + clause);
                     continue main;
+                }
+                
+                if (recordDerivations) {
+                    envFrame.getDerivationRecord().noteMatch(ccp.goal);
                 }
 
                 pc = ccp.cpc;
@@ -554,6 +562,16 @@ public class LPInterpreter {
                             pc = envFrame.cpc;
                             ac = envFrame.cac;
                             if (traceOn) logger.info("EXIT " + clause);
+                            if (recordDerivations && envFrame.getRule() != null) {
+                                LPPartialDerivation pdr = (LPPartialDerivation)envFrame.getDerivationRecord();
+                                if (pdr != null) {
+                                    Triple result = pdr.getResult();
+                                    List matches = pdr.getMatchList();
+                                    BackwardRuleInfGraphI infGraph = engine.getInfGraph();
+                                    RuleDerivation d = new RuleDerivation(envFrame.getRule(), result, matches, infGraph);
+                                    infGraph.logDerivation(result, d);
+                                }
+                            }
                             envFrame = (EnvironmentFrame) envFrame.link;
                             if (envFrame != null) {
                                 clause = envFrame.clause;
@@ -779,7 +797,7 @@ public class LPInterpreter {
             return dnode;
         }
     }
-
+        
 }
 
 

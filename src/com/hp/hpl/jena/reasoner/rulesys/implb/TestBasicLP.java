@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.22 2003-08-14 17:49:06 der Exp $
+ * $Id: TestBasicLP.java,v 1.23 2003-08-18 13:50:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -19,6 +19,8 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 
+import java.io.*;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -28,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-08-14 17:49:06 $
+ * @version $Revision: 1.23 $ on $Date: 2003-08-18 13:50:31 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -70,8 +72,7 @@ public class TestBasicLP  extends TestCase {
         return new TestSuite( TestBasicLP.class );
         
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testBaseRules9" ));
-//        suite.addTest(new TestBasicLP( "testBacktrack4" ));
+//        suite.addTest(new TestBasicLP( "testRuleDerivations" ));
 //        return suite;
     }  
    
@@ -1078,6 +1079,43 @@ public class TestBasicLP  extends TestCase {
                 new Object[] {
                     new Triple(a, ty, c)
                 } );
+    }
+      
+    /**
+     * Test derivation machinery
+     */
+    public void testRuleDerivations() {
+        String rules = "[testRule1: (C2, p, ?a) <- (C1 p ?a)]" +
+                       "[testRule2: (C2, q, ?a) <- (C1 q ?a)]" +
+                       "[testRule3: (a p ?a)  <- (C2 p ?a), (C2 q ?a)]";
+        List ruleList = Rule.parseRules(rules);
+        Graph data = new GraphMem();
+        data.add(new Triple(C1, p, C3));
+        data.add(new Triple(C1, q, C4));
+        data.add(new Triple(C1, q, C3));
+        InfGraph infgraph = makeInfGraph(ruleList, data, new Node[]{p, q});
+        infgraph.setDerivationLogging(true);
+
+        TestUtil.assertIteratorValues(this, infgraph.find(a, null, null),
+            new Triple[] {
+                new Triple(a, p, C3)
+            });
+        
+        Iterator derivs = infgraph.getDerivation(new Triple(a, p, C3));
+        StringWriter outString = new StringWriter(250);
+        PrintWriter out = new PrintWriter(outString);
+        while (derivs.hasNext()) {
+            Derivation d = (Derivation) derivs.next();
+            d.printTrace(out, true);
+        }
+        out.flush();
+
+        String testString = TestUtil.normalizeWhiteSpace("Rule testRule3 concluded (a p C3) <-\n" +
+                "    Rule testRule1 concluded (C2 p C3) <-\n" +
+                "        Fact (C1 p C3)\r\n" +
+                "    Rule testRule2 concluded (C2 q C3) <-\n" +
+                "        Fact (C1 q C3)\r\n");
+        assertEquals(testString, TestUtil.normalizeWhiteSpace(outString.getBuffer().toString()));
     }
     
     /** 
