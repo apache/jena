@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Apr-2005
  * Filename           $RCSfile: TestFrameView.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-04 18:08:09 $
+ * Last modified on   $Date: 2005-04-04 21:26:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestFrameView.java,v 1.1 2005-04-04 18:08:09 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestFrameView.java,v 1.2 2005-04-04 21:26:23 ian_dickinson Exp $)
  */
 public class TestFrameView
     extends TestCase
@@ -89,7 +89,9 @@ public class TestFrameView
 
     public void setUp() {
         mNoInf = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        mNoInf.read( "file:testing/ontology/owl/list-syntax/test-ldp.rdf" );
         mInf = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF );
+        mInf.read( "file:testing/ontology/owl/list-syntax/test-ldp.rdf" );
 
         infA = mInf.getOntClass( NS + "A" );
         infB = mInf.getOntClass( NS + "B" );
@@ -114,14 +116,24 @@ public class TestFrameView
         infQb = mInf.getObjectProperty( NS + "qB" );
     }
 
-    public void testLDP_A_noinf_nodirect() {
+    public void testLDP_noinfA_nodirect() {
         TestUtil.assertIteratorValues( this, noinfA.listDeclaredProperties( false ),
-                                       new Object[] {noinfPa} );
+                                       new Object[] {noinfPa, noinfQa} );
     }
 
-    public void testLDP_A_noinf_direct() {
+    public void testLDP_noinfA_direct() {
         TestUtil.assertIteratorValues( this, noinfA.listDeclaredProperties( true ),
-                                       new Object[] {noinfPa} );
+                                       new Object[] {noinfPa, noinfQa} );
+    }
+
+    public void testLDP_infA_nodirect() {
+        TestUtil.assertIteratorValues( this, infA.listDeclaredProperties( false ),
+                                       new Object[] {infPa, infQa, infQb} );
+    }
+
+    public void testLDP_infA_direct() {
+        TestUtil.assertIteratorValues( this, infA.listDeclaredProperties( true ),
+                                       new Object[] {infPa, infQa, infQb} );
     }
 
     // Internal implementation methods
