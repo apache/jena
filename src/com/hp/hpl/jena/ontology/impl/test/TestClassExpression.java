@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:22:12 $
+ * Last modified on   $Date: 2003-03-31 11:11:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -31,6 +31,7 @@ import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 
+
 /**
  * <p>
  * Unit test cases for the Ontology class
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.1 2003-03-28 22:22:12 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.2 2003-03-31 11:11:46 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestCase 
@@ -215,6 +216,42 @@ public class TestClassExpression
                 new Integer( 1 ),
                 NS + "ClassD",
                 null,
+                null
+            },
+            
+            // Enumerated class
+            {   
+                "OWL EnumeratedClass.oneOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((EnumeratedClass) m.getResource( NS + "ClassA" )
+                               .as( EnumeratedClass.class )).p_oneOf(); 
+                    } 
+                },
+                OWL.oneOf,
+                ProfileRegistry.OWL_LANG,
+                "file:testing/ontology/owl/ClassExpression/test-enum.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                RDF.List,
+                null
+            },
+            {   
+                "DAML EnumeratedClass.oneOf",
+                new PS() { 
+                    public PathSet ps( OntModel m ) {
+                        return ((EnumeratedClass) m.getResource( NS + "ClassA" )
+                               .as( EnumeratedClass.class )).p_oneOf(); 
+                    } 
+                },
+                DAML_OIL.oneOf,
+                ProfileRegistry.DAML_LANG,
+                "file:testing/ontology/daml/ClassExpression/test-enum.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                DAML_OIL.List,
                 null
             },
       };

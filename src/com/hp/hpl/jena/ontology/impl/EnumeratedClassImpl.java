@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            27-Mar-2003
- * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            31-Mar-2003
+ * Filename           $RCSfile: EnumeratedClassImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-31 11:11:44 $
+ * Last modified on   $Date: 2003-03-31 11:11:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -25,23 +25,24 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.*;
 
 
 /**
  * <p>
- * Implementation for the ontology abstraction representing ontology classes.
+ * Implementation of the ontology abstraction representing enumerated classes
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.3 2003-03-31 11:11:44 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClassImpl.java,v 1.1 2003-03-31 11:11:43 ian_dickinson Exp $
  */
-public class OntClassImpl
+public class EnumeratedClassImpl
     extends ClassDescriptionImpl
-    implements OntClass 
+    implements EnumeratedClass 
 {
     // Constants
     //////////////////////////////////
@@ -49,15 +50,14 @@ public class OntClassImpl
     // Static variables
     //////////////////////////////////
 
-    /**
-     * A factory for generating OntClass facets from nodes in enhanced graphs.
+    /** 
+     * A factory for generating enumerated class facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { return new OntClassImpl( n, eg ); }
+        public EnhNode wrap( Node n, EnhGraph eg ) { return new EnumeratedClassImpl( n, eg ); }
     };
-
 
 
     // Instance variables
@@ -68,13 +68,15 @@ public class OntClassImpl
 
     /**
      * <p>
-     * Construct an ontology class node represented by the given node in the given graph.
+     * Construct an enumerated class node represented by the given node in the given graph.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
      * </p>
      * 
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
-    public OntClassImpl( Node n, EnhGraph g ) {
+    public EnumeratedClassImpl( Node n, EnhGraph g ) {
         super( n, g );
     }
 
@@ -82,8 +84,20 @@ public class OntClassImpl
     // External signature methods
     //////////////////////////////////
 
-     
-
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>oneOf</code>
+     * property of an enumerated class. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     */
+    public PathSet p_oneOf() {
+        return asPathSet( getProfile().ONE_OF() );
+    }
+    
     // Internal implementation methods
     //////////////////////////////////
 

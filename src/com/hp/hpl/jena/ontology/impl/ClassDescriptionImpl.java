@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            27-Mar-2003
- * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            31-Mar-2003
+ * Filename           $RCSfile: ClassDescriptionImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-03-31 11:11:44 $
@@ -22,25 +22,25 @@
 package com.hp.hpl.jena.ontology.impl;
 
 
-
 // Imports
 ///////////////
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 
 
 /**
  * <p>
- * Implementation for the ontology abstraction representing ontology classes.
+ * Implementation for the ontology abstraction representing ontology class descriptions.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.3 2003-03-31 11:11:44 ian_dickinson Exp $
+ * @version CVS $Id: ClassDescriptionImpl.java,v 1.1 2003-03-31 11:11:44 ian_dickinson Exp $
  */
-public class OntClassImpl
-    extends ClassDescriptionImpl
+public class ClassDescriptionImpl
+    extends OntResourceImpl
     implements OntClass 
 {
     // Constants
@@ -49,13 +49,13 @@ public class OntClassImpl
     // Static variables
     //////////////////////////////////
 
-    /**
-     * A factory for generating OntClass facets from nodes in enhanced graphs.
+    /** 
+     * A factory for generating class description facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { return new OntClassImpl( n, eg ); }
+        public EnhNode wrap( Node n, EnhGraph eg ) { return new ClassDescriptionImpl( n, eg ); }
     };
 
 
@@ -68,13 +68,13 @@ public class OntClassImpl
 
     /**
      * <p>
-     * Construct an ontology class node represented by the given node in the given graph.
+     * Construct an ontology class description represented by the given node in the given graph.
      * </p>
      * 
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
-    public OntClassImpl( Node n, EnhGraph g ) {
+    public ClassDescriptionImpl( Node n, EnhGraph g ) {
         super( n, g );
     }
 
@@ -82,6 +82,47 @@ public class OntClassImpl
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>subClassOf</code>
+     * property of a class description. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     */
+    public PathSet p_subClassOf() {
+        return asPathSet( getProfile().SUB_CLASS_OF() );
+    }
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>equivalentClass</code>
+     * property of a class description. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     */
+    public PathSet p_equivalentClass() {
+        return asPathSet( getProfile().EQUIVALENT_CLASS() );
+    }
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>disjointWith</code>
+     * property of a class description. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     */
+    public PathSet p_disjointWith() {
+        return asPathSet( getProfile().DISJOINT_WITH() );
+    }
      
 
     // Internal implementation methods

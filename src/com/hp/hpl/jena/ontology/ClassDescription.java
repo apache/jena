@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: ClassDescription.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:19:28 $
+ * Last modified on   $Date: 2003-03-31 11:11:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassDescription.java,v 1.2 2003-03-28 22:19:28 ian_dickinson Exp $
+ * @version CVS $Id: ClassDescription.java,v 1.3 2003-03-31 11:11:45 ian_dickinson Exp $
  */
 public interface ClassDescription
     extends OntResource
@@ -63,7 +63,7 @@ public interface ClassDescription
      * <p>
      * Answer an {@link PathSet accessor} for the 
      * <code>subClassOf</code>
-     * property of an ontology. The accessor
+     * property of a class or class description. The accessor
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
@@ -75,7 +75,7 @@ public interface ClassDescription
      * <p>
      * Answer an {@link PathSet accessor} for the 
      * <code>equivalentClass</code>
-     * property of an ontology. The accessor
+     * property of a class or class description. The accessor
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
@@ -87,7 +87,7 @@ public interface ClassDescription
      * <p>
      * Answer an {@link PathSet accessor} for the 
      * <code>disjointWith</code>
-     * property of an ontology. The accessor
+     * property of a class or class description. The accessor
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
