@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcompare.java,v 1.1.1.1 2002-12-19 19:22:11 bwm Exp $
+ * $Id: rdfcompare.java,v 1.2 2003-01-27 14:31:18 andy_seaborne Exp $
  */
 
 package jena;
@@ -55,7 +55,7 @@ import java.io.FileInputStream;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:22:11 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-01-27 14:31:18 $
  */
 public class rdfcompare extends java.lang.Object {
 
@@ -88,7 +88,7 @@ public class rdfcompare extends java.lang.Object {
             read(m1, in1, lang1);
             read(m2, in2, lang2);
         
-            if (m1.equals(m2)) {
+            if (m1.isIsomorphicWith(m2)) {
                 System.out.println("models are equal");
                 System.out.println();
                 System.exit(0);
