@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.8 2003-08-04 17:08:21 der Exp $
+ * $Id: TestBasicLP.java,v 1.9 2003-08-05 11:31:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-04 17:08:21 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-05 11:31:36 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -64,7 +64,7 @@ public class TestBasicLP  extends TestCase {
         return new TestSuite( TestBasicLP.class );
         
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testBacktrack7" ));
+//        suite.addTest(new TestBasicLP( "testFunctors2" ));
 //        return suite;
     }  
    
@@ -416,7 +416,7 @@ public class TestBasicLP  extends TestCase {
     }
 
     /**
-     * Test nested invocate of rules with permananet vars
+     * Test nested invocation of rules with permanent vars
      */
     public void testNestedPvars() {
         doTest("[r1: (?x r ?y) <- (?x p ?z) (?z q ?y)]" +
@@ -521,7 +521,7 @@ public class TestBasicLP  extends TestCase {
     }
     
     /**
-     * Test wildcard predicate usage - combind triple search and multiclause matching.
+     * Test wildcard predicate usage - combined triple search and multiclause matching.
      * Rules look odd because we have to hack around the recursive loops.
      */
     public void testWildPredicate3() {
@@ -563,7 +563,6 @@ public class TestBasicLP  extends TestCase {
     
     /**
      * Test wildcard predicate usage - wildcard in head as well
-     * Rules look odd because we have to hack around the recursive loops.
      */
     public void testWildPredicate4() {
         doTest("[r1: (a ?p ?x) <- (b ?p ?x)]",
@@ -581,6 +580,75 @@ public class TestBasicLP  extends TestCase {
                 } );
     }
 
+    /**
+     * Test functor usage.
+     */
+    public void testFunctors1() {
+        String ruleSrc = "[r1: (?x s ?y) <- (?x p foo(?z, ?y))] ";
+        Triple[] triples =
+            new Triple[] {
+                new Triple(a, p, Functor.makeFunctorNode("foo", new Node[] {C1, C2})),
+                new Triple(a, p, Functor.makeFunctorNode("bar", new Node[] {C1, D1})),
+                new Triple(b, p, Functor.makeFunctorNode("foo", new Node[] {C1, C2})),
+                new Triple(a, p, Functor.makeFunctorNode("foo", new Node[] {C1, C3})),
+                new Triple(a, p, D1),
+            };
+        doTest(ruleSrc, triples, new Triple(Node.ANY, s, Node.ANY),
+            new Object[] {
+                new Triple(a, s, C2),
+                new Triple(b, s, C2),
+                new Triple(a, s, C3)
+            } );
+    }
+
+    /**
+     * Test functor usage.
+     */
+    public void testFunctors2() {
+        String ruleSrc = "[r1: (?x r foo(?y,?z)) <- (?x p ?y), (?x q ?z)]" +
+               "[r2: (?x s ?y) <- (?x r foo(?z, ?y))] ";
+        Triple[] triples =
+            new Triple[] {
+                new Triple(a, p, C1),
+                new Triple(a, p, C3),
+                new Triple(a, q, C2),
+                new Triple(b, p, D1),
+                new Triple(b, q, D2),
+                new Triple(b, q, D3),
+            };
+        doTest(ruleSrc, triples, new Triple(Node.ANY, s, Node.ANY),
+            new Object[] {
+                new Triple(a, s, C2),
+                new Triple(b, s, D2),
+                new Triple(b, s, D3)
+            } );
+    }
+
+    /**
+     * Test functor usage.
+     */
+    public void testFunctors3() {
+        String ruleSrc = "[r1: (?x r foo(p,?y)) <- (?x p ?y)]" +
+                         "[r2: (?x r foo(q,?y)) <- (?x q ?y)]" +
+                        "[r3: (?x r ?y) <- (?x t ?y)] " +
+                        "[r4: (?x s ?y) <- (?x r ?y), notFunctor(?y)] " +
+                        "[r5: (?x s ?y) <- (?x r foo(?y, ?z))] ";
+        Triple[] triples =
+            new Triple[] {
+                new Triple(a, p, C1),
+                new Triple(b, q, D1),
+                new Triple(b, p, D2),
+                new Triple(c, t, d)
+            };
+        doTest(ruleSrc, triples, new Triple(Node.ANY, s, Node.ANY),
+            new Object[] {
+                new Triple(a, s, p),
+                new Triple(b, s, p),
+                new Triple(b, s, q),
+                new Triple(c, s, d)
+            } );
+    }
+    
     /** 
      * Generic test operation.
      * @param ruleSrc the source of the rules

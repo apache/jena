@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TripleMatchFrame.java,v 1.4 2003-08-03 09:39:18 der Exp $
+ * $Id: TripleMatchFrame.java,v 1.5 2003-08-05 11:31:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.rulesys.Functor;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -19,7 +20,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * graph triple match.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-05 11:31:36 $
  */
 public class TripleMatchFrame extends FrameObject {
     
@@ -40,6 +41,9 @@ public class TripleMatchFrame extends FrameObject {
     
     /** The variable to the subject of the triple, null if no binding required */
     Node_RuleVariable objectVar;
+    
+    /** The functor variable structure to explode the object into, null if not required */
+    Functor objectFunctor;
     
     /** The continuation program counter offet in the parent clause's byte code */
     int cpc;
@@ -62,13 +66,42 @@ public class TripleMatchFrame extends FrameObject {
     public boolean nextMatch(LPInterpreter interpreter) {
         if (matchIterator.hasNext()) {
             Triple t = (Triple)matchIterator.next();
+            if (objectVar != null)    interpreter.bind(objectVar,    t.getObject());
+            if (objectFunctor != null) {
+                int mark = interpreter.trail.size();
+                while (! functorMatch(t, interpreter)) {
+                    interpreter.unwindTrail(mark);
+                    if (matchIterator.hasNext()) {
+                        t = (Triple) matchIterator.next();
+                    } else {
+                        return false;
+                    }
+                }
+            }
             if (subjectVar != null)   interpreter.bind(subjectVar,   t.getSubject());
             if (predicateVar != null) interpreter.bind(predicateVar, t.getPredicate());
-            if (objectVar != null)    interpreter.bind(objectVar,    t.getObject());
             return true;
         } else {
             return false;
         }
+    }
+    
+    /**
+     * Check that the object of a triple match corresponds to the given functor pattern.
+     * Side effects the variable bindings.
+     */
+    public boolean functorMatch(Triple t, LPInterpreter interpreter) {
+        Node o = t.getObject();
+        if (!Functor.isFunctor(o)) return false;
+        Functor f = (Functor)o.getLiteral().getValue();
+        if ( ! f.getName().equals(objectFunctor.getName())) return false;
+        if ( f.getArgLength() != objectFunctor.getArgLength()) return false;
+        Node[] fargs = f.getArgs();
+        Node[] oFargs = objectFunctor.getArgs();
+        for (int i = 0; i < fargs.length; i++) {
+            if (!interpreter.unify(oFargs[i], fargs[i])) return false;
+        }
+        return true;
     }
     
     /**
@@ -86,7 +119,15 @@ public class TripleMatchFrame extends FrameObject {
         predicateVar = (p instanceof Node_RuleVariable) ? (Node_RuleVariable) p : null;
         Node o = LPInterpreter.deref(interpreter.argVars[2]);
         objectVar =    (o instanceof Node_RuleVariable) ? (Node_RuleVariable) o : null;
-        this.matchIterator = interpreter.engine.getInfGraph().findDataMatches(new TriplePattern(s, p, o));
+        TriplePattern query = null;
+        if (Functor.isFunctor(o)) {
+            objectFunctor = (Functor)o.getLiteral().getValue();
+            query = new TriplePattern(s, p, null);
+        } else {
+            objectFunctor = null;
+            query = new TriplePattern(s, p, o);
+        }
+        this.matchIterator = interpreter.engine.getInfGraph().findDataMatches(query);
     }
 
     /**

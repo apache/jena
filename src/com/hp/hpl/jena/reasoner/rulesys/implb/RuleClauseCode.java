@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.12 2003-08-04 17:08:21 der Exp $
+ * $Id: RuleClauseCode.java,v 1.13 2003-08-05 11:31:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-04 17:08:21 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-05 11:31:36 $
  */
 public class RuleClauseCode {
     
@@ -75,14 +75,11 @@ public class RuleClauseCode {
     /** call a predicate code object (predicateCodeList) */
     public static final byte CALL_PREDICATE = 0x9;
     
+    /** deconstruct a functor argument (functor) */
+    public static final byte GET_FUNCTOR = 0xa;
+    
     /** call a predicate code object with run time indexing (predicateCodeList) */
     public static final byte CALL_PREDICATE_INDEX = 0x17;
-    
-//    /** call a predicate code object with special case of wildcard predicate */
-//    public static final byte CALL_WILD_PREDICATE = 0xa;
-
-    /** Unify the predicate argument (A1) with the current clause head's predicate value */
-    public static final byte UNIFY_PREDICATE = 0xa;
     
     /** call a pure triple match (predicate) */
     public static final byte CALL_TRIPLE_MATCH = 0x11;
@@ -119,7 +116,7 @@ public class RuleClauseCode {
     
     /** The maximum number of argument variables allowed in a single goal 
      *   Future refactorings will remove this restriction. */
-    public static final int MAX_ARGUMENT_VARS = 6;
+    public static final int MAX_ARGUMENT_VARS = 8;
     
     /** The maximum number of temporary variables allowed in a single rule clause. */
     public static final int MAX_TEMPORARY_VARS = 10;
@@ -165,9 +162,6 @@ public class RuleClauseCode {
     
     /**
      * Compile the rule into byte code.
-     * <p>
-     * Version 0 - no wildcard predicates, no functors, no register optimization. 
-     * </p>
      * @param ruleStore the store of LP rules through which calls to other predicates
      * can be resolved.
      */
@@ -222,8 +216,8 @@ public class RuleClauseCode {
                     out.println("GET_TEMP " + "T" + code[p++] + ", A" + code[p++]);
                     break;
                 case UNIFY_TEMP:
-                        out.println("UNIFY_TEMP " + "T" + code[p++] + ", A" + code[p++]);
-                        break;
+                    out.println("UNIFY_TEMP " + "T" + code[p++] + ", A" + code[p++]);
+                    break;
                 case PUT_CONSTANT:
                     out.println("PUT_CONSTANT " + args[argi++] + ", A" + code[p++]);
                     break;
@@ -251,14 +245,14 @@ public class RuleClauseCode {
                 case CALL_TRIPLE_MATCH:
                         out.println("CALL_TRIPLE_MATCH");
                         break;
-//                case CALL_WILD_PREDICATE:
-//                    out.println("CALL_WILD_PREDICATE " + args[argi++]);
-//                    break;
                 case PROCEED:
                     out.println("PROCEED");
                     break;
                 case MAKE_FUNCTOR:
                     out.println("MAKE_FUNCTOR " + args[argi++]); 
+                    break;
+                case GET_FUNCTOR:
+                    out.println("GET_FUNCTOR " + args[argi++]); 
                     break;
                 case CALL_BUILTIN:
                     out.println("CALL_BUILTIN " + ((Builtin)args[argi++]).getName() + "/" + code[p++]);
@@ -347,7 +341,8 @@ public class RuleClauseCode {
                 }
                 if (isTemp(var)) {
                     List occurrences = (List)varOccurrence.get(var);
-                    if (occurrences.size() == 2 && 
+                    if (occurrences.size() == 2 &&
+                        ((TermIndex)occurrences.get(0)).index <= 2 && 
                         ((TermIndex)occurrences.get(0)).index ==((TermIndex)occurrences.get(1)).index) {
                             // No movement code required, var in right place  
                     } else {
@@ -359,6 +354,14 @@ public class RuleClauseCode {
                     code[p++] = seen.add(var) ? GET_VARIABLE : UNIFY_VARIABLE;
                     code[p++] = (byte)var.getIndex();
                     code[p++] = (byte)argi;
+                }
+            } else if (Functor.isFunctor(node)) {
+                Functor f = (Functor)node.getLiteral().getValue();
+                code[p++] = GET_FUNCTOR;
+                args.add(f);
+                Node[] fargs = f.getArgs();
+                for (int i = 0; i < fargs.length; i++) {
+                    emitHeadGet(fargs[i], i+3);
                 }
             } else {
                 code[p++] = GET_CONSTANT;
@@ -381,21 +384,16 @@ public class RuleClauseCode {
             if (predicateCode == null || predicateCode.size() == 0) {
                 code[p++] = CALL_TRIPLE_MATCH;
             } else {
-//                if (goal.getPredicate().isVariable()) {
-//                    code[p++] = CALL_WILD_PREDICATE;
-//                    // TODO: add indexed version?
-//                } else {
-                    if (permanentVars.size() == 0) {
-                        code[p++] = LAST_CALL_PREDICATE;
+                if (permanentVars.size() == 0) {
+                    code[p++] = LAST_CALL_PREDICATE;
+                } else {
+                    // Normal call, but can it be indexed further?
+                    if (store.indexedPredicate(goal.getPredicate()) && goal.getObject().isVariable()) {
+                        code[p++] = CALL_PREDICATE_INDEX;
                     } else {
-                        // Normal call, but can it be indexed further?
-                        if (store.indexedPredicate(goal.getPredicate()) && goal.getObject().isVariable()) {
-                            code[p++] = CALL_PREDICATE_INDEX;
-                        } else {
-                            code[p++] = CALL_PREDICATE;
-                        }
+                        code[p++] = CALL_PREDICATE;
                     }
-//                }
+                }
                 args.add(predicateCode);
             }
         }
@@ -432,6 +430,14 @@ public class RuleClauseCode {
                     code[p++] = (byte)var.getIndex();
                     code[p++] = (byte)argi;
                 }
+            } else if (Functor.isFunctor(node)) {
+                Functor f = (Functor)node.getLiteral().getValue();
+                Node[] fargs = f.getArgs();
+                for (int i = 0; i < fargs.length; i++) {
+                    emitBodyPut(fargs[i], i+3);
+                }
+                code[p++] = MAKE_FUNCTOR;
+                args.add(f);
             } else {
                 code[p++] = PUT_CONSTANT;
                 code[p++] = (byte)argi;
@@ -549,7 +555,9 @@ public class RuleClauseCode {
                     }
                 }
                 if (!isDummy(var)) {
-                    if (inBuiltin || inLaterBody || !inFirst) {
+//                    if (inBuiltin || inLaterBody || !inFirst) {
+                    // No longer need builtin's to use permanent variables
+                    if (inLaterBody || !inFirst) {
                         permanentVars.add(var);
                     } else {
                         tempVars.add(var);
@@ -601,6 +609,7 @@ public class RuleClauseCode {
                 result.add(goal.getPredicate());
                 Node obj = goal.getObject();
                 if (Functor.isFunctor(obj)) {
+                    result.add(obj);
                     result.addAll(termVars((Functor)obj.getLiteral().getValue()));
                 } else {
                     result.add(obj);
@@ -655,7 +664,9 @@ public class RuleClauseCode {
             String test9 = "(?x p ?y) <- (?x p ?z) sum(?z, 2, ?y).";
             String test10 = "(?x p ?y) <- (?x p ?v), sum(?v 2 ?y).";
             String test11 = "(b p ?y) <- (a ?y ?v).";
-            store.addRule(Rule.parseRule(test5));
+            String test12 = "(?x p ?y) <- (?x p foo(?z, ?y)).";
+            String test13 = "(?x p foo(?y,?z)) <- (?x q ?y), (?x q ?z).";
+            store.addRule(Rule.parseRule(test13));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);

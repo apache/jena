@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.10 2003-08-03 20:45:59 der Exp $
+ * $Id: LPInterpreter.java,v 1.11 2003-08-05 11:31:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-03 20:45:59 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-05 11:31:36 $
  */
 public class LPInterpreter {
 
@@ -268,7 +268,26 @@ public class LPInterpreter {
                                 }
                             }
                             break;
-                        
+                            
+                        case RuleClauseCode.GET_FUNCTOR:
+                            Functor func = (Functor)args[ac++];
+                            boolean match = false;
+                            Node o = argVars[2];
+                            if (Functor.isFunctor(o)) {
+                                Functor funcArg = (Functor)o.getLiteral().getValue();
+                                if (funcArg.getName().equals(func.getName())) {
+                                    if (funcArg.getArgLength() == func.getArgLength()) {
+                                        Node[] fargs = funcArg.getArgs();
+                                        for (int i = 0; i < fargs.length; i++) {
+                                            argVars[i+3] = fargs[i];
+                                        }
+                                        match = true;
+                                    }
+                                }
+                            }
+                            if (!match) continue main;      // fail to unify functor shape
+                            break;
+                            
                         case RuleClauseCode.UNIFY_VARIABLE :
                             yi = code[pc++];
                             ai = code[pc++];
@@ -319,6 +338,13 @@ public class LPInterpreter {
                         case RuleClauseCode.CLEAR_ARG:
                             ai = code[pc++];
                             argVars[ai] = new Node_RuleVariable(null, ai); 
+                            break;
+                            
+                        case RuleClauseCode.MAKE_FUNCTOR:
+                            Functor f = (Functor)args[ac++];
+                            Node[] fargs = new Node[f.getArgLength()];
+                            System.arraycopy(argVars, 3, fargs, 0, fargs.length);
+                            argVars[2] = Functor.makeFunctorNode(f.getName(), fargs);
                             break;
                         
                         case RuleClauseCode.LAST_CALL_PREDICATE:

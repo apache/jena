@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.5 2003-08-03 20:45:59 der Exp $
+ * $Id: LPRuleStore.java,v 1.6 2003-08-05 11:31:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-03 20:45:59 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-05 11:31:36 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -144,6 +144,12 @@ public class LPRuleStore extends RuleStore {
                 }
             }
         }
+        
+        // Now we change the semantics of the wildcard entry in the code map table
+        // to be used for any wildcard query. Doing it now enables us to easily include
+        // the allRules case in the subsequent indexing stage
+        predicateToCodeMap.put(Node_RuleVariable.ANY, allRuleClauseCodes);
+        indexPredicateToCodeMap.put(Node_RuleVariable.ANY, new HashMap());
         
         // Now built any required two level indices
         for (Iterator i = indexPredicateToCodeMap.entrySet().iterator(); i.hasNext(); ) {
