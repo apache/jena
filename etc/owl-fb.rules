@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.39 2003-11-08 17:54:29 der Exp $
+# $Id: owl-fb.rules,v 1.40 2003-12-06 11:58:07 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -135,7 +135,7 @@
 -> (owl:disjointWith rdfs:range  owl:Class).
 
 -> (owl:sameAs rdf:type owl:SymmetricProperty).
--> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).
+#-> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).
 
 # These are true but mess up the Ont API's notion of declared properties
 #-> (owl:sameAs rdfs:domain owl:Thing).
