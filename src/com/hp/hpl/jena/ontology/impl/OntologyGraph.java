@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Apr-2003
  * Filename           $RCSfile: OntologyGraph.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-22 13:56:24 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-30 12:58:36 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyGraph.java,v 1.6 2003-04-22 13:56:24 ian_dickinson Exp $
+ * @version CVS $Id: OntologyGraph.java,v 1.7 2003-04-30 12:58:36 chris-dollin Exp $
  */
 public class OntologyGraph
     extends GraphBase 
@@ -90,14 +90,14 @@ public class OntologyGraph
     
     /** adds the triple t (if possible) to the set belong to the graph */
     public void add(Triple t) 
-        throws UnsupportedOperationException, VirtualTripleException
+        throws UnsupportedOperationException
     {
         m_unionGraph.add( t );
     }
     
     /** removes the triple t (if possible) from the set belonging to this graph */   
     public void delete(Triple t) 
-        throws UnsupportedOperationException, NoSuchTripleException, VirtualTripleException
+        throws UnsupportedOperationException
     {
         m_unionGraph.delete( t );
     }
