@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Q_String.java,v 1.2 2003-08-26 16:29:33 andy_seaborne Exp $
+ * $Id: Q_String.java,v 1.3 2003-08-26 20:23:22 andy_seaborne Exp $
  */
 
 
@@ -43,8 +43,4 @@ public class Q_String extends SimpleNode {
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

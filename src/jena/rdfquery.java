@@ -45,7 +45,7 @@ import org.apache.log4j.*;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.14 2003-08-07 11:24:15 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.15 2003-08-26 20:21:37 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -595,8 +595,4 @@ public class rdfquery
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

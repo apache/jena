@@ -37,7 +37,7 @@ import java.util.* ;
  * <li>Options may be ended with - or --</li>
  * </ul>
  * @author Andy Seaborne
- * @version $Id: CommandLine.java,v 1.1.1.1 2002-12-19 19:22:21 bwm Exp $
+ * @version $Id: CommandLine.java,v 1.2 2003-08-26 20:21:21 andy_seaborne Exp $
  */
 
 
@@ -293,8 +293,4 @@ public class CommandLine
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

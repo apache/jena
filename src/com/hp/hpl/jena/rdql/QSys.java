@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 /** Class to define the operating environment for RDQL.
  *  Provides some utility operations like assert and handling unexpected exceptions
  * @author		Andy Seaborne
- * @version 	$Id: QSys.java,v 1.4 2003-07-01 12:48:27 chris-dollin Exp $
+ * @version 	$Id: QSys.java,v 1.5 2003-08-26 20:23:15 andy_seaborne Exp $
  */
 
 public class QSys
@@ -49,8 +49,4 @@ public class QSys
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

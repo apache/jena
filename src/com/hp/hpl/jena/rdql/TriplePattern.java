@@ -5,7 +5,7 @@
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.14 2003-06-19 16:09:50 andy_seaborne Exp $
+ * @version  $Id: TriplePattern.java,v 1.15 2003-08-26 20:23:15 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -639,8 +639,4 @@ import com.hp.hpl.jena.shared.*;
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

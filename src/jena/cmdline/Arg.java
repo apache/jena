@@ -8,7 +8,7 @@ package jena.cmdline ;
 /** A command line argument that has been foundspecification.
  *
  * @author  Andy Seaborne
- * @version $Id: Arg.java,v 1.2 2003-01-06 15:32:12 andy_seaborne Exp $
+ * @version $Id: Arg.java,v 1.3 2003-08-26 20:21:21 andy_seaborne Exp $
  */
 public class Arg
 {
@@ -57,8 +57,4 @@ public class Arg
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

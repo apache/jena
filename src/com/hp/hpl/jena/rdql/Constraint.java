@@ -6,7 +6,7 @@
 /** 
  * Interface representing something that evaluates to true or false.
  * @author		Andy Seaborne
- * @version 	$Id: Constraint.java,v 1.3 2003-06-18 15:26:20 andy_seaborne Exp $
+ * @version 	$Id: Constraint.java,v 1.4 2003-08-26 20:23:15 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -41,8 +41,4 @@ public interface Constraint
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.8 2003-06-13 17:06:56 andy_seaborne Exp $
+ * @version  $Id: ResultBinding.java,v 1.9 2003-08-26 20:23:15 andy_seaborne Exp $
  */
 
 
@@ -359,8 +359,4 @@ public class ResultBinding
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

@@ -8,7 +8,7 @@ package jena.cmdline ;
 /** Interface for processing flag arguments.
  * 
  * @author Andy Seaborne
- * @version $Id: ArgHandler.java,v 1.1.1.1 2002-12-19 19:22:20 bwm Exp $
+ * @version $Id: ArgHandler.java,v 1.2 2003-08-26 20:21:21 andy_seaborne Exp $
  */
 public interface ArgHandler
 {
@@ -44,8 +44,4 @@ public interface ArgHandler
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdql.parser.RDQLParser ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.10 2003-08-07 11:23:47 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.11 2003-08-26 20:23:15 andy_seaborne Exp $
  */
 
 public class Query
@@ -382,8 +382,4 @@ public class Query
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

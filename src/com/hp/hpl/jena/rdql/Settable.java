@@ -5,7 +5,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: Settable.java,v 1.4 2003-03-11 18:03:17 andy_seaborne Exp $
+ * @version  $Id: Settable.java,v 1.5 2003-08-26 20:23:15 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -48,8 +48,4 @@ public interface Settable extends Value
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */

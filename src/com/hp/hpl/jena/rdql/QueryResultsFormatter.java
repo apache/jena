@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.9 2003-07-15 13:26:58 andy_seaborne Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.10 2003-08-26 20:23:15 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter
@@ -475,8 +475,4 @@ public class QueryResultsFormatter
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * This product includes software developed by the
- * Apache Software Foundation (http://www.apache.org/).
- *
  */
