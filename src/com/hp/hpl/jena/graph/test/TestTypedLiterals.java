@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.14 2003-03-31 10:05:42 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.15 2003-04-10 08:34:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -29,7 +29,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-03-31 10:05:42 $
+ * @version $Revision: 1.15 $ on $Date: 2003-04-10 08:34:12 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -536,6 +536,11 @@ public class TestTypedLiterals extends TestCase {
         assertTrue(XSDDatatype.XSDstring.isValidLiteral(ll));
         assertTrue(! XSDDatatype.XSDint.isValidLiteral(ll));
        
+       // Test the isValidValue form which had a problem with numbers
+       assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(new Long(10)));
+       assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(new Integer(10)));
+       assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue(new Long(-10)));
+       assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue("10"));
     }
     
       

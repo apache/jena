@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.1 2003-03-31 10:01:21 der Exp $
+ * $Id: XSDBaseNumericType.java,v 1.2 2003-04-10 08:33:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:21 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-10 08:33:34 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -57,6 +57,18 @@ public class XSDBaseNumericType extends XSDDatatype {
         if (this.equals(dt)) return true;
         if (dt instanceof XSDBaseNumericType) {
             return isValid(lit.toString());
+        } else {
+            return false;
+        }
+    }
+     
+    /**
+     * Test whether the given object is a legal value form
+     * of this datatype. Brute force implementation.
+     */
+    public boolean isValidValue(Object valueForm) {
+        if (valueForm instanceof Number) {
+            return isValid(valueForm.toString());
         } else {
             return false;
         }
