@@ -5,19 +5,20 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.8 2003-06-24 10:54:31 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.9 2003-06-26 08:11:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
 
 /**
  * A collection of RDF terms used in driving or configuring some of the
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-24 10:54:31 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-26 08:11:59 $
  */
 public class ReasonerVocabulary {
     
@@ -49,7 +50,7 @@ public class ReasonerVocabulary {
     public static Property directSubPropertyOf; 
 
     /** Base URI used for configuration properties for rule reasoners */
-    public static final String PropURI = "http://www.hpl.hp.com/semweb/2003/RuleReasoner/";
+    public static final String PropURI = "http://www.hpl.hp.com/semweb/2003/RuleReasoner";
 
     /** Property used to configure the derivation logging behaviour of a reasoner.
      *  Set to "true" to enable logging of derivations. */
@@ -79,10 +80,18 @@ public class ReasonerVocabulary {
      * properties in RDFS preprocessing. */
     public static Property PROPenableCMPScan;
     
-    /** Property used to switch on/off full RDFS processing. This subsumes
-     *  the enableCMPScan property and also switches to a rule set that 
-     *  includes the explicit "everything is a Resource rules. */
-    public static Property PROPenableFullRDFS;
+    /** Property used to switch to different RDFS processing levles. The
+     * legal levels are "default", "simple", and "full". */
+    public static Property PROPsetRDFSLevel;
+    
+    /** Constant for PROPsetRDFSLevel default */
+    public static String RDFS_DEFAULT = RDFSRuleReasoner.DEFAULT_RULES;
+    
+    /** Constant for PROPsetRDFSLevel default */
+    public static String RDFS_FULL = RDFSRuleReasoner.FULL_RULES;
+    
+    /** Constant for PROPsetRDFSLevel default */
+    public static String RDFS_SIMPLE = RDFSRuleReasoner.SIMPLE_RULES;
     
     /** A namespace used for Rubric specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubrik/";
@@ -119,7 +128,7 @@ public class ReasonerVocabulary {
             PROPenableOWLTranslation = ResourceFactory.createProperty(PropURI+"#", "enableOWLTranslation");
             PROPenableTGCCaching = ResourceFactory.createProperty(PropURI+"#", "enableTGCCaching");
             PROPenableCMPScan = ResourceFactory.createProperty(PropURI+"#", "enableCMPScan");
-            PROPenableFullRDFS = ResourceFactory.createProperty(PropURI+"#", "enableFullRDFS");
+            PROPsetRDFSLevel = ResourceFactory.createProperty(PropURI+"#", "setRDFSLevel");
         } catch (Exception e) {
             System.err.println("Initialization error: " + e);
             e.printStackTrace(System.err);

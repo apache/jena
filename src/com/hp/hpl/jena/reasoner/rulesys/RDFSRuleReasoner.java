@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.8 2003-06-23 08:09:50 der Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.9 2003-06-26 08:11:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,30 +25,49 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * data scanning hook. Implements datatype range validation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-23 08:09:50 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-26 08:11:58 $
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
     
-    /** The location of the default RDFS rule definitions on the class path */
-    public static final String RULE_FILE = "etc/rdfs-fb-tgc-noresource.rules";
+    /** Constant: used to indicate default RDFS processing level */
+    public static final String DEFAULT_RULES = "default";
     
-    /** The parsed rules */
-    protected static List ruleSet;
+    /** Constant: used to indicate full RDFS processing level */
+    public static final String FULL_RULES = "full";
+    
+    /** Constant: used to indicate minimal RDFS processing level */
+    public static final String SIMPLE_RULES = "simple";
+    
+    /** The location of the default RDFS rule definitions on the class path */
+    protected static final String RULE_FILE = "etc/rdfs-fb-tgc-noresource.rules";
     
     /** The location of the full RDFS rule definitions on the class path */
-    public static final String FULL_RULE_FILE = "etc/rdfs-fb-tgc.rules";
+    protected static final String FULL_RULE_FILE = "etc/rdfs-fb-tgc.rules";
     
-    /** The parsed rules */
-    protected static List fullRuleSet;
+    /** The location of the simple RDFS rule definitions on the class path */
+    protected static final String SIMPLE_RULE_FILE = "etc/rdfs-fb-tgc-simple.rules";
+    
+    /** The cached rule sets, indexed by processing level */
+    protected static HashMap ruleSets = new HashMap();
+    
+    /** The rule file names, indexed by processing level */
+    protected static HashMap ruleFiles;
     
     /** The (stateless) preprocessor for container membership properties */
     protected static RulePreprocessHook cmpProcessor = new RDFSCMPPreprocessHook();
+    
+    static {
+        ruleFiles = new HashMap();
+        ruleFiles.put(DEFAULT_RULES, RULE_FILE);
+        ruleFiles.put(FULL_RULES, FULL_RULE_FILE);
+        ruleFiles.put(SIMPLE_RULES, SIMPLE_RULE_FILE);
+    }
     
     /**
      * Constructor
      */
     public RDFSRuleReasoner(ReasonerFactory parent) {
-        super(loadRules(), parent);
+        super(loadRules(DEFAULT_RULES), parent);
         setMode(HYBRID);
         setTransitiveClosureCaching(true);
         //addPreprocessingHook(new RDFSCMPPreprocessHook());
@@ -69,25 +88,28 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
             }
         }
     }
-   
+    
     /**
      * Internal version of setParameter that does not directly raise an
      * exception on parameters it does not reconize.
      * @return false if the parameter was not recognized
      */
     protected boolean doSetParameter(String parameterUri, Object value) {
-        String fullRDFSURI = ReasonerVocabulary.PROPenableFullRDFS.getURI();
-        if (parameterUri.equals(ReasonerVocabulary.PROPenableCMPScan.getURI())
-            || parameterUri.equals(fullRDFSURI)) {
+        if (parameterUri.equals(ReasonerVocabulary.PROPenableCMPScan.getURI())) {
             boolean scanProperties = Util.convertBooleanPredicateArg(parameterUri, value);
             if (scanProperties) {
                 addPreprocessingHook(cmpProcessor);
             } else {
                 removePreprocessingHook(cmpProcessor);
             }
-            if (parameterUri.equals(fullRDFSURI)) {
-                // Also switch rule sets
-                setRules(loadFullRules());
+            return true;
+        } else if (parameterUri.equals(ReasonerVocabulary.PROPsetRDFSLevel.getURI())) {
+            String level = ((String)value).toLowerCase();
+            setRules(loadRules(level));
+            if (level.equals(FULL_RULES)) {
+                addPreprocessingHook(cmpProcessor);
+            } else {
+                removePreprocessingHook(cmpProcessor);
             }
             return true;
         } else {
@@ -125,31 +147,24 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     }
     
     /**
-     * Return the RDFS rule set, loading it in if necessary
+     * Return the RDFS rule set, loading it in if necessary.
+     * @param level a string defining the processing level required
      */
-    public static List loadRules() {
+    public static List loadRules(String level) {
+        List ruleSet = (List)ruleSets.get(level);
         if (ruleSet == null) {
             try {
-                ruleSet = Rule.parseRules(Util.loadResourceFile(RULE_FILE));
+                String file = (String)ruleFiles.get(level);
+                if (file == null) {
+                    throw new ReasonerException("Illegal RDFS conformance level: " + level);
+                }
+                ruleSet = Rule.parseRules(Util.loadResourceFile(file));
+                ruleSets.put(level, ruleSet);
             } catch (IOException e) {
                 throw new ReasonerException("Can't load rules file: " + RULE_FILE, e);
             }
         }
         return ruleSet;
-    }
-    
-    /**
-     * Return the full RDFS rule set, loading it in if necessary
-     */
-    public static List loadFullRules() {
-        if (fullRuleSet == null) {
-            try {
-                fullRuleSet = Rule.parseRules(Util.loadResourceFile(FULL_RULE_FILE));
-            } catch (IOException e) {
-                throw new ReasonerException("Can't load rules file: " + FULL_RULE_FILE, e);
-            }
-        }
-        return fullRuleSet;
     }
         
 }
