@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 15:19:33 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-05-08 16:56:52 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.13 2003-05-08 15:19:33 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.14 2003-05-08 16:56:52 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -527,6 +527,21 @@ public class OntModelImpl
    
     /**
      * <p>
+     * Answer a resource representing an object property in this model, 
+     * and that is not a functional property. 
+     * </p>
+     * 
+     * @param uri The uri for the object property. May not be null.
+     * @return An ObjectProperty resource.
+     * @see #createObjectProperty( String, boolean )
+     */
+    public ObjectProperty createObjectProperty( String uri ) {
+        return createObjectProperty( uri, false );
+    }
+    
+   
+    /**
+     * <p>
      * Answer a resource that represents an object property in this model.  An object property
      * is defined to have a range of individuals, rather than datatypes. 
      * If a resource
@@ -535,17 +550,41 @@ public class OntModelImpl
      * </p>
      * 
      * @param uri The uri for the object property. May not be null.
-     * @return An ObjectProperty resource.
+     * @param functional If true, the resource will also be typed as a {@link FunctionalProperty},
+     * that is, a property that has a unique range value for any given domain value.
+     * @return An ObjectProperty resource, optionally also functional.
      */
-    public ObjectProperty createObjectProperty( String uri ) {
+    public ObjectProperty createObjectProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
-        return (ObjectProperty) createOntResource( ObjectProperty.class, getProfile().OBJECT_PROPERTY(), uri );
+        ObjectProperty p = (ObjectProperty) createOntResource( ObjectProperty.class, getProfile().OBJECT_PROPERTY(), uri );
+
+        if (functional) {
+            checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
+            p.addProperty( RDF.type, getProfile().FUNCTIONAL_PROPERTY() );
+        }
+        
+        return p;
     }
     
    
     /**
      * <p>
-     * Answer a resource that represents datatype property in this model. A datattype property
+     * Answer a resource that represents datatype property in this model, and that is
+     * not a functional property.
+     * </p>
+     * 
+     * @param uri The uri for the datatype property. May not be null.
+     * @return A DatatypeProperty resource.
+     * @see #createDatatypeProperty( String, boolean )
+     */
+    public DatatypeProperty createDatatypeProperty( String uri ) {
+        return createDatatypeProperty( uri, false );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents datatype property in this model. A datatype property
      * is defined to have a range that is a concrete datatype, rather than an individual. 
      * If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
@@ -553,11 +592,20 @@ public class OntModelImpl
      * </p>
      * 
      * @param uri The uri for the datatype property. May not be null.
+     * @param functional If true, the resource will also be typed as a {@link FunctionalProperty},
+     * that is, a property that has a unique range value for any given domain value.
      * @return A DatatypeProperty resource.
      */
-    public DatatypeProperty createDatatypeProperty( String uri ) {
+    public DatatypeProperty createDatatypeProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
-        return (DatatypeProperty) createOntResource( DatatypeProperty.class, getProfile().DATATYPE_PROPERTY(), uri );
+        DatatypeProperty p = (DatatypeProperty) createOntResource( DatatypeProperty.class, getProfile().DATATYPE_PROPERTY(), uri );
+
+        if (functional) {
+            checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
+            p.addProperty( RDF.type, getProfile().FUNCTIONAL_PROPERTY() );
+        }
+     
+        return p;   
     }
     
    

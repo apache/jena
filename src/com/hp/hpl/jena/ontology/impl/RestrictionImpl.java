@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:27 $
+ * Last modified on   $Date: 2003-05-08 16:56:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.ontology.path.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.6 2003-05-08 14:45:27 ian_dickinson Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.7 2003-05-08 16:56:52 ian_dickinson Exp $
  */
 public class RestrictionImpl 
     extends OntClassImpl
@@ -199,6 +199,68 @@ public class RestrictionImpl
         return asPathSet( getProfile().MAX_CARDINALITY() );
     }
     
+
+    /** 
+     * <p>Answer a view of this restriction as an all values from  expression</p>
+     * @return This class, but viewed as an AllValuesFromRestriction node
+     * @exception ConversionException if the class cannot be converted to an all values from restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public AllValuesFromRestriction asAllValuesFromRestriction() {
+        return (AllValuesFromRestriction) as( AllValuesFromRestriction.class );
+    }
+         
+    /** 
+     * <p>Answer a view of this restriction as a some values from  expression</p>
+     * @return This class, but viewed as a SomeValuesFromRestriction node
+     * @exception ConversionException if the class cannot be converted to an all values from restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public SomeValuesFromRestriction asSomeValuesFromRestriction() {
+        return (SomeValuesFromRestriction) as( SomeValuesFromRestriction.class );
+    }
+         
+    /** 
+     * <p>Answer a view of this restriction as a has value expression</p>
+     * @return This class, but viewed as a HasValueRestriction node
+     * @exception ConversionException if the class cannot be converted to a has value restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public HasValueRestriction asHasValueRestriction() {
+        return (HasValueRestriction) as( HasValueRestriction.class );
+    }
+         
+    /** 
+     * <p>Answer a view of this restriction as a cardinality restriction class expression</p>
+     * @return This class, but viewed as a CardinalityRestriction node
+     * @exception ConversionException if the class cannot be converted to a cardinality restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public CardinalityRestriction asCardinalityRestriction() {
+        return (CardinalityRestriction) as( CardinalityRestriction.class );
+    }
+
+    /** 
+     * <p>Answer a view of this restriction as a min cardinality restriction class expression</p>
+     * @return This class, but viewed as a MinCardinalityRestriction node
+     * @exception ConversionException if the class cannot be converted to a min cardinality restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public MinCardinalityRestriction asMinCardinalityRestriction() {
+        return (MinCardinalityRestriction) as( MinCardinalityRestriction.class );
+    }
+
+    /** 
+     * <p>Answer a view of this restriction as a max cardinality restriction class expression</p>
+     * @return This class, but viewed as a MaxCardinalityRestriction node
+     * @exception ConversionException if the class cannot be converted to a max cardinality restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public MaxCardinalityRestriction asMaxCardinalityRestriction() {
+        return (MaxCardinalityRestriction) as( MaxCardinalityRestriction.class );
+    }
+
+
 
     // Internal implementation methods
     //////////////////////////////////

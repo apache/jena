@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 15:19:32 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-05-08 16:57:11 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
  * (see footer for full conditions)
@@ -57,7 +57,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.11 2003-05-08 15:19:32 chris-dollin Exp $
+ * @version CVS $Id: OntModel.java,v 1.12 2003-05-08 16:57:11 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -379,6 +379,19 @@ public interface OntModel
    
     /**
      * <p>
+     * Answer a resource representing an object property in this model, 
+     * and that is not a functional property. 
+     * </p>
+     * 
+     * @param uri The uri for the object property. May not be null.
+     * @return An ObjectProperty resource.
+     * @see #createObjectProperty( String, boolean )
+     */
+    public ObjectProperty createObjectProperty( String uri );
+    
+   
+    /**
+     * <p>
      * Answer a resource that represents an object property in this model.  An object property
      * is defined to have a range of individuals, rather than datatypes. 
      * If a resource
@@ -387,14 +400,29 @@ public interface OntModel
      * </p>
      * 
      * @param uri The uri for the object property. May not be null.
-     * @return An ObjectProperty resource.
+     * @param functional If true, the resource will also be typed as a {@link FunctionalProperty},
+     * that is, a property that has a unique range value for any given domain value.
+     * @return An ObjectProperty resource, optionally also functional.
      */
-    public ObjectProperty createObjectProperty( String uri );
+    public ObjectProperty createObjectProperty( String uri, boolean functional );
     
    
     /**
      * <p>
-     * Answer a resource that represents datatype property in this model. A datattype property
+     * Answer a resource that represents datatype property in this model, and that is
+     * not a functional property.
+     * </p>
+     * 
+     * @param uri The uri for the datatype property. May not be null.
+     * @return A DatatypeProperty resource.
+     * @see #createDatatypeProperty( String, boolean )
+     */
+    public DatatypeProperty createDatatypeProperty( String uri );
+    
+   
+    /**
+     * <p>
+     * Answer a resource that represents datatype property in this model. A datatype property
      * is defined to have a range that is a concrete datatype, rather than an individual. 
      * If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
@@ -402,9 +430,11 @@ public interface OntModel
      * </p>
      * 
      * @param uri The uri for the datatype property. May not be null.
+     * @param functional If true, the resource will also be typed as a {@link FunctionalProperty},
+     * that is, a property that has a unique range value for any given domain value.
      * @return A DatatypeProperty resource.
      */
-    public DatatypeProperty createDatatypeProperty( String uri );
+    public DatatypeProperty createDatatypeProperty( String uri, boolean functional );
     
    
     /**
@@ -414,7 +444,7 @@ public interface OntModel
      * the updateable sub-graph of the ontology model. 
      * </p>
      * 
-     * @param uri The uri for the annotation property.
+     * @param uri The uri for the annotation property. May not be null.
      * @return An AnnotationProperty resource.
      */
     public AnnotationProperty createAnnotationProperty( String uri );

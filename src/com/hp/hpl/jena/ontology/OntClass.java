@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:45:00 $
+ * Last modified on   $Date: 2003-05-08 16:57:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.4 2003-04-28 15:45:00 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.5 2003-05-08 16:57:11 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -167,6 +167,45 @@ public interface OntClass
      */
     public boolean hasSuperClass( Resource cls );
     
+    /** 
+     * <p>Answer a view of this class as an enumerated class</p>
+     * @return This class, but viewed as an EnumeratedClass node
+     * @exception ConversionException if the class cannot be converted to an enumerated class
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public EnumeratedClass asEnumeratedClass();
+         
+    /** 
+     * <p>Answer a view of this class as a union class</p>
+     * @return This class, but viewed as a UnionClass node
+     * @exception ConversionException if the class cannot be converted to a union class
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public UnionClass asUnionClass();
+         
+    /** 
+     * <p>Answer a view of this class as an intersection class</p>
+     * @return This class, but viewed as an IntersectionClass node
+     * @exception ConversionException if the class cannot be converted to an intersection class
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public IntersectionClass asIntersectionClass();
+         
+    /** 
+     * <p>Answer a view of this class as a complement class</p>
+     * @return This class, but viewed as a ComplementClass node
+     * @exception ConversionException if the class cannot be converted to a complement class
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public ComplementClass asComplementClass();
+         
+    /** 
+     * <p>Answer a view of this class as a restriction class expression</p>
+     * @return This class, but viewed as a Restriction node
+     * @exception ConversionException if the class cannot be converted to a restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public Restriction asRestriction();
          
 }
 

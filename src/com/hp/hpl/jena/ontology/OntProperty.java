@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 10:31:05 $
+ * Last modified on   $Date: 2003-05-08 16:57:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.2 2003-04-01 10:31:05 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.3 2003-05-08 16:57:11 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -115,6 +115,53 @@ public interface OntProperty
     public PathSet p_inverseOf();
 
 
+    /** 
+     * <p>Answer a view of this property as a functional property</p>
+     * @return This property, but viewed as a FunctionalProperty node
+     * @exception ConversionException if the resource cannot be converted to a functional property
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public FunctionalProperty asFunctionalProperty();
+
+    /** 
+     * <p>Answer a view of this property as a datatype property</p>
+     * @return This property, but viewed as a DatatypeProperty node
+     * @exception ConversionException if the resource cannot be converted to a datatype property
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public DatatypeProperty asDatatypeProperty();
+
+    /** 
+     * <p>Answer a view of this property as an object property</p>
+     * @return This property, but viewed as an ObjectProperty node
+     * @exception ConversionException if the resource cannot be converted to an object property
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public ObjectProperty asObjectProperty();
+    
+    /** 
+     * <p>Answer a view of this property as a transitive property</p>
+     * @return This property, but viewed as a TransitiveProperty node
+     * @exception ConversionException if the resource cannot be converted to a transitive property
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public TransitiveProperty asTransitiveProperty();
+    
+    /** 
+     * <p>Answer a view of this property as an inverse functional property</p>
+     * @return This property, but viewed as an InverseFunctionalProperty node
+     * @exception ConversionException if the resource cannot be converted to an inverse functional property
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public InverseFunctionalProperty asInverseFunctionalProperty();
+    
+    /** 
+     * <p>Answer a view of this property as a symmetric property</p>
+     * @return This property, but viewed as a SymmetricProperty node
+     * @exception ConversionException if the resource cannot be converted to a symmetric property
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public SymmetricProperty asSymmetricProperty();
 }
 
 

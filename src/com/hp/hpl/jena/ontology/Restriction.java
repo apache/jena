@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Restriction.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:45:01 $
+ * Last modified on   $Date: 2003-05-08 16:57:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Restriction.java,v 1.3 2003-04-28 15:45:01 ian_dickinson Exp $
+ * @version CVS $Id: Restriction.java,v 1.4 2003-05-08 16:57:11 ian_dickinson Exp $
  */
 public interface Restriction
     extends OntClass
@@ -138,7 +138,53 @@ public interface Restriction
      */
     public PathSet p_maxCardinality();
     
+    /** 
+     * <p>Answer a view of this restriction as an all values from  expression</p>
+     * @return This class, but viewed as an AllValuesFromRestriction node
+     * @exception ConversionException if the class cannot be converted to an all values from restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public AllValuesFromRestriction asAllValuesFromRestriction();
+         
+    /** 
+     * <p>Answer a view of this restriction as a some values from  expression</p>
+     * @return This class, but viewed as a SomeValuesFromRestriction node
+     * @exception ConversionException if the class cannot be converted to an all values from restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public SomeValuesFromRestriction asSomeValuesFromRestriction();
+         
+    /** 
+     * <p>Answer a view of this restriction as a has value expression</p>
+     * @return This class, but viewed as a HasValueRestriction node
+     * @exception ConversionException if the class cannot be converted to a has value restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public HasValueRestriction asHasValueRestriction();
+         
+    /** 
+     * <p>Answer a view of this restriction as a cardinality restriction class expression</p>
+     * @return This class, but viewed as a CardinalityRestriction node
+     * @exception ConversionException if the class cannot be converted to a cardinality restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public CardinalityRestriction asCardinalityRestriction();
 
+    /** 
+     * <p>Answer a view of this restriction as a min cardinality restriction class expression</p>
+     * @return This class, but viewed as a MinCardinalityRestriction node
+     * @exception ConversionException if the class cannot be converted to a min cardinality restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public MinCardinalityRestriction asMinCardinalityRestriction();
+
+    /** 
+     * <p>Answer a view of this restriction as a max cardinality restriction class expression</p>
+     * @return This class, but viewed as a MaxCardinalityRestriction node
+     * @exception ConversionException if the class cannot be converted to a max cardinality restriction
+     * given the lanuage profile and the current state of the underlying model.
+     */
+    public MaxCardinalityRestriction asMaxCardinalityRestriction();
 
 }
 
