@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.17 2004-06-29 09:43:20 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.18 2004-11-24 18:30:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.db.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.db.*;
@@ -18,7 +19,7 @@ import com.hp.hpl.jena.db.*;
     handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.17 $
+ 	@version $Revision: 1.18 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -63,7 +64,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         { 
         if (manager.listening())
             {
-            List L = GraphUtil.iteratorToList( it );
+            List L = IteratorCollection.iteratorToList( it );
             add( L, false );
             manager.notifyAddIterator( graph, L );    
             }
@@ -124,7 +125,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         { 
         if (manager.listening())
             {
-            List L = GraphUtil.iteratorToList( it );
+            List L = IteratorCollection.iteratorToList( it );
             delete( L, false );
             manager.notifyDeleteIterator( graph, L );    
             }

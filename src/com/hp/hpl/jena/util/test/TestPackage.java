@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.8 2004-11-19 14:38:15 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.9 2004-11-24 18:30:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -30,7 +30,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestHashUtils",         TestCollectionFactory.suite() );
         addTest( "TestLocationMapper",    TestLocationMapper.suite() ) ;
         addTest( "TestFileManager",       TestFileManager.suite()) ;
-
+        addTest( TestIteratorCollection.suite() );
     }
 
     private void addTest(String name, TestSuite tc) {

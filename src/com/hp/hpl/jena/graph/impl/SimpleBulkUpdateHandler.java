@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.21 2004-06-30 17:15:45 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.22 2004-11-24 18:30:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -53,7 +54,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
 
     public void addIterator( Iterator it, boolean notify )
         { 
-        List s = GraphUtil.iteratorToList( it );
+        List s = IteratorCollection.iteratorToList( it );
         add( s, false );
         if (notify) manager.notifyAddIterator( graph, s );
         }
@@ -110,7 +111,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         
     public void deleteIterator( Iterator it, boolean notify )
         {  
-        List L = GraphUtil.iteratorToList( it );
+        List L = IteratorCollection.iteratorToList( it );
         delete( L, false );
         if (notify) manager.notifyDeleteIterator( graph, L );
          }

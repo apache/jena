@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.21 2004-11-19 14:38:12 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.22 2004-11-24 18:30:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -12,6 +12,7 @@ package com.hp.hpl.jena.graph.test;
 */
 
 import com.hp.hpl.jena.util.CollectionFactory;
+import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
@@ -35,10 +36,10 @@ public class GraphTestBase extends JenaTestBase
         { return ModelFactory.createModelForGraph( g ); }
         
     public static Set iteratorToSet( Iterator L )
-        { return GraphUtil.iteratorToSet( L ); }
+        { return IteratorCollection.iteratorToSet( L ); }
 
     public static List iteratorToList( Iterator it )
-        { return GraphUtil.iteratorToList( it ); }
+        { return IteratorCollection.iteratorToList( it ); }
                 
     public Set nodeSet( String nodes )
         {

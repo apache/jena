@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.10 2004-06-29 09:43:21 chris-dollin Exp $
+  $Id: SimpleEventManager.java,v 1.11 2004-11-24 18:30:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.IteratorCollection;
 
 /**
     Simple implementation of GraphEventManager for GraphBase to use.
@@ -72,7 +73,7 @@ public class SimpleEventManager implements GraphEventManager
         }
         
     public void notifyAddIterator( Graph g, Iterator it )
-        { notifyAddIterator( g, GraphUtil.iteratorToList( it ) ); }
+        { notifyAddIterator( g, IteratorCollection.iteratorToList( it ) ); }
         
     public void notifyAddGraph( Graph g, Graph added )
         {
@@ -105,7 +106,7 @@ public class SimpleEventManager implements GraphEventManager
         }
         
     public void notifyDeleteIterator( Graph g, Iterator it )
-        { notifyDeleteIterator( g, GraphUtil.iteratorToList( it ) ); }    
+        { notifyDeleteIterator( g, IteratorCollection.iteratorToList( it ) ); }    
             
     public void notifyDeleteGraph( Graph g, Graph removed )
         {

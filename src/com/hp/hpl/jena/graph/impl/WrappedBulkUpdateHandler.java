@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedBulkUpdateHandler.java,v 1.3 2004-06-29 09:43:21 chris-dollin Exp $
+  $Id: WrappedBulkUpdateHandler.java,v 1.4 2004-11-24 18:30:17 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.IteratorCollection;
 
 /**
  	WrappedBulkUpdateHandler - a base class for wrapped bulk update handlers
@@ -45,7 +46,7 @@ public class WrappedBulkUpdateHandler
 
     public void add( Iterator it )
         {
-        List s = GraphUtil.iteratorToList( it );
+        List s = IteratorCollection.iteratorToList( it );
         base.add( s );
         manager.notifyAddIterator( graph, s );
         }
@@ -76,7 +77,7 @@ public class WrappedBulkUpdateHandler
 
     public void delete( Iterator it )
         {
-        List s = GraphUtil.iteratorToList( it );
+        List s = IteratorCollection.iteratorToList( it );
         base.delete( s );
         manager.notifyDeleteIterator( graph, s );
         }

@@ -148,7 +148,9 @@ Post Jena 2.1 change list
       o ARP setup rationalized, a few methods deprecated as a result.
       o Improved documentation, covering new features, (see doc/ARP)
       
-
+  Utilities
+      o new class IteratorCollection with methods iteratorToSet and
+        iteratorToList (heavility used in tests and useful in general)
 
 Jena 2.1 - Main changes from Jena 2.0
   Installation

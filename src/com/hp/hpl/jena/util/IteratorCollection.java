@@ -1,40 +1,64 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphUtil.java,v 1.8 2004-11-24 18:30:16 chris-dollin Exp $
+  $Id: IteratorCollection.java,v 1.1 2004-11-24 18:30:19 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.util;
 
-import com.hp.hpl.jena.util.iterator.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import com.hp.hpl.jena.util.iterator.NiceIterator;
+
 
 /**
-    An ad-hoc collection of useful code for graphs; starting with findAll, which
-    is graph-specific, and extending to iteratorToSet and iteratorToList, which
-    are here because they are used in tests and in the bulk update handlers.
- 	@author kers
-*/
-public class GraphUtil
+ @author hedgehog
+ */
+public class IteratorCollection
     {
     /**
         Only static methods here - the class cannot be instantiated.
     */
-    private GraphUtil()
+    private IteratorCollection()
         {}
+    
+    /**
+        Answer the elements of the given iterator as a set. The iterator is consumed
+        by the operation. Even if an exception is thrown, the iterator will be closed.
+        @param i the iterator to convert
+        @return A set of the members of i
+    */
+    public static Set iteratorToSet( Iterator i )
+        {
+        Set result = CollectionFactory.createHashedSet();
+        try { while (i.hasNext()) result.add( i.next() ); }
+        finally { NiceIterator.close( i ); }
+        return result;
+        }
 
     /**
-        Answer an iterator covering all the triples in the specified graph.
-    	@param g the graph from which to extract triples
-    	@return an iterator over all the graph's triples
-    */
-    public static ExtendedIterator findAll( Graph g )
-        { return g.find( Node.ANY, Node.ANY, Node.ANY ); }
-                
+        Answer the elements of the given iterator as a list, in the order that they
+        arrived from the iterator. The iterator is consumed by this operation:
+        even if an exception is thrown, the iterator will be closed.
+    	@param it the iterator to convert
+    	@return a list of the elements of <code>it</code>, in order
+     */
+    public static List iteratorToList( Iterator it )
+        {
+        List result = new ArrayList();
+        try { while (it.hasNext()) result.add( it.next() ); }
+        finally { NiceIterator.close( it ); }
+        return result;
+        }
+
     }
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

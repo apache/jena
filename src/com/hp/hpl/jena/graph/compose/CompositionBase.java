@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-02 14:10:07 $
+ * Last modified on   $Date: 2004-11-24 18:30:16 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.graph.compose;
 ///////////////
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -40,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.8 2004-11-02 14:10:07 chris-dollin Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.9 2004-11-24 18:30:16 chris-dollin Exp $
  */
 public abstract class CompositionBase
     extends GraphBase
@@ -79,7 +80,7 @@ public abstract class CompositionBase
      */
     public static Filter reject( final ClosableIterator i )
         {
-        final Set suppress = GraphUtil.iteratorToSet( i );
+        final Set suppress = IteratorCollection.iteratorToSet( i );
         return new Filter()
             { public boolean accept( Object o ) { return !suppress.contains( o ); } };
         }
@@ -183,7 +184,7 @@ public abstract class CompositionBase
      */
     public static Filter ifIn( final ClosableIterator i )
         {
-        final Set allow = GraphUtil.iteratorToSet( i );
+        final Set allow = IteratorCollection.iteratorToSet( i );
         return new Filter()
             { public boolean accept( Object x ) { return allow.contains( x ); } };
         }

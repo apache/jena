@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.5 2004-07-08 13:00:15 chris-dollin Exp $
+  $Id: WrappedIterator.java,v 1.6 2004-11-24 18:30:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -29,7 +29,7 @@ public class WrappedIterator extends NiceIterator
     /** the base iterator that we wrap */  
     private Iterator base;
     
-    /** private constructor: remember the base iterator */
+    /** constructor: remember the base iterator */
     protected WrappedIterator( Iterator base )
         { this.base = base; }
         
