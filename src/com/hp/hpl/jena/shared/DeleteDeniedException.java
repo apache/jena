@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DeleteDeniedException.java,v 1.1 2003-07-21 10:55:00 chris-dollin Exp $
+  $Id: DeleteDeniedException.java,v 1.2 2003-07-21 11:01:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.Triple;
     Exception to throw if a delete is denied.
  	@author kers
 */
-public class DeleteDeniedException extends JenaUpdateDeniedException
+public class DeleteDeniedException extends UpdateDeniedException
     {
     public DeleteDeniedException( String message )
         { super( message ); }

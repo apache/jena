@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.11 2003-07-15 14:44:17 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.12 2003-07-21 11:01:32 chris-dollin Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */
@@ -400,7 +400,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 } catch (SAXNotSupportedException ns) {
                     old = null;
                 } catch (SAXNotRecognizedException nr) {
-                    errorHandler.error( new JenaUnknownPropertyException( str ) );
+                    errorHandler.error( new UnknownPropertyException( str ) );
                     return null;
                 }
                 try {
@@ -408,7 +408,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 } catch (SAXNotSupportedException ns) {
                     errorHandler.error(new JenaException(ns));
                 } catch (SAXNotRecognizedException nr) {
-                    errorHandler.error( new JenaUnknownPropertyException( str ) );
+                    errorHandler.error( new UnknownPropertyException( str ) );
                     return null;
                 }
                 return old;
@@ -422,7 +422,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 } catch (SAXNotSupportedException ns) {
                     old = null;
                 } catch (SAXNotRecognizedException nr) {
-                    errorHandler.error( new JenaUnknownPropertyException( str ) );
+                    errorHandler.error( new UnknownPropertyException( str ) );
                     return null;
                 }
                 try {
@@ -430,7 +430,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 } catch (SAXNotSupportedException ns) {
                     errorHandler.error(new JenaException(ns));
                 } catch (SAXNotRecognizedException nr) {
-                    errorHandler.error( new JenaUnknownPropertyException( str ) );
+                    errorHandler.error( new UnknownPropertyException( str ) );
                     return null;
                 } catch (ClassCastException cc) {
                     errorHandler.error(
@@ -578,7 +578,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 return new Integer(old);
             }
         }
-        errorHandler.error(new JenaUnknownPropertyException( str ));
+        errorHandler.error(new UnknownPropertyException( str ));
         return null;
     }
 
