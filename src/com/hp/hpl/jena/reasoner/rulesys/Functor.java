@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.12 2003-07-25 12:16:47 der Exp $
+ * $Id: Functor.java,v 1.13 2003-08-22 13:30:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-07-25 12:16:47 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-22 13:30:41 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -43,6 +43,7 @@ public class Functor implements ClauseEntry {
     /** A static Filter instance that detects triples with Functor objects */
     public static final Filter acceptFilter = new Filter() {
                 public boolean accept(Object t) {
+                    if (((Triple)t).getSubject().isLiteral()) return true;
                     Node n = ((Triple)t).getObject();
                     return n.isLiteral() && n.getLiteral().getDatatype() == FunctorDatatype.theFunctorDatatype;
                 }
