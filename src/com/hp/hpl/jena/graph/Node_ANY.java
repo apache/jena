@@ -14,9 +14,6 @@ public class Node_ANY extends Node_Fluid
     public boolean equals( Object other )
         { return other instanceof Node_ANY; }
         
-    public boolean isConcrete()
-        { return false; }
-        
     public Object visitWith( NodeVisitor v )
         { return v.visitAny( this ); }
         

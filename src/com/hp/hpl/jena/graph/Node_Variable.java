@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Variable.java,v 1.5 2003-07-18 15:14:00 chris-dollin Exp $
+  $Id: Node_Variable.java,v 1.6 2003-07-22 12:46:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -27,9 +27,6 @@ public class Node_Variable extends Node_Fluid
     public boolean isVariable()
         { return true; }
         
-    public boolean isConcrete()
-        { return false; }
-
     public String toString()
         { return ((String) label); }
         
