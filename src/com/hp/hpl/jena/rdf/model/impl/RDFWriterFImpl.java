@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterFImpl.java,v 1.9 2004-07-06 13:36:59 andy_seaborne Exp $
+ * $Id: RDFWriterFImpl.java,v 1.10 2004-11-04 16:59:41 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.JenaRuntime ;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.9 $ $Date: 2004-07-06 13:36:59 $
+ * @version $Revision: 1.10 $ $Date: 2004-11-04 16:59:41 $
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
 
@@ -59,6 +59,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
           N3JenaWriter.n3WriterPlain,
           N3JenaWriter.n3WriterTriples,
           N3JenaWriter.n3WriterTriplesAlt,
+          N3JenaWriter.turtleWriter 
         };
     // default readers for each language
 
@@ -73,6 +74,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
             Jena.PATH + ".n3.N3JenaWriterPlain",
             Jena.PATH + ".n3.N3JenaWriterTriples",
             Jena.PATH + ".n3.N3JenaWriterTriples",  // Same writer, different writer name
+            Jena.PATH + ".n3.TurtleJenaWriter",
              };
 
     protected static final String DEFAULTLANG = LANGS[0];

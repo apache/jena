@@ -22,7 +22,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.25 2004-07-07 11:28:29 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.26 2004-11-04 16:59:40 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -107,7 +107,7 @@ public class N3JenaWriterCommon implements RDFWriter
         Object oldValue = writerPropertyMap.get(propName);
         writerPropertyMap.put(propName, propValue);
         return oldValue;
-    }
+   }
 
     /** Write the model out in N3.  The writer should be one suitable for UTF-8 which
     * excludes a PrintWriter or a FileWriter which use default character set.

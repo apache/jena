@@ -28,8 +28,8 @@ subsystem.
 </li>
 <li><a href="#n3">1.2 N3</a>
 </li>
-<li><a href="#ntriple">1.3 N-TRIPLE</a>
-</li>
+<li><a href="#ntriple">1.3 N-TRIPLE</a></li>
+<li><a href="#turtle">1.4 TURTLE</a></li>
 </ul>
 <li><a href="#encoding">2. Character Encoding in Java and XML</a></li>
 <li><a href="#reader-writer">3. When to Use Reader and Writer?</a></li>
@@ -296,6 +296,15 @@ defined below.</p>
 <a href=
 "http://www.w3.org/TR/2003/WD-rdf-testcases-20030123/#ntriples">RDF Core's
 N-Triples</a> language. They are not configurable.</p>
+
+<h3><a name="turtle">1.4 TURTLE</a></h3>
+
+<p>The N3 reader accepts any valid
+<a href="http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/">Turtle</a>.&nbsp; 
+The Turtle writer is the N3 writer configured with &quot;usePropertySymbols&quot; set to 
+false.&nbsp; Note that the N3 and Turtle writers produce internationalized 
+qnames, with the character set from XML Namespaces (except for ':'), not 
+restricted to ASCII as is the definition of N3 and Turtle.</p>
 
 <h2><a name="encoding">2. Character Encoding in Java and XML</a></h2>
 <p>

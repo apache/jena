@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderFImpl.java,v 1.9 2004-07-06 13:36:59 andy_seaborne Exp $
+ * $Id: RDFReaderFImpl.java,v 1.10 2004-11-04 16:59:41 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.JenaRuntime ;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.9 $ $Date: 2004-07-06 13:36:59 $
+ * @version $Revision: 1.10 $ $Date: 2004-11-04 16:59:41 $
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
 
@@ -50,7 +50,8 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
                                               "RDF/XML-ABBREV",
                                               "N-TRIPLE",
                                               "N-TRIPLES",
-                                              "N3"};
+                                              "N3",
+                                              "TURTLE"};
     // default readers for each language
 
     protected static final String DEFAULTREADERS[] = {
@@ -58,7 +59,8 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         "com.hp.hpl.jena.rdf.arp.JenaReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
-        "com.hp.hpl.jena.n3.N3JenaReader"
+        "com.hp.hpl.jena.n3.N3JenaReader",
+        "com.hp.hpl.jena.n3.TurtleJenaReader"
     };
 
     protected static final String DEFAULTLANG = LANGS[0];

@@ -28,7 +28,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *  </p>
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.24 2003-12-04 12:03:21 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.25 2004-11-04 16:59:40 andy_seaborne Exp $
  */
 
 
@@ -83,11 +83,19 @@ public class N3JenaWriter implements RDFWriter
      */
     static public final String n3WriterTriplesAlt    = "N3-TRIPLE" ;
 
-    RDFWriter writer = null ;
+    /**
+     * Turtle writer.
+     * http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/
+     */
+    static public final String turtleWriter          = "TURTLE" ;
+
+    
+    protected N3JenaWriterCommon writer = null ;
     
     public N3JenaWriter() { writer = chooseWriter() ; }
+    public N3JenaWriter(N3JenaWriterCommon w) { writer = w ;}
     
-    RDFWriter chooseWriter()
+    N3JenaWriterCommon chooseWriter()
     {
         // Compatibility with Jena1
         if ( System.getProperty(propWriteSimple, "false").equals("true"))
@@ -106,6 +114,13 @@ public class N3JenaWriter implements RDFWriter
              writerName.equalsIgnoreCase(n3WriterTriplesAlt) )
             return new N3JenaWriterTriples() ;
             
+        if ( writerName.equalsIgnoreCase(turtleWriter) )
+        {
+            N3JenaWriterPP w = new N3JenaWriterPP() ;
+            w.useWellKnownPropertySymbols = false ;
+            return w ;
+        }
+        
         // Don't know or default.
         return new N3JenaWriterPP() ;
     }
