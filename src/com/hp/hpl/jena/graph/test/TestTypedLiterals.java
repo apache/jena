@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.28 2003-09-03 15:07:30 jeremy_carroll Exp $
+ * $Id: TestTypedLiterals.java,v 1.29 2003-09-09 12:03:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -33,7 +33,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2003-09-03 15:07:30 $
+ * @version $Revision: 1.29 $ on $Date: 2003-09-09 12:03:26 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -164,7 +164,7 @@ public class TestTypedLiterals extends TestCase {
         Literal l2 = m.createTypedLiteral("42", XSDDatatype.XSDint);
         Literal l4 = m.createTypedLiteral("63");  // default map
         
-        assertEquals("Default map failed", l1, l2);
+        assertSameValueAs("Default map failed", l1, l2);
         assertEquals("Value wrong", l1.getValue(), new Integer(42));
         assertEquals("class wrong", l1.getValue().getClass(), Integer.class);
         assertEquals("Value accessor problem", l1.getInt(), 42);
@@ -175,7 +175,7 @@ public class TestTypedLiterals extends TestCase {
         checkIllegalLiteral("42.1", XSDDatatype.XSDint);
         
         Literal l5 = m.createTypedLiteral("42", XSDDatatype.XSDnonNegativeInteger);
-        assertEquals("type coercion", l2, l5);
+        assertSameValueAs("type coercion", l2, l5);
         
         // Check float/double
         l1 = m.createTypedLiteral(42.42);  // default map
@@ -188,7 +188,7 @@ public class TestTypedLiterals extends TestCase {
         assertFloatEquals("value wrong", ((Float)(l2.getValue())).floatValue(), 42.42);
         assertFloatEquals("Value accessor problem", l1.getFloat(), 42.42);
         assertEquals("wrong type", l2.getDatatype(), XSDDatatype.XSDfloat);
-        assertEquals("equality fn", l1, l3);
+        assertSameValueAs("equality fn", l1, l3);
         
         // Minimal check on long, short, byte
         checkLegalLiteral("12345", XSDDatatype.XSDlong, Long.class, new Long(12345));
@@ -278,12 +278,12 @@ public class TestTypedLiterals extends TestCase {
     public void testMiscEquality() {
         Literal l1 = m.createTypedLiteral("10", "http://www.w3.org/2001/XMLSchema#integer");
         Literal l3 = m.createTypedLiteral("010", "http://www.w3.org/2001/XMLSchema#integer");
-        assertEquals("Int lex form", l1, l3);
+        assertSameValueAs("Int lex form", l1, l3);
         
         l1 = m.createTypedLiteral("1", XSDDatatype.XSDint);
         l3 = m.createTypedLiteral("1", XSDDatatype.XSDnonNegativeInteger);
         
-        assertEquals("numeric comparisons", l1, l3);
+        assertSameValueAs("numeric comparisons", l1, l3);
     }
     
     /**
@@ -296,9 +296,9 @@ public class TestTypedLiterals extends TestCase {
         Literal lPlain2 = m.createLiteral("10");
         Literal lInt =  m.createTypedLiteral("10", XSDDatatype.XSDint );
         
-        assertEquals("Null type = plain literal", lPlain, lPlain2);
-        assertEquals("Null type = plain literal", lPlain, lPlain3);
-        assertEquals("Null type = plain literal", lPlain2, lPlain3);
+        assertSameValueAs("Null type = plain literal", lPlain, lPlain2);
+        assertSameValueAs("Null type = plain literal", lPlain, lPlain3);
+        assertSameValueAs("Null type = plain literal", lPlain2, lPlain3);
         assertTrue("null type", lPlain3.getDatatype() == null);
         assertDiffer("String != int", lString, lInt);
         assertDiffer("Plain != int", lPlain, lInt);
@@ -306,8 +306,8 @@ public class TestTypedLiterals extends TestCase {
         
         // The correct answer to this is currently up to us
         if (JenaParameters.enablePlainLiteralSameAsString) {
-            assertEquals("String != plain??", lString, lPlain);
-            assertEquals("String != plain??", lString, lPlain2);
+            assertSameValueAs("String != plain??", lString, lPlain);
+            assertSameValueAs("String != plain??", lString, lPlain2);
         } else {
             assertDiffer("String != plain??", lString, lPlain);
             assertDiffer("String != plain??", lString, lPlain2);
@@ -491,7 +491,7 @@ public class TestTypedLiterals extends TestCase {
         Property p = model.createProperty("urn:x-eg/p");
         Literal l1 = model.createTypedLiteral("10", "http://www.w3.org/2001/XMLSchema#integer");
         Literal l2 = model.createTypedLiteral("010", "http://www.w3.org/2001/XMLSchema#integer");
-        assertEquals("sameas test", l1, l2);
+        assertSameValueAs("sameas test", l1, l2);
         Resource a = model.createResource("urn:x-eg/a");
         a.addProperty(p, l1);
         assertTrue(model.getGraph().find(null, p.asNode(), l1.asNode()).hasNext());
@@ -637,6 +637,28 @@ public class TestTypedLiterals extends TestCase {
     }
     
     /**
+     * Test that equality function takes lexical distinction into account. 
+     */
+    public void testLexicalDistinction() {
+        Literal l1 = m.createTypedLiteral("3.0", XSDDatatype.XSDdecimal);
+        Literal l2 = m.createTypedLiteral("3.00", XSDDatatype.XSDdecimal);
+        Literal l3 = m.createTypedLiteral("3.0", XSDDatatype.XSDdecimal);
+        assertSameValueAs("lexical form does not affect value", l1, l2);
+        assertSameValueAs("lexical form does not affect value", l3, l2);
+        assertTrue("lexical form affects equality", ! l1.equals(l2));
+        assertTrue("lexical form affects equality",   l1.equals(l3));
+        
+        // This version will become illegal in the future and will be removed then
+        l1 = m.createTypedLiteral("3", XSDDatatype.XSDint);
+        l2 = m.createTypedLiteral(" 3 ", XSDDatatype.XSDint);
+        l3 = m.createTypedLiteral("3", XSDDatatype.XSDint);
+        assertSameValueAs("lexical form does not affect value", l1, l2);
+        assertSameValueAs("lexical form does not affect value", l3, l2);
+        assertTrue("lexical form affects equality", ! l1.equals(l2));
+        assertTrue("lexical form affects equality",   l1.equals(l3));
+    }
+    
+    /**
      * Test that two objects are not semantically the same
      */
     private void assertDiffer( String title, Literal x, Literal y ) {
@@ -644,10 +666,9 @@ public class TestTypedLiterals extends TestCase {
     }
      
     /**
-     * Test that two objects are not semantically the same
-     * [changed from assertSame by kers, as assertSame means "==" in junit]
+     * Test that two objects are semantically the same
      */
-    private void assertEquals( String title, Literal x, Literal y ) {
+    private void assertSameValueAs( String title, Literal x, Literal y ) {
         assertTrue( title, x.sameValueAs( y ) ); 
     }
      
