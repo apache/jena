@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.2 2003-04-29 12:31:31 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.3 2003-04-29 13:41:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.shared.impl;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import java.util.*;
+import org.apache.xerces.util.XMLChar;
 
 /**
  	@author kers
@@ -32,16 +33,10 @@ public class PrefixMappingImpl implements PrefixMapping
     */
     private void checkLegal( String prefix )
         {
-        for (int i = 0; i < prefix.length(); i += 1)
-            {
-            char ch = prefix.charAt( i );
-            if (Character.isLetterOrDigit( ch ) || ch == '.' || ch == '_')
-                { /* that's all right then */ }
-            else 
-                throw new PrefixMapping.IllegalPrefixException( prefix );
-            }
+        if (prefix.length() > 0 && !XMLChar.isValidNCName( prefix ))
+            throw new PrefixMapping.IllegalPrefixException( prefix ); 
         }
-    
+        
     public String getNsPrefixURI( String prefix ) 
         { return (String) map.get( prefix ); }
         
