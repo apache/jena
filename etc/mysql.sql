@@ -31,21 +31,21 @@ DROP TABLE IF EXISTS JENA_LONG_LIT;;
 CREATE TABLE JENA_LONG_LIT (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    ${a} NOT NULL,
- Hash    BIGINT,
+ Hish    BIGINT,
  Tail    MEDIUMBLOB
 ) Type = ${b};;
 DROP TABLE IF EXISTS JENA_LONG_URI;;
 CREATE TABLE JENA_LONG_URI (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    ${a} NOT NULL,
- Hash    BIGINT,
+ Hish    BIGINT,
  Tail    MEDIUMBLOB
 ) Type = ${b};;
 DROP TABLE IF EXISTS JENA_PREFIX;;
 CREATE TABLE JENA_PREFIX (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    ${a} NOT NULL,
- Hash    BIGINT,
+ Hish    BIGINT,
  Tail    MEDIUMBLOB
 ) Type = ${b};;
 DROP TABLE IF EXISTS JENA_GRAPH;;
@@ -53,9 +53,9 @@ CREATE TABLE JENA_GRAPH (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Name    TINYBLOB NOT NULL
 ) Type = ${b};;
-CREATE UNIQUE INDEX JENA_IXLIT ON JENA_LONG_LIT(Head(${c}),Hash);;
-CREATE UNIQUE INDEX JENA_IXURI ON JENA_LONG_URI(Head(${c}),Hash);;
-CREATE UNIQUE INDEX JENA_IXBND ON JENA_PREFIX(Head(${c}),Hash);;
+CREATE UNIQUE INDEX JENA_IXLIT ON JENA_LONG_LIT(Head(${c}),Hish);;
+CREATE UNIQUE INDEX JENA_IXURI ON JENA_LONG_URI(Head(${c}),Hish);;
+CREATE UNIQUE INDEX JENA_IXBND ON JENA_PREFIX(Head(${c}),Hish);;
 CREATE INDEX JENA_IXSP ON JENA_SYS_STMT(Subj(${c}), Prop(${c}));;
 CREATE INDEX JENA_IXO ON JENA_SYS_STMT(Obj(${c}));;
 
@@ -98,7 +98,7 @@ CREATE TABLE ${a} (
 CREATE UNIQUE INDEX ${a}_IXSTMT ON ${a}(Stmt(${d}), HasType);;
 CREATE INDEX ${a}_IXSP ON ${a}(Subj(${d}), Prop(${d}));;
 CREATE INDEX ${a}_IXO ON ${a}(Obj(${d}));;
- 
+
 #-------------------------------------------------------------------
 # Initialize a blank database - create any generators needed
 initDBgenerators
@@ -111,7 +111,7 @@ DROP TABLE ${a};;
 
 #-------------------------------------------------------------------
 # Remove all rows from given table with the given GraphID.
-# Substitutes table name 
+# Substitutes table name
 removeRowsFromTable
 DELETE FROM ${a} WHERE (GraphID = ?)
 
@@ -122,27 +122,27 @@ INSERT INTO JENA_GRAPH (Name) VALUES (?)
 
 #-------------------------------------------------------------------
 # Delete a triple
-# substituting Statement table name 
+# substituting Statement table name
 # and taking values as arguments
 deleteStatement
 Delete FROM ${a} WHERE (Subj = ? AND Prop = ? AND Obj = ? AND GraphID = ?)
 
 #-------------------------------------------------------------------
-# Insert a triple into a Statement table, 
-# substituting Statement table name 
+# Insert a triple into a Statement table,
+# substituting Statement table name
 # and taking URI's as arguments
 insertStatement
 INSERT INTO ${a} (Subj, Prop, Obj, GraphID) VALUES (?, ?, ?, ?)
 
 #-------------------------------------------------------------------
-# Return the count of rows in the table 
+# Return the count of rows in the table
 getRowCount
 SELECT COUNT(*) FROM ${a}
 
 #-------------------------------------------------------------------
 # Insert a long object
 insertLongObject
-INSERT INTO ${a} (Head, Hash, Tail) VALUES (?, ?, ?)
+INSERT INTO ${a} (Head, Hish, Tail) VALUES (?, ?, ?)
 
 #-------------------------------------------------------------------
 # Get the ID of the object that was just inserted
@@ -157,12 +157,12 @@ SELECT HEAD, TAIL FROM ${a} WHERE ID = ?
 #-------------------------------------------------------------------
 # Return the ID of a long object, if it exists
 getLongObjectID
-SELECT ID FROM ${a} WHERE Head = ? and Hash = ?
+SELECT ID FROM ${a} WHERE Head = ? and Hish = ?
 
 #-------------------------------------------------------------------
 # Return the ID of a long object, if it exists
 getLongObjectID
-SELECT ID FROM ${a} WHERE Head = ? and Hash = ?
+SELECT ID FROM ${a} WHERE Head = ? and Hish = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
@@ -172,7 +172,7 @@ FROM ${a} S WHERE S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same subject 
+# with the same subject
 SelectStatementS
 SELECT S.Subj, S.Prop, S.Obj
 FROM ${a} S WHERE S.Subj = ? AND S.GraphID = ?
@@ -189,7 +189,7 @@ FROM ${a} S WHERE S.Subj = ? AND S.Prop = ? AND S.GraphID = ?
 # with the same subject and Property and object
 SelectStatementSPO
 SELECT S.Subj, S.Prop, S.Obj
-FROM ${a} S WHERE S.Obj = ? AND S.Subj = ? AND S.Prop = ? AND S.GraphID = ? 
+FROM ${a} S WHERE S.Obj = ? AND S.Subj = ? AND S.Prop = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
@@ -214,7 +214,7 @@ FROM ${a} S WHERE S.Obj = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same Property 
+# with the same Property
 SelectStatementP
 SELECT S.Subj, S.Prop, S.Obj
 FROM ${a} S WHERE S.Prop = ? AND S.GraphID = ?
@@ -222,105 +222,105 @@ FROM ${a} S WHERE S.Prop = ? AND S.GraphID = ?
 #-------------------------------------------------------------------
 # Select all the statements in an Reified Statement (triple store) graph
 SelectAllReifStatement
-SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType 
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
 FROM ${a} S WHERE S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an reified Statement (triple store) graph
 SelectAllReifTypeStmt
-SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType 
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
 FROM ${a} S WHERE HasType = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
 # with the given statement URI
 SelectReifStatement
-SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType 
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
 FROM ${a} S WHERE S.Stmt = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
 # with the given statement URI and that have the HasType property defined
 SelectReifTypeStatement
-SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType 
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
 FROM ${a} S WHERE S.Stmt = ? AND HasType = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
-# Delete an all-URI triple into a Statement table, 
-# substituting Statement table name 
+# Delete an all-URI triple into a Statement table,
+# substituting Statement table name
 # and taking URI's as arguments
 deleteReifStatement
 Delete FROM ${a} WHERE (Subj = ? AND Prop = ? AND Obj = ? AND GraphID = ?
 AND Stmt = ?)
 
 #-------------------------------------------------------------------
-# Insert an all-URI triple into a Statement table, 
-# substituting Statement table name 
+# Insert an all-URI triple into a Statement table,
+# substituting Statement table name
 # and taking URI's as arguments
 insertReifStatement
 INSERT INTO ${a} (Subj, Prop, Obj, GraphID, Stmt, HasType) VALUES (?, ?, ?, ?, ?, ?)
 
 #-------------------------------------------------------------------
-# Update the subject of a reified statement 
+# Update the subject of a reified statement
 updateReifSubj
 UPDATE ${a} SET Subj=? WHERE Stmt = ? AND GraphID = ?
 
 #-------------------------------------------------------------------
-# Update the property of a reified statement 
+# Update the property of a reified statement
 updateReifProp
 UPDATE ${a} SET Prop=? WHERE Stmt = ? AND GraphID = ?
 
 #-------------------------------------------------------------------
-# Update the object of a reified statement 
+# Update the object of a reified statement
 updateReifObj
 UPDATE ${a} SET Obj=? WHERE Stmt = ? AND GraphID = ?
 
 #-------------------------------------------------------------------
-# Update the hasType of a reified statement 
+# Update the hasType of a reified statement
 updateReifHasType
 UPDATE ${a} SET HasType=? WHERE Stmt = ? AND GraphID = ?
 
 #-------------------------------------------------------------------
-# Find the reified statements with the given subject 
+# Find the reified statements with the given subject
 findFragSubj
-SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType 
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
 FROM ${a} S WHERE S.Stmt = ? AND S.Subj = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
-# Find the reified statement with the given property 
+# Find the reified statement with the given property
 findFragProp
-SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType 
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
 FROM ${a} S WHERE S.Stmt = ? AND S.Prop = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Find the reified statement with the given object resource
 findFragObj
-SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType 
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
 FROM ${a} S WHERE S.Stmt = ? AND S.Obj = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
-# Find the reified statement with the given hasType 
+# Find the reified statement with the given hasType
 findFragHasType
-SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType 
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
 FROM ${a} S WHERE S.Stmt = ? AND S.HasType = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph
-# with the specified subject, property and literal (resource) 
+# with the specified subject, property and literal (resource)
 SelectReifURISPO
 SELECT S.Stmt
 FROM ${a} S WHERE S.Subj = ? AND S.Prop = ? and S.Obj = ? AND S.GraphID = ? AND S.HasType = "T"
 
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph
-# with the specified subject, property and literal (reference) 
+# with the specified subject, property and literal (reference)
 SelectReifURI
 SELECT S.Stmt
 FROM ${a} S WHERE S.GraphID = ? AND S.HasType = "T"
 
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph
-# that partially reify something 
+# that partially reify something
 SelectAllReifNodes
 SELECT DISTINCT S.Stmt
 FROM ${a} S WHERE S.GraphID = ?
@@ -331,4 +331,3 @@ FROM ${a} S WHERE S.GraphID = ?
 SelectReifNode
 SELECT DISTINCT S.Stmt
 FROM ${a} S WHERE S.Stmt = ? AND S.GraphID = ?
-
