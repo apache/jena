@@ -1,35 +1,33 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReasonerFactory.java,v 1.3 2004-11-29 16:01:21 chris-dollin Exp $
+  $Id: WrappedReasonerFactory.java,v 1.4 2004-11-30 16:10:22 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import java.util.*;
-
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.vocabulary.JMS;
 
 /**
     WrappedReasonerFactory - a wrapper round ReasonerFactories that
-    allowed rules and schemas to be accumulated that will be applied to any 
-    Reasoner it generates.
+    accepts a Resource configuring initial rules, schemas, etc.
     
     @author kers
 */
-public final class WrappedReasonerFactory extends BaseRuleReasonerFactory 
-    implements RuleReasonerFactory
+public final class WrappedReasonerFactory implements ReasonerFactory
     {
     protected final ReasonerFactory factory;
-    protected final List schemas = new ArrayList();
     protected final Resource config;
+    
+    protected final Model schemaUnion = ModelFactory.createDefaultModel();
     
     public WrappedReasonerFactory( ReasonerFactory rrf, Resource config )
         { super();
         this.factory = rrf; 
-        this.config = config; }
+        this.config = config;
+        loadSchemas( schemaUnion, config ); }
     
     /**
          Answer a Reasoner created according to the underlying factory, and then 
@@ -38,22 +36,25 @@ public final class WrappedReasonerFactory extends BaseRuleReasonerFactory
      */
     public Reasoner create( Resource ignored )
         { Reasoner result = factory.create( config );
-        // if (result instanceof RuleReasoner) ((RuleReasoner) result).setRules( rules );
-        for (int i = 0; i < schemas.size(); i += 1) result.bindSchema( (Graph) schemas.get(i) );
-        return result; }
+        return schemaUnion.isEmpty() ? result : result.bindSchema( schemaUnion ); }
+    
+    private static Model loadSchemas( Model schema, Resource R )
+        {
+        StmtIterator schemas = R.listProperties( JMS.schemaURL );
+        while (schemas.hasNext())
+            {
+            Statement s = schemas.nextStatement();
+            Resource sc = s.getResource();
+            FileManager.get().readModel( schema, sc.getURI() );
+            }
+        return schema;
+        }
     
     /**
          Answer the capabilities of the underlying ReasonerFactory.
     */
     public Model getCapabilities()
         { return factory.getCapabilities(); }
-    
-    /**
-         Remember this schema. When a Reasoner is created from this factory,
-         bind all the remembered schemas.
-    */
-    public void bindSchema( Graph schema )
-    	{ schemas.add( schema ); }
     
     /**
          Answer the URI of the underlying ReasonerFactory. 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphQueryPackage.java,v 1.7 2004-08-16 19:47:00 chris-dollin Exp $
+  $Id: TestGraphQueryPackage.java,v 1.8 2004-11-30 16:10:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -22,6 +22,7 @@ public class TestGraphQueryPackage
     public static TestSuite suite()
         {
         TestSuite result = new TestSuite();
+        result.addTest( TestBufferPipe.suite() );
         result.addTest( QueryTest.suite() );
         result.addTest( TestSimpleTripleSorter.suite() );
         result.addTest( TestExpressions.suite() );

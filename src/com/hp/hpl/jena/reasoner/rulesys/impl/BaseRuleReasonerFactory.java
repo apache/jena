@@ -1,33 +1,21 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BaseRuleReasonerFactory.java,v 1.3 2004-08-04 11:31:07 chris-dollin Exp $
+  $Id: BaseRuleReasonerFactory.java,v 1.4 2004-11-30 16:10:16 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
      BaseRuleReasonerFactory - a base for RuleReasonerFactories that handles
      the list of rules.
      
+     OBSOLETE, not used anywhere.
+     
      @author kers
 */
 public class BaseRuleReasonerFactory 
     {
-    /**
-         The list of rules to be added to newly-created reasoners; defaults to the
-         empty list.
-    */
-    protected List rules = new ArrayList();
-
-    /**
-         Add <code>rules</code>, which must be a List of <code>Rule</code> objects.
-         to the rule list.
-    */
-    public void addRules(List rules)
-        { this.rules.addAll( rules ); }
     }
 
 /*

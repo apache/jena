@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestSetRules.java,v 1.6 2004-11-29 16:01:22 chris-dollin Exp $
+  $Id: TestSetRules.java,v 1.7 2004-11-30 16:10:23 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,9 +13,9 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.BaseRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 
 /**
@@ -33,33 +33,17 @@ public class TestSetRules extends ModelTestBase
 
     static final List rules = Rule.parseRules( "[name: (?s owl:foo ?p) -> (?s ?p ?a)]" );
     
-    public void testRuleFactories()
-        {
-        assertHasParent( GenericRuleReasonerFactory.class, BaseRuleReasonerFactory.class );
-        assertHasParent( RDFSRuleReasonerFactory.class, BaseRuleReasonerFactory.class );
-        assertHasParent( OWLMicroReasonerFactory.class, BaseRuleReasonerFactory.class );
-        }
-    
-    public void testGenericSetRules()
-        { testFactory( new GenericRuleReasonerFactory() ); }
-    
-    public void testRDFSSetRules()
-        { testFactory( new RDFSRuleReasonerFactory() ); }
-
-    public void testOwlMicroSetRules()
-        { testFactory( new OWLMicroReasonerFactory() ); }
-    
     public void testRuleReasonerWrapper()
         {
         MockFactory mock = new MockFactory();
-        RuleReasonerFactory wrapped = wrap( mock );
+        ReasonerFactory wrapped = wrap( mock );
         assertEquals( MockFactory.capabilities, wrapped.getCapabilities() );
         assertEquals( MockFactory.uri, wrapped.getURI() );
         assertEquals( MockFactory.reasoner, wrapped.create( null ) );
         assertEquals( Arrays.asList( new Object[] {"capabilities", "uri", "create"} ),  mock.done );
         }
     
-    private static class MockFactory implements RuleReasonerFactory
+    private static class MockFactory implements ReasonerFactory
         {
         List done = new ArrayList();
         static final Model capabilities = modelWithStatements( "this isA Capability" );
@@ -83,18 +67,11 @@ public class TestSetRules extends ModelTestBase
             return uri; }
         }
     
-    private static RuleReasonerFactory wrap( final RuleReasonerFactory rrf )
+    private static ReasonerFactory wrap( final ReasonerFactory rrf )
         {
-        return new WrappedReasonerFactory(rrf, ModelSpecImpl.emptyResource );
+        return new WrappedReasonerFactory( rrf, ModelSpecImpl.emptyResource );
         }
     
-    private void testFactory( RuleReasonerFactory grf )
-        {
-        RuleReasoner base = (RuleReasoner) grf.create( null );
-        grf.addRules( rules );
-        RuleReasoner gr = (RuleReasoner) grf.create( null );
-        assertEquals( append( base.getRules(), rules ), gr.getRules() );
-        }    
     }
 
 

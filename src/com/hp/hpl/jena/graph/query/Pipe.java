@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Pipe.java,v 1.4 2003-08-29 08:37:51 chris-dollin Exp $
+  $Id: Pipe.java,v 1.5 2004-11-30 16:07:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -30,13 +30,21 @@ public interface Pipe
     public void put( Domain d );
     
     /**
-        Close the pipe: further operations on it have undefined effects.
+        Close the pipe. hasNext() will deliver <code>false</code>, and 
+        <code>get</code> will throw an exception.
     */
     public void close();
+    
+    /**
+         Close the pipe (see close()) and record <code>e</code> as its termination
+         status.
+         @param e the exception that caused the pipe to be closed
+    */
+    public void close( Exception e );
     }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

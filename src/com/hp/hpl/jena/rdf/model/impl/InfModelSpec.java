@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.14 2004-11-30 10:14:24 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.15 2004-11-30 16:10:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -13,7 +13,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -128,38 +127,8 @@ public class InfModelSpec extends ModelSpecImpl
         String rrs = rr.getURI();
         ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( rrs );
         if (rf == null) throw new NoSuchReasonerException( rrs );
-        return loadFactory( rf, rs, R );
+        return new WrappedReasonerFactory( rf, ((Resource) R.inModel( rs )) );
         }
-
-    /**
-        If there are no jms:ruleSet or jms:ruleSetURL properties of <code>R</code>, answer the
-        supplied factory <code>rf</code>. Otherwise, <code>rf</code> must be a RuleReasonerFactory,
-        and it is wrapped up in a WrappedRuleReasonerFactory which is loaded with all the specified
-        rules.
-    */
-    private static ReasonerFactory loadFactory( ReasonerFactory rf, Model rs, Resource R )
-        {
-        Resource config = (Resource) R.inModel( rs );
-        WrappedReasonerFactory f = new WrappedReasonerFactory( rf, config );
-    	loadSchemas( rs, R, f );
-        return f;
-        }
-
-
-	/**
-	 	load the factory <code>f</code> with the schemas given by the jms:schemaURL
-	 	properties of <code>R</code> in <code>rs</code>.
-	*/
-	private static void loadSchemas( Model rs, Resource R, WrappedReasonerFactory f )
-		{
-		StmtIterator schemas = rs.listStatements( R, JMS.schemaURL, (RDFNode) null );
-		while (schemas.hasNext())
-			{
-			Statement s = schemas.nextStatement();
-			Resource sc = s.getResource();
-			f.bindSchema( FileManager.get().loadModel( sc.getURI() ).getGraph() );
-			}
-		}
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BufferPipe.java,v 1.4 2003-08-29 08:37:51 chris-dollin Exp $
+  $Id: BufferPipe.java,v 1.5 2004-11-30 16:07:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -20,7 +20,13 @@ public class BufferPipe implements Pipe
     private boolean open = true;
     private BoundedBuffer buffer = new BoundedBuffer( 5 );
     private Object pending = null;
-    private static final String finished = "<finished>";
+    
+    public static class Finished
+        {
+        
+        }
+    
+    private static final Finished finished = new Finished();
      
     public BufferPipe()
         { }
@@ -44,6 +50,9 @@ public class BufferPipe implements Pipe
 
     public void close()
         { putAny( finished );  }
+    
+    public void close( Exception e )
+        { close(); }
 
     public boolean hasNext()
         {
@@ -52,7 +61,7 @@ public class BufferPipe implements Pipe
             if (pending == null)
                 {
                 pending = fetch();
-                if (pending == finished) open = false;
+                if (pending instanceof Finished) open = false;
                 return open;
                 }
             else

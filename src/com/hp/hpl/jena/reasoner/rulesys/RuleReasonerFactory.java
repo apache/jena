@@ -1,11 +1,9 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RuleReasonerFactory.java,v 1.2 2004-08-04 10:43:10 chris-dollin Exp $
+  $Id: RuleReasonerFactory.java,v 1.3 2004-11-30 16:10:15 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys;
-
-import java.util.List;
 
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
 
@@ -13,17 +11,12 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
     RuleReasonerFactory - a ReasonerFactory interface which allows rules
     to be set up to be installed into each reasoner this factory produces.
     
+    OBSOLETE - not used anywhere.
+    
     @author kers
 */
 public interface RuleReasonerFactory extends ReasonerFactory
     {
-    /**
-         Augment the current set of rules in this factory with a new set of
-         rules, to be used in future invocations of <code>create</code>.
-         
-         @param rules a List of Rule objects
-    */
-    void addRules( List rules );
     }
 
 /*
