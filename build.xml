@@ -284,6 +284,7 @@
         <copy todir="${dist.dir}" file="ReleaseNotes.txt"/>
         <copy todir="${dist.dir}" file="test.bat"/>
         <copy todir="${dist.dir}" file="test.sh"/>
+        <copy todir="${dist.dir}" file="test-db.sh"/>
         <copy todir="${dist.dir}" file="readme.html"/>
 
         <!-- RDQL support files : scripts to build the Java
