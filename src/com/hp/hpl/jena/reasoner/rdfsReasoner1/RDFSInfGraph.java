@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.9 2003-05-12 15:20:23 der Exp $
+ * $Id: RDFSInfGraph.java,v 1.10 2003-05-12 19:42:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,7 +35,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-12 15:20:23 $
+ * @version $Revision: 1.10 $ on $Date: 2003-05-12 19:42:21 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -154,15 +154,9 @@ public class RDFSInfGraph extends BaseInfGraph {
      * @param sClassCache a cache of subClassOf relations from the tbox
      * @param reasoner the RDFSReasoner which spawned this InfGraph
      */
-    public RDFSInfGraph( Finder tbox, Graph data,
-                               TransitiveGraphCache sPropertyCache,
-                               TransitiveGraphCache sClassCache, 
-                               RDFSReasoner reasoner) {
+    public RDFSInfGraph( RDFSReasoner reasoner, Graph data) {
         super(data, reasoner);
-        this.subPropertyCache = sPropertyCache.deepCopy();
-        this.subClassCache = sClassCache;
         this.scanProperties = reasoner.scanProperties;
-        this.tbox = tbox;
     }
     
 //=======================================================================
@@ -212,6 +206,11 @@ public class RDFSInfGraph extends BaseInfGraph {
     * this prepration is done.
     */
    public void prepare() {
+       this.subClassCache = ((TransitiveReasoner)reasoner).getSubClassCache();
+       this.subPropertyCache = ((TransitiveReasoner)reasoner).getSubPropertyCache().deepCopy();
+       this.tbox = ((TransitiveReasoner)reasoner).getTbox();
+       haveSplitSubClassCache = false;
+       
        // Combine a place to hold axioms and local deductions and the tbox into single cache
        if (tbox == null) {
            tripleCache = axioms;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.4 2003-05-05 15:16:01 der Exp $
+ * $Id: TestBasics.java,v 1.5 2003-05-12 19:42:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-05 15:16:01 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-12 19:42:19 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -391,6 +391,31 @@ public class TestBasics extends TestCase  {
             });
         
     }
+    
+    /**
+     * Test the rebind operation.
+     */
+    public void testRebind() {
+        String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
+        List ruleList = Rule.parseRules(rules);
+        Graph data = new GraphMem();
+        data.add(new Triple(n1, p, n2));
+        InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+            new Triple[] {
+                new Triple(n1, p, n2),
+                new Triple(n1, q, n2)
+            });
+        Graph ndata = new GraphMem();
+        ndata.add(new Triple(n1, p, n3));
+        infgraph.rebind(ndata);
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+            new Triple[] {
+                new Triple(n1, p, n3),
+                new Triple(n1, q, n3)
+            });
+    }
+    
 }
 
 /*

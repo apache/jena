@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.1 2003-05-12 07:58:24 der Exp $
+ * $Id: BRuleEngine.java,v 1.2 2003-05-12 19:42:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-12 07:58:24 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-12 19:42:22 $
  */
 public class BRuleEngine {
 
@@ -66,6 +66,13 @@ public class BRuleEngine {
         this.infGraph = infGraph;
         goalTable = new GoalTable(this);
         ruleStore = rules;
+    }
+    
+    /**
+     * Clear the tabled results
+     */
+    public void reset() {
+        goalTable.reset();
     }
     
     /**

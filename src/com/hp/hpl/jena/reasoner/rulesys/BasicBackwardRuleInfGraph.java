@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.5 2003-05-12 07:56:43 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.6 2003-05-12 19:42:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-12 07:56:43 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-12 19:42:21 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph {
 
@@ -90,6 +90,19 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
         
         // Set up the chain of searches for triple matches in the raw data
         rules = reasoner.getRules();
+        // Set up the backchaining engine
+        engine = new BRuleEngine(this, ruleStore);
+    }    
+    
+    /**
+     * Perform any initial processing and caching. This call is optional. Most
+     * engines either have negligable set up work or will perform an implicit
+     * "prepare" if necessary. The call is provided for those occasions where
+     * substantial preparation work is possible (e.g. running a forward chaining
+     * rule system) and where an application might wish greater control over when
+     * this prepration is done.
+     */
+    public void prepare() {
         extractAxioms();
         dataFind = fdata;
         if (faxioms != null) {
@@ -99,10 +112,35 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
             dataFind = FinderUtil.cascade(dataFind, fschema);
         }
         
-        // Set up the backchaining engine
-        engine = new BRuleEngine(this, ruleStore);
         context = new BBRuleContext(this, dataFind);
-    }    
+        
+        isPrepared = true;
+    }
+
+    /**
+     * Replace the underlying data graph for this inference graph and start any
+     * inferences over again. This is primarily using in setting up ontology imports
+     * processing to allow an imports multiunion graph to be inserted between the
+     * inference graph and the raw data, before processing.
+     * @param data the new raw data graph
+     */
+    public void rebind(Graph data) {
+        fdata = new FGraph(data);
+        engine.reset();
+        isPrepared = false;
+    }
+    
+    /**
+     * Cause the inference graph to reconsult the underlying graph to take
+     * into account changes. Normally changes are made through the InfGraph's add and
+     * remove calls are will be handled appropriately. However, in some cases changes
+     * are made "behind the InfGraph's back" and this forces a full reconsult of
+     * the changed data. 
+     */
+    public void rebind() {
+        engine.reset();
+        isPrepared = false;
+    }
    
     /**
      * Extended find interface used in situations where the implementator
@@ -116,6 +154,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
      * may not have completely satisfied the query.
      */
     public synchronized ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        if (!isPrepared) prepare();
         return WrappedIterator.create(
              new TopGoalIterator( engine.findGoal(pattern) )
         );

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.7 2003-05-08 15:08:53 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.8 2003-05-12 19:42:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -33,7 +33,7 @@ import java.util.HashSet;
  * of RDFS processing.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-08 15:08:53 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-12 19:42:19 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -70,6 +70,18 @@ public class TransitiveReasoner implements Reasoner {
     public TransitiveReasoner() {
         subClassCache = new TransitiveGraphCache(directSubClassOf, subClassOf);
         subPropertyCache = new TransitiveGraphCache(directSubPropertyOf, subPropertyOf);
+    }
+    
+    /**
+     * Private constructor used by bindSchema when
+     * returning a partially bound reasoner instance.
+     */
+    protected TransitiveReasoner(Finder tbox, 
+                    TransitiveGraphCache subClassCache, 
+                    TransitiveGraphCache subPropertyCache) {
+        this.tbox = tbox;
+        this.subClassCache = subClassCache;
+        this.subPropertyCache = subPropertyCache;
     }
      
     /**
@@ -112,12 +124,12 @@ public class TransitiveReasoner implements Reasoner {
         if (this.tbox != null) {
             throw new ReasonerException("Attempt to bind multiple rulesets - disallowed for now");
         }
-        this.tbox = tbox;
+        TransitiveGraphCache sCc = new TransitiveGraphCache(directSubClassOf, subClassOf);
+        TransitiveGraphCache sPc = new TransitiveGraphCache(directSubPropertyOf, subPropertyOf);
+        cacheSubProp(tbox, sPc);
+        cacheSubClass(tbox, sPc, sCc);
         
-        cacheSubProp(tbox, subPropertyCache);
-        cacheSubClass(tbox, subPropertyCache, subClassCache);
-        
-        return this;
+        return new TransitiveReasoner(tbox, sCc, sPc);
     }
     
     /**
@@ -224,19 +236,6 @@ public class TransitiveReasoner implements Reasoner {
     }
     
     /**
-     * Merge two graphs. This should be a utility somehwer more sensible
-     * @param graph the graph into which data is to be merged
-     * @param additions the graph of additional triples
-     */
-    public static void addGraph(Graph graph, Graph additions) {
-        ExtendedIterator it = additions.find(null, null, null);
-        while (it.hasNext()) {
-            graph.add((Triple)it.next());
-        }
-        it.close();
-    }
-    
-    /**
      * Attach the reasoner to a set of RDF ddata to process.
      * The reasoner may already have been bound to specific rules or ontology
      * axioms (encoded in RDF) through earlier bindRuleset calls.
@@ -273,6 +272,30 @@ public class TransitiveReasoner implements Reasoner {
      */
     public void setParameter(String parameterUri, Object value) {
         throw new IllegalParameterException(parameterUri);
+    }
+    
+    /**
+     * Accessor used during infgraph construction - return the cached
+     * version of the subProperty lattice.
+     */
+    public TransitiveGraphCache getSubPropertyCache() {
+        return subPropertyCache;
+    }
+    
+    /**
+     * Accessor used during infgraph construction - return the cached
+     * version of the subClass lattice.
+     */
+    public TransitiveGraphCache getSubClassCache() {
+        return subClassCache;
+    }
+    
+    /**
+     * Accessor used during infgraph construction - return the partially
+     * bound tbox, if any.
+     */
+    public Finder getTbox() {
+        return tbox;
     }
     
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.5 2003-05-12 07:58:25 der Exp $
+ * $Id: TestBackchainer.java,v 1.6 2003-05-12 19:42:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
  *  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-12 07:58:25 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-12 19:42:19 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -460,6 +460,35 @@ public class TestBackchainer extends TestCase {
             } );
     }
 
+    /**
+     * Test rebind operation
+     */
+    public void testRebind() {
+        List rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
+        Graph data = new GraphMem();
+        data.add(new Triple(a, p, b));
+        data.add(new Triple(b, p, c));
+        data.add(new Triple(b, p, d));
+        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(null, r, null), 
+            new Object[] {
+                new Triple(a, r, c),
+                new Triple(a, r, d)
+            } );
+        Graph ndata = new GraphMem();
+        ndata.add(new Triple(a, p, d));
+        ndata.add(new Triple(d, p, b));
+        infgraph.rebind(ndata);
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(null, r, null), 
+            new Object[] {
+                new Triple(a, r, b)
+            } );
+
+    }
 }
 
 

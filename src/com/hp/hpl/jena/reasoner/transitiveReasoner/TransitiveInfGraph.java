@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.6 2003-05-12 15:20:22 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.7 2003-05-12 19:42:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -29,7 +29,7 @@ import java.util.HashSet;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-12 15:20:22 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-12 19:42:19 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -54,7 +54,6 @@ public class TransitiveInfGraph extends BaseInfGraph {
      */
     public TransitiveInfGraph(Graph data, TransitiveReasoner reasoner) {
         super(data, reasoner);
-        
     }
     
     /**
@@ -74,9 +73,9 @@ public class TransitiveInfGraph extends BaseInfGraph {
         specialPredicates.add(TransitiveReasoner.subClassOf);
         
         // Initially just point to the reasoner's precached information
-        this.subClassCache = ((TransitiveReasoner)reasoner).subClassCache;
-        this.subPropertyCache = ((TransitiveReasoner)reasoner).subPropertyCache;
-        this.tbox = ((TransitiveReasoner)reasoner).tbox;
+        this.subClassCache = ((TransitiveReasoner)reasoner).getSubClassCache();
+        this.subPropertyCache = ((TransitiveReasoner)reasoner).getSubPropertyCache();
+        this.tbox = ((TransitiveReasoner)reasoner).getTbox();
 
         // But need to check if the data graph defines schema data as well
         Graph data = fdata.getGraph();
@@ -89,11 +88,10 @@ public class TransitiveInfGraph extends BaseInfGraph {
             } else {
                 tbox = fdata;
             }
-            // TODO modify this when we refactor TransitiveReasoner construction
-            TransitiveReasoner newTR = new TransitiveReasoner();
-            this.reasoner = newTR.bindSchema(tbox);
-            subClassCache = newTR.subClassCache;
-            subPropertyCache = newTR.subPropertyCache;
+            subClassCache = new TransitiveGraphCache(TransitiveReasoner.directSubClassOf, TransitiveReasoner.subClassOf);
+            subPropertyCache = new TransitiveGraphCache(TransitiveReasoner.directSubPropertyOf, TransitiveReasoner.subPropertyOf);
+            TransitiveReasoner.cacheSubProp(tbox, subPropertyCache);
+            TransitiveReasoner.cacheSubClass(tbox, subPropertyCache, subClassCache);
         }            
         // Cache the closures of subPropertyOf because these are likely to be
         // small and accessed a lot

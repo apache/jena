@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleReasoner.java,v 1.3 2003-05-12 15:20:23 der Exp $
+ * $Id: BasicForwardRuleReasoner.java,v 1.4 2003-05-12 19:42:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import com.hp.hpl.jena.rdf.model.*;
@@ -17,7 +17,7 @@ import java.util.*;
  * according to a set of rules. This trivial version does not support
  * separate schema processing. The actual work is done in the inference
  * graph implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.3 $ on $Date: 2003-05-12 15:20:23 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-05-12 19:42:20 $ */
 public class BasicForwardRuleReasoner implements Reasoner {
     /** The rules to be used by this instance of the forward engine */
     protected List rules;
@@ -100,11 +100,15 @@ public class BasicForwardRuleReasoner implements Reasoner {
         graph.setDerivationLogging(recordDerivations);
         graph.setRuleThreshold(nRulesThreshold);
         graph.setTraceOn(traceOn);
-        if (schemaGraph != null) {
-            graph.preloadDeductions(schemaGraph);
-        }
-        graph.bindData(data);
+        graph.rebind(data);
         return graph;
+    }
+    
+    /**
+     * Make the precomputed schema deductions available to the inf graph constructor.
+     */
+    protected InfGraph getSchemaGraph() {
+        return schemaGraph;
     }
     
     /**

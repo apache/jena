@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.5 2003-05-05 15:16:00 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.6 2003-05-12 19:42:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-05 15:16:00 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-12 19:42:20 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph {
 
@@ -48,6 +48,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
     
     /** The set of deduced triples, this is in addition to base triples in the fdata graph */
     protected FGraph deductions;
+    
+    /** Reference to any schema graph data bound into the parent reasoner */
+    protected InfGraph schemaGraph;
     
     /** performance stats - number of rules passing initial trigger */
     int nRulesTriggered = 0;
@@ -89,32 +92,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
     public BasicForwardRuleInfGraph(BasicForwardRuleReasoner reasoner, List rules) {
         super(null, reasoner);
         this.rules = rules;
-        deductions = new FGraph( new GraphMem() );
+        this.schemaGraph = reasoner.getSchemaGraph();
         buildClauseIndex();
-        findAndProcessAxioms();
-        nAxiomRulesFired = nRulesFired;
-        logger.debug("Axioms fired " + nAxiomRulesFired + " rules");
-    }
-    
-    /**
-     * Constructor. Creates a new inference graph based on the given rule set, loads
-     * any precomputed deductions then processes the initial data graph.
-     * 
-     * @param reasoner the parent reasoner 
-     * @param rules the list of rules to use this time
-     * @param data the data graph to be processed
-     * @param preload a precomputed set of deductions that should be added to the
-     * deductions context but not directly used to fire new rules (used as part of the
-     * bindSchema handling in the parent Reasoner).
-     */
-    public BasicForwardRuleInfGraph(BasicForwardRuleReasoner reasoner, List rules, Graph data, Graph preload) {
-        this(reasoner, rules);
-        if (preload != null) {
-            preloadDeductions(preload);
-        }
-        bindData(data);
-    }
-    
+    }    
 
     /**
      * Constructor. Creates a new inference graph based on the given rule set
@@ -125,28 +105,64 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * @param the data graph to be processed
      */
     public BasicForwardRuleInfGraph(BasicForwardRuleReasoner reasoner, List rules, Graph data) {
-        this(reasoner, rules, data, null);
+        this(reasoner, rules);
+        rebind(data);
     }
 
     /**
-     * Bind a new raw data graph into the InfGraph. This will cause any
-     * rules that could be fired by the new data triples to fire.
-     * Any existing data graph is lost. 
-     * <p>
-     * Normal usage is to construct a BasicForwardRuleInfGraph, set any
-     * configuration parameters, preloaded any cached deductions then call bindData
-     * precisely once. This is done by the parent Reasoner and is not normally
-     * used directly from client code.
+     * Replace the underlying data graph for this inference graph and start any
+     * inferences over again. This is primarily using in setting up ontology imports
+     * processing to allow an imports multiunion graph to be inserted between the
+     * inference graph and the raw data, before processing.
+     * @param data the new raw data graph
      */
-    public void bindData(Graph data) {
+    public void rebind(Graph data) {
         fdata = new FGraph( data );
+        rebind();
+    }
+    
+    /**
+     * Cause the inference graph to reconsult the underlying graph to take
+     * into account changes. Normally changes are made through the InfGraph's add and
+     * remove calls are will be handled appropriately. However, in some cases changes
+     * are made "behind the InfGraph's back" and this forces a full reconsult of
+     * the changed data. 
+     */
+    public void rebind() {
+        isPrepared = false;
+    }
+    
+    /**
+     * Perform any initial processing and caching. This call is optional. Most
+     * engines either have negligable set up work or will perform an implicit
+     * "prepare" if necessary. The call is provided for those occasions where
+     * substantial preparation work is possible (e.g. running a forward chaining
+     * rule system) and where an application might wish greater control over when
+     * this prepration is done.
+     */
+    public synchronized void prepare() {
+        isPrepared = true;
+        // initilize the deductions with axiomatic data ...
+        deductions = new FGraph( new GraphMem() );
+        findAndProcessAxioms();
+        nAxiomRulesFired = nRulesFired;
+        logger.debug("Axioms fired " + nAxiomRulesFired + " rules");
+        // ... and with schema data
+        if (schemaGraph != null) {
+            preloadDeductions(schemaGraph);
+        }
+        // Create the reasoning context
+        Graph data = fdata.getGraph();
         BFRuleContext context = new BFRuleContext(this);
+        // Insert the data
+        // TODO This could do a set of searches over just the data which might match a rule
         for (Iterator i = data.find(null, null, null); i.hasNext(); ) {
             context.addTriple((Triple)i.next());
         }
+        // Run the engine
         addSet(context);
     }
-    
+
     /**
      * Adds a set of precomputed triples to the deductions store. These do not, themselves,
      * fire any rules but provide additional axioms that might enable future rule
@@ -172,6 +188,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+        if (!isPrepared) prepare();
         if (!processedAxioms) {
             // This occurs during processing if there are axioms in the rules but we haven't yet
             // bound an actual data graph
@@ -212,6 +229,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * the new data item, recursively adding any generated triples.
      */
     public synchronized void add(Triple t) {
+        if (!isPrepared) prepare();
         BFRuleContext context = new BFRuleContext(this);
         context.addTriple(t);
         fdata.getGraph().add(t);
@@ -240,6 +258,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
     public void delete(Triple t) {
+        if (!isPrepared) prepare();
         if (fdata != null) {
             Graph data = fdata.getGraph();
             if (data != null) {
