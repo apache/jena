@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            17-Jun-2003
  * Filename           $RCSfile: TestDAMLProperty.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 16:08:56 $
+ * Last modified on   $Date: 2003-06-17 16:23:48 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLProperty.java,v 1.1 2003-06-17 16:08:56 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLProperty.java,v 1.2 2003-06-17 16:23:48 ian_dickinson Exp $
  */
 public class TestDAMLProperty 
     extends DAMLTestBase
@@ -201,7 +201,7 @@ public class TestDAMLProperty
                     iteratorTest( p.getSuperProperties( true ), new Object[] {q,r} );
                 }
             },
-            new OntTestCase( "DAMLClass.getSameProperties" ) {
+            new OntTestCase( "DAMLProperty.getSameProperties" ) {
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLProperty p = m.createDAMLProperty( NS + "p" );
                     DAMLProperty q = m.createDAMLProperty( NS + "q" );
@@ -216,6 +216,12 @@ public class TestDAMLProperty
                     p.prop_samePropertyAs().add( r );   // could be inferred
                     
                     iteratorTest( p.getSameProperties(), new Object[] {q,r} );
+                }
+            },
+            new OntTestCase( "Datatype property" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLDatatypeProperty p = m.createDAMLDatatypeProperty( NS + "p" );
+                    assertNotNull( p );
                 }
             },
         };
