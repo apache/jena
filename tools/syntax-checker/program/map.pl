@@ -16,7 +16,10 @@ compMapping :-
    mapping(NAV,In,AS,Triples,Node,ID),
    compMapping(NAV,In,AS,Triples,Node,ID),
    fail.
-
+compMapping :-
+   xmapping(NAV,In,AS,Triples,Node,ID),
+   compMapping(NAV,In,AS,Triples,Node,ID),
+   fail.
 compMapping :-
 % sanity checks
    alignedVarsCheck,
@@ -183,7 +186,7 @@ findType(up(Type),up,Type,_).
 findType([open(ID),terminal(uriref),close(ID)],uriref,ID,_).
 findType([open(ID),A:B,close(ID)],A:B,ID,_) :- !.
 findType(_,A:B,A:B,_) :-
-  builtin(A,B).
+  allBuiltins(A,B).
 findType(_Seq,lexicalForm@language^^_DT,literal,_).
 findType(_Seq,lexicalForm@language,literal,_).
 findType(_Seq,lexicalForm^^_DT,literal,_).

@@ -31,7 +31,7 @@ public class Compiler implements Constants {
 	static private long lookup[][];
 
 	boolean validate() {
-		if (prop(qrefine(14,80,89))!=80) {
+		if (prop(qrefine(14, 80, 89)) != 80) {
 			System.err.println("gggg");
 			return false;
 		}
@@ -168,29 +168,10 @@ public class Compiler implements Constants {
 			throw new BrokenException(e);
 		}
 	}
-	static final private Comparator pairComp = new Comparator() {
-
-		public int compare(Object o1, Object o2) {
-			short s1[] = (short[]) o1;
-			short s2[] = (short[]) o2;
-			int rslt = s1[0] - s2[0];
-			if (rslt == 0)
-				rslt = s1[1] - s2[1];
-			return rslt;
-		}
-	};
-	SortedMap pairs[] =
-		{
-			new TreeMap(pairComp),
-			new TreeMap(pairComp),
-			new TreeMap(pairComp),
-			};
 	SortedSet possible = new TreeSet();
 	SortedMap huge = new TreeMap();
 	SortedMap moreThan = new TreeMap();
 	SortedMap lessThan = new TreeMap();
-	SortedMap meet = new TreeMap();
-	SortedMap join = new TreeMap();
 	SortedMap comparablePairs = new TreeMap();
 	Map morePossible = new HashMap();
 	Map oldMorePossible = null;
@@ -198,42 +179,6 @@ public class Compiler implements Constants {
 		Integer ii = new Integer(i);
 		if ((!possible.contains(ii)) && !morePossible.containsKey(ii))
 			morePossible.put(ii, new Integer(was));
-	}
-	/** 
-	 * Perform Roy's Transitive Closure algorithm
-	 * on lessThan, comparablePairs, moreThan
-	 *
-	 */
-	private void roy() {
-		Iterator i = possible.iterator();
-		int c = 0;
-		while (i.hasNext()) {
-			Integer iii = (Integer) i.next();
-			int ii = iii.intValue();
-			Iterator k = possible.iterator();
-			while (k.hasNext()) {
-				int kk = ((Integer) k.next()).intValue();
-				Pair ik = new Pair(ii, kk);
-				if (comparablePairs.containsKey(ik))
-					continue;
-				Set lti = (Set) lessThan.get(iii);
-				if (lti == null)
-					continue;
-				Iterator j = lti.iterator();
-				while (j.hasNext()) {
-					if (c++ % 100000 == 0)
-						log("R", c);
-					int jj = ((Integer) j.next()).intValue();
-					Pair jk = new Pair(jj, kk);
-					Integer x = (Integer) comparablePairs.get(jk);
-					if (x != null && x.intValue() == kk) {
-						add(ii, kk);
-						break;
-					}
-				}
-
-			}
-		}
 	}
 	void add(int i) {
 		add(i, -1);
@@ -403,13 +348,13 @@ public class Compiler implements Constants {
 			compute();
 		}
 		log("GX", 0);
-		//makeLessThan();
+		makeLessThan();
 		//	roy();
 		//makeMeet();
 		//makeJoin();
 		//	pairs();
 		//	System.err.println("XXX=" + evalPairs());
-		//findUseless();
+		findUseless();
 		System.err.println("Saving results");
 		saveResults();
 		System.err.println("Saving data");
@@ -426,51 +371,6 @@ public class Compiler implements Constants {
 		System.arraycopy(rslt0, 0, rslt1, 0, k);
 		return rslt1;
 	}
-	private void makeJoin() {
-		Iterator it1 = possible.iterator();
-		int c = 0;
-		while (it1.hasNext()) {
-			Integer ni1 = (Integer) it1.next();
-			int i1 = ni1.intValue();
-			Set v1 = (Set) moreThan.get(ni1);
-			Iterator it2 = possible.tailSet(ni1).iterator();
-			//	it2.next();
-			while (it2.hasNext()) {
-				if (c++ % 200000 == 0)
-					log("JJ", c);
-				Integer ni2 = (Integer) it2.next();
-				int i2 = ni2.intValue();
-				Set v2 = (Set) moreThan.get(ni2);
-				Pair p = new Pair(i1, i2);
-				Integer in = compare(p);
-				if (in != null) {
-					Integer j = in.equals(ni2) ? ni1 : ni2;
-					join.put(p, j);
-				} else {
-					if (v1 == null || v2 == null)
-						continue;
-					Set more = new HashSet(v1);
-					more.retainAll(v2);
-					if (more.isEmpty())
-						continue;
-					Iterator im = more.iterator();
-					Integer j = (Integer) im.next();
-					while (im.hasNext()) {
-						Integer nj = (Integer) im.next();
-						if (j.equals(nj))
-							continue;
-						j = meet(j, nj);
-						if (j == null) {
-							System.err.println("Join not well-formed");
-							throw new BrokenException("Bad join");
-						}
-					}
-					join.put(p, j);
-				}
-			}
-		}
-		log("JJX", 0);
-	}
 	private Integer compare(int i, int j) {
 		return compare(new Pair(i, j));
 	}
@@ -481,87 +381,6 @@ public class Compiler implements Constants {
 		return compare(i.intValue(), j.intValue());
 	}
 
-	private Integer meet(int i, int j) {
-		return meet(new Pair(i, j));
-	}
-	private Integer meet(Pair p) {
-		return (Integer) meet.get(p);
-	}
-	private Integer meet(Integer i, Integer j) {
-		return meet(i.intValue(), j.intValue());
-	}
-	private Integer join(int i, int j) {
-		return join(new Pair(i, j));
-	}
-	private Integer join(Pair p) {
-		return (Integer) join.get(p);
-	}
-	private Integer join(Integer i, Integer j) {
-		return join(i.intValue(), j.intValue());
-	}
-	private void makeMeet() {
-		Iterator it1 = possible.iterator();
-		int c = 0;
-		while (it1.hasNext()) {
-			Integer ni1 = (Integer) it1.next();
-			int i1 = ni1.intValue();
-			Set v1 = (Set) lessThan.get(ni1);
-			Iterator it2 = possible.tailSet(ni1).iterator();
-			//it2.next();
-			while (it2.hasNext()) {
-				if (c++ % 200000 == 0)
-					log("MM", c);
-				Integer ni2 = (Integer) it2.next();
-				int i2 = ni2.intValue();
-				Set v2 = (Set) lessThan.get(ni2);
-				Pair p = new Pair(i1, i2);
-				Integer in = compare(p);
-				if (in != null) {
-					meet.put(p, in);
-				} else {
-					if (v1 == null || v2 == null)
-						continue;
-					Set less = new HashSet(v1);
-					less.retainAll(v2);
-					if (less.isEmpty())
-						continue;
-					Iterator il = less.iterator();
-					Integer m = (Integer) il.next();
-					while (il.hasNext()) {
-						Integer nm = (Integer) il.next();
-						if (m.equals(nm))
-							continue;
-						Integer in2 = compare(m, nm);
-						if (in2 != null && in2.equals(m)) {
-							m = nm;
-						}
-					}
-					meet.put(p, m);
-					il = less.iterator();
-					while (il.hasNext()) {
-						Integer nm = (Integer) il.next();
-						if (m.equals(nm))
-							continue;
-						Integer in2 = compare(m, nm);
-						if (in2 == null || in2.equals(m)) {
-							System.err.println("Meet not well-formed: " + in2);
-							System.err.println(
-								"A: " + CategorySet.catString(i1));
-							System.err.println(
-								"B: " + CategorySet.catString(i2));
-							System.err.println(
-								"M: " + CategorySet.catString(m.intValue()));
-							System.err.println(
-								"NM: " + CategorySet.catString(nm.intValue()));
-
-							System.exit(1);
-						}
-					}
-				}
-			}
-		}
-		log("MMX", 0);
-	}
 	/*
 	 * from *>* to;  where *>* is the partial order
 	 * defined by category sets.   
@@ -648,8 +467,10 @@ public class Compiler implements Constants {
 		}
 	}
 	private void log(String m, int c) {
-		System.err.println(
-			m
+		System
+			.err
+			.println(
+				m
 				+ ": "
 				+ c
 				+ " "
@@ -661,45 +482,18 @@ public class Compiler implements Constants {
 				+ "/"
 				+ comparablePairs.size()
 				+ "/"
-				+ meet.size()
-				+ "/"
-				+ join.size()
-				+ "{"
-				+ pairs[0].size()
-				+ ","
-				+ pairs[1].size()
-				+ ","
-				+ pairs[2].size()
-				+ "}"
-				+ (System.currentTimeMillis() - start) / 1000);
-	}
-	private void pairs() {
-		Iterator it = huge.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry ent = (Map.Entry) it.next();
-			doPairs(
-				((Long) ent.getKey()).longValue(),
-				((Long) ent.getValue()).longValue());
-		}
-	}
-
-	private int evalPairs() {
-		int rslt = 0;
-		Iterator it = huge.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry ent = (Map.Entry) it.next();
-			short k[] = expand(((Long) ent.getKey()).longValue());
-			short v[] = expand(((Long) ent.getValue()).longValue());
-
-			if (basePairRefine(k[0], k[1], k[2])
-				!= SubCategorize.toLong(v[0], v[1], v[2], aBits(v[3]))) {
-
-				rslt++;
-				if (rslt % 500 == 0)
-					log("E", rslt);
-			}
-		}
-		return rslt;
+		/*
+		+ meet.size()
+		+ "/"
+		+ join.size()
+		+ "{"
+		+ pairs[0].size()
+		+ ","
+		+ pairs[1].size()
+		+ ","
+		+ pairs[2].size()
+		+ "}" */
+		+ (System.currentTimeMillis() - start) / 1000);
 	}
 	private Iterator supers(int x) {
 		return ((Set) moreThan.get(new Integer(x))).iterator();
@@ -750,6 +544,7 @@ public class Compiler implements Constants {
 
 	private void findUseless() {
 		int cnt = 0;
+		int bad = 0;
 		Iterator it = huge.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry ent = (Map.Entry) it.next();
@@ -762,15 +557,46 @@ public class Compiler implements Constants {
 			Map.Entry ent = (Map.Entry) it.next();
 			if (isUseless((Long) ent.getKey())) {
 				cnt++;
-				ent.setValue(
-					new Long(
-						(long) ((long) ((SubCategorize.RemoveTriple)
-							<< (long) (3L * W))
-							| ((Long) ent.getValue()).longValue())));
+				long old = ((Long) ent.getValue()).longValue();
+				long newv = (long) RemoveTriple << (long) (3L * W) | old;
+				if (subject(old) == subject(newv)
+					&& prop(old) == prop(newv)
+					&& object(old) == prop(newv)
+					&& (allActions(old) | RemoveTriple) == allActions(newv)) {
+					ent.setValue(new Long(newv));
+				} else {
+					if (
+					foo(subject(old), subject(newv))
+					&&
+					foo(prop(old), prop(newv))
+					&&
+					foo(object(old), object(newv))
+					&&
+					foo((allActions(old) | RemoveTriple), allActions(newv)) ) {
+						//System.err.println("Hmm not so bad.");
+						ent.setValue(new Long(newv));
+					} else {
+						bad++;
+						System.err.println(
+							bad
+								+ " Error: "
+								+ Long.toHexString(old)
+								+ " != "
+								+ Long.toHexString(newv));
+					}
+					
+
+				}
 			}
 
 		}
 		System.err.println(cnt + " marked as remove");
+	}
+	private boolean foo(int a, int b) {
+		boolean rslt = a==b;
+		if (!rslt)
+		System.err.println(rslt + " : " + a + " == " + b);
+		return rslt;
 	}
 	/**
 	 * @param l
@@ -799,45 +625,6 @@ public class Compiler implements Constants {
 
 	}
 
-	/**
-	 * @param s
-	 * @param t
-	 * @param u
-	 * @return
-	 */
-	private long basePairRefine(short s, short p, short o) {
-		short b[][] =
-			{
-				(short[]) pairs[0].get(new short[] { p, o }),
-				(short[]) pairs[1].get(new short[] { s, o }),
-				(short[]) pairs[2].get(new short[] { s, p }),
-				};
-		short ss = smeet(b[1][0], b[2][0]);
-		short pp = smeet(b[0][0], b[2][1]);
-		short oo = smeet(b[0][1], b[1][1]);
-		short aMust = (short) (b[0][2] | b[1][2] | b[2][2]);
-		if (ss == -2 || pp == -2 || oo == -2)
-			return Failure;
-		return SubCategorize.toLong(ss, pp, oo, aMust);
-	}
-
-	/**
-	 * @param s
-	 * @param t
-	 * @return
-	 */
-	private short smeet(short a, short b) {
-		if (a == -1)
-			return b;
-		if (b == -1)
-			return a;
-		Integer j = meet(a, b);
-		if (j == null)
-			return -2;
-		else
-			return j.shortValue();
-	}
-
 	private short[] expand(long k) {
 		return new short[] {
 			(short) subject(k),
@@ -845,63 +632,19 @@ public class Compiler implements Constants {
 			(short) object(k),
 			(short) allActions(k)};
 	}
-	private void doPairs(long k, long v) {
-		short kk[] = expand(k);
-		short vv[] = expand(v);
-		doPair(0, kk, vv);
-		doPair(1, kk, vv);
-		doPair(2, kk, vv);
-	}
-	private void doPair(int wh, short k[], short v[]) {
-		short a = aBits(v[2]);
-		short key[] = { wh == 0 ? k[1] : k[0], wh == 2 ? k[1] : k[2] };
-		short value[] = { wh == 0 ? v[1] : v[0], wh == 2 ? v[1] : v[2], a, a };
-		short oldValue[] = (short[]) pairs[wh].get(key);
-		if (oldValue != null) {
-			value[0] = sjoin(value[0], oldValue[0]);
-			value[1] = sjoin(value[1], oldValue[1]);
-			value[2] &= oldValue[2];
-			value[3] |= oldValue[3];
-		}
-		pairs[wh].put(key, value);
-	}
-	private short sjoin(short a, short b) {
-		Integer j = join(a, b);
-		if (j == null)
-			return -1;
-		else
-			return j.shortValue();
-	}
-	final short MASK =
-		~(DL | ObjectAction | SubjectAction);
-// TODO delete aBits and all related code
-	private short aBits(short act) {
-		short dlEtc = (short) (act & ~MASK);
-		switch (act & MASK) {
-			case FirstOfOne :
-				return (short) (dlEtc | (1 << 8));
-			case FirstOfTwo :
-				return (short) (dlEtc | (1 << 9));
-			case SecondOfTwo :
-				return (short) (dlEtc | (1 << 10));
-			default :
-				return dlEtc;
-		}
-	}
-
-		public static void main(String[] args) {
+	public static void main(String[] args) {
 		Compiler c = new Compiler();
 		c.go();
 	}
 
 	private static short allActions(long k) {
-		return (short) (k >> (3 * W));
+		return (short) (k >> (long) (3 * W));
 	} /**
-		* 
-		* @param refinement The result of {@link #refineTriple(int,int,int)}
-		* @param subj The old subcategory for the subject.
-		* @return The new subcategory for the subject.
-		*/
+					* 
+					* @param refinement The result of {@link #refineTriple(int,int,int)}
+					* @param subj The old subcategory for the subject.
+					* @return The new subcategory for the subject.
+					*/
 	static private int subject(long refinement) {
 		return (int) (refinement >> (2 * W)) & M;
 	}
@@ -956,10 +699,10 @@ public class Compiler implements Constants {
 				b = A;
 			}
 		} /*
-																							 * (non-Javadoc)
-																							 * 
-																							 * @see java.lang.Comparable#compareTo(java.lang.Object)
-																							 */
+																													 * (non-Javadoc)
+																													 * 
+																													 * @see java.lang.Comparable#compareTo(java.lang.Object)
+																													 */
 		public int compareTo(Object o) {
 			Pair p = (Pair) o;
 			int rslt = a - p.a;

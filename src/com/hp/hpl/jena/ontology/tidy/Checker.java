@@ -431,13 +431,13 @@ public class Checker extends AbsChecker {
 			s.asBlank().addObjectTriple(t);
 		
 		switch (LookupTable.action(key)) {
-			case SubCategorize.FirstOfOne :
+			case FirstOfOne :
 				s.asOne().first(t);
 				break;
-			case SubCategorize.FirstOfTwo :
+			case FirstOfTwo :
 				s.asTwo().first(t);
 				break;
-			case SubCategorize.SecondOfTwo :
+			case SecondOfTwo :
 				s.asTwo().second(t);
 				break;
 		}

@@ -1,11 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.14 2003-11-24 19:40:13 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.15 2003-11-25 11:32:44 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
 import java.util.*;
+
+
+import compiler.*;
 
 /**
  * This file is a front-end onto the Grammar.java file.
@@ -22,6 +25,19 @@ class SubCategorize implements Constants {
 			Grammar.owlDeprecatedProperty,
 			Grammar.owlFunctionalProperty,
 			Grammar.owlDeprecatedClass };
+
+	static int getSubSet(int s[], boolean oks[]) {
+		int cnt = 0;
+		for (int i = 0; i < oks.length; i++)
+			if (oks[i])
+				cnt++;
+		int s2[] = new int[cnt];
+		int j = 0;
+		for (int i = 0; i < oks.length; i++)
+			if (oks[i])
+				s2[j++] = s[i];
+		return CategorySet.find(s2, true);
+	}
 
 	static private boolean COMPARATIVE(int prop) {
 		return prop == Grammar.rdfssubClassOf
@@ -176,13 +192,13 @@ class SubCategorize implements Constants {
 					int triple =
 						((((s[i] << w) | p[j]) << w) | o[k])
 							<< ActionShift;
-					int ix = Arrays.binarySearch(Grammar.triples, triple);
+					int ix = Arrays.binarySearch(Triples.triples, triple);
 					if (ix < 0) {
-						if (-ix - 1 == Grammar.triples.length)
+						if (-ix - 1 == Triples.triples.length)
 							continue;
-						if ((Grammar.triples[-ix - 1] & (~ActionMask))
+						if ((Triples.triples[-ix - 1] & (~ActionMask))
 							== triple) {
-							int action = Grammar.triples[-ix - 1] & ActionMask;
+							int action = Triples.triples[-ix - 1] & ActionMask;
 							dl = dl && ((action & DL) == DL);
 							objectAction =
 								objectAction
@@ -269,19 +285,6 @@ class SubCategorize implements Constants {
 			(((long) s2) << (2 * W))
 			| (((long) p2) << (1 * W))
 			| (((long) o2) << (0 * W));
-	}
-
-	static int getSubSet(int s[], boolean oks[]) {
-		int cnt = 0;
-		for (int i = 0; i < oks.length; i++)
-			if (oks[i])
-				cnt++;
-		int s2[] = new int[cnt];
-		int j = 0;
-		for (int i = 0; i < oks.length; i++)
-			if (oks[i])
-				s2[j++] = s[i];
-		return CategorySet.find(s2, true);
 	}
 
 }

@@ -161,7 +161,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.18 2003-11-24 19:40:14 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.19 2003-11-25 11:32:33 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -215,9 +215,11 @@ gogo(G) :-
   jfile(G,JF),
   tell(JF),
   copyrightHead,
-  wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,
-         'import java.util.Arrays;',nl,
-         'class ',G,' implements Constants {',nl]),
+  wlist(['package com.hp.hpl.jena.ontology.tidy;',nl]),
+  (G=='Triples'->
+  wlist([
+         'import java.util.Arrays;',nl]); true),
+  wlist([ 'class ',G,' implements Constants {',nl]),
   flag(catID,_,1),
   category(C),
   flag(catID,N,N+1),

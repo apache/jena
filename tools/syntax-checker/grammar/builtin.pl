@@ -176,3 +176,10 @@ disallowed(owl,'TransitiveProperty').
 disallowed(owl,'OntologyProperty').
 disallowed(owl,unionOf).
 
+allBuiltins(A,B) :-
+  disallowed(A,B).
+allBuiltins(A,B) :-
+  builtin(A,B).
+allBuiltins(A,B) :-
+  badbuiltin(A,B,_).
+  

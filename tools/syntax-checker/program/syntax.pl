@@ -12,11 +12,12 @@ Program for sorting out the syntax rules.
 :- dynamic symbol2Letter/2.
 % symbol2Letter(Symbol,Letter)
 :- dynamic token/1.
-
+:- dynamic xmapping/6.
 compSyntax :-
    retractall(sRule(_,_,_,_,_)),
    retractall(symbol2Letter(_,_)),
    retractall(token(_)),
+   retractall(xmapping(_,_,_,_,_,_)),
    compSyntax(lite),
    copyLite2DL,
    compSyntax(dl),
@@ -28,6 +29,15 @@ compSyntax(Level) :-
    atom_concat(Symbol,'ID',SymID),
    RHS =.. [SymID,uriref],
    compRule(SymID,RHS,Level,OrigNumber),
+   fail.
+compSyntax(Level) :-
+   flag(builtinX,_,1),
+   setof(A+B,(builtiny(A,B);disallowed(A,B)),S),
+   member(A+B,S),
+   flag(builtinX,N,N+1),
+   assertOnce(xmapping(arg,V,annotation(a,A:B),
+             t(V,x(a),A:B),void,aaa-N)),
+   compRule(annotation,annotation(a,A:B),Level,N),
    fail.
 compSyntax(Level) :-
    syntax(Head,RHS,Level-N),
@@ -191,9 +201,9 @@ checkLeftCorner.
 % needs to check that F is in Namespace, possibly upcasing first letter.
 caseAdjustBuiltin(_,builtin,builtin) :- !.
 caseAdjustBuiltin(Namespace,F,F) :-
-   builtin(Namespace,F), !.
+   allBuiltins(Namespace,F), !.
 caseAdjustBuiltin(Namespace,F,Upcased) :-
    capitalize(F,Upcased),
-   builtin(Namespace,Upcased), !.
+   allBuiltins(Namespace,Upcased), !.
 caseAdjustBuiltin(Namespace,F,_) :-
    throw(builtin(Namespace,F)).
