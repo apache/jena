@@ -115,7 +115,7 @@ import oracle.sql.BLOB;
 			ps.setInt(1,dbid);
 			ps.setString(2,graphName);
 			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps,op);
+			m_sql.returnPreparedSQLStatement(ps);
 		} catch (SQLException e) {
 			throw new RDFRDBException("Failed to get last inserted ID: " + e);
 		}
@@ -133,7 +133,7 @@ import oracle.sql.BLOB;
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,GRAPH_TABLE);
 			ps.setInt(1,graphId);
 			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps,op);
+			m_sql.returnPreparedSQLStatement(ps);
 		} catch (SQLException e) {
 			throw new RDFRDBException("Failed to delete graph ID: " + e);
 		}
@@ -150,7 +150,7 @@ import oracle.sql.BLOB;
 				result = wrapDBID(rs.getObject(1));
 			} else
 				throw new RDFRDBException("No insert ID");
-			m_sql.returnPreparedSQLStatement(ps,op);
+			m_sql.returnPreparedSQLStatement(ps);
 		} catch (SQLException e) {
 			throw new RDFRDBException("Failed to insert ID: " + e);
 		}
@@ -249,7 +249,7 @@ import oracle.sql.BLOB;
 				ps.setNull(argi++,java.sql.Types.BIGINT);    
 			 }
 			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps, opname);
+			m_sql.returnPreparedSQLStatement(ps);
 			
 			if ( lobj.tail.length() > 0) {
 				if (! inTransaction) {
@@ -323,7 +323,7 @@ protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
 				   }
 				}
 				rs.close();
-				m_sql.returnPreparedSQLStatement(ps,opName);
+				m_sql.returnPreparedSQLStatement(ps);
 			
 	} catch (SQLException e1) {
 		// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));

@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.7 $ on $Date: 2003-12-08 10:47:59 $
+* @version $Revision: 1.8 $ on $Date: 2004-03-11 21:46:59 $
 */
 
 public class ResultSetIterator implements ExtendedIterator {
@@ -205,7 +205,7 @@ public class ResultSetIterator implements ExtendedIterator {
                 }
             }
             if (m_sqlCache != null && m_opname != null) {
-                m_sqlCache.returnPreparedSQLStatement(m_statement, m_opname);
+                m_sqlCache.returnPreparedSQLStatement(m_statement);
             } else {
                 try {
                     m_statement.close();

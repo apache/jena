@@ -51,7 +51,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.38 $ on $Date: 2004-02-06 04:06:55 $
+* @version $Revision: 1.39 $ on $Date: 2004-03-11 21:48:41 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -734,7 +734,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			ps.setString(1,seqName);
 			rs = ps.executeQuery();
 			result = rs.next();
-			m_sql.returnPreparedSQLStatement(ps,op);
+			m_sql.returnPreparedSQLStatement(ps);
 		} catch (Exception e) {
 		  logger.error("Unable to select sequence " + seqName,  e);
 			}
@@ -757,7 +757,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		    	results.add(rs.getString(1));
 		    }
 		    //rs.close();
-		    m_sql.returnPreparedSQLStatement(ps,opname);
+		    m_sql.returnPreparedSQLStatement(ps);
 		} catch (Exception e) {
 		  logger.error("Unable to select Jena sequences: ", e);
 		 }
@@ -1514,7 +1514,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				if ( add )
 					result = addRDBLongObject(lobj, table);
 			}
-		    m_sql.returnPreparedSQLStatement(ps, opName);
+		    m_sql.returnPreparedSQLStatement(ps);
 			return result;
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
@@ -1660,7 +1660,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				res.head = rs.getString(1);
 				res.tail = rs.getString(2);			
 			}
-			m_sql.returnPreparedSQLStatement(ps,opName);
+			m_sql.returnPreparedSQLStatement(ps);
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
 			throw new RDFRDBException("Failed to find literal", e1);

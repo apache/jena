@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.41 2004-01-27 00:35:26 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.42 2004-03-11 21:49:16 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.41 $ on $Date: 2004-01-27 00:35:26 $
+* @version $Revision: 1.42 $ on $Date: 2004-03-11 21:49:16 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -205,7 +205,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	     while ( rs.next() ) {
 		  result = rs.getInt(1);
 	     } 
-		m_sql.returnPreparedSQLStatement(ps, op);
+		m_sql.returnPreparedSQLStatement(ps);
 	} catch (SQLException e) {
 	 		logger.debug("tried to count rows in " + tName);
 		   	logger.debug("Caught exception: ", e);
@@ -355,7 +355,7 @@ public void deleteTripleAR(
 			ps.addBatch();
 		} else {
 			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps,stmtStr);
+			m_sql.returnPreparedSQLStatement(ps);
 		}
 	} catch (SQLException e1) {
 		logger.error("Exception executing delete: ", e1);
@@ -588,7 +588,7 @@ public void deleteTripleAR(
 					String op = (String) enum.nextElement();
 					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
 					p.executeBatch();
-					m_sql.returnPreparedSQLStatement(p,op);
+					m_sql.returnPreparedSQLStatement(p);
 				}
 
 				
