@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.9 2004-12-19 17:54:44 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.10 2004-12-19 17:59:23 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -295,7 +295,7 @@ public class FileManager
         {
             if ( scheme.equals("file") )
             {
-                if ( ! baseURI.startsWith("file:/") )
+                if ( ! baseURI.startsWith("file:///") )
                 {
                     try {
                         // Fix up file URIs.  Yuk.
@@ -304,6 +304,7 @@ public class FileManager
                         baseURI = "file:///"+f.getCanonicalPath() ;
                         baseURI = baseURI.replace('\\','/') ;
                         // Convert to URI.  Except that it removes ///
+                        // Could do that and fix up (again)
                         //java.net.URL u = new java.net.URL(baseURI) ;
                         //baseURI = u.toExternalForm() ;
                     } catch (Exception ex) {}
