@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleStore.java,v 1.9 2003-06-18 16:44:14 der Exp $
+ * $Id: RuleStore.java,v 1.10 2003-07-18 16:20:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-18 16:44:14 $
+ * @version $Revision: 1.10 $ on $Date: 2003-07-18 16:20:08 $
  */
 public class RuleStore {
 
@@ -95,7 +95,7 @@ public class RuleStore {
      * @param rule the rule, single headed only
      * @param isAdd true to add, false to remove 
      */
-    private void doAddRemoveRule(Rule rule, boolean isAdd) {
+    protected void doAddRemoveRule(Rule rule, boolean isAdd) {
         if (isAdd && ruleIndex.contains(rule)) return;
         if (isAdd) {
             ruleIndex.add(rule);
