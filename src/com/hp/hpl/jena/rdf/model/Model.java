@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.6 2003-04-03 11:22:52 jeremy_carroll Exp $
+  $Id: Model.java,v 1.7 2003-04-03 12:22:35 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,7 +50,7 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $Date: 2003/04/02 13:26:33 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $Date: 2003/04/03 11:22:52 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	//    public BindingQueryPlan prepareBindings( Query q, Variable [] variables );
@@ -60,14 +60,14 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	boolean isModel();
 
-	/** every model is based on some Graph */
+	/** Every model is based on some Graph */
 	Graph getGraph();
 
-	/** every Model gets a QueryHandler */
+	/** Every Model has a QueryHandler */
 	QueryHandler queryHandler();
 
-	/** computes the number of statements in the model.
-	 *
+	/** (Unwise) Computes the number of statements in the model.
+	 * Many implementations cannot do this efficiently.
 	 * @throws RDFException Generic RDF Exception
 	 * @return the number of statements in the model
 	 */
@@ -149,7 +149,7 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	public Resource createResource(String uri) throws RDFException;
 
-	/** Create a property
+	/** Create a property.
 	 *
 	 * <p> Subsequent operations on the returned property may modify this model.
 	 * </p>
@@ -262,7 +262,7 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	public Model read(String url) throws RDFException;
 
-	/** Add statements from an RDF/XML serialization
+	/** Add statements from an RDF/XML serialization.
 	 * @param in the source of the RDF/XML
 	 * @param base the base to use when converting relative to absolute uri's
 	 * @throws RDFException a generic RDF exception
@@ -548,7 +548,7 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	boolean containsAll(Model model) throws RDFException;
 
 	/** 
-        determine if this Statement has been reified in this Model.
+        Determine if this Statement has been reified in this Model.
         
 	   @param s The statement tested.
 	   @return true iff a ReifiedStatement(s) has been created in this model
@@ -567,7 +567,7 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	void removeAllReifications( Statement s );
     
     /**
-        remove a particular reificiation.
+        Remove a particular reificiation.
     */
     void removeReification( ReifiedStatement rs );
 
@@ -582,7 +582,7 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	StmtIterator listStatements(Selector s) throws RDFException;
     
     /**
-        answer a ReifiedStatement that encodes _s_ and belongs to this Model.
+        Answer a ReifiedStatement that encodes _s_ and belongs to this Model.
     <br>
         result.getModel() == this
     <br>
@@ -644,20 +644,9 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	Model difference(Model model) throws RDFException;
 
 	/** Test whether one model is the equal to another.
-	 *
-	 * <p>Two models are considered equal when each statement in one can be
-	 * matched with a statement in the other.  Statements which are identical
-	 * match.</p>
-	 *
-	 * <p>Special treatment is given to anonymous nodes.  A binding is a one to
-	 * one mapping which maps each anonymous node in <code>this</code> model to
-	 * an anonymous node in <code>model</code>.  Two statements s1 and s2 match
-	 * under a binding if if s1.subject is anonymous and s2.subject is anonymous
-	 * and the binding maps s1.subject to s2.subject.</p>
-	 *
-	 * <p>Two models are equal if there is a binding that allows all the statements
-	 * in one model to match a a statement in the other.</p>
-	 * @param model the model to be compared
+     * Two Models  are equal iff the underlying graphs are identical Java
+     * objects.
+     * @param model the model to be compared
 	 * @return true if the models are equal
 	 */
 	public boolean equals(Object model);
@@ -704,8 +693,22 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	boolean supportsSetOperations();
 	/**
-	 * Compare this Model with another using the method described in
-	 * <a href="http://www.w3.org/TR/rdf-concepts#section-Graph-syntax">
+	 * Compare this Model with another for equality ignoring the labels on
+     * bNodes.
+     * See
+	 * <a href="http://www.w3.org/TR/rdf-concepts#section-Graph-syntax">RDF
+	 * Concepts</a>.
+	 * <p>Two models are isomorphic when each statement in one can be matched
+	 * with a statement in the other.  Statements which are identical match.</p>
+	 *
+	 * <p>Special treatment is given to anonymous nodes.  A binding is a one to
+	 * one mapping which maps each anonymous node in <code>this</code> model to
+	 * an anonymous node in <code>model</code>.  Two statements s1 and s2 match
+	 * under a binding if if s1.subject is anonymous and s2.subject is anonymous
+	 * and the binding maps s1.subject to s2.subject.</p>
+	 *
+	 * <p>Two models are isomorphic if there is a binding that allows all the
+	 * statements in one model to match a a statement in the other.</p>
 	 * @param g Compare against this.
 	 * @return boolean True if the two RDF graphs are isomorphic.
 	 */
@@ -746,5 +749,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.6 2003-04-03 11:22:52 jeremy_carroll Exp $
+ * $Id: Model.java,v 1.7 2003-04-03 12:22:35 jeremy_carroll Exp $
  */

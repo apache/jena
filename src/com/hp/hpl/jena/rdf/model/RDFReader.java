@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReader.java,v 1.2 2003-04-02 13:26:33 jeremy_carroll Exp $
+ * $Id: RDFReader.java,v 1.3 2003-04-03 12:22:34 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -35,7 +35,7 @@ import java.io.InputStream;
  * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
  *
  * @author bwm
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface RDFReader {
 
@@ -43,7 +43,7 @@ public interface RDFReader {
 	 * It is usually a mistake to use this method.
 	 * Read serialized RDF from a <code>Reader</code> and add the statements to a
 	 * <code>Model</code>. It is generally better to use an InputStream if
-	 * possible. {@link Model. read(InputStream,String)}, otherwise there is a
+	 * possible. {@link #read(Model,InputStream,String)}, otherwise there is a
 	 * danger of a mismatch between the character encoding of say the FileReader
 	 * and the character encoding of the data in the file.
 	 * @param model The model to which statements are added.

@@ -52,8 +52,8 @@ package com.hp.hpl.jena.rdf.model;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.2 $'
-            Date='$Date: 2003-02-20 16:48:30 $'
+            Revision='$Revision: 1.3 $'
+            Date='$Date: 2003-04-03 12:22:36 $'
  */
 public interface ModelCon {
 
@@ -160,7 +160,7 @@ public interface ModelCon {
  * </p>
  * <p> The resource is created and an rdf:type property added to the model
  * to specify its type. </p>
- * @ param type the type of the resource to be created.
+ * @param type the type of the resource to be created.
  * @return a new anonymous resource linked to this model.
  * @param type A resource representing the RDF type of the new resource.
  * @throws RDFException Generic RDF exception
@@ -173,7 +173,7 @@ public interface ModelCon {
  * </p>
  * <p> The resource is created and an rdf:type property added to the model
  * to specify its type. </p>
- * @ param type the type of the resource to be created.
+ * @param type the type of the resource to be created.
  * @return a new resource linked to this model.
  * @param uri The URI of the new resource.
  * @param type A resource representing the RDF type of the new resource.
@@ -182,7 +182,7 @@ public interface ModelCon {
     public Resource createResource(String uri, Resource type)
                                     throws RDFException;
 
-/** Create a new anonymous resource using the supplied factory
+/** Create a new anonymous resource using the supplied factory.
  *
  * <p> Subsequent operations on the returned resource may modify this model.
  * </p>
@@ -192,7 +192,7 @@ public interface ModelCon {
  */
     public Resource createResource(ResourceF f) throws RDFException;
  
-/** Create a new resource using the supplied factory
+/** Create a new resource using the supplied factory.
  *
  * <p> Subsequent operations on the returned resource may modify this model.
  * </p>
@@ -203,7 +203,7 @@ public interface ModelCon {
  */   
     public Resource createResource(String uri, ResourceF f) throws RDFException;
 
-/** Create a property
+/** Create a property.
  *
  * <p> Subsequent operations on the returned property may modify this model.
  * </p>
@@ -588,7 +588,7 @@ public interface ModelCon {
      */
     public Seq createSeq(String uri) throws RDFException;
 
-/** add a statement to this model
+/** add a statement to this model.
  * @return this model
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
@@ -597,7 +597,7 @@ public interface ModelCon {
  */ 
     Model add(Resource s, Property p, RDFNode o)     throws RDFException;
 
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -606,7 +606,7 @@ public interface ModelCon {
  * @throws RDFException Generic RDF Exception
  */ 
     Model add(Resource s, Property p, boolean o) throws RDFException;
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -615,7 +615,7 @@ public interface ModelCon {
  * @throws RDFException Generic RDF Exception
  */ 
     Model add(Resource s, Property p, long o) throws RDFException;
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -624,7 +624,7 @@ public interface ModelCon {
  * @throws RDFException Generic RDF Exception
  */ 
     Model add(Resource s, Property p, char o) throws RDFException;
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -633,7 +633,7 @@ public interface ModelCon {
  * @throws RDFException Generic RDF Exception
  */ 
     Model add(Resource s, Property p, float o) throws RDFException;
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -643,7 +643,7 @@ public interface ModelCon {
  */ 
     Model add(Resource s, Property p, double o) throws RDFException;
 
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -653,7 +653,7 @@ public interface ModelCon {
  */ 
     Model add(Resource s, Property p, String o) throws RDFException;
  
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -665,7 +665,7 @@ public interface ModelCon {
     Model add(Resource s, Property p, String o, boolean wellFormed)
       throws RDFException;
 
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -676,7 +676,7 @@ public interface ModelCon {
  */ 
     Model add(Resource s, Property p, String o, String l) throws RDFException;
 
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -689,7 +689,7 @@ public interface ModelCon {
     Model add(Resource s, Property p, String o, String l, boolean wellFormed)
       throws RDFException;
 
-/** add a statement to this model
+/** add a statement to this model.
  *
  * @return this model
  * @param s the subject of the statement to add
@@ -859,7 +859,7 @@ public interface ModelCon {
                                 String   lang)
                                            throws RDFException;
 
-/** List all subjects with a given property and property value
+/** List all subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -868,7 +868,7 @@ public interface ModelCon {
     ResIterator listSubjectsWithProperty(Property p, boolean o)
                                            throws RDFException;
 
-/** List all the subjects with a given property and property value
+/** List all the subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -877,7 +877,7 @@ public interface ModelCon {
     ResIterator listSubjectsWithProperty(Property p, long o)
                                            throws RDFException;
 
-/** List all subjects with a given property and property value
+/** List all subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -886,7 +886,7 @@ public interface ModelCon {
     ResIterator listSubjectsWithProperty(Property p, char o)
                                           throws RDFException;
 
-/** List all subjects with a given property and property value
+/** List all subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -894,7 +894,7 @@ public interface ModelCon {
  */ 
     ResIterator listSubjectsWithProperty(Property p, float o)
                                            throws RDFException;
-/** lists all subjects with a given property and property value
+/** lists all subjects with a given property and property value.
  * @return an iterator over the set of subjects
  * @param p The property sought.
  * @param o The property value sought.
@@ -902,7 +902,7 @@ public interface ModelCon {
  */ 
     ResIterator listSubjectsWithProperty(Property p, double o)
                                            throws RDFException;
-/** lists all subjects with a given property and property value
+/** lists all subjects with a given property and property value.
  * @return an iterator over the set of subjects
  * @param p The predicate sought.
  * @param o The property value sought.
@@ -910,7 +910,7 @@ public interface ModelCon {
  */ 
     ResIterator listSubjectsWithProperty(Property p, String o)
                                           throws RDFException;
-/** lists all subjects with a given property and property value
+/** lists all subjects with a given property and property value.
  * @return an iterator over the set of subjects
  * @param p The predicate sought.
  * @param o The property value sought.
@@ -920,7 +920,7 @@ public interface ModelCon {
     ResIterator listSubjectsWithProperty(Property p, String o, String l)
                                           throws RDFException;
 
-/** List all subjects with a given property and property value
+/** List all subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriter.java,v 1.2 2003-04-02 13:26:33 jeremy_carroll Exp $
+ * $Id: RDFWriter.java,v 1.3 2003-04-03 12:22:34 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,17 +36,18 @@ import java.io.OutputStream;
  * to some RDF serializaion language.  RDF/XML, n-triple and n3 are
  * examples of serialization languages.</p>
  * @author bwm
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface RDFWriter {
-/** Namespace prefixes can be set using a system property of the form<PRE>
- *  NSPREFIXPROPBASE + URI
- * </PRE>.  Such prefixes override the built in ones and those set using
- * <code>setNsPrefix</code>
+/** Namespace prefixes can be set using a system property of the form
+ * <code>NSPREFIXPROPBASE + uri</code>.  
+ * Such prefixes override the built in
+ * ones and those set using 
+ * {@link #setNsPrefix(java.lang.String, java.lang.String)}.
  */
 	public static final String NSPREFIXPROPBASE
 	  = "com.hp.hpl.jena.nsprefix.";
-	/** Serialize Model <code>model</code> to Writer <code>out</out>.
+	/** Caution: Serialize Model <code>model</code> to Writer <code>out</code>.
 	 * It is often better to use an OutputStream and permit Jena
 	 * to choose the character encoding. The charset restrictions
 	 * on the Writer are defined by the different implementations

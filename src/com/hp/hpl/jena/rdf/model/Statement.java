@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Triple;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-03-26 12:20:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-04-03 12:22:35 $
  */
 public interface Statement  //extends Resource 
 {
@@ -264,7 +264,7 @@ public interface Statement  //extends Resource
      */    
     public Seq getSeq() throws RDFException;
     
-    /** Return the language of the object of the statement
+    /** Return the language of the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * @throws RDFException Generuc RDF exception.
@@ -273,7 +273,7 @@ public interface Statement  //extends Resource
     public String getLanguage() throws RDFException;
     
     /** Return whether the Literal object is well formed XML as would result
-     *         from parsing a property element with parseType="Literal"
+     *         from parsing a property element with parseType="Literal".
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * @throws RDFException Generuc RDF exception.

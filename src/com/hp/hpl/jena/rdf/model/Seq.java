@@ -61,7 +61,7 @@ import com.hp.hpl.jena.enhanced.*;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-19 10:54:23 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-03 12:22:35 $'
  */
 public interface Seq extends Container {
     
@@ -245,7 +245,7 @@ public interface Seq extends Container {
      */
     public String getLanguage(int index) throws RDFException;
     
-    /** Get the member at a given index
+    /** Get the member at a given index.
      *
      * <p>The supplied factory object is used to created the object return.</p>
      * @return The member at the given index.
@@ -265,7 +265,7 @@ public interface Seq extends Container {
      */
     public Resource getResource(int index, ResourceF f) throws RDFException;
     
-    /** Get the member at a given.
+    /** Get the member at a given index.
      *
      * @param index The index of the required member.
      * @throws RDFException Generic RDF exception.

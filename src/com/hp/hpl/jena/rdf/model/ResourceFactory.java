@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ResourceFactory.java,v 1.1 2003-02-25 18:19:13 bwm Exp $
+  $Id: ResourceFactory.java,v 1.2 2003-04-03 12:22:35 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -32,14 +32,14 @@ public class ResourceFactory {
     private ResourceFactory() {
     }
 
-    /** get the current factory object
+    /** get the current factory object.
      * 
      *  @return the current factory object
      */
     public static Interface getInstance() {
         return instance;
     }
-    /** set the current factory object
+    /** set the current factory object.
      * 
      * @param newInstance the new factory object
      * @return the previous factory object
@@ -50,7 +50,7 @@ public class ResourceFactory {
         return previousInstance;
     }
 
-    /** create a new anonymous resource
+    /** create a new anonymous resource.
      * 
      * <p>Uses the current factory object to create a new anonymous resource.</p>
      * 
@@ -60,7 +60,7 @@ public class ResourceFactory {
         return instance.createResource();
     }
 
-    /** create a new resource
+    /** create a new resource.
      * 
      * <p>Uses the current factory object to create a new resource.</p>
      * 
@@ -71,7 +71,7 @@ public class ResourceFactory {
         return instance.createResource(uriref);
     }
 
-    /** create a new property
+    /** create a new property.
      * 
      * <p>Uses the current factory object to create a new resource.</p>
      * 
@@ -82,7 +82,7 @@ public class ResourceFactory {
         return instance.createProperty(uriref);
     }
 
-    /** create a new property
+    /** create a new property.
      * 
      * <p>Uses the current factory object to create a new property.</p>
      * 
@@ -94,7 +94,7 @@ public class ResourceFactory {
         return instance.createProperty(namespace, localName);
     }
 
-    /** create a new statement
+    /** create a new statement.
      * 
      * <p>Uses the current factory object to create a new statement.</p>
      * 
@@ -112,27 +112,27 @@ public class ResourceFactory {
      */
     public interface Interface {
 
-        /** create a new anonymous resource
+        /** create a new anonymous resource.
          * 
          * @return a new anonymous resource
          */
         public Resource createResource();
 
-        /** create a new resource
+        /** create a new resource.
          * 
          * @param uriref URIREF of the resource
          * @return a new resource
          */
         public Resource createResource(String uriref);
 
-        /** create a new property
+        /** create a new property.
          * 
          * @param uriref URIREF of the property
          * @return a new property
          */
         public Property createProperty(String uriref);
 
-        /** create a new property
+        /** create a new property.
          * 
          * @param namespace uriref of the namespace
          * @param localName localname of the property
@@ -140,7 +140,7 @@ public class ResourceFactory {
          */
         public Property createProperty(String namespace, String localName);
 
-        /** create a new statement
+        /** create a new statement.
          * 
          * @param subject subject of the new statement
          * @param predicate predicate of the new statement
