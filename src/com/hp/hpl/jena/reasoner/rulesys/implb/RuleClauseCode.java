@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.20 2003-08-14 17:49:06 der Exp $
+ * $Id: RuleClauseCode.java,v 1.21 2003-08-14 22:43:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-08-14 17:49:06 $
+ * @version $Revision: 1.21 $ on $Date: 2003-08-14 22:43:30 $
  */
 public class RuleClauseCode {
     
@@ -406,23 +406,26 @@ public class RuleClauseCode {
             if (predicateCode == null || predicateCode.size() == 0) {
                 code[p++] = CALL_TRIPLE_MATCH;
             } else {
+                code[p++] = CALL_TABLED;
 //                if (goal.getPredicate().isVariable()) {
-//                    code[p++] = CALL_WILD_TABLED; // experimental at this stage ...
-                if (store.isTabled(goal)) {
-                    code[p++] = goal.getPredicate().isVariable() ? CALL_WILD_TABLED : CALL_TABLED;
-                } else {
-                    if (permanentVars.size() == 0) {
-                        code[p++] = LAST_CALL_PREDICATE;
-                    } else {
-                        // Normal call, but can it be indexed further?
-                        if (store.isIndexedPredicate(goal.getPredicate()) && goal.getObject().isVariable()) {
-                            code[p++] = CALL_PREDICATE_INDEX;
-                        } else {
-                            code[p++] = CALL_PREDICATE;
-                        }
-                    }
-                    args.add(predicateCode);
-                }
+//                    // Experimental. Force tabling of any wildcard predicate calls
+//                    code[p++] = CALL_TABLED;
+//                } else if (store.isTabled(goal)) {
+////                if (store.isTabled(goal)) {
+//                    code[p++] = goal.getPredicate().isVariable() ? CALL_WILD_TABLED : CALL_TABLED;
+//                } else {
+//                    if (permanentVars.size() == 0) {
+//                        code[p++] = LAST_CALL_PREDICATE;
+//                    } else {
+//                        // Normal call, but can it be indexed further?
+//                        if (store.isIndexedPredicate(goal.getPredicate()) && goal.getObject().isVariable()) {
+//                            code[p++] = CALL_PREDICATE_INDEX;
+//                        } else {
+//                            code[p++] = CALL_PREDICATE;
+//                        }
+//                    }
+//                    args.add(predicateCode);
+//                }
             }
         }
         

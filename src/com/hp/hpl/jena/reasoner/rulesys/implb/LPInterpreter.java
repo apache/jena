@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.24 2003-08-14 17:49:06 der Exp $
+ * $Id: LPInterpreter.java,v 1.25 2003-08-14 22:43:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2003-08-14 17:49:06 $
+ * @version $Revision: 1.25 $ on $Date: 2003-08-14 22:43:30 $
  */
 public class LPInterpreter {
 
@@ -516,13 +516,14 @@ public class LPInterpreter {
                             continue main;
                                             
                         case RuleClauseCode.CALL_WILD_TABLED:
-                            if (engine.getRuleStore().isTabled(argVars[1])) {
+                            Node predicate = deref(argVars[1]);
+                            if (engine.getRuleStore().isTabled(predicate)) {
                                 setupTabledCall(pc, ac);
                             } else {
                                 // normal call set up
                                 clauses = engine.getRuleStore().codeFor(
-                                    new TriplePattern(argVars[0], argVars[1], argVars[2]));
-                                setupClauseCall(pc, ac, clauses);
+                                    new TriplePattern(argVars[0], predicate, argVars[2]));
+                                if (clauses != null) setupClauseCall(pc, ac, clauses);
                                 setupTripleMatchCall(pc, ac);
                             }
                             continue main;
