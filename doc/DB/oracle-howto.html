@@ -15,7 +15,7 @@ This version: 0.1<br/> Date: 14 July 2003
 <p>Oracle is one of the leading, commercially-available SQL relational database 
 management systems. It is available in a variety of configurations from small 
 personal versions to fault-tolerant, enterprise-class versions. It runs on a 
-variety of hardware/operating system platforms.&nbsp; See
+variety of hardware/operating system platforms. See
 <a href="http://www.postfresql.org">http://www.oracle.com</a> for more 
 information. Jena2 has been tested with the Oracle 9i binary release, version 9.2.0.1.0. </p>
 
@@ -38,9 +38,9 @@ following versions.</p>
 
 <table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
   <tr>
-    <td> <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td> <b>Server:</b> Oracle 9.2.0.1.0
     </td>
-    <td> <b>JDBC Thick Driver: </b>&nbsp;oci8, oci</td>
+    <td> <b>JDBC Thick Driver: </b>oci8, oci</td>
   </tr>
 </table>
 
@@ -64,9 +64,9 @@ http://linux.oreillynet.com/lpt/a/4141</a>.</p>
 
 <table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
   <tr>
-    <td> <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td> <b>Server:</b> Oracle 9.2.0.1.0
     </td>
-    <td> <b>JDBC Thick Driver: </b>&nbsp;oci (using the 9.2.0.3 versions of ojdbc14.jar and ocrs12.zip)</td>
+    <td> <b>JDBC Thick Driver: </b>oci (using the 9.2.0.3 versions of ojdbc14.jar and ocrs12.zip)</td>
     
   </tr>
 </table>
@@ -76,13 +76,13 @@ Typically, Oracle is installed with a demo database and user account that may be
 used for testing and experimentation. In the examples below, we assume the use 
 of this default account (user name is <i>scott</i> and password is <i>tiger</i>). 
 If you have your own Oracle user name and password, please use those values for 
-DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
+DB_USER, DB_PASSWD. The DB_URL value should be set as indicated below.</p>
 
 <table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1" height="83">
 
   <tr>
 
-    <td height="15" style="text-align: left"> <b>jdbc:oracle:oci:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15" style="text-align: left"> <b>jdbc:oracle:oci:@</b>
     </td>
     <td height="15" style="text-align: left">Uses the thick JDBC client and connects 
     to the default local database.</td>
@@ -90,7 +90,7 @@ DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
   </tr>
   <tr>
 
-    <td height="15" style="text-align: left"> <b>jdbc:oracle:oci:@&lt;tnsname&gt;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15" style="text-align: left"> <b>jdbc:oracle:oci:@&lt;tnsname&gt;</b>
     </td>
     <td height="15" style="text-align: left">Uses the thick JDBC client and connects 
     to the specified database.</td>
@@ -98,7 +98,7 @@ DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
   </tr>
   <tr>
 
-    <td height="15" style="text-align: left"> <b>jdbc:oracle:thin:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15" style="text-align: left"> <b>jdbc:oracle:thin:@</b>
     </td>
     <td height="15" style="text-align: left">Uses the thin JDBC client and connects to 
     the default local database (untested with Jena2).</td>
@@ -106,9 +106,9 @@ DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
   </tr>
   <tr>
 
-    <td height="15" style="text-align: left"> <b>jdbc:oracle:thin:@&lt;host&gt;:port:&lt;sid&gt;&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15" style="text-align: left"> <b>jdbc:oracle:thin:@&lt;host&gt;:port:&lt;sid&gt;</b>
     </td>
-    <td height="15" style="text-align: left">Uses the thin&nbsp; JDBC client and 
+    <td height="15" style="text-align: left">Uses the thin JDBC client and 
     connects to a database with the specified sid on the specified host on the 
     specified port
 
@@ -134,8 +134,8 @@ requires several steps as as follows.</p>
 <blockquote>
   <ol>
     <li><em>Important:</em><br> Edit the source file <font face="Courier New" size="2">com.hp.hpl.jena.db.impl.Driver_Oracle.java</font>.<br>  Uncomment the Oracle import commands at the top of the file:<br>
- &nbsp;&nbsp<font face="Courier New" size="2">import oracle.jdbc.OracleResultSet;</font><br>
- &nbsp;&nbsp<font face="Courier New" size="2">import oracle.sql.BLOB;</font><br>
+ &nbsp<font face="Courier New" size="2">import oracle.jdbc.OracleResultSet;</font><br>
+ &nbsp<font face="Courier New" size="2">import oracle.sql.BLOB;</font><br>
 Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
     <li>Load the JDBC driver. This enables the Jena program to communicate with 
     the database instance.</li>
@@ -153,22 +153,22 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
   <dl>
     <dd><font face="Courier New" size="2">// Load the Driver</font></dd>
     <font SIZE="2">
-    <dd><font face="Courier New">String className = &quot;oracle.jdbc.driver.DriverOracle&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    <dd><font face="Courier New">String className = &quot;oracle.jdbc.driver.DriverOracle&quot; 
     // path of driver class</font></dd>
-    <dd><font face="Courier New">Class.forName (className);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    <dd><font face="Courier New">Class.forName (className); 
     // load driver</font></dd>
   </dl>
   </font>
   <dl>
     <font SIZE="2">
-    <dd><font face="Courier New">String DB_URL = &quot;jdbc:oracle:oci:@&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // URL of database server</font></dd>
-    <dd><font face="Courier New">String DB_USER = &quot;scott&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    <dd><font face="Courier New">String DB_URL = &quot;jdbc:oracle:oci:@&quot;; // URL of database server</font></dd>
+    <dd><font face="Courier New">String DB_USER = &quot;scott&quot;; 
     // database user id</font></dd>
-    <dd><font face="Courier New">String DB_PASSWD = &quot;tiger&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    <dd><font face="Courier New">String DB_PASSWD = &quot;tiger&quot;; 
     // database password</font></dd>
-    <dd><font face="Courier New">String DB = &quot;Oracle&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    <dd><font face="Courier New">String DB = &quot;Oracle&quot;; 
     // database type</font></dd>
-    <dt>&nbsp;</dt>
+    <dt></dt>
     <dd><font face="Courier New">// Create database connection</font></dd>
     <dd><font face="Courier New">IDBConnection conn =</font></font><font SIZE="2" face="Courier New"><b> 
     new</b> DBConnection ( URL, DB_USER, DB_PASSWD, DB ); </font></dd>
@@ -181,31 +181,32 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
     <dd></dd>
     <dd><font face="Courier New">ModelMaker maker = 
     ModelFactory.createModelRDBMaker(conn);</font></dd>
-    <dd><font face="Courier New">ModelRDB m = maker.createModel ();
+    <dd><font face="Courier New">ModelRDB m = (ModelRDB) maker.createModel ();
     </font></dd>
-    <dd>&nbsp;</dd>
+    <dd></dd>
     <dd><font face="Courier New">&lt; your Jena code to work with the model goes 
     here &gt;</font></dd>
-    <dd>&nbsp;</dd>
+    <dd></dd>
     <dd><font face="Courier New">// Remove the model. NOTE: this deletes the 
     model from the database.</font></dd>
     <dd>/<font face="Courier New">/ Subsequent attempts to open this model will 
     fail.</font></dd>
-    <dd><font face="Courier New">m.remove();&nbsp;&nbsp;&nbsp;// NOTE: remove 
+    <dd><font face="Courier New">m.remove();// NOTE: remove 
     deletes the model from the database</font></dd>
     </font><font SIZE="2">
-    <dd>&nbsp;</dd>
-    <dd><font face="Courier New">// Close the database connection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conn.close();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <dd></dd>
+    <dd><font face="Courier New">// Close the database connection 
     </font></dd>
+    <dd>conn.close();</dd>
     </font><font SIZE="2">
-    <dd>&nbsp;</dd>
+    <dd></dd>
     <dd><font face="Courier New">// Alternative to creating an unnamed model ...</font></dd>
     <dd><font face="Courier New">// Create a named model</font></dd>
     <dd><font face="Courier New">ModelRDB m = maker.createModel(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;);</font></dd>
-    <dt>&nbsp;</dt>
-    <dd><font face="Courier New" size="2">...&nbsp; later, or in another Jena 
+    <dt></dt>
+    <dd><font face="Courier New" size="2">... later, or in another Jena 
     application ...</font></dd>
-    <dt>&nbsp;</dt>
+    <dt></dt>
     <font SIZE="2">
     <dd><font face="Courier New">// Open a named model.</font></dd>
     <dd><font face="Courier New">ModelRDB m = maker.openModel(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;</font><font SIZE="2"><font face="Courier New">);</font></dd>
@@ -214,7 +215,7 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
 <p></p>
 </font>
 
-<p>&nbsp;</p>
+<p></p>
 
 <h2>Usage Notes</h2>
 
@@ -258,7 +259,7 @@ tableName</i>;</font></span></h4>
 tableName</i>;</font></span></h4>
 
 <h4><font face="Verdana">Execute a SQLPlus command file: </font>
-<span style="font-weight: 400"><font face="Courier New">@&lt;<i>filename</i>&gt;&nbsp;&nbsp;&nbsp; 
+<span style="font-weight: 400"><font face="Courier New">@&lt;<i>filename</i>&gt; 
  
 </font><font face="Verdana">where </font><font face="Courier New"> <i>&lt;filename&gt;</i> </font>
 <font face="Verdana">is the path of a file containing SQLPlus commands</font></span></h4>
@@ -266,11 +267,11 @@ tableName</i>;</font></span></h4>
 <h4><font face="Verdana">Exit SQLPlus:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">quit;</font></span></h4>
 
-<p>&nbsp;</p>
+<p></p>
 
-<p>&nbsp;</p>
+<p></p>
 
-<p>&nbsp;</p>
+<p></p>
 
 </body>
 </html>
