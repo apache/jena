@@ -54,8 +54,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.9 $'
-            Date='$Date: 2003-08-19 09:33:02 $'
+            Revision='$Revision: 1.10 $'
+            Date='$Date: 2003-08-23 12:18:20 $'
  */
 public interface ModelCon {
 
@@ -331,6 +331,12 @@ public interface ModelCon {
      * Build a typed literal from its lexical form. The
      * lexical form will be parsed now and the value stored. If
      * the form is not legal this will throw an exception.
+     * <p>
+     * Note that in preview releases of Jena2 it was also possible to specify
+     *   a language type. Changes to the RDF specification mean that this is no longer
+     *   legal except for plain literals. To create a plain literal with a language tag
+     *   use {@link Model#createLiteral(String, String) createLiteral}. 
+     * </p> 
      * 
      * @param lex the lexical form of the literal
      * @param typeURI the uri of the type of the literal, null for old style "plain" literals
@@ -340,38 +346,17 @@ public interface ModelCon {
     
     /**
      * Build a typed literal from its value form.
+     * <p>
+     * Note that in preview releases of Jena2 it was also possible to specify
+     *   a language type. Changes to the RDF specification mean that this is no longer
+     *   legal except for plain literals. To create a plain literal with a language tag
+     *   use {@link Model#createLiteral(String, String) createLiteral}. 
+     * </p> 
      * 
      * @param value the value of the literal
      * @param typeURI the URI of the type of the literal, null for old style "plain" literals
      */
     public Literal createTypedLiteral(Object value, String typeURI);
-
-    /**
-     * @deprecated as of Jena2.0, use the form without lang tag since lang tags aren't
-     * relevant on typed (as opposed to plain) literals.
-     * 
-     * Build a typed literal from its lexical form. The
-     * lexical form will be parsed now and the value stored. If
-     * the form is not legal this will throw an exception.
-     * 
-     * @param lex the lexical form of the literal
-     * @param lang the optional language tag, only relevant for plain literals
-     * @param typeURI the uri of the type of the literal, null for old style "plain" literals
-     * @throws DatatypeFormatException if lex is not a legal form of dtype
-     */
-    public Literal createTypedLiteral(String lex, String lang, String typeURI)  ;
-    
-    /**
-     * @deprecated as of Jena2.0, use the form without lang tag since lang tags aren't
-     * relevant on typed (as opposed to plain) literals.
-     * 
-     * Build a typed literal from its value form.
-     * 
-     * @param value the value of the literal
-     * @param lang the optional language tag, only relevant for plain literals
-     * @param typeURI the URI of the type of the literal, null for old style "plain" literals
-     */
-    public Literal createTypedLiteral(Object value, String lang, String typeURI);
     
     /** Create a Statement instance.
      *
