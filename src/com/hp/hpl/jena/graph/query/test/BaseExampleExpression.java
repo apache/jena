@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BaseExampleExpression.java,v 1.2 2003-10-09 15:24:25 chris-dollin Exp $
+  $Id: BaseExampleExpression.java,v 1.3 2003-10-10 09:07:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -26,7 +26,10 @@ public abstract class BaseExampleExpression implements Expression
         if (x.isVariable()) return vv.get( x.getName() );
         else return x;    
         }
-                                                    
+        
+    protected Object eval( Node x, IndexValues iv )
+        { throw new RuntimeException( "rargh" ); }
+                                                                
     public static Expression and( final Expression L, final Expression R )
         {
         return new BaseExampleExpression()
@@ -35,6 +38,9 @@ public abstract class BaseExampleExpression implements Expression
                 {
                 return and( L.prepare( vi ), R.prepare( vi ) );    
                 }
+                
+            public boolean evalBool( IndexValues iv )
+                { return L.evalBool( iv ) && R.evalBool( iv ); }
                 
             public boolean evalBool( VariableValues vv )
                 { return L.evalBool( vv ) && R.evalBool( vv ); }

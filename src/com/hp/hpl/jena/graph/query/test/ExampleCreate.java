@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.2 2003-10-09 15:24:24 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.3 2003-10-10 09:07:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -26,6 +26,9 @@ public class ExampleCreate
                 
             public boolean evalBool( VariableValues vv )
                 { return !eval( x, vv ).equals( eval( y, vv ) ); }
+                
+            public boolean evalBool( IndexValues iv )
+                { return !eval( x, iv ).equals( eval( y, iv ) ); }
             };    
         }    
     
@@ -38,6 +41,9 @@ public class ExampleCreate
                 
             public boolean evalBool( VariableValues vv )
                 { return eval( x, vv ).equals( eval( y, vv ) ); }
+                
+            public boolean evalBool( IndexValues iv )
+                { return eval( x, iv ).equals( eval( y, iv ) ); }
             };    
         }         
         
@@ -59,6 +65,9 @@ public class ExampleCreate
                 return x.indexOf( y ) > -1; }       
                          
             public boolean evalBool( VariableValues vv )
+                { return matches( eval( x, vv ), eval( y, vv ) ); }
+                
+            public boolean evalBool( IndexValues vv )
                 { return matches( eval( x, vv ), eval( y, vv ) ); }
             };    
         }

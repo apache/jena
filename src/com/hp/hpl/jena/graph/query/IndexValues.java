@@ -1,23 +1,27 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PredicateFactory.java,v 1.3 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: IndexValues.java,v 1.1 2003-10-10 09:06:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-    A query PredicateFactory is something that can construct a
-    Predicate from two Valuators.
-*/
+	IndexValues: something that when supplied with a non-negative integer, returns
+    a value.
 
-public interface PredicateFactory
+	@author kers
+*/
+public interface IndexValues 
     {
-    abstract Predicate construct( Valuator L, Valuator R );
+    /**
+        Answer the value at <code>index</code>.
+    */
+    Object get( int index );
     }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
