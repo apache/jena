@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-10 13:22:31 $
+ * Last modified on   $Date: 2004-05-27 09:06:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.31 2004-03-10 13:22:31 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.32 2004-05-27 09:06:10 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -671,7 +671,13 @@ public class schemagen {
         int i = 0;
 
         // treat the first character specially - must be able to start a Java ID, may have to upcase
-        for (; !Character.isJavaIdentifierStart( s.charAt( i )); i++) {}
+        try {
+            for (; !Character.isJavaIdentifierStart( s.charAt( i )); i++) {}
+        }
+        catch (StringIndexOutOfBoundsException e) {
+            System.err.println( "Could not identify legal Java identifier start character in '" + s + "', replacing with __" );
+            return "__";
+        }
         buf.append( cap ? Character.toUpperCase( s.charAt( i ) ) : s.charAt( i ) );
 
         // copy the remaining characters - replace non-legal chars with '_'
@@ -732,16 +738,16 @@ public class schemagen {
     protected void writeNamespace() {
         String nsURI = determineNamespaceURI();
 
-        writeln( 1, "/** <p>The namespace of the vocabalary as a string ({@value})</p> */" );
+        writeln( 1, "/** <p>The namespace of the vocabulary as a string ({@value})</p> */" );
         writeln( 1, "public static final String NS = \"" + nsURI + "\";" );
         writeln( 1 );
 
-        writeln( 1, "/** <p>The namespace of the vocabalary as a string</p>" );
+        writeln( 1, "/** <p>The namespace of the vocabulary as a string</p>" );
         writeln( 1, " *  @see #NS */" );
         writeln( 1, "public static String getURI() {return NS;}" );
         writeln( 1 );
 
-        writeln( 1, "/** <p>The namespace of the vocabalary as a resource</p> */" );
+        writeln( 1, "/** <p>The namespace of the vocabulary as a resource</p> */" );
         writeln( 1, "public static final Resource NAMESPACE = m_model.createResource( NS );" );
         writeln( 1 );
     }
