@@ -9,12 +9,11 @@ import antlr.collections.AST ;
 import java.util.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
+import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.4 2003-02-20 16:48:31 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.5 2003-03-06 09:45:42 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -32,13 +31,10 @@ public class N3toRDF implements N3ParserEventHandler
 	
 	static final String NS_rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ;
     static final String NS_rdfs = "http://www.w3.org/2000/01/rdf-schema#" ;
-	//String DAML_NS = DAMLVocabulary.NAMESPACE_DAML_2000_12_URI ;
-    static final String NS_DAML = DAMLVocabulary.NAMESPACE_DAML_2001_03_URI ;
-	DAMLVocabulary damlVocab = DAML_OIL.getInstance() ;
 	
     static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
     static final String XMLLiteralURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral" ;
-	
+
 	String base = null ;
 	final String anonPrefix = "_" ;
 	
@@ -63,7 +59,7 @@ public class N3toRDF implements N3ParserEventHandler
 	
 	public void startFormula(int line, String context)
 	{
-		error("Line "+line+": N3toRDF: All statement are asserted - no formulae") ;
+		error("Line "+line+": N3toRDF: All statements are asserted - no formulae in RDF") ;
 	}
 					
 	public void endFormula(int line, String context) {}
@@ -109,26 +105,32 @@ public class N3toRDF implements N3ParserEventHandler
 	
 	public void quad(int line, AST subj, AST prop, AST obj, String context)
 	{
+        // Syntax that reverses subject and object is done in the grammar
+
 		if ( context != null )
 			error("Line "+line+": N3toRDF: All statement are asserted - no formulae") ;
 		
-//		try
-//		{
+		try
+		{
 			// Converting N3 to RDF:
 			// subject: must be a URIref or a bNode name
 			// property: remove sugaring and then must be a URIref
 			// object: can be a literal or a URIref or a bNode name
 			// context must be zero (no formulae)
+            
+            // Lists: The parser creates list elements as sequnces of triples:
+            //       anon  keyword_A list:List
+            //       anon  list:first  ....
+            //       anon  list:rest   resource
+            // Where "resource" is nil for the last element of the list (generated first).
+             
+            // The properties are inm a unique namespace to distinguish them
+            // from lists encoded explicitly, not with the () syntax. 
 
 			int pType = prop.getType();
 			String propStr = prop.getText();
+            Property pNode = null ;
 			
-			// Syntax that reverses subject and object is done in the grammar
-			/*
-			if ( pType == N3Parser.KW_IS )
-			{
-			}
-			*/
 			switch (pType)
 			{
 				case N3Parser.ARROW_R :
@@ -144,39 +146,44 @@ public class N3toRDF implements N3ParserEventHandler
 					break;
 				case N3Parser.EQUAL :
 					//propStr = NS_DAML + "equivalentTo";
-					propStr = damlVocab.equivalentTo().getURI() ;
+					//propStr = damlVocab.equivalentTo().getURI() ;
+                    pNode = OWL.sameAs ;
 					break;
 				case N3Parser.KW_A :
-					propStr = NS_rdf + "type" ;
+                    pNode = RDF.type ;
 					break ;
 				case N3Parser.QNAME:
+                    ExpandedQName qn = new ExpandedQName(line, propStr);
+                    pNode = model.createProperty(qn.firstPart, qn.secondPart) ;
+                    break ;
 				case N3Parser.URIREF:
-				case N3Parser.LITERAL:
-					break ;
+                    break ;
+                case N3Parser.TK_LIST_FIRST:
+                    pNode = RDF.first ;
+                break ;
+                case N3Parser.TK_LIST_REST:
+                    pNode = RDF.rest ;
+                    break ;
+                // Literals, parser generated bNodes (other bnodes handled as QNAMEs)
+                // and tokens that can't be properties.
 				default:
 					error("Line "+line+": N3toRDF: Shouldn't see "+
 								N3EventPrinter.formatSlot(prop)+
 								" at this point!") ;
 			}
 
-			Property pNode = null ;
-			if ( pType == N3Parser.QNAME )
-			{
-				ExpandedQName qn = new ExpandedQName(line, propStr);
-				pNode = model.createProperty(qn.firstPart, qn.secondPart) ;
-			}
-			else
-			{
-				// URIref
-				if ( propStr.equals("") )
-					propStr = base ;
-				pNode = model.createProperty(propStr) ;
-			}
+            // Didn't find an existing one above so make it ...            
+            if ( pNode == null )
+                pNode = model.createProperty(propStr) ;
+            else
+                propStr = pNode.getURI() ;
 
+
+            
 			RDFNode sNode = createNode(line, subj);
+            // Must be a resource
 			if ( sNode instanceof Literal )
 				error("Line "+line+": N3toRDF: Subject can't be a literal") ;
-			// Must be a resource
 
 			RDFNode oNode = createNode(line, obj);
 			
@@ -184,11 +191,11 @@ public class N3toRDF implements N3ParserEventHandler
 			if ( VERBOSE )
 				System.out.println("Statement: "+stmt) ;
 			model.add(stmt) ;
-//		}
-//		catch (RDFException rdfEx)
-//		{
-//			error("Line "+line+": RDFException: " + rdfEx);
-//		}
+		}
+		catch (RDFException rdfEx)
+		{
+			error("Line "+line+": RDFException: " + rdfEx);
+		}
 	}
 	
 	private Map bNodeMap = new HashMap() ;
@@ -269,10 +276,17 @@ public class N3toRDF implements N3ParserEventHandler
 			
 				ExpandedQName qn = new ExpandedQName(line, text);
 				text = qn.expansion ;
-				// Fall through
-			case N3Parser.URIREF :
-                // By now, is not a "named" bNode (start with _:)
                 return model.createResource(expandURIRef(text)) ;
+            
+            // Lists
+            case N3Parser.TK_LIST_NIL:
+                return RDF.nil ;
+            case N3Parser.TK_LIST:
+                return RDF.List ;
+
+			case N3Parser.URIREF :
+                return model.createResource(expandURIRef(text)) ;
+                
 			case N3Parser.ANON:			// bNodes via [] or [:- ] QNAME starts "=:"
 				if ( ! bNodeMap.containsKey(text) )
 					bNodeMap.put(text, model.createResource()) ;
@@ -280,7 +294,8 @@ public class N3toRDF implements N3ParserEventHandler
                 
             case N3Parser.UVAR:
                 error("Line "+line+": N3toRDF: Can't map variables to RDF: "+text) ;
-                break ; 
+                break ;
+                
 			default:
 				error("Line "+line+": N3toRDF: Can't map to a resource or literal: "+AntlrUtils.ast(thing)) ;
                 break ;

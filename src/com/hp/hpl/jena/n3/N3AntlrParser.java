@@ -95,11 +95,6 @@ public class N3AntlrParser extends antlr.LLkParser
 		handler.error(null, "N3AntlrParser(s): ["+lexer.getLine()+":"+lexer.getColumn()+"] "+s) ;
     }
 
-	private String damlFirst  = "http://www.daml.org/2001/03/daml+oil#first" ;
-	private String damlRest   = "http://www.daml.org/2001/03/daml+oil#rest" ;
-	private String damlNil    = "http://www.daml.org/2001/03/daml+oil#nil" ;
-
-
 protected N3AntlrParser(TokenBuffer tokenBuf, int k) {
   super(tokenBuf,k);
   tokenNames = _tokenNames;
@@ -134,7 +129,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				startDocument() ;
 			}
 			{
-			_loop3:
+			_loop1753:
 			do {
 				switch ( LA(1)) {
 				case AT_PREFIX:
@@ -156,7 +151,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop3;
+					break _loop1753;
 				}
 				}
 			} while (true);
@@ -461,7 +456,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		n_AST = (AST)returnAST;
 		astFactory.addASTChild(currentAST, returnAST);
 		{
-		_loop21:
+		_loop1771:
 		do {
 			switch ( LA(1)) {
 			case PATH:
@@ -496,7 +491,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 			}
 			default:
 			{
-				break _loop21;
+				break _loop1771;
 			}
 			}
 		} while (true);
@@ -573,7 +568,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		case LPAREN:
 		{
 			match(LPAREN);
-			damllist(label);
+			list(label);
 			astFactory.addASTChild(currentAST, returnAST);
 			match(RPAREN);
 			anonnode_AST = (AST)currentAST.root;
@@ -1063,13 +1058,13 @@ public N3AntlrParser(ParserSharedInputState state) {
 		returnAST = kwIS_AST;
 	}
 	
-	public final void damllist(
+	public final void list(
 		AST label
 	) throws RecognitionException, TokenStreamException {
 		
 		returnAST = null;
 		ASTPair currentAST = new ASTPair();
-		AST damllist_AST = null;
+		AST list_AST = null;
 		AST i_AST = null;
 		AST n_AST = null;
 		
@@ -1087,40 +1082,42 @@ public N3AntlrParser(ParserSharedInputState state) {
 			i_AST = (AST)returnAST;
 			astFactory.addASTChild(currentAST, returnAST);
 			if ( inputState.guessing==0 ) {
-				damllist_AST = (AST)currentAST.root;
+				list_AST = (AST)currentAST.root;
 				
 					  	if ( label == null )
 					          label = (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(ANON,genAnonId()))) ;
-						damllist_AST = label ;
+						list_AST = label ;
 					
-				currentAST.root = damllist_AST;
-				currentAST.child = damllist_AST!=null &&damllist_AST.getFirstChild()!=null ?
-					damllist_AST.getFirstChild() : damllist_AST;
+				currentAST.root = list_AST;
+				currentAST.child = list_AST!=null &&list_AST.getFirstChild()!=null ?
+					list_AST.getFirstChild() : list_AST;
 				currentAST.advanceChildToEnd();
 			}
-			damllist(null);
+			list(null);
 			n_AST = (AST)returnAST;
 			astFactory.addASTChild(currentAST, returnAST);
 			if ( inputState.guessing==0 ) {
 				
-					    emitQuad(label, (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(URIREF,damlFirst))), i_AST);
-						emitQuad(label, (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(URIREF,damlRest))), n_AST) ;
+						// The parser emits the type of a list element.
+					  	emitQuad(label,  (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(KW_A,"list"))),             (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(TK_LIST,"List"))) );
+					    emitQuad(label,  (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(TK_LIST_FIRST,"first"))),   i_AST);
+						emitQuad(label,  (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(TK_LIST_REST,"rest"))),     n_AST) ;
 					
 			}
-			damllist_AST = (AST)currentAST.root;
+			list_AST = (AST)currentAST.root;
 			break;
 		}
 		case RPAREN:
 		{
 			if ( inputState.guessing==0 ) {
-				damllist_AST = (AST)currentAST.root;
-				damllist_AST = (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(URIREF,damlNil)));
-				currentAST.root = damllist_AST;
-				currentAST.child = damllist_AST!=null &&damllist_AST.getFirstChild()!=null ?
-					damllist_AST.getFirstChild() : damllist_AST;
+				list_AST = (AST)currentAST.root;
+				list_AST = (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(TK_LIST_NIL,"nil")));
+				currentAST.root = list_AST;
+				currentAST.child = list_AST!=null &&list_AST.getFirstChild()!=null ?
+					list_AST.getFirstChild() : list_AST;
 				currentAST.advanceChildToEnd();
 			}
-			damllist_AST = (AST)currentAST.root;
+			list_AST = (AST)currentAST.root;
 			break;
 		}
 		default:
@@ -1128,7 +1125,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 			throw new NoViableAltException(LT(1), getFilename());
 		}
 		}
-		returnAST = damllist_AST;
+		returnAST = list_AST;
 	}
 	
 	public final void literalModifier() throws RecognitionException, TokenStreamException {
@@ -1152,10 +1149,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 		AST literalModifier1_AST = null;
 		AST dt_AST = null;
 		
-		boolean synPredMatched37 = false;
+		boolean synPredMatched1787 = false;
 		if (((LA(1)==AT_LANG))) {
-			int _m37 = mark();
-			synPredMatched37 = true;
+			int _m1787 = mark();
+			synPredMatched1787 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1163,12 +1160,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched37 = false;
+				synPredMatched1787 = false;
 			}
-			rewind(_m37);
+			rewind(_m1787);
 			inputState.guessing--;
 		}
-		if ( synPredMatched37 ) {
+		if ( synPredMatched1787 ) {
 			AST tmp30_AST = null;
 			tmp30_AST = (AST)astFactory.create(LT(1));
 			astFactory.addASTChild(currentAST, tmp30_AST);
@@ -1176,10 +1173,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 			literalModifier1_AST = (AST)currentAST.root;
 		}
 		else {
-			boolean synPredMatched39 = false;
+			boolean synPredMatched1789 = false;
 			if (((LA(1)==DATATYPE))) {
-				int _m39 = mark();
-				synPredMatched39 = true;
+				int _m1789 = mark();
+				synPredMatched1789 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -1187,12 +1184,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched39 = false;
+					synPredMatched1789 = false;
 				}
-				rewind(_m39);
+				rewind(_m1789);
 				inputState.guessing--;
 			}
-			if ( synPredMatched39 ) {
+			if ( synPredMatched1789 ) {
 				AST tmp31_AST = null;
 				tmp31_AST = (AST)astFactory.create(LT(1));
 				astFactory.addASTChild(currentAST, tmp31_AST);
@@ -1295,6 +1292,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 		"KW_HAS",
 		"KW_A",
 		"KW_IS",
+		"TK_LIST",
+		"TK_LIST_FIRST",
+		"TK_LIST_REST",
+		"TK_LIST_NIL",
 		"AT_PREFIX",
 		"AT_LANG",
 		"STRING",
@@ -1352,12 +1353,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 	}
 	public static final BitSet _tokenSet_0 = new BitSet(mk_tokenSet_0());
 	private static final long[] mk_tokenSet_1() {
-		long[] data = { 34359738368L, 0L};
+		long[] data = { 549755813888L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_1 = new BitSet(mk_tokenSet_1());
 	private static final long[] mk_tokenSet_2() {
-		long[] data = { 137438805826L, 0L};
+		long[] data = { 2199020650306L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_2 = new BitSet(mk_tokenSet_2());

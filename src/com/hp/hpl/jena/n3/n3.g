@@ -49,6 +49,8 @@ tokens
 	ANON ; FORMULA ;
 	QNAME ; KEYWORD ; NAME_OP ;
 	KW_THIS ; KW_OF ; KW_HAS ; KW_A ; KW_IS ;
+	// Tokens for lists : next stage chooses the namespace for lists
+	TK_LIST ; TK_LIST_FIRST ; TK_LIST_REST ; TK_LIST_NIL ;
 	AT_PREFIX ; AT_LANG ;
 	STRING ; LITERAL ;
 }
@@ -135,11 +137,6 @@ tokens
 	    //System.err.println("N3AntlrParser(s): "+s);
 		handler.error(null, "N3AntlrParser(s): ["+lexer.getLine()+":"+lexer.getColumn()+"] "+s) ;
     }
-
-	private String damlFirst  = "http://www.daml.org/2001/03/daml+oil#first" ;
-	private String damlRest   = "http://www.daml.org/2001/03/daml+oil#rest" ;
-	private String damlNil    = "http://www.daml.org/2001/03/daml+oil#nil" ;
-
 }
 
 // The top level rule
@@ -293,23 +290,27 @@ anonnode[AST label]
 
 		// List syntax
 	| LPAREN!
-		damllist[label]
+		list[label]
 	  RPAREN!
 	;
 
-damllist[AST label]
+list[AST label]
 	: i:item
 	  {
 	  	if ( label == null )
 	          label = #([ANON, genAnonId()]) ;
-		#damllist = label ;
+		#list = label ;
 	  }
-	  n:damllist[null]	
+	  // NB The list is generated from tail to head
+	  // because we recurse, then generate quads
+	  n:list[null]	
 	  {
-	    emitQuad(label, #([URIREF, damlFirst]), #i);
-		emitQuad(label, #([URIREF, damlRest]), #n) ;
+		// The parser emits the type of a list element.
+	  	emitQuad(label,  #([KW_A, "list"]),             #([TK_LIST, "List"]) );
+	    emitQuad(label,  #([TK_LIST_FIRST, "first"]),   #i);
+		emitQuad(label,  #([TK_LIST_REST, "rest"]),     #n) ;
 	  }
-	| { #damllist = #([URIREF, damlNil]); } // void - generate daml:nil
+	| { #list = #([TK_LIST_NIL, "nil"]); } // void - generate list:nil
 	;
 
 
