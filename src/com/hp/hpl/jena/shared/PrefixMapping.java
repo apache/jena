@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.19 2003-12-10 11:58:39 jeremy_carroll Exp $
+  $Id: PrefixMapping.java,v 1.20 2003-12-10 16:34:02 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -31,6 +31,13 @@ public interface PrefixMapping
   <p>      
         A prefix name must be a valid NCName, or the empty string. The empty string
         is reserved to mean "the default namespace".
+  <p>
+        Any URI may be ignored; for example URIs that end
+        in an NCName char may be discarded.
+  <p>
+        Does  not check the RFC2396 validity of the URI. 
+        Bad URIs are either silently ignored or behave as if they
+        were good.
         
         @param prefix the string to be used for the prefix.
         @param uri the URI prefix to be named

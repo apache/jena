@@ -7,8 +7,11 @@ package com.hp.hpl.jena.rdf.arp;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.graph.impl.*;
 
 import java.io.*;
 import java.net.*;
@@ -25,6 +28,56 @@ import org.xml.sax.SAXNotRecognizedException;
  */
 public class JenaReader implements RDFReader, ARPErrorNumbers {
 
+  private final class JRStatementHandler implements StatementHandler {
+		static private final int BULK_UPDATE_SIZE = 1000;
+		private final BulkUpdateHandler bulk;
+		final Triple triples[];
+		int ix = 0;
+		private JRStatementHandler( BulkUpdateHandler bulk) {
+			super();
+			this.bulk = bulk;
+			triples = new Triple[BULK_UPDATE_SIZE];
+		}
+		public void statement(
+			AResource subj,
+			AResource pred,
+			AResource obj) {
+			try {
+				triples[ix++]=convert(subj,pred,obj);
+			} catch (JenaException e) {
+				errorHandler.error(e);
+			}
+			if (ix==BULK_UPDATE_SIZE)
+			  bulkUpdate();
+		}
+		public void statement(
+			AResource subj,
+			AResource pred,
+			ALiteral lit) {
+				try {
+					triples[ix++]=convert(subj,pred,lit);
+				} catch (JenaException e) {
+					errorHandler.error(e);
+				}
+				if (ix==BULK_UPDATE_SIZE)
+				  bulkUpdate();
+		}
+		private void bulkUpdate() {
+			try {
+				if (ix == BULK_UPDATE_SIZE)
+				  bulk.add(triples);
+				else 
+				  bulk.add(Arrays.asList(triples).subList(0,ix));
+				ix = 0;
+			}
+			catch (JenaException e) {
+			errorHandler.error(e);
+		  }
+		}
+	}
+
+	static private final int BULK_UPDATE_SIZE = 1000;
+  
 	/** Sets the reader for the languages RDF/XML and RDF/XML-ABBREV to be JenaReader.
 	 * @param m The Model on which to set the reader properties.
 	 */
@@ -32,7 +85,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		m.setReaderClassName("RDF/XML", JenaReader.class.getName());
 		m.setReaderClassName("RDF/XML-ABBREV", JenaReader.class.getName());
 	}
-  Map prefixMap = new HashMap();
 
 	static private final String saxFeaturesURL = "http://xml.org/sax/features/";
 	static private final String saxPropertiesURL =
@@ -67,16 +119,8 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		} catch (IOException e) {
 			throw new JenaException(e);
 		}
-		//     updateModel();
 	}
 
-	/**
-	    update the model by informing it of all the namespace declarations that
-	    we have seen.
-	*/
-	private void updateModel()
-	    { ModelCom.addNamespaces( model, prefixMap ); }
-	
 
 	/** Converts an ARP literal into a Jena Literal.
 	 * @param lit The ARP literal.
@@ -91,51 +135,39 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 			null);
 	}
 
-	Literal convert(ALiteral lit) throws JenaException {
-		String dt = lit.getDatatypeURI();
-		if (dt == null)
-			return model.createLiteral(lit.toString(), lit.getLang());
+ static	Node convert(ALiteral lit)  {
+		String dtURI = lit.getDatatypeURI();
+		if (dtURI == null)
+			return Node.createLiteral(lit.toString(), lit.getLang(), false);
 		else {
 			if (lit.isWellFormedXML()) {
-				return model.createLiteral(lit.toString(), true);
+				return Node.createLiteral(lit.toString(),null, true);
 			} else {
-
-				return model.createTypedLiteral(lit.toString(), dt);
+				RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
+        
+				return Node.createLiteral(lit.toString(),null,dt);
 			}
 		}
 	}
 
-	/** Converts an ARP resource into a Jena resource.
-	 * @param r The ARP resource.
-	 * @return The Jena resource.
-	 * @deprecated Should never have been public.
-	 */
-	static public Resource translate(AResource r) {
+	static Node convert(AResource r){
 		if (r.isAnonymous()) {
 			String id = r.getAnonymousID();
-			Resource rr = (Resource) r.getUserData();
+			Node rr = (Node) r.getUserData();
 			if (rr == null) {
-				rr = new ResourceImpl();
+				rr = Node.createAnon();
 				r.setUserData(rr);
 			}
 			return rr;
 		} else {
-			return new ResourceImpl(r.getURI());
+			return Node.createURI(r.getURI());
 		}
 	}
-
-	Resource convert(AResource r) throws JenaException {
-		if (r.isAnonymous()) {
-			String id = r.getAnonymousID();
-			Resource rr = (Resource) r.getUserData();
-			if (rr == null) {
-				rr = model.createResource();
-				r.setUserData(rr);
-			}
-			return rr;
-		} else {
-			return model.createResource(r.getURI());
-		}
+	static Triple convert(AResource s,AResource p, AResource o){
+	    return new Triple(convert(s),convert(p),convert(o));
+	}
+	static Triple convert(AResource s,AResource p, ALiteral o){
+		return new Triple(convert(s),convert(p),convert(o));
 	}
 	/** Converts an ARP resource into a Jena property.
 	 * @param r The ARP resource.
@@ -147,9 +179,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		return new PropertyImpl(r.getURI());
 	}
 
-	Property convertPred(AResource r) throws JenaException {
-		return model.createProperty(r.getURI());
-	}
 
 	/**
 	 *  Reads from reader, using base URI xmlbase, adding triples to model.
@@ -174,55 +203,26 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 				public void startPrefixMapping(String prefix, String uri) {
 			  	if (PrefixMappingImpl.isNiceURI(uri))
 			  	   model.setNsPrefix(prefix, uri);
-				/*	Set uris = (Set) prefixMap.get(prefix);
-					if (uris == null) {
-						uris = new HashSet();
-						prefixMap.put(prefix, uris);
-					}
-					uris.add(uri); */
 				}
 
 				public void endPrefixMapping(String prefix) {
 				}
 			});
+			final Graph g = model.getGraph();
+			
+			final BulkUpdateHandler bulk = g.getBulkUpdateHandler();
 			inputS.setSystemId(xmlBase);
-			arpf.setStatementHandler(new StatementHandler() {
-				public void statement(
-					AResource subj,
-					AResource pred,
-					AResource obj) {
-					try {
-						model.add(
-							convert(subj),
-							convertPred(pred),
-							convert(obj));
-					} catch (JenaException e) {
-						errorHandler.error(e);
-					}
-				}
-				public void statement(
-					AResource subj,
-					AResource pred,
-					ALiteral lit) {
-					try {
-						model.add(
-							convert(subj),
-							convertPred(pred),
-							convert(lit));
-					} catch (JenaException e) {
-						errorHandler.error(e);
-					}
-				}
-			});
+			JRStatementHandler handler =new JRStatementHandler(bulk); 
+			arpf.setStatementHandler(handler);
 
 			arpf.setErrorHandler(new ARPSaxErrorHandler(errorHandler));
 			arpf.parse(inputS, xmlBase);
+			handler.bulkUpdate();
 		} catch (IOException e) {
 			throw new JenaException(e);
 		} catch (SAXException e) {
 			throw new JenaException(e);
 		}
-//		updateModel();
 	}
 
 	/**
@@ -617,7 +617,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.18 2003-12-10 11:58:48 jeremy_carroll Exp $
+ * * $Id: JenaReader.java,v 1.19 2003-12-10 16:34:14 jeremy_carroll Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */
