@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.42 2004-06-24 12:11:49 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.43 2004-06-24 14:45:45 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -548,12 +548,9 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testRemoveAll( String triples )
         {
         Graph g = getGraph();
-        if (g.getCapabilities().sizeAccurate())
-            {
-            graphAdd( g, triples );
-            g.getBulkUpdateHandler().removeAll();
-            assertEquals( 0, g .size() );
-            }
+        graphAdd( g, triples );
+        g.getBulkUpdateHandler().removeAll();
+        assertTrue( g.isEmpty() );
         }
     
     protected Graph copy( Graph g )

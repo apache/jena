@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Graph.java,v 1.23 2003-09-17 12:14:05 chris-dollin Exp $
+  $Id: Graph.java,v 1.24 2004-06-24 14:45:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -118,8 +118,9 @@ public interface Graph  extends GraphAdd
 	void close();
     
     /**
-        Answer true iff this graph is empty. [Used to be in QueryHandler, but moved in
-        here because it's a more primitive operation.]
+        Answer true iff this graph is empty. "Empty" means "has as few triples as it
+        can manage", because an inference graph may have irremovable axioms
+        and their consequences.
     */
     boolean isEmpty();
     
