@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETERuleInfGraph.java,v 1.5 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RETERuleInfGraph.java,v 1.6 2004-02-02 14:20:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * RETE implementation of the forward rule infernce graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.6 $ on $Date: 2004-02-02 14:20:58 $
  */
 public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
 
@@ -99,6 +99,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
                 data.delete(t);
             }
         }
+        engine.delete(t);
         fdeductions.getGraph().delete(t);
     }
 
