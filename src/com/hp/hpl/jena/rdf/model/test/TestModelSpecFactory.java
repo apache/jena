@@ -56,6 +56,28 @@ public class TestModelSpecFactory extends ModelTestBase
             assertSame( m, e.badModel ); }
         }
     
+    public void testFindSpecificTypeTrivial()
+        {
+        Model m = fullModel( "eh:root rdf:type eh:T" );
+        Resource T = resource( "eh:T" ), root = m.createResource( "eh:root" );
+        assertEquals( T, ModelSpecFactory.findSpecificType( root, T ) );
+        }    
+    
+    public void testFindSpecificTypeWithIrrelevantOtherType()
+        {
+        Model m = fullModel( "eh:root rdf:type eh:T; eh:root rdf:type eh:Other" );
+        Resource T = resource( "eh:T" ), root = m.createResource( "eh:root" );
+        assertEquals( T, ModelSpecFactory.findSpecificType( root, T ) );
+        }
+    
+    public void testFindSpecificTypeWithSubtypes()
+        {
+        Model m = fullModel
+            ( "eh:root rdf:type eh:V; eh:V rdfs:subClassOf eh:U; eh:U rdfs:subClassOf eh:T" );
+        Resource root = m.createResource( "eh:root" );
+        assertEquals( resource( "eh:V" ), ModelSpecFactory.findSpecificType( root, resource( "eh:T") ) );
+        }        
+    
     public void testFactoryReturnsAModelSpec()
         {
         Model m = modelWithStatements( "eh:Root rdf:type jms:PlainModelSpec" );
@@ -139,7 +161,12 @@ public class TestModelSpecFactory extends ModelTestBase
             { return null; }
         }
 
-
+    /**
+        Answer a model which is the RDFS closure of the statements encoded in
+        the string <code>statements</code>.
+    */
+    protected Model fullModel( String statements )
+        { return ModelSpecFactory.withSchema( modelWithStatements( statements ) ); }
     }
 
 

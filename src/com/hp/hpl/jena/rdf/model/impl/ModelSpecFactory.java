@@ -85,9 +85,11 @@ public class ModelSpecFactory
     
     /**
         Answer the "most specific" type of root in desc which is an instance of type.
-        We assume a single inheritance thread starting with that type. 
+        We assume a single inheritance thread starting with that type. The model
+        should contain the subclass closure (ie either be complete, or an inference
+        model which will generate completeness).
         
-        @param root the subject whos type is to be found
+        @param root the subject whose type is to be found
         @param type the base type for the search
         @return T such that (root type T) and if (root type T') then (T' subclassof T)
     */
