@@ -5,12 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DAMLMicroReasoner.java,v 1.3 2004-08-03 11:20:59 chris-dollin Exp $
+ * $Id: DAMLMicroReasoner.java,v 1.4 2004-11-29 16:39:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.util.*;
 
+import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.reasoner.BaseInfGraph;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
 
 /**
@@ -19,7 +21,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * that correspond roughly to what was there in Jena1. We hope.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2004-08-03 11:20:59 $
+ * @version $Revision: 1.4 $ on $Date: 2004-11-29 16:39:00 $
  */
 public class DAMLMicroReasoner  extends GenericRuleReasoner {
    
@@ -44,6 +46,17 @@ public class DAMLMicroReasoner  extends GenericRuleReasoner {
     public static List loadRules() {
         if (ruleSet == null) ruleSet = loadRules( RULE_FILE );
         return ruleSet;
+    }
+
+    /**
+     * Return the Jena Graph Capabilties that the inference graphs generated
+     * by this reasoner are expected to conform to.
+     */
+    public Capabilities getGraphCapabilities() {
+        if (capabilities == null) {
+            capabilities = new BaseInfGraph.InfFindSafeCapabilities();
+        }
+        return capabilities;
     }
 }
 

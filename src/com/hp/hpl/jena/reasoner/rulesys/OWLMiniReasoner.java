@@ -5,10 +5,11 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMiniReasoner.java,v 1.2 2004-08-03 11:20:59 chris-dollin Exp $
+ * $Id: OWLMiniReasoner.java,v 1.3 2004-11-29 16:39:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
+import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.reasoner.*;
 
 import java.util.*;
@@ -23,7 +24,7 @@ import java.util.*;
  * </UL>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2004-08-03 11:20:59 $
+ * @version $Revision: 1.3 $ on $Date: 2004-11-29 16:39:00 $
  */
 public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
 
@@ -52,6 +53,17 @@ public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
 //        setTransitiveClosureCaching(true);
     }
     
+
+    /**
+     * Return the Jena Graph Capabilties that the inference graphs generated
+     * by this reasoner are expected to conform to.
+     */
+    public Capabilities getGraphCapabilities() {
+        if (capabilities == null) {
+            capabilities = new BaseInfGraph.InfFindSafeCapabilities();
+        }
+        return capabilities;
+    }
 
 }
 

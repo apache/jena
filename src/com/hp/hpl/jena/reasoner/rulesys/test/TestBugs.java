@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.24 2004-11-25 17:32:32 der Exp $
+ * $Id: TestBugs.java,v 1.25 2004-11-29 16:38:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -19,7 +19,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -34,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2004-11-25 17:32:32 $
+ * @version $Revision: 1.25 $ on $Date: 2004-11-29 16:38:43 $
  */
 public class TestBugs extends TestCase {
 

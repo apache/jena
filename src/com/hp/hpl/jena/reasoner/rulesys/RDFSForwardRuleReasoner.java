@@ -5,12 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSForwardRuleReasoner.java,v 1.3 2004-08-03 11:20:59 chris-dollin Exp $
+ * $Id: RDFSForwardRuleReasoner.java,v 1.4 2004-11-29 16:39:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.util.*;
 
+import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.reasoner.BaseInfGraph;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
 
 /** 
@@ -21,7 +23,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * chainer. Second, if you want all the RDFS entailments for an entire 
  * dataset the forward chainer will be more efficient.
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> 
- * @version $Revision: 1.3 $ on $Date: 2004-08-03 11:20:59 $ */
+ * @version $Revision: 1.4 $ on $Date: 2004-11-29 16:39:01 $ */
 
 public class RDFSForwardRuleReasoner extends GenericRuleReasoner {    
     /** The location of the OWL rule definitions on the class path */
@@ -46,6 +48,17 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
     public static List loadRules() {
         if (ruleSet == null) ruleSet = loadRules( RULE_FILE ); 
         return ruleSet;
+    }
+
+    /**
+     * Return the Jena Graph Capabilties that the inference graphs generated
+     * by this reasoner are expected to conform to.
+     */
+    public Capabilities getGraphCapabilities() {
+        if (capabilities == null) {
+            capabilities = new BaseInfGraph.InfFindSafeCapabilities();
+        }
+        return capabilities;
     }
         
 }

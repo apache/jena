@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestInfGraph.java,v 1.2 2004-11-22 14:42:22 chris-dollin Exp $
+  $Id: TestInfGraph.java,v 1.3 2004-11-29 16:39:01 der Exp $
 */
 
 package com.hp.hpl.jena.reasoner.test;
@@ -53,7 +53,8 @@ public class TestInfGraph extends AbstractTestGraph
     */
     public void testInfCapabilities()
         {
-        assertFalse( getInfGraph().getCapabilities().findContractSafe() );
+        // The default Ontology inference model is RDFS which is safe
+        assertTrue( getInfGraph().getCapabilities().findContractSafe() );
         }
     }
 

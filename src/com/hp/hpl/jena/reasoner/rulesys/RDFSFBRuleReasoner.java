@@ -5,12 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSFBRuleReasoner.java,v 1.4 2004-08-03 11:20:59 chris-dollin Exp $
+ * $Id: RDFSFBRuleReasoner.java,v 1.5 2004-11-29 16:39:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.util.*;
 
+import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.reasoner.BaseInfGraph;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
 
 /**
@@ -18,7 +20,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * based upon the basic backward rule interpreter. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2004-08-03 11:20:59 $
+ * @version $Revision: 1.5 $ on $Date: 2004-11-29 16:39:01 $
  */
 public class RDFSFBRuleReasoner extends FBRuleReasoner {
     
@@ -41,6 +43,17 @@ public class RDFSFBRuleReasoner extends FBRuleReasoner {
     public static List loadRules() {
         if (ruleSet == null) ruleSet = loadRules( RULE_FILE );
         return ruleSet;
+    }
+
+    /**
+     * Return the Jena Graph Capabilties that the inference graphs generated
+     * by this reasoner are expected to conform to.
+     */
+    public Capabilities getGraphCapabilities() {
+        if (capabilities == null) {
+            capabilities = new BaseInfGraph.InfFindSafeCapabilities();
+        }
+        return capabilities;
     }
 
 }

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.73 $
+ * Revision           $Revision: 1.74 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-25 11:38:20 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-11-29 16:33:20 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.73 2004-11-25 11:38:20 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.74 2004-11-29 16:33:20 der Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -390,7 +390,7 @@ public class OntModelImpl
         boolean supportsIndAsThing = false;
         if (getGraph() instanceof InfGraph) {
             supportsIndAsThing = ((InfGraph) getGraph()).getReasoner()
-                                                        .getCapabilities()
+                                                        .getReasonerCapabilities()
                                                         .contains( null, ReasonerVocabulary.supportsP, ReasonerVocabulary.individualAsThingP );
         }
         if (!supportsIndAsThing || (getProfile().THING() == null) || getProfile().CLASS().equals( RDFS.Class )) {

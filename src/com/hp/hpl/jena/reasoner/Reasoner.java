@@ -5,10 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Reasoner.java,v 1.13 2003-08-27 13:11:17 andy_seaborne Exp $
+ * $Id: Reasoner.java,v 1.14 2004-11-29 16:31:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
+import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -20,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-08-27 13:11:17 $
+ * @version $Revision: 1.14 $ on $Date: 2004-11-29 16:31:15 $
  */
 public interface Reasoner {
     
@@ -114,7 +115,7 @@ public interface Reasoner {
      * information supplied at construction time. May be null if there are
      * no useful capabilities registered.
      */
-    public Model getCapabilities();
+    public Model getReasonerCapabilities();
     
     /**
      * Add a configuration description for this reasoner into a partial
@@ -131,6 +132,12 @@ public interface Reasoner {
      * @return true if the given property is handled specially by the reasoner.
      */
     public boolean supportsProperty(Property property);
+
+    /**
+     * Return the Jena Graph Capabilties that the inference graphs generated
+     * by this reasoner are expected to conform to.
+     */
+    public Capabilities getGraphCapabilities();
 }
 
 
