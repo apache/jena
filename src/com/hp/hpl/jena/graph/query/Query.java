@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.17 2003-08-08 14:29:13 chris-dollin Exp $
+  $Id: Query.java,v 1.18 2003-08-08 14:55:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -179,49 +179,25 @@ public class Query
         if (constraintGraph.size() > 0) 
             stages.add( new ConstraintStage( map, constraintGraph ) );
         outStages.addAll( stages );
-        final int [] indexes = findIndexes( map, nodes );
         variableCount = map.size();
-        Stage allStages = connectStages( stages, variableCount );
-        return filter( indexes, allStages );
+        return filter( connectStages( stages, variableCount ) );
         }
         
-    private int [] findIndexes( Mapping map, Node [] nodes )
-        {
-        int [] result = new int [nodes.length];
-        for (int i = 0; i < nodes.length; i += 1) result[i] = findIndex( map, nodes[i] ); 
-        return result;
-        }
-         
-    private int findIndex( Mapping map, Node node )
-        {
-        if (map.hasBound( node ) == false) map.newIndex( node );
-        return map.indexOf( node );
-        }
-        
-    private ExtendedIterator filter( final int [] indexes, final Stage allStages )
+    private ExtendedIterator filter( final Stage allStages )
         {
         final Pipe complete = allStages.deliver( new BufferPipe() );
         return new NiceIterator()
             {
             public void close() { allStages.close(); clearPipe(); }
-            public Object next() { return filter( indexes, complete.get() ); }
+            public Object next() { return complete.get(); }
             public boolean hasNext() { return complete.hasNext(); }
             private void clearPipe()
                 { 
                 int count = 0; 
                 while (hasNext()) { count += 1; next(); }
-                // System.err.println( ">> pulled " + count + " values" );
                 }
             };
         }
-        
-    protected Domain filter( int [] indexes, Domain complete )
-        {
-        Domain d = new Domain( indexes.length );
-        for (int i = 0; i < indexes.length; i += 1) 
-            d.setElement( i, (Node) complete.get( indexes[i] ) );
-        return d;
-        }     
                           
     /** collection of triple patterns, graph name -> Cons[Triple] */
     private HashMap triples = new HashMap();

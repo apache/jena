@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Mapping.java,v 1.6 2003-08-08 14:29:13 chris-dollin Exp $
+  $Id: Mapping.java,v 1.7 2003-08-08 14:55:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -11,7 +11,8 @@ import java.util.*;
 
 /**
     this class is used to record the mapping from [variable] Node's to
-    the indexes they are bound to in a Query.
+    the indexes they are bound to in a Query. Nodes bound to negative values
+    are predeclared; the negative value is converted on index allocation.
 */
 
 public class Mapping 
