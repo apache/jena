@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.19 2003-12-04 12:03:22 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.20 2004-02-11 12:58:07 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -164,6 +164,10 @@ public class N3toRDF implements N3ParserEventHandler
                     pNode = RDF.type ;
 					break ;
 				case N3Parser.QNAME:
+                    
+                    if ( prop.getText().startsWith("_:") )
+                        error("Line "+line+": N3toRDF: Can't have properties with labelled bNodes in RDF") ;
+                    
                     String uriref = expandPrefix(model, propStr) ;
                     if ( uriref == propStr )
                     {
@@ -183,10 +187,14 @@ public class N3toRDF implements N3ParserEventHandler
                     break ;
                 // Literals, parser generated bNodes (other bnodes handled as QNAMEs)
                 // and tokens that can't be properties.
+                case N3Parser.ANON:
+                    error("Line "+line+": N3toRDF: Can't have anon. properties in RDF") ;
+                    break ;
 				default:
 					error("Line "+line+": N3toRDF: Shouldn't see "+
 								N3EventPrinter.formatSlot(prop)+
 								" at this point!") ;
+                    break ;
 			}
 
             // Didn't find an existing one above so make it ...
