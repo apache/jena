@@ -21,15 +21,15 @@ import com.hp.hpl.jena.rdf.model.* ;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbcreate.java,v 1.2 2003-12-04 10:16:35 andy_seaborne Exp $
+  * @version $Id: dbcreate.java,v 1.3 2004-01-23 16:52:02 andy_seaborne Exp $
   */ 
  
 public class dbcreate extends DBcmd
 {
     public static final String[] usage = new String[]
     { 
-        "dbcreate [--spec spec] | [db description] [--model name] file" ,
-        "  where db description is" ,
+        "dbcreate [--spec spec] | [db_description] [--model name]" ,
+        "  where db_description is" ,
         "    --db JDBC URL --dbType type" ,
         "    --dbUser user --dbPassword password" 
      } ;

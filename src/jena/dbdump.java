@@ -20,15 +20,15 @@ import jena.cmdline.* ;
 
   * 
   * @author Andy Seaborne
-  * @version $Id: dbdump.java,v 1.2 2003-12-04 10:16:35 andy_seaborne Exp $
+  * @version $Id: dbdump.java,v 1.3 2004-01-23 16:52:27 andy_seaborne Exp $
   */ 
  
 public class dbdump extends DBcmd
 {
     public static final String[] usage = new String[]
     { 
-        "dbdump [--spec spec] | [db description] [--model name] file" ,
-        "  where db description is" ,
+        "dbdump [--spec spec] | [db_description] [--model name] [--format syntax]" ,
+        "  where db_description is" ,
         "    --db JDBC URL --dbType type" ,
         "    --dbUser user --dbPassword password" 
      } ;
