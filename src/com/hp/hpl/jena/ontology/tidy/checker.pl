@@ -51,7 +51,7 @@ grouping([allDifferent, description, listOfDataLiteral, listOfDescription,
 listOfIndividualID, orphan,
 restriction, unnamedDataRange, unnamedIndividual],blank).
 
-grouping(H) :- grouping(H,_).
+%grouping(H) :- grouping(H,_).
 
 
 % allBuiltins(Q,N,T,F) :-
@@ -80,14 +80,15 @@ gogo :-
 
 :-dynamic tt/4.
 :- dynamic g/1.
-:- dynamic x/7.
-:- dynamic finished/0.
+%:- dynamic x/7.
+%:- dynamic finished/0.
 :- dynamic gn/2.
 :-dynamic width/1.
 :-dynamic gn2/2.
 :-dynamic m/2.
 :-dynamic m/1.
 :- dynamic h/1.
+:-dynamic expg/2.
 
 propertyNumber(owl:intersectionOf, 1):-!.
 propertyNumber(owl:complementOf, 1):-!.
@@ -162,8 +163,9 @@ buildChecker :-
    
 buildChecker :-
   retractall(g(_)),
-  grouping(G),
+  grouping(G,N),
   expandGrouping(G,G1),
+  assert(expg(G1,N)),
   assert(g(G1)),
   fail.
 buildChecker :-
@@ -232,9 +234,11 @@ buildChecker :-
    fail;nl),fail.
 buildChecker :-
   write('%%'),nl,told,
-  shell('./c/precompute < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl'),
+  shell('precomp.bat'),
+%  shell('precompute < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl'),
   [tmpSubCategorizationOutput].
 
+/*
 choose(X,X,B,C) :- h(X,B),h(X,C).
 choose(X,A,X,C) :- h(A),h(X,C).
 choose(X,A,B,X) :- h(A),h(B).
@@ -242,7 +246,7 @@ choose(X,_,_,_) :- assertz(h(X)),fail.
 
 h(A,A).
 h(_,A) :- h(A).
-
+*/
 
 countx(G,_) :-
   flag(count,_,0),
@@ -251,7 +255,7 @@ countx(G,_) :-
   fail.
 countx(_,N) :-
   flag(count,N,N).
-
+/*
 show_stats :-
   telling(X),
   tell(user),
@@ -266,7 +270,7 @@ stats1 :-
   flag(inferences,OLD,II),
   I is II - OLD,
   writef('%5r %5r %8r %8r\n',[GN,HN,RT,I]).
-  
+  */
 
 expandGrouping(In,Out) :-
   setof(X,expandIn(X,In),Out).
@@ -281,7 +285,7 @@ expand2(X,X) :- \+ m(X,_).
 
 gname :-
   retractall(gn(_,_)),
-  g(G),
+  subCategory(G),
   gname(G,GN),
   assert(gn(G,GN)),
   fail.
@@ -293,7 +297,7 @@ bits(N,NB) :-
   N < 1<<NB,
   !.
 
-gname(L,N) :- grouping(L,N), !.
+gname(L,N) :- expg(L1,N),sort(L,L2),sort(L1,L2), !.
 gname([(Q:N)],QN) :- atom_concat(Q,N,QN),!.
 gname([D-N],QN) :- atom_concat(D,N,QN),!.
 gname([X],X) :- !.
@@ -312,15 +316,18 @@ classfile :-
   wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,nl]),
   wlist(['/** automatically generated. */',nl]),
   wlist(['class Grammar {',nl]),
+  wCategories,
   wGetBuiltinID,
   wActions,
-  wCategories,
   wAddTriple,
   wlist(['}',nl]).
 
 wGetBuiltinID :-
-  wsfi('NotQuiteBuiltin',1),
-  wsfi('BadXSD',2),
+  wsfi('NotQuiteBuiltin','1<<W'),
+  wsfi('BadXSD','2<<W'),
+  wsfi('BadOWL','3<<W'),
+  wsfi('BadRDF','5<<W'),
+  wsfi('DisallowedVocab','4<<W'),
   wsfi('Failure',-1),
   wlist(['static int getBuiltinID(String uri) {',nl]),
   wlist(['  if ( uri.startsWith("http://www.w3.org/") ) {',nl]),
@@ -341,9 +348,24 @@ getBuiltins(Q) :-
          '       if (false) {',nl]),
   allBuiltins(Q,Nm,P,Special),
   wlist(['       } else if ( uri.equals("',Nm,'") ) {',nl]),
-  gn(P,Gp),
+  (P=[ontologyPropertyID]->Gp=ontologyPropertyHack;gn(P,Gp)),
   specialBuiltin(Special,SpCode),
   wlist(['          return ',Gp,SpCode,';',nl]),
+  fail.
+getBuiltins(Q) :-
+  disallowed(Q,N),
+  \+ builtin(Q,N),
+  wlist(['       } else if ( uri.equals("',N,'") ) {',nl]),
+  wlist(['           return DisallowedVocab;',nl]),
+  fail.
+
+getBuiltins(owl) :-
+  wlist(['       } else { return BadOWL; ',nl]),
+  fail.
+
+getBuiltins(RDF_S) :-
+  member(RDF_S,[rdf,rdfs]),
+  wlist(['       } else { return BadRDF; ',nl]),
   fail.
 getBuiltins(_) :-
   wlist(['     }',nl,'   }',nl]).
@@ -355,12 +377,16 @@ specialBuiltin(notQuite,'| NotQuiteBuiltin').
   
 
 wActions :-
-  wsfi('ActionShift',3).
+  wsfi('FirstOfOne',1),
+  wsfi('FirstOfTwo',2),
+  wsfi('SecondOfTwo',3),
+  wsfi('DisjointAction',4),
+  wsfi('ActionShift',5).
 
 wCategories :-
   retractall(width(_)),
   retractall(gn2(_,_)),
-  setof(G,g(G),L),
+  setof(G,subCategory(G),L),
   length(L,N),
   bits(N,NB),
   wsfi('CategoryShift',NB),
@@ -370,7 +396,8 @@ wCategories :-
   wsfi(Name,Ix),
   assert(gn2(G,Ix)),
   fail.
-wCategories.
+wCategories :-
+  wlist(['    static private final int W = CategoryShift;',nl]).
 
 wsfi(Name,Val) :-
   wlist(['    static final int ',Name,' = ',Val,';',nl]).
@@ -378,7 +405,6 @@ wsfi(Name,Val) :-
 
 wAddTriple :-
   wsfi('DL','1 << (3 * CategoryShift)'),
-  wlist(['    static private final int W = CategoryShift;',nl]),
   wlist(['/','** Given some knowledge about the categorization',nl,
          'of a triple, return a refinement of that knowledge,',nl,
          'or {@link #Failure} if no refinement exists.',nl,
@@ -389,24 +415,60 @@ wAddTriple :-
          '*/',nl]),
    wlist(['    static int addTriple(int triple) {',nl]),
    wlist(['      switch(triple) {',nl]),
-   x(S,P,O,SS,PP,OO,DL),
+   
+   refineSubCat(S,P,O,SS,PP,OO),
    write('case '),spo(S,P,O),wlist([':',nl,'return ']),spo(SS,PP,OO),
-   extraInfo(DL,DLX),
+   extraInfo(SS,PP,OO,DLX),
    wlist([DLX,';',nl]),fail.
 wAddTriple :-
    wlist(['      default: return Failure;',nl,'   }',nl,
          '}',nl]).
 
-extraInfo(dl,'| DL').
-extraInfo(lite,'| DL').
-extraInfo(dl/position(0),'| DL').
-extraInfo(lite/position(0),'').
-extraInfo(dl/position(1),'| DL | FirstOfOne ').
-extraInfo(lite/position(1),'| FirstOfOne').
-extraInfo(dl/position(2),'| DL | SecondOfTwo ').
-extraInfo(lite/position(2),'| SecondOfTwo').
-extraInfo(dl/position(3),'| DL | FirstOfTwo ').
-extraInfo(lite/position(3),'| FirstOfTwo').
+extraInfo(SS,PP,OO,XX) :-
+  setof(D,[S,P,O]^(member(S,SS),member(P,PP),member(O,OO),tt(S,P,O,D)),DD),
+  dlPart(DD,DL),
+  positionPart(DD,Pos),
+  disjointWith(PP,SS,OO,DJ),
+  concat_atom([DL,Pos,DJ],XX).
+
+
+disjointWith([owl:disjointWith],SS,_OO,'| DisjointAction') :-
+    expg(GG,blank),
+    xsub(SS,GG),
+    !.
+
+disjointWith([owl:disjointWith],_SS,OO,'| DisjointAction') :-
+    expg(GG,blank),
+    xsub(OO,GG),
+    !.
+disjointWith(_,_,_,'').
+
+dlPart(D,'') :- member(lite,D),!.
+dlPart(D,'') :- member(lite/_,D),!.
+dlPart(_,'| DL').
+
+positionPart(D,'') :-
+  member(X,D),
+  \+ X = _/_,
+  !.
+positionPart(D,'') :-
+  setof(X,Y^member(Y/X,D),[_,_|_]),!.
+positionPart(D,DP) :-
+  setof(X,Y^member(Y/X,D),[P]),
+  pp(P,DP),!.
+positionPart(D,_) :-
+  throw(positionPart(D)).
+
+xsub([],_).
+xsub([H|T],[H|TT]) :-
+  !,
+  xsub(T,TT).
+xsub(L,[_|TT]) :-
+  xsub(L,TT).
+pp(property(0),'').
+pp(property(1),'| FirstOfOne').
+pp(property(2),'| SecondOfTwo').
+pp(property(3),'| FirstOfTwo').
 /*
 spo(S,P,O) :-
    gn(S,SN),wlist(['( /* subject */',SN,'<<(2*W))|',nl]),
@@ -420,7 +482,10 @@ spo(S,P,O) :-
    gn2(P,PN),
    gn2(O,ON),
    R is (SN<<(2*W))\/(PN<<W)\/ON,
-   write(R).
+   write(R),
+   !.
+spo(S,P,O) :-
+  throw(spo(S,P,O)).
 
 
 
@@ -446,13 +511,14 @@ dull(literal).
 dull(dlInteger).
 dull(liteInteger).
 
+/*
 switch(As,Bs,Cs,AA,BB,CC,DL) :-
    setof(A,[B,C,D]^(member(A,As),member(B,Bs),member(C,Cs),tt(A,B,C,D)),AA),
    setof(B,[A,C,D]^(member(A,As),member(B,Bs),member(C,Cs),tt(A,B,C,D)),BB),
    setof(C,[A,B,D]^(member(A,As),member(B,Bs),member(C,Cs),tt(A,B,C,D)),CC),
    (member(A,AA),member(B,BB),member(C,CC),tt(A,B,C,lite)->DL=lite;DL=dl),
    !.
-
+*/
   /*
 switch(As,Bs,Cs,AA,BB,CC,lite) :-
   ignore((As=[A],dull(A),AA=[A])),

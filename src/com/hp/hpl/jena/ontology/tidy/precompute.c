@@ -53,7 +53,8 @@ int tcmp(const void * a, const void * b) {
 	return *(int*)a - *(int*)b;
 }
 
-int printTriple(i) {
+int printTriple(int i) {
+  return 0;
 }
 
 int istriple(int i) {
@@ -245,7 +246,9 @@ void xform(int s, int p, int o) {
     for (j=0; j<prop->sz;j++)
      for (k=0; k<obj->sz; k++) 
       if ( !(oks[i]&&okp[j]&&oko[k]) ) {
-         if ( ( subj->syms[i]==orphan && orphanProp(prop->syms[j]) )
+         if ( ( subj->syms[i]==orphan 
+               && orphanProp(prop->syms[j])
+               && obj->syms[i]!=orphan )
             || istriple(SPO(subj->syms[i],
                            prop->syms[j],
                            obj->syms[k])) ) {
