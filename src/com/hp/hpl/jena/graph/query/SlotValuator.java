@@ -1,0 +1,73 @@
+/*
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP
+  [See end of file]
+  $Id: SlotValuator.java,v 1.1 2004-07-20 19:39:09 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.graph.query;
+
+/**
+ 	A SlotValuator evaluates to a specific slot in the index values
+ 	bindings.
+ 	@author hedgehog
+*/
+
+public class SlotValuator implements ObjectValuator
+	{
+    /**
+     	The index in the index values which this SlotValuator
+     	looks up.
+    */
+    private int index;
+	
+    /**
+     	Initialise this SlotValuator with the index to use for lookup.
+    */
+	public SlotValuator( int index )
+	    { this.index = index; }
+
+	/**
+	 	Answer the value of the <code>index</code>th element of the
+	 	index values bindings.
+	*/
+	public Object eval( IndexValues iv )
+	    { return iv.get( index ); }
+	
+	/**
+	 	Answer the primitive boolean value of the <code>index</code>th
+	 	element of the index value bindings, which must be a 
+	 	<code>Boolean</code> value.
+	*/
+	public boolean evalBool( IndexValues iv )
+	    { return ((Boolean) eval( iv )).booleanValue(); }        
+	}
+
+/*
+	(c) Copyright 2004, Hewlett-Packard Development Company, LP
+	All rights reserved.
+	
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions
+	are met:
+	
+	1. Redistributions of source code must retain the above copyright
+	   notice, this list of conditions and the following disclaimer.
+	
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+	
+	3. The name of the author may not be used to endorse or promote products
+	   derived from this software without specific prior written permission.
+	
+	THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+	IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+	IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+	INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+	THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/

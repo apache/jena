@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.9 2004-03-16 13:26:44 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.10 2004-07-20 19:39:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -19,11 +19,6 @@ import java.util.*;
  */
 public class ExampleCreate
     {
-    interface ObjectValuator extends Valuator
-        {
-        public Object eval( IndexValues iv );    
-        }
-        
     public static abstract class DyadicValuator 
         extends BaseExampleExpression.BaseExampleValuator
         implements ObjectValuator
@@ -36,34 +31,6 @@ public class ExampleCreate
             { return Boolean.valueOf( evalBool( iv ) ); }
         }
     
-    public static class FixedValuator implements ObjectValuator
-        {
-        private Object value;
-        
-        FixedValuator( Object value )
-            { this.value = value; }
-            
-        public boolean evalBool( IndexValues iv )
-            { return ((Boolean) eval( iv )).booleanValue(); }
-                
-        public Object eval( IndexValues iv )
-            { return value; }
-        }
-        
-    public static class SlotValuator implements ObjectValuator
-        {
-        private int index;
-        
-        SlotValuator( int index )
-            { this.index = index; }
-            
-        public boolean evalBool( IndexValues iv )
-            { return ((Boolean) eval( iv )).booleanValue(); }
-                
-        public Object eval( IndexValues iv )
-            { return iv.get( index ); }
-        }
-        
     public static abstract class Dyadic extends BaseExampleExpression
         {
         protected BaseExampleExpression L;
