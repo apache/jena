@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.7 2004-09-20 14:42:19 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.8 2004-09-21 07:28:53 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -74,7 +74,13 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         else
             {
             final Iterator it = forwardMap.entrySet().iterator();   
-            return new FragmentTripleIterator( t, it );
+            return new FragmentTripleIterator( t, it )
+                {
+                public void fill( GraphAdd ga, Node n, Object fragmentsObject )
+                    { 
+                    ((Fragments) fragmentsObject).includeInto( ga );    
+                    }
+                };
             }
         }
     
@@ -160,6 +166,10 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
 
     public boolean hasFragments( Node tag )
         { return getFragments( tag ) != null; }
+
+       
+    
+    
     }
 
 /*

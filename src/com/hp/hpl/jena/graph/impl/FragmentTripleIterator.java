@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.4 2004-09-15 14:03:35 chris-dollin Exp $
+  $Id: FragmentTripleIterator.java,v 1.5 2004-09-21 07:28:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -14,7 +14,7 @@ import java.util.*;
 /**
      Iterator which delivers all the triples from a Fragment's map.
 */
-public final class FragmentTripleIterator extends NiceIterator
+public abstract class FragmentTripleIterator extends NiceIterator
     {
     private final GraphAddList pending;
     private final Iterator it;
@@ -59,13 +59,7 @@ public final class FragmentTripleIterator extends NiceIterator
         Add all the [implied, matching] triples from the Object into the GraphAdd
         entity (which will be our list).
     */
-    private static void fill( GraphAdd ga, Node n, Object tripleOrFragments )
-        {
-        if (tripleOrFragments instanceof Triple)
-            SimpleReifier.graphAddQuad( ga, n, (Triple) tripleOrFragments ); 
-        else
-            ((Fragments) tripleOrFragments).includeInto( ga );    
-        }
+    protected abstract void fill( GraphAdd ga, Node n, Object fragmentsObject );
         
     /**
         Refill the pending list. Keep trying until either there are some elements
