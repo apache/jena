@@ -52,11 +52,13 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2003-04-16 15:33:56 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2003-04-17 14:43:41 $'
  */
 
-public class ModelCom extends EnhGraph
-    implements Model, ModelI {
+public class ModelCom 
+extends EnhGraph
+implements Model, ModelI, PrefixMapping 
+{
 
       private RDFReaderF readerFactory = new RDFReaderFImpl();
       private RDFWriterF writerFactory = new RDFWriterFImpl();
@@ -225,43 +227,7 @@ public class ModelCom extends EnhGraph
         return primeNamespace( writerFactory.getWriter(lang) );
     }
     
-    /**
-        Prime a writer by adding to its namespace prefixes those remembered
-        by this model.
-    <p>    
-        The model's namespace is a mapping from prefixes to sets of URIs.
-        we install in the writer the mapping from each prefix to a random one
-        of those URI's - random in the sense we pick the first one that the set
-        iterator gives us.
-    <p>
-        Someone, perhaps us, perhaps the writer, should consider what to do
-        if several prefixes map to the same URI, or one URI is a prefix of
-        another. For the moment that's not an issue.
-    <p>    
-        TODO explicate and resolve the namespace prefix compatability issue.
-        
-        @param the writer to prime
-        @return that writer after adding this's namespace entries
-    */
-    private RDFWriter primeNamespace( RDFWriter w )
-        {
-        Map m = getNamespaces( this );
-        // System.err.println( "| primeNamespace: " + m );
-        Iterator it  = m.entrySet().iterator();
-        while (it.hasNext())
-            {
-            Map.Entry e = (Map.Entry) it.next();
-            String key = (String) e.getKey();
-            String value = (String) ((Set) e.getValue()).iterator().next();
-            // System.err.println( "| prime: " + key + " => " + value );
-            if (key.equals("daml"))
-                {} // TODO sort out the namespace prefix issue
-            else 
-                w.setNsPrefix( key, value );
-            }
-        return w;
-        }
-        
+
     public String setWriterClassName(String lang, String className) {
         return writerFactory.setWriterClassName(lang, className);
     }
@@ -851,7 +817,6 @@ public class ModelCom extends EnhGraph
         }
      
     public NsIterator listNameSpaces() throws RDFException {
-	    HashSet rSet = new HashSet();
         HashSet nameSpaces = new HashSet();
         updateNamespace( nameSpaces, listPredicates() );
         updateNamespace( nameSpaces, listTypes() );
@@ -859,46 +824,62 @@ public class ModelCom extends EnhGraph
     }
     
     /**
-        Service method to get the namespaces from any EnhGraph hiding
-        as a model.
+        Prime a writer by adding to its namespace prefixes those remembered
+        by this model.
         
-        @param a Model that must really be an EnhGraph
-        @return the namespace map of the Model
-        @exception addNamespacesOnlyWorksOnEnhGraphs
+        @param the writer to prime
+        @return that writer after adding this's namespace entries
     */
-    public static Map getNamespaces( Model m )
-        { return asEnhGraph( m, "getNamespaces" ).getNamespaces(); }
-        
-    /**
-        Service method to update the namespaces of any EnhGraph hiding
-        as a model.
-        
-        @param a Model that must really be an EnhGraph
-        @param ns the namespace map to add to the Model
-        @exception addNamespacesOnlyWorksOnEnhGraphs         
-    */
-    public static void addNamespaces( Model m, Map ns )
-        { asEnhGraph( m, "addNamespaces" ).addNamespaces(  ns ); }
-    
-    /**
-        @param m a Model to be checked for being an EnhGraph
-        @param reason a reason to display if it's not an EnhGraph
-        @exception addNamespacesOnlyWorksOnEnhGraphs  
-    */
-    private static EnhGraph asEnhGraph( Model m, String reason )
-        {        
-        if (m instanceof EnhGraph)  
-            return (EnhGraph) m;
-        else
-            throw new addNamespacesOnlyWorksOnEnhGraphs( reason + " " + m );
+    private RDFWriter primeNamespace( RDFWriter w )
+        {
+        Map m = pm.getNsPrefixMap();
+        // System.err.println( "| primeNamespace: " + m );
+        Iterator it  = m.entrySet().iterator();
+        while (it.hasNext())
+            {
+            Map.Entry e = (Map.Entry) it.next();
+            String key = (String) e.getKey();
+            String value = (String) e.getValue();
+            String already = w.getPrefixFor( value );
+            // System.err.println( "| key=" + key + ", value=" + value + ", already=" + already );
+            if (already == null) w.setNsPrefix( key, value );
+            }
+        return w;
         }
             
+    private PrefixMapping pm = new PrefixMappingImpl();
+    
+    public void setNsPrefix( String prefix, String uri )
+        { pm.setNsPrefix( prefix, uri ); }
+        
+    public String getNsPrefixURI( String prefix ) 
+        { return pm.getNsPrefixURI( prefix ); }
+        
+    public Map getNsPrefixMap()
+        { return pm.getNsPrefixMap(); }
+        
     /**
-        Exception to be thrown when a Model is not an EnhGraph, but an
-        EnhGraph is required.
+        Service method to update the namespaces of  a Model given the
+        mappings from prefix names to sets of URIs.
+        
+        If the prefix maps to multiple URIs, then we discard it completely.
+        
+        @param the Model who's namespace is to be updated
+        @param ns the namespace map to add to the Model      
     */
-    static class addNamespacesOnlyWorksOnEnhGraphs extends JenaException
-        { addNamespacesOnlyWorksOnEnhGraphs( String s ) { super( s ); } }
+    public static void addNamespaces( Model m, Map ns )
+        { 
+        PrefixMapping pm = ((ModelCom) m).pm;
+        Iterator it  = ns.entrySet().iterator();
+        while (it.hasNext())
+            {
+            Map.Entry e = (Map.Entry) it.next();
+            String key = (String) e.getKey();
+            Set  values = (Set) e.getValue();
+            if (values.size() == 1)
+                pm.setNsPrefix( key, (String) values.iterator().next() );
+            }            
+        }
     
     public StmtIterator listStatements() throws RDFException {
         return IteratorFactory.asStmtIterator(graph.find(null,null,null), this);

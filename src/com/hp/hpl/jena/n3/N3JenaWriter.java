@@ -35,7 +35,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.9 2003-04-08 22:12:01 ian_dickinson Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.10 2003-04-17 14:43:37 chris-dollin Exp $
  */
 
 
@@ -105,6 +105,9 @@ public class N3JenaWriter implements RDFWriter
 		}
 		prefixMap.put(prefix, ns) ;
 	}
+
+    final public String getPrefixFor( String uri )
+        { return null; }
 
 	public Object setProperty(String propName, Object propValue) throws RDFException
 	{

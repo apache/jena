@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.14 2003-04-15 09:55:28 chris-dollin Exp $
+  $Id: Model.java,v 1.15 2003-04-17 14:43:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,9 +50,11 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.14 $Date: 2003/04/14 15:10:50 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $Date: 2003/04/15 09:55:28 $'
  */
-public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
+public interface Model 
+    extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping
+{
 
 	/** Every model is based on some Graph */
 	Graph getGraph();
@@ -777,5 +779,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.14 2003-04-15 09:55:28 chris-dollin Exp $
+ * $Id: Model.java,v 1.15 2003-04-17 14:43:38 chris-dollin Exp $
  */

@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.7 2003-04-15 21:33:32 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.8 2003-04-17 14:43:43 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -58,7 +58,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-04-15 21:33:32 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-04-17 14:43:43 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -475,6 +475,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			nameSpaces.set11(ns, prefix);
 		}
 	}
+    
+    final public String getPrefixFor( String uri )
+        {
+        Set s = nameSpaces.backward( uri );
+        if (s != null && s.size() == 1) return (String) s.iterator().next();
+        return null; 
+        }
 
 	String relativize(String uri) {
 		try {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNamespace.java,v 1.1 2003-04-16 15:33:58 chris-dollin Exp $
+  $Id: TestNamespace.java,v 1.2 2003-04-17 14:43:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -34,9 +34,9 @@ public class TestNamespace extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         m.read( "file:testing/wg/rdf-ns-prefix-confusion/test0014.rdf" );
-        Map ns = ModelCom.getNamespaces( m );
-        assertEquals( "namespace eg", set( "http://example.org/" ), ns.get( "eg" ) );
-        assertEquals( "namespace rdf", set( "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ), ns.get( "rdf" ) );
+        Map ns = m.getNsPrefixMap(); 
+        assertEquals( "namespace eg", "http://example.org/", ns.get( "eg" ) );
+        assertEquals( "namespace rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#", ns.get( "rdf" ) );
         assertEquals( "not present", null, ns.get( "spoo" ) );
         }
         
@@ -60,9 +60,9 @@ public class TestNamespace extends ModelTestBase
     /* */
         Model m2 = ModelFactory.createDefaultModel();
         m2.read( "file:" + f.getAbsolutePath() );
-        Map ns = ModelCom.getNamespaces( m2 );
-        assertEquals( "namespace spoo", set("http://spoo.net/"), ns.get( "spoo" ) );
-        assertEquals( "namespace fred", set("ftp://net.fred.org/"), ns.get( "fred" ) );
+        Map ns = m2.getNsPrefixMap();
+        assertEquals( "namespace spoo", "http://spoo.net/", ns.get( "spoo" ) );
+        assertEquals( "namespace fred", "ftp://net.fred.org/", ns.get( "fred" ) );
     /* */
         f.deleteOnExit();
         }
@@ -96,6 +96,44 @@ public class TestNamespace extends ModelTestBase
         s.add( element );
         return s;
         }
+        
+    /**
+        test that a PrefixMapping maps names to URIs. The names and URIs are
+        all fully distinct - overlapping names/uris are dealt with in other tests.
+    */
+    public void testPrefixMappingMapping()
+        {
+        String crisp = "http://crisp.nosuch.net/";
+        String toast = "ftp://ftp.nowhere.not/";
+        assertDiffer( "crisp and toast must differ", crisp, toast );
+    /* */
+        PrefixMapping ns = new PrefixMappingImpl();
+        assertEquals( "crisp should be unset", null, ns.getNsPrefixURI( "crisp" ) );
+        assertEquals( "toast should be unset", null, ns.getNsPrefixURI( "toast" ) );
+        assertEquals( "butter should be unset", null, ns.getNsPrefixURI( "butter" ) );
+    /* */
+        ns.setNsPrefix( "crisp", crisp );
+        assertEquals( "crisp should be set", crisp, ns.getNsPrefixURI( "crisp" ) );
+        assertEquals( "toast should still be unset", null, ns.getNsPrefixURI( "toast" ) );
+        assertEquals( "butter should still be unset", null, ns.getNsPrefixURI( "butter" ) );
+    /* */
+        ns.setNsPrefix( "toast", toast );
+        assertEquals( "crisp should be set", crisp, ns.getNsPrefixURI( "crisp" ) );
+        assertEquals( "toast should be set", toast, ns.getNsPrefixURI( "toast" ) );
+        assertEquals( "butter should still be unset", null, ns.getNsPrefixURI( "butter" ) );
+        }
+        
+    public void testPrefixMappingMap()
+        {
+        PrefixMapping ns = new PrefixMappingImpl();
+        ns.setNsPrefix( "crisp", "crisp.nosuch.net" );
+        ns.setNsPrefix( "rope", "scheme:rope/string#" );
+        Map map = ns.getNsPrefixMap();
+        assertEquals( "map should have two elements", 2, map.size() );
+        assertEquals( "", "crisp.nosuch.net", map.get( "crisp" ) );
+        assertEquals( "", "scheme:rope/string#", map.get( "rope" ) );
+        }
+        
     }
 
 

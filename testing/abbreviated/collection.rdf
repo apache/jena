@@ -1,10 +1,10 @@
-<!-- $Id: collection.rdf,v 1.1.1.1 2002-12-19 19:22:21 bwm Exp $ -->
+<!-- $Id: collection.rdf,v 1.2 2003-04-17 14:43:44 chris-dollin Exp $ -->
 <!-- MUST contain "rdf:parseType=?Collection? -->
 <!-- MUST contain xmlns:owl=?http://www.w3.org/2002/07/owl#? -->
 
 <rdf:RDF
   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:daml="http://www.w3.org/2002/07/owl#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 >
 
