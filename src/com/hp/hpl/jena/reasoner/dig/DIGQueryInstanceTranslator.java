@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryInstanceTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-21 19:24:26 $
+ * Last modified on   $Date: 2004-04-23 22:36:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryInstanceTranslator.java,v 1.2 2004-04-21 19:24:26 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryInstanceTranslator.java,v 1.3 2004-04-23 22:36:28 ian_dickinson Exp $)
  */
 public class DIGQueryInstanceTranslator 
     extends DIGQueryTranslator
@@ -62,7 +62,7 @@ public class DIGQueryInstanceTranslator
     //////////////////////////////////
 
     /**
-     * <p>Construct a translator for the DIG query 'subsumes'.</p>
+     * <p>Construct a translator for the DIG query 'instance'.</p>
      * @param predicate The predicate URI to trigger on
      */
     public DIGQueryInstanceTranslator( String predicate ) {
@@ -114,15 +114,11 @@ public class DIGQueryInstanceTranslator
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        return isTrue( response ) ? (ExtendedIterator) new SingletonIterator( query.asTriple() ) : NullIterator.instance;
+        return isFalse( response ) ? NullIterator.instance : (ExtendedIterator) new SingletonIterator( query.asTriple() );
     }
     
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
-        return subject.isConcrete();
-    }
-    
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
-        return object.isConcrete() && da.isConcept( object );
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
+        return da.isConcept( object, premises );
     }
 
     // Internal implementation methods

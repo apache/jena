@@ -7,10 +7,10 @@
  * Web site           @website@
  * Created            20-Apr-2004
  * Filename           $RCSfile: WebOntTests.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-21 19:46:25 $
+ * Last modified on   $Date: 2004-04-23 22:38:07 $
  *               by   $Author: ian_dickinson $
  *
  * @copyright@
@@ -32,10 +32,13 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.dig.DIGReasoner;
 import com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.io.*;
 import java.util.*;
+
+import org.apache.commons.logging.LogFactory;
 
 
 
@@ -69,7 +72,7 @@ public class WebOntTests
     public static final String[] TEST_DIRS = {"AllDifferent", "AllDistinct", "AnnotationProperty", "DatatypeProperty",
             "FunctionalProperty", "I3.2", "I3.4", "I4.1", "I4.5", "I4.6", "I5.1", "I5.2", "I5.21", "I5.24", "I5.26",
             "I5.3", "I5.5", "I5.8", "InverseFunctionalProperty", "Nothing", "Restriction", "SymmetricProperty",
-            "Thing", "TransitiveProperty", "allValuesFrom", "amp-in-url", "cardinality", "complementOf", "datatypes",
+            "Thing", "TransitiveProperty", "Class", "allValuesFrom", "amp-in-url", "cardinality", "complementOf", "datatypes",
             "differentFrom", "disjointWith", "distinctMembers", "equivalentClass", "equivalentProperty", "imports",
             "intersectionOf", "inverseOf", "localtests", "maxCardinality", "miscellaneous", "oneOf", "oneOfDistinct",
             "sameAs", "sameClassAs", "sameIndividualAs", "samePropertyAs", "someValuesFrom", "statement-entailment",
@@ -376,13 +379,14 @@ public class WebOntTests
                 Statement rootQuery = j.nextStatement();
                 
                 // add the resulting triples to the graph
-                for (Iterator k = inf.find( rootQuery.getSubject().asNode(),
-                                            rootQuery.getPredicate().asNode(),
-                                            rootQuery.getObject().asNode(),
-                                            conclusions.getGraph() );
-                     i.hasNext(); )
-                {
-                    result.getGraph().add( (Triple) k.next() );
+                ExtendedIterator k =inf.find( rootQuery.getSubject().asNode(),
+                                              rootQuery.getPredicate().asNode(),
+                                              rootQuery.getObject().asNode(),
+                                              conclusions.getGraph() ); 
+                while (k.hasNext()) {
+                    Triple t = (Triple) k.next();
+                    LogFactory.getLog( getClass() ).debug( "testEntailment got triple " + t );
+                    result.getGraph().add( t );
                 }
             }
         }
@@ -506,7 +510,7 @@ public class WebOntTests
         for (ResIterator i = m.listSubjects(); i.hasNext(); ) {
             Resource subj = i.nextResource();
             
-            if (!m.contains( subj, null)) {
+            if (!m.contains( null, null, subj )) {
                 // subj is not the object of any other statement
                 l.add( subj );
             }

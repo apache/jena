@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryRoleAncestorsTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-21 19:24:11 $
+ * Last modified on   $Date: 2004-04-23 22:36:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRoleAncestorsTranslator.java,v 1.3 2004-04-21 19:24:11 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryRoleAncestorsTranslator.java,v 1.4 2004-04-23 22:36:28 ian_dickinson Exp $
  */
 public class DIGQueryRoleAncestorsTranslator 
     extends DIGQueryTranslator
@@ -66,7 +66,7 @@ public class DIGQueryRoleAncestorsTranslator
     //////////////////////////////////
 
     /**
-     * <p>Construct a translator for the DIG query 'parents'.</p>
+     * <p>Construct a translator for the DIG query 'rparents'.</p>
      * @param predicate The predicate URI to trigger on
      * @param ancestors If true, we are searching for parents of the class; if false, the descendants
      */
@@ -114,12 +114,12 @@ public class DIGQueryRoleAncestorsTranslator
         return null;
     }
 
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
-        return !m_ancestors || subject.isConcrete();
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
+        return !m_ancestors || da.isRole( subject, premises );
     }
     
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
-        return m_ancestors || object.isConcrete();
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
+        return m_ancestors || da.isRole( object, premises );
     }
 
 

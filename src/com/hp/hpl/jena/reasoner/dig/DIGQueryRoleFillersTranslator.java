@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryRoleFillersTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-21 19:24:26 $
+ * Last modified on   $Date: 2004-04-23 22:36:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRoleFillersTranslator.java,v 1.2 2004-04-21 19:24:26 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryRoleFillersTranslator.java,v 1.3 2004-04-23 22:36:28 ian_dickinson Exp $
  */
 public class DIGQueryRoleFillersTranslator 
     extends DIGQueryTranslator
@@ -105,11 +105,11 @@ public class DIGQueryRoleFillersTranslator
         return null;
     }
 
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
         return subject.isConcrete() && da.isIndividual( subject );
     }
 
-    public boolean checkPredicate( com.hp.hpl.jena.graph.Node predicate, DIGAdapter da ) {
+    public boolean checkPredicate( com.hp.hpl.jena.graph.Node predicate, DIGAdapter da, Model premises ) {
         // check that the predicate is not a datatype property
         if (predicate.isConcrete()) {
             Resource p = (Resource) da.m_sourceData.getRDFNode( predicate );

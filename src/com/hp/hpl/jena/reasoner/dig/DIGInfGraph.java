@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGInfGraph.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-21 19:24:26 $
+ * Last modified on   $Date: 2004-04-23 22:36:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -29,6 +29,8 @@ package com.hp.hpl.jena.reasoner.dig;
 ///////////////
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -40,7 +42,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGInfGraph.java,v 1.4 2004-04-21 19:24:26 ian_dickinson Exp $
+ * @version CVS $Id: DIGInfGraph.java,v 1.5 2004-04-23 22:36:28 ian_dickinson Exp $
  */
 public class DIGInfGraph
     extends BaseInfGraph
@@ -138,8 +140,10 @@ public class DIGInfGraph
      * object nodes refer.
      */
     public ExtendedIterator find( Node subject, Node property, Node object, Graph param ) {
-        
-        return null;
+        OntModel premises = ModelFactory.createOntologyModel( m_adapter.getSourceSpecification(), 
+                                                              ModelFactory.createModelForGraph( param ) );
+        prepare();
+        return m_adapter.find( new TriplePattern( subject, property, object ), premises );
     }
     
     /**

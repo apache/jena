@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQuerySubsumesTranslator.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-21 19:24:10 $
+ * Last modified on   $Date: 2004-04-23 22:36:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQuerySubsumesTranslator.java,v 1.4 2004-04-21 19:24:10 ian_dickinson Exp $
+ * @version CVS $Id: DIGQuerySubsumesTranslator.java,v 1.5 2004-04-23 22:36:28 ian_dickinson Exp $
  */
 public class DIGQuerySubsumesTranslator 
     extends DIGQueryTranslator
@@ -125,12 +125,12 @@ public class DIGQuerySubsumesTranslator
         return isTrue( response ) ? (ExtendedIterator) new SingletonIterator( query.asTriple() ) : NullIterator.instance;
     }
     
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
-        return subject.isConcrete();
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
+        return da.isConcept( subject, premises );
     }
     
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
-        return object.isConcrete();
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
+        return da.isConcept( object, premises );
     }
 
     // Internal implementation methods

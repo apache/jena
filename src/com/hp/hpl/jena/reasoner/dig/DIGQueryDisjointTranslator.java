@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Dec-2003
  * Filename           $RCSfile: DIGQueryDisjointTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-21 19:24:29 $
+ * Last modified on   $Date: 2004-04-23 22:36:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryDisjointTranslator.java,v 1.3 2004-04-21 19:24:29 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryDisjointTranslator.java,v 1.4 2004-04-23 22:36:28 ian_dickinson Exp $
  */
 public class DIGQueryDisjointTranslator 
     extends DIGQueryTranslator
@@ -104,12 +104,12 @@ public class DIGQueryDisjointTranslator
         return null;
     }
 
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
-        return subject.isConcrete();
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
+        return da.isConcept( subject, premises );
     }
     
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
-        return object.isConcrete();
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
+        return da.isConcept( object, premises );
     }
 
 
