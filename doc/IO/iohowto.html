@@ -243,7 +243,7 @@ defined below.</p>
   <tr>
   <td>subjectColumn</td>
  <td>
- If the subject is shorter than this value, the first property may go onthe same 
+ If the subject is shorter than this value, the first property may go on the same 
  line.</td>
  <td align="center">
  indentColumn</td>
@@ -285,6 +285,20 @@ defined below.</p>
  <td>
  boolean &quot;true&quot; or &quot;false&quot;</td>
  </tr>
+  <tr BGCOLOR="white" CLASS="TableRowColor">
+  <td>useTripleQuotedStrings</td>
+  <td> Allow the use of &quot;&quot;&quot; to delimit long strings</td>
+  <td align="center" style="text-align: center"> true</td>
+ <td>
+ boolean &quot;true&quot; or &quot;false&quot;</td>
+ </tr>
+  <tr BGCOLOR="white" CLASS="TableRowColor">
+  <td>useDoubles</td>
+  <td> Allow the use doubles as 123.456</td>
+  <td align="center" style="text-align: center"> true</td>
+ <td>
+ boolean &quot;true&quot; or &quot;false&quot;</td>
+ </tr>
  </table>
 
 <p>Notes:</p>
@@ -300,13 +314,11 @@ N-Triples</a> language. They are not configurable.</p>
 <h3><a name="turtle">1.4 TURTLE</a></h3>
 
 <p>The N3 reader accepts any valid
-<a href="http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/">Turtle</a>.&nbsp; 
-The Turtle writer is the N3 writer configured with &quot;usePropertySymbols&quot; set to 
-false.&nbsp; Note that the N3 and Turtle writers produce internationalized 
+<a href="http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/">Turtle</a>. Note that the N3 and Turtle writers produce internationalized 
 qnames, with the character set from XML Namespaces (except for ':'), not 
-restricted to ASCII as is the definition of N3 and Turtle.</p>
-
-<h2><a name="encoding">2. Character Encoding in Java and XML</a></h2>
+restricted to ASCII as is the definition of N3 and Turtle.</p>The Turtle writer 
+  is the N3 writer configured with: usePropertySymbols=false, 
+  useTripleQuotedStrings=false, useDoubles=false.<h2><a name="encoding">2. Character Encoding in Java and XML</a></h2>
 <p>
 What when wrong with character encoding?
 </p>
