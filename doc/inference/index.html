@@ -988,7 +988,8 @@ that is not compatible with 13</i></pre>
   have a <code>gamingGraphics</code> component from the combination of the <code>nForce</code> 
   inferences we've already seen and the transitivity of <code>hasComponent</code>. 
   We can test this using:</p>
-<pre>    Resource whiteBox = infmodel.getResource("urn:x-hp:eg/whiteBoxZX");
+<pre>    Resource gamingComputer = infmodel.getResource("urn:x-hp:eg/GamingComputer");
+    Resource whiteBox = infmodel.getResource("urn:x-hp:eg/whiteBoxZX");
     if (infmodel.contains(whiteBox, RDF.type, gamingComputer)) {
         System.out.println("White box recognized as gaming computer");
     } else {
@@ -1793,7 +1794,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.18 2004-04-13 15:43:57 der Exp $</i>
+  Last modification: $Id: index.html,v 1.19 2004-11-17 11:25:48 der Exp $</i>
 </p>
 </body>
 </html>
