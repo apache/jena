@@ -15,7 +15,12 @@ class CURIref extends CGeneral {
 	 * @param eg
 	 */
 	public CURIref(Node n, EnhGraph eg) {
+		this(n,eg,Grammar.userID);
+	}
+	public CURIref(Node n, EnhGraph eg, int c) {
 		super(n, eg);
+		if ( getCategories() == -1 )
+			  setCategories(c);
 	}
 
 }

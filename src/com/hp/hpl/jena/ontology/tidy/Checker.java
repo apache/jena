@@ -4,6 +4,9 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * This class implements the OWL Syntax Checker from the OWL Test Cases WD.
@@ -40,14 +43,27 @@ import com.hp.hpl.jena.util.iterator.*;
  *
  */
 public class Checker extends EnhGraph {
+	// TODO personality extenstions
 	static private Personality personality =
 		new GraphPersonality().add(CNodeI.class, CNode.factory);
-	private Set checkedGraphs = new HashSet();
-	/**
-	 * A miscellaneous set of triples that could not be added
-	 * with {@link #add(Triple)}.
-	 */
-	private Graph problems;
+	private Graph hasBeenChecked;
+	private Vector monotoneProblems = new Vector();
+
+	private Vector nonMonotoneProblems = null;
+
+	public Iterator getProblems() {
+		snapCheck();
+		return new AddIterator(
+			monotoneProblems.iterator(),
+			nonMonotoneProblems.iterator());
+	}
+
+	private void snapCheck() {
+		if (nonMonotoneProblems == null) {
+			nonMonotoneProblems = new Vector();
+			// TODO points checks ...
+		}
+	}
 
 	private int errorCnt = 0;
 
@@ -56,25 +72,27 @@ public class Checker extends EnhGraph {
 	}
 
 	void add(Graph g) {
-		if (!checkedGraphs.contains(g)) {
-			// Add every triple
-			ClosableIterator it = null;
-			try {
-				it = g.find(null, null, null);
-				while (it.hasNext()) {
-					add((Triple) it.next());
-				}
-			} finally {
-				if (it != null)
-					it.close();
+		// Add every triple
+		ClosableIterator it = null;
+		try {
+			it = g.find(null, null, null);
+			while (it.hasNext()) {
+				add((Triple) it.next());
 			}
-			checkedGraphs.add(g);
+		} finally {
+			if (it != null)
+				it.close();
 		}
 	}
-	final private int Shift = Grammar.CategoryShift;
-	final private int Mask = (1 << Shift) - 1;
-    final private int AShift = Grammar.ActionShift;
-    final private int AMask = (1<<AShift)-1;
+	private boolean wantLite = true;
+	
+	// TODO Find minimal closure
+	void addProblem(int lvl, Triple t) {
+		
+	}
+	void addProblem(SyntaxProblem sp){
+		monotoneProblems.add(sp);
+	}
 	/**
 	 * 
 	 * @param t A triple from a graph being checked.
@@ -83,44 +101,81 @@ public class Checker extends EnhGraph {
 		CNodeI s = (CNodeI) getNodeAs(t.getSubject(), CNodeI.class);
 		CNodeI p = (CNodeI) getNodeAs(t.getPredicate(), CNodeI.class);
 		CNodeI o = (CNodeI) getNodeAs(t.getObject(), CNodeI.class);
-		final int key =
-			(s.getCategories() << (2 * Shift))
-				| (p.getCategories() << Shift)
-				| o.getCategories();
-		int nkey = 1; //Grammar.addTriple(key);
-		if (nkey == Grammar.Failure) {
-			problems.add(t);
-			errorCnt++;
+		int s0 =
+		s.getCategories();
+		int p0 =
+		p.getCategories();
+		int o0 =
+		o.getCategories();
+		final long key =
+			SubCategorize.refineTriple(s0,p0,o0);
+		if (key == Grammar.Failure) {
+			addProblem(Levels.DL,t);
 		} else {
-			int m = nkey & Mask;
-			o.setCategories(m);
-			nkey >>= Shift;
-			m = nkey & Mask;
-			p.setCategories(m);
-			nkey >>= Shift;
-			m = nkey & Mask;
-			s.setCategories(m);
-            nkey >>= Shift;
-            int action = nkey & AMask;
-            nkey >>= AShift;
-            switch ( action ) {
-                // nothing
-                // restriction-part-1
-                // restriction-part-2
-                // blank node with 1 part
-                // blank node with 2 part-part 1
-                // blank node with 2 part-part 2
-            }
+			if ( wantLite && SubCategorize.dl(key))
+			      addProblem(Levels.Lite,t);
+			o.setCategories(SubCategorize.object(key,o0));
+			p.setCategories(SubCategorize.prop(key,p0));
+			s.setCategories(SubCategorize.subject(key,s0));
+			
+			if ( SubCategorize.tripleForObject(key))
+			   o.asBlank().addObjectTriple(t);
+			
+			switch (SubCategorize.action(key)   ) {
+				case SubCategorize.FirstOfOne:
+				    s.asOne().first(t);
+				    break;
+				    case SubCategorize.FirstOfTwo:
+				    s.asTwo().first(t);
+				    break;
+				    case SubCategorize.SecondOfTwo:
+				    s.asTwo().second(t);
+				    break;
+			}
 		}
-        // not if pred is owl:equivalentClass or owl:disjointClass
-        // also ontologyproperty crap?
-		o.incrObjectCount(1);
-        switch ( key & (Mask | (Mask << Shift)) ) {
-            case (Grammar.rdftype << Shift) | Grammar.rdfList:
-            case (Grammar.rdftype << Shift) | Grammar.owlDataRange:
-                  s.incrObjectCount(0);
-                  break;
+	}
+	// TODO getSubLanguage()
+	public String getSubLanguage() {
+		return null;
+	}
+
+	static public void main(String argv[]) {
+		OntDocumentManager dm = new OntDocumentManager();
+
+		dm.setProcessImports(true);
+
+		OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, null, dm);
+
+		m.read(argv[0]);
+
+		// m.getDocumentManager();
+		GraphFactory gf = dm.getDefaultGraphFactory();
+
+		Checker chk = new Checker(gf.getGraph());
+
+		chk.add(m.getGraph());
+
+		String subLang = chk.getSubLanguage();
+
+		System.out.println(subLang);
+
+		if (argv.length > 1) {
+			if (argv[1].equals(subLang))
+				return;
+			if (argv[1].equalsIgnoreCase("Full") || subLang.equals("Lite")) {
+				System.err.println(
+					"All constructs were in OWL " + subLang + ".");
+				return;
+			}
 		}
+
+		if (subLang.equals("Full")) {
+			Iterator it = chk.getProblems();
+			while (it.hasNext()) {
+				SyntaxProblem sp = (SyntaxProblem) it.next();
+			}
+		}
+
 	}
 
 }

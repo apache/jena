@@ -1,6 +1,6 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.13 2003-04-15 21:11:09 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.14 2003-04-16 14:53:25 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.Arrays;
@@ -432,7 +432,8 @@ if ( i != CategorySet.find(new int[]{i},true) )
       System.err.println("initialization problem");
 }
 };
-static final private int SPOA(int s, int p, int o, int a) {
+static final int MAX_SINGLETON_SET = 146;
+static final int SPOA(int s, int p, int o, int a) {
  return (((((s << W) | p) << W) | o) << ActionShift ) | a;
 }
 static final int triples[] = new int[]{

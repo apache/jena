@@ -7,7 +7,7 @@ import com.hp.hpl.jena.graph.Node;
  * @author jjc
  *
  */
-class CBlank extends CGeneral {
+class CBlank extends OneTwoImpl implements Blank {
     
 	/**
 	 * Constructor for CBlank.
@@ -16,8 +16,9 @@ class CBlank extends CGeneral {
 	 */
 	public CBlank(Node n, EnhGraph eg) {
 		super(n, eg);
+		if ( getCategories() == -1 )
+		      setCategories(Grammar.blank);
 	}
-    public void incrObjectCount(int i){
-    }
+	
 
 }
