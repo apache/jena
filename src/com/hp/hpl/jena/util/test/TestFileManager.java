@@ -8,14 +8,16 @@ package com.hp.hpl.jena.util.test;
 
 import junit.framework.*;
 import java.io.* ;
-import com.hp.hpl.jena.util.file.* ;
+
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.LocationMapper;
 
 import org.apache.commons.logging.*;
 
 /** com.hp.hpl.jena.brql.util.test.TestFileManager
  * 
  * @author Andy Seaborne
- * @version $Id: TestFileManager.java,v 1.1 2004-08-31 08:26:09 andy_seaborne Exp $
+ * @version $Id: TestFileManager.java,v 1.2 2004-08-31 09:49:52 andy_seaborne Exp $
  */
 
 public class TestFileManager extends TestCase

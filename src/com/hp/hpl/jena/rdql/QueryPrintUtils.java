@@ -6,12 +6,19 @@
 package com.hp.hpl.jena.rdql;
 
 import java.io.* ;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdql.parser.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: QueryPrintUtils.java,v 1.5 2004-05-28 16:56:15 andy_seaborne Exp $
+ * @version  $Id: QueryPrintUtils.java,v 1.6 2004-08-31 09:49:52 andy_seaborne Exp $
  */
 
 public class QueryPrintUtils
@@ -20,6 +27,10 @@ public class QueryPrintUtils
     static final String indentPrefix = "  " ;
     public static boolean multiLineExpr = false ;
     public static boolean printName = true ;
+    static int bNodeCounter = 0 ;
+    static Map bNodeStrings = new HashMap() ; 
+    
+
 
     public static void print(PrintWriter pw, Expr expr)
     {
@@ -84,6 +95,152 @@ public class QueryPrintUtils
     {
         for ( int i = 0 ; i < level ; i++ )
           pw.print(indentPrefix);
+    }
+    // Formatting various items
+    
+    public static String stringForObject(Object obj)
+    {
+        if ( obj == null )
+            return "<<null>>" ;
+
+        if ( obj instanceof RDFNode )
+            return stringForRDFNode((RDFNode)obj) ;
+        if ( obj instanceof Node )
+            return stringForNode((Node)obj) ;
+        return obj.toString() ;
+    }
+    
+    
+    public static String stringForRDFNode(RDFNode obj)
+    {
+        if ( obj == null )
+            return "<<null>>" ;
+        
+        if ( obj instanceof Literal )
+            return stringForLiteral((Literal)obj)  ;
+        
+        if ( obj instanceof Resource )
+            return stringForResource((Resource)obj) ;
+        
+        return obj.toString() ;
+    }
+    
+    public static String stringForLiteral(Literal literal)
+    {
+        return stringForLiteralLabel(literal.asNode().getLiteral()) ;
+    }
+        
+    public static String stringForLiteralLabel(LiteralLabel literal)
+    {
+        String datatype = literal.getDatatypeURI() ;
+        String lang = literal.language() ;
+        String s = literal.getLexicalForm() ;
+        
+        if ( datatype != null )
+        {
+            // Special form we know how to handle?
+            // Assume valid text
+            if ( datatype.equals(XSD.integer.getURI()) )
+            {
+                try {
+                    new java.math.BigInteger(s) ;
+                    return s ;
+                } catch (NumberFormatException nfe) {}
+                // No luck.  Continue.
+                // Continuing is always safe.
+            }
+            
+            if ( datatype.equals(XSD.xdouble.getURI()) )
+            {
+                // Must have an '.' or 'e' or 'E'
+                if ( s.indexOf('.') >= 0 || 
+                s.indexOf('e') >= 0 ||
+                s.indexOf('E') >= 0 )
+                {
+                    try {
+                        Double.parseDouble(s) ;
+                        return s ;
+                    } catch (NumberFormatException nfe) {}
+                    // No luck.  Continue.
+                }
+            }
+        }
+        
+        // Format the text - no escaping.
+        StringBuffer sbuff = new StringBuffer() ;
+        sbuff.append("\"") ;
+        sbuff.append(s) ;
+        sbuff.append("\"") ;
+        
+        // Format the language tag 
+        if ( lang != null && lang.length()>0)
+        {
+            sbuff.append("@") ;
+            sbuff.append(lang) ;
+        }
+        
+        return sbuff.toString() ;
+    }
+    
+    
+    public static String stringForResource(Resource r)
+    {
+        return stringForNode(r.getNode(), r.getModel()) ;
+//        if ( r.isAnon() )
+//        {
+//            AnonId a = r.getId() ;
+//            if ( ! bNodeStrings.containsKey(a) )
+//                bNodeStrings.put(a, "_:b"+(bNodeCounter++)) ;
+//            //return "anon:"+r.getId() ;
+//            return (String)bNodeStrings.get(a) ;
+//        }
+//        else
+//        {
+//            String u = r.getURI() ;
+//            String tmp = r.getModel().shortForm(u) ;
+//            if ( u.equals(tmp) )
+//                return "<"+u+">" ;
+//            return tmp ;
+//        }
+//        
+    }
+    
+    public static String stringForNode(Node n) { return stringForNode(n, null) ; }
+    
+    public static String stringForNode(Node n, PrefixMapping mapping)
+    {
+        if ( n == null )
+            return "<<null>>" ;
+        
+        if ( n.isBlank() )
+        {
+            AnonId a = n.getBlankNodeId() ;
+            if ( ! bNodeStrings.containsKey(a) )
+                bNodeStrings.put(a, "_:b"+(bNodeCounter++)) ;
+            //return "anon:"+r.getId() ;
+            return (String)bNodeStrings.get(a) ;
+        }
+        if ( n.isLiteral() )
+        {
+            LiteralLabel ll = n.getLiteral() ;
+            return stringForLiteralLabel(ll) ;
+        }
+        if ( n.isURI() )
+        {
+            String uri = n.getURI() ;
+            if ( mapping != null )
+            {
+                String tmp = mapping.shortForm(n.getURI()) ;
+                if ( tmp != null && !tmp.equals(uri) )
+                    return tmp ;
+            }
+            
+            return "<"+uri+">" ; 
+        }
+        if ( n.isVariable() )
+            return "?"+n.getName() ;
+
+        return n.toString() ;
     }
 
 }

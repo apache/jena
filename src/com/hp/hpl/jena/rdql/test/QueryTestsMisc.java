@@ -16,15 +16,12 @@ import com.hp.hpl.jena.rdql.*;
  *   Workign with associated triples
  *  
  * @author Andy Seaborne
- * @version $Id: QueryTestsMisc.java,v 1.3 2004-05-28 16:57:33 andy_seaborne Exp $
+ * @version $Id: QueryTestsMisc.java,v 1.4 2004-08-31 09:49:52 andy_seaborne Exp $
  */
 
 public class QueryTestsMisc extends TestSuite
 {
 	static final String testSetName = "RDQL - Query - Other" ;
-	
-    
-    
     public static String baseURI = "http://rdql/" ;
 
     public static TestSuite suite()

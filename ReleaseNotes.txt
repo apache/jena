@@ -115,6 +115,14 @@ Post Jena 2.1 change list
         OntProperty.class.  Previously this relied on the reasoner; the change was
         needed to support the DIG interface.
 
+   File Utilities
+      o ModelLoader retired by deprecation.
+        Use FileManager instead, specifically, FileManager.get() for the
+        global FileManager (or create your own).
+        Create new model with FileManager.get().loadModel
+        Read into an existing model with FileManager.get().readModel
+
+
 Jena 2.1 - Main changes from Jena 2.0
   Installation
       The names of some jars have changed be sure to update your classpath.

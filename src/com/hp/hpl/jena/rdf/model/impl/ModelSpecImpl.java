@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.39 2004-08-13 08:42:51 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.40 2004-08-31 09:49:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -288,13 +288,13 @@ public abstract class ModelSpecImpl implements ModelSpec
     public static Model readModel( Resource source )
         {
         String uri = source.getURI();
-        return FileUtils.loadModel( uri );
+        return FileManager.get().loadModel( uri );
         }
 
     protected Model loadFiles(Model m)
         {
         StmtIterator it = description.listStatements( root, JMS.loadWith, (RDFNode) null );
-        while (it.hasNext()) FileUtils.loadModel( m, it.nextStatement().getResource().getURI() );
+        while (it.hasNext()) FileManager.get().readModel( m, it.nextStatement().getResource().getURI() );
         return m;
         }
                 

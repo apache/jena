@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.11 2004-08-07 15:45:58 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.12 2004-08-31 09:49:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -169,7 +169,7 @@ public class InfModelSpec extends ModelSpecImpl
 			{
 			Statement s = schemas.nextStatement();
 			Resource sc = s.getResource();
-			f.bindSchema( FileUtils.loadModel( sc.getURI() ).getGraph() );
+			f.bindSchema( FileManager.get().loadModel( sc.getURI() ).getGraph() );
 			}
 		}
 

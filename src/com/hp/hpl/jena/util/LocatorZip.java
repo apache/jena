@@ -4,66 +4,61 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.util.test;
+package com.hp.hpl.jena.util;
 
-import junit.framework.*;
+import com.hp.hpl.jena.shared.JenaException;
+import java.io.* ;
+import java.util.zip.* ;
 import org.apache.commons.logging.*;
 
-import com.hp.hpl.jena.util.LocationMapper;
-
-/** com.hp.hpl.jena.brql.util.test.TestFileManager
- * 
+/** Location files in a zip file
+ *  
  * @author Andy Seaborne
- * @version $Id: TestLocationMapper.java,v 1.2 2004-08-31 09:49:52 andy_seaborne Exp $
+ * @version $Id: LocatorZip.java,v 1.1 2004-08-31 09:49:50 andy_seaborne Exp $
  */
+ 
 
-public class TestLocationMapper extends TestCase
+class LocatorZip implements Locator
 {
-    static Log log = LogFactory.getLog(TestLocationMapper.class) ;
-    static final String testingDir = TestFileManager.testingDir ;
-    static final String filename1 = "file:test" ; 
-    static final String notFilename = "zzzz" ;
-    static final String filename2 = "file:"+testingDir+"/location-mapping-test-file" ;
-    static final String mapping = "location-mapping-test.n3;"+
-                                  testingDir+"/location-mapping-test.n3" ;
-
+    static Log log = LogFactory.getLog(LocatorZip.class) ;
+    String zipFileName = null ; 
+    ZipFile zipFile = null ;
     
-    public TestLocationMapper( String name )
+    public LocatorZip(String zfn)
     {
-        super(name);
-    }
-    
-    public static TestSuite suite()
-    {
-        return new TestSuite( TestLocationMapper.class );
-    }
-
-    public void testLocationMapping()
-    {
-        LocationMapper locMap = new LocationMapper(mapping) ;
-        String alt = locMap.altMapping(filename1) ;
-        assertNotNull(alt) ;
-        assertEquals(alt, filename2) ;
-    }
-
-    public void testLocationMappingMiss()
-    {
-        LocationMapper locMap = new LocationMapper(mapping) ;
-        String alt = locMap.altMapping(notFilename) ;
-        assertNotNull(alt) ;
-        assertEquals(alt, notFilename) ;
-    }
-
-    public void testLocationMappingURLtoFile()
-    {
-        LocationMapper locMap = new LocationMapper(mapping) ;
-        String alt = locMap.altMapping("http://example.org/file") ;
-        assertNotNull(alt) ;
-        assertEquals(alt, "file:"+testingDir+"/location-mapping-test-file") ;
+        try {
+            zipFileName = zfn ;
+            zipFile = new ZipFile(zipFileName) ;
+        } catch  (IOException ex)
+        { 
+            throw new JenaException("Problems accessing "+zipFileName, ex) ;
+        }
     }
     
+    public InputStream open(String filenameOrURI)
+    {
+        ZipEntry entry = zipFile.getEntry(filenameOrURI) ;
+        if ( entry == null )
+        {
+            if ( FileManager.logLookupFailures && log.isDebugEnabled() )
+                log.debug("Not found in : "+zipFileName+" : "+filenameOrURI) ; 
+            return null ;
+            
+        }
+        try
+        {
+            InputStream in = zipFile.getInputStream(entry) ;
+            return in;
+        }
+        catch (IOException ex)
+        {
+            log.warn("IO Exception opening zip entry: " + filenameOrURI);
+            return null;
+        }
+    }
+    public String getName() { return "LocatorZip("+zipFileName+")" ; } 
+
 }
-
 /*
  * (c) Copyright 2004 Hewlett-Packard Development Company, LP
  * All rights reserved.

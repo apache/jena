@@ -7,9 +7,11 @@
 package jena;
 
 import junit.framework.* ;
+
 import java.io.* ;
 
 import com.hp.hpl.jena.util.* ;
+import com.hp.hpl.jena.util.file.* ;
 import com.hp.hpl.jena.rdql.* ;
 import com.hp.hpl.jena.rdql.test.* ;
 import com.hp.hpl.jena.rdf.model.* ;
@@ -47,7 +49,7 @@ import org.apache.commons.logging.LogFactory;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.19 2003-12-08 10:48:29 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.20 2004-08-31 09:49:49 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -125,7 +127,7 @@ public class rdfquery
                 }
                 else
                 {
-                    QueryTestScripts.doTests(argv[argi], (messageLevel>0), displayTime) ;
+                    doTests(argv[argi]) ;
                     System.exit(0) ;
                 }
 
@@ -213,33 +215,27 @@ public class rdfquery
                 continue ;
             }
 
-            if ( arg.equalsIgnoreCase("--noarp") )
-            {
-                ModelLoader.useARP = false ;
-                continue ;
-            }
-
             if ( arg.equalsIgnoreCase("--xml" ) )
             {
-                language = ModelLoader.langXML ;
+                language = FileUtils.langXML ;
                 continue ;
             }
 
             if ( arg.equalsIgnoreCase("--ntriple" ) )
             {
-                language = ModelLoader.langNTriple ;
+                language = FileUtils.langNTriple ;
                 continue ;
             }
 
             if ( arg.equalsIgnoreCase("--n3" ) )
             {
-                language = ModelLoader.langN3 ;
+                language = FileUtils.langN3 ;
                 continue ;
             }
 
             if ( arg.equalsIgnoreCase("--bdb" ) )
             {
-                language = ModelLoader.langBDB ;
+                language = FileUtils.langBDB ;
                 continue ;
             }
 
@@ -382,6 +378,24 @@ public class rdfquery
         junit.textui.TestRunner.run(ts) ;
     }
 
+    // Alternative invokation for command line use.
+    // Assumes it is in the tests directory
+    static public void doTests(String testsFilename)
+    {
+        TestSuite suite = new QueryTestScripts(testsFilename) ;
+        junit.textui.TestRunner.run(suite) ;
+        /*
+        // Fake the TestRunner : don't want all the dots.
+        TestResult r = new TestResult() ;
+        for ( Enumeration enum = suite.tests() ; enum.hasMoreElements() ; )
+        {
+            Test t = (Test)enum.nextElement() ;
+            t.run(r) ;
+        }
+        */
+    }
+
+
 
     // Execute one query, with stats etc., print results
     static public void query(String s, String dataURL, String language)
@@ -436,7 +450,7 @@ public class rdfquery
                     Model model = null ;
                     if ( vocabularyURI != null )
                     {
-                        vocabulary = ModelLoader.loadModel(vocabularyURI, null) ;
+                        vocabulary = FileManager.get().loadModel(vocabularyURI, null) ;
                         model = ModelFactory.createRDFSModel(m, vocabulary) ;
                     }
                     else

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: RuleMap.java,v 1.3 2004-06-18 10:14:54 der Exp $
+ * $Id: RuleMap.java,v 1.4 2004-08-31 09:49:49 andy_seaborne Exp $
  *****************************************************************/
 package jena;
 
@@ -16,8 +16,8 @@ import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
 
 import jena.cmdline.*;
@@ -41,7 +41,7 @@ import java.io.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2004-06-18 10:14:54 $
+ * @version $Revision: 1.4 $ on $Date: 2004-08-31 09:49:49 $
  */
 public class RuleMap {
     
@@ -167,7 +167,7 @@ public class RuleMap {
             // Load the input data
             Arg il = cl.getArg("il");
             String inLang = (il == null) ? null : il.getValue();
-            Model inModel = ModelLoader.loadModel((String)cl.items().get(1), inLang);
+            Model inModel = FileManager.get().loadModel((String)cl.items().get(1), inLang);
             
             // Determine the type of the output
             Arg ol = cl.getArg("ol");

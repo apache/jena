@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.50 $
+ * Revision           $Revision: 1.51 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-13 16:18:40 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-08-31 09:49:52 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.util.ModelLoader;
+import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -312,7 +312,7 @@ public class TestBugReports
         spec.setDocumentManager(dm);
 
         OntModel oldOntModel = ModelFactory.createOntologyModel(spec, null);
-        oldOntModel.read(BASE + "Import-normalizerBug.owl", ModelLoader.langXMLAbbrev);
+        oldOntModel.read(BASE + "Import-normalizerBug.owl", FileUtils.langXMLAbbrev);
         Graph oldSubGraph = (Graph) oldOntModel.getSubGraphs().iterator().next();
         final int oldTripleCount = getTripleCount(oldSubGraph);
         OntClass ontClass = oldOntModel.getOntClass(BASE + "normalizerBug.owl#SuperClass");
@@ -327,7 +327,7 @@ public class TestBugReports
         dm.clearCache();
         
         OntModel newOntModel = ModelFactory.createOntologyModel(spec, null);
-        newOntModel.read(BASE + "Import-normalizerBug.owl", ModelLoader.langXMLAbbrev);
+        newOntModel.read(BASE + "Import-normalizerBug.owl", FileUtils.langXMLAbbrev);
         Graph newSubGraph = (Graph) newOntModel.getSubGraphs().iterator().next();
         assertFalse(newOntModel == oldOntModel);  // OK!
         assertFalse(newSubGraph == oldSubGraph);  // FAILS!

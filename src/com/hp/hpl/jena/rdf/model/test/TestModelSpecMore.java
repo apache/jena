@@ -8,8 +8,7 @@ package com.hp.hpl.jena.rdf.model.test;
 import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.* ;
 
 import junit.framework.TestSuite;
 
@@ -28,7 +27,7 @@ public class TestModelSpecMore extends ModelTestBase
     public void testLoadWorks() throws Exception
         {
         String url = makeModel( "a bb c" );
-        Model wanted = FileUtils.loadModel( url );
+        Model wanted = FileManager.get().loadModel( url );
         Model spec = modelWithStatements( "_root rdf:type jms:PlainModelSpec; _root jms:maker jms:MemMaker; _root jms:loadWith " + url );
         ModelSpec ms = ModelFactory.createSpec( spec );
         Model m = ModelFactory.createModel( ms );
@@ -38,7 +37,8 @@ public class TestModelSpecMore extends ModelTestBase
     public void testLoadMultiWorks() throws Exception
 	    {
         String url1 = makeModel( "dogs may bark" ), url2 = makeModel( "pigs might fly" );
-	    Model wanted = FileUtils.loadModels( new String[] {url1, url2} );
+	    Model wanted = FileManager.get().loadModel(url1) ;
+        FileManager.get().readModel(wanted,url2) ;
 	    Model spec = modelWithStatements( "_root rdf:type jms:PlainModelSpec; _root jms:maker jms:MemMaker" );
 	    modelAdd( spec, "_root jms:loadWith " + url1 );
 	    modelAdd( spec, "_root jms:loadWith " + url2 );

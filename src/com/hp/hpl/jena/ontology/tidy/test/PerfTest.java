@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PerfTest.java,v 1.3 2004-03-16 20:23:05 jeremy_carroll Exp $
+  $Id: PerfTest.java,v 1.4 2004-08-31 09:49:51 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 import org.xml.sax.InputSource;
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.ontology.tidy.*;
 import org.apache.xerces.parsers.*;
 import com.hp.hpl.jena.rdf.arp.*;
 import java.net.URL;
-import java.io.*;
+
 /**
  * Computes the cost of OWL Syntax checking
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>

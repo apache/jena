@@ -5,11 +5,7 @@
 
 package com.hp.hpl.jena.util;
 
-import java.io.* ;
-import java.net.* ;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
@@ -21,42 +17,32 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.20 2004-06-18 14:18:46 chris-dollin Exp $
+ * @version $Id: ModelLoader.java,v 1.21 2004-08-31 09:49:50 andy_seaborne Exp $
  */
 
 public class ModelLoader
 {
-    static Log logger = LogFactory.getLog(ModelLoader.class) ;
-
-    public static final String langXML         = FileUtils.langXML ;
-    public static final String langXMLAbbrev   = FileUtils.langXMLAbbrev ;
-    public static final String langNTriple     = FileUtils.langNTriple ;
-    public static final String langN3          = FileUtils.langN3 ;
-
-    // Non-standard
-    public static final String langBDB          = "RDF/BDB" ;
-    public static final String langSQL          = "RDF/SQL" ;
-
-    public static String defaultLanguage = langXML ;
-    public static String basename = null ;
-    public static boolean useARP = true ;
-
+    static Log log = LogFactory.getLog(ModelLoader.class)  ;
+    
+    
     /** Load a model
-     *
+     *  @deprecated Use FileManager.loadModel(urlStr)
      * @param urlStr    The URL or file name of the model
      */
 
     public static Model loadModel(String urlStr) { return loadModel(urlStr, null) ; }
 
 	/** Load a model or attached a persistent store (but not a database).
-	 *
+	 *  @deprecated Use FileManager.loadModel(urlStr, lang)
 	 * @param urlStr	The URL or file name of the model
 	 * @param lang		The language of the data - if null, the system guesses
 	 */
 
     public static Model loadModel(String urlStr, String lang)
     {
-    	return loadModel(urlStr, lang, null, null, null, null, null) ;
+        try {
+    	    return FileManager.get().loadModel(urlStr, lang) ;
+        } catch (JenaException ex) { return null ; }
     }
 
 	/** Load a model or attached a persistent store.
@@ -83,12 +69,12 @@ public class ModelLoader
             lang = guessLang(urlStr) ;
 
         if ( lang == null )
-            lang = defaultLanguage ;
+            lang = FileUtils.langXML ;
 
-        if ( lang.equals(langBDB) )
+        if ( lang.equals(FileUtils.langBDB) )
         {
         	// @@ temporarily not supported        	
-            logger.fatal("Failed to open Berkeley database") ;
+            LogFactory.getLog(ModelLoader.class).fatal("Failed to open Berkeley database") ;
             return null ;
 /*
             // URL had better be a file!
@@ -100,48 +86,44 @@ public class ModelLoader
                    dirBDB = "." ;
             urlStr = getBasename(urlStr) ;
 
-            logger.debug("BDB: file="+urlStr+", dir="+dirBDB+", basename="+basename) ;
+            log.debug("BDB: file="+urlStr+", dir="+dirBDB+", basename="+basename) ;
 
             try {
                 Model model = new ModelBdb(new StoreBdbF(dirBDB, urlStr)) ;
                 return model ;
             } catch (JenaException rdfEx)
             {
-                logger.severe("Failed to open Berkeley database", rdfEx) ;
+                log.severe("Failed to open Berkeley database", rdfEx) ;
                 System.exit(1) ;
             }
             */
         }
 
-        if ( lang.equals(langSQL) )
+        if ( lang.equals(FileUtils.langSQL) )
             return connectToDB(urlStr, dbUser, dbPassword, modelName, dbType, driver) ;
 
         // Its a files.
 		// Language is N3, RDF/XML or N-TRIPLE
         Model m = ModelFactory.createDefaultModel() ;
 
-        m.setReaderClassName(langXML, com.hp.hpl.jena.rdf.arp.JenaReader.class.getName());
-        m.setReaderClassName(langXMLAbbrev, com.hp.hpl.jena.rdf.arp.JenaReader.class.getName());
+        m.setReaderClassName(FileUtils.langXML, com.hp.hpl.jena.rdf.arp.JenaReader.class.getName());
+        m.setReaderClassName(FileUtils.langXMLAbbrev, com.hp.hpl.jena.rdf.arp.JenaReader.class.getName());
 
         // Default.
         //m.setReaderClassName(langNTriple, com.hp.hpl.jena.rdf.arp.NTriple.class.getName()) ;
 
         try {
-            _loadModel(m, urlStr, lang) ;
+            FileManager.get().readModel(m, urlStr, lang) ;
         } catch (JenaException rdfEx)
         {
-            logger.warn("Error loading data source", rdfEx);
-            return null ;
-        }
-        catch (FileNotFoundException e)
-        {
-            logger.warn("No such data source: "+urlStr);
+            log.warn("Error loading data source", rdfEx);
             return null ;
         }
         return m ;
     }
 
     /** Load a model from a file into a model.
+     * @deprecated Use FileManager.readModel(model, urlStr) instead
      * @param model   Model to read into
      * @param urlStr  URL (or filename) to read from
      * @return Returns the model passed in.
@@ -161,64 +143,13 @@ public class ModelLoader
     public static Model loadModel(Model model, String urlStr, String lang)
     {
         try {
-            return _loadModel(model, urlStr, null) ;
+            return FileManager.get().readModel(model, urlStr, lang) ;
         }
-        catch (FileNotFoundException e)
+        catch (Exception e)
         {
-            logger.warn("No such data source: "+urlStr);
+            LogFactory.getLog(ModelLoader.class).warn("No such data source: "+urlStr);
             return null ;
         }
-    }
-
-    private static Model _loadModel(Model model, String urlStr, String lang)
-        throws FileNotFoundException
-    {
-        // Wild guess at the language!
-        // Yes - repeated from above.
-        // System.err.println( "[" + urlStr + "]" );
-        if ( lang == null )
-            lang = guessLang(urlStr) ;
-
-        if ( lang.equals(langBDB) || lang.equals(langSQL) )
-        {
-            logger.fatal("Can't load data into existing model from a persistent database") ;
-            return null ;
-        }
-
-        String base = "file://unknown.net/" ;
-        Reader dataReader = null ;
-        try {
-            URL url = new URL(urlStr);
-            dataReader = new BufferedReader(new InputStreamReader(url.openStream())) ;
-            base = urlStr ;
-        }
-        catch (java.net.MalformedURLException e)
-        {
-            // Try as a file.
-            String filename = urlStr ;
-            File file = ( basename != null ) ? new File(basename, filename) : new File(filename) ;
-            // Unfortunately Xerces objects to hybrid file, URLs with \ in them, for a base name.
-            base = ("file:///"+file.getAbsolutePath()).replace('\\','/') ;
-            // System.err.println( "| file = " + filename + " & basename = " + basename );
-            FileReader fr = tryFile( basename, filename ); // was  new FileReader(filename) ; // was (file)
-            dataReader = new BufferedReader(fr) ;
-        }
-        catch (java.io.IOException ioEx)
-        {
-            logger.fatal("IOException: "+ioEx) ;
-            return null ;
-        }
-        //model.read(urlStr, base, lang) ;
-        RDFReader rdfReader = model.getReader(lang) ;
-        if ( rdfReader instanceof com.hp.hpl.jena.rdf.arp.JenaReader )
-            rdfReader.setProperty("error-mode", "lax") ;
-        rdfReader.read(model, dataReader, base) ;
-
-        try { dataReader.close() ; }
-        catch (IOException ioEx)
-        { logger.warn("IOException closing reader", ioEx) ; }
-
-        return model ;
     }
 
     /**
@@ -237,46 +168,21 @@ public class ModelLoader
                                     String dbType, String driverName)
     {
         // Fragment ID is the model name.
-        logger.debug("SQL: file="+urlStr) ;
-        //System.out.println("SQL: file="+urlStr) ;
         try { 
             if ( driverName != null )
                 Class.forName(driverName).newInstance();
         } catch (Exception ex) {}
 
-//        System.out.println("URL        = "+urlStr) ;
-//        System.out.println("dbName     = "+modelName) ;
-//        System.out.println("dbUser     = "+dbUser) ;
-//        System.out.println("dbType     = "+dbType) ;
-//        System.out.println("dbPassword = "+dbPassword) ;
-//        System.out.println("driver     = "+driverName) ;
-            
         try {
             IDBConnection conn = 
                 ModelFactory.createSimpleRDBConnection(urlStr, dbUser, dbPassword, dbType) ;
             return ModelRDB.open(conn, modelName) ;
         } catch (JenaException rdfEx)
         {
-            logger.error("Failed to open SQL database: ModelLoader.connectToDB", rdfEx) ;
+            LogFactory.getLog(ModelLoader.class).error("Failed to open SQL database: ModelLoader.connectToDB", rdfEx) ;
             throw rdfEx ;
         }
     }
-
-    private static FileReader tryFile( String baseName, String fileName ) throws FileNotFoundException
-        {
-        try { return new FileReader( fileName ); }
-        catch (FileNotFoundException e)
-            {
-            // System.err.println( "| could not read " + fileName + "; trying " + new File( baseName, fileName ) );
-            try { return new FileReader( new File( baseName, fileName ) ); }
-            catch (FileNotFoundException e2)
-                {
-                // System.err.println( "| that didn't work either, alas" );
-                throw e2;
-                }
-            }
-        }
-
     /** Guess the language/type of model data. Updated by Chris, hived off the
      * model-suffix part to FileUtils as part of unifying it with similar code in FileGraph.
      * 
@@ -286,6 +192,7 @@ public class ModelLoader
      * <li> If the URI end .nt, it is assumed to be N-Triples</li>
      * <li> If the URI end .bdb, it is assumed to be BerkeleyDB model [suppressed at present]</li>
      * </ul>
+     * @deprecated Use FileUtils.guessLang
      * @param urlStr    URL to base the guess on
      * @param defaultLang Default guess
      * @return String   Guessed syntax - or the default supplied
@@ -294,12 +201,13 @@ public class ModelLoader
     public static String guessLang( String urlStr, String defaultLang )
     {
         if ( urlStr.startsWith("jdbc:") || urlStr.startsWith("JDBC:") )
-            return langSQL ;
+            return FileUtils.langSQL ;
         else
         	return FileUtils.guessLang( urlStr, defaultLang );
     }
     
 	/** Guess the language/type of model data
+     *  
      * 
 	 * <ul>
 	 * <li> If the URI of the model starts jdbc: it is assumed to be an RDB model</li>
@@ -307,32 +215,14 @@ public class ModelLoader
 	 * <li> If the URI end .nt, it is assumed to be N-Triples</li>
 	 * <li> If the URI end .bdb, it is assumed to be BerkeleyDB model</li>
 	 * </ul>
+     * @deprecated Use FileUtils.guessLang
      * @param urlStr    URL to base the guess on
      * @return String   Guessed syntax - null for no guess.
 	 */
 
     public static String guessLang(String urlStr)
     {
-        return guessLang(urlStr, null) ;
-    }
-
-	/** Sets the directory used in
-	 * resolving URIs that are raw file names (no file:)
-	 * This is a global change when the ModelLoader is used.
-	 */
-
-    public static void setFileBase(String _basename) { basename = _basename ; } 
-
-    private static String getDirname(String filename)
-    {
-        File f = new File(filename) ;
-        return f.getParent() ;
-    }
-
-    private static String getBasename(String filename)
-    {
-        File f = new File(filename) ;
-        return f.getName() ;
+        return FileUtils.guessLang(urlStr) ;
     }
 }
 

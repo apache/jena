@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.20 2004-08-07 15:45:58 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.21 2004-08-31 09:49:53 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestSuite;
@@ -203,8 +203,8 @@ public class TestModelSpecRevised extends ModelTestBase
      */
     private Graph loadBoth( String x, String y )
         {
-        Model schema = FileUtils.loadModel( file( x ) );
-        Model schema2 = FileUtils.loadModel( file( y ) );
+        Model schema = FileManager.get().loadModel( file( x ) );
+        Model schema2 = FileManager.get().loadModel( file( y ) );
         schema.add( schema2 );
         return schema.getGraph();
         }
