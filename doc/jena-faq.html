@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.1 2003-08-28 11:40:15 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.html,v 1.2 2003-09-08 12:52:56 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -79,6 +79,9 @@ Jena 2 &ndash; Frequently Asked Questions
 <ul>
   <li><a href="#ontology-0">Why doesn't listClasses() (listProperties()/listIndividuals(),
     etc) work?</a></li>
+  <li><a href="#ontology-1">Why doesn't the ontlogy API handle <code>sub-class</code> 
+	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc) 
+  	relationships in a DAML model?</a></li>
 </ul>
 <h3>Database and persistence</h3>
 <ul>
@@ -98,7 +101,7 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h2>Answers</h2>
 <h3>General</h3>
-<p id="general-0">Q: Why do I get a ClassNotFoundException when I run Jena?<br>
+<p id="general-0"><strong>Q: Why do I get a ClassNotFoundException when I run Jena?</strong><br>
   A: This means that one or more of the libraries that Jena depends on is not
   on your classpath. Typically, all of the librarys (.jar files) in $JENA/lib,
   where $JENA refers to the directory in which you installed Jena, should be on
@@ -109,8 +112,8 @@ Jena 2 &ndash; Frequently Asked Questions
 <h3>Reasoner and inference models</h3>
 <p>no entries yet</p>
 <h3>Ontology API</h3>
-<p id="ontology-0">Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
-  etc) work?<br>
+<p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
+  etc) work?</strong><br />
   A: It does work. Extensive unit tests are used to check the correctness of Jena,
   and are included in the downloaded source code for your reference. If <code>listClasses()</code>,
   or a similar method, is not producing the answers you expect, or no answers
@@ -121,6 +124,22 @@ Jena 2 &ndash; Frequently Asked Questions
   is that relative URI's change depending where you read the model from. Try adding
   an <code>xml:base</code> declaration to the document to ensure that URI's are
   correctly specified.</p>
+<p id="ontology-1"><strong>Q: Why doesn't the ontlogy API handle <code>sub-class</code> 
+	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc) 
+  	relationships in a DAML model?</strong><br />
+  	A: These relationships are handled correctly, but the results you see are dependent on the
+  	model configuration.  The DAML specification includes a number of aliases for RDFS constructs to
+  	copy them into the DAML+OIL namespace. This means that, for a DAML processor, <code>daml:subClassOf</code>
+  	and <code>rdfs:subClassOf</code> are equivalent.  This is declared by means of a 
+  	<code>daml:samePropertyAs</code> in the daml+oil.daml specification document.  Without a reasoner
+  	attached to the model, the ontology API will not recognise the equivalence with <code>rdfs:</code> properties.
+  	Thus, if you are not seeing the expected results when processing a DAML ontology, 
+  	it is likely that your ontology file contains, for example, <br />
+  	<code>&lt;daml:Class rdf:ID="A"&gt; &lt;rdfs:subClassOf rdf:resource="B" /&gt; ...</code> <br />
+  	To fix this, either ensure that the ontology consistently uses <code>daml:</code> relationships,
+  	or declare the ontology model with the DAML micro rule-reasoner: <br />
+  	<code>OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF, null );</code>
+	</p>
 <h3>Database and persistence</h3>
 <p>no entries yet</p>
 <h3>XML serialisation (reading and writing)</h3>
