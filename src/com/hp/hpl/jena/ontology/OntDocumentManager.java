@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 18:45:01 $
+ * Last modified on   $Date: 2004-02-16 20:39:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.32 2004-01-29 18:45:01 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.33 2004-02-16 20:39:15 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -141,7 +141,10 @@ public class OntDocumentManager
     /** Flag to control whether we include the standard prefixes in generated models - default true. */
     protected boolean m_useDeclaredPrefixes = true;
     
-
+    /** The URL of the policy file that was loaded, or null if no external policy file has yet been loaded */
+    protected String m_policyURL = null;
+    
+    
     // Constructors
     //////////////////////////////////
 
@@ -164,7 +167,9 @@ public class OntDocumentManager
      *
      * @param path The search path to search for initial metadata, which will
      * also replace the current search path for this document manager.  Use
-     * null to prevent loading of any initial ontology metadata.
+     * null to prevent loading of any initial ontology metadata. The path is a series
+     * of URL's, separated by the {@link #PATH_DELIMITER}, which defaults to 
+     * semi-colon (;).
      */
     public OntDocumentManager( String path ) {
         m_searchPath = (path == null) ? "" : path;
@@ -227,6 +232,7 @@ public class OntDocumentManager
      */
     public void setMetadataSearchPath( String path, boolean replace ) {
         m_searchPath = path;
+        m_policyURL = null;
         initialiseMetadata( path, replace );
     }
 
@@ -667,6 +673,17 @@ public class OntDocumentManager
         }
     }
     
+    
+    /**
+     * <p>Answer the URL of the most recently loaded policy URL, or null
+     * if no document manager policy has yet been loaded since the metadata
+     * search path was last set.</p>
+     * @return The most recently loaded policy URL or null.
+     */
+    public String getLoadedPolicyURL() {
+        return m_policyURL;
+    }
+    
 
     // Internal implementation methods
     //////////////////////////////////
@@ -805,6 +822,9 @@ public class OntDocumentManager
         while (!loaded  &&  pathElems.hasMoreTokens()) {
             String mdURI = pathElems.nextToken();
             loaded = read( m, mdURI, false );
+            if (loaded) {
+                m_policyURL = mdURI;
+            }
         }
 
         // only return m if we found some metadata

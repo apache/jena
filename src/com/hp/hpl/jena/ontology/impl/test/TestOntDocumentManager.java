@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 18:45:01 $
+ * Last modified on   $Date: 2004-02-16 20:39:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.12 2004-01-29 18:45:01 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.13 2004-02-16 20:39:15 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -82,16 +82,8 @@ public class TestOntDocumentManager
         TestSuite suite = new TestSuite( "TestOntDocumentManager" );
         
         // add the fixed test cases
-        suite.addTest( new TestOntDocumentManager( "testInitialisation") );
-        suite.addTest( new TestOntDocumentManager( "testManualAssociation") );
-        suite.addTest( new TestOntDocumentManager( "testIgnoreImport") );
-        suite.addTest( new TestOntDocumentManager( "testRemoveImport1") );
-        suite.addTest( new TestOntDocumentManager( "testRemoveImport2") );
-        suite.addTest( new TestOntDocumentManager( "testRemoveImport3") );
-        suite.addTest( new TestOntDocumentManager( "testDynamicImports1") );
-        suite.addTest( new TestOntDocumentManager( "testDynamicImports2") );
-        suite.addTest( new TestOntDocumentManager( "testDynamicImports3") );
-        
+        suite.addTestSuite( TestOntDocumentManager.class );
+
         // add the data-driven test cases
         for (int i = 0;  i < s_testData.length;  i++) {
             suite.addTest( new DocManagerImportTest( (String) s_testData[i][0], 
@@ -292,6 +284,22 @@ public class TestOntDocumentManager
         assertFalse( "b should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
     }
     
+    public void testSearchPath() {
+        OntDocumentManager o1 = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertEquals( "Did not return correct loaded search path", "file:etc/ont-policy-test.rdf", o1.getLoadedPolicyURL() );
+        
+        OntDocumentManager o2 = new OntDocumentManager( "file:etc/ont-policy-test.notexist.rdf;file:etc/ont-policy-test.rdf" );
+        assertEquals( "Did not return correct loaded search path", "file:etc/ont-policy-test.rdf", o2.getLoadedPolicyURL() );
+        
+        OntDocumentManager o3 = new OntDocumentManager( (String) null );
+        assertNull( "Most recent policy should be null", o3.getLoadedPolicyURL() );
+        
+        o3.setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
+        assertEquals( "Did not return correct loaded search path", "file:etc/ont-policy-test.rdf", o2.getLoadedPolicyURL() );
+        
+        o3.setMetadataSearchPath( "file:etc/ont-policy-test.notexist.rdf", true );
+        assertNull( "Most recent policy should be null", o3.getLoadedPolicyURL() );
+    }
     
     /* count the number of marker statements in the combined model */
     public static int countMarkers( Model m ) {
