@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.13 2003-08-27 13:08:11 andy_seaborne Exp $
+  $Id: JMS.java,v 1.14 2003-08-27 13:59:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -11,6 +11,9 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     The Jena Model Specification vocabulary, schema, and some conversion methods.
+    See the modelspec and modelspec-details HOWTOs for discussion on how these
+    fit into the ModelSpec design and implementation.
+    
     TODO ensure these have explicit tests [they were developed implicitly from the
     ModelSpec tests].
     
@@ -18,46 +21,154 @@ import com.hp.hpl.jena.rdf.model.*;
 */
 public class JMS
     {
+    /**
+        The base URI for all the JMS vocabulary items. 
+    */
     public static final String baseURI = "http://jena.hpl.hp.com/2003/08/jms#";
     
+    /**
+        Answer the base URI for the JMS vocabulary items.
+     */
     public static String getURI()
         { return baseURI; }
     
+    /** 
+        The property of an OntModelSpec that gives the language URI string.
+    */
     public static final Property ontLanguage = property( "ontLanguage" );
+    
+    /**
+        The property of an OntModelSpec that gives the document manager resource.
+    */
     public static final Property docManager = property( "docManager" );
+    
+    /**
+        The property of an OntModelSpec that gives the MakerSpec used when 
+        manufacturing models for imports.
+    */
     public static final Property importMaker = property( "importMaker" );
+    
+    /**
+        The property of an InfModelSpec that specifies the ReasonerSpec to use.
+    */
     public static final Property reasonsWith = property( "reasonsWith" );
     
+    /**
+        The property of a document manager that gives its policy path string.
+     */
     public static final Property policyPath = property( "policyPath" );
     
+    /**
+        The property of an RDBMakerSpec that gives the string to use for the user name
+        when making the connection.
+    */
     public static final Property dbUser = property( "dbUser" );
+    
+    /**
+        The property of an RDBMakerSpec that gives the string to use for the password
+        when making the connection.
+    */
     public static final Property dbPassword = property( "dbPassword" );
+    
+    /**
+        The property of an RDBMakerSpec that gives the string to use for the database URL
+        when making the connection.
+    */
     public static final Property dbURL = property( "dbURL" );
+    
+    /**
+        The property of an RDBMakerSpec that gives the string to use for the database
+        type when making the connection.
+    */
     public static final Property dbType = property( "dbType" );
+    
+    /**
+        The property of an RDBMakerSpec that gives the string to use for class to load
+        [if any] when making the connection.
+    */
     public static final Property dbClass = property( "dbClass" );
     
+    /**
+        The property of a ModelSpec that specifies the resource which describes the maker.
+    */
     public static final Property maker = property( "maker" );
     
+    /**
+        The property of a MakerSpec that gives the reification mode for all its models.
+    */
     public static final Property reificationMode = property( "reificationMode" );
+    
+    /**
+        The property of a ReasonerSpec that gives the resource who's URI is that of
+        the reasoner to use.
+    */
     public static final Property reasoner = property( "reasoner" );
+    
+    /**
+        The property of a FileMakerSpec that gives the fileBase [root directory] of the
+        FileModelMaker.
+    */
     public static final Property fileBase = property( "fileBase" );
     
+    /**
+        The class of MakerSpec resources.
+    */
     public static final Resource MakerSpec = resource( "MakerSpec" );
+    
+    /**
+        The class of FileMakerSpec resources [subclass of MakerSpec].
+    */
     public static final Resource FileMakerSpec = resource( "FileMakerSpec" );
+    
+    /**
+        The class of MemMakerSpec resources [subclass of MakerSpec].
+    */
     public static final Resource MemMakerSpec = resource( "MemMakerSpec" );
+    
+    /**
+        The class of RDBMakerSpec resources [subclass of MakerSpec].
+    */
     public static final Resource RDBMakerSpec = resource( "RDBMakerSpec" );
     
+    /**
+        The class of ModelSpec resources.
+    */
     public static final Resource ModelSpec = resource( "ModelSpec" );
+        
+    /**
+        The class of PlainModelSpec resources [subclass of ModelSpec].
+    */
     public static final Resource PlainModelSpec = resource( "PlainModelSpec" );
+    
+    /**
+        The class of InfModelSpec resources [subclass of ModelSpec].
+    */
     public static final Resource InfModelSpec = resource( "InfModelSpec" );
+    
+    /**
+        The class of OntModelSpec resources [subclass of InfModelSpec].
+    */
     public static final Resource OntModelSpec = resource( "OntModelSpec" );
     
+    /**
+        The resource representing reification mode Standard.
+    */
     public static final Resource rsStandard = resource( "rsStandard" );
+    
+    /**
+        The resource representing reification mode Minimal.
+    */    
     public static final Resource rsMinimal = resource( "rsMinimal" );
+    
+    /**
+        The resource representing reification mode Convenient.
+    */
     public static final Resource rsConvenient = resource( "rsConvenient" );
 
     /**
-        The JMS schema encoded into a model. 
+        The JMS schema encoded into a model. This defines the subclass hierarchy
+        and the essential domains of the properties. ["Essential" means "relied on by
+        the ModelSpec engines"].
         
         TODO make this model immutable once created. 
     */
@@ -78,12 +189,21 @@ public class JMS
         .add( JMS.importMaker, RDFS.subClassOf, JMS.maker )
         ;
     
+    /**
+        Utility: answer a plain literal string with the given value.
+     */
     protected static Literal literal( String lex )
         { return ResourceFactory.createPlainLiteral( lex ); }
         
+    /**
+        Utility: answer a resource in the jms namespace with the given local name.
+     */
     protected static Resource resource( String ln )
         { return ResourceFactory.createResource( baseURI + ln ); }
         
+    /**
+        Utility: answer a property in the jms namespave with the given local name.
+     */
     protected static Property property( String ln )
         { return ResourceFactory.createProperty( baseURI + ln ); }
 
