@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.19 2004-03-16 16:19:20 chris-dollin Exp $
+  $Id: Expression.java,v 1.20 2004-03-25 13:29:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -164,25 +164,22 @@ public interface Expression
                 for (int i = 0; i < e.argCount(); i += 1)
                     addVariablesOf( s, e.getArg( i ) );
             return s;
-            }           
-        
-//        /**
-//            Answer a Valuator v such that <code>v.evalBool(IndexValues iv)</code>
-//            will return
-//        <br>
-//            <code>
-//            e.evalBool( vv ) where vv.get(name) = iv.get(vi.indexOf(name))
-//            </code>
-//         */
-//        public static Valuator prepare( final Expression e, VariableIndexes vi )
-//            {
-//            final Valof valof = new Valof( vi );
-//            return new Valuator()
-//                {
-//                public boolean evalBool( IndexValues iv )
-//                    { return e.evalBool( valof.setDomain( iv ) ); }
-//                };
-//            }
+            }
+
+		public static boolean containsAllVariablesOf( Set variables, Expression e ) 
+    		{
+    		if (e.isConstant()) 
+    		    return true;
+    		if (e.isVariable()) 
+    		    return variables.contains( e.getName() );
+    		if (e.isApply())
+    		    {
+    		    for (int i = 0; i < e.argCount(); i += 1)
+    		        if (containsAllVariablesOf( variables, e.getArg(i) ) == false) return false;
+    		    return true;
+    		    }
+    		return false;
+    		}           
        }
      
     /**

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.17 2004-03-09 16:16:56 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.18 2004-03-25 13:29:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.Expression;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -92,8 +93,8 @@ public class PatternStage extends Stage
         has been matched, ie, all the variables of the expression have been bound.
     */
     protected boolean canEval( Expression e, int index )
-        { return boundVariables[index].containsAll( Expression.Util.variablesOf( e ) ); }
-
+        { return Expression.Util.containsAllVariablesOf( boundVariables[index], e ); }
+    
     protected Pattern [] compile( Mapping map, Triple [] triples )
         { return compile( compiler, map, triples ); }
         
