@@ -12,8 +12,7 @@
 </p>
 <p>This machinery, and the rest of this description, are appropriate for
 developers working with Graphs and Nodes at the SPI level. Application developers
-using Models should see the convenience methods built into ModelFactory [TODO:
-ref].<br>
+using Models should see the convenience methods built into <a href="../rdf/model/ModelFactory.html">ModelFactory</a>.<br>
 </p>
 <p>Each available reasoner is represented by an factory object which is an
   instance of a <a href="ReasonerFactory.html">ReasonerFactory.</a>
@@ -34,7 +33,7 @@ result   of such binding is an <a href="InfGraph.html">InfGraph</a>
  assertions entailed from the base data via the reasoner appear as "virtual" 
  triples within this InfGraph. Some additional methods on InfGraph offer access
  to the reasoner, the raw data and some additional capabilities.</p>
-<p>For example, all of the steps involved in generated an RDFS closure of 
+<p>For example, using the SPI all of the steps involved in generated an RDFS closure of 
  a graph are:<br>
 </p>
 <pre>
@@ -44,6 +43,8 @@ result   of such binding is an <a href="InfGraph.html">InfGraph</a>
                                .bind(data);
   Model model        = new ModelMem(graph);
 </pre>
+<p>For application developers working with the API then this code is accessible through
+the convenience methods in <a href="../rdf/model/ModelFactory.html">ModelFactory</a>.</p>
 <p>If the resulting <i>graph</i> or <i>model</i> are queried using find/listStatements 
 they contain the sum of all the assertions in the tbox graph, the data graph 
 and the triples entailed from them via RDF+RDFS entailment.<br>
@@ -55,7 +56,7 @@ and instance data, others may allow both binds but be lax about the allowed
 contents of each, others may not support the <i>bindRuleset</i> stage. <br>
 </p>
 <p>The existing built-in reasoners allow a single <i>tbox</i> together with 
-a single <i>data</i> but the <i>tbox</i> is optional and unrestricted.. In 
+a single <i>data</i> but the <i>tbox</i> is optional and unrestricted. In 
 the case of the RDFSReasoner in the example some work is done at bindRuleset 
 to cache information on property and class lattices that may be reused across 
 multiple data sets but the extent of that reuse is lessened if the data also 
