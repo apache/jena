@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.41 2004-03-23 13:47:41 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.42 2004-06-24 12:11:49 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -538,6 +538,31 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertFalse( qh.containsNode( node( "99" ) ) );
         }
         
+    public void testRemoveAll()
+        { 
+        testRemoveAll( "" );
+        testRemoveAll( "a R b" );
+        testRemoveAll( "c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'" );
+        }
+    
+    public void testRemoveAll( String triples )
+        {
+        Graph g = getGraph();
+        if (g.getCapabilities().sizeAccurate())
+            {
+            graphAdd( g, triples );
+            g.getBulkUpdateHandler().removeAll();
+            assertEquals( 0, g .size() );
+            }
+        }
+    
+    protected Graph copy( Graph g )
+        {
+        Graph result = Factory.createDefaultGraph();
+        result.getBulkUpdateHandler().add( g );
+        return result;
+        }
+    
     protected Graph getClosed()
         {
         Graph result = getGraph();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.15 2004-03-24 16:02:19 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.16 2004-06-24 12:11:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
     A simple-minded implementation of the bulk update interface. This only
@@ -23,8 +24,8 @@ import com.hp.hpl.jena.graph.*;
 
 public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     {
-    private GraphBase graph;
-    private GraphEventManager manager;
+    protected GraphBase graph;
+    protected GraphEventManager manager;
     
     public SimpleBulkUpdateHandler( GraphBase graph )
         { 
@@ -133,6 +134,16 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
             deleteIterator( GraphUtil.findAll( g ), false );
         if (withReifications) deleteReifications( graph, g );
         manager.notifyDeleteGraph( g );
+        }
+    
+    public void removeAll()
+        { removeAll( graph ); }
+    
+    public static void removeAll( Graph g )
+        {
+        ExtendedIterator it = GraphUtil.findAll( g );
+        try { while (it.hasNext()) { it.next(); it.remove(); } }
+        finally { it.close(); }
         }
     }
 

@@ -10,6 +10,10 @@ Post Jena 2.1 change list
       o Fixed XSDDouble isValidValue test to check for Double
       o Fixed XSDbase64Binary, XSDhexBinary returning strings instead of byte[]
 
+  Model
+      o added new API operation removeAll() which removes "all" statements
+        from a model [currently there are issues about inference models]
+
   Reasoners
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.
       o Fixed bug in hide() table not being carried across from prebuilt

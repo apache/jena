@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.8 2004-06-18 10:20:52 chris-dollin Exp $
+  $Id: AbstractTestModel.java,v 1.9 2004-06-24 12:11:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -110,6 +110,21 @@ public abstract class AbstractTestModel extends ModelTestBase
     public void testAsRDF()
         {
         RDFNode r = model.asRDFNode( node( "a" ) );
+        }
+    
+    public void testClear()
+        {
+        testClear( "" );
+        testClear( "a RR b" );
+        testClear( "x P y; a Q b; c R 17; _d S 'e'" );
+        testClear( "subject Predicate 'object'; http://nowhere/x scheme:cunning not:plan" );
+        }
+    
+    protected void testClear( String statements )
+        {
+        modelAdd( model, statements );
+        assertSame( model, model.removeAll() );
+        assertEquals( "model should have size 0 following removeAll(): ", 0, model.size() );
         }
     
     }

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.90 2004-06-15 14:00:46 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.91 2004-06-24 12:11:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -288,6 +288,12 @@ public class ModelCom
         {
         getBulkUpdateHandler().delete( m.getGraph(), !suppressReifications );
         return this;
+        }
+    
+    public Model removeAll()
+        { 
+        getGraph().getBulkUpdateHandler().removeAll();
+        return this; 
         }
         
     public boolean contains( Resource s, Property p, boolean o )

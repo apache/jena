@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.51 2004-06-15 14:02:04 chris-dollin Exp $
+  $Id: Model.java,v 1.52 2004-06-24 12:11:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.51 $Date: 2004/03/23 13:47:41 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.52 $Date: 2004/06/15 14:02:04 $'
  */
 public interface Model 
     extends ModelCon, ModelGraphInterface, 
@@ -930,6 +930,11 @@ public interface Model
 	 	@param e the event that has occurred
 	*/
 	public Model notifyEvent( Object e );
+
+    /**
+    	Remove all the statements from this model.
+    */
+    public Model removeAll();
     
 }
 
@@ -958,5 +963,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.51 2004-06-15 14:02:04 chris-dollin Exp $
+ * $Id: Model.java,v 1.52 2004-06-24 12:11:49 chris-dollin Exp $
  */

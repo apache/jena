@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BulkUpdateHandler.java,v 1.7 2003-09-30 13:33:38 chris-dollin Exp $
+  $Id: BulkUpdateHandler.java,v 1.8 2004-06-24 12:11:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -95,6 +95,11 @@ public interface BulkUpdateHandler
         @param withReifications if true, remove g's reifications from this graph
     */
     void delete( Graph g, boolean withReifications );
+
+    /**
+    	Remove all the statements from a graph.
+    */
+    void removeAll();
     }
 
 /*
