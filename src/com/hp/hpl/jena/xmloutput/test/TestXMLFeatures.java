@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.23 2003-06-16 11:20:29 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.24 2003-06-16 12:35:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.23 $ $Date: 2003-06-16 11:20:29 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.24 $ $Date: 2003-06-16 12:35:52 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -216,17 +216,8 @@ public class TestXMLFeatures extends TestCase {
 			m.write(fwriter, lang);
 			fwriter.close();
 			fail("Writer did not detect bad property URI");
-		} catch (RDFException rdfe) {
-			// This loop here really shouldn't be necessary.
-			// When oh when, will we
-			//  - drop NestedExceptions altogther.
-			while (rdfe.getErrorCode() == RDFException.NESTEDEXCEPTION
-				&& rdfe.getNestedException() instanceof RDFException)
-				rdfe = (RDFException) rdfe.getNestedException();
-			assertEquals(
-				"Inappropriate exception: " + rdfe.getMessage(),
-				rdfe.getErrorCode(),
-				RDFException.INVALIDPROPERTYURI);
+        } catch (JenaInvalidPropertyURIException je) {
+                // as required, so nowt to do.
 		}
 		file.delete();
 	}
@@ -680,17 +671,9 @@ public class TestXMLFeatures extends TestCase {
         } catch (JenaBadURIException e) {
             if (behaviour == BadURI) return;
             throw e;
-		} catch (RDFException e) {
-            switch (behaviour)
-            { case BadPropURI:
-			if (e.getErrorCode() == RDFException.INVALIDPROPERTYURI )
-              return;
-              case BadURI:
-              if (e.getErrorCode() == RDFException.NESTEDEXCEPTION &&
-                  e.getNestedException() instanceof MalformedURIException )
-                  return;
-            }
-				throw e;
+        } catch (JenaInvalidPropertyURIException je) {
+            if (behaviour == BadPropURI) return;
+            throw je;
         } catch (JenaException e) {
             throw e;
 		} finally {
@@ -1067,5 +1050,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.23 2003-06-16 11:20:29 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.24 2003-06-16 12:35:52 chris-dollin Exp $
  */

@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.14 2003-06-13 08:47:41 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.15 2003-06-16 12:35:32 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-06-13 08:47:41 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-06-16 12:35:32 $'
 
  */
 class Unparser {
@@ -1440,13 +1440,9 @@ class Unparser {
 			} else {
 				rslt = r.getProperty(RDF.type);
 			}
-		} catch (RDFException rdfe) {
-			if (rdfe.getErrorCode() == RDFException.PROPERTYNOTFOUND) {
-				if (r instanceof Statement)
-					error("Statement type problem");
-				rslt = null;
-			} else
-				throw rdfe;
+		} catch (JenaPropertyNotFoundException rdfe) {
+			if (r instanceof Statement) error( "Statement type problem" ) ;
+			rslt = null;
 		}
 		if (rslt == null || isOKType(rslt.getObject()) == -1)
 			return null;
