@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.25 2005-02-16 13:39:10 chris-dollin Exp $
+  $Id: JMS.java,v 1.26 2005-02-18 10:26:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -227,7 +227,6 @@ public class JMS
         .add( JMS.importMaker, RDFS.domain, JMS.OntModelSpec )
         .add( JMS.ontLanguage, RDFS.domain, JMS.OntModelSpec )
         .add( JMS.reasonsWith, RDFS.domain, JMS.InfModelSpec )
-        
         ;
 
     /**
