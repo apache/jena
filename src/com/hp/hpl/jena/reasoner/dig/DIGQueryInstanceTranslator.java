@@ -2,45 +2,52 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       ian.dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            04-Dec-2003
- * Filename           $RCSfile: NameToNodeMapper.java,v $
+ * Created            July 19th 2003
+ * Filename           $RCSfile: DIGQueryInstanceTranslator.java,v $
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:21 $
+ * Last modified on   $Date: 2003-12-12 23:41:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- *****************************************************************************/
+ * ****************************************************************************/
 
 // Package
 ///////////////
 package com.hp.hpl.jena.reasoner.dig;
 
 
-
 // Imports
 ///////////////
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.util.iterator.Map1;
+import org.w3c.dom.*;
+
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
 
 
 /**
  * <p>
- * Mapper to map DIG identifier names to Jena graph nodes.
+ * Translator that generates DIG 'instance' queries in response to a find query:
+ * <pre>
+ * :x rdf:type :A
+ * </pre>
+ * or similar.
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: NameToNodeMapper.java,v 1.1 2003-12-04 16:38:21 ian_dickinson Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version Release @release@ ($Id: DIGQueryInstanceTranslator.java,v 1.1 2003-12-12 23:41:22 ian_dickinson Exp $)
  */
-public class NameToNodeMapper 
-    implements Map1
+public class DIGQueryInstanceTranslator 
+    extends DIGQueryTranslator
 {
+
     // Constants
     //////////////////////////////////
 
@@ -53,25 +60,47 @@ public class NameToNodeMapper
     // Constructors
     //////////////////////////////////
 
+    /**
+     * <p>Construct a translator for the DIG query 'subsumes'.</p>
+     * @param predicate The predicate URI to trigger on
+     */
+    public DIGQueryInstanceTranslator( String predicate ) {
+        super( null, predicate, null );
+    }
+    
+
     // External signature methods
     //////////////////////////////////
 
 
     /**
-     * <p>Return the node corresponding to the given name string
+     * <p>Answer a query that will test subsumption between two classes</p>
      */
-    public Object map1( Object o ) {
-        String name = (String) o;
-        
-        if (name.startsWith( DIGAdapter.ANON_MARKER )) {
-            String anonID = name.substring( DIGAdapter.ANON_MARKER.length() );
-            return Node.createAnon( new AnonId( anonID ) );
-        }
-        else {
-            return Node.createURI( name );
-        }
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
+        DIGConnection dc = da.getConnection();
+        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
+        Element instance = da.addElement( query.getDocumentElement(), DIGProfile.INSTANCE );
+        da.addNamedElement( instance, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getSubject() ) );
+        da.addClassDescription( instance, pattern.getObject() );
+
+        return query;
     }
 
+
+    /**
+     * <p>Answer an iterator of triples that match the original find query.</p>
+     */
+    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+        return isTrue( response ) ? (ExtendedIterator) new SingletonIterator( query.asTriple() ) : NullIterator.instance;
+    }
+    
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
+        return subject.isConcrete();
+    }
+    
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
+        return object.isConcrete() && da.isConcept( object );
+    }
 
     // Internal implementation methods
     //////////////////////////////////
@@ -109,4 +138,3 @@ public class NameToNodeMapper
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 00:08:05 $
+ * Last modified on   $Date: 2003-12-12 23:41:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -35,6 +35,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.xml.SimpleXMLPath;
 import com.hp.hpl.jena.vocabulary.*;
 
 import org.w3c.dom.*;
@@ -47,7 +48,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.6 2003-12-12 00:08:05 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.7 2003-12-12 23:41:22 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -77,11 +78,6 @@ public class DIGAdapter
 
     /** The table that represents the query translations we know about */
     protected static DIGQueryTranslator[] s_queryTable = {
-        // all concepts query for [* rdf:type :Class]
-        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), RDFS.Class.getURI() ),
-        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), OWL.Class.getURI() ),
-        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), DAML_OIL.Class.getURI() ),
-        
         // subsumes when testing for subsumption between two known class expressions
         new DIGQuerySubsumesTranslator( RDFS.subClassOf.getURI() ),
         new DIGQuerySubsumesTranslator( DAML_OIL.subClassOf.getURI() ),
@@ -125,6 +121,20 @@ public class DIGAdapter
         new DIGQueryRoleHierarchyTranslator( RDFS.subPropertyOf.getURI() ),
         new DIGQueryRoleHierarchyTranslator( DAML_OIL.subPropertyOf.getURI() ),
         
+        // instances
+        new DIGQueryInstancesTranslator( RDF.type.getURI() ),
+        new DIGQueryInstancesTranslator( DAML_OIL.type.getURI() ),
+        new DIGQueryTypesTranslator( RDF.type.getURI() ),
+        new DIGQueryTypesTranslator( DAML_OIL.type.getURI() ),
+        new DIGQueryInstanceTranslator( RDF.type.getURI() ),
+        new DIGQueryInstanceTranslator( DAML_OIL.type.getURI() ),
+        new DIGQueryRoleFillersTranslator(),
+
+        // all concepts query for [* rdf:type :Class]
+        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), RDFS.Class.getURI() ),
+        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), OWL.Class.getURI() ),
+        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), DAML_OIL.Class.getURI() ),
+        
     };
     
     
@@ -142,6 +152,15 @@ public class DIGAdapter
     
     /** The connection to the DIG reasoner */
     private DIGConnection m_connection;
+    
+    /** The set of known individual names from the DIG reasoner */
+    protected Set m_indNames = null;
+    
+    /** The set of known concept names from the DIG reasoner */
+    protected Set m_conceptNames = null;
+    
+    /** The set of known role names from the DIG reasoner */
+    protected Set m_roleNames = null;
     
     
     // Constructors
@@ -267,6 +286,11 @@ public class DIGAdapter
      */
     public void resetKB() {
         getConnection().bindKB( true, getProfile() );
+        
+        // reset the name caches
+        m_indNames = null;
+        m_conceptNames = null;
+        m_roleNames = null;
     }
     
     
@@ -322,7 +346,7 @@ public class DIGAdapter
      */
     public DIGQueryTranslator getQueryTranslator( TriplePattern pattern ) {
         for (int i = 0;  i < s_queryTable.length;  i++) {
-            if (s_queryTable[i].trigger( pattern )) {
+            if (s_queryTable[i].trigger( pattern, this )) {
                 return s_queryTable[i];
             }
         }
@@ -377,8 +401,41 @@ public class DIGAdapter
     public void addClassDescription( Element elem, com.hp.hpl.jena.graph.Node node ) {
         translateClassIdentifier( elem, (Resource) m_sourceData.getRDFNode( node ) );
     }
+    
+    
+    /**
+     * <p>Answer true if the given node corresponds to one of the individuals known to
+     * the DIG reasoner.</p>
+     * @param node A node to test
+     * @return True if <code>node</code> is a known individual
+     */
+    public boolean isIndividual( com.hp.hpl.jena.graph.Node node ) {
+        return getKnownIndividuals().contains( getNodeID( node ) );
+    }    
 
 
+    /**
+     * <p>Answer true if the given node corresponds to one of the roles known to
+     * the DIG reasoner.</p>
+     * @param node A node to test
+     * @return True if <code>node</code> is a known role
+     */
+    public boolean isRole( com.hp.hpl.jena.graph.Node node ) {
+        return getKnownRoles().contains( getNodeID( node ) );
+    }    
+
+
+    /**
+     * <p>Answer true if the given node corresponds to one of the concepts known to
+     * the DIG reasoner.</p>
+     * @param node A node to test
+     * @return True if <code>node</code> is a known concept
+     */
+    public boolean isConcept( com.hp.hpl.jena.graph.Node node ) {
+        return getKnownConcepts().contains( getNodeID( node ) );
+    }
+    
+    
     // Internal implementation methods
     //////////////////////////////////
 
@@ -1011,6 +1068,76 @@ public class DIGAdapter
         
     }
     
+
+    
+    /**
+     * <p>Answer an iterator of the individual names known to the DIG reasoner, from the cache if possible.</p>
+     * @return An iterator of the known individual names
+     */
+    protected Set getKnownIndividuals() {
+        if (m_indNames == null) {
+            m_indNames = collectNamedTerms( DIGProfile.ALL_INDIVIDUALS,
+                                            new String[] {DIGProfile.INDIVIDUAL_SET, DIGProfile.INDIVIDUAL} );
+        }
+        
+        return m_indNames;
+    }
+    
+    
+    /**
+     * <p>Answer an iterator of the concept names known to the DIG reasoner, from the cache if possible.</p>
+     * @return An iterator of the known concept names
+     */
+    protected Set getKnownConcepts() {
+        if (m_conceptNames == null) {
+            m_conceptNames = collectNamedTerms( DIGProfile.ALL_CONCEPT_NAMES,
+                                                new String[] {DIGProfile.CONCEPT_SET, DIGProfile.SYNONYMS, DIGProfile.CATOM} );
+        }
+        
+        return m_conceptNames;
+    }
+    
+    
+    /**
+     * <p>Answer an iterator of the role names known to the DIG reasoner, from the cache if possible.</p>
+     * @return An iterator of the known role names
+     */
+    protected Set getKnownRoles() {
+        if (m_roleNames == null) {
+            m_roleNames = collectNamedTerms( DIGProfile.ALL_ROLE_NAMES,
+                                             new String[] {DIGProfile.ROLE_SET, DIGProfile.SYNONYMS, DIGProfile.RATOM} );
+        }
+        
+        return m_roleNames;
+    }
+    
+    
+    /**
+     * <p>Answer an iterator of named terms known to the DIG reasoner, from the cache if possible.</p>
+     * @param queryType The query verb for the ask
+     * @param path A list of element names to extract the term names from the returned document
+     * @return An iterator of the known individual names
+     */
+    protected Set collectNamedTerms( String queryType, String[] path ) {
+        Set names = new HashSet();
+        
+        // query the DIG ks for the currently known individuals
+        Document query = getConnection().createDigVerb( DIGProfile.ASKS, getProfile() );
+        addElement( query.getDocumentElement(), queryType );
+        Document response = getConnection().sendDigVerb( query, getProfile() );
+
+        // build the path to extract the names        
+        SimpleXMLPath p = new SimpleXMLPath( true );
+        for (int j = 0;  j < path.length;  j++) {
+            p.appendElementPath( path[j] );
+        }
+        p.appendAttrPath( DIGProfile.NAME );
+                             
+        // collect them into a cached set
+        addAll( p.getAll( response ), names );
+        
+        return names;
+    }
     
     
     

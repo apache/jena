@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryAllRolesTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 00:08:05 $
+ * Last modified on   $Date: 2003-12-12 23:41:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -24,6 +24,7 @@ package com.hp.hpl.jena.reasoner.dig;
 import org.w3c.dom.Document;
 
 import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
@@ -40,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryAllRolesTranslator.java,v 1.1 2003-12-12 00:08:05 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryAllRolesTranslator.java,v 1.2 2003-12-12 23:41:22 ian_dickinson Exp $)
  */
 public class DIGQueryAllRolesTranslator 
     extends DIGQueryTranslator
@@ -73,21 +74,27 @@ public class DIGQueryAllRolesTranslator
 
 
     /**
-     * <p>Answer a query that will list all concept names</p>
+     * <p>Since known role names are cached by the adapter, we can just look up the
+     * current set and map directly to triples</p>
+     * @param pattern The pattern to translate to a DIG query
+     * @param da The DIG adapter through which we communicate with a DIG reasoner
      */
+    public ExtendedIterator find( TriplePattern pattern, DIGAdapter da ) {
+        return WrappedIterator.create( da.getKnownRoles().iterator() )
+                              .mapWith( new DIGValueToNodeMapper() )
+                              .mapWith( new TripleSubjectFiller( pattern.getPredicate(), pattern.getObject() ) );
+    }
+    
+    
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
-        DIGConnection dc = da.getConnection();
-        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        da.addElement( query.getDocumentElement(), DIGProfile.ALL_ROLE_NAMES );
-        return query;
+        // not used
+        return null;
     }
 
 
-    /**
-     * <p>Answer an iterator of triples that match the original find query.</p>
-     */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        return translateRoleSetResponse( response, query, da, false );
+        // not used
+        return null;
     }
 
     // Internal implementation methods

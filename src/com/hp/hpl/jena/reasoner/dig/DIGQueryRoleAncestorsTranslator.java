@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryRoleAncestorsTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 00:08:05 $
+ * Last modified on   $Date: 2003-12-12 23:41:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryRoleAncestorsTranslator.java,v 1.1 2003-12-12 00:08:05 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryRoleAncestorsTranslator.java,v 1.2 2003-12-12 23:41:22 ian_dickinson Exp $)
  */
 public class DIGQueryRoleAncestorsTranslator 
     extends DIGQueryTranslator
@@ -105,7 +105,7 @@ public class DIGQueryRoleAncestorsTranslator
      */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
         // translate the concept set to triples, but then we must add :a rdfs:subPropertyOf :a to match owl semantics
-        return translateRoleSetResponse( response, query, da, m_ancestors )
+        return translateRoleSetResponse( response, query, m_ancestors )
                .andThen( new SingletonIterator( 
                             new Triple( m_ancestors ? query.getSubject() : query.getObject(),
                                         query.getPredicate(),
@@ -113,11 +113,11 @@ public class DIGQueryRoleAncestorsTranslator
     }
     
     
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject ) {
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
         return !m_ancestors || subject.isConcrete();
     }
     
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object ) {
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
         return m_ancestors || object.isConcrete();
     }
 

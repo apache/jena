@@ -13,7 +13,7 @@
   xmlns:owl   ="&owl;"
   xmlns:xsd   ="&xsd;"
   xml:base    ="http://example.org/foo"
-  xmlns       ="http://example.org/foo"
+  xmlns       ="http://example.org/foo#"
 >
 
 <owl:Class rdf:ID="A">
@@ -66,5 +66,21 @@
 		</owl:ObjectProperty>
 	</rdfs:subPropertyOf>
 </owl:ObjectProperty>
+
+<owl:TransitiveProperty rdf:ID="q" />
+
+<F0 rdf:ID="i0" />
+<F0 rdf:ID="i1" />
+<F0 rdf:ID="i2" />
+
+<F0 rdf:ID="q0">
+	<q>
+		<F0 rdf:ID="q1">
+			<q>
+				<F0 rdf:ID="q2" />
+			</q>
+		</F0>
+	</q>
+</F0>
 
 </rdf:RDF>

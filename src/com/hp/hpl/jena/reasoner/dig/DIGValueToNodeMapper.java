@@ -5,9 +5,9 @@
  * Author email       ian.dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10-Dec-2003
- * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            04-Dec-2003
+ * Filename           $RCSfile: DIGValueToNodeMapper.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-12 23:41:22 $
@@ -22,25 +22,27 @@
 package com.hp.hpl.jena.reasoner.dig;
 
 
+
 // Imports
 ///////////////
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.util.iterator.Map1;
 
 
 /**
  * <p>
- * Translator to map owl:equivalentClass to the DIG &lt;equivalents&gt; query.
+ * Mapper to map DIG identifier names and concrete value elements to Jena graph nodes.
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.3 2003-12-12 23:41:22 ian_dickinson Exp $
+ * @version CVS $Id: DIGValueToNodeMapper.java,v 1.1 2003-12-12 23:41:22 ian_dickinson Exp $
  */
-public class DIGQueryEquivalentsTranslator 
-    extends DIGQueryTranslator
+public class DIGValueToNodeMapper 
+    implements Map1
 {
     // Constants
     //////////////////////////////////
@@ -51,60 +53,57 @@ public class DIGQueryEquivalentsTranslator
     // Instance variables
     //////////////////////////////////
 
-    /** Flag for whether the free variable is on the lhs or the rhs */
-    protected boolean m_subjectFree;
-    
-    
     // Constructors
     //////////////////////////////////
-
-    /**
-     * <p>Construct a translator for the DIG query 'equivalents'.</p>
-     * @param predicate The predicate URI to trigger on
-     * @param lhs If true, the free variable is the subject of the triple
-     */
-    public DIGQueryEquivalentsTranslator( String predicate, boolean subjectFree ) {
-        super( null, predicate, null );
-        m_subjectFree = subjectFree;
-    }
-    
 
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * <p>Answer a query that will generate the class hierachy for a concept</p>
-     */
-    public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
-        DIGConnection dc = da.getConnection();
-        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        
-        Element equivalents = da.addElement( query.getDocumentElement(), DIGProfile.EQUIVALENTS );
-        da.addClassDescription( equivalents, m_subjectFree ? pattern.getObject() : pattern.getSubject() );
-        
-        return query;
-    }
-
 
     /**
-     * <p>Answer an iterator of triples that match the original find query.</p>
+     * <p>Return the node corresponding to the given element; either a literal
+     * node for ival and sval values, or a URI node for named elements.</p>
+     * @param o An object, expected to be an XML element
      */
-    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        return translateConceptSetResponse( response, query, !m_subjectFree );
-    }
-    
-    
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
-        return m_subjectFree || subject.isConcrete();
-    }
-    
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
-        return !m_subjectFree || object.isConcrete();
+    public Object map1( Object o ) {
+        if (o instanceof Element) {
+            // we know that this mapper is applied to lists of Elements
+            Element elem = (Element) o;
+            
+            if (elem.getNodeName().equals( DIGProfile.IVAL )) {
+                // this is an integer element
+                return Node.createLiteral( elem.getNodeValue(), null, XSDDatatype.XSDint );
+            }
+            else if (elem.getNodeName().equals( DIGProfile.SVAL )) {
+                // this is an integer element
+                return Node.createLiteral( elem.getNodeValue(), null, XSDDatatype.XSDstring );
+            }
+            else if (elem.hasAttribute( DIGProfile.NAME )) {
+                return convertNameToNode( elem.getAttribute( DIGProfile.NAME ) );
+            }
+        }
+        else if (o instanceof String) {
+            return convertNameToNode( (String) o );
+        }
+
+        throw new IllegalArgumentException( "Cannot map value " + o + " to an RDF node because it is not a recognised type" );
     }
 
 
     // Internal implementation methods
     //////////////////////////////////
+
+    /** Answer the node with the given name. It may be the node ID of a bNode */
+    private Object convertNameToNode( String name ) {
+        if (name.startsWith( DIGAdapter.ANON_MARKER )) {
+            String anonID = name.substring( DIGAdapter.ANON_MARKER.length() );
+            return Node.createAnon( new AnonId( anonID ) );
+        }
+        else {
+            return Node.createURI( name );
+        }
+    }
+
 
     //==============================================================================
     // Inner class definitions
@@ -139,3 +138,4 @@ public class DIGQueryEquivalentsTranslator
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 00:08:05 $
+ * Last modified on   $Date: 2003-12-12 23:41:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPath;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.6 2003-12-12 00:08:05 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.7 2003-12-12 23:41:22 ian_dickinson Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -117,15 +117,16 @@ public abstract class DIGQueryTranslator {
     /**
      * <p>Answer true if this translator applies to the given triple pattern.</p>
      * @param pattern An incoming patter to match against
+     * @param da The current dig adapter
      * @return True if this translator applies to the pattern.
      */
-    public boolean trigger( TriplePattern pattern ) {
+    public boolean trigger( TriplePattern pattern, DIGAdapter da ) {
         return trigger( m_subject, pattern.getSubject() ) &&
                trigger( m_object, pattern.getObject() )   &&
                trigger( m_pred, pattern.getPredicate() )  &&
-               checkSubject( pattern.getSubject() )       &&
-               checkObject( pattern.getObject() )         &&
-               checkObject( pattern.getPredicate() );
+               checkSubject( pattern.getSubject(), da )       &&
+               checkObject( pattern.getObject(), da )         &&
+               checkPredicate( pattern.getPredicate(), da );
     }
     
     
@@ -133,9 +134,10 @@ public abstract class DIGQueryTranslator {
      * <p>Additional test on the subject of the incoming find pattern. Default
      * is to always match</p>
      * @param subject The subject resource from the incoming pattern
+     * @param da The current dig adapter
      * @return True if this subject matches the trigger condition expressed by this translator instance
      */
-    public boolean checkSubject( Node subject ) {
+    public boolean checkSubject( Node subject, DIGAdapter da ) {
         return true;
     }
     
@@ -144,9 +146,10 @@ public abstract class DIGQueryTranslator {
      * <p>Additional test on the object of the incoming find pattern. Default
      * is to always match</p>
      * @param object The object resource from the incoming pattern
+     * @param da The current dig adapter
      * @return True if this object matches the trigger condition expressed by this translator instance
      */
-    public boolean checkObject( Node object ) {
+    public boolean checkObject( Node object, DIGAdapter da ) {
         return true;
     }
     
@@ -155,9 +158,10 @@ public abstract class DIGQueryTranslator {
      * <p>Additional test on the predicate of the incoming find pattern. Default
      * is to always match</p>
      * @param pred The predicate resource from the incoming pattern
+     * @param da The current dig adapter
      * @return True if this predicate matches the trigger condition expressed by this translator instance
      */
-    public boolean checkPredicate( Node pred ) {
+    public boolean checkPredicate( Node pred, DIGAdapter da ) {
         return true;
     }
 
@@ -229,28 +233,12 @@ public abstract class DIGQueryTranslator {
      * or object position in the returned triple.</p>
      * @param response The response XML document
      * @param query The original query
-     * @param da The DIG adapter object being used
      * @param object Flag to indicate that the concept names should occupy the subject field
      * of the returned triple, otherwise the object
      */
-    protected ExtendedIterator translateConceptSetResponse( Document response, TriplePattern query, DIGAdapter da, boolean object ) {
-        // evaluate a path through the return value to give us an iterator over catom names
-        ExtendedIterator catomNames = new SimpleXMLPath( true )
-                                          .appendElementPath( DIGProfile.CONCEPT_SET )
-                                          .appendElementPath( DIGProfile.SYNONYMS )
-                                          .appendElementPath( DIGProfile.CATOM )
-                                          .appendAttrPath( DIGProfile.NAME )
-                                          .getAll( response );
-        
-        ExtendedIterator catomNodes = catomNames.mapWith( new NameToNodeMapper() );
-        
-        // return the results as triples
-        if (object) {
-            return catomNodes.mapWith( new TripleObjectFiller( query.getSubject(), query.getPredicate() ) );
-        }
-        else {
-            return catomNodes.mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
-        }
+    protected ExtendedIterator translateConceptSetResponse( Document response, TriplePattern query, boolean object ) {
+        return translateNameSetResponse( response, query, object, 
+                                         new String[] {DIGProfile.CONCEPT_SET, DIGProfile.SYNONYMS, DIGProfile.CATOM} );
     }
     
 
@@ -260,27 +248,59 @@ public abstract class DIGQueryTranslator {
      * or object position in the returned triple.</p>
      * @param response The response XML document
      * @param query The original query
-     * @param da The DIG adapter object being used
      * @param object Flag to indicate that the role names should occupy the subject field
      * of the returned triple, or the object
      */
-    protected ExtendedIterator translateRoleSetResponse( Document response, TriplePattern query, DIGAdapter da, boolean object ) {
+    protected ExtendedIterator translateRoleSetResponse( Document response, TriplePattern query, boolean object ) {
+        return translateNameSetResponse( response, query, object, 
+                                         new String[] {DIGProfile.ROLE_SET, DIGProfile.SYNONYMS, DIGProfile.RATOM} );
+    }
+    
+
+    /**
+     * <p>Translate an instance set document into an extended iterator
+     * of triples, placing the concept identities into either the subject
+     * or object position in the returned triple.</p>
+     * @param response The response XML document
+     * @param query The original query
+     * @param object Flag to indicate that the instance names should occupy the subject field
+     * of the returned triple, or the object
+     */
+    protected ExtendedIterator translateIndividualSetResponse( Document response, TriplePattern query, boolean object ) {
+        return translateNameSetResponse( response, query, object, 
+                                         new String[] {DIGProfile.INDIVIDUAL_SET, DIGProfile.INDIVIDUAL} );
+    }
+    
+
+    /**
+     * <p>Translate an document encoding a set of named entities into an extended iterator
+     * of triples, placing the concept identities into either the subject
+     * or object position in the returned triple.</p>
+     * @param response The response XML document
+     * @param query The original query
+     * @param object Flag to indicate that the instance names should occupy the subject field
+     * of the returned triple, or the object
+     * @param path The element name path to follow from the root
+     */
+    protected ExtendedIterator translateNameSetResponse( Document response, TriplePattern query, boolean object, String[] path ) {
         // evaluate a path through the return value to give us an iterator over catom names
-        ExtendedIterator ratomNames = new SimpleXMLPath( true )
-                                          .appendElementPath( DIGProfile.ROLE_SET )
-                                          .appendElementPath( DIGProfile.SYNONYMS )
-                                          .appendElementPath( DIGProfile.RATOM )
-                                          .appendAttrPath( DIGProfile.NAME )
-                                          .getAll( response );
+        SimpleXMLPath p = new SimpleXMLPath( true );
         
-        ExtendedIterator ratomNodes = ratomNames.mapWith( new NameToNodeMapper() );
+        // build the path
+        for (int i = 0;  i < path.length; i++) {
+            p.appendElementPath( path[i] );
+        }
+        p.appendAttrPath( DIGProfile.NAME );
+        
+        // and evaluate it
+        ExtendedIterator iNodes = p.getAll( response ).mapWith( new DIGValueToNodeMapper() );
         
         // return the results as triples
         if (object) {
-            return ratomNodes.mapWith( new TripleObjectFiller( query.getSubject(), query.getPredicate() ) );
+            return iNodes.mapWith( new TripleObjectFiller( query.getSubject(), query.getPredicate() ) );
         }
         else {
-            return ratomNodes.mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
+            return iNodes.mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
         }
     }
     

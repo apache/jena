@@ -2,12 +2,12 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       ian.dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10-Dec-2003
- * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            July 19th 2003
+ * Filename           $RCSfile: DIGQueryTypesTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-12 23:41:22 $
@@ -15,7 +15,7 @@
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- *****************************************************************************/
+ * ****************************************************************************/
 
 // Package
 ///////////////
@@ -24,24 +24,29 @@ package com.hp.hpl.jena.reasoner.dig;
 
 // Imports
 ///////////////
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
 import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
+
 
 
 /**
  * <p>
- * Translator to map owl:equivalentClass to the DIG &lt;equivalents&gt; query.
+ * Translator that generates DIG 'types' queries in response to a find queries:
+ * <pre>
+ * :i rdf:type *
+ * </pre>
+ * or similar.
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.3 2003-12-12 23:41:22 ian_dickinson Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version Release @release@ ($Id: DIGQueryTypesTranslator.java,v 1.1 2003-12-12 23:41:22 ian_dickinson Exp $)
  */
-public class DIGQueryEquivalentsTranslator 
+public class DIGQueryTypesTranslator 
     extends DIGQueryTranslator
 {
+
     // Constants
     //////////////////////////////////
 
@@ -51,36 +56,32 @@ public class DIGQueryEquivalentsTranslator
     // Instance variables
     //////////////////////////////////
 
-    /** Flag for whether the free variable is on the lhs or the rhs */
-    protected boolean m_subjectFree;
-    
     
     // Constructors
     //////////////////////////////////
 
     /**
-     * <p>Construct a translator for the DIG query 'equivalents'.</p>
+     * <p>Construct a translator for the DIG query 'instances'.</p>
      * @param predicate The predicate URI to trigger on
-     * @param lhs If true, the free variable is the subject of the triple
      */
-    public DIGQueryEquivalentsTranslator( String predicate, boolean subjectFree ) {
-        super( null, predicate, null );
-        m_subjectFree = subjectFree;
+    public DIGQueryTypesTranslator( String predicate ) {
+        super( null, predicate, ALL );
     }
     
 
     // External signature methods
     //////////////////////////////////
 
+
     /**
-     * <p>Answer a query that will generate the class hierachy for a concept</p>
+     * <p>Answer a query that will list the instances of a concept</p>
      */
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         
-        Element equivalents = da.addElement( query.getDocumentElement(), DIGProfile.EQUIVALENTS );
-        da.addClassDescription( equivalents, m_subjectFree ? pattern.getObject() : pattern.getSubject() );
+        Element instances = da.addElement( query.getDocumentElement(), DIGProfile.TYPES );
+        da.addNamedElement( instances, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getSubject() ) );
         
         return query;
     }
@@ -90,16 +91,13 @@ public class DIGQueryEquivalentsTranslator
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        return translateConceptSetResponse( response, query, !m_subjectFree );
+        // translate the concept set to triples, but then we must add :a rdfs:subClassOf :a to match owl semantics
+        return translateConceptSetResponse( response, query, true );
     }
     
     
     public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
-        return m_subjectFree || subject.isConcrete();
-    }
-    
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
-        return !m_subjectFree || object.isConcrete();
+        return subject.isConcrete() && da.isIndividual( subject );
     }
 
 

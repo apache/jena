@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryIsEquivalentTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 00:08:05 $
+ * Last modified on   $Date: 2003-12-12 23:41:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPath;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.1 2003-12-12 00:08:05 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.2 2003-12-12 23:41:22 ian_dickinson Exp $
  */
 public class DIGQueryIsEquivalentTranslator 
     extends DIGQueryTranslator
@@ -110,11 +110,11 @@ public class DIGQueryIsEquivalentTranslator
     }
     
     
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject ) {
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
         return subject.isConcrete();
     }
     
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object ) {
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da ) {
         return object.isConcrete();
     }
 

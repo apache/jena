@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryAllConceptsTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-09 13:02:30 $
+ * Last modified on   $Date: 2003-12-12 23:41:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -26,7 +26,6 @@ import org.w3c.dom.Document;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.xml.SimpleXMLPath;
 
 
 // Imports
@@ -42,7 +41,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPath;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryAllConceptsTranslator.java,v 1.3 2003-12-09 13:02:30 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryAllConceptsTranslator.java,v 1.4 2003-12-12 23:41:22 ian_dickinson Exp $)
  */
 public class DIGQueryAllConceptsTranslator 
     extends DIGQueryTranslator
@@ -75,33 +74,29 @@ public class DIGQueryAllConceptsTranslator
 
 
     /**
-     * <p>Answer a query that will list all concept names</p>
+     * <p>Since known concept names are cached by the adapter, we can just look up the
+     * current set and map directly to triples</p>
+     * @param pattern The pattern to translate to a DIG query
+     * @param da The DIG adapter through which we communicate with a DIG reasoner
      */
+    public ExtendedIterator find( TriplePattern pattern, DIGAdapter da ) {
+        return WrappedIterator.create( da.getKnownConcepts().iterator() )
+                              .mapWith( new DIGValueToNodeMapper() )
+                              .mapWith( new TripleSubjectFiller( pattern.getPredicate(), pattern.getObject() ) );
+    }
+    
+    
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
-        DIGConnection dc = da.getConnection();
-        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        da.addElement( query.getDocumentElement(), DIGProfile.ALL_CONCEPT_NAMES );
-        return query;
+        // not used
+        return null;
     }
 
 
-    /**
-     * <p>Answer an iterator of triples that match the original find query.</p>
-     */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        // evaluate a path through the return value to give us an iterator over catom names
-        ExtendedIterator catomNames = new SimpleXMLPath( true )
-                                          .appendElementPath( DIGProfile.CONCEPT_SET )
-                                          .appendElementPath( DIGProfile.SYNONYMS )
-                                          .appendElementPath( DIGProfile.CATOM )
-                                          .appendAttrPath( DIGProfile.NAME )
-                                          .getAll( response );
-        // check for no results
-        catomNames = (catomNames == null) ? new NullIterator() : catomNames;
-        
-        return catomNames.mapWith( new NameToNodeMapper() )
-                         .mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
+        // not used
+        return null;
     }
+
 
     // Internal implementation methods
     //////////////////////////////////
