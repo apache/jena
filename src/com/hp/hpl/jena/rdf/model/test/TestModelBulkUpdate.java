@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelBulkUpdate.java,v 1.1 2003-04-23 11:00:15 chris-dollin Exp $
+  $Id: TestModelBulkUpdate.java,v 1.2 2003-04-23 13:07:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -69,6 +69,30 @@ public class TestModelBulkUpdate extends ModelTestBase
         m.remove( sList );
         testOmits( m, sArray );
         testOmits( m, sList );
+        }
+        
+    public void testBulkByModel()
+        { testBulkByModel( ModelFactory.createDefaultModel() ); }
+        
+    public void testBulkByModel( Model m )
+        {
+        assertEquals( "precondition: model must be empty", 0, m.size() );
+        Model A = modelWithStatements( "clouds offer rain; trees offer shelter" );
+        Model B = modelWithStatements( "x R y; y Q z; z P x" );
+        m.add( A );
+        assertIsoModels( "", A, m );
+        m.add( B );
+        m.remove( A );
+        assertIsoModels( "", B, m );
+        m.remove( B );
+        assertEquals( "", 0, m.size() );
+        }
+        
+    public void testBulkRemoveSelf()
+        {
+        Model m = modelWithStatements( "they sing together; he sings alone" );
+        m.remove( m );
+        assertEquals( "", 0, m.size() );
         }
         
     }

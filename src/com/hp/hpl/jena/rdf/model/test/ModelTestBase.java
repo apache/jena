@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelTestBase.java,v 1.2 2003-04-23 11:00:15 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.3 2003-04-23 13:07:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -77,6 +77,20 @@ public class ModelTestBase extends JenaTestBase
     public static Model modelWithStatements( String facts )
         { return modelAdd( ModelFactory.createDefaultModel(), facts ); }
          
+     /**
+        test that two modes are isomorphic and fail if they are not.
+        
+        @param title a String appearing at the beginning of the failure message
+        @param wanted the model value that is expected
+        @param got the model value to check
+        @exception if the models are not isomorphic
+     */    
+    public void assertIsoModels( String title, Model wanted, Model got )
+        {
+        if (wanted.isIsomorphicWith( got ) == false)
+            fail( title + ": expected " + wanted + " but had " + got );
+        }
+        
     }
 
 

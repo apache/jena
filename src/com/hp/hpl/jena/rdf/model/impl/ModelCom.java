@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2003-04-23 11:00:15 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2003-04-23 13:06:03 $'
  */
 
 public class ModelCom 
@@ -274,9 +274,7 @@ implements Model, ModelI, PrefixMapping
 		[TODO: Except this implementation delivers only a static Model]
 	*/
     public static Model withHiddenStatements( Model m )
-        {
-        return ModelReifier.withHiddenStatements( m );
-        }
+        { return ModelReifier.withHiddenStatements( m ); }
     
     public Model remove(Statement s) throws RDFException {
         graph.delete(s.asTriple());
@@ -288,7 +286,8 @@ implements Model, ModelI, PrefixMapping
         but no tests catch this. *iter.remove() does not work*, it will
         remove things from the wrong model. ARGH.
     */
-    public Model remove(StmtIterator iter) throws RDFException {
+    public Model remove( StmtIterator iter ) 
+        {
         while (iter.hasNext()) {
             Statement s = (Statement) iter.nextStatement();
             this.remove( s ); // iter.remove();
@@ -296,78 +295,79 @@ implements Model, ModelI, PrefixMapping
         return this;
     }
     
-    public Model remove(Model m) throws RDFException
+    /**
+        Utility method: return a list of all elements in a model. WARNING: if the
+        Model is big, then so is this list. 
+        
+        @param m the model whose triples are required
+        @return the list of its triples
+    */
+    private List triplesOf( Model m )
         {
-        StmtIterator iter = m.listStatements();
+        ArrayList L = new ArrayList();
+        Iterator it = m.getGraph().find( null, null, null );
+        while (it.hasNext()) L.add( it.next() );
+        return L;
+        }
+        
+    /**
+        Remove the contents of the model m from this model. If that graph depends
+        on this one (in particular, if it happens to *be* this one) then we go the long
+        way round, extracting the triples as a list and removing that. Otherwise we
+        call the bulk update directly on the underlying graphs.
+        
+         @param m the model to remove
+         @return this model, for cascading 
+    */
+    public Model remove( Model m ) 
+        {
+        BulkUpdateHandler bu = this.getGraph().getBulkUpdateHandler();
         if (m.getGraph().dependsOn( this.getGraph() ))
-            {
-            ArrayList X = new ArrayList();
-            while (iter.hasNext()) X.add( iter.nextStatement() );
-            for (int i = 0; i < X.size(); i += 1) this.remove( (Statement) X.get(i) );
-            }
+            bu.delete( triplesOf( m ) );
         else
-            {
-            try { remove(iter); }
-            finally { iter.close(); }
-            }
+            bu.delete( m.getGraph() );
         return this;
         }
         
-    public boolean contains(Resource s, Property p, boolean o)
-      throws RDFException {
-        return contains(s, p, String.valueOf( o ) );
-    }
+    public boolean contains( Resource s, Property p, boolean o )
+        { return contains(s, p, String.valueOf( o ) ); }
     
-    public boolean contains(Resource s, Property p, long o)
-      throws RDFException {
-        return contains(s, p, String.valueOf( o ) );
-    }
+    public boolean contains( Resource s, Property p, long o )
+        { return contains(s, p, String.valueOf( o ) ); }
     
-    public boolean contains(Resource s, Property p, char o)
-      throws RDFException {
-        return contains(s, p, String.valueOf( o ) );
-    }
+    public boolean contains( Resource s, Property p, char o )
+        { return contains(s, p, String.valueOf( o ) ); }
     
-    public boolean contains(Resource s, Property p, float o)
-      throws RDFException {
-        return contains(s, p, String.valueOf( o ) );
-    }
+    public boolean contains( Resource s, Property p, float o )
+        { return contains(s, p, String.valueOf( o ) ); }
     
-    public boolean contains(Resource s, Property p, double o)
-      throws RDFException {
-        return contains(s, p, String.valueOf( o ) );
-    }
+    public boolean contains( Resource s, Property p, double o )
+        { return contains(s, p, String.valueOf( o ) ); }
     
     public boolean contains(Resource s, Property p, String o)
-      throws RDFException {
-        return contains(s, p, o, "" );
-    }
+        { return contains(s, p, o, "" ); }
     
     public boolean contains(Resource s, Property p, String o, String l)
-      throws RDFException {
-        return contains( s, p, literal( o, l, false ) );
-    }
+        { return contains( s, p, literal( o, l, false ) ); }
     
     public boolean contains(Resource s, Property p, Object o)
-      throws RDFException {
-          return contains( s, p, ensureRDFNode( o ) );
-    }
+        { return contains( s, p, ensureRDFNode( o ) ); }
     
-    public boolean containsAny(StmtIterator iter) throws RDFException {
+    public boolean containsAny(StmtIterator iter) {
         while (iter.hasNext()) {
             if (contains(iter.nextStatement())) return true;
         }
         return false;
     }
     
-    public boolean containsAll(StmtIterator iter) throws RDFException {
+    public boolean containsAll(StmtIterator iter)  {
         while (iter.hasNext()) {
             if (!contains(iter.nextStatement())) return false;
         }
         return true;
     }
     
-    public boolean containsAny(Model model) throws RDFException {
+    public boolean containsAny(Model model) {
         StmtIterator iter = model.listStatements();
         try { return containsAny(iter); }
         finally { iter.close(); }
