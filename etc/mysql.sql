@@ -325,21 +325,21 @@ FROM ${a} S WHERE S.PropRes = ? AND S.GraphID = ?
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
 SelectAllReifStatement
-SELECT DISTINCT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
 FROM ${a} S WHERE S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
 # with the given statement URI
 SelectReifStatement
-SELECT DISTINCT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
 FROM ${a} S WHERE S.StmtURI = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
 # with the given statement URI and that have the HasType property defined
 SelectReifTypeStatement
-SELECT DISTINCT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
 FROM ${a} S WHERE S.StmtURI = ? AND HasType = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
@@ -386,6 +386,97 @@ INSERT INTO ${a} (SubjRes, PropRes, ObjLiteral, ObjStr, GraphID, StmtRes, HasTyp
 # and taking values as arguments
 insertReifStatementLiteralVal
 INSERT INTO ${a} (SubjRes, PropRes, ObjStr, GraphID, StmtRes, HasType) VALUES (?, ?, ?, ?, ?, ?)
+
+#-------------------------------------------------------------------
+# Update the subject of a reified statement 
+updateReifSubj
+UPDATE ${a} SET SubjRes=? WHERE StmtRes = ? AND GraphID = ?
+
+#-------------------------------------------------------------------
+# Update the property of a reified statement 
+updateReifProp
+UPDATE ${a} SET PropRes=? WHERE StmtRes = ? AND GraphID = ?
+
+#-------------------------------------------------------------------
+# Update the object of a reified statement 
+updateReifObj
+UPDATE ${a} SET ObjRes=?, ObjStr=? ObjLiteral=? WHERE StmtRes = ? AND GraphID = ?
+
+#-------------------------------------------------------------------
+# Update the hasType of a reified statement 
+updateReifHasType
+UPDATE ${a} SET HasType=? WHERE StmtRes = ? AND GraphID = ?
+
+#-------------------------------------------------------------------
+# Find the reified statements with the given subject 
+findFragSubj
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.StmtRes = ? AND S.SubjRes = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Find the reified statement with the given property 
+findFragProp
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.StmtRes = ? AND S.PropRes = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Find the reified statement with the given object resource
+findFragObjOU
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.StmtRes = ? AND S.ObjRes = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Find the reified statement with the given object string
+findFragObjOV
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.StmtRes = ? AND S.ObjStr = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Find the reified statement with the given object literal
+findFragObjOL
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.StmtRes = ? AND S.ObjLiteral = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Find the reified statement with the given hasType 
+findFragHasType
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE S.StmtRes = ? AND S.HasType = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Select all the statement URI's in a Reified Statement (triple store) graph
+# with the specified subject, property and literal (resource) 
+SelectReifURIbyTripleOU
+SELECT S.StmtRes
+FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjRes = ? AND S.GraphID = ? AND S.HasType = 1
+
+#-------------------------------------------------------------------
+# Select all the statement URI's in a Reified Statement (triple store) graph
+# with the specified subject, property and literal (string) 
+SelectReifURIbyTripleOV
+SELECT S.StmtRes
+FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjStr = ? AND S.GraphID = ? AND S.HasType = 1
+
+#-------------------------------------------------------------------
+# Select all the statement URI's in a Reified Statement (triple store) graph
+# with the specified subject, property and literal (reference) 
+SelectReifURIbyTripleOR
+SELECT S.StmtRes
+FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjLiteral = ? AND S.GraphID = ? AND S.HasType = 1
+
+#-------------------------------------------------------------------
+# Select all the statement URI's in a Reified Statement (triple store) graph
+# that partially reify something 
+SelectAllReifNodes
+SELECT DISTINCT S.StmtRes
+FROM ${a} S WHERE S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Determine if the statement URI's partially reifies anything in a Reified
+# Statement (triple store) graph
+SelectReifNode
+SELECT DISTINCT S.StmtRes
+FROM ${a} S WHERE S.StmtRes = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Drop all RDF generators from a database

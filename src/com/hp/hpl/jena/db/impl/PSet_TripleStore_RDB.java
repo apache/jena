@@ -16,7 +16,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -57,7 +56,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.12 $ on $Date: 2003-05-06 16:58:24 $
+* @version $Revision: 1.13 $ on $Date: 2003-05-07 21:30:32 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -403,7 +402,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	* Convert a node (blank or URI only) to a string.
 	* @return the string.
 	*/
-    protected String nodeToRDBString ( Node blankOrURI ) throws RDFRDBException {
+    public static String nodeToRDBString ( Node blankOrURI ) throws RDFRDBException {
     	String res;
     	if ( blankOrURI.isBlank() ) {
     		res = BlankNodeRDBPrefix + blankOrURI.getBlankNodeId().toString();
@@ -422,7 +421,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	* Convert an RDB string to a node (blank or URI only).
 	* @return the node.
 	*/
-	protected Node RDBStringToNode ( String RDBString ) {
+	public static Node RDBStringToNode ( String RDBString ) {
 		Node res;
 		if ( RDBString.startsWith(BlankNodeRDBPrefix) ) {
 			res = Node.createAnon( new AnonId (RDBString.substring(BlankNodeRDBPrefix.length())) );
@@ -444,12 +443,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		return (ls.length() < MAX_LITERAL) && !((literalHasLang(ll) || literalHasType(ll)));
 	}
 	
-	protected boolean literalHasLang ( LiteralLabel ll ) {
+	protected static boolean literalHasLang ( LiteralLabel ll ) {
 		String lang = ll.language();		
 		return ((lang != null)  && !lang.equals(""));
 	}
 
-	protected boolean literalHasType ( LiteralLabel ll ) {
+	protected static boolean literalHasType ( LiteralLabel ll ) {
 		String dtype = ll.getDatatypeURI();		
 		return ((dtype != null) && !dtype.equals(""));
 	}
@@ -759,7 +758,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 **/
   public void deleteTripleAR(Triple t, 
   					IDBID graphID, 
-					Node_URI reifNode,					 
+					Node reifNode,					 
 					boolean isBatch, 
   					Hashtable batchedPreparedStatements) {
 	String objURI;
@@ -938,7 +937,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		 **/
 	  public void storeTripleAR(Triple t, 
 	  						IDBID graphID,
-	  						Node_URI reifNode,
+	  						Node reifNode,
 	  						boolean hasType, 
 	  						boolean isBatch, 
 	  						Hashtable batchedPreparedStatements) {
@@ -956,16 +955,21 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		}
 		   
 		String obj_res, obj_lex, obj_lit;
-		String subjURI =  nodeToRDBString(t.getSubject());
-		String predURI =  nodeToRDBString(t.getPredicate());
-		Node obj_node = t.getObject();
+		// TODO: Node.ANY is only valid for reif triple stores. should check this.
+		String subjURI =  t.getSubject() == Node.ANY ? null : nodeToRDBString(t.getSubject());
+		String predURI =   t.getSubject() == Node.ANY ? null : nodeToRDBString(t.getPredicate());
+		Node obj_node =  t.getSubject() == Node.ANY ? null : t.getObject();
 		String gid = graphID.getID().toString();
 		String	stmtStr;
+		
+		if ( (subjURI == null) || (predURI == null) || (obj_node == null) )
+			if ( !isReif )
+				throw new RuntimeException("Attempt to assert triple with missing values");
 	   	   
 	   PreparedStatement ps = null;
 	
-	   if ( obj_node.isURI() || obj_node.isBlank() ) {
-		 objURI = nodeToRDBString(obj_node);
+	   if ( (obj_node == null) || obj_node.isURI() || obj_node.isBlank() ) {
+		 objURI = obj_node == null ? null : nodeToRDBString(obj_node);
 		 try {
 				stmtStr = isReif ? "insertReifStatementObjectURI" : "insertStatementObjectURI";
 		 	    ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
@@ -973,7 +977,10 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		  	  	ps.clearParameters();	
 		      	ps.setString(1,subjURI);
 		      	ps.setString(2,predURI);
-		      	ps.setString(3,objURI);
+		      	if ( objURI == null )
+		      		ps.setNull(3,java.sql.Types.VARCHAR);
+		      	else 
+		      		ps.setString(3,objURI);
 		      	ps.setString(4,gid);
 		      	
 			if ( isReif ) {

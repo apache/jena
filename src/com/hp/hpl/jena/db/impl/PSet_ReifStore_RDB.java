@@ -5,36 +5,16 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.sql.BatchUpdateException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.zip.CRC32;
 
-import com.hp.hpl.jena.datatypes.BaseDatatype;
-import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.LiteralLabel;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
-import com.hp.hpl.jena.graph.Node_URI;
-import com.hp.hpl.jena.graph.StandardTripleMatch;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 
 //=======================================================================
 /**
@@ -54,110 +34,426 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.1 $ on $Date: 2003-05-06 05:04:14 $
+* @version $Revision: 1.2 $ on $Date: 2003-05-07 21:29:32 $
 */
 
-public  class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
+public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
-//=======================================================================
-// Cutomization variables
+	//=======================================================================
+	// Cutomization variables
 
-   public static String SYS_AS_TNAME = "JENA_StmtReified";
-   
-//=======================================================================
-// Internal variables
+	public static String SYS_AS_TNAME = "JENA_StmtReified";
 
-//=======================================================================
-// Constructors and accessors
+	//=======================================================================
+	// Internal variables
 
-    /**
-     * Constructor.
-     */
-    public PSet_ReifStore_RDB(){
-    }
-    	    
+	//=======================================================================
+	// Constructors and accessors
 
-    
-//=======================================================================
-// Database operations
-
-
-	public void storeReifStmt( Node_URI n, Triple t, IDBID my_GID ) {
-		storeTripleAR( t, my_GID, n, true, false, null);
+	/**
+	 * Constructor.
+	 */
+	public PSet_ReifStore_RDB() {
 	}
 
-	public void deleteReifStmt( Node_URI n, Triple t, IDBID my_GID ) {
-		deleteTripleAR( t, my_GID, n, false, null);
+	//=======================================================================
+	// Database operations
+
+	public void storeReifStmt(Node n, Triple t, IDBID my_GID) {
+		storeTripleAR(t, my_GID, n, true, false, null);
+	}
+
+	public void deleteReifStmt(Node n, Triple t, IDBID my_GID) {
+		deleteTripleAR(t, my_GID, n, false, null);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.IPSet#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.IDBID)
 	 */
-	public ExtendedIterator findReifNodes(Node reifNode, boolean hasType, IDBID graphID) {
-	   String astName = getASTname();
-	   String gid = graphID.getID().toString();
-	   ResultSetTripleIterator result= new ResultSetTripleIterator(this, graphID);
-	   
-	   PreparedStatement ps = null;
-		
-	   boolean objIsBlankOrURI = false;
-	   int args = 1;
-	   String stmtStr;
-	   boolean findAll = reifNode == null;
-	   
-	   stmtStr = findAll ? "SelectAllReifStatement" :
-	   				hasType ? "SelectReifTypeStatement" : "SelectReifStatement";
-	   try {
-	   ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
-	   
-	   if ( findAll ) {
-	   		String stmt_uri = nodeToRDBString(reifNode);
-			ps.setString(1,stmt_uri);
-			if ( hasType )
-				ps.setInt(2,1);
-	   }
-	   
-	   ps.setString(3,gid);
-	   	   
-	   } catch (Exception e) {
-			   	Log.warning("Getting prepared statement for " + stmtStr + " Caught exception " + e);
-			   }
-			   
-	   try {
-		  m_sql.executeSQL(ps, stmtStr, result);
-	   } catch (Exception e) {
-		 Log.debug("find encountered exception " + e);
-	   }
-	   return ((ExtendedIterator) result);
-   }
+	public ResultSetTripleIterator findReifStmt(
+		Node stmtURI,
+		boolean hasType,
+		IDBID graphID) {
+		String astName = getASTname();
+		String gid = graphID.getID().toString();
+		ResultSetTripleIterator result =
+			new ResultSetTripleIterator(this, true, graphID);
 
-}
+		PreparedStatement ps = null;
 
-/*
- *  (c) Copyright Hewlett-Packard Company 2000-2003
- *  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
+		boolean objIsBlankOrURI = false;
+		int args = 1;
+		String stmtStr;
+		boolean findAll = stmtURI == null;
 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+		stmtStr =
+			findAll
+				? "SelectAllReifStatement"
+				: hasType
+				? "SelectReifTypeStatement"
+				: "SelectReifStatement";
+		try {
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+
+			if (findAll) {
+				String stmt_uri = nodeToRDBString(stmtURI);
+				ps.setString(1, stmt_uri);
+				if (hasType)
+					ps.setInt(2, 1);
+			}
+
+			ps.setString(3, gid);
+
+		} catch (Exception e) {
+			Log.warning(
+				"Getting prepared statement for "
+					+ stmtStr
+					+ " Caught exception "
+					+ e);
+		}
+
+		try {
+			m_sql.executeSQL(ps, stmtStr, result);
+		} catch (Exception e) {
+			Log.debug("find encountered exception " + e);
+		}
+		return result;
+	}
 	
+	/*
+	 * (non-Javadoc)
+	 * return all nodes which reify the triple as a statement. no
+	 * need to do distinct here since we only return nodes for reified statments.
+	 */
+	
+	public ExtendedIterator findReifStmtURIByTriple(Triple t, IDBID my_GID) {
+		String stmtStr = null;
+		int argc = 1;
+		PreparedStatement ps = null;
+		ResultSetIterator result = new ResultSetIterator();
+
+		stmtStr = "SelectReifURIByTriple";
+		try {
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+			ps.clearParameters();
+			ps.setString(argc++, nodeToRDBString(t.getSubject()));
+			ps.setString(argc++, nodeToRDBString(t.getPredicate()));
+			Node obj = t.getObject();
+			// find on object field
+			if (obj.isURI() || obj.isBlank()) {
+				stmtStr += "OU";
+				ps.setString(argc++, nodeToRDBString(obj));
+			} else {
+				Node_Literal litNode = (Node_Literal) obj;
+				LiteralLabel ll = litNode.getLiteral();
+				String lval = (String) ll.getValue();
+				boolean litIsPlain = literalIsPlain(ll);
+
+				if (litIsPlain) {
+					// object literal can fit in statement table
+					stmtStr += "OV";
+					ps.setString(argc++, lval);
+				} else {
+					// belongs in literal table
+					stmtStr += "OR";
+					String litIdx = getLiteralIdx(lval);
+					// TODO This happens in several places?
+					IDBID lid = getLiteralID(litNode);
+					if (lid == null) {
+						lid = addLiteral(litNode);
+					}
+					ps.setString(argc++, litIdx);
+					ps.setString(argc++, lid.getID().toString());
+				}
+			}
+			ps.setString(argc, my_GID.getID().toString());
+		} catch (Exception e) {
+			Log.warning(
+				"Getting prepared statement for "
+					+ stmtStr
+					+ " Caught exception "
+					+ e);
+		}
+
+		// find on object field
+		try {
+			m_sql.executeSQL(ps, stmtStr, result);
+		} catch (Exception e) {
+			Log.debug("find encountered exception " + e);
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+		*  return (distinct) nodes which reify something (have any fragment)
+		*/
+
+	public ExtendedIterator findReifNodes(Node stmtURI, IDBID graphID) {
+		String astName = getASTname();
+		String gid = graphID.getID().toString();
+		ResultSetIterator result = new ResultSetIterator();
+		int argc = 1;
+		PreparedStatement ps = null;
+
+		String stmtStr =
+			stmtURI == null ? "SelectAllReifNodes" : "SelectReifNode";
+		try {
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+
+			if (stmtURI != null) {
+				String stmt_uri = nodeToRDBString(stmtURI);
+				ps.setString(argc++, stmt_uri);
+			}
+
+			ps.setString(argc, gid);
+
+		} catch (Exception e) {
+			Log.warning(
+				"Getting prepared statement for "
+					+ stmtStr
+					+ " Caught exception "
+					+ e);
+		}
+
+		try {
+			result = m_sql.executeSQL(ps, stmtStr, result);
+		} catch (Exception e) {
+			Log.debug("find encountered exception " + e);
+		}
+		return result;
+	}
+
+	public void storeFrag(
+		Node stmtURI,
+		Triple frag,
+		StmtMask fragMask,
+		IDBID my_GID) {
+		Node subj = fragMask.hasSubj() ? frag.getSubject() : Node.ANY;
+		Node prop = fragMask.hasProp() ? frag.getPredicate() : Node.ANY;
+		Node obj = fragMask.hasObj() ? frag.getObject() : Node.ANY;
+		Triple t = new Triple(subj, prop, obj);
+		storeTripleAR(t, my_GID, stmtURI, fragMask.hasType(), false, null);
+	}
+
+	public void updateOneFrag(
+		Node stmtURI,
+		Triple frag,
+		StmtMask fragMask,
+		boolean nullify,
+		IDBID my_GID) {
+			
+			String stmtStr = null;
+			Node val = null;
+			int argc = 1;
+			
+			if ( !fragMask.hasOneBit() )
+				throw new RuntimeException("Reification can only update one column");
+			PreparedStatement ps = null;
+
+			if ( fragMask.hasSubj() ) {
+				stmtStr = "UpdateReifSubj";
+				if ( !nullify ) val = frag.getSubject();
+			} else if ( fragMask.hasProp() ) {
+				stmtStr = "UpdateReifProp";
+				if ( !nullify ) val = frag.getSubject();
+			} else if ( fragMask.hasObj() ) {
+				stmtStr = "UpdateReifObj";
+				if ( !nullify ) val = frag.getSubject();
+			} else if ( fragMask.hasType() ) {
+				stmtStr = "UpdateReifHasType";
+				if ( !nullify ) val = frag.getSubject();
+			} 
+				
+			try {
+				ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+				ps.clearParameters();
+				if ( fragMask.hasSubj() || fragMask.hasProp() ) {
+					if (nullify)
+						ps.setNull(argc++,java.sql.Types.VARCHAR);
+					else
+						ps.setString(argc++,nodeToRDBString(val));
+					ps.setString(argc++,my_GID.getID().toString());
+				} else if ( fragMask.hasObj() ){
+					// update object field
+					if (nullify) {
+						ps.setNull(argc++,java.sql.Types.VARCHAR);
+						ps.setNull(argc++,java.sql.Types.BINARY);
+						ps.setNull(argc++,java.sql.Types.INTEGER);
+					} else {
+						if ( val.isURI() || val.isBlank() ) {
+						  ps.setString(argc++,nodeToRDBString(val));
+						  ps.setNull(argc++,java.sql.Types.BINARY);
+						  ps.setNull(argc++,java.sql.Types.INTEGER);
+						} else {
+							Node_Literal litNode = (Node_Literal)val;
+							LiteralLabel ll = litNode.getLiteral();
+							String lval = (String)ll.getValue();
+							boolean litIsPlain = literalIsPlain(ll);
+		  
+							if (litIsPlain) {
+							  // object literal can fit in statement table
+							  ps.setNull(argc++,java.sql.Types.VARCHAR);
+							  ps.setString(argc++, lval);
+							  ps.setNull(argc++,java.sql.Types.INTEGER);
+							} else {
+								// belongs in literal table
+							   String litIdx = getLiteralIdx(lval); // TODO This happens in several places?
+							   IDBID lid = getLiteralID(litNode);
+							   if (lid == null) {
+								 lid = addLiteral(litNode);
+							   }
+							   ps.setNull(argc++,java.sql.Types.VARCHAR);
+							   ps.setString(argc++,litIdx);
+							   ps.setString(argc++,lid.getID().toString());
+							}
+						}
+
+					}
+				} else {
+					// update hasType field
+					if ( nullify )
+						ps.setNull(argc++,java.sql.Types.INTEGER);
+					else
+						ps.setInt(argc++,1);
+				}
+				ps.setString(argc++,nodeToRDBString(stmtURI));
+				ps.setString(argc++,my_GID.getID().toString());
+			} catch (Exception e) {
+				Log.warning(
+					"Getting prepared statement for "
+						+ stmtStr
+						+ " Caught exception "
+						+ e);
+			}
+			try {
+	  			ps.executeUpdate();
+ 			 } catch (SQLException e1) {
+				 Log.severe("SQLException caught during reification update" + e1.getErrorCode() + ": " + e1);
+	 		}
+		}
+
+	public void nullifyFrag(Node stmtURI, StmtMask fragMask, IDBID my_GID) {
+		updateOneFrag(stmtURI,null,fragMask,true,my_GID);
+	}
+	
+	public void updateFrag(
+		Node stmtURI,
+		Triple frag,
+		StmtMask fragMask,
+		IDBID my_GID) {		
+			updateOneFrag(stmtURI,frag,fragMask,false,my_GID);
+		}
+
+	public ResultSetTripleIterator findFrag(
+		Node stmtURI,
+		Triple frag,
+		StmtMask fragMask,
+		IDBID my_GID) {
+			
+			String stmtStr = null;;
+			Node val = null;
+			int argc = 1;
+			ResultSetTripleIterator result =
+				new ResultSetTripleIterator(this, true, my_GID);
+		
+			if ( !fragMask.hasOneBit() )
+				throw new RuntimeException("Reification can only find one column");
+			PreparedStatement ps = null;
+
+			if ( fragMask.hasSubj() ) {
+				stmtStr = "FindFragSubj";
+				val = frag.getSubject();
+			} else if ( fragMask.hasProp() ) {
+				stmtStr = "FindFragProp";
+				val = frag.getSubject();
+			} else if ( fragMask.hasObj() ) {
+				stmtStr = "FindFragObj";
+				val = frag.getSubject();
+			} else if ( fragMask.hasType() ) {
+				stmtStr = "FindFragHasType";
+				val = frag.getSubject();
+			}
+				
+			try {
+				ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+				ps.clearParameters();
+				ps.setString(argc++,nodeToRDBString(stmtURI));
+				if ( fragMask.hasSubj() || fragMask.hasProp() ) {
+					ps.setString(argc++,nodeToRDBString(val));
+					ps.setString(argc++,my_GID.getID().toString());
+				} else if ( fragMask.hasObj() ){
+					// find on object field
+					if ( val.isURI() || val.isBlank() ) {
+						stmtStr += "OU";
+						ps.setString(argc++,nodeToRDBString(val));
+					} else {
+						Node_Literal litNode = (Node_Literal)val;
+						LiteralLabel ll = litNode.getLiteral();
+						String lval = (String)ll.getValue();
+						boolean litIsPlain = literalIsPlain(ll);
+		  
+						if (litIsPlain) {
+							 // object literal can fit in statement table
+							stmtStr += "OV";
+							ps.setString(argc++, lval);
+						} else {
+							// belongs in literal table
+							stmtStr += "OR";
+							String litIdx = getLiteralIdx(lval); // TODO This happens in several places?
+							IDBID lid = getLiteralID(litNode);
+							if (lid == null) {
+								lid = addLiteral(litNode);
+							 }
+							 ps.setString(argc++,litIdx);
+							 ps.setString(argc++,lid.getID().toString());
+						}
+					}
+				} else {
+					// find on hasType field
+					ps.setInt(argc++,1);
+				}
+				ps.setString(argc,my_GID.getID().toString());
+				
+			} catch (Exception e) {
+				Log.warning(
+					"Getting prepared statement for "
+						+ stmtStr
+						+ " Caught exception "
+						+ e);
+			}
+
+			try {
+				m_sql.executeSQL(ps, stmtStr, result);
+			} catch (Exception e) {
+				Log.debug("find encountered exception " + e);
+			}
+		return result;
+	}
+}
+	/*
+	 *  (c) Copyright Hewlett-Packard Company 2000-2003
+	 *  All rights reserved.
+	 *
+	 * Redistribution and use in source and binary forms, with or without
+	 * modification, are permitted provided that the following conditions
+	 * are met:
+	 * 1. Redistributions of source code must retain the above copyright
+	 *    notice, this list of conditions and the following disclaimer.
+	 * 2. Redistributions in binary form must reproduce the above copyright
+	 *    notice, this list of conditions and the following disclaimer in the
+	 *    documentation and/or other materials provided with the distribution.
+	 * 3. The name of the author may not be used to endorse or promote products
+	 *    derived from this software without specific prior written permission.
+	
+	 * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+	 * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	 * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+	 * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+	 * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	 * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	 * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	 * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+	 * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	 */
  

@@ -14,16 +14,18 @@ package com.hp.hpl.jena.db.impl;
 import java.sql.*;
 
 import com.hp.hpl.jena.db.RDFRDBException;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.util.Log;
+import com.hp.hpl.jena.db.impl.PSet_TripleStore_RDB;
 
 //=======================================================================
 /**
 * Version of ResultSetIterator that extracts database rows as Triples.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:57:17 $
+* @version $Revision: 1.2 $ on $Date: 2003-05-07 21:30:43 $
 */
 public class ResultSetTripleIterator extends ResultSetIterator {
 
@@ -35,11 +37,28 @@ public class ResultSetTripleIterator extends ResultSetIterator {
     
     /** Holds the current row as a triple */
     protected Triple m_triple;
+    
+    /** True if iterating over reified statements */
+    protected boolean m_isReif;
+    
+    /** Statement URI if iterating over reified statements */
+    protected Node m_stmtURI;
+    
+    /** HasType flag if iterating over reified statements */
+    protected boolean m_hasType;
 
 	// Constructor
 	public ResultSetTripleIterator(IPSet p, IDBID graphID) {
 		m_pset = p;
 		setGraphID(graphID);
+		m_isReif = true;
+	}
+
+	// Constructor for iterating over reified statements
+	public ResultSetTripleIterator(IPSet p, boolean isReif, IDBID graphID) {
+		m_pset = p;
+		setGraphID(graphID);
+		m_isReif = isReif;
 	}
 	
 	/**
@@ -84,6 +103,11 @@ public class ResultSetTripleIterator extends ResultSetIterator {
 		String objURI = rs.getString(3);
 		String objVal = rs.getString(4);
 		Object litId = rs.getObject(5);
+
+		if ( m_isReif ) {
+			m_stmtURI = PSet_TripleStore_RDB.RDBStringToNode(rs.getString(6));
+			m_hasType = (rs.getInt(7) == 1);
+		}
 		
 		String objRef = null;
 		if (litId != null) {
@@ -109,6 +133,33 @@ public class ResultSetTripleIterator extends ResultSetIterator {
 			return m_triple;
 		}
 		
+		/**
+	 	* Return the current row, which should have already been extracted.
+	 	*/
+		protected Node getStmtURI() {
+			return m_stmtURI;
+		}
+		
+		/**
+		* Return the current row, which should have already been extracted.
+		*/
+		protected boolean getHasType() {
+			return m_hasType;
+		}
+		
+		/**
+	 	* Delete the current row, which should have already been extracted.
+	 	* Should only be used (carefully and) internally by db layer.
+	 	*/
+		protected void deleteRow() {
+			try {
+				m_resultSet.deleteRow();
+			} catch (SQLException e) {
+				throw new RDFRDBException("Internal sql error", e);
+			}
+		}
+		
+	
 		/** 
 		 * Remove the current triple from the data store.
 		 */
