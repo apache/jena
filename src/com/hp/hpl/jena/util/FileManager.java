@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.14 2005-02-15 16:06:38 chris-dollin Exp $
+ * @version    $Id: FileManager.java,v 1.15 2005-02-17 08:52:47 chris-dollin Exp $
  */
  
 public class FileManager
@@ -213,8 +213,7 @@ public class FileManager
             return (Model)modelCache.get(filenameOrURI) ;
         }
         
-        Model m = ModelFactory.createDefaultModel() ;
-        readModel(m, filenameOrURI, baseURI, rdfSyntax) ;
+        Model m = uncachedLoadModel( filenameOrURI, baseURI, rdfSyntax );
         if ( this.cacheModelLoads )
         {
             if ( modelCache == null )
@@ -223,6 +222,20 @@ public class FileManager
         }
         return m ;
     }
+
+    /**
+     * load/create a model, ignoring the cache.
+     * @param filenameOrURI
+     * @param baseURI
+     * @param rdfSyntax
+     * @return
+     */
+    protected Model uncachedLoadModel(String filenameOrURI, String baseURI, String rdfSyntax)
+        {
+        Model m = ModelFactory.createDefaultModel() ;
+        readModel(m, filenameOrURI, baseURI, rdfSyntax) ;
+        return m;
+        }
     
     /**
      * Read a file of RDF into a model.
