@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.10 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.11 2003-09-17 12:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -16,10 +16,15 @@ import com.hp.hpl.jena.vocabulary.RDF;
 */
 public abstract class AbstractTestReifier extends GraphTestBase
     {
+    protected static final ReificationStyle Minimal = ReificationStyle.Minimal;
+    protected static final ReificationStyle Standard = ReificationStyle.Standard;
+    protected static final ReificationStyle Convenient = ReificationStyle.Convenient;
+        
     public AbstractTestReifier(String name)
         { super(name); }
         
-    public abstract Graph getGraph();
+    public Graph getGraph()
+        { return getGraph( Minimal ); }
     
     public abstract Graph getGraph( ReificationStyle style );
 
@@ -28,6 +33,22 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph result = getGraph();
         graphAdd( result, facts );
         return result;
+        }
+        
+    /**
+        Answer the empty graph if cond is false, otherwise the graph with the given facts.
+    */
+    protected final Graph graphWithUnless( boolean cond, String facts )
+        { return graphWith( cond ? "" : facts ); }
+          
+    protected final Graph graphWithIf( boolean cond, String facts )
+        { return graphWithUnless( !cond, facts ); }
+            
+    public void testStyle()
+        {
+        assertSame( Minimal, getGraph( Minimal ).getReifier().getStyle() );    
+        assertSame( Standard, getGraph( Standard ).getReifier().getStyle() );    
+        assertSame( Convenient, getGraph( Convenient ).getReifier().getStyle() );    
         }
         
     public void testEmptyReifiers()
@@ -53,7 +74,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testIntercept()
         {
-        Graph g = getGraph( ReificationStyle.Convenient );
+        Graph g = getGraph( Convenient );
         Reifier r = g.getReifier();
         Node S = node( "sub" ), O = node( "obj" );
         Node RS = node( "http://example.org/type" );
@@ -71,7 +92,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     */
     public void testStandard()
         {
-        Graph g = getGraph( ReificationStyle.Standard );
+        Graph g = getGraph( Standard );
         assertFalse( g.getReifier().hasTriple( triple( "s p o" ) ) );
         g.add( Triple.create( "x rdf:subject s" ) );
         assertEquals( 1, g.size() );
@@ -89,34 +110,85 @@ public abstract class AbstractTestReifier extends GraphTestBase
     */
     public void testStandardExplode()
         {
-        Graph g = getGraph( ReificationStyle.Standard );
+        Graph g = getGraph( Standard );
         g.getReifier().reifyAs( node( "a" ), triple( "p Q r" ) );
-        Graph r = Factory.createDefaultGraph( ReificationStyle.Minimal );
+        Graph r = Factory.createDefaultGraph( Minimal );
         graphAdd( r, "a rdf:type rdf:Statement; a rdf:subject p; a rdf:predicate Q; a rdf:object r" );
         assertEquals( 4, g.size() );
-        assertEquals( "", r, g );
+        assertIsomorphic( r, g );
         }
         
     public void testMinimalExplode()
         {
-        Graph g = getGraph( ReificationStyle.Minimal );
+        Graph g = getGraph( Minimal );
         g.getReifier().reifyAs( node( "a" ), triple( "p Q r" ) );
         assertEquals( 0, g.size() );
         }
         
-    public void testHiddenTriples()
+    public void testReificationTriplesConvenient()
+        { testReificationTriples( Convenient ); }
+        
+    public void testReificationTriplesStandard()
+        { testReificationTriples( Standard ); }
+    
+    public void testReificationQuadletsMinimal()
+        { testReificationTriples( Minimal ); }
+        
+    /**
+        test that a reifier with the given style sees [or not, if it's minimal] the reification quads
+        that are inserted through its graph.
+    */
+    protected void testReificationTriples( ReificationStyle style )
         {
-        Graph g = getGraph( ReificationStyle.Convenient );
-        Reifier r = g.getReifier();
-        Node S = node( "SSS" ), P = node( "PPP" );
-        g.add( new Triple( S, RDF.Nodes.predicate, P ) );
-        assertEquals( "graph must still be empty", 0, g.size() );
-        assertEquals( "reifier must have the triple", 1, r.getHiddenTriples().size() );
-        assertContains( "xxx", "SSS rdf:predicate PPP", r.getHiddenTriples() );
-        g.add( new Triple( S, RDF.Nodes.subject, S) );
-        assertContains( "xxx", "SSS rdf:subject SSS", r.getHiddenTriples() );
+        Graph g = getGraph( style );
+        Graph quadlets = g.getReifier().getReificationTriples();
+        String S1 = "SSS rdf:predicate PPP", S2 = "SSS rdf:subject SSS";
+        g.add( triple( S1 ) );
+        assertIsomorphic( graphWithUnless( style == Minimal, S1 ), quadlets );
+        g.add( triple( S2 ) );
+        assertIsomorphic( graphWithUnless( style == Minimal, S1 + "; " + S2 ), quadlets );
+        assertEquals( "convenient hides quadlets", style == Convenient, g.size() == 0 );
         }
-               
+        
+    public void testManifestQuadsStandard()
+        { testManifestQuads( Standard ); }
+        
+    public void testManifestQuadsConvenient()
+        { testManifestQuads( Convenient ); }
+        
+    public void testManifestQuadsMinimal()
+        { testManifestQuads( Minimal ); }
+        
+    /**
+        Test that reifying a triple explicitly has some effect on the graph only for Standard
+        reifiers.
+     */
+    public void testManifestQuads( ReificationStyle style )
+        {
+        Graph g = getGraph( style );   
+        Reifier r = g.getReifier();
+        r.reifyAs( node( "A" ), triple( "S P O" ) );
+        String reified = "A rdf:type rdf:Statement; A rdf:subject S; A rdf:predicate P; A rdf:object O";
+        assertIsomorphic( graphWithIf( style == Standard, reified ), g );
+        }
+        
+    public void testHiddenVsReificationMinimal()
+        { testHiddenVsReification( Minimal ); }
+        
+    public void testHiddenVsStandard()
+        { testHiddenVsReification( Standard ); }
+        
+    public void testHiddenVsReificationConvenient()
+        { testHiddenVsReification( Convenient ); }
+        
+    public void testHiddenVsReification( ReificationStyle style )
+        {
+        Graph g = getGraph( style );
+        Reifier r = g.getReifier();
+        r.reifyAs( node( "A" ), triple( "S P O" ) );
+        assertEquals( style == Standard, r.getHiddenTriples().isEmpty() );    
+        }
+      
     public void testRetrieveTriplesByNode()
         {
         Graph G = getGraph();
@@ -203,7 +275,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testKevinCaseA()
         {
-        Graph G = getGraph( ReificationStyle.Standard );
+        Graph G = getGraph( Standard );
         Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
         G.add( new Triple( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
         G.getReifier().reifyAs( X, new Triple( a, b, c ) ); 
@@ -211,7 +283,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testKevinCaseB()
         {
-        Graph G = getGraph( ReificationStyle.Standard );
+        Graph G = getGraph( Standard );
         Node X = node( "x" ), Y = node( "y" );
         Node a = node( "a" ), b = node( "b" ), c = node( "c" );
         G.add( new Triple( X, RDF.Nodes.subject, Y ) );
@@ -221,7 +293,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
             fail( "X already has subject Y: cannot make it a" );
             }
         catch (CannotReifyException e)
-            { /* as required */ }
+            { pass(); }
         }
         
     /**
@@ -239,9 +311,9 @@ public abstract class AbstractTestReifier extends GraphTestBase
             + "; x rdf:predicate B"
             + "; x rdf:object c"
             );
-        assertEquals( "", graphWith( "" ), h );
+        assertTrue( h.isEmpty() );
         r.reifyAs( node( "x" ), triple( "a B c" ) );
-        assertEquals( "", wanted, h );
+        assertIsomorphic( wanted, h );
         }
 
 //    public void testKevinCaseC()

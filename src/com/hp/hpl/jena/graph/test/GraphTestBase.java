@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
-  [See end of file]
-  $Id: GraphTestBase.java,v 1.8 2003-09-10 14:00:00 chris-dollin Exp $
+  [See end of file]ispo
+  $Id: GraphTestBase.java,v 1.9 2003-09-17 12:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -82,13 +82,19 @@ public class GraphTestBase extends JenaTestBase
         {
         assertTrue( title, g.isIsomorphicWith( graphWith( template ) ) );
         }
-        
-    public static void assertEquals( String name, Graph wanted, Graph obtained )
+                
+    public static void assertIsomorphic( Graph expected, Graph got )
         {
-        if (!wanted.isIsomorphicWith( obtained ))
-            fail( name + ": wanted " + wanted + " but got " + obtained );
+        if (!expected.isIsomorphicWith( got ))
+            fail( "wanted " + expected + " but got " + got );
         }
-    
+        
+    public static void assertIsomorphic( String title, Graph expected, Graph got )
+        {
+        if (!expected.isIsomorphicWith( got ))
+            fail( title + ": wanted " + expected + " but got " + got );
+        }
+
     public static void assertContains( String name, String s, Graph g )
         {
         assertTrue( name + " must contain " + s, g.contains( triple( s ) ) );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.17 2003-09-16 13:13:19 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.18 2003-09-17 12:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -43,9 +43,9 @@ public class TestGraph extends GraphTestBase
             Graph m = new GraphMem();
             Graph w = new WrappedGraph( m );
             graphAdd( m, "a trumps b; c eats d" );
-            assertEquals( "", m, w );
+            assertIsomorphic( m, w );
             graphAdd( w, "i write this; you read that" );
-            assertEquals( "", w, m );
+            assertIsomorphic( w, m );
             }
         }      
 

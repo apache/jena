@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -138,6 +138,20 @@ public class GraphRDB extends GraphBase implements Graph {
         throw new JenaException( "unsupported reification style" );
         }
         
+    /**
+        Answer the reification style corresponding to the DB behaviour integer.
+    */
+    public static ReificationStyle styleRDB( int behaviour )
+        {
+        if (behaviour == OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING)
+            return ReificationStyle.Standard;
+        if (behaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS)
+            return ReificationStyle.Convenient;
+        if (behaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
+            return ReificationStyle.Minimal;
+        throw new JenaException( "unsupported reification behaviour" );
+        }
+                
 	/**
 	 * Construct a new GraphRDB using an unusual reification style.
 	 * @param con an open connection to the database
@@ -171,7 +185,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * IDBConnection.containsGraph ).
 	 */
 	public GraphRDB( IDBConnection con, String graphID, Graph requestedProperties, int reificationBehaviour, boolean isNew) {
-	
+	   super( styleRDB( reificationBehaviour ) );
 		m_reificationBehaviour = reificationBehaviour;
 		
 		if(graphID == null)
@@ -416,14 +430,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#getReifier()
 	 */
 	public Reifier getReifier() {
-		if (m_reifier == null) {
-			if (m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS
-				|| m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS) {
-				m_reifier = new DBReifier(this, m_specializedGraphReifiers, m_specializedGraphReifiers);
-			} else {
-				m_reifier = new DBReifier(this, m_specializedGraphReifiers, m_specializedGraphReifiers);
-			}
-		}
+		if (m_reifier == null) 
+				m_reifier = new DBReifier( this, style, m_specializedGraphReifiers, m_specializedGraphReifiers );
 		return m_reifier;
 	}
 	 

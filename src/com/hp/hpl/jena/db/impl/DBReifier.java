@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBReifier.java,v 1.12 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: DBReifier.java,v 1.13 2003-09-17 12:14:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.shared.*;
 public class DBReifier implements Reifier
     {
     protected GraphRDB m_parent = null;
-    protected DBReifierGraph m_hiddenTriples = null;    
+    protected Graph m_hiddenTriples = null;    
 	protected List m_reifiers = null;
 	protected List m_hidden_reifiers = null;
 
@@ -33,6 +33,8 @@ public class DBReifier implements Reifier
 	// does with it's list of SpecializedGraphs.
 	protected SpecializedGraphReifier m_reifier = null;
     
+    protected ReificationStyle m_style;
+    
 	/** 
 	 *  Construct a reifier for GraphRDB's.
 	 *  
@@ -40,10 +42,11 @@ public class DBReifier implements Reifier
 	 *  @param allReifiers a List of SpecializedGraphReifiers which reifiy triples in that graph.
 	 *  @param hiddenReifiers the subset of allReifiers whose triples are hidden when querying the parent graph.
 	 */
-	public DBReifier(GraphRDB parent, List allReifiers, List hiddenReifiers ) {
+	public DBReifier(GraphRDB parent, ReificationStyle style, List allReifiers, List hiddenReifiers ) {
 		m_parent = parent;
 		m_reifiers = allReifiers;
 		m_hidden_reifiers = hiddenReifiers;
+        m_style = style;
 		
 		// For now, just take the first specializedGraphReifier
 		if (m_reifiers.size() != 1)
@@ -58,18 +61,19 @@ public class DBReifier implements Reifier
     	return m_parent; }
         
     public ReificationStyle getStyle()
-        { throw new RuntimeException( "NOT YET IMPLEMENTED" ); }
+        { return m_style; }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#getHiddenTriples()
 	 */
-	public Graph getHiddenTriples() {
-		if( m_hiddenTriples == null) {
-			m_hiddenTriples = new DBReifierGraph(m_parent, m_hidden_reifiers);
-		}
-		
+	public Graph getReificationTriples() {
+		if( m_hiddenTriples == null) 
+            m_hiddenTriples = new DBReifierGraph(m_parent, m_hidden_reifiers);
 		return m_hiddenTriples;
 	}
+    
+    public Graph getHiddenTriples()
+        { return m_style == ReificationStyle.Standard ? Graph.emptyGraph : getReificationTriples(); }
 
     /**
         Utility method useful for its short name: answer a new CompletionFlag

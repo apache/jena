@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: MetaTestGraph.java,v 1.2 2003-09-16 13:13:19 chris-dollin Exp $
+  $Id: MetaTestGraph.java,v 1.3 2003-09-17 12:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.*;
 
 	@author kers
 */
-public class MetaTestGraph extends AbstractTestGraph 
+public class MetaTestGraph extends GraphTestBase 
     {
     protected final Class graphClass;
     protected final ReificationStyle style;

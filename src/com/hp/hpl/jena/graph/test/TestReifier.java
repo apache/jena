@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.17 2003-09-08 12:14:09 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.18 2003-09-17 12:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
+
+import java.lang.reflect.Constructor;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
@@ -20,20 +22,47 @@ import junit.framework.*;
 public class TestReifier extends AbstractTestReifier
     {
     public TestReifier( String name )
-        { super( name ); }
-
+        { super( name ); graphClass = null; style = null; }
+        
+    protected final Class graphClass;
+    protected final ReificationStyle style;
+    
+    public TestReifier( Class graphClass, String name, ReificationStyle style ) 
+        {
+        super( name );
+        this.graphClass = graphClass;
+        this.style = style;
+        }
+        
     public static TestSuite suite()
         { 
         TestSuite result = new TestSuite();
-        result.addTest( new TestSuite( TestReifier.class ) );
+        // result.addTest( new TestSuite( TestReifier.class ) );
+        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem.class, ReificationStyle.Minimal ) );
         return result; 
         }   
         
-    public Graph getGraph()
-        { return getGraph( ReificationStyle.Standard ); }       
+    public static Constructor getConstructor( Class c, Class [] args )
+        {
+        try { return c.getConstructor( args ); }
+        catch (NoSuchMethodException e) { return null; }
+        }
         
-    public Graph getGraph( ReificationStyle style )
-        { return new GraphMem( style ); }
+    public Graph getGraph( ReificationStyle style ) 
+        {
+        try
+            {
+            Constructor cons = getConstructor( graphClass, new Class[] {ReificationStyle.class} );
+            if (cons != null) return (Graph) cons.newInstance( new Object[] { style } );
+            Constructor cons2 = getConstructor( graphClass, new Class [] {this.getClass(), ReificationStyle.class} );
+            if (cons2 != null) return (Graph) cons2.newInstance( new Object[] { this, style } );
+            throw new JenaException( "no suitable graph constructor found for " + graphClass );
+            }
+        catch (RuntimeException e)
+            { throw e; }
+        catch (Exception e)
+            { throw new JenaException( e ); }
+        }        
     }
 
 /*

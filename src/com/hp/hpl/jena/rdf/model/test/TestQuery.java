@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestQuery.java,v 1.5 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: TestQuery.java,v 1.6 2003-09-17 12:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -60,7 +60,7 @@ public class TestQuery extends ModelTestBase
         Model m = modelWithStatements( model );
         Graph g = GraphTestBase.graphWith( graph );
         QueryMapper qm = new QueryMapper( m, new Resource[0] );
-        GraphTestBase.assertEquals( title, g,  qm.getGraph() );
+        GraphTestBase.assertIsomorphic( title, g,  qm.getGraph() );
         }
     
     public void testVariablesTranslate( Resource [] vIn, Node [] vOut )

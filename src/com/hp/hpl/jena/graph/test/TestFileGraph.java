@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraph.java,v 1.8 2003-09-10 15:31:42 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.9 2003-09-17 12:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -109,7 +109,7 @@ public class TestFileGraph extends GraphTestBase
             g.getBulkUpdateHandler().add( original );
             g.close();
             Graph g2 = new FileGraph( foo, false, true );
-            assertEquals( "", original, g2 );
+            assertIsomorphic( original, g2 );
             g2.close();
             }
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.35 2003-09-16 13:13:19 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.36 2003-09-17 12:14:05 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -229,12 +229,6 @@ public abstract class AbstractTestGraph extends GraphTestBase
     /* */
         bu.delete( tripleList );
         assertEquals( "graph has original size", initialSize, g.size() );
-        }
-        
-    public static void assertIsomorphic( Graph expected, Graph got )
-        {
-        if (!expected.isIsomorphicWith( got ))
-            fail( "wanted " + expected + " but got " + got );
         }
         
     public void testBulkAddWithReification()

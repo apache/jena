@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.17 2003-09-08 11:28:03 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.18 2003-09-17 12:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -25,8 +25,9 @@ public class SimpleReifier implements Reifier
     private GraphBase parent;
     private boolean intercepting = false;
     private boolean concealing = false;
-    private ReificationStyle style = null;
+    private ReificationStyle style;
     private FragmentMap nodeMap;
+    private Graph reificationTriples;
     
     /** 
         construct a simple reifier that is bound to the parent graph .
@@ -200,10 +201,14 @@ public class SimpleReifier implements Reifier
         Iterator them = nodes.iterator();
         while (them.hasNext()) remove( (Node) them.next(), t );
         }
-        
+            
     public Graph getHiddenTriples()
-        { return nodeMap.asGraph(); }
+        { return style == ReificationStyle.Standard ? Graph.emptyGraph : getReificationTriples(); }
     
+    public Graph getReificationTriples()
+        { if (reificationTriples == null) reificationTriples = nodeMap.asGraph(); 
+        return reificationTriples; }
+        
     /**
         remove from the parent all of the triples that correspond to a reification
         of t on tag.
