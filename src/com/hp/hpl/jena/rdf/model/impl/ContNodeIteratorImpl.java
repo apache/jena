@@ -1,5 +1,69 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: ContNodeIteratorImpl.java,v 1.3 2003-03-26 12:27:09 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.rdf.model.impl;
+
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import java.util.*;
+
+/** An internal class not normally of interest to application developers.
+ *  An iterator over the nodes in a container.
+ * @author bwm, kers
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-03-26 12:27:09 $'
+ */
+public class ContNodeIteratorImpl 
+  extends ClosableWrapper implements NodeIterator{
+    
+    protected Statement stmt = null;
+    protected Container cont;
+    protected int size;
+    protected int index = 0;
+    protected int numDeleted = 0;
+    protected Vector moved = new Vector();
+    
+    /** Creates new ContNodeIteratorImpl */
+    public ContNodeIteratorImpl (Iterator  iterator, 
+                                Object     object,
+                                Container  cont) throws RDFException {
+        super( iterator ); 
+        this.cont     = cont;
+        this.size     = cont.size();
+    }
+
+    public Object next() throws NoSuchElementException, RDFException {
+        stmt = (Statement) super.next();
+        index += 1;
+        return stmt.getObject();
+    }
+    
+    public RDFNode nextNode() throws NoSuchElementException, RDFException {
+        return (RDFNode) next();
+    }
+            
+    public void remove() throws NoSuchElementException, RDFException {
+        if (stmt == null) throw new NoSuchElementException();
+        super.remove();
+        
+        if (index > (size-numDeleted)) {
+            ((ContainerI)cont).remove(((Integer) moved.elementAt(size-index))
+                                                      .intValue(),
+                                       stmt.getObject());
+        } else {
+            cont.remove(stmt);
+            moved.add(new Integer(index));
+        }
+        stmt = null;
+        numDeleted++;
+    }
+    
+}
+/*
+ *  (c) Copyright Hewlett-Packard Company 2000, 2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,81 +92,3 @@
  *
  * Created on 12 August 2000, 09:57
  */
-
-package com.hp.hpl.jena.rdf.model.impl;
-
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.rdf.model.*;
-
-import java.util.NoSuchElementException;
-import java.util.Iterator;
-import java.util.Vector;
-
-/** An internal class not normally of interest to application developers.
- *  An iterator over the nodes in a container.
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
- */
-public class ContNodeIteratorImpl 
-  extends Object implements NodeIterator{
-    
-    Iterator  iterator;
-    Object    object;
-    Statement stmt = null;
-    Container cont;
-    int       size;
-    int       index=0;
-    int       numDeleted=0;
-    Vector    moved = new Vector();
-    /** Creates new ContNodeIteratorImpl */
-    public ContNodeIteratorImpl (Iterator  iterator, 
-                                Object     object,
-                                Container  cont) throws RDFException {
-        this.iterator = iterator;
-        this.object   = object;
-        this.cont     = cont;
-        this.size     = cont.size();
-    }
-
-    public boolean hasNext() throws RDFException {
-        return iterator.hasNext();
-    }
-    
-    public Object next() throws NoSuchElementException, RDFException {
-        if (iterator != null) {
-            stmt = (Statement) iterator.next();
-            index++;
-            return stmt.getObject();
-        } else {
-            throw new RDFException(RDFException.ITERATORCLOSED);  
-        }
-    }
-    
-    public RDFNode nextNode() throws NoSuchElementException, RDFException {
-        return (RDFNode) next();
-    }
-            
-    public void remove() throws NoSuchElementException, RDFException {
-        if (stmt == null) throw new NoSuchElementException();
-        iterator.remove();
-        
-        if (index > (size-numDeleted)) {
-            ((ContainerI)cont).remove(((Integer) moved.elementAt(size-index))
-                                                      .intValue(),
-                                       stmt.getObject());
-        } else {
-            cont.remove(stmt);
-            moved.add(new Integer(index));
-        }
-        stmt = null;
-        numDeleted++;
-    }
-    
-    public void close() throws RDFException{
-        if (iterator instanceof ClosableIterator) {
-            ((ClosableIterator) iterator).close();
-        }
-        iterator = null;
-        object   = null;
-    }
-}

@@ -1,5 +1,36 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: NodeIteratorImpl.java,v 1.3 2003-03-26 12:27:09 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.rdf.model.impl;
+
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import java.util.*;
+
+/** A NodeIterator implementation.
+ *
+ * @author  bwm
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-03-26 12:27:09 $'
+ */
+public class NodeIteratorImpl extends ClosableWrapper implements NodeIterator {
+    
+    /** Creates new NodeIteratorImpl */
+    public NodeIteratorImpl(Iterator iter, Object object) {
+        super( iter );
+    }
+    
+    public RDFNode nextNode() {
+        return (RDFNode) iterator.next();
+    }
+    
+}
+
+/*
+ *  (c) Copyright Hewlett-Packard Company 2000, 2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,60 +59,3 @@
  *
  * Created on 07 August 2000, 06:43
  */
-
-package com.hp.hpl.jena.rdf.model.impl;
-
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.rdf.model.*;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-/** A NodeIterator implementation.
- *
- * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
- */
-public class NodeIteratorImpl extends Object implements NodeIterator {
-    
-    Iterator iterator;
-    Object   object;
-
-    /** Creates new NodeIteratorImpl */
-    public NodeIteratorImpl(Iterator iter, Object object) {
-        this.iterator = iter;
-        this.object   = object;
-    }
-
-    public boolean hasNext() throws RDFException {
-        if (iterator != null) {
-            return iterator.hasNext();
-        } else {
-            throw new RDFException(RDFException.ITERATORCLOSED);
-        }        
-    }
-    
-    public Object next() throws NoSuchElementException, RDFException {
-        if (iterator != null) {
-            return iterator.next();
-        } else {
-            throw new RDFException(RDFException.ITERATORCLOSED);
-        }
-    }
-    
-    public RDFNode nextNode() throws NoSuchElementException, RDFException {
-        return (RDFNode) iterator.next();
-    }
-    
-    public void remove() throws NoSuchElementException, RDFException {
-        throw new RDFException(RDFException.UNSUPPORTEDOPERATION);
-    }
-    
-    public void close() throws RDFException {
-        if (iterator instanceof ClosableIterator) {
-            ((ClosableIterator) iterator).close();
-        }
-        iterator = null;
-        object   = null;
-    }
-}

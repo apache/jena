@@ -41,39 +41,29 @@ import java.util.Iterator;
  *  A sequence node iterator.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-03-26 12:27:09 $'
  */
-public class SeqNodeIteratorImpl extends Object implements NodeIterator {
+public class SeqNodeIteratorImpl extends ClosableWrapper implements NodeIterator {
     
-    Iterator  iterator;
-    Object    object;
     Statement stmt = null;
     Seq       seq;
     int       size;
     int       index=0;
     int       numDeleted=0;
-    /** Creates new SeqNodeIteratorImpl */
+    /** Creates new SeqNodeIteratorImpl 
+    */
     public SeqNodeIteratorImpl (Iterator  iterator, 
-                                Object    object,
+                                
                                 Seq       seq) throws RDFException {
-        this.iterator = iterator;
-        this.object   = object;
+        super( iterator ); 
         this.seq      = seq;
         this.size     = seq.size();
     }
 
-    public boolean hasNext() throws RDFException {
-        return iterator.hasNext();
-    }
-    
     public Object next() throws NoSuchElementException, RDFException {
-        if (iterator != null) {
-            stmt = (Statement) iterator.next();
-            index++;
-            return stmt.getObject();
-        } else {
-            throw new RDFException(RDFException.ITERATORCLOSED);  
-        }
+        stmt = (Statement) super.next();
+        index += 1;
+        return stmt.getObject();
     }
     
     public RDFNode nextNode() throws NoSuchElementException, RDFException {
@@ -88,10 +78,6 @@ public class SeqNodeIteratorImpl extends Object implements NodeIterator {
     }
     
     public void close() throws RDFException {
-        if (iterator instanceof ClosableIterator) {
-            ((ClosableIterator) iterator).close();
-        }
-        iterator = null;
-        object   = null;
+        super.close();
     }
 }
