@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParseException.java,v 1.1.1.1 2002-12-19 19:16:22 bwm Exp $
+ * * $Id: ParseException.java,v 1.2 2003-04-08 14:54:34 jeremy_carroll Exp $
  
    AUTHOR:  Jeremy J. Carroll
  */
@@ -103,8 +103,7 @@ public class ParseException extends SAXParseException implements ARPErrorNumbers
 
     private int id;
 /** The error number
- * (from <a href="ARPErrorNumbers.html"> <CODE>ARPErrorNumbers</CODE></a>)
- * related to this exception.
+ * (from {@link ARPErrorNumbers}) related to this exception.
  * @return The error number.
  */
     public int getErrorNumber() {

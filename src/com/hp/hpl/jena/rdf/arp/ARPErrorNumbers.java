@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.8 2003-04-05 21:09:09 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.9 2003-04-08 14:54:34 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -293,8 +293,8 @@ public interface ARPErrorNumbers {
       * 
      * @deprecated WG decision on <a href=
      * 
-"http://www.w3. org/2001/sw/RDFCore/20030123-issues/#williams-01"
-      >williams- 01</a>.
+"http://www.w3.org/2001/sw/RDFCore/20030123-issues/#williams-01"
+      >williams-01</a>.
       **/
     public int WARN_URI_COMPOSING_CHAR = 123;
 
@@ -399,8 +399,8 @@ public interface ARPErrorNumbers {
      *  (E208).
      * @deprecated WG decision on <a href=
      * 
-"http://www.w3. org/2001/sw/RDFCore/20030123-issues/#williams-01"
-      >williams- 01</a>.
+"http://www.w3.org/2001/sw/RDFCore/20030123-issues/#williams-01"
+      >williams-01</a>.
    */
     public int ERR_URI_NOT_NORMAL_FORM_C = 208;
     /**
