@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Jul-2003
  * Filename           $RCSfile: DescribeClass.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-26 14:29:36 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2003-10-14 13:52:52 $
+ *               by   $Author: ian_dickinson $
  *
  *****************************************************************************/
 
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DescribeClass.java,v 1.1 2003-08-26 14:29:36 der Exp $
+ * @version CVS $Id: DescribeClass.java,v 1.2 2003-10-14 13:52:52 ian_dickinson Exp $
  */
 public class DescribeClass {
     // Constants
@@ -103,8 +103,17 @@ public class DescribeClass {
      * @param c The class to render
      */
     public void renderClassDescription( PrintStream out, OntClass c ) {
-        if (c.isRestriction()) {
-            renderRestriction( out, (Restriction) c.as( Restriction.class ) );
+        if (c.isUnionClass()) {
+            renderBooleanClass( out, "union", c.asUnionClass() );
+        }
+        else if (c.isIntersectionClass()) {
+            renderBooleanClass( out, "intersection", c.asIntersectionClass() );
+        }
+        else if (c.isComplementClass()) {
+            renderBooleanClass( out, "complement", c.asComplementClass() );
+        }
+        else if (c.isRestriction()) {
+            renderRestriction( out, c.asRestriction() );
         }
         else {
             if (!c.isAnon()) {
@@ -136,18 +145,19 @@ public class DescribeClass {
             renderAnonymous( out, r, "restriction" );
         }
         
-        out.print( ' ' );
+        out.println();
         
-        renderRestrictionElem( out, "on property", r.getOnProperty() );
-
+        renderRestrictionElem( out, "    on property", r.getOnProperty() );
+        out.println();
+        
         if (r.isAllValuesFromRestriction()) {
-            renderRestrictionElem( out, "all values from", r.asAllValuesFromRestriction().getAllValuesFrom() );        
+            renderRestrictionElem( out, "    all values from", r.asAllValuesFromRestriction().getAllValuesFrom() );        
         }
         if (r.isSomeValuesFromRestriction()) {
-            renderRestrictionElem( out, "some values from", r.asSomeValuesFromRestriction().getSomeValuesFrom() );        
+            renderRestrictionElem( out, "    some values from", r.asSomeValuesFromRestriction().getSomeValuesFrom() );        
         }
         if (r.isHasValueRestriction()) {
-            renderRestrictionElem( out, "has value", r.asHasValueRestriction().getHasValue() );        
+            renderRestrictionElem( out, "    has value", r.asHasValueRestriction().getHasValue() );        
         }
     }
 
@@ -155,11 +165,13 @@ public class DescribeClass {
         out.print( desc );
         out.print( " " );
         renderValue( out, value );
-        out.print( ",  " );
     }
 
     protected void renderValue( PrintStream out, RDFNode value ) {
-        if (value instanceof Resource) {
+        if (value.canAs( OntClass.class )) {
+            renderClassDescription( out, (OntClass) value.as( OntClass.class ) );
+        }
+        else if (value instanceof Resource) {
             Resource r = (Resource) value;
             if (r.isAnon()) {
                 renderAnonymous( out, r, "resource" );
@@ -167,6 +179,9 @@ public class DescribeClass {
             else {
                 renderURI( out, r.getModel(), r.getURI() ); 
             }
+        }
+        else if (value instanceof Literal) {
+            out.print( ((Literal) value).getLexicalForm() );
         }
         else {
             out.print( value );
@@ -194,6 +209,19 @@ public class DescribeClass {
         out.print( anonID );
     }
         
+    protected void renderBooleanClass( PrintStream out, String op, BooleanClassDescription boolClass ) {
+        out.print( op );
+        out.println( " of {" );
+        
+        for (Iterator i = boolClass.listOperands(); i.hasNext(); ) {
+            out.print( "      " );
+            renderClassDescription( out, (OntClass) i.next() );
+            out.println();
+        }
+        out.print( "  } " );
+    }
+    
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
