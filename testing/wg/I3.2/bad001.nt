@@ -1,0 +1,21 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy Carroll
+#
+# Description: 
+#
+# A DAML+OIL qualified cardinality constraint is not 
+# legal OWL.
+#
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+_:a <http://www.w3.org/2002/07/owl#cardinalityQ> "1" .
+_:a <http://www.w3.org/2002/07/owl#onProperty> <http://www.w3.org/2002/03owlt/I3.2/bad001#exampleProp> .
+_:a <http://www.w3.org/2002/07/owl#hasClassQ> <http://www.w3.org/2002/03owlt/I3.2/bad001#exampleClass> .

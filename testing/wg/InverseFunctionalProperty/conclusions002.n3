@@ -1,0 +1,21 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# If <code>prop</code> belongs to <code>owl:InverseFunctionalProperty</code>,
+# and <code>object</code> denotes a resource and
+# has two incoming <code>prop</code> arcs, then the <code>subject</code>s of these arcs 
+# have the same denotation. Hence an arc originating in 
+# <code>subject1</code> can be copied to <code>subject2</code>.
+#
+first:subject2 eg:prop2 "value" .

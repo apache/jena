@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:rtest="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#"
+         xmlns:otest="http://www.w3.org/2002/03owlt/testOntology#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+>
+<!-- DEPRECATED - all moved to new style.
+
+<otest:NotOwlFeatureTest rdf:ID="test001">
+   <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I3.2-Qualified-Restrictions" />
+   <rtest:status>APPROVED</rtest:status>
+  <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2002Apr/0339.html"/>
+  <rtest:approval rdf:resource="http://ilrt.org/discovery/chatlogs/webont/2002-04-25.txt" />
+   
+   <rtest:description> 
+ A DAML+OIL qualified cardinality constraint is not 
+legal OWL.
+   </rtest:description>
+
+   <rtest:inputDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/qualified-cardinality-constraints/error001.owl" />
+   </rtest:inputDocument>
+
+</otest:NotOwlFeatureTest>
+
+<otest:NotOwlFeatureTest rdf:ID="test002">
+   <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I3.2-Qualified-Restrictions" />
+   <rtest:status>APPROVED</rtest:status>
+  <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2002Apr/0339.html"/>
+  <rtest:approval rdf:resource="http://ilrt.org/discovery/chatlogs/webont/2002-04-25.txt" />
+   
+   <rtest:description> 
+A DAML+OIL qualified max cardinality constraint is not 
+legal OWL.
+   </rtest:description>
+
+   <rtest:inputDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/qualified-cardinality-constraints/error002.owl" />
+   </rtest:inputDocument>
+
+</otest:NotOwlFeatureTest>
+
+<otest:NotOwlFeatureTest rdf:ID="test003">
+   <rtest:issue rdf:resource="http://www.w3.org/2001/sw/WebOnt/webont-issues#I3.2-Qualified-Restrictions" />
+   <rtest:status>APPROVED</rtest:status>
+  <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2002Apr/0339.html"/>
+  <rtest:approval rdf:resource="http://ilrt.org/discovery/chatlogs/webont/2002-04-25.txt" />
+   
+   <rtest:description> 
+ A DAML+OIL qualified min cardinality constraint is not 
+legal OWL.
+   </rtest:description>
+
+   <rtest:inputDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/qualified-cardinality-constraints/error003.owl" />
+   </rtest:inputDocument>
+
+</otest:NotOwlFeatureTest>
+
+
+-->
+</rdf:RDF>

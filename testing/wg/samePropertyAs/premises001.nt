@@ -1,0 +1,22 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# <code>hasLeader</code> may be stated to be the <code>samePropertyAs</code> <code>hasHead</code>.
+#
+<http://www.w3.org/2002/03owlt/samePropertyAs/premises001#hasHead> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2002/03owlt/samePropertyAs/premises001#hasLeader> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2002/03owlt/samePropertyAs/premises001#hasHead> <http://www.w3.org/2002/07/owl#samePropertyAs> <http://www.w3.org/2002/03owlt/samePropertyAs/premises001#hasLeader> .
+<http://www.w3.org/2002/03owlt/samePropertyAs/premises001#X> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Thing> .
+<http://www.w3.org/2002/03owlt/samePropertyAs/premises001#Y> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Thing> .
+<http://www.w3.org/2002/03owlt/samePropertyAs/premises001#X> <http://www.w3.org/2002/03owlt/samePropertyAs/premises001#hasLeader> <http://www.w3.org/2002/03owlt/samePropertyAs/premises001#Y> .

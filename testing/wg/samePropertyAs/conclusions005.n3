@@ -1,0 +1,17 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# If <code>p</code> and <code>q</code> have the same property extension then they <code>p</code> <code>samePropertyAs</code> <code>q</code>.
+#
+first:p owl:samePropertyAs first:q .

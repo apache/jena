@@ -1,0 +1,19 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# If <code>prop</code> is an <code>owl:InverseFunctionalProperty</code>,
+#   then its inverse is an <code>owl:FunctionalProperty</code>.
+#
+<http://www.w3.org/2002/03owlt/InverseFunctionalProperty/premises003#prop> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
+<http://www.w3.org/2002/03owlt/InverseFunctionalProperty/premises003#prop> <http://www.w3.org/2002/07/owl#inverseOf> <http://www.w3.org/2002/03owlt/InverseFunctionalProperty/premises003#inv> .

@@ -1,0 +1,24 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# If <code>prop</code> belongs to <code>owl:FunctionalProperty</code>,
+# and <code>subject</code> denotes a resource and
+# has two outgoing <code>prop</code> arcs, then the <code>object</code>s of these arcs 
+# have the same denotation. Hence an arc originating in 
+# <code>object1</code> can be copied to <code>object2</code>.
+#
+<http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#prop> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
+<http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#object1> <http://www.example.org/prop2> "value" .
+<http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#subject> <http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#prop> <http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#object1> .
+<http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#subject> <http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#prop> <http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#object2> .

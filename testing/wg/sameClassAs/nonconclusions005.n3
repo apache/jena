@@ -1,0 +1,19 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# Two classes with the same partial description are not the same.
+#
+first:c1 rdf:type owl:Class .
+first:c2 rdf:type owl:Class .
+first:c1 owl:sameClassAs first:c2 .

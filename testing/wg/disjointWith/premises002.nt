@@ -1,0 +1,19 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# Disjoint classes have different members; OWL Full.
+#
+<http://www.w3.org/2002/03owlt/disjointWith/premises002#A> <http://www.w3.org/2002/07/owl#disjointWith> <http://www.w3.org/2002/03owlt/disjointWith/premises002#B> .
+<http://www.w3.org/2002/03owlt/disjointWith/premises002#a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/03owlt/disjointWith/premises002#A> .
+<http://www.w3.org/2002/03owlt/disjointWith/premises002#b> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/03owlt/disjointWith/premises002#B> .

@@ -1,0 +1,20 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# This test illustrates the use of dataRange in OWL DL.
+# This test combines some of the ugliest features of XML, RDF and OWL.
+#
+first:p rdf:type owl:DatatypeProperty .
+first:i rdf:type owl:Thing .
+first:i first:p "4"^^xsd:short  .

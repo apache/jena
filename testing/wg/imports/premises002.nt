@@ -1,0 +1,19 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeff Heflin
+#
+# Description: 
+#
+# If a premise document uses a namespace but does not import the document corresponding to
+# the namespace, then the premises do not necessarily entail anything that is entailed by
+# the conjunction of the two documents.
+#
+<http://example.org/data#Socrates> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/03owlt/imports/support002-A#Man> .
