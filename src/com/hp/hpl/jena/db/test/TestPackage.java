@@ -11,7 +11,7 @@ import junit.framework.* ;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.12 $
+ * @version 	$Revision: 1.13 $
  */
 public class TestPackage extends TestSuite
 {
@@ -30,6 +30,14 @@ public class TestPackage extends TestSuite
 	static String M_DB_PASSWD = "";
 	static String M_DB = "MySQL";
 	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
+	// */
+	
+	/* // postgresql settings
+	static String M_DB_URL = "jdbc:postgresql://localhost/test";
+	static String M_DB_USER = "test";
+	static String M_DB_PASSWD = "";
+	static String M_DB = "PostgreSQL";
+	static String M_DBDRIVER_CLASS = "org.postgresql.Driver";
 	// */
 	
     static public TestSuite suite() {
