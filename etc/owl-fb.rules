@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.42 2004-01-08 13:43:03 der Exp $
+# $Id: owl-fb.rules,v 1.43 2004-01-31 15:48:11 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -188,7 +188,7 @@
 
 [earlyTypeProp3: (?C rdf:type owl:Class) -> (?C rdf:type rdfs:Class) ]
 
-[prototype1: (?c rdf:type owl:Class), noValue(?c, rb:prototype), makeTemp(?t)
+[prototype1: (?c rdf:type owl:Class), noValue(?c, rb:prototype), makeTemp(?t), hide(?t)
   	    				-> (?c rb:prototype ?t), (?t rdf:type ?c) ]
     
 [prototype2: (?c rb:prototype ?p) ->

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.33 2004-01-30 13:10:08 der Exp $
+ * $Id: TestFBRules.java,v 1.34 2004-01-31 15:48:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -18,6 +18,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.ClosedException;
+import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -36,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.33 $ on $Date: 2004-01-30 13:10:08 $
+ * @version $Revision: 1.34 $ on $Date: 2004-01-31 15:48:10 $
  */
 public class TestFBRules extends TestCase {
     
@@ -848,6 +849,8 @@ public class TestFBRules extends TestCase {
      * returning duplicate values?
      */
     public void testDuplicatesEC4() throws IOException {
+        boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
+        JenaParameters.enableFilteringOfHiddenInfNodes = false;
         Model premisesM = ModelLoader.loadModel("file:testing/wg/equivalentClass/premises004.rdf");
         Graph data = premisesM.getGraph();
         Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
@@ -871,6 +874,7 @@ public class TestFBRules extends TestCase {
         }
 //        listFBGraph("bindSchema case", (FBRuleInfGraph)infgraph);
         assertEquals(6, count);
+        JenaParameters.enableFilteringOfHiddenInfNodes = prior;
     }
     
     /**

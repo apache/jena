@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.41 2004-01-30 16:30:35 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.42 2004-01-31 15:47:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,9 +36,9 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.41 $ on $Date: 2004-01-30 16:30:35 $
+ * @version $Revision: 1.42 $ on $Date: 2004-01-31 15:47:45 $
  */
-public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
+public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
     /** Single context for the reasoner, used when passing information to builtins */
     protected BBRuleContext context;
@@ -511,7 +511,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             result = result.andThen(continuation.find(pattern));
         }
         if (filterFunctors) {
-            return result.filterDrop(Functor.acceptFilter);
+//            return result.filterDrop(Functor.acceptFilter);
+            return result.filterDrop(this);
         } else {
             return result;
         }
@@ -734,6 +735,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Called to flag that a node should be hidden from external queries.
      */
     public void hideNode(Node n) {
+        if (! JenaParameters.enableFilteringOfHiddenInfNodes) return;
+        if (hiddenNodes == null) {
+            hiddenNodes = new HashSet();
+        }
         synchronized (hiddenNodes) {
             hiddenNodes.add(n);
         }
@@ -758,6 +763,36 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         bEngine.printProfile();
     }
     
+//  =======================================================================
+//  Implement Filter signature
+ 
+    /**
+     * Post-filter query results to hide unwanted
+     * triples from the glare of publicity. Unwanted triples
+     * are triples with Functor literals and triples with hidden nodes
+     * as subject or object.
+     */
+    public boolean accept(Object tin) {
+        Triple t = (Triple)tin;
+        
+        if (((Triple)t).getSubject().isLiteral()) return true;
+        
+        if (JenaParameters.enableFilteringOfHiddenInfNodes && hiddenNodes != null) {
+            if (hiddenNodes.contains(t.getSubject()) || hiddenNodes.contains(t.getObject())) {
+                return true;
+            }
+        }
+        
+        if (filterFunctors) {
+            if (Functor.isFunctor(t.getObject())) {
+                return true;
+            }
+        }
+        
+        return false;
+
+     }
+     
 //  =======================================================================
 //   Inner classes
 
@@ -785,6 +820,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         
     }
+   
+    
 }
 
 

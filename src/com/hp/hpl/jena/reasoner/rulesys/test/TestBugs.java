@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.15 2004-01-29 18:45:00 ian_dickinson Exp $
+ * $Id: TestBugs.java,v 1.16 2004-01-31 15:48:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -30,7 +31,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2004-01-29 18:45:00 $
+ * @version $Revision: 1.16 $ on $Date: 2004-01-31 15:48:10 $
  */
 public class TestBugs extends TestCase {
 
@@ -336,6 +337,20 @@ public class TestBugs extends TestCase {
         InfModel infmodel = ModelFactory.createInfModel(r, model);
         ValidityReport validity = infmodel.validate();
         assertTrue (validity.isValid());                
+    }
+    
+    /**
+     * Test that prototype nodes are now hidden
+     */
+    public void testHide() {
+        String NS = "http://jena.hpl.hp.com/bugs#";
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null);
+        OntClass c = m.createClass(NS + "C");
+        OntResource i = m.createIndividual(c);
+        Iterator res = m.listStatements(null, RDF.type, c);
+        TestUtil.assertIteratorValues(this, res, new Statement[] {
+            m.createStatement(i, RDF.type, c)
+        });
     }
     
     // debug assistant
