@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.8 2003-06-10 22:26:34 der Exp $
+ * $Id: Functor.java,v 1.9 2003-06-19 14:25:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-10 22:26:34 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-19 14:25:24 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -261,7 +261,7 @@ public class Functor implements ClauseEntry {
    public static class FunctorDatatype extends BaseDatatype {
     
         public FunctorDatatype() {
-            super("Functor");
+            super("urn:x-hp-jena:Functor");
         }
         
         public static final RDFDatatype theFunctorDatatype = new FunctorDatatype();
