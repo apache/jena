@@ -37,7 +37,7 @@ import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.5 $ on $Date: 2003-05-29 19:49:19 $
+* @version $Revision: 1.6 $ on $Date: 2003-05-30 16:23:50 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -414,23 +414,36 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			int argc = 1;
 			ResultSetTripleIterator result =
 				new ResultSetTripleIterator(this, true, my_GID);
+			Node_Literal litNode = null;
+			LiteralLabel ll = null;
+			String lval = null;
+			boolean litIsPlain = false;
+			boolean objIsURI = false;
+
 		
 			if ( !fragMask.hasOneBit() )
 				throw new RuntimeException("Reification can only find one column");
 			PreparedStatement ps = null;
 
+			val = frag.getObject();
 			if ( fragMask.hasSubj() ) {
-				stmtStr = "FindFragSubj";
-				val = frag.getSubject();
+				stmtStr = "findFragSubj";
 			} else if ( fragMask.hasPred() ) {
-				stmtStr = "FindFragProp";
-				val = frag.getSubject();
+				stmtStr = "findFragProp";
 			} else if ( fragMask.hasObj() ) {
-				stmtStr = "FindFragObj";
-				val = frag.getSubject();
+				stmtStr = "findFragObj";
+				objIsURI = val.isURI() || val.isBlank();
+				if ( objIsURI ) {
+					stmtStr += "OU";
+				} else {
+					litNode = (Node_Literal) val;
+					ll = litNode.getLiteral();
+					lval = (String) ll.getValue();
+					litIsPlain = literalIsPlain(ll);
+					stmtStr += litIsPlain ? "OV" : "OR";
+				}	
 			} else if ( fragMask.hasType() ) {
-				stmtStr = "FindFragHasType";
-				val = frag.getSubject();
+				stmtStr = "findFragHasType";
 			}
 				
 			try {
@@ -439,25 +452,16 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 				ps.setString(argc++,nodeToRDBString(stmtURI));
 				if ( fragMask.hasSubj() || fragMask.hasPred() ) {
 					ps.setString(argc++,nodeToRDBString(val));
-					ps.setString(argc++,my_GID.getID().toString());
 				} else if ( fragMask.hasObj() ){
 					// find on object field
-					if ( val.isURI() || val.isBlank() ) {
-						stmtStr += "OU";
+					if ( objIsURI ) {
 						ps.setString(argc++,nodeToRDBString(val));
-					} else {
-						Node_Literal litNode = (Node_Literal)val;
-						LiteralLabel ll = litNode.getLiteral();
-						String lval = (String)ll.getValue();
-						boolean litIsPlain = literalIsPlain(ll);
-		  
+					} else {		  
 						if (litIsPlain) {
 							 // object literal can fit in statement table
-							stmtStr += "OV";
 							ps.setString(argc++, lval);
 						} else {
 							// belongs in literal table
-							stmtStr += "OR";
 							String litIdx = getLiteralIdx(lval); // TODO This happens in several places?
 							IDBID lid = getLiteralID(litNode);
 							if (lid == null) {

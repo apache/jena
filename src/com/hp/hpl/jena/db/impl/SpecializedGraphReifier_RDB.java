@@ -235,16 +235,17 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 				// see if this is a duplicate fragment
 				boolean dup = fragHasType && cachedMask.hasType();
 				if (dup == false) {
-					// not a type fragement; have to search db
+					// not a type fragement; have to search db to check for dup
 					ExtendedIterator it = m_reif.findFrag (stmtURI, frag, fragMask, my_GID);
 					dup = it.hasNext();
+					if ( dup == false ) {
+						if ( cachedMask.isStmt())
+							throw new Reifier.AlreadyReifiedException(frag.getSubject());
+						// cannot perform a reificiation; store fragment
+						m_reif.storeFrag(stmtURI, frag, fragMask, my_GID);
+						m_reifCache.flush(cachedFrag);
+					}
 				}
-				if (!dup && cachedMask.isStmt()) {
-					throw new Reifier.AlreadyReifiedException(frag.getSubject());
-				}
-				// cannot perform a reificiation
-				m_reif.storeFrag(stmtURI, frag, fragMask, my_GID);
-				m_reifCache.flush(cachedFrag);
 			} else {
 				// reification may be possible; update if possible, else compact
 				if (cachedFrag.canMerge(fragMask)) {
