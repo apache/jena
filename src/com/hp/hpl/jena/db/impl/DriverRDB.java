@@ -35,7 +35,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.8 $ on $Date: 2003-05-05 11:20:29 $
+* @version $Revision: 1.9 $ on $Date: 2003-05-06 09:43:49 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -511,10 +511,14 @@ public abstract class DriverRDB implements IRDBDriver {
 				m_sql.runSQLGroup("dropTable", (String) it.next());
 			}
 			if (!SKIP_ALLOCATE_ID) {
+				removeSequence("JENA_LITERALS_GEN");
+				removeSequence("JENA_GRAPHS_GEN");
+				/*
 				Iterator seqIt = getSequences().iterator();
 				while (seqIt.hasNext()) {
 					removeSequence((String)seqIt.next());
 				}
+				*/
 			}
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver", e1);
@@ -549,6 +553,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		if (it != null) {
 			return (it.hasNext());
 		}		
+		it.close();
 		return false;
 	}
 
