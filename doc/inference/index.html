@@ -58,7 +58,7 @@
   the original data but also additional statements than can be derived from the 
   data using the rules or other inference mechanisms implemented by the reasoner.</p>
 <p>As illustrated the inference machinery is actually implemented at the level 
-  of the Graph SPI, so that any of of the different Model interfaces can be constructed 
+  of the Graph SPI, so that any of the different Model interfaces can be constructed 
   around an inference Graph. In particular, the <a href="../ontology/index.html">Ontology 
   API</a> provides convenient ways to link appropriate reasoners into the <code>OntModel</code>s 
   that it constructs. As part of the general RDF API we also provide an <a href="../javadoc/com/hp/hpl/jena/rdf/model/InfModel.html"><code>InfModel</code></a>, 
@@ -236,7 +236,7 @@
 <pre>    Resource config = ModelFactory.createDefaultModel()
                       .createResource()
                       .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "simple");
-    Reasoner reasoner = RDFSRuleReasonerFactory.theInstance()Create(config);
+    Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(config);
     InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
 </pre>
 <p>This is a rather long winded way of setting a single parameter, though it can 
@@ -1794,7 +1794,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.19 2004-11-17 11:25:48 der Exp $</i>
+  Last modification: $Id: index.html,v 1.20 2005-01-24 16:41:04 der Exp $</i>
 </p>
 </body>
 </html>
