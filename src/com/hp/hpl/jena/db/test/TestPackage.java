@@ -12,12 +12,12 @@ import junit.framework.* ;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.17 $
+ * @version 	$Revision: 1.18 $
  */
 public class TestPackage extends TestSuite
 {
-	/*  
-	//oracle settings
+ 
+	/*/ oracle settings
 	static String M_DB_URL = "jdbc:oracle:oci8:@";
 	static String M_DB_USER = "scott";
 	static String M_DB_PASSWD = "tiger";
@@ -25,27 +25,29 @@ public class TestPackage extends TestSuite
 	static String M_DBDRIVER_CLASS = "oracle.jdbc.OracleDriver";
 	// */
 	
-//	// mysql settings
-//	static String M_DB_URL = "jdbc:mysql://localhost/test";
-//	static String M_DB_USER = "test";
-//	static String M_DB_PASSWD = "";
-//	static String M_DB = "MySQL";
-//	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
-//	// */
-//	
-// // postgresql settings
-//	static String M_DB_URL = "jdbc:postgresql://localhost/test";
-//	static String M_DB_USER = "test";
-//	static String M_DB_PASSWD = "";
-//	static String M_DB = "PostgreSQL";
-//	static String M_DBDRIVER_CLASS = "org.postgresql.Driver";
-//	// 
+	/*/ mysql settings
+	static String M_DB_URL = "jdbc:mysql://localhost/test";
+	static String M_DB_USER = "test";
+	static String M_DB_PASSWD = "";
+	static String M_DB = "MySQL";
+	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
+	// */
+		
+	/*/ postgresql settings
+	static String M_DB_URL = "jdbc:postgresql://localhost/test";
+	static String M_DB_USER = "test";
+	static String M_DB_PASSWD = "";
+	static String M_DB = "PostgreSQL";
+	static String M_DBDRIVER_CLASS = "org.postgresql.Driver";
+	// */
         
-    static String M_DB_URL = ModelFactoryBase.guessDBURL();
+	//
+	static String M_DB_URL = ModelFactoryBase.guessDBURL();
     static String M_DB_USER = ModelFactoryBase.guessDBUser();
     static String M_DB_PASSWD = ModelFactoryBase.guessDBPassword();
     static String M_DB = ModelFactoryBase.guessDBType();
-    static String M_DBDRIVER_CLASS = ModelFactoryBase.guessDBDriver();        
+    static String M_DBDRIVER_CLASS = ModelFactoryBase.guessDBDriver();  
+    // */      
 
     static public TestSuite suite() {
         return new TestPackage();
@@ -60,7 +62,6 @@ public class TestPackage extends TestSuite
 		addTest( "TestCompatability", TestCompatability.suite() );
 		addTest( "TestCompareToMem", TestCompareToMem.suite() );
 		addTest( "TestGraphRDB", TestGraphRDB.suite());
-        addTest( "TestQueryRDB", TestQueryRDB.suite() );
 		addTest( "TestGraphRDBMaker", TestGraphRDB.suite());
 		addTest( "TestMultiModel", TestMultiModel.suite());
 		addTest( "TestNsPrefix", TestNsPrefix.suite());
