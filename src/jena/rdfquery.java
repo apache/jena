@@ -14,9 +14,8 @@ import com.hp.hpl.jena.rdql.* ;
 import com.hp.hpl.jena.rdql.test.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 
-import com.hp.hpl.jena.mem.ModelMem ;
-
-import com.hp.hpl.jena.reasoner.* ;
+//import com.hp.hpl.jena.mem.ModelMem ;
+//import com.hp.hpl.jena.reasoner.* ;
 
 /** A program to execute queries from the command line.
  *
@@ -41,7 +40,7 @@ import com.hp.hpl.jena.reasoner.* ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.5 2003-03-10 09:51:34 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.6 2003-03-11 17:59:54 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -64,8 +63,8 @@ public class rdfquery
     static String dbUser = "" ;
     static String dbPassword = "" ;
     
-    static final String defaultReasonerURI =  "http://www.hpl.hp.com/semweb/2003/RDFSReasoner1" ;
-    static String reasonerURI = defaultReasonerURI ;
+    //static final String defaultReasonerURI =  "http://www.hpl.hp.com/semweb/2003/RDFSReasoner1" ;
+    //static String reasonerURI = defaultReasonerURI ;
     static String vocabularyURI = null ;
     static Model vocabulary = null ;
     
@@ -195,19 +194,6 @@ public class rdfquery
             if ( arg.equalsIgnoreCase("--rdfs"))
             {
                 applyRDFS = true ;
-                continue ;
-            }
-            
-            if ( arg.equalsIgnoreCase("--reasoner"))
-            {
-                argi++ ;
-                if ( argi == argv.length )
-                {
-                    System.err.println("Error: no reasoner URI specified");
-                    System.exit(1) ;
-                }
-
-                reasonerURI = argv[argi] ;
                 continue ;
             }
             
@@ -408,16 +394,16 @@ public class rdfquery
             
             if ( applyRDFS )
             {
-                ReasonerRegistry reg = ReasonerRegistry.theRegistry() ;
-                Reasoner reasoner = reg.create(reasonerURI, null) ;
+                Model model = null ;
                 if ( vocabularyURI != null )
                 {
                     vocabulary = ModelLoader.loadModel(vocabularyURI, null) ;
-                    reasoner.bindSchema(vocabulary.getGraph()) ;
+                    model = ModelFactory.createRDFSModel(m, vocabulary) ;
                 }
-            
-                InfGraph graph = reasoner.bind(m.getGraph());
-                Model model = new ModelMem(graph);
+                else
+                {
+                    model = ModelFactory.createRDFSModel(m) ;
+                }
                 query.setSource(model) ;
             }
             loadTime = System.currentTimeMillis() - startLoadTime ;
@@ -525,7 +511,7 @@ public class rdfquery
         System.out.println("Usage: [--rdfs] [--data URL] [queryString | --query file]") ;
         System.out.println("   --query file         Read one query from a file") ;
         System.out.println("   --rdfs               Use an RDFS reasoner around the data") ;
-        System.out.println("   --reasoner URI       Set the reasoner URI explicitly.") ;   
+        //System.out.println("   --reasoner URI       Set the reasoner URI explicitly.") ;   
         System.out.println("   --vocab URL | File   Specify a separate vocabulary (may also be in the data)") ;
         System.out.println("   --xml                Data source is XML (default)") ;
         System.out.println("   --ntriple            Data source is n-triple") ;
