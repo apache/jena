@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternStage.java,v 1.6 2003-08-04 14:03:13 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.7 2003-08-08 13:02:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -31,37 +31,34 @@ public class PatternStage extends Stage
         { return compile( compiler, map, triples ); }
         
     protected Pattern [] compile( PatternCompiler pc, Mapping map, Triple [] source )
-        {
-        return PatternStageCompiler.compile( pc, map, source );
-        }
+        { return PatternStageCompiler.compile( pc, map, source ); }
         
     private static final PatternCompiler compiler = new PatternStageCompiler();
         
-    protected void run( Pipe source, Pipe sink )
-    	{
-        while (stillOpen && source.hasNext())
-            {
-            Domain current = source.get();
-            Domain useme = current.extend();           
-            ClosableIterator it = graph.find( compiled[0].asTripleMatch( current ) );
-            while (stillOpen && it.hasNext())
-                {
-                Triple t = (Triple) it.next();
-                if (compiled[0].matches( useme, t ))
-                    {
-                    sink.put( compiled[0].matched( useme, t ) );
-                    useme = current.extend();
-                    }
-                }
-            }
-        sink.close();
-    	}
-
     public Pipe deliver( final Pipe result )
         {
         final Pipe stream = previous.deliver( new BufferPipe() );
-		new Thread() { public void run() { PatternStage.this.run( stream, result ); } } .start();
+        new Thread() { public void run() { PatternStage.this.run( stream, result ); } } .start();
         return result;
+        }
+        
+    protected void run( Pipe source, Pipe sink )
+        {
+        while (stillOpen && source.hasNext()) nest( sink, source.get(), 0 );
+        sink.close();
+        }        
+        
+    protected void nest( Pipe sink, Domain current, int index )
+        {
+        if (index == compiled.length)
+            sink.put( current.extend() );
+        else
+            {
+            Pattern p = compiled[index];
+            ClosableIterator it = graph.find( p.asTripleMatch( current ) );
+            while (stillOpen && it.hasNext())
+                if (p.match( current, (Triple) it.next())) nest( sink, current, index + 1 );
+            }
         }
     }
 

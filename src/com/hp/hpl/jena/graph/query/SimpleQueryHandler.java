@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.10 2003-08-04 14:03:13 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.11 2003-08-08 13:02:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -28,31 +28,7 @@ public class SimpleQueryHandler implements QueryHandler
         { this.graph = graph; }
 
     public Stage patternStage( Mapping map, Graph constraints, Triple [] t )
-        {
-        if (t.length == 1)
-            return new PatternStage( graph, map, t );
-        else
-            {
-            final Stage [] stages = new Stage[t.length];
-            for (int i = 0; i < t.length; i += 1) stages[i] = patternStage( map, constraints, new Triple[] {t[i]} );
-            return new Stage() 
-                {
-                public Stage connectFrom( Stage s ) 
-                    { 
-                    for (int i = 0; i < stages.length; i += 1) 
-                        {
-                        stages[i].connectFrom( s );
-                        s = stages[i];
-                        }
-                    return super.connectFrom( s ); 
-                    }
-                public Pipe deliver( Pipe L ) 
-                    { 
-                    return stages[stages.length - 1].deliver( L ); 
-                    }
-                };
-            }       
-        }
+        { return new PatternStage( graph, map, t ); }
         
     public BindingQueryPlan prepareBindings( Query q, Node [] variables )   
         { return new SimpleQueryPlan( graph, q, variables ); }

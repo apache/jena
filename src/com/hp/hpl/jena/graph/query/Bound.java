@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Bound.java,v 1.4 2003-08-04 14:03:13 chris-dollin Exp $
+  $Id: Bound.java,v 1.5 2003-08-08 13:02:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -25,11 +25,11 @@ public class Bound extends Element
         Answer true iff the node <code>x</code> matches the previously-seen value at
         Donain[index]. The matching uses datatype-value semantics, implemented by
         <code>Node::sameValueAs()</code>.
-    */
-	public boolean accepts( Domain d, Node x )
+    */  
+    public boolean match( Domain d, Node x )
         { return x.sameValueAs(d.get( index ) ); }
-        
-    public Node asNode( Domain d ) 
+     
+    public Node asNodeMatch( Domain d ) 
         { return (Node) d.get( index ); }
         
     public String toString()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Element.java,v 1.3 2003-08-04 14:03:13 chris-dollin Exp $
+  $Id: Element.java,v 1.4 2003-08-08 13:02:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
 	@author hedgehog
 */
 
-public class Element 
+public abstract class Element 
 	{
 	protected int index;
 	
@@ -36,29 +36,34 @@ public class Element
         Initialiser invoked by sub-classes which need no index.
     */
 	protected Element() 
-		{ this( 0 ); }
+		{ this( -1 ); }
 		
     /**
         The constant ANY matches anything and binds nothing
     */
 	public static final Element ANY = new Element()
         {
-        public boolean accepts( Domain d, Node n ) { return true; }
+        public boolean match( Domain d, Node n ) { return true; }
+        public Node asNodeMatch( Domain d ) { return Node.ANY; }
         public String toString() { return "<any>"; }
         };
-	
-	public boolean accepts( Domain d, Node n ) 
-		{ throw new UnsupportedOperationException( this.getClass() + ".accepts" ); }
-	
-	public void matched( Domain d, Object x ) 
-		{}
         
     /**
-        Answer the Node value that this Element represents in the Domain d; over-ridden
-        in sub-classes.
+        Answer true if this Element matches x given the bindings in d. May side-effect d
+        by (re)binding if this element is a variable.
+        @param d the variable bindings to read/update for variables
+        @param x the value to match
+        @return true if the match succeeded
     */
-    public Node asNode( Domain d )
-        { return null; }
+    public abstract boolean match( Domain d, Node x );
+        
+    /**
+        Answer a Node suitable as a pattern-match element in a TripleMatch approximating
+        this Element. Thus Bind elements map to null (or Node.ANY).
+        @param d the domain holding the variable bindings
+        @return the matched value (null if none, ie binding occurance or ANY)
+    */
+    public abstract Node asNodeMatch( Domain d );
         
     public String toString()
     	{ return "<" + this.getClass() + " element>"; }

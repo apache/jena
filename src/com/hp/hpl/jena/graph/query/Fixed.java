@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fixed.java,v 1.4 2003-08-04 14:03:13 chris-dollin Exp $
+  $Id: Fixed.java,v 1.5 2003-08-08 13:02:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -22,24 +22,26 @@ public class Fixed extends Element
 	public Fixed( Node x ) 
         { this.value = x; }
         
-	public Node getValue() 
-        { return value; }
-	
-	public String toString() 
-        { return "<fixed " + value + ">"; }
-			
     /**
-        Accept a node <code>x</code> iff it is value-equal to the fixed value of this element.
-        Equality is determined by Node::sameValueAs.
+        Answer true iff we are matched against a node with the same value as ours.
+        @param d the domain with bound values (ignored)
+        @param x the node we are to match
+        @return true iff our value is the same as his
     */
-	public boolean accepts( Domain d, Node x ) 
+        
+    public boolean match( Domain d, Node x ) 
         { return x.sameValueAs(value); }
     
     /**
-        This element represents the fixed value it is initialised with.
+        Answer the Node we represent given the variable-bindings Domain.
+        @param d the variable bindings to use (ignored)
+        @return our fixed value
     */
-    public Node asNode( Domain d ) 
+    public Node asNodeMatch( Domain d ) 
         { return value; }
+        
+    public String toString() 
+        { return "<fixed " + value + ">"; }            
 	}
 
 /*

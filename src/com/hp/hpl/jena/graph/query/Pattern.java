@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Pattern.java,v 1.5 2003-08-04 14:03:13 chris-dollin Exp $
+  $Id: Pattern.java,v 1.6 2003-08-08 13:02:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -28,34 +28,29 @@ public class Pattern
 		}
 	
     /**
-        Convert a Pattern into a TripleMatch by makign a Triple who's Nodes are the
+        Convert a Pattern into a TripleMatch by making a Triple who's Nodes are the
         conversions of the constituent elements.
     */	
     public TripleMatch asTripleMatch( Domain d )
-        { return Triple.createMatch( S.asNode( d ), P.asNode( d ), O.asNode( d ) ); }
+        { return Triple.createMatch( S.asNodeMatch( d ), P.asNodeMatch( d ), O.asNodeMatch( d ) ); }
           
     public Element [] getParts() { return new Element[] {S, P, O}; }
     
     /**
-        A Pattern matches iff its components accept the corresponding triple elements.
-    */
-	public boolean matches( Domain d, Triple t )
-		{
-		return 
-			S.accepts( d, t.getSubject() ) 
-			&& P.accepts( d, t.getPredicate() )
-			&& O.accepts( d, t.getObject() )
-			; 
-		}
-	
-	public Domain matched( Domain d, Triple t )
-		{
-		S.matched( d, t.getSubject() );
-		P.matched( d, t.getPredicate() );
-		O.matched( d, t.getObject() );
-		return d;
-		}
+        Answer true iff this pattern, given the values for variables as found in a given 
+        Domain, matches the given triple; update the Domain with any variable bindings.
         
+        @param d the Domain with the current bound variable values (and slots for the rest)
+        @param t the concrete triple to match
+        @return true iff this pattern matches the triple [and side-effects the domain]
+    */
+    public boolean match( Domain d, Triple t )
+        {
+        return S.match( d, t.getSubject() ) 
+            && P.match( d, t.getPredicate() ) 
+            && O.match( d, t.getObject() );
+        }
+
      public String toString()
         { return "<pattern " + S + " @" + P + " " + O + ">"; }
 	}
