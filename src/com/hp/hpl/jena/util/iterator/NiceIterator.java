@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.5 2003-08-27 13:07:54 andy_seaborne Exp $
+  $Id: NiceIterator.java,v 1.6 2003-11-17 07:24:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -57,6 +57,12 @@ public class NiceIterator implements ExtendedIterator
         { 
         throw new UnsupportedOperationException( "remove not supported for this iterator" ); 
         }
+    
+    /**
+         Answer the next object, and remove it.
+    */
+    public Object removeNext()
+        { Object result = next(); remove(); return result; }
         
     /**
         concatenate two closable iterators.

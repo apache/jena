@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.3 2003-10-02 09:13:25 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.4 2003-11-17 07:24:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -60,7 +60,7 @@ public class TestGraphMem extends AbstractTestGraph
         it.next(); it.remove();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
         }
-}
+    }
 
 
 /*

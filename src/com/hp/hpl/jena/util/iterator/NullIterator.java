@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NullIterator.java,v 1.3 2003-08-27 13:07:54 andy_seaborne Exp $
+ * $Id: NullIterator.java,v 1.4 2003-11-17 07:24:58 chris-dollin Exp $
  *
  */
 
@@ -36,10 +36,11 @@ import java.util.NoSuchElementException ;
 /**
  * A useful class: an Iteration of nothing.
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-08-27 13:07:54 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-11-17 07:24:58 $'
  */
 public class NullIterator implements Iterator
 {
+    public static NullIterator instance = new NullIterator();
     /** No.
      *
      */

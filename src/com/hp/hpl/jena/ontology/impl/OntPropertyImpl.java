@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-11-17 07:24:58 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.17 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.18 2003-11-17 07:24:58 chris-dollin Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -202,7 +202,7 @@ public class OntPropertyImpl
         // first we have to remove all of the inverse sub-prop links
         checkProfile( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF" );
         for (StmtIterator i = getModel().listStatements( null, getProfile().SUB_PROPERTY_OF(), this );  i.hasNext(); ) {
-            i.nextStatement().remove();
+            i.removeNext();
         }
         
         ((OntProperty) prop.as( OntProperty.class )).addSuperProperty( this );

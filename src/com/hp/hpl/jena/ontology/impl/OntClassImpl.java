@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-13 15:38:55 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-11-17 07:24:58 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.31 2003-11-13 15:38:55 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.32 2003-11-17 07:24:58 chris-dollin Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -255,7 +255,7 @@ public class OntClassImpl
         // first we have to remove all of the inverse sub-class links
         checkProfile( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF" );
         for (StmtIterator i = getModel().listStatements( null, getProfile().SUB_CLASS_OF(), this );  i.hasNext(); ) {
-            i.nextStatement().remove();
+            i.removeNext(); 
         }
         
         ((OntClass) cls.as( OntClass.class )).addSuperClass( this );

@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.5 $ on $Date: 2003-08-27 12:56:40 $
+* @version $Revision: 1.6 $ on $Date: 2003-11-17 07:23:50 $
 */
 
 public class ResultSetIterator implements ExtendedIterator {
@@ -120,6 +120,9 @@ public class ResultSetIterator implements ExtendedIterator {
         if (!m_finished && !m_prefetched) moveForward();
         return !m_finished;
     }
+    
+    public Object removeNext()
+        { cantRemove(); return null; }
 
     /**
      * Return the current row
@@ -137,6 +140,10 @@ public class ResultSetIterator implements ExtendedIterator {
      * Delete the current row entry
      */
     public void remove() {
+        cantRemove();
+    }
+    
+    protected void cantRemove() {
         throw new UnsupportedOperationException("ResultSetIterator can't remove database rows");
     }
 

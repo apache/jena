@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ExtendedIterator.java,v 1.3 2003-08-27 13:07:54 andy_seaborne Exp $
+  $Id: ExtendedIterator.java,v 1.4 2003-11-17 07:24:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -23,6 +23,11 @@ package com.hp.hpl.jena.util.iterator;
 
 public interface ExtendedIterator extends ClosableIterator
     {
+    /**
+         Answer the next object, and remove it. Equivalent to next(); remove().
+    */
+    public Object removeNext();
+    
     /**
          return a new iterator which delivers all the elements of this iterator and
          then all the elements of the other iterator. Does not copy either iterator;
