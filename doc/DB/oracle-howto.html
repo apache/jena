@@ -23,8 +23,8 @@ information. Jena2 has been tested with the Oracle 9i binary release, version 9.
 download instructions. We assume that Jena users wishing to use Oracle have 
 access to an existing Oracle installation or access to the software. Below we 
 list some assumptions and post-installation instructions for using Oracle with 
-Jena. Currently, Jena2 has only been tested 
-with Oracle on Windows XP.</p>
+Jena. Currently, Jena2 has been tested 
+with Oracle on Windows XP and on Linux AS.</p>
 
 <font SIZE="2">
 <h3 ALIGN="LEFT">Windows Platforms</h3>
@@ -38,7 +38,24 @@ following versions.</p>
   <tr>
     <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td>&nbsp;&nbsp;&nbsp; <b>JDBC Thick Driver: </b>&nbsp;oci8</td>
+    <td>&nbsp;&nbsp;&nbsp; <b>JDBC Thick Driver: </b>&nbsp;oci8, oci</td>
+  </tr>
+</table>
+
+<font SIZE="2">
+<h3 ALIGN="LEFT">Linux Platforms</h3>
+</font>
+<p ALIGN="LEFT">Jena2 has been tested with Oracle on Linux AS with the 
+following versions.</p>
+
+<font SIZE="2">
+
+<table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td>&nbsp;&nbsp;&nbsp; <b>JDBC Thick Driver: </b>&nbsp;oci (using the 9.2.0.3 versions of ojdbc14.jar and ocrs12.zip)</td>
+    
   </tr>
 </table>
 
@@ -51,11 +68,12 @@ If you have your own Oracle user name and password, please use those values for
 DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
 
 <table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1" height="83">
+
   <tr>
 
 <font SIZE="2">
 
-    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:oci8:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:oci:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
     <td height="15">&nbsp;&nbsp;&nbsp; Uses the thick JDBC client and connects 
     to the default local database.</td>
@@ -66,7 +84,7 @@ DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
 
 <font SIZE="2">
 
-    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:oci8:@&lt;tnsname&gt;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:oci:@&lt;tnsname&gt;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
     <td height="15">&nbsp;&nbsp;&nbsp; Uses the thick JDBC client and connects 
     to the specified database.</td>
@@ -147,7 +165,7 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
   </font>
   <dl>
     <font SIZE="2">
-    <dd><font face="Courier New">String DB_URL = &quot;jdbc:oracle:oci8:@&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // URL of database server</font></dd>
+    <dd><font face="Courier New">String DB_URL = &quot;jdbc:oracle:oci:@&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // URL of database server</font></dd>
     <dd><font face="Courier New">String DB_USER = &quot;scott&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
     // database user id</font></dd>
     <dd><font face="Courier New">String DB_PASSWD = &quot;tiger&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -208,10 +226,8 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
 details on the physical layout.</p>
 
 <h2>Known Bugs</h2>
-<p>There are known problems with Jena2's 
-support for BLOBs when using an Oracle database running on the Linux 
-operating system, so Jena2 does not support huge objects (e.g., huge literals)
-for Oracle running on Linux at this time.
+<p>We encountered problems with BLOBs when using the Oracle thin driver to access an Oracle database running on the Linux 
+operating system, so we recommend use of the oci driver when using Linux.
 
 <h4>Oracle Utility Commands</h4>
 
