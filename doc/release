@@ -2,6 +2,8 @@
 # Export the web site to jena.sourceforge.net
 # Assumes you have ssh set up correctly.
 
+echo "Best to do a build and copy the doc/ directory from the distribution"
+
 HOST="shell.sourceforge.net"
 LOC="/home/groups/j/je/jena/htdocs"
 
@@ -52,25 +54,13 @@ images/sflogo-type1.png
 EOF
 )
 
+# Need to fix up line endings?
+
 # Copy to a release ara, them copy all to SourceForge
 
-echo "BE CAREFUL"
-exit 
-cp $PAGES   ~/WWW/Jena/WebSite
-cp $STYLE   ~/WWW/Jena/WebSite/styles
-## cp $IMAGES  ~/WWW/Jena/WebSite/images
+COPY="pscp -load afs@jena.hpl.hp.com"
 
-# Need to skip CVS directories ...
-## cp -R $DIRS ~/WWW/Jena/WebSite
-## 
-## find ~/WWW/Jena/WebSite -name CVS | xargs rm -rf
+$COPY -r $PAGES   ~/WWW/Jena/WebSite
+$COPY -r $STYLE   ~/WWW/Jena/WebSite/styles
+$COPY -r $IMAGES  ~/WWW/Jena/WebSite/images
 
-## ##echo $PAGES
-## scp $PAGES "$HOST/$LOC"
-## 
-## ## echo $STYLE
-## scp $STYLE "$HOST/${LOC}/styles"
-## 
-## ## # Fix permissions?
-## ## ssh $HOST "find /home/groups/j/je/jena/htdocs -type d | xargs chmod +rx"
-## ## ssh $HOST "find /home/groups/j/je/jena/htdocs -type f | xargs chmod +r"
