@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.10 $
+* @version $Revision: 1.11 $
 */
 
 public interface IRDBDriver {
@@ -265,7 +265,90 @@ public interface IRDBDriver {
 	 * @return true if the table exists.
 	 */
 	public boolean doesTableExist(String tName);
+	
+	/**
+	 * Generate an SQL string to match a table column value to a constant.
+	 * If the literal does not occur in the database, a match condition
+	 * is generated that will always return false.
+	 * There's a known bug in this method. the literal is converted to
+	 * a string BEFORE the query is run. consequently, there's a race
+	 * condition. if the (long) literal is not in the database
+	 * when the query is compiled but is added prior to running the
+	 * query, then the query will (incorrectly) return no results.
+	 * for now, we'll ignore this case and document it as a bug.
+	 * @param alias The table alias for this match.
+	 * @param col The column to match, one of S,P,O,N,T for subject,
+	 * predicate, object, statement or type, respectively.
+	 * @param lit The literal value to match.
+	 * @return SQL string.
+	 */	
+	
+	public String genSQLQualConst ( int alias, char col, Node lit );
+	
+	/**
+	 * Generate an SQL string to match a table column value to a parameter.
+	 * @param alias The table alias for this match.
+	 * @param col The column to match, one of S,P,O,N,T for subject,
+	 * predicate, object, statement or type, respectively.
+	 * @return SQL string.
+	 */	
 
+	public String genSQLQualParam( int alias, char col );
+	
+	/**
+	 * Generate an SQL string to joing two table columns.
+	 * @param lhsAlias The left side table alias for the join.
+	 * @param lhsCol The left side column to join, one of
+	 * S,P,O,N,T.
+	 * @param rhsAlias The right side table alias to join.
+	 * @param rhsCol The right side column to join.
+	 * @return SQL string.
+	 */	
+
+	public String genSQLJoin( int lhsAlias, char lhsCol,
+		int rhsAlias, char rhsCol );
+		
+	/**
+	 * Generate an SQL string for a result list of a select stmt.
+	 * @param binding Array of Var containing the result list bindings.
+	 * @return SQL string (not prefixed by "Select").
+	 */	
+	
+	public String genSQLResList( DBQuery.Var[] binding );
+
+	/**
+	 * Generate an SQL string for a from list of a select stmt.
+	 * @param aliasCnt The number of table aliases in the from list.
+	 * @param table The name of the table to be queried.
+	 * @return SQL string (not prefixed by "From").
+	 */	
+	
+	public String genSQLFromList( int aliasCnt, String table );
+
+		
+	/**
+	 * Generate an SQL Select statement given the result list,
+	 * the from list and the where clause;
+	 * @param res The result list as a string.
+	 * @param from The from list as a string.
+	 * @param where The where qualifier as a string.
+	 * @return SQL statement.
+	 */	
+
+	public String genSQLSelectStmt( String res, String from, String where );
+	
+	public class GenSQLAnd {
+		 private boolean init;
+		 GenSQLAnd () { init = false; }
+		 String gen( String qual ) {
+			if ( qual == "" ) return "";
+			if ( init == false ) {
+				init = true;
+				return qual;
+			} else
+				return " AND " + qual;
+		 }  	 
+	}
 
 }
 
