@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TriplePattern.java,v 1.18 2003-08-27 13:11:17 andy_seaborne Exp $
+ * $Id: TriplePattern.java,v 1.19 2004-03-12 09:42:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -23,15 +23,17 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * Datastructure which defines a triple pattern as used in simple
  * rules and in find interfaces. 
  * <p>
- * Wildcards are recorded by using Node_Variable entries rather than
+ * Wildcards are recorded by using Node_RuleVariable entries rather than
  * nulls because they can be named. If a null is specified that is
- * converted to a variable of name "".</p>
+ * converted to a variable of name "". Note that whilst some engines might simply
+ * require Node_Variables the forward engine requires variables represented using
+ * the more specialized subclass - Node_RuleVariable.</p>
  * <p>
  * It would make more sense to have TriplePattern subclass Triple
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-08-27 13:11:17 $
+ * @version $Revision: 1.19 $ on $Date: 2004-03-12 09:42:20 $
  */
 public class TriplePattern implements ClauseEntry {
 
@@ -46,7 +48,7 @@ public class TriplePattern implements ClauseEntry {
     
     /**
      * Constructor - builds a pattern from three nodes,
-     * use Node_Variables as variables, use a variable
+     * use Node_RuleVariables as variables, use a variable
      * with an empty name as a wildcard, can also use null
      * as a wildcard.
      */
@@ -273,7 +275,7 @@ public class TriplePattern implements ClauseEntry {
     }
             
     /**
-     * Convert any null wildcards to Node_Variable wildcards.
+     * Convert any null wildcards to Node_RuleVariable wildcards.
      */
     private static Node normalize(Node node) {
         if (node == null || node == Node.ANY) return Node_RuleVariable.WILD;
@@ -282,7 +284,7 @@ public class TriplePattern implements ClauseEntry {
     }
             
     /**
-     * Convert any Node_Variable wildcards to null. This loses
+     * Convert any Node_RuleVariable wildcards to null. This loses
      * the variable named but is used when converting a singleton
      * pattern to a TripleMtch
      */
