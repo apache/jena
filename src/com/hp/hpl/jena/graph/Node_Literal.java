@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Literal.java,v 1.11 2004-03-19 16:33:35 chris-dollin Exp $
+  $Id: Node_Literal.java,v 1.12 2005-02-21 11:51:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -54,7 +54,7 @@ public class Node_Literal extends Node_Concrete
 }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-      (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+      (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: TestGraphExtract.java,v 1.5 2004-08-13 13:51:43 chris-dollin Exp $
+      $Id: TestGraphExtract.java,v 1.6 2005-02-21 11:52:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -108,7 +108,7 @@ public class TestGraphExtract extends GraphTestBase
     }
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

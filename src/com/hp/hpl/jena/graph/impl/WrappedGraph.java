@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedGraph.java,v 1.10 2004-12-03 14:56:35 chris-dollin Exp $
+  $Id: WrappedGraph.java,v 1.11 2005-02-21 11:52:12 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -97,7 +97,7 @@ public class WrappedGraph implements GraphWithPerform
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.35 2004-08-13 13:51:05 chris-dollin Exp $
+  $Id: Query.java,v 1.36 2005-02-21 11:52:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -186,7 +186,7 @@ public class Query
 	}
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

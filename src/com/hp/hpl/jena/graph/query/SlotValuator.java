@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SlotValuator.java,v 1.2 2004-07-21 07:36:56 chris-dollin Exp $
+  $Id: SlotValuator.java,v 1.3 2005-02-21 11:52:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -43,7 +43,7 @@ public class SlotValuator implements Valuator
 	}
 
 /*
-	(c) Copyright 2004, Hewlett-Packard Development Company, LP
+	(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 	
 	Redistribution and use in source and binary forms, with or without

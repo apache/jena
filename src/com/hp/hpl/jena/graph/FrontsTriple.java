@@ -1,7 +1,7 @@
 /*
-	(c) Copyright 2004, Hewlett-Packard Development Company, LP
+	(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: FrontsTriple.java,v 1.1 2004-08-05 07:38:18 chris-dollin Exp $
+	$Id: FrontsTriple.java,v 1.2 2005-02-21 11:51:56 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph;
 
@@ -17,7 +17,7 @@ public interface FrontsTriple
 	}
 
 /*
-	(c) Copyright 2004 Hewlett-Packard Development Company, LP All rights
+	(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP All rights
 	reserved. Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
 	1. Redistributions of source code must retain the above copyright notice,

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.24 2005-02-18 12:27:57 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.25 2005-02-21 11:52:37 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -267,7 +267,7 @@ public class GraphTestBase extends JenaTestBase
     }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

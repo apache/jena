@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.43 2004-12-01 17:50:39 chris-dollin Exp $
+  $Id: Node.java,v 1.44 2005-02-21 11:51:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -395,7 +395,7 @@ public abstract class Node {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

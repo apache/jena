@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *  </p>
  * 
  * @author Andy Seaborne
- * @version $Id: dblist.java,v 1.4 2004-12-06 13:50:20 andy_seaborne Exp $
+ * @version $Id: dblist.java,v 1.5 2005-02-21 11:49:11 andy_seaborne Exp $
  */ 
  
 public class dblist extends DBcmd
@@ -91,7 +91,7 @@ public class dblist extends DBcmd
 
 
 /*
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: DisjointUnion.java,v 1.4 2004-11-02 14:10:07 chris-dollin Exp $
+  $Id: DisjointUnion.java,v 1.5 2005-02-21 11:52:04 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.compose;
 
@@ -38,7 +38,7 @@ public class DisjointUnion extends Dyadic
 
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

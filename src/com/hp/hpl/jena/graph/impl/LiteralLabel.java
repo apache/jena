@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.14 2004-11-19 14:38:11 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.15 2005-02-21 11:52:10 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -349,7 +349,7 @@ final public class LiteralLabel {
 }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

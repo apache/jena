@@ -1,7 +1,7 @@
 /*
-     (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+     (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
      [See end of file]
-     $Id: TestSimpleReifierFragmentsMap.java,v 1.1 2004-09-14 17:11:35 chris-dollin Exp $
+     $Id: TestSimpleReifierFragmentsMap.java,v 1.2 2005-02-21 11:52:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -26,7 +26,7 @@ public class TestSimpleReifierFragmentsMap extends AbstractTestReifierFragmentsM
     }
 
 /*
-     (c) Copyright 2004, Hewlett-Packard Development Company, LP
+     (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
      All rights reserved.
     
      Redistribution and use in source and binary forms, with or without

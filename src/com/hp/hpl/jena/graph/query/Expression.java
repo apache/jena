@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.25 2004-11-19 14:38:11 chris-dollin Exp $
+  $Id: Expression.java,v 1.26 2005-02-21 11:52:15 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -272,7 +272,7 @@ public interface Expression
     }
 
 /*
-    (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.9 2004-08-13 17:12:58 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.10 2005-02-21 11:52:33 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -226,7 +226,7 @@ public class TestExpressions extends QueryTestBase
     }
 
 /*
-	(c) Copyright 2004, Hewlett-Packard Development Company, LP
+	(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 	
 	Redistribution and use in source and binary forms, with or without

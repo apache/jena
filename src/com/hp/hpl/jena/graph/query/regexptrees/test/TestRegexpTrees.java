@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestRegexpTrees.java,v 1.6 2004-09-02 14:36:14 chris-dollin Exp $
+  $Id: TestRegexpTrees.java,v 1.7 2005-02-21 11:52:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees.test;
@@ -108,7 +108,7 @@ public class TestRegexpTrees extends GraphTestBase
     }
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

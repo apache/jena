@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BufferPipe.java,v 1.6 2004-11-30 20:18:53 chris-dollin Exp $
+  $Id: BufferPipe.java,v 1.7 2005-02-21 11:52:15 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -102,7 +102,7 @@ public class BufferPipe implements Pipe
         { BoundedBufferPutException( Exception e ) { super( e ); }  }
     }
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Dyadic.java,v 1.2 2004-07-22 10:10:58 chris-dollin Exp $
+  $Id: Dyadic.java,v 1.3 2005-02-21 11:52:15 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -90,7 +90,7 @@ public abstract class Dyadic extends Application
     }
 
 /*
-(c) Copyright 2004, Hewlett-Packard Development Company, LP
+(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphWithPerform.java,v 1.1 2004-06-28 14:43:17 chris-dollin Exp $
+  $Id: GraphWithPerform.java,v 1.2 2005-02-21 11:52:10 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -29,7 +29,7 @@ public interface GraphWithPerform extends Graph
 
 
 /*
-(c) Copyright 2004, Hewlett-Packard Development Company, LP
+(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Intersection.java,v 1.5 2004-11-01 16:38:26 chris-dollin Exp $
+  $Id: Intersection.java,v 1.6 2005-02-21 11:52:04 andy_seaborne Exp $
 */
 
 /*
@@ -48,7 +48,7 @@ public class Intersection extends Dyadic implements Graph
 	
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

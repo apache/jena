@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestEarlyConstraints.java,v 1.3 2004-07-22 11:31:27 chris-dollin Exp $
+  $Id: TestEarlyConstraints.java,v 1.4 2005-02-21 11:52:33 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -55,7 +55,7 @@ public class TestEarlyConstraints extends QueryTestBase
     }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

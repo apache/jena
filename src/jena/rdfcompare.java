@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcompare.java,v 1.7 2004-12-06 13:50:20 andy_seaborne Exp $
+ * $Id: rdfcompare.java,v 1.8 2005-02-21 11:49:12 andy_seaborne Exp $
  */
 
 package jena;
@@ -54,7 +54,7 @@ import java.io.FileInputStream;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2004-12-06 13:50:20 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2005-02-21 11:49:12 $
  */
 public class rdfcompare extends java.lang.Object {
 

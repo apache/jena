@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.5 2004-07-09 11:26:33 chris-dollin Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.6 2005-02-21 11:52:48 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -237,7 +237,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
 
 
 /*
-	(c) Copyright 2004, Hewlett-Packard Development Company, LP
+	(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 	
 	Redistribution and use in source and binary forms, with or without

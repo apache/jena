@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Sequence.java,v 1.3 2004-09-01 19:18:18 chris-dollin Exp $
+  $Id: Sequence.java,v 1.4 2005-02-21 11:52:30 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -45,7 +45,7 @@ public class Sequence extends MultiOperandTree
 
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

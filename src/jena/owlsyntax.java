@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -33,7 +33,7 @@ import java.io.*;
  * class in the second then a Full reasoner is needed.
  * 
  * @author Jeremy Carroll
- * @version $Id: owlsyntax.java,v 1.6 2004-12-14 13:31:10 jeremy_carroll Exp $
+ * @version $Id: owlsyntax.java,v 1.7 2005-02-21 11:49:12 andy_seaborne Exp $
  */
 public class owlsyntax {
 	private owlsyntax() {
@@ -332,7 +332,7 @@ public class owlsyntax {
 }
 
 /*
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP All
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP All
  * rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

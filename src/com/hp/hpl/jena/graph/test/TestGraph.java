@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.25 2004-12-02 15:48:13 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.26 2005-02-21 11:52:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -122,7 +122,7 @@ public class TestGraph extends GraphTestBase
     }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

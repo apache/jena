@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -37,7 +37,7 @@ import java.util.* ;
  * <li>Options may be ended with - or --</li>
  * </ul>
  * @author Andy Seaborne
- * @version $Id: CommandLine.java,v 1.3 2003-08-27 13:03:54 andy_seaborne Exp $
+ * @version $Id: CommandLine.java,v 1.4 2005-02-21 11:48:56 andy_seaborne Exp $
  */
 
 
@@ -269,7 +269,7 @@ public class CommandLine
 }
 
 /*
- *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.8 2004-11-01 14:20:27 chris-dollin Exp $
+  $Id: FragmentTripleIterator.java,v 1.9 2005-02-21 11:52:10 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -82,7 +82,7 @@ public abstract class FragmentTripleIterator extends NiceIterator
 }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

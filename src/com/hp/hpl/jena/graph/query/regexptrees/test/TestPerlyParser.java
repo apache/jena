@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.12 2004-09-02 14:36:14 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.13 2005-02-21 11:52:30 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -299,7 +299,7 @@ public class TestPerlyParser extends GraphTestBase
 
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

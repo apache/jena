@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphQueryPackage.java,v 1.11 2004-12-06 13:50:28 andy_seaborne Exp $
+  $Id: TestGraphQueryPackage.java,v 1.12 2005-02-21 11:52:33 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -36,7 +36,7 @@ public class TestGraphQueryPackage
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

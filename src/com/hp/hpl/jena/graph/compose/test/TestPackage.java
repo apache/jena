@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.6 2004-09-06 15:19:25 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.7 2005-02-21 11:52:08 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -17,7 +17,7 @@ import junit.framework.TestSuite;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2004-09-06 15:19:25 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2005-02-21 11:52:08 $
  */
 public class TestPackage extends Object {
     
@@ -76,7 +76,7 @@ public class TestPackage extends Object {
 
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

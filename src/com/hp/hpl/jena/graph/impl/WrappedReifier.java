@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReifier.java,v 1.6 2004-12-01 09:04:16 chris-dollin Exp $
+  $Id: WrappedReifier.java,v 1.7 2005-02-21 11:52:12 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -99,7 +99,7 @@ public class WrappedReifier implements Reifier
     }
 
 /*
-    (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

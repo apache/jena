@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Difference.java,v 1.5 2004-11-01 16:38:26 chris-dollin Exp $
+  $Id: Difference.java,v 1.6 2005-02-21 11:52:04 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -45,7 +45,7 @@ public class Difference extends Dyadic implements Graph
 	}
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
