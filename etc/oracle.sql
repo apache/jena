@@ -50,11 +50,11 @@ CREATE TABLE ${c}graph (
  Name    VARCHAR2(4000)
 );;
 CREATE SEQUENCE ${c}graph_ID_seq;;
-CREATE UNIQUE INDEX {c}xlit ON ${c}long_lit(Head,ChkSum);;
-CREATE UNIQUE index {c}xuri ON ${c}long_urI(Head,ChkSum);;
-CREATE UNIQUE INDEX {c}xbnd ON ${c}prefix(Head,ChkSum);;
-CREATE INDEX {c}xsp ON ${c}sys_stmt(Subj, Prop);;
-CREATE INDEX {c}xo ON ${c}sys_stmt(Obj);;
+CREATE UNIQUE INDEX ${c}xlit ON ${c}long_lit(Head,ChkSum);;
+CREATE UNIQUE index ${c}xuri ON ${c}long_urI(Head,ChkSum);;
+CREATE UNIQUE INDEX ${c}xbnd ON ${c}prefix(Head,ChkSum);;
+CREATE INDEX ${c}xsp ON ${c}sys_stmt(Subj, Prop);;
+CREATE INDEX ${c}xo ON ${c}sys_stmt(Obj);;
 
 #-------------------------------------------------------------------
 # Create a blank statement table - and indexes
@@ -331,7 +331,7 @@ FROM ${a} S WHERE S.Stmt = ? AND S.GraphID = ?
 #-------------------------------------------------------------------
 # Select JENA sequence name from sequences
 SelectJenaSequences
-SELECT SEQUENCE_NAME FROM SEQ WHERE SEQUENCE_NAME LIKE ('JENA%')
+SELECT SEQUENCE_NAME FROM SEQ WHERE SEQUENCE_NAME LIKE ('${a}%')
 
 #-------------------------------------------------------------------
 # Select sequence name from sequences
