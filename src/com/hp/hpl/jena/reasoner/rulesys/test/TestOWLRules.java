@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.21 2003-09-15 22:15:15 ksmathers Exp $
+ * $Id: TestOWLRules.java,v 1.22 2003-09-16 09:28:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-09-15 22:15:15 $
+ * @version $Revision: 1.22 $ on $Date: 2003-09-16 09:28:25 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -169,7 +169,7 @@ public class TestOWLRules extends TestCase {
      */
     /*
     public void testOWLReasoner() throws IOException {
-        OWLWGTester tester = new OWLWGTester(OWLFBRuleReasonerFactory.theInstance(), this, null);
+        OWLWGTester tester = new OWLWGTester(OWLRuleReasonerFactory.theInstance(), this, null);
         tester.runTests("SymmetricProperty/Manifest001.rdf");
     }
     */
@@ -179,7 +179,7 @@ public class TestOWLRules extends TestCase {
      */
     protected void runTest() throws IOException {
         if (testForward) {
-            OWLWGTester tester = new OWLWGTester(OWLFBRuleReasonerFactory.theInstance(), this, null);
+            OWLWGTester tester = new OWLWGTester(OWLRuleReasonerFactory.theInstance(), this, null);
             tester.runTests(manifest, enableTracing, printStats);
 //            OWLRuleReasoner.printStats();
         } else {
