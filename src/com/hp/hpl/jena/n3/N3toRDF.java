@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.24 2004-11-29 14:11:20 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.25 2004-11-29 14:45:46 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -62,12 +62,16 @@ public class N3toRDF implements N3ParserEventHandler
             return ;
         }
         base = str ;
-        
-        int i = base.lastIndexOf('/') ;
-        if ( i >= 0 )
-            // Include the /
-            basedir = base.substring(0,i+1) ;
-        else 
+        if ( base.startsWith("file:"))
+        {
+            int i = base.lastIndexOf('/') ;
+            if ( i >= 0 )
+                // Include the /
+                basedir = base.substring(0,i+1) ;
+            else 
+                basedir = base ;
+        }
+        else
             basedir = base ;
     }
     
@@ -404,20 +408,21 @@ public class N3toRDF implements N3ParserEventHandler
             return base+"#" ;
         if ( base != null && ! hasURIscheme(text) )
         {
-            // Hmm - not perfect but pragmatic
-            // Hmm - makes things that were different the same.  Bad. 
-//            if ( text.startsWith("///") )
-//                text = "file:" + text ;
-//            else
-//                if ( text.startsWith("//") )
-//                    text = "file:/" + text ;
-//            else
-//                if ( text.startsWith("/") )
-//                    text = "file://" + text ;
-          if ( text.startsWith("/") )
-                text = "file:" + text ;
+            if ( ! base.startsWith("file:"))
+            {
+                if ( text.startsWith("#"))
+                    return base+text ;
+                else
+                    return base+"#"+text ;
+            }
+            
+            // File-like things.
+            if ( text.startsWith("#") )
+                return base + text ;
+            if ( text.startsWith("/") )
+                return "file:" + text ;
             else
-                text = basedir + text ;
+                return basedir + text ;
         }
         
         return text;
