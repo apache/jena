@@ -43,12 +43,6 @@ public class SpecializedGraphReifier_RDB
 	 */
 	public IDBID my_GID = null;
 
-	// lset name
-	private String m_lsetName;
-
-	// lset classname
-	private String m_className;
-
 	// cache of reified statement status
 	private ReifCacheMap m_reifCache;
 
@@ -437,20 +431,6 @@ public class SpecializedGraphReifier_RDB
 	}
 
 	/*
-	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#getLSetName()
-	 */
-	public String getLSetName() {
-		return m_lsetName;
-	}
-
-	/*
-	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#getClassName()
-	 */
-	public String getClassName() {
-		return m_className;
-	}
-
-	/*
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#close()
 	 */
 	public void close() {
@@ -516,19 +496,19 @@ public class SpecializedGraphReifier_RDB
 				cnt++;
 				Triple db = (Triple) it.next();				
 				StmtMask n = new StmtMask();
-				hasSubj = !db.getSubject().equals(Node.ANY);
+				hasSubj = !db.getSubject().equals(Node.NULL);
 				if ( hasSubj && checkSame )
 					if ( db.getSubject().equals(s.getSubject()) )
 						sm.setHasSubj();
 					else
 						dm.setHasSubj();
-				hasPred = !db.getPredicate().equals(Node.ANY);
+				hasPred = !db.getPredicate().equals(Node.NULL);
 				if ( hasPred && checkSame )
 					if ( db.getPredicate().equals(s.getPredicate()) )
 						sm.setHasPred();
 					else
 						dm.setHasPred();
-				hasObj = !db.getObject().equals(Node.ANY);
+				hasObj = !db.getObject().equals(Node.NULL);
 				if ( hasObj && checkSame )
 					if ( db.getObject().equals(s.getObject()) )
 						sm.setHasObj();
@@ -550,17 +530,6 @@ public class SpecializedGraphReifier_RDB
 			inUse[0] = true;
 			cache[0] = new ReifCache(stmtURI, m, cnt);
 			return cache[0];
-		}
-
-		protected Triple fragToTriple(Triple t, StmtMask s) {
-			Triple res;
-			Node_URI n = (Node_URI) t.getSubject();
-			if (s.hasPred())
-				return new Triple(n, t.getPredicate(), Node.ANY);
-			else if (s.hasObj())
-				return new Triple(n, Node.ANY, t.getObject());
-			else
-				return new Triple(n, Node.ANY, Node.ANY);
 		}
 
 	}
@@ -686,7 +655,49 @@ public class SpecializedGraphReifier_RDB
 			}
 
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#graphIdGet()
+	 */
+	public int getGraphId() {
+		return ((DBIDInt)my_GID).getIntID();
+    }
+    
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#PSetGet()
+	 */
+	public IPSet getPSet() {
+		return m_pset;
+	}
+    	
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#DBPropLSetGet()
+	 */
+	public DBPropLSet getDBPropLSet() {
+		return m_dbPropLSet;
+	}
+	
+	public char subsumes ( Triple pattern ) {
+		Node pred = pattern.getPredicate();
+		char res = noTriplesForPattern;
+		if ( pred.isConcrete() ) {
+			if ( pred.equals(RDF.Nodes.subject) ||
+				pred.equals(RDF.Nodes.predicate) ||
+				pred.equals(RDF.Nodes.object) ) 
+				res = allTriplesForPattern;
+			else if ( pred.equals(RDF.Nodes.type) ) {
+				Node obj = pattern.getObject();
+				if ( obj.equals(RDF.Nodes.Statement) )
+					res = allTriplesForPattern;
+				else
+					res = someTriplesForPattern;
+			}
+		} else if ( (pred.isVariable()) || pred.equals(Node.ANY) ) {
+			res = someTriplesForPattern;
+		} else
+			throw new JenaException("Unexpected predicate: " + pred.toString());
+		return res;
+	}
 }
 
 	/*
