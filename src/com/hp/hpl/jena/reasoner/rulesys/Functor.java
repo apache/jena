@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Functor.java,v 1.19 2005-02-21 12:16:59 andy_seaborne Exp $
+ * $Id: Functor.java,v 1.20 2005-02-27 14:08:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2005-02-21 12:16:59 $
+ * @version $Revision: 1.20 $ on $Date: 2005-02-27 14:08:53 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -197,12 +197,11 @@ public class Functor implements ClauseEntry {
         buff.append("(");
         for (int i = 0; i < args.length; i++) {
             buff.append(PrintUtil.print(args[i]));
-            if (i == args.length - 1) {
-                buff.append(")");
-            } else {
+            if (i < args.length - 1) {
                 buff.append(" ");
             }
         }
+        buff.append(")");
         return buff.toString();
     }
 
