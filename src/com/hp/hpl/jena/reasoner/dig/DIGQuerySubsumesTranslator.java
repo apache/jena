@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQuerySubsumesTranslator.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:24 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQuerySubsumesTranslator.java,v 1.9 2005-02-21 12:16:24 andy_seaborne Exp $
+ * @version CVS $Id: DIGQuerySubsumesTranslator.java,v 1.10 2005-03-16 18:52:27 ian_dickinson Exp $
  */
 public class DIGQuerySubsumesTranslator 
     extends DIGQueryTranslator
@@ -121,7 +121,7 @@ public class DIGQuerySubsumesTranslator
     /**
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
-    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+    public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         return isTrue( response ) ? (ExtendedIterator) new SingletonIterator( query.asTriple() ) : NullIterator.instance;
     }
     

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:24 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -24,7 +24,9 @@ package com.hp.hpl.jena.reasoner.dig;
 
 // Imports
 ///////////////
+import java.util.*;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -45,46 +47,46 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPathElement;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.15 2005-02-21 12:16:24 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.16 2005-03-16 18:52:27 ian_dickinson Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
     //////////////////////////////////
 
     public static final String ALL = "*";
-    
-    
+
+
     // Static variables
     //////////////////////////////////
 
-    
+
     // Instance variables
     //////////////////////////////////
 
     /** The node that the incoming subject must match */
     private Node m_subject;
-    
+
     /** The node that the incoming object must match */
     private Node m_object;
-    
+
     /** The node that the incoming predicate must match */
     private Node m_pred;
-    
-    
+
+
     // Constructors
     //////////////////////////////////
 
     /**
      * <p>Construct an abstract translator, given the URI's of nodes to match against
-     * or null to represent 
+     * or null to represent
      */
     public DIGQueryTranslator( String subject, String predicate, String object ) {
         m_subject = mapNode( subject );
         m_pred    = mapNode( predicate );
         m_object  = mapNode( object );
     }
-    
-    
+
+
     // External signature methods
     //////////////////////////////////
 
@@ -98,26 +100,26 @@ public abstract class DIGQueryTranslator {
      */
     public ExtendedIterator find( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
-        
+
         // pose the query to the dig reasoner
         Document query = translatePattern( pattern, da );
         if (query == null) {
             LogFactory.getLog( getClass() ).warn( "Could not find pattern translator for nested DIG query " + pattern );
         }
         Document response = da.getConnection().sendDigVerb( query, da.getProfile() );
-        
+
         boolean warn = dc.warningCheck( response );
         if (warn) {
             for (Iterator i = dc.getWarnings();  i.hasNext(); ) {
                 LogFactory.getLog( getClass() ).warn( i.next() );
             }
         }
-        
+
         // translate the response back to triples
         return translateResponse( response, pattern, da );
     }
-    
-    
+
+
     /**
      * <p>Translate the given pattern (with given premises)
      * to a DIG query, and pass it on to the DIG
@@ -130,7 +132,7 @@ public abstract class DIGQueryTranslator {
      */
     public ExtendedIterator find( TriplePattern pattern, DIGAdapter da, Model premises ) {
         DIGConnection dc = da.getConnection();
-        
+
         // pose the query to the dig reasoner
         Document query = translatePattern( pattern, da, premises );
         if (query == null) {
@@ -139,20 +141,20 @@ public abstract class DIGQueryTranslator {
         }
         else {
             Document response = da.getConnection().sendDigVerb( query, da.getProfile() );
-            
+
             boolean warn = dc.warningCheck( response );
             if (warn) {
                 for (Iterator i = dc.getWarnings();  i.hasNext(); ) {
                     LogFactory.getLog( getClass() ).warn( i.next() );
                 }
             }
-            
+
             // translate the response back to triples
             return translateResponse( response, pattern, da );
         }
     }
-    
-    
+
+
     /**
      * <p>Answer true if this translator applies to the given triple pattern.</p>
      * @param pattern An incoming patter to match against
@@ -167,8 +169,8 @@ public abstract class DIGQueryTranslator {
                trigger( m_pred, pattern.getPredicate(), premises )  &&
                checkTriple( pattern, da, premises );
     }
-    
-    
+
+
     /**
      * <p>An optional post-trigger check on the consituents of the triple pattern. By default,
      * delegates to a check on each of the subjec, object and predicate.  However, this method
@@ -184,8 +186,8 @@ public abstract class DIGQueryTranslator {
                checkPredicate( pattern.getPredicate(), da, premises );
 
     }
-    
-    
+
+
     /**
      * <p>Additional test on the subject of the incoming find pattern. Default
      * is to always match</p>
@@ -199,8 +201,8 @@ public abstract class DIGQueryTranslator {
     public boolean checkSubject( Node subject, DIGAdapter da, Model premises ) {
         return true;
     }
-    
-    
+
+
     /**
      * <p>Additional test on the object of the incoming find pattern. Default
      * is to always match</p>
@@ -214,8 +216,8 @@ public abstract class DIGQueryTranslator {
     public boolean checkObject( Node object, DIGAdapter da, Model premises ) {
         return true;
     }
-    
-    
+
+
     /**
      * <p>Additional test on the predicate of the incoming find pattern. Default
      * is to always match</p>
@@ -235,7 +237,7 @@ public abstract class DIGQueryTranslator {
      * <p>Answer an XML document that presents the translation of the query into DIG query language.</p>
      */
     public abstract Document translatePattern( TriplePattern query, DIGAdapter da );
-    
+
     /**
      * <p>Answer an XML document that presents the translation of the query into DIG query language,
      * given that either the subject or object may be expressions defined by the statements
@@ -247,11 +249,22 @@ public abstract class DIGQueryTranslator {
      * <p>Answer an extended iterator over the triples that result from translatig the given DIG response
      * to RDF.</p>
      */
-    public abstract ExtendedIterator translateResponse( Document Response, TriplePattern query, DIGAdapter da );
-   
-    
+    public final ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+        ExtendedIterator i = translateResponseHook( response, query, da );
+        Filter f = getResultsTripleFilter( query );
+        return (f == null) ? i : i.filterKeep( f );
+    }
+
+
     // Internal implementation methods
     //////////////////////////////////
+
+    /**
+     * <p>Answer an extended iterator over the triples that result from translatig the given DIG response
+     * to RDF.</p>
+     */
+    protected abstract ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da );
+
 
     /**
      * <p>Answer a node corresponding to the given URI.</p>
@@ -281,8 +294,8 @@ public abstract class DIGQueryTranslator {
     protected boolean trigger( Node lhs, Node rhs, Model premises ) {
         return (lhs == null) || lhs.equals( rhs );
     }
-    
-    
+
+
     /**
      * <p>Answer true if the given document is the response &lt;true&gt; from a DIG reasoner.
      * @param response The document encoding the response
@@ -294,8 +307,8 @@ public abstract class DIGQueryTranslator {
                .getAll( response )
                .hasNext();
     }
-    
-    
+
+
     /**
      * <p>Answer true if the given document is the response &lt;false&gt; from a DIG reasoner.
      * @param response The document encoding the response
@@ -307,8 +320,8 @@ public abstract class DIGQueryTranslator {
                .getAll( response )
                .hasNext();
     }
-    
-    
+
+
     /**
      * <p>Translate a concept set document into an extended iterator
      * of triples, placing the concept identities into either the subject
@@ -318,11 +331,14 @@ public abstract class DIGQueryTranslator {
      * @param object Flag to indicate that the concept names should occupy the subject field
      * of the returned triple, otherwise the object
      */
-    protected ExtendedIterator translateConceptSetResponse( Document response, TriplePattern query, boolean object ) {
-        return translateNameSetResponse( response, query, object, 
-                                         new String[] {DIGProfile.CONCEPT_SET, DIGProfile.SYNONYMS, DIGProfile.CATOM} );
+    protected ExtendedIterator translateConceptSetResponse( Document response, TriplePattern query, boolean object, DIGAdapter da ) {
+        return translateNameSetResponse( response, query, object,
+                                         new String[] {DIGProfile.CONCEPT_SET, DIGProfile.SYNONYMS, DIGProfile.CATOM} )
+               .andThen( translateSpecialConcepts( response, da,
+                                                   object ? query.getSubject() : query.getObject(),
+                                                   query.getPredicate(), object ));
     }
-    
+
 
     /**
      * <p>Translate a role set document into an extended iterator
@@ -334,10 +350,10 @@ public abstract class DIGQueryTranslator {
      * of the returned triple, or the object
      */
     protected ExtendedIterator translateRoleSetResponse( Document response, TriplePattern query, boolean object ) {
-        return translateNameSetResponse( response, query, object, 
+        return translateNameSetResponse( response, query, object,
                                          new String[] {DIGProfile.ROLE_SET, DIGProfile.SYNONYMS, DIGProfile.RATOM} );
     }
-    
+
 
     /**
      * <p>Translate an instance set document into an extended iterator
@@ -349,10 +365,10 @@ public abstract class DIGQueryTranslator {
      * of the returned triple, or the object
      */
     protected ExtendedIterator translateIndividualSetResponse( Document response, TriplePattern query, boolean object ) {
-        return translateNameSetResponse( response, query, object, 
+        return translateNameSetResponse( response, query, object,
                                          new String[] {DIGProfile.INDIVIDUAL_SET, DIGProfile.INDIVIDUAL} );
     }
-    
+
 
     /**
      * <p>Translate an document encoding a set of named entities into an extended iterator
@@ -367,16 +383,16 @@ public abstract class DIGQueryTranslator {
     protected ExtendedIterator translateNameSetResponse( Document response, TriplePattern query, boolean object, String[] path ) {
         // evaluate a path through the return value to give us an iterator over catom names
         SimpleXMLPath p = new SimpleXMLPath( true );
-        
+
         // build the path
         for (int i = 0;  i < path.length; i++) {
             p.appendElementPath( path[i] );
         }
         p.appendAttrPath( DIGProfile.NAME );
-        
+
         // and evaluate it
         ExtendedIterator iNodes = p.getAll( response ).mapWith( new DIGValueToNodeMapper() );
-        
+
         // return the results as triples
         if (object) {
             return iNodes.mapWith( new TripleObjectFiller( query.getSubject(), query.getPredicate() ) );
@@ -385,7 +401,7 @@ public abstract class DIGQueryTranslator {
             return iNodes.mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
         }
     }
-    
+
     /**
      * <p>Check if a document representing a concept-set response from the DIG reasoner
      * contains a given node as a value, and, if so, return a singleton iterator over the
@@ -404,17 +420,17 @@ public abstract class DIGQueryTranslator {
                                      .appendElementPath( DIGProfile.SYNONYMS )
                                      .appendElementPath( SimpleXMLPathElement.ALL_CHILDREN )
                                      .getAll( response );
-                                          
+
         // search for the object name
         String oName = da.getNodeID( node );
 
         boolean seekingTop = oName.equals( da.getOntLanguage().THING().getURI() );
         boolean seekingBottom = oName.equals( da.getOntLanguage().NOTHING().getURI() );
-        
+
         boolean found = false;
         while (!found && catoms.hasNext()) {
             Element name = (Element) catoms.next();
-            
+
             found = (seekingTop    && name.getNodeName().equals( DIGProfile.TOP )) ||
                     (seekingBottom && name.getNodeName().equals( DIGProfile.BOTTOM )) ||
                     name.getAttribute( DIGProfile.NAME ).equals( oName );
@@ -425,7 +441,62 @@ public abstract class DIGQueryTranslator {
                      : NullIterator.instance;
     }
 
-    
+
+    /**
+     * <p>Answer an iterator that contains appropriate triples if the given
+     * response contains either top or bottom elements.</p>
+     * @param response The XML document to process
+     * @param da The DIG adapter
+     * @param ref The fixed node in the triple
+     * @param pred The predicate in the triple
+     * @param refSubject True if the reference node is to be the subject of any
+     * created triples
+     * @return An iterator over any subset of Thing and Nothing, if either
+     * or both of top and bottom appear as elements in the response document.
+     */
+    protected ExtendedIterator translateSpecialConcepts( Document response, DIGAdapter da, Node ref, Node pred, boolean refSubject ) {
+        SimpleXMLPath topPath = new SimpleXMLPath( true )
+                                    .appendElementPath( DIGProfile.CONCEPT_SET )
+                                    .appendElementPath( DIGProfile.SYNONYMS )
+                                    .appendElementPath( DIGProfile.TOP );
+        SimpleXMLPath bottomPath = new SimpleXMLPath( true )
+                                    .appendElementPath( DIGProfile.CONCEPT_SET )
+                                    .appendElementPath( DIGProfile.SYNONYMS )
+                                    .appendElementPath( DIGProfile.BOTTOM );
+
+        List specials = new ArrayList();
+
+        if (topPath.getAll( response ).hasNext()) {
+            // the returned concepts include <top/>
+            Node n = da.getOntLanguage().THING().asNode();
+            specials.add( refSubject ? new Triple( ref, pred, n )
+                                     : new Triple( n, pred, ref ) );
+
+        }
+        if (bottomPath.getAll( response ).hasNext()) {
+            // the returned concepts include <bottom/>
+            Node n = da.getOntLanguage().NOTHING().asNode();
+            specials.add( refSubject ? new Triple( ref, pred, n )
+                                     : new Triple( n, pred, ref ) );
+
+        }
+
+        return WrappedIterator.create( specials.iterator() );
+    }
+
+
+    /**
+     * <p>Extension point: translators can add an optional filter stage to
+     * the translated result by providing a non-null filter here. The filter
+     * should accept triples, and return true for those triples that are to
+     * remain in the final result iterator.</p>
+     * @return An optional filter on the results of a DIG query
+     */
+    protected Filter getResultsTripleFilter( TriplePattern query ) {
+        return null;
+    }
+
+
     //==============================================================================
     // Inner class definitions
     //==============================================================================

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:06:37 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:55:04 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.13 2005-02-21 12:06:37 andy_seaborne Exp $
+ * @version CVS $Id: OWLLiteProfile.java,v 1.14 2005-03-16 18:55:04 ian_dickinson Exp $
  */
 public class OWLLiteProfile
     extends OWLProfile
@@ -74,7 +74,7 @@ public class OWLLiteProfile
     public Property UNION_OF() {                    return null; }
     public Property SAME_AS() {                     return null; }
     public Property SAME_INDIVIDUAL_AS() {          return null; }
-    
+
 
     /**
      * <p>
@@ -85,14 +85,14 @@ public class OWLLiteProfile
     public String getLabel() {
         return "OWL Lite";
     }
-    
-    
-    
+
+
+
 
     // Internal implementation methods
     //////////////////////////////////
 
-    
+
     //==============================================================================
     // Inner class definitions
     //==============================================================================
@@ -119,9 +119,11 @@ public class OWLLiteProfile
             },
             {  OntClass.class,              new SupportsCheck() {
                 public boolean doCheck( Node n, EnhGraph g ) {
-                    return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
-                    g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) || 
-                    g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() );
+                    return OWL.Thing.asNode().equals( n ) ||
+                           OWL.Nothing.asNode().equals( n ) ||
+                           g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
+                           g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) ||
+                           g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() );
                 }
             }
             },
@@ -134,8 +136,8 @@ public class OWLLiteProfile
             {  ObjectProperty.class,        new SupportsCheck() {
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
-                    g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) || 
-                    g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) || 
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) ||
                     g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() );
                 }
             }
@@ -166,10 +168,10 @@ public class OWLLiteProfile
                     g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
                     g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() ) ||
                     g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() ) ||
-                    g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) || 
-                    g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) || 
-                    g.asGraph().contains( n, RDF.type.asNode(), OWL.FunctionalProperty.asNode() ) || 
-                    g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() ); 
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.FunctionalProperty.asNode() ) ||
+                    g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() );
                 }
             }
             },
@@ -221,7 +223,7 @@ public class OWLLiteProfile
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
                     containsSome( g, n, OWL.maxCardinality ) &&
-                    containsSome( g, n, OWL.onProperty ); 
+                    containsSome( g, n, OWL.onProperty );
                 }
             }
             },
@@ -244,10 +246,10 @@ public class OWLLiteProfile
                     if (n instanceof Node_URI || n instanceof Node_Blank) {
                         // necessary to be a uri or bNode, but not sufficient
                         Graph g = eg.asGraph();
-                        
+
                         // this check filters out OWL-full entailments from the OWL-rule reasoner
                         return !(g.contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
-                                 g.contains( n, RDF.type.asNode(), RDF.Property.asNode() ));                            
+                                 g.contains( n, RDF.type.asNode(), RDF.Property.asNode() ));
                     }
                     else {
                         return false;
@@ -256,19 +258,19 @@ public class OWLLiteProfile
             }
             },
             };
-    
+
 
     // to allow concise reference in the code above.
     public static boolean containsSome( EnhGraph g, Node n, Property p ) {
-        return AbstractProfile.containsSome( g, n, p ); 
+        return AbstractProfile.containsSome( g, n, p );
     }
-    
+
     // Static variables
     //////////////////////////////////
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
     private static HashMap s_supportsChecks = new HashMap();
-    
+
     static {
         // initialise the map of supports checks from a table of static data
         for (int i = 0;  i < s_supportsCheckData.length;  i++) {

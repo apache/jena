@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13 May 2004
  * Filename           $RCSfile: DIGQueryRoleFillerTranslator.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:23 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRoleFillerTranslator.java,v 1.5 2005-02-21 12:16:23 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryRoleFillerTranslator.java,v 1.6 2005-03-16 18:52:28 ian_dickinson Exp $
  */
 public class DIGQueryRoleFillerTranslator 
     extends DIGQueryTranslator
@@ -99,7 +99,7 @@ public class DIGQueryRoleFillerTranslator
     /**
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
-    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+    public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         // evaluate a path through the return value to give us an iterator over catom names
         SimpleXMLPath p = new SimpleXMLPath( true );
         p.appendElementPath( DIGProfile.INDIVIDUAL_SET );

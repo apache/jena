@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryIsRoleTranslator.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:22 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryIsRoleTranslator.java,v 1.4 2005-02-21 12:16:22 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGQueryIsRoleTranslator.java,v 1.5 2005-03-16 18:52:27 ian_dickinson Exp $)
  */
 public class DIGQueryIsRoleTranslator 
     extends DIGQueryTranslator
@@ -108,7 +108,7 @@ public class DIGQueryIsRoleTranslator
         return null;
     }
 
-    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+    public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         // not used
         return null;
     }

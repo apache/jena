@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Dec-2003
  * Filename           $RCSfile: DIGIteratedQueryTranslator.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:20 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGIteratedQueryTranslator.java,v 1.5 2005-02-21 12:16:20 andy_seaborne Exp $
+ * @version CVS $Id: DIGIteratedQueryTranslator.java,v 1.6 2005-03-16 18:52:28 ian_dickinson Exp $
  */
 public abstract class DIGIteratedQueryTranslator 
     extends DIGQueryTranslator
@@ -121,7 +121,7 @@ public abstract class DIGIteratedQueryTranslator
     /**
      * Not needed in this class - delegated to the specific query handlers
      */
-    public ExtendedIterator translateResponse(Document Response, TriplePattern query, DIGAdapter da) {
+    public ExtendedIterator translateResponseHook(Document Response, TriplePattern query, DIGAdapter da) {
         return null;
     }
     

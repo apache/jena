@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryParentsTranslator.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:23 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -27,7 +27,11 @@ package com.hp.hpl.jena.reasoner.dig;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
+import com.hp.hpl.jena.util.iterator.Filter;
 
 
 
@@ -42,9 +46,9 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryParentsTranslator.java,v 1.4 2005-02-21 12:16:23 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGQueryParentsTranslator.java,v 1.5 2005-03-16 18:52:28 ian_dickinson Exp $)
  */
-public class DIGQueryParentsTranslator 
+public class DIGQueryParentsTranslator
     extends DIGQueryAncestorsTranslator
 {
 
@@ -57,7 +61,7 @@ public class DIGQueryParentsTranslator
     // Instance variables
     //////////////////////////////////
 
-    
+
     // Constructors
     //////////////////////////////////
 
@@ -69,7 +73,20 @@ public class DIGQueryParentsTranslator
     public DIGQueryParentsTranslator( String predicate, boolean parents ) {
         super( predicate, parents );
     }
-    
+
+
+    /**
+     * <p>Construct a translator for the DIG query 'parents', with explicit
+     * subject and object values.</p>
+     * @param subject The subject URI to trigger on
+     * @param predicate The predicate URI to trigger on
+     * @param object The object URI to trigger on
+     * @param parents If true, we are searching for parents of the class; if false, the children
+     */
+    public DIGQueryParentsTranslator( String subject, String predicate, String object, boolean parents ) {
+        super( subject, predicate, object, parents );
+    }
+
 
     // External signature methods
     //////////////////////////////////
@@ -81,7 +98,7 @@ public class DIGQueryParentsTranslator
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        
+
         if (m_ancestors) {
             Element parents = da.createQueryElement( query, DIGProfile.PARENTS );
             da.addClassDescription( parents, pattern.getSubject() );
@@ -90,10 +107,18 @@ public class DIGQueryParentsTranslator
             Element descendants = da.createQueryElement( query, DIGProfile.CHILDREN );
             da.addClassDescription( descendants, pattern.getObject() );
         }
-        
+
         return query;
     }
 
+    /**
+     * <p>For direct sub-class, we must sometimes ask a more general query
+     * and filter the returned results against the original query.</p>
+     * @return An optional filter on the results of a DIG query
+     */
+    protected Filter getResultsTripleFilter( TriplePattern query ) {
+        return new FilterSubjectAndObject( query.getSubject(), query.getObject() );
+    }
 
 
     // Internal implementation methods
@@ -103,6 +128,30 @@ public class DIGQueryParentsTranslator
     // Inner class definitions
     //==============================================================================
 
+    private class FilterSubjectAndObject
+        implements Filter
+    {
+        private Node m_subj;
+        private Node m_obj;
+
+        private FilterSubjectAndObject( Node subj, Node obj ) {
+            m_subj = subj;
+            m_obj = obj;
+        }
+
+        public boolean accept( Object o ) {
+            Triple t = (Triple) o;
+            return ((m_subj == null) ||
+                    (m_subj == Node_RuleVariable.WILD) ||
+                    (m_subj == Node.ANY) ||
+                    (t.getSubject().equals( m_subj ))) &&
+                   ((m_obj == null) ||
+                    (m_obj == Node_RuleVariable.WILD) ||
+                    (m_obj == Node.ANY) ||
+                    (t.getObject().equals( m_obj )));
+        }
+
+    }
 }
 
 

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryIsEquivalentTranslator.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:21 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.11 2005-02-21 12:16:21 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.12 2005-03-16 18:52:28 ian_dickinson Exp $
  */
 public class DIGQueryIsEquivalentTranslator 
     extends DIGQueryTranslator
@@ -139,7 +139,7 @@ public class DIGQueryIsEquivalentTranslator
     /**
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
-    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+    public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         return conceptSetNameCheck( response, da, m_qObject, query.asTriple() );
     }
     

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:21 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -38,9 +38,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.10 2005-02-21 12:16:21 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.11 2005-03-16 18:52:27 ian_dickinson Exp $
  */
-public class DIGQueryEquivalentsTranslator 
+public class DIGQueryEquivalentsTranslator
     extends DIGQueryTranslator
 {
     // Constants
@@ -54,8 +54,8 @@ public class DIGQueryEquivalentsTranslator
 
     /** Flag for whether the free variable is on the lhs or the rhs */
     protected boolean m_subjectFree;
-    
-    
+
+
     // Constructors
     //////////////////////////////////
 
@@ -68,7 +68,7 @@ public class DIGQueryEquivalentsTranslator
         super( null, predicate, null );
         m_subjectFree = subjectFree;
     }
-    
+
 
     // External signature methods
     //////////////////////////////////
@@ -79,10 +79,10 @@ public class DIGQueryEquivalentsTranslator
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        
+
         Element equivalents = da.createQueryElement( query, DIGProfile.EQUIVALENTS );
         da.addClassDescription( equivalents, m_subjectFree ? pattern.getObject() : pattern.getSubject() );
-        
+
         return query;
     }
 
@@ -90,20 +90,20 @@ public class DIGQueryEquivalentsTranslator
     /**
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
-    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        return translateConceptSetResponse( response, query, !m_subjectFree );
+    public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
+        return translateConceptSetResponse( response, query, !m_subjectFree, da );
     }
-    
+
     public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         // not used
         return null;
     }
 
-    
+
     public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
         return (m_subjectFree && !subject.isConcrete()) || da.isConcept( subject, premises );
     }
-    
+
     public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
         return (!m_subjectFree && !object.isConcrete()) || da.isConcept( object, premises );
     }

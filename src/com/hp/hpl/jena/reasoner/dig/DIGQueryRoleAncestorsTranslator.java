@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryRoleAncestorsTranslator.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:23 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-16 18:52:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRoleAncestorsTranslator.java,v 1.7 2005-02-21 12:16:23 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryRoleAncestorsTranslator.java,v 1.8 2005-03-16 18:52:27 ian_dickinson Exp $
  */
 public class DIGQueryRoleAncestorsTranslator 
     extends DIGQueryTranslator
@@ -103,7 +103,7 @@ public class DIGQueryRoleAncestorsTranslator
     /**
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
-    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+    public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         // translate the concept set to triples, but then we must add :a rdfs:subPropertyOf :a to match owl semantics
         return translateRoleSetResponse( response, query, m_ancestors );
     }
