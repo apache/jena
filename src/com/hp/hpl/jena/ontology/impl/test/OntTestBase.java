@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:13:05 $
+ * Last modified on   $Date: 2003-05-23 20:19:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.1 2003-05-23 11:13:05 ian_dickinson Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.2 2003-05-23 20:19:59 ian_dickinson Exp $
  */
 public abstract class OntTestBase 
     extends TestSuite
@@ -47,7 +47,8 @@ public abstract class OntTestBase
     // Constants
     //////////////////////////////////
 
-    protected String NS = "http://example.org/onttest#";
+    public static final String BASE = "http://jena.hpl.hp.com/testing/ontology";
+    public static final String NS = BASE + "#";
     
     
     // Static variables
@@ -93,6 +94,7 @@ public abstract class OntTestBase
         protected boolean m_inOWLLite;
         protected boolean m_inDAML;
         protected String m_langElement;
+        protected boolean m_owlLang = true;
 
         public OntTestCase( String langElement, boolean inOWL, boolean inOWLLite, boolean inDAML ) {
             super( "Ontology API test " + langElement );
@@ -105,9 +107,21 @@ public abstract class OntTestBase
         public void runTest()
             throws Exception
         {
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null ), m_inOWL );
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, null ), m_inOWLLite );
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM, null ), m_inDAML );
+            // we don't want inferencing for these unit tests
+            OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM );
+            spec.setReasoner( null );
+            runTest( ModelFactory.createOntologyModel( spec, null ), m_inOWL );
+            
+            spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
+            spec.setReasoner( null );
+            runTest( ModelFactory.createOntologyModel( spec, null ), m_inOWLLite );
+            
+            // now DAML
+            m_owlLang = false;
+            
+            spec = new OntModelSpec( OntModelSpec.DAML_MEM );
+            spec.setReasoner( null );
+            runTest( ModelFactory.createOntologyModel( spec, null ), m_inDAML );
         }
     
         protected void runTest( OntModel m, boolean inModel )

@@ -15,7 +15,9 @@
 
 
 <rdf:Property rdf:ID="p">
-	<rdfs:subPropertyOf rdf:resource="#q" />
+	<rdfs:subPropertyOf>
+		<rdf:Property rdf:ID="q" />
+	</rdfs:subPropertyOf>
 	<rdfs:domain>
 		<owl:Class rdf:ID="ClassA" />
 	</rdfs:domain>
@@ -23,10 +25,10 @@
 		<owl:Class rdf:ID="ClassB" />
 	</rdfs:range>
 	<owl:equivalentProperty>
-		<owl:Property rdf:ID="r" />
+		<rdf:Property rdf:ID="r" />
 	</owl:equivalentProperty>
 	<owl:inverseOf>
-		<owl:Property rdf:ID="s" />
+		<rdf:Property rdf:ID="s" />
 	</owl:inverseOf>
 </rdf:Property>
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:13:05 $
+ * Last modified on   $Date: 2003-05-23 20:19:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -27,8 +27,6 @@ package com.hp.hpl.jena.ontology.impl.test;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.*;
-import com.hp.hpl.jena.vocabulary.*;
 
 
 
@@ -39,10 +37,10 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.3 2003-05-23 11:13:05 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.4 2003-05-23 20:19:59 ian_dickinson Exp $
  */
 public class TestProperty
-    extends PathTestCase 
+    extends OntTestBase 
 {
     // Constants
     //////////////////////////////////
@@ -58,20 +56,15 @@ public class TestProperty
     // Constructors
     //////////////////////////////////
 
-    public TestProperty( String s ) {
-        super( s );
+    static public TestSuite suite() {
+        return new TestProperty( "TestProperty" );
     }
     
-    protected String getTestName() {
-        return "TestProperty";
+    public TestProperty( String name ) {
+        super( name );
     }
     
-    public static TestSuite suite() {
-        return new TestProperty( "TestProperty" ).getSuite();
-    }
-    
-    
-    /** Fields are testID, pathset, property, profileURI, sourceData, expected, count, valueURI, rdfTypeURI, valueLit */
+/*
     protected Object[][] psTestData() {
         return new Object[][] {
             {   
@@ -236,13 +229,194 @@ public class TestProperty
             },
             
       };
-    }
+    }*/
     
     
     // External signature methods
     //////////////////////////////////
 
-    
+    public OntTestCase[] getTests() {
+        return new OntTestCase[] {
+            new OntTestCase( "OntProperty.super-property", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntProperty q = m.createObjectProperty( NS + "q" );
+                    OntProperty r = m.createObjectProperty( NS + "r" );
+                    
+                    p.addSuperProperty( q );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
+                    assertEquals( "p have super-prop q", q, p.getSuperProperty() );
+                    
+                    p.addSuperProperty( r );
+                    assertEquals( "Cardinality should be 2", 2, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
+                    iteratorTest( p.listSuperProperties(), new Object[] {q, r} );
+                    
+                    p.setSuperProperty( r );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
+                    assertEquals( "p shuold have super-prop r", r, p.getSuperProperty() );
+                }
+            },
+            new OntTestCase( "OntProperty.sub-property", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntProperty q = m.createObjectProperty( NS + "q" );
+                    OntProperty r = m.createObjectProperty( NS + "r" );
+                    
+                    p.addSubProperty( q );
+                    assertEquals( "Cardinality should be 1", 1, q.getCardinality( prof.SUB_PROPERTY_OF() ) );
+                    assertEquals( "p have sub-prop q", q, p.getSubProperty() );
+                    
+                    p.addSubProperty( r );
+                    assertEquals( "Cardinality should be 2", 2, q.getCardinality( prof.SUB_PROPERTY_OF() ) + r.getCardinality( prof.SUB_PROPERTY_OF() ) );
+                    iteratorTest( p.listSubProperties(), new Object[] {q, r} );
+                    iteratorTest( q.listSuperProperties(), new Object[] {p} );
+                    iteratorTest( r.listSuperProperties(), new Object[] {p} );
+                    
+                    p.setSubProperty( r );
+                    assertEquals( "Cardinality should be 1", 1, q.getCardinality( prof.SUB_PROPERTY_OF() ) + r.getCardinality( prof.SUB_PROPERTY_OF() ) );
+                    assertEquals( "p should have sub-prop r", r, p.getSubProperty() );
+                }
+            },
+            new OntTestCase( "OntProperty.domain", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
+                    
+                    p.addDomain( a );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.DOMAIN() ) );
+                    assertEquals( "p have domain a", a, p.getDomain() );
+                    
+                    p.addDomain( b );
+                    assertEquals( "Cardinality should be 2", 2, p.getCardinality( prof.DOMAIN() ) );
+                    iteratorTest( p.listDomain(), new Object[] {a, b} );
+                    
+                    p.setDomain( b );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.DOMAIN() ) );
+                    assertEquals( "p should have domain b", b, p.getDomain() );
+                }
+            },
+            new OntTestCase( "OntProperty.range", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
+                    
+                    p.addRange( a );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.RANGE() ) );
+                    assertEquals( "p have range a", a, p.getRange() );
+                    
+                    p.addRange( b );
+                    assertEquals( "Cardinality should be 2", 2, p.getCardinality( prof.RANGE() ) );
+                    iteratorTest( p.listRange(), new Object[] {a, b} );
+                    
+                    p.setRange( b );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.RANGE() ) );
+                    assertEquals( "p should have range b", b, p.getRange() );
+                }
+            },
+            new OntTestCase( "OntProperty.equivalentProperty", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntProperty q = m.createObjectProperty( NS + "q" );
+                    OntProperty r = m.createObjectProperty( NS + "r" );
+                    
+                    p.addEquivalentProperty( q );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.EQUIVALENT_PROPERTY() ) );
+                    assertEquals( "p have equivalentProperty q", q, p.getEquivalentProperty() );
+                    
+                    p.addEquivalentProperty( r );
+                    assertEquals( "Cardinality should be 2", 2, p.getCardinality( prof.EQUIVALENT_PROPERTY() ) );
+                    iteratorTest( p.listEquivalentProperties(), new Object[] {q,r} );
+                    
+                    p.setEquivalentProperty( r );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.EQUIVALENT_PROPERTY() ) );
+                    assertEquals( "p should have equivalentProperty r", r, p.getEquivalentProperty() );
+                }
+            },
+            new OntTestCase( "OntProperty.inverseOf", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntProperty q = m.createObjectProperty( NS + "q" );
+                    OntProperty r = m.createObjectProperty( NS + "r" );
+                    
+                    p.addInverseOf( q );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.INVERSE_OF() ) );
+                    assertEquals( "p should have inverse q", q, p.getInverseOf() );
+                    
+                    p.addInverseOf( r );
+                    assertEquals( "Cardinality should be 2", 2, p.getCardinality( prof.INVERSE_OF() ) );
+                    iteratorTest( p.listInverseOf(), new Object[] {q,r} );
+                    
+                    p.setInverseOf( r );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.INVERSE_OF() ) );
+                    assertEquals( "p should have inverse r", r, p.getInverseOf() );
+                }
+            },
+            new OntTestCase( "OntProperty.subproperty.fromFile", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    m.read( fileName );
+
+                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntProperty q = (OntProperty) m.getProperty( NS, "q" ).as( OntProperty.class );
+                    
+                    iteratorTest( p.listSuperProperties(), new Object[] {q} );
+                    iteratorTest( q.listSubProperties(), new Object[] {p} );
+                }
+            },
+            new OntTestCase( "OntProperty.domain.fromFile", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    m.read( fileName );
+
+                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntClass A = (OntClass) m.getResource( NS + "ClassA").as( OntClass.class);
+                    
+                    assertTrue( "p should have domain A", p.hasDomain( A ) );
+                }
+            },
+            new OntTestCase( "OntProperty.range.fromFile", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    m.read( fileName );
+
+                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntClass B = (OntClass) m.getResource( NS + "ClassB").as( OntClass.class);
+                    
+                    assertTrue( "p should have domain B", p.hasRange( B ) );
+                }
+            },
+            new OntTestCase( "OntProperty.equivalentProeprty.fromFile", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    m.read( fileName );
+
+                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntProperty r = (OntProperty) m.getProperty( NS, "r" ).as( OntProperty.class );
+                    
+                    assertTrue( "p should have equiv prop r", p.hasEquivalentProperty( r ) );
+                }
+            },
+            new OntTestCase( "OntProperty.inversePropertyOf.fromFile", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    String fileName = m_owlLang ? "file:testing/ontology/owl/Property/test.rdf" : "file:testing/ontology/daml/Property/test.rdf";
+                    m.read( fileName );
+
+                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntProperty s = (OntProperty) m.getProperty( NS, "s" ).as( OntProperty.class );
+                    
+                    assertTrue( "p should have inv prop s", p.isInverseOf( s ) );
+                }
+            },
+        };
+    }    
     
     // Internal implementation methods
     //////////////////////////////////

@@ -15,7 +15,9 @@
 
 
 <daml:Property rdf:ID="p">
-	<daml:subPropertyOf rdf:resource="#q" />
+	<daml:subPropertyOf>
+		<daml:Property rdf:ID="q" />
+	</daml:subPropertyOf>
 	<daml:domain>
 		<daml:Class rdf:ID="ClassA" />
 	</daml:domain>

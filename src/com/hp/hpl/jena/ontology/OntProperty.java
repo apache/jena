@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 16:57:11 $
+ * Last modified on   $Date: 2003-05-23 20:19:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -24,7 +24,8 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.path.PathSet;
+import java.util.Iterator;
+
 import com.hp.hpl.jena.rdf.model.*;
 
 
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.3 2003-05-08 16:57:11 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.4 2003-05-23 20:19:59 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -48,72 +49,248 @@ public interface OntProperty
     // External signature methods
     //////////////////////////////////
 
+    // subPropertyOf
+    
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>subPropertyOf</code>
-     * property of a property description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the subPropertyOf relation on properties
-     */
-    public PathSet p_subPropertyOf();
-
+     * <p>Assert that this property is sub-property of the given property. Any existing 
+     * statements for <code>subPropertyOf</code> will be removed.</p>
+     * @param prop The property that this property is a sub-property of
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public void setSuperProperty( Property prop );
 
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>domain</code>
-     * property of a property description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the domain of a property
-     */
-    public PathSet p_domain();
-
+     * <p>Add a super-property of this property.</p>
+     * @param prop A property that is a super-property of this property.
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public void addSuperProperty( Property prop );
 
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>range</code>
-     * property of a property description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the range of a property
-     */
-    public PathSet p_range();
+     * <p>Answer a property that is the super-property of this property. If there is
+     * more than one such property, an arbitrary selection is made.</p>
+     * @return A super-property of this property
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public OntProperty getSuperProperty();
 
+    /**
+     * <p>Answer an iterator over all of the properties that are declared to be super-properties of
+     * this property. Each elemeent of the iterator will be an {@link #OntProperty}.</p>
+     * @return An iterator over the super-properties of this property.
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSuperProperties();
+
+    /**
+     * <p>Answer true if the given property is a super-property of this property.</p>
+     * @param prop A property to test.
+     * @return True if the given property is a super-property of this property.
+     */
+    public boolean hasSuperProperty( Property prop );
+    
+    /**
+     * <p>Assert that this property is super-property of the given property. Any existing 
+     * statements for <code>subPropertyOf</code> on <code>prop</code> will be removed.</p>
+     * @param prop The property that is a sub-property of this property
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public void setSubProperty( Property prop );
+
+    /**
+     * <p>Add a sub-property of this property.</p>
+     * @param prop A property that is a sub-property of this property.
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public void addSubProperty( Property prop );
+
+    /**
+     * <p>Answer a property that is the sub-property of this property. If there is
+     * more than one such property, an arbitrary selection is made.</p>
+     * @return A sub-property of this property
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public OntProperty getSubProperty();
+
+    /**
+     * <p>Answer an iterator over all of the properties that are declared to be sub-properties of
+     * this property. Each elemeent of the iterator will be an {@link #OntProperty}.</p>
+     * @return An iterator over the sub-properties of this property.
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSubProperties();
+
+    /**
+     * <p>Answer true if the given property is a sub-property of this property.</p>
+     * @param prop A property to test.
+     * @return True if the given property is a sub-property of this property.
+     */
+    public boolean hasSubProperty( Property prop );
+    
+    // domain
+    
+    /**
+     * <p>Assert that the given resource represents the class of individuals that form the 
+     * domain of this property. Any existing <code>domain</code> statements for this property are removed.</p>
+     * @param res The resource that represents the domain class for this property.
+     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.   
+     */ 
+    public void setDomain( Resource res );
+
+    /**
+     * <p>Add a resource representing the domain of this property.</p>
+     * @param res A resource that represents a domain class for this property. 
+     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.   
+     */ 
+    public void addDomain( Resource res );
+
+    /**
+     * <p>Answer a resource that represents the domain class of this property. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @return An resource representing the class that forms the domain of this property
+     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.   
+     */ 
+    public OntResource getDomain();
+
+    /**
+     * <p>Answer an iterator over all of the declared domain classes of this property.
+     * Each elemeent of the iterator will be an {@link #OntResource}.</p>
+     * @return An iterator over the classes that form the domain of this property.
+     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listDomain();
+
+    /**
+     * <p>Answer true if the given resource a class specifying the domain of this property.</p>
+     * @param res A resource representing a class
+     * @return True if the given resource is one of the domain classes of this property.
+     */
+    public boolean hasDomain( Resource res );
+    
+
+    // range
+    
+    /**
+     * <p>Assert that the given resource represents the class of individuals that form the 
+     * range of this property. Any existing <code>range</code> statements for this property are removed.</p>
+     * @param res The resource that represents the range class for this property.
+     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.   
+     */ 
+    public void setRange( Resource res );
+
+    /**
+     * <p>Add a resource representing the range of this property.</p>
+     * @param res A resource that represents a range class for this property. 
+     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.   
+     */ 
+    public void addRange( Resource res );
+
+    /**
+     * <p>Answer a resource that represents the range class of this property. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @return An resource representing the class that forms the range of this property
+     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.   
+     */ 
+    public OntResource getRange();
+
+    /**
+     * <p>Answer an iterator over all of the declared range classes of this property.
+     * Each elemeent of the iterator will be an {@link #OntResource}.</p>
+     * @return An iterator over the classes that form the range of this property.
+     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listRange();
+
+    /**
+     * <p>Answer true if the given resource a class specifying the range of this property.</p>
+     * @param res A resource representing a class
+     * @return True if the given resource is one of the range classes of this property.
+     */
+    public boolean hasRange( Resource res );
+    
 
     // relationships between properties
 
+    // equivalentProperty
+    
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>equivalentProperty</code>
-     * property of a property description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for property equivalence
-     */
-    public PathSet p_equivalentProperty();
-
+     * <p>Assert that the given property is equivalent to this property. Any existing 
+     * statements for <code>equivalentProperty</code> will be removed.</p>
+     * @param prop The property that this property is a equivalent to.
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.   
+     */ 
+    public void setEquivalentProperty( Property prop );
 
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>inverseOf</code>
-     * property of a property description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for property invserses
-     */
-    public PathSet p_inverseOf();
+     * <p>Add a property that is equivalent to this property.</p>
+     * @param prop A property that is equivalent to this property.
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.   
+     */ 
+    public void addEquivalentProperty( Property prop );
 
+    /**
+     * <p>Answer a property that is equivalent to this property. If there is
+     * more than one such property, an arbitrary selection is made.</p>
+     * @return A property equivalent to this property
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.   
+     */ 
+    public OntProperty getEquivalentProperty();
+
+    /**
+     * <p>Answer an iterator over all of the properties that are declared to be equivalent properties to
+     * this property. Each elemeent of the iterator will be an {@link #OntProperty}.</p>
+     * @return An iterator over the properties equivalent to this property.
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listEquivalentProperties();
+
+    /**
+     * <p>Answer true if the given property is equivalent to this property.</p>
+     * @param prop A property to test for
+     * @return True if the given property is equivalent to this property.
+     */
+    public boolean hasEquivalentProperty( Property prop );
+    
+    // inverseProperty
+    
+    /**
+     * <p>Assert that this property is the inverse of the given property. Any existing 
+     * statements for <code>inverseOf</code> will be removed.</p>
+     * @param prop The property that this property is a inverse to.
+     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
+     */ 
+    public void setInverseOf( Property prop );
+
+    /**
+     * <p>Add a property that this property is the inverse of.</p>
+     * @param prop A property that is the inverse of this property.
+     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
+     */ 
+    public void addInverseOf( Property prop );
+
+    /**
+     * <p>Answer a property of which this property is the inverse. If there is
+     * more than one such property, an arbitrary selection is made.</p>
+     * @return A property inverse to this property
+     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
+     */ 
+    public OntProperty getInverseOf();
+
+    /**
+     * <p>Answer an iterator over all of the properties that this property is declared to be the inverse of.
+     * Each elemeent of the iterator will be an {@link #OntProperty}.</p>
+     * @return An iterator over the properties inverse to this property.
+     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listInverseOf();
+
+    /**
+     * <p>Answer true if this property is the inverse of the given property.</p>
+     * @param prop A property to test for
+     * @return True if the this property is the inverse of the the given property.
+     */
+    public boolean isInverseOf( Property prop );
+    
 
     /** 
      * <p>Answer a view of this property as a functional property</p>

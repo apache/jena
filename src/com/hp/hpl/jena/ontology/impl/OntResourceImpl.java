@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:12:51 $
+ * Last modified on   $Date: 2003-05-23 20:20:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.6 2003-05-23 11:12:51 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.7 2003-05-23 20:20:00 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -123,9 +123,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
      */ 
     public void setSameAs( Resource res ) {
-        checkProfile( getProfile().SAME_AS(), "SAME_AS" );
-        removeAll( getProfile().SAME_AS() );
-        addSameAs( res );
+        setPropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
     }
 
     /**
@@ -134,8 +132,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
      */ 
     public void addSameAs( Resource res ) {
-        checkProfile( getProfile().SAME_AS(), "SAME_AS" );
-        addProperty( getProfile().SAME_AS(), res );
+        addPropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
     }
 
     /**
@@ -145,10 +142,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
      */ 
     public OntResource getSameAs() {
-        checkProfile( getProfile().SAME_AS(), "SAME_AS" );
-        return (OntResource) getProperty( getProfile().SAME_AS() )
-                            .getObject()
-                            .as( OntResource.class );
+        return objectAsResource( getProfile().SAME_AS(), "SAME_AS" );
     }
 
     /**
@@ -158,9 +152,16 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
      */ 
     public Iterator listSameAs() {
-        checkProfile( getProfile().SAME_AS(), "SAME_AS" );
-        return WrappedIterator.create( listProperties( getProfile().SAME_AS() ) )
-               .mapWith( new ObjectAsMapper( OntResource.class ) );
+        return listAs( getProfile().SAME_AS(), "SAME_AS", OntResource.class );
+    }
+
+    /**
+     * <p>Answer true if this resource is the same as the given resource.</p>
+     * @param res A resource to test against
+     * @return True if the resources are declared the same via a <code>sameAs</code> statement.
+     */
+    public boolean isSameAs( Resource res ) {
+        return hasPropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
     }
 
     // differentFrom
@@ -172,9 +173,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
      */ 
     public void setDifferentFrom( Resource res ) {
-        checkProfile( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
-        removeAll( getProfile().DIFFERENT_FROM() );
-        addDifferentFrom( res );
+        setPropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
     }
 
     /**
@@ -183,8 +182,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
      */ 
     public void addDifferentFrom( Resource res ) {
-        checkProfile( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
-        addProperty( getProfile().DIFFERENT_FROM(), res );
+        addPropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
     }
 
     /**
@@ -194,8 +192,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
      */ 
     public OntResource getDifferentFrom() {
-        checkProfile( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
-        return (OntResource) getProperty( getProfile().DIFFERENT_FROM() ).getObject().as( OntResource.class );
+        return objectAsResource( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
     }
 
     /**
@@ -205,11 +202,18 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
      */ 
     public Iterator listDifferentFrom() {
-        checkProfile( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
-        return WrappedIterator.create( listProperties( getProfile().DIFFERENT_FROM() ) )
-               .mapWith( new ObjectAsMapper( OntResource.class ) );
+        return listAs( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", OntResource.class );
     }
 
+    /**
+     * <p>Answer true if this resource is different from the given resource.</p>
+     * @param res A resource to test against
+     * @return True if the resources are declared to be distinct via a <code>differentFrom</code> statement.
+     */
+    public boolean isDifferentFrom( Resource res ) {
+        return hasPropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
+    }
+    
     // version info
 
     /**
@@ -256,6 +260,16 @@ public class OntResourceImpl
                .mapWith( new ObjectAsStringMapper() );
     }
 
+    /**
+     * <p>Answer true if this resource has the given version information</p>
+     * @param info Version information to test for
+     * @return True if this resource has <code>info</code> as version information.
+     */
+    public boolean hasVersionInfo( String info ) {
+        checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
+        return hasProperty( getProfile().VERSION_INFO(), info );
+    }
+    
     // label
     
     /**
@@ -287,8 +301,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
      */ 
     public void addLabel( Literal label ) {
-        checkProfile( getProfile().LABEL(), "LABEL" );
-        addProperty( getProfile().LABEL(), label );
+        addPropertyValue( getProfile().LABEL(), "LABEL", label );
     }
 
     /**
@@ -313,15 +326,46 @@ public class OntResourceImpl
 
     /**
      * <p>Answer an iterator over all of the label literals for this resource.</p>
+     * @param lang The language to restrict any label values to, or null to select all languages
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
      */ 
-    public Iterator listLabels() {
+    public Iterator listLabels( String lang ) {
         checkProfile( getProfile().LABEL(), "LABEL" );
         return WrappedIterator.create( listProperties( getProfile().LABEL() ) )
+               .filterKeep( new LangTagFilter( lang ) )
                .mapWith( new ObjectMapper() );
     }
 
+    /**
+     * <p>Answer true if this resource has the given label</p>
+     * @param label The label to test for
+     * @param lang The optional language tag, or null for don't care.
+     * @return True if this resource has <code>label</code> as a label.
+     */
+    public boolean hasLabel( String label, String lang ) {
+        return hasLabel( getModel().createTypedLiteral( label, lang, XSDDatatype.XSDstring ) );
+    }
+    
+    /**
+     * <p>Answer true if this resource has the given label</p>
+     * @param label The label to test for
+     * @return True if this resource has <code>label</code> as a label.
+     */
+    public boolean hasLabel( Literal label ) {
+        boolean found = false;
+        
+        Iterator i = listLabels( label.getLanguage() );
+        while (!found && i.hasNext()) {
+            found = label.equals( i.next() );
+        }
+        
+        if (i instanceof ClosableIterator) {
+            ((ClosableIterator) i).close();
+        } 
+        return found;
+    }
+    
     // comment
 
     /**
@@ -382,12 +426,42 @@ public class OntResourceImpl
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
      */ 
-    public Iterator listComments() {
+    public Iterator listComments( String lang ) {
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         return WrappedIterator.create( listProperties( getProfile().COMMENT() ) )
+               .filterKeep( new LangTagFilter( lang ) )
                .mapWith( new ObjectMapper() );
     }
 
+    /**
+     * <p>Answer true if this resource has the given comment.</p>
+     * @param comment The comment to test for
+     * @param lang The optional language tag, or null for don't care.
+     * @return True if this resource has <code>comment</code> as a comment.
+     */
+    public boolean hasComment( String comment, String lang ) {
+        return hasComment( getModel().createTypedLiteral( comment, lang, XSDDatatype.XSDstring ) );
+    }
+    
+    /**
+     * <p>Answer true if this resource has the given comment.</p>
+     * @param comment The comment to test for
+     * @return True if this resource has <code>comment</code> as a comment.
+     */
+    public boolean hasComment( Literal comment ) {
+        boolean found = false;
+        
+        Iterator i = listComments( comment.getLanguage() );
+        while (!found && i.hasNext()) {
+            found = comment.equals( i.next() );
+        }
+        
+        if (i instanceof ClosableIterator) {
+            ((ClosableIterator) i).close();
+        } 
+        return found;
+    }
+    
     
     // seeAlso
     
@@ -397,9 +471,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
      */ 
     public void setSeeAlso( Resource res ) {
-        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
-        removeAll( getProfile().SEE_ALSO() );
-        addSeeAlso( res );
+        setPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
     }
 
     /**
@@ -408,8 +480,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
      */ 
     public void addSeeAlso( Resource res ) {
-        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
-        addProperty( getProfile().SEE_ALSO(), res );
+        addPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
     }
 
     /**
@@ -419,8 +490,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
      */ 
     public Resource getSeeAlso() {
-        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
-        return (Resource) getProperty( getProfile().SEE_ALSO() ).getObject();
+        return objectAsResource( getProfile().SEE_ALSO(), "SEE_ALSO" );
     }
 
     /**
@@ -435,6 +505,15 @@ public class OntResourceImpl
                .mapWith( new ObjectMapper() );
     }
 
+    /**
+     * <p>Answer true if this resource has the given resource as a source of additional information.</p>
+     * @param res A resource to test against
+     * @return True if the <code>res</code> provides more information on this resource.
+     */
+    public boolean hasSeeAlso( Resource res ) {
+        return hasPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
+    }
+    
     // is defined by
     
     /**
@@ -444,9 +523,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
      */ 
     public void setIsDefinedBy( Resource res ) {
-        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
-        removeAll( getProfile().IS_DEFINED_BY() );
-        addIsDefinedBy( res );
+        setPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
     }
 
     /**
@@ -455,8 +532,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
      */ 
     public void addIsDefinedBy( Resource res ) {
-        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
-        addProperty( getProfile().IS_DEFINED_BY(), res );
+        addPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
     }
 
     /**
@@ -466,8 +542,7 @@ public class OntResourceImpl
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
      */ 
     public Resource getIsDefinedBy() {
-        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
-        return (Resource) getProperty( getProfile().IS_DEFINED_BY() ).getObject();
+        return objectAsResource( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
     }
 
     /**
@@ -482,6 +557,15 @@ public class OntResourceImpl
                .mapWith( new ObjectMapper() );
     }
 
+    /**
+     * <p>Answer true if this resource is defined by the given resource.</p>
+     * @param res A resource to test against
+     * @return True if <code>res</code> defines this resource.
+     */
+    public boolean isDefinedBy( Resource res ) {
+        return hasPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
+    }
+    
 
     /**
      * <p>Answer the cardinality of the given property on this resource. The cardinality
@@ -761,12 +845,12 @@ public class OntResourceImpl
                 String lLang = l.getLanguage();
                 
                 // is this a better match?
-                if (lang.equals( lLang )) {
+                if (lang.equalsIgnoreCase( lLang )) {
                     // exact match
                     found = l.getString();
                     break;
                 }
-                else if (lang.equals( lLang.substring( 0, 2 ) )) {
+                else if (lang.equalsIgnoreCase( lLang.substring( 0, 2 ) )) {
                     // partial match - want EN, found EN-GB
                     // keep searching in case there's a better
                     found = l.getString();
@@ -780,6 +864,53 @@ public class OntResourceImpl
         
         stmts.close();
         return found;
+    }
+    
+    /** Answer true if the desired lang tag matches the target lang tag */
+    protected boolean langTagMatch( String desired, String target ) {
+        return (desired == null) ||
+               (desired.equalsIgnoreCase( target )) ||
+               (target.length() > desired.length() && desired.equalsIgnoreCase( target.substring( desired.length() ) ));
+    }
+    
+    /** Answer the object of a statement with the given property, .as() an OntResource */
+    protected OntResource objectAsResource( Property p, String name ) {
+        checkProfile( p, name );
+        return (OntResource) getProperty( p ).getObject().as( OntResource.class );
+    }
+
+    
+    /** Answer the object of a statement with the given property, .as() an OntProperty */
+    protected OntProperty objectAsProperty( Property p, String name ) {
+        checkProfile( p, name );
+        return (OntProperty) getProperty( p ).getObject().as( OntProperty.class );
+    }
+
+    
+    /** Answer an iterator for the given property, whose values are .as() some class */
+    protected Iterator listAs( Property p, String name, Class cls ) {
+        checkProfile( p, name );
+        return WrappedIterator.create( listProperties( p ) ).mapWith( new ObjectAsMapper( cls ) );
+    }
+
+    
+    /** Add the property value, checking that it is supported in the profile */
+    protected void addPropertyValue( Property p, String name, RDFNode value ) {
+        checkProfile( p, name );
+        addProperty( p, value );
+    }
+    
+    /** Set the property value, checking that it is supported in the profile */
+    protected void setPropertyValue( Property p, String name, RDFNode value ) {
+        checkProfile( p, name );
+        removeAll( p );
+        addProperty( p, value );
+    }
+
+    /** Answer true if the given property is defined in the profile, and has the given value */
+    protected boolean hasPropertyValue( Property p, String name, RDFNode value ) {
+        checkProfile( p, name );
+        return hasProperty( p, value );
     }
     
     
@@ -826,6 +957,26 @@ public class OntResourceImpl
         implements Map1
     {
         public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getObject() : x; }
+    }
+    
+    /** Filter for matching language tags on literals */
+    protected class LangTagFilter 
+        implements Filter
+    {
+        protected String m_lang;
+        protected LangTagFilter( String lang ) { m_lang = lang; }
+        public boolean accept( Object x ) {
+            if (x instanceof Literal) {
+                return langTagMatch( m_lang, ((Literal) x).getLanguage() );
+            }
+            else if (x instanceof Statement) {
+                // we assume for a statement that we're filtering on the object of the statement
+                return accept( ((Statement) x).getObject() );
+            }
+            else {
+                return false;
+            }
+        }
     }
 }
 

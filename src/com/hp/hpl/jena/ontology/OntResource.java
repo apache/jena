@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:13:05 $
+ * Last modified on   $Date: 2003-05-23 20:20:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.7 2003-05-23 11:13:05 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.8 2003-05-23 20:20:00 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -95,6 +95,14 @@ public interface OntResource
      */ 
     public Iterator listSameAs();
 
+    /**
+     * <p>Answer true if this resource is the same as the given resource.</p>
+     * @param res A resource to test against
+     * @return True if the resources are declared the same via a <code>sameAs</code> statement.
+     */
+    public boolean isSameAs( Resource res );
+    
+    
     // differentFrom
     
     /**
@@ -128,6 +136,13 @@ public interface OntResource
      */ 
     public Iterator listDifferentFrom();
 
+    /**
+     * <p>Answer true if this resource is different from the given resource.</p>
+     * @param res A resource to test against
+     * @return True if the resources are declared to be distinct via a <code>differentFrom</code> statement.
+     */
+    public boolean isDifferentFrom( Resource res );
+    
     // seeAlso
     
     /**
@@ -160,6 +175,13 @@ public interface OntResource
      */ 
     public Iterator listSeeAlso();
 
+    /**
+     * <p>Answer true if this resource has the given resource as a source of additional information.</p>
+     * @param res A resource to test against
+     * @return True if the <code>res</code> provides more information on this resource.
+     */
+    public boolean hasSeeAlso( Resource res );
+    
     // is defined by
     
     /**
@@ -193,6 +215,13 @@ public interface OntResource
      */ 
     public Iterator listIsDefinedBy();
 
+    /**
+     * <p>Answer true if this resource is defined by the given resource.</p>
+     * @param res A resource to test against
+     * @return True if <code>res</code> defines this resource.
+     */
+    public boolean isDefinedBy( Resource res );
+    
     // version info
 
     /**
@@ -225,6 +254,13 @@ public interface OntResource
      */ 
     public Iterator listVersionInfo();
 
+    /**
+     * <p>Answer true if this resource has the given version information</p>
+     * @param info Version information to test for
+     * @return True if this resource has <code>info</code> as version information.
+     */
+    public boolean hasVersionInfo( String info );
+    
     // label
     
     /**
@@ -263,10 +299,26 @@ public interface OntResource
 
     /**
      * <p>Answer an iterator over all of the label literals for this resource.</p>
+     * @param lang The language tag to restric the listed comments to, or null to select all comments
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
      */ 
-    public Iterator listLabels();
+    public Iterator listLabels( String lang );
+
+    /**
+     * <p>Answer true if this resource has the given label</p>
+     * @param label The label to test for
+     * @param lang The optional language tag, or null for don't care.
+     * @return True if this resource has <code>label</code> as a label.
+     */
+    public boolean hasLabel( String label, String lang );
+    
+    /**
+     * <p>Answer true if this resource has the given label</p>
+     * @param label The label to test for
+     * @return True if this resource has <code>label</code> as a label.
+     */
+    public boolean hasLabel( Literal label );
 
     // comment
 
@@ -306,11 +358,27 @@ public interface OntResource
 
     /**
      * <p>Answer an iterator over all of the comment literals for this resource.</p>
+     * @param lang The language tag to restric the listed comments to, or null to select all comments
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
      */ 
-    public Iterator listComments();
+    public Iterator listComments( String lang );
 
+    /**
+     * <p>Answer true if this resource has the given comment.</p>
+     * @param comment The comment to test for
+     * @param lang The optional language tag, or null for don't care.
+     * @return True if this resource has <code>comment</code> as a comment.
+     */
+    public boolean hasComment( String comment, String lang );
+    
+    /**
+     * <p>Answer true if this resource has the given comment.</p>
+     * @param comment The comment to test for
+     * @return True if this resource has <code>comment</code> as a comment.
+     */
+    public boolean hasComment( Literal comment );
+    
     /**
      * <p>Answer the cardinality of the given property on this resource. The cardinality
      * is the number of distinct values there are for the property.</p>

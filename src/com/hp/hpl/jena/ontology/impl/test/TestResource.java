@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:13:05 $
+ * Last modified on   $Date: 2003-05-23 20:19:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.1 2003-05-23 11:13:05 ian_dickinson Exp $
+ * @version CVS $Id: TestResource.java,v 1.2 2003-05-23 20:19:59 ian_dickinson Exp $
  */
 public class TestResource 
     extends OntTestBase
@@ -87,6 +87,9 @@ public class TestResource
                     assertEquals( "Cardinality should be 2", 2, a.getCardinality( prof.SAME_AS() ) );
                     iteratorTest( a.listSameAs(), new Object[] {b, c} );
                     
+                    assertTrue( "a should be the same as b", a.isSameAs( b ) );
+                    assertTrue( "a should be the same as c", a.isSameAs( c ) );
+                    
                     a.setSameAs( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.SAME_AS() ) );
                     assertEquals( "a should be sameAs b", b, a.getSameAs() );
@@ -106,6 +109,9 @@ public class TestResource
                     a.addDifferentFrom( c );
                     assertEquals( "Cardinality should be 2", 2, a.getCardinality( prof.DIFFERENT_FROM() ) );
                     iteratorTest( a.listDifferentFrom(), new Object[] {b, c} );
+                    
+                    assertTrue( "a should be diff from b", a.isDifferentFrom( b ) );
+                    assertTrue( "a should be diff from c", a.isDifferentFrom( c ) );
                     
                     a.setDifferentFrom( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DIFFERENT_FROM() ) );
@@ -127,6 +133,9 @@ public class TestResource
                     assertEquals( "Cardinality should be 2", 2, a.getCardinality( prof.SEE_ALSO() ) );
                     iteratorTest( a.listSeeAlso(), new Object[] {b, c} );
                     
+                    assertTrue( "a should have seeAlso b", a.hasSeeAlso( b ) );
+                    assertTrue( "a should have seeAlso c", a.hasSeeAlso( c ) );
+                    
                     a.setSeeAlso( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.SEE_ALSO() ) );
                     assertEquals( "a should be seeAlso b", b, a.getSeeAlso() );
@@ -147,6 +156,9 @@ public class TestResource
                     assertEquals( "Cardinality should be 2", 2, a.getCardinality( prof.IS_DEFINED_BY() ) );
                     iteratorTest( a.listIsDefinedBy(), new Object[] {b, c} );
                     
+                    assertTrue( "a should be defined by b", a.isDefinedBy( b ) );
+                    assertTrue( "a should be defined by c", a.isDefinedBy( c ) );
+                    
                     a.setIsDefinedBy( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.IS_DEFINED_BY() ) );
                     assertEquals( "a should be isDefinedBy b", b, a.getIsDefinedBy() );
@@ -165,6 +177,9 @@ public class TestResource
                     assertEquals( "Cardinality should be 2", 2, a.getCardinality( prof.VERSION_INFO() ) );
                     iteratorTest( a.listVersionInfo(), new Object[] {"some info", "more info"} );
                     
+                    assertTrue( "a should have some info", a.hasVersionInfo( "some info" ) );
+                    assertTrue( "a should have more info", a.hasVersionInfo( "more info" ) );
+                    
                     a.setVersionInfo( "new info" );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.VERSION_INFO() ) );
                     assertEquals( "a has wrong version info", "new info", a.getVersionInfo() );
@@ -181,7 +196,10 @@ public class TestResource
                     
                     a.addLabel( "more info", null );
                     assertEquals( "Cardinality should be 2", 2, a.getCardinality( prof.LABEL() ) );
-                    iteratorTest( a.listLabels(), new Object[] {m.createTypedLiteral( "some info" ), m.createTypedLiteral( "more info" )} );
+                    iteratorTest( a.listLabels( null ), new Object[] {m.createTypedLiteral( "some info" ), m.createTypedLiteral( "more info" )} );
+                    
+                    assertTrue( "a should have label some info", a.hasLabel( "some info", null ) );
+                    assertTrue( "a should have label more info", a.hasLabel( "more info", null ) );
                     
                     a.setLabel( "new info", null );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.LABEL() ) );
@@ -200,6 +218,10 @@ public class TestResource
                     assertEquals( "wrong label", "good", a.getLabel( "EN" ) );
                     assertEquals( "wrong label", null, a.getLabel( "EN-GB" ) );  // no literal with a specific enough language
                     assertEquals( "wrong label", "bon", a.getLabel( "FR" ) );
+                    
+                    assertTrue( "a should have label good", a.hasLabel( "good", "EN" ) );
+                    assertTrue( "a should have label bon", a.hasLabel( "bon", "FR" ) );
+                    assertTrue( "a should note have label good (DE)", !a.hasLabel( "good", "DE" ) );
                     
                     a.addLabel( "spiffing", "EN-GB" );
                     a.addLabel( "duude", "EN-US" );
@@ -224,7 +246,10 @@ public class TestResource
                     
                     a.addComment( "more info", null );
                     assertEquals( "Cardinality should be 2", 2, a.getCardinality( prof.COMMENT() ) );
-                    iteratorTest( a.listComments(), new Object[] {m.createTypedLiteral( "some info" ), m.createTypedLiteral( "more info" )} );
+                    iteratorTest( a.listComments( null ), new Object[] {m.createTypedLiteral( "some info" ), m.createTypedLiteral( "more info" )} );
+                    
+                    assertTrue( "a should have comment some info", a.hasComment( "some info", null ) );
+                    assertTrue( "a should have comment more info", a.hasComment( "more info", null ) );
                     
                     a.setComment( "new info", null );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.COMMENT() ) );
@@ -243,6 +268,10 @@ public class TestResource
                     assertEquals( "wrong comment", "good", a.getComment( "EN" ) );
                     assertEquals( "wrong comment", null, a.getComment( "EN-GB" ) );  // no literal with a specific enough language
                     assertEquals( "wrong comment", "bon", a.getComment( "FR" ) );
+                    
+                    assertTrue( "a should have label good", a.hasComment( "good", "EN" ) );
+                    assertTrue( "a should have label bon", a.hasComment( "bon", "FR" ) );
+                    assertTrue( "a should note have label good (DE)", !a.hasComment( "good", "DE" ) );
                     
                     a.addComment( "spiffing", "EN-GB" );
                     a.addComment( "duude", "EN-US" );
