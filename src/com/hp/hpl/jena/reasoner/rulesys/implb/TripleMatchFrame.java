@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TripleMatchFrame.java,v 1.1 2003-07-23 16:24:17 der Exp $
+ * $Id: TripleMatchFrame.java,v 1.2 2003-07-24 16:52:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * graph triple match.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-23 16:24:17 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-24 16:52:41 $
  */
 public class TripleMatchFrame extends FrameObject {
     
@@ -40,6 +40,12 @@ public class TripleMatchFrame extends FrameObject {
     
     /** The variable to the subject of the triple, null if no binding required */
     Node_RuleVariable objectVar;
+    
+    /** The program counter offet in the clause's byte code */
+    int pc;
+    
+    /** The argument counter offset in the clause's arg stream */
+    int ac;
     
     /**
      * Constructor.
@@ -72,6 +78,8 @@ public class TripleMatchFrame extends FrameObject {
      */
     public void init(LPInterpreter interpreter) {
         envFrame = interpreter.envFrame;
+        pc = envFrame.pc;
+        ac = envFrame.ac;
         trailIndex = interpreter.trail.size();
         Node s = LPInterpreter.deref(interpreter.argVars[0]);
         subjectVar =   (s instanceof Node_RuleVariable) ? (Node_RuleVariable) s : null;
@@ -80,6 +88,14 @@ public class TripleMatchFrame extends FrameObject {
         Node o = LPInterpreter.deref(interpreter.argVars[2]);
         objectVar =    (o instanceof Node_RuleVariable) ? (Node_RuleVariable) o : null;
         this.matchIterator = interpreter.engine.getInfGraph().findDataMatches(new TriplePattern(s, p, o));
+    }
+    
+    /**
+     * Reset the environment frame suitable for restarting.
+     */
+    public void reset() {
+        envFrame.pc = pc;
+        envFrame.ac = ac;
     }
     
     /**

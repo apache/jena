@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.2 2003-07-23 16:24:17 der Exp $
+ * $Id: TestBasicLP.java,v 1.3 2003-07-24 16:52:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -26,7 +26,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-23 16:24:17 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-24 16:52:41 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -43,6 +43,9 @@ public class TestBasicLP  extends TestCase {
     Node C1 = Node.createURI("C1");
     Node C2 = Node.createURI("C2");
     Node C3 = Node.createURI("C3");
+    Node D1 = Node.createURI("D1");
+    Node D2 = Node.createURI("D2");
+    Node D3 = Node.createURI("D3");
 
     /**
      * Boilerplate for junit
@@ -56,10 +59,10 @@ public class TestBasicLP  extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestBasicLP.class ); 
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testBaseRules5" ));
-//        return suite;
+//        return new TestSuite( TestBasicLP.class ); ?
+        TestSuite suite = new TestSuite();
+        suite.addTest(new TestBasicLP( "testBacktrack6" ));
+        return suite;
     }  
    
     /**
@@ -163,6 +166,149 @@ public class TestBasicLP  extends TestCase {
                      } );
     }
     
+    /**
+     * Test backtracking - simple triple query.
+     */
+    public void testBacktrack1() {
+        doTest("[r1: (?x r ?y) <- (?x p ?y)]",
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(a, p, c),
+                    new Triple(a, p, d)
+                },
+                new Triple(a, p, Node.ANY),
+                new Object[] {
+                    new Triple(a, p, b),
+                    new Triple(a, p, c),
+                    new Triple(a, p, d)
+                } );
+    }
+    
+    /**
+     * Test backtracking - chain to simple triple query.
+     */
+    public void testBacktrack2() {
+        doTest("[r1: (?x r ?y) <- (?x p ?y)]",
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(a, p, c),
+                    new Triple(a, p, d)
+                },
+                new Triple(a, r, Node.ANY),
+                new Object[] {
+                    new Triple(a, r, b),
+                    new Triple(a, r, c),
+                    new Triple(a, r, d)
+                } );
+    }
+    
+    /**
+     * Test backtracking - simple choice point
+     */
+    public void testBacktrack3() {
+        doTest("[r1: (?x r C1) <- (?x p b)]" +
+               "[r2: (?x r C2) <- (?x p b)]" +
+               "[r3: (?x r C3) <- (?x p b)]",
+                new Triple[] {
+                    new Triple(a, p, b)
+                },
+                new Triple(a, r, Node.ANY),
+                new Object[] {
+                    new Triple(a, r, C1),
+                    new Triple(a, r, C2),
+                    new Triple(a, r, C3)
+                } );
+    }
+    
+    /**
+     * Test backtracking - nested choice point
+     */
+    public void testBacktrack4() {
+        doTest("[r1: (?x r C1) <- (?x p b)]" +
+               "[r2: (?x r C2) <- (?x p b)]" +
+               "[r3: (?x r C3) <- (?x p b)]" +
+               "[r4: (?x s ?z) <- (?x p ?w), (?x r ?y) (?y p ?z)]",
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(C1, p, D1),
+                    new Triple(C2, p, D2),
+                    new Triple(C3, p, D3)
+                },
+                new Triple(a, s, Node.ANY),
+                new Object[] {
+                    new Triple(a, s, D1),
+                    new Triple(a, s, D2),
+                    new Triple(a, s, D3)
+                } );
+    }
+    
+    /**
+     * Test backtracking - nested choice point with multiple triple matches
+     */
+    public void testBacktrack5() {
+        doTest("[r1: (?x r C3) <- (C1 p ?x)]" +
+               "[r2: (?x r C2) <- (C2 p ?x)]" +
+               "[r4: (?x s ?y) <- (?x r ?y)]",
+                new Triple[] {
+                    new Triple(C1, p, D1),
+                    new Triple(C1, p, a),
+                    new Triple(C2, p, D2),
+                    new Triple(C2, p, b)
+                },
+                new Triple(Node.ANY, s, Node.ANY),
+                new Object[] {
+                    new Triple(D1, s, C3),
+                    new Triple(a, s, C3),
+                    new Triple(D2, s, C2),
+                    new Triple(b, s, C2)
+                } );
+    }
+    
+    /**
+     * Test backtracking - nested choice point with multiple triple matches, and
+     * checking temp v. permanent variable usage
+     */
+    public void testBacktrack6() {
+        doTest("[r1: (?x r C1) <- (?x p a)]" +
+               "[r2: (?x r C2) <- (?x p b)]" +
+               "[r3: (?x q C1) <- (?x p b)]" +
+               "[r4: (?x q C2) <- (?x p a)]" +
+               "[r5: (?x s ?y) <- (?x r ?y) (?x q ?y)]",
+                new Triple[] {
+                    new Triple(D1, p, a),
+                    new Triple(D2, p, a),
+                    new Triple(D2, p, b),
+                    new Triple(D3, p, b)
+                },
+                new Triple(Node.ANY, s, Node.ANY),
+                new Object[] {
+                    new Triple(D2, s, C1),
+                    new Triple(D2, s, C2),
+                } );
+    }
+    
+    /** 
+     * Generic test operation.
+     * @param ruleSrc the source of the rules
+     * @param triples a set of triples to insert in the graph before the query
+     * @param query the TripleMatch to search for
+     * @param results the array of expected results
+     */
+    private void doTest(String ruleSrc, Triple[] triples, TripleMatch query, Object[] results) {
+        LPRuleStore store = new LPRuleStore();
+        List rules = Rule.parseRules(ruleSrc);
+        for (Iterator i = rules.iterator(); i.hasNext(); ) {
+            store.addRule((Rule)i.next());
+        }
+        Graph data = new GraphMem();
+        for (int i = 0; i < triples.length; i++) {
+            data.add(triples[i]);
+        }
+        InfGraph infgraph =  new LPBackwardRuleInfGraph(null, store, data, null);
+        TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
+
+    }
+    
     /** 
      * Generic base test operation on a graph with the single triple (a, p, b)
      * @param ruleSrc the source of the rules
@@ -170,16 +316,7 @@ public class TestBasicLP  extends TestCase {
      * @param results the array of expected results
      */
     private void doBasicTest(String ruleSrc, TripleMatch query, Object[] results) {
-        LPRuleStore store = new LPRuleStore();
-        List rules = Rule.parseRules(ruleSrc);
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            store.addRule((Rule)i.next());
-        }
-        Graph data = new GraphMem();
-        data.add(new Triple(a, p, b));
-        InfGraph infgraph =  new LPBackwardRuleInfGraph(null, store, data, null);
-        TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
-
+        doTest(ruleSrc, new Triple[]{new Triple(a,p,b)}, query, results);
     }
 }
 

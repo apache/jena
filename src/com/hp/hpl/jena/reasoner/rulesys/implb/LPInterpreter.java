@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.4 2003-07-23 16:24:17 der Exp $
+ * $Id: LPInterpreter.java,v 1.5 2003-07-24 16:52:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-07-23 16:24:17 $
+ * @version $Revision: 1.5 $ on $Date: 2003-07-24 16:52:41 $
  */
 public class LPInterpreter {
 
@@ -47,7 +47,7 @@ public class LPInterpreter {
     protected Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
         
     /** The set of "permanent" variables (Yi) in use by this interpreter */
-    protected Node[] pVars;
+    protected Node[] pVars = new Node[RuleClauseCode.MAX_PERMANENT_VARS];
 
     /** The current environment frame */
     protected EnvironmentFrame envFrame;
@@ -157,12 +157,13 @@ public class LPInterpreter {
                 RuleClauseCode clause = (RuleClauseCode)choice.clauseIterator.next();
                 envFrame = LPEnvironmentFactory.createEnvironment();
                 envFrame.init(clause);
+                choice.reset();
                 envFrame.linkTo(choice.envFrame);
 
                 // Restore the choice point state
-                argVars = choice.argVars;
+                System.arraycopy(choice.argVars, 0, argVars, 0, RuleClauseCode.MAX_ARGUMENT_VARS);
                 int trailMark = choice.trailIndex;
-                if (trailMark > trail.size()) {
+                if (trailMark < trail.size()) {
                     unwindTrail(trailMark);
                 }
                 
@@ -172,9 +173,10 @@ public class LPInterpreter {
                 TripleMatchFrame tmFrame = (TripleMatchFrame)cpFrame;
                 
                 // Restore the calling context
+                tmFrame.reset();
                 envFrame = tmFrame.envFrame;
                 int trailMark = tmFrame.trailIndex;
-                if (trailMark > trail.size()) {
+                if (trailMark < trail.size()) {
                     unwindTrail(trailMark);
                 }
                 
@@ -207,8 +209,8 @@ public class LPInterpreter {
                 TripleMatchFrame tmFrame;
     
                 // Debug ...
-//                System.out.println("Interpeting code (at p = " + pc + "):");
-//                envFrame.clause.print(System.out);
+                System.out.println("Interpeting code (at p = " + pc + "):");
+                envFrame.clause.print(System.out);
         
                 codeloop: while (true) {
                     switch (code[pc++]) {

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ChoicePointFrame.java,v 1.2 2003-07-23 16:24:17 der Exp $
+ * $Id: ChoicePointFrame.java,v 1.3 2003-07-24 16:52:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-23 16:24:17 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-24 16:52:41 $
  */
 public class ChoicePointFrame extends FrameObject {
 
@@ -33,10 +33,16 @@ public class ChoicePointFrame extends FrameObject {
     int trailIndex;
 
     /** The set of argument variables for the call */
-    Node[] argVars;
+    Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
 
     /** Iterator over the set of clause code objects comprising the set of choices */
     Iterator clauseIterator;
+    
+    /** The program counter offet in the clause's byte code */
+    int pc;
+    
+    /** The argument counter offset in the clause's arg stream */
+    int ac;
 
     /**
      * Constructor.
@@ -53,10 +59,19 @@ public class ChoicePointFrame extends FrameObject {
      */
     public void init(LPInterpreter interpreter, List predicateClauses) {
         envFrame = interpreter.envFrame;
+        pc = envFrame.pc;
+        ac = envFrame.ac;
         trailIndex = interpreter.trail.size();
-        argVars = new Node[interpreter.argVars.length];
         System.arraycopy(interpreter.argVars, 0, argVars, 0, argVars.length);
         clauseIterator = predicateClauses.iterator();
+    }
+    
+    /**
+     * Reset the environment frame suitable for restarting.
+     */
+    public void reset() {
+        envFrame.pc = pc;
+        envFrame.ac = ac;
     }
 
     /**

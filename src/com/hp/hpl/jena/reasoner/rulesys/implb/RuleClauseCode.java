@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.6 2003-07-23 16:24:17 der Exp $
+ * $Id: RuleClauseCode.java,v 1.7 2003-07-24 16:52:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-07-23 16:24:17 $
+ * @version $Revision: 1.7 $ on $Date: 2003-07-24 16:52:41 $
  */
 public class RuleClauseCode {
     
@@ -474,13 +474,16 @@ public class RuleClauseCode {
             for (int i = 0; i < rule.bodyLength() + 1; i++ ) {
                 List varEnts = termVarTable[i];
                 for (int j = 0; j < varEnts.size(); j++) {
-                    Node_RuleVariable var = (Node_RuleVariable)varEnts.get(j); 
-                    List occurrences = (List)varOccurrence.get(var);
-                    if (occurrences == null) {
-                        occurrences = new ArrayList();
-                        varOccurrence.put(var, occurrences);
+                    Node n = (Node)varEnts.get(j);
+                    if (n.isVariable()) {
+                        Node_RuleVariable var = (Node_RuleVariable)n; 
+                        List occurrences = (List)varOccurrence.get(var);
+                        if (occurrences == null) {
+                            occurrences = new ArrayList();
+                            varOccurrence.put(var, occurrences);
+                        }
+                        occurrences.add(new TermIndex(var, i, j));
                     }
-                    occurrences.add(new TermIndex(var, i, j));
                 }
             }
             
@@ -552,29 +555,23 @@ public class RuleClauseCode {
             return false;
         }
                 
-        /** Return an list of variables in a ClauseEntry, in flattened order */
+        /** Return an list of variables or nodes in a ClauseEntry, in flattened order */
         private List termVars(ClauseEntry term) {
             List result = new ArrayList();
             if (term instanceof TriplePattern) {
                 TriplePattern goal = (TriplePattern)term;
-                if (goal.getSubject().isVariable()) {
-                    result.add(goal.getSubject());
-                }
-                if (goal.getPredicate().isVariable()) {
-                    result.add(goal.getPredicate());
-                }
+                result.add(goal.getSubject());
+                result.add(goal.getPredicate());
                 Node obj = goal.getObject();
-                if (obj.isVariable()) {
-                    result.add(obj);
-                } else if (Functor.isFunctor(obj)) {
+                if (Functor.isFunctor(obj)) {
                     result.addAll(termVars((Functor)obj.getLiteral().getValue()));
+                } else {
+                    result.add(obj);
                 }
             } else if (term instanceof Functor) {
                 Node[] args = (Node[]) ((Functor)term).getArgs();
                 for (int i = 0; i < args.length; i++) {
-                    if (args[i].isVariable()) {
-                        result.add(args[i]);
-                    }
+                    result.add(args[i]);
                 }
             }
             return result;
@@ -615,7 +612,9 @@ public class RuleClauseCode {
             String test3 =  "(?a p ?a) <- (?z r2 ?w) (?z r2 ?w).";
             String test4 =  "(?a p ?a) <- (?z r2 ?w) (?a r2 ?w).";
             String test5 = "(?a p ?y) <- (?a p ?z), (?z p ?y).";
-            store.addRule(Rule.parseRule(test5));
+            String test6 = "(?x p C3) <- (C1 r ?x).";
+            String test7 = "(?x p ?y) <- (?x r ?y) (?x q ?y).";
+            store.addRule(Rule.parseRule(test7));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);
