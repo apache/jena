@@ -7,10 +7,10 @@
  * Web site           @website@
  * Created            20-Apr-2004
  * Filename           $RCSfile: WebOntTests.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-23 22:38:07 $
+ * Last modified on   $Date: 2004-05-01 16:23:49 $
  *               by   $Author: ian_dickinson $
  *
  * @copyright@
@@ -65,19 +65,62 @@ public class WebOntTests
     /** The base URI in which the files are purported to reside */
     public static String BASE_URI = "http://www.w3.org/2002/03owlt/";
 
+    /** The namespace for terms in the owl test ontology */
+    public static final String OTEST_NS = BASE_URI + "testOntology#";
+    
     /** The base URI for the results file */
     public static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/owl-results.rdf";
 
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
-    public static final String[] TEST_DIRS = {"AllDifferent", "AllDistinct", "AnnotationProperty", "DatatypeProperty",
-            "FunctionalProperty", "I3.2", "I3.4", "I4.1", "I4.5", "I4.6", "I5.1", "I5.2", "I5.21", "I5.24", "I5.26",
-            "I5.3", "I5.5", "I5.8", "InverseFunctionalProperty", "Nothing", "Restriction", "SymmetricProperty",
-            "Thing", "TransitiveProperty", "Class", "allValuesFrom", "amp-in-url", "cardinality", "complementOf", "datatypes",
-            "differentFrom", "disjointWith", "distinctMembers", "equivalentClass", "equivalentProperty", "imports",
-            "intersectionOf", "inverseOf", "localtests", "maxCardinality", "miscellaneous", "oneOf", "oneOfDistinct",
-            "sameAs", "sameClassAs", "sameIndividualAs", "samePropertyAs", "someValuesFrom", "statement-entailment",
-            "unionOf", "xmlbase", "description-logic",
-    //            "extra-credit",
+    public static final String[] TEST_DIRS = {
+            //"AllDifferent", 
+            //"AnnotationProperty", 
+            //"DatatypeProperty",
+            //"FunctionalProperty", 
+            //"I3.2", 
+            //"I3.4", 
+            //"I4.1", 
+            //"I4.5", 
+            //"I4.6", 
+            //"I5.1", 
+            "I5.2", 
+            //"I5.21", 
+            //"I5.24", 
+            //"I5.26",
+            //"I5.3", 
+            //"I5.5", 
+            //"I5.8", 
+            //"InverseFunctionalProperty", 
+            //"Nothing", 
+            //"Restriction", 
+            //"SymmetricProperty",
+            //"Thing", 
+            //"TransitiveProperty", 
+            //"Class", 
+            //"allValuesFrom", 
+            //"amp-in-url", 
+            //"cardinality", 
+            //"complementOf", 
+            //"datatypes",
+            //"differentFrom", 
+            //"disjointWith", 
+            //"distinctMembers", 
+            //"equivalentClass", 
+            //"equivalentProperty", 
+            //"imports",
+            //"intersectionOf", 
+            //"inverseOf", 
+            //"localtests", 
+            //"maxCardinality", 
+            //"miscellaneous", 
+            //"oneOf", 
+            //"sameAs", 
+            //"someValuesFrom", 
+            //"statement-entailment",
+            //"unionOf", 
+            //"xmlbase", 
+            //"description-logic",
+            // "extra-credit",
     };
 
     /**
@@ -92,6 +135,25 @@ public class WebOntTests
      */
     public static final String[] STATUS_FLAGS = {"APPROVED", "PROPOSED"};
 
+    /** List of acceptable test levels */
+    public static final List ACCEPTABLE_TEST_LEVELS = Arrays.asList( new Resource[] {OWLTest.Lite, OWLTest.DL} );
+    
+    /** List of predicates we don't want in the premises (because we will try to prove them) */
+    protected static List UNSAFE_PREMISE_PREDICATES = new ArrayList();
+    static {
+        UNSAFE_PREMISE_PREDICATES.add( OWL.equivalentClass );
+        UNSAFE_PREMISE_PREDICATES.add( OWL.equivalentProperty);
+        UNSAFE_PREMISE_PREDICATES.add( OWL.sameAs );
+        UNSAFE_PREMISE_PREDICATES.add( RDFS.subClassOf );
+        UNSAFE_PREMISE_PREDICATES.add( RDFS.subPropertyOf );
+        UNSAFE_PREMISE_PREDICATES.add( DAML_OIL.sameClassAs );
+        UNSAFE_PREMISE_PREDICATES.add( DAML_OIL.sameIndividualAs );
+        UNSAFE_PREMISE_PREDICATES.add( DAML_OIL.samePropertyAs );
+        UNSAFE_PREMISE_PREDICATES.add( DAML_OIL.subClassOf );
+        UNSAFE_PREMISE_PREDICATES.add( DAML_OIL.subPropertyOf );
+    }
+    
+    
     // Static variables
     //////////////////////////////////
 
@@ -377,20 +439,37 @@ public class WebOntTests
             
             for (StmtIterator j = root.listProperties();  j.hasNext(); ) {
                 Statement rootQuery = j.nextStatement();
+                Resource subject = rootQuery.getSubject();
+                RDFNode object = rootQuery.getObject();
+                
+                Model premises = ModelFactory.createDefaultModel();
+                if (subject.isAnon()) {
+                    // subject is assumed to be an expression
+                    addSubGraph( subject, premises );
+                }
+                if (object instanceof Resource && ((Resource) object).isAnon()) {
+                    addSubGraph( (Resource) object, premises );
+                }
                 
                 // add the resulting triples to the graph
                 ExtendedIterator k =inf.find( rootQuery.getSubject().asNode(),
                                               rootQuery.getPredicate().asNode(),
                                               rootQuery.getObject().asNode(),
-                                              conclusions.getGraph() ); 
+                                              premises.getGraph() ); 
                 while (k.hasNext()) {
-                    Triple t = (Triple) k.next();
+                    //Triple t = (Triple) k.next();
+                    Object x = k.next();
+                    Triple t = (Triple) x;
                     LogFactory.getLog( getClass() ).debug( "testEntailment got triple " + t );
                     result.getGraph().add( t );
                 }
+                
+                // transcribe the premises into the results
+                result.add( premises );
             }
         }
         
+        result.write( System.out, "RDF/XML-ABBREV" );
         // now check that the conclusions, framed as a query, holds
         QueryHandler qh = result.queryHandler();
         Query query = WGReasonerTester.graphToQuery(conclusions.getGraph());
@@ -472,6 +551,7 @@ public class WebOntTests
         while (si.hasNext()) {
             Resource test = si.nextStatement().getSubject();
             boolean accept = true;
+            
             // Check test status
             Literal status = (Literal) test.getProperty(RDFTest.status).getObject();
             if (s_approvedOnly) {
@@ -486,12 +566,26 @@ public class WebOntTests
                     }
                 }
             }
+            
             // Check for blocked tests
             for (int i = 0; i < BLOCKED_TESTS.length; i++) {
                 if (BLOCKED_TESTS[i].equals(test.toString())) {
                     accept = false;
                 }
             }
+            
+            // Check test level
+            Statement levelS = test.getProperty( OWLTest.level );
+            if (levelS == null) {
+                LogFactory.getLog( getClass() ).debug( "Test has no test level defined: " + test );
+            }
+            else {
+                if (!ACCEPTABLE_TEST_LEVELS.contains( levelS.getResource() )) {
+                    accept = false;
+                    LogFactory.getLog( getClass() ).debug( "Ignoring test " + test + " at level " + levelS.getResource() );
+                }
+            }
+            
             // End of filter tests
             if (accept) {
                 result.add(test);
@@ -501,22 +595,59 @@ public class WebOntTests
     }
 
     /**
-     * The query roots of a model are the subject resources that are not
-     * the objects of any other statements.
+     * The query roots of are the set of subjects we want to ask the DIG
+     * reasoner about ... we interpret this as every named resource in the given model
      */
     protected List listQueryRoots( Model m ) {
-        List l = new ArrayList();
+        Set seen = new HashSet();
+        List q = new ArrayList();
+        List roots = new ArrayList();
         
         for (ResIterator i = m.listSubjects(); i.hasNext(); ) {
             Resource subj = i.nextResource();
-            
-            if (!m.contains( null, null, subj )) {
-                // subj is not the object of any other statement
-                l.add( subj );
+            if (!subj.isAnon()) {
+                roots.add( subj );
             }
         }
+
+        return roots;
+    }
+    
+    /**
+     * Add the reachable sub-graph from root, unless it traverses a predicate
+     * that we might be trying to establish.
+     * @param root
+     * @param premises
+     */
+    protected void addSubGraph( Resource root, Model premises ) {
+        List q = new ArrayList();
+        q.add( root );
         
-        return l;
+        while (!q.isEmpty()) {
+            Resource r = (Resource) q.remove( 0 );
+            
+            for (StmtIterator i = r.listProperties(); i.hasNext(); ) {
+                Statement s = i.nextStatement();
+                
+                if (safePremise( s.getPredicate() )) {
+                    premises.add( s );
+                    if (s.getObject() instanceof Resource) {
+                        q.add( s.getObject() );
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * <p>Answer true if p is a property that is safe to add as a premise without
+     * assertng what we are trying to find out.  Properties ruled out by this
+     * test are owl:equivalentClass, owl:equivalentProperty, etc.
+     * @param p A property to test
+     * @return True if p is safe to add to the premises
+     */
+    protected boolean safePremise( Property p ) {
+        return !(UNSAFE_PREMISE_PREDICATES.contains( p ));
     }
     
     

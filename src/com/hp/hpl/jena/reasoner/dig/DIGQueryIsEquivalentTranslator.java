@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryIsEquivalentTranslator.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-23 22:36:28 $
+ * Last modified on   $Date: 2004-05-01 16:23:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -24,23 +24,26 @@ package com.hp.hpl.jena.reasoner.dig;
 
 // Imports
 ///////////////
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.util.xml.SimpleXMLPath;
 
 
 /**
  * <p>
- * Translator to map owl:equivalentClass to the DIG &lt;equivalents&gt; query.
+ * Translator to map variants of owl:equivalentClass to the DIG &lt;equivalents&gt; query, 
+ * where the query is testing if two concepts are indeed equivalent (rather than listing the
+ * atoms that are, in fact, equivalent to a given concept, which is what 
+ * {@link DIGQueryEquivalentsTranslator} does).
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.4 2004-04-23 22:36:28 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.5 2004-05-01 16:23:37 ian_dickinson Exp $
  */
 public class DIGQueryIsEquivalentTranslator 
     extends DIGQueryTranslator
@@ -54,7 +57,13 @@ public class DIGQueryIsEquivalentTranslator
     // Instance variables
     //////////////////////////////////
 
+    /** URI of the predicate we are testing for */
+    protected String m_predicate;
     
+    protected Node m_qSubject;
+    protected Node m_qObject;
+    
+
     // Constructors
     //////////////////////////////////
 
@@ -64,7 +73,8 @@ public class DIGQueryIsEquivalentTranslator
      * @param lhs If true, the free variable is the subject of the triple
      */
     public DIGQueryIsEquivalentTranslator( String predicate ) {
-        super( null, predicate, null );
+        super( null, null, null );
+        m_predicate = predicate;
     }
     
 
@@ -72,14 +82,54 @@ public class DIGQueryIsEquivalentTranslator
     //////////////////////////////////
 
     /**
-     * <p>Answer a query that will generate the class hierachy for a concept</p>
+     * <p>Answer a query that will generate a query to see if two concepts are equivalent</p>
      */
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
+        return translatePattern( pattern, da, null );
+    }
+
+
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         
+        // re-order the argument so that we can ask equivalent between one atom 
+        // and one expression (can't do more because of DIG limitations)
+        m_qSubject = pattern.getSubject();
+        m_qObject = pattern.getObject();
+        
+        if (m_qSubject.isBlank() && m_qObject.isBlank()) {
+            LogFactory.getLog( getClass() ).warn( "DIG 1.1 cannot handle isConcept query with two expressions" );
+            return null;
+        }
+        else if (m_qObject.isBlank()) {
+            // we want subject to be an expression if there is one
+            Node temp = m_qSubject;
+            m_qSubject = m_qObject;
+            m_qObject = temp;
+        }
+        
+        // we have to introduce a bNode, in the mode of the OWL comprehension axioms, if
+        // the query is of the form :c owl:unionOf [A,B]
+        Node p = pattern.getPredicate();
+        if (!m_qObject.isBlank() &&
+            (p.getURI().equals( da.getOntLanguage().UNION_OF().getURI()) ||
+             p.getURI().equals( da.getOntLanguage().INTERSECTION_OF().getURI()) ||
+             p.getURI().equals( da.getOntLanguage().COMPLEMENT_OF().getURI()) ))
+        {
+            if (premises == null) {
+                LogFactory.getLog( getClass() ).warn( "Cannot add comprehension axiom bNode for query because premises model is null" );
+            }
+            else {
+                // create a bNode that has the same relationship to the class expression operands as the given
+                Resource comp = premises.createResource( da.getOntLanguage().CLASS() );
+                premises.add( comp, premises.getProperty( p.getURI() ), premises.getRDFNode( m_qSubject ) );
+                m_qSubject = comp.getNode();
+            }
+        }
+        
         Element equivalents = da.addElement( query.getDocumentElement(), DIGProfile.EQUIVALENTS );
-        da.addClassDescription( equivalents, pattern.getSubject() );
+        da.addClassDescription( equivalents, m_qSubject, premises );
         
         return query;
     }
@@ -89,41 +139,39 @@ public class DIGQueryIsEquivalentTranslator
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        // evaluate a path through the return value to give us an iterator over catom names
-        ExtendedIterator catomNames = new SimpleXMLPath( true )
-                                          .appendElementPath( DIGProfile.CONCEPT_SET )
-                                          .appendElementPath( DIGProfile.SYNONYMS )
-                                          .appendElementPath( DIGProfile.CATOM )
-                                          .appendAttrPath( DIGProfile.NAME )
-                                          .getAll( response );
-                                          
-        // search for the object name
-        String oName = da.getNodeID( query.getObject() );
-        boolean found = false;
+        return conceptSetNameCheck( response, da, m_qObject, query.asTriple() );
+    }
+    
+    
+    /**
+     * <p>Check whether the pattern matches the preconditions for the translation
+     * step.  This means that the subject and object must be concepts or bNodes.
+     * A limitation on DIG means that both cannot be expressions (bNodes). The 
+     * predicate must be equivalence, or one of the boolean definition 
+     * relations (in which case the query will have to introduce a bNode as a
+     * comprehension step).
+     */
+    public boolean checkTriple( TriplePattern pattern, DIGAdapter da, Model premises ) {
+        Node object = pattern.getObject();
+        Node subject = pattern.getSubject();
+        Node pred = pattern.getPredicate();
         
-        while (!found && catomNames.hasNext()) {
-            found = oName.equals( catomNames.next() );
-        }
-
-        // the resulting iterator is either of length 0 or 1
-        return found ? (ExtendedIterator) new SingletonIterator( new Triple( query.getSubject(), query.getPredicate(), query.getObject() ) )
-                     : NullIterator.instance;
-    }
-    
-    
-    public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
-        // not used
-        return null;
+        boolean pass = (object.isBlank() || da.isConcept( object, premises )) &&
+                       (subject.isBlank()) || da.isConcept( subject, premises ) &&
+                       (!subject.isBlank() || !object.isBlank());
+        
+        pass = pass &&
+                pred.getURI().equals( m_predicate ) ||
+                pred.getURI().equals( da.getOntLanguage().UNION_OF().getURI() ) ||
+                pred.getURI().equals( da.getOntLanguage().INTERSECTION_OF().getURI() ) ||
+                pred.getURI().equals( da.getOntLanguage().COMPLEMENT_OF().getURI() );
+        
+        return pass;
     }
 
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
-        return da.isConcept( subject, premises );
+    public boolean trigger( TriplePattern pattern, DIGAdapter da, Model premises ) {
+        return super.trigger( pattern, da, premises );
     }
-    
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
-        return da.isConcept( object, premises );
-    }
-
 
     // Internal implementation methods
     //////////////////////////////////

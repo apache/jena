@@ -5,12 +5,12 @@
  * Author email       ian.dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            04-Dec-2003
- * Filename           $RCSfile: SimpleXMLPathElement.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            09-Dec-2003
+ * Filename           $RCSfile: DIGQueryDifferentFromTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-01 16:23:49 $
+ * Last modified on   $Date: 2004-05-01 16:23:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -19,93 +19,103 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.util.xml;
+package com.hp.hpl.jena.reasoner.dig;
+
+import java.util.*;
+import java.util.List;
+
+import org.w3c.dom.*;
+import org.w3c.dom.Document;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 // Imports
 ///////////////
-import java.util.*;
-
-import org.w3c.dom.*;
-
 
 /**
  * <p>
- * An implementation of a simple XML path component that handles named elements.
+ * Translator for queries as to whether two ground individuals are different-from each other.
+ * This does not have a direct translation in DIG at the moment; instead we ask if the 
+ * class expressions formed from the set of each single individual are disjoint. 
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SimpleXMLPathElement.java,v 1.3 2004-05-01 16:23:49 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryDifferentFromTranslator.java,v 1.1 2004-05-01 16:23:38 ian_dickinson Exp $
  */
-public class SimpleXMLPathElement 
-    implements SimpleXMLPathComponent
+public class DIGQueryDifferentFromTranslator 
+    extends DIGQueryTranslator
 {
+
     // Constants
     //////////////////////////////////
 
-    /** Constant to select all children of a node */
-    public static final String ALL_CHILDREN = "*";
-    
-    
     // Static variables
     //////////////////////////////////
 
     // Instance variables
     //////////////////////////////////
 
-    /** The element name we are evaluating */
-    protected String m_elemName;
-    
-    
     // Constructors
     //////////////////////////////////
 
     /**
-     * <p>Construct a simple XML path component that selects a named
-     * element from the parent.</p>
-     * @param elemName The name of the element to extract
+     * <p>Construct a translator to test whether two individuals are different</p>
+     * @param predicate The predicate we are matching on
      */
-    public SimpleXMLPathElement( String elemName ) {
-        m_elemName = elemName;
+    public DIGQueryDifferentFromTranslator( String predicate ) {
+        super( null, predicate, null );
     }
-    
-    
-    /**
-     * <p>Construct a simple XML path component that selects all child
-     * elements of the parent node.</p>
-     */
-    public SimpleXMLPathElement() {
-        m_elemName = ALL_CHILDREN;
-    }
-    
-    
+
+
     // External signature methods
     //////////////////////////////////
 
     /**
-     * <p>Answer an iterator over all of the values of this path component when
-     * evaluated with respect to the given node.</p>
-     * @param node The parent node to evaluate against
-     * @return An iterator over all of the objects that correspond to evaluating
-     * this path against the given node.
+     * <p>Answer a query that will test difference between two individuals</p>
      */
-    public Iterator getAll( Node node ) {
-        // elements should occur within elements
-        if (!(node instanceof Element)) {
-            throw new IllegalArgumentException( "Tried to get element " + m_elemName + " from a parent node of type " + node.getClass().getName() );
-        } 
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
+        DIGConnection dc = da.getConnection();
+        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
+        Element disjoint = da.addElement( query.getDocumentElement(), DIGProfile.DISJOINT );
         
-        return new NodeListIterator( ((Element) node).getElementsByTagName( m_elemName ) );
+        Element ind = da.addElement( disjoint, DIGProfile.ISET );
+        da.addNamedElement( ind, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getSubject() ) );
+        
+        ind = da.addElement( disjoint, DIGProfile.ISET );
+        da.addNamedElement( ind, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getObject() ) );
+        
+        return query;
+    }
+
+
+    /**
+     * <p>Answer an iterator of triples that match the original find query.</p>
+     */
+    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+        List answer = new ArrayList();
+        if (isTrue( response )) {
+            // if response is true, the subsumption relationship holds
+            answer.add( query.asTriple() );
+        }
+        
+        return WrappedIterator.create( answer.iterator() );
     }
     
-    /**
-     * <p>Answer the first value for this path expression against the given node.</p>
-     * @param node The parent node to evalauate against
-     * @return The first object that corresponds to evaluating
-     * this path against the given node, or null if there is no such value
-     */
-    public Object getFirst( Node node ) {
-        return getAll( node ).next();
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
+        // premises not used
+        return translatePattern( pattern, da );
+    }
+
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
+        return da.isIndividual( subject );
+    }
+    
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
+        return da.isIndividual( object );
     }
 
 

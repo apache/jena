@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-23 22:36:28 $
+ * Last modified on   $Date: 2004-05-01 16:23:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -24,17 +24,20 @@ package com.hp.hpl.jena.reasoner.dig;
 
 // Imports
 ///////////////
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.xml.SimpleXMLPath;
+import com.hp.hpl.jena.util.xml.SimpleXMLPathElement;
 
 
 /**
@@ -43,7 +46,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPath;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.9 2004-04-23 22:36:28 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.10 2004-05-01 16:23:38 ian_dickinson Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -132,18 +135,21 @@ public abstract class DIGQueryTranslator {
         Document query = translatePattern( pattern, da, premises );
         if (query == null) {
             LogFactory.getLog( getClass() ).warn( "Could not find pattern translator for nested DIG query " + pattern );
+            return WrappedIterator.create( new ArrayList().iterator() );
         }
-        Document response = da.getConnection().sendDigVerb( query, da.getProfile() );
-        
-        boolean warn = dc.warningCheck( response );
-        if (warn) {
-            for (Iterator i = dc.getWarnings();  i.hasNext(); ) {
-                LogFactory.getLog( getClass() ).warn( i.next() );
+        else {
+            Document response = da.getConnection().sendDigVerb( query, da.getProfile() );
+            
+            boolean warn = dc.warningCheck( response );
+            if (warn) {
+                for (Iterator i = dc.getWarnings();  i.hasNext(); ) {
+                    LogFactory.getLog( getClass() ).warn( i.next() );
+                }
             }
+            
+            // translate the response back to triples
+            return translateResponse( response, pattern, da );
         }
-        
-        // translate the response back to triples
-        return translateResponse( response, pattern, da );
     }
     
     
@@ -159,9 +165,24 @@ public abstract class DIGQueryTranslator {
         return trigger( m_subject, pattern.getSubject(), premises ) &&
                trigger( m_object, pattern.getObject(), premises )   &&
                trigger( m_pred, pattern.getPredicate(), premises )  &&
-               checkSubject( pattern.getSubject(), da, premises )       &&
+               checkTriple( pattern, da, premises );
+    }
+    
+    
+    /**
+     * <p>An optional post-trigger check on the consituents of the triple pattern. By default,
+     * delegates to a check on each of the subjec, object and predicate.  However, this method
+     * may be overridden by sub-classes to provide a more context-sensitive test.</p>
+     * @param pattern The triple pattern
+     * @param da The current dig adapter
+     * @param premises Model denoting premises to the query, or null
+     * @return True if the pattern conforms to the prerequisites for a given translation step
+     */
+    public boolean checkTriple( TriplePattern pattern, DIGAdapter da, Model premises ) {
+        return checkSubject( pattern.getSubject(), da, premises )       &&
                checkObject( pattern.getObject(), da, premises )         &&
                checkPredicate( pattern.getPredicate(), da, premises );
+
     }
     
     
@@ -365,7 +386,46 @@ public abstract class DIGQueryTranslator {
         }
     }
     
+    /**
+     * <p>Check if a document representing a concept-set response from the DIG reasoner
+     * contains a given node as a value, and, if so, return a singleton iterator over the
+     * given result triple.</p>
+     * @param response The XML document to process
+     * @param da The DIG adapter
+     * @param node The node we are seeking
+     * @param result The triple to return if node occurs in the concept set in response
+     * @return The singeleton iterator over result, or the null iterator if node is not present
+     * in the response.
+     */
+    protected ExtendedIterator conceptSetNameCheck( Document response, DIGAdapter da, Node node, Triple result ) {
+        // evaluate a path through the return value to give us an iterator over catom names
+        ExtendedIterator catoms = new SimpleXMLPath( true )
+                                     .appendElementPath( DIGProfile.CONCEPT_SET )
+                                     .appendElementPath( DIGProfile.SYNONYMS )
+                                     .appendElementPath( SimpleXMLPathElement.ALL_CHILDREN )
+                                     .getAll( response );
+                                          
+        // search for the object name
+        String oName = da.getNodeID( node );
 
+        boolean seekingTop = oName.equals( da.getOntLanguage().THING().getURI() );
+        boolean seekingBottom = oName.equals( da.getOntLanguage().NOTHING().getURI() );
+        
+        boolean found = false;
+        while (!found && catoms.hasNext()) {
+            Element name = (Element) catoms.next();
+            
+            found = (seekingTop    && name.getNodeName().equals( DIGProfile.TOP )) ||
+                    (seekingBottom && name.getNodeName().equals( DIGProfile.BOTTOM )) ||
+                    name.getAttribute( DIGProfile.NAME ).equals( oName );
+        }
+
+        // the resulting iterator is either of length 0 or 1
+        return found ? (ExtendedIterator) new SingletonIterator( result )
+                     : NullIterator.instance;
+    }
+
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
