@@ -1,53 +1,39 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.15 2003-07-17 12:31:41 chris-dollin Exp $
+  $Id: TestOntGraph.java,v 1.1 2003-07-17 12:31:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.ontology.impl.test;
 
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.*;
 
 /**
-    Collected test suite for the .ontology.impl package.
-    @author  Ian Dickinson
+    Ensure that an OntGraph passes the graph tests. Clunky because it has to go
+    via OntModel - there doesn't appear to be an OntGraph class.
+    
+ 	@author kers
 */
 
-public class TestPackage extends TestSuite {
+public class TestOntGraph extends AbstractTestGraph
+    {
+    public TestOntGraph( String name )
+        { super( name ); }
+        
+    public static TestSuite suite()
+        { return new TestSuite( TestOntGraph.class ); }
 
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("ontology.impl");
-        addTest( "TestOntGraph", TestOntGraph.suite() );
-        addTest( "TestResource", TestResource.suite() );
-        addTest( "TestAxioms", TestAxioms.suite() );
-        addTest( "TestClassExpression", TestClassExpression.suite() );
-        addTest( "TestOntDocumentManager", TestOntDocumentManager.suite() );
-        addTest( "TestOntology", TestOntology.suite() );
-        addTest( "TestProperty", TestProperty.suite() );
-        addTest( "TestListSyntaxCategories", TestListSyntaxCategories.suite() );
-        addTest( "TestCreate", TestCreate.suite() );
-        addTest( "TestIndividual", TestIndividual.suite() );
-        addTest( "TestAllDifferent", TestAllDifferent.suite() );
-        addTest( new TestSuite( TestOntReasoning.class  ) );
-        addTest( new TestSuite( TestOntModel.class ) );
-        addTest( new TestSuite( TestBugReports.class ));
+    public Graph getGraph()
+        { return ModelFactory.createOntologyModel().getGraph(); }
     }
 
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

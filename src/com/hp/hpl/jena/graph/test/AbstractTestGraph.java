@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.21 2003-07-16 15:29:42 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.22 2003-07-17 12:31:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -93,15 +93,16 @@ public abstract class AbstractTestGraph extends GraphTestBase
         {
         String title = this.getClass().getName();
         Graph g = getGraph();
+        int baseSize = g.size();
         graphAdd( g, "x R y; p S q; a T b" );
     /* */
         assertContainsAll( title + ": simple graph", g, "x R y; p S q; a T b" );
-        assertEquals( title + ": size", g.size(), 3 );
+        assertEquals( title + ": size", baseSize + 3, g.size() );
         graphAdd( g, "spindizzies lift cities; Diracs communicate instantaneously" );
-        assertEquals( title + ": size after adding", g.size(), 5 );
+        assertEquals( title + ": size after adding", baseSize + 5, g.size() );
         g.delete( triple( "x R y" ) );
         g.delete( triple( "a T b" ) );
-        assertEquals( title + ": size after deleting", g.size(), 3 );
+        assertEquals( title + ": size after deleting", baseSize + 3, g.size() );
         assertContainsAll( title + ": modified simple graph", g, "p S q; spindizzies lift cities; Diracs communicate instantaneously" );
         assertOmitsAll( title + ": modified simple graph", g, "x R y; a T b" );
     /* */ 
@@ -299,18 +300,26 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testIsEmpty()
         {
         Graph g = getGraph();
-        QueryHandler q = g.queryHandler();
-        assertTrue( q.isEmpty() );
-        g.add( Triple.create( "S P O" ) );
-        assertFalse( q.isEmpty() );
-        g.add( Triple.create( "A B C" ) );
-        assertFalse( q.isEmpty() );
-        g.add( Triple.create( "S P O" ) );
-        assertFalse( q.isEmpty() );
-        g.delete( Triple.create( "S P O" ) );
-        assertFalse( q.isEmpty() );
-        g.delete( Triple.create( "A B C" ) );
-        assertTrue( q.isEmpty() );
+        if (canBeEmpty( g ))
+            {
+            QueryHandler q = g.queryHandler();
+            assertTrue( q.isEmpty() );
+            g.add( Triple.create( "S P O" ) );
+            assertFalse( q.isEmpty() );
+            g.add( Triple.create( "A B C" ) );
+            assertFalse( q.isEmpty() );
+            g.add( Triple.create( "S P O" ) );
+            assertFalse( q.isEmpty() );
+            g.delete( Triple.create( "S P O" ) );
+            assertFalse( q.isEmpty() );
+            g.delete( Triple.create( "A B C" ) );
+            assertTrue( q.isEmpty() );
+            }
+        }
+        
+    protected boolean canBeEmpty( Graph g )
+        {
+        return g.queryHandler().isEmpty();
         }
         
     public void testEventRegister()
