@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-13 16:41:33 $
+ * Last modified on   $Date: 2004-11-21 23:27:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.16 2004-08-13 16:41:33 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.17 2004-11-21 23:27:07 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -384,15 +384,17 @@ public class DIGAdapter
         DIGQueryTranslator tr = getQueryTranslator( pattern, null );
         
         ExtendedIterator remote = (tr == null) ? null : tr.find( pattern, this );
-        ExtendedIterator local = m_sourceData.getGraph().find( pattern.getSubject(), 
-                                                               pattern.getPredicate(), 
-                                                               pattern.getObject() );
+        
+        com.hp.hpl.jena.graph.Node pSubj = normaliseNode( pattern.getSubject() );
+        com.hp.hpl.jena.graph.Node pPred = normaliseNode( pattern.getPredicate() );
+        com.hp.hpl.jena.graph.Node pObj = normaliseNode( pattern.getObject() );
+        ExtendedIterator local = m_sourceData.getGraph().find( pSubj, pPred, pObj );
         
         // if we have a remote iterator, prepend to the local one and drop duplicates
         ExtendedIterator i = (remote == null) ? local : remote.andThen( local );
         
         // add the axioms if specified 
-        i = (m_axioms == null) ? i : i.andThen( m_axioms.getGraph().find( pattern.asTripleMatch() ) );
+        i = (m_axioms == null) ? i : i.andThen( m_axioms.getGraph().find( pSubj, pPred, pObj ) );
         
         // make sure we don't have duplicates
         return UniqueExtendedIterator.create( i );
@@ -420,15 +422,17 @@ public class DIGAdapter
         }
         
         ExtendedIterator remote = (tr == null) ? null : tr.find( pattern, this, premises );
-        ExtendedIterator local = m_sourceData.getGraph().find( pattern.getSubject(), 
-                                                               pattern.getPredicate(), 
-                                                               pattern.getObject() );
+        
+        com.hp.hpl.jena.graph.Node pSubj = normaliseNode( pattern.getSubject() );
+        com.hp.hpl.jena.graph.Node pPred = normaliseNode( pattern.getPredicate() );
+        com.hp.hpl.jena.graph.Node pObj = normaliseNode( pattern.getObject() );
+        ExtendedIterator local = m_sourceData.getGraph().find( pSubj, pPred, pObj );
         
         // if we have a remote iterator, prepend to the local one and drop duplicates
         ExtendedIterator i = (remote == null) ? local : remote.andThen( local );
         
         // add the axioms if specified 
-        i = (m_axioms == null) ? i : i.andThen( m_axioms.getGraph().find( pattern.asTripleMatch() ) );
+        i = (m_axioms == null) ? i : i.andThen( m_axioms.getGraph().find( pSubj, pPred, pObj ) );
         
         // make sure we don't have duplicates
         return UniqueExtendedIterator.create( i );
@@ -1420,7 +1424,12 @@ public class DIGAdapter
         return false;
     }
     
-
+    /** Normalise any variables to Node.ANY */
+    private com.hp.hpl.jena.graph.Node normaliseNode( com.hp.hpl.jena.graph.Node n ) {
+        return n.isConcrete() ? n : com.hp.hpl.jena.graph.Node.ANY;
+    }
+    
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
