@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SeqImpl.java,v 1.10 2003-07-18 12:50:49 chris-dollin Exp $
+  $Id: SeqImpl.java,v 1.11 2003-07-21 11:10:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-07-18 12:50:49 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-07-21 11:10:01 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
@@ -311,7 +311,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     protected void checkIndex(int index, int max)  {
         if (! (1 <= index && index <= max)) {
-            throw new JenaSeqIndexBoundsException( max, index );
+            throw new SeqIndexBoundsException( max, index );
         }
     }
 }

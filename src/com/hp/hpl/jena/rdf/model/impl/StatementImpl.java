@@ -40,7 +40,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.18 $ $Date: 2003-07-18 12:50:49 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.19 $ $Date: 2003-07-21 11:10:01 $
  */
 public class StatementImpl  implements Statement {
     
@@ -105,7 +105,7 @@ public class StatementImpl  implements Statement {
         if (n instanceof Resource)
             return (Resource) n;
         else
-            throw new JenaResourceRequiredException( n );
+            throw new ResourceRequiredException( n );
          }
         
     public Resource getResource()
@@ -120,13 +120,13 @@ public class StatementImpl  implements Statement {
         
     /**
         get the object field of this statement, insisting that it be a Literal.
-        If it isn't, throw JenaLiteralRequiredException.
+        If it isn't, throw LiteralRequiredException.
     */
     public Literal getLiteral()  {        
         if (object instanceof Literal) {
             return (Literal) object;
         } else {    
-            throw new JenaLiteralRequiredException( object );
+            throw new LiteralRequiredException( object );
         }
     }
     
@@ -249,7 +249,7 @@ public class StatementImpl  implements Statement {
     /** get the Model for this StatementImpl, and die if it doesn't have one */
 	protected Model mustHaveModel()
 		{
-      	if (model == null) throw new JenaHasNoModelException( this );
+      	if (model == null) throw new HasNoModelException( this );
 		return model; 
 		}
         

@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-06-17 12:25:05 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-07-21 11:10:01 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     
@@ -72,7 +72,7 @@ public class AltImpl extends ContainerImpl implements Alt {
     private Statement needDefaultStatement() 
     	{
         Statement stmt = getDefaultStatement();
-        if (stmt == null) throw new JenaAltHasNoDefaultException( this );
+        if (stmt == null) throw new AltHasNoDefaultException( this );
         return stmt;
     	}
     	

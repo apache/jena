@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
     [See end of file]
-    $Id: Regression.java,v 1.13 2003-07-21 10:54:11 chris-dollin Exp $
+    $Id: Regression.java,v 1.14 2003-07-21 11:10:01 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-07-21 10:54:11 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-07-21 11:10:01 $'
  */
 public class Regression extends Object {
 
@@ -2642,7 +2642,7 @@ public class Regression extends Object {
                        m.createStatement(r, RDF.value, false)
                         .getResource();
                        error(test,n);
-                } catch(JenaResourceRequiredException e) {
+                } catch(ResourceRequiredException e) {
                     // as required
                 }
             n++; if (! m.createStatement(r, RDF.value, true)
@@ -2652,7 +2652,7 @@ public class Regression extends Object {
                        m.createStatement(r, RDF.value, r)
                         .getLiteral();
                        error(test,n);
-                } catch(JenaLiteralRequiredException e) {
+                } catch(LiteralRequiredException e) {
                     // as required
                 }
             n = 200;
@@ -3454,12 +3454,12 @@ public class Regression extends Object {
                 n++; if (!  (seq.getSeq(16).equals(tvSeq))) error(test,n);
                 n++; try {
                         seq.getInt(17); error(test,n);
-                    } catch (JenaSeqIndexBoundsException e) {
+                    } catch (SeqIndexBoundsException e) {
                         // as required
                     }
                 n++; try {
                         seq.getInt(0); error(test,n);
-                    } catch (JenaSeqIndexBoundsException e) {
+                    } catch (SeqIndexBoundsException e) {
                         // as required
                     }
             }
@@ -3473,7 +3473,7 @@ public class Regression extends Object {
 
                      try {
                 n++;        seq.add(0, false); error(test,n);
-                     } catch (JenaSeqIndexBoundsException e) {
+                     } catch (SeqIndexBoundsException e) {
                         // as required
                      }
                      seq.add(num+1, false);
@@ -3481,7 +3481,7 @@ public class Regression extends Object {
                      seq.remove(num+1);
                      try {
                 n++;        seq.add(num+2, false); error(test,n);
-                     } catch (JenaSeqIndexBoundsException e) {
+                     } catch (SeqIndexBoundsException e) {
                         // as required
                      }
 
@@ -4599,12 +4599,12 @@ public class Regression extends Object {
                 n++; if (!  (seq4.getSeq(17).equals(tvSeq))) error(test,n);
                 n++; try {
                         seq4.getInt(18); error(test,n);
-                    } catch (JenaSeqIndexBoundsException e) {
+                    } catch (SeqIndexBoundsException e) {
                         // as required
                     }
                 n++; try {
                         seq4.getInt(0); error(test,n);
-                    } catch (JenaSeqIndexBoundsException e) {
+                    } catch (SeqIndexBoundsException e) {
                         // as required
                     }
             }
@@ -4617,7 +4617,7 @@ public class Regression extends Object {
 
                      try {
                 n++;        seq5.add(0, false); error(test,n);
-                     } catch (JenaSeqIndexBoundsException e) {
+                     } catch (SeqIndexBoundsException e) {
                         // as required
                      }
                      seq5.add(num+1, false);
@@ -4625,7 +4625,7 @@ public class Regression extends Object {
                      seq5.remove(num+1);
                      try {
                 n++;        seq5.add(num+2, false); error(test,n);
-                     } catch (JenaSeqIndexBoundsException e) {
+                     } catch (SeqIndexBoundsException e) {
                         // as required
                      }
 
@@ -4878,5 +4878,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.13 2003-07-21 10:54:11 chris-dollin Exp $
+ * $Id: Regression.java,v 1.14 2003-07-21 11:10:01 chris-dollin Exp $
  */

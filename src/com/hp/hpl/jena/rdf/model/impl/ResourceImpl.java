@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ResourceImpl.java,v 1.17 2003-07-18 12:50:49 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.18 2003-07-21 11:10:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-07-18 12:50:49 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2003-07-21 11:10:01 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -147,7 +147,7 @@ public class ResourceImpl extends EnhNode implements Resource {
 	protected ModelCom mustHaveModel()
 		{
         ModelCom model = (ModelCom) getGraph();
-		if (model == null) throw new JenaHasNoModelException( this );
+		if (model == null) throw new HasNoModelException( this );
 		return model;
 		}
 		
