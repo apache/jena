@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.11 2004-02-17 09:14:28 der Exp $
+ * $Id: XSDDateTime.java,v 1.12 2004-02-18 09:54:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -17,7 +17,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2004-02-17 09:14:28 $
+ * @version $Revision: 1.12 $ on $Date: 2004-02-18 09:54:48 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -91,6 +91,12 @@ public class XSDDateTime extends AbstractDateTime {
      * Return the date time as a java Calendar object. 
      * If the timezone has been specified then the object is normalized to GMT.
      * If the zone has not been specified then we use the default timezone.
+     * <p>
+     * N.B. The millisecond field will be discarded and the resulting Calendar
+     * object will have 0 in the millisecond field. This is a workaround for an
+     * apparent problem with some Linux JDK's Calendar implementations. If it
+     * causes a problem contact us to ask us to revisit this.
+     * </p>
      * 
      * @throws IllegalDateTimeFieldException if this is not a full date + time
      */
