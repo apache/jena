@@ -27,7 +27,7 @@ import EDU.oswego.cs.dl.util.concurrent.*;
  *  and presents the Jena interface to queries.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: QueryEngineSesame.java,v 1.5 2003-03-19 17:16:54 andy_seaborne Exp $
+ * @version 	$Id: QueryEngineSesame.java,v 1.6 2003-03-28 18:11:13 andy_seaborne Exp $
  */
 
 
@@ -215,17 +215,20 @@ public class QueryEngineSesame implements QueryExecution
 			firstInRow = true;
 			columnIndex = 0;
 			currentRow = new ResultBinding() ;
+            currentRow.setQuery(query) ;
 		}
 
 		public void endTuple()
 		{
+            
 			// Create the matching statements
-			for ( Iterator iter = query.getTriplePatterns().iterator() ; iter.hasNext() ; )
-			{
-				TriplePattern tp = (TriplePattern)iter.next() ;
-				Statement s = tp.asStatement(currentRow) ;
-				currentRow.addTriple(s) ;
-			}
+            // Now done in ResultBinding.
+//			for ( Iterator iter = query.getTriplePatterns().iterator() ; iter.hasNext() ; )
+//			{
+//				TriplePattern tp = (TriplePattern)iter.next() ;
+//				Statement s = tp.asStatement(currentRow) ;
+//				currentRow.addTriple(s) ;
+//			}
 
 			if (verbose)
 				System.out.println();

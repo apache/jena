@@ -11,7 +11,7 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.4 2003-02-20 16:48:56 andy_seaborne Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.5 2003-03-28 18:10:25 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
@@ -44,7 +44,6 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test(" #Comment")) ;
 		addTest(new Test("a:subj a:prop a:d.  # Comment")) ;
 		addTest(new Test("a:subj a:prop a:d.# Comment")) ;
-		
 
 		// Literals
 		//addTest(new Test("a:subj a:prop 123.")) ;
@@ -63,9 +62,8 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test("a:subj 'prop'^^<uriref> 'string'.")) ;
 		addTest(new Test("a:subj a:prop 'string1'^^'stringDT'.")) ;
 
-		// Broken
-		//addTest(new Test("a:subj a:prop1 ?x ^^ x:dt.")) ;
-		//addTest(new Test("a:subj a:prop2 ?x ^^ ?x.")) ;
+		addTest(new Test("a:subj a:prop1 ?x ^^ x:dt.")) ;
+		addTest(new Test("a:subj a:prop2 ?x ^^ ?x.")) ;
 
 		// Quotes in string
 		addTest(new Test("a:subj a:prop \"\\'string2\\'\".")) ;
@@ -83,19 +81,17 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test("a:q12 a:prop '''start\\'\\'\\'finish'''.")) ;
 		addTest(new Test("a:q23 a:prop '''start\"\"\"finish'''.")) ;
 		
-		
 		// Keywords and syntactic sugar
 		addTest(new Test("this a:prop x:y .")) ;
 		addTest(new Test("a:subj  a   x:y .")) ;
 		addTest(new Test("a:subj  =   x:y .")) ;
 		addTest(new Test("a:subj  =>  x:y .")) ;
 		addTest(new Test("a:subj  <=  x:y .")) ;
-		//addTest(new Test("a:subj  <=> x:y .")) ;
+		// <=> is not legal : it would mean "implies and is implied by" 
+        // addTest(new Test("a:subj  <=> x:y .")) ;
 		addTest(new Test("a:subj  >- x:y -> 'value' .")) ;
 		addTest(new Test("a:subj  >- x:y -> 'value1', 'value2' .")) ;
-
-
-		
+        
 		// Not keywords
 		addTest(new Test("a:subj <a>  x:y .")) ;
 		addTest(new Test("<this>  a   x:y .")) ;
@@ -108,7 +104,6 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test("<>   a:prop  x:y .")) ;
 		addTest(new Test("<#>  a:prop  x:y .")) ;
 		
-		
 		// Object lists
 		addTest(new Test("a:subj a:prop a:d, a:e.")) ;
 		addTest(new Test("a:subj a:prop a:d, '123'.")) ;
@@ -116,7 +111,7 @@ public class N3InternalTests extends TestSuite
 
 		// Property lists
 		addTest(new Test("a:subj a:p1 a:v1 ;  a:p2 a:v2 .")) ;
-		addTest(new Test("a:subj a:p1 a:v1, a:v2 ;  a:p2 a:v2 ; a:p3 'v4' ,'v5' .")) ;
+    	addTest(new Test("a:subj a:p1 a:v1, a:v2 ;  a:p2 a:v2 ; a:p3 'v4' ,'v5' .")) ;
 		
 		// anon nodes
 		addTest(new Test("[a:prop a:val].")) ;
@@ -129,7 +124,6 @@ public class N3InternalTests extends TestSuite
 		// Variables
 		addTest(new Test("?who ?knows ?what .")) ;
 		addTest(new Test("{?who ?knows ?what} => {'somesort' 'of' 'logic'}." )) ;
-
 		
 		// Formulae do not need the trailing '.'
 		addTest(new Test("{ this a \"string2\". } => { this a 'string1'} .")) ;
@@ -138,8 +132,9 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test("{ @prefix : <a> } => { this a 'string1'} .")) ;
 		addTest(new Test("{ @prefix : <a> . a:x <b> 'c'} => { this a 'string1'} .")) ;
 		
-		// (DAML) lists
-		addTest(new Test("() a daml:list.")) ;
+		// DAML lists => RDF collections
+        // Remove/change
+		addTest(new Test("() .")) ;
 		addTest(new Test("<here> <list> ().")) ;
 		addTest(new Test(" ( a:i1 a:i2 a:i3 ) a daml:list.")) ;
 		
@@ -185,7 +180,10 @@ public class N3InternalTests extends TestSuite
 		String testString ;
 		Test(String s)
 		{
-			super("N3 Internal test: "+(s!=null?s:"<skipped test>")) ;
+            // JUnit in Ecplise has problems with test names with commas in.
+            // No idea why. 
+			super("N3 Internal test: "+(s!=null?s.replace(',','_'):"<skipped test>")) ;
+            //super("N3 Internal test: "+(s!=null?s:"<skipped test>")) ;
 			testString = s ; 
 			if ( VERBOSE )
 				handler = new N3EventPrinter(pw) ;

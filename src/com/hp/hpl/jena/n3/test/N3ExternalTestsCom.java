@@ -11,11 +11,9 @@ import junit.framework.* ;
 
 import com.hp.hpl.jena.util.tuple.* ;
 
-//@@ToDo: Hunt around for the config file
-
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.5 2003-02-20 16:48:56 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.6 2003-03-28 18:10:23 andy_seaborne Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
