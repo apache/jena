@@ -5,13 +5,11 @@
 
 package com.hp.hpl.jena.rdf.model.test ;
 import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdf.model.impl.ModelLockImpl ;
-
 
 import junit.framework.*;
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TestConcurrency.java,v 1.3 2003-08-27 13:05:52 andy_seaborne Exp $
+ * @version 	$Id: TestConcurrency.java,v 1.4 2004-06-15 12:58:52 andy_seaborne Exp $
  */
 public class TestConcurrency  extends TestSuite
 {
@@ -22,7 +20,7 @@ public class TestConcurrency  extends TestSuite
         }
 
 	// Test suite to exercise the locking
-	static long SLEEP = 250 ;
+	static long SLEEP = 100 ;
 	static int threadCount = 0;
 
     // Note : reuse the model across tests.
@@ -33,28 +31,33 @@ public class TestConcurrency  extends TestSuite
     {
         super("Model concurrency control") ;
 
-        // Same model: inner and outer
-        addTest(new Nesting("Lock nesting 1 - same model", 
-                model1, ModelLock.READ, ModelLock.READ, false)) ;
-        addTest(new Nesting("Lock nesting 2 - same model",
-                model1, ModelLock.WRITE, ModelLock.WRITE, false)) ;
-        addTest(new Nesting("Lock nesting 3 - same model",
-                model1, ModelLock.READ, ModelLock.WRITE, true)) ;
-        addTest(new Nesting("Lock nesting 4 - same model",
-                model1, ModelLock.WRITE, ModelLock.READ, false)) ;
-
-        // Different  model: inner and outer
-        addTest(new Nesting("Lock nesting 1 - defifferent models", 
-                model1, ModelLock.READ, model2, ModelLock.READ, false)) ;
-        addTest(new Nesting("Lock nesting 2 - defifferent models",
-                model1, ModelLock.WRITE, model2, ModelLock.WRITE, false)) ;
-        addTest(new Nesting("Lock nesting 3 - defifferent models",
-                model1, ModelLock.READ, model2, ModelLock.WRITE, false)) ;
-        addTest(new Nesting("Lock nesting 4 - defifferent models",
-                model1, ModelLock.WRITE, model2, ModelLock.READ, false)) ;
-
-        // Crude test                
-        addTest(new Parallel("Parallel concurrency test")) ;
+        if ( true )
+        {
+            // Same model: inner and outer
+            addTest(new Nesting("Lock nesting 1 - same model", 
+                    model1, ModelLock.READ, ModelLock.READ, false)) ;
+            addTest(new Nesting("Lock nesting 2 - same model",
+                    model1, ModelLock.WRITE, ModelLock.WRITE, false)) ;
+            addTest(new Nesting("Lock nesting 3 - same model",
+                    model1, ModelLock.READ, ModelLock.WRITE, true)) ;
+            addTest(new Nesting("Lock nesting 4 - same model",
+                    model1, ModelLock.WRITE, ModelLock.READ, false)) ;
+    
+            // Different  model: inner and outer
+            addTest(new Nesting("Lock nesting 1 - defifferent models", 
+                    model1, ModelLock.READ, model2, ModelLock.READ, false)) ;
+            addTest(new Nesting("Lock nesting 2 - defifferent models",
+                    model1, ModelLock.WRITE, model2, ModelLock.WRITE, false)) ;
+            addTest(new Nesting("Lock nesting 3 - defifferent models",
+                    model1, ModelLock.READ, model2, ModelLock.WRITE, false)) ;
+            addTest(new Nesting("Lock nesting 4 - defifferent models",
+                    model1, ModelLock.WRITE, model2, ModelLock.READ, false)) ;
+        }
+        if ( true )
+        {
+            // Crude test                
+            addTest(new Parallel("Parallel concurrency test")) ;
+        }
 
     }
 
@@ -118,7 +121,8 @@ public class TestConcurrency  extends TestSuite
     
     static class Parallel extends TestCase
     {
-        int threadTotal = 8 ; 
+        int threadTotal = 10 ; 
+        
         
         Parallel(String testName)
         {
@@ -138,21 +142,29 @@ public class TestConcurrency  extends TestSuite
                 threads[i].setName(nextId) ;
                 threads[i].start() ;
                 
-                if ( ModelLockImpl.DEBUG )
-                    System.err.println("Create: "+nextId+"  ("+(getReadLock?"READ":"WRITE")+")") ;
                 getReadLock = ! getReadLock ;
             }
         
             boolean problems = false ;
             for ( int i = 0; i < threadTotal; i++)
             {
-                try { threads[i].join(100*SLEEP) ; } catch (InterruptedException intEx) {}
+                try { threads[i].join(200*SLEEP) ; } catch (InterruptedException intEx) {}
+            }
+
+            // Try again for any we missed.
+            for ( int i = 0; i < threadTotal; i++)
+            {
                 if ( threads[i].isAlive() )
+                    try { threads[i].join(200*SLEEP) ; } catch (InterruptedException intEx) {}
+                if ( threads[i].isAlive())
                 {
                     System.out.println("Thread "+threads[i].getName()+" failed to finish") ;
                     problems = true ;
                 }
             }
+            
+            
+            
             assertTrue("Some thread failed to finish", !problems) ;
         }
 
@@ -161,9 +173,9 @@ public class TestConcurrency  extends TestSuite
              Model model ;
              boolean readLock ;
             
-             Operation(Model m, boolean _getReadLock)
+             Operation(Model m, boolean withReadLock)
              {
-                 model = m ; readLock = _getReadLock ;
+                 model = m ; readLock = withReadLock ;
              }
             
              public void run()
@@ -188,13 +200,10 @@ public class TestConcurrency  extends TestSuite
         void doStuff(String label, boolean doThrow)
         {
             String id = Thread.currentThread().getName() ;
-            //if ( ModelLockImpl.DEBUG )
-            //    System.err.println(id+": "+label+" - 1 - sleep="+SLEEP) ;
+            // Puase a while to cause other threads to (try to) enter the region.
             try { Thread.sleep(SLEEP) ; } catch (InterruptedException intEx){}
             if ( doThrow )
                 throw new RuntimeException(label) ;
-            //if ( ModelLockImpl.DEBUG )
-            //    System.err.println(id+": "+label+" - 2") ;
         }
     
         // Example operations

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -7,33 +7,36 @@ package com.hp.hpl.jena.rdf.model.impl ;
 import com.hp.hpl.jena.rdf.model.ModelLock ;
 import com.hp.hpl.jena.shared.JenaException;
 
-import EDU.oswego.cs.dl.util.concurrent.*;
+import EDU.oswego.cs.dl.util.concurrent.WriterPreferenceReadWriteLock;
+import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
 import java.util.*;
+import org.apache.commons.logging.*;
 
 /**
- * Model lock implmenetation using Multiple Reader, Single Writer.
+ * Model lock implmenetation using a Multiple Reader, Single Writer policy.
+ * All the locking work is done by the imported WriterPreferenceReadWriteLock.
+ * Ths class adds:
+ * <ul>
+ *   <li>The same thread that acquired a lock should release it</li>
+ *   <li>Lock promotion (turing read locks into write locks) is deteched as an error</li>
+ *  <ul>
  * @see com.hp.hpl.jena.rdf.model.ModelLock
  *   
  * @author		Andy Seaborne
- * @version 	$Id: ModelLockImpl.java,v 1.4 2003-08-27 13:05:53 andy_seaborne Exp $
+ * @version 	$Id: ModelLockImpl.java,v 1.5 2004-06-15 12:58:23 andy_seaborne Exp $
  */
 
 public class ModelLockImpl implements ModelLock
 {
-	// Model locks impose some extra policy on re-entrant MRSW locks.
-	// 1 - The same thread that acquired a lock should release it.
-	// 2 - Lock promotion (turing read locsk into write locks is deteched as an error. 
-
-    public static final boolean DEBUG = false ;
-    public static final boolean DEBUG_OBJ = true ;
-    // Only needed if DEBUG is true.
-    static java.io.PrintStream out = System.err ;
-	
+    // One instance per model.
+    
+    static Log log = LogFactory.getLog(ModelLockImpl.class) ;
+    
     // Map of threads to lock state for this model lock
 	Map threadStates = new HashMap() ;
+    // We keep this is a variable because it is tested outside of a lock.
     int threadStatesSize = threadStates.size() ;
-    int LIMIT = 100 ;
-
+    
 	//ReentrantWriterPreferenceReadWriteLock lock = new ReentrantWriterPreferenceReadWriteLock();
     WriterPreferenceReadWriteLock lock = new WriterPreferenceReadWriteLock();
     
@@ -41,8 +44,8 @@ public class ModelLockImpl implements ModelLock
     SynchronizedInt activeWriteLocks = new SynchronizedInt(0);
 
 	ModelLockImpl() {
-        if ( DEBUG && DEBUG_OBJ ) 
-            out.println("ModelLockImpl() : "+this) ;
+        if ( log.isDebugEnabled() )
+            log.debug("ModelLockImpl() : "+Thread.currentThread().getName()) ;
     }
 
 
@@ -68,8 +71,8 @@ public class ModelLockImpl implements ModelLock
         
 		ModelLockState state = getLockState() ;
 
-		if (DEBUG)
-			out.println(Thread.currentThread().getName()+" >> enterCS: "+report(state)) ;
+        if ( log.isDebugEnabled() )
+            log.debug(Thread.currentThread().getName()+" >> enterCS: "+report(state)) ;
 			
 		// If we have a read lock, but no write locks, then the thread is attempting
 		// a lock promotion.  We do not allow this.
@@ -80,8 +83,9 @@ public class ModelLockImpl implements ModelLock
     		synchronized(state) { state.readLocks++ ; }
             activeReadLocks.increment() ;
 
-			if ( DEBUG )
-				out.println(Thread.currentThread().getName()+" << enterCS: promotion attempt: "+report(state)) ;
+            if ( log.isDebugEnabled() )
+                log.debug(Thread.currentThread().getName()+" << enterCS: promotion attempt: "+report(state)) ;
+            
 			throw new JenaException("enterCriticalSection: Write lock request while holding read lock - potential deadlock");
 		}
 
@@ -110,8 +114,8 @@ public class ModelLockImpl implements ModelLock
 		}
         finally
         {
-    		if (DEBUG)
-    			out.println(Thread.currentThread().getName()+" << enterCS: "+report(state)) ;
+            if ( log.isDebugEnabled() )
+                log.debug(Thread.currentThread().getName()+" << enterCS: "+report(state)) ;
         }
 	}
 
@@ -125,8 +129,8 @@ public class ModelLockImpl implements ModelLock
          
 		ModelLockState state = getLockState() ;
 
-		if (DEBUG)
-			out.println(Thread.currentThread().getName()+" >> leaveCS: "+report(state)) ;
+        if ( log.isDebugEnabled() )
+            log.debug(Thread.currentThread().getName()+" >> leaveCS: "+report(state)) ;
 
         try {
             if ( state.readLocks > 0)
@@ -155,11 +159,11 @@ public class ModelLockImpl implements ModelLock
         
             // No lock held.
         
-        	throw new JenaException("leaveCriticalSection: No lock held") ;
+        	throw new JenaException("leaveCriticalSection: No lock held ("+Thread.currentThread().getName()+")") ;
         } finally 
         {
-            if (DEBUG)
-			     out.println(Thread.currentThread().getName()+" << leaveCS: "+report(state)) ;
+            if ( log.isDebugEnabled() )
+                log.debug(Thread.currentThread().getName()+" << leaveCS: "+report(state)) ;
         }
 	}
 
@@ -174,12 +178,9 @@ public class ModelLockImpl implements ModelLock
         sb.append(Integer.toString(activeReadLocks.get())) ;
         sb.append("/") ;
         sb.append(Integer.toString(activeWriteLocks.get())) ;
-        if ( DEBUG_OBJ )
-        {
-            sb.append(" (lock:") ;
-            sb.append(this) ;
-            sb.append(")") ;
-        }
+        sb.append(" (thread: ") ;
+        sb.append(state.thread.getName()) ;
+        sb.append(")") ;
         return sb.toString() ;
     }
 
@@ -198,76 +199,48 @@ public class ModelLockImpl implements ModelLock
         return state ;              
     }
 
+    synchronized void removeLockState()
+    {
+        Thread thisThread = Thread.currentThread() ;
+        threadStates.remove(thisThread) ;
+    }
 
-	class ModelLockState
+	static class ModelLockState
 	{
-		// Counters for this lock object
-        // These do not need to be atmoic because a thread is the 
+		// Counters for this lock object.
+        // Instances of ModelLockState are held per thread per model.
+        // These do not need to be atomic because a thread is the 
         // only accessor of its own counters
          
         int readLocks = 0 ;
         int writeLocks = 0 ;
-        ModelLock modelLock ;
+        ModelLockImpl modelLock ;
+        Thread thread ;
 
         // Need to pass in the containing model lock
         // because we want a lock on it. 
-		ModelLockState(ModelLock lock) { modelLock = lock ;}
+		ModelLockState(ModelLockImpl lock)
+        {
+            modelLock = lock ;
+            thread = Thread.currentThread() ;
+        }
 
         void clean()
         {
-            if (activeReadLocks.get() == 0 && activeWriteLocks.get() == 0)
+            if (modelLock.activeReadLocks.get() == 0 && modelLock.activeWriteLocks.get() == 0)
             {
-                // This thread has no locks - think about some cleaning up.
-                if (threadStatesSize > LIMIT)
-                    clean2();
-                // Simple - but it churns.
-                //remove(Thread.currentThread()) ;
+                // A bit simple - but it churns (ModelLocalState creation) in the
+                // case of a thread looping around a critical section.
+                // The alternative, to delay now and do a more sophisticated global GC
+                // could require a global pause which is worse.
+                modelLock.removeLockState() ;
             }
         }
-        
-        
-		private void remove(Thread thread) { threadStates.remove(thread) ; }
-		
-		// Clear out all threads not currently active.
-		// Does not matter if they reenter - we just allocate a control block for them
-		// This policy avoids churn when a thread keeps entering
-		// and leaving critical sections.
-		
-		void clean2()
-		{
-            // This *reads* other threads lock states.
-            // Only does this if there are no readers or writers
-            // Keeps new one out as it synchronizes on the model lock
-            // forcing getLockState to wait.
-
-            synchronized(modelLock)
-            {
-                // check the condition again.
-                if (activeReadLocks.get() != 0 || activeWriteLocks.get() != 0)
-                    return ;
-                
-    			int cleared = 0 ;
-    			for ( Iterator iter = threadStates.keySet().iterator() ; iter.hasNext() ;)
-    			{
-    				ModelLockState state = (ModelLockState)iter.next() ;
-    				if ( state.readLocks == 0 && state.writeLocks == 0 )
-    				{
-    					iter.remove() ;
-    					cleared++ ;
-    				}
-    			}
-    			
-    			if ( cleared < LIMIT/10 )
-    				// Lots active.
-    				LIMIT = LIMIT*2 ;
-    			threadStatesSize = threadStates.size() ;
-            }
-		}
 	}
 }   
 
 /*
- *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
