@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.9 2003-08-12 15:23:11 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.10 2003-08-27 08:08:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -41,12 +41,11 @@ public abstract class AbstractTestQuery extends GraphTestBase
         
     public void setUp()
         {
-			Q = new Query();
-			empty = getGraphWith( "" );
-			single = getGraphWith( "spindizzies drive cities" );
+		Q = new Query();
+		empty = getGraphWith( "" );
+		single = getGraphWith( "spindizzies drive cities" );
 		}
 
-        
     private void testTreeQuery( String title, String content, String pattern, String correct )
         {
         Graph gc = getGraphWith( content ), gp = getGraphWith( pattern );
