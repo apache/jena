@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.62 $
+ * Revision           $Revision: 1.63 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-08 23:13:33 $
+ * Last modified on   $Date: 2004-04-23 22:47:20 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.62 2004-03-08 23:13:33 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.63 2004-04-23 22:47:20 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -383,7 +383,14 @@ public class OntModelImpl
         // or not a powerful reasoner (i.e. owl:Thing/daml:Thing aware) is being used with this model
         if (!(getGraph() instanceof BasicForwardRuleInfGraph) || (m_individualsQueryInf == null) || getProfile().CLASS().equals( RDFS.Class )) {
             // no inference, or we are in RDFS land, so we pick things that have rdf:type whose rdf:type is Class
-            return UniqueExtendedIterator.create( queryFor( m_individualsQueryNoInf, null, Individual.class ) );
+            ExtendedIterator indivI = queryFor( m_individualsQueryNoInf, null, Individual.class );
+
+            // we also must pick resources that simply have rdf:type owl:Thing, since some individuals are asserted that way
+            if (m_individualsQueryInf != null) {
+                indivI = indivI.andThen( queryFor( m_individualsQueryInf, null, Individual.class ) );
+            }
+            
+            return UniqueExtendedIterator.create( indivI );
         }
         else {
             // inference, so we pick the nodes that are of type Thing
