@@ -8,6 +8,7 @@ package com.hp.hpl.jena.db;
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -45,7 +46,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -125,7 +126,7 @@ public class GraphRDB extends GraphBase implements Graph {
         if (style == Reifier.Convenient)
             return GraphRDB.OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS;
         if (style == Reifier.Minimal)
-            return GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING;
+            return GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS;
         throw new JenaException( "unsupported reification style" );
         }
         
@@ -472,7 +473,25 @@ public class GraphRDB extends GraphBase implements Graph {
 			return null;
 		return m_driver.getConnection();
 	}
+	
 
+	/**
+	 * Return an iterator over the specialized graphs for this graph
+	 * 
+	 * @return Iterator over the list of specialized graphs.
+	 */
+	public Iterator getSpecializedGraphs() {
+		return m_specializedGraphs.iterator();
+	}
+/*	
+	private QueryHandler q = null;
+    
+	public QueryHandler queryHandler()
+		{
+		if (q == null) q = new DBQueryHandler( this );
+		return q;
+		}
+*/
 }
 
 /*
