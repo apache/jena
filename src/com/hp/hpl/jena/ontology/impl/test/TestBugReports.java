@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-13 16:59:17 $
+ * Last modified on   $Date: 2003-11-20 17:53:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.22 2003-11-13 16:59:17 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.23 2003-11-20 17:53:10 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -518,7 +518,6 @@ public class TestBugReports
         m.getDocumentManager().loadImport( m, "http://www.w3.org/2001/sw/WebOnt/guide-src/food" ); 
         
         OntClass ontclass = m.getOntClass( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#Wine" );
-        System.out.println(ontclass.getLocalName());
         
         int nNamed = 0;
         int nRestriction = 0;
@@ -529,12 +528,10 @@ public class TestBugReports
             
             //this is to view different anonymous IDs
             if (!ontsuperclass.isAnon()) {
-                System.out.println( "super: " + ontsuperclass.toString());
                 nNamed++;
             }
             else if (ontsuperclass.canAs( Restriction.class )) {
-                Restriction r = ontsuperclass.asRestriction();
-                System.out.println( "anon. restriction on prop " + r.getOnProperty() );
+                ontsuperclass.asRestriction();
                 nRestriction++;
             }
             else {
