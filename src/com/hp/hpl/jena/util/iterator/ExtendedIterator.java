@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ExtendedIterator.java,v 1.1 2003-01-28 10:39:12 chris-dollin Exp $
+  $Id: ExtendedIterator.java,v 1.2 2003-08-26 15:16:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
