@@ -14,54 +14,29 @@
 
 <ul>
 <li>
-<a href="#status">Conformance and Status</a>
+<a href="#intro"> Introduction</a>
 </li>
 <li>
-<a href="#usage-overview">Overview of Usage</a>
+<a href="#command-line">Command Line Tool</a>
 </li>
-<li><a href="#sample">Sample code</a></li>
 <li>
-<a href="#code-documentation">In Lieu of Javadoc</a></li>
-</ul>
-
-<h2><a name="status"> </a>Conformance and Status</h2>
-<p>
-The OWL syntax checker shipping with Jena2.0 is <b>alpha</b> quality
-(mostly) conforming with the Last Call of the OWL design.
-</p>
-<p>
-Two known conformance errors are:
-</p>
+<a href="#checker-rslts">Common Java interface</a>
+<li>
+<a href="#Checker">Using with Jena Models, OntModels, and Graphs</a>
 <ul>
-<li>triples <code>_:b rdf:type owl:Class</code> are incorrectly
-not allowed on blank nodes corresponding to restrictions.
-</li>
-<li>the <a href="http://www.w3.org/2001/sw/WebOnt/rqim">feature at risk</a> in the OWL call for implementations is not implemented.
+<li>
+<a href="#sample">Sample code</a>
 </li>
 </ul>
-<p>
-Further conformance issues concern changes made between the OWL Last Call and Candidate
-Recommendation. The most significant of these is that the
-<code>_:b rdf:type rdf:List</code> triples are no longer required.
-However, the Jena2.0 syntax checker code has not been updated reflecting this.
-Since the Jena2.0 version of ARP has been updated and does not generate these triples, 
-it means that the syntax checker
-is difficult to use in practice.
-</p>
-<p>
-The three main aspects that are expected to change on the next revision of this software 
-(from alpha to beta quality) are:
-</p>
-<ul>
-<li>Reducing the startup overhead - currently a few seconds</li>
-<li>Designing an API - currently there is no coherent API, see below</li>
-<li>Conforming with OWL Candidate Rec, probably continuing to not support the feature at risk</li>
+</li>
+<li><a href="#StreamingChecker">Streaming Checker</a></li>
+
 </ul>
 
-<h2><a name="usage-overview"></a>Overview of Usage</h2>
+<h2><a name="intro"> </a>Introduction</h2>
 <p>
-The OWL Syntax Checker takes a graph and sees whether it conforms with OWL Lite
-or OWL DL syntax.
+An OWL Syntax Checker takes a file, Model or Graph and sees 
+whether it conforms with OWL Lite or OWL DL syntax or neither.
 </p>
 <p>
 The basic usage returns a single word being one of "Lite" "DL" or "Full".
@@ -70,34 +45,169 @@ The basic usage returns a single word being one of "Lite" "DL" or "Full".
 Error messages can indicate why it is not in a lower level.
 </p>
 <p>
-No rationale is offered as to why it is in this level rather than a higher level;
-such a rationale can be found from a different tool that provides the abstract syntax
-form corresponding to the graph. This functionality is not planned within Jena.
+The Jena OWL syntax checker implements
+the 
+<a href="http://www.w3.org/TR/owl-test/#dfn-OWL-syntax-checker">OWL Syntax Checker</a> defined by the 
+<a href="http://www.w3.org/TR/owl-test/">OWL Test Cases Recommendation</a>.
 </p>
-<p>It is generally desirous to compute an imports closure before doing a syntax check,
-the code sample below shows how to do this. A future revision is likely to simplify this.
+<p>
+Tests have shown that it is much faster and smaller
+than other syntax checkers
+written in Java. It is believed to be the fastest OWL Syntax Checker.
+However, it does not produce an OWL abstract syntax tree,
+and the error messages are not yet adequately clear.
 </p>
-<p>If it is desired to have error messages indicating why a graph is in OWL DL rather than OWL Lite
-then appropriate constructor arguments must be given.</p>
-<h2><a name="sample"></a>Sample code</h2>
+<p>
+There are three different ways of using the Jena OWL Syntax Checker:
+</p>
+<ol>
+<li>From the command line, using the class <code>jena.owlsyntax</code></li>
+<li>Checking Jena Models and Graphs which have already been
+read in, using <code>com.hp.hpl.jena.ontology.tidy.Checker</code>.
+</li>
+<li>As a standalone Java library,
+for non-Jena applications requiring
+optimized memory usage 
+<code>com.hp.hpl.jena.ontology.tidy.StreamingChecker</code>.
+</li>
+</ol>
+<p>
+Most users should start with the first option,
+and possibly migrate to the second.
+The third case is only useful for specialized applications
+<em>needing</em> to make the best possible usage of their memory.
+(Some tests indicate that the <code>Checker</code>
+class is slightly quicker than the <code>StreamingChecker</code>
+class).
+</p>
+<p>
+The Jena Ontology Models, and the
+Jena reasoners <em>do not</em> require
+any specific syntactic conformance for the documents
+they work with, and do not
+require the use of the syntax checker.
+However, restricting your ontology files
+to be OWL Lite or OWL DL may catch many typos
+and silly mistakes, and may improve the style of
+your ontologies. Moreover, greater interoperability
+with other tools is likely if you restrict yourself
+to OWL Lite or OWL DL.
+</p>
+
+<h2><a name="command-line"></a>Command Line Tool</h2>
+
+<p>
+Invoke Java with the normal Jena classpath 
+and the <code>jena.owlsyntax</code>
+class and the following arguments:
+</p>
+<pre>
+   jena.owlsyntax [--lite|--quiet] [--big] [file1] [file2]
+   jena.owlsyntax --help
+   jena.owlsyntax [--textui] --test [ManifestURL]
+</pre>
+<p>
+The first form reports "Lite", "DL", or "Full"
+If two files are specified, then both files are checked, and
+the vocabulary usage by both files together must be separated.
+If no files are specified then standard input is used,
+(in this case, relative URIs and rdf:ID's are resolved
+ against <code>&lt;urn:x-jena:syntaxchecker></code>).
+ </p>
+
+<dl>
+<dt>
+  -l
+ </dt>
+ <dt> --lite</dt>
+ <dd>     Give error messages for OWL DL or OWL Full constructions.
+ </dd> 
+  <dt>-q</dt><dt> --quiet</dt>
+  <dd>    No error messages.</dd>
+  <dt>
+  -s
+  </dt> 
+  <dt>--short
+  </dt>
+  <dd>    Give short error messages
+                                (Default is long messages for OWL Full only)
+                                </dd>
+                                
+<dt>  -b</dt><dt> --big</dt>
+<dd>      Input file is big: optimize memory usage.
+
+                                Quality of long error messages suffers.
+</dd>
+<dt>
+  --test</dt>
+  <dd>        Run a test suite - default latest OWL Test publication.
+                                URL of file:testing/wg/OWLManifest.rdf uses local copy.
+  </dd>
+  <dt>
+  --textui</dt>
+  <dd>      Use the junit.textui instead of the swingui
+</dd>
+</dl>
+<h2><a name="checker-rslts"></a>Common Java interface</h2>
+
+<p>
+The API contains two implementation classes
+<code>Checker</code> and <code>StreamingChecker</code>.
+Both of these implement the same interface
+<code>CheckerResults</code> for reporting the
+results of a syntax check. This gives methods
+to get the one word result, and any error messages.
+Some errors are characterised by a small subgraph that
+exhibits the error. This subgraph can be accessed
+using the <code>SyntaxProblem.problemSubGraph()</code>
+method.
+</p>
+
+<h2><a name="Checker"></a>Using with Jena Models, OntModels, and Graphs</h2>
+<p>
+Most Jena users wishing to use the syntax checker should
+use the <code>Checker</code> class.
+The Javadoc should be referred to for usage details.
+</p>
+<p>
+An issue that should be understood concerns the 
+processing of <code>owl:imports</code>.
+Some Jena Models and Graphs have already 
+processed <code>owl:imports</code> (e.g. a default
+<code>OntModel</code>),
+others have not (e.g. a default <code>Model</code>).
+For ease of use, the principle methods in the <code>Checker</code>
+class <code>add(Model)</code> and <code>add(Graph)</code>,
+inspect their argument to decide
+whether or not it already has had the 
+imports processed or not.
+This inspection is heuristic, but should work with
+Models created using the ModelFactory. 
+However, for production 
+code with custom Models or Graphs you should use
+either <code>addGraphAndImports</code> or
+<code>addRaw</code> depending on whether or not the
+custom graph is already imports closed or not.
+</p>
+<h3><a name="sample"></a>Sample code</h3>
 <pre>
     // set this boolean to true if error msgs should
     // indicate why the graph is not in Lite.
     boolean expectingLite = false;
-    Model baseModel;
+    
+    // m can be an OntModel
+    Model m = ...;
     Writer w; // for error messages.
     
-    ...
-    // construct imports closure 
-    OntModel m = ModelFactory.createOntologyModel(
-                   OntModelSpec.OWL_MEM,
-                   baseModel);
 
-   // Get a snytax checker
+    
+   // Get a syntax checker
    Checker chk = new Checker(expectingLite);
 
-   // Add one or more graphs.
-   chk.add(m.getGraph());
+   // Add one or more models or graphs.
+   chk.add(m);
+   ...
+   
    // get result.
    String subLang = chk.getSubLanguage();
    ...
@@ -120,64 +230,21 @@ then appropriate constructor arguments must be given.</p>
      }
    }
 </pre>
-<h2><a name="code-documentation"></a>In Lieu of Javadoc</h2>
-<p>
-The Javadoc has not been finished since the API has not been fully designed.
-This section sketches the current interface.
-<h3>Checker</h3>
-<p>
-<code>com.hp.hpl.jena.ontology.tidy.Checker</code>
-</p>
-<h4>Constructor</h4>
-<dl>
-<dt>
-<code>Checker(boolean expectingLite)</code></dt>
-<dd>If
-<code>expectingLite</code>
-is true then the checker will use an OWL Lite grammar and error messages will be generated for 
-constructs that are in OWL DL but not OWL Lite.
-However, if this is true then the checker cannot distinguish OWL DL from OWL Full.
-If false the checker can distinguish OWL Lite from OWL DL, but cannot justify itself.
-</dd>
-</dl>
-<h4>Methods</h4>
-<dl>
-<dt><code>void add(Graph g)</code></dt>
-<dd>Check this graph (and any others that are added)</dd>
-<dt><code>void load(String url)</code><dt>
-<dd>Add the imports closure of the RDF/XML document found at URL</dd>
-<dt><code>String getSubLanguage()</code></dt>
-<dd>
-Returns one of "Lite", "DL", "Full" or "DL or Full". The latter is only returned
-when the checker was constructed with the <code>expectingLite</code> flag as true.
-This should work incrementally (not tested). i.e. calls to <code>add(Graph)</code>
-and <code>getSubLanguage()</code> can be interleaved.</dd>
-</dd>
-<dt><code>Iterator getErrors()</code></dt>
-<dt><code>Iterator getProblems()</code></dt>
-<dd>Both these methods return an <code>Iterator</code> over <code>SyntaxProblem</code>'s.
-The second returns errors and warnings, the first just the errors.</dd>
-</dl>
-<h3>SyntaxProblem</h3>
-<p>Typically, use either the shortDescription or the longDescription method, and
-none of the others.</p>
-<p>
-<code>com.hp.hpl.jena.ontology.tidy.SyntaxProblem</code>
-</p>
-<h4>Methods</h4>
-<dl>
-<dt><code>String shortDescription()</code></dt>
-<dt><code>String longDescription()</code></dt>
-<dd>A description of the problem detected, often somewhat cryptic.</dd>
-<dt><code>RDFWriter setWriter(RDFWriter)</code></dt>
-<dd>Sets the RDFWriter used for creation of the <code>longDescription()</code>.
-Returns the previous value.</dd>
-<dt><code>EnhNode problemNode()</code></dt>
-<dt><code>Graph problemSubGraph()</code></dt>
-<dd>
-Helps identify the problem. At least one of these two is non-null.
-</dd>
-</dl>
 
+<h2><a name="StreamingChecker"></a>Streaming Checker</h2>
+<p>
+The <code>StreamingChecker</code>
+class is an alternative for users wishing to
+only use the OWL Syntax Checker, without using
+other Jena functionality.
+It is optimised for memory usage,
+and is very slightly slower than the <code>Checker</code>
+class.
+It is a streaming mode parser in that it does not
+remember all the triples from start to finish
+but intelligently discards those which have been
+fully analysed. 
+</p>
+ 
 </BODY>
 </HTML>
