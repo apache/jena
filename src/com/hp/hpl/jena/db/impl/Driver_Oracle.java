@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Driver_Oracle.java,v 1.5 2003-06-18 20:58:48 wkw Exp $
+  $Id: Driver_Oracle.java,v 1.6 2003-06-18 21:38:14 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.util.Log;
  *
  * Extends DriverRDB with Oracle-specific parameters.
  */
-public class Driver_Oracle extends DriverRDB {
+public abstract class Driver_Oracle extends DriverRDB {
 	
 	public int MAX_DB_IDENTIFIER_LENGTH = 30;
 	public int m_tablecounter;
