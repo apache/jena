@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 15:30:37 $
+ * Last modified on   $Date: 2003-08-19 12:44:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
  * of a DAML datatype. The instance is a resource whose <code>rdf:value</code> is a typed literal.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.8 2003-07-24 15:30:37 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.9 2003-08-19 12:44:30 ian_dickinson Exp $
  */
 public class DAMLDataInstanceImpl
     extends DAMLInstanceImpl
@@ -161,7 +161,7 @@ public class DAMLDataInstanceImpl
      * @param value The value to be encoded as a typed literal
      */
     public void setValue( Object value ) {
-        setPropertyValue( RDF.value, "", getModel().createTypedLiteral( value, null, getDatatype() ) );
+        setPropertyValue( RDF.value, "", getModel().createTypedLiteral( value, getDatatype() ) );
     }
 
 
