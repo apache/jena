@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.6 2003-09-25 11:22:24 der Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.7 2003-09-29 22:59:45 wkw Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -51,7 +51,11 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h3>Database and persistence</h3>
 <ul>
-  <li>no entries yet</li>
+  <li><a href="#db-0">Why do I get an exception when trying to create a new persistent model?</a></li>
+  <li><a href="#db-1">Why do I run out of memory when trying to list statements in a persistent 
+  model?</a></li>
+  <li><a href="#db-2">Has Jena2 persistence been ported to other database engines and platforms 
+  besides those officially supported?</a></li>
 </ul>
 <h3>XML serialisation (reading and writing)</h3>
 <ul>
@@ -156,7 +160,41 @@ Jena 2 &ndash; Frequently Asked Questions
   	<code>OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF, null );</code>
 	</p>
 <h3>Database and persistence</h3>
-<p>no entries yet</p>
+<p id="db-0"><strong>Q: Why do I get an exception when trying to create a new persistent model?</strong><br>
+  A: Assuming that your program uses correct methods to create the model (see 
+examples in the database <a href="../DB/howto.html">howto</a>), it may be that 
+your database files are corrupted. Jena2 does <i>not</i> do a good job in 
+checking the validity of the database. It makes a cursory check that some 
+required tables exist but does not check that the tables contain valid data. If 
+you suspect your database has been corrupted, you may invoke
+<code>cleanDB()</code> on a DBConnection object 
+prior to creating your model. This removes all Jena2 tables from a database. 
+Warning: this removes any other existing Jena2 models from the database so make sure 
+that this is what you want to do. </p>
+  <p id="db-1"><strong>Q: Why do I run out of memory when trying to list statements in a persistent 
+  model?</strong><br>
+  A: Jena2 uses the JDBC interface for accessing databases. The JDBC 
+  specification has no cursors. Consequently, when a query is processed by JDBC, 
+  the entire result set is returned from the database at once and the application program then iterates 
+  over the in-memory result set. If the result set is large, as is often the case 
+  when listing all statements of a large model, it may exceed the heap size of 
+  the Java virtual machine. If you suspect this is happening, you might try to 
+  increase the heap size of the Java virtual machine (<code>-vmargs 
+  -Xmx500M</code> for a 500 MB heap size). If this does not help, there is no 
+  other work-around and the program should be recoded.</p>
+<p id="db-2"><strong>Q: Has Jena2 persistence been ported to other database engines and platforms 
+  besides those officially supported?</strong><br>
+  A: The Jena team  supports Jena2 persistence on the databases and operating 
+systems listed in the <a href="../DB/index.html">Database Interface Release 
+Notes</a>. 
+Other users have had success porting Jena2 to other databases and platforms. 
+Jena2 has been ported to IBM's DB2 database. Contact
+<a href="mailto:zhabglj@us.ibm.com">Liang-Jie Zhang</a> for details. A port to 
+HSQLDB, a native-Java SQL database, has been done. Contact
+<a href="mailto:danils@home.se">Jan Danils</a> for details. On the Mac OS X 
+platform, Jena2 has been successfully run using MySQL. Contact
+<a href="mailto:jnachlin@nachlin.com">Jim Nachlin</a> for details.</p>
+
 <h3>XML serialisation (reading and writing)</h3>
 <p>no entries yet</p>
 <h3>RDQL and query processing</h3>
