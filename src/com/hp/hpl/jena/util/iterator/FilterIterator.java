@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterIterator.java,v 1.1.1.1 2002-12-19 19:21:14 bwm Exp $
+ * $Id: FilterIterator.java,v 1.2 2003-03-26 12:08:05 chris-dollin Exp $
  *
  */
 package com.hp.hpl.jena.util.iterator;
@@ -34,52 +34,55 @@ import java.util.NoSuchElementException;
 
 /** Creates a sub-Iterator by filtering.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:14 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-03-26 12:08:05 $'
  */
-public class FilterIterator extends ClosableIteratorImpl
+public class FilterIterator extends ClosableWrapper
 {
 	Filter f;
 	Object current;
-        boolean dead;
-/** Creates a sub-Iterator.
- * @param fl An object is included if it is accepted by this Filter.
- * @param e The parent Iterator.
- */        
+    boolean dead;
+
+    /** Creates a sub-Iterator.
+    * @param fl An object is included if it is accepted by this Filter.
+    * @param e The parent Iterator.
+    */        
 	public FilterIterator( Filter fl, Iterator e) {
 		super(e);
 		f = fl;
 		current = null;
-                dead = false;
+        dead = false;
 	}
-/** Are there any more acceptable objects.
- * @return true if there is another acceptable object.
- */        
+
+    /** Are there any more acceptable objects.
+    * @return true if there is another acceptable object.
+    */        
 	synchronized public boolean hasNext() {
 		if (current!=null)
 			return true;
-		while (  underlying.hasNext() ) {
-			current = underlying.next();
+		while (  iterator.hasNext() ) {
+			current = iterator.next();
 			if (f.accept(current))
 				return true;
 		}
 		current = null;
-                dead = true;
+        dead = true;
 		return false;
 	}
-/** remove's the member from the underlying <CODE>Iterator</CODE>; 
-   <CODE>hasNext()</CODE> may not be called between calls to 
+    
+    /** remove's the member from the underlying <CODE>Iterator</CODE>; 
+    <CODE>hasNext()</CODE> may not be called between calls to 
     <CODE>next()</CODE> and <CODE>remove()</CODE>.
- */        
-        synchronized public void remove() {
-            if ( current != null || dead )
-              throw new IllegalStateException(
-              "FilterIterator does not permit calls to hasNext between calls to next and remove.");
-
-            underlying.remove();
+    */        
+    synchronized public void remove() {
+        if ( current != null || dead )
+          throw new IllegalStateException(
+          "FilterIterator does not permit calls to hasNext between calls to next and remove.");
+        iterator.remove();
         }
-/** The next acceptable object in the iterator.
- * @return The next acceptable object.
- */        
+        
+    /** The next acceptable object in the iterator.
+    * @return The next acceptable object.
+    */        
 	synchronized public Object next() {
 		if (hasNext()) {
 			Object r = current;

@@ -1,28 +1,28 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ClosableIteratorImpl.java,v 1.2 2003-01-28 10:39:12 chris-dollin Exp $
+  $Id: ClosableIteratorImpl.java,v 1.3 2003-03-26 12:08:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
 import java.util.Iterator;
 /**
     @author jjchplb
+    OBSOLETE: use ClosableWrapper instead.
 */
 
-public class ClosableIteratorImpl extends NiceIterator implements ClosableIterator {
+class ClosableIteratorImpl extends NiceIterator implements ClosableIterator {
     final protected Iterator underlying;
-    public ClosableIteratorImpl(Iterator u) {
+    private ClosableIteratorImpl(Iterator u) {
     	underlying = u;
     }
 	/**
 	 * @see ClosableIterator#close()
 	 */
 	public void close() {
-		if (underlying instanceof ClosableIterator)
-		  ((ClosableIterator)underlying).close();
+		WrappedIterator.close( underlying );
 	}
-
+    
 	/**
 	 * @see Iterator#hasNext()
 	 */

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Map1Iterator.java,v 1.1.1.1 2002-12-19 19:21:16 bwm Exp $
+ * $Id: Map1Iterator.java,v 1.2 2003-03-26 12:08:05 chris-dollin Exp $
  *
  */
 
@@ -36,37 +36,36 @@ import java.util.Iterator;
 /**
  * Convert objects as they are iterated over.
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:16 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-03-26 12:08:05 $'
  */
 public class Map1Iterator extends NiceIterator implements ClosableIterator
 {
 	Map1 map;
-	Iterator enum;
+	Iterator underlying;
         /**
          * Construct a list of the converted.
          * @param m The conversion to apply.
          * @param theDamned An Iterator over the unconverted.
          */
-	public Map1Iterator( Map1 m, Iterator theDamned) {
-		enum = theDamned;
+	public Map1Iterator( Map1 m, Iterator iterator) {
+		underlying = iterator;
 		map = m;
 	}
 	public boolean hasNext() {
-			   return enum.hasNext();
+			   return underlying.hasNext();
 	}
 	public Object next() {
-		return map.map1(enum.next());
+		return map.map1(underlying.next());
 	}
     /**
      * <code>remove()</code> the unconverted object from the underlying Iterator.
      *
      */
     public void remove() {
-      enum.remove();
+      underlying.remove();
     }
     public void close() {
-    	if ( enum instanceof ClosableIterator )
-    	  ((ClosableIterator)enum).close();
+    	WrappedIterator.close( underlying );
     }
 
 }

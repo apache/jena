@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: WrappedIterator.java,v 1.1 2003-01-30 10:25:17 chris-dollin Exp $
+  $Id: WrappedIterator.java,v 1.2 2003-03-26 12:08:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -20,7 +20,7 @@ import java.util.*;
 public class WrappedIterator extends NiceIterator
     {
     /**
-        factory method for creating a wrapper arounf _it_. We reserve
+        factory method for creating a wrapper around _it_. We reserve
         the right to deliver the argument if it's already an extended iterator.
     */
     public static WrappedIterator create( Iterator it )
@@ -30,7 +30,7 @@ public class WrappedIterator extends NiceIterator
     private Iterator base;
     
     /** private constructor: remember the base iterator */
-    private WrappedIterator( Iterator base )
+    protected WrappedIterator( Iterator base )
         { this.base = base; }
         
     /** hasNext: defer to the base iterator */
@@ -47,11 +47,18 @@ public class WrappedIterator extends NiceIterator
         
     /** close: defer to the base, iff it is closable */
     public void close()
-        { if (base instanceof ClosableIterator) ((ClosableIterator) base).close(); }
+        { close( base ); }
+
+    /**
+        if _it_ is a Closableiterator, close it. Abstracts away from
+        tests scattered through the code.
+    */
+    public static void close( Iterator it )
+        { if (it instanceof ClosableIterator) ((ClosableIterator) it).close(); }
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

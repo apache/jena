@@ -33,8 +33,7 @@ public class BaseExtendedIterator extends NiceIterator implements ExtendedIterat
      * @see ClosableIterator#close()
      */
     public void close() {
-        if (underlying instanceof ClosableIterator)
-          ((ClosableIterator)underlying).close();
+        WrappedIterator.close( underlying );
     }
 
     /**
