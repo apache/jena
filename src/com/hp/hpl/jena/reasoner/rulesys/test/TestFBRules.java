@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.23 2003-08-22 16:31:25 der Exp $
+ * $Id: TestFBRules.java,v 1.24 2003-08-24 21:16:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,7 +13,9 @@ import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.util.ModelLoader;
@@ -33,7 +35,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-08-22 16:31:25 $
+ * @version $Revision: 1.24 $ on $Date: 2003-08-24 21:16:23 $
  */
 public class TestFBRules extends TestCase {
     
@@ -76,7 +78,7 @@ public class TestFBRules extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestFBRules.class ); 
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestFBRules( "testBackchain1" ));
+//        suite.addTest(new TestFBRules( "testNumericFunctors" ));
 //        return suite;
     }  
 
@@ -579,6 +581,198 @@ public class TestFBRules extends TestCase {
         assertEquals(valueType, C1);
         
     }
+    
+    /**
+     * Test numeric functors
+     */
+    public void testNumericFunctors() {
+        String rules =  
+        "[r1: (?x p f(a, ?x)) -> (?x q f(?x)) ]" +
+        "[r1: (?x p f(a, 0)) -> (?x s res) ]" +
+                       "";
+        List ruleList = Rule.parseRules(rules);
+        Graph data = new GraphMem();
+        data.add(new Triple(n1, p, Util.makeIntNode(2)) );
+        data.add(new Triple(n2, p, Functor.makeFunctorNode("f", new Node[] {
+                                        a, Util.makeIntNode(0)  })));
+        data.add(new Triple(n3, p, Functor.makeFunctorNode("f", new Node[] {
+               a, Node.createLiteral(new LiteralLabel("0", "", XSDDatatype.XSDnonNegativeInteger)) } )));
+        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
+            new Triple[] {
+                new Triple(n2, s, res),
+                new Triple(n3, s, res),
+            });
+    }
+    
+    /**
+     * Test the builtins themselves
+     */
+    public void testBuiltins2() {
+        // Numeric comparisions
+        Node lt = Node.createURI("lt");
+        Node gt = Node.createURI("gt");
+        Node le = Node.createURI("le");
+        Node ge = Node.createURI("ge");
+        Node eq = Node.createURI("eq");
+        Node ne = Node.createURI("ne");
+        String rules =  
+        "[r1: (?x q ?vx), (?y q ?vy), lessThan(?vx, ?vy) -> (?x lt ?y)]" +
+        "[r2: (?x q ?vx), (?y q ?vy), greaterThan(?vx, ?vy) -> (?x gt ?y)]" +
+        "[r3: (?x q ?vx), (?y q ?vy), le(?vx, ?vy) -> (?x le ?y)]" +
+        "[r4: (?x q ?vx), (?y q ?vy), ge(?vx, ?vy) -> (?x ge ?y)]" +
+        "[r5: (?x q ?vx), (?y q ?vy), notEqual(?vx, ?vy) -> (?x ne ?y)]" +
+        "[r6: (?x q ?vx), (?y q ?vy), equal(?vx, ?vy) -> (?x eq ?y)]" +
+                       "";
+        List ruleList = Rule.parseRules(rules);
+        Graph data = new GraphMem();
+        data.add(new Triple(n1, q, Util.makeIntNode(2)) );
+        data.add(new Triple(n2, q, Util.makeIntNode(2)) );
+        data.add(new Triple(n3, q, Util.makeIntNode(3)) );
+        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
+            new Triple[] {
+                new Triple(n1, eq, n2),
+                new Triple(n1, le, n2),
+                new Triple(n1, ge, n2),
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n3),
+            new Triple[] {
+                new Triple(n1, ne, n3),
+                new Triple(n1, lt, n3),
+                new Triple(n1, le, n3),
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n3, null, n1),
+            new Triple[] {
+                new Triple(n3, ne, n1),
+                new Triple(n3, gt, n1),
+                new Triple(n3, ge, n1),
+            });
+        
+        // Floating point comparisons
+        data = new GraphMem();
+        data.add(new Triple(n1, q, Util.makeIntNode(2)) );
+        data.add(new Triple(n2, q, Util.makeDoubleNode(2.2)) );
+        data.add(new Triple(n3, q, Util.makeDoubleNode(2.3)) );
+        infgraph = createReasoner(ruleList).bind(data);
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
+            new Triple[] {
+                new Triple(n1, ne, n2),
+                new Triple(n1, le, n2),
+                new Triple(n1, lt, n2),
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n2, null, n3),
+            new Triple[] {
+                new Triple(n2, ne, n3),
+                new Triple(n2, le, n3),
+                new Triple(n2, lt, n3),
+            });
+            
+        // Arithmetic            
+        rules =  
+        "[r1: (?x p ?a), (?x q ?b), sum(?a, ?b, ?c) -> (?x s ?c)]" +
+        "[r2: (?x p ?a), (?x q ?b), product(?a, ?b, ?c) -> (?x t ?c)]" +
+                       "";
+        ruleList = Rule.parseRules(rules);
+        data = new GraphMem();
+        data.add(new Triple(n1, p, Util.makeIntNode(3)) );
+        data.add(new Triple(n1, q, Util.makeIntNode(5)) );
+        infgraph = createReasoner(ruleList).bind(data);
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+            new Triple[] {
+                new Triple(n1, p, Util.makeIntNode(3)),
+                new Triple(n1, q, Util.makeIntNode(5)),
+                new Triple(n1, s, Util.makeIntNode(8)),
+                new Triple(n1, t, Util.makeIntNode(15)),
+            });
+         
+        // Note type checking   
+        rules =  
+        "[r1: (?x p ?y), isLiteral(?y) -> (?x s 'literal')]" +
+        "[r1: (?x p ?y), notLiteral(?y) -> (?x s 'notLiteral')]" +
+        "[r1: (?x p ?y), isBNode(?y) -> (?x s 'bNode')]" +
+        "[r1: (?x p ?y), notBNode(?y) -> (?x s 'notBNode')]" +
+                       "";
+        ruleList = Rule.parseRules(rules);
+        data = new GraphMem();
+        data.add(new Triple(n1, p, Util.makeIntNode(3)) );
+        data.add(new Triple(n2, p, res));
+        data.add(new Triple(n3, p, Node.createAnon()));
+        infgraph = createReasoner(ruleList).bind(data);
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
+            new Triple[] {
+                new Triple(n1, s, Node.createLiteral("literal", "", null)),
+                new Triple(n1, s, Node.createLiteral("notBNode", "", null)),
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n2, s, null),
+            new Triple[] {
+                new Triple(n2, s, Node.createLiteral("notLiteral", "", null)),
+                new Triple(n2, s, Node.createLiteral("notBNode", "", null)),
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n3, s, null),
+            new Triple[] {
+                new Triple(n3, s, Node.createLiteral("notLiteral", "", null)),
+                new Triple(n3, s, Node.createLiteral("bNode", "", null)),
+            });
+         
+        // Data type checking
+        rules =  
+        "[r1: (?x p ?y), isDType(?y, rdfs:Literal) -> (?x s 'isLiteral')]" +
+        "[r1: (?x p ?y), isDType(?y, http://www.w3.org/2001/XMLSchema#int) -> (?x s 'isXSDInt')]" +
+        "[r1: (?x p ?y), isDType(?y, http://www.w3.org/2001/XMLSchema#string) -> (?x s 'isXSDString')]" +
+        "[r1: (?x p ?y), notDType(?y, rdfs:Literal) -> (?x s 'notLiteral')]" +
+        "[r1: (?x p ?y), notDType(?y, http://www.w3.org/2001/XMLSchema#int) -> (?x s 'notXSDInt')]" +
+        "[r1: (?x p ?y), notDType(?y, http://www.w3.org/2001/XMLSchema#string) -> (?x s 'notXSDString')]" +
+                       "";
+        ruleList = Rule.parseRules(rules);
+        data = new GraphMem();
+        data.add(new Triple(n1, p, Util.makeIntNode(3)) );
+        data.add(new Triple(n2, p, Node.createLiteral("foo", "", null)) );
+        data.add(new Triple(n3, p, Node.createLiteral("foo", "", XSDDatatype.XSDstring)) );
+        data.add(new Triple(n4, p, n4));
+        infgraph = createReasoner(ruleList).bind(data);
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
+            new Triple[] {
+                new Triple(n1, s, Node.createLiteral("isLiteral", "", null)),
+                new Triple(n1, s, Node.createLiteral("isXSDInt", "", null)),
+                new Triple(n1, s, Node.createLiteral("notXSDString", "", null)),
+
+                new Triple(n2, s, Node.createLiteral("isLiteral", "", null)),
+                new Triple(n2, s, Node.createLiteral("notXSDInt", "", null)),
+                new Triple(n2, s, Node.createLiteral("notXSDString", "", null)),
+
+                new Triple(n3, s, Node.createLiteral("isLiteral", "", null)),
+                new Triple(n3, s, Node.createLiteral("notXSDInt", "", null)),
+                new Triple(n3, s, Node.createLiteral("isXSDString", "", null)),
+
+                new Triple(n4, s, Node.createLiteral("notLiteral", "", null)),
+                new Triple(n4, s, Node.createLiteral("notXSDInt", "", null)),
+                new Triple(n4, s, Node.createLiteral("notXSDString", "", null)),
+            });
+            
+        // Literal counting
+        rules = "[r1: (?x p ?y), countLiteralValues(?x, p, ?c) -> (?x s ?c)]";
+        ruleList = Rule.parseRules(rules);
+        data = new GraphMem();
+        data.add(new Triple(n1, p, Util.makeIntNode(2)) );
+        data.add(new Triple(n1, p, Util.makeIntNode(2)) );
+        data.add(new Triple(n1, p, Util.makeIntNode(3)) );
+        data.add(new Triple(n1, p, n2) );
+        infgraph = createReasoner(ruleList).bind(data);
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
+            new Triple[] {
+                new Triple(n1, s, Util.makeIntNode(2)),
+            });
+            
+    }
+         
     
     /**
      * Helper - returns the single object value for an s/p pair, asserts an error
