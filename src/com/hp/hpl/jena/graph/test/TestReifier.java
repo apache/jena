@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.6 2003-04-04 14:00:39 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.7 2003-04-07 15:29:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -70,40 +70,27 @@ public class TestReifier extends GraphTestBase
         g.add( new Triple( S, Reifier.subject, S) );
         assertContains( "xxx", "SSS rdf:subject SSS", r.getHiddenTriples() );
         }
-        
-//    public void testInsertTriples()
-//        {
-//        Graph G = graphWith( "" );
-//        Reifier R = G.getReifier();
-//        Node N = R.reify( triple( "x R y" ) );
-//        assertTrue( "auto-allocated node must be blank", N.isBlank() );
-//        assertTrue( "has one triple", graphWith( "x R y" ).isIsomorphicWith(R.getReifiedTriples()) );
-//        Node M = R.reify( triple( "p S q" ) );
-//        assertTrue( "auto-allocated node must be blank", M.isBlank() );
-//        assertTrue( "has two triples", graphWith( "x R y; p S q" ).isIsomorphicWith(R.getReifiedTriples()) );
-//        assertTrue( "old graph still empty", G.isIsomorphicWith(graphWith( "" ) ) );
-//        }
-        
-//    public void testRetrieveTriplesByNode()
-//        {
-//        Graph G = graphWith( "" );
-//        Reifier R = G.getReifier();
-//        Node N = R.reify( triple( "x R y" ) );
-//        Triple T = R.getTriple( N );
-//        assertEquals( "gets correct triple", triple( "x R y" ), T );
-//        Node M = R.reify( triple( "p S q" ) );
-//        assertDiffer( "different triples need different tags", N, M );
-//        assertEquals( "gets correct triple", triple( "p S q" ), R.getTriple( M ) );
-//    /* */
-//    	assertTrue( "node is known bound", R.hasTriple( M ) );
-//    	assertTrue( "node is known bound", R.hasTriple( N ) );
-//    	assertFalse( "node is known unbound", R.hasTriple( Node.ANY ) );
-//    	assertFalse( "node is known unbound", R.hasTriple( Node.createURI( "any:thing" ) ) );
-//    /* */
+               
+    public void testRetrieveTriplesByNode()
+        {
+        Graph G = graphWith( "" );
+        Reifier R = G.getReifier();
+        Node N = Node.createAnon(), M = Node.createAnon();
+        R.reifyAs( N, triple( "x R y" ) );
+        assertEquals( "gets correct triple", triple( "x R y" ), R.getTriple( N ) );
+        R.reifyAs( M, triple( "p S q" ) );
+        assertDiffer( "the anon nodes must be distinct", N, M );
+        assertEquals( "gets correct triple", triple( "p S q" ), R.getTriple( M ) );
+    /* */
+    	assertTrue( "node is known bound", R.hasTriple( M ) );
+    	assertTrue( "node is known bound", R.hasTriple( N ) );
+    	assertFalse( "node is known unbound", R.hasTriple( Node.ANY ) );
+    	assertFalse( "node is known unbound", R.hasTriple( Node.createURI( "any:thing" ) ) );
+    /* */
 //    	Graph GR = R.getReifiedTriples();
 //    	assertTrue( "reified triples", graphWith( "x R y; p S q" ).isIsomorphicWith(GR) );
 //    	assertTrue( "untouched graph", graphWith( "" ).isIsomorphicWith(G) );
-//        }
+        }
         
     public void testRetrieveTriplesByTriple()
         {
