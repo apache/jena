@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.14 2003-10-15 09:22:36 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.15 2003-10-15 10:56:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -33,6 +33,11 @@ public class PatternStage extends Stage
         this.guards = makeGuards( map, constraints, triples.length );
         }
                 
+    /**
+        Answer an array of sets exactly as long as the argument array of Triples.
+        The i'th element of the answer is the set of all variables that have been 
+        matched when the i'th triple has been matched.
+    */
     protected Set [] makeBoundVariables( Triple [] triples )
         {
         int length = triples.length;
@@ -43,6 +48,19 @@ public class PatternStage extends Stage
         return result;
         }
     
+    /**
+        Answer an array of ExpressionSets exactly as long as the supplied length.
+        The i'th ExpressionSet contains the prepared [against <code>map</code>]
+        expressions that can be evaluated as soon as the i'th triple has been matched.
+        By "can be evaluated as soon as" we mean that all its variables are bound.
+        The original ExpressionSet is updated by removing those elements that can
+        be so evaluated.
+        
+     	@param map the Mapping to prepare Expressions against
+     	@param constraints the set of constraint expressions to plant
+     	@param length the number of evaluation slots available
+     	@return the array of prepared ExpressionSets
+    */
     protected ExpressionSet [] makeGuards( Mapping map, ExpressionSet constraints, int length )
         {        
     	ExpressionSet [] result = new ExpressionSet [length];
@@ -53,13 +71,22 @@ public class PatternStage extends Stage
         return result;
         }
     
+    /**
+        Find the earliest triple index where this expression can be evaluated, add it
+        to the appropriate expression set, and remove it from the original via the
+        iterator.
+    */
     protected void plantWhereFullyBound( Expression e, Iterator it, Mapping map, ExpressionSet [] es )
         {
         for (int i = 0; i < boundVariables.length; i += 1)
             if (canEval( e, i )) { es[i].add( e.prepare( map ) ); it.remove(); return; }
         }
     
-    private boolean canEval( Expression e, int index )
+    /**
+        Answer true iff this Expression can be evaluated after the index'th triple
+        has been matched, ie, all the variables of the expression have been bound.
+    */
+    protected boolean canEval( Expression e, int index )
         { return boundVariables[index].containsAll( Expression.Util.variablesOf( e ) ); }
 
     protected Pattern [] compile( Mapping map, Triple [] triples )

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Util.java,v 1.1 2003-10-15 09:22:35 chris-dollin Exp $
+  $Id: Util.java,v 1.2 2003-10-15 10:56:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,16 +9,20 @@ package com.hp.hpl.jena.graph.query;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 /**
-	Util
+	Util: some utility code used by graph query that doesn't seem to belong 
+    anywhere else that it can be put.
 
 	@author kers
 */
 public class Util 
     {
-
+	/**
+         Answer a new set which is the union of the two argument sets.
+	*/
 	public static Set union( Set x, Set y )
     	{
     	Set result = new HashSet( x );
@@ -26,15 +30,21 @@ public class Util
     	return result;
     	}
 
+    /**
+    	Answer a new set which contains exactly the names of the variable[ node]s
+        in the triple.
+    */
 	public static Set variablesOf( Triple t )
     	{
     	Set result = new HashSet();
-    	if (t.getSubject().isVariable()) result.add( t.getSubject().getName() );
-    	if (t.getPredicate().isVariable()) result.add( t.getPredicate().getName() );
-    	if (t.getObject().isVariable()) result.add( t.getObject().getName() );
+        addIfVariable( result, t.getSubject() );
+        addIfVariable( result, t.getPredicate() );
+        addIfVariable( result, t.getObject() );
     	return result;
     	}
-
+    
+    private static void addIfVariable( Set result, Node n )
+        { if (n.isVariable()) result.add( n.getName() ); }
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.7 2003-10-15 09:23:01 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.8 2003-10-15 10:56:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -117,6 +117,9 @@ public class ExampleCreate
             {
             public boolean evalBool( VariableValues vv )
                 { return !L.eval( vv ).equals( R.eval( vv ) ); }
+            
+            public String getFun()
+                { return "http://jena.hpl.hp.com/constraints/NE"; }
                 
             public Valuator prepare( VariableIndexes vi )
                 {
@@ -135,6 +138,9 @@ public class ExampleCreate
             {
             public boolean evalBool( VariableValues vv )
                 { return L.eval( vv ).equals( R.eval( vv ) ); }
+            
+            public String getFun()
+                { return "http://jena.hpl.hp.com/constraints/EQ"; }
                 
             public Valuator prepare( VariableIndexes vi )
                 {
@@ -151,6 +157,9 @@ public class ExampleCreate
         {
         return new Dyadic( x, y ) 
             {
+            public String getFun()
+                { return "http://jena.hpl.hp.com/constraints/MATCHES"; }
+            
             private String asString( Object n )
                 {
                 if (n instanceof Node_Literal) return ((Node) n).getLiteral().getLexicalForm();
