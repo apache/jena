@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.28 2004-03-05 15:52:36 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.29 2004-07-05 13:59:54 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -27,13 +27,13 @@ import org.apache.commons.logging.LogFactory;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2004-03-05 15:52:36 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.29 $' Date='$Date: 2004-07-05 13:59:54 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
 	static private boolean showProgress = false;
 	static private boolean errorDetail = false;
-	static private int firstTest = 5;
+	static private int firstTest = 4;
 	static private int lastTest = 9;
 	static private int repetitionsJ = 6;
     
@@ -537,5 +537,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.28 2004-03-05 15:52:36 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.29 2004-07-05 13:59:54 jeremy_carroll Exp $
  */
