@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JenaBadCharLiteralException.java,v 1.1 2003-06-16 09:16:59 chris-dollin Exp $
+  $Id: BadBooleanException.java,v 1.1 2003-07-21 10:32:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -9,15 +9,15 @@ package com.hp.hpl.jena.shared;
 import com.hp.hpl.jena.rdf.model.RDFException;
 
 /**
-    Exception to throw when a literal required to be a single character isn't.
+    Exception to throw when a string cannot be converted to a Boolean
+    value.
  	@author kers
 */
-public class JenaBadCharLiteralException extends RDFException
+public class BadBooleanException extends RDFException
     {
-    public JenaBadCharLiteralException( String spelling )
-        { super( LITERALNOTCHAR, spelling ); }
+    public BadBooleanException( String spelling )
+        { super( INVALIDBOOLEANFORMAT, spelling ); }
     }
-
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

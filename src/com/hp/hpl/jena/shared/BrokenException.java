@@ -1,22 +1,25 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JenaBadURIException.java,v 1.1 2003-06-12 15:10:30 chris-dollin Exp $
+  $Id: BrokenException.java,v 1.1 2003-07-21 10:32:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
 
 /**
-    A Jena exception for malformed URIs. (This one is an unchecked
-    exception, so we don't litter our code with try-catch blocks or throws
-    declarations.)
-    
+    An exception to throw if an internal error is detected.
  	@author kers
 */
-public class JenaBadURIException extends JenaException
+public class BrokenException extends JenaException
     {
-    public JenaBadURIException( String message, Throwable e )
-        { super( message, e ); }
+    public BrokenException( String message )
+            { super( message ); }
+
+    public BrokenException( Throwable cause )
+        { super( cause ); }
+
+    public BrokenException( String message, Throwable cause )
+        { super( message, cause ); }
     }
 
 

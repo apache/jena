@@ -42,7 +42,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-06-16 09:16:58 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-07-21 10:32:46 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
 //    private Node node;
@@ -211,7 +211,7 @@ public class LiteralImpl extends EnhNode implements Literal {
             } else if (value.equals("false")) {
                 return false;
             } else {
-                throw new JenaBadBooleanException( value.toString() );
+                throw new BadBooleanException( value.toString() );
             }
         } else {
             // typed literal
@@ -260,7 +260,7 @@ public class LiteralImpl extends EnhNode implements Literal {
             if (getString().length()==1) {
                 return (getString().charAt(0));
             } else {
-                throw new JenaBadCharLiteralException( getString() );
+                throw new BadCharLiteralException( getString() );
             }
         } else {
             Object value = getValue();

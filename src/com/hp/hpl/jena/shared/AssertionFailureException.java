@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JenaBadBooleanException.java,v 1.1 2003-06-16 09:16:59 chris-dollin Exp $
+  $Id: AssertionFailureException.java,v 1.1 2003-07-21 10:32:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -9,15 +9,16 @@ package com.hp.hpl.jena.shared;
 import com.hp.hpl.jena.rdf.model.RDFException;
 
 /**
-    Exception to throw when a string cannot be converted to a Boolean
-    value.
+    Exception to throw when an assertion fails. Probably obsolete in 
+    Java's with the assert statement ...
  	@author kers
 */
-public class JenaBadBooleanException extends RDFException
+public class AssertionFailureException extends RDFException
     {
-    public JenaBadBooleanException( String spelling )
-        { super( INVALIDBOOLEANFORMAT, spelling ); }
+    public AssertionFailureException( String message )
+        { super( ASSERTIONFAILURE, message ); }
     }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

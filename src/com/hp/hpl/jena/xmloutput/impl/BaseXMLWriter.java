@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.18 2003-06-19 08:47:08 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.19 2003-07-21 10:32:46 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2003-06-19 08:47:08 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2003-07-21 10:32:46 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -240,7 +240,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				try {
 					new URI(uri);
 				} catch (MalformedURIException e) {
-					throw new JenaBadURIException( "", e );
+					throw new BadURIException( "", e );
 				}
 			if (prefix.length() > 0) {
 				rslt.append(":" + prefix);
@@ -330,7 +330,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				"Internal error: unexpected QName URI: <"
 					+ uri
 					+ ">.  Fixing up with j.cook.up code.",
-				new JenaBrokenException( "unexpected QName URI " + uri ));
+				new BrokenException( "unexpected QName URI " + uri ));
 			cookUp = true;
 		} else if (prefix.length() == 0) {
 			if (type == ATTR || type == FASTATTR)
@@ -363,7 +363,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 					break;
 				case FAST :
 					logger.fatal("Unreachable code - reached.");
-					throw new JenaBrokenException( "cookup reached final FAST" );
+					throw new BrokenException( "cookup reached final FAST" );
 			}
 		}
 		return prefix + ":" + local;
@@ -467,7 +467,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				writeBody(model, pw, xmlBase, true);
 			}
 		} catch (MalformedURIException e) {
-			throw new JenaBadURIException( "", e);
+			throw new BadURIException( "", e);
 		}
 		pw.flush();
 	}
@@ -590,7 +590,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 					showXmlDeclaration = Boolean.FALSE;
 				else
 					// Also overloading the error condition.
-					throw new JenaBadBooleanException( propValueStr );
+					throw new BadBooleanException( propValueStr );
 			}
 			return oldValue;
 		} else if (propName.equalsIgnoreCase("xmlbase")) {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBReifier.java,v 1.6 2003-06-13 13:06:02 chris-dollin Exp $
+  $Id: DBReifier.java,v 1.7 2003-07-21 10:32:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -47,7 +47,7 @@ public class DBReifier implements Reifier
 		
 		// For now, just take the first specializedGraphReifier
 		if (m_reifiers.size() != 1)
-			throw new JenaBrokenException("Internal error - DBReifier requires exactly one SpecializedGraphReifier");
+			throw new BrokenException("Internal error - DBReifier requires exactly one SpecializedGraphReifier");
 		m_reifier = (SpecializedGraphReifier) m_reifiers.get(0);
 	}
             

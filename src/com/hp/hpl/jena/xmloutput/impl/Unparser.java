@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.19 2003-07-18 12:50:51 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.20 2003-07-21 10:32:46 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.xerces.util.XMLChar;
 
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2003-07-18 12:50:51 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2003-07-21 10:32:46 $'
 
  */
 class Unparser {
@@ -196,7 +196,7 @@ class Unparser {
 				u.setFragment(null);
 				localName = u.getURIString();
 			} catch (MalformedURIException e) {
-				throw new JenaBadURIException( "", e );
+				throw new BadURIException( "", e );
 			}
 	}
 	/** Should be called exactly once for each Unparser.
@@ -1114,7 +1114,7 @@ class Unparser {
 	 */
 	private void error(String msg) {
 		JenaException e =
-			new JenaBrokenException( "Internal error in Unparser: " + msg );
+			new BrokenException( "Internal error in Unparser: " + msg );
 		this.prettyWriter.fatalError(e);
 		throw e; // Just in case.
 	}
@@ -1138,7 +1138,7 @@ class Unparser {
 	private String getNameSpace(Resource r) {
 		if (r.isAnon()) {
 			logger.error( "Internal error - Unparser.getNameSpace; giving up" );
-			throw new JenaBrokenException( "Internal error: getNameSpace(bNode)" );
+			throw new BrokenException( "Internal error: getNameSpace(bNode)" );
 		} else {
 			String uri = r.getURI();
 			int split = Util.splitNamespace(uri);
@@ -1182,7 +1182,7 @@ class Unparser {
 	private String getLocalName(Resource r)  {
 		if (r.isAnon()) {
 			logger.error( "Internal error - giving up - Unparser.getLocalName" );
-			throw new JenaBrokenException( "Internal error: getLocalName(bNode)" );
+			throw new BrokenException( "Internal error: getLocalName(bNode)" );
 		} else {
 			String uri = r.getURI();
 			int split = Util.splitNamespace(uri);

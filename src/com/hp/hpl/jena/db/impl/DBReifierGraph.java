@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -146,7 +146,7 @@ public class DBReifierGraph implements Graph {
 	}
     
     public GraphEventManager getEventManager()
-        { throw new JenaBrokenException( "DB reifiers do not yet implement getEventManager" ); }
+        { throw new BrokenException( "DB reifiers do not yet implement getEventManager" ); }
 	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#dependsOn(com.hp.hpl.jena.graph.Graph)

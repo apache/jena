@@ -42,7 +42,7 @@ import com.hp.hpl.jena.shared.*;
  *  A base class on which the other containers are built.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-07-18 12:50:47 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-07-21 10:32:46 $'
  */
 public class ContainerImpl extends ResourceImpl
                            implements Container, ContainerI {
@@ -181,7 +181,7 @@ public class ContainerImpl extends ResourceImpl
             getModel().remove(last);
         }
         if (size() != (size -1)) 
-            throw new JenaAssertionFailureException( "container size" ); 
+            throw new AssertionFailureException( "container size" ); 
         return this;
     }
     
