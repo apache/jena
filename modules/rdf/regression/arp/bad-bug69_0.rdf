@@ -1,0 +1,18 @@
+<!--
+  Failing (not RDF document) Test case for bug #69.
+  i.e. hp internal bugzilla #69
+  
+  rdf:li no longer allowed in typed node position.
+  
+  WARN_LI_AS_TYPE
+  
+  (even in strict mode).
+  
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+  <rdf:li >
+    <rdf:value> foo </rdf:value>
+  </rdf:li>
+   
+</rdf:RDF>

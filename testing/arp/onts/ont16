@@ -1,0 +1,291 @@
+<!-- This ontology is for describing trust relationships -->
+
+<rdf:RDF
+	xmlns:rdf    = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  	xmlns:rdfs   = "http://www.w3.org/2000/01/rdf-schema#"
+  	xmlns:daml   = "http://www.daml.org/2001/03/daml+oil#" 
+  	xmlns:person = "http://daml.umbc.edu/ontologies/person-ont#"
+  	xmlns        = "http://daml.umbc.edu/ontologies/trust-ont#"
+>
+
+<daml:Ontology rdf:about="">
+ 	<daml:versionInfo>$Revision: 1.1.1.1 $</daml:versionInfo>
+        <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil" /> 
+	<daml:imports rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns" />
+  	<daml:imports rdf:resource="http://www.w3.org/2000/01/rdf-schema" />
+  	<daml:imports rdf:resource="http://daml.umbc.edu/ontologies/person-ont" />
+  	<daml:imports rdf:resource="http://daml.umbc.edu/ontologies/trust-ont" />
+</daml:Ontology>
+
+<daml:Class rdf:ID="String">  
+	<daml:equivalentTo>
+		http://www.daml.org/2001/03/daml+oil#Literal
+        </daml:equivalentTo> 
+</daml:Class>
+
+
+
+<!-- This is the root of our onotology -->
+
+<rdfs:Class rdf:ID="Root">
+	<rdfs:label>Root</rdfs:label>
+  	<rdfs:comment>
+    		This is the root of our ontology
+	</rdfs:comment>
+</rdfs:Class>
+
+
+
+<!-- There are 3 subclasses, State, Entity and Action -->
+
+<rdfs:Class rdf:ID="State">
+	<rdfs:subClassOf rdf:resource="#Root"/>
+	<rdfs:label>State</rdfs:label>
+  	<rdfs:comment>
+    		This subclass contains information about the
+		the state of the system
+  	</rdfs:comment>
+</rdfs:Class>
+
+
+<rdfs:Class rdf:ID="Entity">
+	<rdfs:subClassOf rdf:resource="#Root"/>
+	<rdfs:label>Object</rdfs:label>
+  	<rdfs:comment>
+    		This subclass contains information about objects 
+		that are acted upon by actions
+  	</rdfs:comment>
+</rdfs:Class>
+
+
+<rdfs:Class rdf:ID="Action">
+	<rdfs:subClassOf rdf:resource="#Root"/>
+	<rdfs:label>Action</rdfs:label>
+  	<rdfs:comment>
+    		This subclass contains information about actions that 
+		can be performed in the system
+  	</rdfs:comment>
+</rdfs:Class>
+
+
+
+<!-- Properties of the State -->
+
+<rdf:Property rdf:ID="StartTime">
+	<rdfs:range rdf:resource="#State"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="EndTime">
+	<rdfs:range rdf:resource="#State"/>
+</rdf:Property>
+
+
+
+<!-- SubClass of State -->
+
+<rdfs:Class rdf:ID="Propositions">
+	<rdfs:subClassOf rdf:resource="#State"/>
+	<rdfs:label>Proposistions</rdfs:label>
+</rdfs:Class>
+
+
+
+<!-- Properties of Proposition -->
+
+<rdf:Property rdf:ID="From">
+	<rdfs:range rdf:resource="#Proposition"/>
+	<rdfs:domain rdf:resource="#Agent"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="To">
+	<rdfs:range rdf:resource="#Proposition"/>
+	<rdfs:domain rdf:resource="#Agent"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Redelegatable">
+	<rdfs:range rdf:resource="#Proposition"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="ActionPerformed">
+	<rdfs:range rdf:resource="#Proposition"/>
+	<rdfs:domain rdf:resource="#Action"/>
+</rdf:Property>
+
+
+
+<!-- SubClass of Propositions -->
+
+<rdfs:Class rdf:ID="Permission">
+	<rdfs:subClassOf rdf:resource="#Proposition"/>
+	<rdfs:label>Permission</rdfs:label>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Obligation">
+	<rdfs:subClassOf rdf:resource="#Proposition"/>
+	<rdfs:label>Obligation</rdfs:label>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Entitlement">
+	<rdfs:subClassOf rdf:resource="#State"/>
+	<rdfs:label>Entitlement</rdfs:label>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Prohibtion">
+	<rdfs:subClassOf rdf:resource="#Proposition"/>
+	<rdfs:label>Prohibition</rdfs:label>
+</rdfs:Class>
+
+
+
+<!-- Properties for Obligations -->
+<!-- The Obligations class is not complete, we are still working on it -->
+<rdf:Property rdf:ID="Penalty">
+	<rdfs:range rdf:resource="#Obligation"/>
+	<rdfs:domain rdf:resource="#String"/>
+</rdf:Property>
+
+
+
+<!-- Properties of Entity -->
+
+<rdf:Property rdf:ID="Name">
+	<rdfs:range rdf:resource="#Entity"/>
+	<rdfs:domain rdf:resource="#String"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="URI">
+	<rdfs:range rdf:resource="#Entity"/>
+	<rdfs:domain rdf:resource="#String "/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Affiliation">
+	<rdfs:range rdf:resource="#Entity"/>
+	<rdfs:domain rdf:resource="#String "/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Owner">
+	<rdfs:range rdf:resource="#Entity"/>
+	<rdfs:domain rdf:resource="#String "/>
+</rdf:Property>
+
+
+<rdf:Property rdf:ID="Type">
+	<rdfs:range rdf:resource="#Entity"/>
+	<rdfs:domain rdf:resource="#String "/>
+</rdf:Property>
+
+
+
+<!-- SubClass of Entity is Agent and Object -->
+
+<rdfs:Class rdf:ID="Agent">
+	<rdfs:subClassOf rdf:resource="#Entity"/>
+	<rdfs:label>Agent</rdfs:label>
+  	<rdfs:comment>
+    		This subclass contains information about the
+		agents in the system
+        </rdfs:comment>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Object">
+	<rdfs:subClassOf rdf:resource="#Entity"/>
+	<rdfs:label> Object </rdfs:label>
+  	<rdfs:comment>
+    		This subclass contains information about the
+		objects in the system
+  	</rdfs:comment>
+</rdfs:Class>
+
+
+
+<!-- Properties of Actions -->
+
+<rdf:Property rdf:ID="Name">
+	<rdfs:range rdf:resource="#Action"/>
+	<rdfs:domain rdf:resource="#String"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Description">
+	<rdfs:range rdf:resource="#Action"/>
+	<rdfs:domain rdf:resource="#String "/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Actor">
+	<rdfs:range rdf:resource="#Action"/>
+	<rdfs:domain rdf:resource="#Agent"/>
+</rdf:Property>
+
+<!-- list of objects the action works on -->
+<rdf:Property rdf:ID="Objects">
+	<rdfs:range rdf:resource="#Action"/>
+	<rdfs:domain rdf:resource="#Object"/>	
+</rdf:Property>
+
+<rdf:Property rdf:ID="PreConditions">
+	<rdfs:range rdf:resource="#Action"/>
+	<rdfs:domain rdf:resource="#String"/>	
+</rdf:Property>
+
+<rdf:Property rdf:ID="PostConditions">
+	<rdfs:range rdf:resource="#Action"/>
+	<rdfs:domain rdf:resource="#String"/>	
+</rdf:Property>
+
+
+
+<!-- SubClass of Action; SpeechAct -->
+
+<rdfs:Class rdf:ID="SpeechAct">
+	<rdfs:subClassOf rdf:resource="#Action"/>
+	<rdfs:label>SpeechAct</rdfs:label>
+</rdfs:Class>
+
+
+
+<!-- Properties of SpeechAct -->
+
+<rdf:Property rdf:ID="From">
+	<rdfs:range rdf:resource="#SpeechAct"/>
+	<rdfs:domain rdf:resource="#Agent"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="To">
+	<rdfs:range rdf:resource="#SpeechAct"/>
+	<rdfs:domain rdf:resource="#Agent"/>
+</rdf:Property>
+
+
+
+<!-- SubClass of Speech Acts; Delegation and Request -->
+
+<rdfs:Class rdf:ID="Delegation">
+	<rdfs:subClassOf rdf:resource="#SpeechAct"/>
+	<rdfs:label>Delegation</rdfs:label>
+</rdfs:Class>
+
+<rdfs:Class rdf:ID="Request">
+	<rdfs:subClassOf rdf:resource="#SpeechAct"/>
+	<rdfs:label>Request</rdfs:label>
+</rdfs:Class>
+
+
+
+<!-- Properties of Delegation -->
+
+<rdf:Property rdf:ID="Proposition">
+	<rdfs:range rdf:resource="#Delegation"/>
+	<rdfs:domain rdf:resource="#Proposition"/>
+</rdf:Property>
+
+
+
+<!-- Properties of Request -->
+
+<rdf:Property rdf:ID="Action">
+	<rdfs:range rdf:resource="#Request"/>
+	<rdfs:domain rdf:resource="#Action"/>
+</rdf:Property>
+
+
+</rdf:RDF>
+

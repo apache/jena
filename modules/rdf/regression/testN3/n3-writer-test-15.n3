@@ -1,0 +1,23 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "DAML list : but attached property".
+
+# This is the list ("1" "2" "3" "4").
+
+_:a1 <http://www.daml.org/2001/03/daml+oil#first> "1" .
+_:a1 <http://www.daml.org/2001/03/daml+oil#rest> _:a2 .
+
+_:a2 <http://www.daml.org/2001/03/daml+oil#first> "2" .
+_:a2 <http://www.daml.org/2001/03/daml+oil#rest> _:a3 .
+
+_:a3 <http://www.daml.org/2001/03/daml+oil#first> "3" .
+_:a3 <http://www.daml.org/2001/03/daml+oil#rest> _:a4 .
+
+_:a4 <http://www.daml.org/2001/03/daml+oil#first> "4" .
+_:a4 <http://www.daml.org/2001/03/daml+oil#rest> () .
+
+# This adds a property to the middle element.
+# Tail ("3" "4") should be pretty printed.
+
+_:a2 a:prop "value" .

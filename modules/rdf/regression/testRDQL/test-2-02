@@ -1,0 +1,5 @@
+// Test 2-02 : 2 triple patterns
+
+SELECT ?a
+SOURCE <model1.nt>
+WHERE  (?x, ?y, ?z), (?x, ?y, ?a)

@@ -1,0 +1,425 @@
+<?xml version = '1.0' standalone='no'?>
+<!-- DAML is RDF -->	
+<rdf:RDF 
+    xmlns:rdf ='http://www.w3.org/1999/02/22-rdf-syntax-ns#' 
+    xmlns:daml='http://www.daml.org/2001/03/daml+oil#' 
+>
+
+<!-- **** Email ****  -->	
+    <daml:Class rdf:ID = 'Email' > 
+        <daml:subClassOf rdf:resource = '#Contact'/> 
+        <daml:label>Email</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'userName'> 
+        <daml:label>userName</daml:label>
+        <daml:domain rdf:resource= '#Email'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'domain'> 
+        <daml:label>domain</daml:label>
+        <daml:domain rdf:resource= '#Email'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+
+<!-- **** Phone ****  -->	
+    <daml:Class rdf:ID = 'Phone' > 
+        <daml:subClassOf rdf:resource = '#Contact'/> 
+        <daml:label>Phone</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'code'> 
+        <daml:label>code</daml:label>
+    <comment> 
+        Country, Area or other required access codes.
+    </comment> 
+        <daml:domain rdf:resource= '#Phone'/> 
+        <daml:range  rdf:resource= 'Strng'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'number'> 
+        <daml:label>number</daml:label>
+        <daml:domain rdf:resource= '#Phone'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'exstension'> 
+        <daml:label>exstension</daml:label>
+        <daml:domain rdf:resource= '#Phone'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'type'> 
+        <daml:label>type</daml:label>
+    <comment> 
+        listOf{oneOf {MOBILE, FIXED} VOICE,FAX,MODEM}
+    </comment> 
+        <daml:domain rdf:resource= '#Phone'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+
+<!-- **** Address ****  -->	
+    <daml:Class rdf:ID = 'Address' > 
+        <daml:subClassOf rdf:resource = '#Contact'/> 
+        <daml:label>Address</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'street'> 
+        <daml:label>street</daml:label>
+        <daml:domain rdf:resource= '#Address'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'city'> 
+        <daml:label>city</daml:label>
+        <daml:domain rdf:resource= '#Address'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'state'> 
+        <daml:label>state</daml:label>
+        <daml:domain rdf:resource= '#Address'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'country'> 
+        <daml:label>country</daml:label>
+        <daml:domain rdf:resource= '#Address'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'code'> 
+        <daml:label>code</daml:label>
+        <daml:domain rdf:resource= '#Address'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+
+<!-- **** Contact ****  -->	
+    <daml:Class rdf:ID = 'Contact' > 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#contact-who'/>
+            <daml:toClass rdf:resource='#Person'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>Contact</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'locationType'> 
+        <daml:label>locationType</daml:label>
+    <comment> 
+        one of {HOME, WORK}
+    </comment> 
+        <daml:domain rdf:resource= '#Contact'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:ObjectProperty rdf:ID = 'contact-who'> 
+        <daml:label>contact-who</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>1</daml:maxCardinality>
+    </daml:ObjectProperty> 
+
+<!-- **** offSite ****  -->	
+    <daml:Class rdf:ID = 'offSite' > 
+        <daml:subClassOf rdf:resource = '#Link'/> 
+        <daml:label>offSite</daml:label>
+    </daml:Class> 
+
+<!-- **** onSite ****  -->	
+    <daml:Class rdf:ID = 'onSite' > 
+        <daml:subClassOf rdf:resource = '#Link'/> 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#link-onSite'/>
+            <daml:toClass rdf:resource='#File'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>onSite</daml:label>
+    </daml:Class> 
+    <daml:ObjectProperty rdf:ID = 'link-onSite'> 
+        <daml:label>link-onSite</daml:label>
+    </daml:ObjectProperty> 
+
+<!-- **** onPage ****  -->	
+    <daml:Class rdf:ID = 'onPage' > 
+        <daml:subClassOf rdf:resource = '#Link'/> 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#link-onPage'/>
+            <daml:toClass rdf:resource='#HTMLElement'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>onPage</daml:label>
+    </daml:Class> 
+    <daml:ObjectProperty rdf:ID = 'link-onPage'> 
+        <daml:label>link-onPage</daml:label>
+    </daml:ObjectProperty> 
+
+<!-- **** Image ****  -->	
+    <daml:Class rdf:ID = 'Image' > 
+        <daml:subClassOf rdf:resource = '#HTMLElement'/> 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#contains-file'/>
+            <daml:toClass rdf:resource='#ImageFile'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>Image</daml:label>
+    </daml:Class> 
+    <daml:ObjectProperty rdf:ID = 'contains-file'> 
+        <daml:label>contains-file</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>1</daml:maxCardinality>
+    </daml:ObjectProperty> 
+
+<!-- **** Text ****  -->	
+    <daml:Class rdf:ID = 'Text' > 
+        <daml:subClassOf rdf:resource = '#HTMLElement'/> 
+        <daml:label>Text</daml:label>
+    </daml:Class> 
+
+<!-- **** Form ****  -->	
+    <daml:Class rdf:ID = 'Form' > 
+        <daml:subClassOf rdf:resource = '#HTMLElement'/> 
+        <daml:label>Form</daml:label>
+    </daml:Class> 
+
+<!-- **** Table ****  -->	
+    <daml:Class rdf:ID = 'Table' > 
+        <daml:subClassOf rdf:resource = '#HTMLElement'/> 
+        <daml:label>Table</daml:label>
+    </daml:Class> 
+
+<!-- **** HTMLElement ****  -->	
+    <daml:Class rdf:ID = 'HTMLElement' > 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#page-component'/>
+            <daml:toClass rdf:resource='#Page'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>HTMLElement</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'subject'> 
+        <daml:label>subject</daml:label>
+        <daml:domain rdf:resource= '#HTMLElement'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'localURI'> 
+        <daml:label>localURI</daml:label>
+        <daml:domain rdf:resource= '#HTMLElement'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:ObjectProperty rdf:ID = 'page-component'> 
+        <daml:label>page-component</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>1</daml:maxCardinality>
+    </daml:ObjectProperty> 
+
+<!-- **** ImageFile ****  -->	
+    <daml:Class rdf:ID = 'ImageFile' > 
+        <daml:subClassOf rdf:resource = '#File'/> 
+        <daml:label>ImageFile</daml:label>
+    </daml:Class> 
+
+<!-- **** Document ****  -->	
+    <daml:Class rdf:ID = 'Document' > 
+        <daml:subClassOf rdf:resource = '#File'/> 
+        <daml:label>Document</daml:label>
+    </daml:Class> 
+
+<!-- **** StyleSheet ****  -->	
+    <daml:Class rdf:ID = 'StyleSheet' > 
+        <daml:subClassOf rdf:resource = '#File'/> 
+        <daml:label>StyleSheet</daml:label>
+    </daml:Class> 
+
+<!-- **** Ontology ****  -->	
+    <daml:Class rdf:ID = 'Ontology' > 
+        <daml:subClassOf rdf:resource = '#File'/> 
+        <daml:label>Ontology</daml:label>
+    </daml:Class> 
+
+<!-- **** File ****  -->	
+    <daml:Class rdf:ID = 'File' > 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#file-author'/>
+            <daml:toClass rdf:resource='#Person'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#site-component'/>
+            <daml:toClass rdf:resource='#Site'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>File</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'localURI'> 
+        <daml:label>localURI</daml:label>
+        <daml:domain rdf:resource= '#File'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:ObjectProperty rdf:ID = 'file-author'> 
+        <daml:label>file-author</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>1</daml:maxCardinality>
+    </daml:ObjectProperty> 
+    <daml:ObjectProperty rdf:ID = 'site-component'> 
+        <daml:label>site-component</daml:label>
+        <daml:minCardinality>0</daml:minCardinality>
+        <daml:maxCardinality>n</daml:maxCardinality>
+    </daml:ObjectProperty> 
+
+<!-- **** Site ****  -->	
+    <daml:Class rdf:ID = 'Site' > 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#entryPoint-page'/>
+            <daml:toClass rdf:resource='#Page'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#site-pointOfContact'/>
+            <daml:toClass rdf:resource='#Person'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#home-page'/>
+            <daml:toClass rdf:resource='#Page'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#site-content'/>
+            <daml:toClass rdf:resource='#File'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>Site</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'URI'> 
+        <daml:label>URI</daml:label>
+        <daml:domain rdf:resource= '#Site'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:ObjectProperty rdf:ID = 'entryPoint-page'> 
+        <daml:label>entryPoint-page</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>n</daml:maxCardinality>
+    </daml:ObjectProperty> 
+    <daml:ObjectProperty rdf:ID = 'site-pointOfContact'> 
+        <daml:label>site-pointOfContact</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>n</daml:maxCardinality>
+    </daml:ObjectProperty> 
+    <daml:ObjectProperty rdf:ID = 'home-page'> 
+        <daml:label>home-page</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>1</daml:maxCardinality>
+    </daml:ObjectProperty> 
+    <daml:ObjectProperty rdf:ID = 'site-content'> 
+        <daml:label>site-content</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>n</daml:maxCardinality>
+    </daml:ObjectProperty> 
+
+<!-- **** Page ****  -->	
+    <daml:Class rdf:ID = 'Page' > 
+        <daml:subClassOf rdf:resource = '#File'/> 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#page-content'/>
+            <daml:toClass rdf:resource='#HTMLElement'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>Page</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'usage'> 
+        <daml:label>usage</daml:label>
+    <comment> 
+        one of {NAVIGATION.TOC, NAVIGATION.INDEX, NAVIGATION, ENTRY.HOME, ENTRY, BANNER.ADVERT, 
+        BANNER.DECOR, BANNER}
+    </comment> 
+        <daml:domain rdf:resource= '#Page'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:ObjectProperty rdf:ID = 'page-content'> 
+        <daml:label>page-content</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>1</daml:maxCardinality>
+    </daml:ObjectProperty> 
+
+<!-- **** Link ****  -->	
+    <daml:Class rdf:ID = 'Link' > 
+        <daml:subClassOf rdf:resource = '#HTMLElement'/> 
+        <daml:label>Link</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'URL'> 
+        <daml:label>URL</daml:label>
+        <daml:domain rdf:resource= '#Link'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'Anchor'> 
+        <daml:label>Anchor</daml:label>
+        <daml:domain rdf:resource= '#Link'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'File'> 
+        <daml:label>File</daml:label>
+        <daml:domain rdf:resource= '#Link'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'Domain'> 
+        <daml:label>Domain</daml:label>
+        <daml:domain rdf:resource= '#Link'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+
+<!-- **** Person ****  -->	
+    <daml:Class rdf:ID = 'Person' > 
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#contact-info'/>
+            <daml:toClass rdf:resource='#Contact'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#contact-how'/>
+            <daml:toClass rdf:resource='#Contact'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:subClassOf>
+          <daml:Restriction>
+            <daml:onProperty rdf:resource='#home-page'/>
+            <daml:toClass rdf:resource='#Page'/>
+          </daml:Restriction>
+        </daml:subClassOf>
+        <daml:label>Person</daml:label>
+    </daml:Class> 
+    <daml:DataTypeProperty rdf:ID = 'firstName'> 
+        <daml:label>firstName</daml:label>
+        <daml:domain rdf:resource= '#Person'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'lastName'> 
+        <daml:label>lastName</daml:label>
+        <daml:domain rdf:resource= '#Person'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:DataTypeProperty rdf:ID = 'middleName'> 
+        <daml:label>middleName</daml:label>
+        <daml:domain rdf:resource= '#Person'/> 
+        <daml:range  rdf:resource= 'String'/> 
+    </daml:DataTypeProperty> 
+    <daml:ObjectProperty rdf:ID = 'contact-info'> 
+        <daml:label>contact-info</daml:label>
+        <daml:minCardinality>0</daml:minCardinality>
+        <daml:maxCardinality>n</daml:maxCardinality>
+    </daml:ObjectProperty> 
+    <daml:ObjectProperty rdf:ID = 'contact-how'> 
+        <daml:label>contact-how</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>n</daml:maxCardinality>
+    </daml:ObjectProperty> 
+    <daml:ObjectProperty rdf:ID = 'home-page'> 
+        <daml:label>home-page</daml:label>
+        <daml:minCardinality>1</daml:minCardinality>
+        <daml:maxCardinality>1</daml:maxCardinality>
+    </daml:ObjectProperty> 
+</rdf:RDF>
+<!--  ********** 
+      End   file:D:\LH_Documents\ABC\DAML-ont\WebSiteOntology_26Jul2001.daml
+      **********  -->	

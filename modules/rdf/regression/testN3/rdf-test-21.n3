@@ -1,0 +1,16 @@
+# Datatypes and lang tags
+
+@prefix : <#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:a :p "no datatype" .
+
+## Datatype
+:a :p "11"^^xsd:integer .
+:a :p "12"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+## ## Lang tags
+## :a :q "UK-English"@uk-en .
+## 
+## ## Both
+## :a :q "10"@uk-en^^xsd:integer .

@@ -1,0 +1,67 @@
+// $ANTLR : "c:/home/afs/Projects/Jena/src/com/hp/hpl/jena/n3/n3.g" -> "N3AntlrParser.java"$
+
+package com.hp.hpl.jena.n3 ;
+import java.io.* ;
+import antlr.TokenStreamRecognitionException ;
+
+public interface N3AntlrParserTokenTypes {
+	int EOF = 1;
+	int NULL_TREE_LOOKAHEAD = 3;
+	int ANON = 4;
+	int FORMULA = 5;
+	int QNAME = 6;
+	int KEYWORD = 7;
+	int NAME_OP = 8;
+	int KW_THIS = 9;
+	int KW_OF = 10;
+	int KW_HAS = 11;
+	int KW_A = 12;
+	int KW_IS = 13;
+	int STRING = 14;
+	int LITERAL = 15;
+	int SEP = 16;
+	int AT_PREFIX = 17;
+	int SEMI = 18;
+	int COMMA = 19;
+	int PATH = 20;
+	int RPATH = 21;
+	int EQUAL = 22;
+	int ARROW_R = 23;
+	int ARROW_L = 24;
+	int ARROW_P_L = 25;
+	int ARROW_P_R = 26;
+	int LBRACK = 27;
+	int RBRACK = 28;
+	int LCURLY = 29;
+	int RCURLY = 30;
+	int LPAREN = 31;
+	int RPAREN = 32;
+	int DATA_T = 33;
+	int URIREF = 34;
+	int UVAR = 35;
+	int QNAME_OR_KEYWORD_OR_NAME_OP = 36;
+	int URI_OR_IMPLIES = 37;
+	int URICHAR = 38;
+	int AT = 39;
+	int NAME_IT = 40;
+	int QUESTION = 41;
+	int ARROW_MEANS = 42;
+	int COLON = 43;
+	int SL_COMMENT = 44;
+	int NL1 = 45;
+	int NL2 = 46;
+	int NL3 = 47;
+	int NL = 48;
+	int WS = 49;
+	int ALPHA = 50;
+	int ALPHANUMERIC = 51;
+	int NON_ANC = 52;
+	int NSNAME = 53;
+	int LNAME = 54;
+	int STRING1 = 55;
+	int STRING2 = 56;
+	int QUOTE3S = 57;
+	int QUOTE3D = 58;
+	int ESCAPE = 59;
+	int ESC_CHAR = 60;
+}

@@ -1,0 +1,229 @@
+<!-- $Id: test-cases.daml,v 1.1.1.1 2002-12-19 19:12:32 bwm Exp $ -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns     ="http://dickinson-i-4/daml/tests/test-cases.daml#"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Id: test-cases.daml,v 1.1.1.1 2002-12-19 19:12:32 bwm Exp $</daml:versionInfo>
+  <rdfs:comment>
+    An ontology that will allow me to test the rdf:type code in the DAML API
+  </rdfs:comment>
+</daml:Ontology>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#Animal">
+  <!-- rdfs:subClassOf rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing" / -->
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#Vertebrate">
+  <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Animal" />
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#Mammal">
+  <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Vertebrate" />
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#Dog">
+  <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Mammal" />
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#Pet">
+  <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Companion" />
+</daml:Class>
+
+<Dog rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#fido" />
+<Pet rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#fido" />
+
+<!-- a circular definition ... allowed in DAML, but not in RDFS -->
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#A">
+  <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#B" />
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#B">
+  <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#A" />
+</daml:Class>
+
+<A rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#ab" />
+
+<daml:UnambiguousProperty rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#queen-of" />
+
+<!-- A set of equivalence relations -->
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#X" />
+
+<X rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#x0">
+   <daml:equivalentTo rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#x1" />
+</X>
+
+<X rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#x1">
+</X>
+
+<X rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#x2">
+   <daml:equivalentTo rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#x1" />
+   <daml:equivalentTo rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#x3" />
+</X>
+
+<X rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#x3">
+</X>
+
+<X rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#x4">
+</X>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#C0">
+    <daml:sameClassAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#C1" />
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#C1">
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#C2">
+    <daml:sameClassAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#C3" />
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#C3">
+    <daml:sameClassAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#C1" />
+    <daml:sameClassAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#C2" />
+</daml:Class>
+
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#p0">
+    <daml:samePropertyAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#p1" />
+</daml:Property>
+
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#p1">
+</daml:Property>
+
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#p2">
+    <daml:samePropertyAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#p3" />
+</daml:Property>
+
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#p3">
+    <daml:samePropertyAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#p1" />
+</daml:Property>
+
+<!-- Test that daml aliases are recognised as their rdf equivalents -->
+<rdf:Description rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#CDaml">
+    <daml:type rdf:resource="http://www.daml.org/2001/03/daml+oil#Class" />
+</rdf:Description>
+
+<!-- Test that two equivalent classes are recognised in determining types -->
+<!-- d1 should match 'd1 rdf:type D0.'                                    -->
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#D0">
+    <daml:sameClassAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#D1" />
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#D1">
+</daml:Class>
+
+<D1 rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#d1" />
+
+<!-- Now create a statement 'd2 pd0 d1', where pd0 and pd1 are equiv, so -->
+<!-- that 'd2 pd1 d1' should also be true                                -->
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#pd0" />
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#pd1">
+    <daml:samePropertyAs rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#pd0" />
+</daml:Property>
+
+<D1 rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#d2">
+    <pd0 rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#d1" />
+</D1>
+
+<!-- testing sub-property relationships for user-defined properties        -->
+<!-- 'd2 pd3 d1' implies that 'd2 pd2 d1' since pd2 is a super-prop of pd3 -->
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#pd2" />
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#pd3">
+    <daml:subPropertyOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#pd2" />
+</daml:Property>
+
+<D1 rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#d2">
+    <pd3 rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#d1" />
+</D1>
+
+<!-- test that daml:subClassOf is processed as rdfs:subClassOf -->
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#SubClassBug0">
+</daml:Class>
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#SubClassBug1">
+    <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#SubClassBug0" />
+</daml:Class>
+
+<!-- test cases for determining the defined properties of a class -->
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp0">
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp1">
+    <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp0" />
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp2">
+    <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp1" />
+</daml:Class>
+
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#prop0">
+    <daml:domain rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp0" />
+</daml:Property>
+
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#prop2">
+    <daml:domain rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#DefProp2" />
+</daml:Property>
+
+<!-- Bug reported by Thorsten Liebig -->
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#tl_x" />
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#tl_y" />
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#tl_one">
+     <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#tl_x" />
+     <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#tl_y" />
+</daml:Class>
+
+<!-- Check that getAll(false) on subClassOf is being interpreted correctly -->
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#subClassCheck1" />
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#subClassCheck2">
+    <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#subClassCheck1" />
+</daml:Class>
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#subClassCheck3">
+    <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#subClassCheck2" />
+</daml:Class>
+
+<!-- Test turning on and off equivalence processing - see above for defn of x1 -->
+<daml:Property rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#q" />
+<X rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#qX">
+    <q rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#x1" />
+</X>
+
+<!-- Bug report by Andrei S. Lopatenko [andrei@derpi.tuwien.ac.at] -->
+<!-- superclasses of class not respecting daml:subClassOf -->
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#Person" />
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#TallThing" />
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#Researcher">
+   <daml:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Person"/>
+   <rdfs:subClassOf rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#TallThing"/>
+</daml:Class>
+
+<!-- Bug report by Thorsten Liebig -->
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#TL_Class1"/>
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#TL_Class2"/>
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#TL_Class3"/>
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#TL_Class4"/>
+
+<daml:ObjectProperty rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#TL_PropertyTest">
+   <rdfs:domain rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Class1"/>
+   <rdfs:range rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Class2"/>
+   <daml:domain rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Class3"/>
+   <daml:range rdf:resource="http://dickinson-i-4/daml/tests/test-cases.daml#Class4"/>
+</daml:ObjectProperty>
+
+<!-- bug report by Wesley Bille -->
+<!-- note rdfs:Class, rather than daml:Class -->
+<rdfs:Class rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#HumanBody">
+    <daml:unionOf rdf:parseType="daml:collection">
+        <daml:Thing rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#ObjectOne"/>
+        <daml:Thing rdf:about="http://dickinson-i-4/daml/tests/test-cases.daml#ObjectTwo"/>
+    </daml:unionOf>
+</rdfs:Class>
+
+
+</rdf:RDF>

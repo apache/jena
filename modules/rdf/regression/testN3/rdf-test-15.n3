@@ -1,0 +1,6 @@
+# Forward paths
+@prefix : <#>.
+
+:x!:y :p "3" .
+
+:a!:b!:c :q1 "3" ; :q2 "4" , "5" .

@@ -1,0 +1,198 @@
+<!-- CVS $Id: daml+oil-ex.daml,v 1.1.1.1 2002-12-19 19:12:34 bwm Exp $ -->
+<!-- Note: this is just http://www.daml.org/2000/12/daml+oil-ex.daml, modified  -->
+<!-- to make all names absolute with rdf:about rather than relative with rdf:ID -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2000/12/daml+oil#"
+  xmlns     ="http://www.daml.org/2000/12/daml+oil-ex#"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Id: daml+oil-ex.daml,v 1.1.1.1 2002-12-19 19:12:34 bwm Exp $</daml:versionInfo>
+  <rdfs:comment>An example ontology</rdfs:comment>
+  <!--daml:imports rdf:resource="http://dickinson-i-4.hpl.hp.com/daml/daml+oil.daml"/-->
+  <daml:imports rdf:resource="file:modules/rdf/regression/testDAML/daml_oil_2000_12/daml+oil.daml"/>
+  <!--daml:imports rdf:resource="http://www.daml.org/2000/12/daml+oil"/-->
+  <daml:imports rdf:resource="file:modules/rdf/regression/testDAML/daml_oil_2000_12/daml-local-ex.daml" />
+</daml:Ontology>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Animal">
+  <rdfs:label>Animal</rdfs:label>
+  <rdfs:comment>
+    This class of animals is illustrative of a number of ontological idioms.
+  </rdfs:comment>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Male">
+  <rdfs:subClassOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Animal"/>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Female">
+  <rdfs:subClassOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Animal"/>
+  <daml:disjointWith rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Male"/>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Man">
+  <rdfs:subClassOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Person"/>
+  <rdfs:subClassOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Male"/>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Woman">
+  <rdfs:subClassOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Person"/>
+  <rdfs:subClassOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Female"/>
+</rdfs:Class>
+
+<rdf:Property rdf:about="http://www.daml.org/2000/12/daml+oil-ex#hasParent">
+  <rdfs:domain rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Animal"/>
+  <rdfs:range rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Animal"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2000/12/daml+oil-ex#hasFather">
+  <rdfs:subPropertyOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasParent"/>
+  <rdfs:range rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Male"/>
+</rdf:Property>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Person">
+  <rdfs:subClassOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Animal"/>
+  <rdfs:subClassOf>
+    <daml:Restriction>
+      <daml:onProperty rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasParent"/>
+      <daml:toClass rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Person"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+      <daml:onProperty rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasFather"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Animal">
+  <rdfs:comment>
+    Animals have exactly two parents, ie:
+    If x is an animal, then it has exactly 2 parents
+    (but it is NOT the case that anything that has 2 parents is an animal).
+  </rdfs:comment>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="2">
+      <daml:onProperty rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasParent"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Person">
+  <rdfs:subClassOf>
+    <daml:Restriction daml:maxcardinality="1">
+      <daml:onProperty rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasSpouse"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Person">
+  <rdfs:subClassOf>
+    <daml:Restriction daml:maxcardinalityQ="1">
+      <daml:onProperty rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasOccupation"/>
+      <daml:hasClassQ rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#FullTimeOccupation"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</rdfs:Class>
+
+<daml:UniqueProperty rdf:about="http://www.daml.org/2000/12/daml+oil-ex#hasMother">
+  <rdfs:subPropertyOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasParent"/>
+  <rdfs:range rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Female"/>
+</daml:UniqueProperty>
+
+<rdf:Property rdf:about="http://www.daml.org/2000/12/daml+oil-ex#hasChild">
+  <daml:inverseOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasParent"/>
+</rdf:Property>
+
+<daml:TransitiveProperty rdf:about="http://www.daml.org/2000/12/daml+oil-ex#hasAncestor">
+  <rdfs:label>hasAncestor</rdfs:label>
+</daml:TransitiveProperty>
+
+<daml:TransitiveProperty rdf:about="http://www.daml.org/2000/12/daml+oil-ex#descendant"/>
+
+<rdf:Property rdf:about="http://www.daml.org/2000/12/daml+oil-ex#hasMom">
+  <daml:samePropertyAs rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasMother"/>
+</rdf:Property>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Car">
+  <rdfs:comment>no car is a person</rdfs:comment>
+  <rdfs:subClassOf>
+    <rdfs:Class>
+      <daml:complementOf rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Person"/>
+    </rdfs:Class>
+  </rdfs:subClassOf>
+</rdfs:Class>
+
+<!-- @@CAVEAT: daml:collection is an extension of RDF 1.0 syntax;
+     don't expect existing tools to support it.
+     See http://www.daml.org/2000/12/reference.html#collection for details.
+-->
+
+<daml:Disjoint>
+  <daml:equivalentTo rdf:parseType="daml:collection">
+    <rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Car"/>
+    <rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Person"/>
+  </daml:equivalentTo>
+</daml:Disjoint>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Person">
+  <rdfs:comment>every person is a man or a woman</rdfs:comment>
+  <daml:disjointUnionOf rdf:parseType="daml:collection">
+    <rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Man"/>
+    <rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Woman"/>
+  </daml:disjointUnionOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#TallMan">
+  <daml:intersectionOf rdf:parseType="daml:collection">
+    <rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#TallThing"/>
+    <rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Man"/>
+  </daml:intersectionOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#MarriedPerson">
+  <daml:intersectionOf rdf:parseType="daml:collection">
+    <rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Person"/>
+    <daml:Restriction daml:cardinality="1">
+      <daml:onProperty rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasSpouse"/>
+    </daml:Restriction>
+  </daml:intersectionOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#HumanBeing">
+  <daml:sameClassAs rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Person"/>
+</rdfs:Class>
+
+<Person rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Adam">
+  <rdfs:label>Adam</rdfs:label>
+  <rdfs:comment>Adam is a person.</rdfs:comment>
+</Person>
+
+<rdf:Property rdf:about="http://www.daml.org/2000/12/daml+oil-ex#hasHeight">
+  <rdfs:range rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#Height"/>
+</rdf:Property>
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#Height">
+  <daml:oneOf rdf:parseType="daml:collection">
+    <Height rdf:about="http://www.daml.org/2000/12/daml+oil-ex#short"/>
+    <Height rdf:about="http://www.daml.org/2000/12/daml+oil-ex#medium"/>
+    <Height rdf:about="http://www.daml.org/2000/12/daml+oil-ex#tall"/>
+  </daml:oneOf>
+</rdfs:Class>
+
+<!-- TallThing is EXACTLY the class of things whose hasHeight is tall -->
+
+<rdfs:Class rdf:about="http://www.daml.org/2000/12/daml+oil-ex#TallThing">
+  <daml:sameClassAs>
+    <daml:Restriction>
+      <daml:onProperty rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#hasHeight"/>
+      <daml:hasValue rdf:resource="http://www.daml.org/2000/12/daml+oil-ex#tall"/>
+    </daml:Restriction>
+  </daml:sameClassAs>
+</rdfs:Class>
+
+</rdf:RDF>

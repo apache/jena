@@ -1,0 +1,10 @@
+# cwm: Tests/rdf-test-04.n3 => Tests/rdf-result-04.nt
+    
+    _:a_ga     <http://one.net/ns#prop1> "anon1" .
+    
+    _:a_ga     <http://one.net/ns#prop2> "anon2" .
+    
+    _:a_ga     <http://one.net/ns#prop3> _:a_gb .
+    
+    _:a_ga     <http://one.net/ns#prop4> _:a_gb .
+    

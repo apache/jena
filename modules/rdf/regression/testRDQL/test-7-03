@@ -1,0 +1,7 @@
+// Test-7-03 : Predicate and Subject 
+// Should return no matches 
+// Model7 has anon subject resources. NB anon properties are illegal (currently).
+
+SELECT  ?x, ?y, ?a
+FROM <model7.nt>
+WHERE (?x, ?y, ?z), (?y, ?a, ?b)

@@ -1,0 +1,146 @@
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns     ="http://www.daml.org/2001/03/daml+oil#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  >
+
+<Ontology about="">
+  <VersionInfo>v 1.0 10/10/2000</VersionInfo>
+  <comment>An example ontology to describe projects</comment>
+  <imports resource="http://www.daml.org/2001/13/daml+oil"/>
+</Ontology>
+
+<Class ID="Agency" />
+
+<Class ID="Program" />
+
+<Class ID="Organization" />
+
+<Class ID="Project" />
+
+<Class ID="Researcher" />
+
+<Class ID="Article" />
+
+<Class ID="Presentation" />
+
+<Class ID="Software" />
+
+<Class ID="WebDocument" />
+
+<Class ID="DocumentType">
+  <oneOf parseType="daml:collection">
+    <DocumentType ID="PDF" />
+    <DocumentType ID="PS" />
+    <DocumentType ID="Doc" />
+    <DocumentType ID="HTML" />
+    <DocumentType ID="PPT" />
+    <DocumentType ID="Executable" />
+  </oneOf>
+</Class>
+
+<Property ID="isFundedBy">
+  <domain resource="#Program" />
+  <range  resource="#Agency" />
+</Property>
+
+<UniqueProperty ID="inProgram">
+  <domain resource="#Project" />
+  <range resource="#Program" />
+</UniqueProperty>
+
+<UniqueProperty ID="inOrganization">
+  <domain resource="#Project" />
+  <domain resource="#Researcher" />
+  <range  resource="#Organization" />
+</UniqueProperty>
+
+<Property ID="inProject">
+  <domain resource="#Researcher" />
+  <domain resource="#Article" />
+  <domain resource="#Software" />
+  <domain resource="#Presentation" />
+  <range  resource="#Project" />
+</Property>
+
+<Property ID="isPrincipalInvestigator">
+  <domain resource="#Researcher" />
+  <range  resource="#Project" />
+  <subproperty resource="#inProject"/>
+</Property>
+
+<Property ID="wasWrittenBy">
+  <domain resource="#Article" />
+  <range  resource="#Researcher" />
+</Property>
+
+<UniqueProperty ID="hasType">
+  <domain resource="#WebDocument" />
+  <range  resource="#DocumentType" />
+</UniqueProperty>
+
+<Property ID="hasDocument">
+  <domain resource="#Article" />
+  <domain resource="#Software" />
+  <domain resource="#Presentation" />
+  <range  resource="#WebDocument" />
+</Property>
+
+<Property ID="hasAbstract">
+  <domain resource="#Article" />
+  <range  resource="#WebDocument" />
+</Property>
+
+<Property ID="hasWebPage">
+  <range  resource="#WebDocument" />
+</Property>
+
+<UniqueProperty ID="hasHomePage">
+  <range       resource="#WebDocument" />
+  <subproperty resource="#hasWebPage" />
+</UniqueProperty>
+
+<!--  I do not know how to indicate elemental types like strings, dates, numbers, etc-->
+<UniqueProperty ID="hasTitle">
+  <domain resource="#Presentation" />
+  <domain resource="#Article" />
+  <range  resource="String" />
+</UniqueProperty>
+
+<UniqueProperty ID="wasPublishedIn">
+  <domain resource="#Article" />
+  <range  resource="String" />
+</UniqueProperty>
+
+<UniqueProperty ID="wasPresentedIn">
+  <domain resource="#Presentation" />
+  <range  resource="String" />
+</UniqueProperty>
+
+<UniqueProperty ID="hasVersionNumber">
+  <domain resource="#Software" />
+  <range  resource="String" />
+</UniqueProperty>
+
+<UniqueProperty ID="hasDate">
+   <domain resource="#Article" />
+   <domain resource="#Presentation" />
+   <range  resource="Date" />
+</UniqueProperty>
+
+<UniqueProperty ID="hasName">
+  <domain resource="#Project" />
+  <domain resource="#Program" />
+  <domain resource="#Agency" />
+  <domain resource="#Organization" />
+  <domain resource="#Researcher" />
+  <domain resource="#Software" />
+  <range  resource="String" />
+</UniqueProperty>
+
+<UniqueProperty ID="hasURL">
+  <domain resource="#WebDocument" />
+  <range  resource="String" />
+</UniqueProperty>
+
+</rdf:RDF>

@@ -1,0 +1,1454 @@
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns:xsd ="http://www.w3.org/2000/10/XMLSchema#"
+  xmlns     ="http://edge.mcs.drexel.edu/MUG/2001/05/16/sbf#"
+>
+
+<!--
+    empty namespace states that unprefixed elements refer to 
+    http://edge.mcs.drexel.edu/MUG/2001/05/16/sbf#, this document.
+-->
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Id: ont18,v 1.1.1.1 2002-12-19 19:24:09 bwm Exp $</daml:versionInfo>
+  <rdfs:comment>
+      -------------------------------------------------------------------------
+      References
+
+      Hirtz, J., R. B. Stone, D. A. McAdams, S. Szykman, and K. L. Wood (2001),
+      "Evolving a Functional Basis for Engineering Design," Proceedings of the
+      2001 ASME Design Engineering Technical Conferences (13th International
+      Conference on Design Theory and Methodology), Paper No. DETC01/DTM-21688,
+      Pittsburg, PA, September.
+      -------------------------------------------------------------------------
+      this translation by Chris Cera 
+      http://www.mcs.drexel.edu/~uccera
+
+      GICL Research Laboratory
+      http://edge.mcs.drexel.edu/GICL
+      -------------------------------------------------------------------------
+      This work was supported in part by National Science Foundation (NSF),
+      Knowledge and Distributed Intelligence in the Information Age (KDI)
+      Initiative Grant CISE/IIS-9873005, CAREER Award CISE/IRIS-9733545 and
+      ONR Grant N00014-01-1-0618.
+      
+      Any opinions, findings, and conclusions or recommendations expressed
+      in this material are those of the author(s) and do not necessarily
+      reflect the views of the National Science Foundation or the other
+      supporting government and corporate organizations.
+      -------------------------------------------------------------------------
+  </rdfs:comment>
+  <rdfs:comment>
+      -------------------------------------------------------------------------
+      This file only depends on daml+oil ontology
+      namespaces are mechanism for having unique names
+      imports are for definitions
+      -------------------------------------------------------------------------
+  </rdfs:comment>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+</daml:Ontology>
+
+
+<!--
+    Use daml:Class instead of daml:Class for backwards compatibility
+    semantics are the same anyway
+-->
+
+
+<!--
+    No need for:
+    <Restriction daml:mincardinality="0"/>
+
+    This is assumed by default
+-->
+
+<daml:Class rdf:ID="FunctionTaxonomy">
+    <rdfs:label>FunctionTaxonomy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Usage">
+    <rdfs:subClassOf rdf:resource="#FunctionTaxonomy"/>
+    <rdfs:label>Usage</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Sink">
+    <rdfs:subClassOf rdf:resource="#Usage"/>
+    <rdfs:label>Sink</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Absorb">
+    <rdfs:subClassOf rdf:resource="#Sink"/>
+    <rdfs:label>Absorb</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Consume">
+    <rdfs:subClassOf rdf:resource="#Sink"/>
+    <rdfs:label>Consume</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Destroy">
+    <rdfs:subClassOf rdf:resource="#Sink"/>
+    <rdfs:label>Destroy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Dissipate">
+    <rdfs:subClassOf rdf:resource="#Sink"/>
+    <rdfs:label>Dissipate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Eliminate">
+    <rdfs:subClassOf rdf:resource="#Sink"/>
+    <rdfs:label>Eliminate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Empty">
+    <rdfs:subClassOf rdf:resource="#Sink"/>
+    <rdfs:label>Empty</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Export">
+    <rdfs:subClassOf rdf:resource="#Sink"/>
+    <rdfs:label>Export</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Remove">
+    <rdfs:subClassOf rdf:resource="#Sink"/>
+    <rdfs:label>Remove</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Source">
+    <rdfs:subClassOf rdf:resource="#Usage"/>
+    <rdfs:label>Source</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Add">
+    <rdfs:subClassOf rdf:resource="#Source"/>
+    <rdfs:label>Add</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Create">
+    <rdfs:subClassOf rdf:resource="#Source"/>
+    <rdfs:label>Create</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Emit">
+    <rdfs:subClassOf rdf:resource="#Source"/>
+    <rdfs:label>Emit</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Extract">
+    <rdfs:subClassOf rdf:resource="#Source"/>
+    <rdfs:label>Extract</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generate">
+    <rdfs:subClassOf rdf:resource="#Source"/>
+    <rdfs:label>Generate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Import">
+    <rdfs:subClassOf rdf:resource="#Source"/>
+    <rdfs:label>Import</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Supply">
+    <rdfs:subClassOf rdf:resource="#Source"/>
+    <rdfs:label>Supply</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Storage">
+    <rdfs:subClassOf rdf:resource="#Usage"/>
+    <rdfs:label>Storage</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Accumulate">
+    <rdfs:subClassOf rdf:resource="#Storage"/>
+    <rdfs:label>Accumulate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Collect">
+    <rdfs:subClassOf rdf:resource="#Storage"/>
+    <rdfs:label>Collect</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Store">
+    <rdfs:subClassOf rdf:resource="#Storage"/>
+    <rdfs:label>Store</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Combination/distribution">
+    <rdfs:subClassOf rdf:resource="#FunctionTaxonomy"/>
+    <rdfs:label>Combination/distribution</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Branch">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Branch</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Combine">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Combine</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Connect">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Connect</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Couple">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Couple</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Distribute">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Distribute</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Divide-flow">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Divide-flow</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Link">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Link</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Mix">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Mix</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Separate">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Separate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Sort">
+    <rdfs:subClassOf rdf:resource="#Combination/distribution"/>
+    <rdfs:label>Sort</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Transformation">
+    <rdfs:subClassOf rdf:resource="#FunctionTaxonomy"/>
+    <rdfs:label>Transformation</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Amplify">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Amplify</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Attenuate">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Attenuate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Convert">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Convert</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Decrease">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Decrease</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Filter">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Filter</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Increase">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Increase</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Modify">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Modify</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Modify-form">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Modify-form</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Modify-property-magnitude">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Modify-property-magnitude</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Refine">
+    <rdfs:subClassOf rdf:resource="#Transformation"/>
+    <rdfs:label>Refine</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Conveyance">
+    <rdfs:subClassOf rdf:resource="#FunctionTaxonomy"/>
+    <rdfs:label>Conveyance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Advance">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Advance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Channel">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Channel</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Conduct">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Conduct</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Convey">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Convey</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Direct">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Direct</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Divert">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Divert</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Guide">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Guide</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-move">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Generic-move</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Rotate">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Rotate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Transfer">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Transfer</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Translate">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Translate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Transmit">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Transmit</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Transport">
+    <rdfs:subClassOf rdf:resource="#Conveyance"/>
+    <rdfs:label>Transport</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Signal/Control">
+    <rdfs:subClassOf rdf:resource="#FunctionTaxonomy"/>
+    <rdfs:label>Signal/Control</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Actuate">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Actuate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Adjust">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Adjust</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Close">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Close</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Decrease">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Decrease</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Delay">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Delay</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Detect">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Detect</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Display">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Display</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Equalize">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Equalize</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Enhance">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Enhance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-control">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Generic-control</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Identify">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Identify</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Increase">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Increase</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Indicate">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Indicate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Inhibit">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Inhibit</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Limit">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Limit</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Maintain">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Maintain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Mathematical/Logical">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Mathematical/Logical</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Add">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Add</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="AND">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>AND</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Decrement">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Decrement</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Differentiate">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Differentiate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Divide">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Divide</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Increment">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Increment</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Integrate">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Integrate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Invert">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Invert</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Multiply">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Multiply</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="NOT">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>NOT</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="OR">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>OR</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Shift">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Shift</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Sort">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Sort</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Subtract">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>Subtract</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="XOR">
+    <rdfs:subClassOf rdf:resource="#Mathematical/Logical"/>
+    <rdfs:label>XOR</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Measure">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Measure</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Open">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Open</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Resist">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Resist</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Retrieve-value">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Retrieve-value</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Select">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Select</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Sense">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Sense</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Signal-processing">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Signal-processing</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Amplify">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Amplify</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Attenuate">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Attenuate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Clear">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Clear</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Compare">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Compare</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Decode">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Decode</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Decrypt">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Decrypt</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Demodulate">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Demodulate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Digitize">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Digitize</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Encode">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Encode</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Encrypt">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Encrypt</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Filter">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Filter</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Interrupt">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Interrupt</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Isolate">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Isolate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Modulate">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Modulate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Reset">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Reset</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Split-signal">
+    <rdfs:subClassOf rdf:resource="#Signal-processing"/>
+    <rdfs:label>Split-signal</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Store-value">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Store-value</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Switch">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Switch</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Time">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Time</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Toggle">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Toggle</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Track">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Track</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Turn-on">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Turn-on</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Turn-off">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Turn-off</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Vary">
+    <rdfs:subClassOf rdf:resource="#Signal/Control"/>
+    <rdfs:label>Vary</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Assembly">
+    <rdfs:subClassOf rdf:resource="#FunctionTaxonomy"/>
+    <rdfs:label>Assembly</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Assemble">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Assemble</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Constrain">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Constrain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Cover">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Cover</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Disassemble">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Disassemble</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Enclose">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Enclose</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Extract">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Extract</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Fasten">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Fasten</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Fix">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Fix</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Guide">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Guide</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Join">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Join</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Link">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Link</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Locate">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Locate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Orient">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Orient</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Position">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Position</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Release">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Release</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Remove">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Remove</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Secure">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Secure</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Separate">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Separate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Stabilize">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Stabilize</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Support">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Support</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Unfasten">
+    <rdfs:subClassOf rdf:resource="#Assembly"/>
+    <rdfs:label>Unfasten</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="FlowTaxonomy">
+    <rdfs:label>FlowTaxonomy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Material">
+    <rdfs:subClassOf rdf:resource="#FlowTaxonomy"/>
+    <rdfs:label>Material</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-matter">
+    <rdfs:subClassOf rdf:resource="#Material"/>
+    <rdfs:label>Generic-matter</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Mass">
+    <rdfs:subClassOf rdf:resource="#Material"/>
+    <rdfs:label>Mass</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Solid">
+    <rdfs:subClassOf rdf:resource="#Material"/>
+    <rdfs:label>Solid</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Object">
+    <rdfs:subClassOf rdf:resource="#Solid"/>
+    <rdfs:label>Object</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-object">
+    <rdfs:subClassOf rdf:resource="#Object"/>
+    <rdfs:label>Generic-object</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Rigid-body">
+    <rdfs:subClassOf rdf:resource="#Object"/>
+    <rdfs:label>Rigid-body</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Elastic-body">
+    <rdfs:subClassOf rdf:resource="#Object"/>
+    <rdfs:label>Elastic-body</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Widget">
+    <rdfs:subClassOf rdf:resource="#Object"/>
+    <rdfs:label>Widget</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Powder">
+    <rdfs:subClassOf rdf:resource="#Solid"/>
+    <rdfs:label>Powder</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Particulate">
+    <rdfs:subClassOf rdf:resource="#Solid"/>
+    <rdfs:label>Particulate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Granular-matter">
+    <rdfs:subClassOf rdf:resource="#Solid"/>
+    <rdfs:label>Granular-matter</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Composite-material">
+    <rdfs:subClassOf rdf:resource="#Solid"/>
+    <rdfs:label>Composite-material</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Aggregate-material">
+    <rdfs:subClassOf rdf:resource="#Solid"/>
+    <rdfs:label>Aggregate-material</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Non-homogeneous-solid-mixture">
+    <rdfs:subClassOf rdf:resource="#Solid"/>
+    <rdfs:label>Non-homogeneous-solid-mixture</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Liquid">
+    <rdfs:subClassOf rdf:resource="#Material"/>
+    <rdfs:label>Liquid</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Incompressible-liquid">
+    <rdfs:subClassOf rdf:resource="#Liquid"/>
+    <rdfs:label>Incompressible-liquid</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Compressible-liquid">
+    <rdfs:subClassOf rdf:resource="#Liquid"/>
+    <rdfs:label>Compressible-liquid</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Homogeneous-liquid">
+    <rdfs:subClassOf rdf:resource="#Liquid"/>
+    <rdfs:label>Homogeneous-liquid</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Liquid-mixture">
+    <rdfs:subClassOf rdf:resource="#Liquid"/>
+    <rdfs:label>Liquid-mixture</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Gas">
+    <rdfs:subClassOf rdf:resource="#Material"/>
+    <rdfs:label>Gas</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Homogeneous-gas">
+    <rdfs:subClassOf rdf:resource="#Gas"/>
+    <rdfs:label>Homogeneous-gas</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Gas-mixture">
+    <rdfs:subClassOf rdf:resource="#Gas"/>
+    <rdfs:label>Gas-mixture</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Plasma">
+    <rdfs:subClassOf rdf:resource="#Material"/>
+    <rdfs:label>Plasma</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Multi-phase-mixture">
+    <rdfs:subClassOf rdf:resource="#Material"/>
+    <rdfs:label>Multi-phase-mixture</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Solid-liquid-mixture">
+    <rdfs:subClassOf rdf:resource="#Multi-phase-mixture"/>
+    <rdfs:label>Solid-liquid-mixture</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Colloidal-suspension">
+    <rdfs:subClassOf rdf:resource="#Multi-phase-mixture"/>
+    <rdfs:label>Colloidal-suspension</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Liquid-gas-mixture">
+    <rdfs:subClassOf rdf:resource="#Multi-phase-mixture"/>
+    <rdfs:label>Liquid-gas-mixture</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Liquid-particle-aerosol">
+    <rdfs:subClassOf rdf:resource="#Multi-phase-mixture"/>
+    <rdfs:label>Liquid-particle-aerosol</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Solid-liquid-gas-mixture">
+    <rdfs:subClassOf rdf:resource="#Multi-phase-mixture"/>
+    <rdfs:label>Solid-liquid-gas-mixture</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Solid-particle-aerosol">
+    <rdfs:subClassOf rdf:resource="#Multi-phase-mixture"/>
+    <rdfs:label>Solid-particle-aerosol</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Solid-gas-mixture">
+    <rdfs:subClassOf rdf:resource="#Multi-phase-mixture"/>
+    <rdfs:label>Solid-gas-mixture</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Energy">
+    <rdfs:subClassOf rdf:resource="#FlowTaxonomy"/>
+    <rdfs:label>Energy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Generic">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Generic</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-force">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-force</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-energy">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-energy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-power">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-power</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-impedance">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-impedance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Mechanical-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Mechanical-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Compliance">
+    <rdfs:subClassOf rdf:resource="#Mechanical-domain"/>
+    <rdfs:label>Compliance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Friction-force">
+    <rdfs:subClassOf rdf:resource="#Mechanical-domain"/>
+    <rdfs:label>Friction-force</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Weight-force">
+    <rdfs:subClassOf rdf:resource="#Mechanical-domain"/>
+    <rdfs:label>Weight-force</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Generic">
+    <rdfs:subClassOf rdf:resource="#Mechanical-domain"/>
+    <rdfs:label>Generic</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-motion">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-irregular-motion">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-irregular-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-oscillatory-motion">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-oscillatory-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-inertia">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-inertia</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-curvilinear-motion">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-curvilinear-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-relative-motion">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Generic-relative-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Mechanical-potential-energy">
+    <rdfs:subClassOf rdf:resource="#Generic"/>
+    <rdfs:label>Mechanical-potential-energy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Gravitational-potential-energy">
+    <rdfs:subClassOf rdf:resource="#Mechanical-potential-energy"/>
+    <rdfs:label>Gravitational-potential-energy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Spring-potential-energy">
+    <rdfs:subClassOf rdf:resource="#Mechanical-potential-energy"/>
+    <rdfs:label>Spring-potential-energy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Translational-domain">
+    <rdfs:subClassOf rdf:resource="#Mechanical-domain"/>
+    <rdfs:label>Translational-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Translational-motion">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Translational-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Oscillatory-translational-motion">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Oscillatory-translational-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Relative-translational-motion">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Relative-translational-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Position">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Position</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Displacement">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Displacement</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Velocity">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Velocity</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Acceleration">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Acceleration</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Jerk">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Jerk</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Impulse">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Impulse</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Force">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Force</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Inertia">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Inertia</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Momentum">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Momentum</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Translational-impedance">
+    <rdfs:subClassOf rdf:resource="#Translational-domain"/>
+    <rdfs:label>Translational-impedance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Rotational-domain">
+    <rdfs:subClassOf rdf:resource="#Mechanical-domain"/>
+    <rdfs:label>Rotational-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Rotational-motion">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Rotational-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Oscillatory-rotational-motion">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Oscillatory-rotational-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Relative-rotational-motion">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Relative-rotational-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Orientation/angular-position">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Orientation/angular-position</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Angular-displacement">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Angular-displacement</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Angular-velocity">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Angular-velocity</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Angular-acceleration">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Angular-acceleration</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Angular-jerk">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Angular-jerk</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Angular-impulse">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Angular-impulse</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Torque">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Torque</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Rotational-inertia">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Rotational-inertia</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Angular-momentum">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Angular-momentum</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Rotational-impedance">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Rotational-impedance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Rotational-frequency">
+    <rdfs:subClassOf rdf:resource="#Rotational-domain"/>
+    <rdfs:label>Rotational-frequency</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Electrical-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Electrical-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Electricity/charge-motion">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Electricity/charge-motion</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Charge">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Charge</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Voltage/electromotive-force">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Voltage/electromotive-force</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Current">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Current</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-current">
+    <rdfs:subClassOf rdf:resource="#Current"/>
+    <rdfs:label>Generic-current</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Direct-current">
+    <rdfs:subClassOf rdf:resource="#Current"/>
+    <rdfs:label>Direct-current</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Alternating-current">
+    <rdfs:subClassOf rdf:resource="#Current"/>
+    <rdfs:label>Alternating-current</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Frequency">
+    <rdfs:subClassOf rdf:resource="#Current"/>
+    <rdfs:label>Frequency</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Voltage-pulse">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Voltage-pulse</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Electrical-energy">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Electrical-energy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Electrical-impedance">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Electrical-impedance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Resistance">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Resistance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Capacitance">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Capacitance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Inductance">
+    <rdfs:subClassOf rdf:resource="#Electrical-domain"/>
+    <rdfs:label>Inductance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Thermal-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Thermal-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Entropy">
+    <rdfs:subClassOf rdf:resource="#Thermal-domain"/>
+    <rdfs:label>Entropy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Temperature">
+    <rdfs:subClassOf rdf:resource="#Thermal-domain"/>
+    <rdfs:label>Temperature</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Entropy-flow">
+    <rdfs:subClassOf rdf:resource="#Thermal-domain"/>
+    <rdfs:label>Entropy-flow</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Heat">
+    <rdfs:subClassOf rdf:resource="#Thermal-domain"/>
+    <rdfs:label>Heat</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Hydraulic-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Hydraulic-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Volume">
+    <rdfs:subClassOf rdf:resource="#Hydraulic-domain"/>
+    <rdfs:label>Volume</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Volume-flow">
+    <rdfs:subClassOf rdf:resource="#Hydraulic-domain"/>
+    <rdfs:label>Volume-flow</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Volume-flow-rate">
+    <rdfs:subClassOf rdf:resource="#Hydraulic-domain"/>
+    <rdfs:label>Volume-flow-rate</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Pressure">
+    <rdfs:subClassOf rdf:resource="#Hydraulic-domain"/>
+    <rdfs:label>Pressure</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Pressure-momentum">
+    <rdfs:subClassOf rdf:resource="#Hydraulic-domain"/>
+    <rdfs:label>Pressure-momentum</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Hydraulic-force">
+    <rdfs:subClassOf rdf:resource="#Hydraulic-domain"/>
+    <rdfs:label>Hydraulic-force</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Hydraulic-energy">
+    <rdfs:subClassOf rdf:resource="#Hydraulic-domain"/>
+    <rdfs:label>Hydraulic-energy</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Hydraulic-impedance">
+    <rdfs:subClassOf rdf:resource="#Hydraulic-domain"/>
+    <rdfs:label>Hydraulic-impedance</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Pneumatic-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Pneumatic-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Magnetic-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Magnetic-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Acoustic-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Acoustic-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Electromagnetic-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Electromagnetic-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Optical-domain">
+    <rdfs:subClassOf rdf:resource="#Electromagnetic-domain"/>
+    <rdfs:label>Optical-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Chemical-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Chemical-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Nuclear-domain">
+    <rdfs:subClassOf rdf:resource="#Energy"/>
+    <rdfs:label>Nuclear-domain</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Signal">
+    <rdfs:subClassOf rdf:resource="#FlowTaxonomy"/>
+    <rdfs:label>Signal</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-signal">
+    <rdfs:subClassOf rdf:resource="#Signal"/>
+    <rdfs:label>Generic-signal</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Analog">
+    <rdfs:subClassOf rdf:resource="#Signal"/>
+    <rdfs:label>Analog</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-analog">
+    <rdfs:subClassOf rdf:resource="#Analog"/>
+    <rdfs:label>Generic-analog</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Oscillatory">
+    <rdfs:subClassOf rdf:resource="#Analog"/>
+    <rdfs:label>Oscillatory</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Discrete">
+    <rdfs:subClassOf rdf:resource="#Signal"/>
+    <rdfs:label>Discrete</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Generic-discrete">
+    <rdfs:subClassOf rdf:resource="#Discrete"/>
+    <rdfs:label>Generic-discrete</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+<daml:Class rdf:ID="Binary">
+    <rdfs:subClassOf rdf:resource="#Discrete"/>
+    <rdfs:label>Binary</rdfs:label>
+    <rdfs:comment></rdfs:comment>
+</daml:Class>
+
+</rdf:RDF>

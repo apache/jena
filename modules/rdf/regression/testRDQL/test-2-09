@@ -1,0 +1,5 @@
+// Test-2-09
+
+SELECT *
+FROM <model1.nt>
+WHERE (?x, ?y, ?z), (?x, ?y, ?z), (?x, ?y, ?a)

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<RDF:RDF
+     xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:NS205="http://www.mozilla.org/rdf/chrome#" >
+
+
+   <NS205:className  RDF:about="#Test610"> 
+    <NS205:foo> 
+    <RDF:Description RDF:ID="bar">
+   <RDF:type RDF:resource="http://www.mozilla.org/rdf/chrome#Another" />
+    <NS205:baseURL>jj</NS205:baseURL>
+    <NS206:locType xmlns:NS206="http://www.mozilla.org/rdf/chrome#">install</NS206:locType>
+    <NS207:displayName xmlns:NS207="http://www.mozilla.org/rdf/chrome#">Toolkit</NS207:displayName>
+    <NS208:author xmlns:NS208="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS208:author>
+    <NS209:name xmlns:NS209="http://www.mozilla.org/rdf/chrome#">global</NS209:name>
+    </RDF:Description>
+ </NS205:foo>
+   </NS205:className> 
+
+</RDF:RDF>

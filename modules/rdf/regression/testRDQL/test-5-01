@@ -1,0 +1,5 @@
+// Test 5-01 : Multiple bindiings in one pattern
+
+SELECT *
+SOURCE <model4.nt>
+WHERE  (?x, ?x, ?z)

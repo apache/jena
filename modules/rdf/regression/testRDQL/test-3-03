@@ -1,0 +1,6 @@
+// Test 3-03 : Triple patterns and constraints
+
+SELECT *
+SOURCE <model1.nt>
+WHERE  (?x, ?y, ?z)
+AND    ?z eq "v-2-2"

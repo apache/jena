@@ -1,0 +1,134 @@
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>Version 1</daml:versionInfo>
+  <rdfs:comment>Briefing Ontology</rdfs:comment>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+</daml:Ontology>
+
+<!-- Classes -->
+
+<rdfs:Class rdf:ID="Briefing" />
+
+<rdfs:Class rdf:ID="BriefingProperty" />
+
+<rdfs:Class rdf:ID="Slide" />
+
+<!-- Properties -->
+
+<daml:UniqueProperty rdf:ID="briefingFilename" />
+
+<daml:UniqueProperty rdf:ID="dumpHost" />
+
+<daml:UniqueProperty rdf:ID="dumpDate" />
+
+<daml:UniqueProperty rdf:ID="dumperUID" />
+
+<daml:UniqueProperty rdf:ID="name" />
+
+<daml:UniqueProperty rdf:ID="value" />
+
+<daml:UniqueProperty rdf:ID="slideNumber" />
+
+<rdf:Property rdf:ID="majorText" />
+
+<rdf:Property rdf:ID="shapeText" />
+
+<rdf:Property rdf:ID="builtinProperty" />
+
+<rdf:Property rdf:ID="customProperty" />
+
+<daml:UniqueProperty rdf:ID="isSlideOf" />
+
+<rdf:Property rdf:ID="slide" >
+  <daml:inverseOf rdf:resource="#isSlideOf" />
+</rdf:Property>
+
+<!-- Class Restrictions -->
+
+<rdfs:Class rdf:about="#Briefing">
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+       <daml:onProperty rdf:resource="#briefingFilename" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+       <daml:onProperty rdf:resource="#dumpHost" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+       <daml:onProperty rdf:resource="#dumpDate" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+       <daml:onProperty rdf:resource="#dumperUID" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction>
+       <daml:onProperty rdf:resource="#builtinProperty" />
+       <daml:toClass rdf:resource="#BriefingProperty" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction>
+       <daml:onProperty rdf:resource="#customProperty" />
+       <daml:toClass rdf:resource="#BriefingProperty" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction>
+       <daml:onProperty rdf:resource="#slide" />
+       <daml:toClass rdf:resource="#Slide" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#BriefingProperty">
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+       <daml:onProperty rdf:resource="#name" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+       <daml:onProperty rdf:resource="#value" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#Slide">
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+       <daml:onProperty rdf:resource="#slideNumber" />
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:minCardinality="0">
+       <daml:onProperty rdf:resource="#majorText" />
+       <rdfs:comment>
+          This restriction does not really adds any constraint but 
+          allows me to indicate that this property applies to this class
+       </rdfs:comment>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:minCardinality="0">
+       <daml:onProperty rdf:resource="#shapeText" />
+       <rdfs:comment>
+          This restriction does not really adds any constraint but 
+          allows me to indicate that this property applies to this class
+       </rdfs:comment>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</rdfs:Class>
+
+</rdf:RDF>
+

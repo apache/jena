@@ -1,0 +1,6 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "Just one statement (well - two actually!)" .
+
+a:b a:p1 "123".

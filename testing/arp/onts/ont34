@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE rdf:RDF [
+	 <!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	 <!ENTITY a 'http://www.daml.org/2001/03/daml+oil#'>
+	 <!ENTITY b 'http://www.w3.org/2000/01/rdf-schema#'>
+	 <!ENTITY c 'http://mr.teknowledge.com/DAML/Imaging.daml#'>
+]>
+<rdf:RDF xmlns:rdf="&rdf;"
+	 xmlns:a="&a;"
+	 xmlns:b="&b;"
+	 xmlns:c="&c;">
+
+<a:Ontology rdf:about=""/>
+<a:ObjectProperty rdf:about="&c;Contains">
+   <b:domain rdf:resource="&c;Document"/>
+   <b:range rdf:resource="&c;ImageOccurence"/>
+</a:ObjectProperty>
+<a:Class rdf:about="&c;Document">
+	<b:subClassOf rdf:resource="_anon1"/>
+</a:Class>
+<a:Class rdf:about="&c;ImageOccurence">
+	<b:subClassOf rdf:resource="_anon2"/>
+</a:Class>
+<a:Restriction rdf:about="_anon1">
+	<a:maxCardinality>1</a:maxCardinality>
+	<a:onProperty rdf:resource="&c;hasTitle"/>
+</a:Restriction>
+<a:Restriction rdf:about="_anon2">
+	<a:cardinality>1</a:cardinality>
+	<a:onProperty rdf:resource="&c;hasFingerPrint"/>
+</a:Restriction>
+<a:DatatypeProperty rdf:about="&c;hasFingerPrint"/>
+<a:DatatypeProperty rdf:about="&c;hasTitle"/>
+</rdf:RDF>

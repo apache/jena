@@ -1,0 +1,129 @@
+<rdf:RDF
+  xmlns:rdf    = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs   = "http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml   = "http://www.daml.org/2001/03/daml+oil#" 
+  xmlns:place  = "http://daml.umbc.edu/ontologies/place-ont#"
+  xmlns:person = "http://daml.umbc.edu/ontologies/person-ont#"
+  xmlns:time   = "http://daml.umbc.edu/ontologies/calendar-ont#"
+  xmlns       = "http://daml.umbc.edu/ontologies/talk-ont#"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Revision: 1.1.1.1 $</daml:versionInfo>
+  <daml:imports rdf:resource="http://daml.umbc.edu/ontologies/place-ont"/>
+  <daml:imports rdf:resource="http://daml.umbc.edu/ontologies/person-ont"/>
+  <daml:imports rdf:resource="http://daml.umbc.edu/ontologies/calendar-ont"/>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil#"/>
+</daml:Ontology>
+
+<daml:Class rdf:ID="X-URI">
+  <daml:label>Uniform Resource Indicator</daml:label>
+  <daml:subClassOf rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+</daml:Class>
+
+<!-- Class Event -->
+
+<daml:Class rdf:ID="Event">
+  <daml:label>Event</daml:label>
+</daml:Class>
+
+<rdf:Property rdf:ID="Location">
+  <daml:domain rdf:resource="#Event"/>
+  <daml:range rdf:resource="http://daml.umbc.edu/ontologies/place-ont#Place" />
+  <daml:minCardinality>1</daml:minCardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="BeginTime">
+  <daml:domain rdf:resource="#Event"/>
+  <daml:range rdf:resource="http://daml.umbc.edu/ontologies/calendar-ont#Calendar" />
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="EndTime">
+  <rdfs:domain rdf:resource="#Event"/>
+  <rdfs:range rdf:resource="http://daml.umbc.edu/ontologies/calendar-ont#Calendar" />
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<!-- end of Class Event -->
+
+<!-- Class Talk -->
+
+<daml:Class rdf:ID="Talk">
+  <daml:subClassOf rdf:resource="#Event" />
+</daml:Class>
+
+<rdf:Property rdf:ID="Speaker">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="http://daml.umbc.edu/ontologies/person-ont#Person" />
+  <daml:minCardinality>1</daml:minCardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Host">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="http://daml.umbc.edu/ontologies/person-ont#Person" />
+  <daml:minCardinality>1</daml:minCardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Title">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Abstract">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+  <daml:maxCardinality>1</daml:maxCardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Topic">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+  <daml:minCardinality>1</daml:minCardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="DAML-URI">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="#X-URI" />
+</rdf:Property>
+
+<rdf:Property rdf:ID="HTML-URI">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="#X-URI" />
+</rdf:Property>
+
+<rdf:Property rdf:ID="RelatedURI">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="#X-URI" />
+</rdf:Property>
+
+<rdf:Property rdf:ID="Video">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="#X-URI" />
+</rdf:Property>
+
+<rdf:Property rdf:ID="Audio">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="#X-URI" />
+</rdf:Property>
+
+<rdf:Property rdf:ID="Presentation">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="#X-URI" />
+</rdf:Property>
+
+<rdf:Property rdf:ID="Media">
+  <rdfs:domain rdf:resource="#Talk"/>
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+</rdf:Property>
+
+<!-- end of Class Talk -->
+
+</rdf:RDF>
+
+
+
+
+
+

@@ -1,0 +1,4 @@
+# No datatypes in Jena1
+<file:///base/rdf-test-21.n3#a> <file:///base/rdf-test-21.n3#p> "12" .
+<file:///base/rdf-test-21.n3#a> <file:///base/rdf-test-21.n3#p> "no datatype" .
+<file:///base/rdf-test-21.n3#a> <file:///base/rdf-test-21.n3#p> "11" .

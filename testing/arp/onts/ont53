@@ -1,0 +1,2967 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns="http://opencyc.sourceforge.net/daml/cyc#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <daml:Ontology about="">
+        <daml:versionInfo>$Id: ExportDaml.java,v 1.7 2001/10/31 00:00:52
+            stephenreed Exp $</daml:versionInfo>
+        <rdfs:comment>The Cyc Upper Ontology</rdfs:comment>
+    </daml:Ontology>
+    <daml:UniqueProperty rdf:ID="guid">
+        <rdfs:label>guid</rdfs:label>
+        <rdfs:comment>Permanent Global Unique ID for the associated
+            concept -- which enables concept renaming.  Users should not
+            depend upon the DAML ID nor label as fixed for all time.</rdfs:comment>
+        <daml:domain rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing"/>
+        <daml:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    </daml:UniqueProperty>
+    <daml:Class rdf:ID="AVLB-Leopard2">
+        <rdfs:label>avlb leopard 2</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bdcea080-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ArmoredVehicleLaunchedBridge"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AirCushionVehicle">
+        <rdfs:label>hovercraft</rdfs:label>
+        <rdfs:comment>The collection of vehicles which ride above the
+            surface of the water on a cushion of air, usually provided
+            by fans.</rdfs:comment>
+        <guid>bedc8395-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandingCraft"/>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AirTransportationDevice">
+        <rdfs:label>aircraft</rdfs:label>
+        <rdfs:comment>A collection of physical devices.  An instance of
+            #$AirTransportationDevice is a device used for
+            transportation through the air.  For example, the Goodyear
+            Blimp, Air Force One, and the #$SpaceShuttleAtlantis.
+            Subsets of #$AirTransportationDevice include the collections
+            #$Airplane, #$Helicopter, #$HotAirBalloon,
+            #$GroundToOrbitVehicle (such as Atlas rockets or the Space
+            Shuttles), and so on.</rdfs:comment>
+        <guid>bd58ae50-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AirborneEarlyWarningAircraft">
+        <rdfs:label>airborne early warning aircraft</rdfs:label>
+        <rdfs:comment>The collection of military aircraft which are
+            equipped with long-range radar and used in the surveillance
+            of airspace and maritime territory.</rdfs:comment>
+        <guid>be38e715-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Aircraft-MultiRole">
+        <rdfs:label>multi-role aircraft</rdfs:label>
+        <rdfs:comment>The collection of #$MilitaryAircraft that can be
+            used for more than one role:  presumably fighting, bombing,
+            reconnaissance, etc.</rdfs:comment>
+        <guid>c0e30576-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AircraftCarrier">
+        <rdfs:label>aircraft carrier</rdfs:label>
+        <rdfs:comment>The collection of large warships that are capable
+            of transporting airplanes.  These ships have large, flat
+            decks for take-offs and landings and serve as floating air
+            bases for military aircraft.</rdfs:comment>
+        <guid>c1009985-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Airplane">
+        <rdfs:label>airplanes</rdfs:label>
+        <rdfs:comment>The collection of all heavier-than-air,
+            self-powered flying machines (excluding cruise missiles)
+            that get their lift while flying from #$AirplaneWings. Thus,
+            #$Helicopters are excluded because the lift is caused by
+            rotors. A borderline case are planes that take-off
+            vertically, using a turbojet engine, so initially the lift
+            is not due to their wings. In flight, however, such planes
+            will need their wings to stay up in the air.</rdfs:comment>
+        <guid>bd58828b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#FixedWingAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="All-TerrainVehicle">
+        <rdfs:label>all-terrain vehicles</rdfs:label>
+        <rdfs:comment>land-transportation vehicles designed to be able
+            to function effectively off-road, on a variety of
+            terrain.  Some vehicles (e.g., tanks) are designed    to be
+            significantly more effective at this than    others (e.g.,
+            4x4 recreational vehicles).</rdfs:comment>
+        <guid>beab88b8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Ambulance">
+        <rdfs:label>ambulances</rdfs:label>
+        <rdfs:comment>The collection of all RoadVehicles that are
+            equipped primarily for transporting wounded, injured or sick persons.</rdfs:comment>
+        <guid>bd588cd2-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-GasolineEngine"/>
+        <rdfs:subClassOf rdf:resource="#RescueVehicle"/>
+        <rdfs:subClassOf rdf:resource="#EmergencyVehicle"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AmmunitionShip">
+        <rdfs:label>ammunition ship</rdfs:label>
+        <rdfs:comment>The collection of military ships intended for use
+            in ammunition re-supply.</rdfs:comment>
+        <guid>c041588d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#UnderwayReplenishmentShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AmphibiousAssaultShip">
+        <rdfs:label>amphibious assault ship</rdfs:label>
+        <rdfs:comment>The collection of amphibious craft   intended to
+            be used as primary landing ships in an amphibious attack.</rdfs:comment>
+        <guid>be1448f4-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AmphibiousWarfareShip"/>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AmphibiousCargoShip">
+        <rdfs:label>amphibious cargo ship</rdfs:label>
+        <rdfs:comment>The collection of amphibious craft intended for
+            use in cargo transport.</rdfs:comment>
+        <guid>bfeb0fa8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AmphibiousWarfareShip"/>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AmphibiousCommandShip">
+        <rdfs:label>amphibious command ship</rdfs:label>
+        <rdfs:comment>A collection. Amphibious command military
+            watercraft, which are intended to provide command and
+            control in major amphibious operations.</rdfs:comment>
+        <guid>c0a74259-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAmphibiousPlatform"/>
+        <rdfs:subClassOf rdf:resource="#CommandShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AmphibiousTransportDock">
+        <rdfs:label>amphibious transport dock</rdfs:label>
+        <rdfs:comment>The collection of military amphibious transport
+            docks. These craft are used to transport and land   Marines
+            and their equipment by embarked landing craft or
+            amphibious vehicles augmented by helicopters in amphibious assault.</rdfs:comment>
+        <guid>c0a2e3b4-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AmphibiousWarfareShip"/>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AmphibiousVehicle">
+        <rdfs:label>amphibious vehicles</rdfs:label>
+        <rdfs:comment>The collection of #$TransportationDevice-Vehicles
+            that can cross land as well as water. Some instances are
+            #$Ships that have special means to go on land
+            #$AmphibiousCargoShip whereas others are
+            #$LandTransportationDevices that can &apos;swim&apos;
+            accross water, e.g. #$ArmoredPersonnelCarrier-M113. </rdfs:comment>
+        <guid>c0689df8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WaterTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AmphibiousWarfareShip">
+        <rdfs:label>amphibious warfare ship</rdfs:label>
+        <rdfs:comment>The collection of ships used in amphibious warfare.</rdfs:comment>
+        <guid>beff7fa7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AntiAircraftGun-SelfPropelled">
+        <rdfs:label>anti aircraft gun self propelled</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>beececb8-9c29-11b1-9dad-c379636f7270</guid>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredAmphibiousTractor">
+        <rdfs:label>armored amphibious tractor</rdfs:label>
+        <rdfs:comment>The class of tractors used by expeditionary forces
+            that are equipped with armor to make the battle-suitable and
+            are amphibious as well to facilitate their operation in
+            unfavorable terrain.</rdfs:comment>
+        <guid>bef4edb2-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AmphibiousVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredCar">
+        <rdfs:label>armored cars</rdfs:label>
+        <rdfs:comment>The collection of #$ArmoredVehicles which have
+            #$Automobile bodies (i.e. are &apos;cars&apos;). These
+            vehicles are often used to transport important or
+            high-profile people through areas where they may be in
+            danger of attack. They may also be used to transport
+            valuables such as cash or jewels.</rdfs:comment>
+        <guid>bf4a941b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredCargoCarrier">
+        <rdfs:label>armored cargo carrier</rdfs:label>
+        <rdfs:comment>A type of #$ArmoredVehicle that is used to
+            transport cargo or heavy weapons.</rdfs:comment>
+        <guid>bf2c7c6c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ArmoredVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredFightingVehicle">
+        <rdfs:label>armored combat vehicles</rdfs:label>
+        <rdfs:comment>A collection.  Instances are vehicles used for
+            transport and protection of infantry.  These vehicles are
+            equipped with armor and arms, enabling it to fight like a
+            tank, but not against tanks.</rdfs:comment>
+        <guid>c10ab9ff-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <daml:disjointWith rdf:resource="#Tank-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredInfantryFightingVehicle">
+        <rdfs:label>the Armored Infantry Fighting Vehicle (armored
+            combat vehicle)</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd924e19-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#All-TerrainVehicle"/>
+        <rdfs:subClassOf rdf:resource="#AmphibiousVehicle"/>
+        <rdfs:subClassOf rdf:resource="#ArmoredFightingVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredMortarVehicle">
+        <rdfs:label>the Armored Mortar Vehicle</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c11c1b50-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Artillery-SelfPropelled"/>
+        <rdfs:subClassOf rdf:resource="#AmphibiousVehicle"/>
+        <rdfs:subClassOf rdf:resource="#All-TerrainVehicle"/>
+        <rdfs:subClassOf rdf:resource="#ArmoredFightingVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredPersonnelCarrier">
+        <rdfs:label>armored personnel carrier</rdfs:label>
+        <rdfs:comment>A collection.  Instances are #$ArmoredVehicles
+            used for the transport and protection of infantry and have
+            no armament other than #$SmallArm-Weapons.</rdfs:comment>
+        <guid>bef009d3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredReconCarrier">
+        <rdfs:label>armored recon carrier</rdfs:label>
+        <rdfs:comment>A collection. Armored reconnaisance vehicles.</rdfs:comment>
+        <guid>be166c02-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ReconnaissanceVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryLandPlatform"/>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredRecoveryVehicle">
+        <rdfs:label>armored recovery vehicle</rdfs:label>
+        <rdfs:comment>A type of armored vehicle which is capable of
+            towing other large military vehicles.</rdfs:comment>
+        <guid>bf80cd15-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TrackedVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#ArmoredVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredTOWVehicle">
+        <rdfs:label>the Armored TOW Vehicle</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c12db92b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#All-TerrainVehicle"/>
+        <rdfs:subClassOf rdf:resource="#AmphibiousVehicle"/>
+        <rdfs:subClassOf rdf:resource="#ArmoredFightingVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredVehicle">
+        <rdfs:label>armored vehicles</rdfs:label>
+        <rdfs:comment>A general collection whose instances are vehicles
+            protected by armor.  Includes both tracked and wheeled vehicles.</rdfs:comment>
+        <guid>c035f13f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredVehicleLaunchedBridge">
+        <rdfs:label>AVLB</rdfs:label>
+        <rdfs:comment>The #$ArmoredVehicleLaunchedBridge (AVLB) launcher
+            is a standard M60 or M48 tank chssis modified to transport,
+            launch and retrieve the 60-foot span, Military Load Class
+            (MLC) 60 AVLB.  The tank chassis is modified by the removal
+            of the turret and weapons, a special basket assembly is
+            fitted into the turret will and reinforcement beams are
+            welded to the inside of the hull. A bridge carrying rack on
+            the hull rear provides the necessary support for the bridge
+            during transport.  The bridge is capable of carrying MLC 60
+            track loads across a 17.4 meter (57 foot) gap with
+            unprepared abutments and 18.3 meter (60 foot) gap with
+            prepared abutments.  The AVLB launcher can launch and
+            retrieve the AVLB on slopes up to 15% and on side slopes up
+            to 8%.  System mobility is compatible with the supported
+            combat vehicles.  The AVLB travels with maneuvering Tank and
+            Mechanized Infantry formations.  The assault launcher can
+            launch the bridge without exposing bridge personnel to enemy
+            fire and can retrieve the bridge from either end.  (Source:
+            Engineer Systems Handbook, 4/97)</rdfs:comment>
+        <guid>bede9370-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TrackedVehicle"/>
+        <rdfs:subClassOf rdf:resource="#BridgeWithArmoredVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Tank-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ArmoredVehicleLaunchedBridge-Low">
+        <rdfs:label>armored vehicle launched bridge low</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c049d9c7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#BridgeWithArmoredVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TrackedVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Artillery-SelfPropelled">
+        <rdfs:label>self-propelled artillery</rdfs:label>
+        <rdfs:comment>A collection of #$FieldArtillery.  Every instance
+            of #$Artillery-SelfPropelled is a large-caliber gun mounted
+            on a #$LandPlatform-SelfPropelled.</rdfs:comment>
+        <guid>c06e5060-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ArmoredVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Artillery-Towed">
+        <rdfs:label>towed artillery</rdfs:label>
+        <rdfs:comment>A collection of #$FieldArtillery.  Every instance
+            of #$Artillery-Towed is a large-caliber gun mounted on a #$LandPlatform-Towed.</rdfs:comment>
+        <guid>bfd340a1-9c29-11b1-9dad-c379636f7270</guid>
+    </daml:Class>
+    <daml:Class rdf:ID="AstronomicalSatellite">
+        <rdfs:label>astronomical satellites</rdfs:label>
+        <rdfs:comment>The collection of all artificial satellites
+            (#$Satellite-Device) which are designed for collecting data
+            on celestial and astronomical phenomena.</rdfs:comment>
+        <guid>bda65f29-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Satellite-Device"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AttackAircraftCarrier">
+        <rdfs:label>attack aircraft carrier</rdfs:label>
+        <rdfs:comment>The collection of #$AircraftCarriers intended for
+            use in transporting attack aircraft.</rdfs:comment>
+        <guid>c149b16c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AircraftCarrier"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AttackHelicopter">
+        <rdfs:label>attack helicopters</rdfs:label>
+        <rdfs:comment>The collection of #$Helicopters used for attacking
+            ground or water targets in a military context.</rdfs:comment>
+        <guid>c1372896-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="AutoCarrierTruck">
+        <rdfs:label>auto carrier truck</rdfs:label>
+        <rdfs:comment> Trucks which are used for transporting cars.</rdfs:comment>
+        <guid>be00c681-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Autogyro">
+        <rdfs:label>autogyros</rdfs:label>
+        <rdfs:comment>The collection of aircraft whose lift is provided
+            by unpowered rotating blades, but whose propulsion is
+            provided by a propeller.</rdfs:comment>
+        <guid>c0c25bc7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RotaryWingAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Automobile">
+        <rdfs:label>cars (motor vehicles)</rdfs:label>
+        <rdfs:comment>A collection of transportation devices -- those
+            commonly known as `passenger cars.&apos;  An instance of
+            #$Automobile is an element of #$RoadVehicle which was
+            designed for carrying about 4 passengers (give or take a
+            factor of 2).  In addition to midsize cars, #$Automobile
+            includes elements belonging to the subsets #$SportsCar,
+            #$PickupTruck and #$Van.  This collection does NOT include
+            motorcycles, buses, tractors, etc.</rdfs:comment>
+        <guid>bd5895c1-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BabyCarriage">
+        <rdfs:label>baby carriages</rdfs:label>
+        <rdfs:comment>The collection of baby strollers/carriages</rdfs:comment>
+        <guid>c0fd6b1c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BackHoe">
+        <rdfs:label>backhoes</rdfs:label>
+        <rdfs:comment>The collection of backhoes, a kind of machine used
+            to dig large holes and trenches</rdfs:comment>
+        <guid>bd58a254-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadWorkVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BallisticMissile">
+        <rdfs:label>ballistic missiles</rdfs:label>
+        <rdfs:comment>A collection. Each instance is a #$Missile
+            propelled from a #$MissileLauncher that is often mounted on
+            a #$Platform-Military. A #$BallisticMissile is generally
+            propelled by rockets into the upper atmosphere, and uses the
+            gravitational pull to make its high-speed return to the
+            surface -- either land or water surface -- where it
+            detonates on contact with the target.</rdfs:comment>
+        <guid>bd58e832-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Missile"/>
+        <rdfs:subClassOf rdf:resource="#RocketPropelledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BallisticMissileSubmarine">
+        <rdfs:label>ballistic missile submarines</rdfs:label>
+        <rdfs:comment>A class of submarines that have the capability of
+            launching nuclear            ballistic missiles from
+            underwater (cf. #$BallisticMissile-SubmarineLaunched).</rdfs:comment>
+        <guid>bd7bd001-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Submarine-Military"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Barge">
+        <rdfs:label>barges (containers)</rdfs:label>
+        <rdfs:comment>A #$Barge is a flat, usually rectangular
+            #$WaterTransportationDevice.  It usually is not self-powered
+            but is towed or pushed by a #$Watercraft.  Barges often
+            tranport cargo, but it is not unlikely that some barges
+            transport passengers.</rdfs:comment>
+        <guid>bfaf0f5e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WaterTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BattleCruiser">
+        <rdfs:label>battle cruiser</rdfs:label>
+        <rdfs:comment>The collection of warships which are large and
+            fast, with a great deal of firepower.</rdfs:comment>
+        <guid>be856dc0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Cruiser"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Battleship">
+        <rdfs:label>battleships</rdfs:label>
+        <rdfs:comment>A collection. Large and heavily armored warships.</rdfs:comment>
+        <guid>c10098d6-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Bicycle">
+        <rdfs:label>bicycles (land vehicles)</rdfs:label>
+        <rdfs:comment>The collection of all bicycles, personal wheeled
+            transport devices powered by human peddling.   Most Bicycles
+            have two main wheels arranged in-line, but some tandem
+            bicycles have more than two wheels.</rdfs:comment>
+        <guid>bd58e8d0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Biplane">
+        <rdfs:label>biplanes</rdfs:label>
+        <rdfs:comment>The collection of all airplanes which have two
+            primary sets of wings.  Nowdays biplanes are used mostly for
+            crop-dusting and aerobatics.</rdfs:comment>
+        <guid>bd58ca01-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BlimpTheAirship">
+        <rdfs:label>blimps</rdfs:label>
+        <rdfs:comment>The collection of all dirigible, motorized,
+            lighter-than-air craft (airships).  Each generally consists
+            of a gas-filled gas-sack from which a control and passenger
+            cabin hangs (the gas-sack may or may not have rigid
+            reinforcement such as ribs).  A BlimpTheAirship flies more
+            slowly than an #$Airplane.  They are also called blimps,
+            dirigibles and Zeppelins.</rdfs:comment>
+        <guid>bd5892ea-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LighterThanAirCraft"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Bodyboard">
+        <rdfs:label>bodyboards (athletic gear)</rdfs:label>
+        <rdfs:comment>The collection of all bodyboards.</rdfs:comment>
+        <guid>c00339c1-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WaterTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BomberPlane">
+        <rdfs:label>bombers (warplanes)</rdfs:label>
+        <rdfs:comment>The collection of military #$Airplanes which are
+            designed to be used in #$Bombing target sites.</rdfs:comment>
+        <guid>bd58d3ed-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Warplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BridgeWithArmoredVehicle">
+        <rdfs:label>bridge with armored vehicle</rdfs:label>
+        <rdfs:comment>A collection of military bridges that are
+            physically supported underneath by an armored vehicle such
+            as a modified tank chassis.</rdfs:comment>
+        <guid>be89d67e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#CombatEngineeringVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BulkCargoShip">
+        <rdfs:label>bulk cargo ship</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>be2059a3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#CargoShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Bulldozer">
+        <rdfs:label>bulldozer</rdfs:label>
+        <rdfs:comment>The collection of vehicles generally used to move
+            large amounts of earth and other materials for construction projects</rdfs:comment>
+        <guid>bd58ff00-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TrackedVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#RoadWorkVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="BulletTrain">
+        <rdfs:label>bullet trains</rdfs:label>
+        <rdfs:comment>Modern trains designed for very high speed.</rdfs:comment>
+        <guid>c10aeb3f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Train-TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Bus-RoadVehicle">
+        <rdfs:label>buses (public transportation device)</rdfs:label>
+        <rdfs:comment>The collection of all buses, transport vehicles
+            for ground transportation of many (they have room for at
+            least 10, probably fewer than 60) people.  A bus usually is
+            driven by a professional bus driver.</rdfs:comment>
+        <guid>bd58b4bf-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PublicTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle"/>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-DieselEngine"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Canoe">
+        <rdfs:label>canoes (boats)</rdfs:label>
+        <rdfs:comment>The collection of all canoes, small, narrow
+            watercraft that are powered by human paddling, poling or by
+            a small boat-engine.</rdfs:comment>
+        <guid>bd58ab49-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Small"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CargoAircraft">
+        <rdfs:label>cargo aircraft</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58943a-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CargoHelicopter">
+        <rdfs:label>cargo helicopters</rdfs:label>
+        <rdfs:comment>The collection of #$Helicopters used for cargo transport.</rdfs:comment>
+        <guid>becf4cf1-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CargoShip">
+        <rdfs:label>cargo ships</rdfs:label>
+        <rdfs:comment>The collection of all cargo ships, i.e., ships
+            that by design can transport a large amount of goods.  See
+            also #$TankerShip.</rdfs:comment>
+        <guid>c1009191-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CementTruck">
+        <rdfs:label>cement trucks</rdfs:label>
+        <rdfs:comment>Trucks which are used to carry concrete to
+            construction sites.</rdfs:comment>
+        <guid>be00ca5d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ChemicalTanker-MerchantMarineShip">
+        <rdfs:label>chemical tanker merchant marine ship</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c0bc7dca-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ChemicalTanker-Ship">
+        <rdfs:label>chemical tanker ship</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>be773cd8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CityBus">
+        <rdfs:label>city busses</rdfs:label>
+        <rdfs:comment>A large bus used typically by municipalities for
+            conveying passengers between public bus stops within the
+            municipal limits, for a small fee.  Capacity up to 60 people.</rdfs:comment>
+        <guid>c1007f26-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Bus-RoadVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CoastalEscortBoat">
+        <rdfs:label>coastal escort boat</rdfs:label>
+        <rdfs:comment>The collection of boats intended for use in a
+            military context as escorts for other watercraft involved in
+            a military operation.</rdfs:comment>
+        <guid>bfee7aec-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CoastalPatrolCraft">
+        <rdfs:label>coastal patrol craft</rdfs:label>
+        <rdfs:comment>A collection. Boats meant to be used in coastal
+            patrol operations.</rdfs:comment>
+        <guid>c124bd7f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PatrolWatercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CombatAircraft">
+        <rdfs:label>combat aircraft (military aircraft)</rdfs:label>
+        <rdfs:comment>The subset of military aircraft which are used in
+            combat, as opposed to aircraft used for transport or reconnaissance.</rdfs:comment>
+        <guid>be6dc7ab-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CombatEngineeringVehicle">
+        <rdfs:label>CEV</rdfs:label>
+        <rdfs:comment>The collection of tank-like vehicles used by
+            military organizations to clear obstructions, prepare firing
+            positions, fill in craters and ditches, and recover disabled vehicles.</rdfs:comment>
+        <guid>bfc1216f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ArmoredVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CombatStoreShip">
+        <rdfs:label>combat store ship</rdfs:label>
+        <rdfs:comment>A collection. Ships intended for use in a military
+            context to replenish supplies for other ships involved in combat.</rdfs:comment>
+        <guid>be830ed7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#UnderwayReplenishmentShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CommandHelicopter">
+        <rdfs:label>command helicopter</rdfs:label>
+        <rdfs:comment>The class of helicopters used to transport the
+            commanders of a unit. Examples are the UH-1H Command and
+            Control Helicopter.</rdfs:comment>
+        <guid>c1556808-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CommandShip">
+        <rdfs:label>command ship</rdfs:label>
+        <rdfs:comment>The collection of military command ships.</rdfs:comment>
+        <guid>bd799eac-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CommandVehicle">
+        <rdfs:label>command vehicle</rdfs:label>
+        <rdfs:comment>The subset of military vehicles which transport
+            commanding officers.</rdfs:comment>
+        <guid>bfadb615-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CommercialAircraft">
+        <rdfs:label>commercial aircraft</rdfs:label>
+        <rdfs:comment>The collection of all commercially owned or
+            operated aircraft.</rdfs:comment>
+        <guid>bd588f27-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CommercialFishingBoat">
+        <rdfs:label>commercial fishing boat</rdfs:label>
+        <rdfs:comment>The subcollection of #$Watercraft that contains
+            all fishing boats, including trawlers, seiners, junks etc.
+            that are marine-life-catching devices, and the main purpose
+            of the fishing is commercial.  Note that not all instances
+            of CommercialFishingBoat have to be used exclusively in the
+            ocean--they can also be used in rivers and lakes, etc.</rdfs:comment>
+        <guid>be059efb-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CommercialPassengerAirplane">
+        <rdfs:label>commercial airplanes</rdfs:label>
+        <rdfs:comment>The collection of all commercially owned or
+            operated airplanes designed or used to carry passengers.</rdfs:comment>
+        <guid>bd5882cd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PublicTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#PassengerAirplane"/>
+        <rdfs:subClassOf rdf:resource="#CommercialAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CommunicationVehicle">
+        <rdfs:label>communication vehicle</rdfs:label>
+        <rdfs:comment>The collection of vehicles intended to transport
+            communications equipment.</rdfs:comment>
+        <guid>c074e8bc-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CommunicationsSatellite">
+        <rdfs:label>communications satellites</rdfs:label>
+        <rdfs:comment>The collection of all artificial satellites
+            (#$Satellite-Device) which are designed for facillitating
+            communications between locations on the #$PlanetEarth by
+            receiving radio transmissions and retransmitting them for
+            reception on Earth.  Individual signals may come from or be
+            transmitted to other satellites, they do not need to be
+            solely with ground stations.</rdfs:comment>
+        <guid>c0767c82-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Satellite-Device"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CompactCar">
+        <rdfs:label>compact cars</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58ed92-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+        <daml:disjointWith rdf:resource="#MidSizeCar"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ConstructionVehicle">
+        <rdfs:label>construction vehicles</rdfs:label>
+        <rdfs:comment>The collection of all   construction vehicles that
+            are used to make roads, dams,   buildings etc.  This is a
+            subcollection of   #$InternalCombustionPoweredDevice, whose
+            instances often have   wheels but just as often have treads
+            like tanks.</rdfs:comment>
+        <guid>be4f2d7e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ContainerShip">
+        <rdfs:label>container ship</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bfd52ca0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ConvertedCommandShip">
+        <rdfs:label>converted command ship</rdfs:label>
+        <rdfs:comment>The collection of military converted command ships.</rdfs:comment>
+        <guid>bd67c765-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#CommandShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ConvertibleCar">
+        <rdfs:label>convertibles</rdfs:label>
+        <rdfs:comment>A car without a roof, or whose roof can be folded
+            back out of the way or removed.</rdfs:comment>
+        <guid>bd58a1dd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Corvette-Ship">
+        <rdfs:label>corvettes (military hardware)</rdfs:label>
+        <rdfs:comment>A collection of #$MilitaryWatercraft.  Every
+            instance of #$Corvette-Ship is a ship smaller than a
+            destroyer, armed with antisubmarine and anti-aircraft guns
+            and depth charges, and equipped with detection devices.
+            (The car was named after the ship, not the other way around.)</rdfs:comment>
+        <guid>c0de1cde-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryWatercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CountrySedanCar">
+        <rdfs:label>Country Sedan</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c0141bb0-9c29-11b1-9dad-c379636f7270</guid>
+    </daml:Class>
+    <daml:Class rdf:ID="CraneVehicle">
+        <rdfs:label>crane vehicles</rdfs:label>
+        <rdfs:comment>Large wheeled vehicles mounted with cranes for
+            mounting equipment on other vehicles.</rdfs:comment>
+        <guid>bef10432-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#HeavyWheeledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#ConstructionVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CruiseMissile">
+        <rdfs:label>cruise missiles</rdfs:label>
+        <rdfs:comment>A collection whose instances are #$Missiles which
+            travel at low elevation, dodging fire if necessary, then
+            climb, find the target with its own sensors, and make a
+            final high-speed diving attack.  Although grouped with
+            #$Missiles, #$CruiseMissiles are actually unmanned drone
+            aircraft directed in flight by remote control.</rdfs:comment>
+        <guid>bd83060b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Missile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="CruiseShip">
+        <rdfs:label>cruise ships</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1009bf4-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#OceanLiner"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Cruiser">
+        <rdfs:label>cruiser (modern naval ship)</rdfs:label>
+        <rdfs:comment>The collection of warships which are relatively
+            large and fast. Cruisers are usually smaller than
+            battleships, but larger than destroyers.</rdfs:comment>
+        <guid>c0513621-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Cutter">
+        <rdfs:label>cutter</rdfs:label>
+        <rdfs:comment>The collection of military cutters.</rdfs:comment>
+        <guid>beb6d38d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="DecontaminationTruck-Military">
+        <rdfs:label>decontamination truck military</rdfs:label>
+        <rdfs:comment>The collection of military vehicles used to
+            decontaminate areas where chemical or biological weapons or
+            dangerous radiation levels are present.</rdfs:comment>
+        <guid>bd8855f6-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+        <rdfs:subClassOf rdf:resource="#HeavyWheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="DeepSubmergenceRescueVehicle">
+        <rdfs:label>deep submergence rescue vehicle</rdfs:label>
+        <rdfs:comment>A kind of tiny submarine used by
+            #$China-PeoplesRepublic    for underwater rescue.</rdfs:comment>
+        <guid>be1af6c1-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RescueVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Submarine-Military"/>
+    </daml:Class>
+    <daml:Class rdf:ID="DeliveryTruck">
+        <rdfs:label>delivery trucks</rdfs:label>
+        <rdfs:comment>Typically boxy, panel-sided vehicles used for
+            delivery of goods on local [vs. long-distance] routes.</rdfs:comment>
+        <guid>c1008610-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Destroyer">
+        <rdfs:label>destroyer</rdfs:label>
+        <rdfs:comment>The collection of highly maneuverable, relatively
+            small warships which are used to destroy other naval ships.
+            Typically these ships are armed with naval guns, depth
+            charges, and torpedoes.</rdfs:comment>
+        <guid>c10099fe-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="DestroyerTender">
+        <rdfs:label>destroyer tender</rdfs:label>
+        <rdfs:comment>A collection. Military destroyer tender ships.</rdfs:comment>
+        <guid>bed0d509-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MaterialSupportShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Dinghy">
+        <rdfs:label>dinghies</rdfs:label>
+        <rdfs:comment>small one or two-person rowboat.</rdfs:comment>
+        <guid>be00fad9-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Small"/>
+        <rdfs:subClassOf rdf:resource="#Rowboat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="DirtBike">
+        <rdfs:label>dirt bikes</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1009a22-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Motorcycle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="DockLandingShip">
+        <rdfs:label>dock landing ship</rdfs:label>
+        <rdfs:comment>A collection. Military dock landing ships, which
+            are intended to .</rdfs:comment>
+        <guid>bec19adf-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#AmphibiousWarfareShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="DumpTruck">
+        <rdfs:label>dump trucks</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58ff42-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="EarthRemoteSensingSatellite">
+        <rdfs:label>Earth Remote Sensing Satellite</rdfs:label>
+        <rdfs:comment>The collection of all artificial satellites
+            (#$Satellite-Device) which  use powerful cameras to collect
+            information about the Earth&apos;s surface. They orbit the
+            #$PlanetEarth in a LowEarthOrbit of about 300 miles from the
+            Earth&apos;s surface.</rdfs:comment>
+        <guid>bddce467-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Satellite-Device"/>
+    </daml:Class>
+    <daml:Class rdf:ID="EightPersonInflatableBoat">
+        <rdfs:label>eight person inflatable boat</rdfs:label>
+        <rdfs:comment>The collection of military inflatable boats that
+            can accommodate eight people.</rdfs:comment>
+        <guid>bd971913-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#InflatableBoat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ElectricWheelchair">
+        <rdfs:label>electric wheelchairs</rdfs:label>
+        <rdfs:comment>The type of wheelchair that has an electric motor
+            which powers its movement.</rdfs:comment>
+        <guid>c0fd4628-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#Wheelchair"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ElectronicCountermeasuresVehicle">
+        <rdfs:label>electronic countermeasures vehicle</rdfs:label>
+        <rdfs:comment>The collection of vehicles intended for use in
+            electronic countermeasure operations.</rdfs:comment>
+        <guid>be8f7530-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ElectronicEquipmentVehicle">
+        <rdfs:label>electronic equipment vehicle</rdfs:label>
+        <rdfs:comment>The collection of vehicles intended to be used for
+            the transport of electronic equipment.</rdfs:comment>
+        <guid>c0ea4276-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="EmergencyVehicle">
+        <rdfs:label>emergency vehicles</rdfs:label>
+        <rdfs:comment>EmergencyVehicles include FireTrucks, Ambulances, etc.</rdfs:comment>
+        <guid>c0fbde95-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ExtendedVan">
+        <rdfs:label>extended van</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58a263-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Van"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FastAttackCraft">
+        <rdfs:label>fast attack watercraft</rdfs:label>
+        <rdfs:comment>The collection of military fast attack craft.</rdfs:comment>
+        <guid>c0eca5fe-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PatrolWatercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FastCombatStoreShip">
+        <rdfs:label>fast combat store ship</rdfs:label>
+        <rdfs:comment>A collection. Military fast combat store ships.</rdfs:comment>
+        <guid>be6fd9df-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#UnderwayReplenishmentShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FastFrigate">
+        <rdfs:label>fast frigate</rdfs:label>
+        <rdfs:comment>The colletion of military fast frigates.</rdfs:comment>
+        <guid>bf7cb597-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Frigate"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Ferry">
+        <rdfs:label>ferries (public transportation device)</rdfs:label>
+        <rdfs:comment>The subcollection of #$Watercraft that contains
+            all ferryboats, i.e., boats that are used to carry people,
+            goods or vehicles across rivers, lakes, canals or channels
+            etc. or even from one side of a harbor to another, but
+            normally not used to cross oceans.</rdfs:comment>
+        <guid>c1009ab0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PublicTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FighterAttackPlane">
+        <rdfs:label>fighter attack plane</rdfs:label>
+        <rdfs:comment>#$The collection of aircraft designed primarily
+            for attacking targets on land #$or sea.    Distinct from
+            Interceptors, designed primarily for air-to-air use.</rdfs:comment>
+        <guid>c029381a-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#FighterPlane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FighterInterceptorPlane">
+        <rdfs:label>fighter interceptor plane</rdfs:label>
+        <rdfs:comment>#$The collection of military aircraft designed
+            primarily for use against other aircraft or airborne weapons.</rdfs:comment>
+        <guid>bd74c495-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#FighterPlane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FighterPlane">
+        <rdfs:label>fighter planes</rdfs:label>
+        <rdfs:comment>The collection of aircraft whose primary mission
+            is armed assault on airborne or surface targets.</rdfs:comment>
+        <guid>bd58fe03-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Warplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FireFightingVehicle-Military">
+        <rdfs:label>fire fighting vehicle military</rdfs:label>
+        <rdfs:comment>The collection of #$FireTrucks used in a military context.</rdfs:comment>
+        <guid>c0fe58e5-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+        <rdfs:subClassOf rdf:resource="#FireTruck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FireTruck">
+        <rdfs:label>fire trucks</rdfs:label>
+        <rdfs:comment>Truck which are used to extinguish fire in  fire
+            outbreak cases.</rdfs:comment>
+        <guid>be00ca8e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#EmergencyVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FixedWingAircraft">
+        <rdfs:label>fixed-wing aircraft</rdfs:label>
+        <rdfs:comment>The collection of air vehicles which have a fixed
+            wing structure as the primary source of lift.</rdfs:comment>
+        <guid>c0775fda-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <daml:disjointWith rdf:resource="#RotaryWingAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FleetSupportShip">
+        <rdfs:label>fleet support ship</rdfs:label>
+        <rdfs:comment>The collection of ships intended to be used in
+            operations supporting some fleet.</rdfs:comment>
+        <guid>c02712d7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FloatPlane">
+        <rdfs:label>float planes</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1008854-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Forklift">
+        <rdfs:label>forklifts</rdfs:label>
+        <rdfs:comment>The collection of all vehicles (a.k.a.
+            &apos;forklift trucks&apos;) with prongs in front that can
+            be inserted under a load and raised to lift and transport
+            the load.</rdfs:comment>
+        <guid>bf6501d8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Frigate">
+        <rdfs:label>frigates</rdfs:label>
+        <rdfs:comment>A collection. Warships which are larger than
+            destroyers and smaller than cruisers.</rdfs:comment>
+        <guid>c081be6e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FuelTankTruck">
+        <rdfs:label>fuel tank truck</rdfs:label>
+        <rdfs:comment>The collection of trucks intended for use to
+            transport fuel.</rdfs:comment>
+        <guid>bde235cd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="FullSizeCar">
+        <rdfs:label>full-size cars</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58f6aa-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+        <daml:disjointWith rdf:resource="#MidSizeCar"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GarbageTruck">
+        <rdfs:label>garbage trucks</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58b43c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GasTanker">
+        <rdfs:label>gas tankers</rdfs:label>
+        <rdfs:comment>The collection of tanker ships intended to be used
+            for replenishment of gasoline to other ships.</rdfs:comment>
+        <guid>be3af126-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TankerShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Glider">
+        <rdfs:label>glider (consumer durable)</rdfs:label>
+        <rdfs:comment>The collection of all unpowered steerable aircraft
+            with lift surfaces designed for extended periods of gliding.</rdfs:comment>
+        <guid>bd8040ee-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GolfCart">
+        <rdfs:label>golf carts</rdfs:label>
+        <rdfs:comment>The collection of all motorized vehicles that are
+            designed for golfers to use to drive around on #$GolfCourses
+            while they are playing #$GolfGames.  GolfCarts drive very
+            slowly compared with #$Automobiles.</rdfs:comment>
+        <guid>c0fce4ee-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GroceryCart">
+        <rdfs:label>grocery carts</rdfs:label>
+        <rdfs:comment>#$GroceryCart is the collection of handcarts that
+            are designed to hold groceries.</rdfs:comment>
+        <guid>c10097d4-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ShoppingCart"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GroundToOrbitVehicle">
+        <rdfs:label>ground to orbit vehicle</rdfs:label>
+        <rdfs:comment>The collection of vehicles whose purpose is to
+            carry loads from a planetary surface to orbit around that
+            planet.  So far, these are rocket powered.</rdfs:comment>
+        <guid>c10c2931-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RocketPropelledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#Spacecraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GuidedMissile">
+        <rdfs:label>guided missiles</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bf6a717d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Missile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GuidedMissileCruiser">
+        <rdfs:label>guided missile cruiser</rdfs:label>
+        <rdfs:comment>The collection of #$Cruisers intended to be used
+            for transporting and launching #$GuidedMissiles.</rdfs:comment>
+        <guid>bfc4dcfa-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Cruiser"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GuidedMissileDestroyer">
+        <rdfs:label>guided missile destructions</rdfs:label>
+        <rdfs:comment>The collection of #$Destroyers intended to be used
+            for transporting and launching #$GuidedMissiles.</rdfs:comment>
+        <guid>c08d0080-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Destroyer"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GuidedMissileFrigate">
+        <rdfs:label>guided missile frigates</rdfs:label>
+        <rdfs:comment>The collection of #$Frigates intended to be used
+            for transporting and launching #$GuidedMissiles.</rdfs:comment>
+        <guid>bdb20680-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Frigate"/>
+    </daml:Class>
+    <daml:Class rdf:ID="GunCruiser">
+        <rdfs:label>gun cruiser</rdfs:label>
+        <rdfs:comment>A collection. Military gun cruiser ships.</rdfs:comment>
+        <guid>bee54a60-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Cruiser"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HalfTrackVehicle">
+        <rdfs:label>half track vehicle</rdfs:label>
+        <rdfs:comment>#$HalfTrackVehicle is a collection of vehicles
+            that have tracks in the back and wheels in the fromt.</rdfs:comment>
+        <guid>c0d5e396-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#All-TerrainVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HangGlider">
+        <rdfs:label>hang glider</rdfs:label>
+        <rdfs:comment>The collection of all #$Gliders from which the
+            pilot is suspended below and steers by shifting forward and
+            back and side to side.</rdfs:comment>
+        <guid>bd58dfd8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Glider"/>
+        <daml:disjointWith rdf:resource="#UnmannedAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HarvesterAgriculturalImplement">
+        <rdfs:label>combines (land vehicles)</rdfs:label>
+        <rdfs:comment>The collection of large wheeled agricultural
+            vehicles whose primary function is to harvest a field</rdfs:comment>
+        <guid>bd58932c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HeavyEquipmentTransport">
+        <rdfs:label>HET</rdfs:label>
+        <rdfs:comment>The collection of military trailer trucks used to
+            transport heavy equipment, such as #$EarthMovingEquipment-Military.</rdfs:comment>
+        <guid>be555423-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#HeavyWheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HeavyWheeledVehicle">
+        <rdfs:label>heavy wheeled vehicle</rdfs:label>
+        <rdfs:comment>Heavier weight wheeled military vehicles.</rdfs:comment>
+        <guid>bfcc874e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Helicopter">
+        <rdfs:label>helicopters</rdfs:label>
+        <rdfs:comment>The collection of rotary wing, self-powered
+            mechanical devices that fly.</rdfs:comment>
+        <guid>bd58ae10-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RotaryWingAircraft"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HelicopterCarrier">
+        <rdfs:label>helicopter carrier</rdfs:label>
+        <rdfs:comment>The collection of #$AircraftCarriers intended for
+            use in transporting #$Helicopters.</rdfs:comment>
+        <guid>bf11792b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AircraftCarrier"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HelicopterCruiser">
+        <rdfs:label>helicopter cruiser</rdfs:label>
+        <rdfs:comment>A collection. #$Cruisers specialized for carrying #$Helicopters.</rdfs:comment>
+        <guid>bf81aa54-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Cruiser"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HighEnduranceCutter">
+        <rdfs:label>high endurance cutter</rdfs:label>
+        <rdfs:comment>A collection. Military high-endurance cutter ships.</rdfs:comment>
+        <guid>bf8e04cd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Cutter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HighSpeedTrain-TransportationDevice">
+        <rdfs:label>high speed trains</rdfs:label>
+        <rdfs:comment>The collection of all high-speed trains</rdfs:comment>
+        <guid>be29191d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Train-TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HighwayBus">
+        <rdfs:label>highway bus</rdfs:label>
+        <rdfs:comment>A large, heavy, comfortable bus typically used for
+            long-distance transport of passengers between cities by
+            commercial carriers and/or tour companies.  Capacity up to
+            60 people.</rdfs:comment>
+        <guid>c10080a0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Bus-RoadVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HorseCarriage">
+        <rdfs:label>buggies</rdfs:label>
+        <rdfs:comment>Horse-drawn carriages.</rdfs:comment>
+        <guid>c0fcf3ee-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HotAirBalloon">
+        <rdfs:label>hot-air balloons</rdfs:label>
+        <rdfs:comment>The collection of all hot-air buoyant balloons,
+            #$AirTransportationDevices that usually lack a motor or a
+            means of steering.  Each consistes of a gas-bag into which
+            hot air is introduced, and from which a basket or passenger
+            compartment hangs.</rdfs:comment>
+        <guid>bd58b336-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LighterThanAirCraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HouseBoat">
+        <rdfs:label>houseboats</rdfs:label>
+        <rdfs:comment>a relatively small boat which is like a floating house</rdfs:comment>
+        <guid>c0fcddfe-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Howitzer-SelfPropelled">
+        <rdfs:label>howitzer - self propelled</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bfdd4142-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Artillery-SelfPropelled"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Howitzer-Towed">
+        <rdfs:label>howitzer - towed</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bdaf9423-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Artillery-Towed"/>
+    </daml:Class>
+    <daml:Class rdf:ID="HowitzerSP-HeavyArmored">
+        <rdfs:label>howitzer s p - heavy armored</rdfs:label>
+        <rdfs:comment>This is a relatively small - but growing - class
+            of vehicles.  It consists largely of wheeled  self-propelled
+            155mm artillery pieces.  Some of these were designed as
+            field  artillery, others as coast-defense vehicles.</rdfs:comment>
+        <guid>c0da7ebc-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle-Armored"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Humvee">
+        <rdfs:label>HMMWV</rdfs:label>
+        <rdfs:comment>The collection of &apos;high mobility,
+            multi-purpose, wheeled vehicles&apos; used by the U.S. Army.</rdfs:comment>
+        <guid>c150cb95-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#All-TerrainVehicle"/>
+        <rdfs:subClassOf rdf:resource="#LightWheeledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Humvee-Ambulance">
+        <rdfs:label>humvee - ambulance</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c154455c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Ambulance"/>
+        <rdfs:subClassOf rdf:resource="#Humvee"/>
+    </daml:Class>
+    <daml:Class rdf:ID="InfantryLandingShip">
+        <rdfs:label>infantry landing ship</rdfs:label>
+        <rdfs:comment>A collection. Ships used in a military context to
+            bring personnel onto land.</rdfs:comment>
+        <guid>bf09ab14-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandingShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="InflatableBoat">
+        <rdfs:label>inflatable boats</rdfs:label>
+        <rdfs:comment>The collection of all inflatable boats, that is,
+            boats (mostly small watercraft) that are composed of some
+            fabric or membrane and are inflated with air to give them
+            buoyancy in water.</rdfs:comment>
+        <guid>c1009ce2-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Small"/>
+    </daml:Class>
+    <daml:Class rdf:ID="InternalSecurityArmoredVehicle">
+        <rdfs:label>internal security armored vehicle</rdfs:label>
+        <rdfs:comment>A collection. Internal security armored military vehicles.</rdfs:comment>
+        <guid>c022d8ec-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Jeep-Military">
+        <rdfs:label>jeep military</rdfs:label>
+        <rdfs:comment>The collection of jeep-like vehicles used
+            primarily by military organizations.</rdfs:comment>
+        <guid>bd82921d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LightWheeledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#SportUtilityVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="JetPropelledAircraft">
+        <rdfs:label>jet planes</rdfs:label>
+        <rdfs:comment>The collection of all aircraft propelled by #$JetEngines.</rdfs:comment>
+        <guid>bd58b3ee-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Kayak">
+        <rdfs:label>kayaks (boats)</rdfs:label>
+        <rdfs:comment>The collection of kayaks.</rdfs:comment>
+        <guid>bd58aaa5-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Small"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LandTransportationDevice">
+        <rdfs:label>land vehicles</rdfs:label>
+        <rdfs:comment>A collection of physical devices. An instance of
+            #$LandTransportationDevice is a device used for
+            transportation on land.  Subsets of
+            #$LandTransportationDevice include the collections
+            #$Automobile, #$Snowmobile, #$TrainCar, #$HorseCarriage,
+            #$BabyCarriage, #$Bicycle, #$SkateBoard, and more.</rdfs:comment>
+        <guid>bd58d4ff-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LandingCraft">
+        <rdfs:label>landing craft</rdfs:label>
+        <rdfs:comment>The collection of watercraft or amphibious craft
+            used in landing operations.</rdfs:comment>
+        <guid>c0de98ad-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#AmphibiousWarfareShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LandingCraft-AirCushioned">
+        <rdfs:label>landing craft air cushioned</rdfs:label>
+        <rdfs:comment>The collection of air-cushioned landing craft.
+            These craft are intended for use in transporting weapon
+            systems, equipment, cargo, and personnelboth from ship to
+            shore and across the beach.</rdfs:comment>
+        <guid>bfea46c9-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#LandingCraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LandingCraftPersonnel">
+        <rdfs:label>landing craft personnel</rdfs:label>
+        <rdfs:comment>The collection of landing craft intended to
+            transport personnel.</rdfs:comment>
+        <guid>bff25c15-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#LandingCraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LandingCraftUtility">
+        <rdfs:label>landing craft utility</rdfs:label>
+        <rdfs:comment>The collection of utility landing craft.</rdfs:comment>
+        <guid>c0e056d1-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#LandingCraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LandingShip">
+        <rdfs:label>landing ship</rdfs:label>
+        <rdfs:comment>The collection of military amphibious landing ships.</rdfs:comment>
+        <guid>be95ad26-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#AmphibiousWarfareShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LawnMower-Riding">
+        <rdfs:label>riding mower</rdfs:label>
+        <rdfs:comment>The collection of rider mowers; i.e., those which
+            the user rides on top of while operating. These mowers are
+            powered by fossil fuel.</rdfs:comment>
+        <guid>bd8e3cea-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Lifeboat">
+        <rdfs:label>lifeboats</rdfs:label>
+        <rdfs:comment>Smaller boats carried on a ship to provide a means
+            of escape if the ship is in danger of sinking.</rdfs:comment>
+        <guid>c1008e87-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Small"/>
+        <rdfs:subClassOf rdf:resource="#Rowboat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LightAircraftCarrier">
+        <rdfs:label>light aircraft carrier</rdfs:label>
+        <rdfs:comment>A collection. Military light #$AircraftCarriers.</rdfs:comment>
+        <guid>bdec00d3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AircraftCarrier"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LightCruiser">
+        <rdfs:label>light cruiser</rdfs:label>
+        <rdfs:comment>The collection of light cruiser ships.</rdfs:comment>
+        <guid>be1c1f7f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Cruiser"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LightFrigate">
+        <rdfs:label>light frigate</rdfs:label>
+        <rdfs:comment>The collection of light frigate ships.</rdfs:comment>
+        <guid>bed31d15-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Frigate"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LightGuidedMissileFrigate">
+        <rdfs:label>light guided missile frigate</rdfs:label>
+        <rdfs:comment>The collection of military light frigates intended
+            for use in carrying and launching guided missiles.</rdfs:comment>
+        <guid>bd7adf17-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Frigate"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LightTank">
+        <rdfs:label>light tanks</rdfs:label>
+        <rdfs:comment>The collection of military vehicles that fall into
+            the light tank category.</rdfs:comment>
+        <guid>be910c2f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Tank-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LightWheeledVehicle">
+        <rdfs:label>light wheeled vehicle</rdfs:label>
+        <rdfs:comment>Lighter weight wheeled military vehicles.</rdfs:comment>
+        <guid>bfaf3c1b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LighterThanAirCraft">
+        <rdfs:label>lighter-than-air crafts</rdfs:label>
+        <rdfs:comment>The collection of aircraft which depend on
+            lighter-than-air gaseous substances for lift.</rdfs:comment>
+        <guid>beae9829-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <daml:disjointWith rdf:resource="#RotaryWingAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="LogisticLandingShip">
+        <rdfs:label>logistic landing ship</rdfs:label>
+        <rdfs:comment>A collection. Military logistic landing ships.</rdfs:comment>
+        <guid>bfa73b58-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandingShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="M60AVLB">
+        <rdfs:label>m 60 avlb</rdfs:label>
+        <rdfs:comment>The collection of AVLB&apos;s that are mounted on
+            an M60 chassis.</rdfs:comment>
+        <guid>c085c7bd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ArmoredVehicleLaunchedBridge"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MaintenanceVehicle">
+        <rdfs:label>maintenance vehicle</rdfs:label>
+        <rdfs:comment>The collection of vehicles intended for use in the
+            maintenance of other objects.</rdfs:comment>
+        <guid>c06f7960-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MannedSpacecraft">
+        <rdfs:label>manned spacecraft</rdfs:label>
+        <rdfs:comment>The collection of all manned #$Spacecraft.</rdfs:comment>
+        <guid>bf6f156c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RocketPropelledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Satellite-Device"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MaterialLandingShip">
+        <rdfs:label>material landing ship</rdfs:label>
+        <rdfs:comment>A collection. Military material landing ships.</rdfs:comment>
+        <guid>bef5ee40-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#AmphibiousWarfareShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MaterialSupportShip">
+        <rdfs:label>material support ship</rdfs:label>
+        <rdfs:comment>A collection. Military material support ships.</rdfs:comment>
+        <guid>bfc9cf2e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MechanizedLandingCraft">
+        <rdfs:label>mechanized landing craft</rdfs:label>
+        <rdfs:comment>The collection of mechanized watercraft used in
+            military landing operations.</rdfs:comment>
+        <guid>beec7ae2-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#LandingCraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MedEvacHelicopter">
+        <rdfs:label>MedEvac helicopters</rdfs:label>
+        <rdfs:comment>The collection of #$Helicopters used in a military
+            context to transport patients and medical personnel to and
+            between medical facilities. These helicopters also often
+            carry medical equipment.</rdfs:comment>
+        <guid>bf1d3954-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+        <rdfs:subClassOf rdf:resource="#RescueVehicle"/>
+        <rdfs:subClassOf rdf:resource="#EmergencyVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MediumEnduranceCutter">
+        <rdfs:label>medium endurance cutter</rdfs:label>
+        <rdfs:comment>The collection of military medium endurance cutters.</rdfs:comment>
+        <guid>c0ffd182-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Cutter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MidSizeCar">
+        <rdfs:label>mid-size cars</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd589fe7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+        <daml:disjointWith rdf:resource="#FullSizeCar"/>
+        <daml:disjointWith rdf:resource="#SubCompactCar"/>
+        <daml:disjointWith rdf:resource="#CompactCar"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryAircraft">
+        <rdfs:label>military aircraft</rdfs:label>
+        <rdfs:comment>The collection of all aircraft used for military
+            purposes, or equipped to be used for such purposes.</rdfs:comment>
+        <guid>bd58b375-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Platform-Military"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <daml:disjointWith rdf:resource="#WaterPlatform-Subsurface"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryAirplane">
+        <rdfs:label>military airplanes</rdfs:label>
+        <rdfs:comment>The collection of all #$Airplanes used by    the military.</rdfs:comment>
+        <guid>be79c486-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryAmphibiousPlatform">
+        <rdfs:label>military amphibious platform</rdfs:label>
+        <rdfs:comment>The collection of military platforms intended to
+            be used on land and in water. These are usually amphibious
+            craft which can transport military equipment and personnel.</rdfs:comment>
+        <guid>be3e7092-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Platform-Military"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryHelicopter">
+        <rdfs:label>military helicopter</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bf1f06d9-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryLandPlatform">
+        <rdfs:label>military land platform</rdfs:label>
+        <rdfs:comment>The collection of military land platforms. These
+            are #$LandTransportationDevices which can transport military
+            equipment and personnel.</rdfs:comment>
+        <guid>c0c53f2b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Platform-Military"/>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryLoaderVehicle">
+        <rdfs:label>military loader vehicle</rdfs:label>
+        <rdfs:comment>The collection of heavy wheeled military vehicles
+            which are used to transport rubble, earth, or construction materials.</rdfs:comment>
+        <guid>bff845f3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#HeavyWheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitarySpacecraft">
+        <rdfs:label>military spacecraft</rdfs:label>
+        <rdfs:comment>The collection of #$Spacecraft intended to be used
+            in a military context.</rdfs:comment>
+        <guid>be553ff4-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Spacecraft"/>
+        <rdfs:subClassOf rdf:resource="#Platform-Military"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryTankerVehicle">
+        <rdfs:label>military tanker vehicle</rdfs:label>
+        <rdfs:comment>The collection of wheeled military vehicles which
+            are used to transport fuel or other liquids.</rdfs:comment>
+        <guid>c0858a9b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#HeavyWheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryVehicle">
+        <rdfs:label>military vehicles</rdfs:label>
+        <rdfs:comment>The collection of military platforms (see
+            #$Platform-Military) which are also vehicles (see
+            #$TransportationDevice-Vehicle). This would include things
+            like airplanes and tanks, but exclude things like towed platforms.</rdfs:comment>
+        <guid>c0bac0bc-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Platform-Military"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MilitaryWatercraft">
+        <rdfs:label>military watercraft</rdfs:label>
+        <rdfs:comment>The collection of water transportation devices
+            intended to be used in a military context. Subsets include
+            nuclear submarines and destroyers, but transportation
+            devices which are not vehicles could also be subsets.</rdfs:comment>
+        <guid>c0bcdd22-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft"/>
+        <rdfs:subClassOf rdf:resource="#Platform-Military"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MineCountermeasuresVessel">
+        <rdfs:label>minesweeper (modern naval ship)</rdfs:label>
+        <rdfs:comment>The collection of watercraft intended for use in
+            mine countermeasure operations.</rdfs:comment>
+        <guid>bf7b371d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MineWarfareShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MineLayerShip">
+        <rdfs:label>mine layer ship</rdfs:label>
+        <rdfs:comment>The collection of ships intended for use in laying
+            undersea mines.</rdfs:comment>
+        <guid>bf8c4ffa-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MineWarfareShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MineWarfareShip">
+        <rdfs:label>mine warfare ships</rdfs:label>
+        <rdfs:comment>The collection of ships intended for use in
+            placing, detecting, or destroying underwater mines.</rdfs:comment>
+        <guid>c0b341f3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Minehunter-Coastal">
+        <rdfs:label>minehunter coastal</rdfs:label>
+        <rdfs:comment>The collection of coastal minehunter ships.</rdfs:comment>
+        <guid>c0313fdd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MineCountermeasuresVessel"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Minesweeper-Coastal">
+        <rdfs:label>coastal minesweeper</rdfs:label>
+        <rdfs:comment>The collection of minesweepers designed to operate
+            in coastal areas.</rdfs:comment>
+        <guid>be676c5b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MineCountermeasuresVessel"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Minesweeper-Ocean">
+        <rdfs:label>ocean minesweeper</rdfs:label>
+        <rdfs:comment>The collection of minesweepers designed to operate
+            in open-sea areas.</rdfs:comment>
+        <guid>c028ea9f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MineCountermeasuresVessel"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MiniVan">
+        <rdfs:label>minivans</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1008c59-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Van"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Missile">
+        <rdfs:label>missiles</rdfs:label>
+        <rdfs:comment>A subcollection of #$ProjectileWeapon, the
+            instances of which are self-powered and unmanned. A
+            #$Missile may be jet-propelled or rocket-propelled. The
+            traversal of a missile when launched may be controlled in
+            different ways: launch-guided, midterm-guided or
+            terminal-guided. The subcollection #$CruiseMissile contains
+            instances that adjust their course while flying, so they are
+            midterm-guided and terminal-guided. </rdfs:comment>
+        <guid>bd58d735-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Unmanned"/>
+        <rdfs:subClassOf rdf:resource="#UnmannedAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ModernNavalShip">
+        <rdfs:label>modern naval ships</rdfs:label>
+        <rdfs:comment>The collection of all #$Ships that have been used
+            since the Nineteenth Century primarily for naval purposes,
+            including military attack and defense, reconnaisance,
+            support, rescue, coastal monitoring, etc.  Such a ship is
+            naval in this sense even if it is not operated by a #$Navy.
+            Most ModernNavalShips are specifically constructed for naval purposes.</rdfs:comment>
+        <guid>bd58f0f3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryWatercraft"/>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Monoplane">
+        <rdfs:label>monoplanes</rdfs:label>
+        <rdfs:comment>The collection of all airplanes which have one
+            primary set of wings.  Most modern airplanes are monoplanes,
+            although some airplanes used for crop-dusting and aerobatics
+            are biplanes.</rdfs:comment>
+        <guid>bd58e67e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Monorail">
+        <rdfs:label>monorail trains</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bf178891-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Train-TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Motorboat">
+        <rdfs:label>motorboats</rdfs:label>
+        <rdfs:comment>The collection of all boats usually powered by
+            motors (including in-board and out-board motors).  If a boat
+            is primarily a #$Sailboat, but has a back-up motor to use
+            when becalmed or piloting, that is not enough to make it a
+            Motorboat.  To be more precise, this collection is the
+            intersection of #$Watercraft-Surface,
+            #$InternalCombustionPoweredDevice and #$TransportationDevice-Vehicle.</rdfs:comment>
+        <guid>bd58d72d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <daml:disjointWith rdf:resource="#Rowboat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Motorcycle">
+        <rdfs:label>motorcycles (motor vehicles)</rdfs:label>
+        <rdfs:comment>The collection of all motorcycles, two-wheeled
+            motorized personal transport devices.  A motorcycle lacks a
+            cab or compartment to protect the driver from wind and
+            weather.  Since motorcycles are used both on and off road,
+            this is not a spec of #$RoadVehicle.</rdfs:comment>
+        <guid>bd590474-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle"/>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-GasolineEngine"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MountainBike">
+        <rdfs:label>mountain bikes</rdfs:label>
+        <rdfs:comment>A sturdy bicycle with fat, knobby tires meant for
+            riding off-road or on trails.</rdfs:comment>
+        <guid>c1008c7d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Bicycle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MultiRoleAircraft">
+        <rdfs:label>multi role aircraft</rdfs:label>
+        <rdfs:comment>The collection of military aircraft which are able
+            to perform several functions.</rdfs:comment>
+        <guid>be2c8e78-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="MultipleRocketLauncher">
+        <rdfs:label>multiple-rocket launcher</rdfs:label>
+        <rdfs:comment>The collection of #$MissileLaunchers capable of
+            launching multiple rocket-propelled missiles.</rdfs:comment>
+        <guid>bf2ef56d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Artillery-SelfPropelled"/>
+    </daml:Class>
+    <daml:Class rdf:ID="NavalAircraft">
+        <rdfs:label>naval aircraft</rdfs:label>
+        <rdfs:comment>A collection of #$MilitaryAircraft.  Every
+            instance of #$NavalAircraft is used or equipped to be used
+            by some country&apos;s #$Navy.</rdfs:comment>
+        <guid>bfa75e2b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="NortonMotorcycle">
+        <rdfs:label>norton motorcycle</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bf14543b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Motorcycle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="NuclearAircraftCarrier">
+        <rdfs:label>nuclear aircraft carrier</rdfs:label>
+        <rdfs:comment>The collection of #$AircraftCarriers which are nuclear-powered.</rdfs:comment>
+        <guid>bf7c05a2-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AircraftCarrier"/>
+    </daml:Class>
+    <daml:Class rdf:ID="NuclearGuidedMissileCruiser">
+        <rdfs:label>nuclear guided missile cruiser</rdfs:label>
+        <rdfs:comment>The collection of #$Cruiser ships which are
+            nuclear-powered, and which transport and launch #$GuidedMissiles.</rdfs:comment>
+        <guid>bf277e5f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Cruiser"/>
+    </daml:Class>
+    <daml:Class rdf:ID="NuclearSubmarine">
+        <rdfs:label>nuclear submarines</rdfs:label>
+        <rdfs:comment>A collection of artifacts.  Each element of
+            #$NuclearSubmarine is a submarine which   uses nuclear power
+            as its main power source. This does   not mean that other
+            systems on board cannot have other   power sources. Also,
+            merely having a #$NuclearWeapon on   board does not qualify
+            something as an element of  #$NuclearSubmarine.</rdfs:comment>
+        <guid>c1008e41-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#Submarine"/>
+    </daml:Class>
+    <daml:Class rdf:ID="OceanLiner">
+        <rdfs:label>ocean liner</rdfs:label>
+        <rdfs:comment>The subcollection of #$Ship that contains all
+            ocean liners, i.e., ships that by design can transport a
+            large number of people across oceans.</rdfs:comment>
+        <guid>c10088c3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PublicTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+    </daml:Class>
+    <daml:Class rdf:ID="OffRoadAutomobile">
+        <rdfs:label>off-road automobiles</rdfs:label>
+        <rdfs:comment>The collection of #$Automobiles designed for
+            traveling on not only paved roads, but also unpaved roads,
+            trails, beaches, or other rough terrains.</rdfs:comment>
+        <guid>be4fb1cc-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#All-TerrainVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="OilTanker">
+        <rdfs:label>oil tankers</rdfs:label>
+        <rdfs:comment>The collection of tanker ships intended to be used
+            for replenishment of petroleum products to other ships.</rdfs:comment>
+        <guid>c130fa26-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TankerShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Oiler">
+        <rdfs:label>oilers (oil tankers)</rdfs:label>
+        <rdfs:comment>The collection of #$ModernNavalShips intended to
+            be used for replenishment of petroleum products to other
+            ships; a subset of #$OilTanker.</rdfs:comment>
+        <guid>bf6ad35c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#OilTanker"/>
+        <rdfs:subClassOf rdf:resource="#UnderwayReplenishmentShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Parachute">
+        <rdfs:label>parachutes (consumer durables)</rdfs:label>
+        <rdfs:comment>The collection of parachutes. I.e., those large,
+            roundish sheets of fabric which are attached by cords to a
+            harness worn on the back by persons jumping from airplanes
+            or helicopters. Parachutes can also be used for transporting
+            inanimate objects from the air to the ground.</rdfs:comment>
+        <guid>bf0c9df6-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Paraglider">
+        <rdfs:label>paraglider</rdfs:label>
+        <rdfs:comment>The collection of all combinations of #$Gliders
+            and #$Parachutes.</rdfs:comment>
+        <guid>bfe2d127-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Glider"/>
+        <daml:disjointWith rdf:resource="#UnmannedAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PassengerAircraft">
+        <rdfs:label>passenger aircraft</rdfs:label>
+        <rdfs:comment>The collection of aircraft designed and/or used
+            primarily for carrying passengers.</rdfs:comment>
+        <guid>bd5893f4-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <daml:disjointWith rdf:resource="#UnmannedAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PassengerAirplane">
+        <rdfs:label>passenger airplane</rdfs:label>
+        <rdfs:comment>The collection of all airplanes designed and/or
+            used for carrying passengers (transportees in addition to
+            the pilot).</rdfs:comment>
+        <guid>bd58d364-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+        <rdfs:subClassOf rdf:resource="#PassengerAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PassengerTrainCar">
+        <rdfs:label>passenger train cars</rdfs:label>
+        <rdfs:comment>The collection of all #$TrainCars that are meant
+            to carry passengers, as opposed to cargo.</rdfs:comment>
+        <guid>c14903b3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TrainCar"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PatrolBoat">
+        <rdfs:label>patrol boat</rdfs:label>
+        <rdfs:comment>The collection of boats which are intended for use
+            in patrolling.</rdfs:comment>
+        <guid>bf53afe6-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PatrolWatercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PatrolBoat-River">
+        <rdfs:label>patrol boat river</rdfs:label>
+        <rdfs:comment>The collection of boats which are intended for use
+            in patrolling on rivers.</rdfs:comment>
+        <guid>be644450-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PatrolWatercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PatrolWatercraft">
+        <rdfs:label>patrol crafts</rdfs:label>
+        <rdfs:comment>The collection of watercraft intended to be used
+            for patrolling.</rdfs:comment>
+        <guid>bfa68716-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PedalBoat">
+        <rdfs:label>pedal boats</rdfs:label>
+        <rdfs:comment>A small boat with a paddle wheel that is turned by
+            pedaling.  Also called a &apos;paddle boat&apos;.  For large
+            paddle wheel boats, see #$RiverBoat.</rdfs:comment>
+        <guid>bdfb1aa2-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Small"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PersonalWatercraft">
+        <rdfs:label>personal watercraft</rdfs:label>
+        <rdfs:comment>A single-person water transportation device in
+            which the rider kneels or stands on the device.  It is
+            powered by jetting water out the back and hydroplanes on top
+            of the water as it goes along.  The driver is exposed to the
+            elements and gets very wet.  Great fun to use.</rdfs:comment>
+        <guid>be010fc2-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#WaterTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PickupTruck">
+        <rdfs:label>pickup trucks</rdfs:label>
+        <rdfs:comment>A fuel-burning mechanical device which is a
+            conveyance, a kind of truck, usually with an open back for
+            light hauling, etc.</rdfs:comment>
+        <guid>bd58a116-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Platform-Military">
+        <rdfs:label>platform - military</rdfs:label>
+        <rdfs:comment>The collection of military platforms. These are
+            usually mobile entities which can carry military equipment
+            such as #$Weapons and communications equipment. Often, as
+            with a tank outfitted with a gun, a #$Platform-Military
+            carrying some #$Weapon results in a #$WeaponSystem.</rdfs:comment>
+        <guid>c15730e6-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PropellerDrivenAirplane">
+        <rdfs:label>prop planes</rdfs:label>
+        <rdfs:comment>The collection of all propeller driven airplanes.</rdfs:comment>
+        <guid>bd5895dd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="PublicTransportationDevice">
+        <rdfs:label>public transportation device</rdfs:label>
+        <rdfs:comment>The subclass of #$TransportationDevice-Vehicle
+            that contains  all vehicles used for mass public
+            transportation. Examples include  #$Bus-RoadVehicle,
+            #$Train-TransportationDevice, #$Ferry. #$TaxiCab is  a non example.</rdfs:comment>
+        <guid>c003eec7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Raft">
+        <rdfs:label>rafts (boats)</rdfs:label>
+        <rdfs:comment>a small flat kind of boat.  Rubber rafts and flat
+            wooden rafts are the most common.</rdfs:comment>
+        <guid>c0fcf439-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Small"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RaidVehicle">
+        <rdfs:label>raid vehicle</rdfs:label>
+        <rdfs:comment>The collection of vehicles intended to be used in
+            military or police raids.</rdfs:comment>
+        <guid>be8cf9de-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#SpecialPurposeVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RecoillessGun-Heavy">
+        <rdfs:label>recoilless gun heavy</rdfs:label>
+        <rdfs:comment>The #$RecoillessGun-Heavy is a highly mobile piece
+            of artillery that can also fire a heavy shell.  They usually
+            support the infantry, either as light-support field guns, or
+            more often as anti-tank guns.</rdfs:comment>
+        <guid>c0e3171a-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Artillery-Towed"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ReconnaissanceAircraft">
+        <rdfs:label>reconnaissance aircraft</rdfs:label>
+        <rdfs:comment>The collection of aircraft used for reconnaissance
+            and information gathering in a military context.</rdfs:comment>
+        <guid>c0316a98-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#ReconnaissanceVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ReconnaissanceHelicopter">
+        <rdfs:label>reconnaissance helicopters</rdfs:label>
+        <rdfs:comment>The collection of #$Helicopters used for
+            reconnaissance and information gathering in a military context.</rdfs:comment>
+        <guid>be9bca9d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ReconnaissanceAircraft"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ReconnaissancePlane">
+        <rdfs:label>reconnaissance planes</rdfs:label>
+        <rdfs:comment>The collection of all airplanes used for surveying
+            terrain for the  purpose of gathering information, usually
+            for some military purpose.</rdfs:comment>
+        <guid>be4ac0a8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+        <rdfs:subClassOf rdf:resource="#ReconnaissanceAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ReconnaissanceVehicle">
+        <rdfs:label>reconnaissance vehicles</rdfs:label>
+        <rdfs:comment>The collection of #$MilitaryVehicles used
+            primarily for #$Reconnaissance-MilitaryOperation.</rdfs:comment>
+        <guid>bdbc41db-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#SupportVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ReconnaissanceWatercraft">
+        <rdfs:label>reconnaissance watercraft</rdfs:label>
+        <rdfs:comment>The collection of aircraft used for reconnaissance
+            and information gathering in a military context.</rdfs:comment>
+        <guid>c023e03c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ReconnaissanceVehicle"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryWatercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RecreationalVehicle">
+        <rdfs:label>recreational vehicles</rdfs:label>
+        <rdfs:comment>Large, van-shaped vehicles intended for camping or
+            overnight travelling, and equipped with built-in furniture
+            (seating, table, bunks), kitchen, and sanitary facilities.</rdfs:comment>
+        <guid>c1008cfa-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-GasolineEngine"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RentalCar">
+        <rdfs:label>rental cars</rdfs:label>
+        <rdfs:comment>The collection for rental cars.</rdfs:comment>
+        <guid>bfbe7542-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RepairShip">
+        <rdfs:label>repair ship</rdfs:label>
+        <rdfs:comment>The collection of ships intended to be used in repairs.</rdfs:comment>
+        <guid>c1209505-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#FleetSupportShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ReplenishmentOiler">
+        <rdfs:label>replenishment oiler</rdfs:label>
+        <rdfs:comment>A collection. Underway replenishment oiler ships.</rdfs:comment>
+        <guid>bf482a85-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#UnderwayReplenishmentShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RescueHelicopter">
+        <rdfs:label>rescue helicopters</rdfs:label>
+        <rdfs:comment>The collection of #$Helicopters used for entering
+            enemy territory in order to rescue personnel. These aircraft
+            are usually heavily armored.</rdfs:comment>
+        <guid>bf2633a1-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+        <rdfs:subClassOf rdf:resource="#RescueVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RescueVehicle">
+        <rdfs:label>rescue vehicles</rdfs:label>
+        <rdfs:comment>The collection of vehicles, the primary purpose
+            of which is to transport rescuers to, and     rescuers and
+            rescuees from, rescue sites.    This is a distinct class
+            from #$EmergencyVehicle,    which includes #$FireTrucks,
+            many of which     are not #$RescueVehicles.</rdfs:comment>
+        <guid>bdb5ce35-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#SupportVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RibbonRaft">
+        <rdfs:label>ribbon raft</rdfs:label>
+        <rdfs:comment>A raft composed of #$RibbonBridgeBays whose
+            purpose is to ferry military vehicles and equipment across
+            water obstacles.</rdfs:comment>
+        <guid>be31a6fd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Raft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RiverBoat">
+        <rdfs:label>river boat</rdfs:label>
+        <rdfs:comment>a large boat usually used on rivers which has a
+            large paddle wheel at the back to push it forward</rdfs:comment>
+        <guid>c0fcde23-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadRoller">
+        <rdfs:label>steamrollers</rdfs:label>
+        <rdfs:comment>The collection of vehicles, generally with a
+            relatively high ratio of weight per square inch of wheel
+            surface, used for leveling and packing down road and other
+            construction surfaces.</rdfs:comment>
+        <guid>bd58ff85-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadWorkVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadVehicle">
+        <rdfs:label>motor vehicles</rdfs:label>
+        <rdfs:comment>A collection of transportation devices.  An
+            instance of #$RoadVehicle is a vehicle which would typically
+            be found travelling on roads and (optionally) carrying
+            passengers: cars, busses, vans, pickup trucks, fire trucks,
+            RVs, motorcycles, etc..  Since #$RoadVehicles are vehicles,
+            i.e. self powered (e.g. see #$vehicle),
+            #$LandTransportationDevices such as #$Bicycles, or
+            #$Wheelchairs are not in this class.</rdfs:comment>
+        <guid>bd58d3f7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadVehicle-DieselEngine">
+        <rdfs:label>road vehicle - diesel engine</rdfs:label>
+        <rdfs:comment>The collection of all #$RoadVehicles whose
+            principle motive power is provided by a #$DieselEngine.</rdfs:comment>
+        <guid>be5e00a8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-InternalCombustionEngine"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadVehicle-Electric">
+        <rdfs:label>road vehicle - electric</rdfs:label>
+        <rdfs:comment>The collection of all #$RoadVehicles which are
+            powered by #$ElectricalMotors, and not by #$InternalCombustionEngines.</rdfs:comment>
+        <guid>bf42a955-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadVehicle-ElectricWithBattery">
+        <rdfs:label>road vehicle - electric with battery</rdfs:label>
+        <rdfs:comment>The collection of all instances of
+            #$RoadVehicle-Electric in which the #$ElectricalMotor in the
+            vehicle is run by an on-board #$Battery.</rdfs:comment>
+        <guid>be712e37-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-Electric"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadVehicle-ElectricWithFuelCell">
+        <rdfs:label>road vehicle - electric with fuel cell</rdfs:label>
+        <rdfs:comment>The collection of all instances of
+            #$RoadVehicle-Electric in which the #$ElectricalMotor in the
+            vehicle is run by an on-board #$FuelCell.</rdfs:comment>
+        <guid>bfbfa653-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-Electric"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadVehicle-GasolineEngine">
+        <rdfs:label>gas-powered road vehicles</rdfs:label>
+        <rdfs:comment>The collection of all #$RoadVehicles whose
+            principle motive power is provided by a #$GasolineEngine.</rdfs:comment>
+        <guid>bfa9b99c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-InternalCombustionEngine"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadVehicle-InternalCombustionEngine">
+        <rdfs:label>road vehicle - internal combustion engine</rdfs:label>
+        <rdfs:comment>The collection of all #$RoadVehicles whose
+            principle motive power is supplied by #$InternalCombustionEngines.</rdfs:comment>
+        <guid>bf24b967-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RoadWorkVehicle">
+        <rdfs:label>earth moving equipment</rdfs:label>
+        <rdfs:comment>The class of heavy construction equipment vehicles
+            that are used to make roads and in other situations where
+            one needs to move quantities of earth, rocks, etc. around.
+            These are powered by internal combustion engines, and often
+            have wheels but just as  often have treads like tanks.</rdfs:comment>
+        <guid>bd596847-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ConstructionVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RocketPropelledVehicle">
+        <rdfs:label>rockets (mechanical devices)</rdfs:label>
+        <rdfs:comment>The collection of all vehicles propelled by rocket
+            engines which includes earth-to-orbit and moon-to-orbit
+            devices, aircraft, weapons and some ab instances of
+            automobiles.  Rocket engines are self-contained in that they
+            do not need oxygen from the atmosphere to burn fuel and
+            therefore are the only engines capable of space travel.
+            #$Weapons which are commonly called rockets are here defined
+            as #$Missiles that are also RocketPropelledVehicles.</rdfs:comment>
+        <guid>c10c2830-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RotaryWingAircraft">
+        <rdfs:label>rotary wing aircraft</rdfs:label>
+        <rdfs:comment>The collection of aircraft with rotary blades used
+            as the primary lift mechanism.</rdfs:comment>
+        <guid>c13d771b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <daml:disjointWith rdf:resource="#FixedWingAircraft"/>
+        <daml:disjointWith rdf:resource="#LighterThanAirCraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Rowboat">
+        <rdfs:label>rowboats</rdfs:label>
+        <rdfs:comment>A subcollection of #$Watercraft that contains all
+            boats each of which is usually powered by one or more
+            persons&apos; rowing.--Kat, April 15, 1998</rdfs:comment>
+        <guid>be0118b0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+        <daml:disjointWith rdf:resource="#Motorboat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="RowingShell">
+        <rdfs:label>rowing shells</rdfs:label>
+        <rdfs:comment>A lightweight, narrow-beamed boat designed for
+            competitive racing by crews of one or more persons rowing
+            (and, in larger crews, a coxswain steering).</rdfs:comment>
+        <guid>c10094c3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Small"/>
+        <rdfs:subClassOf rdf:resource="#Rowboat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Runabout-Boat">
+        <rdfs:label>runabouts</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c10081f8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Motorboat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SAMVehicle">
+        <rdfs:label>sam vehicle</rdfs:label>
+        <rdfs:comment>The collection of military vehicles used to
+            transport surface-to-air missiles.</rdfs:comment>
+        <guid>c08e7a01-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SCUDTransloader">
+        <rdfs:label>scud transloader</rdfs:label>
+        <rdfs:comment>Military vehicles used to transport SCUD missiles.</rdfs:comment>
+        <guid>c139e30f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#HeavyWheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SLAM-CruiseMissile">
+        <rdfs:label>Standoff Land Attack Missiles</rdfs:label>
+        <rdfs:comment>a type of   #$Harpoon-CruiseMissile manufactured
+            by Boeing, used in   #$HarpoonWeaponSystems.</rdfs:comment>
+        <guid>c1309e98-9c29-11b1-9dad-c379636f7270</guid>
+    </daml:Class>
+    <daml:Class rdf:ID="Sailboard">
+        <rdfs:label>sailboards</rdfs:label>
+        <rdfs:comment>The collection of all sailboards.</rdfs:comment>
+        <guid>bd588acf-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WaterTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Sailboat">
+        <rdfs:label>sailboats</rdfs:label>
+        <rdfs:comment>Boats powered mainly by lift or push from wind
+            passing over or into their sails.</rdfs:comment>
+        <guid>bd58d6f0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SalvageShip">
+        <rdfs:label>salvage ships</rdfs:label>
+        <rdfs:comment>The collection of ships intended to be used in
+            salvage operations.</rdfs:comment>
+        <guid>bfbd66ed-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Satellite-Device">
+        <rdfs:label>satellites</rdfs:label>
+        <rdfs:comment>A man-made device intended to orbit a celestial
+            body (for most of them, Earth).</rdfs:comment>
+        <guid>c0fcde24-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#SpacePlatform-Unmanned"/>
+        <rdfs:subClassOf rdf:resource="#Spacecraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SchoolBus">
+        <rdfs:label>school busses</rdfs:label>
+        <rdfs:comment>A large, lightweight, utilitarian bus used
+            typically by schools for conveying children to and from
+            school and school-related activities.  Capacity up to 60 people.</rdfs:comment>
+        <guid>c1007d7e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Bus-RoadVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Schooner">
+        <rdfs:label>schooners</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c10094d7-9c29-11b1-9dad-c379636f7270</guid>
+    </daml:Class>
+    <daml:Class rdf:ID="ScissorBridgeTruck">
+        <rdfs:label>scissor bridge truck</rdfs:label>
+        <rdfs:comment>A collection of #$MilitaryVehicles.  A scissor
+            bridge truck transports and deploys a scissor bridge
+            (consisting of hinged sections that can be folded together).
+            The reach of the bridge deployed by a scissor bridge truck
+            (about 28 meters) is longer than that of an
+            #$ArmoredVehicleLaunchedBridge (q.v.).</rdfs:comment>
+        <guid>c144287e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Scooter">
+        <rdfs:label>scooters</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1009d40-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SemiTrailer-Truck">
+        <rdfs:label>semitrailers</rdfs:label>
+        <rdfs:comment>Truck tractor-trailer combinations used for
+            hauling dry freight.</rdfs:comment>
+        <guid>be00cb93-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Ship">
+        <rdfs:label>ships (boats)</rdfs:label>
+        <rdfs:comment>A subcollection of #$Watercraft-Surface, whose
+            instances are large, typically ocean-going vessels.  How big
+            is &apos;large&apos;?  Mariners often use the rule of thumb
+            that a #$Ship is too large to be carried by any other #$Ship.</rdfs:comment>
+        <guid>bd58ab20-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ShoppingCart">
+        <rdfs:label>shopping carts (land vehicles)</rdfs:label>
+        <rdfs:comment>#$ShoppingCart is the collection of handcarts that
+            are designed to hold dry goods for shoppers.</rdfs:comment>
+        <guid>bd7765d5-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Wagon"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SkateBoard">
+        <rdfs:label>skateboards (land vehicles)</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58b2bd-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SnowSki">
+        <rdfs:label>skis (athletic gear)</rdfs:label>
+        <rdfs:comment>The collection of all snow skis.</rdfs:comment>
+        <guid>bd58e6c0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Snowboard">
+        <rdfs:label>snowboards (athletic gear)</rdfs:label>
+        <rdfs:comment>The collection of all snowboards.  These are
+            planks a few to 5 or so feet long, about a foot wide, with
+            bindings used to attach the board to the feet.</rdfs:comment>
+        <guid>c10ca948-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Snowmobile">
+        <rdfs:label>snowmobiles</rdfs:label>
+        <rdfs:comment>Motorized device for conveying one or two people
+            across snow</rdfs:comment>
+        <guid>c0fce51d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SpacePlatform-Manned">
+        <rdfs:label>space platform manned</rdfs:label>
+        <rdfs:comment>The collection of manned military space platforms.</rdfs:comment>
+        <guid>bd8bd312-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitarySpacecraft"/>
+        <daml:disjointWith rdf:resource="#TransportationDevice-Unmanned"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SpacePlatform-Unmanned">
+        <rdfs:label>space platform unmanned</rdfs:label>
+        <rdfs:comment>The collection of unmanned military space platforms.</rdfs:comment>
+        <guid>c0c5c635-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitarySpacecraft"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Unmanned"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SpaceProbe">
+        <rdfs:label>space probes</rdfs:label>
+        <rdfs:comment>These are unmanned vehicles which are sent to
+            other bodies in the Solar System  for the purpose gathering
+            data. Sometimes a separate vehicle is launched from the main
+            vehicle,  the smaller vehicle usually being referred to as a
+            probe. In these cases, both vehicle  would be #$SpaceProbes
+            in the present sense.</rdfs:comment>
+        <guid>c11c2f69-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#SpacePlatform-Unmanned"/>
+        <rdfs:subClassOf rdf:resource="#Spacecraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SpaceShuttle">
+        <rdfs:label>space shuttles</rdfs:label>
+        <rdfs:comment>A fuel-burning conveyance for orbiting the Earth
+            and returning</rdfs:comment>
+        <guid>bd58947c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#SpacePlatform-Manned"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#GroundToOrbitVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SpaceStation">
+        <rdfs:label>space stations</rdfs:label>
+        <rdfs:comment>The collection of spacecraft intended to remain in
+            orbit for a relatively long period of time, with personnel
+            being transported between #$PlanetEarth and the space
+            station via a #$SpaceShuttle or similar vehicle.</rdfs:comment>
+        <guid>bdbdfa8c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MannedSpacecraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Spacecraft">
+        <rdfs:label>spacecraft</rdfs:label>
+        <rdfs:comment>The collection of transportation devices deployed
+            entirely in outer space, or whose trajectories leave the
+            atmosphere of the planet they&apos;re launched from, in
+            order to orbit the planet or to travel away from it beyond
+            its gravitational field.</rdfs:comment>
+        <guid>c10b650e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SpecialPurposeVehicle">
+        <rdfs:label>special purpose vehicle</rdfs:label>
+        <rdfs:comment>The collection of vehicles which are built and/or
+            adapted for a specific purpose (other than generic passenger
+            and cargo transport.</rdfs:comment>
+        <guid>bde402ea-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryLandPlatform"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SportUtilityVehicle">
+        <rdfs:label>sport utility vehicles</rdfs:label>
+        <rdfs:comment>street-legal vehicles which are capable of driving
+            off the road as well.</rdfs:comment>
+        <guid>bd58993b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#All-TerrainVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SportsCar">
+        <rdfs:label>sports cars</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd588795-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SpyPlane">
+        <rdfs:label>spy planes</rdfs:label>
+        <rdfs:comment>The collection of aircraft intended for use in
+            reconnaisance. Such planes often carry #$Sensors, cameras,
+            and other surveillance equipment.</rdfs:comment>
+        <guid>bebc2a10-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SpySatellite">
+        <rdfs:label>spy satellites</rdfs:label>
+        <rdfs:comment>The collection of all artificial satellites
+            (#$Satellite-Device) which are designed for collecting data
+            for use by a #$GovernmentIntelligenceOrganization.</rdfs:comment>
+        <guid>bdfce7db-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitarySpacecraft"/>
+        <rdfs:subClassOf rdf:resource="#Satellite-Device"/>
+    </daml:Class>
+    <daml:Class rdf:ID="StationWagonCar">
+        <rdfs:label>station wagons</rdfs:label>
+        <rdfs:comment>Four doors, a BIG non-trunk luggage space, and
+            back seats which usually can be folded forward, eliminating
+            some passenger space but creating an even LARGER luggage space.</rdfs:comment>
+        <guid>bd58a221-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="StraightBodyTruck">
+        <rdfs:label>straight-body trucks</rdfs:label>
+        <rdfs:comment>Type of truck that has the truck cab and
+            cargo-carrying part incorporated onto the same rigid frame.
+            Not a tractor-trailer combination.</rdfs:comment>
+        <guid>c10098f0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="StreetBike">
+        <rdfs:label>street bikes</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1009c58-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Motorcycle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Stretcher">
+        <rdfs:label>stretchers</rdfs:label>
+        <rdfs:comment>A device which is used to carry medical patients,
+            usually to a location where a medical procedure will be
+            performed on them.</rdfs:comment>
+        <guid>c0fd4ba1-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SubCompactCar">
+        <rdfs:label>subcompacts</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58e934-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+        <daml:disjointWith rdf:resource="#MidSizeCar"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Submarine">
+        <rdfs:label>submarines</rdfs:label>
+        <rdfs:comment>Submarine is the collection of all boats that can
+            operate underwater.</rdfs:comment>
+        <guid>bd588c5b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WaterPlatform-Subsurface"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Subsurface"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Submarine-Military">
+        <rdfs:label>submarine military</rdfs:label>
+        <rdfs:comment>The collection of submarines typically used by
+            military organizations.</rdfs:comment>
+        <guid>bf74f4c4-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TorpedoArmedCraft"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Submarine"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SubmarineTender">
+        <rdfs:label>submarine tender</rdfs:label>
+        <rdfs:comment>A collection. Military submarine tender ships.</rdfs:comment>
+        <guid>bf2e178c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MaterialSupportShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SupplyTruck">
+        <rdfs:label>supply truck</rdfs:label>
+        <rdfs:comment>The collection of trucks used by a military to
+            transport supplies.</rdfs:comment>
+        <guid>c076ad73-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SupportHelicopter">
+        <rdfs:label>support helicopters</rdfs:label>
+        <rdfs:comment>The collection of #$Helicopters intended to
+            provide support for military combat.</rdfs:comment>
+        <guid>c0521c1b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#SupportVehicle"/>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SupportShip">
+        <rdfs:label>support vessels</rdfs:label>
+        <rdfs:comment>The collection of #$Ships intended to provide
+            support for military combat.</rdfs:comment>
+        <guid>be7224c3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryWatercraft"/>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+        <rdfs:subClassOf rdf:resource="#SupportVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SupportVehicle">
+        <rdfs:label>support vehicle</rdfs:label>
+        <rdfs:comment>A collection. Vehicles meant to be used for
+            support in a military context.</rdfs:comment>
+        <guid>c0422a26-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="SurfaceToAirMissile">
+        <rdfs:label>surface-to-air missiles</rdfs:label>
+        <rdfs:comment>A collection.  Each instance is a #$Missile shot
+            from a surface #$Platform-Military in order to bring down aircraft.</rdfs:comment>
+        <guid>c0ddd4e5-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Missile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TMMScissorBridgeTruck">
+        <rdfs:label>tmm scissor bridge truck</rdfs:label>
+        <rdfs:comment>A type of #$ScissorBridgeTruck.</rdfs:comment>
+        <guid>be6598ea-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ScissorBridgeTruck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Tank-Vehicle">
+        <rdfs:label>tanks (armored vehicle heavy)</rdfs:label>
+        <rdfs:comment>The collection of all tanks, armored vehicles
+            designed for military purposes, with mounted guns, heavy
+            armor, and often tracked wheels.</rdfs:comment>
+        <guid>c1007cbe-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryLandPlatform"/>
+        <rdfs:subClassOf rdf:resource="#TrackedVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#TrackedVehicle-Armored"/>
+        <daml:disjointWith rdf:resource="#ArmoredFightingVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TankLandingShip">
+        <rdfs:label>tank landing ship</rdfs:label>
+        <rdfs:comment>The collection of ships intended for use in
+            transporting and landing amphibious vehicles, tanks, combat
+            vehicles, and equipment in amphibious assault.</rdfs:comment>
+        <guid>bdc8e880-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AmphibiousWarfareShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TankerAircraft">
+        <rdfs:label>tanker aircraft</rdfs:label>
+        <rdfs:comment>The collection of aircraft used to transport
+            liquid substances.</rdfs:comment>
+        <guid>bdcab239-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#CargoAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TankerShip">
+        <rdfs:label>tankers</rdfs:label>
+        <rdfs:comment>The subcollection of CargoShip that contains all
+            tankers, i.e., ships that by design can transport large
+            amount of liquid or gas materials.</rdfs:comment>
+        <guid>c1008fc2-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#CargoShip"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TankerTruck">
+        <rdfs:label>tanker trucks</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58b47d-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TaxiCab">
+        <rdfs:label>taxis (cars)</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>be01fae9-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="ThreePersonInflatableBoat">
+        <rdfs:label>three person inflatable boat</rdfs:label>
+        <rdfs:comment>The collection of military inflatable boats which
+            can accommodate three people.</rdfs:comment>
+        <guid>be90d02a-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#InflatableBoat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TorpedoArmedCraft">
+        <rdfs:label>torpedo armed craft</rdfs:label>
+        <rdfs:comment>The collection of military vehicles that are
+            equipped to carry and fire torpedoes.  This collection
+            includes both submarines and torpedo planes.</rdfs:comment>
+        <guid>bf341e3e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TorpedoWatercraft-Surface">
+        <rdfs:label>torpedo watercraft surface</rdfs:label>
+        <rdfs:comment>The collection of surface naval ships which are
+            are equipped with torpedo tubes and are capable of firing torpedoes.</rdfs:comment>
+        <guid>bff5323f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryWatercraft"/>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+        <rdfs:subClassOf rdf:resource="#TorpedoArmedCraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TouringBicycle">
+        <rdfs:label>touring bikes</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1008da0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Bicycle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TrackedVehicle">
+        <rdfs:label>tracked vehicle</rdfs:label>
+        <rdfs:comment>A collection.  Each instance of #$TrackedVehicle
+            used caterpillar-like tracks instead of, or in addition to,
+            wheels for propulsion.  Only #$Tank-Vehicles are necessarily tracked.</rdfs:comment>
+        <guid>be6d8a39-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+        <rdfs:subClassOf rdf:resource="#All-TerrainVehicle"/>
+        <daml:disjointWith rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TrackedVehicle-Armored">
+        <rdfs:label>tracked vehicle - armored</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bdd3ecc0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ArmoredVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TrackedVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Tractor">
+        <rdfs:label>tractors (land vehicles)</rdfs:label>
+        <rdfs:comment>The collection of vehicles generally used to pull
+            different kinds of farm machinery through a field</rdfs:comment>
+        <guid>bd58f559-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Trailer">
+        <rdfs:label>trailers</rdfs:label>
+        <rdfs:comment>A wagon, van, box, etc. designed to be pulled by
+            an automobile, truck. etc.</rdfs:comment>
+        <guid>bd5892ac-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Train-TransportationDevice">
+        <rdfs:label>trains (public transportation device)</rdfs:label>
+        <rdfs:comment>The collection of all trains, the transportation
+            devices that run on #$Railways and consist of multiple
+            #$TrainCars coupled together.</rdfs:comment>
+        <guid>bd58c825-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#PublicTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TrainCar">
+        <rdfs:label>train cars</rdfs:label>
+        <rdfs:comment>The collection of train cars (or train carriages),
+            non-motored wheeled vehicles that run on #$Railways.  When
+            they are to be moved they are coupled together to form
+            trains pulled by train engines.  There are freight
+            TrainCars, and passenger TrainCars for transporting people.</rdfs:comment>
+        <guid>bd5893b0-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TrainEngine">
+        <rdfs:label>locomotives</rdfs:label>
+        <rdfs:comment>The collection of all train engines, each being a
+            fuel-powered, non-steerable, wheeled vehicle that runs on
+            #$Railway tracks, and has enough power to pull or push a
+            group of #$TrainCars with it.</rdfs:comment>
+        <guid>bd92500c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TransportAircraft">
+        <rdfs:label>transport aircraft</rdfs:label>
+        <rdfs:comment>The collection of military aircraft typically used
+            for transporting people, not equipment.</rdfs:comment>
+        <guid>bf7417c7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TransportHelicopter">
+        <rdfs:label>transport helicopters</rdfs:label>
+        <rdfs:comment>The collection of #$Helicopters used for
+            transporting people, rather than cargo.</rdfs:comment>
+        <guid>bfe06d30-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryAircraft"/>
+        <rdfs:subClassOf rdf:resource="#PassengerAircraft"/>
+        <rdfs:subClassOf rdf:resource="#Helicopter"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TransportationDevice">
+        <rdfs:label>transportation devices</rdfs:label>
+        <rdfs:comment>A specialization of both #$Conveyance and
+            #$PhysicalDevice.  Each instance of #$TransportationDevice
+            is an artifact designed to move an object from one location
+            to another, by (for example) carrying, pulling, or pushing
+            the transported object.  Instances of this collection may or
+            may not have their own power source (see
+            #$SelfPoweredDevice).  Those that do, such as automobiles
+            and speedboats, constitute the specialization
+            #$TransportationDevice-Vehicle.  Other transportation
+            devices (for example, instances of #$Wheelbarrow or
+            #$Bicycle) require an external motive force.  Because
+            #$transporter and #$transportees are specializations of
+            #$objectMoving, it follows that any object in the role of
+            #$transporter moves as a whole with those objects playing
+            the role of #$transportees.  Consequently, since any
+            instance of #$TransportationDevice has playing the role of
+            #$transporter as its intended function, stationary objects
+            which cause motion, such as conveyor belts, escalators,
+            rocket launchers, and slingshots, are excluded from the
+            collection #$TransportationDevice. Although they facilitate
+            travel, ice skates, shoes, skis and other instances of
+            #$WearableConveyance are also excluded from the collection
+            #$TransportationDevice, since they are devices which are
+            worn rather than ridden on, ridden with, or ridden in.</rdfs:comment>
+        <guid>bd58d540-9c29-11b1-9dad-c379636f7270</guid>
+    </daml:Class>
+    <daml:Class rdf:ID="TransportationDevice">
+        <rdfs:label>transportation devices</rdfs:label>
+        <rdfs:comment>A specialization of both #$Conveyance and
+            #$PhysicalDevice.  Each instance of #$TransportationDevice
+            is an artifact designed to move an object from one location
+            to another, by (for example) carrying, pulling, or pushing
+            the transported object.  Instances of this collection may or
+            may not have their own power source (see
+            #$SelfPoweredDevice).  Those that do, such as automobiles
+            and speedboats, constitute the specialization
+            #$TransportationDevice-Vehicle.  Other transportation
+            devices (for example, instances of #$Wheelbarrow or
+            #$Bicycle) require an external motive force.  Because
+            #$transporter and #$transportees are specializations of
+            #$objectMoving, it follows that any object in the role of
+            #$transporter moves as a whole with those objects playing
+            the role of #$transportees.  Consequently, since any
+            instance of #$TransportationDevice has playing the role of
+            #$transporter as its intended function, stationary objects
+            which cause motion, such as conveyor belts, escalators,
+            rocket launchers, and slingshots, are excluded from the
+            collection #$TransportationDevice. Although they facilitate
+            travel, ice skates, shoes, skis and other instances of
+            #$WearableConveyance are also excluded from the collection
+            #$TransportationDevice, since they are devices which are
+            worn rather than ridden on, ridden with, or ridden in.</rdfs:comment>
+        <guid>bd58d540-9c29-11b1-9dad-c379636f7270</guid>
+    </daml:Class>
+    <daml:Class rdf:ID="TransportationDevice-Unmanned">
+        <rdfs:label>unmanned vehicles</rdfs:label>
+        <rdfs:comment>The collection of #$TransportationDevices which
+            can operate without a #$driverActor actually being in or on
+            the device. An example would be a drone aircraft operated by
+            remote control, or a #$WeatherBalloon.</rdfs:comment>
+        <guid>bec50000-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+        <daml:disjointWith rdf:resource="#SpacePlatform-Manned"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TransportationDevice-Vehicle">
+        <rdfs:label>vehicles (mechanical devices)</rdfs:label>
+        <rdfs:comment>#$TransportationDevice-Vehicle is the
+            subcollection of #$TransportationDevice whose instances are
+            also instances of #$SelfPoweredDevices, i.e., those that
+            move under their own power.  E.g. jet airplanes,
+            automobiles, but not skateboards, gliders, or rowboats.
+            Note that hand pushed gas powered lawnmowers, even though
+            they are #$SelfPoweredDevices, are not instances of
+            #$TransportationDevice-Vehicle because they are not their
+            own #$providerOfMotiveForce when they move, whereas
+            instances of #$LawnMower-Riding are vehicles.</rdfs:comment>
+        <guid>c0bce169-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TransporterErectorLauncher">
+        <rdfs:label>TEL</rdfs:label>
+        <rdfs:comment>The collection of vehicles which transport, erect
+            and launch missiles and rockets.</rdfs:comment>
+        <guid>bdb38aba-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Trawler">
+        <rdfs:label>trawls</rdfs:label>
+        <rdfs:comment>The subcollection of Ship that contains all
+            trawlers, i.e., ships that drag large nets along the sea
+            bottom in gathering fish or other marine lives.</rdfs:comment>
+        <guid>c1008da3-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Ship"/>
+        <rdfs:subClassOf rdf:resource="#CommercialFishingBoat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Tricycle">
+        <rdfs:label>tricycles</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1009600-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TroopTransportVehicle">
+        <rdfs:label>troop transport vehicle</rdfs:label>
+        <rdfs:comment>The collection of #$MilitaryVehicles whose main
+            purpose is the transport of military personnel.</rdfs:comment>
+        <guid>bea3ac0a-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Truck">
+        <rdfs:label>trucks (motor vehicles)</rdfs:label>
+        <rdfs:comment>The collection of all trucks, large #$RoadVehicles
+            for ground transportation.  Trucks are most often used to
+            haul freight, garbage, materials, liquids and other heavy
+            loads.  #$FireTrucks take firemen to fires.  In many parts
+            of the world, people routinely ride in the backs of Trucks.
+            A Truck has a cab for the driver, separate from the cargo
+            area of the Truck.</rdfs:comment>
+        <guid>bd58b381-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+        <rdfs:subClassOf rdf:resource="#RoadVehicle-InternalCombustionEngine"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TruckTractor">
+        <rdfs:label>truck tractors</rdfs:label>
+        <rdfs:comment>Vehicles used for hauling semitrailers or other
+            freight trailers such as tankers or car carriers.</rdfs:comment>
+        <guid>c10097a1-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TruckTrailer">
+        <rdfs:label>truck trailer</rdfs:label>
+        <rdfs:comment>Typical detached semitrailer for hauling dry freight.</rdfs:comment>
+        <guid>bd58ed6f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Trailer"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Tugboat">
+        <rdfs:label>tugboats</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1009b1e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Motorboat"/>
+    </daml:Class>
+    <daml:Class rdf:ID="TurbojetPropelledAircraft">
+        <rdfs:label>turbojets (jet planes)</rdfs:label>
+        <rdfs:comment>The collection of all aircraft propelled by #$TurbojetEngines.</rdfs:comment>
+        <guid>bf86bcc5-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#JetPropelledAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Ultralight">
+        <rdfs:label>ultralight</rdfs:label>
+        <rdfs:comment>The collection of slow light single seat powered
+            flying machines [#$AirTransportationDevice].  No
+            pilot&apos;s license is required to fly one, but there are
+            restrictions for use, such as not flying at night, not in
+            clouds, not over town/settlements, not near airports,.
+            Unpowered ultralight vehicles as defined by the US
+            government are not included.</rdfs:comment>
+        <guid>c0420d98-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Vehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Ultralight-Airplane">
+        <rdfs:label>ultralight planes</rdfs:label>
+        <rdfs:comment>The collection of #$Ultralight vehicles in the
+            shape of an airplane.</rdfs:comment>
+        <guid>c0cc44ff-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Monoplane"/>
+        <rdfs:subClassOf rdf:resource="#PropellerDrivenAirplane"/>
+        <rdfs:subClassOf rdf:resource="#Ultralight"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Ultralight-Helicopter">
+        <rdfs:label>ultralight helicopters</rdfs:label>
+        <rdfs:comment>The collection of #$Ultralight vehicles in the
+            shape of a helicopter.</rdfs:comment>
+        <guid>c000c08a-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Ultralight"/>
+        <rdfs:subClassOf rdf:resource="#RotaryWingAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="UnderwayReplenishmentShip">
+        <rdfs:label>underway replenishment ship</rdfs:label>
+        <rdfs:comment>The collection of ships intended to be used to
+            transport materiel to other ships which are engaged in some
+            kind of operation.</rdfs:comment>
+        <guid>be606780-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#ModernNavalShip"/>
+    </daml:Class>
+    <daml:Class rdf:ID="UnmannedAircraft">
+        <rdfs:label>unmanned aircraft</rdfs:label>
+        <rdfs:comment>The collection of #$AirTransportationDevices which
+            are designed to travel without human #$driverActor. These
+            craft may be steered by remote control.</rdfs:comment>
+        <guid>bf479b46-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice-Unmanned"/>
+        <rdfs:subClassOf rdf:resource="#AirTransportationDevice"/>
+        <daml:disjointWith rdf:resource="#PassengerAircraft"/>
+        <daml:disjointWith rdf:resource="#HangGlider"/>
+        <daml:disjointWith rdf:resource="#Paraglider"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Van">
+        <rdfs:label>vans (cars)</rdfs:label>
+        <rdfs:comment>Vans are vehicles that can hold lotsa people or
+            things (like drum sets). Can be adapted for mobility
+            impaired people.</rdfs:comment>
+        <guid>bd58a157-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Automobile"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Wagon">
+        <rdfs:label>carts (land vehicles)</rdfs:label>
+        <rdfs:comment>The collection of all carts and wagons, relatively
+            small non-motorized wheeled devices with two or more wheels,
+            used for moving goods.  Usually they are human-powered or
+            #$EquineAnimal driven.</rdfs:comment>
+        <guid>c0fd662e-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Warplane">
+        <rdfs:label>warplanes</rdfs:label>
+        <rdfs:comment>The collection of all #$Airplanes which are
+            designed (and often used) as weapons of war.</rdfs:comment>
+        <guid>c13f5369-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#CombatAircraft"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryAirplane"/>
+        <rdfs:subClassOf rdf:resource="#Airplane"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WaterPlatform-Subsurface">
+        <rdfs:label>water platform subsurface</rdfs:label>
+        <rdfs:comment>The collection of military water platforms meant
+            to travel underwater.</rdfs:comment>
+        <guid>c0951f91-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Subsurface"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryWatercraft"/>
+        <daml:disjointWith rdf:resource="#MilitaryAircraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WaterPlatform-Surface">
+        <rdfs:label>water platform surface</rdfs:label>
+        <rdfs:comment>The collection of military water platforms meant
+            to travel on the surface of a body of water.</rdfs:comment>
+        <guid>bf7e7325-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+        <rdfs:subClassOf rdf:resource="#MilitaryWatercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WaterTransportationDevice">
+        <rdfs:label>water crafts</rdfs:label>
+        <rdfs:comment>A collection of transportation devices.  An
+            instance of #$WaterTransportationDevice is a vehicle used
+            for transportation on or through water (not a device for
+            transporting water).  Subsets of #$WaterTransportationDevice
+            include the collections #$Ship, #$Watercraft, #$Sailboard,
+            #$JetSki, etc.</rdfs:comment>
+        <guid>bd58c685-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#TransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Watercraft">
+        <rdfs:label>watercraft</rdfs:label>
+        <rdfs:comment>A collection of water transportation devices.  An
+            instance of #$Watercraft is a device for transporting people
+            and/or objects over water or through water under the surface
+            without getting them wet; thus, instances of #$Submarine,
+            #$Rowboat or #$Ship (as opposed to #$JetSki or #$Surfboard
+            or #$Sailboard).</rdfs:comment>
+        <guid>bd58bee7-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WaterTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Watercraft-Small">
+        <rdfs:label>small watercraft</rdfs:label>
+        <rdfs:comment>This is any watercraft so small that the usual
+            posture of a person in the boat is sitting, since standing
+            in a small watercraft may capsize it or one may fall out of
+            the boat.</rdfs:comment>
+        <guid>bf32ecf8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft-Surface"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Watercraft-Subsurface">
+        <rdfs:label>subsurface watercraft</rdfs:label>
+        <rdfs:comment>The collection of all #$Watercraft designed to
+            travel underwater, although instances may be able to travel
+            or float on the surface.</rdfs:comment>
+        <guid>bf7b8b03-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Watercraft-Surface">
+        <rdfs:label>boats (containers)</rdfs:label>
+        <rdfs:comment>The collection of all #$Watercraft designed to
+            travel across the suface of a body of water.</rdfs:comment>
+        <guid>be99e24c-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Watercraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WeatherBalloon">
+        <rdfs:label>weather balloons</rdfs:label>
+        <rdfs:comment>The collection of meteorological tools consisting
+            of gas-filled #$Balloons connected to small boxes of
+            #$Sensors called #$Radiosondes. These balloons are released
+            and float to the upper atmosphere, where they record
+            temperature, pressure, wind speed, and humidity. The balloon
+            breaks, and the radiosonde falls back to earth, supported by
+            a parachute.</rdfs:comment>
+        <guid>bd58b3ad-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#UnmannedAircraft"/>
+        <rdfs:subClassOf rdf:resource="#LighterThanAirCraft"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WeatherSatellite">
+        <rdfs:label>weather satellites</rdfs:label>
+        <rdfs:comment>The collection of all artificial satellites
+            (#$Satellite-Device) which are designed for collecting data
+            on the weather of the #$HeavenlyBody which they orbit (#$orbits).</rdfs:comment>
+        <guid>bdef1de8-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Satellite-Device"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Wheelbarrow">
+        <rdfs:label>wheelbarrows</rdfs:label>
+        <rdfs:comment>The collection of wheelbarrows.</rdfs:comment>
+        <guid>bd58936f-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Wheelchair">
+        <rdfs:label>wheelchairs</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>bd58f016-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WheeledAntiTankVehicle">
+        <rdfs:label>wheeled anti tank vehicle</rdfs:label>
+        <rdfs:comment>The collection of wheeled, armored military
+            vehicles with the turret replaced with an anti-tank missile platform.</rdfs:comment>
+        <guid>bd8941c9-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#HeavyWheeledVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WheeledVehicle">
+        <rdfs:label>wheeled vehicles</rdfs:label>
+        <rdfs:comment>The collection of #$LandTransportationDevices that
+            use only wheels (as opposed to tracks, runners, etc.).
+            Despite the name, this collection includes not only many
+            instances of #$TransportationDevice-Vehicle, but also
+            non-self-powered devices such as #$Bicycles and #$Wagons.</rdfs:comment>
+        <guid>c072ef0b-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#LandTransportationDevice"/>
+        <daml:disjointWith rdf:resource="#TrackedVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WheeledVehicle-Armored">
+        <rdfs:label>wheeled vehicle - armored</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c06e9c01-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+        <rdfs:subClassOf rdf:resource="#ArmoredVehicle"/>
+    </daml:Class>
+    <daml:Class rdf:ID="Windsurfer">
+        <rdfs:label>windsurfers</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1009840-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#WaterTransportationDevice"/>
+    </daml:Class>
+    <daml:Class rdf:ID="WreckerTruck">
+        <rdfs:label>wreckers</rdfs:label>
+        <rdfs:comment></rdfs:comment>
+        <guid>c1007a71-9c29-11b1-9dad-c379636f7270</guid>
+        <rdfs:subClassOf rdf:resource="#Truck"/>
+    </daml:Class>
+</rdf:RDF>

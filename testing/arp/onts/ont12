@@ -1,0 +1,285 @@
+<?xml version="1.0" ?>
+
+<rdf:RDF 
+        xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+        xmlns:daml      = "http://www.daml.org/2001/03/daml+oil#" 
+        xmlns           = "http://daml.umbc.edu/ontologies/dreggie-ont#"
+>
+
+<daml:Ontology rdf:about="">
+	<daml:versionInfo>Filip Perich and Dipanjan Chakraborty</daml:versionInfo>  
+	  <rdfs:comment>Anamika Primary Ontology</rdfs:comment>
+  	<daml:imports rdf:resource="http://daml.umbc.edu/ontologies/dreggie-ont" />
+</daml:Ontology>
+
+<daml:Class rdf:ID="Component">
+  <rdfs:label>Component</rdfs:label>
+</daml:Class>
+
+
+<daml:Property rdf:ID="Description">
+  <rdfs:domain rdf:resource="#Component" />
+  <rdfs:range rdf:resource="#DescriptionClass" />
+</daml:Property>
+
+<daml:Class rdf:ID="DescriptionClass" />
+
+
+
+
+<daml:Property rdf:ID="ServiceName" >
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+</daml:Property>
+
+<daml:Property rdf:ID="ServiceAlias" >
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+</daml:Property>
+
+<daml:Property rdf:ID="ClientName" >
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+</daml:Property>
+
+<daml:Property rdf:ID="Capability">
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="#CapabilityClass" />
+</daml:Property>
+
+<daml:Property rdf:ID="Requirements">
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="#RequirementsClass" />
+</daml:Property>
+
+<daml:Property rdf:ID="Cost">
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="#CostClass" />
+</daml:Property>
+
+
+<daml:Property rdf:ID="Mobility">
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="#MobilityClass" />
+</daml:Property>
+
+
+<daml:Property rdf:ID="Input">
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="#InputClass" />
+</daml:Property>
+
+<daml:Property rdf:ID="Output">
+  <rdfs:domain rdf:resource="#DescriptionClass" />
+  <rdfs:range rdf:resource="#OutputClass" />
+</daml:Property>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<daml:Class rdf:ID="CapabilityClass" />
+
+
+<daml:Property rdf:ID="ClientCapability">
+  <rdfs:domain rdf:resource="#CapabilityClass" />
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+<daml:Property rdf:ID="ServiceCapability">
+  <rdfs:domain rdf:resource="#CapabilityClass" />
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+
+<daml:Class rdf:ID="RequirementsClass" />
+
+<daml:Property rdf:ID="CPURequirement">
+  <rdfs:domain rdf:resource="#RequirementsClass" />
+</daml:Property>
+
+<daml:Property rdf:ID="MemoryRequirement">
+  <rdfs:domain rdf:resource="#RequirementsClass" />
+</daml:Property>
+
+<daml:Property rdf:ID="DiskRequirement">
+  <rdfs:domain rdf:resource="#RequirementsClass" />
+</daml:Property>
+
+<daml:Property rdf:ID="OSRequirement">
+  <rdfs:domain rdf:resource="#RequirementsClass" />
+  <rdfs:range  rdf:resource="#VersionName" />
+</daml:Property>
+
+<daml:Property rdf:ID="SoftwareRequirement">
+  <rdfs:domain rdf:resource="#RequirementsClass" />
+  <rdfs:range  rdf:resource="#VersionName" />
+</daml:Property>
+
+<daml:Class rdf:ID="CostClass" />
+
+<daml:Property rdf:ID="Local">
+  <rdfs:domain rdf:resource="#CostClass" />
+  <rdfs:range rdf:resource="#AmountUnit" />
+</daml:Property>
+
+<daml:Property rdf:ID="Remote">
+  <rdfs:domain rdf:resource="#CostClass" />
+  <rdfs:range rdf:resource="#AmountUnit" />
+</daml:Property>
+
+
+
+<daml:Class rdf:ID="MobilityClass" />
+
+<daml:Property rdf:ID="ClientMobility">
+  <rdfs:domain rdf:resource="#MobilityClass" />
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+<daml:Property rdf:ID="ServiceMobility">
+  <rdfs:domain rdf:resource="#MobilityClass" />
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+
+<daml:Class rdf:ID="InputClass" />
+
+<daml:Property rdf:ID="ServiceInputType">
+  <rdfs:domain rdf:resource="#InputClass" />
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+<daml:Property rdf:ID="ClientInputType">
+  <rdfs:domain rdf:resource="#InputClass" />
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+<daml:Class rdf:ID="OutputClass" />
+
+<daml:Property rdf:ID="ServiceOutputType">
+  <rdfs:domain rdf:resource="#OutputClass" />
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+<daml:Property rdf:ID="ClientOutputType">
+  <rdfs:domain rdf:resource="#OutputClass" />
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+
+
+<daml:Property rdf:ID="Property">
+  <rdfs:domain rdf:resource="#Component" />
+  <rdfs:range rdf:resource="#PropertyClass" />
+</daml:Property>
+
+<daml:Class rdf:ID="PropertyClass" />
+
+<daml:Property rdf:ID="ServiceProperty">
+  <rdfs:domain rdf:resource="#PropertyClass" />
+  <rdfs:range rdf:resource="#PropertyType" />
+</daml:Property>
+
+<daml:Property rdf:ID="ClientProperty">
+  <rdfs:domain rdf:resource="#PropertyClass" />
+  <rdfs:range rdf:resource="#PropertyType" />
+</daml:Property>
+
+
+
+
+
+
+
+
+<daml:Class rdf:ID="PropertyType" />
+
+<daml:Property rdf:ID="Name">
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+</daml:Property>
+
+<daml:Property rdf:ID="CpuType">
+  <rdfs:range rdf:resource="#Type" />
+</daml:Property>
+
+<daml:Property rdf:ID="Availability">
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing" />
+</daml:Property>
+
+<daml:Property rdf:ID="Speed">
+  <rdfs:range rdf:resource="#AmountUnit" />
+</daml:Property>
+
+<daml:Property rdf:ID="Size">
+  <rdfs:range rdf:resource="#AmountUnit" />
+</daml:Property>
+
+<daml:Property rdf:ID="Memory">
+  <rdfs:range rdf:resource="#AmountUnit" />
+</daml:Property>
+
+<daml:Property rdf:ID="FileSystem">
+  <rdfs:range rdf:resource="#AmountUnit" />
+</daml:Property>
+
+<daml:Property rdf:ID="OperatingSystem">
+  <rdfs:range rdf:resource="#AmountUnit" />
+</daml:Property>
+
+<daml:Property rdf:ID="Software">
+  <rdfs:range rdf:resource="#AmountUnit" />
+</daml:Property>
+
+<daml:Class rdf:ID="AmountUnit">
+  <daml:subClassOf rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+</daml:Class>
+
+<daml:Property rdf:ID="Amount">
+  <rdfs:range rdf:resource="http://www.w3.org/2000/10/XMLSchema#nonNegativeInteger" />
+  <rdfs:domain rdf:resource="#AmountUnit" /> 
+</daml:Property>
+
+<daml:Property rdf:ID="Unit">
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+  <rdfs:domain rdf:resource="#AmountUnit" /> 
+</daml:Property>
+
+<daml:Class rdf:ID="VersionType">
+  <daml:subClassOf rdf:resource="#Type" />
+</daml:Class>
+
+<daml:Class rdf:ID="VersionName">
+  <daml:subClassOf rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing" />
+</daml:Class>
+
+<daml:Property rdf:ID="Version">
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal" />
+</daml:Property>
+
+<daml:Class rdf:ID="Type">
+  <daml:subClassOf rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing" />
+</daml:Class>
+
+
+
+
+
+</rdf:RDF>
+
+

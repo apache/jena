@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<rdf:RDF 
+         xmlns:rdf  ="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:daml ="http://www.daml.org/2001/03/daml+oil#" 
+         xmlns:rdfs ="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:prsn ="http://daml.umbc.edu/ontologies/person-ont#"
+         xmlns      ="http://daml.umbc.edu/ontologies/topic-ont#"
+>
+	<daml:Ontology rdfs:about="">
+		<daml:versionInfo>$Revision: 1.1.1.1 $</daml:versionInfo>
+		<daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+	</daml:Ontology>
+	<daml:Class rdf:ID="Topic">
+		<daml:label>Topic</daml:label>
+		<daml:subClassOf rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing"/>
+	</daml:Class>
+	<rdf:Property rdf:ID="SubTopic">
+		<daml:domain rdf:resource="#Topic"/>
+		<daml:range rdf:resource="#Topic"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="SuperTopic">
+		<daml:domain rdf:resource="#Topic"/>
+		<daml:range rdf:resource="#Topic"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Keywords">
+		<daml:domain rdf:resource="#Topic"/>
+		<daml:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Literal"/>
+	</rdf:Property>
+	<daml:Class rdf:ID="InfoResource">
+		<daml:label>InfoResource</daml:label>
+		<daml:subClassOf rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing"/>
+	</daml:Class>
+	<rdf:Property rdf:ID="Interestedin">
+		<daml:domain rdf:resource="http://daml.umbc.edu/ontologies/person-ont#Person"/>
+		<daml:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Aboutsubject">
+		<daml:domain rdf:resource="#InfoResource"/>
+		<daml:range rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing"/>
+	</rdf:Property>
+	<rdf:Property rdf:ID="Relatedto">
+		<daml:domain rdf:resource="#Topic"/>
+		<daml:range rdf:resource="#Topic"/>
+	</rdf:Property>
+</rdf:RDF>

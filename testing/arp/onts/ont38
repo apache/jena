@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE rdf:RDF [
+	 <!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	 <!ENTITY a 'http://www.daml.org/2001/03/daml+oil#'>
+	 <!ENTITY b 'http://www.w3.org/2000/01/rdf-schema#'>
+	 <!ENTITY c 'http://mr.teknowledge.com/DAML/pptOntology2.daml#'>
+]>
+<rdf:RDF xmlns:rdf="&rdf;"
+	 xmlns:a="&a;"
+	 xmlns:b="&b;"
+	 xmlns:c="&c;">
+<a:Ontology rdf:about=""/>
+
+
+<a:DatatypeProperty rdf:about="&c;Application_name"/>
+<a:DatatypeProperty rdf:about="&c;Author"/>
+<a:DatatypeProperty rdf:about="&c;Company"/>
+<a:DatatypeProperty rdf:about="&c;Dumper_Date"/>
+<a:DatatypeProperty rdf:about="&c;Dumper_Host"/>
+<a:DatatypeProperty rdf:about="&c;Dumper_account"/>
+<a:DatatypeProperty rdf:about="&c;MajorText"/>
+<a:DatatypeProperty rdf:about="&c;Number_of_characters"/>
+<a:DatatypeProperty rdf:about="&c;Number_of_pages"/>
+<a:DatatypeProperty rdf:about="&c;Number_of_words"/>
+<a:ObjectProperty rdf:about="&c;Contains">
+   <a:domain rdf:resource="&c;Presentation"/>
+   <a:range rdf:resource="&c;Slide"/>
+</a:ObjectProperty>
+<a:Class rdf:about="&c;Presentation"/>
+<a:DatatypeProperty rdf:about="&c;Presentation_Digest"/>
+<a:DatatypeProperty rdf:about="&c;Presentation_File"/>
+<a:DatatypeProperty rdf:about="&c;Security"/>
+<a:DatatypeProperty rdf:about="&c;ShapeText"/>
+<a:Class rdf:about="&c;Slide" />
+<a:DatatypeProperty rdf:about="&c;SlideIndex"/>
+<a:DatatypeProperty rdf:about="&c;Total_editing_time"/>
+<a:Restriction rdf:about="_anon17">
+	<a:onProperty rdf:resource="&c;Contains"/>
+	<a:hasValue rdf:resource="&c;Slide"/>
+</a:Restriction>
+<a:DatatypeProperty rdf:about="&c;creation_date"/>
+</rdf:RDF>

@@ -1,0 +1,3 @@
+
+<http://example.org#one> <http://example.org/name> <http://example.org/test> .
+<http://example.org> <http://example.org/name> <http://example.org/test> .

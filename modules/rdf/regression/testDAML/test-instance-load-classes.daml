@@ -1,0 +1,24 @@
+<!-- $Id: test-instance-load-classes.daml,v 1.1.1.1 2002-12-19 19:12:32 bwm Exp $ -->
+
+<!-- DAML classes for load-instances test case. Note that test-instance-load
+     imports these declarations, rather than vice versa -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns     ="http://dickinson-i-4/daml/tests/test-instance-load-classes.daml#"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Id: test-instance-load-classes.daml,v 1.1.1.1 2002-12-19 19:12:32 bwm Exp $</daml:versionInfo>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil" />
+</daml:Ontology>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-instance-load-classes.daml#Cop">
+</daml:Class>
+
+<daml:Class rdf:about="http://dickinson-i-4/daml/tests/test-instance-load-classes.daml#Robber">
+</daml:Class>
+
+</rdf:RDF>

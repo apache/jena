@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Failing (not RDF document) Test case for bug #73.
+  i.e. hp internal bugzilla #73
+  
+       escaped UTF-8 of 'é' is %C3%A9
+                     
+       "ü" in UTF-8 consists of two bytes with the values 0xC3 and 0xBC
+
+  
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:ég="http://example.org/">
+
+  <rdf:Description ég:foo="bür" />
+   
+</rdf:RDF>
+   

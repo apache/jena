@@ -1,0 +1,8 @@
+# cwm: Tests/rdf-test-14.n3 => Tests/rdf-result-14.nt
+    
+    <file:///base/rdf-test-14.n3#s>     <file:///base/rdf-test-14.n3#prop> "value1" .
+    
+    <file:///base/rdf-test-14.n3#s2>     <file:///base/rdf-test-14.n3#prop> "value2" .
+    
+    <file:///base/rdf-test-14.n3#s1>     <file:///base/rdf-test-14.n3#prop> "value2" .
+    

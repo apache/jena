@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>  
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"             xmlns:daml="http://www.daml.org/2001/03/daml+oil#" 
+xmlns="http://cicho0.tripod.com/Dep_of_Computer_Science#"
+>
+
+ <daml:Ontology rdf:about="">
+  <daml:versionInfo>$ Computer Science dep.ontology data:13/10/01 time:11.25 $</daml:versionInfo> 
+  <rdfs:comment>An ontology created for testing purposes</rdfs:comment> 
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil" /> 
+  <daml:imports rdf:resource="http://cicho0.tripod.com/cs_Staff_ont"/>
+  <daml:imports rdf:resource="http://cicho0.tripod.com/cs_Courses_ont"/>
+ </daml:Ontology>
+
+ <daml:Class rdf:ID="Literal">
+  <daml:equivalentTo rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/> 
+ </daml:Class>
+
+ <daml:Class rdf:ID="Department">
+  <rdfs:label>Department</rdfs:label>
+  <rdfs:comment>Class representing the Department </rdfs:comment>
+  <rdfs:subClassOf rdf:resource="http://www.daml.org/2001/03/daml+oil#Thing"/>
+ </daml:Class>
+
+ <!--express Staff as being the same as Staff in the cs_Staff_ont ontology-->
+ 
+ <daml:Class rdf:ID="Staff">
+  <rdfs:comment>This class is representative of the department's Staff</rdfs:comment>
+  <rdfs:subClassOf rdf:resource="#Department"/>  
+  <daml:sameClassAs rdf:resource="http://cicho0.tripod.com/cs_Staff_ont#Staff"/> 
+ </daml:Class>
+
+ <daml:ObjectProperty rdf:ID="hasStaff">
+  <rdfs:comment>This property states that the department has staff personnel</rdfs:comment>
+  <rdfs:domain rdf:resource="#Department"/>
+  <!--<rdfs:range rdf:resource="#Staff"/>-->
+ </daml:ObjectProperty>
+
+ <daml:ObjectProperty rdf:ID="hasCourses">
+  <rdfs:comment>This property states that the department has a number of courses</rdfs:comment>
+  <rdfs:domain rdf:resource="#Department"/>
+  <rdfs:range rdf:resource="http://cicho0.tripod.com/cs_Courses_ont#Course"/>
+ </daml:ObjectProperty>
+
+ <daml:ObjectProperty rdf:ID="hasURL">
+  <rdfs:comment>The Department has its website URL</rdfs:comment>
+  <rdfs:domain rdf:resource="#Department"/>
+  <rdfs:range rdf:resource="#Literal"/>
+ </daml:ObjectProperty>
+
+</rdf:RDF>

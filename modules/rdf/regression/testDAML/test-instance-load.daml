@@ -1,0 +1,37 @@
+<!-- $Id: test-instance-load.daml,v 1.1.1.1 2002-12-19 19:12:32 bwm Exp $ -->
+
+<!-- Test case for bug reported by Charlie Abela: if the instance file imports the
+     class definitions, rather than vice versa, Jena 1.2 would not recognise the
+     DAML instances for what they are -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns:cr  ="http://dickinson-i-4/daml/tests/test-instance-load-classes.daml#"
+  xmlns     ="http://dickinson-i-4/daml/tests/test-instance-load.daml#"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Id: test-instance-load.daml,v 1.1.1.1 2002-12-19 19:12:32 bwm Exp $</daml:versionInfo>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil" />
+  <daml:imports rdf:resource="file:modules/rdf/regression/testDAML/test-instance-load-classes.daml" />
+</daml:Ontology>
+
+<cr:Cop rdf:about="http://dickinson-i-4/daml/tests/test-instance-load.daml#pugh">
+     <rdfs:comment>
+     The best of the cops, by common consent, is upstanding Officer Pugh.
+     He can run like a hare, and fight like a bear,
+     and he's good at crosswords too.
+     </rdfs:comment>
+</cr:Cop>
+
+<cr:Robber rdf:about="http://dickinson-i-4/daml/tests/test-instance-load.daml#dan">
+     <rdfs:comment>
+     The worst of the robbers, as most of us know, is the villainous Grabber Dan.
+     His voice is rough, and he's pinched enough stuff,
+     To fill a furniture van.
+     </rdfs:comment>
+</cr:Robber>
+
+</rdf:RDF>

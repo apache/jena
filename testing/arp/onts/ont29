@@ -1,0 +1,972 @@
+<rdf:RDF xmlns="http://mnemosyne.umd.edu/~aelkiss/weather-ont.daml"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+    <daml:Ontology rdf:ID="metarOnt">
+        <rdfs:comment>An ontology for use in converting METAR and TAF reports to DAML</rdfs:comment>
+        <daml:versionInfo>$Id: ont29,v 1.1.1.1 2002-12-19 19:24:30 bwm Exp $</daml:versionInfo>
+    </daml:Ontology>
+
+    <daml:Class rdf:ID="UnitAbbreviation">
+	<rdfs:comment>Mapping from unit abbreviations to things used in this ontology. Eventually this could grow into a 'units' ontology and have mappings between various units.</rdfs:comment>
+	<rdfs:label>Unit Abbreviation</rdfs:label>
+    </daml:Class>
+
+    <daml:Property rdf:ID="hasUnitAbbreviation">
+        <rdfs:comment>Abbreviation for a unit of measure</rdfs:comment>
+	<rdfs:label>Abbreviation</rdfs:label>
+    </daml:Property>
+
+    <daml:Property rdf:ID="unitPropertyName">
+        <rdfs:comment>Name in the METAR ontology for a property referring to something measured in the units referenced to by the object with this property (is that clear?:)</rdfs:comment>
+	<rdfs:label>Property name</rdfs:label>	
+    </daml:Property>        
+
+    <UnitAbbreviation rdf:ID="celsiusMap">
+        <hasUnitAbbreviation>C</hasUnitAbbreviation>
+	<unitPropertyName rdf:resource="#celsiusTemperature"/>
+    </UnitAbbreviation>
+
+    <UnitAbbreviation rdf:ID="fahrenheitMap">
+        <hasUnitAbbreviation>F</hasUnitAbbreviation>
+	<unitPropertyName rdf:resource="#fahrenheitTemperature"/>
+    </UnitAbbreviation>
+
+    <UnitAbbreviation rdf:ID="mmHgMap">
+        <hasUnitAbbreviation>mmHg</hasUnitAbbreviation>
+	<unitPropertyName rdf:resource="#millimetersOfMercury"/>
+    </UnitAbbreviation>
+
+    <UnitAbbreviation rdf:ID="inHgMap">
+        <hasUnitAbbreviation>inHg</hasUnitAbbreviation>
+	<unitPropertyName rdf:resource="#inchesOfMercury"/>
+    </UnitAbbreviation>
+
+    <UnitAbbreviation rdf:ID="windMphMap">
+        <hasUnitAbbreviation>MPH</hasUnitAbbreviation>
+	<unitPropertyName rdf:resource="#windSpeedMPH"/>
+    </UnitAbbreviation>
+
+    <UnitAbbreviation rdf:ID="knotsMap">
+        <hasUnitAbbreviation>Kts</hasUnitAbbreviation>
+	<unitPropertyName rdf:resource="#windSpeedKnots"/>
+    </UnitAbbreviation>
+
+
+    <daml:Class rdf:ID="CanadaMetarReport">
+        <rdfs:comment>Canada's METAR format is similar to the US, but with a few subtle differences.</rdfs:comment>
+        <rdfs:label>Canada METAR report</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#MetarReport"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="CurrentWeatherEvent">
+        <rdfs:comment>Superclass for everything reported in the Current Weather Condition group.</rdfs:comment>
+        <rdfs:label>Current weather conditions</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Drizzle">
+        <rdfs:comment>Fairly uniform precipitation composed exclusively of fine drops with diameters of less than 0.02 inch (0.5 mm) very close together. Drizzle appears to float while following air currents, although unlike fog droplets, it falls to the ground.</rdfs:comment>
+        <rdfs:label>Drizzle</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#LiquidPrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="DustOrSandWhirl">
+        <rdfs:comment>An ensemble of particles of dust or sand, sometimes accompanied by small liter, raised from the ground in the form of a whirling column of varying height with a small diameter and an approximately vertical vertical axis.</rdfs:comment>
+        <rdfs:label>Well-developed dust/sand whirl</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#OtherWeatherPhenomena"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Duststorm">
+        <rdfs:comment>A severe weather condition characterized by strong winds and dust-filled air over an extensive area.</rdfs:comment>
+        <rdfs:label>Duststorm</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#OtherWeatherPhenomena"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Fog">
+        <rdfs:comment>A visible aggregate of minute water particles (droplets) which are based at the Earth's surface and reduces horizontal visibility to less than 5/8 statute mile and, unlike drizzle, it does not fall to the ground.</rdfs:comment>
+        <rdfs:label>Fog</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#ObscurationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="SolidPrecipitationEvent">
+        <rdfs:subClassOf rdf:resource="#PrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="FunnelCloud">
+        <rdfs:comment>A violent, rotating column of air which does not touch the surface.</rdfs:comment>
+        <rdfs:label>Funnel cloud</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#TornadicActivity"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="GustingWindEvent">
+        <rdfs:label>gusting wind</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WindEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Hail">
+        <rdfs:comment>Precipitation in the form of small balls or other pieces of ice falling separately or frozen together in irregular lumps.</rdfs:comment>
+        <rdfs:label>Hail</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SolidPrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Haze">
+        <rdfs:comment>A suspension in the air of extremely small, dry particles invisible to the naked eye and sufficiently numerous to give the air an opalescent appearance.</rdfs:comment>
+        <rdfs:label>Haze</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#ObscurationEvent"/>
+    </daml:Class>
+
+    <WeatherIntensity rdf:ID="Heavy">
+        <rdfs:label>Heavy Intensity</rdfs:label>
+    </WeatherIntensity>
+
+    <daml:Class rdf:ID="HighVariableWindEvent">
+        <rdfs:comment>variable direction wind (more than 6 knots)</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="#VariableWindEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="IceCrystals">
+        <rdfs:comment>A fall of unbranched (snow crystals are branched) ice crystals in the form of needles, columns, or plates.</rdfs:comment>
+        <rdfs:label>Ice Crystals</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SolidPrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="IcePellets">
+        <rdfs:comment>    Precipitation of transparent or translucent pellets of ice, which are round or irregular, rarely conical, and which have a diameter of 0.2 inch (5 mm), or less. There are two main types: 1) Hard grains of ice consisting of frozen raindrops, or largely melted and refrozen snowflakes; 2) Pellets of snow encased in a thin layer of ice which have formed from the freezing, either of droplets intercepted by the pellets, or of water resulting from the partial melting of the pellets.</rdfs:comment>
+        <rdfs:label>Ice Pellets</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SolidPrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="IntlMetarReport">
+        <rdfs:comment>METAR report that adheres to the actual international METAR standard.</rdfs:comment>
+        <rdfs:label>International METAR report</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherReport"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="IntlSurfaceVisibility">
+        <rdfs:comment>international-format surface visibility (d{4} in meters or CAVOK (ceiling and visibility OK</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="#SurfaceVisibility"/>
+    </daml:Class>
+
+    <WeatherIntensity rdf:ID="Light">
+        <rdfs:label>Light Intensity</rdfs:label>
+    </WeatherIntensity>
+
+    <daml:Class rdf:ID="LowVariableWindEvent">
+        <rdfs:comment>variable direction wind (less than 6 knots)</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="#VariableWindEvent"/>
+    </daml:Class>
+
+    <WeatherIntensity rdf:ID="Medium">
+        <rdfs:label>Medium Intensity</rdfs:label>
+    </WeatherIntensity>
+
+    <daml:Class rdf:ID="MetarReport">
+        <rdfs:comment>Superclass for all METAR-format reports</rdfs:comment>
+        <rdfs:label>METAR report</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherReport"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Mist">
+        <rdfs:comment>A visible aggregate of minute water particles suspended in the atmosphere that reduces visibility to less than 7 statute miles but greater than or equal to 5/8 statute mile.</rdfs:comment>
+        <rdfs:label>Mist</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#ObscurationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="LiquidPrecipitationEvent">
+        <rdfs:subClassOf rdf:resource="#PrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="ObscurationEvent">
+        <rdfs:comment>Any phenomenon in the atmosphere, other than precipitation, that reduces the horizontal visibility.</rdfs:comment>
+        <rdfs:label>Obscuration</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#CurrentWeatherEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="OtherWeatherPhenomena">
+        <rdfs:comment>Current weather phenomena that do not fit into either the obscuration or precipitation categories</rdfs:comment>
+        <rdfs:label>Other Weather Phenomena</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#CurrentWeatherEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="PeakWindEvent">
+        <rdfs:label>peak wind velocity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WindEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="PrecipitationEvent">
+        <rdfs:comment>Precipitation is any of the forms of water particles, whether liquid or solid, that fall from the atmosphere and reach the ground.</rdfs:comment>
+        <rdfs:label>Precipitation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#CurrentWeatherEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Rain">
+        <rdfs:comment>Precipitation, either in the form of drops larger than 0.02 inch (0.5 mm), or smaller drops which, in contrast to drizzle, are widely separated.</rdfs:comment>
+        <rdfs:label>Rain</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#LiquidPrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="RunwayVisualRange">
+        <rdfs:comment>Runway visual range group - rarely used. Should probably break this into USA and international format RVR</rdfs:comment>
+        <rdfs:label>Runway visual range</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#VisibilityEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Sand">
+        <rdfs:comment>Sand particles raised by the wind to a height sufficient to reduce visibility.</rdfs:comment>
+        <rdfs:label>Sand</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#ObscurationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Sandstorm">
+        <rdfs:comment>Particles of sand carried aloft by a strong wind. The sand particles are mostly confined to the lowest ten feet, and rarely rise more than fifty feet above the ground.</rdfs:comment>
+        <rdfs:label>Sandstorm</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#OtherWeatherPhenomena"/>
+    </daml:Class>
+
+    <WeatherDescriptor rdf:ID="Shallow">
+        <rdfs:comment>The descriptor shallow shall only be used to further describe fog that has little vertical extent (less than 6 feet).</rdfs:comment>
+        <rdfs:label>Shallow</rdfs:label>
+    </WeatherDescriptor>
+
+    <WeatherDescriptor rdf:ID="Showers">
+        <rdfs:comment>Precipitation characterized by the suddenness with which they start and stop, by the rapid changes of intensity, and usually by rapid changes in the appearance of the sky.</rdfs:comment>
+        <rdfs:label>Showers</rdfs:label>
+    </WeatherDescriptor>
+
+    <daml:Class rdf:ID="SmallHail">
+        <rdfs:comment>Precipitation of white, opaque grains of ice. The grains are round or sometimes conical. Diameters range from about 0.08 to 0.2 inch (2 to 5 mm).</rdfs:comment>
+        <rdfs:label>Small Hail and/or Snow Pellets</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SolidPrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Smoke">
+        <rdfs:comment>A suspension in the air of small particles produced by combustion. A transition to haze may occur when smoke particles have traveled great distances (25 to 100 miles or more) and when the larger particles have settled out and the remaining particles have become widely scattered through the atmosphere.</rdfs:comment>
+        <rdfs:label>Smoke</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#ObscurationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Snow">
+        <rdfs:comment>Precipitation of snow crystals, mostly branched in the form of six-pointed stars.</rdfs:comment>
+        <rdfs:label>Snow</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SolidPrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="SnowGrains">
+        <rdfs:comment>Precipitation of very small, white, and opaque grains of ice.</rdfs:comment>
+        <rdfs:label>Snow Grains</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#SolidPrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="SpeciReport">
+        <rdfs:comment>SPECI special information METAR-format report</rdfs:comment>
+        <rdfs:label>SPECI report</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#MetarReport"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Spray">
+        <rdfs:comment>An ensemble of water droplets torn by the wind from the surface of an extensive body of water, generally from the crests of waves, and carried up a short distance into the air.</rdfs:comment>
+        <rdfs:label>Spray</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#ObscurationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Squall">
+        <rdfs:comment>A strong wind characterized by a sudden onset in which the wind speed increases at least 16 knots and is sustained at 22 knots or more for at least one minute.</rdfs:comment>
+        <rdfs:label>Squall</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#OtherWeatherPhenomena"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="SurfaceVisibility">
+        <rdfs:comment>Surface visibility</rdfs:comment>
+        <rdfs:label>surface visibility</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#VisibilityEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="TafReport">
+        <rdfs:comment>TAF (Terminal Aerodrome Forecast) report. Unknown at this time whether this is a US-only or international standard, and if the conventions used are different.</rdfs:comment>
+        <rdfs:label>TAF report</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherReport"/>
+    </daml:Class>
+
+    <WeatherDescriptor rdf:ID="Thunderstorm">
+        <rdfs:comment>A local storm produced by a cumulonimbus cloud that is accompanied by lightning and/or thunder.</rdfs:comment>
+        <rdfs:label>Thunderstorm</rdfs:label>
+    </WeatherDescriptor>
+
+    <daml:Class rdf:ID="TimedWeatherEvent">
+        <rdfs:label>Timed weather event</rdfs:label>
+	<rdfs:subClassOf rdf:resource="#WeatherEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="DatedWeatherEvent">
+        <rdfs:label>Timed and dated weather event</rdfs:label>
+	<rdfs:subClassOf rdf:resource="#TimedWeatherEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="TimeRangeWeatherEvent"> 
+       <rdfs:label>Weather Event Time Range</rdfs:label>
+       <rdfs:comment>Weather event with possibly a beginning and possibly an ending</rdfs:comment>
+<!--       <daml:unionOf>
+         <daml:List>
+	   <daml:item>
+	     <daml:Restriction daml:cardinality="1">
+		 <daml:onProperty rdf:resource="#hasWeatherEventBeginTime"/>
+             </daml:Restriction>
+	   </daml:item>
+	   <daml:item>
+	     <daml:Restriction daml:cardinality="1">
+		 <daml:onProperty rdf:resource="#hasWeatherEventEndTime"/>
+             </daml:Restriction>
+	   </daml:item>
+	 </daml:List> 
+       </daml:unionOf> -->
+
+       <daml:unionOf rdf:parseType="daml:collection">
+           <daml:Restriction daml:cardinality="1">
+		 <daml:onProperty rdf:resource="#hasWeatherEventBeginTime"/>
+           </daml:Restriction>
+	   <daml:Restriction daml:cardinality="1">
+    		 <daml:onProperty rdf:resource="#hasWeatherEventEndTime"/>
+           </daml:Restriction>
+       </daml:unionOf>
+       <rdfs:subClassOf rdf:resource="#TimedWeatherEvent"/>
+    </daml:Class>
+
+    <daml:Property rdf:ID="hasWeatherTime">
+       <rdfs:label>has time</rdfs:label>
+       <rdfs:comment>Minutes past the hour, or hour and minutes, when some event occurred.</rdfs:comment>
+       <rdfs:domain rdf:resource="#TimedWeatherEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="hasWeatherDate">
+       <rdfs:label>has date</rdfs:label>
+       <rdfs:comment>Probably a day of the month. METAR is bizzare like that.</rdfs:comment>
+       <rdfs:domain rdf:resource="#DatedWeatherEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="hasWeatherEventBeginTime">
+       <rdfs:label>has beginning time</rdfs:label>
+       <rdfs:subPropertyOf rdf:resource="#hasWeatherTime"/>
+       <rdfs:domain rdf:resource="TimeRangeWeatherEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="hasWeatherEventEndTime">
+       <rdfs:label>has ending time</rdfs:label>
+       <rdfs:subPropertyOf rdf:resource="#hasWeatherTime"/>
+       <rdfs:domain rdf:resource="TimeRangeWeatherEvent"/>
+    </daml:Property>
+
+    <daml:Class rdf:ID="TornadicActivity">
+        <rdfs:label>Funnel cloud / Tornadic Activity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#OtherWeatherPhenomena"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Tornado">
+        <rdfs:comment>A violent, rotating column of air touching the ground.</rdfs:comment>
+        <rdfs:label>Tornado</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#TornadicActivity"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="UnknownPrecipitation">
+        <rdfs:comment>Unknown precipitation shall only be reported by automated stations to indicate precipitation of unknown type when the automated system cannot identify the precipitation with any greater precision.</rdfs:comment>
+        <rdfs:label>Unknown precipitation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#PrecipitationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="UsaMetarReport">
+        <rdfs:comment>The US does everything differently, so it has its own wacky format for doing metar that's a bit different from everybody else's.</rdfs:comment>
+        <rdfs:label>US METAR report</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#MetarReport"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="UsaSurfaceVisibility">
+        <rdfs:comment>usa/canada-format surface visibility (garbage with fractions and statute miles)</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="#SurfaceVisibility"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="UsaRunwayVisualRange">
+        <rdfs:comment>usa-format runway visual range (garbage with feet rather than meters)</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#RunwayVisualRange"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="IntlRunwayVisualRange">
+        <rdfs:comment>international-format runway visual range (uses meters)</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#RunwayVisualRange"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="VariableWindEvent">
+        <rdfs:label>variable direction wind</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WindEvent"/>
+    </daml:Class>
+
+    <WeatherProximity rdf:ID="Vicinity">
+        <rdfs:comment>Unless otherwise directed elsewhere in this handbook, weather phenomena occurring beyond the point of observation (between 5 and 10 statute miles) shall be reported as (in the) vicinity.</rdfs:comment>
+        <rdfs:label>In the vicinity</rdfs:label>
+    </WeatherProximity>
+
+    <daml:Class rdf:ID="VisibilityEvent">
+        <rdfs:comment>Superclass for everything dealing with visibility</rdfs:comment>
+        <rdfs:label>visibility</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherEvent"/>
+    </daml:Class>
+
+    <daml:Property rdf:ID="hasTemperatureEvent">
+        <rdfs:comment>Has temperature-valued or derived event</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#hasWeatherEvent"/>
+	<rdfs:domain rdf:resource="#WeatherReport"/>
+	<rdfs:range rdf:resource="#TemperatureEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="hasPressureEvent">
+        <rdfs:comment>Has pressure-valued or derived event</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#hasWeatherEvent"/>
+	<rdfs:domain rdf:resource="#WeatherReport"/>
+	<rdfs:range rdf:resource="#PressureEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="hasVisibilityEvent">
+        <rdfs:comment>Wind report</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#hasWeatherEvent"/>
+	<rdfs:domain rdf:resource="#WeatherReport"/>
+	<rdfs:range rdf:resource="#VisibilityEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="visibilityDistance">
+        <rdfs:comment>A distance for visibility. Subclasses have some unit of distance attached.</rdfs:comment>
+	<rdfs:label>visibility distance</rdfs:label>
+    </daml:Property>
+
+    <daml:Property rdf:ID="visibilityFeet">
+        <rdfs:comment>Visibility in feet, for runway visual range reports</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#visibilityDistance"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="visibilityStatuteMiles">
+        <rdfs:comment>Visibility in statue miles, for surface visibility reports</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#visibilityDistance"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="visibilityMeters">
+        <rdfs:comment>Visibility in meters, for surface visibility reports</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#visibilityDistance"/>
+    </daml:Property>
+
+    <daml:Class rdf:ID="VolcanicAsh">
+        <rdfs:comment>Fine particles of rock powder that originate from a volcano and that may remain suspended in the atmosphere for long periods.</rdfs:comment>
+        <rdfs:label>Volcanic Ash</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#ObscurationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="Waterspout">
+        <rdfs:comment>A violent, rotating column of air that forms over a body of water, and touches the water surface.</rdfs:comment>
+        <rdfs:label>Waterspout</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#TornadicActivity"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="WeatherDescriptor">
+        <rdfs:comment>Qualifiers/ descriptors of weather events</rdfs:comment>
+        <rdfs:label>Weather Descriptor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherQualifier"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="WeatherEvent">
+        <rdfs:comment>Superclass for all weather events</rdfs:comment>
+        <rdfs:label>Weather event</rdfs:label>
+    </daml:Class>
+
+    <daml:Class rdf:ID="WeatherIntensity">
+        <rdfs:label>Weather Intensity Descriptor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherQualifier"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="WeatherProximity">
+        <rdfs:label>Weather Proximity Descriptor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherQualifier"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="WeatherQualifier">
+        <rdfs:label>Current Weather Qualifier</rdfs:label>
+    </daml:Class>
+
+    <daml:Property rdf:ID="hasWeatherQualifier">
+        <rdfs:label>event is qualified by</rdfs:label>
+	<rdfs:domain rdf:resource="#WeatherEvent"/>
+	<rdfs:range rdf:resource="#WeatherQualifier"/>
+    </daml:Property>
+
+    <daml:Class rdf:ID="WeatherReport">
+        <rdfs:comment>Superclass for all handled weather reports</rdfs:comment>
+        <rdfs:label>weather report</rdfs:label>
+	<rdfs:subClassOf rdf:resource="#DatedWeatherEvent"/>
+	<rdfs:subClassOf>
+	  <daml:Restriction daml:minCardinality="1">
+	     <daml:onProperty rdf:resource="#hasWeatherEvent"/>
+	  </daml:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+	  <daml:Restriction daml:cardinality="1">
+	     <daml:onProperty rdf:resource="#hasStationID"/>
+          </daml:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+	  <daml:Restriction daml:cardinality="1">
+            <daml:onProperty rdf:resource="#hasReportTime"/>
+          </daml:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+	  <daml:Restriction daml:cardinality="1">
+            <daml:onProperty rdf:resource="#hasReportDate"/>
+          </daml:Restriction>
+	</rdfs:subClassOf>
+    </daml:Class>
+
+    <daml:Class rdf:ID="WidespreadDust">
+        <rdfs:comment>Fine particles of earth or other matter raised or suspended in the air by the wind that may have occurred at or far away from the station which may restrict horizontal visibility.</rdfs:comment>
+        <rdfs:label>Widespread Dust</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#ObscurationEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="WindEvent">
+        <rdfs:comment>Superclass for all events dealing with wind</rdfs:comment>
+        <rdfs:label>Wind event</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#WeatherEvent"/>
+    </daml:Class>
+
+    <daml:Property rdf:ID="windDirection">
+        <rdfs:label>Wind direction</rdfs:label>
+	<rdfs:domain rdf:resource="#WindEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="windSpeed">
+        <rdfs:label>Wind speed</rdfs:label>
+	<rdfs:domain rdf:resource="#WindEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="knotsSpeed">
+        <rdfs:label>Speed of something, in knots</rdfs:label>
+    </daml:Property>
+
+    <daml:Property rdf:ID="mphSpeed">
+        <rdfs:label>Speed of something, in MPH</rdfs:label>
+    </daml:Property>
+
+    <daml:Property rdf:ID="windSpeedMPH">
+        <rdfs:subPropertyOf rdf:resource="#windSpeed"/>
+        <rdfs:subPropertyOf rdf:resource="#mphSpeed"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="windSpeedKnots">
+        <rdfs:subPropertyOf rdf:resource="#windSpeed"/>
+        <rdfs:subPropertyOf rdf:resource="#knotsSpeed"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="windGustSpeed">
+        <rdfs:subPropertyOf rdf:resource="#windSpeed"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="windGustKnots">
+        <rdfs:subPropertyOf rdf:resource="#windGustSpeed"/>
+        <rdfs:subPropertyOf rdf:resource="#knotsSpeed"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="windGustMPH">
+        <rdfs:subPropertyOf rdf:resource="#windGustSpeed"/>
+        <rdfs:subPropertyOf rdf:resource="#mphSpeed"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="windDirectionDegrees">
+        <rdfs:comment>Direction of wind, in degrees</rdfs:comment>
+	<rdfs:label>Wind direction (degrees)</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="#windDirection"/>	
+    </daml:Property>
+
+    <daml:Property rdf:ID="windDirectionEnglish">
+        <rdfs:comment>Direction of wind, in English</rdfs:comment>
+	<rdfs:label>Wind direction (degrees)</rdfs:label>
+	<rdfs:domain rdf:resource="#WindEvent"/>
+	<rdfs:subPropertyOf rdf:resource="#windDirection"/>
+    </daml:Property>
+
+    <daml:Class rdf:ID="WindShiftEvent">
+        <rdfs:label>wind shift event</rdfs:label>
+        <rdfs:subClassOf rdf:resource="#TimedWeatherEvent"/>
+        <rdfs:subClassOf rdf:resource="#WindEvent"/>
+    </daml:Class>
+
+    <daml:Property rdf:ID="hasReportModifier">
+        <rdfs:domain rdf:resource="#MetarReport"/>
+        <rdfs:label>has report modifier</rdfs:label>
+        <rdfs:range rdf:resource="#ReportModifier"/>
+    </daml:Property>
+
+    <daml:Class rdf:ID="ReportModifier">
+        <rdfs:label>Report modifier</rdfs:label>
+	<rdfs:subClassOf rdf:resource="#WeatherQualifier"/>
+    </daml:Class>
+
+    <ReportModifier rdf:ID="Automatic">
+        <rdfs:label>Automatic</rdfs:label>
+    </ReportModifier>
+
+    <ReportModifier rdf:ID="Corrected">
+        <rdfs:label>Corrected</rdfs:label>
+    </ReportModifier>
+
+    <daml:Property rdf:ID="hasReportTime">
+        <rdfs:comment>Every weather report must have a timestamp</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#hasWeatherTime"/>
+        <rdfs:domain rdf:resource="#WeatherReport"/>
+        <rdfs:label>report was made at time</rdfs:label>
+    </daml:Property>
+
+    <daml:Property rdf:ID="hasReportDate">
+        <rdfs:comment>Every weather report must have a timestamp</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#hasWeatherDate"/>
+	<rdfs:domain rdf:resource="#WeatherReport"/>
+	<rdfs:label>day of the month report was made</rdfs:label>
+    </daml:Property>
+	
+
+    <daml:Property rdf:ID="hasStationID">
+        <rdfs:comment>Every weather report must have a station ID</rdfs:comment>
+        <rdfs:domain rdf:resource="#WeatherReport"/>
+        <rdfs:label>has station ID</rdfs:label>
+    </daml:Property>
+
+    <daml:Property rdf:ID="hasWeatherEvent">
+        <rdfs:comment>Weather reports contain information about weather events.</rdfs:comment>
+        <rdfs:domain rdf:resource="#WeatherReport"/>
+        <rdfs:range rdf:resource="#WeatherEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="hasWindEvent">
+        <rdfs:comment>Wind report</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#hasWeatherEvent"/>
+	<rdfs:domain rdf:resource="#WeatherReport"/>
+	<rdfs:range rdf:resource="#WindEvent"/>
+    </daml:Property>
+
+    <WeatherDescriptor rdf:ID="Blowing">
+        <rdfs:comment>When dust, sand, snow, and/or spray is raised by the wind to a height of 6 feet or more, 'blowing' shall be used to further describe the weather phenomenon.</rdfs:comment>
+        <rdfs:label>Blowing</rdfs:label>
+    </WeatherDescriptor>
+
+    <WeatherDescriptor rdf:ID="Freezing">
+        <rdfs:comment>When fog is occurring and the temperature is below 0oC, 'freezing' shall be used to further describe the phenomenon. When drizzle and/or rain freezes upon impact and forms a glaze on the ground or other exposed objects, 'freezing' shall be used to further describe the phenomenon.</rdfs:comment>
+        <rdfs:label>Freezing</rdfs:label>
+    </WeatherDescriptor>
+
+    <WeatherDescriptor rdf:ID="Partial">
+        <rdfs:comment>The descriptor partial and patches shall only be used to further describe fog that has little vertical extent (normally greater than or equal to 6 feet but less than 20 feet), and reduces horizontal visibility, but to a lesser extent vertically. The stars may often be seen by night and the sun by day.</rdfs:comment>
+        <rdfs:label>Partial</rdfs:label>
+        <rdfs:label>Patches</rdfs:label>
+    </WeatherDescriptor>
+    
+    <WeatherDescriptor rdf:ID="Patches">
+        <daml:sameIndividualAs rdf:resource="#Partial"/>
+    </WeatherDescriptor>
+
+    <daml:Class rdf:ID="SkyCondition">
+        <rdfs:comment> Sky condition is a description of the appearance of the sky. Sky condition may be evaluated either automatically by instrument or manually with or without instruments.</rdfs:comment>
+	<rdfs:label>Sky Condition</rdfs:label>
+	<rdfs:subClassOf rdf:resource="#VisibilityEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="VerticalVisibility">
+        <rdfs:label>VerticalVisibility</rdfs:label>
+	<rdfs:comment>Vertical visibility shall be coded in the format, VVhs hshs, where VV identifies an indefinite ceiling and hshshs is the vertical visibility into the indefinite ceiling. There shall be no space between the VV identifier and the vertical visibility.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#SkyCondition"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="ClearSkies">
+        <rdfs:label>Clear</rdfs:label>
+	<rdfs:comment>Clear skies shall be coded in the format, SKC or CLR, where SKC is the abbreviation used by manual stations to indicate no layers are present and CLR is the abbreviation used by automated stations to indicate no layers are detected at or below 12,000 feet.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#SkyCondition"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="ClearSkiesCLR">
+        <rdfs:label>Clear</rdfs:label>
+	<rdfs:comment> CLR is the abbreviation used by automated stations to indicate no layers are detected at or below 12,000 feet.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#ClearSkies"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="ClearSkiesSKC">
+        <rdfs:label>Clear</rdfs:label>
+	<rdfs:comment> SKC is the abbreviation used by manual stations to indicate no layers are present </rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#ClearSkies"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="CloudLayer">
+        <rdfs:label>Cloud Layer</rdfs:label>
+	<rdfs:comment>The sky cover for each layer reported shall be coded by using the appropriate reportable contraction from Table A-16. The abbreviations FEW, SCT, BKN, and OVC shall be followed without a space, by the height of the layer.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#SkyCondition"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="FewCloudLayer">
+        <rdfs:label>Few Clouds</rdfs:label>
+	<rdfs:comment>Cloud layers covering 1/8 - 2/8 of the sky</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#CloudLayer"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="ScatteredCloudLayer">
+        <rdfs:label>Scattered Clouds</rdfs:label>
+	<rdfs:comment>Cloud layers covering 3/8 - 4/8 of the sky. Coded with 'SCT'</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#CloudLayer"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="BrokenCloudLayer">
+        <rdfs:label>Broken Sky</rdfs:label>
+	<rdfs:comment>Cloud layers covering 5/8 - 7/8 of the sky. Coded with 'BKN'</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#CloudLayer"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="OvercastCloudLayer">
+        <rdfs:label>Overcast</rdfs:label>
+	<rdfs:comment>Cloud layers covering 8/8 of the sky. Coded with 'OVC'</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#CloudLayer"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="CloudType">
+        <rdfs:label>Cloud Type</rdfs:label>
+	<rdfs:comment>At manual stations, cumulonimbus (CB) or towering cumulus (TCU) shall be appended to the associated layer.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#WeatherQualifier"/>
+    </daml:Class>
+
+    <CloudType rdf:ID="Cumulonimbus">
+        <rdfs:label>Cumulonimbus</rdfs:label>
+	<rdfs:comment>Coded with 'CB'</rdfs:comment>
+    </CloudType>
+
+    <CloudType rdf:ID="ToweringCumulus">
+        <rdfs:label>Towering Cumulus</rdfs:label>
+	<rdfs:comment>Coded with 'TCU'</rdfs:comment>
+    </CloudType>
+
+    <daml:Class rdf:ID="TemperatureEvent">
+        <rdfs:comment>Superclass for events measuring a temperature, or quantities derived from a temperature.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#WeatherEvent"/>	
+    </daml:Class>
+
+    <daml:Property rdf:ID="temperatureMeasurement">
+        <rdfs:comment>Measurement of a temperature value. Subproperties have units.</rdfs:comment>
+	<rdfs:domain rdf:resource="#TemperatureEvent"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="celsiusTemperature">
+        <rdfs:label>degrees Celsius</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="#temperatureMeasurement"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="fahrenheitTemperature">
+        <rdfs:label>degrees Fahrenheit</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="#temperatureMeasurement"/>
+    </daml:Property>
+
+    <daml:Class rdf:ID="DerivedTemperature">
+        <rdfs:comment>Superclass for temperature-related measurements derived from given information, e.g. heat index, wind chill, relative humidity</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#TemperatureEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="CurrentTemperature">
+        <rdfs:label>Temperature</rdfs:label>
+        <rdfs:comment>In general, the degree of hotness or coldness of the ambient air as indicated on some definite scale as measured by any suitable instrument.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#TemperatureEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="CurrentDewPoint">
+        <rdfs:label>Dew point</rdfs:label>
+	<rdfs:comment>The temperature to which a given parcel of air must be cooled at constant pressure and constant water-vapor content in order for saturation to occur.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#TemperatureEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="RelativeHumidity">
+        <rdfs:label>Relative Humidity</rdfs:label>
+	<rdfs:comment>Relative humidity is the current vapor pressure (saturation vapor pressure of the dewpoint) over the saturation vapor pressure of the current temperature)</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#DerivedTemperature"/>
+    </daml:Class>
+
+    <daml:Property rdf:ID="humidityPercent">
+        <rdfs:label>relative humidity (percentage)</rdfs:label>
+	<rdfs:comment>Percentage of the saturation vapor pressure that the current vapor pressure is.</rdfs:comment>
+	<rdfs:domain rdf:resource="#RelativeHumidity"/>
+    </daml:Property>
+
+    <daml:Class rdf:ID="HeatIndex">
+        <rdfs:label>Heat Index</rdfs:label>
+	<rdfs:comment>Given the temperature and the dewpoint, the heat index can be derived.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#DerivedTemperature"/>
+    </daml:Class>
+	
+    <daml:Class rdf:ID="WindChill">
+        <rdfs:label>Wind Chill</rdfs:label>
+	<rdfs:comment>Given the temperature and the air speed velocity of an unladen swallow, the wind chill can be derived.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#DerivedTemperature"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="CumulativeEvent">
+        <rdfs:label>Cumulative Event</rdfs:label>
+	<rdfs:comment>Superclass for all events or measurements that are an average, maximum, or minimum over a period of time more than that covered by one METAR report</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#WeatherEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="ThreeHourCumulativeEvent">
+        <rdfs:label>3 Hour Cumulative Event</rdfs:label>
+	<rdfs:comment>An event that is an average, maximum, or minimum over a period of 3 hours</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#CumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="SixHourCumulativeEvent">
+        <rdfs:label>6 Hour Cumulative Event</rdfs:label>
+	<rdfs:comment>An event that is an average, maximum, or minimum over a period of 6 hours</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#CumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="TwentyFourHourCumulativeEvent">
+        <rdfs:label>24 Hour Cumulative Event</rdfs:label>
+	<rdfs:comment>An event that is an average, maximum, or minimum over a period of 24 hours</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#CumulativeEvent"/>
+	<rdfs:subClassOf rdf:resource="#CumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="MaximumTemperature">
+        <rdfs:label>Maximum Temperature</rdfs:label>
+	<rdfs:subClassOf rdf:resource="#TemperatureEvent"/>
+	<rdfs:subClassOf rdf:resource="#CumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="SixHourMaximumTemp">
+        <rdfs:label>6-hour maximum temperature</rdfs:label>
+	<rdfs:comment>At designated stations, maximum and minimum temperatures that occurred in the previous 6 hours shall be determined to the nearest tenth of a degree Celsius for the 0000, 0600, 1200, and 1800 UTC observations</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#MaximumTemperature"/>
+	<rdfs:subClassOf rdf:resource="#SixHourCumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="TwentyFourHourMaximumTemp">
+        <rdfs:label>24-hour maximum temperature</rdfs:label>
+	<rdfs:comment>The maximum and minimum temperatures for the previous 24 hours shall be determined to the nearest tenth of a degree Celsius for the 0000 LST observation.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#MaximumTemperature"/>
+	<rdfs:subClassOf rdf:resource="#TwentyFourHourCumulativeEvent"/>
+    </daml:Class>	
+
+    <daml:Class rdf:ID="MinimumTemperature">
+        <rdfs:label>Minimum Temperature</rdfs:label>
+	<rdfs:subClassOf rdf:resource="#TemperatureEvent"/>
+	<rdfs:subClassOf rdf:resource="#CumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="SixHourMinimumTemp">
+        <rdfs:label>6-hour maximum temperature</rdfs:label>
+	<rdfs:comment>At designated stations, maximum and minimum temperatures that occurred in the previous 6 hours shall be determined to the nearest tenth of a degree Celsius for the 0000, 0600, 1200, and 1800 UTC observations</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#MinimumTemperature"/>
+	<rdfs:subClassOf rdf:resource="#SixHourCumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="TwentyFourHourMinimumTemp">
+        <rdfs:label>24-hour maximum temperature</rdfs:label>
+	<rdfs:comment>The maximum and minimum temperatures for the previous 24 hours shall be determined to the nearest tenth of a degree Celsius for the 0000 LST observation.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#MinimumTemperature"/>
+	<rdfs:subClassOf rdf:resource="#TwentyFourHourCumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="PressureEvent">
+        <rdfs:label>Pressure Event</rdfs:label>
+	<rdfs:comment>Superclass for all events dealing with pressure</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#WeatherEvent"/>
+    </daml:Class>
+
+    <daml:Property rdf:ID="pressureMeasurement">
+        <rdfs:label>Pressure Measurement</rdfs:label>
+	<rdfs:comment>Pressure measurement or reading - no implied units</rdfs:comment>
+    </daml:Property>
+    
+    <daml:Property rdf:ID="inchesOfMercury">
+        <rdfs:label>inHg</rdfs:label>
+	<rdfs:comment>Pressure measurement in inHg</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#pressureMeasurement"/>
+    </daml:Property>
+
+    <daml:Property rdf:ID="millimetersOfMercury">
+        <rdfs:label>mmHg</rdfs:label>
+	<rdfs:comment>Pressure measurement in mmHg</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="#pressureMeasurement"/>
+    </daml:Property>
+
+    <daml:Class rdf:ID="AltimeterSetting">
+        <rdfs:label>Altimeter Setting</rdfs:label>
+	<rdfs:comment>The pressure value to which an aircraft altimeter scale is set so that it will indicate the altitude above mean sea level of an aircraft on the ground at the location for which the value was determined.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#PressureEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="SeaLevelPressure">
+        <rdfs:label>Sea-level pressure</rdfs:label>
+	<rdfs:comment>A pressure value obtained by the theoretical reduction of barometric pressure to sea level. Where the Earth's surface is above sea level, it is assumed that the atmosphere extends to sea level below the station and that the properties of that hypothetical atmosphere are related to conditions observed at the station.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#PressureEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="PressureChangeEvent">
+        <rdfs:label>Pressure Change</rdfs:label>
+	<rdfs:comment>At designated stations, the pressure calculated for each report shall be examined to determine if a pressure change is occurring. If the pressure is rising or falling at a rate of at least 0.06 inch per hour and the pressure change totals 0.02 inch or more at the time of the observation, a pressure change remark shall be reported.</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#PressureEvent"/>
+    </daml:Class>
+
+    <PressureChangeEvent rdf:ID="PressureRisingRapidly"/>
+    <PressureChangeEvent rdf:ID="PressureFallingRapidly"/>
+    
+    <daml:Class rdf:ID="ThreeHourPressureTendency">
+        <rdfs:label>3-Hourly Pressure Tendency</rdfs:label>
+	<rdfs:subClassOf rdf:resource="#PressureEvent"/>
+	<rdfs:subClassOf rdf:resource="#ThreeHourCumulativeEvent"/>
+    </daml:Class>
+
+    <daml:Class rdf:ID="PressureTendencyCharacter">
+        <rdfs:subClassOf rdf:resource="#PressureEvent"/>
+    </daml:Class>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode0">
+        <rdfs:label>Increasing, then decreasing</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now higher than 3 hours ago' and 'Atmospheric pressure now same as 3 hours ago.'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode1">
+        <rdfs:label>Increasing, then then steady, or increasing then increasing more slowly.</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now higher than 3 hours ago'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode2">
+        <rdfs:label>Increasing steadily or unsteadily</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now higher than 3 hours ago'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode3">
+        <rdfs:label>Decreasing or steady, then increasing; or increasing, then increasing more rapidly.</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now higher than 3 hours ago'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode4">
+        <rdfs:label>Steady</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now same as 3 hours ago'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode5">
+        <rdfs:label>Decreasing, then increasing</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now same as 3 hours ago' and 'Atmospheric pressure now lower than 3 hours ago.'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode6">
+        <rdfs:label>Decreasing then steady; or decreasing then decreasing more slowly.</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now lower than 3 hours ago'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode7">
+        <rdfs:label>Decreasing steadily or unsteadily.</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now lower than 3 hours ago'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+    <PressureTendencyCharacter rdf:ID="PressureTendencyCode8">
+        <rdfs:label>Steady or increasing, then decreasing; or decreasing then decreasing moe rapidly.</rdfs:label>
+	<rdfs:comment>Applicable for 'Atmospheric pressure now lower than 3 hours ago'</rdfs:comment>
+    </PressureTendencyCharacter>
+
+
+</rdf:RDF>

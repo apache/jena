@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE rdf:RDF [
+	 <!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	 <!ENTITY daml 'http://www.daml.org/2001/03/daml+oil#'>
+	 <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+	 <!ENTITY xsd 'http://www.w3.org/2000/10/XMLSchema#'>
+	 <!ENTITY ifp 'http://mr.teknowledge.com/daml/Ontologies/ImageFingerprinting/2001/04/ImageFingerPrintingOntology-web.daml#'>
+]>
+<rdf:RDF xmlns:rdf="&rdf;"
+	 xmlns:daml="&daml;"
+	 xmlns:rdfs="&rdfs;"
+	 xmlns:xsd="&xsd;"
+	 xmlns="&ifp;">
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Id: ont36,v 1.1.1.1 2002-12-19 19:24:35 bwm Exp $</daml:versionInfo>
+  <rdfs:comment>
+    Image FingerPrinting Ontology for web pages
+  </rdfs:comment>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+</daml:Ontology>
+<rdf:Property rdf:about="ContainsImage">
+	<rdfs:type rdf:resource="&daml;ObjectProperty"/>
+</rdf:Property>
+<rdf:Property rdf:about="Displays">
+	<rdfs:type rdf:resource="&daml;ObjectProperty"/>
+</rdf:Property>
+<rdf:Property rdf:about="FingerPrint">
+	<rdfs:type rdf:resource="&daml;DatatypeProperty"/>
+</rdf:Property>
+<rdf:Property rdf:about="Title">
+	<rdfs:type rdf:resource="&daml;DatatypeProperty"/>
+</rdf:Property>
+<rdfs:Class rdf:about="HtmlPage">
+	<rdfs:subClassOf rdf:resource="_anon0"/>
+</rdfs:Class>
+<rdfs:Class rdf:about="Image">
+	<rdfs:subClassOf rdf:resource="_anon1"/>
+</rdfs:Class>
+<rdfs:Class rdf:about="ImageOccurence">
+	<rdfs:subClassOf rdf:resource="_anon2"/>
+</rdfs:Class>
+<daml:Restriction rdf:about="_anon0">
+	<daml:onProperty rdf:resource="Displays"/>
+	<daml:hasValue rdf:resource="ImageOccurence"/>
+</daml:Restriction>
+<daml:Restriction rdf:about="_anon1">
+	<daml:cardinality>1</daml:cardinality>
+	<daml:onProperty rdf:resource="FingerPrint"/>
+	<daml:hasValue rdf:resource="&xsd;String"/>
+</daml:Restriction>
+<daml:Restriction rdf:about="_anon2">
+	<daml:onProperty rdf:resource="ContainsImage"/>
+	<daml:hasValue rdf:resource="Image"/>
+</daml:Restriction>
+</rdf:RDF>

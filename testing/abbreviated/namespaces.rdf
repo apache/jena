@@ -1,0 +1,18 @@
+<!-- $Id: namespaces.rdf,v 1.1.1.1 2002-12-19 19:22:21 bwm Exp $ -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:ex0="http://example.org/#"
+  xmlns:ex1="http://example.org/file1#"
+  xmlns:ex2="http://example.org/file2#"
+>
+
+
+<rdfs:Class rdf:ID="C" ex1:prop1="v1" ex2:prop2="v2" ex0:prop0="v0">
+</rdfs:Class>
+
+
+</rdf:RDF>
+
+

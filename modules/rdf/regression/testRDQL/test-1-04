@@ -1,0 +1,5 @@
+// Test 1-04 : bound value/literal
+
+SELECT *
+SOURCE <model1.nt>
+WHERE  (?x, ?y, "v-1-1")
