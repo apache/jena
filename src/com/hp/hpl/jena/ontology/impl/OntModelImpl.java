@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.58 $
+ * Revision           $Revision: 1.59 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-08 18:36:11 $
+ * Last modified on   $Date: 2004-02-18 21:02:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.58 2004-02-08 18:36:11 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.59 2004-02-18 21:02:02 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1878,7 +1878,8 @@ public class OntModelImpl
      * <p>Read statements into the model from the given source, and then load
      * imported ontologies (according to the document manager policy).</p>
      * @param uri URI to read from, may be mapped to a local source by the document manager
-     * @param lang The source syntax
+     * @param syntax The source syntax
+     * @return This model, to allow chaining calls
      */
     public Model read( String uri, String syntax ) {
         String sourceURL = getDocumentManager().doAltURLMapping( uri );
@@ -1915,7 +1916,8 @@ public class OntModelImpl
      * imported ontologies (according to the document manager policy).</p>
      * @param reader An input reader
      * @param base The base URI
-     * @param lang The source syntax
+     * @param syntax The source syntax
+     * @return This model, to allow chaining calls
      */
     public Model read(Reader reader, String base, String syntax) {
         super.read( reader, base, syntax );
@@ -1930,7 +1932,8 @@ public class OntModelImpl
      * imported ontologies (according to the document manager policy).</p>
      * @param reader An input stream
      * @param base The base URI
-     * @param lang The source syntax
+     * @param syntax The source syntax
+     * @return This model, to allow chaining calls
      */
     public Model read(InputStream reader, String base, String syntax) {
         super.read( reader, base, syntax );

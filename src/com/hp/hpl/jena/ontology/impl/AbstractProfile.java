@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: AbstractProfile.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-02-18 21:02:02 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AbstractProfile.java,v 1.4 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: AbstractProfile.java,v 1.5 2004-02-18 21:02:02 ian_dickinson Exp $
  */
 public abstract class AbstractProfile
     implements Profile 
@@ -110,7 +110,7 @@ public abstract class AbstractProfile
         Utility method: answer true iff the enhanced graph contains some triple which
         has n as subject, p.asNode() as predicate, and any object.
         
-         @param an enhanced graph to search for triples
+         @param g an enhanced graph to search for triples
          @param n some node
          @param p a property containing a predicate node
          @return true iff the graph contains (n, p, X) for some X 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-16 20:39:15 $
+ * Last modified on   $Date: 2004-02-18 21:02:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.33 2004-02-16 20:39:15 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.34 2004-02-18 21:02:01 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -709,7 +709,7 @@ public class OntDocumentManager
     /**
      * <p>Unload all of the imports in the queue</p>
      * @param model The model to unload the imports from
-     * @param readQueue The queue of imports to unload
+     * @param unloadQueue The queue of imports to unload
      */
     protected void unloadImports( OntModel model, List unloadQueue ) {
         while (!unloadQueue.isEmpty()) {
@@ -913,7 +913,7 @@ public class OntDocumentManager
      *
      * @param model The composite model to load into
      * @param importURI The URI of the document to load
-     * @param readState Cumulate read state for this operation
+     * @param readQueue Cumulative read queue for this operation
      */
     protected void loadImport( OntModel model, String importURI, List readQueue ) {
         if (m_processImports) {

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-02-18 21:02:02 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.10 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.11 2004-02-18 21:02:02 ian_dickinson Exp $
  */
 public class ComplementClassImpl 
     extends OntClassImpl
@@ -139,7 +139,7 @@ public class ComplementClassImpl
 
 	/**
 	 * <p>Add all of the classes from the given iterator to the operands of this boolean expression.</p>
-	 * @param cls A iterator over classes that will be added to the operands of this Boolean expression
+	 * @param classes A iterator over classes that will be added to the operands of this Boolean expression
 	 * @exception Always throws UnsupportedOperationException since a complement expression takes only
 	 * a single argument.    
 	 */ 

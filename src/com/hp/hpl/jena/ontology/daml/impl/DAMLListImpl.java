@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLListImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-02-18 21:02:02 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * in the current list interpretation.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLListImpl.java,v 1.10 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLListImpl.java,v 1.11 2004-02-18 21:02:02 ian_dickinson Exp $
  */
 public class DAMLListImpl
     extends RDFListImpl
@@ -191,7 +191,7 @@ public class DAMLListImpl
      * <p>Set the property <code>daml:rest</code> for the given list element. This is a single
      * value that denotes the tail of the list.</p>
      *
-     * @param value The value to be assigned to the tail of the list.
+     * @param tail The list that will be made the tail of this list
      */
     public void setRest( DAMLList tail ) {
         setTail( tail );
@@ -212,8 +212,8 @@ public class DAMLListImpl
      * given value and whose rest is the current list.  This is the 'cons' operator
      * familiar from other list processing languages.</p>
      *
-     * @param The new value to be added to the head of the list
-     * @return a new list whose <code>daml:first</code> is the value, and whose
+     * @param value The new value to be added to the head of the list
+     * @return A new list whose <code>daml:first</code> is the value, and whose
      *         <code>daml:rest</code> is this list.
      */
     public DAMLList cons( DAMLCommon value ) {

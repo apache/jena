@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-13 19:28:09 $
+ * Last modified on   $Date: 2004-02-18 21:02:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.24 2004-01-13 19:28:09 ian_dickinson Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.25 2004-02-18 21:02:01 ian_dickinson Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -486,7 +486,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         Augment the description with that of our reasoner factory
         @param d the description to augment
         @param me the resource to use to represent this OntModelSpec
-        @param the reasoner factory to describe 
+        @param rf the reasoner factory to describe 
     */        
     protected void addReasonerDescription( Model d, Resource me, ReasonerFactory rf )
         {

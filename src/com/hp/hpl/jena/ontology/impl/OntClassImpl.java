@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.35 $
+ * Revision           $Revision: 1.36 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-09 11:45:34 $
+ * Last modified on   $Date: 2004-02-18 21:02:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.35 2004-01-09 11:45:34 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.36 2004-02-18 21:02:02 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -427,7 +427,7 @@ public class OntClassImpl
 
     /**
      * <p>Answer true if the given class is equivalent to this class.</p>
-     * @param class A class to test for
+     * @param cls A class to test for
      * @return True if the given property is equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
      */

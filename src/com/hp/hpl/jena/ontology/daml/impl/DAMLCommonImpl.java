@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:55:09 $
+ * Last modified on   $Date: 2004-02-18 21:02:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.10 2003-12-11 22:55:09 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.11 2004-02-18 21:02:02 ian_dickinson Exp $
  */
 public class DAMLCommonImpl
     extends OntResourceImpl
@@ -108,7 +108,7 @@ public class DAMLCommonImpl
      * model it will be attached to.</p>
      *
      * @param n The node that is being presented as a DAMLCommonImpl
-     * @param model Reference to the DAML model that will contain statements about this DAML value.
+     * @param g Reference to the enhanced graph that will contain statements about this DAML value.
      */
     public DAMLCommonImpl( Node n, EnhGraph g )
     {
