@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.43 $
+ * Revision           $Revision: 1.44 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 10:51:38 $
+ * Last modified on   $Date: 2004-08-12 12:03:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -24,6 +24,8 @@ package com.hp.hpl.jena.ontology.impl.test;
 // Imports
 ///////////////
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import com.hp.hpl.jena.enhanced.EnhGraph;
@@ -1094,6 +1096,20 @@ public class TestBugReports
         r = (Resource) OWL.Nothing.inModel( m );
         OntClass nothingClass = (OntClass) r.as( OntClass.class );
         assertNotNull( nothingClass );
+    }
+    
+    /** Test case for SF bug 937810 - NPE from ModelSpec.getDescription() */
+    public void test_sf_937810() throws IllegalAccessException {
+        Field[] specs = OntModelSpec.class.getDeclaredFields();
+        
+        for (int i = 0;  i < specs.length;  i++) {
+            if (Modifier.isPublic( specs[i].getModifiers()) && 
+                Modifier.isStatic( specs[i].getModifiers()) &&
+                specs[i].getType().equals( OntModelSpec.class )) {
+                OntModelSpec s = (OntModelSpec) specs[i].get( null );
+                assertNotNull( s.getDescription() );
+            }
+        }
     }
     
     

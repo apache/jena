@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-05 15:02:39 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-08-12 12:03:13 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.31 2004-08-05 15:02:39 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.32 2004-08-12 12:03:13 ian_dickinson Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -583,8 +583,10 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     */        
     protected void addReasonerDescription( Model d, Resource me, ReasonerFactory rf ) {
         Resource reasonerSelf = d.createResource();
-        d.add( me, JMS.reasonsWith, reasonerSelf );  
-        d.add( reasonerSelf, JMS.reasoner, d.createResource( rf.getURI() ) );  
+        d.add( me, JMS.reasonsWith, reasonerSelf );
+        if (rf != null) {
+            d.add( reasonerSelf, JMS.reasoner, d.createResource( rf.getURI() ) );  
+        }
     }
 
     /**
