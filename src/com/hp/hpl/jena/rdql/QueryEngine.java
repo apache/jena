@@ -11,10 +11,11 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.ModelLoader ;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngine.java,v 1.6 2003-06-18 15:26:20 andy_seaborne Exp $
+ * @version    $Id: QueryEngine.java,v 1.7 2003-08-07 11:23:47 andy_seaborne Exp $
  */
  
 public class QueryEngine implements QueryExecution
@@ -53,7 +54,10 @@ public class QueryEngine implements QueryExecution
                 throw new QueryException("No model for query");
             }
             long startTime = System.currentTimeMillis();
-            query.setSource(com.hp.hpl.jena.util.ModelLoader.loadModel(query.sourceURL, null));
+            Model src = ModelLoader.loadModel(query.sourceURL, null) ;
+            if ( src == null )
+                throw new QueryException("Failed to load data source") ;
+            query.setSource(src);
             query.loadTime = System.currentTimeMillis() - startTime;
         }
         queryInitialised = true;
@@ -163,7 +167,7 @@ public class QueryEngine implements QueryExecution
                 boolean passesTests = true;
                 for (Iterator cIter = query.constraints.iterator(); cIter.hasNext();)
                 {
-                    Constraint constraint = (Constraint) cIter.next();
+                    Constraint constraint = (Constraint)cIter.next();
                     if (!constraint.isSatisfied(query, nextBinding))
                     {
                         passesTests = false;
@@ -187,6 +191,8 @@ public class QueryEngine implements QueryExecution
 
         public Object next()
         {
+            if ( nextBinding == null )
+                throw new NoSuchElementException("QueryEngine.ResultsIterator") ;
             ResultBinding x = nextBinding ;
             nextBinding = null ;
             return x ;

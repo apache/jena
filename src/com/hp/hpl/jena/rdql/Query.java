@@ -14,6 +14,10 @@ import com.hp.hpl.jena.graph.impl.*;
 
 import com.hp.hpl.jena.rdf.model.* ;
 
+// Don't import the package!  Conflict with graph.Node
+import com.hp.hpl.jena.rdql.parser.Q_Query ;
+import com.hp.hpl.jena.rdql.parser.RDQLParser ;
+
 /** The data structure for a query.
  *  There are two ways of creating a query - use the parser to turn
  *  a string description of the query into the executable form, and
@@ -26,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.9 2003-07-15 13:26:58 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.10 2003-08-07 11:23:47 andy_seaborne Exp $
  */
 
 public class Query
@@ -72,7 +76,7 @@ public class Query
     public Query(String s)
     {
         this() ;
-        com.hp.hpl.jena.rdql.parser.Q_Query query = null ;
+        Q_Query query = null ;
         try {
             //long initTime = 0;
             parseTime = 0;
@@ -82,14 +86,13 @@ public class Query
             ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes()) ;
 
             startTime = System.currentTimeMillis();
-            com.hp.hpl.jena.rdql.parser.RDQLParser parser = 
-                new com.hp.hpl.jena.rdql.parser.RDQLParser(in) ;
+            RDQLParser parser = new RDQLParser(in) ;
             parser.CompilationUnit();
             parseTime = System.currentTimeMillis() - startTime;
 
             logger.debug("Query parse time: "+parseTime) ;
 
-            query = (com.hp.hpl.jena.rdql.parser.Q_Query)parser.top() ;
+            query = (Q_Query)parser.top() ;
             // Post-parsing work on the query tree
             query.phase2(this) ;
 
@@ -198,9 +201,7 @@ public class Query
 
     /** Programmatic API operation */
     public void addTriplePattern(Triple t)  { triplePatterns.add(t) ; }
-    public void addTriplePattern(com.hp.hpl.jena.graph.Node s,
-                                 com.hp.hpl.jena.graph.Node p,
-                                 com.hp.hpl.jena.graph.Node o)
+    public void addTriplePattern(Node s, Node p, Node o)
     {
         Triple t = new Triple(s, p, o) ;
         triplePatterns.add(t) ;

@@ -160,6 +160,20 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         throw new ParseException();
       }
       SourceSelector();
+      label_2:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case COMMA:
+        case LT:
+          ;
+          break;
+        default:
+          jj_la1[7] = jj_gen;
+          break label_2;
+        }
+        CommaOpt();
+        SourceSelector();
+      }
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -217,7 +231,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     try {
       jj_consume_token(WHERE);
       TriplePattern();
-      label_2:
+      label_3:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LPAREN:
@@ -225,8 +239,8 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
           ;
           break;
         default:
-          jj_la1[7] = jj_gen;
-          break label_2;
+          jj_la1[8] = jj_gen;
+          break label_3;
         }
         CommaOpt();
         TriplePattern();
@@ -260,7 +274,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     try {
       jj_consume_token(SUCHTHAT);
       Expression();
-      label_3:
+      label_4:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SUCHTHAT:
@@ -268,8 +282,8 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
           ;
           break;
         default:
-          jj_la1[8] = jj_gen;
-          break label_3;
+          jj_la1[9] = jj_gen;
+          break label_4;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case COMMA:
@@ -279,7 +293,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
           jj_consume_token(SUCHTHAT);
           break;
         default:
-          jj_la1[9] = jj_gen;
+          jj_la1[10] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -359,7 +373,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
       URI();
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -390,7 +404,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
       Literal();
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[12] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -433,7 +447,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
     try {
       jj_consume_token(PREFIXES);
       PrefixDecl();
-      label_4:
+      label_5:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case SELECT:
@@ -450,8 +464,8 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
           ;
           break;
         default:
-          jj_la1[12] = jj_gen;
-          break label_4;
+          jj_la1[13] = jj_gen;
+          break label_5;
         }
         CommaOpt();
         PrefixDecl();
@@ -517,15 +531,15 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void ConditionalOrExpression() throws ParseException {
     ConditionalXorExpression();
-    label_5:
+    label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SC_OR:
         ;
         break;
       default:
-        jj_la1[13] = jj_gen;
-        break label_5;
+        jj_la1[14] = jj_gen;
+        break label_6;
       }
       jj_consume_token(SC_OR);
               Q_LogicalOr jjtn001 = new Q_LogicalOr(JJTLOGICALOR);
@@ -561,15 +575,15 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void ConditionalAndExpression() throws ParseException {
     ValueLogical();
-    label_6:
+    label_7:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SC_AND:
         ;
         break;
       default:
-        jj_la1[14] = jj_gen;
-        break label_6;
+        jj_la1[15] = jj_gen;
+        break label_7;
       }
       jj_consume_token(SC_AND);
                 Q_LogicalAnd jjtn001 = new Q_LogicalAnd(JJTLOGICALAND);
@@ -610,7 +624,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void StringEqualityExpression() throws ParseException {
     NumericalLogical();
-    label_7:
+    label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STR_EQ:
@@ -620,8 +634,8 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         ;
         break;
       default:
-        jj_la1[15] = jj_gen;
-        break label_7;
+        jj_la1[16] = jj_gen;
+        break label_8;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STR_EQ:
@@ -733,7 +747,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         }
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -747,15 +761,15 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void InclusiveOrExpression() throws ParseException {
     ExclusiveOrExpression();
-    label_8:
+    label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BIT_OR:
         ;
         break;
       default:
-        jj_la1[17] = jj_gen;
-        break label_8;
+        jj_la1[18] = jj_gen;
+        break label_9;
       }
       jj_consume_token(BIT_OR);
                Q_BitOr jjtn001 = new Q_BitOr(JJTBITOR);
@@ -787,15 +801,15 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void ExclusiveOrExpression() throws ParseException {
     AndExpression();
-    label_9:
+    label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BIT_XOR:
         ;
         break;
       default:
-        jj_la1[18] = jj_gen;
-        break label_9;
+        jj_la1[19] = jj_gen;
+        break label_10;
       }
       jj_consume_token(BIT_XOR);
                 Q_BitXor jjtn001 = new Q_BitXor(JJTBITXOR);
@@ -827,15 +841,15 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void AndExpression() throws ParseException {
     ArithmeticCondition();
-    label_10:
+    label_11:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BIT_AND:
         ;
         break;
       default:
-        jj_la1[19] = jj_gen;
-        break label_10;
+        jj_la1[20] = jj_gen;
+        break label_11;
       }
       jj_consume_token(BIT_AND);
                 Q_BitAnd jjtn001 = new Q_BitAnd(JJTBITAND);
@@ -930,13 +944,13 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         }
         break;
       default:
-        jj_la1[20] = jj_gen;
+        jj_la1[21] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[22] = jj_gen;
       ;
     }
   }
@@ -1058,13 +1072,13 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         }
         break;
       default:
-        jj_la1[22] = jj_gen;
+        jj_la1[23] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[24] = jj_gen;
       ;
     }
   }
@@ -1078,7 +1092,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void ShiftExpression() throws ParseException {
     AdditiveExpression();
-    label_11:
+    label_12:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LSHIFT:
@@ -1087,8 +1101,8 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         ;
         break;
       default:
-        jj_la1[24] = jj_gen;
-        break label_11;
+        jj_la1[25] = jj_gen;
+        break label_12;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LSHIFT:
@@ -1173,7 +1187,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         }
         break;
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[26] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1182,7 +1196,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void AdditiveExpression() throws ParseException {
     MultiplicativeExpression();
-    label_12:
+    label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
@@ -1190,8 +1204,8 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         ;
         break;
       default:
-        jj_la1[26] = jj_gen;
-        break label_12;
+        jj_la1[27] = jj_gen;
+        break label_13;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
@@ -1249,7 +1263,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         }
         break;
       default:
-        jj_la1[27] = jj_gen;
+        jj_la1[28] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1258,7 +1272,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 
   final public void MultiplicativeExpression() throws ParseException {
     UnaryExpression();
-    label_13:
+    label_14:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
@@ -1267,8 +1281,8 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         ;
         break;
       default:
-        jj_la1[28] = jj_gen;
-        break label_13;
+        jj_la1[29] = jj_gen;
+        break label_14;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
@@ -1353,7 +1367,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         }
         break;
       default:
-        jj_la1[29] = jj_gen;
+        jj_la1[30] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1443,13 +1457,13 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         }
         break;
       default:
-        jj_la1[30] = jj_gen;
+        jj_la1[31] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[32] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1467,7 +1481,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
         jj_consume_token(BANG);
         break;
       default:
-        jj_la1[32] = jj_gen;
+        jj_la1[33] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1518,7 +1532,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
       PrimaryExpression();
       break;
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[34] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1554,7 +1568,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
       jj_consume_token(RPAREN);
       break;
     default:
-      jj_la1[34] = jj_gen;
+      jj_la1[35] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1565,46 +1579,13 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
 // {
 //   Identifier() <LPAREN> ArgList() <RPAREN>
 // }
-  final public void ArgList() throws ParseException {
- /*@bgen(jjtree) ArgList */
-  Q_ArgList jjtn000 = new Q_ArgList(JJTARGLIST);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      VarOrLiteral();
-      label_14:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case COMMA:
-          ;
-          break;
-        default:
-          jj_la1[35] = jj_gen;
-          break label_14;
-        }
-        jj_consume_token(COMMA);
-        VarOrLiteral();
-      }
-    } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
-    }
-    if (jjte000 instanceof RuntimeException) {
-      {if (true) throw (RuntimeException)jjte000;}
-    }
-    if (jjte000 instanceof ParseException) {
-      {if (true) throw (ParseException)jjte000;}
-    }
-    {if (true) throw (Error)jjte000;}
-    } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-    }
-    }
-  }
+// 
+// void ArgList() :
+// {}
+// {
+//   VarOrLiteral() (<COMMA> VarOrLiteral() ) *
+// }
+
 
 /******************************************************************/
 // Literals (as in query literls - any value in the query
@@ -1769,7 +1750,14 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
               t = getNextToken() ;
               marker = t.image.charAt(0) ;
           }
-
+          else
+          {
+              if ( marker == '"' || marker == '\'' )
+                  // Does not start m, and does start with " or '
+                  {if (true) throw new Error("Invalid regular expression (starts with ["+marker+"]) at line " +
+                      t.beginLine + " column " + t.beginColumn + ".");}
+          }
+          // Sanity check - delimiter isn't an alphanumeric
           if ( Character.isLetterOrDigit(marker) )
               {if (true) throw new Error("Invalid start to regular expression at line " +
                               t.beginLine + " column " + t.beginColumn + ".");}
@@ -1883,7 +1871,7 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      URI();
+      QuotedURI();
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -2078,9 +2066,9 @@ public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQL
   private boolean jj_semLA;
   private int jj_gen;
   final private int[] jj_la1 = new int[43];
-  final private int[] jj_la1_0 = {0x0,0x30000000,0x80000000,0x0,0x0,0x8000000,0x30000000,0x0,0x80000000,0x80000000,0xf8000000,0xf8690000,0xf8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf8690000,0x0,0xf8690000,0xf8690000,0x0,0xf8690000,0x90000,0x600000,0x0,0x0,0xf8000000,0xf8000000,};
-  final private int[] jj_la1_1 = {0x20000,0x0,0x0,0x1,0x1020000,0x0,0x0,0x20400,0x20000,0x20000,0x120008f,0x12000bf,0x2008f,0x40000000,0x80000000,0xc,0xc,0x0,0x0,0x0,0xc000000,0xc000000,0x30300000,0x30300000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1e004bf,0xc00000,0x1e004bf,0x12004bf,0x20000,0x2000bf,0x0,0x0,0x0,0x0,0x20008f,0x8f,};
-  final private int[] jj_la1_2 = {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000,0x6000,0x80,0x100,0x40,0x0,0x0,0x0,0x0,0x1c00,0x1c00,0xc,0xc,0x230,0x230,0xc,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x8000,0x0,0x0,};
+  final private int[] jj_la1_0 = {0x0,0x30000000,0x80000000,0x0,0x0,0x8000000,0x30000000,0x0,0x0,0x80000000,0x80000000,0xf8000000,0xf8690000,0xf8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf8690000,0x0,0xf8690000,0xf8690000,0xf8690000,0x90000,0x600000,0x0,0x0,0xf8000000,0xf8000000,};
+  final private int[] jj_la1_1 = {0x20000,0x0,0x0,0x1,0x1020000,0x0,0x0,0x220000,0x20400,0x20000,0x20000,0x120008f,0x12000bf,0x2008f,0x40000000,0x80000000,0xc,0xc,0x0,0x0,0x0,0xc000000,0xc000000,0x30300000,0x30300000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1e004bf,0xc00000,0x1e004bf,0x12004bf,0x2000bf,0x0,0x0,0x0,0x0,0x20008f,0x8f,};
+  final private int[] jj_la1_2 = {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000,0x6000,0x80,0x100,0x40,0x0,0x0,0x0,0x0,0x1c00,0x1c00,0xc,0xc,0x230,0x230,0xc,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x8000,0x0,0x0,};
   final private JJCalls[] jj_2_rtns = new JJCalls[1];
   private boolean jj_rescan = false;
   private int jj_gc = 0;

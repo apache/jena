@@ -77,9 +77,22 @@ public class Q_Query extends SimpleNode
             if ( jjtGetChild(i) instanceof Q_SourceClause )
             {
                 // SourceClause -> SourceSelector -> URL
-                Node n = jjtGetChild(i).jjtGetChild(0).jjtGetChild(0) ;
-                String source = ((Q_URL)n).urlString ;
-                q.setSourceURL(source) ;
+                int numSources = jjtGetChild(i).jjtGetNumChildren() ;
+                if ( numSources > 1 )
+                {
+                    throw new QueryException("Error: Multiple sources in FROM clause") ;  
+                }
+                
+                // This coide is waiting to be fixed for multiple sources
+                // That requires an interface change to Query   
+                for ( int j = 0 ; j < numSources ; j++ )
+                {                
+                    Node n = jjtGetChild(i).jjtGetChild(j).jjtGetChild(0) ;
+                    String source = ((Q_URL)n).urlString ;
+                    // Just the first
+                    if ( j == 0 )
+                        q.setSourceURL(source) ;
+                }
                 i++ ;
             }
 

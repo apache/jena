@@ -45,7 +45,7 @@ import org.apache.log4j.*;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.13 2003-07-01 14:43:55 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.14 2003-08-07 11:24:15 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -391,151 +391,152 @@ public class rdfquery
     static public void query(String s, String dataURL, String language)
     {
         try {
-        boolean doBlank = false ;
-
-        if ( messageLevel >= 2 )
-        {
-            System.out.println("Query:") ;
-            System.out.println(s) ;
-            if ( ! s.endsWith("\n") )
-                System.out.println() ;
-            doBlank = true ;
-        }
-
-        long startTime = System.currentTimeMillis();
-        long loadTime = -1 ;
-
-        Query query = new Query(s) ;
-        if ( displayTime )
-            // Do again after classloading has occured.
-            query = new Query(s) ;
-
-        if ( messageLevel > 0 )
-        {
-            System.out.println("Parsed query:") ;
-            String tmp = query.toString() ;
-            System.out.print(tmp) ;
-            if ( ! tmp.endsWith("\n") )
-                System.out.println() ;
-            doBlank = true ;
-        }
-
-        if ( dataURL == null && query.getSourceURL() == null )
-        {
-            System.err.println("RDQL: no data source");
-            return ;
-        }
-
-        if ( dataURL != null )
-        {
-            long startLoadTime = System.currentTimeMillis();
-            query.setSource(ModelLoader.loadModel(dataURL, language,
-                                                  dbUser, dbPassword,
-                                                  dbName, dbType, dbDriver)) ;
-            Model m = query.getSource() ;
-            // ------------
-
-            if ( applyRDFS )
+            boolean doBlank = false ;
+    
+            if ( messageLevel >= 2 )
             {
-                Model model = null ;
-                if ( vocabularyURI != null )
+                System.out.println("Query:") ;
+                System.out.println(s) ;
+                if ( ! s.endsWith("\n") )
+                    System.out.println() ;
+                doBlank = true ;
+            }
+    
+            long startTime = System.currentTimeMillis();
+            long loadTime = -1 ;
+    
+            Query query = new Query(s) ;
+            if ( displayTime )
+                // Do again after classloading has occured.
+                query = new Query(s) ;
+    
+            if ( messageLevel > 0 )
+            {
+                System.out.println("Parsed query:") ;
+                String tmp = query.toString() ;
+                System.out.print(tmp) ;
+                if ( ! tmp.endsWith("\n") )
+                    System.out.println() ;
+                doBlank = true ;
+            }
+    
+            if ( dataURL == null && query.getSourceURL() == null )
+            {
+                System.err.println("RDQL: no data source");
+                return ;
+            }
+    
+            if ( dataURL != null )
+            {
+                long startLoadTime = System.currentTimeMillis();
+                query.setSource(ModelLoader.loadModel(dataURL, language,
+                                                      dbUser, dbPassword,
+                                                      dbName, dbType, dbDriver)) ;
+                Model m = query.getSource() ;
+                // ------------
+    
+                if ( applyRDFS )
                 {
-                    vocabulary = ModelLoader.loadModel(vocabularyURI, null) ;
-                    model = ModelFactory.createRDFSModel(m, vocabulary) ;
+                    Model model = null ;
+                    if ( vocabularyURI != null )
+                    {
+                        vocabulary = ModelLoader.loadModel(vocabularyURI, null) ;
+                        model = ModelFactory.createRDFSModel(m, vocabulary) ;
+                    }
+                    else
+                    {
+                        model = ModelFactory.createRDFSModel(m) ;
+                    }
+                    query.setSource(model) ;
+                }
+                loadTime = System.currentTimeMillis() - startLoadTime ;
+                query.loadTime = loadTime ;
+            }
+    
+            QueryExecution qe = new QueryEngine(query) ;
+            qe.init() ;
+            if ( dumpModel )
+            {
+                try {
+                    if ( doBlank )
+                        System.out.println() ;
+                    doBlank = true ;
+                    Model model = query.getSource() ;
+                    RDFWriter w = model.getWriter("N-TRIPLE") ;
+                    PrintWriter pw = new PrintWriter(System.out) ;
+                    pw.println("# Model --------------------------------------------------------------------------------") ;
+                    w.write(model, pw, "http://unset/") ;
+                    pw.println("# Model --------------------------------------------------------------------------------") ;
+                    pw.flush() ;
+                } catch (JenaException refEx) { logger.error("rdfquery: Failed to write model") ; System.exit(1) ; }
+            }
+            QueryResults results = qe.exec() ;
+            QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
+    
+            if ( outputFormat == FMT_NONE)
+                fmt.consume() ;
+            else
+            {
+                if ( doBlank ) System.out.println() ;
+    
+                if ( outputFormat == FMT_DUMP )
+                {
+                    Model m = fmt.toModel() ;
+                    RDFWriter rdfw = m.getWriter("N3") ;
+                    m.setNsPrefix("rs", ResultSet.getURI()) ;
+                    rdfw.write(m, System.out, null) ;
                 }
                 else
                 {
-                    model = ModelFactory.createRDFSModel(m) ;
+    
+                    PrintWriter pw = new PrintWriter(System.out) ;
+                    switch(outputFormat)
+                    {
+                        case FMT_TEXT:   fmt.printAll(pw) ; break ;
+                        case FMT_HTML:   fmt.printHTML(pw) ; break ;
+                        case FMT_TUPLES: fmt.dump(pw, true) ; break ;
+                        default: break ;
+                    }
+                    pw.flush() ;
                 }
-                query.setSource(model) ;
-            }
-            loadTime = System.currentTimeMillis() - startLoadTime ;
-            query.loadTime = loadTime ;
-        }
-
-        QueryExecution qe = new QueryEngine(query) ;
-        qe.init() ;
-        if ( dumpModel )
-        {
-            try {
-                if ( doBlank )
-                    System.out.println() ;
                 doBlank = true ;
-                Model model = query.getSource() ;
-                RDFWriter w = model.getWriter("N-TRIPLE") ;
-                PrintWriter pw = new PrintWriter(System.out) ;
-                pw.println("# Model --------------------------------------------------------------------------------") ;
-                w.write(model, pw, "http://unset/") ;
-                pw.println("# Model --------------------------------------------------------------------------------") ;
-                pw.flush() ;
-            } catch (JenaException refEx) { logger.error("rdfquery: Failed to write model") ; System.exit(1) ; }
-        }
-        QueryResults results = qe.exec() ;
-        QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
-
-        if ( outputFormat == FMT_NONE)
-            fmt.consume() ;
-        else
-        {
-            if ( doBlank ) System.out.println() ;
-
-            if ( outputFormat == FMT_DUMP )
-            {
-                Model m = fmt.toModel() ;
-                RDFWriter rdfw = m.getWriter("N3") ;
-                m.setNsPrefix("rs", ResultSet.getURI()) ;
-                rdfw.write(m, System.out, null) ;
             }
-            else
+    
+            fmt.close() ;
+            results.close() ;
+            qe.close() ;
+    
+            long finishTime = System.currentTimeMillis();
+            long totalTime = finishTime-startTime ;
+    
+            if ( messageLevel > 0 )
             {
-
-                PrintWriter pw = new PrintWriter(System.out) ;
-                switch(outputFormat)
-                {
-                    case FMT_TEXT:   fmt.printAll(pw) ; break ;
-                    case FMT_HTML:   fmt.printHTML(pw) ; break ;
-                    case FMT_TUPLES: fmt.dump(pw, true) ; break ;
-                    default: break ;
-                }
-                pw.flush() ;
+                if ( doBlank ) System.out.println() ;
+                System.out.println("Results: "+fmt.numRows()) ;
+                doBlank = true ;
             }
-            doBlank = true ;
+    
+            if ( displayTime )
+            {
+                if ( doBlank ) System.out.println() ;
+                System.out.println("Query parse:     "+formatlong(query.parseTime)   +" ms") ;
+                System.out.println("Query build:     "+formatlong(query.buildTime)   +" ms") ;
+                System.out.println("Data load time:  "+formatlong(query.loadTime)    +" ms") ;
+                System.out.println("Query execute:   "+formatlong(query.executeTime) +" ms") ;
+                System.out.println("Query misc:      "+formatlong(totalTime-query.parseTime-query.buildTime-query.loadTime-query.executeTime)+" ms") ;
+                System.out.println("Query total:     "+formatlong(totalTime)         +" ms") ;
+                doBlank = true ;
+            }
+    
+            if ( query.getSource() != null )
+                query.getSource().close() ;
+            /*
+            PrintWriter pw = new PrintWriter(System.out) ;
+            resultsIter.print(pw) ;
+            pw.flush() ;
+            */
         }
-
-        fmt.close() ;
-        results.close() ;
-        qe.close() ;
-
-        long finishTime = System.currentTimeMillis();
-        long totalTime = finishTime-startTime ;
-
-        if ( messageLevel > 0 )
-        {
-            if ( doBlank ) System.out.println() ;
-            System.out.println("Results: "+fmt.numRows()) ;
-            doBlank = true ;
-        }
-
-        if ( displayTime )
-        {
-            if ( doBlank ) System.out.println() ;
-            System.out.println("Query parse:     "+formatlong(query.parseTime)   +" ms") ;
-            System.out.println("Query build:     "+formatlong(query.buildTime)   +" ms") ;
-            System.out.println("Data load time:  "+formatlong(query.loadTime)    +" ms") ;
-            System.out.println("Query execute:   "+formatlong(query.executeTime) +" ms") ;
-            System.out.println("Query misc:      "+formatlong(totalTime-query.parseTime-query.buildTime-query.loadTime-query.executeTime)+" ms") ;
-            System.out.println("Query total:     "+formatlong(totalTime)         +" ms") ;
-            doBlank = true ;
-        }
-
-        if ( query.getSource() != null )
-            query.getSource().close() ;
-        /*
-        PrintWriter pw = new PrintWriter(System.out) ;
-        resultsIter.print(pw) ;
-        pw.flush() ;
-        */
-        } catch (QueryException qEx)
+        catch (QueryException qEx)
         {
             System.err.println(qEx.getMessage()) ;
             System.exit(9) ;

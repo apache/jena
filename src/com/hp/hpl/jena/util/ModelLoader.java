@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.* ;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.11 2003-07-23 07:20:02 chris-dollin Exp $
+ * @version $Id: ModelLoader.java,v 1.12 2003-08-07 11:24:15 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -135,7 +135,7 @@ public class ModelLoader
         }
         catch (FileNotFoundException e)
         {
-            logger.warn("No such data source: "+urlStr, e);
+            logger.warn("No such data source: "+urlStr);
             return null ;
         }
         return m ;
@@ -185,7 +185,7 @@ public class ModelLoader
         }
         catch (java.io.IOException ioEx)
         {
-            logger.fatal("IOException: "+ioEx, ioEx) ;
+            logger.fatal("IOException: "+ioEx) ;
             return null ;
         }
         //model.read(urlStr, base, lang) ;

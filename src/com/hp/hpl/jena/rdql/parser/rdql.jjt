@@ -304,13 +304,15 @@ void SelectClause() :
 void SourceClause() :
 {}
 {
-  // Currently, we support only ONE source
-  (<SOURCE> | <FROM>) SourceSelector() //( <COMMA> SourceSelector() )*
+  (<SOURCE> | <FROM>)
+  SourceSelector()
+  (CommaOpt() SourceSelector() )*
 }
 
 void SourceSelector() :
 {}
 {
+  // Must be quoted, must be a URL - no qnames at this point.
   URL()
 }
 
@@ -331,7 +333,6 @@ void TriplePattern() :
 {}
 {
   <LPAREN> VarOrURI() CommaOpt()  VarOrURI() CommaOpt()  VarOrLiteral() <RPAREN>
-//  <LPAREN> VarOrURI() <COMMA> VarOrURI() <COMMA> VarOrLiteral() <RPAREN>
 }
 
 void VarOrURI() #void :
@@ -562,12 +563,12 @@ void PrimaryExpression() #void :
 // {
 //   Identifier() <LPAREN> ArgList() <RPAREN>
 // }
-
-void ArgList() :
-{}
-{
-  VarOrLiteral() (<COMMA> VarOrLiteral() ) *
-}
+// 
+// void ArgList() :
+// {}
+// {
+//   VarOrLiteral() (<COMMA> VarOrLiteral() ) *
+// }
 
 
 /******************************************************************/
@@ -640,6 +641,11 @@ void PatternLiteral() :
   }
    
   // Pattern language is: [m]/pattern/[i][m][s][x]
+  // Note the leading "m" is optional because // is
+  // often in conflict with URIs so the convenience
+  // of, say "!", as a leading marker is good.
+  // We do check that the RE isn't "....", i.e. markers, with
+  // no "m", that might be a plain string.
     
   // Having a variable marker is tricky because we can't
   // define the pattern in fixed tokens.  But the target is simple
@@ -667,7 +673,14 @@ void PatternLiteral() :
 	      t = getNextToken() ;
 	      marker = t.image.charAt(0) ;
 	  }
-	  
+	  else
+          {
+              if ( marker == '"' || marker == '\'' )
+                  // Does not start m, and does start with " or '
+                  throw new Error("Invalid regular expression (starts with ["+marker+"]) at line " +
+		      t.beginLine + " column " + t.beginColumn + ".");
+	  }
+          // Sanity check - delimiter isn't an alphanumeric
 	  if ( Character.isLetterOrDigit(marker) )
 	      throw new Error("Invalid start to regular expression at line " +
 			      t.beginLine + " column " + t.beginColumn + ".");
@@ -758,8 +771,7 @@ void NullLiteral() :
 void URL() :
 {}
 {
-  // To be fixed.
-  URI()
+  QuotedURI()
 }
 
 void URI() #void :
