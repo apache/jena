@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBugs.java,v 1.1 2003-08-22 10:21:53 der Exp $
+ * $Id: TestBugs.java,v 1.2 2003-08-22 11:09:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-22 10:21:53 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-22 11:09:04 $
  */
 public class TestBugs extends TestCase {
 
@@ -47,7 +47,7 @@ public class TestBugs extends TestCase {
      * from Hugh Winkler.
      * 
      * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-     * @version $Revision: 1.1 $ on $Date: 2003-08-22 10:21:53 $
+     * @version $Revision: 1.2 $ on $Date: 2003-08-22 11:09:04 $
      */
     public void testIntersectionNPE() {
         Model base = ModelFactory.createDefaultModel();
@@ -63,6 +63,22 @@ public class TestBugs extends TestCase {
         assertTrue("Correctly detected the illegal list", foundBadList);
     }
     
+    /**
+     * Report of problems with cardinality v. maxCardinality usage in classification,
+     * from Hugh Winkler.
+     * 
+     * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
+     * @version $Revision: 1.2 $ on $Date: 2003-08-22 11:09:04 $
+     */
+    public void testCardinality1() {
+        Model base = ModelFactory.createDefaultModel();
+        base.read("file:testing/reasoners/bugs/cardFPTest.owl");
+        InfModel test = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), base);
+        String NAMESPACE = "urn:foo#";
+        Resource aDocument = test.getResource(NAMESPACE + "aDocument");
+        Resource documentType = test.getResource(NAMESPACE + "Document");
+        assertTrue("Cardinality-based classification", test.contains(aDocument, RDF.type, documentType));
+    }
 }
 
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TempNodeCache.java,v 1.4 2003-08-14 07:51:10 der Exp $
+ * $Id: TempNodeCache.java,v 1.5 2003-08-22 11:09:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * to a deductions graph due to the risk of concurrent access.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-14 07:51:10 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-22 11:09:09 $
  */
 
 // Implementation note: We need to map from a pair of values (instance and prop).
@@ -59,7 +59,8 @@ public class TempNodeCache {
         for (Iterator i = ipMap.getAll(ip); i.hasNext(); ) {
             Node t = (Node)i.next();
             if (pclass != null) {
-                if (classMap.get(t).equals(pclass)) {
+                Object tClass = classMap.get(t);
+                if (tClass != null && tClass.equals(pclass)) {
                     result = t;
                     break;
                 }

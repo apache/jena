@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF 
+      xmlns:owl="http://www.w3.org/2002/07/owl#" 
+      xmlns="urn:foo#" 
+      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+      xml:base="urn:foo" >
+      
+      <owl:Class rdf:ID="Document">
+             <owl:intersectionOf rdf:parseType="Collection">
+                  <owl:Restriction rdf:ID="R0">
+                        <owl:onProperty rdf:resource="#has_header"/>
+                        <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+                  </owl:Restriction>             
+            </owl:intersectionOf>
+         </owl:Class>
+      <owl:Class rdf:ID="Header"/>
+      <owl:ObjectProperty rdf:ID="has_header">
+            <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+            <rdfs:range rdf:resource="#Header"/>
+      </owl:ObjectProperty>
+      <!-- individuals -->
+      <!-- header individual-->
+      <Header rdf:ID="L1"/>
+      <!-- a Thing that is a valid document  -->
+      <owl:Thing rdf:ID="aDocument">
+            <has_header rdf:resource="#L1"/>
+      </owl:Thing>
+</rdf:RDF>
