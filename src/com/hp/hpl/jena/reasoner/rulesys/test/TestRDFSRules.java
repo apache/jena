@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.7 2003-05-19 08:24:26 der Exp $
+ * $Id: TestRDFSRules.java,v 1.8 2003-05-27 15:50:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,7 +13,9 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.test.*;
 import com.hp.hpl.jena.util.ModelLoader;
 // import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -25,7 +27,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.7 $ on $Date: 2003-05-19 08:24:26 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.8 $ on $Date: 2003-05-27 15:50:25 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -66,6 +68,17 @@ public class TestRDFSRules extends TestCase {
         assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
     }
 
+    /**
+     * Test the capabilities description.
+     */
+    public void testRDFSDescription() {
+        ReasonerFactory rf = RDFSBRuleReasonerFactory.theInstance();
+        Reasoner r = rf.create(null);
+        assertTrue(r.supportsProperty(RDFS.subClassOf));        
+        assertTrue(r.supportsProperty(RDFS.domain));        
+        assertTrue( ! r.supportsProperty(OWL.allValuesFrom));        
+    }
+    
     /**
      * Time a trial list of results from an inf graph.
      */

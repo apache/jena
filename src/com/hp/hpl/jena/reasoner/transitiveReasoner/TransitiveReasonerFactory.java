@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasonerFactory.java,v 1.4 2003-04-15 21:29:00 jeremy_carroll Exp $
+ * $Id: TransitiveReasonerFactory.java,v 1.5 2003-05-27 15:50:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -18,12 +18,15 @@ import com.hp.hpl.jena.reasoner.*;
  * Factory class for creating blank instances of the transitive reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:29:00 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-27 15:50:24 $
  */
 public class TransitiveReasonerFactory implements ReasonerFactory {
     
     /** Single global instance of this factory */
     private static ReasonerFactory theInstance = new TransitiveReasonerFactory();
+    
+    /** Cache of the capabilities description */
+    protected Model capabilities;
     
     /** Static URI for this reasoner type */
     public static final String URI = "http://www.hpl.hp.com/semweb/2003/TransitiveReasoner";
@@ -50,15 +53,17 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
      * the resulting information so dynamically creating here is not really an overhead.
      */
     public Model getCapabilities() {
-        Model capabilities = new ModelMem();
-        Resource base = capabilities.createResource(getURI());
-        base.addProperty(ReasonerRegistry.nameP, "Transitive Reasoner")
-            .addProperty(ReasonerRegistry.descriptionP, "Provides reflexive-transitive closure of subClassOf and subPropertyOf")
-            .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
-            .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubClassOf)
-            .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubPropertyOf)
-            .addProperty(ReasonerRegistry.versionP, "0.1");
+        if (capabilities == null) {
+            capabilities = new ModelMem();
+            Resource base = capabilities.createResource(getURI());
+            base.addProperty(ReasonerRegistry.nameP, "Transitive Reasoner")
+                .addProperty(ReasonerRegistry.descriptionP, "Provides reflexive-transitive closure of subClassOf and subPropertyOf")
+                .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
+                .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubClassOf)
+                .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubPropertyOf)
+                .addProperty(ReasonerRegistry.versionP, "0.1");
+        }
         return capabilities;
     }
     

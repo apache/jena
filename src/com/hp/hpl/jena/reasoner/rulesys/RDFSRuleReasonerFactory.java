@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasonerFactory.java,v 1.2 2003-05-12 07:56:46 der Exp $
+ * $Id: RDFSRuleReasonerFactory.java,v 1.3 2003-05-27 15:50:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import com.hp.hpl.jena.reasoner.*;
@@ -13,13 +13,16 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /** * Factory class for creating blank instances of the RDFS reasoner.
- * * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.2 $ on $Date: 2003-05-12 07:56:46 $ */
+ * * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.3 $ on $Date: 2003-05-27 15:50:23 $ */
 public class RDFSRuleReasonerFactory implements ReasonerFactory {    
     /** Single global instance of this factory */
     private static ReasonerFactory theInstance = new RDFSRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
     public static final String URI = "http://www.hpl.hp.com/semweb/2003/RDFSRuleReasoner";
+    
+    /** Cache of the capabilities description */
+    protected Model capabilities;
     
     /**
      * Return the single global instance of this factory
@@ -44,18 +47,20 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
      * the resulting information so dynamically creating here is not really an overhead.
      */
     public Model getCapabilities() {
-        Model capabilities = ModelFactory.createDefaultModel();
-        Resource base = capabilities.createResource(getURI());
-        base.addProperty(ReasonerRegistry.nameP, "RDFS Rule Reasoner")
-            .addProperty(ReasonerRegistry.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
-                                        + "Pure forward chaining so all entailments are immediate calculated\n"
-                                        + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
-            .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.member)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.range)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
-            .addProperty(ReasonerRegistry.versionP, "0.1");
+        if (capabilities == null) {
+            capabilities = ModelFactory.createDefaultModel();
+            Resource base = capabilities.createResource(getURI());
+            base.addProperty(ReasonerRegistry.nameP, "RDFS Rule Reasoner")
+                .addProperty(ReasonerRegistry.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
+                                            + "Pure forward chaining so all entailments are immediate calculated\n"
+                                            + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
+                .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.member)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.range)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
+                .addProperty(ReasonerRegistry.versionP, "0.1");
+        }
         return capabilities;
     }
     

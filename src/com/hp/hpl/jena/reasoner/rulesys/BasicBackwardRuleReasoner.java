@@ -5,11 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleReasoner.java,v 1.4 2003-05-13 08:18:12 der Exp $
+ * $Id: BasicBackwardRuleReasoner.java,v 1.5 2003-05-27 15:50:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.RuleStore;
 import com.hp.hpl.jena.graph.*;
@@ -22,10 +22,13 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-13 08:18:12 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-27 15:50:23 $
  */
 public class BasicBackwardRuleReasoner implements Reasoner {
 
+    /** The parent reasoner factory which is consulted to answer capability questions */
+    protected ReasonerFactory factory;
+    
     /** The rules to be used by this instance of the backward engine */
     protected List rules;
     
@@ -45,11 +48,23 @@ public class BasicBackwardRuleReasoner implements Reasoner {
     protected long nRulesThreshold = BasicForwardRuleInfGraph.DEFAULT_RULES_THRESHOLD;
 
     /**
-     * Constructor
+     * Constructor. This is the raw version that does not reference a ReasonerFactory
+     * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
     public BasicBackwardRuleReasoner(List rules) {
         this.rules = rules;
+        ruleStore = new RuleStore(rules);
+    }
+
+    /**
+     * Constructor
+     * @param rules a list of Rule instances which defines the ruleset to process
+     * @param factory the parent reasoner factory which is consulted to answer capability questions
+     */
+    public BasicBackwardRuleReasoner(List rules, ReasonerFactory factory) {
+        this.rules = rules;
+        this.factory = factory;
         ruleStore = new RuleStore(rules);
     }
     
@@ -61,6 +76,35 @@ public class BasicBackwardRuleReasoner implements Reasoner {
         rules = parent.rules;
         ruleStore = parent.ruleStore;
         this.schemaGraph = schemaGraph;
+        this.factory = parent.factory;
+    }
+
+    /**
+     * Return a description of the capabilities of this reasoner encoded in
+     * RDF. These capabilities may be static or may depend on configuration
+     * information supplied at construction time. May be null if there are
+     * no useful capabilities registered.
+     */
+    public Model getCapabilities() {
+        if (factory != null) {
+            return factory.getCapabilities();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Determine whether the given property is recognized and treated specially
+     * by this reasoner. This is a convenience packaging of a special case of getCapabilities.
+     * @param property the property which we want to ask the reasoner about, given as a Node since
+     * this is part of the SPI rather than API
+     * @return true if the given property is handled specially by the reasoner.
+     */
+    public boolean supportsProperty(Property property) {
+        if (factory == null) return false;
+        Model caps = factory.getCapabilities();
+        Resource root = caps.getResource(factory.getURI());
+        return caps.contains(root, ReasonerRegistry.supportsP, property);
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.15 2003-05-15 17:28:20 der Exp $
+ * $Id: TestReasoners.java,v 1.16 2003-05-27 15:50:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-05-15 17:28:20 $
+ * @version $Revision: 1.16 $ on $Date: 2003-05-27 15:50:25 $
  */
 public class TestReasoners extends TestCase {
     
@@ -76,6 +76,8 @@ public class TestReasoners extends TestCase {
         data.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
         data.add( new Triple(C2, RDFS.subClassOf.asNode(), C3) );
         Reasoner reasoner = TransitiveReasonerFactory.theInstance().create(null);
+        assertTrue(reasoner.supportsProperty(RDFS.subClassOf));
+        assertTrue(! reasoner.supportsProperty(RDFS.domain));
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(C1, null, null), 
@@ -142,6 +144,12 @@ public class TestReasoners extends TestCase {
                      .addProperty(RDFSReasonerFactory.scanProperties, "false");
         assertTrue("RDFS reasoner tests", 
                     !tester.runTest(NAMESPACE + "rdfs/test17", rf, null, configuration));
+        
+        // Check capabilities description
+        Reasoner r = rf.create(null);
+        assertTrue(r.supportsProperty(RDFS.subClassOf));
+        assertTrue(r.supportsProperty(RDFS.domain));
+        assertTrue(r.supportsProperty(RDFS.range));
     }
     // */
 
@@ -278,6 +286,7 @@ public class TestReasoners extends TestCase {
             new StatementImpl(b, RDF.type, RDFS.Resource),
             new StatementImpl(b, RDF.type, C)
         });
+        
     }
     // */
         

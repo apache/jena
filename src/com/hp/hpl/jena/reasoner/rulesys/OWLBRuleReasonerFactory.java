@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLBRuleReasonerFactory.java,v 1.1 2003-05-13 08:18:12 der Exp $
+ * $Id: OWLBRuleReasonerFactory.java,v 1.2 2003-05-27 15:50:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-13 08:18:12 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-27 15:50:23 $
  */
 public class OWLBRuleReasonerFactory implements ReasonerFactory {
     
@@ -38,6 +38,9 @@ public class OWLBRuleReasonerFactory implements ReasonerFactory {
     
     /** Static URI for this reasoner type */
     public static final String URI = "http://www.hpl.hp.com/semweb/2003/OWLBRuleReasoner";
+    
+    /** Cache of the capabilities description */
+    protected Model capabilities;
     
     /**
      * Return the single global instance of this factory
@@ -76,18 +79,20 @@ public class OWLBRuleReasonerFactory implements ReasonerFactory {
      * the resulting information so dynamically creating here is not really an overhead.
      */
     public Model getCapabilities() {
-        Model capabilities = ModelFactory.createDefaultModel();
-        Resource base = capabilities.createResource(getURI());
-        base.addProperty(ReasonerRegistry.nameP, "OWL BRule Reasoner")
-            .addProperty(ReasonerRegistry.descriptionP, "Experimental OWL reasoner.\n"
-                                        + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
-            .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.member)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.range)
-            .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
-            // TODO - add OWL elements supported
-            .addProperty(ReasonerRegistry.versionP, "0.1");
+        if (capabilities == null) {
+            capabilities = ModelFactory.createDefaultModel();
+            Resource base = capabilities.createResource(getURI());
+            base.addProperty(ReasonerRegistry.nameP, "OWL BRule Reasoner")
+                .addProperty(ReasonerRegistry.descriptionP, "Experimental OWL reasoner.\n"
+                                            + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
+                .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.member)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.range)
+                .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
+                // TODO - add OWL elements supported
+                .addProperty(ReasonerRegistry.versionP, "0.1");
+        }
         return capabilities;
     }
     

@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.9 2003-05-08 15:08:16 der Exp $
+ * $Id: Reasoner.java,v 1.10 2003-05-27 15:48:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
-//import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.rdf.model.Property;
 
 /**
  * The minimal interface to which all reasoners (or reasoner adaptors) conform. 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-08 15:08:16 $
+ * @version $Revision: 1.10 $ on $Date: 2003-05-27 15:48:52 $
  */
 public interface Reasoner {
     
@@ -109,6 +109,21 @@ public interface Reasoner {
      */
     public void setParameter(String parameterUri, Object value);
 
+    /**
+     * Return a description of the capabilities of this reasoner encoded in
+     * RDF. These capabilities may be static or may depend on configuration
+     * information supplied at construction time. May be null if there are
+     * no useful capabilities registered.
+     */
+    public Model getCapabilities();
+
+    /**
+     * Determine whether the given property is recognized and treated specially
+     * by this reasoner. This is a convenience packaging of a special case of getCapabilities.
+     * @param property the property which we want to ask the reasoner about
+     * @return true if the given property is handled specially by the reasoner.
+     */
+    public boolean supportsProperty(Property property);
 }
 
 

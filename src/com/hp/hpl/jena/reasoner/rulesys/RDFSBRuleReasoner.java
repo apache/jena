@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSBRuleReasoner.java,v 1.4 2003-05-16 16:39:57 der Exp $
+ * $Id: RDFSBRuleReasoner.java,v 1.5 2003-05-27 15:50:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * based upon the basic backward rule interpreter. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-16 16:39:57 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-27 15:50:24 $
  */
 public class RDFSBRuleReasoner extends BasicBackwardRuleReasoner {
     
@@ -36,7 +36,7 @@ public class RDFSBRuleReasoner extends BasicBackwardRuleReasoner {
      * Constructor
      */
     public RDFSBRuleReasoner() {
-        super(loadRules());
+        super(loadRules(), RDFSBRuleReasonerFactory.theInstance());
     }
     
     /**

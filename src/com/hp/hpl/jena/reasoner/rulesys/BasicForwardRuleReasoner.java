@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleReasoner.java,v 1.4 2003-05-12 19:42:20 der Exp $
+ * $Id: BasicForwardRuleReasoner.java,v 1.5 2003-05-27 15:50:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import com.hp.hpl.jena.rdf.model.*;
@@ -17,8 +17,12 @@ import java.util.*;
  * according to a set of rules. This trivial version does not support
  * separate schema processing. The actual work is done in the inference
  * graph implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-05-12 19:42:20 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.5 $ on $Date: 2003-05-27 15:50:23 $ */
 public class BasicForwardRuleReasoner implements Reasoner {
+    
+    /** The parent reasoner factory which is consulted to answer capability questions */
+    protected ReasonerFactory factory;
+
     /** The rules to be used by this instance of the forward engine */
     protected List rules;
     
@@ -50,7 +54,8 @@ public class BasicForwardRuleReasoner implements Reasoner {
     public static final Property PROPrulesThreshold = ResourceFactory.createProperty(URI+"#", "rulesThreshold");
     
     /**
-     * Constructor
+     * Constructor. This is the raw version that does not reference a ReasonerFactory
+     * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
     public BasicForwardRuleReasoner(List rules) {
@@ -58,12 +63,51 @@ public class BasicForwardRuleReasoner implements Reasoner {
     }
     
     /**
+     * Constructor
+     * @param rules a list of Rule instances which defines the ruleset to process
+     * @param factory the parent reasoner factory which is consulted to answer capability questions
+     */
+    public BasicForwardRuleReasoner(List rules, ReasonerFactory factory) {
+        this.rules = rules;
+        this.factory = factory;
+    }
+    
+    /**
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private BasicForwardRuleReasoner(List rules, InfGraph schemaGraph) {
+    private BasicForwardRuleReasoner(List rules, InfGraph schemaGraph, ReasonerFactory factory) {
         this.rules = rules;
         this.schemaGraph = schemaGraph;
+        this.factory = factory;
+    }
+
+    /**
+     * Return a description of the capabilities of this reasoner encoded in
+     * RDF. These capabilities may be static or may depend on configuration
+     * information supplied at construction time. May be null if there are
+     * no useful capabilities registered.
+     */
+    public Model getCapabilities() {
+        if (factory != null) {
+            return factory.getCapabilities();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Determine whether the given property is recognized and treated specially
+     * by this reasoner. This is a convenience packaging of a special case of getCapabilities.
+     * @param property the property which we want to ask the reasoner about, given as a Node since
+     * this is part of the SPI rather than API
+     * @return true if the given property is handled specially by the reasoner.
+     */
+    public boolean supportsProperty(Property property) {
+        if (factory == null) return false;
+        Model caps = factory.getCapabilities();
+        Resource root = caps.getResource(factory.getURI());
+        return caps.contains(root, ReasonerRegistry.supportsP, property);
     }
     
     /**
@@ -72,7 +116,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      */
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         InfGraph graph = new BasicForwardRuleInfGraph(this, rules, tbox);
-        return new BasicForwardRuleReasoner(rules, graph);
+        return new BasicForwardRuleReasoner(rules, graph, factory);
     }
     
     /**
@@ -81,7 +125,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      */
     public Reasoner bindSchema(Model tbox) throws ReasonerException {
         InfGraph graph = new BasicForwardRuleInfGraph(this, rules, tbox.getGraph());
-        return new BasicForwardRuleReasoner(rules, graph);
+        return new BasicForwardRuleReasoner(rules, graph, factory);
     }
     
     /**
