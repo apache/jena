@@ -1,56 +1,47 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.5 2003-05-09 13:30:33 chris-dollin Exp $
+  $Id: ModelMakerImpl.java,v 1.1 2003-05-09 13:30:33 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model.test;
+package com.hp.hpl.jena.rdf.model.impl;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.graph.GraphMaker;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelMaker;
 
-import com.hp.hpl.jena.db.*;
 
-import junit.framework.*;
-
-/**
-    Tests the ModelFactory code. Very skeletal at the moment. It's really
-    testing that the methods actually exists, but it doesn't check much in
-    the way of behaviour.
-    
-    @author kers
-*/
-
-public class TestModelFactory extends GraphTestBase
+public class ModelMakerImpl implements ModelMaker
     {
-    public static TestSuite suite()
-        { return new TestSuite( TestModelFactory.class ); }   
+    private GraphMaker maker;
+    
+    public ModelMakerImpl( GraphMaker maker )
+        { this.maker = maker; }
         
-    public TestModelFactory(String name)
-        { super(name); }
-
-    public void testCreateDefaultModel()
-        {
-        Model m = ModelFactory.createDefaultModel();
-        m.close();
-        }    
+    public void close()
+        { maker.close(); }
         
-    public void testRDBStuff()
-        {
-//        try { Class.forName( "com.mysql.jdbc.Driver" ); }
-////        catch (Exception e) { throw new JenaException( e ); }
-//        IDBConnection c = ModelFactory.createSimpleRDBConnection();
-//        assertNotNull( c );
-//        ModelMaker mm = ModelFactory.createModelRDBMaker( c ); 
-//        Model m1 = mm.createModel( "brujo" );
+    public Model openModel( String name, boolean strict )
+        { return new ModelCom( maker.openGraph( name, strict ) ); }
         
-        }
+    public Model openModel( String name )
+        { return openModel( name, false ); }
         
+    public Model createModel( String name, boolean strict )
+        { return new ModelCom( maker.createGraph( name, strict ) ); }
+        
+    public Model createModel( String name )
+        { return createModel( name, false ); }
+        
+    public void removeModel( String name )
+        { maker.removeGraph( name ); }
+        
+    public boolean hasModel( String name )
+        { return maker.hasGraph( name ); }
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002, 2003
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

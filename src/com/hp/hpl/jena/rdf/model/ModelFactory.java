@@ -1,12 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.10 2003-05-08 15:19:34 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.11 2003-05-09 13:29:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -17,37 +20,29 @@ import com.hp.hpl.jena.enhanced.*;
 
 
 /**
-    Factory provides methods for creating standard kinds of Model. 
+    ModelFactory provides methods for creating standard kinds of Model. 
+    (ModelFactoryBase is helper functions for it).
 */
 
-public class ModelFactory
+public class ModelFactory extends ModelFactoryBase
 {
+    /**
+        No-one can make instances of this.
+    */
+    private ModelFactory()
+        {}
+        
     /** 
         construct a new memory-based model that captures reification triples 
     */
     public static Model createDefaultModel()
-        { return new ModelCom( GraphBase.withReification( new GraphMem() ), BuiltinPersonalities.model );}
-
-    /**
-        Answer a new persistent model as described by <code>name</code>.
-        The named model must not already exist.
-        
-        @return a fresh, empty persistent model.
-        @exception [perhaps] AlreadyExistsException a model with that name already exists.
-    */
-    
-//    public static Model createPersistentModel( String name )
-//        { return new ModelCom( Factory.createPersistentGraph( name ) ); }
-        
-    /**
-        Answer a persistent model with the given <code>name</code>. The
-        named model must already exist.
-        
-        @return a model mapping to the persisted name
-        @exception [perhaps] NoSuchModelException if it doesn't exist
-    */
-//    public static Model openPersistentModel( String name )
-//        { return new ModelCom( Factory.openPersistentGraph( name ) ); }
+        { 
+        return new ModelCom
+            ( 
+            GraphBase.withReification( new GraphMem() ), 
+            BuiltinPersonalities.model 
+            );
+        }
         
     /**
         construct a new memory-based model that does not capture reification triples
@@ -67,7 +62,67 @@ public class ModelFactory
     public static Model createModelForGraph( Graph g ) {
         return new ModelCom( g ); 
     }
+    
+    /**
+        Answer a ModelMaker that constructs memory-based Models that
+        are backed by files in the root directory. The Model is loaded from the
+        file when it is opened, and when the Model is closed it is written back.
         
+        @param root the name of the directory in which the backing files are held
+        @return a ModelMaker linked to the files in the root
+    */
+    public static ModelMaker createFileModelMaker( String root )
+        { return new ModelMakerImpl( new FileGraphMaker( root ) ); }
+        
+    /**
+        Answer a ModelMaker that constructs memory-based Models that do
+        not persist past JVM termination.
+        
+        @return a ModelMaker that constructs memory-based models
+    */
+    public static ModelMaker createMemModelMaker()
+        { return new ModelMakerImpl( new SimpleGraphMaker() ); }
+        
+    /**
+        Answer a ModelMaker that accesses database-backed Models on
+        the database at the other end of the connection c.
+        
+        @return a ModelMaker whose Models are held in the database at c
+    */
+    public static ModelMaker createModelRDBMaker( IDBConnection c )
+        { return new ModelMakerImpl( new GraphRDBMaker( c ) ); }
+        
+    /**
+        Answer a plain IDBConnection to a database with the given URL, with
+        the given user having the given password. For more complex ways of
+        forming a connection, see the DBConnection documentation.
+        
+        @param url the URL of the database
+        @param user the user name to use to access the database
+        @param password the password to use. WARNING: open text.
+        @param the databate type: currently, "Oracle" or "MySQL".
+        @return the connection
+        @exception quite possibly
+    */
+    public static IDBConnection createSimpleRDBConnection
+        ( String url, String user, String password, String dbType )
+        { return new DBConnection( url, user, password, dbType ); }
+        
+    /**
+        Answer a plain IDBConnection to a database, with the arguments implicitly
+        supplied by system properties:
+    <p>    
+        The database URL - jena.db.url
+        <br>The user - jena.db.user, or fails back to "test"
+        <br>The password - jena.db.password, or fails back to ""
+        <br>The db type - jena.db.type, or guessed from the URL
+    */
+    public static IDBConnection createSimpleRDBConnection()
+        { 
+        return createSimpleRDBConnection
+            ( guessDBURL(), guessDBUser(), guessDBPassword(), guessDBType() );
+        }
+               
     /**
      * Return a Model through which all the RDFS entailments 
      * derivable from the given model are accessible. Some work is done
