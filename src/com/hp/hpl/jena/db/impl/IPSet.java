@@ -5,6 +5,8 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import java.util.List;
+
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Triple;
@@ -21,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on the Jena1 version of IRDBDriver by Dave Reynolds
 * 
 * @author hkuno
-* @version $Revision: 1.1 $
+* @version $Revision: 1.2 $
 */
 
 public interface IPSet {
@@ -99,18 +101,34 @@ public interface IPSet {
 	public IDBID addLiteral(Node_Literal l);
 
 	/**
-	 * @param subj_uri
-	 * @param pred_uri
-	 * @param o
-	 * @param my_ASTName
+	 * @param t the triple to be added
+	 * @param gid the id of the graph
 	 */
 	public void storeTriple(Triple t, IDBID gid);
+	
+	/** 
+	 * Attempt to add a list of triples to the specialized graph.
+	 * 
+	 * As each triple is successfully added it is removed from the List.
+	 * If complete is true then the entire List was added and the List will 
+	 * be empty upon return.  if complete is false, then at least one triple 
+	 * remains in the List.
+	 * 
+	 * If a triple can't be stored for any reason other than incompatability
+	 * (for example, a lack of disk space) then the implemenation should throw
+	 * a runtime exception.
+	 * 
+	 * @param triples List of triples to be added.  This is modified by the call.
+	 * @param my_GID  ID of the graph.
+	 */
+	public void storeTripleList(List triples, IDBID my_GID);
+
+
+
 
 	/**
-	 * @param subj_uri
-	 * @param pred_uri
-	 * @param o
-	 * @param my_ASTName
+	 * @param t the triple to be added
+	 * @param gid the id of the graph
 	 */
 	public void deleteTriple(Triple t, IDBID gid);
 	
