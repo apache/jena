@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.4 2005-02-13 12:07:03 der Exp $
+ * $Id: OWLUnitTest.java,v 1.5 2005-02-14 18:08:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-13 12:07:03 $
+ * @version $Revision: 1.5 $ on $Date: 2005-02-14 18:08:58 $
  */
 public class OWLUnitTest extends TestCase {
     
@@ -47,6 +47,11 @@ public class OWLUnitTest extends TestCase {
     /** bit flag to indicate the test should be passed by the micro reasoner */
     public static final int MICRO = 4;
     
+    // Flags from OWLConsistencyTest, copied here for brevity
+    public static final int INCONSISTENT = OWLConsistencyTest.INCONSISTENT;
+    public static final int WARNINGS = OWLConsistencyTest.WARNINGS;
+    public static final int CLEAN = OWLConsistencyTest.CLEAN;
+
     /** The set of test cases to be used */
     public static TestDef[] testDefs = {
         // subClass
@@ -134,6 +139,21 @@ public class OWLUnitTest extends TestCase {
         new TestDef("localtests/Manifest003.rdf", FB | MICRO | MINI),
         new TestDef("localtests/Manifest004.rdf", FB | MINI), // Requires equality
         new TestDef("localtests/Manifest006.rdf", FB ), // a oneOF case
+        
+        // Consistency tests
+        // clean case
+        new TestDef(new OWLConsistencyTest("tbox.owl", "consistentData.rdf", CLEAN, null), FB | MICRO | MINI),
+        // Disjoint classes
+        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent1.rdf", INCONSISTENT, null), FB | /* TODO make this one work MICRO | */ MINI),
+        // Type violation
+        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent2.rdf", INCONSISTENT, null), FB | MICRO | MINI),
+        // Count violation
+        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent3.rdf", INCONSISTENT, null), FB | MINI),
+        // Distinct values for functional property
+        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent4.rdf", INCONSISTENT, null), FB |  MINI),
+        // Type clash - allValuesFrom rdfs:Literal
+        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent5.rdf", INCONSISTENT, null), FB | MICRO | MINI),
+                                     
     };
 
 //  --------------  instance variables for a single test ----------------------    
@@ -165,7 +185,12 @@ public class OWLUnitTest extends TestCase {
             for (int j = 0; j < testDefs.length; j++) {
                 TestDef test = testDefs[j];
                 if (test.applicableTo(rf)) {
-                    suite.addTest(new OWLUnitTest(test.manifest, rName, rf));
+                    if (test.spec instanceof String) {
+                        suite.addTest(new OWLUnitTest((String)test.spec, rName, rf));
+                    } else if (test.spec instanceof OWLConsistencyTest) {
+                        OWLConsistencyTest oct = (OWLConsistencyTest)test.spec;
+                        suite.addTest(new OWLConsistencyTest(oct, rName, rf));
+                    }
                 }
             }
         }
@@ -186,15 +211,15 @@ public class OWLUnitTest extends TestCase {
      * it is relevant to.
      */
     static class TestDef {
-        /** The manifest file, relative to global test dir */
-        public String manifest;  
+        /** Test spec, could be a the relative URI for a manifest, or a consistecy test object */
+        public Object spec;  
         
         /** Bitmap of the reasoners this test is relevant to */
         public int validFor;
          
         /** Constructor */
-        public TestDef(String manifest, int validFor) {
-            this.manifest = manifest;
+        public TestDef(Object spec, int validFor) {
+            this.spec = spec;
             this.validFor = validFor;
         }
         

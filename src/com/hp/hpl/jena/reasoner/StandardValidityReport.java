@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: StandardValidityReport.java,v 1.8 2004-12-07 09:56:29 andy_seaborne Exp $
+ * $Id: StandardValidityReport.java,v 1.9 2005-02-14 18:09:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,7 +16,7 @@ import java.util.*;
  * of precomputed Report records.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2004-12-07 09:56:29 $
+ * @version $Revision: 1.9 $ on $Date: 2005-02-14 18:09:08 $
  */
 public class StandardValidityReport implements ValidityReport {
 
@@ -62,11 +62,23 @@ public class StandardValidityReport implements ValidityReport {
         }
     }
     
+    
     /**
-     * Return true if there are no problems reported by the validation
+     * Returns true if no logical inconsistencies were detected (in which case
+     * there will be at least one error Report included). Warnings may still
+     * be present. As of Jena 2.2 we regard classes which can't be instantiated
+     * as warnings rather than errors. 
      */
     public boolean isValid() {
         return !isError;
+    }
+    
+    /**
+     * Returns true if the model is both valid (logically consistent) and no
+     * warnings were generated. 
+     */
+    public boolean isClean() {
+        return reports.isEmpty();
     }
     
     /**

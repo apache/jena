@@ -98,6 +98,7 @@ Post Jena 2.1 change list
         on the iterator from find() generated a notifyDeleteTriple event.
 
   Reasoners
+      o Fixed performance problem with listing all triples in a transitive reasoner
       o Fixed bug 927644, mishandling of cycles in transitive reasoner
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.
       o Fixed bug in hide() table not being carried across from prebuilt

@@ -5,15 +5,14 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.21 2004-12-07 09:56:33 andy_seaborne Exp $
+ * $Id: OWLWGTester.java,v 1.22 2005-02-14 18:08:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
-import com.hp.hpl.jena.util.ModelLoader;
-//import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
@@ -39,7 +38,7 @@ import java.util.*;
  * some code rationalization might be once once that stabilizes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2004-12-07 09:56:33 $
+ * @version $Revision: 1.22 $ on $Date: 2005-02-14 18:08:57 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -121,7 +120,7 @@ public class OWLWGTester {
      */
     public boolean runTests(String manifestFile, boolean log, boolean stats) throws IOException {
         // Load up the manifest
-        Model manifest = ModelLoader.loadModel(baseDir + manifestFile);
+        Model manifest = FileManager.get().loadModel(baseDir + manifestFile);
         ResIterator tests = manifest.listSubjectsWithProperty(RDF.type, PositiveEntailmentTest);
         while (tests.hasNext()) {
             Resource test = tests.nextResource();

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ValidityReport.java,v 1.8 2004-12-07 09:56:29 andy_seaborne Exp $
+ * $Id: ValidityReport.java,v 1.9 2005-02-14 18:09:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,15 +17,23 @@ import java.util.Iterator;
  * each of which has a severity, a type (string) and a description (string).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2004-12-07 09:56:29 $
+ * @version $Revision: 1.9 $ on $Date: 2005-02-14 18:09:08 $
  */
 public interface ValidityReport {
     
     /**
-     * Return true if there are no problems reported by the validation. There may
-     * still be warnings genererate.
+     * Returns true if no logical inconsistencies were detected (in which case
+     * there will be at least one error Report included). Warnings may still
+     * be present. As of Jena 2.2 we regard classes which can't be instantiated
+     * as warnings rather than errors. 
      */
     public boolean isValid();
+    
+    /**
+     * Returns true if the model is both valid (logically consistent) and no
+     * warnings were generated. 
+     */
+    public boolean isClean();
     
     /**
      * Return an iterator over the separate ValidityReport.Report records.
@@ -81,6 +89,31 @@ public interface ValidityReport {
             this.extension = extension;
         }
         
+        /**
+         * @return a textual description of the problem
+         */
+        public String getDescription() {
+            return description;
+        }
+        /**
+         * @return a reasoner dependent data structure giving more information
+         * on the problem.
+         */
+        public Object getExtension() {
+            return extension;
+        }
+        /**
+         * @return True if the report is a error, false if it is just a warning.
+         */
+        public boolean isError() {
+            return isError;
+        }
+        /**
+         * @return a string giving a reasoner-dependent classification for the report
+         */
+        public String getType() {
+            return type;
+        }
          /**
          * Printable form of the report
          */
