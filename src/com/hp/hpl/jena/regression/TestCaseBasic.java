@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestCaseBasic.java,v 1.5 2003-12-04 17:26:05 jeremy_carroll Exp $
+ * $Id: TestCaseBasic.java,v 1.6 2003-12-12 10:13:52 der Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -52,7 +52,7 @@ import junit.framework.TestCase;
  * </p>
  * 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-12-04 17:26:05 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-12-12 10:13:52 $
  */
 public class TestCaseBasic extends TestCase {
 
@@ -317,7 +317,7 @@ public class TestCaseBasic extends TestCase {
 						tearDown();
 						setUp();
 					} catch (Exception e) {
-						throw new RuntimeException(e);
+						throw new RuntimeException(e.getMessage());
 					}
 					cache[0] = m1;
 					cache[1] = m2;
