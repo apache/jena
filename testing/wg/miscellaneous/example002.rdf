@@ -1,38 +1,26 @@
-<!--
-  Copyright World Wide Web Consortium, (Massachusetts Institute of
-  Technology, European Research Consortium for Informatics and
-  Mathematics, Keio University).
-
-  All Rights Reserved.
-
-  Please see the full Copyright clause at
-  <http://www.w3.org/Consortium/Legal/copyright-software.html>
-
-  $Id: example002.rdf,v 1.4 2003-09-24 15:35:38 jeremy_carroll Exp $
--->
-
-<!DOCTYPE owl [
-     <!ENTITY vin  "http://www.example.org/wine#" >
-     <!ENTITY food "http://www.example.org/food#" >
-     <!ENTITY xsd  "http://www.w3.org/2000/10/XMLSchema#" >
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+     <!ENTITY vin  "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#" >
+     <!ENTITY food "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
    ]>
 
 <rdf:RDF
-    xml:base="http://www.w3.org/2002/03owlt/miscellaneous/example002"
-   
-  xmlns     = "http://www.example.org/food#"
-  xmlns:food= "http://www.example.org/food#"
-  xmlns:vin = "http://www.example.org/wine#"
+  xmlns     = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#"
+  xmlns:food= "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#"
+  xml:base  = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#"
+  xmlns:vin = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#"
   xmlns:owl = "http://www.w3.org/2002/07/owl#"
   xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs= "http://www.w3.org/2000/01/rdf-schema#">
 
-  <owl:Ontology rdf:about="http://www.example.org/food.owl">
+  <owl:Ontology rdf:about="">
     <rdfs:comment>
       Derived from the DAML Wine ontology at 
       http://ontolingua.stanford.edu/doc/chimaera/ontologies/wines.daml
       Substantially modified.
     </rdfs:comment>
+    <owl:imports rdf:resource="http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine"/>
   </owl:Ontology>
 
   <owl:Class rdf:ID="ConsumableThing" />
@@ -50,13 +38,41 @@
     <owl:disjointWith rdf:resource="#EdibleThing" />
   </owl:Class>
   
+  <!-- One goal of these example ontologies was that they
+       be in the OWL DL subset.  We made wine and food
+       mutually import one another, because food shares
+       many of the wine properties.
+       Rather than that, we could have used the following
+       assertion for all of the shared concepts:
+
+        <owl:Class rdf:ID="&vin;Wine"/>
+
+       The reason for this is that in DL all referenced 
+       elements must have a type.
+  -->
+
   <owl:Class rdf:ID="Wine">
     <owl:equivalentClass rdf:resource="&vin;Wine"/>
   </owl:Class>
 
+  <owl:ObjectProperty rdf:ID="madeFromFruit">
+    <rdfs:domain rdf:resource="#ConsumableThing" />
+    <rdfs:range rdf:resource="#Fruit" />
+  </owl:ObjectProperty>
+
+  <owl:Class rdf:ID="Juice">
+    <rdfs:subClassOf rdf:resource="#PotableLiquid" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#madeFromFruit" />
+ 	<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
   <owl:ObjectProperty rdf:ID="hasDrink">
     <rdfs:domain rdf:resource="#MealCourse" />
-    <rdfs:range rdf:resource="#Wine" />
+    <rdfs:range rdf:resource="#PotableLiquid" />
   </owl:ObjectProperty>
   
   <owl:Thing rdf:ID="White">
@@ -580,14 +596,14 @@
         <owl:allValuesFrom>
           <owl:Restriction>
             <owl:onProperty rdf:resource="&vin;hasFlavor" />
-            <owl:hasClass>
+            <owl:allValuesFrom>
               <owl:Class>
                 <owl:oneOf rdf:parseType="Collection">
                   <owl:Thing rdf:about="#Strong" />
                   <owl:Thing rdf:about="#Moderate" />
                 </owl:oneOf>
               </owl:Class>
-            </owl:hasClass>
+            </owl:allValuesFrom>
           </owl:Restriction>
         </owl:allValuesFrom>
       </owl:Restriction>
@@ -722,19 +738,13 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasFood" />
-        <owl:minCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:minCardinality>
-      </owl:Restriction>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf>
-      <owl:Restriction>
-        <owl:onProperty rdf:resource="#hasFood" />
-        <owl:allValuesFrom rdf:resource="#EdibleThing" />
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasDrink" />
-        <owl:minCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:minCardinality>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -752,7 +762,7 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#course" />
-        <owl:minCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:minCardinality>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -1105,8 +1115,8 @@
   </owl:Class>
   
   <owl:ObjectProperty rdf:ID="hasFood">
-    <rdfs:range rdf:resource="#EdibleThing" />
     <rdfs:domain rdf:resource="#MealCourse" />
+    <rdfs:range rdf:resource="#EdibleThing" />
   </owl:ObjectProperty>
   
   <owl:Class rdf:ID="Fish">
@@ -1132,14 +1142,14 @@
         <owl:allValuesFrom>
           <owl:Restriction>
             <owl:onProperty rdf:resource="&vin;hasFlavor" />
-            <owl:hasClass>
+            <owl:allValuesFrom>
               <owl:Class>
                 <owl:oneOf rdf:parseType="Collection">
                   <owl:Thing rdf:about="#Moderate" />
                   <owl:Thing rdf:about="#Strong" />
                 </owl:oneOf>
               </owl:Class>
-            </owl:hasClass>
+            </owl:allValuesFrom>
           </owl:Restriction>
         </owl:allValuesFrom>
       </owl:Restriction>

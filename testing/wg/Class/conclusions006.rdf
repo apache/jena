@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: conclusions006.rdf,v 1.1 2003-09-25 07:48:19 jeremy_carroll Exp $
+  $Id: conclusions006.rdf,v 1.2 2003-11-20 15:34:09 jeremy_carroll Exp $
 -->
 <!--
 This test shows a correct application of OWL Full comprehension rules.
@@ -30,7 +30,7 @@ may make a file fall outside OWL DL.
         <owl:unionOf rdf:parseType="Collection">
           <owl:Class rdf:about="premises006#c" />
           <rdfs:Class>
-            <owl:complementOf rdf:resource="premises#c"/>
+            <owl:complementOf rdf:resource="premises006#c"/>
           </rdfs:Class>
         </owl:unionOf>
       </owl:Class>

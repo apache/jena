@@ -1,38 +1,27 @@
-<!--
-  Copyright World Wide Web Consortium, (Massachusetts Institute of
-  Technology, European Research Consortium for Informatics and
-  Mathematics, Keio University).
-
-  All Rights Reserved.
-
-  Please see the full Copyright clause at
-  <http://www.w3.org/Consortium/Legal/copyright-software.html>
-
-  $Id: example001.rdf,v 1.4 2003-09-24 15:35:38 jeremy_carroll Exp $
--->
-
-<!DOCTYPE owl [
-     <!ENTITY vin  "http://www.example.org/wine#" >
-     <!ENTITY food "http://www.example.org/food#" >
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+     <!ENTITY vin  "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#" >
+     <!ENTITY food "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#" >
      <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
-     <!ENTITY xsd  "http://www.w3.org/2000/10/XMLSchema#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
    ]>
 
 <rdf:RDF
-    xml:base="http://www.w3.org/2002/03owlt/miscellaneous/example001"
-   
-  xmlns     = "http://www.example.org/wine#"
-  xmlns:vin = "http://www.example.org/wine#"
-  xmlns:food= "http://www.example.org/food#"
+  xmlns     = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#"
+  xmlns:vin = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#"
+  xml:base  = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#"
+  xmlns:food= "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food#"
   xmlns:owl = "http://www.w3.org/2002/07/owl#"
   xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs= "http://www.w3.org/2000/01/rdf-schema#"
-  xmlns:xsd = "http://www.w3.org/2000/10/XMLSchema#">
+  xmlns:xsd = "http://www.w3.org/2001/XMLSchema#">
 
-  <owl:Ontology rdf:about="http://www.example.org/wine">
+  <owl:Ontology rdf:about="">
     <rdfs:comment>An example OWL ontology</rdfs:comment>
-    <owl:priorVersion rdf:resource="http://www.example.org/wine-112102.owl"/>
-    <owl:imports rdf:resource="http://www.example.org/food.owl"/>
+    <owl:priorVersion>
+      <owl:Ontology rdf:about="http://www.w3.org/TR/2003/WD-owl-guide-20030331/wine"/>
+    </owl:priorVersion>
+    <owl:imports rdf:resource="http://www.w3.org/TR/2003/CR-owl-guide-20030818/food"/>
     <rdfs:comment>Derived from the DAML Wine ontology at 
       http://ontolingua.stanford.edu/doc/chimaera/ontologies/wines.daml
       Substantially changed, in particular the Region based relations.
@@ -45,7 +34,7 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasMaker" />
-	<owl:cardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:cardinality>
+	<owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -57,43 +46,37 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
- 	<owl:minCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:minCardinality>
+ 	<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasSugar" />
-        <owl:cardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:cardinality>
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasFlavor" />
-        <owl:cardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:cardinality>
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasBody" />
-        <owl:cardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:cardinality>
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasColor" />
-        <owl:cardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:cardinality>
-      </owl:Restriction>
-    </rdfs:subClassOf>
-    <rdfs:subClassOf>
-      <owl:Restriction>
-        <owl:onProperty rdf:resource="#hasMaker" />
-	<owl:cardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:cardinality>
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn"/> 
-        <owl:minCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:minCardinality>
+        <owl:someValuesFrom rdf:resource="&vin;Region"/>
       </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:label xml:lang="en">wine</rdfs:label>
@@ -104,7 +87,7 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasVintageYear"/>  
-        <owl:cardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:cardinality>
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
   </owl:Class>
@@ -191,7 +174,7 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
   </owl:Class>
@@ -251,6 +234,7 @@
   </owl:ObjectProperty>
   
   <owl:ObjectProperty rdf:ID="madeFromGrape">
+    <rdfs:subPropertyOf rdf:resource="&food;madeFromFruit" />
     <rdfs:domain rdf:resource="#Wine" />
     <rdfs:range rdf:resource="#WineGrape" />
   </owl:ObjectProperty>
@@ -306,7 +290,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -424,7 +408,7 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
   </owl:Class>
@@ -501,14 +485,14 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <owl:intersectionOf rdf:parseType="Collection">
       <owl:Class rdf:about="#Bordeaux" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#stEmilionRegion" />
+        <owl:hasValue rdf:resource="#StEmilionRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -558,7 +542,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -572,7 +556,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -628,14 +612,14 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <owl:intersectionOf rdf:parseType="Collection">
       <owl:Class rdf:about="#Loire" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#sancerreRegion" />
+        <owl:hasValue rdf:resource="#SancerreRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -645,7 +629,7 @@
       <owl:Class rdf:about="#Wine" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#hasColor" />
-        <owl:hasValue rdf:resource="#rose" />
+        <owl:hasValue rdf:resource="#Rose" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -665,7 +649,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -700,7 +684,7 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <owl:intersectionOf rdf:parseType="Collection">
@@ -772,7 +756,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -792,7 +776,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -840,11 +824,11 @@
       <owl:Class rdf:about="#Wine" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:hasValue rdf:resource="#petiteSyrahGrape" />
+        <owl:hasValue rdf:resource="#PetiteSyrahGrape" />
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -871,14 +855,14 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <owl:intersectionOf rdf:parseType="Collection">
       <owl:Class rdf:about="#Medoc" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#pauillacRegion" />
+        <owl:hasValue rdf:resource="#PauillacRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -911,14 +895,14 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <owl:intersectionOf rdf:parseType="Collection">
       <owl:Class rdf:about="#Loire" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#muscadetRegion" />
+        <owl:hasValue rdf:resource="#MuscadetRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -934,7 +918,7 @@
       <owl:Class rdf:about="#WhiteBurgundy" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#meursaultRegion" />
+        <owl:hasValue rdf:resource="#MeursaultRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -986,7 +970,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1016,9 +1000,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:minCardinality>
-          2
-        </owl:minCardinality>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">2</owl:minCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1044,7 +1026,7 @@
       <owl:Class rdf:about="#Bordeaux" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#medocRegion" />
+        <owl:hasValue rdf:resource="#MedocRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1065,14 +1047,14 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <owl:intersectionOf rdf:parseType="Collection">
       <owl:Class rdf:about="#Medoc" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#margauxRegion" />
+        <owl:hasValue rdf:resource="#MargauxRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1169,7 +1151,7 @@
       <owl:Class rdf:about="#Wine" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#germanyRegion" />
+        <owl:hasValue rdf:resource="#GermanyRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1183,7 +1165,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1314,7 +1296,7 @@
       <owl:Class rdf:about="#RedBurgundy" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#cotesDOrRegion" />
+        <owl:hasValue rdf:resource="#CotesDOrRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1413,7 +1395,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1459,7 +1441,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1539,7 +1521,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1577,7 +1559,7 @@
       </owl:Restriction>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1650,14 +1632,14 @@
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty rdf:resource="#madeFromGrape" />
-        <owl:maxCardinality rdf:datatype="&xsd;NonNegativeInteger">1</owl:maxCardinality>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
     <owl:intersectionOf rdf:parseType="Collection">
       <owl:Class rdf:about="#Wine" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#beaujolaisRegion" />
+        <owl:hasValue rdf:resource="#BeaujolaisRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1693,7 +1675,7 @@
       <owl:Class rdf:about="#Loire" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#anjouRegion" />
+        <owl:hasValue rdf:resource="#AnjouRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1713,7 +1695,7 @@
       <owl:Class rdf:about="#Wine" />
       <owl:Restriction>
         <owl:onProperty rdf:resource="#locatedIn" />
-        <owl:hasValue rdf:resource="#alsaceRegion" />
+        <owl:hasValue rdf:resource="#AlsaceRegion" />
       </owl:Restriction>
     </owl:intersectionOf>
   </owl:Class>
@@ -1757,25 +1739,25 @@
 
   <owl:AllDifferent>
     <owl:distinctMembers rdf:parseType="Collection">
-      <vin:WineColor rdf:about="#Light" />
-      <vin:WineColor rdf:about="#Medium" />
-      <vin:WineColor rdf:about="#Full" />
+      <vin:WineBody rdf:about="#Light" />
+      <vin:WineBody rdf:about="#Medium" />
+      <vin:WineBody rdf:about="#Full" />
     </owl:distinctMembers>
   </owl:AllDifferent>
 
   <owl:AllDifferent>
     <owl:distinctMembers rdf:parseType="Collection">
-      <vin:WineColor rdf:about="#Delicate" />
-      <vin:WineColor rdf:about="#Moderate" />
-      <vin:WineColor rdf:about="#Strong" />
+      <vin:WineFlavor rdf:about="#Delicate" />
+      <vin:WineFlavor rdf:about="#Moderate" />
+      <vin:WineFlavor rdf:about="#Strong" />
     </owl:distinctMembers>
   </owl:AllDifferent>
  
   <owl:AllDifferent>
     <owl:distinctMembers rdf:parseType="Collection">
-      <vin:WineColor rdf:about="#Sweet" />
-      <vin:WineColor rdf:about="#OffDry" />
-      <vin:WineColor rdf:about="#Dry" />
+      <vin:WineSugar rdf:about="#Sweet" />
+      <vin:WineSugar rdf:about="#OffDry" />
+      <vin:WineSugar rdf:about="#Dry" />
     </owl:distinctMembers>
   </owl:AllDifferent>
 
@@ -2293,7 +2275,7 @@
     <hasMaker  rdf:resource="#Selaks" />
     <hasFlavor rdf:resource="#Moderate" />
     <hasBody   rdf:resource="#Medium" />
-    <color rdf:resource="#White" />
+    <hasColor rdf:resource="#White" />
   </IceWine>
   
   <SauvignonBlanc rdf:ID="SelaksSauvignonBlanc">
@@ -2380,17 +2362,14 @@
       <vin:Winery rdf:about="#ChateauLafiteRothschild" />
       <vin:Winery rdf:about="#ChateauMargauxWinery" />
       <vin:Winery rdf:about="#ChateauMorgon" />
-      <vin:Winery rdf:about="#McGuinnesso" />
       <vin:Winery rdf:about="#ClosDeLaPoussie" />
       <vin:Winery rdf:about="#ClosDeVougeot" />
       <vin:Winery rdf:about="#CongressSprings" />
       <vin:Winery rdf:about="#Corbans" />
-      <vin:Winery rdf:about="#Corbans" />
-      <vin:Winery rdf:about="#Corbans" />
       <vin:Winery rdf:about="#CortonMontrachet" />
       <vin:Winery rdf:about="#Cotturi" />
+      <vin:Winery rdf:about="#DAnjou" />
       <vin:Winery rdf:about="#Elyse" />
-      <vin:Winery rdf:about="#Forman" />
       <vin:Winery rdf:about="#Forman" />
       <vin:Winery rdf:about="#Foxen" />
       <vin:Winery rdf:about="#GaryFarrell" />
@@ -2399,28 +2378,20 @@
       <vin:Winery rdf:about="#LaneTanner" />
       <vin:Winery rdf:about="#Longridge" />
       <vin:Winery rdf:about="#Marietta" />
-      <vin:Winery rdf:about="#Marietta" />
-      <vin:Winery rdf:about="#Marietta" />
-      <vin:Winery rdf:about="#Marietta" />
+      <vin:Winery rdf:about="#McGuinnesso" />
       <vin:Winery rdf:about="#MountEdenVineyard" />
-      <vin:Winery rdf:about="#MountEdenVineyard" />
-      <vin:Winery rdf:about="#Mountadam" />
-      <vin:Winery rdf:about="#Mountadam" />
       <vin:Winery rdf:about="#Mountadam" />
       <vin:Winery rdf:about="#PageMillWinery" />
       <vin:Winery rdf:about="#PeterMccoy" />
       <vin:Winery rdf:about="#PulignyMontrachet" />
-      <vin:Winery rdf:about="#DAnjou" />
       <vin:Winery rdf:about="#SantaCruzMountainVineyard" />
-      <vin:Winery rdf:about="#StGenevieve" />
-      <vin:Winery rdf:about="#SaucelitoCanyon" />
       <vin:Winery rdf:about="#SaucelitoCanyon" />
       <vin:Winery rdf:about="#SchlossRothermel" />
       <vin:Winery rdf:about="#SchlossVolrad" />
       <vin:Winery rdf:about="#SeanThackrey" />
       <vin:Winery rdf:about="#Selaks" />
-      <vin:Winery rdf:about="#Selaks" />
       <vin:Winery rdf:about="#SevreEtMaine" />
+      <vin:Winery rdf:about="#StGenevieve" />
       <vin:Winery rdf:about="#Stonleigh" />
       <vin:Winery rdf:about="#Taylor" />
       <vin:Winery rdf:about="#Ventana" />
