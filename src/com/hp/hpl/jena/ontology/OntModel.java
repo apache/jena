@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.26 $
+ * Revision           $Revision: 1.27 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-26 19:26:44 $
+ * Last modified on   $Date: 2003-07-04 14:13:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -60,7 +60,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.26 2003-06-26 19:26:44 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.27 2003-07-04 14:13:42 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -992,7 +992,9 @@ public interface OntModel
     /**
      * <p>
      * Answer a list of the imported URI's in this ontology model. Detection of <code>imports</code>
-     * statments will be according to the local language profile
+     * statments will be according to the local language profile.  Note that, in order to allow this
+     * method to be called during the imports closure process, we <b>only query the base model</b>,
+     * thus side-stepping the any attached reasoner.
      * </p>
      * 
      * @return The imported ontology URI's as a list. Note that since the underlying graph is
