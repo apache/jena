@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:15:06 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-01-23 15:14:22 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -59,16 +59,10 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.rdf.model.Model;
 
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 import com.hp.hpl.jena.util.iterator.NodeIteratorWrapper;
 import com.hp.hpl.jena.util.iterator.ResIteratorWrapper;
-import com.hp.hpl.jena.util.iterator.StatementObjectIterator;
-import com.hp.hpl.jena.util.iterator.StatementSubjectIterator;
 
 
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
@@ -99,7 +93,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.1.1.1 2002-12-19 19:15:06 bwm Exp $
+ * @version CVS info: $Id: PropertyIterator.java,v 1.2 2003-01-23 15:14:22 ian_dickinson Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.common).
  */
 public class PropertyIterator

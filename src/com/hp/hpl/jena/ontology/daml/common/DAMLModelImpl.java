@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:15:33 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-01-23 15:14:20 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -45,19 +45,14 @@ package com.hp.hpl.jena.ontology.daml.common;
 
 // Imports
 ///////////////
-import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.Reader;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Iterator;
-import java.util.Vector;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFException;
-import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -108,7 +103,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.1.1.1 2002-12-19 19:15:33 bwm Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.2 2003-01-23 15:14:20 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends ModelMem

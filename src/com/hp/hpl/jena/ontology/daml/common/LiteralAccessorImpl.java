@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: LiteralAccessorImpl.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:15:44 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-01-23 15:14:21 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -45,9 +45,6 @@ package com.hp.hpl.jena.ontology.daml.common;
 
 // Imports
 ///////////////
-
-import java.util.Iterator;
-
 import com.hp.hpl.jena.ontology.daml.LiteralAccessor;
 import com.hp.hpl.jena.ontology.daml.DAMLCommon;
 
@@ -66,7 +63,7 @@ import com.hp.hpl.jena.util.Log;
  * see {@link com.hp.hpl.jena.ontology.daml.PropertyAccessor PropertyAccessor}.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: LiteralAccessorImpl.java,v 1.1.1.1 2002-12-19 19:15:44 bwm Exp $
+ * @version CVS info: $Id: LiteralAccessorImpl.java,v 1.2 2003-01-23 15:14:21 ian_dickinson Exp $
  */
 public class LiteralAccessorImpl
     extends PropertyAccessorImpl

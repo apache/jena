@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:15:29 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-01-23 15:14:17 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -50,9 +50,6 @@ import java.util.Iterator;
 import java.util.Hashtable;
 import java.util.HashSet;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -64,10 +61,6 @@ import java.io.Reader;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.daml.DAMLClass;
 import com.hp.hpl.jena.ontology.daml.DAMLCommon;
-import com.hp.hpl.jena.ontology.daml.DAMLObjectProperty;
-import com.hp.hpl.jena.ontology.daml.DAMLDatatypeProperty;
-import com.hp.hpl.jena.ontology.daml.DAMLOntology;
-import com.hp.hpl.jena.ontology.daml.DAMLProperty;
 
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.DAML_OIL_2000_12;
@@ -105,7 +98,7 @@ import com.hp.hpl.jena.mem.ModelMem;
  * of imports on or off overall, or by using
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.1.1.1 2002-12-19 19:15:29 bwm Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.2 2003-01-23 15:14:17 ian_dickinson Exp $
  */
 public class DAMLLoader
 {

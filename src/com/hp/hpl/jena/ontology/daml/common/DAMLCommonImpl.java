@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:15:14 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-01-23 15:14:20 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -45,8 +45,6 @@ package com.hp.hpl.jena.ontology.daml.common;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -54,12 +52,10 @@ import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.ResIterator;
 
 
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
-import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.model.impl.SelectorImpl;
 
 import java.util.Iterator;
@@ -69,8 +65,6 @@ import java.util.Vector;
 
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
-import com.hp.hpl.jena.util.iterator.NodeIteratorWrapper;
-import com.hp.hpl.jena.util.iterator.StatementObjectIterator;
 
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.daml.DAMLCommon;
@@ -81,10 +75,8 @@ import com.hp.hpl.jena.ontology.daml.DAMLClass;
 import com.hp.hpl.jena.ontology.daml.DAMLProperty;
 import com.hp.hpl.jena.ontology.daml.DAMLObjectProperty;
 
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 
 
@@ -95,7 +87,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * properties, such as comment, label, and equivalentTo.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.1.1.1 2002-12-19 19:15:14 bwm Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.2 2003-01-23 15:14:20 ian_dickinson Exp $
  */
 public abstract class DAMLCommonImpl
     extends ResourceImpl
