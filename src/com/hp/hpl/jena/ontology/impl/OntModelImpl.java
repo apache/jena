@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.72 $
+ * Revision           $Revision: 1.73 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-23 16:15:56 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-11-25 11:38:20 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.72 2004-11-23 16:15:56 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.73 2004-11-25 11:38:20 chris-dollin Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -149,7 +149,7 @@ public class OntModelImpl
         
         // add the global prefixes, if required
         if (getDocumentManager().useDeclaredPrefixes()) {
-            setNsPrefixes( getDocumentManager().getDeclaredPrefixMapping() );
+            withDefaultMappings( getDocumentManager().getDeclaredPrefixMapping() );
         }
         
         // load the imports closure, according to the policies in my document manager
