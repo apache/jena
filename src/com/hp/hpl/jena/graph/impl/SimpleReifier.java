@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.23 2004-09-06 12:54:11 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.24 2004-09-06 13:49:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -18,6 +18,7 @@ import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
+
 import java.util.*;
 
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -29,16 +30,8 @@ public class SimpleReifier implements Reifier
     private boolean concealing = false;
     private ReificationStyle style;
     
-    static class TMap extends FragmentMap
-        {
-        }
-    
-    static class FMap extends FragmentMap
-        {
-        }
-    
-    private FragmentMap nodeMap;
-    private FragmentMap tripleMap;
+    private SimpleReifierFragmentsMap nodeMap;
+    private SimpleReifierTripleMap tripleMap;
     
     private Graph reificationTriples;
     
@@ -51,8 +44,8 @@ public class SimpleReifier implements Reifier
     public SimpleReifier( GraphBase parent, ReificationStyle style )
         {
         this.parent = parent;
-        this.nodeMap = new FMap();
-        this.tripleMap = new TMap();
+        this.nodeMap = new SimpleReifierFragmentsMap();
+        this.tripleMap = new SimpleReifierTripleMap();
         this.intercepting = style.intercepts();
         this.concealing = style.conceals();
         this.style = style;
@@ -69,17 +62,7 @@ public class SimpleReifier implements Reifier
     public Triple getTriple( Node n )        
         { 
         return (Triple) tripleMap.get( n );
-//        Object partial = nodeMap.get( n );
-//        return
-//            partial == null ? null
-//            : partial instanceof Triple ? (Triple) partial
-//            : getTriple( n, (Fragments) partial )
-//            ;
         }
-        
-//    private Triple getTriple( Node n, Fragments f )
-//        { // if (f.isComplete()) System.err.println( ">> this is not supposed to happen" );
-//            return f.isComplete() ? nodeMap.putTriple( n, f.asTriple() ) : null; }
         
     /** true iff there is a triple bound to _n_ */
     public boolean hasTriple( Node n )
@@ -119,8 +102,6 @@ public class SimpleReifier implements Reifier
     protected boolean isComplete( Node n )
         {
         return tripleMap.get( n ) != null;
-//        Object x = nodeMap.get( n );
-//        return x instanceof Triple || ((Fragments) x) .isComplete();
         }
         
     /** 
@@ -137,11 +118,11 @@ public class SimpleReifier implements Reifier
             tripleMap.putTriple( tag, t );
         else
             { // TODO
-            FragmentMap.graphAddQuad( parent, tag, t );
+            graphAddQuad( parent, tag, t );
             Triple t2 = getTriple( tag );
             if (t2 == null) throw new CannotReifyException( tag );
             }
-        if (concealing == false) FragmentMap.graphAddQuad( parent, tag, t );
+        if (concealing == false) graphAddQuad( parent, tag, t );
         return tag; 
     	}
         
@@ -257,7 +238,15 @@ public class SimpleReifier implements Reifier
         parent.delete( Triple.create( n, RDF.Nodes.predicate, t.getPredicate() ) );
         parent.delete( Triple.create( n, RDF.Nodes.object, t.getObject() ) ); 
         }        
-              
+    
+    public static void graphAddQuad( GraphAdd g, Node node, Triple t )
+        {
+        g.add( Triple.create( node, RDF.Nodes.subject, t.getSubject() ) );
+        g.add( Triple.create( node, RDF.Nodes.predicate, t.getPredicate() ) );
+        g.add( Triple.create( node, RDF.Nodes.object, t.getObject() ) );
+        g.add( Triple.create( node, RDF.Nodes.type, RDF.Nodes.Statement ) );
+        }      
+    
     /**
         our string representation is <R ...> wrapped round the string representation
         of our node map.
@@ -267,7 +256,7 @@ public class SimpleReifier implements Reifier
     }
     
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

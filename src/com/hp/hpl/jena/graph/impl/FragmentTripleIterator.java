@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.2 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: FragmentTripleIterator.java,v 1.3 2004-09-06 13:49:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -77,7 +77,7 @@ public final class FragmentTripleIterator extends NiceIterator
     private static void fill( GraphAdd ga, Node n, Object tripleOrFragments )
         {
         if (tripleOrFragments instanceof Triple)
-            FragmentMap.graphAddQuad( ga, n, (Triple) tripleOrFragments ); 
+            SimpleReifier.graphAddQuad( ga, n, (Triple) tripleOrFragments ); 
         else
             ((Fragments) tripleOrFragments).includeInto( ga );    
         }
@@ -97,7 +97,7 @@ public final class FragmentTripleIterator extends NiceIterator
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

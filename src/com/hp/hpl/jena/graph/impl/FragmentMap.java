@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentMap.java,v 1.10 2004-09-06 12:54:11 chris-dollin Exp $
+  $Id: FragmentMap.java,v 1.11 2004-09-06 13:49:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -15,6 +15,7 @@ import java.util.*;
 
 /**
     a FragmentMap maps Nodes to Triples/Fragments and from Triples to Nodes.
+    OBSOLETE.
     
     @author kers
 */
