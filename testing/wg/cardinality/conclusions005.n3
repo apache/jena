@@ -1,0 +1,29 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# An <code>owl:cardinality</code> constraint is simply shorthand for a pair of <code>owl:minCardinality</code> and <code>owl:maxCardinality</code> constraints.
+#
+_:a rdf:type owl:Restriction .
+_:a owl:onProperty first:p .
+_:a owl:maxCardinality "1"^^xsd:nonNegativeInteger  .
+_:b rdf:type owl:Restriction .
+_:b owl:onProperty first:p .
+_:b owl:minCardinality "1"^^xsd:nonNegativeInteger  .
+_:c rdf:first _:b .
+_:c rdf:rest rdf:nil .
+_:c rdf:type rdf:List .
+_:d rdf:first _:a .
+_:d rdf:rest _:c .
+_:d rdf:type rdf:List .
+first:c owl:intersectionOf _:d .
