@@ -223,6 +223,7 @@
         <javadoc
                  sourcepath="${src.dir}"
                  destdir="${javadoc.dir}"
+		 source="${java.source}"
                  author="true"
                  version="true"
                  classpathref="classpath"
