@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.7 2003-04-15 21:18:40 jeremy_carroll Exp $
+ * $Id: Reasoner.java,v 1.8 2003-05-02 08:59:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.Graph;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-04-15 21:18:40 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-02 08:59:40 $
  */
 public interface Reasoner {
     
@@ -41,7 +41,7 @@ public interface Reasoner {
      * future RDF rather than do processing at this time. </p>
      * @param tbox the ontology axioms or rule set encoded in RDF
      * @return a reasoner instace which can be used to process a data graph,
-     * it may be the same instance - bindRuleset is not required to be side-effect free.
+     * it may be the same instance - bindSchema is not required to be side-effect free.
      * @throws ReasonerException if the reasoner cannot be
      * bound to a rule set in this way, for example if the underlying engine
      * can only accept a single rule set in this way and one rule set has
