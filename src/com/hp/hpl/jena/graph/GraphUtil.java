@@ -1,75 +1,30 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Delta.java,v 1.3 2003-06-06 09:15:48 chris-dollin Exp $
+  $Id: GraphUtil.java,v 1.1 2003-06-06 09:14:50 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.compose;
+package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.*;
-
-import com.hp.hpl.jena.mem.*;
-
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
-	@author hedgehog
-	L is the collection of things added,
-	R is the collection of things removed,
-	base is the original graph (which is not mutated)
+ 	@author kers
 */
+public class GraphUtil
+    {
 
-public class Delta extends Dyadic implements Graph 
-	{
-	private Graph base;
-	
-	public Delta( Graph base )
-		{
-		super( new GraphMem(), new GraphMem() );
-		this.base = base;
-		}
-		
-	public Graph getAdditions()
-		{
-		return L;
-		}
-		
-	public Graph getDeletions()
-		{
-		return R;
-		}
-		
-	public void add( Triple t )
-		{
-		L.add( t );
-		R.delete( t );
-		}
+    private GraphUtil()
+        {}
 
-	public void delete( Triple t )
-		{
-		L.delete( t );
-		R.add( t );
-		}
-		 
-	public ExtendedIterator find( TripleMatch tm ) 
-		{
-        return base.find( tm ) .filterDrop( ifIn( GraphUtil.findAll( R ) ) ) .andThen( L.find( tm ) );
-		}
+    public static ExtendedIterator findAll( Graph g )
+        { return g.find( Node.ANY, Node.ANY, Node.ANY ); }
 
-	public void close() 
-		{
-		super.close();
-		base.close();
-		}
+    }
 
-	public int size()
-		{
-		return base.size() + L.size() - R.size();
-		}
-	}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.42 $' Date='$Date: 2003-06-04 15:15:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.43 $' Date='$Date: 2003-06-06 09:15:50 $'
  */
 
 public class ModelCom 
@@ -1104,7 +1104,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
         }
 
     public boolean supportsTransactions() 
-        { return getGraph().getTransactionHandler().transactionsSupported(); }
+        { return getTransactionHandler().transactionsSupported(); }
     	
     public Model begin() 
         { getTransactionHandler().begin(); return this; }

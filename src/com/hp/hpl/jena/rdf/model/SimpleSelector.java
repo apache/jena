@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleSelector.java,v 1.6 2003-06-04 15:14:26 chris-dollin Exp $
+  $Id: SimpleSelector.java,v 1.7 2003-06-06 09:15:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.graph.*;
  * selects</CODE> method to test for any application supplied constraint.  The
  * default <CODE>selects</CODE> method simply returns true.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-06-04 15:14:26 $
+ * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-06-06 09:15:49 $
  */
 public class SimpleSelector extends Object implements Selector {
 
@@ -256,19 +256,19 @@ public class SimpleSelector extends Object implements Selector {
         return true;
     }
     
-    /**
-        TODO unused - eliminate?
-     */
-    public TripleMatch asTripleMatch(final ModelCom model) {
-    	return new StandardTripleMatch(
-    	    subject==null?null:subject.asNode(),
-    	    predicate==null?null:predicate.asNode(),
-    	    object==null?null:object.asNode() ) {
-    	  public boolean triple(Triple t) {
-    	  	 return selects(IteratorFactory.asStatement(t,model));
-    	  }
-    	};
-    }
+//    /**
+//        TODO unused - eliminate?
+//     */
+//    public TripleMatch asTripleMatch(final ModelCom model) {
+//    	return new StandardTripleMatch(
+//    	    subject==null?null:subject.asNode(),
+//    	    predicate==null?null:predicate.asNode(),
+//    	    object==null?null:object.asNode() ) {
+//    	  public boolean triple(Triple t) {
+//    	  	 return selects(IteratorFactory.asStatement(t,model));
+//    	  }
+//    	};
+//    }
 }
 /*
  *  (c) Copyright Hewlett-Packard Company 2000 - 2003

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: StandardTripleMatch.java,v 1.2 2003-02-10 09:55:43 der Exp $
+  $Id: StandardTripleMatch.java,v 1.3 2003-06-06 09:14:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -21,16 +21,16 @@ package com.hp.hpl.jena.graph;
           in the way so dumped it for simpler code whilst adding the get methods
  */
 
-public class StandardTripleMatch implements TripleMatch {
+public final class StandardTripleMatch implements TripleMatch {
         
     protected Node subject;
     protected Node predicate;
     protected Node object;
     
     public StandardTripleMatch(Node subject, Node predicate, Node object) {
-        this.subject = subject;
-        this.predicate = predicate;
-        this.object = object;
+        this.subject = nullToAny( subject );
+        this.predicate = nullToAny( predicate );
+        this.object = nullToAny( object );
     }
         
 	/**
@@ -38,27 +38,24 @@ public class StandardTripleMatch implements TripleMatch {
 	 * when subject!=null.
 	 * @see TripleMatch#subject(Node)
 	 */
-	public boolean subject(Node n) {
-            return matches(subject, n);
-	}
-
+	public boolean subject(Node n) 
+        { return subject.matches( n ); }
+            
 	/**
 	 * Stores may optimise to not call this method
 	 * when predicate!=null.
 	 * @see TripleMatch#predicate(Node)
 	 */
-	public boolean predicate(Node n) {
-            return matches(predicate, n);
-	}
+	public boolean predicate(Node n) 
+        { return predicate.matches( n ); }
 
 	/**
 	 * Stores may optimise to not call this method
 	 * when object!=null.
 	 * @see TripleMatch#object(Node)
 	 */
-	public boolean object(Node n) {
-            return matches(object, n);
-	}
+	public boolean object(Node n) 
+        { return object.matches( n ); }
 
 	/**
 	 * This method must always be used as a filter by a Store.
@@ -81,27 +78,34 @@ public class StandardTripleMatch implements TripleMatch {
         
         /** If it is known that all triples selected by this match will
          * have a common object, return that node, otherwise return null  */
-        public Node getObject() {
-            return object;
-        }
+        public Node getObject() 
+            { return anyToNull( object ); }
         
         /** If it is known that all triples selected by this match will
          * have a common predicate, return that node, otherwise return null  */
-        public Node getPredicate() {
-            return predicate;
-        }
+        public Node getPredicate() 
+            { return anyToNull( predicate ); }
         
         /** If it is known that all triples selected by this filter will
          * have a common subject, return that node, otherwise return null  */
-        public Node getSubject() {
-            return subject;
-        }
+        public Node getSubject() 
+            { return anyToNull( subject ); }
         
-        protected boolean matches(Node matcherNode, Node testNode) {
-            // return matcherNode == null  || matcherNode.equals(testNode);
-            // der - modified to support sameValueAs semantics
-            return matcherNode == null  || matcherNode.sameValueAs(testNode);
-        }
+        /**
+            Utility: convert ANY to null
+            @param n a node that may be null, ANY, or something concrete
+            @return n, unless it is ANY, in which case null
+        */
+        private Node anyToNull( Node n )
+            { return Node.ANY.equals( n ) ? null : n; }
+            
+        /**
+            Utility: convert null to ANY
+            @param n a node that may be null
+            @return n, unless it is null, in which case Node.ANY
+        */
+        private Node nullToAny( Node n )
+            { return n == null ? Node.ANY : n; }
     }
 
 /*

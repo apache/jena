@@ -17,4 +17,7 @@ public class Node_ANY extends Node
         
     public Object visitWith( NodeVisitor v )
         { return v.visitAny( this ); }
+        
+    public boolean matches( Node other )
+        { return other != null; }
     }

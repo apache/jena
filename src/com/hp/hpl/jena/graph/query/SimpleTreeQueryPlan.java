@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleTreeQueryPlan.java,v 1.1.1.1 2002-12-19 19:14:04 bwm Exp $
+  $Id: SimpleTreeQueryPlan.java,v 1.2 2003-06-06 09:15:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -68,9 +68,9 @@ public class SimpleTreeQueryPlan implements TreeQueryPlan
 	public static HashSet getRoots( Graph pattern )
 		{
 		HashSet roots = new HashSet();
-		ClosableIterator sub = pattern.find( null, null, null );
+		ClosableIterator sub = GraphUtil.findAll( pattern );
 		while (sub.hasNext()) roots.add( ((Triple) sub.next()).getSubject() );
-		ClosableIterator obj = pattern.find( null, null, null );
+		ClosableIterator obj = GraphUtil.findAll( pattern );
 		while (obj.hasNext()) roots.remove( ((Triple) obj.next()).getObject() );
 		return roots;
 		}

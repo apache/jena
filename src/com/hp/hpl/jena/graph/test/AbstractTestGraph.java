@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.4 2003-05-28 11:13:50 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.5 2003-06-06 09:15:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -158,6 +158,14 @@ public abstract class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getGraph();
         Capabilities c = g.getCapabilities();
+        }
+        
+    public void testFind()
+        {
+        Graph g = getGraph();
+        graphAdd( g, "S P O" );
+        assertTrue( g.find( Node.ANY, null, null ).hasNext() );
+        assertTrue( g.find( null, Node.ANY, null ).hasNext() );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.2 2003-05-28 11:13:50 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.3 2003-06-06 09:15:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -81,7 +81,7 @@ public class GraphTestBase extends JenaTestBase
         
     public static void printGraph( PrintStream sink, Graph g )
     	{
-    	ClosableIterator it = g.find( null, null, null );
+    	ClosableIterator it = GraphUtil.findAll( g );
     	while (it.hasNext()) sink.println( it.next() );
     	}
         
@@ -139,7 +139,7 @@ public class GraphTestBase extends JenaTestBase
         { while (it.hasNext()) assertTrue( g.contains( (Triple) it.next() ) ); }
 
     public void testContains( Graph g, Graph other )
-        { testContains( g, other.find( null, null, null ) ); }
+        { testContains( g, GraphUtil.findAll( other ) ); }
     
     public void testOmits( Graph g, Triple [] triples )
         { for (int i = 0; i < triples.length; i += 1) assertFalse( "", g.contains( triples[i] ) ); }
@@ -154,11 +154,11 @@ public class GraphTestBase extends JenaTestBase
         { while (it.hasNext()) assertFalse( "", g.contains( (Triple) it.next() ) ); }
 
     public void testOmits( Graph g, Graph other )
-        { testOmits( g, other.find( null, null, null ) ); }
+        { testOmits( g, GraphUtil.findAll( other ) ); }
     
     public static void show( String title, Graph g )
         {
-        ClosableIterator it = g.find( null, null, null );
+        ClosableIterator it = GraphUtil.findAll( g );
         System.out.println( title );
         while (it.hasNext()) 
             {
