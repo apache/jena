@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NiceIterator.java,v 1.1.1.1 2002-12-19 19:21:19 bwm Exp $
+  $Id: NiceIterator.java,v 1.2 2003-01-28 10:39:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -13,7 +13,7 @@ package com.hp.hpl.jena.util.iterator;
     about to become more complicated ...
 */
 
-public class NiceIterator implements ClosableIterator
+public class NiceIterator implements ExtendedIterator
     {
     public NiceIterator()
         { super(); }
@@ -25,13 +25,13 @@ public class NiceIterator implements ClosableIterator
         { }
 
     /**
-        default hasNext: we have no bananas.
+        default hasNext: no elements, return false.
     */
     public boolean hasNext()
         {  return false; }
 
     /**
-        default next: we *said* we had no bananas.
+        default next: throw an exception.
     */
     public Object next()
         {
@@ -39,7 +39,7 @@ public class NiceIterator implements ClosableIterator
         }
 
     /**
-        we have no bananas, so we can't remove any.
+        default remove: we have no elements, so we can't remove any.
     */
     public void remove()
         { 
@@ -50,7 +50,7 @@ public class NiceIterator implements ClosableIterator
         concatenate two closable iterators.
     */
     
-    public static ClosableIterator andThen( final ClosableIterator a, final ClosableIterator b )
+    public static ExtendedIterator andThen( final ClosableIterator a, final ClosableIterator b )
         {
         return new NiceIterator()
             {
@@ -75,24 +75,29 @@ public class NiceIterator implements ClosableIterator
         
     /**
         make a new iterator, which is us then the other chap.
-    */
-    
-    public ClosableIterator andThen( ClosableIterator other )
+    */   
+    public ExtendedIterator andThen( ClosableIterator other )
         { return andThen( this, other ); }
         
     /**
         make a new iterator, which is our elements that pass the filter
     */
-    public ClosableIterator filterKeep( Filter f )
+    public ExtendedIterator filterKeep( Filter f )
         { return new FilterIterator( f, this ); }
-        
-    public ClosableIterator filterDrop( final Filter f )
+
+    /**
+        make a new iterator, which is our elements that pass the filter
+    */        
+    public ExtendedIterator filterDrop( final Filter f )
         { 
         Filter notF = new Filter() { public boolean accept( Object x ) { return !f.accept( x ); } };
         return new FilterIterator( notF, this ); 
         }
-        
-    public ClosableIterator mapWith( Map1 map1 )
+   
+    /**
+        make a new iterator which is the elementwise _map1_ of the base iterator.
+    */     
+    public ExtendedIterator mapWith( Map1 map1 )
         { return new Map1Iterator( map1, this ); }
     }
 

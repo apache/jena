@@ -1,17 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ClosableIteratorImpl.java,v 1.1.1.1 2002-12-19 19:21:11 bwm Exp $
+  $Id: ClosableIteratorImpl.java,v 1.2 2003-01-28 10:39:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
 import java.util.Iterator;
 /**
- * @author jjchplb
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- */
+    @author jjchplb
+*/
+
 public class ClosableIteratorImpl extends NiceIterator implements ClosableIterator {
     final protected Iterator underlying;
     public ClosableIteratorImpl(Iterator u) {

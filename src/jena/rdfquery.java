@@ -6,22 +6,13 @@
 
 package jena;
 
-
 import junit.framework.* ;
 import java.io.* ;
-import java.net.* ;
-import java.util.* ;
-import java.text.* ;
 
 import com.hp.hpl.jena.util.* ;
-
 import com.hp.hpl.jena.rdql.* ;
-import com.hp.hpl.jena.rdql.parser.* ;
 import com.hp.hpl.jena.rdql.test.* ;
-
 import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdf.model.impl.* ;
-
 
 /** A program to execute queries from the command line.
  *
@@ -43,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.impl.* ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.1.1.1 2002-12-19 19:22:15 bwm Exp $
+ * @version $Id: rdfquery.java,v 1.2 2003-01-28 10:39:26 chris-dollin Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.1.1.1 2002-12-19 19:13:57 bwm Exp $
+  $Id: Query.java,v 1.2 2003-01-28 10:39:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -71,13 +71,13 @@ public class Query
         while (it.hasNext()) addMatch( (Triple) it.next() );
         }
 
-    public ClosableIterator executeBindings( Graph g, Node [] results )
+    public ExtendedIterator executeBindings( Graph g, Node [] results )
         { return executeBindings( args().put( anon, g ), results ); }
                 
     /**
         the standard "default" implementation of executeBindings.
     */
-    public ClosableIterator executeBindings( ArgMap args, Node [] nodes )
+    public ExtendedIterator executeBindings( ArgMap args, Node [] nodes )
         {
         Pipe result = new BufferPipe();
         Mapping map = new Mapping();
@@ -95,7 +95,7 @@ public class Query
         return result;
         }
          
-    private ClosableIterator filter( final int [] indexes, final Pipe complete )
+    private ExtendedIterator filter( final int [] indexes, final Pipe complete )
         {
         return new NiceIterator()
             {

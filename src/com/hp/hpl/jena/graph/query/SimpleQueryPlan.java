@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryPlan.java,v 1.2 2003-01-09 15:28:01 chris-dollin Exp $
+  $Id: SimpleQueryPlan.java,v 1.3 2003-01-28 10:39:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -25,7 +25,7 @@ public class SimpleQueryPlan implements BindingQueryPlan
         this.variables = variables;
         }
         
-    public ClosableIterator executeBindings()
+    public ExtendedIterator executeBindings()
         {
         return query.executeBindings( graph, variables );
         }

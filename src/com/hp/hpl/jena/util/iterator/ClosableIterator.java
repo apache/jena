@@ -34,14 +34,13 @@ package com.hp.hpl.jena.util.iterator;
 /**
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:10 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-28 10:39:12 $'
  */
+
 import java.util.Iterator;
 
 
-
 /** An iterator which should be closed after use
- *
  * <p>Some iterators take up resources which should be free'd as soon as
  * possible, i.e. without waiting for the garbage collector to call the
  * the finalizer.</p>
@@ -50,20 +49,14 @@ import java.util.Iterator;
  * if the iterator iterates to completion, i.e. more() will return false.</p>
  *
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:10 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-28 10:39:12 $'
  */
+
 public interface ClosableIterator extends Iterator {
     
     /** Close the iterator
      */
     public void close();
     
-    public ClosableIterator andThen( ClosableIterator other );
-    
-    public ClosableIterator filterKeep( Filter f );
-
-    public ClosableIterator filterDrop( final Filter f );
-    
-    public ClosableIterator mapWith( Map1 map1 );
-
+ 
 }
