@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:55 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-15 21:46:50 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
  * (see footer for full conditions)
@@ -36,20 +36,18 @@ import java.util.*;
  * <p>
  * An enhanced view of a Jena model that is known to contain ontology
  * data, under a given ontology {@link Profile vocabulary} (such as OWL).
- * This class does by itself compute the deductive extension of the graph under
- * the semantic rules of the language.  Instead, we wrap an underlying graph
- * with this interface that presents a convenience syntax for accessing the
- * language elements. Depending on the capability of the inference graph, the
- * OntModel will appear to contain more or less triples. For example, if this
- * class is used to wrap a plain memory or database model, only the relationships
- * asserted by the document will be reported through this convenience API. 
- * Alternatively, if the OntModel wraps an inferencing graph, the inferred
- * triples from the extension will be reported as well. For example, assume the 
- * following ontology fragment:
- * <code><pre>
- *     :a rdf:type owl:Class .
- *     :b rdf:type owl:Class ; rdfs:subClassOf :a .
- *     :widget rdf:type :b .
+ * This class does not by itself compute the deductive extension of the graph
+ * under the semantic rules of the language.  Instead, we wrap an underlying
+ * graph with this interface that presents a convenience syntax for accessing
+ * the language elements. Depending on the capability of the inference graph,
+ * the OntModel will appear to contain more or less triples. For example, if
+ * this class is used to wrap a plain memory or database model, only the
+ * relationships asserted by the document will be reported through this
+ * convenience API. Alternatively, if the OntModel wraps an inferencing graph,
+ * the inferred triples from the extension will be reported as well. For
+ * example, assume the following ontology fragment: <code><pre>     :a rdf:type
+ * owl:Class .     :b rdf:type owl:Class ; rdfs:subClassOf :a .     :widget rdf:
+ * type :b .
  * </pre></code>
  * In a non-inferencing graph, the <code>rdf:type</code> of the widget will be
  * reported as class <code>:b</code> only.  In a graph that can process the OWL
@@ -59,7 +57,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.8 2003-04-08 22:11:55 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.9 2003-04-15 21:46:50 jeremy_carroll Exp $
  */
 public interface OntModel
     extends Model
