@@ -7,6 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
+import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.rdql.* ;
 
 import java.util.* ;
@@ -86,7 +87,8 @@ public class Q_Query extends SimpleNode
 
             if ( jjtGetChild(i) instanceof Q_TriplePatternClause )
             {
-                extractTriplePatterns(q, jjtGetChild(i)) ;
+                // Convert to graph-level query.
+                extractTriplePatternsFP(q, jjtGetChild(i)) ;
                 i++ ;
             }
             else
@@ -95,29 +97,20 @@ public class Q_Query extends SimpleNode
             // Constraints
 
             if ( i < numQueryChildren )
+            {
 	            if ( jjtGetChild(i) instanceof Q_ConstraintClause )
 	            {
 	                extractConstraints(q, jjtGetChild(i)) ;
 	                i++ ;
 	            }
-
-//            Q_PrefixesClause qpc = null ;
-//            if ( i < numQueryChildren && jjtGetChild(i) instanceof Q_PrefixesClause )
-//            {
-//                qpc = (Q_PrefixesClause)jjtGetChild(i) ;
-//                i++ ;
-//            }
-//            
-//            extractPrefixes(q, qpc) ;
-//            // Now allow any node (such as Q_URI) to do fixups
-//            this.fixup(this) ;
-
+            }
         }
         catch (RDQL_InternalErrorException e) { throw e ; }
         catch (QueryException qEx) { throw qEx; } 
         catch (ClassCastException e) { throw new RDQL_InternalErrorException("Parser generated illegal parse tree: "+e) ; }
         catch (Exception e) { throw new RDQL_InternalErrorException("Unknown exception: "+e) ; }
     }
+
 
     /** Formats the query from phase 2 in a style that is acceptable to the
      *  parser.  Note this is NOT guaranteed to be the same as the original string
@@ -158,10 +151,12 @@ public class Q_Query extends SimpleNode
         }
     }
 
-    private void extractTriplePatterns(Query q, Node node)
+    // Like the above but for Graph objects, not Model objects. 
+    
+    private void extractTriplePatternsFP(Query q, Node node)
     {
         Q_TriplePatternClause tpc = (Q_TriplePatternClause)node ;
-        List patternVars = new ArrayList() ;
+        List patternVars = q.getBoundVars() ;
         int n = tpc.jjtGetNumChildren() ;
         for ( int j = 0 ; j < n ; j++ )
         {
@@ -169,19 +164,10 @@ public class Q_Query extends SimpleNode
             if ( tp.jjtGetNumChildren() != 3 )
                 throw new RDQL_InternalErrorException("Triple pattern has "+tp.jjtGetNumChildren()+" children") ;
 
-            Slot rSlot = new Slot() ;
-            Slot pSlot = new Slot() ;
-            Slot oSlot = new Slot() ;
-
-            // URI or Var
-            doSlot(rSlot, patternVars, tp.jjtGetChild(0)) ;
-            // URI or Var
-            doSlot(pSlot, patternVars, tp.jjtGetChild(1)) ;
-            // Value or Var
-            doSlot(oSlot, patternVars, tp.jjtGetChild(2)) ;
-
-            TriplePattern tmp = new TriplePattern(rSlot, pSlot, oSlot) ;
-            q.addTriplePattern(tmp) ;
+            com.hp.hpl.jena.graph.Node nodeSubj = convertToGraphNode(tp.jjtGetChild(0), q) ;
+            com.hp.hpl.jena.graph.Node nodePred = convertToGraphNode(tp.jjtGetChild(1), q) ;
+            com.hp.hpl.jena.graph.Node nodeObj  = convertToGraphNode(tp.jjtGetChild(2), q) ;
+            q.addTriplePattern(nodeSubj, nodePred, nodeObj) ;
         }
         
         if ( selectAllVars )
@@ -192,19 +178,38 @@ public class Q_Query extends SimpleNode
                 q.addResultVar(varName) ;
             }
         }
+        
+        
     }
 
-    private void doSlot(Slot slot, List vars, Node node)
+    static private com.hp.hpl.jena.graph.Node convertToGraphNode(Node n, Query q)
     {
-        if ( node instanceof Var )
+        if ( n instanceof Var )
         {
-            Var v = (Var)node ;
-            if ( !vars.contains(v.getVarName()) )
-                vars.add(v.getVarName()) ;
-            slot.set((Var)node) ;
+            String varName = ((Var)n).getVarName() ;
+            q.addBoundVar(varName) ;
+            return com.hp.hpl.jena.graph.Node.createVariable(((Var)n).getVarName()) ;
         }
-        else
-            slot.set((Value)node) ;
+        if ( n instanceof Value)
+        {
+            Value v = (Value)n ;
+            if ( v.isRDFLiteral() )
+            {
+                Literal lit = v.getRDFLiteral() ;
+                return lit.asNode() ;
+            }
+            if ( v.isRDFResource() )
+                return v.getRDFResource().getNode() ;
+                
+            if ( v.isURI() )
+                return com.hp.hpl.jena.graph.Node.createURI(v.getURI()) ;
+                
+            if ( v.isString() )
+                return com.hp.hpl.jena.graph.Node.createLiteral(v.getString(), null, null) ;
+                
+        }
+        throw new RDQL_InternalErrorException("convertToGraphNode encountered strange type: "+n.getClass().getName()) ;
+                                                                
     }
 
     private void extractConstraints(Query q, Node node)

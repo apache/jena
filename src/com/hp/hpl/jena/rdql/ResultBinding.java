@@ -6,34 +6,37 @@
 package com.hp.hpl.jena.rdql;
 
 import java.util.* ;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.* ;
+
 
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.4 2003-03-11 18:03:16 andy_seaborne Exp $
+ * @version  $Id: ResultBinding.java,v 1.5 2003-03-19 17:16:54 andy_seaborne Exp $
  */
 
 
 public class ResultBinding
 {
-	// We store name -> the value, not the variable itself, because variables
-    // may be rebound in the process of the backtracking.  ResultBindings will
+	// We store name -> the value, not the variable itself.  ResultBindings will
     // keep the association of name-value.
 
-    // A binding for a triple pattern is at most 3 variables.
-    // The three lists seem expensive for this.  A reallocating vector may be better.
-    // Note: The remote query client and the QueryResultMem class create single,
-    // long ResultBindings.
-    
     ResultBinding parent = null ;
-    List triples = new ArrayList() ;               // The triples that caused this ResultBinding
 
     List varNames = new ArrayList() ;
-    List values = new ArrayList() ;     // Values or RDFNodes (Resource or Properties)
+    List values = new ArrayList() ;     // Values or usually RDFNodes (Resource or Properties or Literals)
+    List causalTriples = null ;  
+    Query query = null ;
 
-    public ResultBinding() {}
+    public ResultBinding(ResultBinding parent) { this.parent = parent ; }
+    public ResultBinding() { this(null) ; }
     
+    /** Set the triple pattern (if any) that caused this ResultBinding
+     * Optional.  But needed for getTriples and mergeTriples.
+     * 
+     * @param pattern
+     */
     // Return index of added item
     /** Set the parent ResultBinding.
      *  This is only needed for testing of parts of the query engine
@@ -44,8 +47,6 @@ public class ResultBinding
 
     public int add(String varName, Value value)
     {
-        //QSys.assertTrue(varName != null , "Null variable name", "ResultBinding", "add") ;
-        //QSys.assertTrue(varNames.size() == values.size(), "Lists out of step", "ResultBinding", "add") ;
         varNames.add(varName) ;
         values.add(value) ;
         check() ;
@@ -54,19 +55,28 @@ public class ResultBinding
 
     public int add(String varName, RDFNode node)
     {
-        //QSys.assertTrue(varName != null , "Null variable name", "ResultBinding", "add") ;
-        //QSys.assertTrue(varNames.size() == values.size(), "Lists out of step", "ResultBinding", "add") ;
         varNames.add(varName) ;
         values.add(node) ;
         check() ;
         return varNames.size()-1 ;
     }
 
+    public void setQuery(Query q)
+    {
+        query = q ;
+    }
+    
+
     /** Add a triple to the ResultBinding. Assumed to be related to
      *  the some binding of this result binding.
      */
     // Stop being public when/if remote QueryEngineRemote moves into rdf.query
-    public void addTriple(Statement s) { triples.add(s) ; }
+    public void addTriple(Statement s)
+    {
+        if ( causalTriples == null )
+            causalTriples = new ArrayList() ; 
+        causalTriples.add(s) ;
+    }
 
     /** Get the set of statements that caused this ResultBinding.
      *  Note: returns a set so there may be less statements in some result bindings
@@ -83,9 +93,37 @@ public class ResultBinding
     // Worker function
     private void getTriples(Collection acc)
     {
-        acc.addAll(triples) ;
-        if ( parent != null )
-            parent.getTriples(acc) ;
+        if ( causalTriples == null )
+        {
+            causalTriples = new ArrayList() ;
+            
+            if ( query != null )
+            {
+                Model model = query.getSource() ;
+                try {
+                    for ( Iterator iter = query.getTriplePatterns().iterator() ; iter.hasNext() ; )
+                    {
+                        Triple t1 = (Triple)iter.next() ;
+                        Triple t2 = QueryEngine.substituteIntoTriple(t1, this) ;
+                        RDFNode s = QueryEngine.convertNodeToRDFNode(t2.getSubject(), model) ;
+                        RDFNode p = QueryEngine.convertNodeToRDFNode(t2.getPredicate(), model) ;
+                        if ( p instanceof Resource )
+                            p = model.createProperty(((Resource)p).getURI()) ;
+                        RDFNode o = QueryEngine.convertNodeToRDFNode(t2.getObject(), model) ;
+                        Statement stmt = model.createStatement((Resource)s, (Property)p, o) ;
+                        acc.add(stmt) ;
+                    }
+                } catch (Exception ex)
+                {
+                    System.err.println("ResultBinding.getTriples: Substitution error: "+ex) ;
+                }
+            }
+        }
+        
+        if ( causalTriples == null )
+            return ;
+            
+        acc.addAll(causalTriples) ;
     }
     
     /** Merge the triples that caused this result binding into a model.
@@ -93,14 +131,10 @@ public class ResultBinding
      */
     public Model mergeTriples(Model model)
     {
-        try {
-            for ( Iterator iter = triples.iterator() ; iter.hasNext() ; )
-                model.add((Statement)iter.next()) ;
-            if ( parent != null )
-                parent.mergeTriples(model) ;
-        } catch (RDFException rdfEx)
+        Set s = getTriples() ;
+        for ( Iterator iter = s.iterator() ; iter.hasNext() ; )
         {
-            QSys.unhandledException(rdfEx, "ResultBinding", "mergeTriples") ;
+            model.add((Statement)iter.next()) ;
         }
         return model ;
     }
@@ -112,9 +146,6 @@ public class ResultBinding
 
     public Object get(String varName)
     {
-        //QSys.assertTrue(varName != null , "Null variable name", "ResultBinding", "get") ;
-        //QSys.assertTrue(varNames.size() == values.size(), "Lists out of step", "ResultBinding", "get") ;
-
         return lookup(varName, 0) ;
     }
 

@@ -10,6 +10,7 @@ package com.hp.hpl.jena.rdql.test;
 
 import junit.framework.* ;
 
+import java.util.* ;
 import com.hp.hpl.jena.rdql.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
@@ -18,7 +19,7 @@ import com.hp.hpl.jena.mem.* ;
 
 /** Bunch of programmatic uses of query to complrment the script tests.
  * @author Andy Seaborne
- * @version $Id: QueryTestProgrammatic.java,v 1.3 2003-02-20 16:46:30 andy_seaborne Exp $
+ * @version $Id: QueryTestProgrammatic.java,v 1.4 2003-03-19 17:17:40 andy_seaborne Exp $
  */
 
 public class QueryTestProgrammatic extends TestSuite
@@ -93,10 +94,20 @@ public class QueryTestProgrammatic extends TestSuite
             // Currently "success" is executing the query at all!
             Query query = new Query(queryString) ;
             query.setSource(model);
-            QueryEngine qe = new QueryEngine(query) ;
+            QueryExecution qe = new QueryEngine(query) ;
             QueryResults results = qe.exec() ;
-            QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
-            fmt.consume();
+
+
+            for ( ; results.hasNext() ; )
+            {
+                 ResultBinding rb = (ResultBinding)results.next() ;
+                 for ( Iterator iter = rb.getTriples().iterator() ; iter.hasNext() ; )
+                 {
+                     Statement s = (Statement)iter.next() ;
+                     assertTrue("Statement not in model", model.contains(s)) ;
+                }
+            }
+            results.close() ;
         }
     }
     
@@ -127,7 +138,7 @@ public class QueryTestProgrammatic extends TestSuite
             // Currently "success" is executing the query at all!
             Query query = new Query(queryString) ;
             query.setSource(model);
-            QueryEngine qe = new QueryEngine(query) ;
+            QueryExecution qe = new QueryEngine(query) ;
             QueryResults results = qe.exec(binding) ;
             long count = 0 ;
             for ( ; results.hasNext() ; )
@@ -135,23 +146,30 @@ public class QueryTestProgrammatic extends TestSuite
                 ResultBinding rb = (ResultBinding)results.next() ;
                 if ( rb == null )
                     throw new Exception("TestQueryTemplate: found null result binding") ;
+                // Check all the variables are there.
+                for ( Iterator iter = query.getResultVars().iterator() ;
+                      iter.hasNext() ; )
+                {
+                    String varName = (String)iter.next() ; 
+                    Object obj = rb.get(varName) ;
+                    assertNotNull("Variable: "+varName, obj) ;
+                    if ( binding != null )
+                    {
+                        Object original = binding.get(varName) ;
+                        if ( original != null )
+                            assertTrue("Variable: "+varName+" = "+original+" / "+obj, original.equals(obj)) ;
+                    }
+                }
+                          
                 count++ ;
             }
+            results.close() ;
             
             if ( count != numResults )
             {
                 throw new Exception("TestQueryTemplate: mismatch in counts.  Expected "+numResults+".  Got "+count+"  Query: "+queryString) ;
-                
             }
             
-            /*
-            QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
-            PrintWriter pw = new PrintWriter(System.out) ;
-            pw.println() ;
-            fmt.printAll(pw) ;
-            pw.flush() ;
-             */
-            //fmt.consume();
         }
     }
     

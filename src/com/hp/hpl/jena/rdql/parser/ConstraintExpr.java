@@ -24,8 +24,6 @@ public class ConstraintExpr implements Constraint
             return false ;
 
         try {
-            if ( q.getLog() != null )
-                q.getLog().debug("Eval: "+expr.asInfixString()+" :: "+env) ;
             return expr.eval(q, env).getBoolean() ;
         }
         catch (EvalFailureException e) //Includes EvalTypeException

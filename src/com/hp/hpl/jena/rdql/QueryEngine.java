@@ -4,50 +4,34 @@
  */
 
 package com.hp.hpl.jena.rdql;
-
 import java.util.* ;
-import EDU.oswego.cs.dl.util.concurrent.* ;
 
-// To do:
-//   Debugging version with no threading.
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.util.iterator.*;
 
-/** An execution of a query.
- *  The query is not modified so can be reused.  A new QueryEngine object
- *  should be created because the internal state after (and during) execution
- *  of a query is not defined.
- *
- *  This implementation executes the triple pattern generation on a one thread,
- *  executes the constraint filters on another, and leaving the application thread
- *  just to return results.
- *
- * @see Query
- * @see QueryResults
- * 
- * @author		Andy Seaborne
- * @version 	$Id: QueryEngine.java,v 1.4 2003-03-10 09:49:07 andy_seaborne Exp $
+/**
+ * @author     Andy Seaborne
+ * @version    $Id: QueryEngine.java,v 1.5 2003-03-19 17:16:55 andy_seaborne Exp $
  */
-
-
+ 
 public class QueryEngine implements QueryExecution
 {
     Query query ;
-    Set results ;
 
-    static final int bufferCapacity = 5 ;
-    Object endOfPipeMarker = new Object() ;
-    volatile boolean queryStop = false ;
-    boolean queryInitialised = false ;
     static int queryCount = 0 ;
+    boolean queryInitialised = false ;
     int idQueryExecution ;
     
+    ResultsIterator resultsIter ;
     // Statistics
-    long triplePatterns = 0 ;
     long queryStartTime = -1 ;
 
     public QueryEngine(Query q)
     {
         query = q ;
-        queryStop = false ;
         idQueryExecution = (++queryCount) ;
     }
 
@@ -58,23 +42,23 @@ public class QueryEngine implements QueryExecution
 
     public void init()
     {
-        if ( queryInitialised ) return ;
+        if (queryInitialised)
+            return;
 
-        if ( query.getSource() == null )
+        if (query.getSource() == null)
         {
-            if ( query.sourceURL == null )
+            if (query.sourceURL == null)
             {
-                query.getLog().warn("No data for query (no URL, no model)") ;
-                throw new QueryException("No model for query") ;
+                Query.logger.warn("No data for query (no URL, no model)");
+                throw new QueryException("No model for query");
             }
-            long startTime = System.currentTimeMillis() ;
-            query.setSource(com.hp.hpl.jena.util.ModelLoader.loadModel(query.sourceURL, null)) ;
-            query.loadTime = System.currentTimeMillis() - startTime ;
+            long startTime = System.currentTimeMillis();
+            query.setSource(com.hp.hpl.jena.util.ModelLoader.loadModel(query.sourceURL, null));
+            query.loadTime = System.currentTimeMillis() - startTime;
         }
-
-        queryInitialised = true ;
+        queryInitialised = true;
     }
-
+    
     /** Execute a query and get back the results.
      * @return QueryResults
      */
@@ -89,179 +73,218 @@ public class QueryEngine implements QueryExecution
     public QueryResults exec(ResultBinding startBinding)
     {
         init() ;
-
-        //if ( startBinding == null )
-        //    startBinding = new ResultBinding() ;
-
-        // Pipeline from generators to constraints
-        // These are final because they are passed into the anonymous classes.
-        final BoundedBuffer pipe1 = new BoundedBuffer(bufferCapacity) ;
-        // Pipeline from constraints to results iterator
-
-        final BoundedBuffer pipe2 = query.constraints.isEmpty() ? pipe1 : new BoundedBuffer(bufferCapacity) ;
-
-        final ResultBinding environment = startBinding ;
-        
-        queryStartTime = System.currentTimeMillis() ;
-        // Triple patterns : create thread and start.
-        new Thread("Triples-"+idQueryExecution) { public void run() { execTriples(pipe1, environment) ; } }.start() ;
-
-        //query.constraints.isEmpty()
-        if ( pipe2 != pipe1 )
-            // If there are any tests to do, create thread and start.
-            new Thread("Constraints-"+idQueryExecution) { public void run() { execConstraints(pipe1, pipe2) ; } }.start() ;
-        else
-            if ( query.loggingOn )
-                query.getLog().debug("No constraint pipe stage");
-
-        Iterator resultsIter = new ResultsIterator(pipe2) ;
+        resultsIter = new ResultsIterator(query, startBinding) ;
         return new QueryResultsStream(query, this, resultsIter) ;
     }
 
     public void abort()
     {
-        if ( ! queryStop )
-            this.queryStop = true ;
+        resultsIter.close() ;
     }
 
     /** Normal end of use of this execution  */
     public void close()
     {
-        if ( ! queryStop )
-            this.queryStop = true ;
+        resultsIter.close() ;
     }
-    
 
-    private void execConstraints(BoundedBuffer pipe1, BoundedBuffer pipe2)
+
+    static class ResultsIterator implements ClosableIterator
     {
-        // This is very stupid because it takes no account of the
-        // variables an expression actually uses.
+        Node[] projectionVars ;
+        Query query ;
 
-        int inputCount = 0 ;
-        int outputCount = 0 ;
+        ResultBinding nextBinding = null ;
+        boolean finished = false ;
+        ClosableIterator planIter ;
+        ResultBinding initialBindings ;
+         
+        ResultsIterator(Query q, ResultBinding presets)
+        {
+            query = q ;
+            initialBindings = presets ;
+            // Build the graph query plan etc.        
+            Graph graph = query.getSource().getGraph();
 
-        try {
-        outerLoop:
-            for ( ;; )
+            QueryHandler queryHandler = graph.queryHandler();
+            com.hp.hpl.jena.graph.query.Query graphQuery = new com.hp.hpl.jena.graph.query.Query();
+
+            for (Iterator iter = query.getTriplePatterns().listIterator(); iter.hasNext();)
             {
-                if ( queryStop )
-                    break outerLoop;
-                Object x = pipe1.take() ;
-                if ( x == endOfPipeMarker )
-                    break outerLoop;
-
-                inputCount ++ ;
-
-                ResultBinding env = (ResultBinding)x ;
-                boolean passesTests = true ;
-                for ( Iterator cIter = query.constraints.iterator() ; cIter.hasNext() ; )
-                {
-                    Constraint constraint = (Constraint)cIter.next() ;
-                    if ( ! constraint.isSatified(query, env) )
-                    {
-                        passesTests = false ;
-                        break ;
-                    }
-                }
-                if ( passesTests )
-                {
-                    outputCount ++ ;
-                    pipe2.put(env);
-                }
+                Triple t = (Triple) iter.next();
+                t = substituteIntoTriple(t, presets) ;
+                graphQuery.addMatch(t);
             }
 
-            pipe2.put(endOfPipeMarker);
-            return ;
-        } catch (InterruptedException e) { QSys.unhandledException(e, "QueryEngine", "execConstraints") ; }
-    }
+            projectionVars = new Node[query.getBoundVars().size()];
 
-    private void execTriples(BoundedBuffer pipe, ResultBinding startBinding)
-    {
-        try {
-            execTriplesWorker(pipe, startBinding, 0) ;
-            pipe.put(endOfPipeMarker);
-        } catch (InterruptedException e) { QSys.unhandledException(e, "QueryEngine", "execTriples"); }
-    }
-
-
-    private void execTriplesWorker(BoundedBuffer results, ResultBinding env, int index)
-    {
-        if ( query.loggingOn )
-        {
-            query.getLog().debug("QueryEngine.execTriplesWorker: "+
-                                 "Triple matching: "+(index+1)+" of "+query.triplePatterns.size()) ;
-            query.getLog().debug("QueryEngine.execTriplesWorker: "+                                 "Triple matching: "+(env==null ? "<<null ResultBinding>>" : env.toString())) ;
-        }
-
-        if ( queryStop )
-            return ;
-
-        if ( index > query.triplePatterns.size()-1 )
-        {
-            try {
-            	if ( env != null )
-	                results.put(env);
-            } catch (InterruptedException e) { QSys.unhandledException(e, "QueryEngine", "execTriplesWorker") ; }
-            return ;
-        }
-
-        triplePatterns ++ ;
-        int matchesFound = 0 ;
-
-        TriplePattern tp = (TriplePattern)query.triplePatterns.get(index) ;
-
-        Iterator iter = tp.match((query.loggingOn ? query.log : null), this, query.source, env ) ;
-
-        if ( iter != null )
-            for ( ; iter.hasNext() ; )
+            for (int i = 0; i < projectionVars.length; i++)
             {
-                ResultBinding rb2 = (ResultBinding)iter.next();
-                if ( query.loggingOn && query.log != null )
-                    query.log.debug("Env: "+rb2) ;
-                if ( rb2 == null )
-                    continue ;
-                matchesFound++ ;
-                execTriplesWorker(results, rb2, index+1) ;
+                projectionVars[i] = Node.createVariable((String) query.getBoundVars().get(i));
             }
-    }
 
-    class ResultsIterator implements Iterator
-    {
-        BoundedBuffer pipe ;
-        Object nextThing ;
-
-        ResultsIterator(BoundedBuffer p) { pipe = p ; nextThing = null ; }
-
+            BindingQueryPlan plan = queryHandler.prepareBindings(graphQuery, projectionVars);
+            planIter = plan.executeBindings() ;
+        }
+          
         public boolean hasNext()
         {
-            try {
-                if ( queryStop )
-                    return false ;
+            if ( finished )
+                return false ;
+            // Loop until we get a binding that is satifactory
+            // or we run out of candidates. 
+            while ( nextBinding == null )
+            {
+                if ( ! planIter.hasNext() )
+                    break ;
+                // Convert from graph form to model form
+                Domain d = (Domain)planIter.next() ;
+                nextBinding = new ResultBinding(initialBindings) ;
+                nextBinding.setQuery(query) ;
+                for ( int i = 0 ; i < projectionVars.length ; i++ )
+                {
+                    String name = projectionVars[i].toString().substring(1) ;
+                    Node n = (Node)d.get(i) ;
+                    if ( n == null )
+                    {
+                        // There was no variable of this name
+                        // May have been prebound.
+                        // (Later) may have optionally bound variables.
+                        // Otherwise, should not occur but this is safe.
+                        continue ;
+                    }
+    
+                    // Convert graph node to model RDFNode
+                    RDFNode rdfNode = convertNodeToRDFNode(n, query.getSource()) ;
+                    nextBinding.add(name, rdfNode) ;
+                }
+                
+                // Verify constriants
+                boolean passesTests = true;
+                for (Iterator cIter = query.constraints.iterator(); cIter.hasNext();)
+                {
+                    Constraint constraint = (Constraint) cIter.next();
+                    if (!constraint.isSatified(query, nextBinding))
+                    {
+                        passesTests = false;
+                        break;
+                    }
+                }
+                if (!passesTests)
+                {
+                    nextBinding = null ;
+                    continue ;
+                }
+            }       
 
-                // Implements "blocking poll"
-                if ( nextThing == null )
-                    nextThing = pipe.take() ;
-
-                boolean isMore = ( nextThing != endOfPipeMarker ) ;
-                if ( query.executeTime == -1 )
-                    query.executeTime = System.currentTimeMillis() - queryStartTime ;
-
-                return isMore ;
-            } catch (InterruptedException e) { QSys.unhandledException(e, "ResultsIterator", "hasNext") ; }
-            return false ;
+            if ( nextBinding == null )
+            {
+                close() ;
+                return false ;
+            }
+            return true ;
         }
 
         public Object next()
         {
-            //if ( query.logging )
-            if ( ! hasNext() )
-                return null ;
-            Object x = nextThing ;
-            nextThing = null ;
+            ResultBinding x = nextBinding ;
+            nextBinding = null ;
             return x ;
         }
 
-        public void remove() { throw new java.lang.UnsupportedOperationException("ResultsIterator.remove") ; }
+        public void remove()
+        {
+            throw new UnsupportedOperationException("QueryEngine.ResultsIterator.remove") ; 
+        }
+        
+        public void close()
+        {
+            if ( ! finished )
+            {
+                planIter.close() ;
+                finished = true ;
+            }
+        }
+    }
+
+    static Node convertValueToNode(Value value)
+    {
+        if ( value.isRDFLiteral())
+            return Node.createLiteral(
+                    value.getRDFLiteral().getLexicalForm(),
+                    value.getRDFLiteral().getLanguage(),
+                    value.getRDFLiteral().getDatatype()) ;
+            
+        if ( value.isRDFResource())
+        {
+            if ( value.getRDFResource().isAnon())
+                return Node.createAnon(value.getRDFResource().getId()) ;
+            return Node.createURI(value.getRDFResource().getURI()) ;
+        }
+            
+        if ( value.isURI())
+            return Node.createURI(value.getURI()) ;
+            
+        return Node.createLiteral(value.asUnquotedString(),null ,null) ;
+    }
+
+    static RDFNode convertNodeToRDFNode(Node n, Model model)
+    {
+        if ( n.isLiteral() )
+            return new LiteralImpl(n, model) ;
+                
+        if ( n.isURI() || n.isBlank() )
+            return new ResourceImpl(n, model) ;
+                
+        if ( n.isVariable() )
+        {
+            // Hack
+            System.err.println("Variable unbound: "+n) ;
+            //binding.add(name, n) ;
+            return null ;
+        }
+                
+        System.err.println("Unknown node type for node: "+n) ;
+        return null ;
+
+    }
+
+    static Triple substituteIntoTriple(Triple t, ResultBinding binding)
+    {
+        if ( binding == null )
+           return t ;
+        
+        boolean keep = true ;
+        Node subject = substituteNode(t.getSubject(), binding) ;
+        Node predicate = substituteNode(t.getPredicate(), binding) ;
+        Node object = substituteNode(t.getObject(), binding) ;
+        
+        if ( subject == t.getSubject() &&
+             predicate == t.getPredicate() &&
+             object == t.getObject() )
+             return t ;
+             
+        return new Triple(subject, predicate, object) ;
+    }
+    
+    static Node substituteNode(Node n, ResultBinding binding)
+    {
+        if ( ! n.isVariable() )
+            return n ;
+            
+        String name = ((Node_Variable)n).getName() ;
+        Object obj = binding.get(name) ;
+        if ( obj == null )
+            return n ;
+            
+        if ( obj instanceof RDFNode )
+            return ((RDFNode)obj).asNode() ;
+            
+        if ( obj instanceof Value )
+            return convertValueToNode((Value)obj) ;
+
+        System.err.println("Unknown object in binding: ignored: "+obj.getClass().getName()) ;        
+        return n ;
     }
 }
 

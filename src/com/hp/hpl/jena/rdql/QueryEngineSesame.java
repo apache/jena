@@ -27,7 +27,7 @@ import EDU.oswego.cs.dl.util.concurrent.*;
  *  and presents the Jena interface to queries.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: QueryEngineSesame.java,v 1.4 2003-03-10 09:49:07 andy_seaborne Exp $
+ * @version 	$Id: QueryEngineSesame.java,v 1.5 2003-03-19 17:16:54 andy_seaborne Exp $
  */
 
 
@@ -224,7 +224,6 @@ public class QueryEngineSesame implements QueryExecution
 			{
 				TriplePattern tp = (TriplePattern)iter.next() ;
 				Statement s = tp.asStatement(currentRow) ;
-				QSys.assertTrue(s!=null, "QueryEngineSesame.QueryResultsBuilder", "endTuple", "Triple Pattern failed to grouind") ;
 				currentRow.addTriple(s) ;
 			}
 

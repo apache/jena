@@ -7,24 +7,14 @@ package com.hp.hpl.jena.rdql;
 
 import com.hp.hpl.jena.util.Log ;
 
-// Only public so the parser and other query subsystems cab use it.
 /** Class to define the operating environment for RDQL.
  *  Provides some utility operations like assert and handling unexpected exceptions
  * @author		Andy Seaborne
- * @version 	$Id: QSys.java,v 1.2 2003-02-20 16:45:47 andy_seaborne Exp $
+ * @version 	$Id: QSys.java,v 1.3 2003-03-19 17:16:53 andy_seaborne Exp $
  */
 
 public class QSys
 {
-    public static void assertTrue(boolean condition, String msg, String className, String methodName)
-    {
-        if ( ! condition )
-        {
-            Log.severe(msg, className, methodName);
-            throw new RDQL_InternalErrorException(className+"."+methodName+": "+msg) ;
-        }
-    }
-
     public static void unhandledException(Throwable t, String className, String methodName)
     {
         String tmp = Thread.currentThread().getName() ;

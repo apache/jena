@@ -13,6 +13,7 @@ import com.hp.hpl.jena.util.* ;
 import com.hp.hpl.jena.rdql.* ;
 import com.hp.hpl.jena.rdql.test.* ;
 import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.vocabulary.ResultSet ;
 
 //import com.hp.hpl.jena.mem.ModelMem ;
 //import com.hp.hpl.jena.reasoner.* ;
@@ -40,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.6 2003-03-11 17:59:54 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.7 2003-03-19 17:21:29 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -376,9 +377,6 @@ public class rdfquery
             doBlank = true ;
         }
 
-        if ( debug )
-            query.setLogging(true);
-
         if ( dataURL == null && query.getSourceURL() == null )
         {
             System.err.println("RDQL: no data source");
@@ -440,7 +438,7 @@ public class rdfquery
             {
                 Model m = fmt.toModel() ;
                 RDFWriter rdfw = m.getWriter("N3") ; 
-                rdfw.setNsPrefix("rs", QueryResultsFormatter.resultsNamespace) ;
+                rdfw.setNsPrefix("rs", ResultSet.getURI()) ;
                 rdfw.write(m, System.out, null) ; 
             }
             else

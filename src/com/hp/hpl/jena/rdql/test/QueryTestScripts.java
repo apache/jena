@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  adding new script files.  This class need not change.
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.6 2003-03-10 09:44:50 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.7 2003-03-19 17:17:39 andy_seaborne Exp $
  */
 
 
@@ -236,7 +236,7 @@ public class QueryTestScripts extends TestSuite
                     query.loadTime = System.currentTimeMillis() - startLoadTime ;
                 }
 
-                QueryEngine qe = new QueryEngine(query) ;
+                QueryExecution qe = new QueryEngine(query) ;
                 ModelLoader.setFileBase(directory) ;
                 qe.init() ;
                 ModelLoader.setFileBase(null) ;
@@ -247,7 +247,7 @@ public class QueryTestScripts extends TestSuite
                 long totalTime = finishTime-startTime ;
 
                 // Turn into a resettable version
-                QueryResultsMem results = new QueryResultsMem(resultsActual) ;
+                QueryResultsRewindable results = new QueryResultsMem(resultsActual) ;
                 resultsActual.close() ;
                 resultsActual = null ;
                 
@@ -262,7 +262,7 @@ public class QueryTestScripts extends TestSuite
                     int n = fmt.numRows() ;
                     pw.println("Results: "+((n < 0)?"unknown (one pass format)":n+"")) ;
                     fmt.close() ;
-                    results.reset() ;
+                    results.rewind() ;
                 }
 
                 if ( printDetails && displayTime )
@@ -281,38 +281,61 @@ public class QueryTestScripts extends TestSuite
                 if ( testingResults )
                 {
                     String rf = convertFilename(resultsFile,directory) ;
-                    QueryResultsMem qr1 = results ;
+                    QueryResultsMem qr1 = new QueryResultsMem(results) ;
                     QueryResultsMem qr2 = new QueryResultsMem(rf) ;
                     if ( ! QueryResultsMem.equivalent(qr1, qr2) )
                     {
                         pw.println() ;
+                        pw.println("=======================================") ;
                         pw.println("Failure: "+queryFile) ;
-                        pw.println("Got:") ;
-                        
+                        pw.println("Got: ----------------------------------") ;
+                        qr1.rewind() ;   
                         qr1.list(pw) ;
+                        qr1.rewind() ;
+                        pw.println("---------------------------------------") ;
+                        qr1.toModel().write(pw, "N3") ;
                         pw.flush() ;
-                        pw.println("Expected:") ;
+                        qr1.close() ;
+                        
+                        pw.println("Expected: -----------------------------") ;
+                        qr2.rewind() ;
                         qr2.list(pw) ;
+                        qr2.rewind() ;
+                        pw.println("---------------------------------------") ;
+                        qr2.toModel().write(pw, "N3") ;
+                        qr2.close() ;
                         pw.flush() ;
-                        Assert.assertTrue(queryFile,false) ;
+                        Assert.assertTrue("Rsults do not match: "+queryFile,false) ;
                     }
                     //else
                     //  System.err.println("Test: "+queryFile+" => "+resultsFile+" passed") ;
+                    qr1.close() ;
+                    qr2.close() ;
                 }
+                results.close() ;
             }
             catch (QueryException qEx) {
                 pw.flush() ;
+                Assert.fail(queryFile) ;
                 // Test failure.
                 throw qEx ;
             }
             catch (IOException ioEx){ pw.println("IOException: "+ioEx) ; ioEx.printStackTrace(pw) ; pw.flush() ; }
             //catch (RDFException rdfEx) { pw.println("RDFException: "+rdfEx) ; rdfEx.printStackTrace(pw) ; pw.flush() ; }
-            catch (Exception ex)    { pw.println("Exception: "+ex) ; ex.printStackTrace(pw) ; pw.flush() ; }
+            catch (Exception ex)
+            {
+                pw.println("Exception: "+ex) ;
+                ex.printStackTrace(pw) ;
+                pw.flush() ;
+                Assert.assertTrue("Exception: "+queryFile,false) ;
+            }
             finally
             {
                 if ( model == null && query.getSource() != null )
                     query.getSource().close() ;
                 pw.flush() ;
+                
+
             }
         }
     }
@@ -350,7 +373,7 @@ public class QueryTestScripts extends TestSuite
         String queryString = "SELECT * WHERE (?x, ?y, ?z)" ;
         Query query = new Query(queryString) ;
         query.setSource(new ModelMem());
-        QueryEngine qe = new QueryEngine(query) ;
+        QueryExecution qe = new QueryEngine(query) ;
         QueryResults qr = qe.exec() ;
         QueryResultsFormatter fmt = new QueryResultsFormatter(qr) ;
         fmt.consume();

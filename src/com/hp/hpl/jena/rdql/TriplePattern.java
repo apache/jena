@@ -3,22 +3,20 @@
  * [See end of file]
  */
 
-/**
+/** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.7 2003-03-10 09:49:07 andy_seaborne Exp $
+ * @version  $Id: TriplePattern.java,v 1.8 2003-03-19 17:16:51 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
 
 import java.util.* ;
 
-import org.apache.log4j.Logger ;
-
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
 import com.hp.hpl.jena.rdf.model.RDFException;
 
-public class TriplePattern
+/*public*/ class TriplePattern
 {
     static final boolean DEBUG = false ;
     
@@ -33,7 +31,7 @@ public class TriplePattern
     Slot objectSlot ;
     RDFNode fixed_o ;
     
-    QueryEngine queryEngine = null ;
+    QueryEngineExt queryEngine = null ;
 
     public TriplePattern(Slot s, Slot p, Slot o)
     {
@@ -197,18 +195,22 @@ public class TriplePattern
 
             else if ( objectSlot.isResource() )
                 fixed_o = objectSlot.getResource() ;
-
+                
+            else if ( objectSlot.isLiteral() )
+                fixed_o = objectSlot.getLiteral() ;
+                
             // --------
 
             initialized = true ;
         } catch (RDFException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern", "init") ; }
     }
 
+
     // Returns an Iterator of ResultBindings
     // This was written before the substitute operation and has not been
     // converted because it works as it is.
 
-    public Iterator match(Logger log, QueryEngine qe, Model m, ResultBinding env)
+    public Iterator match(QueryEngineExt qe, Model m, ResultBinding env)
     {
         queryEngine = qe ;
         
@@ -266,9 +268,7 @@ public class TriplePattern
                         // Also: may be a URI that can't be turned into a property.
                         if ( p == null )
                         {
-                            if ( log != null )
-                                //throw new EvalFailureException("TriplePattern: Attempt to match an anonymous resource with a property") ;
-                                log.warn("TriplePattern: Attempt to match an anonymous resource with a property") ;
+                            Query.logger.warn("TriplePattern: Attempt to match an anonymous resource with a property") ;
                             return null ;
                         }
                     }
@@ -336,7 +336,7 @@ public class TriplePattern
             } 
             // ----
                 
-            return new BindingIterator(log, m, s, p, o, env) ;
+            return new BindingIterator(m, s, p, o, env) ;
         }
         catch (EvalFailureException evalEx) { return null ; }
         catch (RDFException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern", "match") ; }
@@ -349,14 +349,12 @@ public class TriplePattern
         Resource s ;
         Property p ;
         RDFNode o ;
-        Logger log ;
         ResultBinding currentBinding ;
         Object current ;
         boolean finished = false ;
 
-        BindingIterator(Logger _log, Model m, Resource _s, Property _p, RDFNode _o, ResultBinding binding)
+        BindingIterator(Model m, Resource _s, Property _p, RDFNode _o, ResultBinding binding)
         {
-            log = _log ;
             s = _s ;
             p = _p ;
             o = _o ;
@@ -402,8 +400,7 @@ public class TriplePattern
             {
                 current = process() ;
                 String tmp = (current!=null)?((ResultBinding)current).toString():"<<null>>" ;
-                if ( log != null )
-                    log.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
+                Query.logger.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
             }
                 
             return current != null ;
@@ -418,8 +415,7 @@ public class TriplePattern
             if ( hasNext() )
             {
                 String tmp = (current!=null)?((ResultBinding)current).toString():"<<null>>" ;
-                if ( log != null )
-                    log.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
+                Query.logger.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
                 Object x = current ;
                 current = null ;
                 return x ;
@@ -444,8 +440,7 @@ public class TriplePattern
                         sIter.close() ;
                         sIter = null ;
                         String tmp = Thread.currentThread().getName() ;
-                        if ( log != null )
-                            log.debug("("+tmp+") sIter close") ;
+                        Query.logger.debug("("+tmp+") sIter close") ;
                         return null ;
                     }
 
@@ -476,8 +471,7 @@ public class TriplePattern
                             if ( ! predicate.equals(subject) )
                             {
                                 // Different values - skip this entire binding.
-                                if ( log != null )
-                                    log.debug("Triple binding clash: subject/predicate") ;
+                                Query.logger.debug("Triple binding clash: subject/predicate") ;
                                 continue ;
                             }
                             // Same variable, already due to be bound
@@ -493,8 +487,7 @@ public class TriplePattern
                         {
                             if ( ! ( ( object instanceof Resource ) && ((Resource)object).equals(subject) ) )
                             {
-                                if ( log != null )
-                                    log.debug("Triple binding clash: subject/object") ;
+                                Query.logger.debug("Triple binding clash: subject/object") ;
                                 // Different types or same type, different values - skip entire binding
                                 continue ;
                             }
@@ -507,8 +500,7 @@ public class TriplePattern
                             // Note: object is a Resource - not a property - here.
                             if ( ! ( ( object instanceof Resource ) && ((Resource)object).equals(predicate)) )
                             {
-                                if ( log != null )
-                                    log.debug("Triple binding clash: predicate/object") ;
+                                Query.logger.debug("Triple binding clash: predicate/object") ;
                                 continue ;
                             }
                             oName = null ;
@@ -518,12 +510,26 @@ public class TriplePattern
                         // Or same variable, same value.
                     }
 
+                    if ( DEBUG )
+                    {
+                        System.err.println("Binding:") ;
+                        if ( sName == null && pName == null && oName == null )
+                            System.err.println("    No bindings") ;
+                        
+                        if ( sName != null )
+                            System.err.println("    "+sName+" <- "+subject) ;
+                        if ( pName != null )
+                            System.err.println("    "+pName+" <- "+predicate) ;
+                        if ( oName != null )
+                            System.err.println("    "+oName+" <- "+object) ;
+                    }
+
 
                     if ( sName == null && pName == null && oName == null )
                         return currentBinding ;
 
                     // If we get here, we can do the bindings.
-                    ResultBinding binding = new ResultBinding() ;
+                    ResultBinding binding = new ResultBinding(currentBinding) ;
 
                     if ( sName != null )
                         binding.add(sName, subject) ;
@@ -536,8 +542,7 @@ public class TriplePattern
 
                     if ( binding.size() == 0 )
                         throw new RDQL_InternalErrorException("TriplePattern.BindingIterator: Environemnt is still empty") ;
-                    
-                    binding.setParent(currentBinding) ;
+                        
                     binding.addTriple(stmt) ;
                     
                     return binding ;

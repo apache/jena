@@ -9,8 +9,7 @@ import java.io.* ;
 import java.util.* ;
 import org.apache.log4j.Logger;
 
-
-import com.hp.hpl.jena.rdql.parser.*;
+import com.hp.hpl.jena.graph.*;
 
 import com.hp.hpl.jena.rdf.model.* ;
 
@@ -26,7 +25,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.4 2003-02-21 18:20:38 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.5 2003-03-19 17:16:55 andy_seaborne Exp $
  */
 
 public class Query
@@ -35,6 +34,8 @@ public class Query
     
     // The names of variables wanted by the caller.
     protected List resultVars = new ArrayList() ;         // Type in list: String name
+    // List of all variabes used in the triple patterns 
+    protected List patternVars = new ArrayList() ;        // Type in list: String name
     protected List triplePatterns = new ArrayList() ;     // Type in list: TriplePatterns
     protected List constraints = new ArrayList() ;        // Type in list: Constraints
     
@@ -47,12 +48,6 @@ public class Query
         defaultPrefixMap.put("xsd" , "http://www.w3.org/2001/XMLSchema#") ; 
         defaultPrefixMap.put("owl" , "http://www.w3.org/2002/07/owl#") ; 
     }
-
-    // Turn logging on and off.
-    // This is in addition to the log levels.
-    boolean loggingOn = false ;
-
-    Logger log = logger ;
 
     // If no model is provided explicitly, the query engine will load
     // a model from the URL.
@@ -76,7 +71,7 @@ public class Query
     public Query(String s)
     {
         this() ;
-        Q_Query query = null ;
+        com.hp.hpl.jena.rdql.parser.Q_Query query = null ;
         try {
             long initTime = 0;
             parseTime = 0;
@@ -86,20 +81,19 @@ public class Query
             ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes()) ;
 
             startTime = System.currentTimeMillis();
-            RDQLParser parser = new RDQLParser(in) ;
+            com.hp.hpl.jena.rdql.parser.RDQLParser parser = 
+                new com.hp.hpl.jena.rdql.parser.RDQLParser(in) ;
             parser.CompilationUnit();
             parseTime = System.currentTimeMillis() - startTime;
 
-            if ( loggingOn )
-                log.debug("Query parse time: "+parseTime) ;
+            logger.debug("Query parse time: "+parseTime) ;
 
-            query = (Q_Query)parser.top() ;
+            query = (com.hp.hpl.jena.rdql.parser.Q_Query)parser.top() ;
             // Post-parsing work on the query tree
             query.phase2(this) ;
 
             buildTime = System.currentTimeMillis() - parseTime - startTime ;
-            if ( loggingOn )
-                log.debug("Query parse and build time: "+buildTime) ;
+            logger.debug("Query parse and build time: "+buildTime) ;
         }
         catch (QueryException qEx) { throw qEx ; }
         catch (Exception e)
@@ -125,7 +119,7 @@ public class Query
     public static QueryResults exec(String queryString)
     {
         Query q = new Query(queryString) ;
-        QueryEngine qe = new QueryEngine(q) ;
+        QueryExecution qe = new QueryEngine(q) ;
         qe.init() ;
         return qe.exec() ;
     }
@@ -141,7 +135,7 @@ public class Query
         Query q = new Query(queryString) ;
         if ( model != null )
             q.setSource(model);
-        QueryEngine qe = new QueryEngine(q) ;
+        QueryExecution qe = new QueryEngine(q) ;
         qe.init() ;
         return qe.exec() ;
     }
@@ -158,7 +152,7 @@ public class Query
     {
         Query q = new Query(queryString) ;
         q.setSourceURL(dataURL) ;
-        QueryEngine qe = new QueryEngine(q) ;
+        QueryExecution qe = new QueryEngine(q) ;
         qe.init() ;
         return qe.exec() ;
     }
@@ -189,27 +183,30 @@ public class Query
     }
 
     /** Programmatic API operation */
+    public List getBoundVars() { return patternVars ; }
+    
+    /** Programmatic API operation */
+    public void addBoundVar(String varName)
+    {
+        if ( !patternVars.contains(varName) )
+            patternVars.add(varName);
+    }
+
+    /** Programmatic API operation */
     public void addConstraint(Constraint c)         { constraints.add(c) ; }
 
     /** Programmatic API operation */
-    public void addTriplePattern(TriplePattern tp)  { triplePatterns.add(tp) ; }
+    public void addTriplePattern(Triple t)  { triplePatterns.add(t) ; }
+    public void addTriplePattern(com.hp.hpl.jena.graph.Node s,
+                                 com.hp.hpl.jena.graph.Node p,
+                                 com.hp.hpl.jena.graph.Node o)
+    {
+        Triple t = new Triple(s, p, o) ;
+        triplePatterns.add(t) ;
+    }
 
     /** Programmatic API operation */
     public List getTriplePatterns()  { return triplePatterns ; }
-
-    /** Set the log destination.  By default the log does to the Jena system log
-     */
-     public void setLog(Logger newLog) { log = newLog ; }
-
-     /** Get the current log */
-     public Logger getLog() { return log ; }
-
-     /** Switch for logging.  This is in addition to log levels.  Default is off */
-     public void setLogging(boolean loggingSwitch) { loggingOn = loggingSwitch ; }
-
-     /** See if we are logging */
-     public boolean getLogging()                      { return loggingOn  ; }
-
 
 	/** Set a prefix for this query */
 	public void setPrefix(String prefix, String expansion)
@@ -236,15 +233,11 @@ public class Query
     // Reverse of parsing : should produce a string that parses to the same query
     public String toString()
     {
-        StringWriter stringWriter = new StringWriter(512) ;
-        PrintWriter pw = new PrintWriter(stringWriter) ;
+        StringBuffer sb = new StringBuffer() ; 
 
-        pw.print("SELECT  ") ;
+        sb.append("SELECT  ") ;
         if ( resultVars.size() == 0 )
-        {
-            pw.print("*") ;
-            pw.println() ;
-        }
+            sb.append("*") ;
         else
         {
             boolean first = true ;
@@ -252,78 +245,113 @@ public class Query
             {
                 String var = (String)iter.next() ;
                 if ( ! first )
-                    pw.print(", ") ;
-                pw.print("?") ;
-                pw.print(var) ;
+                    sb.append(", ") ;
+                sb.append("?") ;
+                sb.append(var) ;
                 first = false ;
             }
-            pw.println() ;
         }
+        sb.append("\n") ;
 
         // Source
 
         // Triple patterns
         if ( triplePatterns.size() > 0 )
         {
-            pw.print("WHERE   ") ;
+            sb.append("WHERE   ") ;
             boolean first = true ;
             for ( Iterator iter = triplePatterns.iterator() ; iter.hasNext() ; )
             {
-                TriplePattern tp = (TriplePattern)iter.next() ;
+                Triple tp = (Triple)iter.next() ;
                 if ( ! first )
                 {
-                    pw.print(", ") ;
-                    pw.println() ;
-                    pw.print("        ") ;
+                    sb.append(", \n") ;
+                    sb.append("        ") ;
+                   
                 }
-                pw.print(tp.toString()) ;
+                sb.append(triplePatternToString(tp)) ;
                 first = false ;
             }
-            pw.println() ;
+            sb.append("\n") ;
         }
 
         // Constraints
         if ( constraints.size() > 0 )
         {
-            /* Old code - print all on one line, separated by commas
-            boolean first = true ;
             for ( Iterator iter = constraints.iterator() ; iter.hasNext() ; )
             {
                 Constraint c = (Constraint)iter.next() ;
-                if ( ! first )
-                    pw.print(", ") ;
-                pw.print(c.toString()) ;
-                first = false ;
-            }
-            pw.println() ;
-            */
-            for ( Iterator iter = constraints.iterator() ; iter.hasNext() ; )
-            {
-                Constraint c = (Constraint)iter.next() ;
-                pw.print("AND     ") ;
-                pw.println(c.toString()) ;
+                sb.append("AND     ") ;
+                sb.append(c.toString()) ;
+                sb.append("\n") ;
             }
         }
 
 		if ( prefixMap.size() > 0 )
 		{
-			pw.println("USING") ;
+			sb.append("USING\n") ;
             boolean first = true ;
 			for ( Iterator iter = prefixMap.keySet().iterator() ; iter.hasNext() ; )
 			{
                 if ( ! first )
-                    pw.println(" ,") ;
+                    sb.append(" ,\n") ;
 				String k = (String)iter.next() ;
 				String v = (String)prefixMap.get(k) ;
-				pw.print("    "+k+" FOR <"+v+">") ;
+				sb.append("    "+k+" FOR <"+v+">") ;
                 first = false ;
 			}
-            pw.println() ;
+            sb.append("\n") ;
 		}
         
-        pw.flush() ;
-        pw.close() ;
-        return stringWriter.getBuffer().toString() ;
+        return sb.toString() ;
+    }
+    
+    static private String triplePatternToString(Triple tp)
+    {
+        StringBuffer sb = new StringBuffer() ;
+        sb.append("( ") ;
+        sb.append(slotToString(tp.getSubject())) ;
+        sb.append(", ") ;
+        sb.append(slotToString(tp.getPredicate())) ;
+        sb.append(", ") ;
+        sb.append(slotToString(tp.getObject())) ;
+        sb.append(" )") ;
+        return sb.toString() ;
+    }
+    
+    static private String slotToString(Node n)
+    {
+        if ( n instanceof Node_Variable)
+            return n.toString() ;
+        if ( n instanceof Node_URI)
+            return "<"+n+">" ;
+        if ( n instanceof Node_Literal)
+        {
+            LiteralLabel lit = ((Node_Literal)n).getLiteral() ;
+            StringBuffer sb = new StringBuffer() ;
+            sb.append('"') ;
+            sb.append(lit.toString()) ;
+            sb.append('"') ;
+            if ( lit.language() != null && lit.language().length() > 0 )
+            {
+                sb.append("@") ;
+                sb.append(lit.language()) ;
+            }
+            if ( lit.getDatatypeURI() != null )
+            {
+                sb.append("^^<") ;
+                sb.append(lit.getDatatypeURI()) ;
+                sb.append(">") ;
+            }
+                            
+            return sb.toString() ;
+        }
+        //if ( n instanceof Node_Blank)
+        //    return "_:"+n.toString() ;
+        if ( n instanceof Node_ANY )
+            // Shouldn't happen!
+            return "any:"+n ;
+        return "unknown:"+n ;
     }
 }
 

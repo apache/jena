@@ -1,7 +1,3 @@
-/*
- * $Id: QueryResults.java,v 1.3 2003-02-20 16:45:49 andy_seaborne Exp $
- */
-
 
 package com.hp.hpl.jena.rdql;
 
@@ -17,7 +13,7 @@ import java.util.*;
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResults.java,v 1.3 2003-02-20 16:45:49 andy_seaborne Exp $
+ * @version  $Id: QueryResults.java,v 1.4 2003-03-19 17:16:55 andy_seaborne Exp $
  */
 
 public interface QueryResults extends java.util.Iterator

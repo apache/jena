@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.5 2003-03-10 09:46:01 andy_seaborne Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.6 2003-03-19 17:16:53 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter
@@ -135,20 +135,24 @@ public class QueryResultsFormatter
                 Resource thisBinding = model.createResource() ;
                 String rVar = (String)iter.next() ;
                 Object tmp = env.get(rVar) ;
-                if ( ! (tmp instanceof RDFNode) )
+                RDFNode n = null ;
+                if ( tmp == null )
+                    //Unbound!
+                    n = ResultSet.undefined ;
+                else if ( ! (tmp instanceof RDFNode) )
                 {
                     System.err.println("Class wrong: "+tmp.getClass().getName()) ;
                     continue ;
                 }
-                
-                RDFNode n = (RDFNode)env.get(rVar) ;
+                else
+                    n = (RDFNode)env.get(rVar) ;
+                    
                 thisBinding.addProperty(ResultSet.variable, rVar) ;
                 thisBinding.addProperty(ResultSet.value, n) ;
                 thisSolution.addProperty(ResultSet.binding, thisBinding) ;
             }
         }
         results.addProperty(ResultSet.size, count) ;
-        queryResults.close() ;
         return results ;
     }
 

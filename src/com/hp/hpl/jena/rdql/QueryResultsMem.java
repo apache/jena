@@ -15,13 +15,13 @@ import com.hp.hpl.jena.util.*;
 
 /**
  * @author      Andy Seaborne
- * @version     $Id: QueryResultsMem.java,v 1.4 2003-03-10 09:45:28 andy_seaborne Exp $
+ * @version     $Id: QueryResultsMem.java,v 1.5 2003-03-19 17:16:53 andy_seaborne Exp $
  */
 
 
-public class QueryResultsMem implements QueryResults
+public class QueryResultsMem implements QueryResultsRewindable
 {
-    static boolean DEBUG = false;
+    static final boolean DEBUG = false;
     // The result set in memory
     List rows = new ArrayList();
     List varNames = null ;
@@ -138,7 +138,16 @@ public class QueryResultsMem implements QueryResults
      *  Should be called on all QueryResults objects
      */
     
-    public void close() { return ; }
+    public void close() 
+    {
+        // Free early - may be large
+        rows = null ; 
+        iterator = null ;
+        varNames = null ;
+        return ;
+    }
+
+    public void rewind( ) { reset() ; }
 
     public void reset() { iterator = rows.iterator() ; rowNumber = 0 ; }
 
@@ -232,13 +241,37 @@ public class QueryResultsMem implements QueryResults
     {
         QueryResultsFormatter fmt1 = new QueryResultsFormatter(irs1) ;
         Model model1 = fmt1.toModel() ;
-        fmt1.close() ;
 
         QueryResultsFormatter fmt2 = new QueryResultsFormatter(irs2) ;
         Model model2 = fmt2.toModel() ;
-        fmt2.close() ;
         
         return model1.isIsomorphicWith(model2) ;
+    }
+    
+    /** Encode the result set as RDF.
+     * @return Model       Model contains the results
+     */
+
+    
+    public Model toModel()
+    {
+        Model m = ModelFactory.createDefaultModel() ;
+        asRDF(m) ;
+        return m ;
+    }
+    
+    /** Encode the result set as RDF in the model provided.
+      *  
+      * @param model     The place where to put the RDF.
+      * @return Resource The resource for the result set.
+      */ 
+
+    public Resource asRDF(Model model)
+    {
+        QueryResultsFormatter fmt = new QueryResultsFormatter(this) ;
+        Resource r = fmt.asRDF(model) ;
+        fmt.close() ;
+        return r ;
     }
     
     /** Print out the result set in dump format.  Easeier to read than computed N3

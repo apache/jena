@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 
 /** Test the Jena-Sesame RDQL query engine.
  * @author		Andy Seaborne
- * @version 	$Id: SesameQueryMain.java,v 1.2 2003-02-20 16:46:31 andy_seaborne Exp $
+ * @version 	$Id: SesameQueryMain.java,v 1.3 2003-03-19 17:17:40 andy_seaborne Exp $
  */
 public class SesameQueryMain
 {
@@ -36,12 +36,12 @@ public class SesameQueryMain
 			pw.flush() ;
 			
 			// Now check that producing triples works.
-			System.out.println() ;
-			for ( Iterator iter = q.getTriplePatterns().iterator() ; iter.hasNext() ; )
-			{
-				TriplePattern tp =(TriplePattern)iter.next() ;
-				System.out.println(tp) ;
-			}
+//			System.out.println() ;
+//			for ( Iterator iter = q.getTriplePatterns().iterator() ; iter.hasNext() ; )
+//			{
+//				TriplePattern tp =(TriplePattern)iter.next() ;
+//				System.out.println(tp) ;
+//			}
 			
 			System.out.println() ;
 			for ( Iterator iter = qrm ; iter.hasNext() ; )

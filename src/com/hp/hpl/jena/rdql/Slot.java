@@ -3,11 +3,10 @@
  * [See end of file]
  */
 
-/** Internal class - public so the external code that understands the internals
- * of RDQL can access it.
+/** Internal class - used by the old, external-to-model query system.
  * 
  * @author   Andy Seaborne
- * @version  $Id: Slot.java,v 1.3 2003-02-20 16:45:51 andy_seaborne Exp $
+ * @version  $Id: Slot.java,v 1.4 2003-03-19 17:16:54 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -15,7 +14,7 @@ package com.hp.hpl.jena.rdql;
 // A slot holds one of a value (A typed RDF value), a resource, a property, or a variable.
 import com.hp.hpl.jena.rdf.model.* ;
 
-public class Slot
+class Slot
 {
     Value value ;
     Var variable ;
@@ -77,15 +76,17 @@ public class Slot
         literal = l ;
     }
 
-    public boolean isValue() { return value != null ; }
-    public boolean isVar()   { return variable != null ; }
+    public boolean isValue()    { return value != null ; }
+    public boolean isVar()      { return variable != null ; }
     public boolean isResource() { return resource != null ; }
     public boolean isProperty() { return property != null ; }
+    public boolean isLiteral () { return literal  != null ; }
 
     public Value getValue() { return value ; }
     public Var getVar() { return variable ; }
     public Resource getResource() { return resource ; }
     public Property getProperty() { return property ; }
+    public Literal  getLiteral() { return literal ; }
 
     public String getVarName()
     {
