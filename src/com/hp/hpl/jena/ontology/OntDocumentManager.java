@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 15:19:32 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-05-14 14:58:29 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -29,11 +29,10 @@ import java.util.*;
 import org.apache.log4j.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
+import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.ontology.impl.OntologyGraph;
+
+
 
 /**
  * <p>
@@ -44,7 +43,7 @@ import com.hp.hpl.jena.ontology.impl.OntologyGraph;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.10 2003-05-08 15:19:32 chris-dollin Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.11 2003-05-14 14:58:29 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -108,7 +107,7 @@ public class OntDocumentManager
     protected Map m_uriMap = new HashMap();
 
     /** Mapping of public URI's to loaded models */
-    protected Map m_graphMap = new HashMap();
+    protected Map m_modelMap = new HashMap();
 
     /** Mapping of public public URI's to language resources */
     protected Map m_languageMap = new HashMap();
@@ -117,13 +116,10 @@ public class OntDocumentManager
     private Logger m_log = Logger.getLogger( getClass() );
 
     /** Flag: cache models as they are loaded */
-    protected boolean m_cacheGraphs = true;
+    protected boolean m_cacheModels = true;
 
     /** Flag: process the imports closure */
     protected boolean m_processImports = true;
-
-    /** The factory we're using to create graphs in the union */
-    protected GraphMaker m_graphFactory = null;
 
 
 
@@ -226,7 +222,7 @@ public class OntDocumentManager
      * @param uri The ontology document to lookup
      * @return The resolvable location of the alternative copy, if known, or <code>uri</code> otherwise
      */
-    public String getCacheURL( String uri ) {
+    public String doAltURLMapping( String uri ) {
         String alt = (String) m_altMap.get( uri );
         return (alt == null) ? uri : alt;
     }
@@ -278,11 +274,10 @@ public class OntDocumentManager
      * </p>
      *
      * @param uri The ontology document to lookup
-     * @return The ontology model for the document, or null if the model is not
-     *      known.
+     * @return The model for the document, or null if the model is not known.
      */
-    public Graph getGraph( String uri ) {
-        return (Graph) m_graphMap.get( uri );
+    public Model getModel( String uri ) {
+        return (Model) m_modelMap.get( uri );
     }
 
 
@@ -318,16 +313,16 @@ public class OntDocumentManager
 
     /**
      * <p>
-     * Add an entry that <code>graph</code> is the appropriate graph to use
+     * Add an entry that <code>model</code> is the appropriate model to use
      * for the given ontology document
      * </p>
      *
      * @param docURI The public URI of the ontology document
-     * @param graph A graph containing the triples from the document
+     * @param model A model containing the triples from the document
      */
-    public void addGraph( String docURI, Graph graph ) {
-        if (m_cacheGraphs) {
-            m_graphMap.put( docURI, graph );
+    public void addModel( String docURI, Model model ) {
+        if (m_cacheModels) {
+            m_modelMap.put( docURI, model );
         }
     }
 
@@ -357,7 +352,7 @@ public class OntDocumentManager
         m_altMap.remove( docURI );
         m_uriMap.remove( docURI );
         m_prefixMap.remove( docURI );
-        m_graphMap.remove( docURI );
+        m_modelMap.remove( docURI );
         m_languageMap.remove( docURI );
     }
 
@@ -372,11 +367,23 @@ public class OntDocumentManager
      * </p>
      *
      * @param uri Identifies the model to load.
-     * @param lang URI denoting the language of the ontology to be loaded
+     * @param spec Specifies the structure of the ontology model to create
      * @return An ontology model containing the statements from the ontology document.
      */
-    public Model getOntology( String uri, String lang ) {
-        OntModel m = ModelFactory.createOntologyModel( lang, null, this );
+    public Model getOntology( String uri, OntModelSpec spec ) {
+        // cached already?
+        if (m_modelMap.containsKey( uri )) {
+            return (Model) m_modelMap.get( uri );
+        } 
+        
+        // ensure consistency of document managers (to allow access to cached documents)
+        OntModelSpec _spec = spec;
+        if (_spec.getDocumentManager() != this) {
+            _spec = new OntModelSpec( spec );
+            _spec.setDocumentManager( this );
+        } 
+        
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
         m.read( uri );
 
         return m;
@@ -385,40 +392,8 @@ public class OntDocumentManager
 
     /**
      * <p>
-     * Answer the graph factory this document manager is using to build composite
-     * graphs.  If no graph factory has been set, return a default factory that creates
-     * a new in-memory graph each time.
-     * </p>
-     *
-     * @return A GraphFactory that will provide a graph for building composite graphs
-     */
-    public GraphMaker getDefaultGraphFactory() {
-        if (m_graphFactory == null) {
-            // construct the default graph factory
-            m_graphFactory = new SimpleGraphMaker();
-        }
-
-        return m_graphFactory;
-    }
-
-
-    /**
-     * <p>
-     * Set the graph factory that this document manager will use when building
-     * composite models to hold the imports closure of an ontology model.
-     * </p>
-     *
-     * @param graphFactory The new graph factory to use
-     */
-    public void setDefaultGraphFactory( GraphMaker graphFactory ) {
-        m_graphFactory = graphFactory;
-    }
-
-
-    /**
-     * <p>
      * Answer the policy flag indicating whether the imports statements of
-     * loaded ontologies will be processed to build a union of graphs.
+     * loaded ontologies will be processed to build a union of s.
      * </p>
      *
      * @return True if imported models will be included in a loaded model
@@ -430,15 +405,15 @@ public class OntDocumentManager
 
     /**
      * <p>
-     * Answer true if the graphs loaded by this document manager from a given
+     * Answer true if the models loaded by this document manager from a given
      * URI will be cached, so that they can be re-used in other compound
      * ontology models.
      * </p>
      *
-     * @return If true, a cache is mainted of loaded models from their URI's.
+     * @return If true, a cache is maintained of loaded models from their URI's.
      */
-    public boolean getCacheGraphs() {
-        return m_cacheGraphs;
+    public boolean getCacheModels() {
+        return m_cacheModels;
     }
 
 
@@ -461,20 +436,20 @@ public class OntDocumentManager
      * </p>
      *
      * @param cacheModels If true, models will be cached by URI
-     * @see #getCacheGraphs()
+     * @see #getCacheModels()
      */
-    public void setCacheGraphs( boolean cacheGraphs ) {
-        m_cacheGraphs = cacheGraphs;
+    public void setCacheModels( boolean cacheModels ) {
+        m_cacheModels = cacheModels;
     }
 
 
     /**
      * <p>
-     * Remove all entries from the graph cache
+     * Remove all entries from the model cache
      * </p>
      */
     public void clearCache() {
-        m_graphMap.clear();
+        m_modelMap.clear();
     }
 
 
@@ -484,32 +459,26 @@ public class OntDocumentManager
      * into the model any imported documents.  Imports statements are recognised according
      * to the model's language profile.  An occurs check allows cycles of importing
      * safely.  This method will do nothing if the {@linkplain #getProcessImports policy}
-     * for this manager is not to process imports.  If the {@linkplain #getCacheGraphs cache policy}
+     * for this manager is not to process imports.  If the {@linkplain #getCacheModels cache policy}
      * for this doc manager allows, models will be cached by URI and re-used where possible.
      * </p>
      *
      * @param model An ontology model whose imports are to be loaded.
-     * @param readState A state-vector containing the key elements of the state
-     *          of the read operation so far
      */
-    public void loadImports( OntModel model, OntReadState readState ) {
+    public void loadImports( OntModel model ) {
         if (m_processImports) {
-            // first time through, we initialise the queue of imports to process
-            if (readState.getQueue() == null) {
-                readState.setQueue( model.listImportedOntologyURIs() );
-            }
-            else {
-                // add the imports from this model to the existing queue
-                readState.getQueue().addAll( model.listImportedOntologyURIs() );
-            }
+            List readQueue = new ArrayList();
+            
+            // add the imported statements from the given model to the processing queue
+            queueImports( model, readQueue, model.getProfile() );
 
-            while (!readState.getQueue().isEmpty()) {
+            while (!readQueue.isEmpty()) {
                 // we process the import statements as a FIFO queue
-                String importURI = (String) readState.getQueue().remove( 0 );
+                String importURI = (String) readQueue.remove( 0 );
 
                 if (!model.hasLoadedImport( importURI )) {
                     // this file has not been processed yet
-                    loadImport( model, importURI, readState );
+                    loadImport( model, importURI, readQueue );
                 }
             }
         }
@@ -519,6 +488,31 @@ public class OntDocumentManager
     // Internal implementation methods
     //////////////////////////////////
 
+    /**
+     * <p>Add the ontologies imported by the given model to the end of the queue.</p>
+     */
+    protected void queueImports( Model model, List readQueue, Profile profile ) {
+        if (model instanceof OntModel) {
+            // add the imported ontologies to the queue
+            readQueue.addAll( ((OntModel) model).listImportedOntologyURIs() );
+        }
+        else {
+            // we have to do the query manually
+            StmtIterator i = model.listStatements( null, profile.IMPORTS(), (RDFNode) null );
+            
+            while (i.hasNext()) {
+                // read the next import statement
+                Resource imp = i.nextStatement().getResource();
+                
+                // add to the queue
+                readQueue.add( imp.getURI() );                 
+            }
+            
+            i.close();
+        }
+    } 
+        
+        
     /**
      * <p>
      * Initialise the mappings for uri's and prefixes by loading metadata
@@ -533,7 +527,7 @@ public class OntDocumentManager
         if (replace) {
             m_altMap.clear();
             m_prefixMap.clear();
-            m_graphMap.clear();
+            m_modelMap.clear();
         }
 
         // search the path for metadata about locally cached models
@@ -633,43 +627,33 @@ public class OntDocumentManager
      * @param importURI The URI of the document to load
      * @param readState Cumulate read state for this operation
      */
-    protected void loadImport( OntModel model, String importURI, OntReadState readState ) {
-        // add this graph to occurs check list
+    protected void loadImport( OntModel model, String importURI, List readQueue ) {
+        // add this model to occurs check list
         model.addLoadedImport( importURI );
-        readState.getModel().addLoadedImport( importURI );
 
         // if we have a cached version get that, otherwise load from the URI but don't do the imports closure
-        Graph in = getGraph( importURI );
+        Model in = getModel( importURI );
 
         // if not cached, we must load it from source
         if (in == null) {
             // create a sub ontology model and load it from the source
             // note that we do this to ensure we recursively load imports
-            OntModel mIn = ModelFactory.createOntologyModel( model.getProfile().NAMESPACE(), null, this, model.getGraphFactory() );
-            mIn.read( importURI, readState );
-
-            in = mIn.getGraph();
+            ModelMaker maker = model.getSpecification().getModelMaker();
+            boolean loaded = maker.hasModel( importURI );
+            
+            in = maker.openModel( importURI );
+            
+            // if the graph was already in existence, we don't need to read the contents (we assume)!
+            if (!loaded) {
+                read( in, doAltURLMapping( importURI ) ); 
+            } 
         }
 
-        // we need to add this graph to the union
-        // both the top-level source document model, and the local cache model
-        if (in instanceof OntologyGraph) {
-            // 'in' is composite - so flatten all subgraphs into the main union
-            MultiUnion u = ((OntologyGraph) in).getUnion();
-
-            model.addSubGraph( u.getBaseGraph() );
-            readState.getModel().addSubGraph( u.getBaseGraph() );
-
-            for (Iterator i = u.getSubGraphs().iterator(); i.hasNext(); ) {
-                Graph sub = (Graph) i.next();
-                model.addSubGraph( sub );
-                readState.getModel().addSubGraph( sub );
-            }
-        }
-        else {
-            model.addSubGraph( in );
-            readState.getModel().addSubGraph( in );
-        }
+        // queue the imports from the input model on the end of the read queue
+        queueImports( in, readQueue, model.getProfile() );
+        
+        // add to the imports union graph, but don't do the rebind yet
+        model.addSubModel( in, false );
     }
 
 
@@ -680,24 +664,25 @@ public class OntDocumentManager
      *
      * @param model A model to read statements into
      * @param uri A URI string
-     * @param lang The language profile
-     * @param gf A graph factory
-     * @return A Model containing the statements from the document with the given URI
      */
-    protected void read( OntModel model, String uri ) {
+    protected void read( Model model, String uri ) {
         // map to the cache URI if defined
         String resolvableURI = (String) (m_uriMap.containsKey( uri ) ? m_uriMap.get( uri ) : uri);
 
-        // make a new model to contain
-        OntModel m = ModelFactory.createOntologyModel( model.getProfile().NAMESPACE(), null, this, model.getGraphFactory() );
-
         // try to load the URI
         try {
-            // TODO: should be able to specify uri as the base here
-            m.read( resolvableURI );
+            // try to use the extension of the url to guess what syntax to use (.n3 => "N3", etc)
+            String lang = ModelLoader.guessLang( uri );
+            
+            if (lang != null) {
+                model.read( resolvableURI, lang );
+            } 
+            else {
+                model.read( resolvableURI );
+            }
 
             // success: cache the model against the uri
-            addGraph( uri, m.getGraph() );
+            addModel( uri, model );
         }
         catch (RDFException e) {
             Logger.getLogger( OntDocumentManager.class )

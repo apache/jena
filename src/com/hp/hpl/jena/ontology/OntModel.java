@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-12 17:03:09 $
+ * Last modified on   $Date: 2003-05-14 14:58:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -24,8 +24,6 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphMaker;
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.util.*;
@@ -38,26 +36,28 @@ import java.util.*;
  * data, under a given ontology {@link Profile vocabulary} (such as OWL).
  * This class does not by itself compute the deductive extension of the graph
  * under the semantic rules of the language.  Instead, we wrap an underlying
- * graph with this interface that presents a convenience syntax for accessing
- * the language elements. Depending on the capability of the inference graph,
+ * model with this ontology interface, that presents a convenience syntax for accessing
+ * the language elements. Depending on the inference capability of the underlying model,
  * the OntModel will appear to contain more or less triples. For example, if
  * this class is used to wrap a plain memory or database model, only the
  * relationships asserted by the document will be reported through this
- * convenience API. Alternatively, if the OntModel wraps an inferencing graph,
+ * convenience API. Alternatively, if the OntModel wraps an OWL inferencing model,
  * the inferred triples from the extension will be reported as well. For
- * example, assume the following ontology fragment: <code><pre>     :a rdf:type
- * owl:Class .     :b rdf:type owl:Class ; rdfs:subClassOf :a .     :widget rdf:
- * type :b .
+ * example, assume the following ontology fragment: 
+ * <code><pre>
+ *      :A rdf:type owl:Class .
+ *      :B rdf:type owl:Class ; rdfs:subClassOf :A .
+ *      :widget rdf:type :B .
  * </pre></code>
- * In a non-inferencing graph, the <code>rdf:type</code> of the widget will be
- * reported as class <code>:b</code> only.  In a graph that can process the OWL
- * semantics, the widget's types will include <code>:b</code>, <code>:a</code>,
+ * In a non-inferencing model, the <code>rdf:type</code> of the widget will be
+ * reported as class <code>:B</code> only.  In a model that can process the OWL
+ * semantics, the widget's types will include <code>:B</code>, <code>:A</code>,
  * and <code>owl:Thing</code>.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.14 2003-05-12 17:03:09 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.15 2003-05-14 14:58:29 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -341,7 +341,7 @@ public interface OntModel
      * <p>
      * Answer a resource that represents an ontology description node in this model. If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
+     * the updateable sub-model of the ontology model. 
      * </p>
      * 
      * @param uri The uri for the ontology node. Conventionally, this corresponds to the base URI
@@ -354,7 +354,7 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents an Indvidual node in this model. A new anonymous resource
-     * will be created in the updateable sub-graph of the ontology model. 
+     * will be created in the updateable sub-model of the ontology model. 
      * </p>
      * 
      * @param cls Resource representing the ontology class to which the individual belongs
@@ -367,7 +367,7 @@ public interface OntModel
      * <p>
      * Answer a resource that represents an Individual node in this model. If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
+     * the updateable sub-model of the ontology model. 
      * </p>
      * 
      * @param cls Resource representing the ontology class to which the individual belongs
@@ -396,7 +396,7 @@ public interface OntModel
      * is defined to have a range of individuals, rather than datatypes. 
      * If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
+     * the updateable sub-model of the ontology model. 
      * </p>
      * 
      * @param uri The uri for the object property. May not be null.
@@ -484,7 +484,7 @@ public interface OntModel
      * is defined to have a range that is a concrete datatype, rather than an individual. 
      * If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
+     * the updateable sub-model of the ontology model. 
      * </p>
      * 
      * @param uri The uri for the datatype property. May not be null.
@@ -499,7 +499,7 @@ public interface OntModel
      * <p>
      * Answer a resource that represents an annotation property in this model. If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
+     * the updateable sub-model of the ontology model. 
      * </p>
      * 
      * @param uri The uri for the annotation property. May not be null.
@@ -524,7 +524,7 @@ public interface OntModel
      * <p>
      * Answer a resource that represents a class description node in this model. If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
+     * the updateable sub-model of the ontology model. 
      * </p>
      * 
      * @param uri The uri for the class node, or null for an anonymous class.
@@ -585,7 +585,7 @@ public interface OntModel
      * <p>
      * Answer a resource that represents a property restriction in this model. If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
+     * the updateable sub-model of the ontology model. 
      * </p>
      * 
      * @param uri The uri for the restriction node, or null for an anonymous restriction.
@@ -647,7 +647,7 @@ public interface OntModel
      * <p>
      * Answer a resource that represents a generic ontology node in this model. If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-graph of the ontology model. 
+     * the updateable sub-model of the ontology model. 
      * </p>
      * <p>
      * This is a generic method for creating any known ontology value.  The selector that determines
@@ -720,25 +720,13 @@ public interface OntModel
     
     /**
      * <p>
-     * Answer the graph factory associated with this model (used for constructing the
-     * constituent graphs of the imports closure).
+     * Answer the model maker associated with this model (used for constructing the
+     * constituent models of the imports closure).
      * </p>
      * 
-     * @return The local graph factory
+     * @return The local model maker
      */
-    public GraphMaker getGraphFactory();
-    
-    
-    /**
-     * <p>
-     * Read operation that is invoked while loading the imports closure of an
-     * ontology model.  Not normally invoked by user code.
-     * </p>
-     *
-     * @param uri The URI to load from 
-     * @param readState The read-state for this operation
-     */
-    public void read( String uri, OntReadState readState );
+    public ModelMaker getModelMaker();
     
     
     /**
@@ -747,27 +735,16 @@ public interface OntModel
      * is used to contain the triples from an imported document.
      * </p>
      * 
-     * @return A list of sub graphs for this ontology model
+     * @return A list of graphs that are contained in this ontology model
      */
     public List getSubGraphs();
     
     
     /**
      * <p>
-     * Answer the base-graph of this model. The base-graph is the graph that
-     * contains the triples read from the source document for this ontology.
-     * </p>
-     * 
-     * @return The base-graph for this ontology model
-     */
-    public Graph getBaseGraph();
-    
-    
-    /**
-     * <p>
-     * Answer the base model of this model. The base model is the model wrapping
-     * the graph that contains the triples read from the source document for this 
-     * ontology.  It is therefore the model that will be updated if statements are
+     * Answer the base model of this model. The base model is the model 
+     * that contains the triples read from the source document for this 
+     * ontology.  It is therefore this base model that will be updated if statements are
      * added to a model that is built from a union of documents (via the 
      * <code>imports</code> statements in the source document).
      * </p>
@@ -779,12 +756,27 @@ public interface OntModel
     
     /**
      * <p>
-     * Add the given graph as one of the sub-graphs of this ontology union graph
+     * Add the given model as one of the sub-models of the enclosed ontology union model.    Will 
+     * cause the associated infererence engine (if any) to update, so this may be
+     * an expensive operation in some cases. 
      * </p>
      *
-     * @param graph A sub-graph to add 
+     * @param model A sub-model to add 
+     * @see addSubModel( Model, boolean )
      */
-    public void addSubGraph( Graph graph );
+    public void addSubModel( Model model );
+    
+    
+    /**
+     * <p>
+     * Add the given model as one of the sub-models of the enclosed ontology union model.
+     * </p>
+     *
+     * @param model A sub-model to add
+     * @param rebind If true, rebind any associated inferencing engine to the new data (which
+     * may be an expensive operation) 
+     */
+    public void addSubModel( Model model, boolean rebind );
     
     
     /**
@@ -823,6 +815,13 @@ public interface OntModel
      * @return A reference to this model's document manager
      */
     public OntDocumentManager getDocumentManager();
+    
+    
+    /**
+     * <p>Answer the ontology model specification that was used to construct this model</p>
+     * @return An ont model spec instance.
+     */
+    public OntModelSpec getSpecification();
 }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.13 2003-05-13 19:18:56 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.14 2003-05-14 14:58:30 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -196,78 +196,75 @@ public class ModelFactory extends ModelFactoryBase
     
     /**
      * <p>
-     * Answer a new ontology model which will process ontologies expressed in the given language.
-     * The default (global) document manager
+     * Answer a new ontology model which will process in-memory models of
+     * ontologies expressed the default ontology language (OWL).
+     * The default document manager
      * will be used to load the ontology's included documents.
      * </p>
      * 
-     * @param languageURI A URI denoting the ontology language that will be used in this model
-     * @return An empty ontology model
-     * @see ProfileRegistry
+     * @return A new ontology model
+     * @see OntModelSpec
+     */
+    public static OntModel createOntologyModel() {
+        return createOntologyModel( OntModelSpec.OWL_MEM, null );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer a new ontology model which will process in-memory models of
+     * ontologies in the given language.
+     * The default document manager
+     * will be used to load the ontology's included documents.
+     * </p>
+     * 
+     * @param languageURI The URI specifying the ontology language we want to process
+     * @return A new ontology model
+     * @see OntModelSpec
      */
     public static OntModel createOntologyModel( String languageURI ) {
-        return createOntologyModel( languageURI, null, null, null );
+        return createOntologyModel( OntModelSpec.getDefaultSpec( languageURI ), null );
     }
     
     
     /**
      * <p>
-     * Answer a new ontology model which will process ontologies expressed in the given language,
-     * starting with the ontology data in the given model. The default (global) document manager
+     * Answer a new ontology model which will process in-memory models of
+     * ontologies expressed the default ontology language (OWL).
+     * The default document manager
      * will be used to load the ontology's included documents.
      * </p>
      * 
-     * @param languageURI A URI denoting the ontology language that will be used in this model
-     * @param model An existing model to treat as an ontology model
-     * @return An ontology model containing the statements in <code>model</code>
-     * @see ProfileRegistry
+     * @param spec An ontology model specification that defines the language and reasoner to use
+     * @param maker A model maker that is used to get the initial store for the ontology (unless
+     * the base model is given),
+     * and create addtional stores for the models in the imports closure
+     * @param base The base model, which contains the contents of the ontology to be processed
+     * @return A new ontology model
+     * @see OntModelSpec
      */
-    public static OntModel createOntologyModel( String languageURI, Model model ) {
-        return createOntologyModel( languageURI, model, null, null ); 
-    }
-    
-    
-    /**
-     * <p>
-     * Answer a new ontology model which will process ontologies expressed in the given language,
-     * starting with the ontology data in the given model.
-     * </p>
-     * 
-     * @param languageURI A URI denoting the ontology language that will be used in this model
-     * @param model An existing model to treat as an ontology model, or null
-     * @param docMgr A document manager to use to load the imports closure of the ontology (if desired)
-     * @return An ontology model containing the statements in <code>model</code>
-     * @see ProfileRegistry
-     */
-    public static OntModel createOntologyModel( String languageURI, Model model, OntDocumentManager docMgr ) {
-        return createOntologyModel( languageURI, model, docMgr, null );
-    }
-
-    /**
-     * <p>
-     * Answer a new ontology model which will process ontologies expressed in the given language,
-     * starting with the ontology data in the given model.
-     * </p>
-     * 
-     * @param languageURI A URI denoting the ontology language that will be used in this model.
-     * @param model An existing model to treat as an ontology model, or null.
-     * @param docMgr A document manager to use to load the imports closure of the ontology (if desired), or null.
-     * @param graphFactory A factory for accessing the graph that imported ontologies will be added to, or null.
-     * @return An ontology model containing the statements in <code>model</code>, if any.
-     * @see ProfileRegistry
-     * @exception IllegalArgumentException if languageURI is null
-     */
-    public static OntModel createOntologyModel( String languageURI, Model model, OntDocumentManager docMgr, GraphMaker graphFactory ) {
-        if (languageURI == null) {
-            throw new IllegalArgumentException( "Cannot create an ontology model with a null languageURI" );
-        }
+    public static OntModel createOntologyModel( OntModelSpec spec, ModelMaker maker, Model base ) {
+        OntModelSpec _spec = new OntModelSpec( spec );
+        _spec.setModelMaker( maker );
         
-        // ensure we have all the helpers we need, getting defaults if necessary
-        OntDocumentManager dm = (docMgr == null) ? OntDocumentManager.getInstance() : docMgr;
-        GraphMaker gf = (graphFactory == null) ? dm.getDefaultGraphFactory() : graphFactory;
-        Model m = (model == null) ? createModelForGraph( gf.getGraph() ) : model;
-         
-        return new OntModelImpl( languageURI, m, dm, gf );
+        return createOntologyModel( _spec, base );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer a new ontology model, constructed according to the given ontology model specification, 
+     * and starting with the ontology data in the given model.
+     * </p>
+     * 
+     * @param spec An ontology model specification object, that will be used to construct the ontology
+     * model with different options of ontology language, reasoner, document manager and storage model
+     * @param base An existing model to treat as an ontology model, or null.
+     * @return A new ontology model
+     * @see OntModelSpec
+     */
+    public static OntModel createOntologyModel( OntModelSpec spec, Model base ) {
+        return new OntModelImpl( spec, base );
     }
 }
     

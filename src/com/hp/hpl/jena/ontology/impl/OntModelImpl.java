@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-12 17:03:08 $
+ * Last modified on   $Date: 2003-05-14 14:58:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.ontology.impl;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.ontology.*;
@@ -47,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.16 2003-05-12 17:03:08 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.17 2003-05-14 14:58:30 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -64,14 +65,8 @@ public class OntModelImpl
     // Instance variables
     //////////////////////////////////
 
-    /** The document manager this ontology model is using to load imports */
-    protected OntDocumentManager m_docMgr;
-    
-    /** The graph factory this ontology model is using to build the union graph of imports */
-    protected GraphMaker m_graphFactory;
-    
-    /** The language profile that defines what we can do in this ontology */
-    protected Profile m_profile;
+    /** The model specification this model is using to define its structure */
+    protected OntModelSpec m_spec;
     
     /** List of URI strings of documents that have been imported into this one */
     protected Set m_imported = new HashSet();
@@ -85,6 +80,9 @@ public class OntModelImpl
     /** Mode switch for strict checking mode */
     protected boolean m_strictMode = true;
     
+    /** The union graph that contains the imports closure - there is always one of these, which may also be _the_ graph for the model */
+    protected MultiUnion m_union = new MultiUnion();
+    
     
     // Constructors
     //////////////////////////////////
@@ -93,33 +91,29 @@ public class OntModelImpl
     /**
      * <p>
      * Construct a new ontology model, using the given model as a base.  The document manager
+     * given in the specification object
      * will be used to build the imports closure of the model if its policy permits.
      * </p>
      * 
-     * @param languageURI Denotes the language profile that this ontology is using
      * @param model The base model that may contain existing statements for the ontology
-     * @param docMgr The ontology document manager to use when building the imports closure
-     * @param gf The graph factory to use when building the union of the imported graphs
+     * @param spec A specification object that allows us to specify parameters and structure for the
+     *              ontology model to be constructed.
      */
-    public OntModelImpl( String languageURI, Model model, OntDocumentManager docMgr, GraphMaker gf ) {
-        // all ontologies are defined to be union graphs, to allow us to add the imports to the union
-        super( new OntologyGraph(), BuiltinPersonalities.model );
+    public OntModelImpl( OntModelSpec spec, Model model ) {
+        // we haven't built the full graph yet, so we pass a vestigial form up to the super constructor
+        super( generateGraph( spec ), BuiltinPersonalities.model );
+        m_spec = spec;
         
-        Profile lang = ProfileRegistry.getInstance().getProfile( languageURI );
-        if (lang == null) {
-            // can't proceed after this
-            throw new OntologyException( "Ontology model could not locate language profile for ontology language " + languageURI );
-        }
+        // extract the union graph from whatever generateGraph() created
+        m_union = (getGraph() instanceof MultiUnion) ?
+                        ((MultiUnion) getGraph()) :
+                        (MultiUnion) ((InfGraph) getGraph()).getRawGraph();
         
-        // add the base graph to the union first, so that it will receive updates
-        getUnionGraph().addGraph( model.getGraph() );
-        
-        // record pointers to the helpers we're using
-        m_profile = lang;
-        m_docMgr = docMgr;
-        m_graphFactory = gf;
-        
+        // add the base model to the union, if we have one
+        m_union.addGraph( (model != null) ? model.getGraph() : ModelFactory.createDefaultModel().getGraph() );
+
         // cache the query plan for individuals
+        Profile lang = getProfile();
         m_individualsQuery = queryXTypeOfType( lang.CLASS() );
         
         // cache the query plan for individuals using class alias (if defined)
@@ -133,8 +127,10 @@ public class OntModelImpl
         }        
         
         // load the imports closure, according to the policies in my document manager
-        m_docMgr.loadImports( this, new OntReadState( null, this ) );
-        ((OntologyGraph) graph).bind();
+        getDocumentManager().loadImports( this );
+        
+        // force the inference engine, if we have one, to see the new graph data
+        rebind();
     }
     
     
@@ -146,14 +142,16 @@ public class OntModelImpl
      * <p>
      * Answer a reference to the document manager that this model is using to manage
      * ontology &lt;-&gt; mappings, and to load the imports closure. <strong>Note</strong>
-     * by default, an ontology model is constructed with a reference to the shared,
-     * global document manager.  Thus changing the settings via this model's document
-     * manager may affect other models also using the same instance.
+     * the default ontology model {@linkplain OntModelSpec specifications} each have 
+     * a contained default document manager. Changing the document managers specified by 
+     * these default specification may (in fact, probably will)
+     * affect other models built with the same specification
+     * policy. This may or may not be as desired by the programmer!
      * </p>
-     * @return A reference to this model's document manager
+     * @return A reference to this model's document manager, obtained from the specification object
      */
     public OntDocumentManager getDocumentManager() {
-        return m_docMgr;
+        return m_spec.getDocumentManager();
     }
     
     
@@ -978,7 +976,7 @@ public class OntModelImpl
      * @return A language profile
      */
     public Profile getProfile() {
-        return m_profile;
+        return m_spec.getProfile();
     }
 
 
@@ -1025,10 +1023,10 @@ public class OntModelImpl
         List imports = new ArrayList();
         
         // list the ontology nodes
-        for (StmtIterator i = listStatements( null, RDF.type, m_profile.ONTOLOGY() );  i.hasNext(); ) {
+        for (StmtIterator i = listStatements( null, RDF.type, getProfile().ONTOLOGY() );  i.hasNext(); ) {
             Resource ontology = i.nextStatement().getSubject();
             
-            for (StmtIterator j = ontology.listProperties( m_profile.IMPORTS() ); j.hasNext();  ) {
+            for (StmtIterator j = ontology.listProperties( getProfile().IMPORTS() ); j.hasNext();  ) {
                 // add the imported URI to the list
                 imports.add( j.nextStatement().getResource().getURI() );
             }
@@ -1040,14 +1038,14 @@ public class OntModelImpl
     
     /**
      * <p>
-     * Answer the graph factory associated with this model (used for constructing the
-     * constituent graphs of the imports closure).
+     * Answer the model maker associated with this model (used for constructing the
+     * constituent models of the imports closure).
      * </p>
      * 
      * @return The local graph factory
      */
-    public GraphMaker getGraphFactory() {
-        return m_graphFactory;
+    public ModelMaker getModelMaker() {
+        return m_spec.getModelMaker();
     }
     
     
@@ -1057,13 +1055,10 @@ public class OntModelImpl
      * @param uri URI to read from, may be mapped to a local source by the document manager
      */
     public Model read( String uri ) {
-        super.read( m_docMgr.getCacheURL( uri ) );
+        super.read( getDocumentManager().doAltURLMapping( uri ) );
         
-        // cache this model against the public uri (if caching enabled)
-        m_docMgr.addGraph( uri, getGraph() );
-        
-        m_docMgr.loadImports( this, new OntReadState( null, this ) );
-        ((OntologyGraph) graph).bind();
+        getDocumentManager().loadImports( this );
+        rebind();
         return this;
     }
     
@@ -1073,11 +1068,11 @@ public class OntModelImpl
      * @param reader An input reader
      * @param base The base URI
      */
-    public Model read(Reader reader, String base) {
+    public Model read( Reader reader, String base ) {
         super.read( reader, base );
         
-        m_docMgr.loadImports( this, new OntReadState( null, this ) );
-        ((OntologyGraph) graph).bind();
+        getDocumentManager().loadImports( this );
+        rebind();
         return this;
     }
     
@@ -1089,8 +1084,9 @@ public class OntModelImpl
      */
     public Model read(InputStream reader, String base) {
         super.read( reader, base );
-        m_docMgr.loadImports( this, new OntReadState( null, this ) );
-        ((OntologyGraph) graph).bind();
+        
+        getDocumentManager().loadImports( this );
+        rebind();
         return this;
     } 
     
@@ -1101,13 +1097,13 @@ public class OntModelImpl
      * @param lang The source syntax
      */
     public Model read(String uri, String syntax) {
-        super.read( m_docMgr.getCacheURL( uri ), syntax );
+        super.read( getDocumentManager().doAltURLMapping( uri ), syntax );
                 
         // cache this model against the public uri (if caching enabled)
-        m_docMgr.addGraph( uri, getGraph() );
+        getDocumentManager().addModel( uri, this );
 
-        m_docMgr.loadImports( this, new OntReadState( syntax, this ) );
-        ((OntologyGraph) graph).bind();
+        getDocumentManager().loadImports( this );
+        rebind();
         return this;
     }
     
@@ -1121,8 +1117,8 @@ public class OntModelImpl
     public Model read(Reader reader, String base, String syntax) {
         super.read( reader, base, syntax );
         
-        m_docMgr.loadImports( this, new OntReadState( syntax, this ) );
-        ((OntologyGraph) graph).bind();
+        getDocumentManager().loadImports( this );
+        rebind();
         return this;
     }
     
@@ -1136,30 +1132,12 @@ public class OntModelImpl
     public Model read(InputStream reader, String base, String syntax) {
         super.read( reader, base, syntax );
         
-        m_docMgr.loadImports( this, new OntReadState( syntax, this ) );
-        ((OntologyGraph) graph).bind();
+        getDocumentManager().loadImports( this );
+        rebind();
         return this;
     }
     
     
-    /**
-     * <p>
-     * Read operation that is invoked while loading the imports closure of an
-     * ontology model.  Not normally invoked by user code.
-     * </p>
-     *
-     * @param uri The URI to load from 
-     * @param readState The read-state for this operation
-     */
-    public void read( String uri, OntReadState readState ) {
-        super.read( m_docMgr.getCacheURL( uri ), readState.getSyntax() );
-        
-        // cache this model against the public uri (if caching enabled)
-        m_docMgr.addGraph( uri, getGraph() );
-        m_docMgr.loadImports( this, readState );
-    }
-    
-      
     /**
      * <p>
      * Answer the sub-graphs of this model. A sub-graph is defined as a graph that
@@ -1169,7 +1147,7 @@ public class OntModelImpl
      * @return A list of sub graphs for this ontology model
      */
     public List getSubGraphs() {
-        return ((MultiUnion) getGraph()).getSubGraphs();
+        return getUnionGraph().getSubGraphs();
     }
     
     
@@ -1182,7 +1160,7 @@ public class OntModelImpl
      * @return The base-graph for this ontology model
      */
     public Graph getBaseGraph() {
-        return ((OntologyGraph) getGraph()).getUnion().getBaseGraph();
+        return getUnionGraph().getBaseGraph();
     }
     
     
@@ -1204,13 +1182,32 @@ public class OntModelImpl
     
     /**
      * <p>
-     * Add the given graph as one of the sub-graphs of this ontology union graph
+     * Add the given model as one of the sub-models of this ontology union.   Will 
+     * cause the associated infererence engine (if any) to update, so this may be
+     * an expensive operation in some cases. 
      * </p>
      *
-     * @param graph A sub-graph to add 
+     * @param model A sub-model to add 
      */
-    public void addSubGraph( Graph graph ) {
-        getUnionGraph().addGraph( graph );
+    public void addSubModel( Model model) {
+        addSubModel( model, true );
+    }
+    
+    
+    /**
+     * <p>
+     * Add the given model as one of the sub-models of the enclosed ontology union model.
+     * </p>
+     *
+     * @param model A sub-model to add
+     * @param rebind If true, rebind any associated inferencing engine to the new data (which
+     * may be an expensive operation) 
+     */
+    public void addSubModel( Model model, boolean rebind ) {
+        getUnionGraph().addGraph( model.getGraph() );
+        if (rebind) {
+            rebind();
+        } 
     }
     
     
@@ -1241,14 +1238,51 @@ public class OntModelImpl
     public void setStrictMode( boolean strict ) {
         m_strictMode = strict;
     }
+    
+    
+    /**
+     * <p>Answer the ontology model specification that was used to construct this model</p>
+     * @return An ont model spec instance.
+     */
+    public OntModelSpec getSpecification() {
+        return m_spec;
+    }
 
 
     // Internal implementation methods
     //////////////////////////////////
 
-// jjc - want access for Syntax checker ....
-    public MultiUnion getUnionGraph() {
-        return ((OntologyGraph) graph).getUnion();
+    /**
+     * <p>Helper method to the constructor, which interprets the spec and generates an appropriate
+     * graph for this model</p>
+     * @param spec The model spec to interpret
+     * @param base The base model, or null
+     */
+    private static Graph generateGraph( OntModelSpec spec ) {
+        // create a empty union graph
+        MultiUnion u = new MultiUnion();
+        
+        // if we have a reasoner in the spec, bind to the union graph and return
+        return (spec.getReasoner() == null) ? (Graph) u : (Graph) spec.getReasoner().bind( u );
+    }
+
+
+    /**
+     * <p>Answer the union graph that contains the imports closure for this ontology</p>
+     * @return The union graph
+     */
+    protected MultiUnion getUnionGraph() {
+        return m_union;
+    }
+    
+    
+    /**
+     * <p>Notify the embedded reasoner, if any, that the data in the sub-graphs has changed</p>
+     */
+    protected void rebind() {
+        if (getGraph() instanceof InfGraph) {
+            ((InfGraph) getGraph()).rebind();
+        }
     }
     
     
@@ -1501,7 +1535,10 @@ public class OntModelImpl
                          : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);
             return getNodeAs( n, m_asKey );
         }
+        
     }
+    
+    
     
     /** Project out the first element of a list of bindings */
     protected class GetBinding implements Map1

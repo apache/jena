@@ -5,10 +5,8 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdql.*;
-import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
@@ -186,16 +184,16 @@ public class Checker extends AbsChecker {
 	}
 	
 	public void load(String url){
-		OntDocumentManager dm = new OntDocumentManager();
-		dm.setProcessImports(true);
-		OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, 
-		ModelFactory.createDefaultModel()
-		, dm);
+        // create an ontology model with no reasoner and the default doc manager
+        OntModel m = ModelFactory.createOntologyModel( new OntModelSpec( ModelFactory.createMemModelMaker(),
+                                                                         null, null, ProfileRegistry.OWL_LANG ), null );
+		//OntModel m = ModelFactory.createOntologyModel();
+        m.getDocumentManager().setProcessImports( true );
 	
 		m.read(url);
-		Graph g = ((OntModelImpl)m).getUnionGraph();
-		add(g);
-		
+        
+        // since we specified the null reasoner, the graph of the model is the union graph
+        add( m.getGraph() );
 	}
 	//private boolean wantLite = true;
 
@@ -249,18 +247,21 @@ public class Checker extends AbsChecker {
 		}
 	}
 	static public void main(String argv[]) {
-		OntDocumentManager dm = new OntDocumentManager();
-		dm.setProcessImports(true);
-		GraphMaker gf = dm.getDefaultGraphFactory();
-		OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, 
-		ModelFactory.createDefaultModel()
-		, dm);
+		GraphMaker gf = ModelFactory.createMemModelMaker().getGraphMaker();
+        
+        // create an ontology model with no reasoner and the default doc manager
+		OntModel m = ModelFactory.createOntologyModel( new OntModelSpec( ModelFactory.createMemModelMaker(),
+                                                                         null, null, ProfileRegistry.OWL_LANG ), null );
+        m.getDocumentManager().setProcessImports( true );
 	
 		//Model m = ModelFactory.createDefaultModel();
 		m.read(argv[0]);
         //m.write(System.out);
 		// m.getDocumentManager();
-		Graph g = ((OntModelImpl)m).getUnionGraph();
+        
+        // the ont model graph must be the union graph, since we specified the null reasoner (hence no inf graph)
+        Graph g = m.getGraph();
+
 		Checker chk = new Checker(argv.length==2 && argv[1].equalsIgnoreCase("Lite"), gf);
 		chk.add(g);
       //  System.err.println("g added.");

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-11 17:51:46 $
+ * Last modified on   $Date: 2003-05-14 14:58:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.14 2003-05-11 17:51:46 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.15 2003-05-14 14:58:30 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -344,7 +344,7 @@ public class schemagen {
     
     /** Create the source model after determining which input language */
     protected void determineLanguage() {
-        m_source = ModelFactory.createOntologyModel( isTrue( OPT_LANG_DAML ) ? ProfileRegistry.DAML_LANG : ProfileRegistry.OWL_LANG );
+        m_source = ModelFactory.createOntologyModel( OntModelSpec.getDefaultSpec( isTrue( OPT_LANG_DAML ) ? ProfileRegistry.DAML_LANG : ProfileRegistry.OWL_LANG ), null );
         m_source.getDocumentManager().setProcessImports( false );
     }
     
