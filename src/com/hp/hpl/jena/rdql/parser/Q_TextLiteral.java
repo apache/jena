@@ -61,15 +61,7 @@ class Q_TextLiteral extends ParsedLiteral {
             tmp_datatype = datatype.valueString() ;
         }
                  
-        Literal l = null ;
-        String tmp_langTag = langTag ;
-        
-        if ( langTag == null )
-            tmp_langTag = "" ;
-        if ( tmp_datatype == null )
-            l = model.createLiteral(super.getString(), tmp_langTag) ;
-        else 
-            l = model.createTypedLiteral(super.getString(), tmp_langTag, tmp_datatype) ;
+        Literal l = model.createTypedLiteral(super.getString(), langTag, tmp_datatype) ;
         super.setRDFLiteral(l) ; 
     }
   

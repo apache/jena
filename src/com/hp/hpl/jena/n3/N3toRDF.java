@@ -13,7 +13,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.5 2003-03-06 09:45:42 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.6 2003-03-28 18:08:21 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -258,11 +258,6 @@ public class N3toRDF implements N3ParserEventHandler
                             return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
                     }
                 }
-                if ( langTag == null )
-                    langTag = "" ;
-                if ( typeURI == null )
-                    return model.createLiteral(text, langTag) ; 
-                
                 return model.createTypedLiteral(text, langTag, typeURI) ;
                 
 			case N3Parser.QNAME :
