@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.39 2004-07-14 09:52:55 chris-dollin Exp $
+  $Id: Node.java,v 1.40 2004-07-16 08:10:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -75,7 +75,7 @@ public abstract class Node {
             throw new JenaException( "Node.create does not accept an empty string as argument" );
         char first = x.charAt( 0 );
         if (first == '\'' || first == '\"')
-            return Node.createLiteral( newString( first, x ) );
+            return Node.createLiteral( newString( pm, first, x ) );
         if (Character.isDigit( first )) 
             return Node.createLiteral( new LiteralLabel( x, "", XSDDatatype.XSDinteger ) );
         if (first == '_')
@@ -97,13 +97,13 @@ public abstract class Node {
     private static RDFDatatype getType( String s )
         { return TypeMapper.getInstance().getSafeTypeByName( s ); }
     
-    private static LiteralLabel literal( String spelling, String langOrType )
+    private static LiteralLabel literal( PrefixMapping pm, String spelling, String langOrType )
         {
         String content = unEscape( spelling );
         int colon = langOrType.indexOf( ':' );
         return colon < 0 
             ? new LiteralLabel( content, langOrType, false )
-            : new LiteralLabel( content, "", getType( langOrType ) )
+            : new LiteralLabel( content, "", getType( pm.expandPrefix( langOrType ) ) )
             ;
         }
     
@@ -121,7 +121,7 @@ public abstract class Node {
             start = b + 2;
             }
         result.append( spelling.substring( start ) );
-        System.err.println( ">> escaped => " + result );
+        // System.err.println( ">> escaped => " + result );
         return result.toString();
         }
     
@@ -139,10 +139,10 @@ public abstract class Node {
         	}
         }
     
-    private static LiteralLabel newString( char quote, String nodeString )
+    private static LiteralLabel newString( PrefixMapping pm, char quote, String nodeString )
         {
         int close = nodeString.lastIndexOf( quote );
-        return literal( nodeString.substring( 1, close ), nodeString.substring( close + 1 ) );
+        return literal( pm, nodeString.substring( 1, close ), nodeString.substring( close + 1 ) );
         }
     
     /** make a blank node with the specified label */

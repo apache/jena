@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.31 2004-07-14 08:52:24 chris-dollin Exp $
+  $Id: TestNode.java,v 1.32 2004-07-16 08:11:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -347,7 +347,7 @@ public class TestNode extends GraphTestBase
         Node n = Node.create( "'42'xsd:integer" );
         assertEquals( "42", n.getLiteral().getLexicalForm() );
         assertEquals( "", n.getLiteral().language() );
-        assertEquals( "xsd:integer", n.getLiteral().getDatatypeURI() );
+        assertEquals( expand( "xsd:integer" ), n.getLiteral().getDatatypeURI() );
         }
     
     public void testCreateTypedLiteralBoolean()
@@ -355,9 +355,25 @@ public class TestNode extends GraphTestBase
         Node n = Node.create( "\"true\"xsd:boolean" );
         assertEquals( "true", n.getLiteral().getLexicalForm() );
         assertEquals( "", n.getLiteral().language() );
-        assertEquals( "xsd:boolean", n.getLiteral().getDatatypeURI() );
+        assertEquals( expand( "xsd:boolean" ), n.getLiteral().getDatatypeURI() );
         }
         
+    public void testTypesExpandPrefix()
+        {
+        testTypeExpandsPrefix( "rdf:spoo" );
+        testTypeExpandsPrefix( "rdfs:bar" );
+        testTypeExpandsPrefix( "owl:henry" );
+        testTypeExpandsPrefix( "xsd:bool" );
+        testTypeExpandsPrefix( "unknown:spoo" );
+        }
+    
+    private void testTypeExpandsPrefix( String type )
+        {
+        Node n = Node.create( "'stuff'" + type );
+        String wanted = PrefixMapping.Extended.expandPrefix( type );
+        assertEquals( wanted, n.getLiteral().getDatatypeURI() );
+        }
+
     public void testCreateURI()
         {
         String uri = "http://www.electric-hedgehog.net/";
@@ -586,7 +602,13 @@ public class TestNode extends GraphTestBase
 		assertTrue( uri, !n.isURI() || n.hasURI( uri ) );
 		assertFalse( uri, n.hasURI( uri + "x" ) );
         }
-    
+
+    /**
+     	Answer the string <code>s</code> prefix-expanded using the built-in
+     	PrefixMapping.Extended.
+    */
+    private String expand( String s )
+        { return PrefixMapping.Extended.expandPrefix( s ); }
     }
 
 /*
