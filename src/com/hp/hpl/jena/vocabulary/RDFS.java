@@ -40,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 /**
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-01-30 17:24:23 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-03-03 22:36:04 $'
  */
 public class RDFS {
     
@@ -50,6 +50,8 @@ public class RDFS {
     
            static final String   nClass    = "Class";
     public static       Resource Class     = null;
+           static final String   nDatatype           = "Datatype";
+    public static       Resource Datatype            = null;
            static final String   nConstraintProperty = "ConstraintProperty";
     public static       Resource ConstraintProperty  = null;
            static final String   nContainer          = "Container";
@@ -88,6 +90,7 @@ public class RDFS {
     static {
         try {
             Class = new ResourceImpl(uri+nClass);
+            Datatype = new ResourceImpl(uri+nDatatype);
             ConstraintProperty = new ResourceImpl(uri+nConstraintProperty);
             Container = new ResourceImpl(nContainer);
             ContainerMembershipProperty = 
