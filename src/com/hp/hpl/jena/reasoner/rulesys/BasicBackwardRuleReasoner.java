@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleReasoner.java,v 1.3 2003-05-12 07:56:43 der Exp $
+ * $Id: BasicBackwardRuleReasoner.java,v 1.4 2003-05-13 08:18:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-12 07:56:43 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-13 08:18:12 $
  */
 public class BasicBackwardRuleReasoner implements Reasoner {
 
@@ -37,6 +37,9 @@ public class BasicBackwardRuleReasoner implements Reasoner {
     
     /** Flag to set whether the inference class should record derivations */
     protected boolean recordDerivations = false;
+    
+    /** Flag which, if true, enables tracing of rule actions to logger.info */
+    boolean traceOn = false;
     
     /** threshold on the numbers of rule firings allowed in a single operation */
     protected long nRulesThreshold = BasicForwardRuleInfGraph.DEFAULT_RULES_THRESHOLD;
@@ -54,7 +57,7 @@ public class BasicBackwardRuleReasoner implements Reasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private BasicBackwardRuleReasoner(BasicBackwardRuleReasoner parent, Graph schemaGraph) {
+    protected BasicBackwardRuleReasoner(BasicBackwardRuleReasoner parent, Graph schemaGraph) {
         rules = parent.rules;
         ruleStore = parent.ruleStore;
         this.schemaGraph = schemaGraph;
@@ -119,6 +122,14 @@ public class BasicBackwardRuleReasoner implements Reasoner {
      */
     public void setRulesThreshold(long threshold) {
         nRulesThreshold = threshold;
+    }
+    
+    /**
+     * Set the state of the trace flag. If set to true then rule firings
+     * are logged out to the Logger at "INFO" level.
+     */
+    public void setTraceOn(boolean state) {
+        traceOn = state;
     }
     
     /**

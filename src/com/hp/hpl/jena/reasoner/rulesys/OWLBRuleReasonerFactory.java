@@ -1,11 +1,11 @@
 /******************************************************************
- * File:        RDFSBRuleReasonerFactory.java
+ * File:        OWLBRuleReasonerFactory.java
  * Created by:  Dave Reynolds
  * Created on:  12-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSBRuleReasonerFactory.java,v 1.2 2003-05-13 08:18:12 der Exp $
+ * $Id: OWLBRuleReasonerFactory.java,v 1.1 2003-05-13 08:18:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,17 +14,30 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
- * Factory class for creating blank instances of the backchaining RDFS reasoner. 
+ * Factory class for creating blank instances of the OWL Reasoner.
+ * <p>
+ * The reasoner can be configured using three properties (set as
+ * properties of the base reasonder URI in a configuration model). These are:
+ * <ul>
+ * <li><b>derivationLogging</b> - if set to true this causes all derivations to
+ * be recorded in an internal data structure for replay through the {@link com.hp.hpl.jena.reasoner.InfGraph#getDerivation getDerivation}
+ * method. </li>
+ * <li><b>traceOn</b> - if set to true this causes all rule firings and deduced triples to be
+ * written out to the Logger at INFO level.</li>
+ * <li><b>ruleThreshold</b> - which limits the number of rules that can be fired on a single 
+ * data processing stage to the given number (useful to limit infinite runaways). </li>
+ * </ul>
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-13 08:18:12 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-13 08:18:12 $
  */
-public class RDFSBRuleReasonerFactory implements ReasonerFactory {
+public class OWLBRuleReasonerFactory implements ReasonerFactory {
     
     /** Single global instance of this factory */
-    private static ReasonerFactory theInstance = new RDFSBRuleReasonerFactory();
+    private static ReasonerFactory theInstance = new OWLBRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
-    public static final String URI = "http://www.hpl.hp.com/semweb/2003/RDFSBRuleReasoner";
+    public static final String URI = "http://www.hpl.hp.com/semweb/2003/OWLBRuleReasoner";
     
     /**
      * Return the single global instance of this factory
@@ -36,11 +49,25 @@ public class RDFSBRuleReasonerFactory implements ReasonerFactory {
     /**
      * Constructor method that builds an instance of the associated Reasoner
      * @param configuration a set of arbitrary configuration information to be 
-     * passed the reasoner encoded within an RDF graph, the current implemenation
-     * is not configurable and will ignore this parameter.
+     * passed the reasoner encoded within an RDF graph
      */
     public Reasoner create(Model configuration) {
-        return new RDFSBRuleReasoner();
+        OWLBRuleReasoner reasoner = new OWLBRuleReasoner();
+        if (configuration != null) {
+            Boolean doLog = Util.checkBinaryPredicate(URI, BasicForwardRuleReasoner.PROPderivationLogging, configuration);
+            if (doLog != null) {
+                reasoner.setDerivationLogging(doLog.booleanValue());
+            }
+            Boolean doTrace = Util.checkBinaryPredicate(URI, BasicForwardRuleReasoner.PROPtraceOn, configuration);
+            if (doTrace != null) {
+                reasoner.setTraceOn(doTrace.booleanValue());
+            }
+            Integer threshold = Util.getIntegerPredicate(URI, BasicForwardRuleReasoner.PROPrulesThreshold, configuration);
+            if (threshold != null) {
+                reasoner.setRulesThreshold(threshold.intValue());
+            }
+        }
+        return reasoner;
     }
    
     /**
@@ -51,14 +78,15 @@ public class RDFSBRuleReasonerFactory implements ReasonerFactory {
     public Model getCapabilities() {
         Model capabilities = ModelFactory.createDefaultModel();
         Resource base = capabilities.createResource(getURI());
-        base.addProperty(ReasonerRegistry.nameP, "RDFS BRule Reasoner")
-            .addProperty(ReasonerRegistry.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
+        base.addProperty(ReasonerRegistry.nameP, "OWL BRule Reasoner")
+            .addProperty(ReasonerRegistry.descriptionP, "Experimental OWL reasoner.\n"
                                         + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
             .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
             .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
             .addProperty(ReasonerRegistry.supportsP, RDFS.member)
             .addProperty(ReasonerRegistry.supportsP, RDFS.range)
             .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
+            // TODO - add OWL elements supported
             .addProperty(ReasonerRegistry.versionP, "0.1");
         return capabilities;
     }
@@ -69,9 +97,8 @@ public class RDFSBRuleReasonerFactory implements ReasonerFactory {
     public String getURI() {
         return URI;
     }
-
+    
 }
-
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

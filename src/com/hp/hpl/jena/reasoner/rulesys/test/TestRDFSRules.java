@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.3 2003-05-12 15:20:23 der Exp $
+ * $Id: TestRDFSRules.java,v 1.4 2003-05-13 08:18:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.3 $ on $Date: 2003-05-12 15:20:23 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-05-13 08:18:12 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -48,20 +48,20 @@ public class TestRDFSRules extends TestCase {
         return new TestSuite(TestRDFSRules.class);
     }  
 
-    /**
-     * Test the basic functioning of an RDFS reasoner
-     */
-    public void testRDFSReasoner() throws IOException {
-        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect.rdf");
-        ReasonerFactory rf = RDFSRuleReasonerFactory.theInstance();
-        assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
-    }
+//    /**
+//     * Test the basic functioning of an RDFS reasoner
+//     */
+//    public void testRDFSReasoner() throws IOException {
+//        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect.rdf");
+//        ReasonerFactory rf = RDFSRuleReasonerFactory.theInstance();
+//        assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
+//    }
 
     /**
      * Test the basic functioning of an RDFS reasoner
      */
     public void testRDFSBReasoner() throws IOException {
-        ReasonerTester tester = new ReasonerTester("rdfs/manifest-nodirect.rdf");
+        ReasonerTester tester = new ReasonerTester("rdfs/manifest-debug.rdf");
         ReasonerFactory rf = RDFSBRuleReasonerFactory.theInstance();
         assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
     }
@@ -102,8 +102,8 @@ public class TestRDFSRules extends TestCase {
             t1 = System.currentTimeMillis();
             Model inf3 = ModelFactory.createModelForGraph(rdfsBRule.bindSchema(tbox.getGraph()).bind(data.getGraph()));
             count = 0;
-            for (Iterator i = inf2.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
-            //for (Iterator i = inf2.listStatements(); i.hasNext(); i.next()) count++;
+            for (Iterator i = inf3.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
+            //for (Iterator i = inf3.listStatements(); i.hasNext(); i.next()) count++;
             t2 = System.currentTimeMillis();
             System.out.println("RDFSBrule: " + count +" results in " + (t2-t1) +"ms");
 

@@ -1,11 +1,11 @@
 /******************************************************************
- * File:        OWLRuleReasoner.java
+ * File:        OWLBRuleReasoner.java
  * Created by:  Dave Reynolds
- * Created on:  11-Apr-2003
+ * Created on:  12-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLRuleReasoner.java,v 1.4 2003-05-13 08:18:12 der Exp $
+ * $Id: OWLBRuleReasoner.java,v 1.1 2003-05-13 08:18:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -13,25 +13,25 @@ import java.util.*;
 import java.io.*;
 import org.apache.log4j.Logger;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * An pure forward chaining implementation of the experimental OWL closure rules
- * based upon the basic forward rule interpreter. This is not a serious or
- * usable OWL implementation, it is a tool for developing the rules.
+ * An backward chaining implementation of the experimental OWL closure rules.
  * <p>
  * TODO: Replace intersection-translation step by rule based alternative (or failing that
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-13 08:18:12 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-13 08:18:12 $
  */
-public class OWLRuleReasoner extends BasicForwardRuleReasoner {
+public class OWLBRuleReasoner extends BasicBackwardRuleReasoner {
     
     /** The location of the OWL rule definitions on the class path */
-    protected static final String RULE_FILE = "etc/owl.rules";
+    protected static final String RULE_FILE = "etc/owl-b.rules";
     
     /** The parsed rules */
     protected static List ruleSet;
@@ -48,7 +48,7 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
     /**
      * Constructor
      */
-    public OWLRuleReasoner() {
+    public OWLBRuleReasoner() {
         super(loadRules());
         
     }
@@ -57,14 +57,12 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private OWLRuleReasoner(List rules, InfGraph schemaGraph) {
-        super(rules);
-        this.rules = rules;
-        this.schemaGraph = schemaGraph;
+    private OWLBRuleReasoner(BasicBackwardRuleReasoner parent, Graph schemaGraph) {
+        super(parent, schemaGraph);
     }
     
     /**
-     * Return the RDFS rule set, loading it in if necessary
+     * Return the rule set, loading it in if necessary
      */
     public static List loadRules() {
         if (ruleSet == null) {
@@ -82,18 +80,15 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
      * The practicality benefit of this has not yet been fully checked out.
      */
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
-        InfGraph graph = new BasicForwardRuleInfGraph(this, rules, tbox);
-        // Process the  scehma looking for any intersection declarations
-        // that we translate into addtiional rules procedurally (for now at least)
-        Iterator i = tbox.find(null, OWL.intersectionOf.asNode(), null); 
-        ArrayList rules = (ArrayList) ruleSet;
-        if (i.hasNext()) {
-            rules = (ArrayList) rules.clone();
-            while(i.hasNext()) {
-                translateIntersectionOf((Triple)i.next(), rules, tbox);
-            }
-        }
-        return new OWLRuleReasoner(rules, graph);
+        return new OWLBRuleReasoner(this, tbox);
+    }
+    
+    /**
+     * Precompute the implications of a schema Model. The statements in the graph
+     * will be combined with the data when the final InfGraph is created.
+     */
+    public Reasoner bindSchema(Model tbox) throws ReasonerException {
+        return new OWLBRuleReasoner(this, tbox.getGraph());
     }
         
     /**
@@ -119,16 +114,16 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
                 translateIntersectionOf((Triple)i.next(), rules, data);
             }
         }
+        ruleStore = new RuleStore(rules);
 
         // Now create the inference graph        
-        BasicForwardRuleInfGraph graph = new BasicForwardRuleInfGraph(this, rules);
+        BasicBackwardRuleInfGraph graph = new BasicBackwardRuleInfGraph(this, data, ruleStore);
         graph.setDerivationLogging(recordDerivations);
         graph.setRuleThreshold(nRulesThreshold);
         graph.setTraceOn(traceOn);
-        graph.rebind(data);
         long endTime = System.currentTimeMillis();
         timeCost += (double)(endTime - startTime);
-        nRulesFired += graph.getNRulesFired();
+        //nRulesFired += graph.getNRulesFired();
         
         return graph;
     }
@@ -215,6 +210,7 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
     }
      
 }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

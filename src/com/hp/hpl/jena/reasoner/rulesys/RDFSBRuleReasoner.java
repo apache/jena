@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSBRuleReasoner.java,v 1.1 2003-05-12 15:20:23 der Exp $
+ * $Id: RDFSBRuleReasoner.java,v 1.2 2003-05-13 08:18:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,12 +18,12 @@ import java.util.*;
  * based upon the basic backward rule interpreter. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-12 15:20:23 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-13 08:18:12 $
  */
 public class RDFSBRuleReasoner extends BasicBackwardRuleReasoner {
     
     /** The location of the OWL rule definitions on the class path */
-    public static final String RULE_FILE = "etc/rdfs.rules";
+    public static final String RULE_FILE = "etc/rdfs-b.rules";
     
     /** The parsed rules */
     protected static List ruleSet;

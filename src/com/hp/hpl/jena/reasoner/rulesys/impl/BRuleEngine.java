@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.2 2003-05-12 19:42:22 der Exp $
+ * $Id: BRuleEngine.java,v 1.3 2003-05-13 08:18:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-12 19:42:22 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-13 08:18:13 $
  */
 public class BRuleEngine {
 
@@ -98,20 +98,26 @@ public class BRuleEngine {
      * Append a new rule node to the end of the agenda.
      */
     public void appendToAgenda(RuleState rs) {
-        if (traceOn) {
-            logger.debug("append to agenda: " + rs);
+        if (!rs.isScheduled) {
+            if (traceOn) {
+                logger.debug("append to agenda: " + rs);
+            }
+            agenda.add(rs);
+            rs.isScheduled = true;
         }
-        agenda.add(rs);
     }
     
     /**
      * Prepend a new rule node to the head of the agenda.
      */
     public void prependToAgenda(RuleState rs) {
-        if (traceOn) {
-            logger.debug("prepend to agenda: " + rs);
+        if (!rs.isScheduled) {
+            if (traceOn) {
+                logger.debug("prepend to agenda: " + rs);
+            }
+            agenda.add(0, rs);
+            rs.isScheduled = true;
         }
-        agenda.add(0, rs);
     }
     
     /**
@@ -160,10 +166,11 @@ public class BRuleEngine {
                     // Move to the next agenda item
                     // (if empty then an exception is thrown and caught later)
                     current = (RuleState)agenda.removeFirst();
+                    current.isScheduled = false;
                     numResults = 0;
                 }
                 if (traceOn) {
-                    logger.debug("Processing agenda item: " + current);
+                    logger.debug("Processing " + current);
                 }
                 Object result = current.next();
                 if (result == StateFlag.FAIL) {
@@ -171,13 +178,13 @@ public class BRuleEngine {
                     // current will end up as null in which case the loop with
                     // shift to the next agenda item
                     if (traceOn) {
-                        logger.debug("Failed");
+                        //logger.debug("Failed");
                     }
                     current = current.prev;
                 } else if (result == StateFlag.SUSPEND) {
                     // Can do no more with this goal
                     if (traceOn) {
-                        logger.debug("Suspend");
+                        //logger.debug("Suspend");
                     }
                     current.goalState.results.addDependent(current);
                     current = current.prev;
@@ -233,7 +240,7 @@ public class BRuleEngine {
                         return finalResult;
                     } else if (numResults > batchSize) {
                         // push the current state lower down agenda and try another
-                        if (current != null) agenda.add(current);
+                        if (current != null) appendToAgenda(current);
                         current = null;
                     }
                 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.1 2003-05-12 07:58:25 der Exp $
+ * $Id: RuleState.java,v 1.2 2003-05-13 08:18:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-12 07:58:25 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-13 08:18:13 $
  */
 public class RuleState {
 
@@ -41,6 +41,9 @@ public class RuleState {
     
     /** The continuation point for the rule clause being processed */
     protected GoalState goalState;
+    
+    /** Flag to indicate that rule state is scheduled on the agenda */
+    protected boolean isScheduled;
     
     /** The clause number in the rule to be processed next.
      *  TODO this needs revising if we enable clause reordering */
@@ -209,8 +212,9 @@ public class RuleState {
      * Printable string
      */
     public String toString() {
-        return "RS: clause=" + (clauseIndex-1) 
-                + ", rule=" + ruleInstance.rule.toShortString()
+        return "RuleState " 
+                + ruleInstance.rule.toShortString()
+                + "("+ (clauseIndex-1) +")"
                 + ", env=" + env 
                 + ", gs=" + goalState;
     }
