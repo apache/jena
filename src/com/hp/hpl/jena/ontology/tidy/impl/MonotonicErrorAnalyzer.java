@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.15 2005-01-24 15:00:14 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.16 2005-01-25 11:42:48 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -242,33 +242,111 @@ public static MonotonicProblem[] flattenProblem(Triple t, MonotonicProblem r) {
     }
 
     /**
- * @param meetCase
- * @param key
- * @param s
- * @param p
- * @param o
- * @param sx
- * @param px
- * @param ox
- * @return
- */
-private MonotonicProblem multiTripleMeetError(int meetCase, int key, int s, int p, int o, int sx, int px, int ox) {
-    addResult(new MultiTripleDuplicateNodeProblem(meetCase));
-    // TODO more work here
-    return rslt;
-}
-    /**
      * @param meetCase
+     * @param key
+     * @param s
+     * @param p
+     * @param o
      * @param sx
      * @param px
      * @param ox
      * @return
      */
-    private MonotonicProblem singleTripleMeetError(int meetCase, int sx, int px, int ox) {
-        addResult(new SingleTripleDuplicateNodeProblem(meetCase));
+    private MonotonicProblem multiTripleMeetError(int meetCase, int k, int s, int p, int o, int sx, int px, int ox) {
+        if ( (meetCase & 1) != 0) {
+            if ( p != o )
+                throw new IllegalArgumentException("Meet stuff not honoured.");
+            int key = look.qrefine(sx,p,o);
+            if (key==Failure)
+                throw new IllegalArgumentException("Called for too easy a case.");
+            int pp = look.prop(p,key);
+            int oo = look.object(o,key);
+            if ( look.meet(pp,oo)==Failure ) {
+                MultiTripleDuplicateNodeProblem problem = new MultiTripleDuplicateNodeProblem(1);
+//     name in this context:
+                CategorySetNames.symmetricNames(problem.wantedGiven(0),
+                        nonPseudoCats(pp),nonPseudoCats(oo)
+                        );
+//     distinguish this context
+                int kk = look.qrefine(sx,px,ox);
+                int okm = look.meet(look.prop(px,kk),look.object(ox,kk));
+                if (okm==Failure)
+                    throw new IllegalArgumentException("Called for too easy a case.");
+                CategorySetNames.symmetricNames(problem.wantedGiven(1),
+                        nonPseudoCats(okm),nonPseudoCats(p));
+                addResult(problem);
+            }
+        }
+        if ( (meetCase & 2) != 0) {
+            if ( s != o )
+                throw new IllegalArgumentException("Meet stuff not honoured.");
+            int key = look.qrefine(s,px,o);
+            if (key==Failure)
+                throw new IllegalArgumentException("Called for too easy a case.");
+            int ss = look.prop(s,key);
+            int oo = look.object(o,key);
+            if ( look.meet(ss,oo)==Failure ) {
+                MultiTripleDuplicateNodeProblem problem = new MultiTripleDuplicateNodeProblem(2);
+//     name in this context:
+                CategorySetNames.symmetricNames(problem.wantedGiven(0),
+                        nonPseudoCats(ss),nonPseudoCats(oo)
+                        );
+//     distinguish this context
+                int kk = look.qrefine(sx,px,ox);
+                int okm = look.meet(look.prop(sx,kk),look.object(ox,kk));
+                if (okm==Failure)
+                    throw new IllegalArgumentException("Called for too easy a case.");
+                CategorySetNames.symmetricNames(problem.wantedGiven(1),
+                        nonPseudoCats(okm),nonPseudoCats(s));
+                addResult(problem);
+            }
+        }
+        if ( (meetCase & 4) != 0) {
+            if ( s != p )
+                throw new IllegalArgumentException("Meet stuff not honoured.");
+            int key = look.qrefine(s,p,ox);
+            if (key==Failure)
+                throw new IllegalArgumentException("Called for too easy a case.");
+            int ss = look.prop(s,key);
+            int pp = look.object(p,key);
+            if ( look.meet(ss,pp)==Failure ) {
+                MultiTripleDuplicateNodeProblem problem = new MultiTripleDuplicateNodeProblem(2);
+//     name in this context:
+                CategorySetNames.symmetricNames(problem.wantedGiven(0),
+                        nonPseudoCats(ss),nonPseudoCats(pp)
+                        );
+//     distinguish this context
+                int kk = look.qrefine(sx,px,ox);
+                int okm = look.meet(look.prop(sx,kk),look.object(px,kk));
+                if (okm==Failure)
+                    throw new IllegalArgumentException("Called for too easy a case.");
+                CategorySetNames.symmetricNames(problem.wantedGiven(1),
+                        nonPseudoCats(okm),nonPseudoCats(s));
+                addResult(problem);
+            }
+        }
+        if (rslt==null)
+        
+        addResult(new DeepMultiTripleDuplicateNodeProblem(meetCase));
         // TODO more work here
         return rslt;
     }
+        /**
+         * @param meetCase
+         * @param sx
+         * @param px
+         * @param ox
+         * @return
+         */
+        private MonotonicProblem singleTripleMeetError(int meetCase, int sx, int px, int ox) {
+            // meetCase is 2.
+            SingleTripleDuplicateNodeProblem problem = new SingleTripleDuplicateNodeProblem(meetCase);
+            CategorySetNames.symmetricNames(problem,
+                    nonPseudoCats(sx),nonPseudoCats(ox)
+                    );
+            addResult(problem);
+            return rslt;
+        }
     private int qrefineWithMeet(int s, int p, int o, int meetCase) {
         int key2 = look.qrefine(s, p, o);
         int s0 = look.subject(s, key2);

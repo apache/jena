@@ -41,7 +41,7 @@ abstract class AbsChecker implements Constants {
 	public void noremove() {
 		useRemove = false;
 	}
-	Lookup look = LookupTable.get();
+	static Lookup look = LookupTable.get();
 	
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;

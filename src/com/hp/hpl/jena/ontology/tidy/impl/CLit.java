@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.shared.*;
 import java.util.*;
 
 /**
@@ -70,6 +71,12 @@ class CLit extends CBuiltin {
 		super(n, eg, literalCategory(n,eg));
 	}
 	static private String rdfXMLLiteral = RDF.getURI()+"XMLLiteral";
+
+	static final int noTypeAndDatatypeID = CategorySet.find(
+	        new int[]{Grammar.notype,Grammar.datatypeID},
+	  true
+	);
+
     /** 
      * Decide whether this literal node is a
      * nonNegativeInteger, (or compatible),
@@ -98,8 +105,12 @@ class CLit extends CBuiltin {
         	}
         	if ( dt.equals( rdfXMLLiteral))
         	  return Grammar.literal;
-        	eg.getCNode(Node.createURI(n.getLiteral().getDatatypeURI()));
-        	// TODO this must be a datatypeID
+        CNodeI dtURI =        	eg.getCNode(Node.createURI(n.getLiteral().getDatatypeURI()));
+        int cat = dtURI.getCategories();
+        if ( cat != Grammar.datatypeID &&
+                cat != noTypeAndDatatypeID)
+            throw new BrokenException("Precondition that datatype URI has already been registered as such has been violated"); 
+        
         	return Grammar.userTypedLiteral;
         }
         return Grammar.literal;

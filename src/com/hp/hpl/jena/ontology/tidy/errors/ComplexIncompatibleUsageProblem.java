@@ -15,8 +15,6 @@ import com.hp.hpl.jena.ontology.tidy.impl.*;
 public class ComplexIncompatibleUsageProblem extends MultipleTripleProblem {
     final private int field;
     
-    final private int wanted[] = new int[2];
-    final private int given[] = new int[2];
     
     static final String messages[] = {
             "The predicate %p is used elsewhere as %1g." +
@@ -50,7 +48,9 @@ public class ComplexIncompatibleUsageProblem extends MultipleTripleProblem {
         // TODO reduce complexity of this expression
         return DC_DOM_RANGE+(7^(1<<field));
     }
-    
+    final private int wanted[] = new int[2];
+    final private int given[] = new int[2];
+
     /** Not part of API */
     public WantedGiven wantedGiven(int i) {
        final int ix = i>field?i-1:i; 

@@ -15,9 +15,11 @@ import com.hp.hpl.jena.util.iterator.*;
  */
 public class TestExamples {
     
-    static public Iterator examples(int s, int p, int o) {
-        if (useSameIndex(s, p) ) {
-            if ( useSameIndex(o, p) ) {
+    static public Iterator examples(
+            int ss, int pp, int oo,
+            int s, int p, int o) {
+        if (useSameIndex(ss,pp,s, p) ) {
+            if ( useSameIndex(oo,pp,o, p) ) {
                 return new ArrayIterator(
                         new Triple[]{
                                 new Triple(
@@ -63,8 +65,8 @@ public class TestExamples {
                         }
                 );
             }
-        } else if( useSameIndex(o, p) 
-                || useSameIndex(o, s) ) {
+        } else if( useSameIndex(oo,pp, o, p) 
+                || useSameIndex(oo, ss, o, s) ) {
 
             return new ArrayIterator(
                     new Triple[]{
@@ -94,13 +96,14 @@ public class TestExamples {
         } 
     }
     
-    static boolean useSameIndex(int a, int b) {
+    static boolean useSameIndex(int aa, int bb, int a, int b) {
         if (a != b) {
             return (a == Grammar.userTypedLiteral && b == Grammar.userID)
             || (b == Grammar.userTypedLiteral && a == Grammar.userID);
         }
-        return a == Grammar.propertyOnly || a == Grammar.userID
-        || a == Grammar.blank;
+        
+        return aa==bb && (a == Grammar.propertyOnly || a == Grammar.userID
+        || a == Grammar.blank);
     }
     
     static public Node examples[][] = new Node[Grammar.blank + 1][];

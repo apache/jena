@@ -20,6 +20,8 @@ import com.hp.hpl.jena.shared.ReificationStyle;
  *  
  */
 public class ErrorMsgTest extends TestCase {
+    
+    // TODO update OWL tests ...
 
     // TODO add test for rdf:_1 etc. seems wrong to me.
     /**
@@ -109,7 +111,8 @@ public class ErrorMsgTest extends TestCase {
         basicTest("eg:c rdf:type owl:Class; " + "eg:cc rdf:type owl:Class; "
                 + "eg:p rdf:type owl:ObjectProperty;" + "eg:c eg:p eg:cc", new String[]{"expect an object which is an individual","expect a subject which is an individual"});
     }
-/*// TODO get these right
+    /*
+// TODO get these right
     public void testUserDatatype1() {
         basicTest("eg:c eg:p '1'eg:c; " 
                 + "eg:p rdf:type owl:DatatypeProperty", 
@@ -118,6 +121,18 @@ public class ErrorMsgTest extends TestCase {
     }
     public void testUserDatatype2() {
         basicTest("_n eg:c '1'eg:c", 
+                new String[]{""});
+        
+    }
+    public void testUserDatatype3() {
+        basicTest("eg:a eg:p '1'eg:c; " 
+                + "eg:c rdf:type owl:DatatypeProperty", 
+                new String[]{""});
+        
+    }
+    public void testUserDatatype4() {
+        basicTest("eg:c rdf:type owl:DatatypeProperty; " +
+                "eg:a eg:p '1'eg:c " ,
                 new String[]{""});
         
     }

@@ -134,7 +134,7 @@ public class ExhaustiveErrorTest extends TestCase implements Constants {
         for (int i = 0; i < starts.length; i++)
             for (int j = 0; j < startp.length; j++)
                 for (int k = 0; k < starto.length; k++) {
-                    Iterator it = TestExamples.examples(starts[i],startp[j],starto[k]);
+                    Iterator it = TestExamples.examples(i,j,k,starts[i],startp[j],starto[k]);
                     while (it.hasNext()) {
                         //   if ( predTestCount % 10000 == 0)
                         //   System.out.println(predTestCount +"/" + allTestCount+ "  errors checked. "+ this.getName());
@@ -166,6 +166,7 @@ public class ExhaustiveErrorTest extends TestCase implements Constants {
                         assertTrue("No problems found",rs.length>0);
                         for (int xx=0;xx<rs.length;xx++)
                             allCodes[rs[xx].getTypeCode()]++;
+                        
                     }
                 }
     }

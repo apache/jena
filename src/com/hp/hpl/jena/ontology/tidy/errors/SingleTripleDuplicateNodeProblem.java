@@ -5,21 +5,49 @@
 
 package com.hp.hpl.jena.ontology.tidy.errors;
 
-import com.hp.hpl.jena.ontology.tidy.impl.SingleTripleProblem;
+import com.hp.hpl.jena.ontology.tidy.impl.*;
 
 /**
  * @author Jeremy J. Carroll
  *
  */
-public class SingleTripleDuplicateNodeProblem extends SingleTripleProblem {
+public class SingleTripleDuplicateNodeProblem extends SingleTripleProblem implements WantedGiven {
 
     final private int meet;
 
+    /**
+     * 
+     * @param meetCase Must be 2. 
+     */
     public SingleTripleDuplicateNodeProblem(int meetCase) {
-        super("single triple duplicate node");
+        super("The node %s is used as both subject and object, which isn't permitted with predicate %p: we could have a subject %w related by %p to an object %g.");
         meet = meetCase;
-        // TODO Auto-generated constructor stub
+        if (meet != 2)
+            throw new IllegalArgumentException("The only possible SingleTripleDuplicateNodeProblem is a subject/object conflict.");
+   }
+
+    private int wanted, given;
+
+    /** Not part of API */
+    public int getWanted() {
+        return wanted;
     }
+
+    /** Not part of API */
+    public int getGiven() {
+        return given;
+    }
+
+    /** Not part of API */
+    public void setWanted(int w) {
+        wanted = w;
+    }
+
+    /** Not part of API */
+    public void setGiven(int g) {
+        given = g;
+    }
+
     /* (non-Javadoc)
      * @see com.hp.hpl.jena.ontology.tidy.SyntaxProblem2#getTypeCode()
      */

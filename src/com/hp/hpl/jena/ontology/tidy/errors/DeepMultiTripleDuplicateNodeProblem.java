@@ -7,47 +7,21 @@ package com.hp.hpl.jena.ontology.tidy.errors;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.tidy.impl.MultipleTripleProblem;
-import com.hp.hpl.jena.ontology.tidy.impl.WantedGiven;
 
 /**
  * @author Jeremy J. Carroll
  *
  */
-public class MultiTripleDuplicateNodeProblem extends MultipleTripleProblem {
+public class DeepMultiTripleDuplicateNodeProblem extends MultipleTripleProblem {
 
     final private int meet;
     /**
      * @param msg
      */
-    public MultiTripleDuplicateNodeProblem(int meetCase) {
+    public DeepMultiTripleDuplicateNodeProblem(int meetCase) {
         super("multi triple duplicate node");
         meet = meetCase;
         // TODO Auto-generated constructor stub
-    }
-    final private int wanted[] = new int[2];
-    final private int given[] = new int[2];
-
-    /** Not part of API */
-    public WantedGiven wantedGiven(final int ix) {
-        return new WantedGiven(){
-
-            public int getWanted() {
-               return wanted[ix];
-            }
-
-            public int getGiven() {
-                return given[ix];
-            }
-
-            public void setWanted(int w) {
-                wanted[ix]=w;
-            }
-
-            public void setGiven(int g) {
-             given[ix]=g;   
-            }
-            
-        };
     }
 
     /* (non-Javadoc)
@@ -70,7 +44,7 @@ public class MultiTripleDuplicateNodeProblem extends MultipleTripleProblem {
      * @see com.hp.hpl.jena.ontology.tidy.SyntaxProblem2#getTypeCode()
      */
     public int getTypeCode() {
-        return MULTIPLE_TRIPLE_DUPLICATE_NODE+meet;
+        return 10+MULTIPLE_TRIPLE_DUPLICATE_NODE+meet;
     }
 
 }
