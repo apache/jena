@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:01:00 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-08-27 15:17:52 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.graph.compose;
 // Imports
 ///////////////
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.SimpleReifier;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -43,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.7 2003-08-27 13:01:00 andy_seaborne Exp $
+ * @version CVS $Id: Polyadic.java,v 1.8 2003-08-27 15:17:52 chris-dollin Exp $
  */
 public abstract class Polyadic
     extends CompositionBase
@@ -244,8 +245,11 @@ public abstract class Polyadic
     public GraphEventManager getEventManager()
         { return (getBaseGraph() == null) ? super.getEventManager() : getBaseGraph().getEventManager(); }
 
-    public Reifier getReifier()
-        {return (getBaseGraph() == null) ? super.getReifier() : getBaseGraph().getReifier(); }
+//    public Reifier getReifier()
+//        { 
+//        if (reifier == null) reifier = new SimpleReifier( this, style );
+//        return reifier;
+//        }
 
     public PrefixMapping getPrefixMapping()
         { return (getBaseGraph() == null) ? super.getPrefixMapping() : getBaseGraph().getPrefixMapping(); }
