@@ -90,6 +90,8 @@
 [ mf:name "test-B-16" ; mf:action <file:test-B-16> ; mf:result <file:result-B-16.n3> ]
 [ mf:name "test-B-17" ; mf:action <file:test-B-17> ; mf:result <file:result-B-17.n3> ]
 [ mf:name "test-B-18" ; mf:action <file:test-B-18> ; mf:result <file:result-B-18.n3> ]
+[ mf:name "test-B-19" ; mf:action <file:test-B-19> ; mf:result <file:result-B-19.n3> ]
+[ mf:name "test-B-20" ; mf:action <file:test-B-20> ; mf:result <file:result-B-20.n3> ]
 
 # Jena Tutorial
 [ mf:name "test-T-01" ; mf:action <file:test-T-01> ; mf:result <file:result-T-01.n3> ]

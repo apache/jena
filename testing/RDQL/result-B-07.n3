@@ -2,15 +2,71 @@
 
 []    a       rs:ResultSet ;
       rs:resultVariable "z" , "y" , "x" ;
-      rs:size "6" ;
+      rs:size "7" ;
       rs:solution
               [ rs:binding
-                        [ rs:value <http://rdf.hp.com/p2> ;
+                        [ rs:value <http://rdf.hp.com/p1> ;
                           rs:variable "y"
                         ] ;
                 rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ] ;
+                rs:binding
+                        [ rs:value "value"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> ;
+                          rs:variable "z"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ] ;
+                rs:binding
+                        [ rs:value 5 ;
+                          rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p5> ;
+                          rs:variable "y"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value <http://rdf.hp.com/p5> ;
+                          rs:variable "y"
+                        ] ;
+                rs:binding
+                        [ rs:value 5.7 ;
+                          rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ] ;
+                rs:binding
+                        [ rs:value "true" ;
+                          rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p6> ;
+                          rs:variable "y"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
                         [ rs:value "value"@en ;
                           rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p2> ;
+                          rs:variable "y"
                         ] ;
                 rs:binding
                         [ rs:value <http://rdf.hp.com/r> ;
@@ -43,47 +99,5 @@
                 rs:binding
                         [ rs:value <http://rdf.hp.com/p4> ;
                           rs:variable "y"
-                        ]
-              ] ;
-      rs:solution
-              [ rs:binding
-                        [ rs:value <http://rdf.hp.com/r> ;
-                          rs:variable "x"
-                        ] ;
-                rs:binding
-                        [ rs:value "value"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> ;
-                          rs:variable "z"
-                        ] ;
-                rs:binding
-                        [ rs:value <http://rdf.hp.com/p1> ;
-                          rs:variable "y"
-                        ]
-              ] ;
-      rs:solution
-              [ rs:binding
-                        [ rs:value <http://rdf.hp.com/r> ;
-                          rs:variable "x"
-                        ] ;
-                rs:binding
-                        [ rs:value <http://rdf.hp.com/p5> ;
-                          rs:variable "y"
-                        ] ;
-                rs:binding
-                        [ rs:value 5 ;
-                          rs:variable "z"
-                        ]
-              ] ;
-      rs:solution
-              [ rs:binding
-                        [ rs:value "true" ;
-                          rs:variable "z"
-                        ] ;
-                rs:binding
-                        [ rs:value <http://rdf.hp.com/p6> ;
-                          rs:variable "y"
-                        ] ;
-                rs:binding
-                        [ rs:value <http://rdf.hp.com/r> ;
-                          rs:variable "x"
                         ]
               ] .
