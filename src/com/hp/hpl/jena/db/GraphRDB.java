@@ -46,7 +46,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -325,7 +325,6 @@ public class GraphRDB extends GraphBase implements Graph {
     		throw new RDFRDBException("Error - attempt to call remove on a Graph that has already been closed");
     	// First we ask the driver to remove the specialized graphs
     	m_driver.removeSpecializedGraphs( m_properties, m_specializedGraphs );
-    	m_properties.remove();
     	m_properties = null;
     	m_specializedGraphs = null;
     }
