@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.13 2003-08-05 11:31:36 der Exp $
+ * $Id: RuleClauseCode.java,v 1.14 2003-08-07 17:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-08-05 11:31:36 $
+ * @version $Revision: 1.14 $ on $Date: 2003-08-07 17:02:30 $
  */
 public class RuleClauseCode {
     
@@ -87,6 +87,12 @@ public class RuleClauseCode {
     /** variant on CALL_PREDICATE using the last call optimization, only current used in chain rules */
     public static final byte LAST_CALL_PREDICATE = 0x13;
     
+    /** call a table code object () */
+    public static final byte CALL_TABLED = 0x18;
+    
+    /** call a table code object from a wildcard () */
+    public static final byte CALL_WILD_TABLED = 0x19;
+    
     /** return from a call, proceeed along AND tree */
     public static final byte PROCEED = 0xb;
     
@@ -108,7 +114,7 @@ public class RuleClauseCode {
     /** Allocate a new environment frame */
     public static final byte ALLOCATE = 0x16;
     
-    // current next = 0x18
+    // current next = 0x20
     
     /** The maximum number of permanent variables allowed in a single rule clause. 
      *   Future refactorings will remove this restriction. */
@@ -235,6 +241,12 @@ public class RuleClauseCode {
                     break;
                 case CALL_PREDICATE:
                     out.println("CALL_PREDICATE " + args[argi++]);
+                    break;
+                case CALL_TABLED:
+                    out.println("CALL_TABLED ");
+                    break;
+                case CALL_WILD_TABLED:
+                    out.println("CALL_WILD_TABLED ");
                     break;
                 case CALL_PREDICATE_INDEX:
                     out.println("CALL_PREDICATE_INDEX " + args[argi++]);
@@ -377,24 +389,27 @@ public class RuleClauseCode {
         void emitBody(TriplePattern goal, LPRuleStore store) {
             int argi = 0;
             emitBodyPut(goal.getSubject(), 0);
-            // TODO: Add predicate test in variable predicate case
             emitBodyPut(goal.getPredicate(), 1);
             emitBodyPut(goal.getObject(), 2);
             Collection predicateCode = store.codeFor(goal);
             if (predicateCode == null || predicateCode.size() == 0) {
                 code[p++] = CALL_TRIPLE_MATCH;
             } else {
-                if (permanentVars.size() == 0) {
-                    code[p++] = LAST_CALL_PREDICATE;
+                if (store.isTabled(goal)) {
+                    code[p++] = goal.getPredicate().isVariable() ? CALL_WILD_TABLED : CALL_TABLED;
                 } else {
-                    // Normal call, but can it be indexed further?
-                    if (store.indexedPredicate(goal.getPredicate()) && goal.getObject().isVariable()) {
-                        code[p++] = CALL_PREDICATE_INDEX;
+                    if (permanentVars.size() == 0) {
+                        code[p++] = LAST_CALL_PREDICATE;
                     } else {
-                        code[p++] = CALL_PREDICATE;
+                        // Normal call, but can it be indexed further?
+                        if (store.isIndexedPredicate(goal.getPredicate()) && goal.getObject().isVariable()) {
+                            code[p++] = CALL_PREDICATE_INDEX;
+                        } else {
+                            code[p++] = CALL_PREDICATE;
+                        }
                     }
+                    args.add(predicateCode);
                 }
-                args.add(predicateCode);
             }
         }
         

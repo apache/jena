@@ -1,72 +1,78 @@
 /******************************************************************
- * File:        TripleMatchFrame.java
+ * File:        ConsumerChoicePoint.java
  * Created by:  Dave Reynolds
- * Created on:  23-Jul-2003
+ * Created on:  07-Aug-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TripleMatchFrame.java,v 1.7 2003-08-07 17:02:30 der Exp $
+ * $Id: ConsumerChoicePointFrame.java,v 1.1 2003-08-07 17:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
 
 /**
- * Frame on the choice point stack used to represent the state of a direct
- * graph triple match.
+ * Frame in the LPInterpreter's control stack used to represent matching
+ * to the results of a tabled predicate. Conventionally the system state which
+ * finds and tables the goal results is called the generator and states which
+ * require those results are called consumers.
  * <p>
  * This is used in the inner loop of the interpreter and so is a pure data structure
  * not an abstract data type and assumes privileged access to the interpreter state.
  * </p>
- *  
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-07 17:02:30 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-07 17:02:30 $
  */
-public class TripleMatchFrame extends GenericTripleMatchFrame {
+public class ConsumerChoicePointFrame extends GenericTripleMatchFrame {
+        
+    /** The generator whose tabled results we are selecting over */
+    protected Generator generator;
     
-    /** An iterator over triples matching a goal */
-    ExtendedIterator matchIterator;
+    /** The index in the generator's result set that we have reached so far. */
+    protected int resultIndex;
     
     /**
      * Constructor.
-     * Initialize the triple match to preserve the current context of the given
-     * LPInterpreter and search for the match defined by the current argument registers
-     * @param intepreter the interpreter instance whose env, trail and arg values are to be preserved
+     * @param interpreter the parent interpreter whose state is to be preserved here, its arg stack
+     * defines the parameters for the target goal
      */
-    public TripleMatchFrame(LPInterpreter interpreter) {
+    public ConsumerChoicePointFrame(LPInterpreter interpreter) {
         init(interpreter);
-    }
-
-    /**
-     * Find the next result triple and bind the result vars appropriately.
-     * @param interpreter the calling interpreter whose trail should be used
-     * @return false if there are no more matches in the iterator.
-     */
-    public boolean nextMatch(LPInterpreter interpreter) {
-        while (matchIterator.hasNext()) {
-            if (bindResult((Triple)matchIterator.next(), interpreter)) {
-                return true;
-            }
-        }
-        return false;
     }
     
     /**
-     * Initialize the triple match to preserve the current context of the given
-     * LPInterpreter and search for the match defined by the current argument registers
-     * @param intepreter the interpreter instance whose env, trail and arg values are to be preserved
+     * Initialize the choice point state.
+     * @param interpreter the parent interpreter whose state is to be preserved here, its arg stack
+     * defines the parameters for the target goal
      */
     public void init(LPInterpreter interpreter) {
         super.init(interpreter);
-        this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
+        generator = interpreter.getEngine().generatorFor(goal);
+        generator.setChoicePoint(this);
+        resultIndex = 0;
     }
     
     /**
-     * Override close method to reclaim the iterator.
+     * Find the next result triple and bind the result vars appropriately.
+     * @param interpreter the calling interpreter whose trail should be used
+     * @return FAIL if there are no more matches and the generator is closed, SUSPEND if
+     * there are no more matches but the generator could generate more, SATISFIED if
+     * a match has been found.
      */
-    public void close() {
-        if (matchIterator != null) matchIterator.close();
+    public synchronized StateFlag nextMatch(LPInterpreter interpreter) {
+        while (resultIndex < generator.results.size()) {
+            Triple result = (Triple) generator.results.get(resultIndex++);
+            if (bindResult(result, interpreter)) {
+                return StateFlag.SATISFIED;
+            }            
+        }
+        if (generator.isComplete()) {
+            return StateFlag.FAIL;
+        } else {
+            return StateFlag.SUSPEND;
+        }
     }
     
 }

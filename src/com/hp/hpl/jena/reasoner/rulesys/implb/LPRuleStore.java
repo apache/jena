@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.6 2003-08-05 11:31:36 der Exp $
+ * $Id: LPRuleStore.java,v 1.7 2003-08-07 17:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-05 11:31:36 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-07 17:02:30 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -38,6 +38,9 @@ public class LPRuleStore extends RuleStore {
 
     /** Two level index map - index on predicate then on object */
     protected Map indexPredicateToCodeMap;
+        
+    /** Set of predicates which should be tabled */
+    protected HashSet tabledPredicates = new HashSet();
         
     /** Threshold for number of rule entries in a predicate bucket before second level indexing kicks in */
     private static final int INDEX_THRESHOLD = 20;
@@ -56,6 +59,14 @@ public class LPRuleStore extends RuleStore {
     public LPRuleStore() {
         super();
     }
+    
+    /**
+     * Register an RDF predicate as one whose presence in a goal should force
+     * the goal to be tabled.
+     */
+    public synchronized void tablePredicate(Node predicate) {
+        tabledPredicates.add(predicate);
+    }    
     
     /**
      * Return an ordered list of RuleClauseCode objects to implement the given 
@@ -96,8 +107,30 @@ public class LPRuleStore extends RuleStore {
     /**
      * Return true if the given predicate is indexed.
      */
-    public boolean indexedPredicate(Node predicate) {
+    public boolean isIndexedPredicate(Node predicate) {
         return (indexPredicateToCodeMap.get(predicate) != null);
+    }
+    
+    /**
+     * Return true if the given goal is tabled, currently this is true if the
+     * predicate is a tabled predicate or the predicate is a wildcard and some
+     * tabled predictes exist.
+     */
+    public boolean isTabled(TriplePattern goal) {
+        return isTabled(goal.getPredicate());
+    }
+    
+    /**
+     * Return true if the given predicated is tabled, currently this is true if the
+     * predicate is a tabled predicate or the predicate is a wildcard and some
+     * tabled predictes exist.
+     */
+    public boolean isTabled(Node predicate) {
+        if (predicate.isVariable() && !tabledPredicates.isEmpty()) {
+            return true;
+        } else {
+            return tabledPredicates.contains(predicate);
+        }
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.2 2003-08-06 17:00:22 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.3 2003-08-07 17:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-06 17:00:22 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-07 17:02:30 $
  */
 public class LPBRuleEngine {
     
@@ -50,9 +50,6 @@ public class LPBRuleEngine {
     /** Table mapping tabled goals to generators for those goals.
      *  This is here so that partial goal state can be shared across multiple queries. */
     protected HashMap tabledGoals = new HashMap();
-        
-    /** Set of predicates which should be tabled */
-    protected HashSet tabledPredicates = new HashSet();
     
     /** Set of generators waiting to be run */
     protected LinkedList agenda = new LinkedList();
@@ -208,12 +205,31 @@ public class LPBRuleEngine {
      * the goal to be tabled.
      */
     public synchronized void tablePredicate(Node predicate) {
-        tabledPredicates.add(predicate);
+        ruleStore.tablePredicate(predicate);
     }
     
     /**
      * Return a generator for the given goal (assumes that the caller knows that
      * the goal should be tabled).
+     * @param goal the goal whose results are to be generated
+     * @param clauses the precomputed set of code blocks used to implement the goal
+     */
+    public synchronized Generator generatorFor(TriplePattern goal, Collection clauses) {
+        Generator generator = (Generator) tabledGoals.get(goal);
+        if (generator == null) {
+            LPInterpreter interpreter = new LPInterpreter(this, goal, clauses);
+            activeInterpreters.add(interpreter);
+            generator = new Generator(interpreter);
+            schedule(generator);
+            tabledGoals.put(goal, generator);
+        }
+        return generator;
+    }
+        
+    /**
+     * Return a generator for the given goal (assumes that the caller knows that
+     * the goal should be tabled).
+     * @param goal the goal whose results are to be generated
      */
     public synchronized Generator generatorFor(TriplePattern goal) {
         Generator generator = (Generator) tabledGoals.get(goal);
@@ -235,8 +251,8 @@ public class LPBRuleEngine {
     }
     
     /**
-     * Run the scheduled generators until the given generator is ready to run or until
-     * all generators are exhaused. 
+     * Run the scheduled generators until the given generator is ready to run
+     * then run that generator until it generates some results or closes.
      */
     public synchronized void pump(Generator gen) {
         while(!gen.isReady) {
@@ -244,6 +260,7 @@ public class LPBRuleEngine {
             Generator g = (Generator)agenda.removeFirst();
             g.pump();
         }
+        gen.pump();
     }
  
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Generator.java,v 1.1 2003-08-06 17:00:22 der Exp $
+ * $Id: Generator.java,v 1.2 2003-08-07 17:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,13 +21,16 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * awaiing results from a dependent generator).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-06 17:00:22 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-07 17:02:30 $
  */
 public class Generator {
 
     /** The intepreter instance which generates the results for this goal, 
      *  null if the generator is complete */
     protected LPInterpreter interpreter;
+    
+    /** The choice point frame at which the interpreter should restart */
+    protected FrameObject choicePoint;
     
     /** The ordered set of results available for the goal */
     protected ArrayList results = new ArrayList();
@@ -75,6 +78,13 @@ public class Generator {
             }
             dependents = null;
         }
+    }
+    
+    /**
+     * Return the interpeter choice point state at which this generator should resume.
+     */
+    public void setChoicePoint(FrameObject choice) {
+        choicePoint = choice;
     }
     
     /**
@@ -129,7 +139,7 @@ public class Generator {
         boolean finished = false;
         List notifyList = dependents;
         while (!finished) {
-            Object result = interpreter.next();
+            Object result = interpreter.next(choicePoint);
             if (result == StateFlag.FAIL) {
                 setComplete();
                 finished = true;

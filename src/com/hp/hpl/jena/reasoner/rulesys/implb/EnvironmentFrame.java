@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: EnvironmentFrame.java,v 1.3 2003-08-03 09:39:18 der Exp $
+ * $Id: EnvironmentFrame.java,v 1.4 2003-08-07 17:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -17,11 +17,11 @@ import com.hp.hpl.jena.graph.Node;
  * of nested predicate calls.
  * <p>
  * This is used in the inner loop of the interpreter and so is a pure data structure
- * not an abstract data type.
+ * not an abstract data type and assumes privileged access to the interpreter state.
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-07 17:02:30 $
  */
 public class EnvironmentFrame extends FrameObject {
 
@@ -39,10 +39,10 @@ public class EnvironmentFrame extends FrameObject {
     
     /** 
      * Constructor 
-     * @param factory The parent factory to which free frames can be returned
+     * @param clause the compiled code being interpreted by this env frame 
      */
-    public EnvironmentFrame(LPEnvironmentFactory factory) {
-        super(factory);
+    public EnvironmentFrame(RuleClauseCode clause) {
+        this.clause = clause;
     }
     
     /**
@@ -51,10 +51,6 @@ public class EnvironmentFrame extends FrameObject {
      */
     public void init(RuleClauseCode clause) { 
         this.clause = clause;
-        // Note that the current fixed-frame implementation is just a short cut 
-        // the first implementation and will get relaced by a
-        // dynamic (and possibly trimmable) implementation in the future
-//        pVars = new Node[RuleClauseCode.MAX_PERMANENT_VARS];
     }
     
     /**

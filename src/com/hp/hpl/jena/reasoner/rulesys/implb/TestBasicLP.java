@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.9 2003-08-05 11:31:36 der Exp $
+ * $Id: TestBasicLP.java,v 1.10 2003-08-07 17:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-08-05 11:31:36 $
+ * @version $Revision: 1.10 $ on $Date: 2003-08-07 17:02:30 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -61,11 +61,11 @@ public class TestBasicLP  extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestBasicLP.class );
+//        return new TestSuite( TestBasicLP.class );
         
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testFunctors2" ));
-//        return suite;
+        TestSuite suite = new TestSuite();
+        suite.addTest(new TestBasicLP( "testTabled1" ));
+        return suite;
     }  
    
     /**
@@ -76,13 +76,24 @@ public class TestBasicLP  extends TestCase {
      */
     public InfGraph makeInfGraph(List rules, Graph data) {
         FBLPRuleReasoner reasoner = new FBLPRuleReasoner(rules);
-        return reasoner.bind(data);
-//        LPRuleStore store = new LPRuleStore();
-//        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-//            store.addRule((Rule)i.next());
-//        }
-//        InfGraph infgraph =  new LPBackwardRuleInfGraph(null, store, data, null);
-//        return infgraph;
+        FBLPRuleInfGraph infgraph = (FBLPRuleInfGraph) reasoner.bind(data);
+        return infgraph;
+    }
+   
+    /**
+     * Return an inference graph working over the given rule set and raw data.
+     * Can be overridden by subclasses of this test class.
+     * @param rules the rule set to use
+     * @param data the graph of triples to process
+     * @param tabled an array of predicates that should be tabled
+     */
+    public InfGraph makeInfGraph(List rules, Graph data, Node[] tabled) {
+        FBLPRuleReasoner reasoner = new FBLPRuleReasoner(rules);
+        FBLPRuleInfGraph infgraph = (FBLPRuleInfGraph) reasoner.bind(data);
+        for (int i = 0; i < tabled.length; i++) {
+            infgraph.setTabled(tabled[i]);
+        }
+        return infgraph;
     }
     
     /**
@@ -649,6 +660,24 @@ public class TestBasicLP  extends TestCase {
             } );
     }
     
+    /**
+     * Test tabled predicates. Simple transitive closure case.
+     */
+    public void testTabled1() {
+        doTest("[r1: (?a p ?c) <- (?a p ?b)(?a p ?c)]",
+                new Node[] { p },
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(b, p, c),
+                },
+                new Triple(a, p, Node.ANY),
+                new Object[] {
+                    new Triple(a, p, b),
+                    new Triple(b, p, c),
+                    new Triple(a, p, c),
+                } );
+    }
+
     /** 
      * Generic test operation.
      * @param ruleSrc the source of the rules
@@ -663,6 +692,25 @@ public class TestBasicLP  extends TestCase {
             data.add(triples[i]);
         }
         InfGraph infgraph =  makeInfGraph(rules, data);
+        TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
+
+    }
+
+    /** 
+     * Generic test operation.
+     * @param ruleSrc the source of the rules
+     * @param tabled the predicates that should be tabled
+     * @param triples a set of triples to insert in the graph before the query
+     * @param query the TripleMatch to search for
+     * @param results the array of expected results
+     */
+    private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, TripleMatch query, Object[] results) {
+        List rules = Rule.parseRules(ruleSrc);
+        Graph data = new GraphMem();
+        for (int i = 0; i < triples.length; i++) {
+            data.add(triples[i]);
+        }
+        InfGraph infgraph =  makeInfGraph(rules, data, tabled);
         TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
 
     }

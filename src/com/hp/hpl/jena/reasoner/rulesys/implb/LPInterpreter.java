@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.12 2003-08-06 17:00:22 der Exp $
+ * $Id: LPInterpreter.java,v 1.13 2003-08-07 17:02:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-06 17:00:22 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-07 17:02:30 $
  */
 public class LPInterpreter {
 
@@ -75,27 +75,33 @@ public class LPInterpreter {
      * @param goal the query to be satisfied
      */
     public LPInterpreter(LPBRuleEngine engine, TriplePattern goal) {
+        this(engine, goal, engine.getRuleStore().codeFor(goal));
+    }
+
+    /**
+     * Constructor.
+     * @param engine the engine which is calling this interpreter
+     * @param goal the query to be satisfied
+     * @param clauses the set of code blocks needed to implement this goal
+     */
+    public LPInterpreter(LPBRuleEngine engine, TriplePattern goal, Collection clauses) {
         this.engine = engine;
-        Collection clauses = engine.getRuleStore().codeFor(goal);
         
         // Construct dummy top environemnt which is a call into the clauses for this goal
-        envFrame = LPEnvironmentFactory.createEnvironment();
-        envFrame.init(RuleClauseCode.returnCodeBlock);
+        envFrame = new EnvironmentFrame(RuleClauseCode.returnCodeBlock);
         envFrame.allocate(RuleClauseCode.MAX_PERMANENT_VARS);
         envFrame.pVars[0] = argVars[0] = standardize(goal.getSubject());
         envFrame.pVars[1] = argVars[1] = standardize(goal.getPredicate());
         envFrame.pVars[2] = argVars[2] = standardize(goal.getObject());
         
         if (clauses != null && clauses.size() > 0) {
-            ChoicePointFrame newChoiceFrame = ChoicePointFactory.create();
-            newChoiceFrame.init(this, clauses);
+            ChoicePointFrame newChoiceFrame = new ChoicePointFrame(this, clauses);
             newChoiceFrame.linkTo(null);
             newChoiceFrame.setContinuation(0, 0);
             cpFrame = newChoiceFrame;
         }
         
-        TripleMatchFrame tmFrame = TripleMatchFactory.create();
-        tmFrame.init(this);
+        TripleMatchFrame tmFrame = new TripleMatchFrame(this);
         tmFrame.linkTo(cpFrame);
         tmFrame.setContinuation(0, 0);
         cpFrame = tmFrame;
@@ -127,11 +133,21 @@ public class LPInterpreter {
 
     /**
      * Return the next result from this engine.
+     * @param choice the stored choice point frame which the run should restart
+     * @return either a StateFlag or  a result Triple
+     */
+    public synchronized Object next(FrameObject choice) {
+        cpFrame = choice;
+        return next();
+    }
+
+    /**
+     * Return the next result from this engine.
      * @return either a StateFlag or  a result Triple
      */
     public synchronized Object next() {
         StateFlag answer = run();
-        if (answer == StateFlag.FAIL) {
+        if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
         } else {
             // TODO: avoid store turn over here in case where answer has been returned by a TripleMatch
@@ -156,9 +172,17 @@ public class LPInterpreter {
         return engine;
     }
     
+    /**
+     * Return the current choice point frame that can be used to restart the
+     * interpter at this point.
+     */
+    public FrameObject getChoiceFrame() {
+        return cpFrame;
+    }
+    
     //  =======================================================================
     //  Engine implementation  
-
+ 
     /**
      * Restore the current choice point and restart execution of the LP code
      * until either find a successful branch (in which case exit with StateFlag.ACTIVE
@@ -182,16 +206,12 @@ public class LPInterpreter {
                 if (!choice.clauseIterator.hasNext()) {
                     // No more choices left in this choice point
                     cpFrame = choice.getLink();
-                    // Disable pool allocation - not enough performance benefit
-//                    if (cpFrame != null) cpFrame.incRefCount(); // Now a root pointer, so inc ref
-//                    choice.close();
                     continue main;
                 }
                 
                 clause = (RuleClauseCode)choice.clauseIterator.next();
                 // Create an execution environment for the new choice of clause
-                envFrame = LPEnvironmentFactory.createEnvironment();
-                envFrame.init(clause);
+                envFrame = new EnvironmentFrame(clause);
                 envFrame.linkTo(choice.envFrame);
                 envFrame.cpc = choice.cpc;
                 envFrame.cac = choice.cac;
@@ -222,13 +242,38 @@ public class LPInterpreter {
                 if (!tmFrame.nextMatch(this)) {
                     // No more matches
                     cpFrame = cpFrame.getLink();
-                    // Disable pool allocation - not enough performance benefit
-//                    if (cpFrame != null) cpFrame.incRefCount();  // Now a root pointer, so inc ref
-//                    tmFrame.close();
                     continue main;
                 }
                 pc = tmFrame.cpc;
                 ac = tmFrame.cac;
+
+                // then fall through to the execution context in which the the match was called
+                
+            } else if (cpFrame instanceof ConsumerChoicePointFrame) {
+                ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)cpFrame;
+                
+                // Restore the calling context
+                envFrame = ccp.envFrame;
+                clause = envFrame.clause;
+                int trailMark = ccp.trailIndex;
+                if (trailMark < trail.size()) {
+                    unwindTrail(trailMark);
+                }
+                
+                // Find the next choice result directly
+                StateFlag state = ccp.nextMatch(this);
+                if (state == StateFlag.FAIL) {
+                    // No more matches
+                    cpFrame = cpFrame.getLink();
+                    continue main;
+                } else if (state == StateFlag.SUSPEND) {
+                    // Require other generators to cycle before resuming this one
+                    blockedOn = ccp.generator;
+                    return state;
+                }
+
+                pc = ccp.cpc;
+                ac = ccp.cac;
 
                 // then fall through to the execution context in which the the match was called
                 
@@ -369,19 +414,8 @@ public class LPInterpreter {
                             // TODO: improved implementation of last call case
                         case RuleClauseCode.CALL_PREDICATE:
                             Collection clauses = (List)args[ac++];
-                            // Create the new choice points
-                            ChoicePointFrame newChoiceFrame = ChoicePointFactory.create();
-                            newChoiceFrame.init(this, clauses);
-                            newChoiceFrame.linkTo(cpFrame);
-                            tmFrame = TripleMatchFactory.create();
-                            tmFrame.init(this);
-                            tmFrame.linkTo(newChoiceFrame);
-                            tmFrame.setContinuation(pc, ac);
-                            newChoiceFrame.setContinuation(pc, ac);
-                            cpFrame = tmFrame;
-                            // Disable pool allocation - not enough performance benefit
-//                            if (cpFrame != null) cpFrame.incRefCount(); // Now a root pointer, so inc ref
-//                            logger.debug("CALL");
+                            setupClauseCall(pc, ac, clauses);
+                            setupTripleMatchCall(pc, ac);
                             continue main;
                                             
                         case RuleClauseCode.CALL_PREDICATE_INDEX:
@@ -393,32 +427,28 @@ public class LPInterpreter {
                                 clauses = engine.getRuleStore().codeFor(
                                     new TriplePattern(argVars[0], argVars[1], argVars[2]));
                             }
-                            // Create the new choice points
-                            newChoiceFrame = ChoicePointFactory.create();
-                            newChoiceFrame.init(this, clauses);
-                            newChoiceFrame.linkTo(cpFrame);
-                            tmFrame = TripleMatchFactory.create();
-                            tmFrame.init(this);
-                            tmFrame.linkTo(newChoiceFrame);
-                            tmFrame.setContinuation(pc, ac);
-                            newChoiceFrame.setContinuation(pc, ac);
-                            cpFrame = tmFrame;
-//                            logger.debug("CALL(INDEXED)");
+                            setupClauseCall(pc, ac, clauses);
+                            setupTripleMatchCall(pc, ac);
                             continue main;
                                             
                          case RuleClauseCode.CALL_TRIPLE_MATCH:
-                            // Stash the current state
-                            tmFrame = TripleMatchFactory.create();
-                            tmFrame.init(this);
-                            tmFrame.setContinuation(pc, ac);
-                            tmFrame.linkTo(cpFrame);
-                            cpFrame = tmFrame;
-                            // Disable pool allocation - not enough performance benefit
-//                            if (cpFrame != null) cpFrame.incRefCount(); // Now a root pointer, so inc ref
-//                            logger.debug("CALL triple match: " + 
-//                                            deref(argVars[0]) + " " +
-//                                            deref(argVars[1]) + " " +
-//                                            deref(argVars[2]));
+                            setupTripleMatchCall(pc, ac);
+                            continue main;
+                         
+                        case RuleClauseCode.CALL_TABLED:
+                            setupTabledCall(pc, ac);
+                            continue main;
+                                            
+                        case RuleClauseCode.CALL_WILD_TABLED:
+                            if (engine.getRuleStore().isTabled(argVars[1])) {
+                                setupTabledCall(pc, ac);
+                            } else {
+                                // normal call set up
+                                clauses = engine.getRuleStore().codeFor(
+                                    new TriplePattern(argVars[0], argVars[1], argVars[2]));
+                                setupClauseCall(pc, ac, clauses);
+                                setupTripleMatchCall(pc, ac);
+                            }
                             continue main;
                                             
                         case RuleClauseCode.PROCEED:
@@ -450,6 +480,40 @@ public class LPInterpreter {
         return StateFlag.FAIL;
     }
  
+    /**
+     * Set up a triple match choice point as part of a CALL.
+     */
+    private void setupTripleMatchCall(int pc, int ac) {
+        TripleMatchFrame tmFrame = new TripleMatchFrame(this);
+        tmFrame.setContinuation(pc, ac);
+        tmFrame.linkTo(cpFrame);
+        cpFrame = tmFrame;
+//        logger.debug("CALL triple match: " + 
+//                        deref(argVars[0]) + " " +
+//                        deref(argVars[1]) + " " +
+//                        deref(argVars[2]));
+    }
+    
+    /**
+     * Set up a clause choice point as part of a CALL.
+     */
+    private void setupClauseCall(int pc, int ac, Collection clauses) {
+        ChoicePointFrame newChoiceFrame = new ChoicePointFrame(this, clauses);
+        newChoiceFrame.linkTo(cpFrame);
+        newChoiceFrame.setContinuation(pc, ac);
+        cpFrame = newChoiceFrame;
+    }
+    
+    /**
+     * Set up a tabled choice point as part of a CALL.
+     */
+    private void setupTabledCall(int pc, int ac) {
+        ConsumerChoicePointFrame ccp = new ConsumerChoicePointFrame(this);
+        ccp.linkTo(cpFrame);
+        ccp.setContinuation(pc, ac);
+        cpFrame = ccp;
+    }
+    
     /**
      * Unify two nodes. Current implementation does not support functors.
      * @return true if the unifcation succeeds
