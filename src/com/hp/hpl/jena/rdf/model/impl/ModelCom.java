@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelCom.java,v 1.74 2003-08-23 12:18:19 der Exp $
+  $Id: ModelCom.java,v 1.75 2003-08-23 14:19:22 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.74 $' Date='$Date: 2003-08-23 12:18:19 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.75 $' Date='$Date: 2003-08-23 14:19:22 $'
  */
 
 public class ModelCom 
@@ -98,7 +98,9 @@ implements Model, PrefixMapping, ModelLock
     
     public Model add(Resource s, Property p, String o, boolean wellFormed)
        {
-        return add( s, p, o, "", wellFormed );
+           add(s, p, literal(o, "", wellFormed));
+           return this;
+//        return add( s, p, o, "", wellFormed );
     }
     
     public Model add(Resource s, Property p, String o, String lang,
