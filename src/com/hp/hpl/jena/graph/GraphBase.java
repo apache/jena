@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.10 2003-04-22 15:02:16 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.11 2003-04-22 15:30:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -40,7 +40,7 @@ public abstract class GraphBase implements Graph {
         { return new SimpleTransactionHandler(); }
         
     public BulkUpdateHandler getBulkUpdateHandler()
-        { return null; }
+        { return new SimpleBulkUpdateHandler( this ); }
         
     public Capabilities getCapabilities()
         { return null; }

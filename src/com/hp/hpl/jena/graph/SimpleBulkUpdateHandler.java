@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BulkUpdateHandler.java,v 1.2 2003-04-22 15:30:55 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.1 2003-04-22 15:30:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,21 +9,49 @@ package com.hp.hpl.jena.graph;
 import java.util.*;
 
 /**
-    Defines how bulk update may be done on Graphs.
+    A simple-minded implementation of the bulk update interface.
     
  	@author kers
 */
-public interface BulkUpdateHandler
+
+public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     {
-    void add( Triple [] triples );
-    void add( List triples );
-    void add( Iterator it );
-    void add( Graph g );
+    private Graph graph;
     
-    void delete( Triple [] triples );
-    void delete( List triples );
-    void delete( Iterator it );
-    void delete( Graph g );
+    public SimpleBulkUpdateHandler( Graph graph )
+        { this.graph = graph; }
+
+    public void add( Triple [] triples )
+        {
+        }
+        
+    public void add( List triples )
+        {
+        }
+        
+    public void add( Iterator it )
+        {
+        }
+        
+    public void add( Graph g )
+        {
+        }
+
+    public void delete( Triple [] triples )
+        {
+        }
+    
+    public void delete( List triples )
+        {
+        }
+    
+    public void delete( Iterator it )
+        {
+        }
+    
+    public void delete( Graph g )
+        {
+        }
     }
 
 
