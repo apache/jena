@@ -45,7 +45,7 @@ import com.hp.hpl.jena.shared.*;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.15 $ on $Date: 2003-06-18 20:58:49 $
+* @version $Revision: 1.16 $ on $Date: 2003-06-27 15:14:33 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -250,7 +250,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			// Format the DB
 			return formatAndConstructSystemSpecializedGraph();
 		}
-		
+        getDbInitTablesParams();
 		// The database has already been formatted - just grab the properties
 		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_STMT_TABLE);
 		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet, DEFAULT_ID);
