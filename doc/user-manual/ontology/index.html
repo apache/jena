@@ -40,7 +40,7 @@
   <li><a href="#cameraExample">Running example: the camera ontology</a></li>
   <li><a href="#creatingModels">Creating ontology models</a></li>
   <li><a href="#documentHandling">Handling ontology documents and imports</a></li>
-  <li>Handling ontology components: classes (basic)</li>
+  <li><a href="#classesBasic">Handling ontology components: basic class expressions</a></li>
   <li>Handling ontology components: properties</li>
   <li>Handling ontology components: more complex class expressions</li>
   <li>Ontology meta-data</li>
@@ -222,6 +222,54 @@
   the ontology model. It also means that the base graph can be an in-memory store, 
   a database-backed persistent store, or some other storage structure altogether 
   (e.g. an LDAP directory) again without affecting the ontology model.</p>
+<h3>RDF-level polymorphism and Java</h3>
+<p>Consider the following RDF sample:</p>
+<pre>&lt;rdfs:Class rdf:ID=&quot;DigitalCamera&quot;&gt;
+&lt;/rdfs:Class&gt;</pre>
+<p>This declares that the resource with the (relative) URI #DigitalCamera is an 
+  ontology class. It might be appropriate to model declaration in Java with an 
+  instance of an <code>OntClass</code>. Now suppose we augment the class declaration 
+  with some more information:</p>
+<pre>&lt;rdfs:Class rdf:ID=&quot;DigitalCamera&quot;&gt;
+  &lt;rdf:type owl:Restriction /&gt;
+&lt;/rdfs:Class&gt;</pre>
+<p>Now we are saying that <code>#DigitalCamera</code> is an OWL Restriction (which 
+  is a sub-class of rdfs:Class, so this is a perfectly consistent operation). 
+  The problem we have is that Java does not allow us to dynamically change the 
+  Java class of the object modelling this resource. The resource has not changed: 
+  it still has URI <code>#DigitalCamera</code>. But the appropriate Java class 
+  we might choose to model it has changed from <code>OntClass</code> to <code>Restriction</code>. 
+  Conversely, if we remove the <code>rdf:type Restiction</code> from the model, 
+  the use of a <code>Restriction</code> Java class is no longer appropriate. </p>
+<p>Even worse, OWL Full allows us the following (rather counter-intuitive) construction:</p>
+<pre>&lt;rdfs:Class rdf:ID=&quot;DigitalCamera&quot;&gt;
+  &lt;rdf:type owl:ObjectProperty /&gt;
+&lt;/rdfs:Class&gt;</pre>
+<p>That is, <code>#DigitalCamera</code> is now a class <i>and</i> a property. 
+  While this may not be a very useful operation, it illustrates a basic point 
+  that we cannot rely on a consistent or unique mapping between an RDF resource 
+  and the appropriate Java abstraction. In the Jena1 DAML API, we attempted to 
+  determine the most-specific Java class for a given DAML object, and create one 
+  an instance of that class to model the DAML resource. While having some advantages, 
+  this scheme was very brittle and it was easy to construct cases in which it 
+  failed.</p>
+<p>Jena 2 accepts this basic characteristic of polymorphism at the RDF level by 
+  considering that the Java abstraction (OntClass, Restriction, DatatypeProperty, 
+  etc) is just a view or <i>facet</i> of the resource. Given a RDF object (i.e. 
+  an instance of <code>com.hp.hpl.jena.rdf.model.RDFNode</code> or one of its 
+  many sub-classes), we can get a new facet with the <code>as()</code> method. 
+  For example:</p>
+<pre>Resource r = myModel.getResource( myNS + &quot;DigitalCamera&quot; );
+OntClass cls = (OntClass) r.as( OntClass.class );
+Restriction rest = (Restriction) cls.as( Restriction.class );</pre>
+<p>This pattern allows us to defer until run-time decisions about the correct 
+  Java abstraction to use, and make this choice depend on the properties of the 
+  resource itself. If a given RDFNode will not support the conversion to a given 
+  facet, it will raise an exception. The rather clumsily named <code>canAs()</code> 
+  allows a programmer to test whether the <code>as()</code> conversion would work 
+  for a given resource.</p>
+<p>This RDF-level polymorphism is used extensively in the Jena ontology API to 
+  allow maximum flexibility in handling ontology data.</p>
 <h2 id="cameraExample">Running example: the camera ontology</h2>
 <p>To illustrate the principles of using the Ontology API, we use examples drawn 
   from a <a href="http://www.google.com/search?hl=en&ie=UTF-8&oe=UTF-8&q=Roger%2BCostello%2Bcamera%2Bontology">Roger 
@@ -359,7 +407,7 @@ read( InputStream reader, String base, String lang )</pre>
 <p>The ontology DocumentManager is a helper class for OntModel that assists with 
   handling such imports. Before discussing it further, we need to update Figure 
   2 to show how imported documents are handled:</p>
-<p class="centered"><img src="../../images/Ont-model-layers-import.png" width="550" height="331"></p>
+<p class="centered"><img src="../../images/Ont-model-layers-import.png" width="563" height="331"></p>
 <p class="caption">Figure 4: ontology internal structure including imports</p>
 <p>We see that each imported ontology document is held in a separate graph structure. 
   This is important: if we did not do this, once the imports had been processed 
@@ -373,7 +421,133 @@ read( InputStream reader, String base, String lang )</pre>
 <p>Imports are processed recursively, so if our base document imports ontology 
   A, and A imports B, we will end up with the structure shown in Figure 4. The 
   occurs check is used to prevent the document manager getting stuck if B also 
-  imports A! </p>
+  imports A!</p>
+<h3>The ontology document manager</h3>
+<p>Each ontology model has an associated document manager that assists with the 
+  processing and handling of ontology documents. For convenience, there is one 
+  global document manager that is used by default by ontology models. This shared 
+  instance is accessible via <code>OntDocumentManager.getInstance()</code>. In 
+  many cases, it will be sufficient to simply change the settings on the global 
+  document manager to suit a given application's needs. However, for more fine-grain 
+  control, separate document managers may be constructed and passed to the ontology 
+  model when it is created through the model factory. This is achieved by creating 
+  (or adapting) an ontology specification object, and setting the document manager 
+  attribute, for example:</p>
+<pre>OntDocumentManager mgr = new OntDocumentManager();<br>// set the mgr's properties now ...
+OntModelSpec s = new OntModelSpec( OntModelSpec.RDFS_MEM );
+s.setDocumentManager( mgr );
+OntModel m = ModelFactory.createOntologyModel( s, null );</pre>
+<p>Note that the model retains a reference to the document manager it was created 
+  with. Thus changing a document manager's properties will affect models that 
+  have previously been constructed with that document manager.</p>
+<h3>Document manager policy</h3>
+<p>Since the document manager has a large number of configurable options, there 
+  are two ways in which it can be customised to application requirements. Firstly, 
+  the individual parameters of the document manager can be set by Java code. Alternatively, 
+  when a given document manager is created it can load values for the various 
+  parameters from a policy file, expressed in RDF. The document manager has a 
+  list of URL's on which it will search for a policy document. It will stop at 
+  the first entry on the list that resolves to a retrievable document. The default 
+  search path for the policy is: <code>file:etc/ont-policy.rdf;file:ont-policy.rdf</code>. 
+  Thus the default policy, which can serve as a template for user-defined policies, 
+  can be found in the <code>etc/</code> directory under the Jena download directory.</p>
+<p>General properties of the document manager are set in the policy as properties 
+  on a DocumentManagerPolicy object as follows:</p>
+<pre>&lt;DocumentManagerPolicy&gt;
+  &lt;!-- policy for controlling the document manager's behaviour --&gt;
+  &lt;processImports rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/processImports&gt;
+  &lt;cacheModels rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/cacheModels&gt;
+&lt;/DocumentManagerPolicy&gt;</pre>
+<p>The (simple) ontology that declares the various properties that can be used 
+  in such a policy is available in the vocabularies directory in the Jena download, 
+  see <code>ont-manager.rdf</code>.</p>
+<p>To change the search path that the document manager will use to initialise 
+  itself, either pass the new search path as a string when creating a new document 
+  manager object, or call the method <code>setMetadataSearchPath</code>.</p>
+<p></p>
+<h3>The ModelMaker parameter of the document manager</h3>
+<p>In order for the document manager to build the union of the imported documents 
+  (which we refer to as the <i>imports closure</i>), it must be able to create 
+  new graphs to store the imported ontologies. A parameter of the document manager 
+  is its <i>model maker</i>. The model maker is a simple interface that allows 
+  different kinds of models (in memory, from file, in persistent database, etc) 
+  to be built on demand. For the database case, this may include passing the database 
+  user-name and password and other connection parameters. New model makers can 
+  be created via <code>ModelFactory</code>. The default specifications in OntModelSpec 
+  that begin MEM_ use an in-memory model for the base model, and use a memory 
+  model maker to store the imported ontologies in in-memory models.</p>
+<p><b>Note</b>: internally to Jena, we use the Graph as a primary data structure. 
+  However, user code will almost always refer to models, not graphs. A model wraps 
+  a graph, and provides convenience methods for accessing the contents of the 
+  graph. Hence Figure 4, above, refers to a structure containing graphs, but we 
+  use a <code>ModelMaker</code> to generate new stores. The document manager extracts 
+  the appropriate graph from the containing model.</p>
+<h3>Controlling imports processing</h3>
+<p>To load an ontology without building the imports closure, call the method <code>setProcessImports(&nbsp;false&nbsp;)</code> 
+  on the document manager object, or set the <code>processImports</code> property 
+  in the policy file. To be more selective, it is possible to ignore certain URI's 
+  when loading the imported documents. Call the method <code>addIgnoreImport(&nbsp;String&nbsp;uri&nbsp;)</code> 
+  on the document manager object, or set the <code>ignoreImport</code> property 
+  in the policy.</p>
+<p>A strength of working with ontologies is that we can re-use work done by other 
+  ontologists by importing their published ontologies. Often, however, this means 
+  that the ontology is only retrievable by traversing an Internet firewall. Even 
+  if this is possible, by using an HTTP proxy, it may impose unacceptable delay 
+  in loading an application. In the worst case, an ontology on which our application 
+  depends is temporarily or permanently unavailable from the original published 
+  URL. To assist with this common problem, the ontology document manager allows 
+  a local indirection, so that an attempt to import a document from a given published 
+  URL means that a local copy of the document is retrieved instead. This may be 
+  a file copy or simply duplicated on an internal mirror web site.</p>
+<p>To specify this local re-direction in the policy file, we use the following 
+  declarations:</p>
+<pre>&lt;OntologySpec&gt;
+  &lt;!-- local version of the RDFS vocabulary --&gt;
+  &lt;publicURI rdf:resource=&quot;http://www.w3.org/2000/01/rdf-schema&quot;    /&gt;
+  &lt;altURL rdf:resource=&quot;file:vocabularies/rdf-schema.rdf&quot; /&gt;
+  &lt;language rdf:resource=&quot;http://www.w3.org/2000/01/rdf-schema&quot; /&gt;
+  &lt;prefix rdf:datatype=&quot;&amp;xsd;string&quot;&gt;rdfs&lt;/prefix&gt;
+&lt;/OntologySpec&gt;</pre>
+<p>This specifies that an attempt to load the RDFS vocabulary from <code>http://www.w3.org/2000/01/rdf-schema</code> 
+  will transparently cause <code>file:vocabularies/rdf-schema.rdf</code> to be 
+  fetched instead. Any number of such re-directions may be specified in the policy 
+  file, or they can be added to the document manager object directly by calling 
+  the various 'add' methods (see the Javadoc for details). As a side-effect, this 
+  mechanism also means that ontologies can be named with any legal URI (not necessarily 
+  resolvable) - so long as the altURL is itself resolvable.</p>
+<h3>Specifying prefixes</h3>
+<p>A model keeps a table of URI prefixes that can be used to render URI's in the 
+  shortened prefix:name form, which is useful in displaying URI's in a readable 
+  way in user interfaces, and is essential in producing legal XML names that denote 
+  arbitrary URI's. The ontology model's table of prefixes can be initialised from 
+  a table kept by the document manager, which contains the standard prefixes plus 
+  any that are declared by in the policy file (or added to subsequently by method 
+  calls). To prevent the model's prefix table from being initialised in this way, 
+  use the property <code>useDeclaredNsPrefixes</code> in the policy file (with 
+  value 'false'), or call the method <code>setUseDeclaredPrefixes</code> on the 
+  ontology object.</p>
+<h3>Caching models</h3>
+<p>The final behaviour that the document manager provides to assist with loading 
+  ontology documents is a model cache. Suppose two ontologies, A and B both import 
+  ontology C. It would be nice not to have to read C twice when loading A and 
+  B. The document manager supports this use case by optionally caching C's model, 
+  indexed by C's URI. Then an attempt to import C from B, it previously having 
+  been loaded by A, would result in a significant time saving, and a re-use of 
+  the same model for C in both A and B. </p>
+<p>To turn model caching on or off, use the policy property <code>cacheModels</code>, 
+  or call the method <code>setCacheModels(&nbsp;boolean&nbsp;caching&nbsp;)</code>. 
+  The default is caching on. The document manager's current model cache can be 
+  cleared at any time by calling <code>clearCache()</code>.</p>
+<h3>Example</h3>
+<p>In the following example, we programmatically declare that the camera ontology 
+  is copied locally, and then load it using the public URL. Assume that the constant 
+  JENA has been initialised to the directory in which Jena is installed.</p>
+<pre>OntModel m = ModelFactory.createOntologyModel();
+OntDocumentManager dm = m.getDocumentManager();
+dm.addAltEntry( &quot;http://www.xfront.com/owl/ontologies/camera/&quot;,
+                &quot;file:&quot; + JENA + &quot;doc/user-manual/ontology/data/camera.owl&quot;    );
+m.read( &quot;http://www.xfront.com/owl/ontologies/camera/&quot; );</pre>
+<h2>Handling ontology components: basic class expressions</h2>
 <p>&nbsp;</p>
 </body>
 </html>

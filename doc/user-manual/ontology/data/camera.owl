@@ -6,20 +6,18 @@
 	 xmlns:camera="http://www.xfront.com/owl/ontologies/camera/#"
 	 xml:base="http://www.xfront.com/owl/ontologies/camera/">
 
-     <![CDATA[
-     <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-     <!--                                                             -->
-     <!--               Camera OWL Ontology                           -->
-     <!--                                                             -->
-     <!-- Author: Roger L. Costello                                   -->
-     <!-- Acknowlegements: Many thanks to the following people for    -->
-     <!--                  their invaluable input:                    -->
-     <!--                     Richard McCullough, Yuzhong Qu,         -->
-     <!--                     Leo Sauermann, Brian McBride and        -->
-     <!--                     Jim Farrugia.                           -->
-     <!--                                                             -->
-     <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-     ]]>
+    <owl:Ontology>
+        <rdfs:comment>
+        Camera OWL Ontology                           
+                                                                  
+      Author: Roger L. Costello                                   
+      Acknowlegements: Many thanks to the following people for    
+                       their invaluable input:                    
+                          Richard McCullough, Yuzhong Qu,         
+                          Leo Sauermann, Brian McBride and        
+                          Jim Farrugia.                           
+        </rdfs:comment>
+    </owl:Ontology>
 
      <owl:Class rdf:ID="Money">
           <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
@@ -89,7 +87,7 @@
      <owl:Class rdf:ID="Lens">
           <rdfs:subClassOf rdf:resource="#PurchaseableItem"/>
      </owl:Class>
-		
+
      <owl:Class rdf:ID="Camera">
           <rdfs:subClassOf rdf:resource="#PurchaseableItem"/>
      </owl:Class>
@@ -168,6 +166,6 @@
           <owl:equivalentProperty rdf:resource="#aperture"/>
           <rdfs:domain rdf:resource="#Lens"/>
           <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-     </owl:DatatypeProperty>	
+     </owl:DatatypeProperty>
 
 </rdf:RDF>
