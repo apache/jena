@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.18 2004-11-29 16:01:20 chris-dollin Exp $
+ * $Id: GenericRuleReasoner.java,v 1.19 2004-11-30 10:14:25 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2004-11-29 16:01:20 $
+ * @version $Revision: 1.19 $ on $Date: 2004-11-30 10:14:25 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -202,13 +202,10 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         {
         if (parameter.equals( JMS.ruleSetURL )) 
             {
-//            System.err.println( ">> ruleSetURL " + value );
             addRules( Rule.rulesFromURL( value.getURI() ) );
             }
         else if (parameter.equals( JMS.ruleSet )) 
             {
-//            System.err.println( ">> ruleSet " + value );
-//            System.err.println( "++  " + IteratorCollection.iteratorToSet( value.listProperties() ) );
             StmtIterator that = value.listProperties( JMS.ruleSetURL );
             while (that.hasNext())
                 {
@@ -217,9 +214,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             StmtIterator it = value.listProperties( JMS.hasRule );
             while (it.hasNext()) 
                 {
-                String s = it.nextStatement().getString();
-                // System.err.println( "++  " + s );
-                addRules( Rule.parseRules( s ) ); 
+                addRules( Rule.parseRules( it.nextStatement().getString() ) ); 
                 }
             }
         else

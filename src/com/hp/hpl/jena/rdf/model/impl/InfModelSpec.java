@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.13 2004-11-29 15:59:32 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.14 2004-11-30 10:14:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -11,7 +11,6 @@ import junit.framework.Assert;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileManager;
@@ -143,21 +142,9 @@ public class InfModelSpec extends ModelSpecImpl
         Resource config = (Resource) R.inModel( rs );
         WrappedReasonerFactory f = new WrappedReasonerFactory( rf, config );
     	loadSchemas( rs, R, f );
-        loadRulesets( rs, R, f );
         return f;
         }
 
-    /**
-        load the factory <code>f</code> with all the rulesets given by the jms:ruleSet and 
-        jms:ruleSetURL properties of <code>R</code> in the model <code>rs</code>.
-	*/
-	private static void loadRulesets( Model rs, Resource R, WrappedReasonerFactory f )
-		{
-		StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
-		StmtIterator others = rs.listStatements( R, JMS.ruleSet, (RDFNode) null );
-		while (rulesets.hasNext()) load( f, rulesets.nextStatement().getResource() );
-		while (others.hasNext()) loadNamedRulesets( f, others.nextStatement().getResource() );
-		}
 
 	/**
 	 	load the factory <code>f</code> with the schemas given by the jms:schemaURL
@@ -173,45 +160,6 @@ public class InfModelSpec extends ModelSpecImpl
 			f.bindSchema( FileManager.get().loadModel( sc.getURI() ).getGraph() );
 			}
 		}
-
-	/**
-        load into the factory <code>f</code> any rules described by the jms:hasRule and
-        jms:ruleSetURL properties of <code>ruleSet</code>.
-    */
-    protected static void loadNamedRulesets( RuleReasonerFactory f, Resource ruleSet )
-        {
-        loadRulesetStrings( f, ruleSet );
-        loadRulesetURLs( f, ruleSet );
-        }
-    
-    /**
-    	load into the factory <code>f</code> all the rules which are at the URLs
-    	specified by the resources-values of the jms:ruleSetURL properties
-    	of <code>ruleSet</code>.
-    */
-    protected static void loadRulesetURLs( RuleReasonerFactory f, Resource ruleSet )
-    	{
-    	StmtIterator it = ruleSet.listProperties( JMS.ruleSetURL );
-    	while (it.hasNext()) load( f, it.nextStatement().getResource() );
-    	}
-
-    /**
-     	load into the factory <code>f</code> the rules given by the literal strings
-     	which are the jms:hasRule properties of <code>ruleSet</code>.
-    */
-    protected static void loadRulesetStrings( RuleReasonerFactory f, Resource ruleSet )
-    	{
-    	StmtIterator it = ruleSet.listProperties( JMS.hasRule );
-    	while (it.hasNext())
-    	    f.addRules( Rule.parseRules( it.nextStatement().getString() ) );
-    	}
-    
-    /**
-     load into the factory <code>f</code> the rules at the URL which is the
-        URI of the resource <code>u</code>.
-    */
-    protected static void load( RuleReasonerFactory rf, Resource u )
-        { rf.addRules( Rule.rulesFromURL( u.getURI() ) ); }
     }
 
 
