@@ -1,39 +1,45 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TripleSorter.java,v 1.4 2003-10-07 06:27:02 chris-dollin Exp $
+  $Id: NamedGraphMap.java,v 1.1 2003-10-07 06:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
-import com.hp.hpl.jena.graph.*;
+import java.util.HashMap;
+
+import com.hp.hpl.jena.graph.Graph;
 
 /**
-    Interface for things that can sort triples (for optimising queries).
-    
- 	@author kers
+    a mapping from from names to Graphs.
 */
-public interface TripleSorter
+public class NamedGraphMap
     {
-    /**
-        Sort the array triples and return the reorganised array. A new array may be returned
-        or the existing array reorganised in-place. The result array may have a different
-        size from the original; the requirement is just that a query using the result must
-        deliver the same results as one using the original. We hope, of course, that the
-        performance of the query is improved ...
-    */
-    public Triple [] sort( Triple [] triples );
+    NamedGraphMap() {}      
+    
+    private HashMap map = new HashMap();    
     
     /**
-        A TripleSorter that does not alter the triple array at all.
-     */
-    public static final TripleSorter dontSort = new TripleSorter()
-        { public Triple []  sort( Triple [] ts ) { return ts; } };        
+        Add a named graph to the map and return this map.
+    	@param name the name to give this graph. Must not already be bound.
+    	@param g the graph to name
+    	@return this NamedGraphMap
+    */
+    public NamedGraphMap put( String name, Graph g ) 
+        { map.put( name, g ); 
+        return this; }       
+    
+    /**
+        Answer the GRaph with the given name, or null if there isn't one.
+    	@param name the name of the graph
+    	@return the named graph, or null
+    */
+    public Graph get( String name ) 
+        { return (Graph) map.get( name ); } 
     }
 
-
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

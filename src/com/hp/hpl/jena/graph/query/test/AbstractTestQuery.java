@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.16 2003-10-06 05:37:40 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.17 2003-10-07 06:27:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -330,7 +330,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
         Graph b = getGraphWith( "blish inGenre SF; curry inGenre food" );
         Node reads = node("reads"), inGenre = node("inGenre");
         Q.addMatch( "a", X, reads, Y ).addMatch( "b", Y, inGenre, Z );
-        Query.ArgMap args = Q.args().put( "a", a ).put( "b", b );
+        NamedGraphMap args = Q.args().put( "a", a ).put( "b", b );
         List bindings = iteratorToList( Q.executeBindings( args, new Node [] {X, Z} ) );
         assertEquals( "testTwoGraphs: one binding", bindings.size(), 1 );
         Domain  d = (Domain) bindings.get( 0 );
@@ -591,11 +591,11 @@ public abstract class AbstractTestQuery extends GraphTestBase
     public void testTripleSorting()
         {
         Graph g = dataGraph();
-        Map answer = getAnswer( g, Query.dontSort );
+        Map answer = getAnswer( g, TripleSorter.dontSort );
         assertEquals( 1, answer.size() );
         assertEquals( new Integer(1), answer.get( Arrays.asList( nodes( "a d" ) ) ) );
     /* */
-        assertEquals( answer, getAnswer( g, Query.dontSort ) );
+        assertEquals( answer, getAnswer( g, TripleSorter.dontSort ) );
         assertEquals( answer, getAnswer( g, fiddle( 0, 2, 1 ) ) );
         assertEquals( answer, getAnswer( g, fiddle( 1, 0, 2 ) ) );
         assertEquals( answer, getAnswer( g, fiddle( 1, 2, 0 ) ) );
@@ -642,7 +642,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
     
     public void testQueryOptimisation()
         {
-        int dontCount = queryCount( Query.dontSort );
+        int dontCount = queryCount( TripleSorter.dontSort );
         int optimCount = queryCount( new SimpleTripleSorter() );
         // System.err.println( ">> dontCount=" + dontCount + " optimCount=" + optimCount );
         if (optimCount > dontCount) 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryEngine.java,v 1.1 2003-10-06 15:19:40 chris-dollin Exp $
+  $Id: SimpleQueryEngine.java,v 1.2 2003-10-07 06:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -19,11 +19,11 @@ import com.hp.hpl.jena.util.iterator.*;
 public class SimpleQueryEngine 
     {
     private ExpressionSet constraint;
-    private Map triples;
+    private NamedTripleBunches triples;
     private TripleSorter sortMethod;
     private int variableCount;
     
-	public SimpleQueryEngine( Map triples, TripleSorter ts, ExpressionSet constraint )
+	public SimpleQueryEngine( NamedTripleBunches triples, TripleSorter ts, ExpressionSet constraint )
         { this.constraint = constraint; 
         this.triples = triples; 
         this.sortMethod = ts; }
@@ -31,7 +31,7 @@ public class SimpleQueryEngine
     int getVariableCount()
         { return variableCount; }
         
-    public ExtendedIterator executeBindings( List outStages, Query.ArgMap args, Node [] nodes )
+    public ExtendedIterator executeBindings( List outStages, NamedGraphMap args, Node [] nodes )
         {
         Mapping map = new Mapping( nodes );
         ArrayList stages = new ArrayList();        
@@ -43,7 +43,7 @@ public class SimpleQueryEngine
         return filter( connectStages( stages, variableCount ) );
         }
                                   
-    public ExtendedIterator filter( final Stage allStages )
+    private ExtendedIterator filter( final Stage allStages )
         {
         final Pipe complete = allStages.deliver( new BufferPipe() );
         return new NiceIterator()
@@ -70,9 +70,9 @@ public class SimpleQueryEngine
         static int size( Cons L ) { int n = 0; while (L != null) { n += 1; L = L.tail; } return n; }
         }
                 
-    private void addStages( ArrayList stages, Query.ArgMap arguments, Mapping map )
+    private void addStages( ArrayList stages, NamedGraphMap arguments, Mapping map )
         {
-        Iterator it2 = triples.entrySet().iterator();
+        Iterator it2 = triples.entrySetIterator();
         while (it2.hasNext())
             {
             Map.Entry e = (Map.Entry) it2.next();

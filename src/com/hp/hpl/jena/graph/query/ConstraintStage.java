@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.9 2003-10-06 05:37:40 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.10 2003-10-07 06:27:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -134,7 +134,7 @@ public class ConstraintStage extends Stage
                 
    private boolean evalConstraint( Domain d, ExpressionSet e )
         {
-        return constraint.evalBool( map, d );
+        return e.evalBool( map, d );
         }
     
     /**

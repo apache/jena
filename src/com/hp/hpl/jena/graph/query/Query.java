@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.28 2003-10-06 15:19:40 chris-dollin Exp $
+  $Id: Query.java,v 1.29 2003-10-07 06:27:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -21,11 +21,6 @@ import java.util.*;
 
 public class Query 
 	{   
-    /**
-        A more-or-less internal object for referring to the "default" graph in a query.
-    */
-    public static final String anon = "<this>";   
-    
     /**
         A convenient synonym for Node.ANY, used in a match to match anything.
     */ 
@@ -85,7 +80,7 @@ public class Query
         @return this Query, for cascading
     */
     public Query addMatch( Node s, Node p, Node o )
-        { return addNamedMatch( anon, s, p, o ); }     
+        { return addNamedMatch( NamedTripleBunches.anon, s, p, o ); }     
         
     /**
         Add a triple to the query's collection of match triples. Return this query
@@ -94,7 +89,8 @@ public class Query
         @return this Query, for cascading
     */
     public Query addMatch( Triple t )
-        { return addNamedMatch( anon, t ); }
+        { triples.add( NamedTripleBunches.anon, t );
+        return this; }
         
     /**
         Add an (S, P, O) match triple to this query to match against the graph labelled
@@ -110,6 +106,9 @@ public class Query
         
     private ExpressionSet constraint = new ExpressionSet();
     
+    public ExpressionSet getConstraints()
+        { return constraint; }
+        
     public Query addConstraint( Expression e )
         { 
         constraint.add( e );
@@ -126,61 +125,54 @@ public class Query
         }
 
     public ExtendedIterator executeBindings( Graph g, Node [] results )
-        { return executeBindings( args().put( anon, g ), results ); }
+        { return executeBindings( args().put( NamedTripleBunches.anon, g ), results ); }
                 
     public ExtendedIterator executeBindings( Graph g, List stages, Node [] results )
-        { return executeBindings( stages, args().put( anon, g ), results ); }
+        { return executeBindings( stages, args().put( NamedTripleBunches.anon, g ), results ); }
     
-    public ExtendedIterator executeBindings( ArgMap args, Node [] nodes )
+    public ExtendedIterator executeBindings( NamedGraphMap args, Node [] nodes )
         { return executeBindings( new ArrayList(), args, nodes ); }
         
     /**
         the standard "default" implementation of executeBindings.
     */
-    public ExtendedIterator executeBindings( List outStages, ArgMap args, Node [] nodes )
+    public ExtendedIterator executeBindings( List outStages, NamedGraphMap args, Node [] nodes )
         {
         SimpleQueryEngine e = new SimpleQueryEngine( triples, sortMethod, constraint );
         ExtendedIterator result = e.executeBindings( outStages, args, nodes );
         variableCount = e.getVariableCount();
         return result;
         }
-                          
-    /** collection of triple patterns, graph name -> Cons[Triple] */
-    private HashMap triples = new HashMap();
     
-    /** mapping of graph name -> graph */
-    private ArgMap argMap = new ArgMap();
-            
-    /**
-        a mapping from from names to Graphs
-    */
-    public static class ArgMap
-        {
-        private HashMap map = new HashMap();    
-        ArgMap() {}      
-        public ArgMap put( String name, Graph g ) { map.put( name, g ); return this; }       
-        public Graph get( String name ) { return (Graph) map.get( name ); } 
-        }
+    /** The named bunches of triples for graph matching */
+    
+    private NamedTripleBunches triples = new NamedTripleBunches();
+    
+    public NamedTripleBunches getTriples()
+        { return triples; }
         
-    public ArgMap args()
+    /** mapping of graph name -> graph */
+    private NamedGraphMap argMap = new NamedGraphMap();
+            
+    public NamedGraphMap args()
         { return argMap; }
 
     private Query addNamedMatch( String name, Node s, Node p, Node o )
-        { return addNamedMatch( name, new Triple( s, p, o ) ); }
-        
-    private Query addNamedMatch( String name, Triple pattern )
-    	{
-        triples.put( name, SimpleQueryEngine.cons( pattern, triples.get( name ) ) );
-    	return this;
-    	}
+        { triples.add( name, new Triple( s, p, o ) ); 
+        return this; }
+
+    public TripleSorter getSorter()
+        { return sortMethod; }
         
     public void setTripleSorter( TripleSorter ts )
-        { sortMethod = ts == null ? dontSort : ts; }
+        { sortMethod = ts == null ? TripleSorter.dontSort : ts; }
         
-    public static final TripleSorter dontSort = new TripleSorter()
-        { public Triple []  sort( Triple [] ts ) { return ts; } };
+    /**
+        @deprecated - use TripleSorter.dontSort instead.
+    */
+    public static final TripleSorter dontSort = TripleSorter.dontSort;
         
-    private TripleSorter sortMethod = dontSort;
+    private TripleSorter sortMethod = TripleSorter.dontSort;
     
     private int variableCount = -1;
     
