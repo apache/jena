@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhGraph.java,v 1.14 2003-08-27 12:59:37 andy_seaborne Exp $
+  $Id: EnhGraph.java,v 1.15 2004-12-01 14:49:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -35,8 +35,7 @@ public class EnhGraph
     static private int cnt = 0;
 
     /** Cache of enhanced nodes that have been created */
-    private Cache enhNodes = CacheManager.createCache
-        ("RAND","EnhGraph-"+cnt++,1000);
+    protected Cache enhNodes = CacheManager.createCache( CacheManager.ENHNODECACHE, "EnhGraph-" + cnt++, 1000 );
     
     /** The unique personality that is bound to this polymorphic instace */
     private Personality personality;

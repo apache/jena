@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCache.java,v 1.4 2003-08-27 13:07:55 andy_seaborne Exp $
+  $Id: TestCache.java,v 1.5 2004-12-01 14:51:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -24,6 +24,7 @@ public class TestCache extends TestCase
     public static TestSuite suite() {
         TestSuite suite = new TestSuite("Cache");       
         suite.addTest( new CacheTestCase(CacheManager.RAND));
+        // suite.addTest( new CacheTestCase(CacheManager.ENHNODECACHE));
         return suite;
     }   
            
