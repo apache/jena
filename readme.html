@@ -42,6 +42,17 @@ style="font-style: italic">Hewlett Packard Laboratories, Bristol</span></p>
 		<p>This version of the Jena toolkit is a preview release of Jena 2. It has considerably less functionality than the current Jena 1 release (no DAML support, no persistenence support, no reification support). It is newer and thus less well tested in the field. However, it does have fully compliant support for datatyped literals, parsers and writers that are fully conformant with the RDFCore WG last call drafts and a preview of the proposed support for RDFS inference. The Jena team intend to complete the functionality missing from Jena 1 as soon as possible.</p>
 		<p>The Jena team do not recommend migrating from Jena 1 to Jena 2 at this time. However, we do encourage folks to try out Jena 2 and provide feedback on ease of migrating existing code and experience, especially with the new features such as datatypes and the preliminary inference SPI.</p>
 		<p>Whilst the intention is maintain the present API through the migration from Jena 1 to Jena 2, we are taking the opportunity to make some minor changes that folks have requested.  These are described in the document <a href="doc/migrate1-2.html">Migrating from Jena 1 to Jena2</a>. You may notice the javadoc is a lot smaller. This is largely because we are trying to not include classes which are internal to the operation of Jena. </p>
+
+<p> A key feature of the new architecture is making a clear distinction
+between the Application Programming Interface (API), the System Programming
+Interface (SPI) and the implementation.  The API is intended for use in
+building applications that use Jena; this is where Model, Resource, etc live.
+The SPI is entended for use in extending Jena, <i>eg</i> integrating new
+persistent stores and reasoners: this is where the new Graph interface lives.
+This release contains preliminary versions of SPI interfaces for integrating
+new reasoners, and for "fast path" query which will allow us to pass complex
+queries on to database engines.
+
 		<p>Earlier and more recent versions may be available from the Jena web site - <a href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb</a>.</p>
 		<h2>Installation</h2>
 		<ul>
@@ -61,11 +72,13 @@ style="font-style: italic">Hewlett Packard Laboratories, Bristol</span></p>
 </pre>
 			</li>
 			<li>Test the distribution by running the regression tests, either:</li>
-			<pre>ant test                      // if you have ant configured to run junit
-
+			
+<pre>
+ant test                      // if you have ant configured to run junit
 test.bat                      // on windows
+. test.sh                     // on unix
 
-test.sh                       // on unix</pre>
+</pre>
 			<p>You may see some warnings about some tests being suppressed,
 			but the remaining 944 tests should run successfully.
 			</p>
