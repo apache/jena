@@ -1,10 +1,12 @@
 
 uriref(o, ontology, lite ).
 
+/*
 comment(note,
    ['The only metaproperties are: owl:imports,
      owl:backwardsCompatibleWith, etc. 
      There is no facility for user-defined metaproperties.']).
+     */
 uriref(m, ontologyProperty, lite ).
 uriref(dt, datatype, lite).
 uriref(a, annotationProp, lite).

@@ -181,6 +181,8 @@ axiom ::=
   annotationProperty( a, { annotation } ).
 axiom ::=
   annotationProperty( da, { annotation } ).
+axiom ::=
+  ontologyProperty( m, { annotation } ).
 
 comment(rationale,
   [ 'For ease of writing the document, I have made the property axioms

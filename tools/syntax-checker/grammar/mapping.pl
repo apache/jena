@@ -43,8 +43,10 @@ c(C) ->
 
 i(I) -> note(thing)/(+[t(I,rdf:type,owl:thing)]);                            I.
 
-m(owl:Builtin) -> +[t(owl:Builtin,rdf:type,owl:ontologyProperty)];  owl:Builtin.
-m(rdfs:Builtin) -> true;                 rdfs:Builtin .
+m(owl:Builtin) -> true;  owl:Builtin.
+m(M) -> t(M,rdf:type,owl:ontologyProperty);    M.
+%m(rdfs:Builtin) -> true;                 rdfs:Builtin .
+
 dt(rdfs:literal) -> true;                rdfs:literal.
 /*
 dr(DR) -> 
@@ -127,9 +129,11 @@ D + annotation( a, dt ) ->
 
 comment(1, heading(1,individuals)).
 comment(1, heading(2,'Named Individuals')).
+/*
 comment(1, 'The interaction between these two individual rules make it obligatory 
 to declare at least one type for a named individual.
 The default is <code>owl:thing</code>').
+*/
 
 individual( i, {annotation}, {type( description )}, 
             {value}, {individualComparison} ) ->
@@ -152,6 +156,10 @@ annotationProperty( a, { annotation } ) ->
     t(x(a),rdf:type,owl:annotationProperty),
     +[t(x(a),rdf:type,rdf:property)],
     {x(x(a),annotation)}.
+ontologyProperty( m, { annotation } ) ->
+    t(x(m),rdf:type,owl:ontologyProperty),
+    +[t(x(m),rdf:type,rdf:property)],
+    {x(x(m),annotation)}.
 
 
 
@@ -239,39 +247,45 @@ comment(1, heading(2,'Restrictions on Datatype Properties')).
 
 
 restriction( cdp, allValuesFrom( dataRange ) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:allValuesFrom,x(dataRange)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.
 
 restriction( cdp, someValuesFrom( dataRange ) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:someValuesFrom,x(dataRange)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.    
 
 restriction( cdp, cardinality(smallInt) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:cardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.    
 restriction( cdp, minCardinality(smallInt) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:minCardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.     
 restriction( cdp, maxCardinality(smallInt) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:maxCardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.     
 restriction( cdp, hasValue(dataLiteral) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cdp)),
    t(blank,owl:hasValue,x(dataLiteral)),
    +[t(blank,rdf:type,rdfs:class)];  
@@ -281,38 +295,44 @@ restriction( cdp, hasValue(dataLiteral) ) ->
 comment(1, heading(2,'Restrictions on Object Properties')).
 
 restriction( cop, allValuesFrom( classInRestriction ) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:allValuesFrom,x(classInRestriction));  
                                         blank.
 
 restriction( cop, someValuesFrom( classInRestriction ) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:someValuesFrom,x(classInRestriction)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.    
 
 restriction( cop, cardinality(smallInt) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:cardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.    
 restriction( cop, minCardinality(smallInt) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:minCardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.     
 restriction( cop, maxCardinality(smallInt) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:maxCardinality,x(smallInt)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.      
 restriction( cop, hasValue(i) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(cop)),
    t(blank,owl:hasValue,x(i)),
    +[t(blank,rdf:type,rdfs:class)];  
@@ -322,20 +342,23 @@ comment(1, heading(2,'Restrictions on Transitive Properties')).
 
 
 restriction( tp, allValuesFrom( classInRestriction ) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(tp)),
    t(blank,owl:allValuesFrom,x(classInRestriction)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.
 
 restriction( tp, someValuesFrom( classInRestriction ) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(tp)),
    t(blank,owl:someValuesFrom,x(classInRestriction)),
    +[t(blank,rdf:type,rdfs:class)];  
                                         blank.     
 restriction( tp, hasValue(i) ) ->
-   t(blank,rdf:type,owl:restriction),
+   +[t(blank,rdf:type,owl:restriction)],
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:onProperty,x(tp)),
    t(blank,owl:hasValue,x(i)),
    +[t(blank,rdf:type,rdfs:class)];  
@@ -430,29 +453,29 @@ comment(1, heading(1,'Descriptions')).
 
 
 intersectionOf({description}) ->
-   t(blank,rdf:type,owl:class),
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:intersectionOf,x(seq({description}))),
    +[t(blank,rdf:type,rdfs:class)];     blank.
 
 unionOf({description}) ->
-   t(blank,rdf:type,owl:class),
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:unionOf,x(seq({description}))),
    +[t(blank,rdf:type,rdfs:class)];     blank.
 
 complementOf(description) ->
-   t(blank,rdf:type,owl:class),
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:complementOf,x(description)),
    +[t(blank,rdf:type,rdfs:class)];     blank.
 
 oneOf({i}) ->
-   t(blank,rdf:type,owl:class),
+   +[t(blank,rdf:type,owl:class)],
    t(blank,owl:oneOf,x(seq({i}))),
    +[t(blank,rdf:type,rdfs:class)];     blank.
 
 comment(1, heading(1,'DataRanges')).
 
 dataRange( {dataLiteral} ) ->
-   t(blank,rdf:type,owl:dataRange),
+   +[t(blank,rdf:type,owl:dataRange)],
    t(blank,owl:oneOf,x(seq({dataLiteral}))),
    +[t(blank,rdf:type,rdfs:class)];     blank.
  
@@ -468,16 +491,18 @@ dataRange( dr, +declaration, {annotation} ) ->
 
 seq({[]}) -> true; rdf:nil .
 seq(description-1,{description-2}) -> 
-    t(blank,rdf:type,rdf:list),
+    +[t(blank,rdf:type,rdf:list)],
     t(blank,rdf:first,x(description-1)),
     t(blank,rdf:rest,x(seq({description-2}))); blank.
 
 seq(dataLiteral-1,{dataLiteral-2}) -> 
+    +[t(blank,rdf:type,rdf:list)],
     t(blank,rdf:type,rdf:list),
     t(blank,rdf:first,x(dataLiteral-1)),
     t(blank,rdf:rest,x(seq({dataLiteral-2}))); blank.
 
 seq(i-1,{i-2}) -> 
+    +[t(blank,rdf:type,rdf:list)],
     t(blank,rdf:type,rdf:list),
     t(blank,rdf:first,x(i-1)),
     t(blank,rdf:rest,x(seq({i-2}))); blank.
