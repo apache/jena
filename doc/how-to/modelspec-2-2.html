@@ -15,8 +15,8 @@ pre {
 <body>
 <h1>ModelSpec howto - describing Jena 2.2 models in RDF</h1>
 
-<i>draft for discussion 13th August 2004</i>
-<br><i>version 0.2</i>
+<i>draft for discussion 16th August 2004</i>
+<br><i>version 0.3</i>
 
 <h1>introduction</h1>
 
@@ -179,37 +179,147 @@ filebase. There is no need for a file-based model to be opened
 with the same style each time it is used - the reification style 
 is not preserved.
 
-<hr>
-Unmodified original from here .....
-
 <h2>PlainModelSpec from a database</h2>
 
-Database model makers need to have their connection specified. Each
-such <code>ModelSpec</code> will create its own connection. 
+A Plain (ie non-inferring, non-ontologogical) model can be a
+persistent database model. Jena supports JDBC-connected database models;
+these are specified using an RDB model-maker. Each such model created
+will use it's own database connection.
 
 <pre>
-    _this jms:maker _A
-    _A jms:reificationMode jms:rsStandard
-    _A jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB"
-    _A jms:dbUser "william.blake"
-    _A jms:dbPassword "tyger, tyger"
-    _A jms:dbType "MySQL"
+_:this jms:maker _:maker .
+_:maker jms:reificationMode jms:rsStandard .
+_:maker jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB" .
+_:maker jms:dbUser "william.blake" .
+_:maker jms:dbPassword "tyger, tyger" .
+_:maker jms:dbType "MySQL" .
 </pre>
+
+The URL specifies the database to connect to; the same database can
+support many different Jena models. The user and password are 
+required to (weakly) authenticate the connection. The type is
+required so that the correct database drivers can be loaded. Note
+the (in-)security implications of the database password being stored
+in plain text in the ModelSpec description document.
+
+<p>[Consider lifting out connection as independantly specifiable
+    object, so it can be shared; this then subsumes the current
+	values-as-bnodes hack in ModelSpec.]
+	
+<p>[Should contact Chris Bizer and ask him about the connections to
+    databases needed for his RDB-to-graph connection.]
+	
+<p>[Leave placeholder for BDB connections?]
 
 <h2>an inference model</h2>
 
-Inference models require a reasoner specification as well as a
+An inference model is characterised by having a reasoner specification
+as well as a (base) model-maker specification. The reasoner engine is
+specified by its URI (as known to the Jena ReasonerRegistry), and
+additional properties, such as schemas and rules.
+ 
+<p>Inference models require a reasoner specification as well as a
 base ModelMaker. In the current ModelSpec implementation, the
 reasoner only requires the URI describing the necessary inference:
 other reasoner properties will be introduced in later revisions.
 
 <pre>
-    _this jms:maker _M
-    _this jms:reasonsWith _R
-    _M jms:reificationMode jms:rsMinimal
-    _R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner
+_:this jms:maker _:maker .
+_:this jms:reasonsWith _:reasoner .
+_:reasoner jms:reasoner <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner> .
 </pre>
 
+[check that the URI remains correct]
+
+<p>This is the simplest reasoner specification - just giving the URL of
+the reasoner. Any other properties of the reasoner take on its usual
+defaults (see [THE REASONER DOCUENTATION]). 
+
+Reasoners may be supplied with a schema or schemas as the "initial 
+base" for their reasoning - for example, an RDFS reasoner may be
+given an RDFS schema and do sub-type reasoning in advance of being
+applied to a particular model. Schemas can be specified by giving their
+URLs.
+
+<pre>
+_:reasoner jms:schemaURL <http://some.domain.xyz/RDFS/cunning> .
+</pre>
+
+If several schemas are supplied, they are merged into a single schema
+to feed to the reasoner. 
+
+<p>Similarly, a schema can be specified using a ModelSpec.
+[Discussed later, when we've sorted out the unresolved issue of
+ model specs that identify <i>particular</i> models.]
+
+<pre>
+_:reasoner jms:schema _:modelSpec .
+</pre>
+
+If the reasoner is a rule-based reasoner, it may be loaded with
+additional rules. Those rules may be specified in the ModelSpec
+description, or be identified by URL.
+
+<pre>
+_:reasoner jms:ruleSetURL <http://some.domain.xyz/RULES/straight> .
+</pre>
+
+The URL identifies a resource containing the rules, written in
+an appropriate notation. Several <code>ruleSetURL</code>s may be
+given; all the rules are loaded into the reasoner in no particular
+order.
+
+<p>[The weasel-wording about "an appropriate notation" is to cover 
+that we only have the one rule-based reasoning engine with the 
+single surface syntax, wheras we ought to conver more options.
+The reasoner should be in charge of parsing the rules. Also we
+have only the one internal Rule class, but it's possible we should 
+allow user-definable classes, or else hide Rule as a detail of
+our implementation.]
+
+<p>Similarly, 
+
+<pre>
+_:reasoner jms:ruleSet _:set .
+</pre>
+
+specifies a set of rules located elsewhere in this specification,
+as properties of <code>_:set</code>. Multiple such <code>ruleSet</code>s
+can be given, and they my be freely mixed with <code>ruleSetURL</code>s.
+
+<h3>ruleSet specifications</h3>
+
+The ruleset specifications allow different reasoner specifications to
+share rule specifications (and possibly the rules themselves). The
+simplest such specification is the empty one:
+
+<pre>
+_:set rdf:type jms:RuleSet .
+</pre>
+
+which may be useful as a placeholder (or a leftover from pruning
+away rulesets). Additional rules may be specified inline or by
+URL:
+
+<pre>
+_:set jms:hasRule "some proper rule text here" .
+_:set jms:ruleSetURL <http://some.domain/RULES/example> .
+</pre>
+
+Both <code>hasRule</code> and <code>ruleSetURL</code> may be
+present as often as required. Since both predicates have
+domain <code>RuleSet</code>, the type declaration may be
+omitted.
+
+<p>[If <code>ruleSet</code> is given range <code>RuleSet</code>,
+then the type declaration is always unnecessary. I'm a bit
+worried that this makes it easy to forget or mislabel a ruleset.]
+
+<p>[Again, we weasel about the notation in which the rules are
+expressed. Possibly a <code>jms:ruleLanguage</code> property?]
+
+<hr>
+Unmodified original from here .....
 <h2>an ontology model</h2>
 
 Finally, here's the description of an ontology model for OWL Lite over
