@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 18:45:01 $
+ * Last modified on   $Date: 2004-01-30 09:45:20 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -641,6 +641,38 @@ public class TestBugReports extends TestCase {
         assertNull( "Property accessor value should be null", a.getDAMLValue() );
     }
     
+    /** Bug report by anon at SourceForge - Bug ID 887409 */
+    public void test_anon_0() {
+        String NS = "http://example.org/foo#";
+        String sourceT =
+            "<rdf:RDF "
+            + "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'"
+            + "    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'"
+            + "    xmlns:ex='http://example.org/foo#'"
+            + "    xmlns:owl='http://www.w3.org/2002/07/owl#'>"
+            + "   <owl:ObjectProperty rdf:about='http://example.org/foo#p' />"
+            + "   <owl:Class rdf:about='http://example.org/foo#A' />"
+            + "   <ex:A rdf:about='http://example.org/foo#x' />"
+            + "   <owl:Class rdf:about='http://example.org/foo#B'>"
+            + "     <owl:equivalentClass>"
+            + "      <owl:Restriction>" 
+            + "        <owl:onProperty rdf:resource='http://example.org/foo#p' />" 
+            + "        <owl:hasValue rdf:resource='http://example.org/foo#x' />" 
+            + "      </owl:Restriction>"
+            + "     </owl:equivalentClass>"
+            + "   </owl:Class>"
+            + "</rdf:RDF>";
+
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+        m.read(new ByteArrayInputStream(sourceT.getBytes()), "http://example.org/foo");
+        
+        OntClass B = m.getOntClass( NS + "B");
+        Restriction r = B.getEquivalentClass().asRestriction();
+        HasValueRestriction hvr = r.asHasValueRestriction();
+        RDFNode n = hvr.getHasValue();
+        
+        assertTrue( "Should be an individual", n instanceof Individual );
+    }
     
     // Internal implementation methods
     //////////////////////////////////
