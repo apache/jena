@@ -175,6 +175,7 @@
                  overview="src/link2readme.html"
                  bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved.">
             <classpath refid="classpath"/>
+                <package name="com.hp.hpl.jena.enhanced"/>
                 <package name="com.hp.hpl.jena.graph"/>
                 <package name="com.hp.hpl.jena.rdf.model"/>
                 <package name="com.hp.hpl.jena.rdql"/>
@@ -189,6 +190,7 @@
                 <package name="com.hp.hpl.jena.vocabulary"/>
             </group>
             <group title="SPI - System Programming Interface">
+                <package name="com.hp.hpl.jena.enhanced"/>
                 <package name="com.hp.hpl.jena.graph"/>
                 <package name="com.hp.hpl.jena.reasoner.rdfsReasoner1"/>
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
