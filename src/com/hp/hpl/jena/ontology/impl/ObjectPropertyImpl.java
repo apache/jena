@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: ObjectPropertyImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-08-12 15:57:56 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -28,6 +28,7 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ObjectPropertyImpl.java,v 1.5 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: ObjectPropertyImpl.java,v 1.6 2004-08-12 15:57:56 ian_dickinson Exp $
  */
 public class ObjectPropertyImpl
     extends OntPropertyImpl
@@ -94,6 +95,36 @@ public class ObjectPropertyImpl
 
     // External signature methods
     //////////////////////////////////
+
+    /**
+     * <p>Answer a property that is an inverse of this property, ensuring that it
+     * presents the ObjectProperty facet.</p>
+     * @return A property inverse to this property
+     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
+     */ 
+    public OntProperty getInverseOf() {
+        return super.getInverseOf().asObjectProperty();
+    }
+
+    /**
+     * <p>Answer an iterator over all of the properties that are declared to be inverse properties of
+     * this property, esnuring that each presents the objectProperty facet.</p>
+     * @return An iterator over the properties inverse to this property.
+     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
+     */ 
+    public ExtendedIterator listInverseOf() {
+        return super.listInverseOf().mapWith( new AsMapper( ObjectProperty.class ));
+    }
+
+    /**
+     * <p>Answer the property that is the inverse of this property, ensuring that it presents
+     * the object property facet.</p>
+     * @return The property that is the inverse of this property, or null. 
+     */
+    public OntProperty getInverse() {
+        return super.getInverse().asObjectProperty();
+    }
+    
 
     // Internal implementation methods
     //////////////////////////////////

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.46 $
+ * Revision           $Revision: 1.47 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 15:02:41 $
+ * Last modified on   $Date: 2004-08-12 15:57:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -1179,6 +1179,46 @@ public class TestBugReports
             ex = true;
         }
         assertFalse( "Should not have been a conversion exception", ex );
+    }
+    
+    /** Test case for SF bug 969475 - the return value for getInverse() on an ObjectProperty should be an object property */
+    public void test_sf_969475() {
+        String SOURCE=
+            "<?xml version='1.0'?>" +
+            "<!DOCTYPE owl [" +
+            "      <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#' >" +
+            "      <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#' >" +
+            "      <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#' >" +
+            "      <!ENTITY owl  'http://www.w3.org/2002/07/owl#' >" +
+            "      <!ENTITY dc   'http://purl.org/dc/elements/1.1/' >" +
+            "      <!ENTITY base  'http://jena.hpl.hp.com/test' >" +
+            "    ]>" +
+            "<rdf:RDF xmlns:owl ='&owl;' xmlns:rdf='&rdf;' xmlns:rdfs='&rdfs;' xmlns:dc='&dc;' xmlns='&base;#' xml:base='&base;'>" +
+            "  <owl:ObjectProperty rdf:ID='p0'>" +
+            "    <owl:inverseOf>" +
+            "      <owl:ObjectProperty rdf:ID='q0' />" +
+            "    </owl:inverseOf>" +
+            "  </owl:ObjectProperty>" +
+            "  <owl:ObjectProperty rdf:ID='p1'>" +
+            "    <owl:inverseOf>" +
+            "      <owl:ObjectProperty rdf:ID='q1' />" +
+            "    </owl:inverseOf>" +
+            "  </owl:ObjectProperty>" +
+            "</rdf:RDF>";
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        m.read( new StringReader( SOURCE ), null );
+
+        ObjectProperty p0 = m.getObjectProperty( "http://jena.hpl.hp.com/test#p0");
+        Object invP0 = p0.getInverseOf();
+        
+        assertEquals( m.getResource( "http://jena.hpl.hp.com/test#q0"), invP0 );
+        assertTrue( "Should be an ObjectProperty facet", invP0 instanceof ObjectProperty );
+
+        ObjectProperty q1 = m.getObjectProperty( "http://jena.hpl.hp.com/test#q1");
+        Object invQ1 = q1.getInverse();
+        
+        assertEquals( m.getResource( "http://jena.hpl.hp.com/test#p1"), invQ1 );
+        assertTrue( "Should be an ObjectProperty facet", invQ1 instanceof ObjectProperty );
     }
     
     
