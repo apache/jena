@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 16:06:07 $
+ * Last modified on   $Date: 2003-04-08 22:11:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -37,12 +37,12 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  * Instances of the all different axiom are expected to have a property
  * (e.g. <code>owl:distinctMembers</code> defining the list of distinct
  * individuals in the ontology.  For a given vocabulary, this will be defined by
- * the {@link Profile#distinctMembers distinctMembers} entry.
+ * the {@linkplain Profile#DISTINCT_MEMBERS distinctMembers} entry.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.3 2003-04-01 16:06:07 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.4 2003-04-08 22:11:55 ian_dickinson Exp $
  */
 public interface AllDifferent
     extends Axiom
@@ -56,7 +56,7 @@ public interface AllDifferent
 
     /**
      * <p>
-     * Answer an {@link PathSet accessor} for the 
+     * Answer an {@linkplain PathSet accessor} for the 
      * <code>distinctMembers</code>
      * property of an AllDifferent axiom. The accessor
      * can be used to perform a variety of operations, including getting and setting the value.

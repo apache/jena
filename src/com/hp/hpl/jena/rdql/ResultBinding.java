@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 /** A mapping from variable name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.5 2003-03-19 17:16:54 andy_seaborne Exp $
+ * @version  $Id: ResultBinding.java,v 1.6 2003-04-08 22:12:03 ian_dickinson Exp $
  */
 
 
@@ -42,7 +42,7 @@ public class ResultBinding
      *  This is only needed for testing of parts of the query engine
      *  @param varName String name of the variable to bind
      *  @param value   The value to set
-     *  @returns The index of the added value
+     *  @return The index of the added value
      */
 
     public int add(String varName, Value value)

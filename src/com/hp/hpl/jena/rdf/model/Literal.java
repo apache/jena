@@ -58,7 +58,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-04-08 12:27:39 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-04-08 22:12:00 $
  */
 public interface Literal extends RDFNode {
         
@@ -189,7 +189,7 @@ public interface Literal extends RDFNode {
      * @throws RDFException Generic RDF Exception
      * @return the literal string
      */
-    // @TODO is this the right approach, could make getString synonomous 
+    // TODO is this the right approach, could make getString synonomous 
     //       with getLexicalForm
     public String getString() throws RDFException;
     

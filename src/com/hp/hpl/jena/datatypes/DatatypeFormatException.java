@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DatatypeFormatException.java,v 1.1 2003-03-31 10:01:17 der Exp $
+ * $Id: DatatypeFormatException.java,v 1.2 2003-04-08 22:10:38 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -15,10 +15,10 @@ import com.hp.hpl.jena.rdf.model.RDFException;
  * Exception thrown when a lexical form does not match the stated
  * datatype.
  * 
- * @TODO could hold the lexical form and datatype in local fields
+ * TODO could hold the lexical form and datatype in local fields
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:17 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-08 22:10:38 $
  */
 public class DatatypeFormatException extends RDFException 
 {

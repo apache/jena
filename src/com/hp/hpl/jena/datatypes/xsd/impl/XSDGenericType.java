@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDGenericType.java,v 1.1 2003-03-31 10:01:27 der Exp $
+ * $Id: XSDGenericType.java,v 1.2 2003-04-08 22:11:53 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -25,7 +25,7 @@ import java.math.BigInteger;
  * user defined types - the built in types have a fixed mapping.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:27 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-08 22:11:53 $
  */
 public class XSDGenericType extends XSDDatatype {
 
@@ -56,7 +56,7 @@ public class XSDGenericType extends XSDDatatype {
                     return convertNumeric(xsdValue);
                 } catch (ClassCastException e) {
                     // Rats assume its usable java already
-                    // @TODO add date/time format conversion
+                    // TODO add date/time format conversion
                     return xsdValue;
                 }
             } else {

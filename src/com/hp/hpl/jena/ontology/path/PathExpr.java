@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: PathExpr.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:40 $
+ * Last modified on   $Date: 2003-04-08 22:12:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PathExpr.java,v 1.1 2003-03-25 10:11:40 ian_dickinson Exp $
+ * @version CVS $Id: PathExpr.java,v 1.2 2003-04-08 22:12:02 ian_dickinson Exp $
  */
 public interface PathExpr {
     // Constants
@@ -86,7 +86,7 @@ public interface PathExpr {
      * <p>
      * For convenience in accessing the contents of a path expression, answer a path set
      * of the paths defined from the given root.  The {@link PathSet} is really just a 
-     * set of wrapper functions for {@link #evaluate()}. 
+     * set of wrapper functions for {@link #evaluate}. 
      * </p>
      * 
      * @return A set of the paths this path expression defines from the given root.

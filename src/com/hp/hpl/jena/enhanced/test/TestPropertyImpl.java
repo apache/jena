@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPropertyImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: TestPropertyImpl.java,v 1.3 2003-04-08 22:12:04 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -9,7 +9,7 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * @see TestObejctImpl
+ * @see TestObjectImpl
  * @author  jjc
  */
 public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {

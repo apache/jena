@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedNodeIterator.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-01 14:35:31 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-04-08 22:11:58 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedNodeIterator.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
+ * @version CVS info: $Id: ConcatenatedNodeIterator.java,v 1.3 2003-04-08 22:11:58 ian_dickinson Exp $
  */
 public class ConcatenatedNodeIterator
     implements NodeIterator
@@ -92,8 +92,6 @@ public class ConcatenatedNodeIterator
      *              first in the elements read from the concatenation.
      * @param iter1 The second iterator. Elements of this iterator will appear
      *              second in the elements read from the concatenation.
-     * @return An iterator over the concatenation of the elements of the two
-     *         given iterators.
      */
     public ConcatenatedNodeIterator( NodeIterator iter0, NodeIterator iter1 ) {
         m_iter0 = iter0;

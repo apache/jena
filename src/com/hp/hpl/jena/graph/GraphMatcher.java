@@ -26,15 +26,14 @@ import com.hp.hpl.jena.util.iterator.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:13:26 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-08 22:11:59 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
  /**
- * Are the two models isomorphic.
+ * Are the two models isomorphic?
  * The isomorphism is defined as a bijection between the anonymous
  * variables such that the statements are identical.
- * @see com.hp.hpl.jena.rdf.model.Graph#equals For a less mathematical explanation.
  */
     static public boolean equals(Graph m1,Graph m2)   {
         if ( m1 == m2 )
@@ -932,5 +931,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.1.1.1 2002-12-19 19:13:26 bwm Exp $
+ * $Id: GraphMatcher.java,v 1.2 2003-04-08 22:11:59 ian_dickinson Exp $
  */

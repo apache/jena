@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TripleMatchIterator.java,v 1.1.1.1 2002-12-19 19:13:35 bwm Exp $
+  $Id: TripleMatchIterator.java,v 1.2 2003-04-08 22:11:59 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -14,7 +14,6 @@ import java.util.Iterator;
 /** An iterator that selects triples from an underlying iterators of triples
  *
  * @author  bwm
- * @version 
  */
 public class TripleMatchIterator extends FilterIterator
                                                   implements ClosableIterator {

@@ -1,8 +1,8 @@
 /*
  *  (c) Copyright Hewlett-Packard Company 2002
- *  
+ *
  *  All rights reserved.
- * 
+ *
  * See end of file.
  */
 
@@ -15,7 +15,6 @@ import java.util.Iterator;
 /**
  *
  * @author  bwm
- * @version 
  */
 public class RandCache implements Cache, CacheControl {
     int size;
@@ -23,14 +22,14 @@ public class RandCache implements Cache, CacheControl {
     boolean enabled = true;
                                                // so we can identify caches
     String name;                               // e.g. when logging
-    
+
     HashMap map;
     Collection collection;
-    
+
     long gets = 0;
     long puts = 0;
     long hits = 0;
-    
+
     /** Creates new RandCache */
     RandCache(String name, int size) {
         this.size = size;
@@ -40,8 +39,8 @@ public class RandCache implements Cache, CacheControl {
             throw new Error("Cache size too small: " + size);
         }
         collection = map.values();
-    }    
-    
+    }
+
     public Object get(Object key) {
         if (enabled) {
             if (gets == Long.MAX_VALUE) {
@@ -51,20 +50,20 @@ public class RandCache implements Cache, CacheControl {
             Object result = map.get(key);
             if (result != null) {
                 hits++;
-            }            
+            }
             return result;
         } else {
             return null;
         }
-    }            
-    
+    }
+
     public void put(Object key, Object value) {
-        
+
         // don't allow null values
         if (value == null) {
             throw new NullPointerException();
         }
-        
+
         if (enabled) {
             if (puts == Long.MAX_VALUE) {
                 forgetStats();
@@ -76,10 +75,10 @@ public class RandCache implements Cache, CacheControl {
             map.put(key, value);
         }
     }
-    
+
     protected void makeSpace() {
         Iterator iter = collection.iterator();
-        
+
         // we are going to remove every 3rd member of the cache
         int size = map.size();
         int i = 3;
@@ -91,45 +90,45 @@ public class RandCache implements Cache, CacheControl {
             i = i + 3;
         }
     }
-    
+
     public boolean getEnabled() {
         return enabled;
     }
-    
+
     public boolean setEnabled(boolean enabled) {
         boolean result = enabled;
         this.enabled = enabled;
         return result;
     }
-    
+
     public void clear() {
         map.clear();
     }
-    
+
     public long getHits() {
         return hits;
     }
-    
+
     public long getGets() {
         return gets;
     }
-    
+
     public long getPuts() {
         return puts;
     }
-    
+
     protected void forgetStats() {
         gets = gets/2;
         puts = puts/2;
         hits = hits/2;
     }
-    
+
 }
 /*
  *  (c) Copyright Hewlett-Packard Company 2002
- *  
+ *
  *  All rights reserved.
- * 
+ *
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -153,5 +152,5 @@ public class RandCache implements Cache, CacheControl {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandCache.java,v 1.1.1.1 2002-12-19 19:21:09 bwm Exp $
+ * $Id: RandCache.java,v 1.2 2003-04-08 22:11:58 ian_dickinson Exp $
  */

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 16:06:11 $
+ * Last modified on   $Date: 2003-04-08 22:11:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.1 2003-04-01 16:06:11 ian_dickinson Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.2 2003-04-08 22:11:57 ian_dickinson Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -51,7 +51,7 @@ public class IndividualImpl
     /** 
      * A factory for generating Individual facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
-     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { return new IndividualImpl( n, eg ); }

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedIterator.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:21:12 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-04-08 22:11:58 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -59,7 +59,7 @@ import com.hp.hpl.jena.rdf.model.ResIterator;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.1.1.1 2002-12-19 19:21:12 bwm Exp $
+ * @version CVS info: $Id: ConcatenatedIterator.java,v 1.2 2003-04-08 22:11:58 ian_dickinson Exp $
  */
 public class ConcatenatedIterator
     implements Iterator
@@ -101,8 +101,6 @@ public class ConcatenatedIterator
      *              first in the elements read from the concatenation.
      * @param iter1 The second iterator. Elements of this iterator will appear
      *              second in the elements read from the concatenation.
-     * @return An iterator over the concatenation of the elements of the two
-     *         given iterators.
      */
     public ConcatenatedIterator( Object iter0, Object iter1 ) {
         // find out which kind of iterator iter0 is

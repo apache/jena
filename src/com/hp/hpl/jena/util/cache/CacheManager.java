@@ -1,8 +1,8 @@
 /*
  *  (c) Copyright Hewlett-Packard Company 2002
- *  
+ *
  *  All rights reserved.
- * 
+ *
  * See end of file.
  */
 package com.hp.hpl.jena.util.cache;
@@ -10,17 +10,16 @@ package com.hp.hpl.jena.util.cache;
 /** A factory for creating cache objects
  *
  * @author bwm
- * @version
  */
 
 public class CacheManager {
-    
+
     public static final String RAND = "RAND";
 
     /** Creates new Manager */
     private CacheManager() {
     }
-    
+
     /** Create a new cache
      * @param type The type of cache to create.  This should be one
      * of the standard cache types defined in this class.
@@ -34,21 +33,21 @@ public class CacheManager {
      * objects it can store.
      * @return a newly created cache object
      *
-     */    
+     */
     public static Cache createCache(String type, String name, int size) {
         // for now we just have one type
         if (! type.equals(RAND)) {
             throw new Error("Bad cache type: " + type);
         }
-    
+
         return new RandCache(name, size);
     }
 }
 /*
  *  (c) Copyright Hewlett-Packard Company 2002
- *  
+ *
  *  All rights reserved.
- * 
+ *
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -72,5 +71,5 @@ public class CacheManager {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: CacheManager.java,v 1.2 2003-01-30 10:25:18 chris-dollin Exp $
+ * $Id: CacheManager.java,v 1.3 2003-04-08 22:11:58 ian_dickinson Exp $
  */

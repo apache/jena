@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.1 2003-03-31 10:01:32 der Exp $
+ * $Id: XSDDateTime.java,v 1.2 2003-04-08 22:11:54 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * <p>TODO: revist and consider have separate types for each.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:32 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-08 22:11:54 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -72,7 +72,7 @@ public class XSDDateTime extends AbstractDateTime {
      * If the timezone has been specified then the object is normalized to GMT.
      * If the zone has not been specified then we use the default timezone.
      * 
-     * @throw IllegalDateTimeFieldException if this is not a full date + time
+     * @throws IllegalDateTimeFieldException if this is not a full date + time
      */
     public Calendar asCalendar () throws IllegalDateTimeFieldException {
         TimeZone tz = data[UTC] == 'Z' ? TimeZone.getTimeZone("GMT") : TimeZone.getDefault();
@@ -84,7 +84,7 @@ public class XSDDateTime extends AbstractDateTime {
     
     /**
      * Return the number of years in the dateTime.
-     * @throw IllegalDateTimeFieldException if there is no legal year component
+     * @throws IllegalDateTimeFieldException if there is no legal year component
      */
     public int getYears() throws IllegalDateTimeFieldException {
         if ((mask & YEAR_MASK) == 0) throw new IllegalDateTimeFieldException("Year not available");
@@ -93,7 +93,7 @@ public class XSDDateTime extends AbstractDateTime {
     
     /**
      * Return the number of months in the dateTime
-     * @throw IllegalDateTimeFieldException if there is no legal month component
+     * @throws IllegalDateTimeFieldException if there is no legal month component
      */
     public int getMonths() throws IllegalDateTimeFieldException {
         if ((mask & MONTH_MASK) == 0) throw new IllegalDateTimeFieldException("Month not available");
@@ -102,7 +102,7 @@ public class XSDDateTime extends AbstractDateTime {
     
     /**
      * Return the number of years in the dateTime
-     * @throw IllegalDateTimeFieldException if there is no legal day component
+     * @throws IllegalDateTimeFieldException if there is no legal day component
      */
     public int getDays() throws IllegalDateTimeFieldException {
         if ((mask & DAY_MASK) == 0) throw new IllegalDateTimeFieldException("Day not available");
@@ -111,7 +111,7 @@ public class XSDDateTime extends AbstractDateTime {
     
     /**
      * Return the number of hours in the dateTime
-     * @throw IllegalDateTimeFieldException if there is no legal time component
+     * @throws IllegalDateTimeFieldException if there is no legal time component
      */
     public int getHours() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
@@ -120,7 +120,7 @@ public class XSDDateTime extends AbstractDateTime {
     
     /**
      * Return the number of minutes in the dateTime
-     * @throw IllegalDateTimeFieldException if there is no legal time component
+     * @throws IllegalDateTimeFieldException if there is no legal time component
      */
     public int getMinutes() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
@@ -129,7 +129,7 @@ public class XSDDateTime extends AbstractDateTime {
     
     /**
      * Return the number of full seconds in the dateTime
-     * @throw IllegalDateTimeFieldException if there is no legal time component
+     * @throws IllegalDateTimeFieldException if there is no legal time component
      */
     public int getFullSeconds() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
@@ -138,7 +138,7 @@ public class XSDDateTime extends AbstractDateTime {
     
     /**
      * Return the number of seconds in the dateTime, including fractional part
-     * @throw IllegalDateTimeFieldException if there is no legal time component
+     * @throws IllegalDateTimeFieldException if there is no legal time component
      */
     public double getSeconds() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
@@ -148,7 +148,7 @@ public class XSDDateTime extends AbstractDateTime {
     /**
      * Return the time component of the dateTime - i.e. just the hours/mins/seconds,
      * and returns the values in seconds.
-     * @throw IllegalDateTimeFieldException if there is no legal time component
+     * @throws IllegalDateTimeFieldException if there is no legal time component
      */
     public double getTimePart() throws IllegalDateTimeFieldException {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");

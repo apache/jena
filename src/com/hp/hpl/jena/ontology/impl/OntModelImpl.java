@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 14:37:55 $
+ * Last modified on   $Date: 2003-04-08 22:11:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.7 2003-04-08 14:37:55 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.8 2003-04-08 22:11:57 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -191,8 +191,7 @@ public class OntModelImpl
      * </p>
      * <p>
      * Specifically, the resources in this iterator will those whose type corresponds 
-     * to the value given in the ontology vocabulary associated with this model: see
-     * {@link Profile#PROPERTY}.
+     * to the value given in the ontology vocabulary associated with this model.
      * </p>
      * <p>
      * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
@@ -325,7 +324,7 @@ public class OntModelImpl
      * Answer an iterator that ranges over all of the various forms of class description resource 
      * in this model.  Class descriptions include {@link #listEnumeratedClasses enumerated}
      * classes, {@link #listUnionClasses union} classes, {@link #listComplementClasses complement}
-     * classes, {@link #listIntersectionClasses intersection} classes, {@link #listOntClasses named}
+     * classes, {@link #listIntersectionClasses intersection} classes, {@link #listClasses named}
      * classes and {@link #listRestrictions property restrictions}.
      * </p>
      * <p>
@@ -664,7 +663,7 @@ public class OntModelImpl
      * </p>
      * <p>
      * This is a generic method for creating any known ontology value.  The selector that determines
-     * which resource to create is the same as as the argument to the {@link RDFNode#as() as()} 
+     * which resource to create is the same as as the argument to the {@link RDFNode#as as()} 
      * method: the Java class object of the desired abstraction.  For example, to create an
      * ontology class via this mechanism, use:
      * <code><pre>

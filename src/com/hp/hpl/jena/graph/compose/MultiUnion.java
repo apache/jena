@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:17:03 $
+ * Last modified on   $Date: 2003-04-08 22:12:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.2 2003-03-12 17:17:03 ian_dickinson Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.3 2003-04-08 22:12:01 ian_dickinson Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -100,7 +100,7 @@ public class MultiUnion
     /**
      * <p>
      * Add the given triple to the union model; the actual component model to
-     * be updated will be the designated (or default) {@link #getUpdateableGraph updateable} graph. 
+     * be updated will be the designated (or default) {@linkplain #getBaseGraph updateable} graph. 
      * </p>
      * 
      * @param t A triple to add to the union graph
@@ -120,7 +120,7 @@ public class MultiUnion
     /**
      * <p>
      * Delete the given triple from the union model; the actual component model to
-     * be updated will be the designated (or default) {@link #getUpdateableGraph updateable} graph. 
+     * be updated will be the designated (or default) {@linkplain #getBaseGraph updateable} graph. 
      * </p>
      * 
      * @param t A triple to from the union graph

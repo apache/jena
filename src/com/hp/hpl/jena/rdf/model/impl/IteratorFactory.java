@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: IteratorFactory.java,v 1.4 2003-04-04 19:26:29 jeremy_carroll Exp $
+  $Id: IteratorFactory.java,v 1.5 2003-04-08 22:12:00 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,8 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 import com.hp.hpl.jena.graph.*;
-//import com.hp.hpl.jena.rdf.model.personality.*;
-import com.hp.hpl.jena.rdf.model.*;
+
 
 /**
  * @author jjc
@@ -27,7 +26,7 @@ public final class IteratorFactory {
 
     private IteratorFactory(){}
 	/**
-	 * @see Personality#asRDFNode(Node, Model)
+	 * 
 	 */
 	static public RDFNode asRDFNode(Node n, ModelCom m) {
 		if ( n.isLiteral() ) 
@@ -43,7 +42,7 @@ public final class IteratorFactory {
 		*/
 		
 	/**
-	 * @see Personality#asStatement(Triple, Model)
+	 * 
 	 */
 	static public Statement asStatement(Triple t, ModelCom m) {
 		return new StatementImpl(
@@ -55,7 +54,7 @@ public final class IteratorFactory {
 	}
 
 	/**
-	 * @see Personality#asStmtIterator(Iterator, Model)
+	 * 
 	 */
 	static public StmtIterator asStmtIterator(Iterator i, final ModelCom m) {
 		return new StmtIteratorImpl(new Map1Iterator(new Map1(){
@@ -66,7 +65,7 @@ public final class IteratorFactory {
 	}
 
 	/**
-	 * @see Personality#asResIterator(Iterator, Model)
+	 * 
 	 */
 	static public ResIterator asResIterator(Iterator i, final ModelCom m) {
 		return new ResIteratorImpl(new Map1Iterator(new Map1(){
@@ -77,7 +76,7 @@ public final class IteratorFactory {
 	}
 
 	/**
-	 * @see Personality#asRDFNodeIterator(Iterator, Model)
+	 * 
 	 */
 	static public NodeIterator asRDFNodeIterator(Iterator i, final ModelCom m) {
 		return new NodeIteratorImpl(new Map1Iterator(new Map1(){

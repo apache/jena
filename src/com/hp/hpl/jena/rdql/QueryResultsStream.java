@@ -18,7 +18,7 @@ import java.util.*;
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsStream.java,v 1.3 2003-02-20 16:45:50 andy_seaborne Exp $
+ * @version  $Id: QueryResultsStream.java,v 1.4 2003-04-08 22:12:03 ian_dickinson Exp $
  */
 
 public class QueryResultsStream implements QueryResults
@@ -113,7 +113,7 @@ public class QueryResultsStream implements QueryResults
     /** Convenience function to consume a query.
      *  Returns a list of {@link ResultBinding}s.
      *
-     *  @returns List
+     *  @return List
      *  @deprecated  QueryResultsStream do not have all the results at once - {@link QueryResultsMem}
      */
 

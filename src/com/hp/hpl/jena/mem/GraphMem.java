@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.6 2003-03-26 12:12:29 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.7 2003-04-08 22:12:00 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -23,12 +23,11 @@ import java.util.LinkedList;
 /**
  *
  * @author  bwm
- * @version 
  */
 public class GraphMem extends GraphBase implements Graph {
-    
+
     HashSet triples = new HashSet();
-    
+
     NodeMap subjects = new NodeMap();
     NodeMap predicates = new NodeMap();
     NodeMap objects = new NodeMap();
@@ -36,7 +35,7 @@ public class GraphMem extends GraphBase implements Graph {
     /** Creates new Store */
     public GraphMem() {}
 
-    public void add( Triple t ) 
+    public void add( Triple t )
         {
         if (getReifier().handledAdd( t ) || triples.contains( t ))
             return;
@@ -48,8 +47,8 @@ public class GraphMem extends GraphBase implements Graph {
             objects.add( t.getObject(), t );
             }
         }
-    
-    public void delete( Triple t ) 
+
+    public void delete( Triple t )
         {
         if (getReifier().handledRemove( t ))
             return;
@@ -61,26 +60,26 @@ public class GraphMem extends GraphBase implements Graph {
             objects.remove( t.getObject(), t );
             }
         }
-    
+
     public int size() throws UnsupportedOperationException {
         return triples.size();
     }
-    
+
     public boolean contains(Triple t) {
         return triples.contains(t);
     }
-        
+
     public boolean contains(Node s, Node p, Node o) {
         return contains(new Triple(s, p, o));
     }
-    
+
     /** Returns an iterator over Triple.
      */
     public ExtendedIterator find(TripleMatch m) {
         Node s = m.getSubject();
         Node p = m.getPredicate();
         Node o = m.getObject();
-        
+
         // @@ some redundant compares in this code which could be improved
         if (s != null) {
             return new TripleMatchIterator(m, subjects.iterator(s));
@@ -93,10 +92,10 @@ public class GraphMem extends GraphBase implements Graph {
             return new TripleMatchIterator(m, triples.iterator());
         }
     }
-    
+
     protected class NodeMap {
         HashMap map = new HashMap();
-        
+
         protected void add(Node o, Triple t) {
             LinkedList l = (LinkedList) map.get(o);
             if (l==null) {
@@ -105,7 +104,7 @@ public class GraphMem extends GraphBase implements Graph {
             }
             l.add(t);
         }
-        
+
         protected void remove(Node o, Triple t ) {
             LinkedList l = (LinkedList) map.get(o);
             if (l != null) {
@@ -115,7 +114,7 @@ public class GraphMem extends GraphBase implements Graph {
                 }
             }
         }
-        
+
         protected Iterator iterator(Node o) {
             LinkedList l = (LinkedList) map.get(o);
             if (l==null) {

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:37:07 $
+ * Last modified on   $Date: 2003-04-08 22:12:03 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.7 2003-04-04 20:37:07 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.8 2003-04-08 22:12:03 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase
@@ -127,7 +127,6 @@ public class TestList
         
             Resource listHead = root.getProperty( m.getProperty( NS + "p" ) ).getResource();
         
-            // @todo make this cast go away once the proper connection from model layer -> enhanced layer is defined
             OntList l = (OntList) listHead.as( OntList.class );
             assertNotNull( "as(OntList) should not return null for root", l );
         

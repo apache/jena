@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: ObjectPropertyImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:36:18 $
+ * Last modified on   $Date: 2003-04-08 22:11:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ObjectPropertyImpl.java,v 1.2 2003-04-04 20:36:18 ian_dickinson Exp $
+ * @version CVS $Id: ObjectPropertyImpl.java,v 1.3 2003-04-08 22:11:57 ian_dickinson Exp $
  */
 public class ObjectPropertyImpl
     extends OntPropertyImpl
@@ -53,7 +53,7 @@ public class ObjectPropertyImpl
     /**
      * A factory for generating ObjectProperty facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
-     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { 

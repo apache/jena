@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: AbstractPathExpr.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:30:24 $
+ * Last modified on   $Date: 2003-04-08 22:11:54 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AbstractPathExpr.java,v 1.2 2003-03-28 22:30:24 ian_dickinson Exp $
+ * @version CVS $Id: AbstractPathExpr.java,v 1.3 2003-04-08 22:11:54 ian_dickinson Exp $
  */
 public abstract class AbstractPathExpr
     implements PathExpr
@@ -79,7 +79,7 @@ public abstract class AbstractPathExpr
      * <p>
      * For convenience in accessing the contents of a path expression, answer a path set
      * of the paths defined from the given root.  The {@link PathSet} is really just a 
-     * set of wrapper functions for {@link #evaluate()}. 
+     * set of wrapper functions for {@link #evaluate}. 
      * </p>
      * 
      * @return A set of the paths this path expression defines from the given root.

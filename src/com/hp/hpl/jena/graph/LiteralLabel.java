@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.5 2003-03-31 10:05:29 der Exp $
+  $Id: LiteralLabel.java,v 1.6 2003-04-08 22:11:59 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -21,15 +21,15 @@ final public class LiteralLabel {
 
     /** 
      * Global flag - set to true to switch on eager checking of literal validity.
-     * </ br>@todo - this needs to be connected to or replaced by the global flag
-     * setting mechanism - whatever that is.
+     * <p>TODO - this needs to be connected to or replaced by the global flag
+     * setting mechanism - whatever that is.</p>
      */
     public static boolean enableEagerValidation = false;
 
     /** 
      * Global flag - set to true to treat plain literals and xsd:string literals as semantically equal.
-     * </ br>@todo - this needs to be connected to or replaced by the global flag
-     * setting mechanism - whatever that is.
+     * <p>TODO - this needs to be connected to or replaced by the global flag
+     * setting mechanism - whatever that is.</p>
      */
     public static boolean enablePlainSameAsString = true;
     
