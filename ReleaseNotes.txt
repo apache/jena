@@ -18,8 +18,12 @@ o Bug fixes:
     sameValueAs resources as equal.
     
 Reasoner subsystem:
-o various bug fixes in OWL rules (maxCardinality bug, hasValue in intersection 
+o Extended OWL rules to include more explicit representation of XSD knowledge.
+o Various bug fixes in OWL rules (maxCardinality bug, hasValue in intersection 
   lists fixed, bug in someValuesFrom fixed, misssing property subclass axioms).
+o Fixed bug in RETE engine which could loop when deleting non-deletable triples.
+o Fixed bug in LP engine which could lead to loss of variable bindings
+  (manifested as "Internal error in LP reasoner: variable in triple result")
 
 OWL Syntax Checker
 o Now conforms with OWL Candidate Rec of August 2003
