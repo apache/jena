@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.8 $ on $Date: 2003-08-27 12:56:40 $
+* @version $Revision: 1.9 $ on $Date: 2003-11-26 03:11:45 $
 */
 
 public class SQLCache {
@@ -248,12 +248,27 @@ public class SQLCache {
 				throw new SQLException("No SQL defined for operation: " + opname);
 			}
 			if (psl == null && CACHE_PREPARED_STATEMENTS) m_preparedStatements.put(aop, new LinkedList());
-			return getConnection().prepareStatement(sql);
+			return doPrepareSQLStatement(sql);
 		} else {
 			return (PreparedStatement) psl.remove(0);
 		}
 	}
 	
+	/**
+	 * Prepare a SQL statement for the given statement string.
+	 *  
+	 * <p>Only works for single statements, not compound statements.
+	 * @param stmt the sql statement to prepare.
+	 * @return a prepared SQL statement appropriate for the JDBC connection
+	 * used when this SQLCache was constructed or null if there is no such
+	 * connection.
+	 */
+
+	private synchronized PreparedStatement doPrepareSQLStatement(String sql) throws SQLException {
+		if (m_connection == null) return null;
+		return getConnection().prepareStatement(sql);
+	}
+
 	/**
 	 * Return a prepared SQL statement for the given statement string.
 	 * The statement should either be closed after use.
@@ -267,7 +282,7 @@ public class SQLCache {
 
 	public synchronized PreparedStatement prepareSQLStatement(String sql) throws SQLException {
 		if (m_connection == null) return null;
-		return getConnection().prepareStatement(sql);
+		return doPrepareSQLStatement(sql);
 	}
 
     public synchronized PreparedStatement getPreparedSQLStatement(String opname) throws SQLException {
@@ -276,7 +291,7 @@ public class SQLCache {
 
     /**
      * Variant on {@link #getPreparedSQLStatement getPreparedSQLStatement} which
-     * accesses the attribte variant correspond to the given attribute suffix.
+     * accesses the attribute variant correspond to the given attribute suffix.
      */
     public synchronized PreparedStatement getPreparedSQLStatement(String opname, String attr) throws SQLException {
 		String[] param = {attr};
@@ -285,7 +300,7 @@ public class SQLCache {
 
     /**
      * Variant on {@link #getPreparedSQLStatement getPreparedSQLStatement} which
-     * access the attribte variant correspond to the given attribute suffix.
+     * access the attribute variant correspond to the given attribute suffix.
      */
     public synchronized PreparedStatement getPreparedSQLStatement(String opname, String attrA, String attrB) throws SQLException {
 		String[] param = {attrA,attrB};
