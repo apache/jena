@@ -1,44 +1,25 @@
+package com.hp.hpl.jena.rdf.model.test;
+
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.5 2003-03-05 10:29:10 chris-dollin Exp $
+  $Id: TestReifiedStatements.java,v 1.1 2003-03-05 10:29:10 chris-dollin Exp $
 */
-
-package com.hp.hpl.jena.rdf.model.test;
 
 import junit.framework.*;
 
-/**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
-*/
-
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+public class TestReifiedStatements extends TestCase
+    {
+    public TestReifiedStatements( String name )
+        { super( name ); }
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("Model");
-        addTest( "TestModel", TestModelFactory.suite() );
-        addTest( "TestModelFactory", TestModelFactory.suite() );
-        addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
-        addTest( "TestModelPolymorphism", TestModelPolymorphism.suite() );
-        addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
-        addTest( "TestReifiedStatements", TestReifiedStatements.suite() );
-        }
+    public static TestSuite suite()
+        { return new TestSuite( TestSimpleSelector.class ); }   
 
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
     }
-
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
