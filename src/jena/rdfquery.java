@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.ResultSet ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.10 2003-06-11 13:29:19 chris-dollin Exp $
+ * @version $Id: rdfquery.java,v 1.11 2003-06-25 16:54:14 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -502,6 +502,7 @@ public class rdfquery
 
         fmt.close() ;
         results.close() ;
+        qe.close() ;
 
         long finishTime = System.currentTimeMillis();
         long totalTime = finishTime-startTime ;
