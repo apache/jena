@@ -115,6 +115,9 @@ abstract class AbsChecker extends EnhGraph {
 			rr = 1;
 		else
 			rr = 2;
+	    if ( p1 == Grammar.owldisjointWith) {
+	    	s.addDisjoint(o);
+	    }
 		//	System.err.println("* " + t.toString() + "[" + rr + "]");
 		return rr;
 	}

@@ -121,7 +121,7 @@ public class Checker extends AbsChecker {
 		  * 
 		  * We check the potentially cyclic
 		  * nodes.
-		  */
+		  */ 
 		 clearProperty( Vocab.cyclicState);  
 		 check(CategorySet.cyclicSets, new NodeAction() {
 			public void apply(Node n){
@@ -155,7 +155,7 @@ public class Checker extends AbsChecker {
 			* Hardest
 			* Check the disjointUnion blank nodes
 			*/
-		    
+		    /* Not needed
 		    clearProperty(Vocab.transDisjointWith);
 			Iterator i = asGraph().find(Node.ANY,Vocab.disjointWith,Node.ANY);
 			while ( i.hasNext()) {
@@ -165,32 +165,27 @@ public class Checker extends AbsChecker {
 				Vocab.transDisjointWith,
 				t.getObject() ) );
 			}
+			*/
 			check(CategorySet.disjointWithSets, new NodeAction() {
 						public void apply(Node n){
 
-							Iterator i = asGraph().find(Node.ANY,Vocab.transDisjointWith,n);
+							Iterator i = asGraph().find(Node.ANY,Vocab.disjointWith,n);
 							while ( i.hasNext()) {
 								Triple ti = (Triple)i.next();
-								Iterator j = asGraph().find(n,Vocab.transDisjointWith,Node.ANY);
+								Iterator j = asGraph().find(n,Vocab.disjointWith,Node.ANY);
 								while (j.hasNext()) {
 									Triple tj = (Triple)j.next();
-									asGraph().add(new Triple(ti.getSubject(),
-									              Vocab.transDisjointWith,
-									              tj.getObject()));
+									Node tis = ti.getSubject();
+									Node tjo = tj.getObject();
+									if (!( tis.equals(tjo) ||
+									asGraph().contains(new Triple(tis,
+									              Vocab.disjointWith,
+									             tjo )) ) )
+									nonMonProblem("Ill-formed owl:disjointWith",n);  
 								}
 							}
 						}
 						}, m);
-				// TODO finish this code		
-		    check(CategorySet.disjointWithSets, new NodeAction() {
-			public void apply(Node n){
-
-				Iterator i = asGraph().find(Node.ANY,Vocab.transDisjointWith,n);
-				Iterator j = asGraph().find(n,Vocab.transDisjointWith,Node.ANY);
-			}
-		    }, m);
-			
-			
 		}
 	}
 	private void clearProperty(Node p) {
@@ -346,10 +341,8 @@ public class Checker extends AbsChecker {
 			case SubCategorize.SecondOfTwo :
 				s.asTwo().second(t);
 				break;
-		   case SubCategorize.DisjointWith:
-		   // TODO implement disjointWith
-		        break;
 		}
+		
 	}
 	static public void main(String argv[]) {
 		GraphMaker gf = ModelFactory.createMemModelMaker().getGraphMaker();

@@ -163,7 +163,12 @@ abstract class CNode extends EnhNode implements CNodeI {
 		cn.addDisjoint1(this);
 	}
 	public void addDisjoint1(CNodeI cn){
-		// TODO
+		getGraph()
+		   .asGraph()
+		   .add(new Triple(
+		        this.asNode(),
+		        Vocab.disjointWith,
+		        cn.asNode()));
 	}
 
 }

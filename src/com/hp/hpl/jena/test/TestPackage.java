@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.19 2003-08-27 13:11:14 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.20 2003-09-30 12:26:22 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -43,7 +43,7 @@ public class TestPackage extends TestSuite {
         addTest( "Ontology", com.hp.hpl.jena.ontology.impl.test.TestPackage.suite() );
         addTest( "DAML", com.hp.hpl.jena.ontology.daml.impl.test.TestPackage.suite() );
         addTest( "Paths", com.hp.hpl.jena.ontology.path.impl.test.TestPackage.suite() );
-        addTest("OWL Syntax", com.hp.hpl.jena.ontology.tidy.test.TestPackage.suite() );
+        addTest(com.hp.hpl.jena.ontology.tidy.test.WGTests.suite() );
     }
 
     private void addTest(String name, TestSuite tc) {

@@ -33,6 +33,7 @@
 package com.hp.hpl.jena.ontology.tidy.test;
 
 import com.hp.hpl.jena.shared.wg.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.wg.URI;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -70,11 +71,17 @@ public class WGTests extends java.lang.Object {
 	 * etc.
 	 */
 	static private TestInputStreamFactory factory;
-
+   
+   
+    static private String skipThese[] = {
+    	"http://www.w3.org/2002/03owlt/I5.8/Manifest016#test"
+    };
+    static private boolean doLargeTests = false;
+    
 	static private String manifestURI = "OWLManifest.rdf";
 	static private boolean manifestInFactory = true;
 
-	static public Test suite() throws IOException {
+	static public Test suite() {
 		TestSuite s = new TestSuite("OWL-Syntax");
 		InputStream manifest;
 		if (factory == null) {
@@ -88,9 +95,13 @@ public class WGTests extends java.lang.Object {
 			manifest = factory.open(manifestURI);
 		} else {
 			try {
+			try {
 				manifest = new URL(manifestURI).openStream();
 			} catch (MalformedURLException e) {
 				manifest = new FileInputStream(manifestURI);
+			}
+			} catch (IOException e) {
+				throw new JenaException(e);
 			}
 		}
 		Model m = ModelFactory.createDefaultModel();
@@ -116,16 +127,35 @@ public class WGTests extends java.lang.Object {
 
 		for (Iterator iter = results; iter.hasNext();) {
 			ResultBinding res = (ResultBinding) iter.next();
+			
+			addTest(s, res, m);
+		}
+		results.close();
+        s.addTest(new DummyTest());
+		return s;
+	}
+
+	private static void addTest(TestSuite s, ResultBinding res, Model m) {
 			Object status = res.get("s");
-			Object testResource = res.get("t");
+			Resource testResource = (Resource)res.get("t");
 			Object testFile = res.get("f");
 			Object level = res.get("l");
-
+		
+			String testURI =  testResource.getURI();
+			for (int kk=0;kk<skipThese.length; kk++)
+			  if ( testURI.equals(skipThese[kk]))
+			    return;
+			    
+			if ((!doLargeTests) &&
+				testResource.hasProperty(OWLTest.size, OWLTest.Large) ) {
+					return;
+			}
+		
 			TestSuite st =
 				(TestSuite) getTest(s,
 					((Literal) status).getLexicalForm(),
 					null);
-			String testURI = ((Resource) testResource).getURI();
+			
 		//	System.err.println(testURI);
 			int lastSl = testURI.lastIndexOf('/');
 			int penUltimateSl = testURI.lastIndexOf('/', lastSl - 1);
@@ -137,10 +167,6 @@ public class WGTests extends java.lang.Object {
 			SyntaxTest test = (SyntaxTest) getTest(dir, number, testURI);
 			String fileURI = ((Resource) testFile).getURI();
 			test.add(factory.open(fileURI), (Resource) level, fileURI);
-		}
-		results.close();
-        s.addTest(new DummyTest());
-		return s;
 	}
 
 	static private Test getTest(TestSuite s, String nm, String syntaxTestURI) {

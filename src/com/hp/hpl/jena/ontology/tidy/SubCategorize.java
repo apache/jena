@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.9 2003-09-30 07:35:06 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.10 2003-09-30 12:26:08 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -40,9 +40,7 @@ class SubCategorize {
 	*/
 	static final int SecondOfTwo = Grammar.SecondOfTwo;
 	
-	// TODO put in link to Grammar
-	static final int DisjointWith = 55;
-
+	
 	static private final int DL = Grammar.DL;
 
 	static private final int ObjectAction = Grammar.ObjectAction;
