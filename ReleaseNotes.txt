@@ -36,6 +36,12 @@ I/O:
   in doc/IO/iohowto.html
   Jena2 I/O subsystem uses InputStream's and OutputStream's where
   Jena1 used Reader's and Writer's.
++ There is still a problem ubder Linux with FileWriter
+  and OutputStreamWriter. The test suite prints a warning
+  message describing the problem and the workaround.
+   "IANA name for Java encoding: ISO-8859-15 is not known. 
+    Not including any encoding declaration in the RDF/XML output.
+    It is better to use a FileOutputStream, in place of a FileWriter."
 + The RDF/XML Writers now behave more uniformly and can be
   controlled much better.
 + Improved documentation for both basic and advanced I/O in Jena2
