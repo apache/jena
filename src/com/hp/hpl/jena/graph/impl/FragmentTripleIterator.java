@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.5 2004-09-21 07:28:53 chris-dollin Exp $
+  $Id: FragmentTripleIterator.java,v 1.6 2004-09-21 09:19:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -57,7 +57,8 @@ public abstract class FragmentTripleIterator extends NiceIterator
         
     /**
         Add all the [implied, matching] triples from the Object into the GraphAdd
-        entity (which will be our list).
+        entity (which will be our list). It would be nice if we could create an interface
+        for the fragmentObject's type.
     */
     protected abstract void fill( GraphAdd ga, Node n, Object fragmentsObject );
         

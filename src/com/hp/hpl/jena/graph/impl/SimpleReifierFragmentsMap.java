@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.8 2004-09-21 07:28:53 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.9 2004-09-21 09:19:38 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.HashUtils;
@@ -167,9 +168,150 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     public boolean hasFragments( Node tag )
         { return getFragments( tag ) != null; }
 
-       
+    public static class Fragments
+        { 
+        
+        /**
+            a Fragments object is represented by four sets, one for each of the reification
+            predicates. The slots are array elements because, sadly, it's easier to dynamically
+            choose a slot by number than any other way I could think of.
+        */
+        private final Set [] slots = 
+            {HashUtils.createSet(), HashUtils.createSet(), HashUtils.createSet(), HashUtils.createSet()};
+        
+        /**
+            the Node the fragments are about. 
+        */
+        private Node anchor;
+        
+        /**
+            a fresh Fragments object remembers the node n and starts
+            off with all sets empty. (In use, at least one of the slots will
+            then immediately be updated - otherwise there was no reason
+            to create the Fragments in the first place ...)
+        */
+        public Fragments( Node n ) 
+            { this.anchor = n; }
+            
+        public Fragments( Node n, Triple t )
+            {
+            this( n );
+            addTriple( t ); 
+            }
+            
+        /**
+            true iff this is a complete fragment; every component is present with exactly
+            one value, so n unambiguously reifies (subject, predicate, object).
+        */
+        public boolean isComplete()
+            { return slots[0].size() == 1 && slots[1].size() == 1 && slots[2].size() == 1 && slots[3].size() == 1; }
+            
+        /**
+            true iff this is an empty fragment; no reificational assertions have been made
+            about n. (Hence, in use, the Fragments object can be discarded.)
+        */
+        public boolean isEmpty()
+            { return slots[0].isEmpty() && slots[1].isEmpty() && slots[2].isEmpty() && slots[3].isEmpty(); }
+            
+        /**
+            remove the node n from the set specified by slot which.
+        */
+        public void remove( SimpleReifierFragmentsMap.Slot w, Node n )
+            { slots[w.which].remove( n ); }
+            
+        /**
+            add the node n to the slot identified by which).
+       */
+        public void add( SimpleReifierFragmentsMap.Slot w, Node n )
+            { slots[w.which].add( n ); }
+            
+        /**
+            include into g all of the reification components that this Fragments
+            represents.
+        */
+        public void includeInto( GraphAdd g )
+            {
+            includeInto( g, RDF.Nodes.subject, SUBJECTS );
+            includeInto( g, RDF.Nodes.predicate, PREDICATES );
+            includeInto( g, RDF.Nodes.object, OBJECTS );
+            includeInto( g, RDF.Nodes.type, TYPES );
+            }
+            
+        /**
+            include into g all of the (n, p[which], o) triples for which
+            o is an element of the slot <code>which</code> corresponding to
+            predicate.
+        */
+        private void includeInto( GraphAdd g, Node predicate, SimpleReifierFragmentsMap.Slot w )
+            {
+            Iterator it = slots[w.which].iterator();
+            while (it.hasNext())
+                g.add( Triple.create( anchor, predicate, (Node) it.next() ) );
+            }
+            
+        /**
+            add to this Fragments the entire reification quad needed to
+            reify the triple t.
+            @param t: Triple the (S, P, O) triple to reify
+            @return this with the quad for (S, P, O) added
+        */
+        public Fragments addTriple( Triple t )
+            {
+            slots[SUBJECTS.which].add( t.getSubject() );
+            slots[PREDICATES.which].add( t.getPredicate() );
+            slots[OBJECTS.which].add( t.getObject() );
+            slots[TYPES.which].add( RDF.Nodes.Statement );
+            return this;
+            }
+            
+        /** 
+            precondition: isComplete() 
+        <p>
+            return the single Triple that this Fragments represents; only legal if
+            isComplete() is true.    
+        */        
+        Triple asTriple()
+            { return Triple.create( only( slots[SUBJECTS.which] ), only( slots[PREDICATES.which] ), only( slots[OBJECTS.which] ) ); }
+                   
+        /**
+            precondition: s.size() == 1
+        <p>
+            utiltity method to return the only element of a singleton set.
+        */
+        private Node only( Set s )
+            { return (Node) s.iterator().next(); }
+            
+        /**
+            return a readable representation of this Fragment for debugging purposes.
+        */
+        public String toString()
+            { return anchor + " s:" + slots[SUBJECTS.which] + " p:" + slots[PREDICATES.which] + " o:" + slots[OBJECTS.which] + " t:" + slots[TYPES.which]; }
+           
+        /*
+            the magic numbers for the slots. The order doesn't matter, but that they're
+            some permutation of {0, 1, 2, 3} does. 
+        */
+        private static final SimpleReifierFragmentsMap.Slot TYPES = new SimpleReifierFragmentsMap.Slot(0) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return false; } };
+        private static final SimpleReifierFragmentsMap.Slot SUBJECTS = new SimpleReifierFragmentsMap.Slot(1) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getSubject() ); } };
+        private static final SimpleReifierFragmentsMap.Slot PREDICATES = new SimpleReifierFragmentsMap.Slot(2) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getPredicate() ); } };
+        private static final SimpleReifierFragmentsMap.Slot OBJECTS = new SimpleReifierFragmentsMap.Slot(3) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
     
-    
+        public static final Map selectors = makeSelectors();
+              
+        /**
+            make the selector mapping.
+        */
+        private static Map makeSelectors()
+            {
+            Map result = HashUtils.createMap();
+            result.put( RDF.Nodes.subject, SUBJECTS );
+            result.put( RDF.Nodes.predicate, PREDICATES );
+            result.put( RDF.Nodes.object, OBJECTS );
+            result.put( RDF.Nodes.type, TYPES );
+            return result;
+            }
+        }       
+
     }
 
 /*

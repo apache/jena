@@ -1,13 +1,12 @@
 /*
      (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
      [See end of file]
-     $Id: AbstractTestReifierFragmentsMap.java,v 1.3 2004-09-20 14:42:20 chris-dollin Exp $
+     $Id: AbstractTestReifierFragmentsMap.java,v 1.4 2004-09-21 09:19:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.Fragments;
 import com.hp.hpl.jena.graph.impl.ReifierFragmentsMap;
 
 /**
