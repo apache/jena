@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.12 2003-07-18 11:02:18 chris-dollin Exp $
+  $Id: Query.java,v 1.13 2003-07-18 15:38:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -17,24 +17,52 @@ import java.util.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
-	The class of graph queries. 
-<br>
+	The class of graph queries, plus some machinery (which should move) for
+    implementing them.
+
 	@author hedgehog
 */
 
 public class Query 
 	{   
+    /**
+        A more-or-less internal object for referring to the "default" graph in a query.
+    */
     public static final String anon = "<this>";   
-     
+    
+    /**
+        A convenient synonym for Node.ANY, used in a match to match anything.
+    */ 
     public static final Node ANY = Node.ANY;
     
+    /**
+        A variable called "S".
+    */
     public static final Node S = Node.createVariable( "S" );
+    /**
+        A variable called "P".
+    */
     public static final Node P = Node.createVariable( "P" );
+    /**
+        A variable called "O".
+    */
     public static final Node O = Node.createVariable( "O" );
+    /**
+        A variable called "X".
+    */
     public static final Node X = Node.createVariable( "X" );
+    /**
+        A variable called "Y".
+    */
     public static final Node Y = Node.createVariable( "Y" );
+    /**
+        A variable called "Z".
+    */
     public static final Node Z = Node.createVariable( "Z" );
     
+    /**
+        The built-in constraint operator not-equals.
+    */
     public static final Node NE = GraphTestBase.node( "&ne" );
         
 	public Query()

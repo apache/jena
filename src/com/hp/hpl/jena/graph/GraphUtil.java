@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphUtil.java,v 1.3 2003-07-18 15:14:00 chris-dollin Exp $
+  $Id: GraphUtil.java,v 1.4 2003-07-18 15:38:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;

@@ -1,12 +1,14 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Capabilities.java,v 1.1 2003-04-22 15:02:16 chris-dollin Exp $
+  $Id: Capabilities.java,v 1.2 2003-07-18 15:38:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 /**
+    Interface for expressing capabilities; presently empty until tests force something
+    useful into it (the existing capability integers not being used constructively anywhere).
  	@author kers
 */
 public interface Capabilities
