@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.27 2003-10-06 05:37:40 chris-dollin Exp $
+  $Id: Query.java,v 1.28 2003-10-06 15:19:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -140,37 +139,14 @@ public class Query
     */
     public ExtendedIterator executeBindings( List outStages, ArgMap args, Node [] nodes )
         {
-        Mapping map = new Mapping( nodes );
-        ArrayList stages = new ArrayList();        
-        addStages( stages, args, map );
-        if (constraint != Expression.TRUE) 
-            stages.add( new ConstraintStage( map, constraint ) );
-        outStages.addAll( stages );
-        variableCount = map.size();
-        return filter( connectStages( stages, variableCount ) );
-        }
-        
-    private ExtendedIterator filter( final Stage allStages )
-        {
-        final Pipe complete = allStages.deliver( new BufferPipe() );
-        return new NiceIterator()
-            {
-            public void close() { allStages.close(); clearPipe(); }
-            public Object next() { return complete.get(); }
-            public boolean hasNext() { return complete.hasNext(); }
-            private void clearPipe()
-                { 
-                int count = 0; 
-                while (hasNext()) { count += 1; next(); }
-                }
-            };
+        SimpleQueryEngine e = new SimpleQueryEngine( triples, sortMethod, constraint );
+        ExtendedIterator result = e.executeBindings( outStages, args, nodes );
+        variableCount = e.getVariableCount();
+        return result;
         }
                           
     /** collection of triple patterns, graph name -> Cons[Triple] */
     private HashMap triples = new HashMap();
-    
-    /** the combined constraint graph */
-    // private Graph constraintGraph = new GraphMem();
     
     /** mapping of graph name -> graph */
     private ArgMap argMap = new ArgMap();
@@ -188,47 +164,15 @@ public class Query
         
     public ArgMap args()
         { return argMap; }
-        
-    private static class Cons
-        {
-        Triple head;
-        Cons tail;
-        Cons( Triple head, Cons tail ) { this.head = head; this.tail = tail; }
-        static int size( Cons L ) { int n = 0; while (L != null) { n += 1; L = L.tail; } return n; }
-        }
-        
+
     private Query addNamedMatch( String name, Node s, Node p, Node o )
-        {
-        return addNamedMatch( name, new Triple( s, p, o ) );
-        }
+        { return addNamedMatch( name, new Triple( s, p, o ) ); }
         
     private Query addNamedMatch( String name, Triple pattern )
     	{
-        triples.put( name, new Cons( pattern, (Cons) triples.get( name ) ) );
+        triples.put( name, SimpleQueryEngine.cons( pattern, triples.get( name ) ) );
     	return this;
     	}
-              
-    private void addStages( ArrayList stages, ArgMap arguments, Mapping map )
-        {
-        Iterator it2 = triples.entrySet().iterator();
-        while (it2.hasNext())
-            {
-            Map.Entry e = (Map.Entry) it2.next();
-            String name = (String) e.getKey();
-            Cons nodeTriples = (Cons) e.getValue();
-            Graph g = arguments.get( name );
-            int nBlocks = Cons.size( nodeTriples ), i = nBlocks;
-            Triple [] nodes = new Triple[nBlocks];
-            while (nodeTriples != null)
-                {
-                nodes[--i] = nodeTriples.head;
-                nodeTriples = nodeTriples.tail;
-                }
-            nodes = sortTriples( nodes );
-            Stage next = g.queryHandler().patternStage( map, constraint, nodes );
-            stages.add( next );
-            }
-        }
         
     public void setTripleSorter( TripleSorter ts )
         { sortMethod = ts == null ? dontSort : ts; }
@@ -238,21 +182,10 @@ public class Query
         
     private TripleSorter sortMethod = dontSort;
     
-    private Triple [] sortTriples( Triple [] ts )
-        { return sortMethod.sort( ts ); }
-        
     private int variableCount = -1;
     
     public int getVariableCount()
         { return variableCount; }
-        
-    private Stage connectStages( ArrayList stages, int count )
-        {
-        Stage current = Stage.initial( count );
-        for (int i = 0; i < stages.size(); i += 1)
-            current = ((Stage) stages.get( i )).connectFrom( current );
-        return current;
-        }
 	}
 
 /*
