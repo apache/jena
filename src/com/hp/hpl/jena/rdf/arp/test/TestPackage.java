@@ -83,20 +83,24 @@ Test test26 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfc
 test14.addTest(test26);
 Test test27 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-018","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/error-018.rdf",true,new int[]{205, });
 test14.addTest(test27);
+/*
 Test test28 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0007","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0007.rdf",true,new int[]{102, 101, });
 test14.addTest(test28);
 Test test29 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0008","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0008.rdf",true,new int[]{102, 101, });
 test14.addTest(test29);
 Test test30 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0009","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0009.rdf",true,new int[]{101, });
 test14.addTest(test30);
+*/
 Test test31 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#test004","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test004.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test004.nt",false);
 test14.addTest(test31);
 Test test32 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#test003","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test003.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test003.nt",false);
 test14.addTest(test32);
+/*
 Test test33 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0003","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0003.rdf",true,new int[]{101, });
 test14.addTest(test33);
 Test test34 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0004","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0004.rdf",true,new int[]{101, });
 test14.addTest(test34);
+*/
 Test test35 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test011","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test011.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test011.nt",false);
 test14.addTest(test35);
 Test test36 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test010","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test010.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test010.nt",false);
@@ -111,10 +115,12 @@ Test test40 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfc
 test14.addTest(test40);
 Test test41 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#test005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test005.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test005.nt",false);
 test14.addTest(test41);
+/*
 Test test42 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0005.rdf",true,new int[]{101, });
 test14.addTest(test42);
 Test test43 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0006","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0006.rdf",true,new int[]{101, });
 test14.addTest(test43);
+*/
 Test test44 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test013","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test013.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test013.nt",false);
 test14.addTest(test44);
 Test test45 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test012","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test012.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test012.nt",false);
@@ -383,10 +389,12 @@ Test test176 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdf
 test14.addTest(test176);
 Test test177 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-019","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/error-019.rdf",true,new int[]{205, });
 test14.addTest(test177);
+/*
 Test test178 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0001","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0001.rdf",true,new int[]{101, });
 test14.addTest(test178);
 Test test179 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0002","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0002.rdf",true,new int[]{101, });
 test14.addTest(test179);
+*/
 test1.addTest(test14);
 TestSuite test180 = new TestSuite("PENDING");
 Test test181 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-syntax-incomplete/Manifest.rdf#error006","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-syntax-incomplete/error006.rdf",true,null);
@@ -573,20 +581,24 @@ Test test271 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/r
 test259.addTest(test271);
 Test test272 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-018","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/error-018.rdf",true,new int[]{205, });
 test259.addTest(test272);
+/*
 Test test273 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0007","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0007.rdf",true,new int[]{102, 101, });
 test259.addTest(test273);
 Test test274 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0008","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0008.rdf",true,new int[]{102, 101, });
 test259.addTest(test274);
 Test test275 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0009","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0009.rdf",true,new int[]{101, });
 test259.addTest(test275);
+*/
 Test test276 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#test004","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test004.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test004.nt",false);
 test259.addTest(test276);
 Test test277 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#test003","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test003.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test003.nt",false);
 test259.addTest(test277);
+/*
 Test test278 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0003","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0003.rdf",true,new int[]{101, });
 test259.addTest(test278);
 Test test279 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0004","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0004.rdf",true,new int[]{101, });
 test259.addTest(test279);
+*/
 Test test280 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test011","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test011.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test011.nt",false);
 test259.addTest(test280);
 Test test281 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test010","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test010.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test010.nt",false);
@@ -601,10 +613,13 @@ Test test285 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/r
 test259.addTest(test285);
 Test test286 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#test005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test005.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test005.nt",false);
 test259.addTest(test286);
+/*
 Test test287 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0005.rdf",true,new int[]{101, });
 test259.addTest(test287);
 Test test288 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0006","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0006.rdf",true,new int[]{101, });
 test259.addTest(test288);
+
+*/
 Test test289 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test013","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test013.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test013.nt",false);
 test259.addTest(test289);
 Test test290 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test012","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test012.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test012.nt",false);
@@ -873,10 +888,13 @@ Test test421 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/r
 test259.addTest(test421);
 Test test422 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-019","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/error-019.rdf",true,new int[]{205, });
 test259.addTest(test422);
+/*
 Test test423 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0001","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0001.rdf",true,new int[]{101, });
 test259.addTest(test423);
 Test test424 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0002","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/error0002.rdf",true,new int[]{101, });
 test259.addTest(test424);
+
+*/
 test246.addTest(test259);
 TestSuite test425 = new TestSuite("PENDING");
 Test test426 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-syntax-incomplete/Manifest.rdf#error006","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-syntax-incomplete/error006.rdf",true,null);

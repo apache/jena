@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.4 2003-04-01 10:44:56 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.5 2003-04-03 08:17:00 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -110,9 +110,8 @@ public interface ARPErrorNumbers {
     public int WARN_XMLBASE_MISSING = 100;
     /**
      A standard rdf attribute like type or about is used 
-     without a namespace qualifier. In default mode ARP adds the
-     *rdf: qualifier; strict mode skips to the end of the enclosing element.
-     * (W101).
+     without a namespace qualifier. In default and strict mode ARP adds the
+     *rdf: qualifier and reports a warning. (W101).
     */
     public int WARN_UNQUALIFIED_RDF_ATTRIBUTE = 101;
     /**
