@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.3 2003-08-08 14:55:49 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.4 2003-08-11 02:39:51 wkw Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -41,10 +41,11 @@ public abstract class AbstractTestQuery extends GraphTestBase
         
     public void setUp()
         {
-        Q = new Query();
-        empty = getGraphWith( "" );
-        single = getGraphWith( "spindizzies drive cities" );
-        }
+			Q = new Query();
+			empty = getGraphWith( "" );
+			single = getGraphWith( "spindizzies drive cities" );
+		}
+
         
     private void testTreeQuery( String title, String content, String pattern, String correct )
         {
@@ -100,23 +101,46 @@ public abstract class AbstractTestQuery extends GraphTestBase
         assertEquals( "binding object to quickly", binding.get(1), node("quickly") ); 
         }
 
-    public void testBinding2( )
-        { // TODO - relies on ordering of results; this is UNSAFE
-        Graph several = getGraphWith( "rice grows quickly; time isan illusion" );
-        String [][] answers = { {"time", "isan", "illusion"}, {"rice", "grows", "quickly"} };
-        Query q = new Query();
-        Node V1 = node( "?v1" ), V2 = node( "?v2" ), V3 = node( "?v3" );
-        BindingQueryPlan qp = several.queryHandler().prepareBindings( q.addMatch( V1, V2, V3 ),  new Node[] {V1, V2, V3} );
-        Iterator bindings = qp.executeBindings();
-        for (int i = 0; i < answers.length; i += 1)
-            {
-            if (bindings.hasNext() == false) fail( "wanted some more results" );
-            Domain bound = (Domain) bindings.next();
-            for (int j = 0; j < 3; j += 1)
-                assertEquals( "binding failure", bound.get(j), node( answers[i][j] ) );
-            }
-        assertFalse( "iterator should be empty", bindings.hasNext() ); 
-        }
+	public void testBinding2() { 
+		Graph several = getGraphWith("rice grows quickly; time isan illusion");
+		String[][] answers = { { "time", "isan", "illusion" }, {
+				"rice", "grows", "quickly" }
+		};
+		boolean[] found = { false, false };
+		Query q = new Query();
+		Node V1 = node("?v1"), V2 = node("?v2"), V3 = node("?v3");
+		BindingQueryPlan qp =
+			several.queryHandler().prepareBindings(
+				q.addMatch(V1, V2, V3),
+				new Node[] { V1, V2, V3 });
+		Iterator bindings = qp.executeBindings();
+		for (int i = 0; i < answers.length; i += 1) {
+			if (bindings.hasNext() == false)
+				fail("wanted some more results");
+			Domain bound = (Domain) bindings.next();
+			for (int k = 0; k < answers.length; k++) {
+				if (found[k])
+					continue;
+				boolean match = true;
+				for (int j = 0; j < 3; j += 1) {
+					if (!bound.get(j).equals(node(answers[k][j]))) {
+						match = false;
+						break;
+					}
+				}
+				if (match) {
+					found[k] = true;
+					break;
+				}
+			}
+		}
+		for (int k = 0; k < answers.length; k++) {
+			if (!found[k])
+				assertTrue("binding failure", false);
+		}
+		assertFalse("iterator should be empty", bindings.hasNext());
+	}
+
 
     public void testMultiplePatterns()
         {
