@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.36 2004-03-12 09:36:31 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.37 2004-03-19 09:53:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -32,7 +32,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.36 $ on $Date: 2004-03-12 09:36:31 $
+ * @version $Revision: 1.37 $ on $Date: 2004-03-19 09:53:38 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -409,7 +409,7 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("serialization", "1999-05-31T02:09:32Z", l1.getValue().toString());
         Calendar cal = xdt.asCalendar();
         Calendar testCal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-        testCal.set(1999, 5, 31, 2, 9, 32);
+        testCal.set(1999, 4, 31, 2, 9, 32);
         /*
         assertEquals("calendar value", cal.get(Calendar.YEAR), testCal.get(Calendar.YEAR) );
         assertEquals("calendar value", cal.get(Calendar.MONTH), testCal.get(Calendar.MONTH) );
@@ -424,13 +424,31 @@ public class TestTypedLiterals extends TestCase {
         assertTrue("inequality test", l1 != m.createTypedLiteral("1999-04-31T02:09:32Z", XSDDatatype.XSDdateTime));
         
         Calendar testCal2 = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-        testCal2.set(1999, 5, 30, 15, 9, 32);
+        testCal2.set(1999, 4, 30, 15, 9, 32);
         testCal2.set(Calendar.MILLISECOND, 0);   // ms field can be undefined on Linux
         Literal lc = m.createTypedLiteral(testCal2);
         assertEquals("calendar 24 hour test", m.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc );
         
         assertEquals("calendar value", cal, testCal);
         assertEquals("equality test", l1, m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime));
+
+        Calendar testCal3 = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        testCal3.clear();
+        testCal3.set(1999, Calendar.JANUARY, 30, 15, 9, 32);
+        lc = m.createTypedLiteral(testCal3);
+        assertEquals("1999-01-30T15:09:32Z", lc.getLexicalForm());
+        String urib="rdf://test.com#";
+        String uri1=urib+"1";
+        String urip=urib+"prop";
+        String testN3 = "<"+uri1+"> <"+urip+"> \""+lc.getLexicalForm()+"\"^^<"+lc.getDatatypeURI()+"> .";
+        java.io.StringReader sr = new java.io.StringReader(testN3);
+        m.read(sr, urib, "N3");
+        assertTrue(m.contains(m.getResource(uri1),m.getProperty(urip)));
+        Resource r1 = m.getResource(uri1);
+        Property p = m.getProperty(urip);
+        XSDDateTime returnedDateTime = (XSDDateTime) r1.getProperty(p).getLiteral().getValue();
+        assertEquals("deserialized calendar value", testCal3, returnedDateTime.asCalendar());
+
         
         // date
         l1 = m.createTypedLiteral("1999-05-31", XSDDatatype.XSDdate);
@@ -522,7 +540,7 @@ public class TestTypedLiterals extends TestCase {
         l1 = m.createTypedLiteral(ncal);
         assertEquals("DateTime from date", XSDDatatype.XSDdateTime, l1.getDatatype());
         assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
-        assertEquals("DateTime from date", "2003-11-08T10:50:42Z", l1.getValue().toString());
+        assertEquals("DateTime from date", "2003-12-08T10:50:42Z", l1.getValue().toString());
         
     }
       
