@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:38 $
+ * Last modified on   $Date: 2003-07-30 19:15:49 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.8 2003-06-21 12:35:38 ian_dickinson Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.9 2003-07-30 19:15:49 ian_dickinson Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -56,8 +56,20 @@ public class IndividualImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { return new IndividualImpl( n, eg ); }
-        public boolean canWrap( Node n, EnhGraph eg ) { return true; }
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new IndividualImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to Individual");
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            // node will support being an Individual facet if it is a URI node or bNode
+            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+            return (profile != null)  &&  profile.isSupported( node, eg, Individual.class );
+        }
     };
     
     

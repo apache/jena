@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-26 22:26:28 $
+ * Last modified on   $Date: 2003-07-30 19:16:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.2 2003-06-26 22:26:28 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.3 2003-07-30 19:16:16 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -48,6 +48,9 @@ public class TestBugReports
     // Constants
     //////////////////////////////////
 
+    public static String NS = "http://example.org/test#";
+    
+    
     // Static variables
     //////////////////////////////////
 
@@ -118,6 +121,21 @@ public class TestBugReports
         //(OntClass) (ontModel.getProfile().CLASS()).as(OntClass.class);
 
 
+    }
+    
+    /**
+     * Bug report by federico.carbone@bt.com, 30-July-2003.   A literal can be
+     * turned into an individual.
+     */
+    public void test_fc_01() {
+        OntModel m = ModelFactory.createOntologyModel();
+        
+        ObjectProperty p = m.createObjectProperty( NS + "p" ); 
+        Restriction r = m.createRestriction( p );
+        HasValueRestriction hv = r.convertToHasValueRestriction( m.createLiteral( 1 ) );
+        
+        RDFNode n = hv.getHasValue();
+        assertFalse( "Should not be able to convert literal to individual", n.canAs( Individual.class ) );
     }
     
     
