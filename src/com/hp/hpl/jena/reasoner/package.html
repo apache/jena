@@ -39,8 +39,8 @@ result   of such binding is an <a href="InfGraph.html">InfGraph</a>
 </p>
 <pre>
   ReasonerFactory rf = RDFSReasonerFactory.theInstance();
-  Reasoner reasoner  = reasonerF.create(null);
-  InfGraph graph     = reasoner.bindSchema(tbox)
+  Reasoner reasoner  = rf.create(null);
+  InfGraph graph     = reasoner.bindSchema(tbox) // optional
                                .bind(data);
   Model model        = new ModelMem(graph);
 </pre>
