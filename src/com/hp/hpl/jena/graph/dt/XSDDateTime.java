@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.1.1.1 2002-12-19 19:13:46 bwm Exp $
+ * $Id: XSDDateTime.java,v 1.2 2003-02-03 16:51:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * <p>TODO: revist and consider have separate types for each.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:46 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-03 16:51:50 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -77,6 +77,7 @@ public class XSDDateTime extends AbstractDateTime {
         TimeZone tz = data[UTC] == 'Z' ? TimeZone.getTimeZone("GMT") : TimeZone.getDefault();
         Calendar calendar = new GregorianCalendar(tz);
         calendar.set(data[CY], data[MONTH], data[DAY], data[HOUR], data[MINUTE], data[SECOND]);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
     }
     
