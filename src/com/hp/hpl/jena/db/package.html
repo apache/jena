@@ -1,92 +1,21 @@
 <HTML>
 <HEAD><TITLE>Jean Relational Database backend</TITLE></HEAD>
 <BODY>
-<p>A general  database backend for persistent storage of jena models. This is a 
-preliminary Jena2 release that only supports one implementation, the relational 
-model using MySQL. It is largely backwards-compatible with Jena1 but does not 
-support the various Jena1 layouts. Also missing is support for reification and 
-datatypes for literals. A future release will support these feature and enable 
-additional database types and layouts.</p>
-<h2>Overview</h2>
-<p>
-The jena/db module provides an implementation of the jena <code>model</code> interface which
-stores the RDF statement information in a relational database.</p>
-
-<h2>Creating and accessing database instances</h2>
-<p>
-Database-backed RDF models are instances of the class <code>jena.db.ModelRDB</code>.
-As well as implementing the full <code>jena.model.Model</code> interface the static
-methods on <code>ModelRDB</code> provide means to create, extend and reopen database instances. 
-For backwards-compatibility, Jena2 supports Jena1 methods for creating and 
-opening databases (see release notes for details on changes).
-</p>
-<p>
-In Jena2, the database type is specified as part of the database connection. 
-Configuration information (model and database properties) are specified as 
-statements in an RDF model. The following examples show how this is done.</p>
-
-<h3>Default models</h3>
-<p>
-First consider the situation where we have an available database but as yet it has no
-RDF models stored in it and we want to format it for holding RDF statements.  To 
-construct a default model use:
-<code>
-<pre>
-    Class.forName("com.mysql.jdbc.Driver").newInstance();
-    DBConnection dbcon = new DBConnection("jdbc:mysql://localhost/test", myusername, mypassword, "MySQL");
-    ModelRDB model = ModelRDB.createModel(dbcon);
-</pre>
-</code>
-</p>
-<p>
-To later reopen that default model, use:
-<code>
-<pre>
-    Class.forName("com.mysql.jdbc.Driver").newInstance();
-    DBConnection dbcon = new DBConnection("jdbc:mysql://localhost/test", myusername, mypassword, "MySQL");
-    ModelRDB model = ModelRDB.open(dbcon);
-</pre>
-</code>
-<h3>Multiple models per database</h3>
-<p>
-To place more than one model within a single database you'll need to give each one a name (so they may be distinguished later).  Here is an example which checks to see if a specific named model exists and then creates or reopens it as necessary:
-<code>
-<pre>
-    String myModelName = "myModelName";
-    Class.forName("com.mysql.jdbc.Driver").newInstance();
-    DBConnection dbcon = new DBConnection("jdbc:mysql://localhost/test", myusername, mypassword, "MySQL");
-    ModelRDB model;
-    if( !dbcon.containsModel( myModelName ) )
-        model = ModelRDB.createModel(dbcon, myModelName);
-    else
-        model = ModelRDB.open(dbcon, myModelName);
-</pre>
-</code>
-
-<h3>Customizing the layout/optimization parameters</h3>
-<p>
-Database and model configuration parameters are declared as statements
-in an RDF model. Currently, properties may be retrieved but not
-specified. A future release will enable applications to set
-configuration parameters. The names of the configuration properties
-are specified in <code>com.hp.hpl.jena.vocabulary.DB</code></p>
-
-<p> To retrieve a Model containing the Database properties use:
-<code>
-<pre>
-    Model dbProperties = dbcon.getDatabaseProperties();
-</pre>
-</code>
-</p>
-
-<p> To retrieve a Model containing the properties of a model within the databae use:
-<code>
-<pre>
-    Model modelProperties = model.getModelProperties();
-</pre>
-</code>
-</p>
-
-<p> To access any particular property, use the standard jena Model interface (for example: <code>listStatments</code>).</p>
+<p>A general  database backend for persistent storage of Jena models. This  Jena2 release 
+runs on three database engines, MySQL, Oracle, PostgreSQL on two platforms, 
+Linux and WindowsXP. The Jena2 persistence subsystem is largely compatible with 
+Jena1 but does not support the various Jena1 layouts. Existing Jena1 databases 
+cannot be accessed by Jena2 and must be reloaded.</p>
+<p>For details on creating and accessing persistent models, see
+<font face="Courier New" size="2">doc/DB/howto.html</font>. For details on 
+options for configuring and accessing persistent models see the
+<font size="2" face="Courier New">doc/DB/options.html</font>. For particulars on 
+persistent models for the various database engines, see
+<font face="Courier New" size="2">doc/DB/mysql-howto.html, doc/DB/oracle-howto.html,doc/DB/postgresql-howto.html</font>.</p>
+<p>Note that the recommended mechanism for creating and opening persistent 
+models has changed from Jena1 and also from the preliminary releases of Jena2. 
+Previous mechanisms are now deprecated and users are encouraged to use the new 
+factory mechanisms. See <font size="2" face="Courier New">doc/how-to/model-factory.html</font> 
+for details.</p>
 </BODY>
 </HTML>
