@@ -1,44 +1,28 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.8 2003-04-15 09:55:29 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.3 2003-04-15 21:14:37 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
 import junit.framework.*;
 
-/**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
-*/
+public class TestModelFactory extends GraphTestBase
+    {
+    public static TestSuite suite()
+        { return new TestSuite( TestModelFactory.class ); }   
+        
+    public TestModelFactory(String name)
+        { super(name); }
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
+    public void testCreateDefaultModel()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        }    
     }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("Model");
-        addTest( "TestModel", TestModelFactory.suite() );
-        addTest( "TestModelFactory", TestModelFactory.suite() );
-        addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
-        addTest( "TestModelPolymorphism", TestModelPolymorphism.suite() );
-        addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
-        addTest( "TestStatements", TestReifiedStatements.suite() );
-        addTest( "TestReifiedStatements", TestReifiedStatements.suite() );
-        addTest( "TestIterators", TestIterators.suite() );
-        addTest( "TestContains", TestContains.suite() );
-        }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
-}
 
 /*
     (c) Copyright Hewlett-Packard Company 2002
