@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ManualExample.java,v 1.4 2003-08-25 20:58:04 der Exp $
+ * $Id: ManualExample.java,v 1.5 2003-08-26 23:44:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * Some code samples from the user manual.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-25 20:58:04 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-26 23:44:15 $
  */
 public class ManualExample {
 
@@ -106,12 +106,44 @@ public class ManualExample {
         out.flush();
     }
     
+    /** Another generic rules illustration */
+    public void test4() {
+        // Test data
+        String egNS = PrintUtil.egNS;   // Namespace for examples
+        Model rawData = ModelFactory.createDefaultModel();
+        Property first = rawData.createProperty(egNS, "concatFirst");
+        Property second = rawData.createProperty(egNS, "concatSecond");
+        Property p = rawData.createProperty(egNS, "p");
+        Property q = rawData.createProperty(egNS, "q");
+        Property r = rawData.createProperty(egNS, "r");
+        Resource A = rawData.createResource(egNS + "A");
+        Resource B = rawData.createResource(egNS + "B");
+        Resource C = rawData.createResource(egNS + "C");
+        A.addProperty(p, B);
+        B.addProperty(q, C);
+        r.addProperty(first, p);
+        r.addProperty(second, q);
+        
+        // Rule example for
+        String rules = 
+            "[r1: (?c eg:concatFirst ?p), (?c eg:concatSecond ?q) -> " +            "     [r1b: (?x ?c ?y) <- (?x ?p ?z) (?z ?q ?y)] ]";        Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+//        reasoner.setParameter(ReasonerVocabulary.PROPtraceOn, Boolean.TRUE);
+        InfModel inf = ModelFactory.createInfModel(reasoner, rawData);
+//        System.out.println("OK = " + inf.contains(A, r, C));
+        Iterator list = inf.listStatements(A, null, (RDFNode)null);
+        System.out.println("A * * =>");
+        while (list.hasNext()) {
+            System.out.println(" - " + list.next());
+        }
+    }
+    
     public static void main(String[] args) {
         try {
 //            new ManualExample().test1();
 //            new ManualExample().test2("file:testing/reasoners/rdfs/dttest2.nt");
 //            new ManualExample().test2("file:testing/reasoners/rdfs/dttest3.nt");
-            new ManualExample().test3();
+//            new ManualExample().test3();
+            new ManualExample().test4();
         } catch (Exception e) {
             System.out.println("Problem: " + e);
             e.printStackTrace();
