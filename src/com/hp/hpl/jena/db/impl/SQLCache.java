@@ -15,6 +15,7 @@ import java.util.*;
 import java.io.*;
 
 import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.shared.JenaException;
 
 import org.apache.log4j.Logger;
 
@@ -43,7 +44,7 @@ import org.apache.log4j.Logger;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.4 $ on $Date: 2003-07-01 12:48:12 $
+* @version $Revision: 1.5 $ on $Date: 2003-07-10 18:37:37 $
 */
 
 public class SQLCache {
@@ -136,22 +137,39 @@ public class SQLCache {
     /**
      * Return the raw SQL statement corresponding to the named operation.
      */
-    public String getSQLStatement(String opname) {
-        return m_sql.getProperty(opname);
+    public String getSQLStatement(String opname) throws SQLException {
+        return getSQLStatement(opname, (String[]) null);
     }
 
     /**
      * Return the raw SQL statement corresponding to the named operation.
-     * Attribute version - substitute the ${a} attribute macro for
-     * the current attribute number.
+     * Substitute the ${a} attribute macro for the current attribute number.
      */
+	public String getSQLStatement(String opname, String[] attr) throws SQLException {
+		String cmd = m_sql.getProperty(opname);
+		if (cmd == null) {
+			if ( opname.startsWith("*") ) {
+				cmd = genSQLStatement(opname);
+				m_sql.setProperty(opname, cmd);
+			} else {
+				logger.error("Unable to find SQL for operation: " + opname);
+				throw new SQLException("Unable to find SQL for operation: " + opname);
+			}
+		}
+		int attrCnt = (attr == null) ? 0 : attr.length;
+		if ( attrCnt > 0 ) cmd = substitute(cmd, "${a}", attr[0]);
+		if ( attrCnt > 1 ) cmd = substitute(cmd, "${b}", attr[1]);
+		if ( attrCnt > 2 ) cmd = substitute(cmd, "${c}", attr[2]);
+		if ( attrCnt > 3 ) throw new JenaException("Too many arguments");
+
+		return cmd;
+	}
+
+    
+    
     public String getSQLStatement(String opname, String attr) throws SQLException {
-    	String cmd = m_sql.getProperty(opname);
-    	if (cmd == null) {
-    		logger.error("Unable to find SQL for operation: " + opname);
-			throw new SQLException("Unable to find SQL for operation: " + opname); 
-    	}
-        return substitute(cmd, "${a}", attr);
+		String[] param = {attr};
+		return getSQLStatement(opname,param);
     }
 
 	/**
@@ -160,8 +178,8 @@ public class SQLCache {
 	 * the current attribute number.
 	 */
 	public String getSQLStatement(String opname, String attrA, String attrB) throws SQLException {
-	    String op = getSQLStatement(opname, attrA);
-	    return substitute(op, "${b}", attrB);
+		String[] param = {attrA,attrB};
+		return getSQLStatement(opname,param);
 	}
 
     /**
@@ -207,23 +225,38 @@ public class SQLCache {
      * @return a prepared SQL statement appropriate for the JDBC connection
      * used when this SQLCache was constructed or null if there is no such
      * operation or no such connection
+     * 
+     * 
      */
+    
+	public synchronized PreparedStatement getPreparedSQLStatement(String opname, String [] attr) throws SQLException {
+		/* TODO extended calling format or statement format to support different
+		 * result sets and conconcurrency modes.
+		 */
+		if (m_connection == null || opname == null) return null;
+		int attrCnt = (attr == null) ? 0 : attr.length;
+		String aop = opname;
+		if ( attrCnt > 0 ) aop = concatOpName(aop, attr[0]);
+		if ( attrCnt > 1 ) aop = concatOpName(aop, attr[1]);
+		if ( attrCnt > 2 ) aop = concatOpName(aop, attr[2]);
+		if ( attrCnt > 3 ) throw new JenaException("Too many arguments");
+        
+		List psl = (List) m_preparedStatements.get(aop);
+		if (psl == null || psl.isEmpty()) {
+			String sql = getSQLStatement(opname, attr);
+			if (sql == null) {
+				throw new SQLException("No SQL defined for operation: " + opname);
+			}
+			if (psl == null && CACHE_PREPARED_STATEMENTS) m_preparedStatements.put(aop, new LinkedList());
+			return getConnection().prepareStatement(sql);
+		} else {
+			return (PreparedStatement) psl.remove(0);
+		}
+	}
+
+
     public synchronized PreparedStatement getPreparedSQLStatement(String opname) throws SQLException {
-    	/* TODO extended calling format or statement format to support different
-     	 * result sets and conconcurrency modes.
-	     */
-        if (m_connection == null || opname == null) return null;
-        List psl = (List) m_preparedStatements.get(opname);
-        if (psl == null || psl.isEmpty()) {
-            String sql = getSQLStatement(opname);
-            if (sql == null) {
-                throw new SQLException("No SQL defined for operation: " + opname);
-            }
-            if (psl == null && CACHE_PREPARED_STATEMENTS) m_preparedStatements.put(opname, new LinkedList());
-            return getConnection().prepareStatement(sql);
-        } else {
-            return (PreparedStatement) psl.remove(0);
-        }
+    	return getPreparedSQLStatement(opname, (String[]) null);
     }
 
     /**
@@ -231,22 +264,8 @@ public class SQLCache {
      * accesses the attribte variant correspond to the given attribute suffix.
      */
     public synchronized PreparedStatement getPreparedSQLStatement(String opname, String attr) throws SQLException {
-        if (m_connection == null || opname == null) return null;
-  	    
-  	    // Hk added delimiter
-        String aop = concatOpName(opname, attr);
-        
-        List psl = (List) m_preparedStatements.get(aop);
-        if (psl == null || psl.isEmpty()) {
-            String sql = getSQLStatement(opname, attr);
-            if (sql == null) {
-                throw new SQLException("No SQL defined for operation: " + opname);
-            }
-            if (psl == null && CACHE_PREPARED_STATEMENTS) m_preparedStatements.put(aop, new LinkedList());
-            return getConnection().prepareStatement(sql);
-        } else {
-            return (PreparedStatement) psl.remove(0);
-        }
+		String[] param = {attr};
+		return getPreparedSQLStatement(opname,param);
     }
 
     /**
@@ -254,23 +273,9 @@ public class SQLCache {
      * access the attribte variant correspond to the given attribute suffix.
      */
     public synchronized PreparedStatement getPreparedSQLStatement(String opname, String attrA, String attrB) throws SQLException {
-        if (m_connection == null || opname == null) return null;
-        
-        // Hk added delimiter ';'
-        String aop = concatOpName(opname, attrA, attrB);
-        
-        List psl = (List) m_preparedStatements.get(aop);
-        if (psl == null || psl.isEmpty()) {
-            String sql = getSQLStatement(opname, attrA, attrB);
-            if (sql == null) {
-                throw new SQLException("No SQL defined for operation: " + opname);
-            }
-            if (psl == null && CACHE_PREPARED_STATEMENTS) m_preparedStatements.put(aop, new LinkedList());
-            return getConnection().prepareStatement(sql);
-        } else {
-            return (PreparedStatement) psl.remove(0);
-        }
-    }
+		String[] param = {attrA,attrB};
+		return getPreparedSQLStatement(opname,param);
+	}
     
     /**
      * Return a prepared statement to the statement pool for reuse by
@@ -611,7 +616,7 @@ public class SQLCache {
 
 	/** Helper function calculate op name given substitutions */
 	public static String concatOpName(String opName, String attr) {
-		return (opName  + attr);
+		return (opName + attr);
 	}
 	
 	/** Helper function calculate op name given substitutions */
@@ -666,6 +671,138 @@ public class SQLCache {
             return null;
         }
     }
+    
+    /**
+     * Return dynamically generated SQL for the specified operation.
+     * @param opname the command to generate; must start with "*", the opname and then op params.
+     * @return the generated command as a String.
+     */
+    
+    protected String genSQLStatement ( String opname ) throws SQLException {
+    	/* for testing. for now, we only generate one operation, findReif,
+    	 * to find reified statements from a triple match pattern.
+    	 */
+    	String sql = "";
+    	boolean badop = false;
+    	if ( opname.startsWith("*") ) {
+    		// a space separate the operation name from its parameters.
+    		int delim = opname.indexOf(' ');
+    		String op = opname.substring(1,delim);
+    		String args = opname.substring(delim+1);
+    		if ( op.equals("findReif") ) {
+    			sql = genSQLStmtFindReif(op,args);
+    		} else badop = true;
+    	} else badop = true;
+    	if ( badop ) {
+			logger.error("Unable to generate SQL for operation: " + opname);
+			throw new JenaException("Unable to generate SQL for operation: " + opname);
+    	}   	
+    	return sql;    	
+    }
+    
+	/**
+	 * Return generate SQL for finding reified statements from a triple pattern.
+	 * @param op the command to generate. should be findReif.
+	 * @param args a string describing which command to generate. 
+	 * it has the form [N][PS|PP|PO|PT][O[C]] where N means to search
+	 * for the statement URI; Px means to search for reified subjects, properties,
+	 * objects or types; O means to search for reified objects; OC means the object
+	 * value is rdf:Statement.
+	 */
+    
+	protected String genSQLStmtFindReif ( String op, String args ) throws SQLException {
+		/* for a reified triple pattern <S,P,O>, there are 8 cases.
+		 * 1. <-,-,->	this means retrieve all reified triples. args="".
+		 * 2. <S,-,->	retrieve all reified triples for this subject. args="N".
+		 * 3. <S,-,O>	retrieve all reified triples for this subject and
+		 * 				object value. args="NO" or "NOC".
+		 * 4. <-,-,O>	retrieve all reified triples with this object value.
+		 * 				args="O" or "OC"
+		 * 5. <-,P,->	retrieve all reified triples with this property. args="Px".
+		 * 				property must be either rdf:subject, rdf:predicate,
+		 * 				rdf:object, rdf:type.
+		 * 6. <-,P,O>	retrieve all reified triples with this property and object
+		 * 				value. args="PxO" or "PxOC".
+		 * 7. <S,P,->	retrieve all reified triples with this subject and property.
+		 * 				args="NPx".
+		 * 8. <S,P,O>	retrieve all reified triples with this subject, property and
+		 * 				object value. args="NPxO" or "NPxOC".
+		 */
+
+		String stmtStr = getSQLStatement("selectReified");
+		String qual = "";
+		
+		if ( args.equals("") ) {
+			// case 1 <-,-,->  nothing to do.
+		} else {
+			int ix = 0;
+			boolean hasSubj = false;
+			boolean hasProp = false;
+			boolean hasObj = false;
+			boolean objIsStmt = false;
+			char reifProp = ' ';
+			int argLen = args.length();
+			
+			if ( args.charAt(ix) == 'N' ) {
+				hasSubj = true;
+				ix++;
+			}
+			hasProp = (ix < argLen) && (args.charAt(ix) == 'P');
+			if ( hasProp && (ix < argLen) ) {
+				ix++;
+				reifProp = args.charAt(ix++);
+			}
+			hasObj = (ix < argLen) && (args.charAt(ix) == 'O');
+			if ( hasObj ) {
+				ix++;
+				objIsStmt = (ix < argLen) && (args.charAt(ix) == 'C');
+			}
+			if ( !hasProp ) {
+				if ( hasSubj ) {
+					// cases 2 and 3
+					qual += genSQLFindReifStmtQual();
+					if ( hasObj ) {
+						// case 3 above
+						qual += " AND " + genSQLFindReifObjQual(objIsStmt);
+					}			
+				} else {
+					// case 4 above
+					qual += genSQLFindReifObjQual(objIsStmt);
+				}
+			} else {
+				// have a reified property
+				if ( hasSubj ) qual += genSQLFindReifStmtQual() + " AND ";
+				qual += genSQLFindReifPropQual(reifProp,hasObj);
+			}
+			stmtStr += " AND " + qual;		
+		}
+		return stmtStr;
+	}
+	
+	protected String genSQLFindReifStmtQual () {
+		return "stmt = ?";
+	}
+	
+	protected String genSQLFindReifObjQual( boolean objIsStmt) {
+		return "( subj = ? OR prop = ? OR obj = ?" + (objIsStmt ? " OR hasType = \"T\")" : " )");
+		
+	}
+	protected String genSQLFindReifPropQual ( char reifProp, boolean hasObj ) {
+		String qual = "";
+		if ( reifProp == 'T' ) {
+			qual = "hasType = \"T\"";
+		} else {
+			String cmp = (hasObj ? " = ?" : " is not null");
+			String col = null;
+			if ( reifProp == 'S' ) col = "subj";
+			else if ( reifProp == 'P' ) col = "prop";
+			else if ( reifProp == 'O' ) col = "obj";
+			else throw new JenaException("Undefined reification property");
+		
+			qual = col + cmp;
+		}
+		return qual;	
+	}
 }
 
 /*
