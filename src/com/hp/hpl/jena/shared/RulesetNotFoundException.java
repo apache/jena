@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RulesetNotFoundException.java,v 1.1 2004-07-28 15:33:45 chris-dollin Exp $
+  $Id: RulesetNotFoundException.java,v 1.2 2004-12-03 16:11:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.shared;
 
@@ -11,7 +11,7 @@ package com.hp.hpl.jena.shared;
     @author kers
  */
 
-public class RulesetNotFoundException extends JenaException
+public class RulesetNotFoundException extends DoesNotExistException
     {
     protected String uri;
     

@@ -1,32 +1,29 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DoesNotExistException.java,v 1.3 2004-06-18 14:18:45 chris-dollin Exp $
+  $Id: DoesNotExistException.java,v 1.4 2004-12-03 16:11:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
 
-import com.hp.hpl.jena.db.RDFRDBException;
-
 /**
-    Exception thrown when an attempt is made to open a persistent model,
-    but no model of that name exists.
+    Exception thrown when an attempt is made find an entity by name, but it
+    cannot be located. 
     
  	@author kers
 */
 
-public class DoesNotExistException extends RDFRDBException
+public class DoesNotExistException extends JenaException
     {
     /**
-     	The exception thrown when a persistent model (eg a file or a
-     	database) is not found; eg wraps a FileNotFoundException.
+         The entity <code>name</code> does not exist.
     */
     public DoesNotExistException( String name )
         { super( name); }
     }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
