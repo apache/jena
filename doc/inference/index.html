@@ -181,6 +181,8 @@
   locate reasoners with appropriate properties. The calls <code>Reasoner.getCapabilities</code> 
   and <code>Reasoner.supportsProperty</code> are used to access this descriptive 
   metadata.</p>
+<p>[<a href="#api">API index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="generalExamples"></a>Some small examples</h2>
 <p>These initial examples are not designed to illustrate the power of the reasoners 
   but to illustrate the code required to set one up.</p>
@@ -189,69 +191,72 @@
   have a resource &quot;a&quot; with value &quot;foo&quot; for &quot;p&quot;. 
   This could be done by writing an RDF/XML or N3 file and reading that in but 
   we have chosen to use the RDF API:</p>
-<pre>        String NS = "urn:x-hp-jena:eg/";
+<pre>    String NS = "urn:x-hp-jena:eg/";
         
-        // Build a trivial example data set
-        Model rdfsExample = ModelFactory.createDefaultModel();
-        Property p = rdfsExample.createProperty(NS, "p");
-        Property q = rdfsExample.createProperty(NS, "q");
-        rdfsExample.add(p, RDFS.subPropertyOf, q);
-        rdfsExample.createResource(NS+"a").addProperty(p, "foo");
+    // Build a trivial example data set
+    Model rdfsExample = ModelFactory.createDefaultModel();
+    Property p = rdfsExample.createProperty(NS, "p");
+    Property q = rdfsExample.createProperty(NS, "q");
+    rdfsExample.add(p, RDFS.subPropertyOf, q);
+    rdfsExample.createResource(NS+"a").addProperty(p, "foo");
 </pre>
 <p>Now we can create an inference model which performs RDFS inference over this 
   data by using:</p>
-<pre>        InfModel inf = ModelFactory.createRDFSModel(rdfsExample);  // [1]
+<pre>    InfModel inf = ModelFactory.createRDFSModel(rdfsExample);  // [1]
 </pre>
 <p>We can then check that resulting model shows that &quot;a&quot; also has property 
   &quot;q&quot; of value &quot;foo&quot; by virtue of the subPropertyOf entailment:</p>
-<pre>        Resource a = inf.getResource(NS+"a");
-        System.out.println("Statement: " + a.getProperty(q));
+<pre>    Resource a = inf.getResource(NS+"a");
+    System.out.println("Statement: " + a.getProperty(q));
 </pre>
 <p>Which prints the output:</p>
-<pre>        Statement: [urn:x-hp-jena:eg/a, urn:x-hp-jena:eg/q, Literal<foo>]
+<pre>    Statement: [urn:x-hp-jena:eg/a, urn:x-hp-jena:eg/q, Literal<foo>]
 </pre>
 <p></p>
 <p>Alternatively we could have created an empty inference model and then added 
   in the statements directly to that model.</p>
 <p>If we wanted to use a different reasoner which is not available as a convenience 
-  method or wanted to configure one we would change line [1].</p>
-<p>To create the same set up manually we could replace [1] by:</p>
-<pre>        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
-        InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
+  method or wanted to configure one we would change line [1]. For example, to 
+  create the same set up manually we could replace [1] by:</p>
+<pre>    Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
+    InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
 </pre>
-<p>Then we could set properties of the reasoner before use. For example, if we 
-  were to listStatements on inf Model we would see that it also &quot;includes&quot; 
-  all the RDFS axioms, of which there are quite a lot. It is sometimes useful 
-  to suppress these and only see the &quot;interesting&quot; entailments. This 
-  can be done by setting the processing level parameter by creating a description 
-  of a new reasoner configuration and passing that to the factory method:</p>
-<pre>        Resource config = ModelFactory.createDefaultModel()
-                          .createResource()
-                          .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "simple");
-        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(config);
-        InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
+<p>The purpose of creating a new reasoner instance like this would be to enable 
+  configuration parameters to be set. For example, if we were to listStatements 
+  on inf Model we would see that it also &quot;includes&quot; all the RDFS axioms, 
+  of which there are quite a lot. It is sometimes useful to suppress these and 
+  only see the &quot;interesting&quot; entailments. This can be done by setting 
+  the processing level parameter by creating a description of a new reasoner configuration 
+  and passing that to the factory method:</p>
+<pre>    Resource config = ModelFactory.createDefaultModel()
+                      .createResource()
+                      .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "simple");
+    Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(config);
+    InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
 </pre>
 <p>This is a rather long winded way of setting a single parameter, though it can 
   be useful in the cases where you want to store this sort of configuration information 
   in a separate (RDF) configuration file. For hardwired uses the following alternative 
   is often simpler:</p>
-<pre>        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
-        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
-                              ReasonerVocabulary.RDFS_SIMPLE);
-        InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
+<pre>    Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
+    reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
+                          ReasonerVocabulary.RDFS_SIMPLE);
+    InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
 </pre>
 <p></p>
 <p>Finally, supposing you have a more complex set of schema information, defined 
   in a Model called <i>schema,</i> and you want to apply this schema to several 
   sets of instance data without redoing too many of the same intermediate deductions. 
   This can be done by using the SPI level methods: </p>
-<pre>        Reasoner boundReasoner = reasoner.bindSchema(schema);
-        InfModel inf = ModelFactory.createInfModel(boundReasoner, data);
+<pre>    Reasoner boundReasoner = reasoner.bindSchema(schema);
+    InfModel inf = ModelFactory.createInfModel(boundReasoner, data);
 </pre>
 <p>This creates an new reasoner, independent from the original, which contains 
   the schema data. Any queries to an InfModel created using the boundReasoner 
   will see the schema statements, the data statements and any statements entailed 
   from the combination of the two.</p>
+<p>[<a href="#api">API index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="operationsOnInferenceModels"></a>Operations on inference models</h2>
 <p>For many applications one simply creates a model incorporating some inference 
   step, using the <code>ModelFactory</code> methods, and then just works within 
@@ -279,23 +284,23 @@
   which can be used for programmatic handling of the violations.</p>
 <p>For example, to check a data set and list any problems one could do something 
   like:</p>
-<pre>        Model data = ModelLoader.loadModel(fname);
-        InfModel infmodel = ModelFactory.createRDFSModel(data);
-        ValidityReport validity = infmodel.validate();
-        if (validity.isValid()) {
-            System.out.println("OK");
-        } else {
-            System.out.println("Conflicts");
-            for (Iterator i = validity.getReports(); i.hasNext(); ) {
-                System.out.println(" - " + i.next());
-            }
+<pre>    Model data = ModelLoader.loadModel(fname);
+    InfModel infmodel = ModelFactory.createRDFSModel(data);
+    ValidityReport validity = infmodel.validate();
+    if (validity.isValid()) {
+        System.out.println("OK");
+    } else {
+        System.out.println("Conflicts");
+        for (Iterator i = validity.getReports(); i.hasNext(); ) {
+            System.out.println(" - " + i.next());
         }
+    }
 </pre>
 <p>The file <code>testing/reasoners/rdfs/dttest2.nt</code> declares a property 
   <code>bar</code> with range <code>xsd:integer</code> and attaches a <code>bar</code> 
   value to some resource with the value <code>&quot;25.5&quot;^^xsd:decimal</code>. 
   If we run the above sample code on this file we see:</p>
-<blockquote> 
+<blockquote>
   <p>Conflicts <br>
     - Error (dtRange): Property http://www.hpl.hp.com/semweb/2003/eg#bar has a 
     typed range Datatype[http://www.w3.org/2001/XMLSchema#integer -> class java.math.BigInteger]that 
@@ -353,53 +358,49 @@
 <h3><a name="derivations"></a>Derivations</h3>
 <p>It is sometimes useful to be able to trace where an inferred statement was 
   generated from. This is achieved using the <code>InfModel.getDerivation(Statement)</code> 
-  method. This returns a iterator over a set <a href="file:///C%7C/der/java/projects/jena-sf2/doc/javadoc/com/hp/hpl/jena/reasoner/Derivation.html"><code>Derviation</code></a> 
+  method. This returns a iterator over a set <a href="../javadoc/com/hp/hpl/jena/reasoner/Derivation.html"><code>Derviation</code></a> 
   objects through which a brief description of the source of the derivation can 
   be obtained. Typically understanding this involves tracing the sources for other 
   statements which were used in this derivation and the <code>Derivation.PrintTrace</code> 
   method is used to do this recursively.</p>
 <p>The general form of the Derivation objects is quite abstract but in the case 
   of the rule-based reasoners, there they have a more detailed internal structure 
-  that can be accessed - see <code><a href="file:///C%7C/der/java/projects/jena-sf2/doc/javadoc/com/hp/hpl/jena/reasoner/rulesys/RuleDerivation.html">RuleDerivation</a></code>.</p>
+  that can be accessed - see <code><a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/RuleDerivation.html">RuleDerivation</a></code>.</p>
 <p>Derviation information is rather expensive to compute and store. For this reason, 
   it is not recorded by default and <code>InfModel.serDerivationLogging(true)</code> 
   must be used to enable derivations to be recorded. This should be called before 
   any queries are made to the inference model.</p>
 <p>As an illustration suppose that we have a raw data model which asserts three 
   triples:</p>
-<blockquote> 
-  <pre>eg:A eg:p eg:B .
+<pre>eg:A eg:p eg:B .
 eg:B eg:p eg:C .
 eg:C eg:p eg:D .</pre>
-</blockquote>
 <p>and suppose that we have a trivial rule set which computes the transitive closure 
   over relation eg:p</p>
-<pre>        String rules = "[rule1: (?a eg:p ?b) (?b eg:p ?c) -> (?a eg:p ?c)]";
-        Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
-        reasoner.setDerivationLogging(true);
-        InfModel inf = ModelFactory.createInfModel(reasoner, rawData);</pre>
+<pre>    String rules = "[rule1: (?a eg:p ?b) (?b eg:p ?c) -> (?a eg:p ?c)]";
+    Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+    reasoner.setDerivationLogging(true);
+    InfModel inf = ModelFactory.createInfModel(reasoner, rawData);</pre>
 <p>Then we can query whether eg:A is related through eg:p to eg:D and list the 
   derivation route using the following code fragment: </p>
-<pre>        PrintWriter out = new PrintWriter(System.out);
-        for (StmtIterator i = inf.listStatements(A, p, D); i.hasNext(); ) {
-            Statement s = i.nextStatement(); 
-            System.out.println("Statement is " + s);
-            for (Iterator id = inf.getDerivation(s); id.hasNext(); ) {
-                Derivation deriv = (Derivation) id.next();
-                deriv.printTrace(out, true);
-            }
+<pre>    PrintWriter out = new PrintWriter(System.out);
+    for (StmtIterator i = inf.listStatements(A, p, D); i.hasNext(); ) {
+        Statement s = i.nextStatement(); 
+        System.out.println("Statement is " + s);
+        for (Iterator id = inf.getDerivation(s); id.hasNext(); ) {
+            Derivation deriv = (Derivation) id.next();
+            deriv.printTrace(out, true);
         }
-        out.flush();
+    }
+    out.flush();
 </pre>
 <p>Which generates the output:</p>
-<blockquote>
-  <pre>Statement is [urn:x-hp:eg/A, urn:x-hp:eg/p, urn:x-hp:eg/D]
+<pre>Statement is [urn:x-hp:eg/A, urn:x-hp:eg/p, urn:x-hp:eg/D]
 Rule rule1 concluded (eg:A eg:p eg:D) <-
     Fact (eg:A eg:p eg:B)
     Rule rule1 concluded (eg:B eg:p eg:D) <-
         Fact (eg:B eg:p eg:C)
         Fact (eg:C eg:p eg:D)</pre>
-</blockquote>
 <h3><a name="rawAccess"></a>Accessing raw data and deductions</h3>
 <p>From an <code>InfModel</code> it is easy to retrieve the original, unchanged, 
   data over which the model has been computed using the <code>getRawModel()</code> 
@@ -444,12 +445,13 @@ Rule rule1 concluded (eg:A eg:p eg:D) <-
 </p>
 <p>Tracing is not supported by a convenience API call but, for those reasoners 
   that support it, it can be enabled using:</p>
-<pre>        reasoner.setParameter(ReasonerVocabulary.PROPtraceOn, Boolean.TRUE);
+<pre>   reasoner.setParameter(ReasonerVocabulary.PROPtraceOn, Boolean.TRUE);
 </pre>
 <p>Dynamic tracing control is possible on several of the supplied InfGraph implementations 
   using a <code>setTraceOn()</code> call. If you need to make use of this see 
   the full javadoc.</p>
-<p>[<a href="#index">index</a>]</p>
+<p>[<a href="#api">API index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h1 class="sectionHeading"><a name="rdfs"></a>The RDFS reasoner</h1>
 <ol>
   <li><a href="#RDFSintro">RDFS reasoner - introduction and coverage</a></li>
@@ -470,14 +472,10 @@ Rule rule1 concluded (eg:A eg:p eg:D) <-
   then the RDFS reasoner implements all RDFS entailments except for the bNode 
   closure rules. These closure rules imply, for example, that for all triples 
   of the form:</p>
-<blockquote> 
-  <pre>eg:a eg:p nnn^^datatype .</pre>
-</blockquote>
+<pre>eg:a eg:p nnn^^datatype .</pre>
 <p>we should introduce the corresponding blank nodes:</p>
-<blockquote> 
-  <pre>eg:a eg:p _:anon1 .
+<pre>eg:a eg:p _:anon1 .
 _:anon1 rdf:type datatype .</pre>
-</blockquote>
 <p>Whilst such rules are both correct and necessary to reduce RDF datatype entailment 
   down to simple entailment they are not useful in implementation terms. In Jena 
   simple entailment can be implemented by translating a graph containing bNodes 
@@ -486,6 +484,8 @@ _:anon1 rdf:type datatype .</pre>
   the datatype of the literal. The value to applications of directly seeing the 
   addtional bNode triples, even in <i>virtual</i> triple form, is negligable and 
   so this has been deliberately omitted from the reasoner. </p>
+<p>[<a href="#rdfs">RDFS index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="RDFSconfiguration"></a>RDFS configuration</h2>
 <p>The RDFSRuleReasoner can be configured to work at three different compliance 
   levels: </p>
@@ -514,15 +514,15 @@ _:anon1 rdf:type datatype .</pre>
     the standard. </dd>
 </dl>
 <p>The level can be set using the <code>setParameter</code> call, e.g.</p>
-<pre>        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
-                              ReasonerVocabulary.RDFS_SIMPLE);
+<pre>    reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
+                          ReasonerVocabulary.RDFS_SIMPLE);
 </pre>
 <p>or by constructing an RDF configuration description and passing that to the 
   RDFSRuleReasonerFactory e.g.</p>
-<pre>        Resource config = ModelFactory.createDefaultModel()
-                          .createResource()
-                          .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "simple");
-        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(config);
+<pre>    Resource config = ModelFactory.createDefaultModel()
+                      .createResource()
+                      .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "simple");
+    Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(config);
 </pre>
 <p></p>
 <h3>Summary of parameters</h3>
@@ -574,8 +574,12 @@ _:anon1 rdf:type datatype .</pre>
     </td>
   </tr>
 </table>
+<p>[<a href="#rdfs">RDFS index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="RDFSexamples"></a>RDFS Examples</h2>
 <p>TODO</p>
+<p>[<a href="#rdfs">RDFS index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="RDFSnotes"></a>RDFS implementation and performance notes</h2>
 <p>The RDFSRuleReasoner is a hybrid implementation. The subproperty and subclass 
   lattices are eagerly computed and stored in a compact in-memory form using the 
@@ -629,7 +633,8 @@ _:anon1 rdf:type datatype .</pre>
   the absence of caching we would expect the peformance to be weak. Future work 
   on adpating the the rule engines to exploit the capabilities of the more sophisticated 
   database backends will be considered.</p>
-<p>[<a href="#index">index</a>]</p>
+<p>[<a href="#rdfs">RDFS index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2></h2>
 <h1 class="sectionHeading"><a name="owl"></a>The OWL reasoner</h1>
 <ol>
@@ -788,9 +793,11 @@ _:anon1 rdf:type datatype .</pre>
 <p>Nevertheless, the reasoner passes the normative OWL working group positive 
   and negative entailment tests for the supported constructs, though some tests 
   need modification for the comprehension axioms (see below).</p>
+<p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="OWLconfiguration"></a>OWL Configuration</h2>
 <p>This reasoner is accessed using <code>ModelFactory.createOntologyMode</code> 
-  with the prebuilt <a href="file:///C%7C/der/java/projects/jena-sf2/doc/javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html"><code>OntModelSpec</code></a> 
+  with the prebuilt <a href="../javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html"><code>OntModelSpec</code></a> 
   <code>OWL_MEM_RULE_INF</code> or manually via <code>ReasonerRegistery.getOWLReasoner()</code>.</p>
 <p>There are no OWL-specific configuration parameters though the reasoner supports 
   the standard control parameters:</p>
@@ -824,22 +831,24 @@ _:anon1 rdf:type datatype .</pre>
 <p>As we gain experience with the ways in which OWL is used and the capabilities 
   of the rule-based approach we imagine useful subsets of functionality emerging 
   - like that that supported by the RDFS reasoner in the form of the level settings.</p>
+<p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="OWLexamples"></a>OWL Examples</h2>
 <p>TODO</p>
 <p>- recognition example</p>
 <p>- class extension example</p>
 <p>- deduction example</p>
 <p>- validation example</p>
+<p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="OWLnotes"></a>OWL notes and limitations</h2>
 <h3>Comprehension axioms</h3>
 <p>A critical implication of the instance-based approach is that the reasoner 
   cannot answer queries relating to dynamically introduced class expressions.</p>
 <p>For example, given a model containing the RDF assertions corresponding to the 
   two OWL axioms:</p>
-<blockquote> 
-  <pre>class A = intersectionOf (minCardinality(P, 1), maxCardinality(P,1))
+<pre>class A = intersectionOf (minCardinality(P, 1), maxCardinality(P,1))
 class B = cardinality(P,1)</pre>
-</blockquote>
 <p>Then the reasoner can demonstrate that classes A and B are equivalent. However, 
   given a model just containing the first set of assertions you cannot directly 
   query the inference model for the assertions that make up cardinality(P,1). 
@@ -854,9 +863,7 @@ class B = cardinality(P,1)</pre>
   if you list all instances of a given class A then there will be one bNode instance 
   than you expect. You can verify that this anonymous instance of the introduced 
   prototype by checking for triples of the form:</p>
-<blockquote> 
-  <pre><i>class </i>rb:prototype _:anon .</pre>
-</blockquote>
+<pre><i>class </i>rb:prototype _:anon .</pre>
 <p>where rb is the Rubrik namespace defined in <code>ReasonerVocabulary</code>.</p>
 <p>Future versions of the OWL reasoner will probably eliminate this contamination 
   of the models.<br>
@@ -906,7 +913,7 @@ class B = cardinality(P,1)</pre>
   the reasoner should be sound (all inferred triples should be valid) but not 
   complete. </p>
 <h3></h3>
-<p>[<a href="#index">index</a>]</p>
+<p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h1 class="sectionHeading"><a name="daml"></a>DAML support</h1>
 <p>In Jena1 the DAML API included some hardwired support for useful DAML inferences 
@@ -915,7 +922,7 @@ class B = cardinality(P,1)</pre>
   of the Ontology API, by using a tailored reasoner. The DAMLMicroReasoner is 
   essentially the RDFS reasoner augmented by axioms declaring the equivalence 
   between the DAML constructs and their RDFS aliases. It is invoked using the 
-  prebuilt <a href="file:///C%7C/der/java/projects/jena-sf2/doc/javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html"><code>OntModelSpec</code></a> 
+  prebuilt <a href="../javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html"><code>OntModelSpec</code></a> 
   <code>DAML_MEM_RULE_INF.</code></p>
 <p>There are <u><b>no</b></u> plans to go beyond this and offer more complete 
   DAML inference support.</p>
@@ -947,7 +954,7 @@ class B = cardinality(P,1)</pre>
   <li><a href="#RULEhybrid">Hybrid engine</a></li>
   <li><a href="#RULEconfiguration">GenericRuleReasoner configuration</a></li>
   <li><a href="#RULEbuiltins">Builtin primitives</a></li>
-  <li><a href="#RULEexamples">Examples</a></li>
+  <li><a href="#RULEexamples">Example</a></li>
   <li><a href="#RULEnotes">Notes</a></li>
   <li><a href="#RULEextensions">Extensions</a></li>
 </ol>
@@ -960,7 +967,7 @@ class B = cardinality(P,1)</pre>
   tabled datalog engine - they can be run separately or the forward engine can 
   be used to prime the backward engine which in turn will be used to answer queries.</p>
 <p>The various engine configurations are all accessible through a single parameterized 
-  reasoner <code><a href="file:///C%7C/der/java/projects/jena2/doc/javadoc/com/hp/hpl/jena/reasoner/rulesys/GenericRuleReasoner.html">GenericRuleReasoner</a></code>. 
+  reasoner <code><a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/GenericRuleReasoner.html">GenericRuleReasoner</a></code>. 
   At a mimimum a <code>GenericRuleReasoner</code> requires a ruleset to define 
   its behaviour. A <code>GenericRuleReasoner</code> instance with a ruleset can 
   be used like any of the other reasoners described above - that is it can be 
@@ -969,10 +976,11 @@ class B = cardinality(P,1)</pre>
 <p>The rule reasoner can also be extended by registering new procedural primitives. 
   The current release includes a starting set of primitives which are sufficient 
   for the RDFS and OWL implementations but is easily extensible.</p>
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
 <h2> <a name="RULEsyntax"></a>Rule syntax and structure</h2>
-<p>A rule for the rule-based reasoner is defined by a Java <code><a href="file:///C%7C/der/java/projects/jena2/doc/javadoc/com/hp/hpl/jena/reasoner/rulesys/Rule.html">Rule</a></code> 
+<p>A rule for the rule-based reasoner is defined by a Java <code><a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/Rule.html">Rule</a></code> 
   object with a list of body terms (premises), a list of head terms (conclusions) 
-  and an optional name and optional direction. Each term or <a href="file:///C%7C/der/java/projects/jena2/doc/javadoc/com/hp/hpl/jena/reasoner/rulesys/ClauseEntry.html"><code>ClauseEntry</code></a> 
+  and an optional name and optional direction. Each term or <a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/ClauseEntry.html"><code>ClauseEntry</code></a> 
   is either a triple pattern, an extended triple pattern or a call to a builtin 
   primitive. A rule set is simply a List of Rules.</p>
 <p>For convenience a rather simple parser is included with Rule which allows rules 
@@ -982,8 +990,7 @@ class B = cardinality(P,1)</pre>
   possible to build a real parser for the current text file syntax which offered 
   better error recovery and diagnostics.</p>
 <p>An informal description of the simplified text rule syntax is:</p>
-<blockquote> 
-  <pre><i>Rule</i>      :=   <i>bare-rule</i> .
+<pre><i>Rule</i>      :=   <i>bare-rule</i> .
           or   [ <i>bare-rule</i> ]<br>	      or   [ ruleName : <i>bare-rule</i> ]
 
 <i>bare-rule</i> :=   <i>term</i>, ... <i>term</i> -&gt; <i>hterm</i>, ... <i>hterm</i>    // forward rule
@@ -992,18 +999,17 @@ class B = cardinality(P,1)</pre>
 hterm     :=   term
           </i>or   [<i> bare-rule </i>]<i>
 
-term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)                  // triple pattern
-          or   (<i>node</i>, <i>node</i>, <i>functor</i>)               // extended triple pattern
-          or   builtin(<i>node</i>, ... <i>node</i>)             // invoke procedural primitive
+term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple pattern
+          or   (<i>node</i>, <i>node</i>, <i>functor</i>)        // extended triple pattern
+          or   builtin(<i>node</i>, ... <i>node</i>)      // invoke procedural primitive
 
-<i>functor</i>   :=   functorName(<i>node</i>, ... <i>node</i>)         // structured literal
+<i>functor</i>   :=   functorName(<i>node</i>, ... <i>node</i>)  // structured literal
 
 <i>node</i>      :=   <i>uri-ref</i>		               // e.g. http://foo.com/eg
           or   prefix:localname		       // e.g. rdf:type
-          or   ?<i>varname                    </i>// variable, name scoped to a single rule<i>
+          or   ?<i>varname                    </i>// variable<i>
           or   'a literal' </i>                // either a string or a number<i>
           or   </i>number                      // e.g. 42 or 25.5</pre>
-</blockquote>
 <p>The &quot;,&quot; separators are optional.</p>
 <p>The difference between forward and backward rule syntax is only relevant for 
   the hybrid execution strategy, see below.</p>
@@ -1014,29 +1020,30 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)                  // t
   multiple triples and allows a rule to collect those triples together in one 
   place.</p>
 <p>To shorten the rule syntax qname syntax is supported for URI refs. The set 
-  of known prefixes is those registered with the <code><a href="file:///C%7C/der/java/projects/jena2/doc/javadoc/com/hp/hpl/jena/util/PrintUtil.html">PrintUtil</a></code> 
+  of known prefixes is those registered with the <code><a href="../javadoc/com/hp/hpl/jena/util/PrintUtil.html">PrintUtil</a></code> 
   object. This initially knows about rdf, rdfs, owl, daml, xsd and a test namespace 
   eg, but more mappings can be registered in java code. No rule syntax for defining 
   prefixes is available yet. In future revisions we will link the <code>PrintUtil</code> 
   capabilities more closely to the prefix mapping machinery now available for 
   Models.</p>
 <p>Here are some example rules which illustrate most of these constructs:</p>
-<blockquote> 
-  <pre>[allID: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
-						-> (?C owl:equivalentClass all(?P, ?D)) ]
+<pre>[allID: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), 
+     (?C owl:allValuesFrom ?D)  -> (?C owl:equivalentClass all(?P, ?D)) ]
 
-[all2: (?C rdfs:subClassOf all(?P, ?D)) -> print('Creating backward rule for ', ?C)
+[all2: (?C rdfs:subClassOf all(?P, ?D)) -> print('Rule for ', ?C)
 		[all1b: (?Y rdf:type ?D) <- (?X ?P ?Y), (?X rdf:type ?C) ] ]
 
-[max1: (?A rdf:type max(?P, 1)), (?A ?P ?B), (?A ?P ?C) -> (?B owl:sameIndividualAs ?C) ]
+[max1: (?A rdf:type max(?P, 1)), (?A ?P ?B), (?A ?P ?C) 
+      -> (?B owl:sameIndividualAs ?C) ]
 </pre>
-</blockquote>
 <p>Rule <code>allID</code> illustrates the functor use for collecting the components 
   of an OWL restriction into a single datastructure which can then fire further 
   rules. Rule <code>all2</code> illustrates a forward rule which creates a new 
   backward rule and also calls the <code>print</code> procedural primitive. Rule 
   <code>max1</code> illustrates use of numeric literals.<br>
 </p>
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2> <a name="RULEforward"></a>Forward chaining engine</h2>
 <p>If the rule reasoner is configured to run in forward mode then only the forward 
   chaining engine will be used. The first time the inference Model is queried 
@@ -1074,7 +1081,10 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)                  // t
   efficient in some circumstances but has identical external semantics. This alternative 
   engine is likely to be eliminated in a future release once more tuning has been 
   done to the default RETE engine.</p>
-<h2> <a name="RULEbackward"></a>Backward chaining engine</h2>
+<h2>&nbsp; </h2>
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
+<h2><a name="RULEbackward"></a>Backward chaining engine</h2>
 <p>If the rule reasoner is run in backward chaining mode it uses a logic programming 
   (LP) engine with a similar execution strategy to Prolog engines. When the inference 
   Model is queried then the query is translated into a goal and the engine attempts 
@@ -1088,15 +1098,11 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)                  // t
 <p>As a datalog language the rule syntax is a little surprising because it restricts 
   all properties to be binary and allows variables in any position including the 
   property position. In effect, rules of the form:</p>
-<blockquote> 
-  <pre>(s, p, o), (s1, p1, o1) ... &lt;- (sb1, pb1, ob1), .... </pre>
-</blockquote>
+<pre>(s, p, o), (s1, p1, o1) ... &lt;- (sb1, pb1, ob1), .... </pre>
 <p>Can be thought of as being translated to datalog rules of the form:</p>
-<blockquote> 
-  <pre>triple(s, p, o)    :- triple(sb1, pb1, ob1), ...
+<pre>triple(s, p, o)    :- triple(sb1, pb1, ob1), ...
 triple(s1, p1, o1) :- triple(sb1, pb1, ob1), ...
 ...</pre>
-</blockquote>
 <p>where &quot;triple/3&quot; is a hidden implicit predicate. Internally, this 
   transformation is not used and the rules are implemented directly.</p>
 <p>In addition all the data in the raw model supplied to the engine is treated 
@@ -1122,96 +1128,409 @@ triple(s1, p1, o1) :- triple(sb1, pb1, ob1), ...
   <code>P</code> be tabled by calling <code>table(P)</code>. Note that if any 
   property is tabled then goals such as <code>(A, ?P, ?X)</code> will all be tabled.</p>
 <p>Thus the rule set:</p>
-<blockquote> 
-  <pre>
+<pre>
 -&gt; table(rdfs:subClassOf).
 [r1: (?A rdfs:subClassOf ?C) &lt;- (?A rdfs:subClassOf ?B) (?B rdfs:subClassOf ?C)]</pre>
-</blockquote>
 <p>will compute the transitive closure of the subClassOf relation. Any query of 
   the form (*, rdfs:subClassOf, *) will be satisfied by a mixture of ground facts 
   and resolution of rule r1. Without the first line this rule would be an infinite 
-  loop. <br>
+  loop. </p>
+<p>The tabled results of each query are kept indefinitely. This means that queries 
+  can exploit all of the results of the subgoals involved in previous queries. 
+  In essence we build up a complete forward closure of the data set in response 
+  to successive queries. The <code>reset()</code> operation on the inference model 
+  will force these tabled results to be discarded, thus saving memory.</p>
+<p>When the inference Model is updating by adding or removing statements all tabled 
+  results are discarded by an internal <code>reset()</code> and the next query 
+  will rebuilt the tabled results from scratch. <br>
 </p>
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="RULEhybrid"></a>Hybrid rule engine</h2>
 <p>The rule reasoner has the option of employing both of the individual rule engines 
-  at once. When run in this <i>hybrid</i> mode the data flows look something like 
-  this: </p>
+  in conjunction. When run in this <i>hybrid</i> mode the data flows look something 
+  like this: </p>
 <p align="center"><img src="../images/jena-inf-figure2.png"></p>
-<p align="left">The forward engine runs, as desribed above, and maintains a set 
+<p align="left">The forward engine runs, as described above, and maintains a set 
   of inferred statements in the <i>deductions</i> store. Any forward rules which 
-  assert new backward rules will instantiate those rules according tp the forward 
+  assert new backward rules will instantiate those rules according to the forward 
   variable bindings and pass the instantiated rules on to the backward engine.</p>
 <p align="left">Queries are answered by using the backward chaining LP engine, 
   employing the merge of the supplied and generated rules applied to the merge 
   of the raw and deduced data.</p>
+<p align="left">This split allows the ruleset developer to achieve greater performance 
+  by only including backward rules which are relevant to the dataset at hand. 
+  In particular, we can use the forward rules to compile a set of backward rules 
+  from the ontology information in the dataset. As a simple example consider trying 
+  to implement the RDFS subPropertyOf entailments using a rule engine. A simple 
+  approach would involve rules like:</p>
+<pre align="left"> (?a ?q ?b) &lt;- (?p rdfs:subPropertyOf ?q), (?a ?p ?b) .
+</pre>
+<p align="left">Such a rule would work but every goal would match the head of 
+  this rule and so every query would invoke a dynamic test for whether there was 
+  a subProperty of the property being queried for. Instead the hybrid rule:</p>
+<pre align="left">(?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] .</pre>
+<p align="left">would precompile all the declared subPropertyOf relationships 
+  into simple chain rules which would only fire if the query goal references a 
+  property which actually has a sub property. If there are no subPropertyOf relationships 
+  then there will be no overhead at query time for such a rule.</p>
+<p align="left">Note that there are no loops in the above data flows. The backward 
+  rules are not employed when searching for matches to forward rule terms. This 
+  two-phase execution is simple to understand and keeps the semantics of the rule 
+  engines straightforward. However, it does mean that care needs to be take when 
+  formulating rules. If in the above example there were ways that the subPropertyOf 
+  relation could be derived from some other relations then that derivation would 
+  have to be accessible to the forward rules for the above to be complete.</p>
+<p align="left">Updates to an inference Model working in hybrid mode will discard 
+  all the tabled LP results, as they do in the pure backward case. However, the 
+  forward rules still work incrementally, including asserting or removing backward 
+  rules in response to the data changes.</p>
+
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="RULEconfiguration"></a>GenericRuleReasoner configuration</h2>
-<p>mention functor filtering</p>
+<p>As with the other reasoners there are a set of parameters, identified by RDF 
+  properties, to control behaviour of the <code>GenericRuleReasoner</code>. These 
+  parameters can be set using the <code>Reasoner.setParameter</code> call or passed 
+  into the Reasoner factory in an RDF Model.</p>
+<p>The primary parameter required to instantiate a useful <code>GenericRuleReasoner</code> 
+  is a rule set can be passed into a to the contructor, for example:</p>
+<pre>String ruleSrc = "[rule1: (?a eg:p ?b) (?b eg:p ?c) -> (?a eg:p ?c)]";
+List rules = Rule.parseRules(ruleSrc);
+...
+Reasoner reasoner = new GenericRuleReasoner(rules);</pre>
+<p>A short cut, useful when the rules are defined in local text files using the 
+  syntax described above, is the <code>ruleSet</code> parameter which gives a 
+  file name which should be loadable from either the classpath or relative to 
+  the current working directory.<br>
+</p>
 <h3>Summary of parameters</h3>
 <table width="90%" border="1" cellspacing="0" cellpadding="0">
   <tr> 
-    <td width="22%"><b>Parameter</b></td>
-    <td width="16%"><b>Values</b></td>
-    <td width="62%"><b>Description</b></td>
+    <td width="26%"><b>Parameter</b></td>
+    <td width="23%"><b>Values</b></td>
+    <td width="51%"><b>Description</b></td>
   </tr>
   <tr> 
-    <td width="22%"> 
-      <div align="left">PROPsetRDFSLevel</div>
+    <td width="26%"> 
+      <div align="left">PROPruleMode</div>
     </td>
-    <td width="16%">&quot;full&quot;, &quot;default&quot;, &quot;simple&quot;</td>
-    <td width="62%"> 
-      <div align="left">Sets the RDFS processing level as described above.</div>
-    </td>
-  </tr>
-  <tr> 
-    <td width="22%"> 
-      <div align="left">PROPenableCMPScan</div>
-    </td>
-    <td width="16%">boolean</td>
-    <td width="62%"> 
-      <div align="left">If true forces an preprocessing pass which finds all use 
-        of rdf:_n properties and declares them as ContainerMembershipProperties. 
-        This is implied by setting the level parameter to &quot;full&quot; and 
-        is not normally used directly.</div>
+    <td width="23%">&quot;forward&quot;, &quot;forwardRETE&quot;, &quot;backward&quot;, 
+      &quot;hybrid&quot; </td>
+    <td width="51%"> 
+      <div align="left">Sets the rule direction mode as discussed above. Default 
+        is &quot;hybrid&quot;.</div>
     </td>
   </tr>
   <tr> 
-    <td width="22%"> 
+    <td width="26%"> 
+      <div align="left">PROPruleSet</div>
+    </td>
+    <td width="23%">filename-string</td>
+    <td width="51%"> 
+      <div align="left">The name of a rule text file which can be found on the 
+        classpath or from the current directory. </div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="26%"> 
+      <div align="left">PROPenableTGCCaching</div>
+    </td>
+    <td width="23%">boolean</td>
+    <td width="51%"> 
+      <div align="left">If true causes an instance of the TransitiveReasoner to 
+        be inserted in the forward dataflow to cache the transitive closure of 
+        the subProperty and subClass lattices.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="26%"> 
+      <div align="left">PROPenableFunctorFiltering</div>
+    </td>
+    <td width="23%">boolean</td>
+    <td width="51%"> 
+      <div align="left">If set to true this causes the structured literals (functors) 
+        generated by rules to be filtered out of any final queries. This allows 
+        them to be used for storing intermediate results hidden from the view 
+        of the InfModel's clients.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="26%"> 
+      <div align="left">PROPenableOWLTranslation</div>
+    </td>
+    <td width="23%">boolean</td>
+    <td width="51%"> 
+      <div align="left">If set to true this causes a procedural preprocessing 
+        step to be inserted in the dataflow which supports the OWL reasoner (it 
+        translates intersectionOf clauses into groups of backward rules in a way 
+        that is clumsy to expess in pure rule form).</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="26%"> 
       <div align="left">PROPtraceOn</div>
     </td>
-    <td width="16%">boolean</td>
-    <td width="62%"> 
+    <td width="23%">boolean</td>
+    <td width="51%"> 
       <div align="left">If true switches on exhaustive tracing of rule executions 
         to the log4j <i>info</i> appender.</div>
     </td>
   </tr>
   <tr> 
-    <td width="22%"> 
+    <td width="26%"> 
       <div align="left">PROPderivationLogging</div>
     </td>
-    <td width="16%">boolean</td>
-    <td width="62%"> 
+    <td width="23%">boolean</td>
+    <td width="51%"> 
       <div align="left">If true causes derivation routes to be recorded internally 
         so that future getDerivation calls can return useful information.</div>
     </td>
   </tr>
 </table>
-<p>&nbsp;</p>
-<h2><a name="RULEbuiltins"></a>Builtin primitives</h2>
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
-<h2> <a name="RULEexamples"></a>Examples</h2>
+<h2><a name="RULEbuiltins"></a>Builtin primitives</h2>
+<p>The procedural primitives which can be called by the rules are each implemented 
+  by a single Java object stored in a registry. Additional primitives can be created 
+  and registered - see below for more details.</p>
+<p>Each primitive can optionally be used in either the rule body, the rule head 
+  or both. If used in the rule body then as well as binding variables (and any 
+  procedural side-effects like printing) the primitive can act as a test - if 
+  it returns false the rule will not match. Primitives using in the rule head 
+  are only used for their side effects.</p>
+<p>The set of builtin primitives available at the time writing are:</p>
+<table width="90%" border="1" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="41%">Builtin</td>
+    <td width="59%">Operations</td>
+  </tr>
+  <tr> 
+    <td width="41%"> 
+      <p>isLiteral(?x) notLiteral(?x)<br>
+        isFunctor(?x) notFunctor(?x)<br>
+        isBNode(?x) notBNode(?x)</p>
+    </td>
+    <td width="59%"> 
+      <div align="left">Test whether the single argument is or is not a literal, 
+        a functor-valued literal or a blank-node, respectively.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">bound(?x...) unbound(?x..)</td>
+    <td width="59%"> 
+      <div align="left">Test if all of the arguments are bound (not bound) variables</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">equal(?x,?y) notEqual(?x,?y)</td>
+    <td width="59%"> 
+      <div align="left">Test if x=y (or x != y). The equality test is semantic 
+        equality so that, for example, the xsd:int 1 and the xsd:decimal 1 would 
+        test equal.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%"> 
+      <p>lessThan(?x, ?y), greaterThan(?x, ?y)<br>
+        le(?x, ?y), ge(?x, ?y)</p>
+    </td>
+    <td width="59%"> 
+      <div align="left">Test if x is &lt;, &gt;, &lt;= or &gt;= y. Only passes 
+        if both x and y are numbers (can be integer or floating point).</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">sum(?a, ?b, ?c)<br>
+      addOne(?a, ?b)<br>
+      product(?a, ?b, ?c)</td>
+    <td width="59%"> 
+      <div align="left">Sets c to be (a+b), (a+1) or (a*b). Not that these do 
+        not run backwards, if in <code>sum</code> a and c are bound and b is unbound 
+        then the test will fail rather than bind b to (c-a). This could be fixed.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">makeTemp(?x)</td>
+    <td width="59%"> 
+      <div align="left">Binds ?x to a newly created blank node.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">makeInstance(?x, ?p, ?v)<br>
+      makeInstance(?x, ?p, ?t, ?v)</td>
+    <td width="59%"> 
+      <div align="left">Binds ?v to be a blank node which is asserted as the value 
+        of the ?p property on resource ?x and optionally has type ?t. Multiple 
+        calls with the same arguments will return the same blank node each time 
+        - thus allowing this call to be used in backward rules.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">noValue(?x, ?p)</td>
+    <td width="59%"> 
+      <div align="left">True if there is no known value for property p on resource 
+        x in the set of statements known to the model.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">remove(?n, ...)</td>
+    <td width="59%"> 
+      <div align="left">Remove the statement (triple) which caused the n'th body 
+        term of this (forward-only) rule to match.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">isDType(?l, ?t) notDType(?l, ?t)</td>
+    <td width="59%"> 
+      <div align="left">Tests if literal ?l is (or is not) an instance of the 
+        datatype defined by resource ?t.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">print(?x, ...)</td>
+    <td width="59%"> 
+      <div align="left">Print to standard out a representation of each argument. 
+        This is useful for debugging rather than serious IO work.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">table(?p) tableAll()</td>
+    <td width="59%"> 
+      <div align="left">Declare that all goals involving property ?p (or all goals) 
+        should be tabled by the backward engine.</div>
+    </td>
+  </tr>
+</table>
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
+<h2> <a name="RULEexamples"></a>Example</h2>
+<p>As a simple illustration suppose we wish to create a simple ontology language 
+  in which we can declare one property as being the concatenation of two others 
+  and to build a rule reasoner to implement this.</p>
+<p>As a simple design we define two properties eg:concatFirst, eg:concatSecond 
+  which declare the first and second properties in a concatentation. Thus the 
+  triples:</p>
+<pre>eg:r eg:concatFirst  eg:p .
+eg:r eg:concatSecond eg:q . </pre>
+<p>mean that the property r = p o q.</p>
+<p>Suppose we have a Jena Model rawModel which contains the above assertions together 
+  with the additional facts:</p>
+<pre>eg:A eg:p eg:B .
+eg:B eg:q eg:C .</pre>
+<p>Then we want to be able to conclude that A is related to C through the composite 
+  relation r. The following code fragement constructs and runs a rule reasoner 
+  instance to implement this:</p>
+<pre>String rules = 
+    "[r1: (?c eg:concatFirst ?p), (?c eg:concatSecond ?q) -> " +
+    "     [r1b: (?x ?c ?y) <- (?x ?p ?z) (?z ?q ?y)] ]";
+Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+InfModel inf = ModelFactory.createInfModel(reasoner, rawData);
+System.out.println("A * * =>");
+Iterator list = inf.listStatements(A, null, (RDFNode)null);
+while (list.hasNext()) {
+    System.out.println(" - " + list.next());
+}</pre>
+<p>When run on a rawData model contain the above four triples this generates the 
+  (correct) output:</p>
+<pre>A * * =>
+ - [urn:x-hp:eg/A, urn:x-hp:eg/p, urn:x-hp:eg/B]
+ - [urn:x-hp:eg/A, urn:x-hp:eg/r, urn:x-hp:eg/C]</pre>
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="RULEnotes"></a>Notes</h2>
-<p>mention validation rules</p>
+<p>One final aspect of the general rule engine to mention is that of validation 
+  rules. We described earlier how reasoners can implement a <code>validate</code> 
+  call which returns a set of error and reports and warnings about inconsistencies 
+  in a dataset. Some reasoners (e.g. the RDFS reasoner) implement this feature 
+  through procedural code. Others (e.g. the OWL reasoner) does so using yet more 
+  rules.</p>
+<p>Validation rules take the general form:</p>
+<pre>(?v rb:validation on()) ...  ->
+    [ (?X rb:violation error('summary', 'description', args)) <- ...) ] .</pre>
+<p>First the validate call with &quot;switch on&quot; validation by insert an 
+  additional triple into the graph of the form:</p>
+<pre>_:anon rb:validation on() .</pre>
+<p>This makes it possible to build rules, such as the template above, which are 
+  ignored unless validation has been switched on - thus avoiding potential overhead 
+  in normal operation.</p>
+<p>Then the validate call queries the inference graph for all triples of the form:</p>
+<pre>?x rb:violation f(summary, description, args) .</pre>
+<p>The subject resource is the &quot;prime suspect&quot; implicated in the inconsistency, 
+  the relation<code> rb:violation</code> is a reserved property used to communicate 
+  validation reports from the rules to the reasoner, the object is a structured 
+  (functor-valued) literal. The name of the functor indicates the type of violation 
+  and is normally <code>error</code> or <code>warning</code>, the first argument 
+  is a short form summary of the type of problem, the second is a descriptive 
+  text and the remaining arguments are other resources involved in the inconsistency. 
+</p>
+<p>Future extensions will improve the formating capabilities and flexibility of 
+  this mechanism. </p>
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+<h2></h2>
 <h2><a name="RULEextensions"></a>Extensions</h2>
-<p>rule syntax</p>
-<p>builtins</p>
-<p>preprocessing hooks</p>
+<p>There are several places in which the rule system can be extended by application 
+  code.</p>
+<h3>Rule syntax</h3>
+<p>First, as mentioned earlier, the rule engines themselves only see rules in 
+  terms of the Rule java object. Thus applications are free to define an alternative 
+  rule syntax so long as it can be compiled into Rule objects.</p>
+<h3>Builtins</h3>
+<p>Second, the set of procedural builtins can be extended. A builtin should implement 
+  the <a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/Builtin.html"><code>Builtin</code></a> 
+  interface. The easiest way to achieve this is by subclassing <code><a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/builtins/BaseBuiltin.html">BaseBuiltin</a></code> 
+  and defining a name (<code>getName</code>), the number of arguments expected 
+  (<code>getArgLength</code>) and one or both of <code>bodyCall</code> and <code>headAction</code>. 
+  The <code>bodyCall</code> method is used when the builtin is invoked in the 
+  body of a rule clause and should return true or false according to whether the 
+  test passes. In both cases the arguments may be variables or bound values and 
+  the supplied <code><a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/RuleContext.html">RuleContext</a></code> 
+  object can be used to dereference bound variables and to bind new variables. 
+</p>
+<p>Once the Builtin has been defined then an instance of it needs to be registered 
+  with <a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/BuiltinRegistry.html"><code>BuiltinRegistry</code></a> 
+  for it to be seen by the rule parser and interpreters.</p>
+<p>The easiest way to experiment with this is to look at the examples in the builtins 
+  directory. </p>
+<h3>Preprocessing hooks</h3>
+<p>The rule reasoner can optionally run a sequence of procedural preprocessing 
+  hooks over the data at the time the inference graph is <i>prepared</i>. These 
+  procedural hooks can be used to perform tests or translations which are slow 
+  or inconvenient to express in rule form. See <code>GenericRuleReasoner.addPreprocessingHook</code> 
+  and the <a href="../javadoc/com/hp/hpl/jena/reasoner/rulesys/RulePreprocessHook.html"><code>RulePreprocessHook</code></a> 
+  class for more details.</p>
 <p>[<a href="#index">index</a>]</p>
 <h1 class="sectionHeading"><a name="extensions"></a>Extending the inference support</h1>
-<p>&nbsp;</p>
+<p>Apart from the extension points in the rule reasoner discussed above the intention 
+  is that it should be possible to plug external inference engines into Jena. 
+  The core interfaces of <code>InfGraph</code> and <code>Reasoner</code> are kept 
+  as simple are generic as we can to make this possible and the <code>ReasonerRegistry</code> 
+  provides a means for mapping from reasoner ids (URIs) to reasoner instances 
+  at run time.</p>
+<p>In a future Jena release we plan to provide at least one adapter to an example, 
+  freely available, reasoner to both validate the machinery and to provide an 
+  example of how this extension can be done.</p>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
 <h1 class="sectionHeading"><a name="futures"></a>Futures</h1>
-<p>mention database integration</p>
+<p>Whilst we can make no firm commitments, at the time of writing we intend to 
+  continue work on the Jena reasoning support. The key activities on the drawing 
+  board are:</p>
+<ul>
+  <li>Build a plug-in adapater for at least one external reasoner, preferably 
+    one which complements the existing capabilities.</li>
+  <li>Develop a custom equality reasoner which can handle the &quot;owl:sameIndividualAs&quot; 
+    and related processing more efficiently that the plain rules engine.</li>
+  <li>Tune the rule set and processing model for the OWL reasoner (support the 
+    direct/indirect distinction, improve the datatype handling, improve the validation 
+    rules, possibly introduce a distinct taxonmy construction phase).</li>
+  <li>Tune the RETE engine to perform better with highly non-ground patterns.</li>
+  <li>Tune the LP engine to further reduce memory usage (in particular explore 
+    subsumption tabling rather than the current variant tabling).</li>
+  <li>Investigate routes to better integrating the rule reasoner with underlying 
+    database engines. This is a rather larger and longer term task than the others 
+    above and is the least likely to happen in the near future.</li>
+</ul>
 <p>[<a href="#index">index</a>]</p>
 </body>
 </html>
