@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE owl [
+ <!ENTITY tex "http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#">
+ <!ENTITY owl "http://www.w3.org/2002/7/owl#">
+]>
+
+<rdf:RDF
+ xml:base  = "http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#"
+ xmlns     = "http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#" 
+ xmlns:tex = "http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#"
+ xmlns:owl = "http://www.w3.org/2002/07/owl#"
+ xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:rdfs= "http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:xsd = "http://www.w3.org/2000/10/XMLSchema#">
+
+ <owl:Ontology rdf:about="http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1"> 
+
+   <rdfs:comment>
+     UserOntology for testcase 2 of the query generation. Three classes with properties
+     defined between 1,2 and 2,3 and 3,1.
+   </rdfs:comment>
+ </owl:Ontology>
+
+ <owl:ObjectProperty rdf:ID="edge">
+   <rdfs:domain rdf:resource="owl#Thing"/>
+   <rdfs:range rdf:resource="owl#Thing"/>
+ </owl:ObjectProperty>
+
+
+ <owl:Class rdf:ID="C1">
+   <rdfs:subClassOf>
+     <owl:Restriction>
+       <!--original: owl:onPropertry rdf:resource="#edge" /-->
+       <owl:onProperty rdf:resource="#edge" />
+       <owl:allValuesFrom rdf:resource="#C2" />
+     </owl:Restriction>
+   </rdfs:subClassOf>
+     <owl:disjointWith rdf:resource="#C2" />
+   <owl:disjointWith rdf:resource="#C3" />
+ </owl:Class>
+
+
+ <owl:Class rdf:ID="C2">
+   <rdfs:subClassOf>
+     <owl:Restriction>
+       <!--original: owl:onPropertry rdf:resource="#edge" /-->
+       <owl:onProperty rdf:resource="#edge" />
+       <owl:allValuesFrom rdf:resource="#C3" />
+     </owl:Restriction>
+   </rdfs:subClassOf>
+     <owl:disjointWith rdf:resource="#C1" />
+   <owl:disjointWith rdf:resource="#C3" />
+ </owl:Class>
+
+
+ <owl:Class rdf:ID="C3">
+   <rdfs:subClassOf>
+     <owl:Restriction>
+       <!--original: owl:onPropertry rdf:resource="#edge" /-->
+       <owl:onProperty rdf:resource="#edge" />
+       <owl:allValuesFrom rdf:resource="#C1" />
+     </owl:Restriction>
+   </rdfs:subClassOf>
+     <owl:disjointWith rdf:resource="#C1" />
+   <owl:disjointWith rdf:resource="#C2" />
+ </owl:Class>
+
+</rdf:RDF>
+

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-08 14:51:56 $
+ * Last modified on   $Date: 2004-01-09 11:45:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -605,6 +605,21 @@ public class TestBugReports extends TestCase {
     }
 
 
+    /** Bug report by David Kensche [david.kensche@post.rwth-aachen.de] - NPE in listDeclaredProperties */
+    public void test_dk_01() {
+        OntModel m = ModelFactory.createOntologyModel();
+        m.read( "file:testing/ontology/bugs/test_dk_01.xml" );
+        
+        String NS = "http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#";
+        String[] classes = new String[] {NS+"C1", NS+"C3", NS+"C2"};
+        
+        for (int i = 0; i < classes.length; i++) {
+            OntClass c = m.getOntClass( classes[i] );
+            for (Iterator j = c.listDeclaredProperties(); j.hasNext(); j.next() );
+        }
+    }
+    
+    
     // Internal implementation methods
     //////////////////////////////////
 

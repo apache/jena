@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:59:10 $
+ * Last modified on   $Date: 2004-01-09 11:45:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -37,6 +37,8 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * <p>
@@ -45,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.34 2003-12-11 22:59:10 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.35 2004-01-09 11:45:34 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -555,7 +557,15 @@ public class OntClassImpl
                 Restriction r = (Restriction) supClass.as( Restriction.class );
                 Property p = r.getOnProperty();
                 
-                if (!props.contains( p )) {
+                if (p == null) {
+                    // A restriction that is not on a property - bad
+                    String id = r.getURI();
+                    if (id == null) {
+                        id = "[anon restriction with anonID " + r.getId().toString() + "]";
+                    }
+                    LogFactory.getLog( getClass() ).warn( "Found restriction " + id + " with no onProperty declaration" );
+                }
+                else if (!props.contains( p )) {
                     // rule out properties with a cardinality of zero
                     if (!(r.hasProperty( getProfile().MAX_CARDINALITY(), 0 ) ||
                           r.hasProperty( getProfile().CARDINALITY(), 0))) {
