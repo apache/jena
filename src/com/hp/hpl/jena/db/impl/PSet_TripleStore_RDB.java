@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.32 2003-07-10 18:40:47 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.33 2003-07-11 19:18:20 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.32 $ on $Date: 2003-07-10 18:40:47 $
+* @version $Revision: 1.33 $ on $Date: 2003-07-11 19:18:20 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -119,10 +119,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	public void setMaxLiteral(int value) { MAX_LITERAL = value; }
 	public void setSQLType(String value) { ID_SQL_TYPE = value; }
 	public void setSkipDuplicateCheck(boolean value) { SKIP_DUPLICATE_CHECK = value;}
-	public void setSkipAllocateId(boolean value ) { SKIP_ALLOCATE_ID = value;}
-	public void setEmptyLiteralMarker(String value ) { EMPTY_LITERAL_MARKER = value;}
 	public void setSQLCache(SQLCache cache ) { m_sql = cache; }
-	public void setInsertByProcedure(boolean value) { INSERT_BY_PROCEDURE = value; }
 	public void setCachePreparedStatements(boolean value) { CACHE_PREPARED_STATEMENTS = value; }
 	
 	
@@ -309,7 +306,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		 PreparedStatement ps = m_sql.getPreparedSQLStatement("getRowCount",tName);
 	     ResultSet rs = ps.executeQuery();
 	     while ( rs.next() ) {
-		  result = rs.getInt("COUNT(*)");
+		  result = rs.getInt(1);
 	     } 
 	//	m_sql.returnPreparedSQLStatement(ps, "getRowCount");
 	} catch (SQLException e) {
