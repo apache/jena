@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.3 2003-05-14 16:50:19 der Exp $
+ * $Id: RuleState.java,v 1.4 2003-05-15 08:38:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-14 16:50:19 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-15 08:38:24 $
  */
 public class RuleState {
 
@@ -207,6 +207,102 @@ public class RuleState {
         }
         // If we get to here there are no rule body clause to process
         return new RuleState(ri, env, null, 0);
+    }
+    
+    /**
+     * Unify a goal with the head of a rule. This is a poor-man's unification,
+     * we should try swtiching to a more conventional global-variables-with-trail
+     * implementation in the future.
+     * @return An initialized binding environment for the rule variables
+     * or null if the unificatin fails. If a variable in the environment becomes
+     * aliased to another variable through the unification this is represented
+     * by having its value in the environment be the variable to which it is aliased.
+     */ 
+    public static BindingVector unify(TriplePattern goal, TriplePattern head) {
+        Node[] gEnv = new Node[BindingStack.MAX_VAR];
+        Node[] hEnv = new Node[BindingStack.MAX_VAR];
+        
+        if (!unify(goal.getSubject(), head.getSubject(), gEnv, hEnv)) {
+            return null;
+        } 
+        if (!unify(goal.getPredicate(), head.getPredicate(), gEnv, hEnv)) {
+            return null; 
+        } 
+        
+        Node gObj = goal.getObject();
+        Node hObj = goal.getObject();
+        if (Functor.isFunctor(hObj)) {
+            if (Functor.isFunctor(hObj)) {
+                Functor gFunctor = (Functor)gObj.getLiteral().getValue();
+                Functor hFunctor = (Functor)hObj.getLiteral().getValue();
+                if ( ! gFunctor.getName().equals(hFunctor.getName()) ) {
+                    return null;
+                }
+                Node[] gArgs = gFunctor.getArgs();
+                Node[] hArgs = hFunctor.getArgs();
+                if ( gArgs.length != hArgs.length ) return null;
+                for (int i = 0; i < gArgs.length; i++) {
+                    if (! unify(gArgs[i], hArgs[i], gEnv, hEnv) ) {
+                        return null;
+                    }
+                }
+            } else if (hObj instanceof Node_RuleVariable) {
+                // No extra biding to do, success
+            } else {
+                // unifying simple ground object with functor, failure
+                return null;
+            }
+        } else if (hObj instanceof Node_RuleVariable) {
+            if (!unify(gObj, hObj, gEnv, hEnv)) return null;
+        } else {
+            if ( ! hObj.sameValueAs(gObj) ) return null;
+        }
+        // Successful bind if we get here
+        return new BindingVector(hEnv);
+    }
+    
+    /**
+     * Unify a single pair of goal/head nodes. Unification of a head var to
+     * a goal var is recorded using an Integer in the head env to point to a
+     * goal env and storing the head var in the goal env slot.
+     * @return true if they are unifiable, side effects the environments
+     */
+    private static boolean unify(Node gNode, Node hNode, Node[] gEnv, Node[] hEnv) {
+        if (hNode instanceof Node_RuleVariable) {
+            int hIndex = ((Node_RuleVariable)hNode).getIndex();
+            if (gNode instanceof Node_RuleVariable) {
+                // Record variable bind between head and goal to detect aliases
+                int gIndex = ((Node_RuleVariable)gNode).getIndex();
+                if (gEnv[gIndex] == null) {
+                    // First time bind so record link 
+                    gEnv[gIndex] = hNode;
+                } else {
+                    // aliased var so follow trail to alias
+                    hEnv[hIndex] = gEnv[gIndex];
+                }
+            } else {
+                hEnv[hIndex] = gNode;
+            }
+            return true;
+        } else {
+            if (gNode instanceof Node_RuleVariable) {
+                int gIndex = ((Node_RuleVariable)gNode).getIndex();
+                Node gVal = gEnv[gIndex]; 
+                if (gVal == null) {
+                    //. No variable alias so just record binding
+                    gEnv[gIndex] = hNode;
+                } else if (gVal instanceof Node_RuleVariable) {
+                    // Already an alias
+                    hEnv[((Node_RuleVariable)gVal).getIndex()] = hNode;
+                    gEnv[gIndex] = hNode;
+                } else {
+                    return gVal.sameValueAs(hNode);
+                }
+                return true;
+            } else {
+                return hNode.sameValueAs(gNode); 
+            }
+        }
     }
     
     /**
