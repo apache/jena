@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.1.1.1 2002-12-19 19:13:45 bwm Exp $
+ * $Id: XSDDatatype.java,v 1.2 2003-01-31 08:52:05 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.graph.dt;
@@ -29,7 +29,6 @@ import org.apache.xerces.xni.parser.XMLInputSource;
 import org.apache.xerces.impl.xs.psvi.XSModel;
 import org.apache.xerces.impl.xs.psvi.XSTypeDefinition;
 import org.apache.xerces.impl.xs.psvi.XSNamedMap;
-import org.apache.xerces.impl.xs.psvi.XSObject;
 import org.apache.xerces.xni.grammars.XSGrammar;
 
 /**
@@ -37,7 +36,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:45 $
+ * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:52:05 $
  */
 public class XSDDatatype extends BaseDatatype {
 

@@ -5,14 +5,13 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDGenericType.java,v 1.1.1.1 2002-12-19 19:13:48 bwm Exp $
+ * $Id: XSDGenericType.java,v 1.2 2003-01-31 08:52:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.DecimalDV;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
-import org.apache.xerces.impl.xs.psvi.XSSimpleTypeDefinition;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,7 +22,7 @@ import java.math.BigInteger;
  * user defined types - the built in types have a fixed mapping.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:48 $
+ * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:52:04 $
  */
 public class XSDGenericType extends XSDDatatype {
 
