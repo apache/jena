@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLListImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
+ * Last modified on   $Date: 2003-06-20 20:37:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * in the current list interpretation.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLListImpl.java,v 1.7 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLListImpl.java,v 1.8 2003-06-20 20:37:55 ian_dickinson Exp $
  */
 public class DAMLListImpl
     extends RDFListImpl
@@ -76,8 +76,15 @@ public class DAMLListImpl
             
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an RDFList facet if it has rdf:type rdf:List or equivalent
-            return node.equals( DAML_OIL.nil.asNode() ) || 
+/*TODO            return node.equals( DAML_OIL.nil.asNode() ) || 
                    eg.asGraph().find( node, RDF.type.asNode(), DAML_OIL.List.asNode() ).hasNext();
+*/            Graph g = eg.asGraph();
+            
+            // node will support being an RDFList facet if it has rdf:type rdf:List, is nil, or is in the domain of a list property
+            return  node.equals( DAML_OIL.nil.asNode() ) || 
+                    g.find( node, DAML_OIL.first.asNode(), Node.ANY ).hasNext() ||
+                    g.find( node, DAML_OIL.rest.asNode(), Node.ANY ).hasNext() ||
+                    g.find( node, RDF.type.asNode(), DAML_OIL.List.asNode() ).hasNext();
         }
     };
 

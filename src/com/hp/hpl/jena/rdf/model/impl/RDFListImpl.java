@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFListImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-19 08:19:46 $
+ * Last modified on   $Date: 2003-06-20 20:37:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.6 2003-06-19 08:19:46 ian_dickinson Exp $
+ * @version CVS $Id: RDFListImpl.java,v 1.7 2003-06-20 20:37:55 ian_dickinson Exp $
  */
 public class RDFListImpl
     extends ResourceImpl
@@ -69,9 +69,13 @@ public class RDFListImpl
         }
             
         public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an RDFList facet if it has rdf:type rdf:List or equivalent
-            return node.equals( RDF.nil.asNode() ) || 
-                   eg.asGraph().find( node, RDF.type.asNode(), RDF.List.asNode() ).hasNext();
+            Graph g = eg.asGraph();
+            
+            // node will support being an RDFList facet if it has rdf:type rdf:List, is nil, or is in the domain of a list property
+            return  node.equals( RDF.nil.asNode() ) || 
+                    g.find( node, RDF.first.asNode(), Node.ANY ).hasNext() ||
+                    g.find( node, RDF.rest.asNode(), Node.ANY ).hasNext() ||
+                    g.find( node, RDF.type.asNode(), RDF.List.asNode() ).hasNext();
         }
     };
 
@@ -850,7 +854,8 @@ public class RDFListImpl
      * @return A new list cell as a resource
      */
     public Resource newListCell( RDFNode value, Resource tail ) {
-        Resource cell = getModel().createResource( listType() );
+        // Note: following the RDF WG decision, we no longer assert rdf:type rdf:List for list cells
+        Resource cell = getModel().createResource();
         
         // set the head and tail
         cell.addProperty( listFirst(), value );
