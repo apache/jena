@@ -5,11 +5,15 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.4 2003-09-16 16:04:56 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.5 2003-09-17 07:53:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
+import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.io.*;
@@ -21,7 +25,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-09-16 16:04:56 $
+ * @version $Revision: 1.5 $ on $Date: 2003-09-17 07:53:34 $
  */
 public class WebOntTestHarness {
 
@@ -37,14 +41,26 @@ public class WebOntTestHarness {
 //  =======================================================================
 //  Internal state
 
+    /** The reasoner being tested */
+    public Reasoner reasoner;
+    
     /** The total set of known tests */
     public Model testDefinitions;
+    
+    /** The number of tests run */
+    public int testCount = 0;
+    
+    /** The time cost in ms of the last test to be run */
+    public long lastTestDuration = 0;
     
 //  =======================================================================
 //  Internal constants
 
     /** The base directory for the working group test files to use */
     public static final String BASE_TESTDIR = "testing/wg/";
+    
+    /** The base URI in which the files are purported to reside */
+    public static String BASE_URI = "http://www.w3.org/2002/03owlt/";
     
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
     public static final String[] TEST_DIRS= {"AllDifferent", "AllDistinct", 
@@ -63,7 +79,7 @@ public class WebOntTestHarness {
         };
     
     /** List of tests that are blocked because they test language features beyond Lite */
-    public static final String[] BLOCK_TESTS = {
+    public static final String[] BLOCKED_TESTS = {
         "http://www.w3.org/2002/03owlt/complementOf/Manifest001#test", 
         "http://www.w3.org/2002/03owlt/description-logic/Manifest901#test", 
         "http://www.w3.org/2002/03owlt/description-logic/Manifest903#test", 
@@ -125,8 +141,116 @@ public class WebOntTestHarness {
     
     public static void main(String[] args) {
         WebOntTestHarness harness = new WebOntTestHarness();
-        List l = harness.findTestsOfType(OWLTest.PositiveEntailmentTest);
-        harness.findTestsOfType(OWLTest.NegativeEntailmentTest);
+        harness.runTests();
+    }
+    
+    /**
+     * Run all relevant tests.
+     */
+    public void runTests() {
+        runTests(findTestsOfType(OWLTest.PositiveEntailmentTest));
+        runTests(findTestsOfType(OWLTest.NegativeEntailmentTest));
+    }
+    
+    /**
+     * Run all tests in the given list.
+     */
+    public void runTests(List tests) {
+        for (Iterator i = tests.iterator(); i.hasNext(); ) {
+            runTest( (Resource) i.next() );
+        }
+    }
+    
+    /**
+     * Run a single test of any sort, performing any appropriate logging
+     * and error reporting.
+     */
+    public void runTest(Resource test) {
+        boolean success = false;
+        try {
+            success = doRunTest(test);
+        } catch (Exception e) {
+            System.out.print("\nException: " + e);
+        }
+        testCount++;
+        if (success) {
+            System.out.print( (testCount % 40 == 0) ? ".\n" : ".");
+            System.out.flush();
+        } else {
+            System.out.println("\nFAIL: " + test);
+        }
+        // TODO add logging to the rdf result format
+    }
+    
+    /**
+     * Run a single test of any sort, return true if the test succeeds.
+     */
+    public boolean doRunTest(Resource test) throws IOException {
+        if (test.hasProperty(RDF.type, OWLTest.PositiveEntailmentTest) 
+        ||  test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest)) {
+            // Entailment tests
+            Model premises = getDoc(test, RDFTest.premiseDocument);
+            Model conclusions = getDoc(test, RDFTest.conclusionDocument);
+            long t1 = System.currentTimeMillis();
+            InfGraph graph = reasoner.bind(premises.getGraph());
+            Model result = ModelFactory.createModelForGraph(graph);
+            boolean correct = testConclusions(conclusions.getGraph(), result.getGraph());
+            long t2 = System.currentTimeMillis();
+            lastTestDuration = t2 - t1; 
+            if (test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest)) {
+                correct = !correct;
+            }
+            return correct;
+        } else {
+            throw new ReasonerException("Unknown test type");
+        }
+    }
+    
+    /**
+     * Load the premises or conclusions for the test.
+     */
+    public Model getDoc(Resource test, Property docType) throws IOException {
+        Model result = ModelFactory.createDefaultModel();
+        StmtIterator si = test.listProperties(docType);
+        while ( si.hasNext() ) {
+            String fname = si.nextStatement().getObject().toString() + ".rdf";
+            loadFile(fname, result);
+        }
+        return result;
+    }
+
+    /**
+     * Utility to load a file into a model a Model. 
+     * Files are assumed to be relative to the BASE_URI.
+     * @param file the file name, relative to baseDir
+     * @return the loaded Model
+     */
+    public static Model loadFile(String file, Model model) throws IOException {
+        String langType = "RDF/XML";
+        if (file.endsWith(".nt")) {
+            langType = "N-TRIPLE";
+        } else if (file.endsWith("n3")) {
+            langType = "N3";
+        }
+        String fname = file;
+        if (fname.startsWith(BASE_URI)) {
+            fname = fname.substring(BASE_URI.length());
+        }
+        Reader reader = new BufferedReader(new FileReader(BASE_TESTDIR + fname));
+        model.read(reader, BASE_URI + fname, langType);
+        return model;
+    }
+    
+    /**
+     * Test a conclusions graph against a result graph. This works by
+     * translating the conclusions graph into a find query which contains one
+     * variable for each distinct bNode in the conclusions graph.
+     */
+    private boolean testConclusions(Graph conclusions, Graph result) {
+        QueryHandler qh = result.queryHandler();
+        Query query = WGReasonerTester.graphToQuery(conclusions);
+        Iterator i = qh.prepareBindings(query, new Node[] {}).executeBindings();
+        return i.hasNext();
     }
     
 //  =======================================================================
@@ -153,8 +277,8 @@ public class WebOntTestHarness {
                 }
             }
             // Check for blocked tests
-            for (int i = 0; i < BLOCK_TESTS.length; i++) {
-                if (BLOCK_TESTS[i].equals(test.toString())) {
+            for (int i = 0; i < BLOCKED_TESTS.length; i++) {
+                if (BLOCKED_TESTS[i].equals(test.toString())) {
                     accept = false; 
                 }
             }
