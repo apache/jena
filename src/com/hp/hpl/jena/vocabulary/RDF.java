@@ -1,7 +1,7 @@
 /*
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002. All rights reserved.
  * [See end of file]
- *  $Id: RDF.java,v 1.5 2003-06-23 11:01:37 chris-dollin Exp $
+ *  $Id: RDF.java,v 1.6 2003-06-23 12:59:03 chris-dollin Exp $
 */
 
 
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
  *
  * @author  bwm; updated by kers/daniel/christopher
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-23 11:01:37 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-23 12:59:03 $'
  */
 public class RDF{
 
@@ -40,21 +40,21 @@ public class RDF{
     	// System.err.println( "constructing RDF.li(" + i + ")" );
         return new PropertyImpl(uri, "_"+Integer.toString(i));}
 
-    public static       Resource Alt = new ResourceImpl(uri+"Alt");
-    public static       Resource Bag = new ResourceImpl(uri+"Bag");
-    public static       Resource Property = new ResourceImpl(uri+"Property");
-    public static       Resource Seq = new ResourceImpl(uri+"Seq");
-    public static       Resource Statement = new ResourceImpl(uri+"Statement");
-    public static       Resource List = new ResourceImpl(uri+"List");
-    public static       Resource nil = new ResourceImpl(uri+"nil");
+    public static final Resource Alt = new ResourceImpl(uri+"Alt");
+    public static final Resource Bag = new ResourceImpl(uri+"Bag");
+    public static final Resource Property = new ResourceImpl(uri+"Property");
+    public static final Resource Seq = new ResourceImpl(uri+"Seq");
+    public static final Resource Statement = new ResourceImpl(uri+"Statement");
+    public static final Resource List = new ResourceImpl(uri+"List");
+    public static final Resource nil = new ResourceImpl(uri+"nil");
 
-    public static       Property first = new PropertyImpl(uri, "first");
-    public static       Property rest = new PropertyImpl(uri, "rest");
-    public static       Property subject = new PropertyImpl(uri, "subject");
-    public static       Property predicate = new PropertyImpl(uri, "predicate");
-    public static       Property object = new PropertyImpl(uri, "object");
-    public static       Property type = new PropertyImpl(uri, "type");
-    public static       Property value = new PropertyImpl(uri, "value");
+    public static final Property first = new PropertyImpl(uri, "first");
+    public static final Property rest = new PropertyImpl(uri, "rest");
+    public static final Property subject = new PropertyImpl(uri, "subject");
+    public static final Property predicate = new PropertyImpl(uri, "predicate");
+    public static final Property object = new PropertyImpl(uri, "object");
+    public static final Property type = new PropertyImpl(uri, "type");
+    public static final Property value = new PropertyImpl(uri, "value");
 
 }
 

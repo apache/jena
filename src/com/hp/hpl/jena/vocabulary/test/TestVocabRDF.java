@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestVocabRDF.java,v 1.1 2003-06-23 11:01:37 chris-dollin Exp $
+  $Id: TestVocabRDF.java,v 1.2 2003-06-23 12:59:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
@@ -25,7 +25,7 @@ public class TestVocabRDF extends ModelTestBase
         Tests that the RDF vocabulary identifiers are what they're supposed to be. 
         TODO arrange that we detect if there are any other identifiers in the class.
     */
-    public void testA()
+    public void testRDFVocabulary()
         {
         String ns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
         assertEquals( ns, RDF.getURI() );

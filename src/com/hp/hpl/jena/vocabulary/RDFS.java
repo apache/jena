@@ -1,4 +1,53 @@
 /*
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: RDFS.java,v 1.5 2003-06-23 12:59:03 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.vocabulary;
+
+import com.hp.hpl.jena.rdf.model.*;
+
+/**
+ *
+ * @author  bwm, updated by kers/daniel/christopher
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-23 12:59:03 $'
+ */
+public class RDFS {
+
+    protected static final String uri="http://www.w3.org/2000/01/rdf-schema#";
+    
+    private static Model m = ModelFactory.createDefaultModel();
+    
+    public static final Resource Class     = m.createResource(uri+"Class");
+    public static final Resource Datatype            = m.createResource(uri+"Datatype");
+    public static final Resource ConstraintProperty  =  m.createResource(uri+"ConstraintProperty");
+    public static final Resource Container           = m.createResource(uri+"Container");
+    public static final Resource ContainerMembershipProperty
+                                                     = m.createResource(uri+"ContainerMembershipProperty");
+    public static final Resource ConstraintResource  = m.createResource(uri+"ConstraintResource");
+    public static final Resource Literal             = m.createResource(uri+"Literal");
+    public static final Resource Resource            = m.createResource(uri+"Resource");
+    
+    public static final Property comment             = m.createProperty(uri, "comment");
+    public static final Property domain              = m.createProperty(uri, "domain");
+    public static final Property label               = m.createProperty(uri, "label");
+    public static final Property isDefinedBy         = m.createProperty(uri, "isDefinedBy");
+    public static final Property range               = m.createProperty(uri, "range");
+    public static final Property seeAlso             = m.createProperty(uri, "seeAlso");
+    public static final Property subClassOf          = m.createProperty(uri, "subClassOf");
+    public static final Property subPropertyOf       = m.createProperty(uri, "subPropertyOf");
+    public static final Property member             = m.createProperty(uri, "member"); 
+
+/** returns the URI for this schema
+ * @return the URI for this schema
+ */    
+    public static String getURI() {
+        return uri;
+    }
+}
+
+/*
  *  (c) Copyright Hewlett-Packard Company 2000 
  *  All rights reserved.
  *
@@ -28,96 +77,3 @@
  *
  * Created on 28 July 2000, 18:13
  */
-
-package com.hp.hpl.jena.vocabulary;
-
-import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Property;
-
-/**
- *
- * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-03-03 22:36:04 $'
- */
-public class RDFS {
-    
-    // next available error code = 2
-
-    protected static    String uri="http://www.w3.org/2000/01/rdf-schema#";
-    
-           static final String   nClass    = "Class";
-    public static       Resource Class     = null;
-           static final String   nDatatype           = "Datatype";
-    public static       Resource Datatype            = null;
-           static final String   nConstraintProperty = "ConstraintProperty";
-    public static       Resource ConstraintProperty  = null;
-           static final String   nContainer          = "Container";
-    public static       Resource Container           = null;
-           static final String   
-                        nContainerMembershipProperty =
-                                                 "ContainerMembershipProperty";
-    public static       Resource ContainerMembershipProperty
-                                                     = null;
-           static final String   nConstraintResource = "ConstraintResource";
-    public static       Resource ConstraintResource  = null;
-           static final String   nLiteral            = "Literal";
-    public static       Resource Literal             = null;
-           static final String   nResource           = "Resource";
-    public static       Resource Resource            = null;
-    
-           static final String   ncomment            = "comment";
-    public static       Property comment             = null;
-           static final String   ndomain             = "domain";
-    public static       Property domain              = null;
-           static final String   nlabel              = "label";
-    public static       Property label               = null;
-           static final String   nisDefinedBy        = "isDefinedBy";
-    public static       Property isDefinedBy         = null;
-           static final  String   nrange              = "range";
-    public static       Property range               = null;
-           static final String   nseeAlso            = "seeAlso";
-    public static       Property seeAlso             = null;
-           static final String   nsubClassOf         = "subClassOf";
-    public static       Property subClassOf          = null;
-           static final String   nsubPropertyOf      = "subPropertyOf";
-    public static       Property subPropertyOf       = null;
-           static final String   nmember             = "member";
-    public static       Property member             = null;
-    
-    static {
-        try {
-            Class = new ResourceImpl(uri+nClass);
-            Datatype = new ResourceImpl(uri+nDatatype);
-            ConstraintProperty = new ResourceImpl(uri+nConstraintProperty);
-            Container = new ResourceImpl(nContainer);
-            ContainerMembershipProperty = 
-                             new ResourceImpl(uri+nContainerMembershipProperty);
-            ConstraintResource = new ResourceImpl(uri+nConstraintResource);
-            Literal = new ResourceImpl(uri+nLiteral);
-            Resource = new ResourceImpl(uri+nResource);
-            
-            comment = new PropertyImpl(uri, ncomment);
-            domain = new PropertyImpl(uri, ndomain);
-            label = new PropertyImpl(uri, nlabel);
-            isDefinedBy = new PropertyImpl(uri, nisDefinedBy);
-            range = new PropertyImpl(uri, nrange);
-            seeAlso = new PropertyImpl(uri, nseeAlso);
-            subClassOf = new PropertyImpl(uri, nsubClassOf);
-            subPropertyOf = new PropertyImpl(uri, nsubPropertyOf);
-            member = new PropertyImpl(uri, nmember);
-        } catch (Exception e) {
-            ErrorHelper.logInternalError("RDFS", 1, e);
-        }
-    }
-                   
-
-/** returns the URI for this schema
- * @return the URI for this schema
- */    
-    public static String getURI() {
-        return uri;
-    }
-}
