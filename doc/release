@@ -8,6 +8,8 @@ HOST="shell.sourceforge.net"
 LOC="/home/groups/j/je/jena/htdocs"
 
 PAGES=$(cat <<EOF
+jena-faq.html
+concurrency.html
 documentation.html
 downloads.html
 index.html
@@ -41,14 +43,14 @@ EOF
 
 STYLE=$(cat <<EOF
 styles/site.css
-styles/usermanual.css
+styles/doc.css
 styles/tutorial.css
 EOF
 )
 
 #images/JenaLogo.png
 IMAGES=$(cat <<EOF
-images/JenaLogoSimple.png
+images/JenaSWF.png
 images/rdf_w3c_icon.gif
 images/sflogo-type1.png
 EOF
@@ -58,9 +60,10 @@ EOF
 
 # Copy to a release ara, them copy all to SourceForge
 
-COPY="pscp -load afs@jena.hpl.hp.com"
+COPY="pscp -load afs@jena.hpl.hp.com -r"
+COPY="cp -R"
 
-$COPY -r $PAGES   ~/WWW/Jena/WebSite
-$COPY -r $STYLE   ~/WWW/Jena/WebSite/styles
-$COPY -r $IMAGES  ~/WWW/Jena/WebSite/images
+$COPY $PAGES   ~/WWW/Jena/WebSite
+$COPY $STYLE   ~/WWW/Jena/WebSite/styles
+$COPY $IMAGES  ~/WWW/Jena/WebSite/images
 
