@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.8 2003-06-11 11:23:40 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.9 2003-06-20 12:27:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -10,7 +10,9 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.impl.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import junit.framework.*;
 
@@ -418,6 +420,49 @@ public class QueryTest extends GraphTestBase
         assertEquals( 1, bindings.size() );
         assertEquals( node( "x" ), ((List) bindings.get(0)).get(0) );
         assertEquals( node( "y" ), ((List) bindings.get(0)).get(1) );
+        }
+        
+     /**
+        Test that the default engine does not re-order triples.
+     */
+    public void testQueryTripleOrder()
+        {
+        Triple t1 = Triple.create( "A B C" ), t2 = Triple.create( "D E F" );
+        List desired = Arrays.asList( new Triple[] {t1, t2} );
+        List obtained = getTriplesFromQuery( desired );
+        assertEquals( desired, obtained );
+        }
+        
+    /**
+        This horror to extract the order in which the triples are handed to
+        patternStage illustrates that the Query code needs some refactoring
+        to make it more testable.
+        TODO make the Query code more testable. 
+    */
+    private List getTriplesFromQuery( List desired )
+        {
+        Query q = new Query();
+        final Triple [][] tripleses = new Triple[1][];
+        final Graph g = new GraphBase()
+            {
+            public ExtendedIterator find( TripleMatch tm )
+                { return new NiceIterator(); }
+            public QueryHandler queryHandler()
+                {
+                return new SimpleQueryHandler( this )
+                    {
+                    public Stage patternStage( Mapping map, Graph constraints, Triple [] t )
+                        {
+                        if (t.length > 1) tripleses[0] = t;
+                        return super.patternStage( map, constraints, t );
+                        }
+                    }
+                    ;
+                }
+            };
+        for (int i = 0; i < desired.size(); i += 1) q.addMatch( (Triple) desired.get(i) );
+        q.executeBindings( g, nodes( "" ) );
+        return Arrays.asList( tripleses[0] );
         }
     }
 

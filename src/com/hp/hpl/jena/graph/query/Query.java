@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.6 2003-06-06 09:15:48 chris-dollin Exp $
+  $Id: Query.java,v 1.7 2003-06-20 12:27:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -170,11 +170,11 @@ public class Query
             String name = (String) e.getKey();
             Cons triples = (Cons) e.getValue();
             Graph g = (Graph) arguments.get( name );
-            int nBlocks = Cons.size( triples ), i = 0;
+            int nBlocks = Cons.size( triples ), i = nBlocks;
             Triple [] nodes = new Triple[nBlocks];
             while (triples != null)
                 {
-                nodes[i++] = triples.head;
+                nodes[--i] = triples.head;
                 triples = triples.tail;
                 }
             Stage next = g.queryHandler().patternStage( map, constraintGraph, nodes );

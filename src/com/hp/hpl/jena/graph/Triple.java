@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Triple.java,v 1.7 2003-06-20 08:56:36 chris-dollin Exp $
+  $Id: Triple.java,v 1.8 2003-06-20 12:27:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,9 +19,9 @@ import java.util.*;
 final public class Triple implements TripleMatch {
 	private final Node subj, pred, obj;
 	public Triple(Node s, Node p, Node o) {
-//        if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
-//        if (p == null) throw new UnsupportedOperationException( "predicate cannot be null" );
-//        if (o == null) throw new UnsupportedOperationException( "object cannot be null" );
+        if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
+        if (p == null) throw new UnsupportedOperationException( "predicate cannot be null" );
+        if (o == null) throw new UnsupportedOperationException( "object cannot be null" );
 		subj = s;
 		pred = p;
 		obj = o;
