@@ -39,7 +39,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.3 2004-09-01 10:30:08 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.4 2004-10-05 16:12:43 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -261,7 +261,7 @@ public class FileManager
         {
             syntax = FileUtils.guessLang(filenameOrURI) ;
             if ( syntax == null || syntax.equals("") )
-                syntax = "RDF/XML" ;
+                syntax = FileUtils.langXML ;
         }
 
         InputStream in = open(filenameOrURI) ;

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.22 2004-09-01 11:05:51 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.23 2004-10-05 16:12:43 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -130,7 +130,7 @@ public class ModelLoader
         //m.setReaderClassName(langNTriple, com.hp.hpl.jena.rdf.arp.NTriple.class.getName()) ;
 
         try {
-            FileManager.get().readModel(m, urlStr, lang) ;
+            FileManager.get().readModel(m, urlStr, null, lang) ;
         } catch (JenaException rdfEx)
         {
             log.warn("Error loading data source", rdfEx);
@@ -160,7 +160,7 @@ public class ModelLoader
     public static Model loadModel(Model model, String urlStr, String lang)
     {
         try {
-            return FileManager.get().readModel(model, urlStr, lang) ;
+            return FileManager.get().readModel(model, urlStr, null, lang) ;
         }
         catch (Exception e)
         {
