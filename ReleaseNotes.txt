@@ -16,6 +16,26 @@ Post Jena 2.1 change list
   Database
       o Fixed user-reported problem where removeNsPrefix() wasn't persistent
 
+  GraphBase and Reification SPI
+      o Reifier::getHiddenTriples() and getReificationTriples() REMOVED and
+        replaced by iterator-returning find(TripleMatch) [for all quadlets],
+        findExposed(TripleMatch) [for exposed quadlets, ie Standard], and
+        findEither(TripleMatch, boolean showHidden) [for exposed or hidden
+        quadlets].
+
+      o Reworking of GraphBase to clean up reification and fix bug with
+        duplicated fully-reified triples. GraphBase now implements find()
+        by appending triples from reifier with triples from local triple
+        store. find() is not over-ridable; over-ride graphBaseFind() instead.
+
+      o Reworking of SimpleReifier to express it in terms of implementations
+        of a store for fragments and a store for complete triples, with new
+        interfaces. This should allow implementors of persistent Graphs an
+        easier time of it. [Driven by GraphBDB work, so there's an example to
+        hand.]
+
+      o Reifiers must also implement a size[OfExposedTriples]() method.
+
   Model & Graph removeAll(), remove(S, P, O)
       o added new API operation Model::removeAll() which removes "all" statements
         from a model [currently there are issues about inference models]
