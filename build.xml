@@ -3,10 +3,18 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="2.0.0-beta1"/>
+    
+    <!-- The major and minor version numbers  -->
+    <property name="version-major"   value="2"/>
+    <property name="version-minor"   value="0"/>
+    <property name="version-status"  value="-beta1"/>  <!-- e.g. -beta1, or empty string for stable releases -->
+    <property name="version"         value="${version-major}.${version-minor}${version-status}"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
-
+    
+	<property name="web.site"		 value="http://sourceforge.net/projects/jena" />
+	<property name="copyright"		 value="Copyright &#169;2001-2003 Hewlett-Packard. All Rights Reserved." />
+	
     <property name="debug"           value="true"/>
     <property name="debuglevel"      value="source,lines"/>
     <property name="deprecation"     value="false"/>
@@ -38,6 +46,17 @@
       <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
  <!--     <dirset dir="${classes.dir}" includes="*"/> -->
     </path>
+
+    <!-- keyword substitutions -->
+    <filterset id="filters.shared">
+        <filter token="Name"          value="${Name}" />
+        <filter token="copyright"     value="${copyright}" />
+        <filter token="website"       value="${web.site}" />
+        <filter token="version-major" value="${version-major}" />
+        <filter token="version-minor" value="${version-minor}" />
+        <filter token="version-status" value="${version-status}" />
+        <filter token="version"       value="${version}" />
+    </filterset>
 
 <!-- Main external targets -->
     <target name="main" depends="init,bin"/>
@@ -78,6 +97,9 @@
         <!-- Ensure clean source build -->
         <delete dir="${src.dir}"/>
         <mkdir  dir="${src.dir}"/>
+		<tstamp>
+    		<format property="BUILD_TIME" pattern="d-MMMM-yyyy HH:mm"/>
+  		</tstamp>
         <copy todir="${src.dir}">
             <fileset dir="${orig-src.dir}"
                      includes="*"/>
@@ -117,6 +139,10 @@
                      includes="com/hp/hpl/jena/xmloutput/**"/>
             <fileset dir="${orig-src.dir}"
                      includes="jena/**"/>
+            <filterset>
+              <filterset refid="filters.shared" />
+	          <filter token="build-time"    value="${BUILD_TIME}" />
+            </filterset>
         </copy>
 
     </target>

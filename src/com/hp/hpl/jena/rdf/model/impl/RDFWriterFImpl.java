@@ -24,11 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterFImpl.java,v 1.6 2003-07-21 10:54:06 chris-dollin Exp $
+ * $Id: RDFWriterFImpl.java,v 1.7 2003-08-01 21:21:36 ian_dickinson Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
+import com.hp.hpl.jena.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.util.Properties;
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.n3.N3JenaWriter;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.6 $ $Date: 2003-07-21 10:54:06 $
+ * @version $Revision: 1.7 $ $Date: 2003-08-01 21:21:36 $
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
 
