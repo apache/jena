@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.18 2004-08-06 13:17:49 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.19 2004-08-07 11:33:32 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -282,6 +282,14 @@ public class TestModelSpecRevised extends ModelTestBase
         List rules = rr.getRules();
         assertSameRules( wanted, rules );
         }
+   
+    public void testDescription()
+    	{
+        String ruleString = "[rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]";
+    	Model desc = createInfModelDesc( A, GenericRuleReasonerFactory.URI, ruleString );
+    	ModelSpec s = ModelSpecImpl.create( desc );
+    	// assertIsoModels( desc, s.getDescription() );
+    	}
     
     private ModelSpec createInfModelSpec( String ruleString )
         {
@@ -302,7 +310,7 @@ public class TestModelSpecRevised extends ModelTestBase
             ;
         return modelWithStatements( d, new Object[] {URI, "'" + ruleString + "'"} ); 
         }
-    
+   
     /**
      * @param factoryURI
      * @param rulesURL

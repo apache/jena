@@ -1,10 +1,12 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.9 2004-08-06 13:39:04 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.10 2004-08-07 11:33:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
+
+import junit.framework.Assert;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
@@ -28,6 +30,7 @@ public class InfModelSpec extends ModelSpecImpl
         The Resource who's URI identifies the reasoner to use.
     */
     protected Resource reasonerResource;
+    protected Resource reasonerRoot;
     protected ReasonerFactory factory;
     
     /**
@@ -38,6 +41,10 @@ public class InfModelSpec extends ModelSpecImpl
         {
         super( root, description );
         Statement st = description.getRequiredProperty( null, JMS.reasoner );
+        Statement xx = description.listStatements( root, JMS.reasonsWith, (RDFNode) null ).nextStatement();
+        reasonerRoot = st.getSubject();
+        Resource yy = xx.getResource();
+        Assert.assertEquals( reasonerRoot, yy );
         reasonerResource = st.getResource();
         factory = getReasonerFactory( st.getSubject(), description );
         }   
@@ -89,9 +96,10 @@ public class InfModelSpec extends ModelSpecImpl
     public Model addDescription( Model desc, Resource self )
         {
         super.addDescription( desc, self );
-        Resource r = desc.createResource();
+        Resource r = reasonerRoot; // desc.createResource();
         desc.add( self, JMS.reasonsWith, r );
         desc.add( r, JMS.reasoner, reasonerResource );
+        
         return desc;    
         }
 
@@ -198,7 +206,7 @@ public class InfModelSpec extends ModelSpecImpl
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
