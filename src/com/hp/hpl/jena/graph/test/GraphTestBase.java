@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.10 2003-09-22 12:16:28 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.11 2003-10-15 14:02:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -46,6 +46,9 @@ public class GraphTestBase extends JenaTestBase
         return result;
         }
         
+    public HashSet arrayToSet( Node [] nodes )
+        { return new HashSet( Arrays.asList( nodes ) ); }
+                
     public static Triple triple( String fact )
         { return Triple.create( fact ); }
         

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.29 2003-10-07 06:27:02 chris-dollin Exp $
+  $Id: Query.java,v 1.30 2003-10-15 14:03:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -140,9 +140,11 @@ public class Query
         {
         SimpleQueryEngine e = new SimpleQueryEngine( triples, sortMethod, constraint );
         ExtendedIterator result = e.executeBindings( outStages, args, nodes );
-        variableCount = e.getVariableCount();
+        lastQueryEngine = e;
         return result;
         }
+    
+    private SimpleQueryEngine lastQueryEngine = null;
     
     /** The named bunches of triples for graph matching */
     
@@ -174,10 +176,8 @@ public class Query
         
     private TripleSorter sortMethod = TripleSorter.dontSort;
     
-    private int variableCount = -1;
-    
     public int getVariableCount()
-        { return variableCount; }
+        { return lastQueryEngine.getVariableCount(); }
 	}
 
 /*
