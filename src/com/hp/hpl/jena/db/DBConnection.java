@@ -10,20 +10,16 @@ package com.hp.hpl.jena.db;
 import java.sql.*;
 
 import com.hp.hpl.jena.db.impl.*;
-import com.hp.hpl.jena.db.impl.DBPropDatabase;
-import com.hp.hpl.jena.db.impl.DBPropGraph;
-import com.hp.hpl.jena.db.impl.SpecializedGraph;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
 * Encapsulate the specification of a jdbc connection.
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.9 $
+* @version $Revision: 1.10 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -182,7 +178,7 @@ public class DBConnection implements IDBConnection {
 	public Model getDatabaseProperties() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
-		ModelMem resultModel = new ModelMem();
+		Model resultModel = ModelFactory.createDefaultModel();
 		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(),
 			                         resultModel,
 			                         Triple.createMatch( null, null, null ));
@@ -196,7 +192,7 @@ public class DBConnection implements IDBConnection {
 		if (m_driver == null)
 			m_driver = getDriver();
 		DBPropGraph defaultProps = m_driver.getDefaultModelProperties();
-		ModelMem resultModel = new ModelMem();
+		Model resultModel = ModelFactory.createDefaultModel();
 		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(),
 			                         resultModel,
 			                         Triple.createMatch(defaultProps.getNode(), null, null));

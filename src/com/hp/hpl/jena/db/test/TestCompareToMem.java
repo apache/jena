@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCompareToMem.java,v 1.6 2003-08-27 12:56:20 andy_seaborne Exp $
+  $Id: TestCompareToMem.java,v 1.7 2003-09-09 12:14:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,9 +24,7 @@ package com.hp.hpl.jena.db.test;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.db.IDBConnection;
-import com.hp.hpl.jena.db.ModelRDB;
-import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.*;
@@ -51,7 +49,7 @@ public class TestCompareToMem extends TestCase
     protected void setUp() throws java.lang.Exception {
 		conn = TestConnection.makeAndCleanTestConnection();
 		modelrdf = ModelRDB.createModel(conn);
-		modelmem = new ModelMem();
+		modelmem = ModelFactory.createDefaultModel();
     }
     
     protected void tearDown() throws java.lang.Exception {

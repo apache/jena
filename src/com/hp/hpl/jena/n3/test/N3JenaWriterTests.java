@@ -5,24 +5,15 @@
 
 package com.hp.hpl.jena.n3.test ;
 
-import com.hp.hpl.jena.n3.test.N3ExternalTestsCom;
-
 import java.io.* ;
-
 import junit.framework.* ;
 
 import com.hp.hpl.jena.n3.* ;
-
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.*;
-
-//import com.hp.hpl.mesa.rdf.jena.vocabulary.*;
-//import com.hp.hpl.jena.vocabulary.*;
-
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTests.java,v 1.9 2003-08-27 13:01:46 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterTests.java,v 1.10 2003-09-09 12:14:26 chris-dollin Exp $
  */
 public class N3JenaWriterTests extends N3ExternalTestsCom
 {
@@ -95,7 +86,7 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 
 			// Test: write model to a string, read it again and see if same/isomorphic
 			
-			Model model_1 = new ModelMem() ;
+			Model model_1 = ModelFactory.createDefaultModel() ;
 			model_1.read(data, uriBase, "N3") ;
             
 			StringWriter w = new StringWriter() ;
@@ -105,7 +96,7 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 			w.close() ;
 			
 			StringReader r = new StringReader(w.toString()) ;
-			Model model_2 = new ModelMem() ;
+			Model model_2 = ModelFactory.createDefaultModel() ;
 			model_2.read(r, uriBase, "N3") ;
 			
             if ( ! model_1.isIsomorphicWith(model_2) )

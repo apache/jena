@@ -1,49 +1,16 @@
 /*
- *  (c) Copyright 2001 Hewlett-Packard Development Company, LP
- *  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
- * * $Id: JenaReader.java,v 1.15 2003-09-03 13:40:58 jeremy_carroll Exp $
-
-   AUTHOR:  Jeremy J. Carroll
- */
-/*
- * JenaReader.java
- *
- * Created on July 10, 2001, 6:29 AM
- */
+    (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+    [See end of file]
+*/
 
 package com.hp.hpl.jena.rdf.arp;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.shared.*;
 
 import java.io.*;
 import java.net.*;
-
 import java.util.*;
 
 import org.xml.sax.InputSource;
@@ -95,8 +62,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                     model,
                     new InputStreamReader(conn.getInputStream(), encoding),
                     url);
-        } catch (JenaException e) {
-            throw e;
         } catch (IOException e) {
             throw new JenaException( e);
         }
@@ -123,6 +88,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             lit.isWellFormedXML(),
             null);
     }
+    
     Literal convert(ALiteral lit) throws JenaException {
         String dt = lit.getDatatypeURI();
         if (dt == null)
@@ -136,6 +102,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             }
         }
     }
+    
     /** Converts an ARP resource into a Jena resource.
      * @param r The ARP resource.
      * @return The Jena resource.
@@ -154,6 +121,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             return new ResourceImpl(r.getURI());
         }
     }
+    
     Resource convert(AResource r) throws JenaException {
         if (r.isAnonymous()) {
             String id = r.getAnonymousID();
@@ -176,9 +144,11 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     static public Property translatePred(AResource r) throws JenaException {
         return new PropertyImpl(r.getURI());
     }
+    
     Property convertPred(AResource r) throws JenaException {
         return model.createProperty(r.getURI());
     }
+    
     /**
      *  Reads from reader, using base URI xmlbase, adding triples to model.
      * If xmlbase is "" then relative URIs may be added to model.
@@ -248,6 +218,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         throws JenaException {
         read(model, new InputSource(reader), xmlBase);
     }
+    
     /**
      *  Reads from inputStream, using base URI xmlbase, adding triples to model.
      * If xmlbase is "" then relative URIs may be added to model.
@@ -278,6 +249,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         this.errorHandler = errHandler;
         return old;
     }
+    
     /**
      *
      * Change a property of the RDF or XML parser.
@@ -449,6 +421,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         }
         return setArpProperty(str, obj);
     }
+    
     static public int errorCode(String upper) {
         Class c = ARPErrorNumbers.class;
         try {
@@ -458,6 +431,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             return -1;
         }
     }
+    
     static public String errorCodeName(int errNo) {
         Class c = ARPErrorNumbers.class;
         java.lang.reflect.Field flds[] = c.getDeclaredFields();
@@ -470,6 +444,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         }
         return null;
     }
+    
     /**Supported proprties:
      * error-mode  (String)        default, lax, strict, strict-ignore, strict-warning, strict-error, strict-fatal
      * embedding  (String/Boolean) true, false
@@ -591,9 +566,40 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @return A new in-memory Jena model.
      */
     static public Model memModel() {
-        Model rslt = new ModelMem();
+        Model rslt = ModelFactory.createDefaultModel();
         useMe(rslt);
         return rslt;
     }
 
 }
+
+/*
+ *  (c) Copyright 2001 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ * * $Id: JenaReader.java,v 1.16 2003-09-09 12:14:41 chris-dollin Exp $
+
+   AUTHOR:  Jeremy J. Carroll
+ */

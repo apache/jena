@@ -11,7 +11,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.db.impl.DBQueryHandler;
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.graph.*;
 
 /** A persistent relational database implemention of the RDF API.
@@ -35,7 +34,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -250,10 +249,10 @@ public class ModelRDB extends ModelCom implements Model {
 	 */
 	
 	public Model getModelProperties() {
-		Model m = new ModelMem();
+		Model m = ModelFactory.createDefaultModel();
+        Graph g = m.getGraph();
 		ExtendedIterator it = m_graphRDB.getPropertyTriples();
-		while(it.hasNext())
-			m.getGraph().add( (Triple)it.next());
+		while (it.hasNext()) g.add( (Triple) it.next());
 		return m;
 	}
 	
@@ -336,9 +335,9 @@ public class ModelRDB extends ModelCom implements Model {
 	 * the soon-to-be-released bulk-load functions.
 	 */
 	public Model loadAll()  {
-		ModelMem m = new ModelMem();
+		Model m = ModelFactory.createDefaultModel();
 		for (StmtIterator i = this.listStatements(); i.hasNext(); ) {
-			m.add((Statement)i.next());
+			m.add( i.nextStatement() );
 		}
 		return m;
 	}

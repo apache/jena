@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.12 2003-08-27 13:05:53 andy_seaborne Exp $
+    $Id: WGTestSuite.java,v 1.13 2003-09-09 12:14:42 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -12,7 +12,6 @@ import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.mem.*;
 import java.util.*;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -52,7 +51,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     }
     Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
         throws IOException {
-        Model model = new ModelMem();
+        Model model = ModelFactory.createDefaultModel();
         JenaReader jr = new JenaReader();
 
         if (eh != null)
@@ -62,21 +61,26 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         in.close();
         return model;
     }
+    
     static Model loadNT(InputStream in, String base) throws IOException {
-        Model model = new ModelMem();
+        Model model = ModelFactory.createDefaultModel();
         model.read(in, base, "N-TRIPLE");
         in.close();
         return model;
     }
+    
     static String testNS =
         "http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#";
+        
     static String jjcNS = "http://jcarroll.hpl.hp.com/testSchema#";
+    
     static private String approved = "APPROVED";
     static private Property status;
     static private Property input;
     static private Property output;
     static private Property warning;
     static private Property errorCodes;
+    
     static {
             status = new PropertyImpl(testNS, "status");
             input = new PropertyImpl(testNS, "inputDocument");
@@ -84,20 +88,27 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             warning = new PropertyImpl(testNS, "warning");
             errorCodes = new PropertyImpl(jjcNS, "error");
     }
+    
     static private Resource rdfxml =
         new ResourceImpl(testNS, "RDF-XML-Document");
+        
     static private Resource ntriple = new ResourceImpl(testNS, "NT-Document");
 
     private URI testDir;
+    
     private Act noop = new Act() {
         public void act(Resource r) {
         }
     };
+    
     ARPTestInputStreamFactory factory;
+    
     static private Collection misc =
         Arrays.asList(
             new String[] { "http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-uri-substructure/error001" });
+            
     private Map behaviours = new HashMap();
+    
     {
         behaviours
             .put(new ResourceImpl(testNS + "PositiveParserTest"), new Act() {
@@ -161,6 +172,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         return m;
     }
+    
     /** Creates new WGTestSuite
         This is a private snapshot of the RDF Test Cases Working Draft's
         data.
@@ -236,6 +248,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     }
 
     private Map parts = new HashMap();
+    
     private void addTest(Resource key, TestCase test)  {
         String keyName =
             key.hasProperty(status)
@@ -255,9 +268,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 
     final static String errorLevelName[] =
         new String[] { "warning", "error", "fatal error" };
+        
     interface Act {
         void act(Resource r) ;
     }
+    
     abstract class Test extends TestCase implements RDFErrorHandler {
         Resource testID;
         String createURI() {
@@ -348,6 +363,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             fail(msg);
         }
     }
+    
     class PositiveTest extends NegativeTest {
         String createMe() {
             return createURI() + "," + create(input) + "," + create(output);
@@ -374,6 +390,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             expected = new HashSet();
         }
     }
+    
     class WarningTest extends PositiveTest {
         String createMe() {
             return createURI()
@@ -392,6 +409,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             initExpectedFromModel();
         }
     }
+    
     class NegativeTest extends Test {
         Model m1;
         Set expected;
@@ -550,15 +568,19 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 return loadRDF(factory.open(uri), this, uri);
             }
         }
+        
         public void warning(Exception e) {
             error(0, e);
         }
+        
         public void error(Exception e) {
             error(1, e);
         }
+        
         public void fatalError(Exception e) {
             error(2, e);
         }
+        
         private void error(int level, Exception e) {
             //      println(e.getMessage());
             if (e instanceof ParseException) {
@@ -602,6 +624,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             fail(msg);
         }
     }
+    
     class PositiveTest2 extends NegativeTest2 {
         String out;
         boolean outtype;
@@ -650,6 +673,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             expected = new HashSet();
         }
     }
+    
     class WarningTest2 extends PositiveTest2 {
         WarningTest2(
             String uri,
@@ -662,6 +686,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 expectedLevel = 0;
         }
     }
+    
     class NegativeTest2 extends Test2 {
         Model m1;
         Set expected;
