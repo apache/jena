@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.6 2003-12-04 11:03:56 der Exp $
+ * $Id: AbstractDateTime.java,v 1.7 2003-12-15 15:26:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -21,7 +21,7 @@ package com.hp.hpl.jena.datatypes.xsd;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-12-04 11:03:56 $
+ * @version $Revision: 1.7 $ on $Date: 2003-12-15 15:26:38 $
  */
 public class AbstractDateTime {
 
@@ -51,7 +51,6 @@ public class AbstractDateTime {
     /**
      * Constructor
      * @param value the date/time value returned by the parsing
-     * @param dtype the XSD type representation
      */
     public AbstractDateTime(Object value) {
         data = (int[]) value;
