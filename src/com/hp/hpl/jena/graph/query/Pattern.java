@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Pattern.java,v 1.2 2003-01-08 15:31:11 chris-dollin Exp $
+  $Id: Pattern.java,v 1.3 2003-06-13 10:12:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -26,7 +26,7 @@ public class Pattern
 		}
 		
     public TripleMatch asTripleMatch( Domain d )
-        { return new StandardTripleMatch( S.asNode( d ), P.asNode( d ), O.asNode( d ) ); }
+        { return Triple.createMatch( S.asNode( d ), P.asNode( d ), O.asNode( d ) ); }
           
     public Element [] getParts() { return new Element[] {S, P, O}; }
     

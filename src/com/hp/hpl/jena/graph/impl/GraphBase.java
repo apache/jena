@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.2 2003-05-30 13:50:12 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.3 2003-06-13 10:12:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -101,7 +101,7 @@ public abstract class GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#find(Node, Node, Node)
 	 */
 	public ExtendedIterator find(Node s, Node p, Node o) {
-		return find(new StandardTripleMatch(s, p, o));
+		return find( Triple.createMatch( s, p, o ) );
 	}
 
 	/**

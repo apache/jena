@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.10 2003-06-08 17:49:51 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.11 2003-06-13 10:12:17 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -34,7 +34,7 @@ import java.util.HashSet;
  * of RDFS processing.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-13 10:12:17 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -241,8 +241,7 @@ public class TransitiveReasoner implements Reasoner {
      */
     public static boolean checkOccurance(Node prop, Graph graph, TransitiveGraphCache spCache) {
         boolean foundOne = false;
-        ExtendedIterator uses
-            = graph.find(new StandardTripleMatch(null, prop, null));
+        ExtendedIterator uses  = graph.find( null, prop, null );
         foundOne = uses.hasNext();
         uses.close();
         if (foundOne) return foundOne;
@@ -252,7 +251,7 @@ public class TransitiveReasoner implements Reasoner {
         while (propVariants.hasNext() && !foundOne) {
             Triple t = (Triple)propVariants.next();
             Node propVariant = t.getSubject();
-            uses = graph.find(new StandardTripleMatch(null, propVariant, null));
+            uses = graph.find( null, propVariant, null );
             foundOne = uses.hasNext();
             uses.close();
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Triple.java,v 1.5 2003-06-10 10:46:19 chris-dollin Exp $
+  $Id: Triple.java,v 1.6 2003-06-13 10:10:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -15,7 +15,7 @@ import java.util.*;
     
     @author Jeremy Carroll
  */
-final public class Triple {
+final public class Triple implements TripleMatch {
 	private final Node subj, pred, obj;
 	public Triple(Node s, Node p, Node o) {
 //        if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
@@ -54,6 +54,24 @@ final public class Triple {
 		return obj;
 	}
 
+    public Node getMatchSubject()
+        { return anyToNull( subj ); }
+        
+    public Node getMatchPredicate()
+        { return anyToNull( pred ); }
+        
+    public Node getMatchObject()
+        { return anyToNull( obj ); }
+        
+    private static Node anyToNull( Node n )
+        { return Node.ANY.equals( n ) ? null : n; }
+
+    private static Node nullToAny( Node n )
+        { return n == null ? Node.ANY : n; }        
+        
+    public Triple asTriple()
+        { return this; }
+        
     /** 
         triples only equal other triples with the same components. 
     <p>
@@ -104,6 +122,9 @@ final public class Triple {
     */
     public static Triple create( Node s, Node p, Node o )
         { return new Triple( s, p, o ); }
+        
+    public static Triple createMatch( Node s, Node p, Node o )
+        { return Triple.create( nullToAny( s ), nullToAny( p ), nullToAny( o ) ); }
         
     /**
         Utility factory method for creating a triple based on the content of an
