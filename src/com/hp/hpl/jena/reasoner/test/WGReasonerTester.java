@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.20 2003-11-07 22:30:17 jeremy_carroll Exp $
+ * $Id: WGReasonerTester.java,v 1.21 2003-11-08 17:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -43,7 +43,7 @@ import java.net.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-11-07 22:30:17 $
+ * @version $Revision: 1.21 $ on $Date: 2003-11-08 17:58:05 $
  */
 public class WGReasonerTester {
 
@@ -91,14 +91,11 @@ public class WGReasonerTester {
         BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-1",
         BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-2",
     // Additional blocked tests, because we do not implement them ... jjc
+        BASE_URI + "pfps-10/Manifest.rdf#non-well-formed-literal-1",
         BASE_URI + "xmlsch-02/Manifest.rdf#whitespace-facet-3",
-		    BASE_URI + "xmlsch-02/Manifest.rdf#whitespace-facet-2",
-		    BASE_URI + "xmlsch-02/Manifest.rdf#whitespace-facet-1",
-		    BASE_URI + "pfps-10/Manifest.rdf#non-well-formed-literal-1",
-		    BASE_URI + "rdfms-seq-representation/Manifest.rdf#test003",
-		    BASE_URI + "datatypes-intensional/Manifest.rdf#xsd-integer-string-incompatible",
-    
-    
+//	BASE_URI + "xmlsch-02/Manifest.rdf#whitespace-facet-2",
+//	BASE_URI + "xmlsch-02/Manifest.rdf#whitespace-facet-1",
+//	BASE_URI + "datatypes-intensional/Manifest.rdf#xsd-integer-string-incompatible",
     };
     
     // Static initializer for the predicates
