@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraph.java,v 1.11 2003-05-13 14:59:45 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.12 2003-05-13 15:30:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -27,6 +27,8 @@ public class TestGraph extends GraphTestBase
         TestSuite result = new TestSuite();
         result.addTest( TestDefaultGraph.suite() );
         result.addTest( TestStandardGraph.suite() );
+        result.addTest( TestMinimalGraph.suite() );
+        result.addTest( TestConvenientGraph.suite() );
         return result;
         }
         
@@ -44,6 +46,20 @@ public class TestGraph extends GraphTestBase
         public Graph getGraph() { return new GraphMem( Reifier.Standard ); }
         }
         
+    public static class TestMinimalGraph extends AbstractTestGraph
+        {
+        public TestMinimalGraph( String name ) { super( name ); }
+        public static TestSuite suite() { return new TestSuite( TestMinimalGraph.class ); }
+        public Graph getGraph() { return new GraphMem( Reifier.Minimal ); }
+        }
+        
+    public static class TestConvenientGraph extends AbstractTestGraph
+        {
+        public TestConvenientGraph( String name ) { super( name ); }
+        public static TestSuite suite() { return new TestSuite( TestConvenientGraph.class ); }
+        public Graph getGraph() { return new GraphMem( Reifier.Convenient ); }
+        }
+                
     }
 
 /*

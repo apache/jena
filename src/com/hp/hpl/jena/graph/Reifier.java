@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.9 2003-05-13 14:59:04 chris-dollin Exp $
+  $Id: Reifier.java,v 1.10 2003-05-13 15:29:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -41,14 +41,20 @@ public interface Reifier extends GetTriple
     */
     public static class Style
         {
-        boolean intercept;
-        boolean conceal;
+        private boolean intercept;
+        private boolean conceal;
         
         Style( boolean intercept, boolean conceal )
             {
             this.intercept = intercept;
             this.conceal = conceal;
             }
+            
+        public boolean intercepts()
+            { return intercept; }
+            
+        public boolean conceals()
+            { return conceal; }
         }
         
     /**

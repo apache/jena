@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.13 2003-05-13 14:59:03 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.14 2003-05-13 15:29:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -26,11 +26,13 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 public abstract class GraphBase implements Graph {
 
+    private Reifier.Style style;
+    
     public GraphBase( Reifier.Style style )
-        {}
+        { this.style = style; }
         
     public GraphBase()
-        {}
+        { this( Reifier.Minimal ); }
         
 	public boolean dependsOn(Graph other) {
 		return this == other;
@@ -110,7 +112,7 @@ public abstract class GraphBase implements Graph {
 	protected Reifier reifier = null;
 	
 	public Reifier getReifier() {
-		if (reifier == null) reifier = new SimpleReifier( this, false );
+		if (reifier == null) reifier = new SimpleReifier( this, style.intercepts() );
 		return reifier;
 	}
     
