@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.46 $
+ * Revision           $Revision: 1.47 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 14:46:05 $
+ * Last modified on   $Date: 2004-10-20 13:46:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.46 2004-08-12 14:46:05 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.47 2004-10-20 13:46:00 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -947,11 +947,22 @@ public class OntResourceImpl
         return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectMapper() ), null );
     }
     
-    /** 
-     * <p>Removes this resource from the ontology by deleting any statements that refer to it.
-     * If this resource is a property, this method will <strong>not</strong> remove instances
-     * of the property from the model.</p>
-     */
+    /**
+    * <p>Removes this resource from the ontology by deleting any statements that refer to it, 
+    * as either statement-subject or statement-object.
+    * If this resource is a property, this method will <strong>not</strong> remove statements
+    * whose predicate is this property.</p>
+    * <p><strong>Caveat:</strong> Jena RDF models contain statements, not resources <em>per se</em>,
+    * so this method simulates removal of an object by removing all of the statements that have
+    * this resource as subject or object, with one exception. If the resource is referenced
+    * in an RDF List, i.e. as the object of an <code>rdf:first</code> statement in a list cell,
+    * this reference is <strong>not</strong> removed.  Removing an arbitrary <code>rdf:first</code>
+    * statement from the midst of a list, without doing other work to repair the list, would
+    * leave an ill-formed list in the model.  Therefore, if this resource is known to appear
+    * in a list somewhere in the model, it should be separately deleted from that list before
+    * calling this remove method.
+    * </p>
+    */
     public void remove() {
         List stmts = new ArrayList();
         List skip = new ArrayList();
