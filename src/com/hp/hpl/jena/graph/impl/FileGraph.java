@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.2 2003-05-03 16:53:21 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.3 2003-05-05 10:30:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -10,7 +10,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
-import com.hp.hpl.jena.util.JenaException;
 import com.hp.hpl.jena.shared.*;
 
 import java.io.*;

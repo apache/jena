@@ -3,7 +3,7 @@
  * [See end of file]
  */
  
- package com.hp.hpl.jena.util;
+ package com.hp.hpl.jena.shared;
  
  import java.io.*;
 

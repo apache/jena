@@ -5,7 +5,8 @@
 
 package com.hp.hpl.jena.rdf.model.impl ;
 import com.hp.hpl.jena.rdf.model.ModelLock ;
-import com.hp.hpl.jena.util.JenaException ;
+import com.hp.hpl.jena.shared.JenaException;
+
 import EDU.oswego.cs.dl.util.concurrent.*;
 import java.util.*;
 
@@ -14,7 +15,7 @@ import java.util.*;
  * @see com.hp.hpl.jena.rdf.model.ModelLock
  *   
  * @author		Andy Seaborne
- * @version 	$Id: ModelLockImpl.java,v 1.2 2003-04-29 10:52:15 andy_seaborne Exp $
+ * @version 	$Id: ModelLockImpl.java,v 1.3 2003-05-05 10:31:00 chris-dollin Exp $
  */
 
 public class ModelLockImpl implements ModelLock

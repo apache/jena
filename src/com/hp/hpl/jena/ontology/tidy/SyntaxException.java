@@ -1,6 +1,6 @@
 package com.hp.hpl.jena.ontology.tidy;
 
-import com.hp.hpl.jena.util.JenaException;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
  * @author jjc

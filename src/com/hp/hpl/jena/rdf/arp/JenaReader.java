@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: JenaReader.java,v 1.5 2003-05-03 16:53:22 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.6 2003-05-05 10:31:00 chris-dollin Exp $
  
    AUTHOR:  Jeremy J. Carroll
  */
@@ -49,8 +49,8 @@ import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.LiteralImpl;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
+import com.hp.hpl.jena.shared.JenaException;
 
-import com.hp.hpl.jena.util.JenaException;
 
 import java.io.*;
 import java.net.*;

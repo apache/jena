@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphFactory.java,v 1.2 2003-05-03 11:40:31 chris-dollin Exp $
+  $Id: AbstractTestGraphFactory.java,v 1.3 2003-05-05 10:30:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -10,6 +10,15 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 
 /**
+    Abstract base class for testing graph factories. Subclasses define the
+    method <code>getGraphFactory()</code> which supplies a new graph
+    factory to be tested: ATGF invokes that during <code>setUp</code>
+    and closes it in <code>tearDown</code>.
+<p>
+    This bunch of tests is not remotely exhaustive, but it was sufficent to
+    drive the development of the first full graph factory. (Although at the time
+    it wasn't abstract.)
+    
  	@author hedgehog
 */
 

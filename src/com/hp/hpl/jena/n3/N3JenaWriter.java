@@ -26,9 +26,9 @@ package com.hp.hpl.jena.n3;
 //import org.apache.log4j.Logger;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom ;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.vocabulary.OWL ;
 import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.util.JenaException ;
 
 import java.util.* ;
 import java.io.* ;
@@ -37,7 +37,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.14 2003-05-02 08:15:56 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.15 2003-05-05 10:31:00 chris-dollin Exp $
  */
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraphRDB.java,v 1.2 2003-04-28 19:00:06 csayers Exp $
+  $Id: TestGraphRDB.java,v 1.3 2003-05-05 10:29:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.db.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.*;
 
 import junit.framework.*;
