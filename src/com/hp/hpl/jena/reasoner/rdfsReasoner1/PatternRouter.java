@@ -5,13 +5,16 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PatternRouter.java,v 1.4 2003-04-15 21:18:19 jeremy_carroll Exp $
+ * $Id: PatternRouter.java,v 1.1 2003-06-23 15:54:23 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner;
+package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
+import com.hp.hpl.jena.reasoner.Finder;
+import com.hp.hpl.jena.reasoner.InfGraph;
+import com.hp.hpl.jena.reasoner.ReasonerException;
+import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCache;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.BRWRule;
 import com.hp.hpl.jena.graph.*;
 
 import org.apache.log4j.Logger;
@@ -30,11 +33,9 @@ import java.util.*;
  * 
  * <p>This implementation only supports TGCs and rules. It only indexes on
  * pattern predicates and does a linear search down the rest.<br />
- * TODO: add an index on object values.<br />
- * TODO: extend to support arbitrary pattern indexed triple caches.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:18:19 $
+ * @version $Revision: 1.1 $ on $Date: 2003-06-23 15:54:23 $
  */
 public class PatternRouter {
     
@@ -82,9 +83,6 @@ public class PatternRouter {
         if (sats == null) {
             sats = new HashSet();
             patternIndex.put(predicate, sats);
-            // TODO: Add second level index on object
-            // be careful to normalize away the different variable names so that
-            // matching on wildcard is easy
         }
         sats.add(entry);
     }
@@ -119,7 +117,6 @@ public class PatternRouter {
         Node predicate = pattern.getPredicate();
         if (predicate.isVariable()) {
             // Wildcard predicate - this is brute force search across all rules
-            // TODO: Add indexing on other elements, especially object
             for (Iterator i = patternIndex.values().iterator(); i.hasNext();) {
                 HashSet sats = (HashSet)i.next();
                 result = doFind(sats, result, pattern, tripleCache, data, infGraph, firedRules);
