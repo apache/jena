@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReader.java,v 1.6 2003-06-17 13:39:28 chris-dollin Exp $
+ * $Id: RDFReader.java,v 1.7 2003-06-25 14:20:10 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,7 +36,7 @@ import java.io.InputStream;
  * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
  *
  * @author bwm
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public interface RDFReader {
 
@@ -49,13 +49,21 @@ public interface RDFReader {
 	 * and the character encoding of the data in the file.
 	 * @param model The model to which statements are added.
 	 * @param r the reader from which to read
+	 * @param base The base to use when converting relative to absolute URI's.
+	 * The base URI may be null if there are no relative URIs to convert.
+	 * A base URI of "" may permit relative URIs to be used in the
+	 * model unconverted.
 	 */
 	public void read(Model model, Reader r, String base) ;
 
 	/** Read serialized RDF from an <code>InputStream</code> and add the statements
 	 * to a <code>Model</code>.
 	 * @param model The model to which statements are added.
-	 * @param r the InputStream from which to read
+	 * @param r The InputStream from which to read
+	 * @param base The base to use when converting relative to absolute URI's.
+	 * The base URI may be null if there are no relative URIs to convert.
+	 * A base URI of "" may permit relative URIs to be used in the
+	 * model unconverted.
 	 */
 	public void read(Model model, InputStream r, String base);
 

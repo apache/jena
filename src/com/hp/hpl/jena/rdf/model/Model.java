@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.25 2003-06-24 10:34:25 chris-dollin Exp $
+  $Id: Model.java,v 1.26 2003-06-25 14:20:10 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.25 $Date: 2003/06/21 15:11:36 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.26 $Date: 2003/06/24 10:34:25 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -326,7 +326,10 @@ public interface Model
 
 	/** Add statements from an RDF/XML serialization.
 	 * @param in the source of the RDF/XML
-	 * @param base the base to use when converting relative to absolute uri's
+	 * @param base the base to use when converting relative to absolute uri's.
+	 * The base URI may be null if there are no relative URIs to convert.
+	 * A base URI of "" may permit relative URIs to be used in the
+	 * model unconverted.
 	 * @return the current model
 	 */
 	public Model read(InputStream in, String base) ;
@@ -340,6 +343,10 @@ public interface Model
 	 * @return this model
 	 * @param base the base uri to be used when converting relative
 	 * URI's to absolute URI's.
+	  The base URI may be null if there are no relative URIs to 
+	  convert.
+	  A base URI of "" may permit relative URIs to be used in the
+	   model.
 	 * @param lang the langauge of the serialization <code>null<code>
 	 * selects the default
 	 * @param in the source of the input serialization
@@ -354,8 +361,12 @@ public interface Model
      * mismatch between the character encoding of say the FileReader and the
      * character encoding of the data in the file.
 	 * @param reader the source of the RDF/XML
-	 * @param base the base to use when converting relative to absolute uri's
-	 * @return the current model
+	 * @param base the base to use when converting relative to absolute uri's.
+	  The base URI may be null if there are no relative URIs to 
+	  convert.
+	  A base URI of "" may permit relative URIs to be used in the
+	   model.
+	 * * @return the current model
 	 */
 	public Model read(Reader reader, String base) ;
 	
@@ -389,6 +400,12 @@ public interface Model
 	 * @return this model
 	 * @param base the base uri to be used when converting relative
 	 * URI's to absolute URI's.
+	 
+	  The base URI may be null if there are no relative URIs to 
+	  convert.
+	  A base URI of "" may permit relative URIs to be used in the
+	   model.
+	   
 	 * @param lang the langauge of the serialization <code>null<code>
 	 * selects the default
 	 * @param reader the source of the input serialization
@@ -856,5 +873,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.25 2003-06-24 10:34:25 chris-dollin Exp $
+ * $Id: Model.java,v 1.26 2003-06-25 14:20:10 jeremy_carroll Exp $
  */
