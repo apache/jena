@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.1 2004-12-29 21:16:35 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.2 2005-01-02 19:25:29 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -132,11 +132,26 @@ class MonotonicErrorAnalyzer implements Constants {
 	final static int OBJ_PROP_OR_NON_OBJ_PROP = 206;
 
 	final static int OWL_PROP_OR_NON_OWL_PROP = 207;
+
 	final static int OBJ_OR_DATA_RESTRICTION = 208;
+
 	final static int DIFFERENT_DATA_OR_NONDATA_LISTS = 209;
+
 	final static int BAD_TRANS_RESTRICTION = 210;
+
 	final static int BAD_TRANS_PROP = 211;
+
 	final static int ONTO_PROP_ON_INDIVIDUAL = 212;
+
+	// Difficult cases ...
+
+	final static int LIST_MISMATCH = 220;
+
+	final static int TRANS_PROP_MISMATCH = 221;
+
+	final static int DATAPROP_OBJPROP_MISMATCH = 222;
+	
+	final static int DC_DOM_RANGE = 223;
 
 	static LookupTable look = (LookupTable) LookupTable.get();
 
@@ -187,7 +202,7 @@ class MonotonicErrorAnalyzer implements Constants {
 				case Grammar.userTypedLiteral:
 					break;
 				default:
-			//		System.err.println("Builtin: " + Grammar.catNames[i]);
+					//		System.err.println("Builtin: " + Grammar.catNames[i]);
 					isBuiltin[i] = true;
 				}
 			}
@@ -253,46 +268,142 @@ class MonotonicErrorAnalyzer implements Constants {
 			return rslt;
 		}
 	}
-private static int diffPreds[] = new int[SZ];
+
+	private static boolean isNonTransOWLProp(int s, int sc[]) {
+		return isOWLPropertyID(s) && !Q.member(Grammar.transitivePropID, sc);
+
+	}
+
+	private static int diffPreds[] = new int[SZ];
+
 	private static int difficultCase(int s, int p, int o, int sz, int pz, int oz) {
 		int rslt = DIFFICULT;
 		if (isOWLPropertyID(p) && isNotIndividual(s))
 			return NOT_ANNO_ON_NON_INDIV;
-		///* ???? don't believe this one.
-		if (
-
-		//	((isIndividual(s) && isNotAnnOrOntoProp(p))
-		isOWLPropertyID(p) && isUserID[o] && isNotIndividual(o))
+		if (isOWLPropertyID(p) && isUserID[o] && isNotIndividual(o))
 			return NOT_ANNO_WITH_OBJ_NON_INDIV;
-		//*/
 		if (isOntologyProp(p) && isNotOntology(s))
 			return ONTPROP_BAD_SUBJ;
-		if (isOntologyProp(p) && isBlank[o])
-			return ONTPROP_BLANK_OBJ;
-
+		/*
+		 * unused code if (isOntologyProp(p) && isBlank[o]) return
+		 * ONTPROP_BLANK_OBJ;
+		 */
 		if (isOntologyProp(p) && isNotOntology(o))
 			return ONTPROP_BAD_OBJ;
+		/*
+		 * unused code if (isAnnotationProp(p) && isBlank[o] &&
+		 * isNotIndividual(o)) return ANNPROP_WITH_NON_INDIV_BLANK_OBJ;
+		 * 
+		 * if (isObjectProperty(p) && isNotIndividual(o)) {
+		 * 
+		 * if (isBlank[o]) return OBJPROP_WITH_NON_INDIV_BLANK_OBJ;
+		 * 
+		 * if (isUserID[o]) return OBJPROP_WITH_NON_INDIV_ID_OBJ; rslt =
+		 * DIFFICULT; }
+		 */
 
-		if (isAnnotationProp(p) && isBlank[o] && isNotIndividual(o))
-			return ANNPROP_WITH_NON_INDIV_BLANK_OBJ;
-
-		if (isObjectProperty(p) && isNotIndividual(o)) {
-
-			if (isBlank[o])
-				return OBJPROP_WITH_NON_INDIV_BLANK_OBJ;
-
-			if (isUserID[o])
-				return OBJPROP_WITH_NON_INDIV_ID_OBJ;
-			rslt = DIFFICULT;
-		}
-
-		diffPreds[p]++;
+		int sc[] = nonPseudoCats(s);
+		int oc[] = nonPseudoCats(o);
 		
-		if (debug()) {
-			dumpc("DC-subj", s, sz);
-			dumpc("DC-prop", p, pz);
-			dumpc("DC-obj", o, oz);
+		
+
+		int sSC = simpleClassify(s, sc);
+		int oSC = simpleClassify(o, oc);
+		int sGivenName = -1, sWantedName = -1, 
+		oGivenName = -1, oWantedName = -1;
+		int key = look.qrefine(s, pz, oz);
+		if (key == Failure) {
+			System.err.println("Unexpected object failure.");
+		} else {
+			int o2 = look.object(oz,key);
+			int o2c[] = nonPseudoCats(o2);
+			if (Q.intersect(oc,o2c)) {
+				System.err.println("??1 "+
+						"S "+CategorySet.catString(s)+
+						"P "+CategorySet.catString(p) +
+						"O "+CategorySet.catString(o)
+						);
+				System.err.println("??2 "+
+						"S "+CategorySet.catString(sz)+
+						"P "+CategorySet.catString(pz) +
+						"O "+CategorySet.catString(oz)
+						);
+				System.err.println("??3 O "+CategorySet.catString(o2));
+			}
+			oGivenName = nameCatSet(oc,o2c);
+			oWantedName = nameCatSet(o2c,oc);
 		}
+		
+		
+		key = look.qrefine(sz, pz, o);
+		if (key == Failure) {
+			System.err.println("Unexpected subject failure.");
+		} else {
+			int s2 = look.subject(sz,key);
+			int s2c[] = nonPseudoCats(s2);
+			if (Q.intersect(sc,s2c)) {
+				System.err.println("?#1 "+
+						"S "+CategorySet.catString(s)+
+						"P "+CategorySet.catString(p) +
+						"O "+CategorySet.catString(o)
+						);
+				System.err.println("?#2 "+
+						"S "+CategorySet.catString(sz)+
+						"P "+CategorySet.catString(pz) +
+						"O "+CategorySet.catString(oz)
+						);
+				System.err.println("?#3 S "+CategorySet.catString(s2));
+			}			sGivenName = nameCatSet(sc,s2c);
+			sWantedName = nameCatSet(s2c,sc);
+		}
+		
+		if (sGivenName!= -1 &&
+				sWantedName != -1 &&
+				oGivenName != -1 &&
+				oWantedName != -1)
+			return DC_DOM_RANGE;
+
+		switch (p) {
+
+		case Grammar.rdfrest:
+			if (sc.length == 1 && oc.length == 1 && sc[0] != oc[0]
+					&& sSC == SC.list && oSC == SC.list)
+				return LIST_MISMATCH;
+			break;
+		case Grammar.owlequivalentProperty:
+		case Grammar.owlinverseOf:
+		case Grammar.rdfssubPropertyOf:
+			if (Q.member(Grammar.dataPropID, sc)
+					&& !Q.member(Grammar.dataPropID, oc)
+					&& Q.intersect(objProps, oc) && !Q.intersect(objProps, sc))
+				return DATAPROP_OBJPROP_MISMATCH;
+			if (!Q.member(Grammar.dataPropID, sc)
+					&& Q.member(Grammar.dataPropID, oc)
+					&& !Q.intersect(objProps, oc) && Q.intersect(objProps, sc))
+				return DATAPROP_OBJPROP_MISMATCH;
+			if (oc.length == 1 && oc[0] == Grammar.transitivePropID
+					&& isNonTransOWLProp(s, sc)
+					&& p != Grammar.rdfssubPropertyOf)
+				return TRANS_PROP_MISMATCH;
+			if (sc.length == 1 && sc[0] == Grammar.transitivePropID
+					&& isNonTransOWLProp(o, oc))
+				return TRANS_PROP_MISMATCH;
+
+		case Grammar.owlonProperty:
+		case Grammar.owlsomeValuesFrom:
+		case Grammar.rdffirst:
+		case Grammar.rdfsrange:
+
+			break;
+		case Grammar.owloneOf:
+			if (debug()) {
+				dumpc("DC-subj", s, sz);
+				dumpc("DC-prop", p, pz);
+				dumpc("DC-obj", o, oz);
+			}
+		}
+		diffPreds[p]++;
+
 		return rslt;
 	}
 
@@ -301,16 +412,16 @@ private static int diffPreds[] = new int[SZ];
 		return !Q.intersect(ontos, c);
 	}
 
-	private static boolean isNonTransProp(int s[]){
+	private static boolean isNonTransProp(int s[]) {
 		switch (s.length) {
 		case 1:
-			return  s[0]==Grammar.objectPropID;
-			case 2:
-				return s[0]==Grammar.dataPropID
-				&& s[1]==Grammar.objectPropID;
+			return s[0] == Grammar.objectPropID;
+		case 2:
+			return s[0] == Grammar.dataPropID && s[1] == Grammar.objectPropID;
 		}
 		return false;
 	}
+
 	static int ontp2 = CategorySet.find(new int[] { Grammar.notype,
 			Grammar.ontologyPropertyID }, false);
 
@@ -410,24 +521,31 @@ private static int diffPreds[] = new int[SZ];
 			Grammar.restriction7subClassOf, Grammar.restriction8disjointWith,
 			Grammar.restriction8equivalentClass, Grammar.restriction8object,
 			Grammar.restriction8subClassOf };
+
 	static final int dataPropRestrictions[] = new int[] {
 			Grammar.restriction6disjointWith,
 			Grammar.restriction6equivalentClass, Grammar.restriction6object,
-			Grammar.restriction6subClassOf,  };
+			Grammar.restriction6subClassOf, };
+
+	static final int objProps[] = new int[] { Grammar.objectPropID,
+			Grammar.transitivePropID };
+
 	static final int objPropRestrictions[] = new int[] {
-	 Grammar.restriction7disjointWith,
+			Grammar.restriction7disjointWith,
 			Grammar.restriction7equivalentClass, Grammar.restriction7object,
 			Grammar.restriction7subClassOf, Grammar.restriction8disjointWith,
 			Grammar.restriction8equivalentClass, Grammar.restriction8object,
 			Grammar.restriction8subClassOf };
+
 	static final int nonTransPropRestrictions[] = new int[] {
 			Grammar.restriction6disjointWith,
 			Grammar.restriction6equivalentClass, Grammar.restriction6object,
 			Grammar.restriction6subClassOf, Grammar.restriction7disjointWith,
 			Grammar.restriction7equivalentClass, Grammar.restriction7object,
 			Grammar.restriction7subClassOf, };
+
 	static final int transPropRestrictions[] = new int[] {
-	  Grammar.restriction8disjointWith,
+			Grammar.restriction8disjointWith,
 			Grammar.restriction8equivalentClass, Grammar.restriction8object,
 			Grammar.restriction8subClassOf };
 
@@ -479,11 +597,10 @@ private static int diffPreds[] = new int[SZ];
 			Grammar.ontologyPropertyID, Grammar.transitivePropID,
 
 	};
-	static final int individualPropIDs[] = { 
-			Grammar.annotationPropID,
-			Grammar.dataPropID, Grammar.objectPropID,
-			Grammar.transitivePropID,
-	};
+
+	static final int individualPropIDs[] = { Grammar.annotationPropID,
+			Grammar.dataPropID, Grammar.objectPropID, Grammar.transitivePropID, };
+
 	static final int annoOntoObjectPropIDs[] = { Grammar.annotationPropID,
 			Grammar.objectPropID, Grammar.ontologyPropertyID,
 			Grammar.transitivePropID };
@@ -515,6 +632,7 @@ private static int diffPreds[] = new int[SZ];
 		Arrays.sort(transPropRestrictions);
 		Arrays.sort(nonTransPropRestrictions);
 		Arrays.sort(objPropRestrictions);
+		Arrays.sort(objProps);
 		Arrays.sort(restrictions);
 		Arrays.sort(descriptions);
 		Arrays.sort(descriptionsAndDatarange);
@@ -544,10 +662,377 @@ private static int diffPreds[] = new int[SZ];
 		return !Q.intersect(annOrOnt, c);
 	}
 
+	static int empty[] = {};
+
+	static Object names[][] = {
+			{		new int[] { Grammar.unnamedIndividual,
+					Grammar.individualID }, "an individual" },
+			{		new int[] { Grammar.unnamedOntology,
+					Grammar.ontologyID }, "an ontology" },
+			{ new int[] { Grammar.unnamedIndividual }, "an unnamed individual" },
+			{ new int[] { Grammar.unnamedOntology }, "an unnamed ontology" },
+			{ new int[] {
+					  Grammar.unnamedIndividual, Grammar.unnamedOntology }
+			, "an unnamed individual or unnamed ontology" },
+			{ new int[] { Grammar.allDifferent },
+					"a blank node in an owl:AllDifferent construction" },
+			{
+					new int[] { Grammar.description5disjointWith,
+							Grammar.description5equivalentClass,
+							Grammar.description5object,
+							Grammar.description5subClassOf },
+					"a class description" },
+			{		new int[] { Grammar.listOfDataLiteral,
+							Grammar.listOfDescription,
+							Grammar.listOfIndividualID }, "a list" },
+			{		new int[] { Grammar.restriction6disjointWith,
+							Grammar.restriction6equivalentClass,
+							Grammar.restriction6object,
+							Grammar.restriction6subClassOf,
+							Grammar.restriction7disjointWith,
+							Grammar.restriction7equivalentClass,
+							Grammar.restriction7object,
+							Grammar.restriction7subClassOf,
+							Grammar.restriction8disjointWith,
+							Grammar.restriction8equivalentClass,
+							Grammar.restriction8object,
+							Grammar.restriction8subClassOf },
+					"a property restriction" },
+
+					 { new int[] {
+					  Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
+					  Grammar.restriction6object, Grammar.restriction6subClassOf, },
+					  "a restriction on a datatype property" }, 
+					 { new int[] { Grammar.restriction7disjointWith,
+					 		  Grammar.restriction7equivalentClass, Grammar.restriction7object,
+					 		  Grammar.restriction7subClassOf, Grammar.restriction8disjointWith,
+					 		  Grammar.restriction8equivalentClass, Grammar.restriction8object,
+					 		  Grammar.restriction8subClassOf },
+							  "a restriction on an object property" },
+							  
+					{ new int[] { Grammar.unnamedDataRange }, "a datarange" },
+					{ new int[] {
+					  Grammar.description5disjointWith, Grammar.unnamedDataRange,
+					  Grammar.description5equivalentClass, Grammar.description5object,
+		
+					 Grammar.description5subClassOf }, "a description or datarange" },
+					 {new int[] {
+ Grammar.restriction7disjointWith, Grammar.restriction7equivalentClass,
+							  Grammar.restriction7object, Grammar.restriction7subClassOf, },
+							  "a restriction on a non-transitive object property" },
+
+					 {new int[] {
+					  Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
+					  Grammar.restriction6object, Grammar.restriction6subClassOf,
+					  Grammar.restriction7disjointWith, Grammar.restriction7equivalentClass,
+					  Grammar.restriction7object, Grammar.restriction7subClassOf, },
+					  "a restriction on a datatype property or on a non-transitive object property" },
+					  { new int[] {
+Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
+Grammar.restriction8object, Grammar.restriction8subClassOf },
+"a restriction on a transitive object property" },
+
+{
+ new int[] {
+ Grammar.description5disjointWith, Grammar.description5equivalentClass,
+Grammar.description5object, Grammar.description5subClassOf,
+Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
+ Grammar.restriction6object, Grammar.restriction6subClassOf,
+Grammar.restriction7disjointWith, Grammar.restriction7equivalentClass,
+ Grammar.restriction7object, Grammar.restriction7subClassOf,
+Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
+ Grammar.restriction8object, Grammar.restriction8subClassOf },
+ "a class description or a property restriction" },
+ 
+					 
+					 
+					 { new int[] { Grammar.annotationPropID }, "an annotation property" },
+			{ new int[] { Grammar.classID }, "a named class" },
+			{ new int[] { Grammar.dataPropID }, "a datatype property" },
+			{ new int[] { Grammar.datatypeID }, "a datatype" },
+			{ new int[] { Grammar.individualID }, "a named individual" },
+			{ new int[] { Grammar.objectPropID, Grammar.transitivePropID },
+					"an object property" },
+					{ new int[] {  Grammar.transitivePropID },
+					"a transitive object property" },
+					{ new int[] { Grammar.transitivePropID },
+					"a non-transitive object property" },
+
+			{ new int[] { Grammar.ontologyID }, "a named ontology" },
+			{ new int[] { Grammar.ontologyPropertyID }, "an ontology property" },
+
+			{ new int[] { Grammar.classID ,Grammar.individualID },
+				"a named class or a named individual"
+			},
+			{ new int[] { Grammar.listOfDescription },
+				"a list of class expressions",
+			},
+			{ new int[] { Grammar.listOfIndividualID },
+				"a list of named individuals"
+			},
+			{ new int[] { Grammar.classID ,Grammar.datatypeID },
+				"a named class or a datatype identifier"
+			},
+			{ new int[] { Grammar.listOfDataLiteral ,Grammar.listOfIndividualID },
+				"a list of literals or a list of named individuals"
+			},
+			{ new int[] { Grammar.annotationPropID ,
+					Grammar.objectPropID ,
+					Grammar.transitivePropID },
+					"an annotation property or an object property"
+			},
+			{ new int[] { Grammar.annotationPropID ,
+					Grammar.objectPropID ,Grammar.ontologyPropertyID ,
+					Grammar.transitivePropID },
+					"an annotation property, an object property or an ontology property"
+			},
+			{ new int[] { Grammar.annotationPropID ,
+					Grammar.dataPropID },
+					"a datatype property or an annotation property"
+			},
+			{ new int[] { Grammar.objectPropID },
+				"a non-transitive object property"
+			},
+			{ new int[] { Grammar.dataPropID ,Grammar.objectPropID },
+				"a datatype property or a non-transitive object property"
+			},
+			{ new int[] { Grammar.listOfDescription ,
+					Grammar.listOfIndividualID },
+					"a list of class expressions or a list of named individuals"
+			},
+			{ new int[] { Grammar.listOfDataLiteral },
+				"a list of literals"
+			},
+			{ CategorySet.getSet(Grammar.userID), "a user ID", },
+
+			{
+					new int[] { Grammar.transitivePropID, Grammar.objectPropID,
+							Grammar.dataPropID },
+							"an object or datatype property" },
+					{ new int[] { Grammar.annotationPropID,
+							  Grammar.dataAnnotationPropID, Grammar.ontologyPropertyID },
+							  "an anotation or ontology property" },
+							  
+			{
+					new int[] { Grammar.dlInteger, Grammar.liteInteger,
+							Grammar.literal, Grammar.userTypedLiteral },
+					"a literal", },
+
+			{ CategorySet.getSet(Grammar.blank), "a blank node", },
+
+	};
+
+	static {
+		for (int i=0;i<names.length;i++) {
+			Arrays.sort((int[])names[i][0]);
+		}
+};
+	/*
+	 * static final int indv[] = new int[] { Grammar.unnamedIndividual,
+	 * Grammar.individualID };
+	 * 
+	 * static final int annOrOnt[] = new int[] { Grammar.annotationPropID,
+	 * Grammar.dataAnnotationPropID, Grammar.ontologyPropertyID };
+	 * 
+	 * static final int ontos[] = new int[] { Grammar.ontologyID,
+	 * Grammar.unnamedOntology };
+	 * 
+	 * static final int owlProps[] = ;
+	 * 
+	 * static final int owlProps2[] = new int[] { Grammar.notype,
+	 * Grammar.transitivePropID, Grammar.objectPropID, Grammar.dataPropID };
+	 * 
+	 * static final int unnamedIndividualOrOntology[] = new int[] {
+	 * Grammar.unnamedIndividual, Grammar.unnamedOntology };
+	 * 
+	 * static final int descriptions[] = new int[] {
+	 * Grammar.description5disjointWith, Grammar.description5equivalentClass,
+	 * Grammar.description5object, Grammar.description5subClassOf };
+	 * 
+	 * static final int descriptionsAndDatarange[] = new int[] {
+	 * Grammar.description5disjointWith, Grammar.unnamedDataRange,
+	 * Grammar.description5equivalentClass, Grammar.description5object,
+	 * Grammar.description5subClassOf };
+	 * 
+	 * static final int lists[] = new int[] { Grammar.listOfDataLiteral,
+	 * Grammar.listOfDescription, Grammar.listOfIndividualID };
+	 * 
+	 * 
+	 * static final int dataPropRestrictions[] = new int[] {
+	 * Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
+	 * Grammar.restriction6object, Grammar.restriction6subClassOf, };
+	 * 
+	 * static final int objProps[] = new int[]{ Grammar.objectPropID,
+	 * Grammar.transitivePropID }; static final int objPropRestrictions[] = new
+	 * int[] { Grammar.restriction7disjointWith,
+	 * Grammar.restriction7equivalentClass, Grammar.restriction7object,
+	 * Grammar.restriction7subClassOf, Grammar.restriction8disjointWith,
+	 * Grammar.restriction8equivalentClass, Grammar.restriction8object,
+	 * Grammar.restriction8subClassOf };
+	 * 
+	 * static final int nonTransPropRestrictions[] = new int[] {
+	 * Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
+	 * Grammar.restriction6object, Grammar.restriction6subClassOf,
+	 * Grammar.restriction7disjointWith, Grammar.restriction7equivalentClass,
+	 * Grammar.restriction7object, Grammar.restriction7subClassOf, };
+	 * 
+	 * static final int transPropRestrictions[] = new int[] {
+	 * Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
+	 * Grammar.restriction8object, Grammar.restriction8subClassOf };
+	 * 
+	 * static final int restrictionsAndDescriptions[] = new int[] {
+	 * 
+	 * Grammar.description5disjointWith, Grammar.description5equivalentClass,
+	 * Grammar.description5object, Grammar.description5subClassOf,
+	 * Grammar.restriction6disjointWith, Grammar.restriction6equivalentClass,
+	 * Grammar.restriction6object, Grammar.restriction6subClassOf,
+	 * Grammar.restriction7disjointWith, Grammar.restriction7equivalentClass,
+	 * Grammar.restriction7object, Grammar.restriction7subClassOf,
+	 * Grammar.restriction8disjointWith, Grammar.restriction8equivalentClass,
+	 * Grammar.restriction8object, Grammar.restriction8subClassOf };
+	 * 
+	 * static final int disjointWith[] = new int[] {
+	 * 
+	 * Grammar.description5disjointWith, Grammar.restriction6disjointWith,
+	 * Grammar.restriction7disjointWith, Grammar.restriction8disjointWith, };
+	 * 
+	 * static final int subClass[] = new int[] { Grammar.description5subClassOf,
+	 * Grammar.restriction6subClassOf, Grammar.restriction7subClassOf,
+	 * Grammar.restriction8subClassOf };
+	 * 
+	 * static final int equivalentClass[] = new int[] {
+	 * Grammar.description5equivalentClass, Grammar.restriction6equivalentClass,
+	 * Grammar.restriction7equivalentClass, Grammar.restriction8equivalentClass };
+	 * 
+	 * static final int classOrDatarangeObject[] = new int[] {
+	 * Grammar.description5object, Grammar.restriction6object,
+	 * Grammar.restriction7object, Grammar.restriction8object,
+	 * Grammar.unnamedDataRange };
+	 * 
+	 * static final int restrictionsAndDescriptionsAndDatarange[] = new int[] {
+	 * Grammar.unnamedDataRange, Grammar.description5disjointWith,
+	 * Grammar.description5equivalentClass, Grammar.description5object,
+	 * Grammar.description5subClassOf, Grammar.restriction6disjointWith,
+	 * Grammar.restriction6equivalentClass, Grammar.restriction6object,
+	 * Grammar.restriction6subClassOf, Grammar.restriction7disjointWith,
+	 * Grammar.restriction7equivalentClass, Grammar.restriction7object,
+	 * Grammar.restriction7subClassOf, Grammar.restriction8disjointWith,
+	 * Grammar.restriction8equivalentClass, Grammar.restriction8object,
+	 * Grammar.restriction8subClassOf };
+	 * 
+	 * static final int userPropIDs[] = { Grammar.annotationPropID,
+	 * Grammar.dataPropID, Grammar.objectPropID, Grammar.ontologyPropertyID,
+	 * Grammar.transitivePropID,
+	 *  };
+	 * 
+	 * static final int individualPropIDs[] = { Grammar.annotationPropID,
+	 * Grammar.dataPropID, Grammar.objectPropID, Grammar.transitivePropID, };
+	 * 
+	 * static final int annoOntoObjectPropIDs[] = { Grammar.annotationPropID,
+	 * Grammar.objectPropID, Grammar.ontologyPropertyID,
+	 * Grammar.transitivePropID };
+	 * 
+	 * static final int annoDataPropIDs[] = { Grammar.annotationPropID,
+	 * Grammar.dataPropID, };
+	 * 
+	 * static final int objectOrAnnotationPropIDs[] = {
+	 * Grammar.annotationPropID, Grammar.objectPropID, Grammar.transitivePropID,
+	 *  };
+	 * 
+	 * static final int ontologyOrAnnotationPropIDs[] = {
+	 * Grammar.annotationPropID, Grammar.ontologyPropertyID,
+	 *  };
+	 * 
+	 * private static int rdClassify(int a[]) { if (Q.subset(a, disjointWith))
+	 * return SC.disjointWith; if (Q.subset(a, equivalentClass)) return
+	 * SC.equivalentClass; if (Q.subset(a, subClass)) return SC.subClassOf; if
+	 * (Q.subset(a, classOrDatarangeObject)) return SC.classOrDatarangeObject;
+	 * return SC.UNKNOWN; } if (a.length == 1) { switch (a[0]) { case
+	 * Grammar.unnamedIndividual}, "" }, return SC.unnamedIndividual; case
+	 * Grammar.unnamedOntology: return SC.unnamedOntology; case
+	 * Grammar.allDifferent: return SC.allDifferent; case
+	 * Grammar.description5disjointWith: case
+	 * Grammar.description5equivalentClass: case Grammar.description5object:
+	 * case Grammar.description5subClassOf: return SC.description; case
+	 * Grammar.listOfDataLiteral: case Grammar.listOfDescription: case
+	 * Grammar.listOfIndividualID: return SC.list; case
+	 * Grammar.restriction6disjointWith: case
+	 * Grammar.restriction6equivalentClass: case Grammar.restriction6object:
+	 * case Grammar.restriction6subClassOf: case
+	 * Grammar.restriction7disjointWith: case
+	 * Grammar.restriction7equivalentClass: case Grammar.restriction7object:
+	 * case Grammar.restriction7subClassOf: case
+	 * Grammar.restriction8disjointWith: case
+	 * Grammar.restriction8equivalentClass: case Grammar.restriction8object:
+	 * case Grammar.restriction8subClassOf: return SC.restriction; case
+	 * Grammar.unnamedDataRange: return SC.unnamedDataRange; case
+	 * Grammar.annotationPropID: return SC.annotationPropID; case
+	 * Grammar.classID: return SC.classID; case Grammar.dataPropID: return
+	 * SC.dataPropID; case Grammar.datatypeID: return SC.datatypeID; case
+	 * Grammar.individualID: return SC.individualID; case Grammar.objectPropID:
+	 * return SC.objectPropID; case Grammar.ontologyID: return SC.ontologyID;
+	 * case Grammar.ontologyPropertyID: return SC.ontologyPropertyID; case
+	 * Grammar.transitivePropID: return SC.objectPropID; default: throw new
+	 * RuntimeException("Impossible"); } } if (isObjectProperty(c)) return
+	 * SC.objectPropID; if (Q.subset(a, descriptions)) return SC.description; if
+	 * (Q.subset(a, lists)) return SC.list; if (Q.subset(a, restrictions))
+	 * return SC.restriction;
+	 * 
+	 * if (isOWLPropertyID(c)) return SC.owlPropID; if (Q.subset(a,
+	 * userPropIDs)) return SC.userPropID;
+	 * 
+	 * if (Q.subset(a, restrictionsAndDescriptions)) return
+	 * SC.descriptionOrRestriction;
+	 * 
+	 * if (Q.subset(a, descriptionsAndDatarange)) return
+	 * SC.descriptionOrDatarange;
+	 * 
+	 * if (isRestrictionOrDescriptionOrDatarange(a)) return
+	 * SC.descriptionOrRestrictionOrDatarange;
+	 * 
+	 * if (Q.subset(a, unnamedIndividualOrOntology)) return
+	 * SC.unnamedIndividualOrOntology;
+	 * 
+	 * if (a.length == 2 && a[0] == Grammar.classID) { switch (a[1]) { case
+	 * Grammar.individualID: return SC.classOrIndividualID; case
+	 * Grammar.datatypeID: return SC.classOrDatatypeID; } }
+	 * 
+	 * 
+	 * 
+	 *  };
+	 */
+static Vector doneNames = new Vector();
+	static int nameCatSet(int in[], int out[]) {
+		if (out == null)
+			out = empty;
+		
+		for (int i=0; i<names.length; i++) {
+			int cats[] = (int[])names[i][0];
+			if (Q.subset(in,cats) && !Q.intersect(cats,out)) {
+				return i;
+			}
+		}
+		Iterator it = doneNames.iterator();
+		while (it.hasNext()){
+			int a[][] = (int[][])it.next();
+			if (Q.subset(in,a[0]) &&
+					Q.subset(a[0],in) &&
+					Q.subset(out,a[1]) &&
+					Q.subset(a[1],out))
+				return -1;
+		}
+		System.err.println("nameCatSet(" +
+		CategorySet.catString(in) + ","
+		+ CategorySet.catString(out) );
+		doneNames.add(new int[][]{in,out});
+
+		return -1;
+	}
+
 	static int dbgCnt = 0;
 
 	static boolean debug() {
-		return (dbgCnt++ % 500 == 0 && dbgCnt < 10000);
+		return (dbgCnt++ % 50 == 0 && dbgCnt < 2000);
 	}
 
 	static void dumpc(String x, int c, int d) {
@@ -842,7 +1327,7 @@ private static int diffPreds[] = new int[SZ];
 			dumpc("DC-prop", px, 0);
 			dumpc("DC-obj", ox, 0);
 		}
-// TODO not reached.
+		// TODO not reached.
 		// TODO fix me
 		if (isObjectProperty(px) && isLiteral(ox))
 			return OBJ_PROP_AND_LIT;
@@ -1153,21 +1638,17 @@ private static int diffPreds[] = new int[SZ];
 			int rdB = rdClassify(b);
 			if (rdA != rdB && rdA != SC.UNKNOWN && rdB != SC.UNKNOWN)
 				return DIFFERENT_DESCRIPTIONS;
-			
+
 			if (scA == scB && scA == SC.restriction) {
-				if ((Q.subset(a,objPropRestrictions)
-						&&Q.subset(b,dataPropRestrictions))
-					||
-					(Q.subset(b,objPropRestrictions)
-							&&Q.subset(a,dataPropRestrictions))
-						)
+				if ((Q.subset(a, objPropRestrictions) && Q.subset(b,
+						dataPropRestrictions))
+						|| (Q.subset(b, objPropRestrictions) && Q.subset(a,
+								dataPropRestrictions)))
 					return OBJ_OR_DATA_RESTRICTION;
-				if ((Q.subset(a,transPropRestrictions)
-						&&Q.subset(b,nonTransPropRestrictions))
-					||
-					(Q.subset(b,transPropRestrictions)
-							&&Q.subset(a,nonTransPropRestrictions))
-						)
+				if ((Q.subset(a, transPropRestrictions) && Q.subset(b,
+						nonTransPropRestrictions))
+						|| (Q.subset(b, transPropRestrictions) && Q.subset(a,
+								nonTransPropRestrictions)))
 					return BAD_TRANS_RESTRICTION;
 			}
 		}
@@ -1185,18 +1666,18 @@ private static int diffPreds[] = new int[SZ];
 			if (a.length == 1 && b.length == 1)
 				return DIFFERENT_LISTS;
 			if (a.length == 2 && b.length == 1 && a[1] != b[0]) {
-				if ( a[0] == Grammar.listOfDataLiteral
-					&& a[1] == Grammar.listOfIndividualID)
-				return DIFFERENT_DATA_OR_IND_LISTS;
-				if ( a[0] == Grammar.listOfDescription
+				if (a[0] == Grammar.listOfDataLiteral
+						&& a[1] == Grammar.listOfIndividualID)
+					return DIFFERENT_DATA_OR_IND_LISTS;
+				if (a[0] == Grammar.listOfDescription
 						&& a[1] == Grammar.listOfIndividualID)
 					return DIFFERENT_DATA_OR_NONDATA_LISTS;
 			}
 			if (b.length == 2 && a.length == 1 && b[1] != a[0]) {
-				if ( b[0] == Grammar.listOfDataLiteral
-					&& b[1] == Grammar.listOfIndividualID)
-				return DIFFERENT_DATA_OR_IND_LISTS;
-				if ( b[0] == Grammar.listOfDescription
+				if (b[0] == Grammar.listOfDataLiteral
+						&& b[1] == Grammar.listOfIndividualID)
+					return DIFFERENT_DATA_OR_IND_LISTS;
+				if (b[0] == Grammar.listOfDescription
 						&& b[1] == Grammar.listOfIndividualID)
 					return DIFFERENT_DATA_OR_NONDATA_LISTS;
 			}
@@ -1213,26 +1694,22 @@ private static int diffPreds[] = new int[SZ];
 				return r;
 
 		}
-		
-		if (a.length==1 &&a[0]==Grammar.transitivePropID
+
+		if (a.length == 1 && a[0] == Grammar.transitivePropID
 				&& isNonTransProp(b))
 			return BAD_TRANS_PROP;
-		if (b.length==1 &&b[0]==Grammar.transitivePropID
+		if (b.length == 1 && b[0] == Grammar.transitivePropID
 				&& isNonTransProp(a))
 			return BAD_TRANS_PROP;
-		
-		if (scA == SC.ontologyPropertyID
-				&& Q.subset(b,individualPropIDs))
+
+		if (scA == SC.ontologyPropertyID && Q.subset(b, individualPropIDs))
 			return ONTO_PROP_ON_INDIVIDUAL;
-		if (scB == SC.ontologyPropertyID
-				&& Q.subset(a,individualPropIDs))
-			return ONTO_PROP_ON_INDIVIDUAL ;
+		if (scB == SC.ontologyPropertyID && Q.subset(a, individualPropIDs))
+			return ONTO_PROP_ON_INDIVIDUAL;
 		// not reached.
 		/*
-		if (debug()) {
-			dumpc("Arg1:", oz, o);
-		}
-		*/
+		 * if (debug()) { dumpc("Arg1:", oz, o); }
+		 */
 		throw new RuntimeException("Logic Error");
 	}
 
@@ -1295,10 +1772,11 @@ private static int diffPreds[] = new int[SZ];
 		dump("Misses", miss);
 		dump("MTypes", mTypes);
 
-		for (int i=0;i<SZ;i++)
-			if (diffPreds[i]!=0)
-				System.out.println(CategorySet.catString(i)+" "+diffPreds[i]);
-		System.out.println("TODO: " + eCnt[GENERIC]+"+"+eCnt[DIFFICULT]);
+		for (int i = 0; i < SZ; i++)
+			if (diffPreds[i] != 0)
+				System.out.println(CategorySet.catString(i) + " "
+						+ diffPreds[i]);
+		System.out.println("TODO: " + eCnt[GENERIC] + "+" + eCnt[DIFFICULT]);
 	}
 
 	static private String fieldName[] = { "subj", "pred", "obj ", "S1  ",

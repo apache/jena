@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.8 2004-12-06 13:50:14 andy_seaborne Exp $
+  $Id: CategorySet.java,v 1.9 2005-01-02 19:25:29 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -131,6 +131,9 @@ public class CategorySet implements Comparable, Serializable, Constants {
 	 */
 	public static String catString(int j) {
 		int c[] = getSet(j);
+		return catString(c);
+	}
+	static String catString(int[] c) {
 		StringBuffer rslt = new StringBuffer("{");
 		rslt.append(Grammar.catNames[c[0]]);
 		for (int i=1;i<c.length;i++) {
