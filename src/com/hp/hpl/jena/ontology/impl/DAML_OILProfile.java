@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:27 $
+ * Last modified on   $Date: 2003-05-09 16:05:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.10 2003-05-08 14:45:27 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.11 2003-05-09 16:05:34 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -76,6 +76,8 @@ public class DAML_OILProfile
     private Resource m_deprecatedClass              = null;
     private Resource m_deprecatedProperty           = null;
     private Resource m_annotationProperty           = null;
+    private Resource m_list                         = m_vocabModel.createResource( DAML_OIL.List.getURI()                      );                     
+    private Resource m_nil                          = m_vocabModel.createResource( DAML_OIL.nil.getURI()                       );
     
     private Property m_equivalentProperty           = m_vocabModel.createProperty( DAML_OIL.samePropertyAs.getNameSpace(),          DAML_OIL.samePropertyAs.getLocalName() );
     private Property m_equivalentClass              = m_vocabModel.createProperty( DAML_OIL.sameClassAs.getNameSpace(),             DAML_OIL.sameClassAs.getLocalName() );
@@ -105,7 +107,8 @@ public class DAML_OILProfile
     private Property m_subClassOf                   = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.subClassOf.getLocalName() );
     private Property m_domain                       = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.domain.getLocalName() );
     private Property m_range                        = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.range.getLocalName() );
-
+    private Property m_first                        = m_vocabModel.createProperty( DAML_OIL.first.getNameSpace(),                   DAML_OIL.first.getLocalName() );
+    private Property m_rest                         = m_vocabModel.createProperty( DAML_OIL.rest.getNameSpace(),                    DAML_OIL.rest.getLocalName() );
 
 
     // Constructors
@@ -142,6 +145,8 @@ public class DAML_OILProfile
     public Resource DEPRECATED_CLASS() {            return m_deprecatedClass; }
     public Resource DEPRECATED_PROPERTY() {         return m_deprecatedProperty; }
     public Resource ANNOTATION_PROPERTY() {         return m_annotationProperty; }
+    public Resource LIST() {                        return m_list; }
+    public Resource NIL() {                         return m_nil; }
     
     public Property EQUIVALENT_PROPERTY() {         return m_equivalentProperty; }
     public Property EQUIVALENT_CLASS() {            return m_equivalentClass; }
@@ -170,6 +175,8 @@ public class DAML_OILProfile
     public Property SUB_PROPERTY_OF() {             return m_subPropertyOf; }
     public Property DOMAIN() {                      return m_domain; }
     public Property RANGE() {                       return m_range; }
+    public Property FIRST() {                       return m_first; }
+    public Property REST() {                        return m_rest; }
     
 
     // Annotations    

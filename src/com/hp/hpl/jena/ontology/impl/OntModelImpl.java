@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 16:56:52 $
+ * Last modified on   $Date: 2003-05-09 16:05:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.14 2003-05-08 16:56:52 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.15 2003-05-09 16:05:34 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -714,8 +714,67 @@ public class OntModelImpl
      * @return A new AllDifferent resource
      */
     public AllDifferent createAllDifferent() {
+        return createAllDifferent( null );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer a new, anonymous node representing the fact that a given set of classes are all
+     * pair-wise distinct.  <code>AllDifferent</code> is a feature of OWL only, and is something
+     * of an anomoly in that it exists only to give a place to anchor the <code>distinctMembers</code>
+     * property, which is the actual expression of the fact. 
+     * </p>
+     * @param differentMembers A list of the class expressions that denote a set of mutually disjoint classes
+     * @return A new AllDifferent resource
+     */
+    public AllDifferent createAllDifferent( OntList differentMembers ) {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
-        return (AllDifferent) createOntResource( AllDifferent.class, getProfile().ALL_DIFFERENT(), null );
+        AllDifferent ad = (AllDifferent) createOntResource( AllDifferent.class, getProfile().ALL_DIFFERENT(), null );
+        
+        if (differentMembers != null) {
+            ad.p_distinctMembers().add( differentMembers );
+        }
+        
+        return ad;
+    }
+    
+    
+    /**
+     * <p>Answer a new empty list</p>
+     * @return An RDF-encoded list of no elements
+     */
+    public OntList createList() {
+        Resource list = getResource( getProfile().NIL().getURI() );
+        list.addProperty( RDF.type, getProfile().LIST() );
+        
+        return (OntList) list.as( OntList.class );
+    }
+    
+    
+    /**
+     * <p>Answer a new list containing the resources from the given iterator, in order.</p>
+     * @param members An iterator, each value of which is expected to be an RDFNode.
+     * @return An RDF-encoded list of the elements of the iterator
+     */
+    public OntList createList( Iterator members ) {
+        OntList list = createList();
+        
+        while (members != null && members.hasNext()) {
+            list = list.add( (RDFNode) members.next() );
+        }
+        
+        return list;
+    }
+    
+    
+    /**
+     * <p>Answer a new list containing the RDF nodes from the given array, in order</p>
+     * @param members An array of RDFNodes that will be the members of the list
+     * @return An RDF-encoded list 
+     */
+    public OntList createList( RDFNode[] members ) {
+        return createList( Arrays.asList( members ).iterator() );
     }
     
     
@@ -1248,6 +1307,20 @@ public class OntModelImpl
     }
     
     
+    /**
+     * <p>Check that every member of the given list has the given rdf:type, and throw an exception if not.</p>
+     * @param list The list to be checked
+     * @param rdfType The rdf:type value to check for
+     * @exception LanguageConsistencyException if any member of the list does not have <code>rdf:type <i>rdfType</i></code>
+     */
+    protected void checkListMembersRdfType( OntList list, Resource rdfType ) {
+        if (strictMode() && ! ((Boolean) list.reduce( new RdfTypeTestFn( rdfType), Boolean.TRUE )).booleanValue()) {
+            // not all of the members of the list are of the given type
+            throw new LanguageConsistencyException( "The members of the given list are expected to be of rdf:type " + rdfType.toString() );
+        }
+    }
+
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
@@ -1273,6 +1346,24 @@ public class OntModelImpl
         protected int m_index;
         protected GetBinding( int index ) { m_index = index; }
         public Object map1( Object x )    { return ((List) x).get( m_index );  }
+    }
+    
+    /** Function to test the rdf type of a list */
+    protected class RdfTypeTestFn implements OntList.ReduceFn
+    {
+        protected Resource m_type;
+        protected RdfTypeTestFn( Resource type ) { m_type = type; }
+        public Object reduce( RDFNode node, Object accumulator ) {
+            Boolean acc = (Boolean) accumulator;
+            if (acc.booleanValue()) {
+                // true so far
+                Resource r = (Resource) node;
+                return new Boolean( r.hasProperty( RDF.type, m_type ) );
+            }
+            else {
+                return acc;
+            }
+        }
     }
 }
 

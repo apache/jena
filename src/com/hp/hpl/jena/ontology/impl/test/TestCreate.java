@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            03-Apr-2003
  * Filename           $RCSfile: TestCreate.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-30 09:59:34 $
+ * Last modified on   $Date: 2003-05-09 16:05:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,10 +24,13 @@ package com.hp.hpl.jena.ontology.impl.test;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.*;
+
+import java.util.*;
 
 
 /**
@@ -37,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestCreate.java,v 1.2 2003-04-30 09:59:34 ian_dickinson Exp $
+ * @version CVS $Id: TestCreate.java,v 1.3 2003-05-09 16:05:34 ian_dickinson Exp $
  */
 public class TestCreate 
     extends TestCase
@@ -110,23 +113,59 @@ public class TestCreate
             public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p" ); }
             public boolean test( OntResource r )        { return r instanceof ObjectProperty;}
         },
+        new CreateTestCase( "OWL create object property non-F", ProfileRegistry.OWL_LANG, NS + "p" ) {
+            public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p", false ); }
+            public boolean test( OntResource r )        { return r instanceof ObjectProperty  &&  !r.canAs( FunctionalProperty.class );}
+        },
+        new CreateTestCase( "OWL create object property F", ProfileRegistry.OWL_LANG, NS + "p" ) {
+            public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p", true ); }
+            public boolean test( OntResource r )        { return r instanceof ObjectProperty  &&  r.canAs( FunctionalProperty.class );}
+        },
+        
         new CreateTestCase( "OWL create datatype property", ProfileRegistry.OWL_LANG, NS + "p" ) {
             public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p" ); }
             public boolean test( OntResource r )        { return r instanceof DatatypeProperty;}
         },
+        new CreateTestCase( "OWL create datatype property non-F", ProfileRegistry.OWL_LANG, NS + "p" ) {
+            public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p", false ); }
+            public boolean test( OntResource r )        { return r instanceof DatatypeProperty  &&  !r.canAs( FunctionalProperty.class );}
+        },
+        new CreateTestCase( "OWL create datatype property F", ProfileRegistry.OWL_LANG, NS + "p" ) {
+            public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p", true ); }
+            public boolean test( OntResource r )        { return r instanceof DatatypeProperty  &&  r.canAs( FunctionalProperty.class );}
+        },
+        
         new CreateTestCase( "OWL create annotation property", ProfileRegistry.OWL_LANG, NS + "p" ) {
             public OntResource doCreate( OntModel m )   { return m.createAnnotationProperty( NS + "p" ); }
             public boolean test( OntResource r )        { return r instanceof AnnotationProperty;}
         },
-        new CreateTestCase( "DAML create object property", ProfileRegistry.DAML_LANG, NS + "p" ) {
+        
+        new CreateTestCase( "OWL create object property", ProfileRegistry.OWL_LANG, NS + "p" ) {
             public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p" ); }
             public boolean test( OntResource r )        { return r instanceof ObjectProperty;}
         },
+        new CreateTestCase( "DAML create object property non-F", ProfileRegistry.DAML_LANG, NS + "p" ) {
+            public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p", false ); }
+            public boolean test( OntResource r )        { return r instanceof ObjectProperty  &&  !r.canAs( FunctionalProperty.class );}
+        },
+        new CreateTestCase( "DAML create object property F", ProfileRegistry.DAML_LANG, NS + "p" ) {
+            public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p", true ); }
+            public boolean test( OntResource r )        { return r instanceof ObjectProperty  &&  r.canAs( FunctionalProperty.class );}
+        },
+        
         new CreateTestCase( "DAML create datatype property", ProfileRegistry.DAML_LANG, NS + "p" ) {
             public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p" ); }
             public boolean test( OntResource r )        { return r instanceof DatatypeProperty;}
         },
-
+        new CreateTestCase( "DAML create datatype property non-F", ProfileRegistry.DAML_LANG, NS + "p" ) {
+            public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p", false ); }
+            public boolean test( OntResource r )        { return r instanceof DatatypeProperty  &&  !r.canAs( FunctionalProperty.class );}
+        },
+        new CreateTestCase( "DAML create datatype property F", ProfileRegistry.DAML_LANG, NS + "p" ) {
+            public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p", true ); }
+            public boolean test( OntResource r )        { return r instanceof DatatypeProperty  &&  r.canAs( FunctionalProperty.class );}
+        },
+        
         new CreateTestCase( "OWL create allDifferent", ProfileRegistry.OWL_LANG, null ) {
             public OntResource doCreate( OntModel m )   { return m.createAllDifferent(); }
             public boolean test( OntResource r )        { return r instanceof AllDifferent;}
@@ -149,6 +188,60 @@ public class TestCreate
             public boolean test( OntResource r )        { return r instanceof Restriction;}
         },
         
+        // Lists
+        new CreateTestCase( "OWL empty list", ProfileRegistry.OWL_LANG, OWL.nil.getURI() ) {
+            public OntResource doCreate( OntModel m )   { return m.createList(); }
+            public boolean test( OntResource r )        { return r instanceof OntList && ((OntList) r).size() == 0;}
+        },
+        new CreateTestCase( "OWL list from iterator", ProfileRegistry.OWL_LANG, null ) {
+            public OntResource doCreate( OntModel m )   {
+                OntClass a = m.createClass( NS + "A" ); 
+                OntClass b = m.createClass( NS + "B" ); 
+                OntClass c = m.createClass( NS + "C" );
+                List l = new ArrayList();
+                l.add( a );  l.add( b );  l.add( c );
+                
+                return m.createList( l.iterator() ); 
+            }
+            public boolean test( OntResource r )        { return r instanceof OntList && ((OntList) r).size() == 3;}
+        },
+        new CreateTestCase( "OWL list from array", ProfileRegistry.OWL_LANG, null ) {
+            public OntResource doCreate( OntModel m )   {
+                OntClass a = m.createClass( NS + "A" ); 
+                OntClass b = m.createClass( NS + "B" ); 
+                OntClass c = m.createClass( NS + "C" );
+                
+                return m.createList( new Resource[] {a, b, c} ); 
+            }
+            public boolean test( OntResource r )        { return r instanceof OntList && ((OntList) r).size() == 3;}
+        },
+        
+        new CreateTestCase( "DAML empty list", ProfileRegistry.DAML_LANG, DAML_OIL.nil.getURI() ) {
+            public OntResource doCreate( OntModel m )   { return m.createList(); }
+            public boolean test( OntResource r )        { return r instanceof OntList && ((OntList) r).size() == 0;}
+        },
+        new CreateTestCase( "DAML list from iterator", ProfileRegistry.DAML_LANG, null ) {
+            public OntResource doCreate( OntModel m )   {
+                OntClass a = m.createClass( NS + "A" ); 
+                OntClass b = m.createClass( NS + "B" ); 
+                OntClass c = m.createClass( NS + "C" );
+                List l = new ArrayList();
+                l.add( a );  l.add( b );  l.add( c );
+                
+                return m.createList( l.iterator() ); 
+            }
+            public boolean test( OntResource r )        { return r instanceof OntList && ((OntList) r).size() == 3;}
+        },
+        new CreateTestCase( "DAML list from array", ProfileRegistry.DAML_LANG, null ) {
+            public OntResource doCreate( OntModel m )   {
+                OntClass a = m.createClass( NS + "A" ); 
+                OntClass b = m.createClass( NS + "B" ); 
+                OntClass c = m.createClass( NS + "C" );
+                
+                return m.createList( new Resource[] {a, b, c} ); 
+            }
+            public boolean test( OntResource r )        { return r instanceof OntList && ((OntList) r).size() == 3;}
+        }
     };
     
     // Instance variables

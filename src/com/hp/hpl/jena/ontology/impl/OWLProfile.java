@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:27 $
+ * Last modified on   $Date: 2003-05-09 16:05:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.11 2003-05-08 14:45:27 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.12 2003-05-09 16:05:34 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -78,7 +78,8 @@ public class OWLProfile
     public Resource DEPRECATED_CLASS() {            return OWL.DeprecatedClass; }
     public Resource DEPRECATED_PROPERTY() {         return OWL.DeprecatedProperty; }
     public Resource ANNOTATION_PROPERTY() {         return OWL.AnnotationProperty; }
-    
+    public Resource LIST() {                        return RDF.List; }
+    public Resource NIL() {                         return RDF.nil; }
     
 
     public Property EQUIVALENT_PROPERTY() {         return OWL.equivalentProperty; }
@@ -108,6 +109,8 @@ public class OWLProfile
     public Property SUB_CLASS_OF() {                return RDFS.subClassOf; }
     public Property DOMAIN() {                      return RDFS.domain; }
     public Property RANGE() {                       return RDFS.range; }
+    public Property FIRST() {                       return RDF.first; }
+    public Property REST() {                        return RDF.rest; }
 
     // Annotations    
     public Property VERSION_INFO() {                return OWL.versionInfo; }

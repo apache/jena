@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 16:57:11 $
+ * Last modified on   $Date: 2003-05-09 16:05:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -57,7 +57,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.12 2003-05-08 16:57:11 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.13 2003-05-09 16:05:34 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -511,6 +511,42 @@ public interface OntModel
      * @return A new AllDifferent resource
      */
     public AllDifferent createAllDifferent();
+    
+    
+    /**
+     * <p>
+     * Answer a new, anonymous node representing the fact that a given set of classes are all
+     * pair-wise distinct.  <code>AllDifferent</code> is a feature of OWL only, and is something
+     * of an anomoly in that it exists only to give a place to anchor the <code>distinctMembers</code>
+     * property, which is the actual expression of the fact. 
+     * </p>
+     * @param differentMembers A list of the class expressions that denote a set of mutually disjoint classes
+     * @return A new AllDifferent resource
+     */
+    public AllDifferent createAllDifferent( OntList differentMembers );
+    
+    
+    /**
+     * <p>Answer a new empty list</p>
+     * @return An RDF-encoded list of no elements
+     */
+    public OntList createList();
+    
+    
+    /**
+     * <p>Answer a new list containing the resources from the given iterator, in order.</p>
+     * @param members An iterator, each value of which is expected to be an RDFNode
+     * @return An RDF-encoded list of the elements of the iterator
+     */
+    public OntList createList( Iterator members );
+    
+    
+    /**
+     * <p>Answer a new list containing the nodes from the given array, in order</p>
+     * @param members An array of RDF nodes that will be the members of the list
+     * @return An RDF-encoded list 
+     */
+    public OntList createList( RDFNode[] members );
     
     
     /**
