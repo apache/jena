@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleTreeQueryPlan.java,v 1.6 2004-06-30 12:57:58 chris-dollin Exp $
+  $Id: SimpleTreeQueryPlan.java,v 1.7 2004-11-19 14:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.mem.*;
 import java.util.*;
@@ -30,7 +30,7 @@ public class SimpleTreeQueryPlan implements TreeQueryPlan
 		{ 
 		Graph result = new GraphMem();
 		Set roots = getRoots( pattern );
-		for (Iterator it = roots.iterator(); it.hasNext(); handleRoot( result, (Node) it.next(), HashUtils.createSet())) {}
+		for (Iterator it = roots.iterator(); it.hasNext(); handleRoot( result, (Node) it.next(), CollectionFactory.createHashedSet())) {}
 		return result;
 		}
 		
@@ -71,7 +71,7 @@ public class SimpleTreeQueryPlan implements TreeQueryPlan
 		
 	public static Set getRoots( Graph pattern )
 		{
-		Set roots = HashUtils.createSet();
+		Set roots = CollectionFactory.createHashedSet();
 		ClosableIterator sub = GraphUtil.findAll( pattern );
 		while (sub.hasNext()) roots.add( ((Triple) sub.next()).getSubject() );
 		ClosableIterator obj = GraphUtil.findAll( pattern );

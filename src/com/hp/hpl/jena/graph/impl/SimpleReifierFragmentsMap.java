@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.15 2004-11-05 11:59:09 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.16 2004-11-19 14:38:11 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class SimpleReifierFragmentsMap implements ReifierFragmentsMap 
     {
     
-    protected Map forwardMap = HashUtils.createMap();
+    protected Map forwardMap = CollectionFactory.createHashedMap();
     
     protected Fragments getFragments( Node tag )
         { return (Fragments) forwardMap.get( tag ); }
@@ -162,7 +162,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
             choose a slot by number than any other way I could think of.
         */
         private final Set [] slots = 
-            {HashUtils.createSet(), HashUtils.createSet(), HashUtils.createSet(), HashUtils.createSet()};
+            {CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet()};
         
         /**
             the Node the fragments are about. 
@@ -298,7 +298,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     */
     protected Map makeSelectors()
         {
-        Map result = HashUtils.createMap();
+        Map result = CollectionFactory.createHashedMap();
         result.put( RDF.Nodes.subject, SUBJECTS );
         result.put( RDF.Nodes.predicate, PREDICATES );
         result.put( RDF.Nodes.object, OBJECTS );

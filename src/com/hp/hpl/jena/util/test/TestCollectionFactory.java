@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestHashUtils.java,v 1.1 2004-06-30 12:58:02 chris-dollin Exp $
+  $Id: TestCollectionFactory.java,v 1.1 2004-11-19 14:38:15 chris-dollin Exp $
 */
 package com.hp.hpl.jena.util.test;
 
@@ -10,29 +10,29 @@ import java.util.*;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 
 /**
  	TestHashUtils - test that the hash utility returns a map.
  	@author kers
 */
-public class TestHashUtils extends ModelTestBase
+public class TestCollectionFactory extends ModelTestBase
     {
-    public TestHashUtils( String name )
+    public TestCollectionFactory( String name )
     	{ super( name ); }
     
     public static TestSuite suite()
-        { return new TestSuite( TestHashUtils.class ); }
+        { return new TestSuite( TestCollectionFactory.class ); }
 
     public void testHashMapExists()
         {
-        Map map = HashUtils.createMap();
+        Map map = CollectionFactory.createHashedMap();
         assertTrue( map instanceof Map );
         }
     
     public void testHashMapSized()
         {
-        Map map = HashUtils.createMap( 42 );
+        Map map = CollectionFactory.createHashedMap( 42 );
         assertTrue( map instanceof Map );
         }
     
@@ -41,13 +41,13 @@ public class TestHashUtils extends ModelTestBase
         Map map = new HashMap();
         map.put( "here", "Bristol" );
         map.put( "there", "Oxford" );
-        Map copy = HashUtils.createMap( map );
+        Map copy = CollectionFactory.createHashedMap( map );
         assertEquals( map, copy );
         }
     
     public void testHashSetExists()
         {
-        Set set = HashUtils.createSet();
+        Set set = CollectionFactory.createHashedSet();
         assertTrue( set instanceof Set );
         }
     
@@ -56,7 +56,7 @@ public class TestHashUtils extends ModelTestBase
         Set s = new HashSet();
         s.add( "jelly" );
         s.add( "concrete" );
-        Set copy = HashUtils.createSet( s );
+        Set copy = CollectionFactory.createHashedSet( s );
         assertEquals( s, copy );
         }
     }

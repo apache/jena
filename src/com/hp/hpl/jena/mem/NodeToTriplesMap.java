@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.14 2004-07-09 15:05:09 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.15 2004-11-19 14:38:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.mem;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -21,7 +21,7 @@ public abstract class NodeToTriplesMap
     /**
          The map from nodes to Set(Triple).
     */
-    private Map map = HashUtils.createMap();
+    private Map map = CollectionFactory.createHashedMap();
     
     /**
           The number of triples held in this NTM, maingained incrementally (because
@@ -51,7 +51,7 @@ public abstract class NodeToTriplesMap
     public boolean add( Node o, Triple t ) 
         {
         Set s = (Set) map.get( o );
-        if (s == null) map.put( o, s = HashUtils.createSet() );
+        if (s == null) map.put( o, s = CollectionFactory.createHashedSet() );
         if (s.add( t )) { size += 1; return true; } else return false; 
         }
 

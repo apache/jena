@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.10 2004-06-30 12:58:00 chris-dollin Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.11 2004-11-19 14:38:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.graph.test.*;
 
@@ -194,7 +194,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     public Set getSetRS( Model m )
         { return GraphTestBase.iteratorToSet( m.listReifiedStatements() ); }
    
-    protected static Set empty = HashUtils.createSet();
+    protected static Set empty = CollectionFactory.createHashedSet();
     
     /**
         test that listReifiedStatements produces an iterator that contains

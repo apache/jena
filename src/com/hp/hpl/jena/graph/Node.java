@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.41 2004-07-21 13:11:46 chris-dollin Exp $
+  $Id: Node.java,v 1.42 2004-11-19 14:38:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -375,11 +375,18 @@ public abstract class Node {
     	{ return toString( null ); }
     
     /**
-        Answer a human-readable representation of the Node, leaving literals unquoted
-        but compressing URIs.
+         Answer a human-readable representation of this Node where literals are
+         quoted according to <code>quoting</code> but URIs are not compressed.
+    */
+    public String toString( boolean quoting )
+        { return toString( null, quoting ); }
+    
+    /**
+        Answer a human-readable representation of the Node, quoting literals and
+        compressing URIs.
     */
     public String toString( PrefixMapping pm )
-        { return toString( pm, false ); }
+        { return toString( pm, true ); }
         
     /**
         Answer a human readable representation of this Node, quoting literals if specified,

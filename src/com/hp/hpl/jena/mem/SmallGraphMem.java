@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.4 2004-11-18 11:46:51 chris-dollin Exp $
+  $Id: SmallGraphMem.java,v 1.5 2004-11-19 14:38:13 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.TripleMatchFilter;
 import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 public class SmallGraphMem extends GraphMemBase
     {
-    protected Set triples = HashUtils.createSet();
+    protected Set triples = CollectionFactory.createHashedSet();
     
     public SmallGraphMem()
         { this( ReificationStyle.Minimal ); }

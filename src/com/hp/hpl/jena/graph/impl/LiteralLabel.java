@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.13 2003-12-04 14:54:06 der Exp $
+  $Id: LiteralLabel.java,v 1.14 2004-11-19 14:38:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -200,19 +200,11 @@ final public class LiteralLabel {
 	*/
 	public String toString(boolean quoting) {
 		StringBuffer b = new StringBuffer();
-		if (quoting)
-			b.append('"');
+		if (quoting) b.append('"');
 		b.append(getLexicalForm());
-		if (quoting)
-			b.append('"');
-		if (lang != null && !lang.equals("")) {
-			b.append("~");
-			b.append(lang);
-		}
-		if (dtype != null) {
-			b.append(":");
-			b.append(dtype.getURI());
-		}
+		if (quoting) b.append('"');
+		if (lang != null && !lang.equals( "" )) b.append( "@" ).append(lang);
+		if (dtype != null) b.append( "^^" ).append(dtype.getURI());
 		return b.toString();
 	}
 

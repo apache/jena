@@ -1,14 +1,14 @@
   /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.32 2004-11-02 15:57:11 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.33 2004-11-19 14:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.impl.*;
 
@@ -272,7 +272,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         List bindings = ebList( xxx, Q, justX ); 
         assertEquals( "bindings match (X X X)", bindings.size(), 3 );       
     /* */
-        Set found = HashUtils.createSet();
+        Set found = CollectionFactory.createHashedSet();
         for (int i = 0; i < bindings.size(); i += 1) 
             {
             Domain d = (Domain) bindings.get( i );
@@ -396,7 +396,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     */
    public void testMatchConstraint()
         {
-        Set expected = HashUtils.createSet();
+        Set expected = CollectionFactory.createHashedSet();
         expected.add( node( "beta" ) );
         Query q = new Query()  
             .addMatch( X, node( "ppp" ), Y ).addConstraint( matches( Y, node( "'ell'" ) ) ) 
@@ -700,7 +700,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         
     protected Map getAnswer( Graph g, TripleSorter sorter )
         {
-        Map result = HashUtils.createMap();
+        Map result = CollectionFactory.createHashedMap();
         Query q = new Query();
         q.addMatch( triple( "?a ?? ?d " ) ).addMatch( triple( "?a X ?b" ) ).addMatch( triple( "?b Y ?c" ) );
         q.addConstraint( notEqual( node( "?d" ), node( "?b" ) ) );

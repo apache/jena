@@ -15,7 +15,7 @@ package com.hp.hpl.jena.db.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 
 
 //=======================================================================
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.util.HashUtils;
 * the same as SimpleCache.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.5 $ on $Date: 2004-06-30 12:56:57 $
+* @version $Revision: 1.6 $ on $Date: 2004-11-19 14:37:26 $
 */
 
 public class LRUCache implements ICache {
@@ -65,8 +65,8 @@ public class LRUCache implements ICache {
 	
 	protected void resize ( int max ) {
 		maxCount = max;
-		keyCache = HashUtils.createMap(max);
-		valCache = HashUtils.createMap(max);
+		keyCache = CollectionFactory.createHashedMap(max);
+		valCache = CollectionFactory.createHashedMap(max);
 		Keys = new IDBID[max];
 		count = 0;
 	}

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.32 2004-07-16 08:11:39 chris-dollin Exp $
+  $Id: TestNode.java,v 1.33 2004-11-19 14:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -542,9 +542,10 @@ public class TestNode extends GraphTestBase
         Node plain = Node.createLiteral( "rhubarb", "", false );    
         Node english = Node.createLiteral( "eccentric", "en_UK", false );
         Node typed = Node.createLiteral( "10", "", dtInt );
-        assertEquals( "rhubarb", plain.toString() );
-        assertEquals( "eccentric~en_UK", english.toString() );
-        assertEquals( "10:http://www.w3.org/2001/XMLSchema#int", typed.toString() );
+        assertEquals( "\"rhubarb\"", plain.toString() );
+        assertEquals( "rhubarb", plain.toString( false ) );
+        assertEquals( "\"eccentric\"@en_UK", english.toString() );
+        assertEquals( "10^^http://www.w3.org/2001/XMLSchema#int", typed.toString( false ) );
         }
         
     public void testConcrete()

@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Personality.java,v 1.6 2004-06-30 12:57:56 chris-dollin Exp $
+  $Id: Personality.java,v 1.7 2004-11-19 14:38:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
 import java.util.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 
 /**
  * Defines a set of permitted mappings from [interface] Class objects to 
@@ -22,7 +22,7 @@ public class Personality {
 
     // Instance variables
     /** Records the bindings from type specifications to implementations.  */
-    private Map types = HashUtils.createMap();
+    private Map types = CollectionFactory.createHashedMap();
     
     // Constructors
     

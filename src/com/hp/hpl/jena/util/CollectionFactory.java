@@ -1,78 +1,67 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Union.java,v 1.9 2004-11-19 14:38:11 chris-dollin Exp $
+  $Id: CollectionFactory.java,v 1.1 2004-11-19 14:38:15 chris-dollin Exp $
 */
-
-package com.hp.hpl.jena.graph.compose;
-
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.CollectionFactory;
-import com.hp.hpl.jena.util.iterator.*;
+package com.hp.hpl.jena.util;
 
 import java.util.*;
 
 /**
-    A class representing the dynamic union of two graphs. Addition only affects the left 
-    operand, deletion affects both. 
-    @see MultiUnion
-	@author hedgehog
+    CollectionFactory - a central place for allocating sets and maps, mostly so that
+    it's easy to plug in new implementations (eg trove).
+    
+ 	@author kers
 */
-
-public class Union extends Dyadic implements Graph 
-	{
-	public Union( Graph L, Graph R )
-		{ super( L, R ); }
-		
+public class CollectionFactory 
+    {
     /**
-        To add a triple to the union, add it to the left operand; this is asymmetric.
+         Answer a new Map which uses hashing for lookup.
     */
-	public void performAdd( Triple t )
-		{ L.add( t ); }
-
+    public static Map createHashedMap() { return new HashMap(); }
+    
     /**
-        To remove a triple, remove it from <i>both</i> operands.
+         Answer a new Map which uses hashing for lookup and has initial size
+         <code>size</code>.
     */
-	public void performDelete( Triple t )
-		{
-		L.delete( t );
-		R.delete( t );
-		}
-
-    public boolean graphBaseContains( Triple t )
-        { return L.contains( t ) || R.contains( t ); }
+    public static Map createHashedMap( int size ) { return new HashMap( size ); }
+    
+    /**
+         Answer a new Map which uses hashing for lookup and is initialised to be
+         a copy of <code>toCopy</code>.
+    */
+    public static Map createHashedMap( Map toCopy ) { return new HashMap( toCopy ); }
         
     /**
-        To find in the union, find in the components, concatenate the results, and omit
-        duplicates. That last is a performance penalty, but I see no way to remove it
-        unless we know the graphs do not overlap.
+         Answer a new Set which uses haashing for lookup.
     */
-	public ExtendedIterator graphBaseFind( final TripleMatch t ) 
-	    {
-	    Set seen = CollectionFactory.createHashedSet();
-        return recording( L.find( t ), seen ).andThen( rejecting( R.find( t ), seen ) ); 
-	    // return L.find( t ) .andThen( rejecting( R.find( t ), L ) ); 
-		}
-	}
+    public static Set createHashedSet() { return new HashSet(); }
+    
+    /**
+         Answer a new Set which uses hashing for lookup and is initialised as a copy
+         of <code>toCopy</code>.
+    */
+    public static Set createHashedSet( Collection  toCopy ) { return new HashSet( toCopy ); }
+    }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, Hewlett-Packard Development Company, LP
     All rights reserved.
-
+    
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions
     are met:
-
+    
     1. Redistributions of source code must retain the above copyright
        notice, this list of conditions and the following disclaimer.
-
+    
     2. Redistributions in binary form must reproduce the above copyright
        notice, this list of conditions and the following disclaimer in the
        documentation and/or other materials provided with the distribution.
-
+    
     3. The name of the author may not be used to endorse or promote products
        derived from this software without specific prior written permission.
-
+    
     THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
     IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
     OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.

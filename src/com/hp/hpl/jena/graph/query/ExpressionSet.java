@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionSet.java,v 1.11 2004-06-30 12:57:58 chris-dollin Exp $
+  $Id: ExpressionSet.java,v 1.12 2004-11-19 14:38:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import java.util.*;
 
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 
 /**
 	ExpressionSet: represent a set of (boolean) expressions ANDed together.
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.HashUtils;
 */
 public class ExpressionSet 
     {
-    private Set expressions = HashUtils.createSet();
+    private Set expressions = CollectionFactory.createHashedSet();
     /**
         Initialise an expression set with no members.
     */

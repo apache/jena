@@ -1,7 +1,7 @@
 /*
       (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: GraphExtract.java,v 1.3 2004-08-09 15:08:16 chris-dollin Exp $
+      $Id: GraphExtract.java,v 1.4 2004-11-19 14:38:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.hp.hpl.jena.mem.GraphMem;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 
 /**
      GraphExtract offers a very simple recursive extraction of a subgraph with a
@@ -61,7 +61,7 @@ public class GraphExtract
             {
             this.toUpdate = toUpdate;
             this.extractFrom = extractFrom;
-            this.active = HashUtils.createSet();
+            this.active = CollectionFactory.createHashedSet();
             this.b = b;
             }
         

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.18 2004-08-03 08:32:01 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.19 2004-11-19 14:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.query.Expression.Util;
 
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 
 import junit.framework.*;
 import java.util.*;
@@ -53,7 +53,7 @@ public class TestExpressionConstraints extends QueryTestBase
             .addMatch( X, ANY, Y )
             .addConstraint( notEqual( X, Y ) )
             ;
-        Set expected = HashUtils.createSet();
+        Set expected = CollectionFactory.createHashedSet();
         expected.add( node( "x" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, justX ).mapWith( getFirst ) ) );     
         }        
@@ -66,7 +66,7 @@ public class TestExpressionConstraints extends QueryTestBase
             .addMatch( X, ANY, Y )
             .addConstraint( notEqual( X, Y ) )
             ;
-        Set expected = HashUtils.createSet();
+        Set expected = CollectionFactory.createHashedSet();
         expected.add( node( "x" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, justX ).mapWith( getFirst ) ) );     
         }
@@ -78,7 +78,7 @@ public class TestExpressionConstraints extends QueryTestBase
             .addMatch( X, ANY, ANY )
             .addConstraint( notEqual( X, node( "y" ) ) )
             ;
-        Set expected = HashUtils.createSet();
+        Set expected = CollectionFactory.createHashedSet();
         expected.add( node( "x" ) );
         expected.add( node( "z" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, justX ).mapWith( getFirst ) ) );     
@@ -92,14 +92,14 @@ public class TestExpressionConstraints extends QueryTestBase
             .addConstraint( notEqual( X, node( "y" ) ) )
             .addConstraint( notEqual( X, node( "x" ) ) )
             ;
-        Set expected = HashUtils.createSet();
+        Set expected = CollectionFactory.createHashedSet();
         expected.add( node( "z" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, justX ).mapWith( getFirst ) ) );     
         }
         
     public static class VI implements VariableIndexes
         {
-        private Map values = HashUtils.createMap();
+        private Map values = CollectionFactory.createHashedMap();
         
         public VI set( String x, int i ) { values.put( x, new Integer( i ) ); return this; }    
         
@@ -108,9 +108,9 @@ public class TestExpressionConstraints extends QueryTestBase
     
     public static class IV implements IndexValues
         {
-        private Map values = HashUtils.createMap();
+        private Map values = CollectionFactory.createHashedMap();
         
-        public IV set( int i, Object x ) { values.put( new Integer( i ), x ); return this; }    
+        public IV set( int i, String x ) { values.put( new Integer( i ), Node.createLiteral( x ) ); return this; }    
         
         public Object get( int i ) { return values.get( new Integer( i ) ); }
         }
@@ -166,7 +166,7 @@ public class TestExpressionConstraints extends QueryTestBase
         {
         Expression e1 = notEqual( X, Y ), e2 = notEqual( X, Z );
         Query q = new Query().addConstraint( Dyadic.and( e1, e2 ) );
-        Set eBoth = HashUtils.createSet(); eBoth.add( e1 ); eBoth.add( e2 );
+        Set eBoth = CollectionFactory.createHashedSet(); eBoth.add( e1 ); eBoth.add( e2 );
         Set s = iteratorToSet( q.getConstraints().iterator() );
         assertEquals( eBoth, s );
         }
@@ -182,7 +182,7 @@ public class TestExpressionConstraints extends QueryTestBase
             { public Valuator prepare(VariableIndexes vi) 
                 { return null; }
             };
-        assertFalse( Util.containsAllVariablesOf( HashUtils.createSet(), eOpaque ) );
+        assertFalse( Util.containsAllVariablesOf( CollectionFactory.createHashedSet(), eOpaque ) );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.5 2004-11-02 14:10:09 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.6 2004-11-19 14:38:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -10,7 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -22,14 +22,14 @@ public class MixedGraphMem extends GraphMemBase implements Graph
     
     public static class Thing 
     	{
-        protected Map map = HashUtils.createMap();
+        protected Map map = CollectionFactory.createHashedMap();
 
         protected int size = 0;
         
         protected boolean add( Node key, Triple t )
             {
             Set s = (Set) map.get( key );
-            if (s == null) map.put( key, s = HashUtils.createSet() );
+            if (s == null) map.put( key, s = CollectionFactory.createHashedSet() );
             return s.add( t );
             }
         
@@ -111,7 +111,7 @@ public class MixedGraphMem extends GraphMemBase implements Graph
                 protected Triple triple = null;
                 protected Triple remember = null;
                 protected Node key = null;
-                protected Set seen = HashUtils.createSet();
+                protected Set seen = CollectionFactory.createHashedSet();
                 protected Filter filter = new TripleMatchFilter( pattern );
                 
                 protected Triple ANY = Triple.create( "?? ?? ??" );

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TriplePattern.java,v 1.20 2004-06-30 12:58:01 chris-dollin Exp $
+ * $Id: TriplePattern.java,v 1.21 2004-11-19 14:38:14 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.rulesys.ClauseEntry;
 import com.hp.hpl.jena.reasoner.rulesys.Functor;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2004-06-30 12:58:01 $
+ * @version $Revision: 1.21 $ on $Date: 2004-11-19 14:38:14 $
  */
 public class TriplePattern implements ClauseEntry {
 
@@ -153,7 +153,7 @@ public class TriplePattern implements ClauseEntry {
      * of the same variable.
      */
     public boolean variantOf(TriplePattern pattern) {
-        Map vmap = HashUtils.createMap();
+        Map vmap = CollectionFactory.createHashedMap();
         if ( ! variantOf(subject, pattern.subject, vmap) ) return false;
         if ( ! variantOf(predicate, pattern.predicate, vmap) ) return false;
         if (Functor.isFunctor(object) && Functor.isFunctor(pattern.object)) {

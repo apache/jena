@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-11-01 15:50:51 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-11-19 14:38:15 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * See end of file for details
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.9 2004-11-01 15:50:51 ian_dickinson Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.10 2004-11-19 14:38:15 chris-dollin Exp $
  */
 public class OneToManyMap
     implements Map
@@ -136,7 +136,7 @@ public class OneToManyMap
      * @return A Set of the mappings as Map.Entry values.
      */
     public Set entrySet() {
-        Set s = HashUtils.createSet();
+        Set s = CollectionFactory.createHashedSet();
 
         for (Iterator e0 = m_table.keySet().iterator();  e0.hasNext(); ) {
             Object key = e0.next();
@@ -333,7 +333,7 @@ public class OneToManyMap
      * @return A collection view of the values contained in this map.
      */
     public Collection values() {
-        Set s = HashUtils.createSet();
+        Set s = CollectionFactory.createHashedSet();
 
         for (Iterator e = m_table.keySet().iterator();  e.hasNext();  ) {
             s.addAll( (ArrayList) m_table.get(e.next()) );

@@ -42,15 +42,9 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2004-06-15 14:00:49 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2004-11-19 14:38:13 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
-//    private Node node;
-//    String  literal;
-//    String  language = "";
-//    boolean wellFormed = false;   // literal is well formed XML which
-                                  // does not need escaping when wriiten
-                                  // as RDF/XML
   
     final static public Implementation factory = new Implementation() {
         public boolean canWrap( Node n, EnhGraph eg )
@@ -160,7 +154,7 @@ public class LiteralImpl extends EnhNode implements Literal {
     }
     
     public String toString() {
-        return asNode().toString();
+        return asNode().toString( PrefixMapping.Standard, false );
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.94 2004-11-04 12:27:10 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.95 2004-11-19 14:38:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.datatypes.*;
@@ -821,7 +821,7 @@ public class ModelCom
         
     private Iterator listPredicates()
         {
-        Set predicates = HashUtils.createSet();
+        Set predicates = CollectionFactory.createHashedSet();
         ClosableIterator it = graph.find( null, null, null );
         while (it.hasNext()) predicates.add( ((Triple) it.next()).getPredicate() );
         return predicates.iterator();
@@ -829,14 +829,14 @@ public class ModelCom
      
     private Iterator listTypes()
         {
-        Set types = HashUtils.createSet();
+        Set types = CollectionFactory.createHashedSet();
         ClosableIterator it = graph.find( null, RDF.type.asNode(), null );
         while (it.hasNext()) types.add( ((Triple) it.next()).getObject() );
         return types.iterator();
         }
      
     public NsIterator listNameSpaces()  {
-        Set nameSpaces = HashUtils.createSet();
+        Set nameSpaces = CollectionFactory.createHashedSet();
         updateNamespace( nameSpaces, listPredicates() );
         updateNamespace( nameSpaces, listTypes() );
         return new NsIteratorImpl(nameSpaces.iterator(), nameSpaces);
@@ -914,7 +914,7 @@ public class ModelCom
             Map.Entry e = (Map.Entry) it.next();
             String key = (String) e.getKey();
             Set  values = (Set) e.getValue();
-            Set niceValues = HashUtils.createSet();
+            Set niceValues = CollectionFactory.createHashedSet();
             Iterator them = values.iterator();
             while (them.hasNext())
                 {

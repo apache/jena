@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.20 2004-11-16 15:59:36 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.21 2004-11-19 14:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -11,7 +11,7 @@ package com.hp.hpl.jena.graph.test;
 	@author kers
 */
 
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
@@ -42,14 +42,14 @@ public class GraphTestBase extends JenaTestBase
                 
     public Set nodeSet( String nodes )
         {
-        Set result = HashUtils.createSet();
+        Set result = CollectionFactory.createHashedSet();
         StringTokenizer st = new StringTokenizer( nodes );
         while (st.hasMoreTokens()) result.add( node( st.nextToken() ) );
         return result;
         }
         
     public Set arrayToSet( Object [] elements )
-        { return HashUtils.createSet( Arrays.asList( elements ) ); }
+        { return CollectionFactory.createHashedSet( Arrays.asList( elements ) ); }
                 
     public static Triple triple( String fact )
         { return Triple.create( fact ); }
@@ -110,7 +110,7 @@ public class GraphTestBase extends JenaTestBase
         {
         if (!expected.isIsomorphicWith( got ))
             {
-            Map map = HashUtils.createMap();
+            Map map = CollectionFactory.createHashedMap();
             fail( title + ": wanted " + nice( expected, map ) + "\nbut got " + nice( got, map ) );
             }
         }

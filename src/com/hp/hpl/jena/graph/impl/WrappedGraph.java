@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedGraph.java,v 1.7 2004-06-29 09:43:21 chris-dollin Exp $
+  $Id: WrappedGraph.java,v 1.8 2004-11-19 14:38:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -89,21 +89,15 @@ public class WrappedGraph implements GraphWithPerform
         { return base.size(); }
     
     public void performAdd(Triple t)
-        {
-        // TODO Auto-generated method stub
-        
-        }
+        { base.add( t ); }
 
     public void performDelete(Triple t)
-        {
-        // TODO Auto-generated method stub
-        
-        }
+        { base.delete( t ); }
     }
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

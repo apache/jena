@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTestBase.java,v 1.3 2004-07-27 08:06:51 chris-dollin Exp $
+  $Id: QueryTestBase.java,v 1.4 2004-11-19 14:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -60,7 +60,10 @@ public abstract class QueryTestBase extends GraphTestBase
 	    return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/MATCHES", asExpression( y ) ) 
 	        {
 	        public boolean evalBool( Object L, Object R )
-	            { return L.toString().indexOf( R.toString() ) > -1; }       
+	            {
+                Node l = (Node) L, r = (Node) R;
+                return l.toString( false ).indexOf( r.toString( false ) ) > -1; 
+                }       
 	        };    
 	    }
 

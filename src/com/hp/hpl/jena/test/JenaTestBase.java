@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.12 2004-08-04 10:43:10 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.13 2004-11-19 14:38:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 import junit.framework.*;
 import java.util.*;
 
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 
 /**
     A basis for Jena test cases which provides assertFalse and assertDiffer.
@@ -48,7 +48,7 @@ public class JenaTestBase extends TestCase
     	Answer a Set formed from the elements of the List <code>L</code>.
     */
     public static Set listToSet( List L )
-        { return HashUtils.createSet( L ); }
+        { return CollectionFactory.createHashedSet( L ); }
     
     /**
         Do nothing; a way of notating that a test has succeeded, useful in the body of a

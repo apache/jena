@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NamedTripleBunches.java,v 1.2 2004-06-30 12:57:58 chris-dollin Exp $
+  $Id: NamedTripleBunches.java,v 1.3 2004-11-19 14:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.CollectionFactory;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
 */
 public class NamedTripleBunches
     {
-    private Map triples = HashUtils.createMap();
+    private Map triples = CollectionFactory.createHashedMap();
 
     /**
         A more-or-less internal object for referring to the "default" graph in a query.

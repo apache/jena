@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-11 22:27:46 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-11-19 14:38:15 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.8 2004-08-11 22:27:46 ian_dickinson Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.9 2004-11-19 14:38:15 chris-dollin Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -217,7 +217,7 @@ public class ResourceUtils {
         Model m = ModelFactory.createDefaultModel();
         
         // set of resources we have passed through already (i.e. the occurs check)
-        Set seen = HashUtils.createSet();
+        Set seen = CollectionFactory.createHashedSet();
         
         // queue of resources we have not yet visited
         List queue = new LinkedList();
