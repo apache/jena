@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.8 2003-05-19 08:25:46 der Exp $
+ * $Id: RuleState.java,v 1.9 2003-05-19 17:13:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-19 08:25:46 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-19 17:13:12 $
  */
 public class RuleState {
 
@@ -45,8 +45,7 @@ public class RuleState {
     /** Flag to indicate that rule state is scheduled on the agenda */
     protected boolean isScheduled = false;
     
-    /** The clause number in the rule to be processed next.
-     *  TODO this needs revising if we enable clause reordering */
+    /** The clause number in the rule to be processed next. */
     int clauseIndex;
     
     /** binding offset for subject field, -1 if none */
@@ -64,7 +63,7 @@ public class RuleState {
     /**
      * Normal constructor. Creates a new RuleState as an extension to an existing one.
      * @param parent the parent RuleState being expanded, can't be null
-     * @param clause the TriplePattern which forms to goal for this state
+     * @param clause the TriplePattern which forms the goal for this state
      * @param index the index of the clause in the parent rule
      * @param env the prebound enviornment to use
      */

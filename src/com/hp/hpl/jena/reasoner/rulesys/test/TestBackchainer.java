@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.12 2003-05-19 08:24:26 der Exp $
+ * $Id: TestBackchainer.java,v 1.13 2003-05-19 17:15:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  *  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-05-19 08:24:26 $
+ * @version $Revision: 1.13 $ on $Date: 2003-05-19 17:15:55 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -748,6 +748,40 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, c), new Object[] {
                   new Triple(b, ty, c)
+              } );
+    }
+    
+
+    /**
+     * Test restriction example
+     */
+    public void testRestriction2() {    
+        Graph data = new GraphMem();
+        data.add(new Triple(a, ty, OWL.Thing.asNode()));
+        data.add(new Triple(p, ty, OWL.FunctionalProperty.asNode()));
+        data.add(new Triple(c, OWL.equivalentClass.asNode(), C1));
+        data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
+        data.add(new Triple(C1, OWL.onProperty.asNode(), p));
+        data.add(new Triple(C1, OWL.maxCardinality.asNode(), Util.makeIntNode(1)));
+        List rules = Rule.parseRules(
+        "[rdfs8:  unbound(?c) (?a rdfs:subClassOf ?b) (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
+        "[rdfs8:  bound(?c)   (?b rdfs:subClassOf ?c) (?a rdfs:subClassOf ?b) -> (?a rdfs:subClassOf ?c)]" + 
+        "[rdfs9:  bound(?y)   (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" + 
+        "[rdfs9:  unbound(?y) (?a rdf:type ?x) (?x rdfs:subClassOf ?y) -> (?a rdf:type ?y)]" + 
+        "[restriction4: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X) -> (?C owl:equivalentClass max(?P, ?X))]" +
+        "[restrictionProc11: (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing) -> (?X rdf:type max(?P, '1'))]" +
+        "[equivalentClass1: (?P owl:equivalentClass ?Q) -> (?P rdfs:subClassOf ?Q), (?Q rdfs:subClassOf ?P) ]" +
+        "[-> (rdf:type      rdfs:range rdfs:Class)]" +
+        "[rdfs3:  bound(?c)   (?p rdfs:range ?c) (?x ?p ?y) -> (?y rdf:type ?c)]" + 
+        "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]" +
+        "[restrictionProc13: (owl:Thing rdfs:subClassOf all(?P, ?C)) -> (?P rdfs:range ?C)]" +
+                       ""  );        
+        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(a, ty, c), new Object[] {
+                  new Triple(a, ty, c)
               } );
     }
     

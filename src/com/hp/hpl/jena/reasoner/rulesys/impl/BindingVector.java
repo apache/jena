@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.9 2003-05-19 08:25:47 der Exp $
+ * $Id: BindingVector.java,v 1.10 2003-05-19 17:13:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-19 08:25:47 $
+ * @version $Revision: 1.10 $ on $Date: 2003-05-19 17:13:11 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -211,7 +211,7 @@ public class BindingVector implements BindingEnvironment {
      * @param head the head pattern of the rule which is being instantiated
      * @param numRuleVars the length of the environment to allocate.
      * @return An initialized binding environment for the rule variables
-     * or null if the unificatin fails. If a variable in the environment becomes
+     * or null if the unification fails. If a variable in the environment becomes
      * aliased to another variable through the unification this is represented
      * by having its value in the environment be the variable to which it is aliased.
      */ 
@@ -245,6 +245,10 @@ public class BindingVector implements BindingEnvironment {
                 }
             } else if (hObj instanceof Node_RuleVariable) {
                 // No extra biding to do, success
+                // Temp debug
+                // TODO remove
+                if (!unify(gObj, hObj, gEnv, hEnv)) return null;
+                // end temp
             } else {
                 // unifying simple ground object with functor, failure
                 return null;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLBRuleReasoner.java,v 1.1 2003-05-13 08:18:12 der Exp $
+ * $Id: OWLBRuleReasoner.java,v 1.2 2003-05-19 17:15:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,12 +26,13 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-13 08:18:12 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-19 17:15:56 $
  */
 public class OWLBRuleReasoner extends BasicBackwardRuleReasoner {
     
     /** The location of the OWL rule definitions on the class path */
     protected static final String RULE_FILE = "etc/owl-b.rules";
+//    protected static final String RULE_FILE = "etc/owl-b-debug.rules";
     
     /** The parsed rules */
     protected static List ruleSet;
