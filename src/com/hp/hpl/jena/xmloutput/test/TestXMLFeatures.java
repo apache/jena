@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003    
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.7 2003-04-01 14:36:11 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.8 2003-04-01 20:36:20 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /** 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-04-01 14:36:11 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-04-01 20:36:20 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -231,6 +231,78 @@ public class TestXMLFeatures extends TestCase {
 		});
 	}
 
+    public void testTab()
+        throws IOException, MalformedPatternException {
+        check(
+            file1,
+            "          ",
+            //null,
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("tab", "5");
+            }
+        });
+    }
+    public void testNoTab()
+        throws IOException, MalformedPatternException {
+        check(
+            file1,
+            "  ",
+            //null,
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("tab", "0");
+            }
+        });
+    }
+    public void testNoLiteral()
+        throws IOException, MalformedPatternException {
+        check(
+            "file:testing/wg/rdfms-xml-literal-namespaces/test001.rdf",
+            "#XMLLiteral",
+            "[\"']Literal[\"']",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "parseTypeLiteralPropertyElt");
+            }
+        });
+    }
+    public void testNoPropAttr()
+        throws IOException, MalformedPatternException {
+        check(
+            file1,
+            null,
+            "prop1=",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "propertyAttr");
+            }
+        });
+    }
+    public void testNoDamlCollection()
+        throws IOException, MalformedPatternException {
+        check(
+            "file:testing/abbreviated/daml.rdf",
+            null,
+            "[\"']daml:collection[\"']",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "daml:collection");
+            }
+        });
+    }
+    public void testNoRdfCollection()
+        throws IOException, MalformedPatternException {
+        check(
+            "file:testing/abbreviated/collection.rdf",
+            null,
+            "[\"']Collection[\"']",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "parseTypeCollectionPropertyElt");
+            }
+        });
+    }
 	public void testRDFDefaultNamespace()
 		throws IOException, MalformedPatternException {
 		check(
@@ -856,5 +928,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.7 2003-04-01 14:36:11 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.8 2003-04-01 20:36:20 jeremy_carroll Exp $
  */

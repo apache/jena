@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.6 2003-04-01 17:20:48 jeremy_carroll Exp $
+  $Id: Basic.java,v 1.7 2003-04-01 20:35:57 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput;
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-04-01 17:20:48 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-04-01 20:35:57 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -26,7 +26,7 @@ public class Basic extends BaseXMLWriter {
 
 	public Basic() {
 	}
-
+    private String space;
 	void writeBody(
 		Model model,
 		PrintWriter pw,
@@ -35,6 +35,10 @@ public class Basic extends BaseXMLWriter {
 		// 	System.err.println(base +" - "+inclXMLBase + " + " + (model!=null));
 		//	setupMaps();
 		//pw = new PrintWriter(System.out);
+        space = "";
+        for (int i=0; i<tab;i++)
+         space += " ";
+        
 		writeRDFHeader(model, pw);
 		writeRDFStatements(model, pw);
 		writeRDFTrailer(pw, base);
@@ -117,7 +121,7 @@ public class Basic extends BaseXMLWriter {
 
 	protected void writeDescriptionHeader(Resource subject, PrintWriter writer)
 		throws RDFException {
-		writer.print("  <" + rdfEl("Description") + " ");
+		writer.print(space + "<" + rdfEl("Description") + " ");
 		writeResourceId(subject, writer);
 		writer.println(">");
 	}
@@ -128,8 +132,8 @@ public class Basic extends BaseXMLWriter {
 		Property predicate = stmt.getPredicate();
 		RDFNode object = stmt.getObject();
 
-		writer.print(
-			"    <"
+		writer.print(space+space+
+			"<"
 				+ startElementTag(
 					predicate.getNameSpace(),
 					predicate.getLocalName()));
@@ -158,13 +162,14 @@ public class Basic extends BaseXMLWriter {
     private boolean blockLiterals = false;
     void blockRule(Resource r) {
         if (r.equals(RDFSyntax.parseTypeLiteralPropertyElt)) {
+     //       System.err.println("Blocking");
             blockLiterals = true;
         } else
            logger.warn("Cannot block rule <"+r.getURI()+">");
     }
 
 	protected void writeDescriptionTrailer(PrintWriter writer) {
-		writer.println("  </" + rdfEl("Description") + ">");
+		writer.println(space + "</" + rdfEl("Description") + ">");
 	}
 /*
 	protected void writeReifiedProperties(Statement stmt, PrintWriter writer)
@@ -237,10 +242,10 @@ public class Basic extends BaseXMLWriter {
 			if (dt != null) {
                 writer.print(" " + rdfAt("datatype") + "='" +
                 Util.substituteStandardEntities(dt)+"'>");
-                writer.print(l.getLexicalForm());
+                writer.print(Util.substituteEntitiesInElementContent(l.getLexicalForm()));
 			} else {
 				writer.print(">");
-				writer.print(Util.substituteStandardEntities(l.toString()));
+				writer.print(Util.substituteEntitiesInElementContent(l.toString()));
 			}
 		}
 	}

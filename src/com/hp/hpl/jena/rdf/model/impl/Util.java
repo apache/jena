@@ -35,7 +35,7 @@ import org.apache.xerces.util.XMLChar;
 /** Some utility functions.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:41 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-01 20:34:34 $'
  */
 public class Util extends Object {
 
@@ -85,6 +85,10 @@ public class Util extends Object {
         s = replace(s, "\n", "&#xA;");
         s = replace(s, "\r", "&#xD;");
         return replace(s, "\"", "&quot;");
+    }
+    public static String substituteEntitiesInElementContent(String s) {
+        s = replace(s, "&", "&amp;");
+        return replace(s, "<", "&lt;");
     }
 
     public static String replace(

@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterAndReader.java,v 1.8 2003-04-01 14:36:11 jeremy_carroll Exp $
+  $Id: testWriterAndReader.java,v 1.9 2003-04-01 20:36:21 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-04-01 14:36:11 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-04-01 20:36:21 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     static private boolean showProgress = false;
@@ -172,6 +172,26 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
             langsuite.addTest(
                 new TestXMLFeatures("testStringDeclPresent", lang));
             /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testTab", lang));
+            /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testNoLiteral", lang));
+            /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testNoTab", lang));
+            /* */
+        }
+        if ( lang.equals("RDF/XML-ABBREV") ) {
+        langsuite.addTest(
+            new TestXMLFeatures("testNoPropAttr", "RDF/XML-ABBREV"));
+        /* */
+        langsuite.addTest(
+            new TestXMLFeatures("testNoDamlCollection", "RDF/XML-ABBREV"));
+        /* */
+        langsuite.addTest(
+            new TestXMLFeatures("testNoRdfCollection", "RDF/XML-ABBREV"));
+        /* */
         }
         return langsuite;
     }
@@ -421,5 +441,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.8 2003-04-01 14:36:11 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.9 2003-04-01 20:36:21 jeremy_carroll Exp $
  */

@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.8 2003-04-01 17:20:47 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.9 2003-04-01 20:35:57 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
@@ -21,7 +21,6 @@ import com.hp.hpl.jena.vocabulary.RSS;
 import com.hp.hpl.jena.vocabulary.VCARD;
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
-
 
 import com.hp.hpl.jena.rdf.arp.URI;
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
@@ -57,7 +56,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-04-01 17:20:47 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-04-01 20:35:57 $'
  */
 abstract public class BaseXMLWriter implements RDFWriter {
 	/** log4j logger */
@@ -96,6 +95,7 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	String xmlBase = null;
 	boolean longId = false;
 	boolean allowBadURIs = false;
+	int tab = 2;
 
 	HashMap anonMap = new HashMap();
 	int anonCount = 0;
@@ -582,6 +582,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	 *  asked to write to an OutputStreamWriter that uses some
 	 *  encoding other than UTF-8. In this case the encoding is shown
 	 *  in the XML declaration.
+	 * <dt>tab</dt>
+	 * <dd>The number of spaces with which to indent XML child elements.</dd>
 	 * <dt>blockRules</dt>
 	 * <dd>
 	 * A list of Resource or a String being a comma separated list
@@ -686,6 +688,19 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			String result = xmlBase;
 			xmlBase = (String) propValue;
 			return result;
+		} else if (propName.equalsIgnoreCase("tab")) {
+			Integer result = new Integer(tab);
+            if ( propValue instanceof Integer ) {
+                tab = ((Integer)propValue).intValue();
+            } else {
+                try {
+                    tab = Integer.parseInt((String)propValue);
+                }
+                catch (Exception e) {
+                    logger.warn("Bad value for tab: '"+propValue+"' [" + e.getMessage()+"]");
+                }
+            }
+			return result;
 		} else if (propName.equalsIgnoreCase("longid")) {
 			Boolean result = new Boolean(longId);
 			longId = toboolean(propValue);
@@ -719,32 +734,33 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			"prettyTypes is not a property on the Basic RDF/XML writer.");
 		return null;
 	}
-    private Resource blockedRules[] = new Resource[0];
-    Resource[] setBlockRules(Object o) {
-        Resource rslt[] = blockedRules;
-        unblockAll();
-        if (o instanceof Resource[]) {
-            blockedRules = (Resource[])o;
-            for (int i=0;i<blockedRules.length;i++)
-              blockRule(blockedRules[i]);
-        } else {
-            StringTokenizer tkn = new StringTokenizer((String)o,", ");
-            Vector v = new Vector();
-            while ( tkn.hasMoreElements() ) {
-                String frag = tkn.nextToken();
-                if ( frag.equals("daml:collection") )
-                   v.add(DAML_OIL.collection);
-                else 
-                  v.add(new ResourceImpl(RDFSyntax.getURI()+frag));
-            }
-            
-            blockedRules = new Resource[v.size()];
-            v.copyInto(blockedRules);
-        }
-        return rslt;
-    }
-    abstract void unblockAll();
-    abstract void blockRule(Resource r);
+	private Resource blockedRules[] = new Resource[0];
+	Resource[] setBlockRules(Object o) {
+		Resource rslt[] = blockedRules;
+		unblockAll();
+		if (o instanceof Resource[]) {
+			blockedRules = (Resource[]) o;
+		} else {
+			StringTokenizer tkn = new StringTokenizer((String) o, ", ");
+			Vector v = new Vector();
+			while (tkn.hasMoreElements()) {
+				String frag = tkn.nextToken();
+              //  System.err.println("Blocking " + frag);
+				if (frag.equals("daml:collection"))
+					v.add(DAML_OIL.collection);
+				else
+					v.add(new ResourceImpl(RDFSyntax.getURI() + frag));
+			}
+
+			blockedRules = new Resource[v.size()];
+			v.copyInto(blockedRules);
+		}
+        for (int i = 0; i < blockedRules.length; i++)
+            blockRule(blockedRules[i]);
+		return rslt;
+	}
+	abstract void unblockAll();
+	abstract void blockRule(Resource r);
 	/*
 	private boolean sameDocument = true;
 	private boolean network = false;
@@ -755,6 +771,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	*/
 	private int relativeFlags =
 		URI.SAMEDOCUMENT | URI.ABSOLUTE | URI.RELATIVE | URI.PARENT;
+        
+    
 }
 
 /*

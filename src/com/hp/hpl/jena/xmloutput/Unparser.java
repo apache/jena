@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.5 2003-04-01 17:20:48 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.6 2003-04-01 20:35:58 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
@@ -105,7 +105,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-01 17:20:48 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-04-01 20:35:58 $'
 
  */
 class Unparser {
@@ -479,7 +479,7 @@ class Unparser {
         wIdAttrReified(s);
         wDatatype(((Literal) r).getDatatypeURI());
         print(">");
-        print(((Literal) r).getLexicalForm());
+        print(Util.substituteEntitiesInElementContent(((Literal) r).getLexicalForm()));
         print("</");
         wt.wTypeEnd(prop);
         print(">");
@@ -558,13 +558,7 @@ class Unparser {
 	 */
 	private void wValueString(Literal lt) throws RDFException {
 		String val = lt.getString();
-		// Personally (jjc), I don't believe this is sufficient.
-		// I have cribbed it from the basicWriter (RDFWriter).
-		// I get the impression that the String processing rules
-		// are a minefield. I might be wrong the XML
-		// reference doesn't make it seem so hard ...
-		//
-		print(Util.substituteStandardEntities(val));
+		print(Util.substituteEntitiesInElementContent(val));
 	}
 
 	/*
@@ -1134,7 +1128,7 @@ class Unparser {
 		return new String(rslt);
 	}
 	private void tab() {
-		int desiredColumn = 4 * indentLevel;
+		int desiredColumn = prettyWriter.tab * indentLevel;
 		if ((desiredColumn == 0 && currentColumn == 0)
 			|| desiredColumn > currentColumn) {
 			String spaces = filler(desiredColumn - currentColumn);
