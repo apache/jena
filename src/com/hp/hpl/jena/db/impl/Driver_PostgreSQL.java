@@ -28,7 +28,7 @@ public class Driver_PostgreSQL extends DriverRDB {
 	/** 
 	 * Constructor
 	 */
-	public Driver_PostgreSQL(){
+	public Driver_PostgreSQL( ){
 		super();
 
 		String myPackageName = this.getClass().getPackage().getName();
@@ -46,12 +46,14 @@ public class Driver_PostgreSQL extends DriverRDB {
 		SKIP_DUPLICATE_CHECK = false;
 		SQL_FILE = "etc/postgresql.sql";
 		QUOTE_CHAR = '\'';
+		DB_NAMES_TO_UPPER = false;
+		setTableNames(TABLE_NAME_PREFIX);
 		
 		m_psetClassName = myPackageName + ".PSet_TripleStore_RDB";
 		m_psetReifierClassName = myPackageName + ".PSet_ReifStore_RDB";
 		
 		m_lsetClassName = myPackageName + ".SpecializedGraph_TripleStore_RDB";						
-		m_lsetReifierClassName = myPackageName + ".SpecializedGraphReifier_RDB";							
+		m_lsetReifierClassName = myPackageName + ".SpecializedGraphReifier_RDB";
 	}
 	
 	/**
@@ -177,12 +179,7 @@ public class Driver_PostgreSQL extends DriverRDB {
 				
 		getTblParams (parms);
 		int tblCnt = getTableCount(graphId);
-		String tblName = TABLE_NAME_PREFIX + 
-					"g" + Integer.toString(graphId) +
-					"t" + Integer.toString(tblCnt) +
-					(isReif ? "_reif" : "_stmt");	
-		tblName = stringToDBname(tblName);	
-		res[0] = tblName;
+		res[0] = genTableName(graphId,tblCnt,isReif);
 		res[1] = parms[0];
 		return res;
 	}
