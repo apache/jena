@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.21 2003-08-27 13:11:17 andy_seaborne Exp $
+ * $Id: ReasonerRegistry.java,v 1.22 2003-09-09 14:41:08 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.rulesys.DAMLMicroReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasonerFactory;
@@ -33,7 +32,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-08-27 13:11:17 $
+ * @version $Revision: 1.22 $ on $Date: 2003-09-09 14:41:08 $
  */
 public class ReasonerRegistry {
 
@@ -50,7 +49,7 @@ public class ReasonerRegistry {
      * Constructor is hidden - go via theRegistry
      */
     private ReasonerRegistry() {
-        allDescriptions = new ModelMem();
+        allDescriptions = ModelFactory.createDefaultModel();
         // Preload the known Jena reasoers
         register(TransitiveReasonerFactory.theInstance());
         register(RDFSRuleReasonerFactory.theInstance());

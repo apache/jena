@@ -1,8 +1,8 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.13 2003-09-09 12:14:42 chris-dollin Exp $
- */
+    $Id: WGTestSuite.java,v 1.14 2003-09-09 14:41:08 chris-dollin Exp $
+*/
 
 package com.hp.hpl.jena.rdf.arp.test;
 

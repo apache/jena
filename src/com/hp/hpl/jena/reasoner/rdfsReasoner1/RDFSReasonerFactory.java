@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.12 2003-08-27 13:11:17 andy_seaborne Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.13 2003-09-09 14:41:08 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * {@link com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory}.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-27 13:11:17 $
+ * @version $Revision: 1.13 $ on $Date: 2003-09-09 14:41:08 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
@@ -64,7 +64,7 @@ public class RDFSReasonerFactory implements ReasonerFactory {
      */
     public Model getCapabilities() {
         if (capabilities == null) {
-            capabilities = new ModelMem();
+            capabilities = ModelFactory.createDefaultModel();
             Resource base = capabilities.createResource(getURI());
             base.addProperty(ReasonerVocabulary.nameP, "RDFS Reasoner 1")
                 .addProperty(ReasonerVocabulary.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"

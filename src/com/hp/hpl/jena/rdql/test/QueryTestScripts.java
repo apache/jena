@@ -1,6 +1,7 @@
 /*
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
+ * $Id: QueryTestScripts.java,v 1.15 2003-09-09 14:41:02 chris-dollin Exp $
  */
 
 
@@ -9,16 +10,15 @@ package com.hp.hpl.jena.rdql.test;
 import java.io.* ;
 //import java.util.* ;
 
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.mem.* ;
+import com.hp.hpl.jena.rdf.model.*;
 
-import junit.framework.* ;
+import junit.framework.*;
 
-import com.hp.hpl.jena.util.* ;
+import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.rdql.* ;
+import com.hp.hpl.jena.rdql.*;
 
-import com.hp.hpl.jena.vocabulary.* ;
+import com.hp.hpl.jena.vocabulary.*;
 
 import org.apache.log4j.Logger;
 
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.14 2003-09-09 14:24:43 chris-dollin Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.15 2003-09-09 14:41:02 chris-dollin Exp $
  */
 
 

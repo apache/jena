@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-09-09 14:24:43 $
+ * Last modified on   $Date: 2003-09-09 14:41:08 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -26,7 +26,6 @@ package com.hp.hpl.jena.ontology.daml.impl.test;
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -42,7 +41,7 @@ import org.apache.log4j.Logger;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.17 2003-09-09 14:24:43 chris-dollin Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.18 2003-09-09 14:41:08 chris-dollin Exp $,
  */
 public class DAMLTest
     extends TestCase

@@ -1,11 +1,12 @@
 /*
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
+ * $Id: TriplePattern.java,v 1.18 2003-09-09 14:41:08 chris-dollin Exp $
  */
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.17 2003-09-09 14:24:43 chris-dollin Exp $
+ * @version  $Id: TriplePattern.java,v 1.18 2003-09-09 14:41:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -13,7 +14,6 @@ package com.hp.hpl.jena.rdql;
 import java.util.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.mem.* ;
 import com.hp.hpl.jena.shared.*;
 
 /*public*/ class TriplePattern
