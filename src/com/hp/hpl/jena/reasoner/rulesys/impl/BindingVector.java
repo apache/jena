@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.1 2003-05-05 15:15:59 der Exp $
+ * $Id: BindingVector.java,v 1.2 2003-05-05 21:52:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * Stack management is done externally.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:59 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -137,6 +137,20 @@ public class BindingVector implements BindingEnvironment {
     }
     
     /**
+     * Bind the variables in a goal pattern using the binding environment, to
+     * generate a more specialized goal
+     * @param goal the TriplePattern to be instantiated
+     * @return a TriplePattern obtained from the goal by substituting current bindinds
+     */
+    public TriplePattern bind(TriplePattern goal) {
+        return new TriplePattern(
+                getGroundVersion(goal.getSubject()),
+                getGroundVersion(goal.getPredicate()),
+                getGroundVersion(goal.getObject())
+        );
+    }
+    
+    /**
      * Instatiate a goal pattern using the binding environment
      * @param goal the TriplePattern to be instantiated
      * @return an instantiated Triple
@@ -148,6 +162,7 @@ public class BindingVector implements BindingEnvironment {
                 getGroundVersion(goal.getObject())
         );
     }
+    
 }
 
 

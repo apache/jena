@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.8 2003-04-22 14:20:09 der Exp $
+ * $Id: ReasonerTester.java,v 1.9 2003-05-05 21:52:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import junit.framework.TestCase;
@@ -43,7 +44,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-04-22 14:20:09 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-05 21:52:43 $
  */
 public class ReasonerTester {
 
@@ -162,7 +163,7 @@ public class ReasonerTester {
      */
     public static Node nodeToPattern(Node n) {
         if (n.isURI() && n.toString().startsWith("var:")) {
-            return TriplePattern.nodeWildcard;
+            return Node_RuleVariable.WILD;
         } else {
             return n;
         }

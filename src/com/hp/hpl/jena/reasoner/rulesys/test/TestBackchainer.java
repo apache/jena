@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.1 2003-05-05 15:16:01 der Exp $
+ * $Id: TestBackchainer.java,v 1.2 2003-05-05 21:52:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
  *  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:16:01 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -81,54 +81,98 @@ public class TestBackchainer extends TestCase {
                         rules.get(1).toString());
     }
     
+//    /**
+//     * Check that a reasoner over an empty rule set accesses
+//     * the raw data successfully.
+//     */
+//    public void testListData() {
+//        Graph data = new GraphMem();
+//        for (int i = 0; i < dataElts.length; i++) {
+//            data.add(dataElts[i]);
+//        }
+//        Graph schema = new GraphMem();
+//        schema.add(new Triple(c, p, c));
+//        
+//        // Case of schema and data but no rule axioms
+//        Reasoner reasoner =  new BasicBackwardRuleReasoner(new ArrayList());
+//        InfGraph infgraph = reasoner.bindSchema(schema).bind(data);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, null, null), 
+//            new Object[] {
+//                new Triple(p, sP, q),
+//                new Triple(q, sP, r),
+//                new Triple(a,  p, b), 
+//                new Triple(c, p, c)});
+//                
+//        // Case of data and rule axioms but no schema
+//        List rules = Rule.parseRules("-> (d p d).");
+//        reasoner =  new BasicBackwardRuleReasoner(rules);
+//        infgraph = reasoner.bind(data);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, null, null), 
+//            new Object[] {
+//                new Triple(p, sP, q),
+//                new Triple(q, sP, r),
+//                new Triple(a,  p, b), 
+//                new Triple(d, p, d)});
+//                
+//        // Case of data and rule axioms and schema
+//        infgraph = reasoner.bindSchema(schema).bind(data);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, null, null), 
+//            new Object[] {
+//                new Triple(p, sP, q),
+//                new Triple(q, sP, r),
+//                new Triple(a,  p, b), 
+//                new Triple(c, p, c),
+//                new Triple(d, p, d)});
+//                
+//    }
+   
     /**
-     * Check that a reasoner over an empty rule set accesses
-     * the raw data successfully.
+     * Test basic rule operations
      */
-    public void testListData() {
+    public void testFirstRules() {    
         Graph data = new GraphMem();
         for (int i = 0; i < dataElts.length; i++) {
             data.add(dataElts[i]);
         }
-        Graph schema = new GraphMem();
-        schema.add(new Triple(c, p, c));
-        
-        // Case of schema and data but no rule axioms
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(new ArrayList());
-        InfGraph infgraph = reasoner.bindSchema(schema).bind(data);
+
+        // Simple AND rule check
+        List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
+        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, null, null), 
+            infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
             new Object[] {
                 new Triple(p, sP, q),
                 new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(c, p, c)});
-                
-        // Case of data and rule axioms but no schema
-        List rules = Rule.parseRules("-> (d p d).");
+                new Triple(p, sP, r)
+            } );
+            
+        // AND/OR case with tabling
+        data = new GraphMem();
+        data.add(new Triple(a, r, b));
+        data.add(new Triple(b, r, c));
+        data.add(new Triple(b, r, b));
+        data.add(new Triple(b, r, d));
+        rules = Rule.parseRules(
+                        "[r1: (?x p ?y) <- (?x r ?y)]" +
+                        "[r2: (?x p ?z) <- (?x p ?y), (?y r ?z)]" 
+                        );        
         reasoner =  new BasicBackwardRuleReasoner(rules);
         infgraph = reasoner.bind(data);
+        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, null, null), 
+            infgraph.find(a, p, null), 
             new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(d, p, d)});
-                
-        // Case of data and rule axioms and schema
-        infgraph = reasoner.bindSchema(schema).bind(data);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, null, null), 
-            new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(c, p, c),
-                new Triple(d, p, d)});
-                
+                new Triple(a, p, b),
+                new Triple(a, p, d),
+                new Triple(a, p, c)
+            } );
+        
     }
-    
 }
 
 

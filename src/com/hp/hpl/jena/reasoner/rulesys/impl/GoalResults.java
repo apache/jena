@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalResults.java,v 1.1 2003-05-05 15:15:59 der Exp $
+ * $Id: GoalResults.java,v 1.2 2003-05-05 21:52:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -14,6 +14,7 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.BasicBackwardRuleInfGraph;
 
 import java.util.*;
+import org.apache.log4j.Logger;
 
 /**
  * Part of the backward chaining rule interpreter. The goal table
@@ -25,7 +26,7 @@ import java.util.*;
  * the OR graph of the evaluation trace.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:59 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
  */
 public class GoalResults {
 
@@ -50,6 +51,9 @@ public class GoalResults {
     
     /** The set of remaining RuleInstances that can generate results for this entry */
     List ruleInstances;
+    
+    /** log4j logger*/
+    static Logger logger = Logger.getLogger(GoalResults.class);
     
 //  =======================================================================
 //   methods
@@ -137,6 +141,9 @@ public class GoalResults {
             } else if (result instanceof Triple) {
                 resultSet.add(result);
                 flushDependents();
+                if (ruleEngine.isTraceOn()) {
+                    logger.debug("Cranking GoalResult on goal (" + goal + ") generated " + result);
+                }
                 return result;
             }
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Node_RuleVariable.java,v 1.2 2003-05-05 15:16:00 der Exp $
+ * $Id: Node_RuleVariable.java,v 1.3 2003-05-05 21:52:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,13 +19,15 @@ import com.hp.hpl.jena.graph.Node_Variable;
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 15:16:00 $
+ * @version $Revision: 1.3 $ on $Date: 2003-05-05 21:52:41 $
  */
 public class Node_RuleVariable extends Node_Variable {
-
     /** The offset of this variable in the rule's binding table */
     protected int index;
-    
+
+    /** A static wildcard - like Node.ANY but tests equl to other Node_RuleVariables */
+    public static final Node_RuleVariable WILD = new Node_RuleVariable("*", 0);
+         
     /**
      * Constructor
      * @param label the text label for the variable

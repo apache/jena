@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.3 2003-05-05 15:16:00 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.4 2003-05-05 21:52:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-05 15:16:00 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-05 21:52:41 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph {
 
@@ -74,8 +74,8 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
     /** Default setting for rules threshold */
     public static final long DEFAULT_RULES_THRESHOLD = 500000;
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(BasicBackwardRuleInfGraph.class);
+    /** log4j logger*/
+    static Logger logger = Logger.getLogger(BasicBackwardRuleInfGraph.class);
     
 //=======================================================================
 // Core methods
@@ -187,6 +187,13 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
      */
     public void setTraceOn(boolean state) {
         traceOn = state;
+    }
+    
+    /**
+     * Return true if tracing is switched on
+     */
+    public boolean isTraceOn() {
+        return traceOn;
     }
     
 //  =======================================================================

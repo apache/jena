@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalState.java,v 1.1 2003-05-05 15:15:59 der Exp $
+ * $Id: GoalState.java,v 1.2 2003-05-05 21:52:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * whole derivation) is complete.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:59 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
  */
 public class GoalState {
     
@@ -64,7 +64,9 @@ public class GoalState {
         if (solutionPointer < results.numResults()) {
             return results.getResult(solutionPointer++);
         } else {
-            return results.crank();
+            Object result = results.crank();
+            if (!(result instanceof StateFlag)) solutionPointer++;
+            return result;
         }
     }
     

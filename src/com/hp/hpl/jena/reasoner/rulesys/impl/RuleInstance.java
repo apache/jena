@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleInstance.java,v 1.1 2003-05-05 15:16:00 der Exp $
+ * $Id: RuleInstance.java,v 1.2 2003-05-05 21:52:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import java.util.*;
+import org.apache.log4j.Logger;
 
 /**
  *  Part of the backward chaining rule interpreter. A RuleInstance
@@ -20,7 +21,7 @@ import java.util.*;
  * goal results.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:16:00 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
  */
 public class RuleInstance {
 
@@ -38,6 +39,9 @@ public class RuleInstance {
     
     /** A push down state of RuleStates for earlier subgoals */
     protected ArrayList stateStack = new ArrayList(); 
+    
+    /** log4j logger*/
+    static Logger logger = Logger.getLogger(RuleInstance.class);
     
     /**
      * Constructor. Create a new continuation point for a rule in
@@ -57,6 +61,9 @@ public class RuleInstance {
             if (state == null) return StateFlag.FAIL;
         }
         BasicBackwardRuleInfGraph ruleEngine = generator.ruleEngine;
+        if (ruleEngine.isTraceOn()) {
+            logger.debug("Entering ruleInstance: " + rule.toShortString());
+        }
         // Process the AND until we hit a fail, a suspend or get though all the clauses
         while(true) {
             Object result = state.next();
@@ -66,17 +73,25 @@ public class RuleInstance {
                 int clauseIndex = state.clauseIndex;
                 BindingVector env = state.env;
                 boolean finished = true;
-                stateStack.add(state);
                 while (clauseIndex < maxClause) {
                     Object clause = rule.getBodyElement(clauseIndex++);
                     if (clause instanceof TriplePattern) {
-                        // found next subgoal to try 
-                        GoalState gs = ruleEngine.findGoal((TriplePattern)clause);
-                        state = new RuleState(gs, new BindingVector(state.env), clauseIndex);
+                        // found next subgoal to try
+                        // Push current state onto stack 
+                        stateStack.add(state);
+                        // This is an expensive step - turns over storage in the inner loop
+                        TriplePattern subgoal = env.bind((TriplePattern)clause);
+                        GoalState gs = ruleEngine.findGoal(subgoal);
+                        state = new RuleState(gs, subgoal, new BindingVector(state.env), clauseIndex);
+                        if (ruleEngine.isTraceOn()) {
+                            logger.debug("Pushed new rule state for subgoal: " + subgoal);
+                        }
                         finished = false;
                     } else {
                         if (!ruleEngine.processBuiltin(clause, rule, env)) {
                             result = StateFlag.FAIL;
+                            // push state onto stack, fail will pop it again
+                            stateStack.add(state);
                             finished = false;
                             break;      // fall through to stack pop
                         }
@@ -87,6 +102,9 @@ public class RuleInstance {
             if (result == StateFlag.SUSPEND) {
                 // Record that this processing point is suspended on the current subgoal
                 state.goalState.results.addDependent(generator);
+                if (ruleEngine.isTraceOn()) {
+                    logger.debug("Suspending ruleInstance: " + rule.toShortString());
+                }
                 return result;
             } else if (result == StateFlag.FAIL) {
                 // fail back
@@ -96,12 +114,19 @@ public class RuleInstance {
                     stateStack.remove(ptr);
                 } else {
                     // Run out of alternatives so the whole rule fails
+                    if (ruleEngine.isTraceOn()) {
+                        logger.debug("Failing ruleInstance: " + rule.toShortString());
+                    }
                     return StateFlag.FAIL;
                 }
             }
         }
         // If we get to here we have run out of body clauses
-        return state.env.instantiate(head);
+        Triple result = state.env.instantiate(head);
+        if (ruleEngine.isTraceOn()) {
+            logger.debug("Returning from ruleInstance: " + rule.toShortString() + " value = (" + result +")");
+        }
+        return result;
     }
 
     /**
@@ -148,8 +173,9 @@ public class RuleInstance {
         while (state == null && clauseIndex < maxClause) {
             Object clause = rule.getBodyElement(clauseIndex++);
             if (clause instanceof TriplePattern) {
-                GoalState gs = ruleEngine.findGoal((TriplePattern)clause);
-                state = new RuleState(gs, env, clauseIndex);
+                TriplePattern subgoal = env.bind((TriplePattern)clause);
+                GoalState gs = ruleEngine.findGoal(subgoal);
+                state = new RuleState(gs, subgoal, env, clauseIndex);
             } else {
                 if (!ruleEngine.processBuiltin(clause, rule, env)) {
                     return;
@@ -188,11 +214,10 @@ public class RuleInstance {
          * Constructor. Caches the map from result node to environment offset
          * to speed up result checking during next().
          */
-        RuleState(GoalState goalState, BindingVector env, int clauseIndex) {
+        RuleState(GoalState goalState, TriplePattern goal, BindingVector env, int clauseIndex) {
             this.goalState = goalState;
             this.env = env;
             this.clauseIndex = clauseIndex;
-            TriplePattern goal = goalState.results.goal;
             Node n = goal.getSubject();
             subjectBind = (n instanceof Node_RuleVariable) ? ((Node_RuleVariable)n).getIndex() : -1 ;
             n = goal.getPredicate();

@@ -5,21 +5,23 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalTable.java,v 1.1 2003-05-05 15:15:59 der Exp $
+ * $Id: GoalTable.java,v 1.2 2003-05-05 21:52:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.BasicBackwardRuleInfGraph;
 
 import java.util.*;
+import org.apache.log4j.Logger;
 
 /**
  *  Part of the backwared chaining rule interpreter. The goal table
  *  is a table of partially evaluated goals.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:59 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-05 21:52:42 $
  */
 public class GoalTable {
 
@@ -28,6 +30,9 @@ public class GoalTable {
     
     /** The parent inference engine for the goal table */
     BasicBackwardRuleInfGraph ruleEngine;
+    
+    /** log4j logger*/
+    static Logger logger = Logger.getLogger(GoalTable.class);
         
     /**
      * Constructor. Creates a new, empty GoalTable. Any goal search on
@@ -47,6 +52,9 @@ public class GoalTable {
      * @return a GoalState which can iterate over all of the goal solutions
      */
     public GoalState findGoal(TriplePattern goal) {
+        if (ruleEngine.isTraceOn()) {
+            logger.debug("findGoal on " + goal.toString());
+        }
         GoalResults results = (GoalResults) table.get(goal);
         if (results == null) {
             results = new GoalResults(goal, ruleEngine);
@@ -62,6 +70,16 @@ public class GoalTable {
         table = new HashMap();
     }
     
+    /**
+     * Normalize a node by relacing any variables by Node.ANY
+     */
+    private Node normalize(Node n) {
+        if (n.isVariable()) {
+            return Node.ANY;
+        } else {
+            return n;
+        }
+    }
 }
 
 

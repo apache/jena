@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TriplePattern.java,v 1.4 2003-04-15 21:20:27 jeremy_carroll Exp $
+ * $Id: TriplePattern.java,v 1.5 2003-05-05 21:50:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -25,7 +26,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:20:27 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-05 21:50:51 $
  */
 public class TriplePattern {
 
@@ -37,9 +38,6 @@ public class TriplePattern {
     
     /** The object element of the pattern */
     protected Node object;
-    
-    /** A cached, preconstructed wildcard node */
-    public static final Node nodeWildcard = Node.createVariable("*");
     
     /**
      * Constructor - builds a pattern from three nodes,
@@ -175,7 +173,7 @@ public class TriplePattern {
      * Convert any null wildcards to Node_Variable wildcards.
      */
     private static Node normalize(Node node) {
-        return node == null ? nodeWildcard : node;
+        return node == null ? Node_RuleVariable.WILD : node;
     }
             
     /**
