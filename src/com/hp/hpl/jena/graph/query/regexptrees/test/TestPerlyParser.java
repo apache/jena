@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.3 2004-08-16 19:47:00 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.4 2004-08-17 08:53:37 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -23,6 +23,20 @@ public class TestPerlyParser extends GraphTestBase
     
     public static TestSuite suite()
         { return new TestSuite( TestPerlyParser.class ); }
+    
+    protected static class FlagException extends RuntimeException
+        {}
+    
+    public void testAlternateGenerator()
+        {
+        RegexpTreeGenerator g = new SimpleGenerator()
+            {
+            public RegexpTree getAnySingle() { throw new FlagException(); }
+            };
+        PerlPatternParser p = new PerlPatternParser( ".", g );
+        try { p.parseAtom(); fail( "should be using supplied generator" ); }
+        catch (FlagException e) { pass(); }
+        }
     
     public void testLit()
         {
@@ -57,14 +71,25 @@ public class TestPerlyParser extends GraphTestBase
     public void testDollarAtom()
         { testSimpleSpecialAtom( RegexpTree.EOL, "$" ); }
     
-    public void testClassAtoms()
+    public void testClassesUnimplemented()
         {
-        
+        PerlPatternParser p = new PerlPatternParser( "[" );
+        try { p.parseAtom(); fail( "should be unimplemented at the moment" ); }
+        catch (RegexpTree.UnsupportedException e) { pass(); }
         }
     
-    public void testBackslahedAtoms()
+    public void testTerminatorsReturnNull()
         {
-        
+        assertEquals( null, new PerlPatternParser( "|" ).parseAtom() );
+        assertEquals( null, new PerlPatternParser( ")" ).parseAtom() );
+        assertEquals( null, new PerlPatternParser( "]" ).parseAtom() );
+        }
+    
+    public void testBackslashedAtomsUnimplemented()
+        {
+        PerlPatternParser p = new PerlPatternParser( "\\" );
+        try { p.parseAtom(); fail( "should be unimplemented at the moment" ); }
+        catch (RegexpTree.UnsupportedException e) { pass(); }
         }
     
     public void testParentheses()

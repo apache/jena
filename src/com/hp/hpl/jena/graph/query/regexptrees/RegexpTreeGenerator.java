@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTreeGenerator.java,v 1.1 2004-08-17 07:30:27 chris-dollin Exp $
+  $Id: RegexpTreeGenerator.java,v 1.2 2004-08-17 08:52:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -16,20 +16,51 @@ import java.util.List;
 */
 public interface RegexpTreeGenerator
     {
+    /**
+         Answer some instance of AnySingle (a pattern that matches any one
+         character). May return the same instance on each call.
+    */
     public abstract RegexpTree getAnySingle();
 
+    /**
+         Answer some instance of StartOfLine (a pattern that matches the start of
+         a line). May return the same instance on each call.
+    */
     public abstract RegexpTree getStartOfLine();
 
+    /**
+         Answer some instance of EndOfLine (a pattern that matches the end of
+         a line). May return the same instance on each call.
+    */
     public abstract RegexpTree getEndOfLine();
 
+    /**
+         Answer some instance of Text which matches the literal character
+         <code>ch</code>.
+    */
     public abstract RegexpTree getText( char ch );
 
+    /**
+         Answer an instance of ZeroOrMore with repeated content <code>d</code>.
+    */
     public abstract RegexpTree getZeroOrMore( RegexpTree d );
 
+    /**
+         Answer an instance of OneOrMore with repeated content <code>d</code>.
+    */
     public abstract RegexpTree getOneOrMore( RegexpTree d );
 
+    /**
+         Answer an instance of Optional with content <code>d</code>.
+    */
     public abstract RegexpTree getOptional( RegexpTree d );
 
+    /**
+         Answer a RegExpTree which for matching the sequence of operands 
+         in the list. Every element must be a RegexpTree. If the list contains
+         exactly one element, it is strongly recommended that that element be
+         returned.
+    */
     public abstract Object getSequence( List operands );
     }
 

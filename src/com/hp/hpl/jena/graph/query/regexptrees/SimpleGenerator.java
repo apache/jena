@@ -1,13 +1,17 @@
 /*
     (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
     [See end of file]
-    $Id: SimpleGenerator.java,v 1.1 2004-08-17 07:30:27 chris-dollin Exp $
+    $Id: SimpleGenerator.java,v 1.2 2004-08-17 08:52:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
 
 import java.util.List;
 
+/**
+     The base implementation of <code>RegexpTreeGenerator</code>
+ 	@author hedgehog
+*/
 public class SimpleGenerator implements RegexpTreeGenerator
     {
     public RegexpTree getAnySingle() { return new AnySingle(); }

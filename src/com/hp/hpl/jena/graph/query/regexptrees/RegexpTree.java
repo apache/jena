@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTree.java,v 1.2 2004-08-16 19:46:57 chris-dollin Exp $
+  $Id: RegexpTree.java,v 1.3 2004-08-17 08:52:45 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -15,6 +15,11 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 
 public abstract class RegexpTree
     {
+    public static class UnsupportedException extends RuntimeException
+        {
+
+        }
+    
     public static final RegexpTree EOL = new EndOfLine();
     
     public static final RegexpTree SOL = new StartOfLine();
