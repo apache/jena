@@ -1,3 +1,4 @@
+// (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
 // Test 2-01 : 2 triple patterns the same
 
 SELECT ?x, ?y, ?z

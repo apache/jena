@@ -1,4 +1,0 @@
-# Variables:
-?x ?y ?z .
-# Data:
-?x <urn:/*not_a_comment*/> ?y <http://localhost/p1> ?z "RDQL//RDQL" .

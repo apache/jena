@@ -1,7 +1,0 @@
-# Variables:
-?x ?y ?z1 ?z2 .
-# Data:
-?x <http://rdf.hp.com/r-2> ?y <http://rdf.hp.com/p-1> ?z1 "v-2-1" ?z2 "v-2-1" .
-?x <http://rdf.hp.com/r-1> ?y <http://rdf.hp.com/p-2> ?z1 "v-1-2" ?z2 "v-1-2" .
-?x <http://rdf.hp.com/r-1> ?y <http://rdf.hp.com/p-1> ?z1 "v-1-1" ?z2 "v-1-1" .
-?x <http://rdf.hp.com/r-2> ?y <http://rdf.hp.com/p-2> ?z1 "v-2-2" ?z2 "v-2-2" .

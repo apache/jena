@@ -1,7 +1,0 @@
-# Variables:
-?resource ?givenName .
-# Data:
-?resource <http://somewhere/JohnSmith/> ?givenName "John" .
-?resource <http://somewhere/RebeccaSmith/> ?givenName "Rebecca" .
-?resource <http://somewhere/SarahJones/> ?givenName "Sarah" .
-?resource <http://somewhere/MattJones/> ?givenName "Matthew" .

@@ -1,3 +1,4 @@
+// (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
 // Test 4-01 : Paths : Find all paths of length 2
 
 SELECT *

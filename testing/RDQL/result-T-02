@@ -1,7 +1,0 @@
-# Variables:
-?x ?fname .
-# Data:
-?x <http://somewhere/JohnSmith/> ?fname "John Smith" .
-?x <http://somewhere/RebeccaSmith/> ?fname "Becky Smith" .
-?x <http://somewhere/SarahJones/> ?fname "Sarah Jones" .
-?x <http://somewhere/MattJones/> ?fname "Matt Jones" .

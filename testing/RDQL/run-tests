@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# $Id: run-tests,v 1.1 2003-02-20 15:59:55 andy_seaborne Exp $
+# $Id: run-tests,v 1.2 2003-03-10 09:41:51 andy_seaborne Exp $
 
 # You will probably need to change this script if you use it.
 
@@ -19,16 +19,18 @@ do
     done
 
 
-CP="${CP:-}"
-for jar in $JENADIR/lib/*.jar
-do
-    if [ "$CP" = "" ]
-    then
-	CP="$jar"
-    else
-	CP="$CP;$jar"
-	fi
-done
+export JENAROOT="/home/afs/Projects/Jena"
+CP="$(jena_path)"
+## CP="${CP:-}"
+## for jar in $JENADIR/lib/*.jar
+## do
+##     if [ "$CP" = "" ]
+##     then
+## 	CP="$jar"
+##     else
+## 	CP="$CP;$jar"
+## 	fi
+## done
 
 TESTFILE="${1:-_control_}"
 

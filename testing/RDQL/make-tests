@@ -6,44 +6,54 @@ TEST_LIST="_control_"
 SEP="--------------------------------------------------------------------"
 CP=""
 
+## The format of the test files needs to enable finding the results file.
 
-if [ $# = 0 ]
-then
-    TESTS=test*
-else
-    TESTS="$@"
-    fi
+## if [ $# = 0 ]
+## then
+##     TESTS=test*
+## else
+##     TESTS="$@"
+##     fi
 
 (
-    # Stage 1: do all the model dumps
+    # Stage 1: do all the model dumps : no results file
     for d in model*.nt
     do
 	i=$(($i+1))
-	echo "<query-dump>" "<$d>" "<>" "."
+	echo "<query-dump> <$d> <> ."
 	done
 
     # Stage 2: all the tests
-    for t in $TESTS
+    for t in test-?-??
     do
 	i=$(($i+1))
-	echo "<${t}>" "<>" "<>" "."
+	# We get the model from the query itself at test time
+	#S=$(perl -ne 'if ( /(SOURCE|FROM)\s*<(.*\.nt)>/i ) { print $2,"\n"; }' < $t)
+	# Guess the result file : test-N => result-N
+	R="result-${t#test-}"
+	[ -e "$R" ] || R=''
+	echo "<${t}> <$S> <$R> ."
 	done
 
-    echo
-    echo "# BDB testing."
-    echo
-    # Same for BDB
-    for t in $TESTS
-    do
-	S=$(perl -ne 'if ( /(SOURCE|FROM)\s*<(.*)\.nt>/i ) { print $2,"\n"; }' < $t)
-	if [ "$S" = "" ]
-	then
-	    echo "No source found: $t" 1>&2
-	    continue ;
-	    fi
-	S="BDB/$S.bdb"
-	echo "## <${t}>" "<${S}>" "<>" "."
-	done
+##     echo
+##     echo "# BDB testing."
+##     echo
+## 
+##     # Same for BDB
+##     for t in test-*
+##     do
+## 	S=$(perl -ne 'if ( /(SOURCE|FROM)\s*<(.*)\.nt>/i ) { print $2,"\n"; }' < $t)
+## 	if [ "$S" = "" ]
+## 	then
+## 	    echo "No source found: $t" 1>&2
+## 	    continue ;
+## 	    fi
+## 	S="BDB/$S.bdb"
+## 	# Guess the result file : test-N => result-N
+## 	R="result-${t#test-}"
+## 	[ -e "$R" ] || R=''
+## 	echo "## <${t}>" "<${S}>" "<>" "."
+## 	done
 
 # Don't do this : the control file is CVS'ed as part of the 
 # Jena-wide regression tests.

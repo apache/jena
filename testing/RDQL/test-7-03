@@ -1,5 +1,5 @@
+// (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
 // Test-7-03 : Predicate and Subject 
-// Should return no matches 
 // Model7 has anon subject resources. NB anon properties are illegal (currently).
 
 SELECT  ?x, ?y, ?a

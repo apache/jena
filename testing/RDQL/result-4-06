@@ -1,8 +1,0 @@
-# Variables:
-?x ?p1 ?v1 ?y ?p2 ?v2 .
-# Data:
-?x <anon:6cd7d5:eea1fac33b:-8000> ?p1 <http://rdf.hp.com/p2> ?v1 "v-a-2" ?y <anon:6cd7d5:eea1fac33b:-8000> ?p2 <http://rdf.hp.com/p2> ?v2 "v-a-2" .
-?x <anon:6cd7d5:eea1fac33b:-8000> ?p1 <http://rdf.hp.com/p2> ?v1 "v-a-2" ?y <anon:6cd7d5:eea1fac33b:-8000> ?p2 <http://rdf.hp.com/p1> ?v2 "v-a-1" .
-?x <anon:6cd7d5:eea1fac33b:-8000> ?p1 <http://rdf.hp.com/p1> ?v1 "v-a-1" ?y <anon:6cd7d5:eea1fac33b:-8000> ?p2 <http://rdf.hp.com/p2> ?v2 "v-a-2" .
-?x <anon:6cd7d5:eea1fac33b:-8000> ?p1 <http://rdf.hp.com/p1> ?v1 "v-a-1" ?y <anon:6cd7d5:eea1fac33b:-8000> ?p2 <http://rdf.hp.com/p1> ?v2 "v-a-1" .
-?x <anon:6cd7d5:eea1fac33b:-7ffd> ?p1 <http://rdf.hp.com/p> ?v1 <anon:6cd7d5:eea1fac33b:-8000> ?y <anon:6cd7d5:eea1fac33b:-7ffd> ?p2 <http://rdf.hp.com/p> ?v2 <anon:6cd7d5:eea1fac33b:-8000> .

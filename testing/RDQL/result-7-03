@@ -1,5 +1,0 @@
-# Variables:
-?x ?y ?a .
-# Data:
-?x <anon:b4b2f:eea1faf5d4:-8000> ?y <http://rdf.hp.com/p> ?a <http://rdf.hp.com/p> .
-?x <http://rdf.hp.com/p> ?y <http://rdf.hp.com/p> ?a <http://rdf.hp.com/p> .

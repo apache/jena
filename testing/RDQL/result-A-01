@@ -1,7 +1,0 @@
-# Variables:
-?b ?y .
-# Data:
-?b <anon:cdedfd:eea1fb1d9f:-8000> ?y "11" .
-?b <anon:cdedfd:eea1fb1d9f:-8000> ?y "12" .
-?b <http://never/bag> ?y "21" .
-?b <http://never/bag> ?y "22" .

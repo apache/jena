@@ -1,8 +1,0 @@
-# Variables:
-?property .
-# Data:
-?property <http://www.w3.org/2001/vcard-rdf/3.0#FN> .
-?property <http://somewhere/peopleInfo#age> .
-?property <http://www.w3.org/2001/vcard-rdf/3.0#N> .
-?property <http://www.w3.org/2001/vcard-rdf/3.0#TEL> .
-?property <http://www.w3.org/2001/vcard-rdf/3.0#TEL> .

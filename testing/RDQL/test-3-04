@@ -1,3 +1,4 @@
+// (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
 // Test 3-04 : Triple patterns and constraints
 
 SELECT *

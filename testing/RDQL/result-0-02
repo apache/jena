@@ -1,4 +1,0 @@
-# Variables:
-?y ?z .
-# Data:
-?y <http://localhost/p1> ?z "RDQL//RDQL" .

@@ -1,0 +1,5 @@
+// Datatypes: test handling in results
+
+SELECT ?z
+FROM <model8.n3>
+WHERE (?x ?y ?z)

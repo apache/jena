@@ -1,4 +1,0 @@
-# Variables:
-?a ?b .
-# Data:
-?a <http://rdf.hp.com/s1> ?b <http://rdf.hp.com/p> .

@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.rdql.test;
 
 import java.io.* ;
-import java.util.* ;
+//import java.util.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
@@ -16,71 +16,64 @@ import junit.framework.* ;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.util.* ;
-import com.hp.hpl.jena.util.tuple.* ;
 import com.hp.hpl.jena.rdql.* ;
+
+import com.hp.hpl.jena.vocabulary.* ;
 
 /** Test scripts for RDQL - loads, executes and checks (with JUnit) a collection of 
  *  queries.  New tests added as new featues appera and bugs are reported by
  *  adding new script files.  This class need not change.
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.5 2003-02-20 16:46:31 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.6 2003-03-10 09:44:50 andy_seaborne Exp $
  */
 
 
 public class QueryTestScripts extends TestSuite
 {
-	static final String testSetName = "RDQL - Query - Scripts" ;
+    static final String testSetName = "RDQL - Query - Scripts" ;
 
-    static final public String defaultControlFilename = "_control_" ;
+    static final public String defaultControlFilename = "rdql-tests.n3" ;
     static final public String defaultTestDirectory = "testing/RDQL" ;
     
     public String basename = null ;
     static public boolean printDetails = false ;
     static public boolean displayTime = false ;
-    static Writer outputFile = null ;
 
-	// Instance variables.
-	String controlFilename = null ;
+    // Instance variables.
+    String controlFilename = null ;
     String testDirectory = null ;
 
 
-//    static public void setBase(String directory)
-//    {
-//        testDirectory = directory ;
-//        basename = directory ;
-//        ModelLoader.setFileBase(directory) ;
-//    }
-
-   	// Make runnable from JUnit
+    // Make runnable from JUnit
     public static TestSuite suite() { return suite(testSetName, null) ; }
     
     public static TestSuite suite(String name, Model m)
     {
-    	
-    	return suite(name, m, defaultTestDirectory, defaultControlFilename) ;
+        
+        return suite(name, m, defaultTestDirectory, defaultControlFilename) ;
     }
 
     public static TestSuite suite(String name, Model m, String _testDirectory, String _controlFilename)
     {
-    	return new QueryTestScripts(name, m, _testDirectory, _controlFilename) ;
+        return new QueryTestScripts(name, m, _testDirectory, _controlFilename) ;
     }
     
 
-	private QueryTestScripts(String name,
-							 Model m,
-							 String _testDirectory,
-							 String _controlFilename)
-	{
-		super(name) ;
-		testDirectory = _testDirectory ;
-		controlFilename = _controlFilename ;
-		
+    private QueryTestScripts(String name,
+                             Model m,
+                             String _testDirectory,
+                             String _controlFilename)
+    {
+        super(name) ;
+        testDirectory = _testDirectory ;
+        controlFilename = _controlFilename ;
+        
         String testsFile = (testDirectory==null)?controlFilename:(testDirectory+"/"+controlFilename) ;
         addTests(m, testsFile) ;
 
-	}
-		
+    }
+        
 
     // Alternative invokation for command line use.
     // Assumes it is in the tests directory
@@ -106,57 +99,54 @@ public class QueryTestScripts extends TestSuite
 
     public void addTests(Model model, String testsFile)
     {
-        PrintWriter pw = new PrintWriter(System.out) ;
-        try {
-            BufferedReader r = new BufferedReader(new FileReader(testsFile), 1024) ;
-            TupleSet ts = new TupleSet(r) ;
-            // For each line.
-            for(; ts.hasNext() ; )
-            {
-                List tuple = (List)ts.next() ;
-                if ( tuple == null || tuple.size() != 3 )
-                {
-                    Log.severe("QueryTest: error in test file, line "+ts.lineNumber+"\n"+ts.line);
-                    System.exit(1) ;
-                }
+        PrintWriter out = new PrintWriter(System.out);
+        Model tests = ModelLoader.loadModel(testsFile, "N3");
+        TestManifestList manifest = new TestManifestList(tests);
 
-                // URI , not null
-                TupleItem item1 = (TupleItem)tuple.get(0) ;
-                if ( ! item1.isURI() )
-                {
-                    Log.warning("Not a URI: "+item1.asQuotedString()+" :: "+ts.line) ;
-                    continue ;
-                }
-                // URI - may be null if the query itself has a source in it.
-                TupleItem item2 = (TupleItem)tuple.get(1) ;
-                if ( ! item2.isURI() )
-                {
-                    Log.warning("Not a URI: "+item2.asQuotedString()+" :: "+ts.line) ;
-                    continue ;
-                }
-                // URI
-                TupleItem item3 = (TupleItem)tuple.get(2) ;
-                if ( ! item3.isURI() )
-                {
-                    Log.warning("Not a URI: "+item3.asQuotedString()+" :: "+ts.line) ;
-                    continue ;
-                }
-
-                String testFile = item1.get() ;
-                int i = testFile.lastIndexOf('/') ;
-                String testName = (i<=0) ? testFile : testFile.substring(i+1) ;
-                addTest(new RDQLTest(model, pw, "RDQL:"+testName, testDirectory, item1.get(), item2.get(), item3.get())) ;
-
-                //pw.println(item1.asQuotedString()+" "+item2.asQuotedString()+" "+item3.asQuotedString()+" ");
-            }
-            r.close() ;
-        } catch (IOException e)
+        TestManifestList.TestIterator iter = manifest.iterator();
+        for (; iter.hasNext();)
         {
-            Log.warning("Exception during control file processing", "rdf.query.Test", "doTests", e) ;
-            return ;
+            TestManifestList.TestItem item = iter.nextItem();
+            String queryFile = null;
+            String dataFile = null;
+            String resultsFile = null;
+
+            if (item.getAction() instanceof Literal)
+            {
+                queryFile = ((Literal) item.getAction()).getString();
+            }
+            else if (!((Resource) item.getAction()).isAnon())
+            {
+                queryFile = ((Resource) item.getAction()).getURI();
+            }
+            else
+            {
+                // Anon node - more details
+                Resource r = (Resource) item.getAction();
+                queryFile = r.getProperty(TestQuery.query).getResource().getURI();
+                if (r.hasProperty(TestQuery.data))
+                    dataFile = r.getProperty(TestQuery.data).getResource().getURI();
+            }
+
+            if (item.getResult() != null)
+            {
+                if (item.getResult() instanceof Resource)
+                    resultsFile = ((Resource) item.getResult()).getURI();
+                else
+                    resultsFile = ((Literal) item.getResult()).getString();
+            }
+            TestCase test =
+                new RDQLTest(
+                    model,
+                    out,
+                    item.getName(),
+                    testDirectory,
+                    queryFile,
+                    dataFile,
+                    resultsFile);
+            addTest(test);
         }
     }
-
 
     static class RDQLTest extends TestCase
     {
@@ -173,13 +163,13 @@ public class QueryTestScripts extends TestSuite
         // If no model is supplied one is created or attached (e.g. a database)
 
         RDQLTest(PrintWriter _pw, String testName, String _directory,
-        		 String _queryFile, String _dataFile, String _resultsFile)
+                 String _queryFile, String _dataFile, String _resultsFile)
         {
             this(null, _pw, testName, _directory, _queryFile, _dataFile, _resultsFile) ;
         }
 
         RDQLTest(Model _model, PrintWriter _pw, String testName, String _directory,
-        		 String _queryFile, String _dataFile, String _resultsFile)
+                 String _queryFile, String _dataFile, String _resultsFile)
         {
             super(testName) ;
             model = _model ;
@@ -206,13 +196,14 @@ public class QueryTestScripts extends TestSuite
                     pw.println("Test "+testNumber+" :: QueryFile="+queryFile+", DataFile="+dataFile+", ResultsFile="+resultsFile) ;
                 }
 
-                String qf = (directory==null) ? queryFile : directory+"/"+queryFile ;
+                String qf = convertFilename(queryFile, directory) ;
                 String queryString = FileUtils.readWholeFile(qf) ;
                 if ( printDetails ) {
                     pw.println("Query:") ;
                     pw.println(queryString);
                     if ( ! queryString.endsWith("\n") )
                         pw.println() ;
+                    pw.flush() ;
                 }
 
                 long startTime = System.currentTimeMillis();
@@ -221,61 +212,58 @@ public class QueryTestScripts extends TestSuite
                 if ( printDetails ) {
                     pw.println("Parsed query:") ;
                     pw.println(query.toString()) ;
+                    pw.flush() ;
                 }
 
                 if ( model == null )
                 {
                     if ( dataFile != null && ! dataFile.equals("") ) {
-                        ModelLoader.setFileBase(directory) ;
                         long startLoadTime = System.currentTimeMillis();
-                        query.setSource(ModelLoader.loadModel(dataFile, null)) ;
+                        String df = convertFilename(dataFile, directory) ;
+                        query.setSource(ModelLoader.loadModel(df, null)) ;
                         query.loadTime = System.currentTimeMillis() - startLoadTime ;
-                        ModelLoader.setFileBase(null) ;
                     }
                 } else
                 {
                     // Model supplied
                     emptyModel(model) ;
-                    String data = dataFile ;
-                    if ( dataFile == null || dataFile.equals("") )
+                    String data = convertFilename(dataFile, directory) ;
+                    if ( data == null )
                         data = query.getSourceURL() ;
 
-                    ModelLoader.setFileBase(directory) ;
                     long startLoadTime = System.currentTimeMillis();
                     query.setSource(ModelLoader.loadModel(model, data, null)) ;
                     query.loadTime = System.currentTimeMillis() - startLoadTime ;
-                    ModelLoader.setFileBase(null) ;
-
                 }
 
                 QueryEngine qe = new QueryEngine(query) ;
                 ModelLoader.setFileBase(directory) ;
                 qe.init() ;
-				ModelLoader.setFileBase(null) ;
-                QueryResults results = qe.exec() ;
+                ModelLoader.setFileBase(null) ;
+                // Do the query!
+                QueryResults resultsActual = qe.exec() ;
+
+                long finishTime = System.currentTimeMillis();
+                long totalTime = finishTime-startTime ;
+
+                // Turn into a resettable version
+                QueryResultsMem results = new QueryResultsMem(resultsActual) ;
+                resultsActual.close() ;
+                resultsActual = null ;
                 
                 boolean testingResults = ( resultsFile != null && !resultsFile.equals("") ) ;
-                if ( testingResults )
-                // Duplicate
-	                results = new QueryResultsMem(results) ;
                 
-                QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
                 if ( printDetails )
                 {
+                    QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
                     fmt.printAll(pw, " | ") ;
                     // Must be after the results have been processed
                     pw.println() ;
                     int n = fmt.numRows() ;
                     pw.println("Results: "+((n < 0)?"unknown (one pass format)":n+"")) ;
+                    fmt.close() ;
+                    results.reset() ;
                 }
-                else
-                    fmt.consume() ;
-
-                long finishTime = System.currentTimeMillis();
-                long totalTime = finishTime-startTime ;
-
-                fmt.close() ;
-                results.close() ;
 
                 if ( printDetails && displayTime )
                 {
@@ -286,36 +274,31 @@ public class QueryTestScripts extends TestSuite
                     pw.println("Query execute:   "+formatlong(query.executeTime) +" ms") ;
                     pw.println("Query misc:      "+formatlong(totalTime-query.parseTime-query.buildTime-query.loadTime-query.executeTime)+" ms") ;
                     pw.println("Query total:     "+formatlong(totalTime)         +" ms") ;
+                    pw.flush() ;
                 }
 
 
                 if ( testingResults )
                 {
-  	                resultsFile = (directory==null) ? resultsFile : directory+"/"+resultsFile ;
-                	QueryResultsMem qr1 = (QueryResultsMem)results ;
-                	qr1.reset() ;
-                	QueryResultsMem qr2 = new QueryResultsMem(resultsFile) ;
-                	if ( ! QueryResultsMem.equivalent(qr1, qr2) )
-                	{
-                		// Reset for printing
-                		//qr1.reset() ;
-                		//qr2.reset() ;
-                		pw.println() ;
-                		pw.println("Failure: "+queryFile) ;
-                		pw.println("Got:") ;
-	                	qr1.list(pw) ;
-	                	pw.flush() ;
-                		pw.println("Expected:") ;
-	                	qr2.list(pw) ;
-	                	pw.flush() ;
-                		Assert.assertTrue(queryFile,false) ;
-                	}
-                	//else
-                	//	System.err.println("Test: "+queryFile+" => "+resultsFile+" passed") ;
+                    String rf = convertFilename(resultsFile,directory) ;
+                    QueryResultsMem qr1 = results ;
+                    QueryResultsMem qr2 = new QueryResultsMem(rf) ;
+                    if ( ! QueryResultsMem.equivalent(qr1, qr2) )
+                    {
+                        pw.println() ;
+                        pw.println("Failure: "+queryFile) ;
+                        pw.println("Got:") ;
+                        
+                        qr1.list(pw) ;
+                        pw.flush() ;
+                        pw.println("Expected:") ;
+                        qr2.list(pw) ;
+                        pw.flush() ;
+                        Assert.assertTrue(queryFile,false) ;
+                    }
+                    //else
+                    //  System.err.println("Test: "+queryFile+" => "+resultsFile+" passed") ;
                 }
-                //else
-                //	System.err.println(queryFile+"No results file") ;
-
             }
             catch (QueryException qEx) {
                 pw.flush() ;
@@ -347,6 +330,17 @@ public class QueryTestScripts extends TestSuite
             sIter.close() ;
         } catch ( RDFException rdfEx)
         { Log.severe("Failed to empty model", "com.hp.hpl.jena.rdf.query.Test.QueryTest", "emptyModel", rdfEx) ; }
+    }
+
+    static String convertFilename(String filename, String directory)
+    {
+        if ( filename == null )
+            return null;
+        if ( filename.startsWith("file:"))
+            filename = filename.substring("file:".length()) ;
+        if ( directory != null && ! filename.startsWith("/"))
+            filename = directory+"/"+filename ;
+        return filename ;
     }
 
     // This method executes a trivial query in order to force most classes to be loaded.
