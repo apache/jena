@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.3 2003-05-12 07:56:46 der Exp $
+ * $Id: Rule.java,v 1.4 2003-05-16 16:39:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.3 $ on $Date: 2003-05-12 07:56:46 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-05-16 16:39:57 $ */
 public class Rule {
     
 //=======================================================================
@@ -66,6 +66,9 @@ public class Rule {
     
     /** Optional name for the rule */
     protected String name;
+    
+    /** The number of distinct variables used in the rule */
+    protected int numVars = -1;
     
     /** A namespace used for Rubic specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubik/";
@@ -154,6 +157,67 @@ public class Rule {
      */
     public String getName() {
         return name;
+    }
+    
+    /**
+     * Set the number of distinct variables for this rule.
+     * Used internally when cloing rules, not normally required.
+     */
+    public void setNumVars(int n) {
+        numVars = n;
+    }
+    
+    /**
+     * Return the number of distinct variables in the rule.
+     */
+    public int getNumVars() {
+        if (numVars == -1) {
+            // only have to do this if the rule was generated programatically
+            // the parser will have prefilled this in for normal rules
+            HashSet vars = new HashSet();
+            findVars(body, vars);
+            findVars(head, vars);
+            numVars = vars.size();
+        }
+        return numVars;
+    }
+    
+    /**
+     * Find all the variables in a clause array.
+     */
+    private void findVars(Object[] nodes, HashSet vars) {
+        for (int i = 0; i < nodes.length; i++) {
+            Object node = nodes[i];
+            if (node instanceof TriplePattern) {
+                findVars((TriplePattern)node, vars);
+            } else {
+                findVars((Functor)node, vars); 
+            }
+        }
+    }
+    
+    /**
+     * Find all the variables in a TriplePattern.
+     */
+    private void findVars(TriplePattern t, HashSet vars) {
+        if (t.getSubject().isVariable()) vars.add(t.getSubject());
+        if (t.getPredicate().isVariable()) vars.add(t.getPredicate());
+        Node obj = t.getObject();
+        if (obj.isVariable()) {
+            vars.add(obj);
+        } else if (Functor.isFunctor(obj)) {
+            findVars((Functor)obj.getLiteral().getValue(), vars);
+        }
+    }
+        
+    /**
+     * Find all the variables in a Functor.
+     */
+    private void findVars(Functor f, HashSet vars) {
+        Node[] args = f.getArgs();
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].isVariable()) vars.add(args[i]);
+        }
     }
     
     /**
@@ -451,11 +515,14 @@ public class Rule {
                     token = peekToken();
                 } while ( !(token.equals(".") || token.equals("]")) );
                 nextToken();        // consume the terminating token
+                Rule r = null;
                 if (backwardRule) {
-                    return new Rule(name, body, head);
+                    r =  new Rule(name, body, head);
                 } else {
-                    return new Rule(name, head, body);
+                    r = new Rule(name, head, body);
                 }
+                r.numVars = varMap.keySet().size();
+                return r;
             } catch (NoSuchElementException e) {
                 throw new ParserException("Malformed rule", this);
             }

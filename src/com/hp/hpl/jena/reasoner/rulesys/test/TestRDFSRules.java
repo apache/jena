@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.5 2003-05-15 17:01:57 der Exp $
+ * $Id: TestRDFSRules.java,v 1.6 2003-05-16 16:39:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.5 $ on $Date: 2003-05-15 17:01:57 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.6 $ on $Date: 2003-05-16 16:39:58 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -67,6 +67,28 @@ public class TestRDFSRules extends TestCase {
     }
 
     /**
+     * Time a trial list of results from an inf graph.
+     */
+    private static void doTiming(Reasoner r, Model tbox, Model data, String name) {
+        Resource C1 = ResourceFactory.createResource("http://www.hpl.hp.com/semweb/2003/eg#C1");
+        Resource C2 = ResourceFactory.createResource("http://www.hpl.hp.com/semweb/2003/eg#C2");
+        
+        long t1 = System.currentTimeMillis();
+        Model m = ModelFactory.createModelForGraph(r.bindSchema(tbox.getGraph()).bind(data.getGraph()));
+        int count = 0;
+        for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
+        long t2 = System.currentTimeMillis();
+        System.out.println(name + ": " + count +" results in " + (t2-t1) +"ms");
+        t1 = System.currentTimeMillis();
+        for (int j = 0; j < 10; j++) {
+            count = 0;
+            for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
+        }
+        t2 = System.currentTimeMillis();
+        System.out.println(name + ": " + count + " results in " + (t2-t1)/10 +"ms");
+    }
+    
+    /**
      * Simple timing test used to just a broad feel for how performance of the
      * pure FPS rules compares with the hand-crafted version.
      * The test ontology and data is very small. The test query is designed to
@@ -78,37 +100,17 @@ public class TestRDFSRules extends TestCase {
         try {
             Model tbox = ModelLoader.loadModel("testing/reasoners/rdfs/timing-tbox.rdf");
             Model data = ModelLoader.loadModel("testing/reasoners/rdfs/timing-data.rdf");
-            Resource C1 = ResourceFactory.createResource("http://www.hpl.hp.com/semweb/2003/eg#C1");
             Reasoner rdfsRule = RDFSRuleReasonerFactory.theInstance().create(null);
             Reasoner rdfsBRule = RDFSBRuleReasonerFactory.theInstance().create(null);
             Reasoner rdfs1    = RDFSReasonerFactory.theInstance().create(null);
-            
-            long t1 = System.currentTimeMillis();
-            Model inf1 = ModelFactory.createModelForGraph(rdfs1.bindSchema(tbox.getGraph()).bind(data.getGraph()));
-            int count = 0;
-            for (Iterator i = inf1.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
-            //for (Iterator i = inf1.listStatements(); i.hasNext(); i.next()) count++;
-            long t2 = System.currentTimeMillis();
-            System.out.println("RDFS1: " + count +" results in " + (t2-t1) +"ms");
-
-            t1 = System.currentTimeMillis();
-            Model inf2 = ModelFactory.createModelForGraph(rdfsRule.bindSchema(tbox.getGraph()).bind(data.getGraph()));
-            count = 0;
-            for (Iterator i = inf2.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
-            //for (Iterator i = inf2.listStatements(); i.hasNext(); i.next()) count++;
-            t2 = System.currentTimeMillis();
-            System.out.println("RDFSrule: " + count +" results in " + (t2-t1) +"ms");
-
-            t1 = System.currentTimeMillis();
-            Model inf3 = ModelFactory.createModelForGraph(rdfsBRule.bindSchema(tbox.getGraph()).bind(data.getGraph()));
-            count = 0;
-            for (Iterator i = inf3.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
-            //for (Iterator i = inf3.listStatements(); i.hasNext(); i.next()) count++;
-            t2 = System.currentTimeMillis();
-            System.out.println("RDFSBrule: " + count +" results in " + (t2-t1) +"ms");
-
+        
+            doTiming(rdfs1, tbox, data, "RDFS1");    
+            doTiming(rdfsRule, tbox, data, "RDFS F rule");    
+            doTiming(rdfsBRule, tbox, data, "RDFS B rule");    
+ 
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println("Problem: " + e.toString());
+            e.printStackTrace();
         }
     }
     

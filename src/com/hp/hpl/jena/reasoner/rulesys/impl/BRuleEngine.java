@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.5 2003-05-15 21:34:32 der Exp $
+ * $Id: BRuleEngine.java,v 1.6 2003-05-16 16:39:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-15 21:34:32 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-16 16:39:57 $
  */
 public class BRuleEngine {
 
@@ -93,6 +93,13 @@ public class BRuleEngine {
     public void setTraceOn(boolean state) {
         traceOn = state;
     }
+    
+    /**
+     * Return true if traces of rule firings should be logged.
+     */
+    public boolean isTraceOn() {
+        return traceOn;
+    }
 
     /**
      * Append a new rule node to the end of the agenda.
@@ -118,6 +125,34 @@ public class BRuleEngine {
             agenda.add(0, rs);
             rs.isScheduled = true;
         }
+    }
+    
+    /**
+     * Get next agenda item. May do heuristic selection of next item to process.
+     */
+    public RuleState nextAgendaItem() {
+        return (RuleState)agenda.removeFirst();
+        
+        // The reordering attempts had no positive effect
+//        int maxPending = 0;
+//        RuleState best = null;
+//        int bestIndex = 0;
+//        int limit = Math.min(10, agenda.size());
+//        for (int i = 0; i < limit; i++) {
+//            RuleState rs = (RuleState)agenda.get(i);
+//            GoalState gs = rs.goalState;
+//            if (gs != null && gs.results.started) {
+//                int pending = gs.results.numResults() - gs.solutionPointer;
+//                if (pending > maxPending) {
+//                    maxPending = pending;
+//                    best = rs;
+//                    bestIndex = i;
+//                }
+//            }
+//        }
+//        if (best == null) return (RuleState)agenda.removeFirst();
+//        agenda.remove(bestIndex);
+//        return best;
     }
     
     /**
@@ -162,10 +197,11 @@ public class BRuleEngine {
         try {
             while(true) {
                 boolean foundResult = false;
+                RuleState delayedRefCountDec = null;
                 if (current == null) {
                     // Move to the next agenda item
                     // (if empty then an exception is thrown and caught later)
-                    current = (RuleState)agenda.removeFirst();
+                    current = nextAgendaItem();
                     current.isScheduled = false;
                     numResults = 0;
                 }
@@ -180,6 +216,7 @@ public class BRuleEngine {
                     if (traceOn) {
                         logger.debug("Failed");
                     }
+                    delayedRefCountDec = current;
                     current = current.prev;
                 } else if (result == StateFlag.SUSPEND) {
                     // Can do no more with this goal
@@ -192,11 +229,13 @@ public class BRuleEngine {
                     // The rule had no clauses left to check, so return answers
                     foundResult = true;
                     env = current.env;
+                    delayedRefCountDec = current;
                     continuation = current.prev;
                 } else {                    // We have a result so continue extending this search tree depth first
                     env = current.newEnvironment((Triple)result);
                     if (env == null) {
                         // failed a functor match
+                        current.ruleInstance.generator.decRefCount();
                         current = current.prev;
                         continue;
                     }
@@ -214,6 +253,7 @@ public class BRuleEngine {
                         } else {
                             if (!infGraph.processBuiltin(clause, rule, env)) {
                                 // This branch has failed
+                                delayedRefCountDec = current;
                                 current = current.prev;
                                 foundGoal = true;
                             }
@@ -233,6 +273,9 @@ public class BRuleEngine {
                         logger.debug("Result:" + finalResult + " <- " + current +", newenv=" + env);
                     }
                     boolean newresult = resultDest.addResult(finalResult);
+                    if (delayedRefCountDec != null) {
+                        delayedRefCountDec.ruleInstance.generator.decRefCount();
+                    }
                     numResults++;
                     current = continuation;
                     if (newresult && resultDest == topGoal) {
@@ -242,6 +285,10 @@ public class BRuleEngine {
                         // push the current state lower down agenda and try another
                         if (current != null) appendToAgenda(current);
                         current = null;
+                    }
+                } else {
+                    if (delayedRefCountDec != null) {
+                        delayedRefCountDec.ruleInstance.generator.decRefCount();
                     }
                 }
             }
