@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.23 2003-06-19 12:58:05 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.24 2003-06-23 16:28:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-06-19 12:58:05 $
+ * @version $Revision: 1.24 $ on $Date: 2003-06-23 16:28:07 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -219,15 +219,17 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         if (!isPrepared) prepare();
+        ExtendedIterator result = null;
         if (fdata == null) {
-            return fdeductions.findWithContinuation(pattern, continuation);
+            result = fdeductions.findWithContinuation(pattern, continuation);
         } else {
             if (continuation == null) {
-                return fdata.findWithContinuation(pattern, fdeductions);
+                result = fdata.findWithContinuation(pattern, fdeductions);
             } else {
-                return fdata.findWithContinuation(pattern, FinderUtil.cascade(fdeductions, continuation) );
+                result = fdata.findWithContinuation(pattern, FinderUtil.cascade(fdeductions, continuation) );
             }
         }
+        return result.filterDrop(Functor.acceptFilter);
     }
    
     /** 

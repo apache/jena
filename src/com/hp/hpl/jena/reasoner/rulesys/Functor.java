@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.9 2003-06-19 14:25:24 der Exp $
+ * $Id: Functor.java,v 1.10 2003-06-23 16:28:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.util.iterator.Filter;
 import com.hp.hpl.jena.datatypes.*;
 import org.apache.log4j.Logger;
 
@@ -27,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-19 14:25:24 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-23 16:28:07 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -38,6 +39,14 @@ public class Functor implements ClauseEntry {
     
     /** A built in that implements the functor */
     protected Builtin implementor;
+    
+    /** A static Filter instance that detects triples with Functor objects */
+    public static final Filter acceptFilter = new Filter() {
+                public boolean accept(Object t) {
+                    Node n = ((Triple)t).getObject();
+                    return n.isLiteral() && n.getLiteral().getDatatype() == FunctorDatatype.theFunctorDatatype;
+                }
+            };
     
     /** log4j logger */
     protected static Logger logger = Logger.getLogger(Functor.class);

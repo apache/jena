@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.13 2003-06-19 16:45:48 der Exp $
+ * $Id: TestBasics.java,v 1.14 2003-06-23 16:27:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-19 16:45:48 $
+ * @version $Revision: 1.14 $ on $Date: 2003-06-23 16:27:56 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -335,6 +335,7 @@ public class TestBasics extends TestCase  {
      */
     public void testEmbeddedFunctors() {
         String rules = "(?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
+                       "(?C rb:restriction all(eg:p, eg:D)) -> (?C rb:restriction 'allOK')." +
                        "[ -> (eg:foo eg:prop functor(eg:bar, '1')) ]" +
                        "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
                        "[ (?x eg:prop functor(?v, *)) -> (?x eg:propfunc ?v) ]" +
@@ -361,11 +362,12 @@ public class TestBasics extends TestCase  {
         
         RDFNode flit = infModel.getResource(R1.getURI()).getProperty(rbr).getObject();
         assertNotNull(flit);
-        assertTrue(flit instanceof Literal);
-        Functor func = (Functor)((Literal)flit).getValue();
-        assertEquals("all", func.getName());
-        assertEquals(p.getNode(), func.getArgs()[0]);
-        assertEquals(D.getNode(), func.getArgs()[1]);
+        assertEquals(flit.toString(), "allOK");
+//        assertTrue(flit instanceof Literal);
+//        Functor func = (Functor)((Literal)flit).getValue();
+//        assertEquals("all", func.getName());
+//        assertEquals(p.getNode(), func.getArgs()[0]);
+//        assertEquals(D.getNode(), func.getArgs()[1]);
         
         Literal one = (Literal)foo.getProperty(propbar).getObject();
         assertEquals(new Integer(1), one.getValue());
