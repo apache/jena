@@ -10,6 +10,9 @@ Post Jena 2.1 change list
       o Fixed XSDDouble isValidValue test to check for Double
       o Fixed XSDbase64Binary, XSDhexBinary returning strings instead of byte[]
 
+      o GraphExtract operations made available through ModelExtract plus 
+        StatementBoundary[Base] & StatementTripleBoundary.
+
   Database
       o Fixed user-reported problem where removeNsPrefix() wasn't persistent
 
@@ -71,6 +74,16 @@ Post Jena 2.1 change list
       o Changed delete for RETE reasoner to be non-incremental to work around
         bug without demanding full reference counting
       o Added experimental OWLMini and OWLMicro reasoners
+
+      o [kers] Added WrappedReasonerFactory class and RuleReasoner interface.
+        Some tweaking to "implements" clauses. Refactored out some setRules
+        code into FBRuleReasoner and BaseRuleReasonerFactory, to make it easy
+        to share code for ModelSpec's reasoner specs.
+
+  ModelSpecs
+      o The modelspec language has been extended. Reasoner specs can now
+        specify multiple rulesets by URL or by literal strings. Schemas
+        may also be specified by URL. 
 
   PrefixMappings
       o Standard no longer contains vcard, jms, or rss.
