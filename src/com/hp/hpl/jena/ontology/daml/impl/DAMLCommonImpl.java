@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-14 15:10:44 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-04-22 19:22:34 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -45,15 +45,7 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.RDFException;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.SimpleSelector;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-
+import com.hp.hpl.jena.rdf.model.*;
 
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
@@ -84,7 +76,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * properties, such as comment, label, and equivalentTo.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.2 2003-04-14 15:10:44 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.3 2003-04-22 19:22:34 ian_dickinson Exp $
  */
 public abstract class DAMLCommonImpl
     extends ResourceImpl
