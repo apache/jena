@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.1 2003-07-18 16:20:08 der Exp $
+ * $Id: LPRuleStore.java,v 1.2 2003-07-20 19:06:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-18 16:20:08 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-20 19:06:07 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -93,6 +93,13 @@ public class LPRuleStore extends RuleStore {
             }
         }
         predicateToCodeMap.put(Node_RuleVariable.ANY, allRuleClauseCodes);
+        
+        
+        // Now compile all the clauses
+        for (Iterator i = allRuleClauseCodes.iterator(); i.hasNext(); ) {
+            RuleClauseCode code = (RuleClauseCode)i.next();
+            code.compile(this);
+        }
         isCompiled = true;
     }
     

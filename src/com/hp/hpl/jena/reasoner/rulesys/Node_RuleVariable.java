@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Node_RuleVariable.java,v 1.9 2003-07-01 11:04:01 der Exp $
+ * $Id: Node_RuleVariable.java,v 1.10 2003-07-20 19:05:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-07-01 11:04:01 $
+ * @version $Revision: 1.10 $ on $Date: 2003-07-20 19:05:40 $
  */
 public class Node_RuleVariable extends Node_Variable {
     /** The offset of this variable in the Frule's binding table */
@@ -33,7 +33,7 @@ public class Node_RuleVariable extends Node_Variable {
      *  itself (meaning unbound) or an actual value */
     protected Node value;
     
-    /** A flag to indicate the the value is reference (pointer to a var) */
+    /** A flag to indicate that the value is reference (pointer to a var) */
     protected boolean isRef = true;
     
     /** A static wildcard - like Node.ANY but tests equl to other Node_RuleVariables */
@@ -62,11 +62,20 @@ public class Node_RuleVariable extends Node_Variable {
     }
     
     /**
-     * Returns the varibles index in an frule binding vector.
+     * Returns the variable's index in a binding vector.
      * @return int
      */
     public int getIndex() {
         return index;
+    }
+    
+    /**
+     * Changes the variable's index. This is used in LP rules which classify the
+     * variables into different sequences.
+     * @return int
+     */
+    public void setIndex(int index) {
+        this.index = index;
     }
     
     /**
