@@ -170,6 +170,9 @@ import oracle.sql.BLOB;
 		if ( LONG_OBJECT_LENGTH > 4000 )
 			throw new RDFRDBException("Long object length specified (" + LONG_OBJECT_LENGTH +
 					") exceeds maximum sane length of 4000.");
+		if ( INDEX_KEY_LENGTH > 4000 )
+			throw new RDFRDBException("Index key length specified (" + INDEX_KEY_LENGTH +
+					") exceeds maximum sane length of 4000.");
 
 		objColType = "VARCHAR2(" + LONG_OBJECT_LENGTH + ")";
 		STRINGS_TRIMMED = false;
