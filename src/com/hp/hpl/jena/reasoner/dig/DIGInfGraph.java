@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGInfGraph.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-18 14:50:40 $
+ * Last modified on   $Date: 2004-05-18 15:41:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGInfGraph.java,v 1.7 2004-05-18 14:50:40 ian_dickinson Exp $
+ * @version CVS $Id: DIGInfGraph.java,v 1.8 2004-05-18 15:41:38 ian_dickinson Exp $
  */
 public class DIGInfGraph
     extends BaseInfGraph
@@ -146,6 +146,7 @@ public class DIGInfGraph
     public ExtendedIterator find( Node subject, Node property, Node object, Graph param ) {
         OntModel premises = ModelFactory.createOntologyModel( m_adapter.getSourceSpecification(), 
                                                               ModelFactory.createModelForGraph( param ) );
+        premises.setStrictMode( false );
         prepare();
         return m_adapter.find( new TriplePattern( subject, property, object ), premises );
     }

@@ -7,10 +7,10 @@
  * Web site           @website@
  * Created            20-Apr-2004
  * Filename           $RCSfile: WebOntTests.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-18 14:50:40 $
+ * Last modified on   $Date: 2004-05-18 15:41:41 $
  *               by   $Author: ian_dickinson $
  *
  * @copyright@
@@ -26,6 +26,8 @@ package com.hp.hpl.jena.reasoner.dig.test;
 ///////////////
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -74,54 +76,54 @@ public class WebOntTests
 
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
     public static final String[] TEST_DIRS = {
-            //"AllDifferent", 
-            //"AnnotationProperty", 
-            //"DatatypeProperty",
-            //"FunctionalProperty", 
-            //"I3.2", 
-            //"I3.4", 
-            //"I4.1", 
-            //"I4.5",
-            //"I4.6", 
-            //"I5.1",
-            //"I5.2", 
-            //"I5.21", 
-            //"I5.24", 
-            //"I5.26",
-            //"I5.3", 
-            //"I5.5", 
-            //"I5.8",
-            //"InverseFunctionalProperty", 
-            //"Nothing",
-            //"Restriction", 
-            //"SymmetricProperty",
-            //"Thing", 
-            //"TransitiveProperty", 
-            //"Class", 
-            //"allValuesFrom", 
-            //"amp-in-url", 
-            //"cardinality", 
-            //"complementOf", 
-            //"datatypes",
-            //"differentFrom", 
-            //"disjointWith", 
-            //"distinctMembers", 
-            //"equivalentClass", 
-            //"equivalentProperty", 
-            //"imports",
-            //"intersectionOf", 
-            //"inverseOf", 
-            //"localtests", 
-            //"maxCardinality", 
-            //"miscellaneous", 
-            //"oneOf", 
-            //"sameAs", 
-            //"someValuesFrom", 
-            //"statement-entailment",
-            //"unionOf", 
-            //"xmlbase", 
+            "AllDifferent", 
+            "AnnotationProperty", 
+            "DatatypeProperty",
+            "FunctionalProperty", 
+            "I3.2", 
+            "I3.4", 
+            "I4.1", 
+            "I4.5",
+            "I4.6", 
+            "I5.1",
+            "I5.2", 
+            "I5.21", 
+            "I5.24", 
+            "I5.26",
+            "I5.3", 
+            "I5.5", 
+            "I5.8",
+            "InverseFunctionalProperty", 
+            "Nothing",
+            "Restriction", 
+            "SymmetricProperty",
+            "Thing", 
+            "TransitiveProperty", 
+            "Class", 
+            "allValuesFrom", 
+            "amp-in-url", 
+            "cardinality", 
+            "complementOf", 
+            "datatypes",
+            "differentFrom", 
+            "disjointWith", 
+            "distinctMembers", 
+            "equivalentClass", 
+            "equivalentProperty", 
+            "imports",
+            "intersectionOf", 
+            "inverseOf", 
+            "localtests", 
+            "maxCardinality", 
+            "miscellaneous", 
+            "oneOf", 
+            "sameAs", 
+            "someValuesFrom", 
+            "statement-entailment",
+            "unionOf", 
+            "xmlbase", 
             "description-logic",
-            // "extra-credit",
+             "extra-credit",
     };
 
     /**
@@ -216,6 +218,13 @@ public class WebOntTests
         }
 
         WebOntTests harness = new WebOntTests();
+        
+        // initialise the document manager
+        OntDocumentManager.getInstance().addAltEntry( "http://www.w3.org/2002/03owlt/miscellaneous/consistent002", 
+                                                        "file:testing/wg/miscellaneous/consistent002.rdf" );
+        OntDocumentManager.getInstance().addAltEntry( "http://www.w3.org/2002/03owlt/miscellaneous/consistent001", 
+                                                        "file:testing/wg/miscellaneous/consistent001.rdf" );
+
         if (testName == null) {
             harness.runTests();
         }
@@ -442,7 +451,9 @@ public class WebOntTests
                 Resource subject = rootQuery.getSubject();
                 RDFNode object = rootQuery.getObject();
                 
-                Model premises = ModelFactory.createDefaultModel();
+                OntModel premises = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
+                premises.setStrictMode( false );
+                
                 if (subject.isAnon()) {
                     // subject is assumed to be an expression
                     addSubGraph( subject, premises );
