@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalTable.java,v 1.7 2003-05-21 07:58:22 der Exp $
+ * $Id: GoalTable.java,v 1.8 2003-05-21 16:53:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  *  TODO Investigate performance impact of switching to subsumption-based.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-21 07:58:22 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-21 16:53:26 $
  */
 public class GoalTable {
 
@@ -68,6 +68,26 @@ public class GoalTable {
      */
     public void reset() {
         table = new HashMap();
+    }
+    
+    /**
+     * Clear all partial results, closing any pending RuleStates but leaving
+     * completed goals intact.
+     */
+    public void removePartialGoals() {
+        for (Iterator i= table.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry entry = (Map.Entry)i.next();
+            TriplePattern goal = (TriplePattern)entry.getKey();
+            GoalResults result = (GoalResults)entry.getValue();
+            if ( ! result.isComplete()) {
+                // Close any iterators in the dependent goal states.
+                for (Iterator d = result.dependents.iterator(); d.hasNext(); ) {
+                    RuleState rs = (RuleState)d.next();
+                    if (rs.goalState != null) rs.goalState.close();
+                }
+                i.remove();
+            }
+        }
     }
     
     /**

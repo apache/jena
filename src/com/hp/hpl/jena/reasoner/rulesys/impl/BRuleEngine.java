@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.12 2003-05-21 11:13:49 der Exp $
+ * $Id: BRuleEngine.java,v 1.13 2003-05-21 16:53:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -28,13 +28,16 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-05-21 11:13:49 $
+ * @version $Revision: 1.13 $ on $Date: 2003-05-21 16:53:27 $
  */
 public class BRuleEngine {
 
     /** a list of active RuleStates to be processed */
     protected LinkedList agenda = new LinkedList();
     
+//    /** the RuleState currently being procssed */
+//    protected RuleState current;
+
     /** The table of all goals */
     protected GoalTable goalTable;
     
@@ -66,10 +69,28 @@ public class BRuleEngine {
     }
     
     /**
-     * Clear the tabled results
+     * Clear all tabled results.
      */
-    public void reset() {
+    public synchronized void reset() {
+        agenda.clear();
         goalTable.reset();
+    }
+    
+    /**
+     * Stop the current work. This is called if the top level results iterator has
+     * either finished or the calling application has had enough. We leave any completed 
+     * results in the GoalTable but clear out the agenda and all non-compelted results.
+     */
+    public synchronized void halt() {
+        // Clear agenda
+        for (Iterator i = agenda.iterator(); i.hasNext(); ) {
+            RuleState item = (RuleState)i.next();
+            // don't call item.close(), that would update the ref count and set a completion flag
+            if (item.goalState != null) item.goalState.close();     
+        }
+        agenda.clear();
+        // Clear the goal table
+        goalTable.removePartialGoals();
     }
     
     /**
@@ -140,8 +161,25 @@ public class BRuleEngine {
         next.isScheduled = false;
         return next;
         
-        // The reordering attempts had no positive effect
-//        int maxPending = 0;
+//        // This wasn't any good
+//        RuleState next = null;
+//        for (Iterator i = agenda.iterator(); i.hasNext(); ) {
+//            RuleState item = (RuleState)i.next();
+//            if (item.couldProcess()) {
+//                next = item;
+//                break;
+//            }
+//        }
+//        if (next != null) {
+//            agenda.remove(next);
+//        } else {
+//            next = (RuleState)agenda.removeFirst();
+//        }
+//        next.isScheduled = false;
+//        return next;
+//        
+//        // This was even worse
+//        int maxPending = -1;
 //        RuleState best = null;
 //        int bestIndex = 0;
 //        int limit = Math.min(10, agenda.size());
@@ -159,6 +197,7 @@ public class BRuleEngine {
 //        }
 //        if (best == null) return (RuleState)agenda.removeFirst();
 //        agenda.remove(bestIndex);
+//        best.isScheduled = false;
 //        return best;
     }
     
@@ -199,18 +238,18 @@ public class BRuleEngine {
     public synchronized Triple next(GoalState topGoalState) {
         GoalResults topGoal = topGoalState.getGoalResultsEntry();
         int numResults = 0;
+        BindingVector env = null;
         RuleState current = null;
         RuleState continuation = null;
         try {
             while(true) {
+//                System.gc();
                 boolean foundResult = false;
                 RuleState delayedRSClose = null;
-                Trail nexttrail = null;
                 if (current == null) {
                     // Move to the next agenda item
                     // (if empty then an exception is thrown and caught later)
                     current = nextAgendaItem();
-                    current.restoreBindings();
                     numResults = 0;
                 }
                 if (traceOn) {
@@ -229,20 +268,20 @@ public class BRuleEngine {
                 } else if (result == StateFlag.SUSPEND) {
                     // Can do no more with this goal
                     if (traceOn) {
-//                        logger.debug("Suspend " + current);
+                        logger.debug("Suspend " + current);
                     }
-                    current.goalState.results.addDependent(current);
-                    current.unwindBindings();
+                    GoalResults waitingFor = current.goalState.results;
+                    waitingFor.addDependent(current);
                     current = current.prev;
                 } else if (result == StateFlag.SATISFIED) {
                     // The rule had no clauses left to check, so return answers
                     foundResult = true;
+                    env = current.env;
                     delayedRSClose = current;
                     continuation = current.prev;
-                } else {                    
-                    // We have a result so continue extending this search tree depth first
-                    nexttrail = new Trail();
-                    if (! nexttrail.unify((Triple)result, current.getCurrentClause()) ) {
+                } else {                    // We have a result so continue extending this search tree depth first
+                    env = current.newEnvironment((Triple)result);
+                    if (env == null) {
                         // failed a functor match - so loop back to look for more results
                         // Might be better to reschedule onto the end of the agenda?
                         continue;
@@ -256,20 +295,18 @@ public class BRuleEngine {
                         if (clause instanceof TriplePattern) {
                             // found next subgoal to try
                             // Push current state onto stack 
-                            TriplePattern subgoal = nexttrail.partInstantiate((TriplePattern)clause);
+                            TriplePattern subgoal = env.partInstantiate((TriplePattern)clause);
                             if (!subgoal.isLegal()) {
                                 // branch has failed
-                                if (nexttrail != null) nexttrail.unwindBindings();
                                 delayedRSClose = current;
                                 current = current.prev;
                             } else {                                
-                                current = new RuleState(current, nexttrail, subgoal, clauseIndex);
+                                current = new RuleState(current, subgoal, clauseIndex, env);
                             }
                             foundGoal = true;
                         } else {
-                            if (!infGraph.processBuiltin(clause, rule, nexttrail)) {
+                            if (!infGraph.processBuiltin(clause, rule, env)) {
                                 // This branch has failed
-                                if (nexttrail != null) nexttrail.unwindBindings();
                                 delayedRSClose = current;
                                 current = current.prev;
                                 foundGoal = true;
@@ -285,13 +322,9 @@ public class BRuleEngine {
                 if (foundResult) {
                     // If we get to here then this branch has completed and we have a result
                     GoalResults resultDest = current.ruleInstance.generator;
-                    Triple finalResult = current.getResult();
-                    if (nexttrail != null) nexttrail.unwindBindings();
-                    if (finalResult == null) {
-                        continue;
-                    }
+                    Triple finalResult = current.getResult(env);
                     if (traceOn) {
-                        logger.debug("Result:" + finalResult + " <- " + current);
+                        logger.debug("Result:" + finalResult + " <- " + current +", newenv=" + env);
                     }
                     boolean newresult = resultDest.addResult(finalResult);
                     if (delayedRSClose != null) {
@@ -301,17 +334,11 @@ public class BRuleEngine {
                     current = continuation;
                     if (newresult && resultDest == topGoal) {
                         // Found a top level goal result so return it now
-                        if (current != null) {
-                            current.unwindAllBindings();
-                            prependToAgenda(current);
-                        } 
+                        if (current != null) prependToAgenda(current);
                         return finalResult;
                     } else if (numResults > batchSize) {
                         // push the current state lower down agenda and try another
-                        if (current != null) {
-                            current.unwindAllBindings();
-                            appendToAgenda(current);
-                        } 
+                        if (current != null) appendToAgenda(current);
                         current = null;
                     }
                 } else {

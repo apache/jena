@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.19 2003-05-21 11:13:49 der Exp $
+ * $Id: TestBackchainer.java,v 1.20 2003-05-21 16:52:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -28,7 +29,7 @@ import junit.framework.TestSuite;
  * Test harness for the backward chainer. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-05-21 11:13:49 $
+ * @version $Revision: 1.20 $ on $Date: 2003-05-21 16:52:36 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -846,6 +847,43 @@ public class TestBackchainer extends TestCase {
               infgraph.find(null, ty, c), new Object[] {
               } );
     }
+
+    /**
+     * Test close and halt operation.
+     */
+    public void testClose() {    
+        Graph data = new GraphMem();
+        data.add(new Triple(p, sP, q));
+        data.add(new Triple(q, sP, r));
+        data.add(new Triple(C1, sC, C2));
+        data.add(new Triple(C2, sC, C3));
+        data.add(new Triple(a, ty, C1));
+        List rules = Rule.parseRules(
+        "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
+        "[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
+        "[-> (rdf:type rdfs:range rdfs:Class)]" +
+        "[rdfs3:  (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)]" +
+        "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]"
+                        );        
+        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+        // Get just one result
+        ExtendedIterator it = infgraph.find(a, ty, null);
+        Triple result = (Triple)it.next();
+        assertEquals(result.getSubject(), a);
+        assertEquals(result.getPredicate(), ty);
+        it.close();
+        // Make sure if we start again we get the full listing.
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(a, ty, null), 
+            new Object[] {
+                new Triple(a, ty, C1),
+                new Triple(a, ty, C2),
+                new Triple(a, ty, C3)
+            } );
+    }
+
     
 }
 

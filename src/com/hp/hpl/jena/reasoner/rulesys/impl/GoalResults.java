@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalResults.java,v 1.7 2003-05-20 10:21:55 der Exp $
+ * $Id: GoalResults.java,v 1.8 2003-05-21 16:53:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,13 +20,20 @@ import org.apache.log4j.Logger;
  * Part of the backward chaining rule interpreter. The goal table
  * is a table of partially evaluated goals. Each entry is an instance
  * of GoalResults which contains the goal (a generalized triple pattern
- * which supports structured literals), a set triple values, a completion
+ * which supports structured literals), a set of triple values, a completion
  * flag and a generator (which represents a continuation point for
  * finding further goal values). This is essentially an encapsulation of
  * the OR graph of the evaluation trace.
+ * <p>
+ * This implementation is not very space efficient. Once a GoalResult is
+ * complete we could flush all the results out to a single shared deductions
+ * graph in the inference engine wrapper. Care would be needed to do this
+ * in a thread-safe fashion since there can be multiple GoalStates scanning each
+ * GoalResult at any given time.
+ * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-20 10:21:55 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-21 16:53:26 $
  */
 public class GoalResults {
 
