@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMaker.java,v 1.8 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: ModelMaker.java,v 1.9 2003-09-10 14:00:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     A ModelMaker contains a collection of named models, methods for creating
@@ -98,6 +99,14 @@ public interface ModelMaker extends ModelSpec
         makes models. In general this will be an underlying GraphMaker.
     */
     public GraphMaker getGraphMaker();
+    
+    /**
+        Answer an [extended] iterator where each element is the name of a model in
+        the maker, and the complete sequence exhausts the set of names. No particular
+        order is expected from the list.
+        @return an extended iterator over the names of models known to this Maker.
+    */
+    ExtendedIterator listModels();
     }
 
 

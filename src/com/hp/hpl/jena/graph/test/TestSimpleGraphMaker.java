@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleGraphMaker.java,v 1.2 2003-08-27 13:00:37 andy_seaborne Exp $
+  $Id: TestSimpleGraphMaker.java,v 1.3 2003-09-10 14:00:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -24,7 +24,7 @@ public class TestSimpleGraphMaker extends AbstractTestGraphMaker
     public static TestSuite suite()
         { return new TestSuite( TestSimpleGraphMaker.class ); }
     
-    public GraphMaker getGraphFactory()
+    public GraphMaker getGraphMaker()
         { return new SimpleGraphMaker(); }    
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.14 2003-09-08 11:28:23 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.15 2003-09-10 13:59:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -11,6 +11,7 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -57,11 +58,18 @@ public class GraphRDBMaker extends BaseGraphMaker
         {}
         
     /**
-        Answer the default graph of this Maker.
+        Answer the default graph of this Maker; make it if necessary.
     */
     public Graph getGraph()
-        { return consGraph( null, true ); }
+        { if (defaultGraph == null) 
+            defaultGraph = consGraph( null, !c.containsDefaultModel() ); 
+         return defaultGraph; }
         
+    /**
+        The default graph for this maker, or null if there isn't one.
+    */
+    protected Graph defaultGraph = null;
+    
     /**
         Answer an "anonymous", freshly-created graph. We fake this by creating a graph
         with the name "anon_<digit>+". This may lead to problems later; such a graph
@@ -89,6 +97,7 @@ public class GraphRDBMaker extends BaseGraphMaker
     public Graph openGraph( String name, boolean strict )
         {
         boolean fresh = hasGraph( name ) == false && strict == false;
+        if (fresh) created.add( name );
         return consGraph( name, fresh );
         }
         
@@ -128,6 +137,12 @@ public class GraphRDBMaker extends BaseGraphMaker
         
     public void close()
         { /* should consider - do we close the connection or not? */ }
+        
+    public ExtendedIterator listGraphs()
+        { return c.getAllModelNames() .filterDrop ( filterDEFAULT ); }
+        
+    private Filter filterDEFAULT = new Filter()
+        { public boolean accept( Object x ) { return "DEFAULT".equals( x ); } };
     }
 
 /*

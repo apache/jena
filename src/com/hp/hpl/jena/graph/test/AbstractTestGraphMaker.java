@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.10 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.11 2003-09-10 14:00:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
+
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
@@ -27,18 +29,19 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
     public AbstractTestGraphMaker( String name )
             { super( name ); }
             
-    public abstract GraphMaker getGraphFactory();
+    public abstract GraphMaker getGraphMaker();
     
     private GraphMaker gf;
     
     public void setUp()
-        { gf = getGraphFactory(); }
+        { gf = getGraphMaker(); }
         
     public void tearDown()
         { gf.close(); }
 
     /**
-        A trivial test that getGraph delivers a proper graph, not cheating with null.
+        A trivial test that getGraph delivers a proper graph, not cheating with null, and that
+        getGraph() "always" delivers the same Graph.
     */
     public void testGetGraph()
         {
@@ -77,7 +80,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         }
         
     private String jName( String name )
-        { return "jena_test_" + name; }
+        { return "jena-test-AbstractTestGraphMaker-" + name; }
         
     public void testCanCreateTwice()
         {
@@ -201,6 +204,30 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         y.add( triple( "p RR q" ) );
         y.close();
         }
+        
+    public void testListNoGraphs()
+        { assertFalse( gf.listGraphs().hasNext() ); }
+        
+    public void testListThreeGraphs()
+        { gf.createGraph( "x" ).close();
+        gf.createGraph( "y" ).close();
+        gf.createGraph( "z" ).close();
+        Set s = iteratorToSet( gf.listGraphs() );
+        assertEquals( 3, s.size() ); 
+        assertTrue( s.contains( "x" ) );
+        assertTrue( s.contains( "y" ) );
+        assertTrue( s.contains( "z" ) ); }
+        
+    public void testListAfterDelete()
+        { gf.createGraph( "x" ).close();
+        gf.createGraph( "y" ).close();
+        gf.createGraph( "z" ).close();
+        gf.removeGraph( "x" );
+        Set s = iteratorToSet( gf.listGraphs() );
+        assertEquals( 2, s.size() ); 
+        assertTrue( s.contains( "y" ) );
+        assertTrue( s.contains( "z" ) ); }
+        
     }
 
 /*

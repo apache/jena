@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMaker.java,v 1.10 2003-09-09 14:47:49 chris-dollin Exp $
+  $Id: GraphMaker.java,v 1.11 2003-09-10 14:00:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     A factory for providing instances of named graphs with appropriate storage models.
@@ -118,6 +119,14 @@ public interface GraphMaker
         can be done.
     */
     public void close();
+    
+    /**
+        Answer an [extended] iterator where each element is the name of a graph in
+        the maker, and the complete sequence exhausts the set of names. No particular
+        order is expected from the list.
+     	@return an extended iterator over the names of graphs known to this Maker.
+     */
+    ExtendedIterator listGraphs();
 }
 
 /* ****************************************************************************
@@ -128,7 +137,7 @@ public interface GraphMaker
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  *
- * Last modified on   $Date: 2003-09-09 14:47:49 $
+ * Last modified on   $Date: 2003-09-10 14:00:01 $
  *               by   $Author: chris-dollin $
 
  *****************************************************************************/

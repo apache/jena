@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDBMaker.java,v 1.4 2003-09-08 11:28:22 chris-dollin Exp $
+  $Id: TestGraphRDBMaker.java,v 1.5 2003-09-10 14:00:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -34,6 +34,11 @@ public class TestGraphRDBMaker extends AbstractTestGraphMaker
 
     public static TestSuite suite()
         { return new TestSuite( TestGraphRDBMaker.class ); }
+        
+    public void setUp()
+        { super.setUp();
+        // assertFalse( connection.getAllModelNames().hasNext() ); 
+        }
 
     /**
         The current factory object, or null when there isn't one.
@@ -43,7 +48,7 @@ public class TestGraphRDBMaker extends AbstractTestGraphMaker
     /**
         Invent a new factory on the connection, record it, and return it.    
     */
-    public GraphMaker getGraphFactory()
+    public GraphMaker getGraphMaker()
         { return current = new GraphRDBMaker( connection, ReificationStyle.Minimal ); }    
         
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphTestBase.java,v 1.7 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: GraphTestBase.java,v 1.8 2003-09-10 14:00:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -184,6 +184,23 @@ public class GraphTestBase extends JenaTestBase
         return ++counter;
         }
  
+    /**
+        Answer a File naming a freshly-created directory in the temporary directory. This
+        directory should be deleted on exit.
+        TODO handle threading issues, mkdir failure, and better cleanup
+        
+     	@param prefix the prefix for the directory name
+     	@return a File naming the new directory
+     */
+    public static File getScratchDirectory( String prefix )
+        {
+        File result = new File( getTempDirectory(), prefix + randomNumber() );
+        if (result.exists()) return getScratchDirectory( prefix );
+        assertTrue( "make temp directory", result.mkdir() );
+        result.deleteOnExit();
+        return result;   
+        } 
+        
     public static String getTempDirectory()
         { return temp; }
     

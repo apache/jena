@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.15 2003-09-08 12:14:09 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.16 2003-09-10 14:00:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -95,6 +95,12 @@ public class FileGraph extends GraphMem
         if (suffix.equals( "n3" )) return "N3";
         if (suffix.equals( "nt" )) return "N-TRIPLE";
         return "RDF/XML";
+        }
+        
+    public static boolean plausibleGraphName( String name )
+        {
+        String suffix = name.substring( name.lastIndexOf( '.' ) + 1 );
+        return suffix.equals( "n3" ) || suffix.equals( "nt" ) || suffix.equals( "rdf" );
         }
         
     /**

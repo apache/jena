@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.9 2003-09-08 11:28:03 chris-dollin Exp $
+  $Id: SimpleGraphMaker.java,v 1.10 2003-09-10 14:00:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.impl;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -107,6 +108,9 @@ public class SimpleGraphMaker extends BaseGraphMaker
      */
     public void close()
         { /* nothing to do */ }
+        
+    public ExtendedIterator listGraphs()
+        { return WrappedIterator.create( graphs.keySet().iterator() ); }
 	}
 
 
