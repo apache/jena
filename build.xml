@@ -166,7 +166,7 @@
 
 <!-- Section: Javadoc -->
 
-    <target name="javadoc">
+    <target name="javadoc" depends="build-src">
         <delete dir="javadoc"/>
         <mkdir dir="javadoc"/>
 
