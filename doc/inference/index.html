@@ -7,11 +7,11 @@
   <link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body>
+<body id="content">
 
-<h1>Jena 2 Inference support</h1>
+<h1 id="sectionHeading">Jena 2 Inference support</h1>
 
-<p>This section of the user documentation describes the current support for inference 
+<p>This section of the documentation describes the current support for inference 
   available within Jena2. It includes an outline of the general inference API, 
   together with details of the specific rule engines and configurations for RDFS 
   and OWL inference supplied with Jena2.</p>
@@ -35,7 +35,7 @@
   <li><a href="#extensions">Extending the inference support</a></li>
   <li><a href="#futures">Futures</a></li>
 </ol>
-<h1><a name="overview"></a>Overview of inference support</h1>
+<h1 id="sectionHeading"><a name="overview"></a>Overview of inference support</h1>
 <p>The Jena2 inference subsystem is designed to allow a range of inference engines 
   or reasoners to be plugged into Jena. Such engines are used to derive additional 
   RDF assertions which are entailed from some base RDF together with any optional 
@@ -100,7 +100,7 @@
 </dl>
 
 <p>[<a href="#index">index</a>]</p>
-<h1><a name="api"></a>The Inference API</h1>
+<h1 id="sectionHeading"><a name="api"></a>The Inference API</h1>
 <ol>
   <li><a href="#reasonerAPI">Generic reasoner API</a></li>
   <li><a href="#generalExamples">Small examples</a></li>
@@ -235,7 +235,6 @@
   be useful in the cases where you want to store this sort of configuration information 
   in a separate (RDF) configuration file. For hardwired uses the following alternative 
   is often simpler:</p>
-<h2></h2>
 <pre>        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
         reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
                               ReasonerVocabulary.RDFS_SIMPLE);
@@ -451,8 +450,7 @@ Rule rule1 concluded (eg:A eg:p eg:D) <-
   using a <code>setTraceOn()</code> call. If you need to make use of this see 
   the full javadoc.</p>
 <p>[<a href="#index">index</a>]</p>
-<h2></h2>
-<h1><a name="rdfs"></a>The RDFS reasoner</h1>
+<h1 id="sectionHeading"><a name="rdfs"></a>The RDFS reasoner</h1>
 <ol>
   <li><a href="#RDFSintro">RDFS reasoner - introduction and coverage</a></li>
   <li><a href="#RDFSconfiguration">RDFS Configuration</a></li>
@@ -633,7 +631,7 @@ _:anon1 rdf:type datatype .</pre>
   database backends will be considered.</p>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
-<h1><a name="owl"></a>The OWL reasoner</h1>
+<h1 id="sectionHeading"><a name="owl"></a>The OWL reasoner</h1>
 <ol>
   <li><a href="#OWLintro">OWL reasoner introduction</a></li>
   <li><a href="#OWLcoverage">OWL coverage</a></li>
@@ -677,7 +675,7 @@ _:anon1 rdf:type datatype .</pre>
   express in rule-based form and hard to express in standard Description Logics.</p>
 <p>Since RDFS is not a subset of the OWL/Lite or OWL/DL languages the Jena implementation 
   is an incomplete implementation of OWL/full. It includes rules for each of the 
-  OWL/lite constructs together with the hasValue construct. The constructs support 
+  OWL/lite constructs together with the hasValue construct. The constructs supported 
   are:</p>
 <table width="90%" border="1" cellspacing="0" cellpadding="0">
   <tr> 
@@ -785,8 +783,11 @@ _:anon1 rdf:type datatype .</pre>
   Jena OWL reasoner are unionOf, complementOf and oneOf.</p>
 <p>Even within these constructs rule based implementations are limited in the 
   extent to which they can handle equality reasoning - propositions provable by 
-  reasoning over concrete and introduced instances are covered but reasoning no 
-  reason by cases is supported.</p>
+  reasoning over concrete and introduced instances are covered but reasoning by 
+  cases is not supported.</p>
+<p>Nevertheless, the reasoner passes the normative OWL working group positive 
+  and negative entailment tests for the supported constructs, though some tests 
+  need modification for the comprehension axioms (see below).</p>
 <h2><a name="OWLconfiguration"></a>OWL Configuration</h2>
 <p>This reasoner is accessed using <code>ModelFactory.createOntologyMode</code> 
   with the prebuilt <a href="file:///C%7C/der/java/projects/jena-sf2/doc/javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html"><code>OntModelSpec</code></a> 
@@ -907,7 +908,7 @@ class B = cardinality(P,1)</pre>
 <h3></h3>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
-<h1><a name="daml"></a>DAML support</h1>
+<h1 id="sectionHeading"><a name="daml"></a>DAML support</h1>
 <p>In Jena1 the DAML API included some hardwired support for useful DAML inferences 
   such as subClassOf and equivalence. </p>
 <p>A similar level of functionality is provided in Jena2, through the DAML profile 
@@ -920,7 +921,7 @@ class B = cardinality(P,1)</pre>
   DAML inference support.</p>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
-<h1><a name="transitive"></a>The transitive reasoner</h1>
+<h1 id="sectionHeading"><a name="transitive"></a>The transitive reasoner</h1>
 <p>The TransitiveReasoner provides support for storing and traversing class and 
   property lattices. This implements just the <i>transitive</i> and <i>symmetric</i> 
   properties of <code>rdfs:subPropertyOf</code> and <code>rdfs:subClassOf</code>. 
@@ -936,66 +937,281 @@ class B = cardinality(P,1)</pre>
   used in the default RDFS reasoner.</p>
 <p>It has no configuration options.</p>
 <p>[<a href="#index">index</a>]</p>
-<h1></h1>
-<h2></h2>
-<h1></h1>
-<h1><a name="rules"></a>The general purpose rule engine</h1>
+
+<h1 id="sectionHeading"><a name="rules"></a>The general purpose rule engine</h1>
 <ol>
   <li><a href="#RULEoverview">Overview of the rule engine(s)</a></li>
   <li><a href="#RULEsyntax">Rule syntax and structure</a></li>
   <li><a href="#RULEforward">Forward chaining engine</a></li>
   <li><a href="#RULEbackward">Backward chaining engine</a></li>
-  <li><a href="#RULEbuiltins">Builtin primitives</a></li>
+  <li><a href="#RULEhybrid">Hybrid engine</a></li>
   <li><a href="#RULEconfiguration">GenericRuleReasoner configuration</a></li>
+  <li><a href="#RULEbuiltins">Builtin primitives</a></li>
   <li><a href="#RULEexamples">Examples</a></li>
+  <li><a href="#RULEnotes">Notes</a></li>
+  <li><a href="#RULEextensions">Extensions</a></li>
 </ol>
 <h2><a name="RULEoverview"></a>Overview of the rule engine(s)</h2>
+<p>Jena2 includes a general purpose rule-based reasoner which is used to implement 
+  both the RDFS and OWL reasoners but is also available for general use. This 
+  reasoner supports rule-based inference over RDF graphs and provides forward 
+  chaining, backward chaining and a hybrid execution model. To be more exact, 
+  there are two internal rule engines one forward chaining RETE engine and one 
+  tabled datalog engine - they can be run separately or the forward engine can 
+  be used to prime the backward engine which in turn will be used to answer queries.</p>
+<p>The various engine configurations are all accessible through a single parameterized 
+  reasoner <code><a href="file:///C%7C/der/java/projects/jena2/doc/javadoc/com/hp/hpl/jena/reasoner/rulesys/GenericRuleReasoner.html">GenericRuleReasoner</a></code>. 
+  At a mimimum a <code>GenericRuleReasoner</code> requires a ruleset to define 
+  its behaviour. A <code>GenericRuleReasoner</code> instance with a ruleset can 
+  be used like any of the other reasoners described above - that is it can be 
+  bound to a data graph and used to answer queries to the resulting inference 
+  graph. </p>
+<p>The rule reasoner can also be extended by registering new procedural primitives. 
+  The current release includes a starting set of primitives which are sufficient 
+  for the RDFS and OWL implementations but is easily extensible.</p>
 <h2> <a name="RULEsyntax"></a>Rule syntax and structure</h2>
+<p>A rule for the rule-based reasoner is defined by a Java <code><a href="file:///C%7C/der/java/projects/jena2/doc/javadoc/com/hp/hpl/jena/reasoner/rulesys/Rule.html">Rule</a></code> 
+  object with a list of body terms (premises), a list of head terms (conclusions) 
+  and an optional name and optional direction. Each term or <a href="file:///C%7C/der/java/projects/jena2/doc/javadoc/com/hp/hpl/jena/reasoner/rulesys/ClauseEntry.html"><code>ClauseEntry</code></a> 
+  is either a triple pattern, an extended triple pattern or a call to a builtin 
+  primitive. A rule set is simply a List of Rules.</p>
+<p>For convenience a rather simple parser is included with Rule which allows rules 
+  to be specified in reasonably compact form in text source files. However, it 
+  would be perfectly possible to define alternative parsers which encode rules 
+  using, say, XML or RDF and generate Rule objects as output. It would also be 
+  possible to build a real parser for the current text file syntax which offered 
+  better error recovery and diagnostics.</p>
+<p>An informal description of the simplified text rule syntax is:</p>
+<blockquote> 
+  <pre><i>Rule</i>      :=   <i>bare-rule</i> .
+          or   [ <i>bare-rule</i> ]<br>	      or   [ ruleName : <i>bare-rule</i> ]
+
+<i>bare-rule</i> :=   <i>term</i>, ... <i>term</i> -&gt; <i>hterm</i>, ... <i>hterm</i>    // forward rule
+          or   <i>hterm</i>, ... <i>hterm</i> &lt;- <i>term</i>, ... <i>term   </i> // backward rule<i>
+
+hterm     :=   term
+          </i>or   [<i> bare-rule </i>]<i>
+
+term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)                  // triple pattern
+          or   (<i>node</i>, <i>node</i>, <i>functor</i>)               // extended triple pattern
+          or   builtin(<i>node</i>, ... <i>node</i>)             // invoke procedural primitive
+
+<i>functor</i>   :=   functorName(<i>node</i>, ... <i>node</i>)         // structured literal
+
+<i>node</i>      :=   <i>uri-ref</i>		               // e.g. http://foo.com/eg
+          or   prefix:localname		       // e.g. rdf:type
+          or   ?<i>varname                    </i>// variable, name scoped to a single rule<i>
+          or   'a literal' </i>                // either a string or a number<i>
+          or   </i>number                      // e.g. 42 or 25.5</pre>
+</blockquote>
+<p>The &quot;,&quot; separators are optional.</p>
+<p>The difference between forward and backward rule syntax is only relevant for 
+  the hybrid execution strategy, see below.</p>
+<p>The <i>functor</i> in an extended triple pattern is used to create and access 
+  structured literal values. The functorName can be any simple identifier and 
+  is not related to the execution of builtin procedural primitives, it is just 
+  a datastructure. It is useful when a single semantic structure is defined across 
+  multiple triples and allows a rule to collect those triples together in one 
+  place.</p>
+<p>To shorten the rule syntax qname syntax is supported for URI refs. The set 
+  of known prefixes is those registered with the <code><a href="file:///C%7C/der/java/projects/jena2/doc/javadoc/com/hp/hpl/jena/util/PrintUtil.html">PrintUtil</a></code> 
+  object. This initially knows about rdf, rdfs, owl, daml, xsd and a test namespace 
+  eg, but more mappings can be registered in java code. No rule syntax for defining 
+  prefixes is available yet. In future revisions we will link the <code>PrintUtil</code> 
+  capabilities more closely to the prefix mapping machinery now available for 
+  Models.</p>
+<p>Here are some example rules which illustrate most of these constructs:</p>
+<blockquote> 
+  <pre>[allID: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
+						-> (?C owl:equivalentClass all(?P, ?D)) ]
+
+[all2: (?C rdfs:subClassOf all(?P, ?D)) -> print('Creating backward rule for ', ?C)
+		[all1b: (?Y rdf:type ?D) <- (?X ?P ?Y), (?X rdf:type ?C) ] ]
+
+[max1: (?A rdf:type max(?P, 1)), (?A ?P ?B), (?A ?P ?C) -> (?B owl:sameIndividualAs ?C) ]
+</pre>
+</blockquote>
+<p>Rule <code>allID</code> illustrates the functor use for collecting the components 
+  of an OWL restriction into a single datastructure which can then fire further 
+  rules. Rule <code>all2</code> illustrates a forward rule which creates a new 
+  backward rule and also calls the <code>print</code> procedural primitive. Rule 
+  <code>max1</code> illustrates use of numeric literals.<br>
+</p>
 <h2> <a name="RULEforward"></a>Forward chaining engine</h2>
+<p>If the rule reasoner is configured to run in forward mode then only the forward 
+  chaining engine will be used. The first time the inference Model is queried 
+  (or when an explicit <code>prepare()</code> call is made, see <a href="#processingControl">above</a>) 
+  then all of the relevant data in the model will be submitted to the rule engine. 
+  Any rules which fire that create additional triples do so in an internal <i>deductions</i> 
+  graph and can in turn trigger additional rules. There is a <i>remove</i> primitive 
+  that can be used to remove triples and such removals can also trigger rules 
+  to fire in removal mode. This cascade of rule firings continues until no more 
+  rules can file. It is perfectly possible, though not a good idea, to write rules 
+  that will loop infinitely at this point.</p>
+<p>Once the prepraration phase is complete the inference graph will act as if 
+  it were the union of all the statements in the original model together with 
+  all the statements in the internal deductions graph generated by the rule firings. 
+  All queries will see all of these statements and will be of similar speed to 
+  normal model accesses. It is possible to separately access the original raw 
+  data and the set of deduced statements if required, see <a href="#rawAccess">above</a>.</p>
+<p>If the inference model is changed by adding or removing statements through 
+  the normal API then this will trigger further rule firings. The forward rules 
+  work incrementally and only the consequences of the added or removed triples 
+  will be explored. The default rule engine is based on the standard RETE algorithm 
+  (C.L Forgy, <i>RETE: A fast algorithm for the many pattern/many object pattern 
+  match problem, </i>Artificial Ingtelligence 1982) which is optimized for such 
+  incremental changes. </p>
+<p>When run in forward mode all rules are treated as forward even if they were 
+  written in backward (&quot;&lt;-&quot;) syntax. This allows the same rule set 
+  to be used in different modes to explore the performance tradeoffs.</p>
+<p>There is no guarantee of the order in which matching rules will fire or the 
+  order in which body terms will be tested, however once a rule fires its head-terms 
+  will be executed in left-to-right sequence.</p>
+<p>In forward mode then head-terms which assert backward rules (such as <code>all1b</code> 
+  above) are ignored.</p>
+<p>There are in fact two forward engines included within the Jena2 code base, 
+  an earlier non-RETE implementation is retained for now because it can be more 
+  efficient in some circumstances but has identical external semantics. This alternative 
+  engine is likely to be eliminated in a future release once more tuning has been 
+  done to the default RETE engine.</p>
 <h2> <a name="RULEbackward"></a>Backward chaining engine</h2>
-<h2> <a name="RULEbuiltins"></a>Builtin primitives</h2>
-<h2> <a name="RULEconfiguration"></a>GenericRuleReasoner configuration</h2>
+<p>If the rule reasoner is run in backward chaining mode it uses a logic programming 
+  (LP) engine with a similar execution strategy to Prolog engines. When the inference 
+  Model is queried then the query is translated into a goal and the engine attempts 
+  to satisfy that goal by matching to any stored triples and by goal resolution 
+  against the backward chaining rules.</p>
+<p>Except as noted below rules will be executed in top-to-bottom, left-to-right 
+  order with backtracking, as in SLD resolution. In fact, the rule language is 
+  essentially datalog rather than full prolog, whilst the functor syntax within 
+  rules does allow some creation of nested data structures they are flat (not 
+  recursive) and so can be regarded a syntactic sugar for datalog.</p>
+<p>As a datalog language the rule syntax is a little surprising because it restricts 
+  all properties to be binary and allows variables in any position including the 
+  property position. In effect, rules of the form:</p>
+<blockquote> 
+  <pre>(s, p, o), (s1, p1, o1) ... &lt;- (sb1, pb1, ob1), .... </pre>
+</blockquote>
+<p>Can be thought of as being translated to datalog rules of the form:</p>
+<blockquote> 
+  <pre>triple(s, p, o)    :- triple(sb1, pb1, ob1), ...
+triple(s1, p1, o1) :- triple(sb1, pb1, ob1), ...
+...</pre>
+</blockquote>
+<p>where &quot;triple/3&quot; is a hidden implicit predicate. Internally, this 
+  transformation is not used and the rules are implemented directly.</p>
+<p>In addition all the data in the raw model supplied to the engine is treated 
+  as it were a set of <code>triple(s,p,o)</code> facts which are prepended to 
+  the front of the rule set. Again, the implementation does not actually work 
+  that way but consults the source graph, with all its storage and indexing capabilities, 
+  directly.</p>
+<p>Because the order of triples in a Model is not defined then this is one violation 
+  to strict top-to-bottom execution. Essentially all ground facts are consulted 
+  before all rule clauses but the ordering of ground facts is arbitrary.</p>
+<h3>Tabling</h3>
+<p>The LP engine supports tabling. When goal is tabled then all previously computed 
+  matches to that goal are recorded (memoized) and used when satisfying future 
+  similar goals. When such a tabled goal is called and all known answers have 
+  been consumed then the goal will suspend until some other execution branch has 
+  generated new results and then be resumed. This allows one to successfully run 
+  recursive rules such as transitive closure which would be infinite loops in 
+  normal SLD prolog. This execution strategy, SLG, is essentially the same as 
+  that used in the well known <a href="http://xsb.sourceforge.net/">XSB</a> system.</p>
+<p>In the Jena rule engine the goals to be tabled are identified by the property 
+  field of the triple. One can request that all goals be tabled by calling the 
+  <code>tableAll()</code> primitive or that all goals involving a given property 
+  <code>P</code> be tabled by calling <code>table(P)</code>. Note that if any 
+  property is tabled then goals such as <code>(A, ?P, ?X)</code> will all be tabled.</p>
+<p>Thus the rule set:</p>
+<blockquote> 
+  <pre>
+-&gt; table(rdfs:subClassOf).
+[r1: (?A rdfs:subClassOf ?C) &lt;- (?A rdfs:subClassOf ?B) (?B rdfs:subClassOf ?C)]</pre>
+</blockquote>
+<p>will compute the transitive closure of the subClassOf relation. Any query of 
+  the form (*, rdfs:subClassOf, *) will be satisfied by a mixture of ground facts 
+  and resolution of rule r1. Without the first line this rule would be an infinite 
+  loop. <br>
+</p>
+<h2><a name="RULEhybrid"></a>Hybrid rule engine</h2>
+<p>The rule reasoner has the option of employing both of the individual rule engines 
+  at once. When run in this <i>hybrid</i> mode the data flows look something like 
+  this: </p>
+<p align="center"><img src="../images/jena-inf-figure2.png"></p>
+<p align="left">The forward engine runs, as desribed above, and maintains a set 
+  of inferred statements in the <i>deductions</i> store. Any forward rules which 
+  assert new backward rules will instantiate those rules according tp the forward 
+  variable bindings and pass the instantiated rules on to the backward engine.</p>
+<p align="left">Queries are answered by using the backward chaining LP engine, 
+  employing the merge of the supplied and generated rules applied to the merge 
+  of the raw and deduced data.</p>
+<h2><a name="RULEconfiguration"></a>GenericRuleReasoner configuration</h2>
 <p>mention functor filtering</p>
+<h3>Summary of parameters</h3>
+<table width="90%" border="1" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="22%"><b>Parameter</b></td>
+    <td width="16%"><b>Values</b></td>
+    <td width="62%"><b>Description</b></td>
+  </tr>
+  <tr> 
+    <td width="22%"> 
+      <div align="left">PROPsetRDFSLevel</div>
+    </td>
+    <td width="16%">&quot;full&quot;, &quot;default&quot;, &quot;simple&quot;</td>
+    <td width="62%"> 
+      <div align="left">Sets the RDFS processing level as described above.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="22%"> 
+      <div align="left">PROPenableCMPScan</div>
+    </td>
+    <td width="16%">boolean</td>
+    <td width="62%"> 
+      <div align="left">If true forces an preprocessing pass which finds all use 
+        of rdf:_n properties and declares them as ContainerMembershipProperties. 
+        This is implied by setting the level parameter to &quot;full&quot; and 
+        is not normally used directly.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="22%"> 
+      <div align="left">PROPtraceOn</div>
+    </td>
+    <td width="16%">boolean</td>
+    <td width="62%"> 
+      <div align="left">If true switches on exhaustive tracing of rule executions 
+        to the log4j <i>info</i> appender.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="22%"> 
+      <div align="left">PROPderivationLogging</div>
+    </td>
+    <td width="16%">boolean</td>
+    <td width="62%"> 
+      <div align="left">If true causes derivation routes to be recorded internally 
+        so that future getDerivation calls can return useful information.</div>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2><a name="RULEbuiltins"></a>Builtin primitives</h2>
+<h2></h2>
 <h2> <a name="RULEexamples"></a>Examples</h2>
+<h2><a name="RULEnotes"></a>Notes</h2>
+<p>mention validation rules</p>
+<h2><a name="RULEextensions"></a>Extensions</h2>
+<p>rule syntax</p>
+<p>builtins</p>
+<p>preprocessing hooks</p>
 <p>[<a href="#index">index</a>]</p>
-<h1><a name="extensions"></a>Extending the inference support</h1>
+<h1 id="sectionHeading"><a name="extensions"></a>Extending the inference support</h1>
+<p>&nbsp;</p>
 <p>[<a href="#index">index</a>]</p>
 <h2></h2>
-<h1><a name="futures"></a>Futures</h1>
+<h1 id="sectionHeading"><a name="futures"></a>Futures</h1>
 <p>mention database integration</p>
 <p>[<a href="#index">index</a>]</p>
-<h2></h2>
-<h2></h2>
-<h2>old ...</h2>
-<h2>GenericRuleReasoner</h2>
-<p>The RDFS (and indeed OWL) reasoner is built using a general purpose rule engine. 
-  This engine supports forward chaining rules, tabled (aka memoized) backward 
-  chaining rules or a hybrid mode in which forward rules can create new backward 
-  rules that are used to answer queries.</p>
-<p>This engine is available for general use in applications that wish to perform 
-  rule based processing of RDF data. </p>
-<p>At this release the engine is exposed via the <code>GenericRuleReasoner</code> 
-  and is complete enough to support the RDFS reasoner but is not yet stable. In 
-  particular the backward chaining component is being revised. As the RuleReasoner 
-  stabilizes will generate documentation and sample code for how to use it in 
-  applications. At the moment rules can only be created either programmatically 
-  or via a text format, though in principle it would be possible to define an 
-  RDF encoding for them. </p>
-<p>[TODO lots more details]</p>
-<h2>Advanced usage</h2>
-<p>TODO. Describe:</p>
-<ul>
-  <li>query with premises using the 4 arg version of listStatements</li>
-  <li>validation</li>
-  <li>access to derivation information</li>
-  <li>control of when the expensive processing happens</li>
-</ul>
-<h2>Extension point - the reasoner registry</h2>
-<p>The Jena reasoner API is intended to support plug in access to appropriate 
-  external reasoners and we plan to construct example adapters for one or two 
-  openly available reasoners. This work has not yet been done and no external 
-  reasoner support is included within this release.</p>
-<p>[TODO lots more details]</p>
-
 </body>
 </html>
