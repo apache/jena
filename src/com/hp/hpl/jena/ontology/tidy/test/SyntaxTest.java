@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.12 2004-01-11 21:20:15 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.13 2004-01-27 15:45:23 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -99,7 +99,7 @@ class SyntaxTest extends TestCase {
 
 			CheckerImpl chk;
 			if (HP) {
-				HPChecker hpchk = new HPChecker(ent.lvl.equals(OWLTest.Lite));
+				StreamingChecker hpchk = new StreamingChecker(ent.lvl.equals(OWLTest.Lite));
 				hpchk.getRedirect().add(
 					"http://www.w3.org/2002/03owlt",
 					"file:testing/wg");

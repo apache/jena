@@ -1,7 +1,7 @@
 /*
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Checker.java,v 1.45 2004-01-11 21:20:29 jeremy_carroll Exp $
+  $Id: Checker.java,v 1.46 2004-01-27 15:45:24 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.ontology.tidy.impl.CheckerImpl;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-public class Checker extends CheckerImpl {
+public class Checker extends CheckerImpl implements CheckerResults {
 
 
 /**
@@ -54,24 +54,8 @@ public class Checker extends CheckerImpl {
 	public Checker(boolean liteFlag) {
 		super(liteFlag);
 	}
-	/**
-	 * Answer an Iterator over {@link SyntaxProblem}'s which
-	 * are errors found by the syntax checker.
-	 * If the liteFlag was set in the constructor then
-	 * all OWL DL and OWL Full constructs are errors.
-	 * If the liteFlag was not set, then only OWL Full constructs
-	 * are errors.
-	 */
-	public Iterator getErrors() {
-		return super.getErrors();
-	}
-	/**
-	 * Answer an Iterator over {@link SyntaxProblem}'s which
-	 * are errors or warnings found by the syntax checker.
-	 */
-	public Iterator getProblems() {
-		return super.getProblems();
-	}
+
+
 	/**
 * Adds the graph, and definitely not its imports, to the syntax check.
 	 * Many graphs can be checked together.
@@ -92,13 +76,7 @@ public class Checker extends CheckerImpl {
 	public void load(String url) {
 		super.load(url);
 	}
-	/**
-	 * Which subLanguage is this document in.
-	 * @return "Lite", "DL" or "Full".
-	 */
-	public String getSubLanguage() {
-		return super.getSubLanguage();
-	}
+
 
 	/**
 	 * Adds the graph to the syntax check.
@@ -135,7 +113,7 @@ public class Checker extends CheckerImpl {
 	 * (if recognised as such), along with any imports.
 	 * <p>
 	 * If the <code>Model</code> is an 
-	 * {@link OntModel} created with the {@link ModelFactory}
+	 * {@link com.hp.hpl.jena.ontology.OntModel} created with the {@link ModelFactory}
  then the base graph with its imports (which have already
  been collected) are added. Import processing is not redone
  at this stage.
@@ -149,19 +127,10 @@ public class Checker extends CheckerImpl {
 		add(m.getGraph());
 	}
 
-	/**
-	 * If set, the syntax checker will conserve space
-	 * at the expense of the quality of the
-	 * {@link SyntaxProblem#longDescription} of errors.
-	 * @param big
-	 */
-	public void setOptimizeMemory(boolean big) {
-		super.setOptimizeMemory(big);
-		
-	}
+
 }
 /*
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

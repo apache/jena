@@ -346,20 +346,22 @@ public class CheckerImpl extends AbsChecker {
 		super.addProblem(lvl, t, msg);
 		if (lvl == Levels.Lite && !wantLite)
 			return;
-
+        String msg2;
 		Graph min;
 
 		if (justForErrorMessages == null) {
 			min = Factory.createDefaultGraph(ReificationStyle.Minimal);
 			min.add(t);
+			msg2 = "\n Rerun without memory optimizations to get more correct error message.";
 		} else {
 			min =
 				new MinimalSubGraph(lvl == Levels.Lite, t, this)
 					.getContradiction();
+			msg2 = "";
 		}
 		addProblem(
 			new SyntaxProblemImpl(
-				msg + " Not a " + Levels.toString(lvl) + " subgraph",
+				msg + " Not a " + Levels.toString(lvl) + " subgraph" + msg2,
 				min,
 				lvl));
 

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<!-- The bug report asked what was wrong, and indicated a one-triple
+ error message. The error message should have two triples
+ -->                                                                     
+                       
+<!DOCTYPE owl [
+<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+<!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+<!ENTITY base "http://www.foobar.com" >
+]>
+                                                                     
+                       
+<rdf:RDF
+  xmlns:owl ="&owl;"
+  xmlns:rdf ="&rdf;"
+  xmlns:rdfs="&rdfs;"
+  xmlns ="&base;#"
+  xml:base ="&base;">
+                                                                     
+                       
+  <owl:ObjectProperty rdf:ID="Foo">
+    <rdfs:range rdf:resource="&xsd;int"/>
+  </owl:ObjectProperty>
+</rdf:RDF>

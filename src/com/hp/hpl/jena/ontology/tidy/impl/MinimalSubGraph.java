@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.5 2003-12-03 21:30:56 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.6 2004-01-27 15:45:00 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -103,7 +103,7 @@ class MinimalSubGraph extends AbsChecker {
 				
 				switch ( addX(tryMe, true) ) {
 					case 0:
-					 // hasBeenChecked.add(tryMe);
+					  hasBeenChecked.add(tryMe);
 					  return;
 					case 1:
 					 if (!bestIsTrivial) break;
@@ -143,7 +143,7 @@ class MinimalSubGraph extends AbsChecker {
 			if ( addX( bestTriple, true )==0 ) {
 				System.err.println("Non-fatal logic error");
 				dump();
-				//hasBeenChecked.add(tryMe);
+				hasBeenChecked.add(tryMe);
 				return;
 				
 			} 

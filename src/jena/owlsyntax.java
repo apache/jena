@@ -11,7 +11,6 @@ import java.util.*;
 import com.hp.hpl.jena.ontology.tidy.test.WGTests;
 import com.hp.hpl.jena.ontology.tidy.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.rdf.model.*;
 import java.io.*;
 
 /**
@@ -20,7 +19,6 @@ import java.io.*;
     <ul>
     <li>Does not report "Other" for non-RDF/XML files</li>
     <li>Network error reporting on bad owl:imports has not been tested.</li>
-    <li>Uses a memory model for each file, giving an unnecessarily small size limit</li>
     </ul>
     When two files are given on the command-line it treats the
     first as a premises file and the second as a conclusion file
@@ -29,7 +27,7 @@ import java.io.*;
     Lite but a URI is used as an individual in the first
     and a class in the second then a Full reasoner is needed.
  * @author		Jeremy Carroll
- * @version 	$Id: owlsyntax.java,v 1.1 2003-12-02 04:58:55 jeremy_carroll Exp $
+ * @version 	$Id: owlsyntax.java,v 1.2 2004-01-27 15:45:24 jeremy_carroll Exp $
  */
 public class owlsyntax {
 	private owlsyntax(){
@@ -158,7 +156,7 @@ If no files are specified then standard input is used,
 			}
 			WGTests.test(cmd.contains(textUIDecl), manifest);
 		} else {
-			Checker chk = new Checker(cmd.contains(liteDecl));
+			StreamingChecker chk = new StreamingChecker(cmd.contains(liteDecl));
 			boolean big =
 				cmd.contains(bigDecl)
 					|| cmd.contains(quietDecl)
@@ -178,7 +176,7 @@ If no files are specified then standard input is used,
 						(String) cmd.items().get(0),
 						(String) cmd.items().get(0),
 						cmd);
-					Checker chk2 = new Checker(cmd.contains(liteDecl));
+					StreamingChecker chk2 = new StreamingChecker(cmd.contains(liteDecl));
 					chk2.setOptimizeMemory(big);
 					check(
 						chk2,
@@ -193,17 +191,15 @@ If no files are specified then standard input is used,
 		}
 	}
 	static private void check(
-		Checker chk,
+		StreamingChecker chk,
 		InputStream in,
 		String msgPrefix,
 		CommandLine cmd) {
-		Model m = ModelFactory.createDefaultModel();
-		m.read(in, "urn:x-jena:syntaxchecker");
-		chk.add(m);
+		chk.load(in, "urn:x-jena:syntaxchecker");
 		results(chk, msgPrefix, cmd);
 	}
 	static private void check(
-		Checker chk,
+		StreamingChecker chk,
 		String url,
 		String msgPrefix,
 		CommandLine cmd) {
@@ -217,7 +213,7 @@ If no files are specified then standard input is used,
 			return m + ": ";
 	}
 	static private void results(
-		Checker chk,
+		CheckerResults chk,
 		String msgPrefix,
 		CommandLine cmd) {
 		String subLang = chk.getSubLanguage();

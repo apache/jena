@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PerfTest.java,v 1.1 2004-01-11 21:20:15 jeremy_carroll Exp $
+  $Id: PerfTest.java,v 1.2 2004-01-27 15:45:23 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 import org.xml.sax.InputSource;
@@ -410,7 +410,7 @@ public class PerfTest {
 	 * @param nms
 	 */
 	private void testHPNoOps(String nm, String[] nms) {
-		HPChecker hp = new HPChecker(false);
+		StreamingChecker hp = new StreamingChecker(false);
 		hp.getRedirect().add(
 		"http://www.w3.org/2002/03owlt",
 		"file:testing/wg");
@@ -427,7 +427,7 @@ public class PerfTest {
 	 * @param nms
 	 */
 	private void testHP(String nm, String[] nms) {
-    HPChecker hp = new HPChecker(false);
+    StreamingChecker hp = new StreamingChecker(false);
     hp.getRedirect().add(
 	"http://www.w3.org/2002/03owlt",
 	"file:testing/wg");
