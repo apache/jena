@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.16 2004-01-31 15:48:10 der Exp $
+ * $Id: TestBugs.java,v 1.17 2004-02-02 13:47:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2004-01-31 15:48:10 $
+ * @version $Revision: 1.17 $ on $Date: 2004-02-02 13:47:19 $
  */
 public class TestBugs extends TestCase {
 
@@ -49,7 +49,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testEquivalentClass1" ));
+//        suite.addTest(new TestBugs( "testBindSchemaValidate" ));
 //        return suite;
     }  
 
@@ -351,6 +351,29 @@ public class TestBugs extends TestCase {
         TestUtil.assertIteratorValues(this, res, new Statement[] {
             m.createStatement(i, RDF.type, c)
         });
+    }
+    
+    /**
+     * Test problem with bindSchema not interacting properly with validation.
+     */
+    public void testBindSchemaValidate() {
+        Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
+        Model schema = ModelLoader.loadModel("file:testing/reasoners/bugs/sbug.owl");
+        Model data = ModelLoader.loadModel("file:testing/reasoners/bugs/sbug.rdf");
+        
+        // Union version
+        InfModel infu = ModelFactory.createInfModel(reasoner, data.union(schema));
+        ValidityReport validity = infu.validate();
+        assertTrue( ! validity.isValid());
+        // debug print
+//        for (Iterator i = validity.getReports(); i.hasNext(); ) {
+//            System.out.println(" - " + i.next());
+//        }
+        
+        // bindSchema version
+        InfModel inf = ModelFactory.createInfModel(reasoner.bindSchema(schema), data);
+        validity = inf.validate();
+        assertTrue( ! validity.isValid());
     }
     
     // debug assistant
