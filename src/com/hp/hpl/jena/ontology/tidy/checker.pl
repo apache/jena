@@ -185,7 +185,6 @@ buildChecker :-
   retract(finished),
   fail;
   finished,!).
-*/
 buildChecker :-
   retractall(x(_,_,_,_,_,_,_)),
   retractall(finished),
@@ -206,6 +205,26 @@ buildChecker :-
   retract(finished),
   fail;
   finished,!).
+
+*/
+
+buildChecker :-
+   g([A]),
+   wlist([A,nl]),
+   fail.
+buildChecker :-
+   write('%%'),nl,
+   tt(S,P,O,_),
+   wlist([S,' ',P,' ',O,nl]),
+   fail.
+buildChecker :-
+   write('%%'),nl,
+   g([A,B|T]),
+   (member(X,[A,B|T]),
+   write(X),put(" "),
+   fail;nl),fail.
+buildChecker :-
+  write('%%'),nl.
 
 choose(X,X,B,C) :- h(X,B),h(X,C).
 choose(X,A,X,C) :- h(A),h(X,C).
