@@ -1,7 +1,8 @@
 /*
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
+
  
 package jena;
 import jena.cmdline.* ;
@@ -12,7 +13,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.1 2003-09-09 12:17:23 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.2 2003-12-04 10:16:35 andy_seaborne Exp $
  */ 
  
 abstract class DBcmd
@@ -285,10 +286,9 @@ abstract class DBcmd
     }
 }
 
-
 /*
- * (c) Copyright 2003 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

@@ -1,8 +1,8 @@
 /*
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
- 
+
 package jena;
 import jena.cmdline.* ;
 
@@ -20,7 +20,7 @@ import jena.cmdline.* ;
 
   * 
   * @author Andy Seaborne
-  * @version $Id: dbdump.java,v 1.1 2003-09-09 12:17:23 andy_seaborne Exp $
+  * @version $Id: dbdump.java,v 1.2 2003-12-04 10:16:35 andy_seaborne Exp $
   */ 
  
 public class dbdump extends DBcmd
