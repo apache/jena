@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:37 $
+ * Last modified on   $Date: 2003-03-25 10:35:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.mem.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.2 2003-03-12 17:16:37 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.3 2003-03-25 10:35:46 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -53,13 +53,13 @@ public class OntDocumentManager
     //////////////////////////////////
 
     /** The default path for searching for the metadata on locally cached ontologies */ 
-    public static final String DEFAULT_METADATA_PATH = "file:etc/docmanager.rdf;file:docmanager.rdf";
+    public static final String DEFAULT_METADATA_PATH = "file:etc/ont-policy.rdf;file:ont-policy.rdf";
 
     /** Delimiter between path entries */
     public static final String PATH_DELIMITER = ";";
     
     /** Namespace for ontology metadata resources and properties */
-    public static final String NS = "http://jena.hpl.hp.com/schemas/2003/03/docmanager#";
+    public static final String NS = "http://jena.hpl.hp.com/schemas/2003/03/ont-manager#";
     
 
     // Static variables
