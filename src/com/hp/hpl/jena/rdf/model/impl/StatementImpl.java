@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2004, Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: StatementImpl.java,v 1.27 2004-08-04 08:00:12 chris-dollin Exp $
+	$Id: StatementImpl.java,v 1.28 2004-08-05 07:38:44 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.27 $ $Date: 2004-08-04 08:00:12 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.28 $ $Date: 2004-08-05 07:38:44 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     
@@ -131,25 +131,6 @@ public class StatementImpl  extends StatementBase implements Statement {
         return s;
     }
         
-    public String toString() 
-        {
-        return
-            "[" 
-            + subject.toString()
-            + ", " + predicate.toString() 
-            + ", " + objectString()
-            + "]";
-        }
-        
-    private String objectString()
-        {
-        return object.asNode().toString( null, true );
-//        return object instanceof Resource
-//            ? "Resource<" + ((Resource)object).toString() + ">"
-//            : "Literal<" + ((Literal)object).toString() + ">"
-//            ;
-        }
-    
     /**
         .equals() defers to .sameAs so we only get the complexity of one cast.
     */

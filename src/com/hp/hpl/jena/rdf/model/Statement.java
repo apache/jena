@@ -1,37 +1,13 @@
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
- *  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
+	(c) Copyright 2000-2004, Hewlett-Packard Development Company, LP
+	[See end of file]
+	$Id: Statement.java,v 1.11 2004-08-05 07:38:43 chris-dollin Exp $
+*/
 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Statement.java
- *
- * Created on 27 July 2000, 07:03
- */
 
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.*;
 
 /** An RDF Statement.
  *
@@ -49,9 +25,10 @@ import com.hp.hpl.jena.graph.Triple;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2003-08-27 13:05:53 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2004-08-05 07:38:43 $
  */
-public interface Statement 
+
+public interface Statement extends FrontsTriple
 {
     
     /** determine whether two statements are equal.
@@ -412,19 +389,6 @@ public interface Statement
     RSIterator listReifiedStatements();
     
     /**
-        answer the Triple containing the appropriate Nodes corrsponding to
-        the subject, predicate, and object fields.
-    */
-    Triple asTriple();
-    
-//    /**
-//     * Returns a resource representing the reification of this
-//     * statement. Such a resoruce is created and added to the model
-//     * if necessary.
-//     */
-//    Resource asResource();
-    
-    /**
         get the Model this Statement was created in.
     */
     Model getModel();
@@ -436,3 +400,29 @@ public interface Statement
      */
     void removeReification();
 }
+/*
+	  (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+	  All rights reserved.
+	 
+	 Redistribution and use in source and binary forms, with or without
+	 modification, are permitted provided that the following conditions
+	 are met:
+	 1. Redistributions of source code must retain the above copyright
+	    notice, this list of conditions and the following disclaimer.
+	 2. Redistributions in binary form must reproduce the above copyright
+	    notice, this list of conditions and the following disclaimer in the
+	    documentation and/or other materials provided with the distribution.
+	 3. The name of the author may not be used to endorse or promote products
+	    derived from this software without specific prior written permission.
+	
+	 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+	 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+	 IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+	 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	 NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+	 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

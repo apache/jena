@@ -1,7 +1,7 @@
 /*
 	 (c) Copyright 2004, Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.3 2004-08-04 08:00:12 chris-dollin Exp $
+	 $Id: StatementBase.java,v 1.4 2004-08-05 07:38:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -191,6 +191,28 @@ public abstract class StatementBase
 	public boolean getWellFormed()
 		{
 		return getLiteral().getWellFormed();
+		}
+
+	/**
+	 	Answer a string describing this Statement in a vagely pretty way, with the 
+	 	representations of the subject, predicate, and object in that order.
+	*/
+	public String toString()
+		{
+		return
+		    "[" 
+		    + getSubject().toString()
+		    + ", " + getPredicate().toString() 
+		    + ", " + objectString( getObject() )
+		    + "]";
+		}
+
+	/**
+	 	Answer a string describing <code>object</code>, quoting it if it is a literal.
+	*/
+	protected String objectString( RDFNode object )
+		{
+		return object.asNode().toString( null, true );
 		}
 
 	}

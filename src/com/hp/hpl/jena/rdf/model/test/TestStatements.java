@@ -1,16 +1,15 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: TestStatements.java,v 1.10 2003-08-27 13:05:52 andy_seaborne Exp $
+	$Id: TestStatements.java,v 1.11 2004-08-05 07:38:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.graph.FrontsTriple;
 import com.hp.hpl.jena.rdf.model.*;
 import junit.framework.*;
 import com.hp.hpl.jena.vocabulary.RDF;
-
-import java.util.*;
 
 public class TestStatements extends ModelTestBase
     {
@@ -75,15 +74,12 @@ public class TestStatements extends ModelTestBase
         Resource R = A.createResource( "jena:R" );
         Property P = A.createProperty( "jena:P" );
         RDFNode O = A.createResource( "jena:O" );
-        Statement S1 = A.createStatement( S, P, O );
-        Statement S2 = A.createStatement( S, P, O );
-        assertEquals( S1, S2 );
-        S1.changeObject( S );
-        // assertEquals( S1, S2 );
-        HashMap h = new HashMap();
-        h.put( S2, "pontisbright" );
-        S2.changeObject( S );
-        // System.err.println( h.get( S2 ) );
+        Statement spo = A.createStatement( S, P, O );
+        A.add( spo );
+        Statement sps = A.createStatement( S, P, S );
+        assertEquals( sps, spo.changeObject( S ) );
+        assertFalse( A.contains( spo ) );
+        assertTrue( A.contains( sps ) );
         }
         
     public void testPortingBlankNodes()
@@ -96,6 +92,12 @@ public class TestStatements extends ModelTestBase
         assertEquals( "move resource should equal original", anon, bAnon );
         }
         
+    public void testTripleWrapper()
+    	{
+    	Model A = ModelFactory.createDefaultModel();
+    	assertTrue( statement( A, "s p o" ) instanceof FrontsTriple );
+    	}
+    
     /**
         Feeble test that toString'ing a Statement[Impl] will display the data-type
         of its object if it has one.
