@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.24 2003-09-22 12:25:09 der Exp $
+ * $Id: TestOWLRules.java,v 1.25 2003-10-03 07:31:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2003-09-22 12:25:09 $
+ * @version $Revision: 1.25 $ on $Date: 2003-10-03 07:31:26 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -124,12 +124,13 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("localtests/Manifest002.rdf"));
         suite.addTest(new TestOWLRules("localtests/Manifest003.rdf"));
         suite.addTest(new TestOWLRules("localtests/Manifest004.rdf"));
+        suite.addTest(new TestOWLRules("localtests/Manifest005.rdf"));
         
         // Duplications of tests included earlier
 //        suite.addTest(new TestOWLRules("differentFrom/Manifest002.rdf"));  // Duplication of AllDifferent#1
 //        suite.addTest(new TestOWLRules("distinctMembers/Manifest001.rdf"));  // Duplication of AllDifferent#1
         
-        // Consistency tests - not yet implemented by tester
+        // Consistency tests - not yet implemented by this tester
 //      suite.addTest(new TestOWLRules("I5.3/Manifest005.rdf"));
 //      suite.addTest(new TestOWLRules("I5.3/Manifest006.rdf"));
 //      suite.addTest(new TestOWLRules("I5.3/Manifest007.rdf"));
