@@ -82,7 +82,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#add(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public void add(Node n, Triple t, CompletionFlag complete) throws Reifier.AlreadyReifiedException {
-		ReifCache rs = m_reifCache.load((Node_URI) t.getSubject());
+		ReifCache rs = m_reifCache.load(t.getSubject());
 		if (rs != null)
 			throw new Reifier.AlreadyReifiedException(n);
 		m_reif.storeReifStmt(n, t, my_GID);
@@ -373,12 +373,16 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 			String subjURI = (String) res.get(0);
 			String predURI = (String) res.get(1);
 			String objURI = (String) res.get(2);
-			String objVal = (String) res.get(3);
+			String objVal = null;
+			if ( res.get(3) != null ) {
+				byte b[] = (byte []) res.get(3);
+				objVal = new String(b,0,b.length);
+			}
 //			Object litId = res.get(4); 
 			String litId = (String) res.get(4); 
 			String stmtURI = (String) res.get(5);
 			Object hasType = res.get(6);
-			Node node = new Node_URI(stmtURI);
+			Node node = PSet_TripleStore_RDB.RDBStringToNode(stmtURI);
 				
 //			System.err.println(hasType.getClass());
 //			System.err.println(litId.getClass());
