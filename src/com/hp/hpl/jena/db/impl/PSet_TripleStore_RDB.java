@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.50 2005-03-11 02:47:01 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.51 2005-03-17 10:11:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.50 $ on $Date: 2005-03-11 02:47:01 $
+* @version $Revision: 1.51 $ on $Date: 2005-03-17 10:11:14 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -191,21 +191,20 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 */
 	public int rowCount(String tName) {
 
-	int result = 0;
 	try {
+        int result = 0;
 		 String op = "getRowCount";
 		 PreparedStatement ps = m_sql.getPreparedSQLStatement(op,tName);
 	     ResultSet rs = ps.executeQuery();
-	     while ( rs.next() ) {
-		  result = rs.getInt(1);
-	     } 
+	     while ( rs.next() ) result = rs.getInt(1); 
+         rs.close();
 		m_sql.returnPreparedSQLStatement(ps);
+        return result;
 	} catch (SQLException e) {
 	   logger.debug("tried to count rows in " + tName);
 	   logger.debug("Caught exception: ", e);
            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 	}
-	return(result);
 	}
 
 	//=======================================================================

@@ -52,7 +52,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.47 $ on $Date: 2005-02-21 12:02:50 $
+* @version $Revision: 1.48 $ on $Date: 2005-03-17 10:11:14 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -765,11 +765,11 @@ public abstract class DriverRDB implements IRDBDriver {
 		// check to see if statement tables for graph are shared
 		boolean stInUse = true;
 		boolean rtInUse = true;
-		Iterator it;
+        
 		if ( graphId != DEFAULT_ID ) {
 			stInUse = false;
 			rtInUse = false;
-			it =  m_dbProps.getAllGraphs();
+			Iterator it =  m_dbProps.getAllGraphs();
 			while ( it.hasNext() ) {
 				DBPropGraph gp = (DBPropGraph) it.next();
 				if ( gp.getStmtTable().equals(stmtTbl) ) stInUse = true;
@@ -778,7 +778,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		// now remove the statement tables or else delete all triples.
 		if ( stInUse || rtInUse ) {
-			it = specializedGraphs.iterator();
+			Iterator it = specializedGraphs.iterator();
 			while (it.hasNext()){
 			   SpecializedGraph sg = (SpecializedGraph) it.next();
 			   removeSpecializedGraph(sg);
@@ -958,17 +958,15 @@ public abstract class DriverRDB implements IRDBDriver {
     /* return true if the mutex is held. */
     
     public boolean DBisLocked() throws RDFRDBException {
-    	boolean res;
     	try {
     		DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
     		String[] tableTypes = { "TABLE" };
     		String prefixMatch = stringToDBname(TABLE_NAME_PREFIX + "%");
     		ResultSet iter = dbmd.getTables(null, null, MUTEX_TABLE, tableTypes);
-    		res = iter.next();
+    		try { return iter.next(); } finally { iter.close(); }
     	} catch (SQLException e1) {
     		throw new RDFRDBException("Internal SQL error in driver" + e1);
     	}
-    	return res;
     }
 
 	/* (non-Javadoc)
@@ -1074,14 +1072,14 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public boolean sequenceExists(String seqName) {
 		Object[] args = {seqName};
-		ResultSet rs = null;
 		boolean result = false;
 		try {
 			String op = "SelectSequenceName";
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(op);
 			ps.setString(1,seqName);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 			result = rs.next();
+            rs.close();
 			m_sql.returnPreparedSQLStatement(ps);
 		} catch (Exception e) {
 		  logger.error("Unable to select sequence " + seqName,  e);
@@ -1096,15 +1094,12 @@ public abstract class DriverRDB implements IRDBDriver {
 	public List getSequences() {
 		List results =  new ArrayList(10);
 		Object[] args = {};
-		ResultSetIterator it = null;
 		try {
 			String opname = "SelectJenaSequences";
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, TABLE_NAME_PREFIX);
 		    ResultSet rs = ps.executeQuery();
-		    while (rs.next()) {
-		    	results.add(rs.getString(1));
-		    }
-		    //rs.close();
+		    while (rs.next()) results.add( rs.getString(1) );
+		    rs.close();
 		    m_sql.returnPreparedSQLStatement(ps);
 		} catch (Exception e) {
 		  logger.error("Unable to select Jena sequences: ", e);
@@ -1934,6 +1929,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				if ( add )
 					result = addRDBLongObject(lobj, table);
 			}
+            rs.close();
 		    m_sql.returnPreparedSQLStatement(ps);
 			return result;
 		} catch (SQLException e1) {
@@ -2076,10 +2072,11 @@ public abstract class DriverRDB implements IRDBDriver {
 			ps.setInt(1,dbid);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				res = new RDBLongObject();
+                res = new RDBLongObject();
 				res.head = rs.getString(1);
 				res.tail = rs.getString(2);			
 			}
+            rs.close();
 			m_sql.returnPreparedSQLStatement(ps);
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));

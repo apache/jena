@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleSelector.java,v 1.5 2005-02-21 12:03:34 andy_seaborne Exp $
+  $Id: TestSimpleSelector.java,v 1.6 2005-03-17 10:12:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -103,13 +103,11 @@ public class TestSimpleSelector extends TestCase
     }
     
     public void testFindSubject() {
-    	StmtIterator iter = model.listStatements(
-    	  new SimpleSelector(null, null, RDFS.Resource));
-    	assertTrue(iter.hasNext());
-    	Resource subject = iter.nextStatement()
-    	                       .getSubject();
-    	iter = model.listStatements(
-    	  new SimpleSelector(subject, null, (RDFNode) null));
+    	StmtIterator iter = model.listStatements( new SimpleSelector(null, null, RDFS.Resource));
+    	assertTrue( iter.hasNext() );
+    	Resource subject = iter.nextStatement().getSubject();
+        iter.close();
+    	iter = model.listStatements( new SimpleSelector(subject, null, (RDFNode) null));
     	int i =0;
     	while (iter.hasNext()) {
     		i++;

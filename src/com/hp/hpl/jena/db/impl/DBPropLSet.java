@@ -6,10 +6,8 @@
 package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.DB;
-
-import java.util.*;
 
 /**
  *
@@ -27,7 +25,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class DBPropLSet extends DBProp {
 
@@ -53,10 +51,10 @@ public class DBPropLSet extends DBProp {
 	public String getType() { return getPropString( lSetType); }
 	
 	public DBPropPSet getPset() {
-		Iterator matches = graph.find(self, lSetPSet, null, newComplete() );
+		ClosableIterator matches = graph.find( self, lSetPSet, null, newComplete() );
 		if( matches.hasNext() ) {
-			Triple t = (Triple)matches.next();
-			return new DBPropPSet(graph, t.getObject());
+			try { return new DBPropPSet( graph, ((Triple) matches.next()).getObject()); }
+            finally { matches.close(); }
 		}
 		else
 			return null;
