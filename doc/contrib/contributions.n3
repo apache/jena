@@ -1,0 +1,39 @@
+#
+# N3 rendition of contributions data
+#
+# $Id: contributions.n3,v 1.1 2005-04-05 13:16:02 chris-dollin Exp $
+#
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix ct:     <http://jena.hplb.hpl.hp.com/contrib#> .
+
+[]
+    dc:creator "Chris Dollin"
+    ; dc:name "ModelJEB"
+    ; dc:description "persistent models using Berkely DB JE"
+    ; ct:link "http://sourceforge.net/project/showfiles.php?group_id=40417"
+    .
+
+[]
+    dc:creator "Chris Dollin"
+    ; dc:name "Eyeball"
+    ; dc:description "RDF lint - look for common problems in RDF data"
+    ; ct:link "http://sourceforge.net/project/showfiles.php?group_id=40417"
+    .
+
+[]
+    dc:creator "Jeremy Carroll"
+    ; dc:name "OWL Tidy"
+    ; dc:description "report causes of syntactic non-conformance in OWL"
+    ; ct:link "TBD"
+    .
+
+[]
+    dc:creator "Andy Seaborne"
+    ; dc:name "ARQ"
+    ; dc:description "implementation of SPARQL for Jena"
+    ; ct:link "http://sourceforge.net/project/showfiles.php?group_id=40417"
+    .

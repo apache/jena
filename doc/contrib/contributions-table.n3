@@ -1,0 +1,27 @@
+#
+# configuration file for RDFtoTable which describes the table
+# to create from the contributions RDF data.
+#
+# $Id: contributions-table.n3,v 1.1 2005-04-05 13:16:02 chris-dollin Exp $
+#
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tt:     <http://jena.hpl.hp.com/rdftotable#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix ct:     <http://jena.hplb.hpl.hp.com/contrib#> .
+
+ct:contributions
+    tt:columns ( ct:Name ct:Description ct:Creator ct:Link ) .
+
+ct:Name tt:displays ([tt:property dc:name]) ; rdfs:label "name" .
+
+ct:Description tt:displays ([tt:property dc:description]) ; rdfs:label "description" .
+
+ct:Creator tt:displays ([tt:property dc:creator]) ; rdfs:label "creator" .
+
+ct:Link tt:displays
+    ([tt:literal "<a href='"] [tt:property ct:link] [tt:literal "'>"]
+     [tt:property ct:link] [tt:literal '</a>'])
+    ; rdfs:label "for download see"
+    .
