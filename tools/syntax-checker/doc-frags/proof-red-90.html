@@ -1,0 +1,55 @@
+<p>
+We now consider some other triples with
+an unnamed individual as subject and a blank node
+as object
+</p>
+%%lemma('Second Unnamed Individual Triple Reduction').
+<dd>
+If <em>g</em> is an acceptable graph
+containing a triple <em>tr</em>
+with subject <em>n</em> such that:
+<em>n</em>
+is an unnamed individual;
+there is some other explicit type triple for <em>n</em> in <em>g</em>;
+ <em>tr</em> has a blank node <em>b</em> as object;
+ and <em>n</em> is not the object of any triple,
+then <em>g</em>
+can be reduced by removing <em>tr</em>.
+</dd>
+<dt>Proof:</dt>
+<dd>
+<em>h</em> is acceptable, as in
+%%linkLemma('first unnamed Individual triple Reduction').
+.
+<br />
+Take an abstract syntax tree <em>t</em> corresponding to <em>h</em>.
+By inspection of the triple table <em>b</em> must 
+have category unnamedIndividual%%dl_only(Lvl,', description'). 
+
+or
+restriction 
+and so by the %%linkLemma(description).
+ or the 
+%%linkLemma('unnamed individual').
+
+we find a directive <em>d</em>
+in <em>t</em> corresponding to <em>b</em>.
+We can form a tree corresponding to <em>g</em> by:
+<ul>
+<li>finding <em>tr</em> in the table below.
+</li>
+<li>modify the syntax expression found in the table
+by substituting <em>d</em> appropriately.
+</li>
+<li>using the %%linkLemma('unnamed individual'). to find
+the directive in <em>t</em> corresponding to
+<em>n</em>, this has form <code>Individual( &hellip; )</code>.
+</li>
+<li>modifying <em>t</em> by adding into the <code>Individual( &hellip; )</code>
+expression the modified syntactic expression from the table below.
+</li>
+</ul>
+</dd>
+</dl>
+
+
