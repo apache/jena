@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.19 2004-04-26 13:26:58 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.html,v 1.20 2004-04-26 19:34:26 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -107,10 +107,12 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#xml-1">Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code> 
     when I want output like <code>&lt;owl:Class&nbsp;...&gt;</code>?</a></li>
 </ul>
+
 <h3>RDQL and query processing</h3>
 <ul>
-  <li>no entries yet</li>
+  <li><a href="#rdql-0">How do I do test for substrings of literals?</a></li>
 </ul>
+
 <h3>Miscellaneous</h3>
 <ul>
   <li><a href="#misc-0">What versions of library jars does Jena require?</a></li>
@@ -407,8 +409,28 @@ fragments are equivalent (in RDF terms):</p>
   large models from a persistent database to RDF XML. More details on controlling the
   precise behaviour of the writer, including turning on and off abbreviation rules, are
   in the <a href="IO/iohowto.html#output">I/O howto</a>.</p>
+
 <h3>RDQL and query processing</h3>
-<p>no entries yet</p>
+<p>See the <a href="tutorial/RDQL/index.html">RDQL tutorial</a></p>
+
+<p id="rdql-0"><strong>Q: How do I do test substrings of literals?</strong><br>
+<strong>A:</strong> RDQL provides the regular expression match operator
+<code>=~</code> which is styled after Perl5, taking a variable on the left-hand side
+and a regular expression on the right.  The regular expression matching
+is provided by <a href="http://jakarta.apache.org/oro/">Jakarta ORO</a>.  Examples:
+<pre>
+  SELECT ?name
+  WHERE (?x  vCard:FN  ?name)
+  AND ?name =~ /Smith$/i
+  USING vCard FOR <http://www.w3.org/2001/vcard-rdf/3.0#>
+
+  SELECT ?x
+  WHERE (?x dc:title ?v)
+  AND ?v =~ /RDF/i
+  USING dc for <http://purl.org/dc/elements/1.1/title>
+</pre>
+<p>This can be used to do a case-insensitive substring match as in the last example,
+giving functionality similar to SQL LIKE.</p>
 
 <h3>Miscellaneous</h3>
 
