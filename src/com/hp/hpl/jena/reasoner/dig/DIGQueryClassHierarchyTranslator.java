@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryClassHierarchyTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-21 19:24:25 $
+ * Last modified on   $Date: 2004-08-13 16:14:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryClassHierarchyTranslator.java,v 1.2 2004-04-21 19:24:25 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryClassHierarchyTranslator.java,v 1.3 2004-08-13 16:14:00 ian_dickinson Exp $
  */
 public class DIGQueryClassHierarchyTranslator 
     extends DIGIteratedQueryTranslator
@@ -70,7 +70,6 @@ public class DIGQueryClassHierarchyTranslator
     /**
      * <p>Construct a translator for the DIG class hierarchy queries.</p>
      * @param predicate The predicate URI to trigger on
-     * @param ancestors If true, we are searching for parents of the class; if false, the descendants
      */
     public DIGQueryClassHierarchyTranslator( String predicate ) {
         super( ALL, predicate, ALL );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryIsEquivalentTranslator.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-18 09:56:34 $
+ * Last modified on   $Date: 2004-08-13 16:14:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.8 2004-05-18 09:56:34 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.9 2004-08-13 16:14:00 ian_dickinson Exp $
  */
 public class DIGQueryIsEquivalentTranslator 
     extends DIGQueryTranslator
@@ -70,7 +70,6 @@ public class DIGQueryIsEquivalentTranslator
     /**
      * <p>Construct a translator for the DIG query 'equivalents'.</p>
      * @param predicate The predicate URI to trigger on
-     * @param lhs If true, the free variable is the subject of the triple
      */
     public DIGQueryIsEquivalentTranslator( String predicate ) {
         super( null, null, null );

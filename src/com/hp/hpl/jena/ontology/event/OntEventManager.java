@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Sep-2003
  * Filename           $RCSfile: OntEventManager.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-08 15:44:00 $
+ * Last modified on   $Date: 2004-08-13 16:14:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.vocabulary.OntEventsVocab;
  * ontology model can produce makes the traditional Java style of listener interface
  * impractical. Instead, this event manager allows the user to register 
  * {@linkplain OntEventHandler handlers}, based on command pattern, against specific
- * {@linkplain OntEvents event types}. 
+ * {@linkplain OntEventsVocab event types}. 
  * </p>
  * <p>
  * For example, to register a handler for the declaration of an ontology class:
@@ -75,7 +75,7 @@ import com.hp.hpl.jena.vocabulary.OntEventsVocab;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntEventManager.java,v 1.3 2004-01-08 15:44:00 ian_dickinson Exp $
+ * @version CVS $Id: OntEventManager.java,v 1.4 2004-08-13 16:14:12 ian_dickinson Exp $
  */
 public class OntEventManager 
     extends StatementListener
@@ -213,7 +213,6 @@ public class OntEventManager
     /**
      * <p>Add the given handler as the default event handler, which will be invoked if
      * no other handler is applicable to a given event.</p>
-     * @param event The event type to be handled, as a resource
      * @param handler The event handler object
      */
     public void addDefaultHandler( OntEventHandler handler ) {

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryRoleFillersTranslator.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-12 15:56:00 $
+ * Last modified on   $Date: 2004-08-13 16:14:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRoleFillersTranslator.java,v 1.4 2004-05-12 15:56:00 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryRoleFillersTranslator.java,v 1.5 2004-08-13 16:14:00 ian_dickinson Exp $
  */
 public class DIGQueryRoleFillersTranslator 
     extends DIGQueryTranslator
@@ -65,7 +65,6 @@ public class DIGQueryRoleFillersTranslator
 
     /**
      * <p>Construct a translator for the DIG query 'roleFillers'.</p>
-     * @param predicate The predicate URI to trigger on
      */
     public DIGQueryRoleFillersTranslator() {
         super( null, null, ALL );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: ProfileRegistry.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-10 13:50:27 $
+ * Last modified on   $Date: 2004-08-13 16:17:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -38,19 +38,19 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ProfileRegistry.java,v 1.7 2004-05-10 13:50:27 ian_dickinson Exp $
+ * @version CVS $Id: ProfileRegistry.java,v 1.8 2004-08-13 16:17:45 ian_dickinson Exp $
  */
 public class ProfileRegistry {
     // Constants
     //////////////////////////////////
 
-    /** The URI that maps to the language profile for OWL-Full (value {@value}) */
+    /** The URI that maps to the language profile for OWL-Full */
     public static final String OWL_LANG = OWL.FULL_LANG.getURI();
     
-    /** The URI that maps to the language profile for OWL-DL (value {@value}) */
+    /** The URI that maps to the language profile for OWL-DL */
     public static final String OWL_DL_LANG = OWL.DL_LANG.getURI();
     
-    /** The URI that maps to the language profile for OWL-Lite (value {@value}) */
+    /** The URI that maps to the language profile for OWL-Lite */
     public static final String OWL_LITE_LANG = OWL.LITE_LANG.getURI();
     
     /** The URI that maps to the language profile for DAML+OIL */

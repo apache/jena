@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-13 09:51:40 $
+ * Last modified on   $Date: 2004-08-13 16:19:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.34 2004-08-13 09:51:40 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.35 2004-08-13 16:19:29 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -768,7 +768,7 @@ public class schemagen {
     protected void writeNamespace() {
         String nsURI = determineNamespaceURI();
 
-        writeln( 1, "/** <p>The namespace of the vocabulary as a string ({@value})</p> */" );
+        writeln( 1, "/** <p>The namespace of the vocabulary as a string</p> */" );
         writeln( 1, "public static final String NS = \"" + nsURI + "\";" );
         writeln( 1 );
 

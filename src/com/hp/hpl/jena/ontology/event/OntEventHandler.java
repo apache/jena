@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Sep-2003
  * Filename           $RCSfile: OntEventHandler.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 10:47:01 $
+ * Last modified on   $Date: 2004-08-13 16:14:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntEventHandler.java,v 1.2 2003-12-04 10:47:01 ian_dickinson Exp $
+ * @version CVS $Id: OntEventHandler.java,v 1.3 2004-08-13 16:14:12 ian_dickinson Exp $
  */
 public interface OntEventHandler 
 {
@@ -52,7 +52,7 @@ public interface OntEventHandler
     /**
      * <p>Handle the occurrence of the ontology event denoted by the given
      * event code.  Standard OWL event contstants are defined in 
-     * {@linkplain com.hp.hpl.vocabulary.OntEvents the Ontology events vocabulary}.
+     * {@linkplain com.hp.hpl.jena.vocabulary.OntEventsVocab the Ontology events vocabulary}.
      * </p>
      * 
      * @param event The event code as a resource

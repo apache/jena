@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-18 15:41:37 $
+ * Last modified on   $Date: 2004-08-13 16:14:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.14 2004-05-18 15:41:37 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.15 2004-08-13 16:14:00 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -305,6 +305,17 @@ public class DIGAdapter
     }
     
     
+    
+    /**
+     * <p>Answer an iterator over any recent warnings returned from from the remote DIG reasoner.</p>
+     * @return An iterator over any warnings; if there are no warnings the return 
+     * value will be an iterator that returns <code>hasNext()</code> = false.
+     */
+    public Iterator getRecentWarnings() {
+        return getConnection().getWarnings();
+    }
+    
+    
     /**
      * <p>Answer an XML document that contains the DIG translation of the local graph, wrapped
      * as a tell verb</p>
@@ -466,7 +477,7 @@ public class DIGAdapter
 
     /** 
      * <p>Answer an identifier for a node, named or anon</p>
-     * @param r An RDF node
+     * @param n An RDF node
      * @return A unique identifier for the node as a string, which will either
      * be the resource URI for named nodes, or a unique ID string for bNodes
      */
@@ -539,8 +550,6 @@ public class DIGAdapter
      * <p>Answer true if the given node corresponds to one of the individuals known to
      * the DIG reasoner.</p>
      * @param node A node to test
-     * @param premises A model defining premises that may encode more information about
-     * node, or may be null
      * @return True if <code>node</code> is a known individual
      */
     public boolean isIndividual( com.hp.hpl.jena.graph.Node node ) {
@@ -593,7 +602,6 @@ public class DIGAdapter
     /**
      * <p>Create a new element to represent a query, adding to it a unique query
      * ID.</p>
-     * @param da The DIG adapter
      * @param query The query document
      * @param elemName The string name of the query element
      * @return The new query element
@@ -772,9 +780,6 @@ public class DIGAdapter
     /**
      * <p>Translate the restrictions in the source model into the DIG concept language.</p>
      * @param tell The node representing the DIG tell verb
-     * @param p A property that will require an implicit equivalence to be made explicit
-     * in a correct translation to DIG
-     * @param classExprType Denotes the type of class expression we are translating
      */
     protected void translateRestrictions( Element tell ) {
         translateClassExpressions( tell, 
