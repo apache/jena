@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 14:29:19 $
+ * Last modified on   $Date: 2003-06-17 21:56:21 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.3 2003-06-17 14:29:19 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.4 2003-06-17 21:56:21 ian_dickinson Exp $
  */
 public class TestDAMLClass 
     extends DAMLTestBase
@@ -343,25 +343,79 @@ public class TestDAMLClass
             new OntTestCase( "DAMLClass.getDefinedProperties" ) {
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                    
+                    B.prop_subClassOf().add( A );
+                    
                     DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
                     DAMLObjectProperty q = m.createDAMLObjectProperty( NS + "q" );
                     DAMLObjectProperty r = m.createDAMLObjectProperty( NS + "r" );
 
-                    // TODO once daml property has been migrated          
-                             
-                    iteratorTest( A.getDefinedProperties(), new Object[] {} );
+                    p.prop_domain().add( B );
+                    q.prop_domain().add( B );
+                    r.prop_domain().add( A );
+                    
+                    iteratorTest( A.getDefinedProperties(), new Object[] {r} );
+                    iteratorTest( B.getDefinedProperties(), new Object[] {p,q} );   // note no inference
                 }
             },
-            new OntTestCase( "DAMLClass.getDefinedProperties" ) {
+            new OntTestCase( "DAMLRestriction.prop_onProperty" ) {
                 public void doTest( DAMLModel m ) throws Exception {
-                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLRestriction A = m.createDAMLRestriction( NS + "A" );
                     DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
-                    DAMLObjectProperty q = m.createDAMLObjectProperty( NS + "q" );
-                    DAMLObjectProperty r = m.createDAMLObjectProperty( NS + "r" );
-
-                    // TODO once daml property has been migrated          
-                             
-                    iteratorTest( A.getDefinedProperties(), new Object[] {} );
+                   
+                    assertEquals( "prop_onProperty property", DAML_OIL.onProperty, A.prop_onProperty().getProperty() );
+                    
+                    assertEquals( "onProperty cardinality", 0, A.prop_onProperty().count() );
+                    A.prop_onProperty().add( p );
+                    
+                    assertEquals( "onProperty cardinality", 1, A.prop_onProperty().count() );
+                    
+                    iteratorTest( A.prop_onProperty().getAll(), new Object[] {p} );
+                }
+            },
+            new OntTestCase( "DAMLRestriction.prop_toClass" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLRestriction A = m.createDAMLRestriction( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                   
+                    assertEquals( "prop_toClass property", DAML_OIL.toClass, A.prop_toClass().getProperty() );
+                    
+                    assertEquals( "toClass cardinality", 0, A.prop_toClass().count() );
+                    A.prop_toClass().add( B );
+                    
+                    assertEquals( "toClass cardinality", 1, A.prop_toClass().count() );
+                    
+                    iteratorTest( A.prop_toClass().getAll(), new Object[] {B} );
+                }
+            },
+            new OntTestCase( "DAMLRestriction.prop_hasClass" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLRestriction A = m.createDAMLRestriction( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                   
+                    assertEquals( "prop_hasClass property", DAML_OIL.hasClass, A.prop_hasClass().getProperty() );
+                    
+                    assertEquals( "hasClass cardinality", 0, A.prop_hasClass().count() );
+                    A.prop_hasClass().add( B );
+                    
+                    assertEquals( "hasClass cardinality", 1, A.prop_hasClass().count() );
+                    
+                    iteratorTest( A.prop_hasClass().getAll(), new Object[] {B} );
+                }
+            },
+            new OntTestCase( "DAMLRestriction.prop_cardinality" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLRestriction A = m.createDAMLRestriction( NS + "A" );
+                   
+                    assertEquals( "prop_cardinality property", DAML_OIL.cardinality, A.prop_cardinality().getProperty() );
+                    
+                    assertEquals( "cardinality cardinality", 0, A.prop_cardinality().count() );
+                    A.prop_cardinality().addInt( 1 );
+                    
+                    assertEquals( "cardinality cardinality", 1, A.prop_cardinality().count() );
+                    
+                    assertEquals( "cardinality", 1, A.prop_cardinality().getInt() );
                 }
             },
         };
