@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphFactory.java,v 1.2 2003-05-08 14:53:57 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.1 2003-05-08 15:19:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.shared.*;
     
  	@author hedgehog
 */
-public class FileGraphFactory extends BaseGraphFactory
+public class FileGraphMaker extends BaseGraphMaker
     {
     private String root;
     private boolean deleteOnClose;
@@ -31,7 +31,7 @@ public class FileGraphFactory extends BaseGraphFactory
         
      	@param root the directory to keep the files in.
      */
-    public FileGraphFactory( String root )
+    public FileGraphMaker( String root )
         { this( root, false ); }
  
     /**
@@ -42,7 +42,7 @@ public class FileGraphFactory extends BaseGraphFactory
      	@param root the directory to keep the files in
      	@param deleteOnClose iff true, delete created files on close
      */
-    public FileGraphFactory( String root, boolean deleteOnClose )
+    public FileGraphMaker( String root, boolean deleteOnClose )
         {
         this.root = root;
         this.deleteOnClose = deleteOnClose;       

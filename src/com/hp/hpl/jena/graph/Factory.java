@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Factory.java,v 1.4 2003-05-03 07:43:56 chris-dollin Exp $
+  $Id: Factory.java,v 1.5 2003-05-08 15:19:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -22,8 +22,8 @@ public class Factory
     public static Graph createDefaultGraph()
         { return new GraphMem(); }
         
-    public static GraphFactory createRDBGraphFactory( IDBConnection c )
-        { return new GraphRDBFactory( c ); }
+    public static GraphMaker createRDBGraphFactory( IDBConnection c )
+        { return new GraphRDBMaker( c ); }
               
     private Factory()
         { super(); }

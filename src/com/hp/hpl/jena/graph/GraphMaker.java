@@ -6,11 +6,11 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
- * Filename           $RCSfile: GraphFactory.java,v $
- * Revision           $Revision: 1.4 $
+ * Filename           $RCSfile: GraphMaker.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:53:51 $
+ * Last modified on   $Date: 2003-05-08 15:19:31 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,9 +37,9 @@ package com.hp.hpl.jena.graph;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: GraphFactory.java,v 1.4 2003-05-08 14:53:51 chris-dollin Exp $
+ * @version CVS $Id: GraphMaker.java,v 1.1 2003-05-08 15:19:31 chris-dollin Exp $
  */
-public interface GraphFactory 
+public interface GraphMaker 
 {
 
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DefaultGraphFactory.java,v 1.4 2003-05-03 11:40:31 chris-dollin Exp $
+  $Id: DefaultGraphFactory.java,v 1.5 2003-05-08 15:19:32 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.impl;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.impl.*;
  *
  */
 
-public class DefaultGraphFactory extends SimpleGraphFactory 
+public class DefaultGraphFactory extends SimpleGraphMaker 
     {
 	public DefaultGraphFactory() { super();} 
     }

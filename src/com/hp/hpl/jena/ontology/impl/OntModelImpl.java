@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-30 09:59:25 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-08 15:19:33 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.12 2003-04-30 09:59:25 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.13 2003-05-08 15:19:33 chris-dollin Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -68,7 +68,7 @@ public class OntModelImpl
     protected OntDocumentManager m_docMgr;
     
     /** The graph factory this ontology model is using to build the union graph of imports */
-    protected GraphFactory m_graphFactory;
+    protected GraphMaker m_graphFactory;
     
     /** The language profile that defines what we can do in this ontology */
     protected Profile m_profile;
@@ -101,7 +101,7 @@ public class OntModelImpl
      * @param docMgr The ontology document manager to use when building the imports closure
      * @param gf The graph factory to use when building the union of the imported graphs
      */
-    public OntModelImpl( String languageURI, Model model, OntDocumentManager docMgr, GraphFactory gf ) {
+    public OntModelImpl( String languageURI, Model model, OntDocumentManager docMgr, GraphMaker gf ) {
         // all ontologies are defined to be union graphs, to allow us to add the imports to the union
         super( new OntologyGraph(), BuiltinPersonalities.model );
         
@@ -776,7 +776,7 @@ public class OntModelImpl
      * 
      * @return The local graph factory
      */
-    public GraphFactory getGraphFactory() {
+    public GraphMaker getGraphFactory() {
         return m_graphFactory;
     }
     

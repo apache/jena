@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFileGraphFactory.java,v 1.1 2003-05-03 16:53:21 chris-dollin Exp $
+  $Id: TestFileGraphFactory.java,v 1.2 2003-05-08 15:19:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -14,7 +14,7 @@ import junit.framework.*;
 /**
  	@author hedgehog
 */
-public class TestFileGraphFactory extends AbstractTestGraphFactory
+public class TestFileGraphFactory extends AbstractTestGraphMaker
     {
     public TestFileGraphFactory( String name )
         { super( name ); }
@@ -22,8 +22,8 @@ public class TestFileGraphFactory extends AbstractTestGraphFactory
     public static TestSuite suite()
         { return new TestSuite( TestFileGraphFactory.class ); }
 
-    public GraphFactory getGraphFactory()
-        { return new FileGraphFactory( getTempDirectory(), true ); } 
+    public GraphMaker getGraphFactory()
+        { return new FileGraphMaker( getTempDirectory(), true ); } 
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraphRDBFactory.java,v 1.1 2003-05-03 11:40:30 chris-dollin Exp $
+  $Id: TestGraphRDBFactory.java,v 1.2 2003-05-08 15:19:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -21,7 +21,7 @@ import junit.framework.*;
     the test.
 */
 
-public class TestGraphRDBFactory extends AbstractTestGraphFactory
+public class TestGraphRDBFactory extends AbstractTestGraphMaker
     {
     /**
         A clean test connection for all the graph factories.
@@ -37,13 +37,13 @@ public class TestGraphRDBFactory extends AbstractTestGraphFactory
     /**
         The current factory object, or null when there isn't one.
      */
-    private GraphRDBFactory current;
+    private GraphRDBMaker current;
     
     /**
         Invent a new factory on the connection, record it, and return it.    
     */
-    public GraphFactory getGraphFactory()
-        { return current = new GraphRDBFactory( connection ); }    
+    public GraphMaker getGraphFactory()
+        { return current = new GraphRDBMaker( connection ); }    
         
     /**
         Run the parent teardown, and then remove all the freshly created graphs.

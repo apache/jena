@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleGraphFactory.java,v 1.2 2003-05-03 11:40:31 chris-dollin Exp $
+  $Id: TestSimpleGraphFactory.java,v 1.3 2003-05-08 15:19:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -16,7 +16,7 @@ import junit.framework.*;
     Test the SimpleGraphFactory by extending AbstractTestGraphFactory
     and supplying new SimplGraphFactorys via getGraph.
 */
-public class TestSimpleGraphFactory extends AbstractTestGraphFactory
+public class TestSimpleGraphFactory extends AbstractTestGraphMaker
     {
     public TestSimpleGraphFactory( String name )
         { super( name ); }
@@ -24,8 +24,8 @@ public class TestSimpleGraphFactory extends AbstractTestGraphFactory
     public static TestSuite suite()
         { return new TestSuite( TestSimpleGraphFactory.class ); }
     
-    public GraphFactory getGraphFactory()
-        { return new SimpleGraphFactory(); }    
+    public GraphMaker getGraphFactory()
+        { return new SimpleGraphMaker(); }    
     }
 
 

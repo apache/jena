@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.9 2003-05-02 15:30:37 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.10 2003-05-08 15:19:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -173,14 +173,14 @@ public class ModelFactory
      * @see ProfileRegistry
      * @exception IllegalArgumentException if languageURI is null
      */
-    public static OntModel createOntologyModel( String languageURI, Model model, OntDocumentManager docMgr, GraphFactory graphFactory ) {
+    public static OntModel createOntologyModel( String languageURI, Model model, OntDocumentManager docMgr, GraphMaker graphFactory ) {
         if (languageURI == null) {
             throw new IllegalArgumentException( "Cannot create an ontology model with a null languageURI" );
         }
         
         // ensure we have all the helpers we need, getting defaults if necessary
         OntDocumentManager dm = (docMgr == null) ? OntDocumentManager.getInstance() : docMgr;
-        GraphFactory gf = (graphFactory == null) ? dm.getDefaultGraphFactory() : graphFactory;
+        GraphMaker gf = (graphFactory == null) ? dm.getDefaultGraphFactory() : graphFactory;
         Model m = (model == null) ? createModelForGraph( gf.getGraph() ) : model;
          
         return new OntModelImpl( languageURI, m, dm, gf );

@@ -47,7 +47,7 @@ import java.util.*;
  *
  */
 public class Checker extends AbsChecker {
-	private GraphFactory gf;
+	private GraphMaker gf;
 	private Vector monotoneProblems = new Vector();
 	private Vector warnings = new Vector();
 
@@ -161,7 +161,7 @@ public class Checker extends AbsChecker {
 		);
 	}
 
-	public Checker(boolean lite, GraphFactory gf) {
+	public Checker(boolean lite, GraphMaker gf) {
 		super(lite, gf);
 		this.gf = gf;
 	}
@@ -169,7 +169,7 @@ public class Checker extends AbsChecker {
 		this(false);
 	}
 	public Checker(boolean lite) {
-		this(lite, new SimpleGraphFactory());
+		this(lite, new SimpleGraphMaker());
 	}
 	public void add(Graph g) {
 		// Add every triple
@@ -251,7 +251,7 @@ public class Checker extends AbsChecker {
 	static public void main(String argv[]) {
 		OntDocumentManager dm = new OntDocumentManager();
 		dm.setProcessImports(true);
-		GraphFactory gf = dm.getDefaultGraphFactory();
+		GraphMaker gf = dm.getDefaultGraphFactory();
 		OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, 
 		ModelFactory.createDefaultModel()
 		, dm);

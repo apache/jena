@@ -1,20 +1,20 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BaseGraphFactory.java,v 1.1 2003-05-08 14:53:57 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.1 2003-05-08 15:19:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphFactory;
+import com.hp.hpl.jena.graph.GraphMaker;
 
 /**
  	@author kers
 */
-public abstract class BaseGraphFactory implements GraphFactory
+public abstract class BaseGraphMaker implements GraphMaker
     {
-    public BaseGraphFactory()
+    public BaseGraphMaker()
         { super(); }
         
     private int counter = 0;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleGraphFactory.java,v 1.4 2003-05-08 14:53:57 chris-dollin Exp $
+  $Id: SimpleGraphMaker.java,v 1.1 2003-05-08 15:19:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -19,7 +19,7 @@ import java.util.*;
     in a local map.
 */
 
-public class SimpleGraphFactory extends BaseGraphFactory 
+public class SimpleGraphMaker extends BaseGraphMaker
 	{
     private Map graphs = new HashMap();
     

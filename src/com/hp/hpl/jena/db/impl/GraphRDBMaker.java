@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBFactory.java,v 1.3 2003-05-08 14:53:06 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.1 2003-05-08 15:18:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -23,7 +23,7 @@ import java.util.*;
     @author kers 
 */
 
-public class GraphRDBFactory extends BaseGraphFactory
+public class GraphRDBMaker extends BaseGraphMaker
     {
     private IDBConnection c;
     private int counter = 0;
@@ -33,7 +33,7 @@ public class GraphRDBFactory extends BaseGraphFactory
         Construct a new GraphRDB factory based on the supplied DB connection.
         @param c the database connection
     */
-    public GraphRDBFactory( IDBConnection c ) { this.c = c; }
+    public GraphRDBMaker( IDBConnection c ) { this.c = c; }
      
     /**
      	@see com.hp.hpl.jena.graph.GraphFactory#getGraph()

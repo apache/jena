@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-03 09:24:27 $
+ * Last modified on   $Date: 2003-05-08 15:19:32 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.ontology.impl.OntologyGraph;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.9 2003-05-03 09:24:27 chris-dollin Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.10 2003-05-08 15:19:32 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -123,7 +123,7 @@ public class OntDocumentManager
     protected boolean m_processImports = true;
 
     /** The factory we're using to create graphs in the union */
-    protected GraphFactory m_graphFactory = null;
+    protected GraphMaker m_graphFactory = null;
 
 
 
@@ -392,10 +392,10 @@ public class OntDocumentManager
      *
      * @return A GraphFactory that will provide a graph for building composite graphs
      */
-    public GraphFactory getDefaultGraphFactory() {
+    public GraphMaker getDefaultGraphFactory() {
         if (m_graphFactory == null) {
             // construct the default graph factory
-            m_graphFactory = new SimpleGraphFactory();
+            m_graphFactory = new SimpleGraphMaker();
         }
 
         return m_graphFactory;
@@ -410,7 +410,7 @@ public class OntDocumentManager
      *
      * @param graphFactory The new graph factory to use
      */
-    public void setDefaultGraphFactory( GraphFactory graphFactory ) {
+    public void setDefaultGraphFactory( GraphMaker graphFactory ) {
         m_graphFactory = graphFactory;
     }
 

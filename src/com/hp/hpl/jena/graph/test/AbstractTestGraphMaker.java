@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphFactory.java,v 1.4 2003-05-08 14:53:57 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.1 2003-05-08 15:19:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -22,14 +22,14 @@ import com.hp.hpl.jena.shared.*;
  	@author hedgehog
 */
 
-public abstract class AbstractTestGraphFactory extends GraphTestBase
+public abstract class AbstractTestGraphMaker extends GraphTestBase
     {
-    public AbstractTestGraphFactory( String name )
+    public AbstractTestGraphMaker( String name )
             { super( name ); };
             
-    public abstract GraphFactory getGraphFactory();
+    public abstract GraphMaker getGraphFactory();
     
-    private GraphFactory gf;
+    private GraphMaker gf;
     
     public void setUp()
         { gf = getGraphFactory(); }
