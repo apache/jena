@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.3 2003-04-25 09:33:49 der Exp $
+ * $Id: OWLWGTester.java,v 1.4 2003-05-09 08:08:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
-import com.hp.hpl.jena.reasoner.rulesys.OWLRuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleReasoner;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
@@ -33,7 +33,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-25 09:33:49 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-09 08:08:36 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -160,8 +160,8 @@ public class OWLWGTester {
         if (log) {
             configuration = ModelFactory.createDefaultModel();
             configuration.createResource(reasonerF.getURI())
-                         .addProperty(OWLRuleReasonerFactory.PROPtraceOn, "true")
-                         .addProperty(OWLRuleReasonerFactory.PROPderivationLogging, "true");
+                         .addProperty(BasicForwardRuleReasoner.PROPtraceOn, "true")
+                         .addProperty(BasicForwardRuleReasoner.PROPderivationLogging, "true");
         }
         Reasoner reasoner = reasonerF.create(configuration);
         // Temp ...

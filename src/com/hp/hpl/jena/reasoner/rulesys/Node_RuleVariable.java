@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Node_RuleVariable.java,v 1.3 2003-05-05 21:52:41 der Exp $
+ * $Id: Node_RuleVariable.java,v 1.4 2003-05-09 08:08:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-05 21:52:41 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-09 08:08:37 $
  */
 public class Node_RuleVariable extends Node_Variable {
     /** The offset of this variable in the rule's binding table */
@@ -34,7 +34,7 @@ public class Node_RuleVariable extends Node_Variable {
      * @param index the calculated index of this variable in the rule
      */
     public Node_RuleVariable(String label, int index) {
-        super(label);
+        super(new VarLabel(label));
         this.index = index;
     }
     
@@ -44,6 +44,11 @@ public class Node_RuleVariable extends Node_Variable {
      */
     public int getIndex() {
         return index;
+    }
+    
+    /** printable form */        
+    public String toString() {
+        return ((VarLabel)label).getLabel();
     }
     
     /** Equality override - all rule variables are treated as equal
@@ -56,6 +61,21 @@ public class Node_RuleVariable extends Node_Variable {
      *  search of variant tables */
     public int hashCode() {
         return 0xc3a7;
+    }
+    
+    /** Inner class to wrap the label to ensure it is distinct from other usages */
+    static class VarLabel {
+        
+        /** The label being wrapped */
+        String label;
+        
+        VarLabel(String label ) {
+            this.label = label;
+        }
+        
+        public String getLabel() {
+            return label;
+        }
     }
 
 }
