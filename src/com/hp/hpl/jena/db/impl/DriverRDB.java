@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.zip.CRC32;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -21,19 +20,20 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
+import com.hp.hpl.jena.db.impl.DBIDInt;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.graph.query.Element;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.*;
 
 import org.apache.log4j.Logger;
+import org.apache.xerces.util.XMLChar;
 
 //=======================================================================
 /**
@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.27 $ on $Date: 2003-08-22 16:15:40 $
+* @version $Revision: 1.28 $ on $Date: 2003-08-25 02:16:36 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -91,15 +91,17 @@ public abstract class DriverRDB implements IRDBDriver {
 
    /** The maximum size of index key (or a component of a key) */
    protected int INDEX_KEY_LENGTH;
-   /** The maximum size of an object that can be stored in a Statement table */
 
-   protected boolean HAS_XACTS;
-   /** true if graphs using this database instance use transactions.
-    * note, this differs from m_transactionSupported because HAS_XACTS
-    * is a user settable parameter. the underlying db engine may support
+   /** The maximum possible value for INDEX_KEY_LENGTH (db-dependent) */
+   protected int INDEX_KEY_LENGTH_MAX;
+
+   /** true if graphs using this database instance supports transactions.
+    * this is a user settable parameter. the underlying db engine may support
     * transactions but an application may prefer to run without transactions
-    * for better performance.
+    * for better performance. this can only be set before the db is formatted.
     */
+   protected boolean IS_XACT_DB;
+
    
    protected boolean STRINGS_TRIMMED;
    /** true if the database engine will trim trailing spaces in strings. to
@@ -124,18 +126,22 @@ public abstract class DriverRDB implements IRDBDriver {
    protected  boolean DB_NAMES_TO_UPPER = false;
   
 
-   protected boolean URI_COMPRESS;
    /** true if URI's are to be compressed by storing prefixes (an approximation
     *  of a namespace) in the JENA_PREFIX table. note that "short" prefixes are
     *  not stored, i.e., the prefix length not more than URI_COMPRESS_LENGTH.
     */
+   protected boolean URI_COMPRESS;
+
    
-   protected int URI_COMPRESS_LENGTH;
+   protected int URI_COMPRESS_LENGTH = 100;
    /** if URI_COMPRESS is true, compress prefixes that are longer than this.
 
    /** The maximum size of an object that can be stored in a Statement table */
    protected int LONG_OBJECT_LENGTH;
    
+   /** The maximum possible value for LONG_OBJECT_LENGTH (db-dependent) */
+   protected int LONG_OBJECT_LENGTH_MAX;
+
    /** The SQL type to use for storing ids (compatible with wrapDBID) */
    protected String ID_SQL_TYPE;
    
@@ -145,30 +151,38 @@ public abstract class DriverRDB implements IRDBDriver {
    /** Set to true if IDs are allocated prior to insert */
    protected boolean PRE_ALLOCATE_ID;
 	
-   /** Holds value of empty literal marker */
-   protected String EMPTY_LITERAL_MARKER;
-	
    /** The name of the sql definition file for this database/layout combo */
    protected String SQL_FILE;
    
    /** The name of the sql definition file for this database/layout combo */
    protected String DEFAULT_SQL_FILE = "etc/generic_generic.sql";
-
-
-   /** Set to true if the insert operations should be done using the "proc" versions */
-   protected boolean INSERT_BY_PROCEDURE;
       
    
 // =======================================================================
 //	Common variables
 // =======================================================================
    /**
-	* Holds base name of AssertedStatement table.
-	* Every triple store has at least one tables for AssertedStatements.
+	* Holds prefix for names of Jena database tables.
 	*/
-   protected static final String TABLE_BASE_NAME = "jena_";
+   protected String TABLE_NAME_PREFIX = "jena_";
    
+   /**
+	* Holds maximum length of table and index names in database.
+	*/
+   protected int TABLE_NAME_LENGTH_MAX;
    
+   /**
+	* Holds the length of the longest jena table or index name.
+	* This is really a hack and should be better architected.
+	* The currently known longest possible name is:
+	* <prefix>GnTm_StmtXSP   where prefix is the table
+	* name prefix (which isn't counted here), n is the
+	* graph identifier, m is the table number within that
+	* graph and XSP refers to the subject-predicate index.
+	* If we assume n and m might be two digits, we get 14.
+	*/
+   protected int JENA_LONGEST_TABLE_NAME_LENGTH = 14;
+  
    /** Set to true to enable cache of pre-prepared statements */
    protected boolean CACHE_PREPARED_STATEMENTS = true;
 
@@ -176,19 +190,22 @@ public abstract class DriverRDB implements IRDBDriver {
    protected String LAYOUT_TYPE = "TripleStore";
 
    /** Default name of the table that holds system property graph asserted statements **/
-   protected final String SYSTEM_STMT_TABLE = TABLE_BASE_NAME + "sys_stmt";
+   protected String SYSTEM_STMT_TABLE;
    
    /** Name of the long literal table **/
-   protected final String LONG_LIT_TABLE = "jena_long_lit";
+   protected String LONG_LIT_TABLE;
    
    /** Name of the long URI table **/
-   protected final String LONG_URI_TABLE = "jena_long_uri";
+   protected String LONG_URI_TABLE;
 
    /** Name of the prefix table **/
-   protected final String PREFIX_TABLE = "jena_prefix";
+   protected String PREFIX_TABLE;
 
-   /** Name of the graph table **/
-   protected final String GRAPH_TABLE = "jena_graph";
+      /** Name of the graph table **/
+   protected String GRAPH_TABLE;
+    
+	/** If not null, newly-created graphs share tables with the identified graph **/
+   protected String STORE_WITH_MODEL = null;
     
    /** Name of the graph holding default properties (the one's that a newly-created
 	*  graph will have by default **/
@@ -200,6 +217,9 @@ public abstract class DriverRDB implements IRDBDriver {
         
    /** Driver version number */
    protected final String VERSION = "2.0alpha";
+   
+   /** Database layout version */
+   protected String LAYOUT_VERSION = "2.0";
    
    protected static Logger logger = Logger.getLogger( PSet_ReifStore_RDB.class );
     
@@ -216,6 +236,10 @@ public abstract class DriverRDB implements IRDBDriver {
     protected SpecializedGraph m_sysProperties = null;
     
     protected IDBConnection m_dbcon = null;
+    
+    protected LRUCache prefixCache;
+    
+    public static final int PREFIX_CACHE_SIZE = 10;
     
     //===================================
     // for transaction support
@@ -262,19 +286,69 @@ public abstract class DriverRDB implements IRDBDriver {
 		if (m_sysProperties != null) {
 			return m_sysProperties;
 		}
-		
+		setTableNames(TABLE_NAME_PREFIX);
+			
 		if( !isDBFormatOK() ) {
 			// Re-format the DB
 			cleanDB();
+			prefixCache = new LRUCache(PREFIX_CACHE_SIZE);
 			return formatAndConstructSystemSpecializedGraph();
 		}
-        getDbInitTablesParams();
-		// The database has already been formatted - just grab the properties
+		prefixCache = new LRUCache(PREFIX_CACHE_SIZE);
+        getDbInitTablesParams();  //this call is a hack. it's needed because
+        // it has the side effect of initializing some vars (e.g., EOS).
 		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_STMT_TABLE);
 		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet, DEFAULT_ID);
 		m_dbProps = new DBPropDatabase(m_sysProperties);
+		
+		// now reset the configuration parameters
+		checkEngine(m_dbProps);
+		checkDriverVersion(m_dbProps);
+		checkLayoutVersion(m_dbProps);
+		String val = m_dbProps.getLongObjectLength();
+		if ( val != null ) LONG_OBJECT_LENGTH = Integer.parseInt(val);
+		val = m_dbProps.getIndexKeyLength();
+		if ( val != null ) INDEX_KEY_LENGTH = Integer.parseInt(val);
+		val = m_dbProps.getIsTransactionDb(); 
+		if ( val != null ) IS_XACT_DB = Boolean.valueOf(val).booleanValue();
+		val = m_dbProps.getDoCompressURI();
+		if ( val != null ) URI_COMPRESS = Boolean.valueOf(val).booleanValue();
+		val = m_dbProps.getCompressURILength();
+		if ( val != null ) URI_COMPRESS_LENGTH = Integer.parseInt(val);
+		val = m_dbProps.getTableNamePrefix();
+		if ( val != null ) TABLE_NAME_PREFIX = val;
+		
 		return m_sysProperties;		
 	}
+	
+	private void checkEngine ( DBProp dbProps ) {
+		String dbtype = m_dbProps.getEngineType();
+		if ( !dbtype.equals(DATABASE_TYPE) ) {
+			throw new JenaException(
+			"Database created with incompatible database type for this version of Jena: "
+			+ dbtype);
+		}
+	}
+	
+	private void checkDriverVersion ( DBProp dbProps ) {
+		String vers = m_dbProps.getDriverVersion();
+		if ( !vers.equals(VERSION) ) {
+			throw new JenaException(
+			"Models in the database were created with an incompatible version of Jena: "
+			+ vers);
+		}
+	}
+	
+	private void checkLayoutVersion ( DBProp dbProps ) {
+		String layout = m_dbProps.getLayoutVersion();
+		if ( !layout.equals(LAYOUT_VERSION) ) {
+			throw new JenaException(
+			"The database layout cannot be processed by this version of Jena: "
+			+ layout);	
+		}
+
+	}
+
 	
 	/**
 	 * Format the database and construct a brand new system specialized graph.
@@ -284,8 +358,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		try {
 			String [] params = 	getDbInitTablesParams();
 			m_sql.runSQLGroup("initDBtables", params);
-			m_sql.runSQLGroup("initDBgenerators");
-//			m_sql.runSQLGroup("initDBprocedures");
+			m_sql.runSQLGroup("initDBgenerators");//			m_sql.runSQLGroup("initDBprocedures");
 		} catch (SQLException e) {
 			logger.warn("Problem formatting database", e);
 			throw new RDFRDBException("Failed to format database", e);
@@ -298,8 +371,11 @@ public abstract class DriverRDB implements IRDBDriver {
 		// The following call constructs a new set of database properties and
 		// adds them to the m_sysProperties specialized graph.
 		m_dbProps = new DBPropDatabase( m_sysProperties, m_dbcon.getDatabaseType(), 
-		                                VERSION, String.valueOf(LONG_OBJECT_LENGTH));
-			
+		        VERSION, LAYOUT_VERSION,String.valueOf(LONG_OBJECT_LENGTH), 
+		        String.valueOf(INDEX_KEY_LENGTH), Boolean.toString(IS_XACT_DB), 
+				Boolean.toString(URI_COMPRESS), String.valueOf(URI_COMPRESS_LENGTH),
+				TABLE_NAME_PREFIX);
+		
 		// Now we also need to construct the parameters that will be the
 		// default settings for any graph added to this database
 		DBPropGraph def_prop = new DBPropGraph( m_sysProperties, DEFAULT_PROPS, "generic");
@@ -326,20 +402,23 @@ public abstract class DriverRDB implements IRDBDriver {
 		String graphName = graphProperties.getName();
 		String stmtTbl = null;
 		String reifTbl = null;
-		String dbSchema;
+		String dbSchema = STORE_WITH_MODEL;
 		int graphId = graphIdAlloc(graphName);
 		graphProperties.addGraphId(graphId);
 		boolean useDefault = false;
 				
-		dbSchema = graphProperties.getDBSchema();
+		// dbSchema = graphProperties.getDBSchema();
 		// use the default schema if:
 		// 1) no schema is specified and we are creating the default (unnamed) graph
 		// 2) a schema is specified and it is the default (unnamed) graph
-		if ( ((dbSchema == null) && graphName.equals(GraphRDB.DEFAULT)) ||
-			 ((dbSchema != null) && dbSchema.equals(GraphRDB.DEFAULT)) ) {
+		if ( ((dbSchema == null) && graphName.equals(GraphRDB.DEFAULT)) ) {
 			useDefault = true;
 			dbSchema = DEFAULT_PROPS;  // default graph should use default tables
 		}
+		// else if ( ((dbSchema != null) && dbSchema.equals(GraphRDB.DEFAULT)) ) {
+		// 	useDefault = true;
+		//	dbSchema = DEFAULT_PROPS;  // default graph should use default tables
+		// }
 		if ( dbSchema != null ) {
 			DBPropGraph schProp = DBPropGraph.findPropGraphByName(getSystemSpecializedGraph(),
 												dbSchema );
@@ -368,7 +447,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		lSetReifier.setPSet(pSetReifier);
 		graphProperties.addLSet(lSetReifier);
 		
-		// Now add support all all non-reified triples
+		// Now add support for all non-reified triples
 		DBPropPSet pSet = new DBPropPSet(m_sysProperties, m_psetClassName, stmtTbl);
 		DBPropLSet lSet = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName(), m_lsetClassName);
 		lSet.setPSet(pSet);
@@ -417,7 +496,6 @@ public abstract class DriverRDB implements IRDBDriver {
 			// get PSet
 			pSet = (IPSet) Class.forName(className).newInstance();
 			pSet.setDriver(this);
-			pSet.setMaxLiteral(LONG_OBJECT_LENGTH);
 			pSet.setSQLType(ID_SQL_TYPE);
 			pSet.setSkipDuplicateCheck(SKIP_DUPLICATE_CHECK);
 			pSet.setSQLCache(m_sql);
@@ -545,10 +623,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	public boolean isDBFormatOK() {
 			boolean result = false;
 			try {
-					DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
-					String[] tableTypes = { "TABLE" };
-					String prefixMatch = stringToDBname("jena%");
-					ResultSet alltables = dbmd.getTables(null, null, prefixMatch, tableTypes);
+					ResultSet alltables = getAllTables();
 					result = alltables.next();
 					alltables.close();
 			} catch (Exception e1) {
@@ -572,10 +647,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public void cleanDB() {
 		try {
-			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
-			String[] tableTypes = { "TABLE" };
-			String prefixMatch = stringToDBname("jena%");
-			ResultSet alltables = dbmd.getTables(null, null, prefixMatch, tableTypes);
+			ResultSet alltables = getAllTables();
 			List tablesPresent = new ArrayList(10);
 			while (alltables.next()) {
 				tablesPresent.add(alltables.getString("TABLE_NAME"));
@@ -588,6 +660,20 @@ public abstract class DriverRDB implements IRDBDriver {
 			if (PRE_ALLOCATE_ID) {
 				clearSequences();
 			}
+		} catch (SQLException e1) {
+			throw new RDFRDBException("Internal SQL error in driver", e1);
+		}
+		m_sysProperties = null;
+		if ( prefixCache != null ) prefixCache.clear();
+		prefixCache = null;
+	}
+	
+	private ResultSet getAllTables() {
+		try {
+			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
+			String[] tableTypes = { "TABLE" };
+			String prefixMatch = stringToDBname(TABLE_NAME_PREFIX + "%");
+			return dbmd.getTables(null, null, prefixMatch, tableTypes);
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver", e1);
 		}
@@ -999,7 +1085,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			String pfx;
 			String qname;
 			if ( URI_COMPRESS == true ) {
-				pos = Util.splitNamespace(uri);
+				pos = dbSplitNamespace(uri);
 				noCompress = (pos == uri.length()) || (pos <= URI_COMPRESS_LENGTH);
 			} else
 				noCompress = true;
@@ -1163,6 +1249,49 @@ public abstract class DriverRDB implements IRDBDriver {
 		return res;
 	}
 	
+	/** This is cuurently a copy of Util.splitNamespace.  It was
+	 * copied rather than used directly for two reasons. 1) in the
+	 * future it may be desirable to use a different split algorithm
+	 * for persistence. 2) the util version could change at any time,
+	 * which would render existing databases inaccessible. having a
+	 * copy allows the db version to evolve in a controlled way.
+	 * 
+	 * Given an absolute URI, determine the split point between the namespace part
+	 * and the localname part.
+	 * If there is no valid localname part then the length of the
+	 * string is returned.
+	 * The algorithm tries to find the longest NCName at the end
+	 * of the uri, not immediately preceeded by the first colon
+	 * in the string.
+	 * @param uri
+	 * @return the index of the first character of the localname
+	 */
+	public static int dbSplitNamespace(String uri) {
+		char ch;
+		int lg = uri.length();
+		if (lg == 0)
+			return 0;
+		int j;
+		int i;
+		for (i = lg - 1; i >= 1; i--) {
+			ch = uri.charAt(i);
+			if (!XMLChar.isNCName(ch))
+				break;
+		}
+		for (j = i + 1; j < lg; j++) {
+			ch = uri.charAt(j);
+			if (XMLChar.isNCNameStart(ch)) {
+				if (uri.charAt(j - 1) == ':'
+					&& uri.lastIndexOf(':', j - 2) == -1)
+					continue; // split "mailto:me" as "mailto:m" and "e" !
+				else
+					break;
+			}
+		}
+		return j;
+	}
+
+	
 	class ParseInt {
 		int	pos;
 		Integer val;	
@@ -1190,7 +1319,10 @@ public abstract class DriverRDB implements IRDBDriver {
 
 	DBIDInt URItoPrefix ( String uri, int pos, boolean add ) {
 		RDBLongObject	lobj = PrefixToLongObject(uri,pos);
-		return getLongObjectID(lobj, PREFIX_TABLE, add);
+		DBIDInt res = getLongObjectID(lobj, PREFIX_TABLE, add);
+		if ( res != null )
+			prefixCache.put(res,uri.substring(0,pos));
+		return res;
 	}
 	
 	protected RDBLongObject PrefixToLongObject ( String prefix, int split ) {
@@ -1203,10 +1335,10 @@ public abstract class DriverRDB implements IRDBDriver {
 		avail = INDEX_KEY_LENGTH - (headLen + EOS_LEN);
 		if ( split > avail ) {
 			res.head = res.head + prefix.substring(0,avail);
-			res.tail = prefix.substring(avail);
+			res.tail = prefix.substring(avail,split);
 			res.hash = stringToHash(res.tail);
 		} else {
-			res.head = res.head + prefix;
+			res.head = res.head + prefix.substring(0,split);
 			res.tail = "";
 		}
 		res.head = res.head + EOS;
@@ -1399,7 +1531,13 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @return the prefix string or null if it does not exist.
 	 */
 	protected String IDtoPrefix ( int prefixID ) {
-		return IDtoString ( prefixID, PREFIX_TABLE, RDBCodePrefix);
+		// check cache
+		DBIDInt dbid = new DBIDInt(prefixID);
+		Object res = prefixCache.get(dbid);
+		if ( res != null)
+			return (String) res;
+		else
+			return IDtoString ( prefixID, PREFIX_TABLE, RDBCodePrefix);
 	}
 	
 	/**
@@ -1619,57 +1757,125 @@ public abstract class DriverRDB implements IRDBDriver {
 	}
 
 	
-	protected int getTableCount ( int graphId ) {		
-	try {
-		DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
-		String[] tableTypes = { "TABLE" };
-		int	res = 0;
-		String	tblPattern = TABLE_BASE_NAME + "g" + Integer.toString(graphId) + "%";
-		tblPattern = stringToDBname(tblPattern);
-		ResultSet alltables = dbmd.getTables(null, null, tblPattern, tableTypes);
-		while (alltables.next()) {
-			res += 1;
+	protected int getTableCount(int graphId) {
+		try {
+			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
+			String[] tableTypes = { "TABLE" };
+			int res = 0;
+			String tblPattern =
+				TABLE_NAME_PREFIX + "g" + Integer.toString(graphId) + "%";
+			tblPattern = stringToDBname(tblPattern);
+			ResultSet alltables =
+				dbmd.getTables(null, null, tblPattern, tableTypes);
+			while (alltables.next()) {
+				res += 1;
+			}
+			alltables.close();
+			return res;
+		} catch (SQLException e1) {
+			throw new RDFRDBException("Internal SQL error in driver", e1);
 		}
-		alltables.close();
-		return res;
-	} catch (SQLException e1) {
-		throw new RDFRDBException("Internal SQL error in driver", e1);
 	}
-}
+	
+	/*
+	 * getters and setters for database options
+	 */
+	 
+	 public int getLongObjectLength () {
+	 	return LONG_OBJECT_LENGTH;
+	 }
+	 
+	 public void setLongObjectLength ( int len ) {
+		checkDbUninitialized();
+		if ( len > LONG_OBJECT_LENGTH_MAX )
+			throw new JenaException("IndexKeyLength exceeds maximum value for database");
+		LONG_OBJECT_LENGTH = len;
+	}
 
-//=======================================================================
-//Database operations
+	public int getIndexKeyLength () {
+   		return INDEX_KEY_LENGTH;
+	}
+	 
+	public void setIndexKeyLength ( int len ) {
+		checkDbUninitialized();
+		if ( len > INDEX_KEY_LENGTH_MAX )
+			throw new JenaException("IndexKeyLength exceeds maximum value for database");
+		INDEX_KEY_LENGTH = len;
+	}
+	
+	public boolean getIsTransactionDb () {
+		return IS_XACT_DB;
+	}
+	 
+	public void setIsTransactionDb ( boolean bool ) {
+		checkDbUninitialized();
+		if ( bool == false )
+			throw new JenaException("setIsTransactionDb unsupported for this database engine");
+	}
 
-    
-  /**
-   * Check to see if a table with the specified name exists in the database.
-   * @param tName table name
-   * @return boolean indicating whether or not table is present.
-   */
-  public boolean doesTableExist(String tName) {
-	  boolean ok = false;
-	  try {
-			  DatabaseMetaData dbmd = getConnection().getConnection().getMetaData();
-			  String[] tableTypes = { "TABLE" };
-			  String prefix = stringToDBname("jena%");
-			  ResultSet alltables = dbmd.getTables(null, null, prefix, tableTypes);
-			  List tablesPresent = new ArrayList(10);
-			  while (alltables.next()) {
-					  tablesPresent.add(alltables.getString("TABLE_NAME"));
-			  }
-			  alltables.close();
-			  //TODO get these names from someplace
-			  ok &= tablesPresent.contains(stringToDBname(tName));
-	  } catch (SQLException e1) {
-			  throw new RDFRDBException("Internal SQL error in driver", e1);
-	  }
-	  return ok;
-  }
+	public boolean getDoCompressURI () {
+			return URI_COMPRESS;
+	}
+	
+	public void setDoCompressURI ( boolean bool ) {
+		checkDbUninitialized();
+		URI_COMPRESS = bool;
+	}
+	
+	public int getCompressURILength() {
+		return URI_COMPRESS_LENGTH;
+	}
+	
+	public void setCompressURILength ( int len ) {
+		checkDbUninitialized();
+		URI_COMPRESS_LENGTH = len;
+	}
+	
+	public boolean getDoDuplicateCheck() {
+		return !SKIP_DUPLICATE_CHECK;
+	}
+	
+	public void setDoDuplicateCheck ( boolean bool ) {
+		SKIP_DUPLICATE_CHECK = !bool;
+	}
+	
+	protected void checkDbUninitialized () {
+		if ( (m_sysProperties != null) || (isDBFormatOK() == true) )
+			throw new JenaException("Database configuration option cannot be set after database is formatted");
+	}
 
-    
-    
+	public String getTableNamePrefix() {
+		return TABLE_NAME_PREFIX;
+	}
 
+	public void setTableNamePrefix ( String prefix ) {
+		if ( (prefix.length() + JENA_LONGEST_TABLE_NAME_LENGTH) >
+										TABLE_NAME_LENGTH_MAX )
+			throw new JenaException("TableNamePrefix exceeds maximum length for database: "				+ TABLE_NAME_LENGTH_MAX);
+		if ( m_sysProperties != null )
+			throw new JenaException("Table name prefix must be set before opening or connecting to a model.");
+		setTableNames(prefix);
+	}
 
+	private void setTableNames ( String prefix ) {
+		TABLE_NAME_PREFIX = prefix;
+		SYSTEM_STMT_TABLE = TABLE_NAME_PREFIX + "sys_stmt";
+		LONG_LIT_TABLE = TABLE_NAME_PREFIX + "long_lit";
+		LONG_URI_TABLE = TABLE_NAME_PREFIX + "long_uri";
+		PREFIX_TABLE = TABLE_NAME_PREFIX + "prefix";
+		GRAPH_TABLE = TABLE_NAME_PREFIX + "graph";
+	}
+	
+	public String getStoreWithModel() {
+		return STORE_WITH_MODEL;
+	}
+
+	public void setStoreWithModel ( String modelName ) {
+		String name = null;
+		if ( (modelName != null) && !modelName.equals("") )
+				name = modelName;
+		STORE_WITH_MODEL = name;
+	}
 
 }
 
