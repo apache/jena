@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SyntaxProblem.java,v 1.4 2003-05-28 11:13:52 chris-dollin Exp $
+  $Id: SyntaxProblem.java,v 1.5 2003-06-19 09:02:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -103,7 +103,7 @@ public class SyntaxProblem {
 	 * Sets the writer used for creation of the 
 	 * {@link #longDescription()}.
 	 * @param w
-	 * @return
+	 * @return the old writer
 	 */
 	public RDFWriter setWriter(RDFWriter w){
 		RDFWriter old = wtr;
@@ -176,7 +176,7 @@ public class SyntaxProblem {
 	 * At least one of probelmSubGraph() and problemNode()
 	 * is non-null. If both are non-null then the problemSubGraph()
 	 * is the graph underlying the problemNode().
-	 * @return
+	 * @return the problem sub-graph
 	 */
 	public Graph problemSubGraph() {
 		return pgraph;

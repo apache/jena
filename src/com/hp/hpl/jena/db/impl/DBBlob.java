@@ -36,10 +36,11 @@ public abstract class DBBlob implements IDBBlob {
 	}
 	
 	/**
+     TODO is this obsolete? It doesn't look useful and it's never called.
 	 * Creates and returns instance of appropriate subclass of DBBlob.
 	 * @param ablob
 	 * @param dbType
-	 * @return
+	 * @return null ?
 	 */
 	public static IDBBlob getDBBlob(Object ablob, String dbType) {
 		IDBBlob result = null;

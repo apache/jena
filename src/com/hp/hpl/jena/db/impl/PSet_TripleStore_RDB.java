@@ -42,7 +42,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.25 $ on $Date: 2003-06-18 23:56:36 $
+* @version $Revision: 1.26 $ on $Date: 2003-06-19 09:02:39 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -485,7 +485,7 @@ public void deleteTripleAR(
 	   * @param tableName
 	   * @param isBatch
 	   * @param batchedPreparedStatements
-	   * @return
+	   * @returnthe prepared statement
 	   * @throws SQLException
 	   */
 	  public PreparedStatement getPreparedStatement(String op, 
