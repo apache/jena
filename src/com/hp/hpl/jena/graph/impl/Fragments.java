@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Fragments.java,v 1.10 2004-09-15 14:03:35 chris-dollin Exp $
+  $Id: Fragments.java,v 1.11 2004-09-16 17:18:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -30,7 +30,14 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class Fragments
     { 
     
-    static class Slot { int which; Slot( int n ) { which = n; } }
+    static abstract class Slot 
+        { 
+        int which; 
+        Slot( int n ) 
+            { which = n; }
+        
+        public abstract boolean clashesWith( Node n, Triple reified );
+        }
     
     /**
         a Fragments object is represented by four sets, one for each of the reification
@@ -164,10 +171,10 @@ public class Fragments
         the magic numbers for the slots. The order doesn't matter, but that they're
         some permutation of {0, 1, 2, 3} does. 
     */
-    private static final Slot TYPES = new Slot(0);
-    private static final Slot SUBJECTS = new Slot(1);
-    private static final Slot PREDICATES = new Slot(2);
-    private static final Slot OBJECTS = new Slot(3);
+    private static final Slot TYPES = new Slot(0) { public boolean clashesWith( Node n, Triple reified ) { return false; } };
+    private static final Slot SUBJECTS = new Slot(1) { public boolean clashesWith( Node n, Triple reified ) { return !n.equals( reified.getSubject() ); } };
+    private static final Slot PREDICATES = new Slot(2) { public boolean clashesWith( Node n, Triple reified ) { return !n.equals( reified.getPredicate() ); } };
+    private static final Slot OBJECTS = new Slot(3) { public boolean clashesWith( Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
 
     private static final Map selectors = makeSelectors();
           
