@@ -15,8 +15,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -30,8 +30,8 @@ import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.StandardTripleMatch;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -53,7 +53,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.5 $ on $Date: 2003-05-01 18:05:06 $
+* @version $Revision: 1.6 $ on $Date: 2003-05-03 02:04:59 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -98,7 +98,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 
 	/** The table of sql driver statements */
 	protected SQLCache m_sql = null;
-
+	
 //=======================================================================
 // Internal variables
 
@@ -262,12 +262,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		return allocateID("allocateLiteralID");
 	}
 	
-    /**
-     * Register a literal in the literals table.  
-     * Add it if it is not there.  If it already present, return its id.
-     * @return the db index of the added literal 
-     */
-    public IDBID addLiteral(Node_Literal l) throws RDFRDBException {
+	/**
+	 * Register a literal in the literals table.  
+	 * Add it if it is not there.  If it already present, return its id.
+	 * @return the db index of the added literal 
+	 */
+	public IDBID addLiteral(Node_Literal l) throws RDFRDBException {
         IDBID id = null;
         if (!SKIP_DUPLICATE_CHECK) {
             id = getLiteralID(l);
@@ -339,14 +339,15 @@ public  class PSet_TripleStore_RDB implements IPSet {
 				ps.setString(argi++, l.getLiteral().language());
             }
 			
+			// TODO update here to work with executeBatch()
             if (INSERT_BY_PROCEDURE) {
                 ResultSet rs = ps.executeQuery();
                 ResultSetIterator it = new ResultSetIterator(rs, ps, m_sql, opname);
                 if (it != null && it.hasNext())
                     id = wrapDBID(it.getSingleton());
             } else {
-                ps.executeUpdate();
-                m_sql.returnPreparedSQLStatement(ps, opname);
+				  ps.executeUpdate();
+                  m_sql.returnPreparedSQLStatement(ps, opname);
             }
             if (id == null)
                 id = getLiteralID(l);
@@ -755,7 +756,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
    }
 }
 
-
 		/**
 		 *
 		 * Attempt to store a statement into an Asserted_Statement table.
@@ -768,6 +768,25 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		 *
 		 **/
 	  public void storeTriple(Triple t, IDBID graphID) {
+	  	storeTriple(t,graphID,false, new HashSet());
+	  }
+
+
+		/**
+		 *
+		 * Attempt to store a statement into an Asserted_Statement table.
+		 *
+		 * @param subj_uri is the URI of the subject
+		 * @param pred_uri is the URI of the predicate (property)
+		 * @param obj_node is the URI of the object (can be URI or literal)
+		 * @param graphID is the ID of the graph
+		 * @param isBatch is true if this request is part of a batch operation.
+		 *
+		 **/
+	  public void storeTriple(Triple t, 
+	  						IDBID graphID, 
+	  						boolean isBatch, 
+	  						HashSet batchedPreparedStatements) {
 		String objURI;
 		Object obj_val;
 		
@@ -799,7 +818,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		      ps.setString(3,objURI);
 		      ps.setString(4,gid);
 		
+			if (isBatch) {
+				ps.addBatch();
+				batchedPreparedStatements.add(ps);
+			} else {
 		      ps.executeUpdate();
+			}
 		 } catch(SQLException e1) {
 			Log.debug("SQLException caught " + e1);
 		 }
@@ -824,7 +848,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			ps.setString(3, lval);
 			ps.setString(4,gid);
 		
-			ps.executeUpdate();
+			if (isBatch) {
+				ps.addBatch();
+				batchedPreparedStatements.add(ps);
+			} else {
+			  ps.executeUpdate();
+			}
 		   } catch(SQLException e1) {
 			Log.debug("SQLException caught " + e1);
 		   }
@@ -845,7 +874,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			ps.setString(4, litIdx); // TODO should this be here?  Seems redundant to store litIdx?
 			ps.setString(5,gid);
 		
-			ps.executeUpdate();
+			if (isBatch) {
+				ps.addBatch();
+				batchedPreparedStatements.add(ps);
+			} else {
+			  ps.executeUpdate();
+			}
 		   } catch(SQLException e1) {
 		  	Log.debug("SQLException caught " + e1);
 		   }
@@ -874,22 +908,28 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			// JDBC 2.0 supports batched updates.
 			// MySQL also supports a multiple-row insert.
 			// For now, we support only jdbc 2.0 batched updates
-			
-			
+			/** Set of PreparedStatements that need executeBatch() **/
+			HashSet batchedPreparedStatements = new HashSet();
 			Triple t;
 			String cmd;
 			try {
 				 Connection con = m_sql.getConnection();
-				//TODO when using executeBatch().  con.setAutoCommit(false);
-				//TODO when doing executeBatch() Statement stmt = con.createStatement();
+				 con.setAutoCommit(false);
 				Iterator it = triples.iterator();
 				
 				while (it.hasNext()) {
-					t = (Triple) it.next();
-					//TODO stmt.addBatch(generateInsertCmd(t,my_GID)); 
-					storeTriple(t, my_GID);	
+					t = (Triple) it.next(); 
+					storeTriple(t, my_GID, true, batchedPreparedStatements);	
 				}
-				//TODO  stmt.executeBatch();
+				
+				it = batchedPreparedStatements.iterator();
+				
+				while (it.hasNext()) {
+					PreparedStatement p = (PreparedStatement)it.next();
+					p.executeBatch();
+				}
+				m_sql.getConnection().setAutoCommit(true);
+				batchedPreparedStatements = new HashSet();
 				ArrayList c = new ArrayList(triples);
 				triples.removeAll(c);						
 		} catch(BatchUpdateException b) {
