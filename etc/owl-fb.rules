@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.17 2003-08-24 21:11:13 der Exp $
+# $Id: owl-fb.rules,v 1.18 2003-09-05 16:16:56 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -372,7 +372,11 @@
 
 # This rule is not sufficient if the type inference is being done backwards
 [max1: (?C rdfs:subClassOf max(?P, 1)), (?X ?P ?Y1), notLiteral(?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notLiteral(?Y2),
-					notEqual(?Y1, ?Y2) -> (?Y1 owl:sameIndividualAs ?Y2) ]
+					notEqual(?Y1, ?Y2) -> (?Y1 owl:sameIndividualAs ?Y2) ]					
+
+# Subclass inheritance not normally availabe forward which causes problems for max1,
+# patch this but just for restrictions to limit costs
+[subClassTemp: (?C rdfs:subClassOf ?R), isFunctor(?R), (?B rdfs:subClassOf ?C) -> (?B rdfs:subClassOf ?R) ]
 					
 # sameIndividualAs propagation rules - forward version
 
@@ -382,7 +386,7 @@
 
 [sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 
-[sameIndividualAs7: (?X owl:sameIndividualAs ?X) <- (?X rdf:type owl:Thing) ]
+[sameIndividualAs7: (?X owl:sameIndividualAs ?X) <- bound(?X) (?X rdf:type owl:Thing) ]
 
 # Equality processing rules
 
