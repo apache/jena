@@ -31,7 +31,7 @@
   </dc:creator>
 
   <owl:versionInfo>
-	CVS:    $Id: ont-manager.rdf,v 1.3 2003-06-22 19:18:55 ian_dickinson Exp $
+	CVS:    $Id: ont-manager.rdf,v 1.4 2003-06-26 08:38:43 ian_dickinson Exp $
   </owl:versionInfo>
 </owl:Ontology>
 
@@ -89,6 +89,12 @@
 <rdf:Property rdf:ID="ignoreImport">
 	<rdfs:label>Ignore specified import</rdfs:label>
 	<rdfs:comment>Specifies URL that will never be loaded as the result of processing an imports statement</rdfs:comment>
+	<rdfs:domain rdf:resource="#DocumentManagerPolicy" />
+</rdf:Property>
+
+<rdf:Property rdf:ID="useDeclaredNsPrefixes">
+	<rdfs:label>Use declared NS prefixes</rdfs:label>
+	<rdfs:comment>Boolean flag for whether new ontology models will include the pre-declared namespace prefixes</rdfs:comment>
 	<rdfs:domain rdf:resource="#DocumentManagerPolicy" />
 </rdf:Property>
 

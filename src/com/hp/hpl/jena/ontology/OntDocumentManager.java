@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:24:00 $
+ * Last modified on   $Date: 2003-06-26 08:38:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -34,6 +34,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 
 /**
@@ -45,7 +46,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.19 2003-06-22 19:24:00 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.20 2003-06-26 08:38:34 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -92,6 +93,9 @@ public class OntDocumentManager
     /** Specifies the URI of an ontology that we do not want to import, even if processImports is true. */
     public static final Property IGNORE_IMPORT = vocab.createProperty( NS, "ignoreImport" );
 
+    /** The policy property for including the pre-declared namespace prefixes in a model. */
+    public static final Property USE_DECLARED_NS_PREFIXES = vocab.createProperty( NS, "useDeclaredNsPrefixes" );
+
     /** Default document manager instance */
     private static OntDocumentManager s_instance = new OntDocumentManager();
 
@@ -123,6 +127,12 @@ public class OntDocumentManager
     /** List of URI's that will be ignored when doing imports processing */
     protected Set m_ignoreImports = new HashSet();
 
+    /** Default prefix mapping to use to seed all models */
+    protected PrefixMapping m_prefixMap = new PrefixMappingImpl();
+    
+    /** Flag to control whether we include the standard prefixes in generated models - default true. */
+    protected boolean m_useDeclaredPrefixes = true;
+    
 
     // Constructors
     //////////////////////////////////
@@ -252,7 +262,7 @@ public class OntDocumentManager
      *          given document's namespace, or null if not known
      */
     public String getPrefixForURI( String uri ) {
-        return PrefixMapping.Standard.usePrefix( uri );
+        return m_prefixMap.usePrefix( uri );
     }
 
 
@@ -265,7 +275,7 @@ public class OntDocumentManager
      * @return The basename that the prefix expands to, or null
      */
     public String getURIForPrefix( String prefix ) {
-        return PrefixMapping.Standard.getNsPrefixURI( prefix );
+        return m_prefixMap.getNsPrefixURI( prefix );
     }
 
 
@@ -283,6 +293,39 @@ public class OntDocumentManager
 
 
     /**
+     * <p>Answer true if, according to the policy expressed by this document manager, newly
+     * generated ontology models should include the pre-declared namespace prefixes.
+     * </p>
+     * 
+     * @return True if pre-declared prefixes should be added to the models
+     */
+    public boolean useDeclaredPrefixes() {
+        return m_useDeclaredPrefixes;
+    }
+    
+    /**
+     * <p>Set the flag that determines whether pre-declared namespace prefixes will be added to newly
+     * generated ontology models.</p>
+     * 
+     * @param useDeclaredPrefixes If true, new models will include the pre-declared prefixes set held
+     * by this document manager.
+     */
+    public void setUseDeclaredPrefixes( boolean useDeclaredPrefixes ) {
+        m_useDeclaredPrefixes = useDeclaredPrefixes;
+    }
+    
+    /**
+     * <p>Answer the namespace prefix map that contains the shared prefixes managed by this
+     * document manager.</p>
+     * 
+     * @return The namespace prefix mapping
+     */
+    public PrefixMapping getDeclaredPrefixMapping() {
+        return m_prefixMap;
+    }
+    
+
+    /**
      * <p>
      * Add a prefix mapping between the given public base URI and the
      * given prefix.
@@ -292,7 +335,7 @@ public class OntDocumentManager
      * @param prefix A qname prefix
      */
     public void addPrefixMapping( String uri, String prefix ) {
-        PrefixMapping.Standard.setNsPrefix( prefix, uri );
+        m_prefixMap.setNsPrefix( prefix, uri );
     }
 
 
@@ -558,8 +601,12 @@ public class OntDocumentManager
         if (replace) {
             m_altMap.clear();
             m_modelMap.clear();
+            m_prefixMap = new PrefixMappingImpl();
         }
 
+        // copy the standard prefixes
+        m_prefixMap.setNsPrefixes( PrefixMapping.Standard );
+        
         // search the path for metadata about locally cached models
         Model metadata = findMetadata( path );
 
@@ -621,6 +668,9 @@ public class OntDocumentManager
                 }
                 else if (pred.equals( IGNORE_IMPORT )) {
                     addIgnoreImport( s.getResource().getURI() );
+                }
+                else if (pred.equals( USE_DECLARED_NS_PREFIXES )) {
+                    setUseDeclaredPrefixes( s.getBoolean() );
                 }
             }
         }

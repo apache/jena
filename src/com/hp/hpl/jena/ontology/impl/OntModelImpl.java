@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:16:18 $
+ * Last modified on   $Date: 2003-06-26 08:38:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.32 2003-06-22 19:16:18 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.33 2003-06-26 08:38:43 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -112,6 +112,11 @@ public class OntModelImpl
         // cache the query plan for individuals
         Profile lang = getProfile();
         m_individualsQuery = queryXTypeOfType( lang.CLASS() );
+        
+        // add the global prefixes, if required
+        if (getDocumentManager().useDeclaredPrefixes()) {
+            setNsPrefixes( getDocumentManager().getDeclaredPrefixMapping() );
+        }
         
         // load the imports closure, according to the policies in my document manager
         getDocumentManager().loadImports( this );
