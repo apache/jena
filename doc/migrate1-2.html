@@ -14,11 +14,19 @@
         Exceptions are reification and a bug fix on the I/O API.
                 </p>
 		<h2>What Must be changed:</h2>
+		
 		<h3>package renaming:</h3>
 		<ul>
 			<li>com.hp.hpl.mesa.rdf.jena.model -&gt; com.hp.hpl.jena.rdf.model</li>
 			<li>com.hp.hpl.mesa.rdf.jena.vocabulary -&gt; com.hp.hpl.jena.vocabulary</li>
 		</ul>
+		
+		<h3>logging uses log4j</h3>
+
+		The old logging package in <strong>.util.Log</strong> has been
+		removed. Jena now uses <strong>log4j</strong> for its logging. Any
+		users who used the old logging package should switch to log4j.
+		
 		<h3>new model factory:</h3>
 		<ul>
 			<li>Models in Jena 1 were created using new on the model class.
@@ -27,6 +35,7 @@
 			If for some reason you don't want to do that, the memory model
 			class has moved to com.hp.hpl.jena.mem.</li>
 		</ul>
+		
 		<h3>iterators now implement java.util.iterator</h3>
 		<ul>
 			<li>which means the .next() method returns an Object rather than a typed object.
@@ -35,6 +44,7 @@
 			is Resource, Literal, Ns, RDFNode or Statement depending on the
 			iterator) to avoid casting.</li>
 		</ul>
+		
 		<h3>DAMLSelector has gone</h3>
 		<ul>
 		<li>
@@ -43,6 +53,7 @@
 			models infer the necessary transitive triples.
 		</li>
 		</ul>
+		
 		<h3>I/O bug fix</h3>
 		<ul>
 			<li>java.io.Reader -&gt; java.io.InputStream etc.</li>
