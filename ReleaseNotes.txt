@@ -107,6 +107,9 @@ Post Jena 2.1 change list
       o Changed delete for RETE reasoner to be non-incremental to work around
         bug without demanding full reference counting
       o Added experimental OWLMini and OWLMicro reasoners
+        N.B. These remain experimental at 2.2beta. By 2.2 final the split 
+        between these should be clarified, support for unionOf rationalized 
+        and documentation updated.
 
       o [kers] Added WrappedReasonerFactory class and RuleReasoner interface.
         Some tweaking to "implements" clauses. Refactored out some setRules
