@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-02 13:17:01 $
+ * Last modified on   $Date: 2004-04-26 12:41:20 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.20 2004-03-02 13:17:01 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.21 2004-04-26 12:41:20 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -232,8 +232,8 @@ public class TestListSyntaxCategories
         },
         
         // individuals
-        new DoListTest( "OWL list individuals",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  3,  
-                        new String[] {NS+"A0", NS+"A1", NS+"C0"} ) 
+        new DoListTest( "OWL list individuals",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  8,  
+                        new String[] {NS+"A0", NS+"A1", NS+"C0", NS+"a0", NS+"a1", NS+"a2", NS+"z0", NS+"z1"} ) 
         {
             public Iterator doList( OntModel m ) {
                 return m.listIndividuals();
