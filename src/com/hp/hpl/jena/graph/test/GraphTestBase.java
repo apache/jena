@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.18 2004-07-07 15:42:26 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.19 2004-11-04 15:05:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -14,6 +14,7 @@ package com.hp.hpl.jena.graph.test;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
@@ -248,6 +249,14 @@ public class GraphTestBase extends JenaTestBase
             { throw e; }
         catch (Exception e)
             { throw new JenaException( e ); }
+        }
+
+    protected static Graph getReificationTriples( final Reifier r )
+        {
+        return new GraphBase()
+            {
+            public ExtendedIterator graphBaseFind( TripleMatch m ) { return r.find( m ); }
+            };
         }
 
         

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.19 2004-11-04 12:27:10 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.20 2004-11-04 15:05:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -59,8 +59,8 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testEmptyReifiers()
         {
-        assertFalse( getGraphWith( "x R y" ).getReifier().find( ALL ).hasNext() );
-        assertFalse( getGraphWith( "x R y; p S q" ).getReifier().find( ALL ).hasNext() );
+        assertFalse( getGraphWith( "x R y" ).getReifier().findExposed( ALL ).hasNext() );
+        assertFalse( getGraphWith( "x R y; p S q" ).getReifier().findExposed( ALL ).hasNext() );
         }
         
     public void testSameReifier()
@@ -147,7 +147,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     protected void testReificationTriples( ReificationStyle style )
         {
         Graph g = getGraph( style );
-        Graph quadlets = g.getReifier().getReificationTriples();
+        Graph quadlets = getReificationTriples( g.getReifier() );
         String S1 = "SSS rdf:predicate PPP", S2 = "SSS rdf:subject SSS";
         g.add( triple( S1 ) );
         assertIsomorphic( graphWithUnless( style == Minimal, S1 ), quadlets );
@@ -249,7 +249,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph g = getGraph( style );
         Reifier r = g.getReifier();
         r.reifyAs( node( "A" ), triple( "S P O" ) );
-        assertEquals( style == Standard, r.find( ALL, false ).hasNext() );    
+        assertEquals( style == Standard, r.findEither( ALL, false ).hasNext() );    
         }
       
     public void testRetrieveTriplesByNode()
@@ -390,7 +390,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         {
         return new GraphBase() 
             {
-            public ExtendedIterator graphBaseFind( TripleMatch m ) { return r.find( m, true ); }
+            public ExtendedIterator graphBaseFind( TripleMatch m ) { return r.findEither( m, true ); }
             };
         }
             
@@ -421,7 +421,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         {
         Graph g = getGraph( Standard );
         Reifier r = g.getReifier();
-        assertEquals( HashUtils.createSet(), iteratorToSet( r.find( triple( "?? ?? ??" ) ) ) );
+        assertEquals( HashUtils.createSet(), iteratorToSet( r.findExposed( triple( "?? ?? ??" ) ) ) );
         }
 
     public void testReifierFindSubject()
@@ -441,7 +441,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph g = getGraph( Standard );
         Reifier r = g.getReifier();
         graphAdd( g, "s rdf:subject S" );
-        assertEquals( tripleSet( "" ), iteratorToSet( r.find( triple( "s otherPredicate S" ) ) ) );
+        assertEquals( tripleSet( "" ), iteratorToSet( r.findExposed( triple( "s otherPredicate S" ) ) ) );
         }
 
     protected void testReifierFind( String triples )
@@ -452,7 +452,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph g = getGraph( Standard );
         Reifier r = g.getReifier();
         graphAdd( g, triples );
-        assertEquals(  tripleSet( triples ), iteratorToSet( r.find( triple( pattern ) ) ) );
+        assertEquals(  tripleSet( triples ), iteratorToSet( r.findExposed( triple( pattern ) ) ) );
         }
 
 //    public void testKevinCaseC()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReifier.java,v 1.4 2004-11-04 12:27:10 chris-dollin Exp $
+  $Id: WrappedReifier.java,v 1.5 2004-11-04 15:05:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -26,11 +26,6 @@ public class WrappedReifier implements Reifier
         { this.base = base; this.parent = parent; }
 
 	/** 
-	 	@see com.hp.hpl.jena.graph.Reifier#getReificationTriples()
-	*/
-	public Graph getReificationTriples() { return base.getReificationTriples(); }
-
-	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#getStyle()
 	*/
 	public ReificationStyle getStyle() { return base.getStyle(); }
@@ -41,8 +36,10 @@ public class WrappedReifier implements Reifier
     
     public ExtendedIterator find( TripleMatch m ) { return base.find( m ); }
     
-    public ExtendedIterator find( TripleMatch m, boolean showHidden ) 
-        { return base.find( m, showHidden ); }
+    public ExtendedIterator findExposed( TripleMatch m ) { return base.findExposed( m ); }
+    
+    public ExtendedIterator findEither( TripleMatch m, boolean showHidden ) 
+        { return base.findEither( m, showHidden ); }
     
     public int size() { return base.size(); }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.33 2004-11-02 14:10:08 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.34 2004-11-04 15:05:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -155,7 +155,7 @@ public abstract class GraphBase implements GraphWithPerform
         return reifierTriples( m ) .andThen( graphBaseFind( m ) ); }
 
     protected ExtendedIterator reifierTriples( TripleMatch m )
-        { return getReifier().find( m ); }
+        { return getReifier().findExposed( m ); }
     
 	protected abstract ExtendedIterator graphBaseFind( TripleMatch m );
     
@@ -179,7 +179,7 @@ public abstract class GraphBase implements GraphWithPerform
 		return reifierContains( t ) || graphBaseContains( t );	}
     
     protected boolean reifierContains( Triple t )
-        { return getReifier().find( t ).hasNext(); }
+        { return getReifier().findExposed( t ).hasNext(); }
 
 	/**
      * @param t

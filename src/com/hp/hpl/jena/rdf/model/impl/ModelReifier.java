@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.16 2004-11-04 12:27:10 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.17 2004-11-04 15:05:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -69,7 +69,7 @@ public class ModelReifier
         return new GraphBase()
             {
             public ExtendedIterator graphBaseFind( TripleMatch m ) 
-                { return r.find( m, true ); }
+                { return r.findEither( m, true ); }
             };
         }
 
