@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTransitiveGraphCache.java,v 1.8 2004-03-14 17:07:34 der Exp $
+ * $Id: TestTransitiveGraphCache.java,v 1.9 2004-05-04 15:26:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -20,7 +20,7 @@ import junit.framework.TestSuite;
 /**
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2004-03-14 17:07:34 $
+ * @version $Revision: 1.9 $ on $Date: 2004-05-04 15:26:21 $
  */
 public class TestTransitiveGraphCache extends TestCase {
     
@@ -280,6 +280,23 @@ public class TestTransitiveGraphCache extends TestCase {
             });
            
     }
+    
+//    /**
+//     * Test whether direct handles cycles.
+//     */
+//    public void testBug2() {
+//        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
+//        cache.addRelation(a, b);        
+//        cache.addRelation(b, c);        
+//        cache.addRelation(c, b);        
+//        TestUtil.assertIteratorValues(this, 
+//            cache.find(new TriplePattern(a, directP, null)),
+//            new Object[] {
+//                new Triple(a, closedP, a),
+//                new Triple(a, closedP, b),
+//                new Triple(a, closedP, c),
+//            });
+//    }
     
     /**
      * Test the removeRelation functionality.

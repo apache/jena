@@ -30,13 +30,10 @@
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#byte">126</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedByte">0</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedByte">126</e:p>
-<!--
-  Temporarily commented out to allow der to check in updated XSD code
-  which seems to provoke a JDK-dependent bug.
-  
+
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#base64Binary">GpM7</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#hexBinary">0FB7</e:p>
--->
+
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">-126789</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">-1</e:p>
 <e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</e:p>

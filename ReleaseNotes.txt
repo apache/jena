@@ -7,6 +7,9 @@ Post Jena 2.1 bug fix list
       o Fixed bug in typed literals support which caused isValidLiteral tests 
         to fail on user defined types derived indirectly from simple types.
       o Fixed bugs in conversion of Calendar to XSDDateTime
+      o Fixed XSDDouble isValidValue test to check for Double
+      o Fixed XSDbase64Binary, XSDhexBinary returning strings instead of byte[]
+      
   Reasoners
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.
       o Fixed bug in hide() table not being carried across from prebuilt 

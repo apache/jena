@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.38 2004-05-04 08:11:58 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.39 2004-05-04 15:26:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -35,7 +35,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.38 $ on $Date: 2004-05-04 08:11:58 $
+ * @version $Revision: 1.39 $ on $Date: 2004-05-04 15:26:21 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -717,9 +717,10 @@ public class TestTypedLiterals extends TestCase {
     }
     
     /**
-     * Attempt to isolate a JDK-dependent bug that only appears under 1.4.1_*
+     * Attempt to isolate a JDK-dependent bug that only appears under 1.4.1_*.
+     * This failed to provoke the bug.
      */
-    public void testBinaryBug() throws IOException {
+    public void XXtestBinaryBug() throws IOException {
         Model orig = ModelFactory.createDefaultModel();
         Resource r = orig.createResource("http://jena.hpl.hp.com/test#r");
         Property p = orig.createProperty("http://jena.hpl.hp.com/test#p");

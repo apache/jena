@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.22 2004-04-26 19:30:47 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.23 2004-05-04 15:25:09 der Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -34,6 +34,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <ul>
       <li><a href="#api-0">Why does the localname part of my URI look wrong?</a></li>
       <li><a href="#api-1">How do I change the URI or localName of a Resource?</a></li>
+      <li><a href="#api-2">Why do I see the warning message <i>'Detected a NaN anomaly believed to be due to use of JDK 1.4.1'</i>?</a></li>
 </ul>
 <h3>Reasoner and inference models</h3>
 <ul>
@@ -120,7 +121,18 @@ Jena 2 &ndash; Frequently Asked Questions
       If you are working with inference or ontology models, you need to be 
       careful to do this on the base model, not the entailment (aka inference) model.
     </p>
-
+    
+    <p id="api-2"><strong>Why do I see the warning message <i>'Detected a NaN anomaly believed to be due to use of JDK 1.4.1'</i>?</strong><br />
+      <strong>A:</strong>As a side effect of some changes post-Jena 2.1 we started seeing 
+      random error message of the form 'Illegal load factor: NaN' when creating a HashMap.
+      This appears to be a JDK bug in that the call is perfectly legal and the error
+      message is seen frequently under JDK 1.4.1 but
+      has never been seen under 1.3.1 or 1.4.2. We provide a work around which simply tries
+      again to create the HashMap and this log message indicates that the work around has
+      been triggered. To prevent it occuring switch to JDK 1.4.2. If you see the message
+      under a JDK other than 1.4.1 please let us know.
+    </p>
+    
 <h3>Reasoner and inference models</h3>
   <p id="reasoner-0"><strong>Q. I want to develop my own rules, how do I get started?</strong><br />
     A: The GenericRuleReasoner is the place to start. You can create instances of this reasoner by
