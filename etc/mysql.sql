@@ -107,7 +107,7 @@ initDBgenerators
 #-------------------------------------------------------------------
 # Delete all rows from named AST table
 dropTable
-DROP TABLE ${a};;
+DROP TABLE ${a}
 
 #-------------------------------------------------------------------
 # Remove all rows from given table with the given GraphID.
