@@ -1,6 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
+  $Id: PSet_TripleStore_RDB.java,v 1.28 2003-06-19 10:48:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -42,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.27 $ on $Date: 2003-06-19 09:06:03 $
+* @version $Revision: 1.28 $ on $Date: 2003-06-19 10:48:40 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
