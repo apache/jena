@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.5 2003-04-03 08:17:00 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.6 2003-04-03 12:12:53 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -335,7 +335,7 @@ public interface ARPErrorNumbers {
      * an encoding differnt from that in the XML declaration. The usual fix
      * is to use an InputStream or a FileInputStream instead. (W129).  
      * A warning in default mode, an error in strict mode.
-     * @see ERR_ENCODING_MISMATCH
+     * @see #ERR_ENCODING_MISMATCH
      */
     public int WARN_ENCODING_MISMATCH = 129;
 
@@ -406,7 +406,7 @@ public interface ARPErrorNumbers {
      * was detected as probably significant (i.e. the document includes
      * characters outside the ascii range). The usual fix is to use an
      * InputStream or a FileInputStream instead. (E210).
-     * @see WARN_ENCODING_MISMATCH
+     * @see #WARN_ENCODING_MISMATCH
      */
     public int ERR_ENCODING_MISMATCH = 210;
     /**   The error recovery code failed; this can occur. (E300)

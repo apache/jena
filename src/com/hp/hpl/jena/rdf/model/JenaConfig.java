@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: JenaConfig.java,v 1.1.1.1 2002-12-19 19:17:37 bwm Exp $
+ * $Id: JenaConfig.java,v 1.2 2003-04-03 12:14:25 jeremy_carroll Exp $
  *
  * Created on 27 June 2002, 08:49
  */
@@ -33,7 +33,7 @@ package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.util.Log;
 
-/** A Class for configuring Jena's behaviour
+/** A Class for configuring Jena's behaviour.
  *
  * <p>It is sometimes necessary to configure Jena's behaviour.  For example
  * when external functionality has changed, it may, for a time be desirable
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.util.Log;
        See <code>setOldLiteralCompare</code> below.</li>
  * </ul>
  * @author bwm
- * @version $Revision: 1.1.1.1 $
+ * @version $Revision: 1.2 $
  *
  */
 public class JenaConfig {

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.3 2003-04-01 10:44:56 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.4 2003-04-03 12:12:52 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -100,7 +100,8 @@ public class ARP implements ARPErrorNumbers {
         }
     }
     /**
-     * This method is a work-around for Xerces bug
+     * This method is a work-around for a Xerces bug.
+     * Speicifically
      * <a href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=18551">bug
      * 18551</a>. It should be called before using the EncodingMap from Xerces,
      * typically in a static initializer. This is done within Jena code, and is 
