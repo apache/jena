@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.20 2004-06-30 12:57:58 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.21 2004-09-03 10:48:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -78,7 +78,14 @@ public class SimpleReifier implements Reifier
         }
         
     public ExtendedIterator allNodes( Triple t )
-        { return allNodes() .filterKeep( matching( t ) );  }
+        // { return allNodes() .filterKeep( matching( t ) );  }
+        { 
+        Set s = (Set) nodeMap.inverseMap.get( t );
+        if (s == null)
+            return NullIterator.instance;
+        else
+            return WrappedIterator.create( s.iterator() );
+        }
         
     /**
         Answer a filter that only accepts nodes that are bound to the given triple.
@@ -131,12 +138,12 @@ public class SimpleReifier implements Reifier
         {
         Object x = nodeMap.get( n );
         if (t.equals( nodeMap.get( n ) )) 
-            { nodeMap.remove( n ); 
+            { nodeMap.removeTriple( n, t ); 
             if (!concealing) parentRemoveQuad( n, t ); }
         }
         
     public boolean hasTriple( Triple t )
-        { return allNodes( t ).hasNext(); }
+        { return nodeMap.hasTriple( t ); }
           
     public boolean handledAdd( Triple t )
         {
