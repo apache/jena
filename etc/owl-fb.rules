@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.29 2003-09-22 12:25:53 der Exp $
+# $Id: owl-fb.rules,v 1.30 2003-09-22 14:59:28 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -598,14 +598,14 @@
 [xsd2: (?X rdfs:subClassOf ?Y) <- 
         (?X rb:xsdRange xsd(?B, 1, ?L)) (?Y rb:xsdRange xsd(?B, 1, ?L2)) le(?L, ?L2)]
 
-#[range1: (?P rdfs:range ?C) <- 
-#			(?P rdfs:range ?D), (?D rb:xsdRange xsd(?B, ?S1, ?L1)), 
-#			(?P rdfs:range ?E), notEqual(?D, ?E), 
-#			(?E rb:xsdRange xsd(?B, ?S2, ?L2)), 
-#			min(?S1, ?S2, ?S3),
-#			min(?L1, ?L2, ?L3),
-#			(?C rb:xsdRange xsd(?B, ?S3, ?L3)),
-#			]
+[range1: (?P rdfs:range ?C) <- 
+			(?P rdfs:range ?D), (?D rb:xsdRange xsd(?B, ?S1, ?L1)), 
+			(?P rdfs:range ?E), notEqual(?D, ?E), 
+			(?E rb:xsdRange xsd(?B, ?S2, ?L2)), 
+			min(?S1, ?S2, ?S3),
+			min(?L1, ?L2, ?L3),
+			(?C rb:xsdRange xsd(?B, ?S3, ?L3)),
+			]
 
 [range2: (?P rdfs:range xsd:byte) <- (?P rdfs:range xsd:nonNegativeInteger),
 					(?P rdfs:range xsd:nonPositiveInteger)]
