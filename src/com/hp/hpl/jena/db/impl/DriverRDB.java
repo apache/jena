@@ -49,7 +49,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.36 $ on $Date: 2003-12-12 22:14:01 $
+* @version $Revision: 1.37 $ on $Date: 2004-01-27 00:37:31 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -306,23 +306,30 @@ public abstract class DriverRDB implements IRDBDriver {
 		checkDriverVersion(m_dbProps);
 		checkLayoutVersion(m_dbProps);
 		String val = m_dbProps.getLongObjectLength();
-		if ( val != null ) LONG_OBJECT_LENGTH = Integer.parseInt(val);
+		if ( val == null ) throwBadFormat("long object length");
+		else LONG_OBJECT_LENGTH = Integer.parseInt(val);
 		val = m_dbProps.getIndexKeyLength();
-		if ( val != null ) INDEX_KEY_LENGTH = Integer.parseInt(val);
+		if ( val == null ) throwBadFormat("index key length");
+		else INDEX_KEY_LENGTH = Integer.parseInt(val);
 		val = m_dbProps.getIsTransactionDb(); 
-		if ( val != null ) IS_XACT_DB = Boolean.valueOf(val).booleanValue();
+		if ( val == null ) throwBadFormat("database supports transactions");
+		else IS_XACT_DB = Boolean.valueOf(val).booleanValue();
 		val = m_dbProps.getDoCompressURI();
-		if ( val != null ) URI_COMPRESS = Boolean.valueOf(val).booleanValue();
+		if ( val == null ) throwBadFormat("compress URIs");
+		else URI_COMPRESS = Boolean.valueOf(val).booleanValue();
 		val = m_dbProps.getCompressURILength();
-		if ( val != null ) URI_COMPRESS_LENGTH = Integer.parseInt(val);
+		if ( val == null ) throwBadFormat("URI compress length");
+		else URI_COMPRESS_LENGTH = Integer.parseInt(val);
 		val = m_dbProps.getTableNamePrefix();
-		if ( val != null ) TABLE_NAME_PREFIX = val;
+		if ( val == null ) throwBadFormat("table name prefix");
+		else TABLE_NAME_PREFIX = val;
 		
 		return m_sysProperties;		
 	}
 	
 	private void checkEngine ( DBProp dbProps ) {
 		String dbtype = m_dbProps.getEngineType();
+		if ( dbtype == null ) throwBadFormat("database type");
 		if ( !dbtype.equals(DATABASE_TYPE) ) {
 			throw new JenaException(
 			"Database created with incompatible database type for this version of Jena: "
@@ -332,6 +339,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	private void checkDriverVersion ( DBProp dbProps ) {
 		String vers = m_dbProps.getDriverVersion();
+		if ( vers == null ) throwBadFormat("database version");
 		if ( !vers.equals(VERSION) ) {
 			throw new JenaException(
 			"Models in the database were created with an incompatible version of Jena: "
@@ -341,12 +349,21 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	private void checkLayoutVersion ( DBProp dbProps ) {
 		String layout = m_dbProps.getLayoutVersion();
+		if ( layout == null ) throwBadFormat("database layout");
 		if ( !layout.equals(LAYOUT_VERSION) ) {
 			throw new JenaException(
 			"The database layout cannot be processed by this version of Jena: "
 			+ layout);	
 		}
 
+	}
+	
+	private void throwBadFormat ( String prop ) {
+		throw new JenaException(
+		"The database appears to be unformatted or corrupted - could not find value\n" +
+		" for \"" + prop + "\" in Jena system properties table.\n" + 
+		"If possible, call IDBConnection.cleanDB(). \n" +
+		"Warning: cleanDB will remove all Jena models from the databases.");
 	}
 
 	
@@ -623,8 +640,10 @@ public abstract class DriverRDB implements IRDBDriver {
 			boolean result = false;
 			try {
 					ResultSet alltables = getAllTables();
-					result = alltables.next();
+					int i = 0;
+					while ( alltables.next() ) i++;
 					alltables.close();
+					result = i >= 5;
 			} catch (Exception e1) {
 					// if anything goes wrong, the database is not formatted correctly;
 			}
