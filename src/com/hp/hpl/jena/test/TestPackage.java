@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.5 2003-01-30 18:31:39 der Exp $
+  $Id: TestPackage.java,v 1.6 2003-02-02 13:06:29 bwm Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -25,13 +25,13 @@ public class TestPackage extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage() {
         super("jena");
+        addTest("Enhanced", com.hp.hpl.jena.enhanced.test.TestPackage.suite());
         addTest("Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
-        addTest("Util", com.hp.hpl.jena.util.test.TestPackage.suite());
-        addTest(com.hp.hpl.jena.enhanced.test.TestPackage.suite());
-        addTest("Output", com.hp.hpl.jena.xmloutput.test.TestPackage.suite());
+        addTest("Model", com.hp.hpl.jena.rdf.model.test.TestPackage.suite());
+        addTest("N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());;
         addTest("RDQL", com.hp.hpl.jena.rdql.test.RDQLTestSuite.suite());
-        addTest("N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
-        addTest( "Model", com.hp.hpl.jena.rdf.model.test.TestModel.suite() );
+        addTest("XML Output", com.hp.hpl.jena.xmloutput.test.TestPackage.suite());
+        addTest("Util", com.hp.hpl.jena.util.test.TestPackage.suite());
         addTest( com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
         addTest("Mega", com.hp.hpl.jena.regression.MegaTestSuite.suite());
         addTest( com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
