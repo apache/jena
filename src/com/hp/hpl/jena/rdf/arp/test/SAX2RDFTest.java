@@ -23,7 +23,7 @@ import org.xml.sax.*;
 public class SAX2RDFTest extends TestCase {
 	
 	static final private String all[] = {
-			/*
+			
 			"abbreviated/collection.rdf",
 			"abbreviated/container.rdf",
 			"abbreviated/cookup.rdf",
@@ -1080,9 +1080,9 @@ public class SAX2RDFTest extends TestCase {
 			"wg/rdf-containers-syntax-vs-schema/test002.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test003.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test004.rdf",
-			*/
+			
 			"wg/rdf-containers-syntax-vs-schema/test005.rdf",
-			/*
+			
 			"wg/rdf-containers-syntax-vs-schema/test006.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test007.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test008.rdf",
@@ -1145,10 +1145,10 @@ public class SAX2RDFTest extends TestCase {
 			"wg/rdfms-literal-is-xml-structure/test002.rdf",
 			"wg/rdfms-literal-is-xml-structure/test003.rdf",
 			"wg/rdfms-literal-is-xml-structure/test004.rdf",
-			"wg/rdfms-literal-is-xml-structure/test005.rdf", */
-			"wg/rdfms-nested-bagIDs/test001.rdf", /*
+			"wg/rdfms-literal-is-xml-structure/test005.rdf", 
+		//	"wg/rdfms-nested-bagIDs/test001.rdf", 
 			"wg/rdfms-nested-bagIDs/test002.rdf",
-			"wg/rdfms-nested-bagIDs/test003.rdf",
+		//	"wg/rdfms-nested-bagIDs/test003.rdf",
 			"wg/rdfms-nested-bagIDs/test004.rdf",
 			"wg/rdfms-nested-bagIDs/test005.rdf",
 			"wg/rdfms-nested-bagIDs/test006.rdf",
@@ -1346,7 +1346,7 @@ public class SAX2RDFTest extends TestCase {
 			"wg/xmlbase/test014.rdf",
 			"wg/xmlbase/test015.rdf",
 			"wg/xmlbase/test016.rdf",
-*/
+
 	};
 
 	/**
@@ -1355,7 +1355,7 @@ public class SAX2RDFTest extends TestCase {
 	 */
 	static class RDFEHArray implements RDFErrorHandler {
 
-		private Vector v = new Vector();
+		Vector v = new Vector();
 		
 
 		/* (non-Javadoc)
@@ -1383,11 +1383,15 @@ public class SAX2RDFTest extends TestCase {
 		}
 
 	}
-	static public Test suite() {
+	static public TestSuite suite() {
 		TestSuite s = new TestSuite("SAX2RDF");
-			
-		for (int i =0; i<all.length; i++){
+		s.addTestSuite(PushMePullYouTest.class);
+		s.addTestSuite(SAX2RDFMoreTests.class);
+		//for (int j=0; j<20; j++)
+		for (int i =0; i<all.length; i+=20){
 			String nm = all[i];
+			//if (all[i].indexOf("premises663")==-1)
+			//	continue;
 			if (all[i].startsWith("wg/")) {
 				s.addTest(new SAX2RDFTest("wg/",ARPTests.wgTestDir.toString(),all[i].substring(3)));
 			} else if (all[i].startsWith("arp/")) {
@@ -1428,7 +1432,12 @@ public class SAX2RDFTest extends TestCase {
 
 		RDFEHArray eh2 = new RDFEHArray();
 		
-		
+/*
+		w = m.getReader();
+		w.setErrorHandler(eh2);
+		w.read(m2,in,base);
+		in.close();
+		*/
 		XMLReader saxParser = new SAXParser();
 		SAX2Model handler = SAX2Model.newInstance(base,m2);
 		SAX2RDF.initialize(saxParser,handler);
@@ -1449,6 +1458,7 @@ public class SAX2RDFTest extends TestCase {
 		}
 		
 		in.close();
+		
 	/*	
 		System.out.println("Normal:");
 		m.write(System.out,"N-TRIPLE");
@@ -1458,12 +1468,16 @@ public class SAX2RDFTest extends TestCase {
 		*/
 		if (eh.v.size()==0)
 		assertTrue("Not isomorphic",m.isIsomorphicWith(m2));
-		/*
+		
 		if ( eh.v.size()!=eh2.v.size()) {
-			for (int i=0; i<a.length;i++)
+			for (int i=0; i<eh.v.size();i++)
 				System.err.println(eh.v.get(i));
+			System.err.println("---");
+			for (int i=0; i<eh2.v.size();i++)
+				System.err.println(eh2.v.get(i));
+			
 		}
-		*/
+		
 		assertEquals("Different number of errors",eh.v.size(),
 				eh2.v.size());
 

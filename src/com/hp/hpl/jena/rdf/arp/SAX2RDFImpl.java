@@ -24,11 +24,16 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 		ContentHandler, ErrorHandler {
 	private int depth;
 	private ARPRunnable rdf;
-
+    final private String lang;
 	SAX2RDFImpl(String base,  String l) {
-
+      lang = l;
 	}
 
+	protected void initParse(String b) throws MalformedURIException {
+		super.initParse(b);
+		if (lang != null && !lang.equals(""))
+			documentContext = documentContext.withLang(lang);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -222,12 +227,14 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 
 	}
 	
-	void close() throws SAXParseException {
+	void close() throws SAXException {
 		if (pipe() != null) {
 		    pipe().close();
 		    if (!pipe().exactlyExhausted()) {
-		    	// TODO don't think this works.
-		    	super.error(new SAXParseException("Too many XML events for RDF grammar.",getLocator()));
+		    	// Note this happens with 
+		    	// rdfms-nested-bagIDs/test001.rdf
+		    	// and test003.rdf
+		    	this.getHandlers().getErrorHandler().error(new SAXParseException("Too many XML events for RDF grammar; error condition not thought through, please report on jena-dev.",getLocator()));
 		    }
 		}
 		endBnodeScope();
@@ -255,6 +262,7 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 				}
 			};
 			pipe = new PushMePullYouPipe( rdf);
+			((PushMePullYouPipe)pipe).start();
             
 			
 		}

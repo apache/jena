@@ -29,7 +29,7 @@ class PushMePullYouPipe extends TokenPipe {
 	
 	private boolean overflow = false;
 
-	private BoundedBuffer buffer = new BoundedBuffer(5);
+	private BoundedBuffer buffer = new BoundedBuffer(100);
 
 	private Object pending = null;
 
@@ -55,9 +55,11 @@ class PushMePullYouPipe extends TokenPipe {
 			}
 
 		};
-		this.puller.start();
+		
 	}
-
+    void start() {
+	   this.puller.start();
+    }
 	/**
 	 * get something from the pipe; take care of BoundedBuffer's checked
 	 * exceptions
@@ -135,7 +137,9 @@ class PushMePullYouPipe extends TokenPipe {
 		}
 		if (brokenPipe != naturalEnd)
 			isPipeBroken();
-		// TODO check that pipe is exhausted.
+		/* Note check that pipe is exhausted is done
+		 * on exactlyExhausted ....
+		 */
 	}
 
 	private boolean hasNext() {

@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import org.xml.sax.SAXParseException;
+import org.xml.sax.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
@@ -87,7 +87,7 @@ public class SAX2Model extends SAX2RDF {
     	handler.useWith(getHandlers());
     }
 private boolean closed = false;
-    public void close() throws SAXParseException{
+    public void close() throws SAXException{
     //	System.err.println("closing;");
     	if (!closed) {
     	super.close();

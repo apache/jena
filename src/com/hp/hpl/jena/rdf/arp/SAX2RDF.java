@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.4 2004-10-19 14:46:29 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.5 2004-10-20 14:11:15 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -126,7 +126,6 @@ implements ARPConfig {
 
     SAX2RDF(String base,  String lang) throws MalformedURIException {
     	super(base,lang);
-    	// TODO something with lang
     	initParse(base);
     }
 	/** This is used when configuring a parser that

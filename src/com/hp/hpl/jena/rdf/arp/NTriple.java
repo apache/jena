@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.11 2004-10-11 11:54:35 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.12 2004-10-20 14:11:15 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -106,7 +106,7 @@ public class NTriple implements ARPErrorNumbers {
 	 * @param eh Can be null.
 	 * @param ap Can be null.
 	 */
-	static public void mainEh(String args[], ErrorHandler eh, ARPHandler ap) {
+	static public void mainEh(String args[], ErrorHandler eh, ARPEventHandler ap) {
 		boolean doneOne = false;
 		startMem = -1;
 		andMeToo = ap;

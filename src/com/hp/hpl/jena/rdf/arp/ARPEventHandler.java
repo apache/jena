@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2003 Hewlett-Packard Development Company, LP
  [See end of file]
-  $Id: ARPHandler.java,v 1.3 2004-10-20 14:11:15 jeremy_carroll Exp $
+  $Id: ARPEventHandler.java,v 1.1 2004-10-20 14:11:15 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -18,10 +18,9 @@ package com.hp.hpl.jena.rdf.arp;
  *    arp.setNamespaceHandler(h);
  * </pre>
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
- * @deprecated Renamed as {@link ARPEventHandler}.
  * 
 */
-public interface ARPHandler extends StatementHandler, ExtendedHandler, NamespaceHandler {
+public interface ARPEventHandler extends StatementHandler, ExtendedHandler, NamespaceHandler {
   // deliberately empty - add by adding additional super-interfaces.
 }
 

@@ -47,7 +47,7 @@ class NTripleTestSuite extends WGTestSuite {
 	}
 	static class TestHandler
 		extends ARPSaxErrorHandler
-		implements ARPHandler, org.xml.sax.ErrorHandler {
+		implements ARPEventHandler, org.xml.sax.ErrorHandler {
 		TestHandler(RDFErrorHandler eh) {
 			this(eh, 0);
 		}

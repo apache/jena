@@ -45,6 +45,7 @@ public class PushMePullYouTest extends TestCase {
 			}
 		};
 		pipe = new PushMePullYouPipe(puller);
+		pipe.start();
 		
 		for (int i=0;i<ii;i++){
 			pipe.putNextToken(new Token(i,null));
