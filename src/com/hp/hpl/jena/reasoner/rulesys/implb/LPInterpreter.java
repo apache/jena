@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.13 2003-08-07 17:02:30 der Exp $
+ * $Id: LPInterpreter.java,v 1.14 2003-08-08 09:25:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-08-07 17:02:30 $
+ * @version $Revision: 1.14 $ on $Date: 2003-08-08 09:25:43 $
  */
 public class LPInterpreter {
 
@@ -105,10 +105,6 @@ public class LPInterpreter {
         tmFrame.linkTo(cpFrame);
         tmFrame.setContinuation(0, 0);
         cpFrame = tmFrame;
-        
-        BBRuleContext bbcontext = new BBRuleContext(engine.getInfGraph());
-        bbcontext.setEnv(new LPBindingEnvironment(this));
-        context = bbcontext;
     }
 
     //  =======================================================================
@@ -224,7 +220,6 @@ public class LPInterpreter {
                     unwindTrail(trailMark);
                 }
                 pc = ac = 0;
-                context.setRule(clause.getRule());
                 // then fall through into the recreated execution context for the new call
                 
             } else if (cpFrame instanceof TripleMatchFrame) {
@@ -461,6 +456,12 @@ public class LPInterpreter {
                         
                         case RuleClauseCode.CALL_BUILTIN:
                             Builtin builtin = (Builtin)args[ac++];
+                            if (context == null) {
+                                BBRuleContext bbcontext = new BBRuleContext(engine.getInfGraph());
+                                bbcontext.setEnv(new LPBindingEnvironment(this));
+                                context = bbcontext;
+                            }
+                            context.setRule(clause.getRule());
                             if (!builtin.bodyCall(argVars, code[pc++], context)) {
 //                                logger.debug("FAIL: " + envFrame.clause.rule.toShortString());
                                 continue main;  

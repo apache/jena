@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.11 2003-08-07 21:06:20 der Exp $
+ * $Id: TestBasicLP.java,v 1.12 2003-08-08 09:25:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-07 21:06:20 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-08 09:25:43 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -42,6 +42,7 @@ public class TestBasicLP  extends TestCase {
     Node b = Node.createURI("b");
     Node c = Node.createURI("c");
     Node d = Node.createURI("d");
+    Node e = Node.createURI("e");
     Node C1 = Node.createURI("C1");
     Node C2 = Node.createURI("C2");
     Node C3 = Node.createURI("C3");
@@ -64,7 +65,7 @@ public class TestBasicLP  extends TestCase {
 //        return new TestSuite( TestBasicLP.class );
         
         TestSuite suite = new TestSuite();
-        suite.addTest(new TestBasicLP( "testTabled2" ));
+        suite.addTest(new TestBasicLP( "testTabled6" ));
         return suite;
     }  
    
@@ -687,12 +688,103 @@ public class TestBasicLP  extends TestCase {
                 new Triple[] {
                     new Triple(a, p, b),
                     new Triple(b, p, c),
+                    new Triple(b, p, d),
                 },
                 new Triple(Node.ANY, p, Node.ANY),
                 new Object[] {
                     new Triple(a, p, b),
                     new Triple(b, p, c),
                     new Triple(a, p, c),
+                    new Triple(b, p, d),
+                    new Triple(a, p, d),
+                } );
+    }
+    
+//    /**
+//     * Test tabled predicates. Simple transitive closure over normal predicates
+//     */
+//    public void testTabled3() {
+//        doTest("[r1: (?x p ?z) <- (?x p ?y), (?y p ?z)]" +
+//               "[r2: (?x p ?z) <- (?x e ?z), (?z q ?z)]",
+//                new Node[] { p },
+//                new Triple[] {
+//                    new Triple(a, e, b),
+//                    new Triple(a, e, d),
+//                    new Triple(b, e, c),
+//                    new Triple(a, q, a),
+//                    new Triple(b, q, b),
+//                    new Triple(c, q, c),
+//                },
+//                new Triple(a, p, Node.ANY),
+//                new Object[] {
+//                    new Triple(a, p, b),
+////                    new Triple(b, p, c),
+//                    new Triple(a, p, c)
+//                } );
+//    }
+    
+    /**
+     * Test tabled predicates. Co-routining example.
+     */
+    public void testTabled4() {
+        doTest("[r1: (?x a ?y) <- (?x c ?y)]" +
+               "[r2: (?x a ?y) <- (?x b ?z), (?z c ?y)]" +
+               "[r3: (?x b ?y) <- (?x d ?y)]" +
+               "[r4: (?x b ?y) <- (?x a ?z) (?z c ?y)]",
+                new Node[] { a, b },
+                new Triple[] {
+                    new Triple(p, c, q),
+                    new Triple(q, c, r),
+                    new Triple(p, d, q),
+                    new Triple(q, d, r),
+                },
+                new Triple(p, a, Node.ANY),
+                new Object[] {
+                    new Triple(p, a, q),
+                    new Triple(p, a, r)
+                } );
+    }
+    
+    /**
+     * Test tabled predicates. Simple transitive closure case.
+     */
+    public void testTabled5() {
+        doTest("[r1: (?a p ?c) <- (?a p ?b)(?b p ?c)]" +
+               "[r2: (?a r ?b) <- (?a q ?b)]",
+                new Node[] { p },
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(b, p, c),
+                    new Triple(a, q, d),
+                    new Triple(c, q, d),
+                },
+                new Triple(a, Node.ANY, Node.ANY),
+                new Object[] {
+                    new Triple(a, p, b),
+                    new Triple(a, p, c),
+                    new Triple(a, q, d),
+                    new Triple(a, r, d),
+                } );
+    }
+   
+    /**
+     * Test tabled predicates. Simple transitive closure case, tabling set
+     * by rule base.
+     */
+    public void testTabled6() {
+        doTest("[-> table(p)] [r1: (?a p ?c) <- (?a p ?b)(?b p ?c)]",
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(b, p, c),
+                    new Triple(b, p, d),
+                },
+                new Triple(Node.ANY, p, Node.ANY),
+                new Object[] {
+                    new Triple(a, p, b),
+                    new Triple(b, p, c),
+                    new Triple(a, p, c),
+                    new Triple(b, p, d),
+                    new Triple(a, p, d),
                 } );
     }
 
