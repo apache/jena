@@ -5,7 +5,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: WorkingVar.java,v 1.6 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version  $Id: WorkingVar.java,v 1.7 2003-09-29 11:15:05 andy_seaborne Exp $
  */
 
 
@@ -20,58 +20,6 @@ public class WorkingVar extends ParsedLiteral implements Value, Printable, Setta
 {
     public WorkingVar() { super() ; }
     public WorkingVar(Value v) { super(v) ; } 
-    
-    //public boolean isNumber()   { return isSet && (isInt || isDouble) ; }
-    
-    // Unlike ParsedLiterals, trying to get a WorkingVar as a number (say)
-    // invokes an attempt to make it a number.
-     
-    public boolean isNumber()
-    {
-        forceInt() ;
-        if ( ! isInt )
-            forceDouble() ;
-         return isSet && (isInt || isDouble) ;
-    }
-
-
-    public boolean isInt()      { forceInt() ;     return isSet && isInt ; }
-    public boolean isDouble()   { forceDouble() ;  return isSet && isDouble ; }
-
-    private void forceInt()
-    {
-        if ( ! isSet || isInt || ! isString ) return ;
-        try {
-            valInt = Long.parseLong(valString) ;
-            isInt = true ;
-            isDouble = true ;
-            valDouble = valInt ;
-        } catch (NumberFormatException e) { return ; }
-    }
-
-    private void forceDouble()
-    {
-        if ( ! isSet || isDouble || ! isString ) return ;
-        try {
-            valDouble = Double.parseDouble(valString) ;
-            isDouble = true ;
-        } catch (NumberFormatException e) { return ; }
-    }
-
-
-    public long getInt()
-    {
-        forceInt() ;
-        if ( ! isSet || ! isInt ) throw new ValueException("Not an int: "+this) ;
-        return valInt ;
-    }
-
-    public double getDouble()
-    {
-        forceDouble() ;
-        if ( ! isSet || ! isDouble ) throw new ValueException("Not a long: "+this) ;
-        return valDouble ;
-    }
 }
 
 /*

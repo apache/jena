@@ -127,9 +127,9 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
 
     public boolean isSet() { return isSet ; }
 
-    public boolean isNumber()       { return isSet && (isInt || isDouble) ; }
-    public boolean isInt()          { return isSet && isInt ; }
-    public boolean isDouble()       { return isSet && isDouble ; }
+    public boolean isNumber()       { forceNumber() ; return isSet && (isInt || isDouble) ; }
+    public boolean isInt()          { forceInt() ;    return isSet && isInt ; }
+    public boolean isDouble()       { forceDouble() ; return isSet && isDouble ; }
     public boolean isBoolean()      { return isSet && isBoolean ; }
     public boolean isString()       { return isSet && isString ; }
     public boolean isURI()          { return isSet && isURI ; }
@@ -142,6 +142,37 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
     public void setBoolean(boolean b)        { unset() ; isSet = true ; isBoolean = true ; valBoolean = b ; }
     public void setString(String s)          { unset() ; isSet = true ; isString = true ; valString = s ; }
     public void setURI(String uri)           { unset() ; isSet = true ; isURI = true ; isString = true ; valURI = uri ; valString = uri ; }
+    
+    private void forceInt()
+    {
+        if ( ! isSet || isInt || ! isString ) return ;
+        try {
+            valInt = Long.parseLong(valString) ;
+            isInt = true ;
+            isDouble = true ;
+            valDouble = valInt ;
+        } catch (NumberFormatException e) { return ; }
+    }
+
+    private void forceDouble()
+    {
+        if ( ! isSet || isDouble || ! isString ) return ;
+        try {
+            valDouble = Double.parseDouble(valString) ;
+            isDouble = true ;
+        } catch (NumberFormatException e) { return ; }
+    }
+
+    private void forceNumber()
+    {
+        if ( ! isSet || isInt || isDouble || ! isString )
+                return ;
+        
+        forceInt() ;
+        if ( ! isInt )
+            forceDouble() ;
+    }
+
     
     public void setRDFLiteral(Literal l)
     {

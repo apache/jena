@@ -72,6 +72,9 @@ public class TestExpressions extends TestSuite
         addTest(new TestBoolean("(2 < 3) && (3>=4)", false, (2 < 3) && (3>=4))) ;
         addTest(new TestBoolean("(2 < 3) || (3>=4)", false, (2 < 3) || (3>=4))) ;
         addTest(new TestBoolean("2 == 3", false, 2 == 3)) ;
+        
+        // Check that strings are coerced if needed
+        addTest(new TestBoolean("2 < '3'", false, 2 < 3)) ;
 
         addTest(new TestBoolean("\"fred\" ne \"joe\"", false, true )) ;
         addTest(new TestBoolean("\"fred\" eq \"joe\"", false, false )) ;
@@ -88,11 +91,14 @@ public class TestExpressions extends TestSuite
         addTest(new TestBoolean("'fred'^^<type1> eq 'fred'^^<type2>", false, false )) ;
         addTest(new TestBoolean("'fred'^^<type1> ne 'fred'^^<type2>", false, true )) ;
         
-        // true: xsd:string is sameValueAs plain (classic) RDf literal
+        // true: xsd:string is sameValueAs plain (classic) RDF literal
         addTest(new TestBoolean("'fred'^^<"+xsd+"string> eq 'fred'", false, true )) ;
         // false: parsing created two RDF literals and these are different 
         addTest(new TestBoolean("'fred'^^<type1> eq 'fred'", false, false )) ;
         addTest(new TestBoolean("'fred'^^<type1> ne 'fred'", false, true )) ;
+        
+        // Numerci expessions: ignore typing (compatibility with RDF-99) 
+        addTest(new TestBoolean("'21'^^<int> == '21'", false, true )) ;
 
         // Escapes in strings
         addTest(new TestBoolean("\"fred\\1\" eq 'fred1'", false, true )) ;
