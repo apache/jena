@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.11 2003-05-19 19:38:32 chris-dollin Exp $
+  $Id: TestNode.java,v 1.12 2003-05-19 20:20:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -299,17 +299,26 @@ public class TestNode extends GraphTestBase
         }
         
     // TODO fill in this incomplete test
-    public void testVisitorPattern()
+    public void testVisitorPatternNode()
         {
-        NodeVisitor v = new NodeVisitor() 
+        NodeVisitor returnNode = new NodeVisitor() 
             {
-            public Object visitAny( Node_ANY it ) { return null; }
-            public Object visitBlank( Node_Blank it, AnonId id ) { return null; }
-            public Object visitLiteral( Node_Literal it, LiteralLabel lit ) { return null; }
-            public Object visitURI( Node_URI it, String uri ) { return null; }
-            public Object visitVariable( Node_Variable it, String name ) { return null; }
+            public Object visitAny( Node_ANY it ) { return it; }
+            public Object visitBlank( Node_Blank it, AnonId id ) { return it; }
+            public Object visitLiteral( Node_Literal it, LiteralLabel lit ) { return it; }
+            public Object visitURI( Node_URI it, String uri ) { return it; }
+            public Object visitVariable( Node_Variable it, String name ) { return it; }
             };
-        node( "hello" ).visitWith( v );
+        testVisitorPatternNode( "sortOfURI", returnNode );
+        testVisitorPatternNode( "?variable", returnNode );
+        testVisitorPatternNode( "_anon", returnNode );
+        testVisitorPatternNode( "11", returnNode );
+        }
+        
+    private void testVisitorPatternNode( String ns, NodeVisitor v )
+        {
+        Node n = node( ns ); 
+        assertEquals( n, n.visitWith( v ) ); 
         }
     }
 
