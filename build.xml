@@ -206,6 +206,8 @@
             depends="bin,javadoc,distribution-init,copy,zip"/>
 
     <target name="distribution-init">
+        <delete includeEmptyDir="true">
+            <fileset dir="${dist.dir}"/>
         <mkdir dir="${dist.dir}"/>
     </target>
 
