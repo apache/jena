@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Graph;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.1 $
+* @version $Revision: 1.2 $
 */
 
 public interface IRDBDriver {
@@ -79,7 +79,7 @@ public interface IRDBDriver {
 	 * 
 	 * @since Jena 2.0
 	 */
-	public void removeSpecializedGraphs(DBPropGraph graphProperties);
+	public void removeSpecializedGraphs(DBPropGraph graphProperties, List specializedGraphs);
 	
 	/**
 	 * Test if the database has previously been formatted (there's no other
