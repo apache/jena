@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLPropertyImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-12-11 22:55:09 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * as a sub-class of Property), so uniqueness is modelled here as an attribute of a DAMLProperty.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.6 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.7 2003-12-11 22:55:09 ian_dickinson Exp $
  */
 public class DAMLPropertyImpl
     extends OntPropertyImpl
@@ -147,7 +147,7 @@ public class DAMLPropertyImpl
                        // followed by the samePropertyAs values
                        getSameProperties() );
 
-        return new UniqueExtendedIterator( i ).mapWith( new AsMapper( DAMLProperty.class ) );
+        return UniqueExtendedIterator.create( i ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
 

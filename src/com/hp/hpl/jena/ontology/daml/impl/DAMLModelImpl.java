@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-12-11 22:55:09 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.12 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.13 2003-12-11 22:55:09 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -336,7 +336,7 @@ public class DAMLModelImpl
      * @return An iterator over all currently defined classes (including Restrictions).
      */
     public ExtendedIterator listDAMLClasses() {
-        return new UniqueExtendedIterator( findByTypeAs( getProfile().CLASS(), null, DAMLClass.class ) );
+        return UniqueExtendedIterator.create( findByTypeAs( getProfile().CLASS(), null, DAMLClass.class ) );
     }
 
 
@@ -347,7 +347,7 @@ public class DAMLModelImpl
      *         all sub-classes).
      */
     public ExtendedIterator listDAMLProperties() {
-        return new UniqueExtendedIterator( findByTypeAs( getProfile().PROPERTY(), null, DAMLProperty.class ) );
+        return UniqueExtendedIterator.create( findByTypeAs( getProfile().PROPERTY(), null, DAMLProperty.class ) );
     }
 
 
@@ -357,7 +357,7 @@ public class DAMLModelImpl
      * @return An iterator over all currently defined DAML instances.
      */
     public ExtendedIterator listDAMLInstances() {
-        return new UniqueExtendedIterator( listIndividuals().mapWith( new Map1() {
+        return UniqueExtendedIterator.create( listIndividuals().mapWith( new Map1() {
                         public Object map1(Object x){ return ((Resource) x).as( DAMLInstance.class );} } ) );
     }
 

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-12-11 22:55:09 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.10 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.11 2003-12-11 22:55:09 ian_dickinson Exp $
  */
 public class DAMLClassImpl
     extends OntClassImpl
@@ -158,7 +158,7 @@ public class DAMLClassImpl
                        // followed by the sameClassAs values
                        getSameClasses() );
 
-        return new UniqueExtendedIterator( i ).mapWith( new AsMapper( DAMLClass.class ) );
+        return UniqueExtendedIterator.create( i ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
 
