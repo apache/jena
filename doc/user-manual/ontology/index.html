@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 
-  <title>Jena 2 Ontology tutorial - lesson one</title>
+  <title>Jena 2 User Manual - Ontology</title>
   <link rev="made" href="mailto:ian.dickinson@hp.com" />
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
   <meta name="generator" content="NoteTab Pro 4.95" />
@@ -40,6 +40,7 @@
   <li><a href="#cameraExample">Running example: the camera ontology</a></li>
   <li><a href="#creatingModels">Creating ontology models</a></li>
   <li><a href="#documentHandling">Handling ontology documents and imports</a></li>
+  <li><a href="#ontResource">The generic ontology type: OntResource</a></li>
   <li><a href="#classesBasic">Handling ontology components: basic class expressions</a></li>
   <li>Handling ontology components: properties</li>
   <li>Handling ontology components: more complex class expressions</li>
@@ -47,7 +48,7 @@
   <li>Ontology inference: introduction</li>
   <li>Built-in Jena reasoners</li>
   <li>Using external reasoners</li>
-  <li>Common problems and other tips</li>
+  <li>FAQ, common problems and other tips</li>
 </ol>
 <h3>Further assistance</h3>
 <p> We hope that this documentation will be sufficient to help most readers to 
@@ -222,7 +223,7 @@
   the ontology model. It also means that the base graph can be an in-memory store, 
   a database-backed persistent store, or some other storage structure altogether 
   (e.g. an LDAP directory) again without affecting the ontology model.</p>
-<h3>RDF-level polymorphism and Java</h3>
+<h3 id="rdfPolymorphism">RDF-level polymorphism and Java</h3>
 <p>Consider the following RDF sample:</p>
 <pre>&lt;rdfs:Class rdf:ID=&quot;DigitalCamera&quot;&gt;
 &lt;/rdfs:Class&gt;</pre>
@@ -547,7 +548,212 @@ OntDocumentManager dm = m.getDocumentManager();
 dm.addAltEntry( &quot;http://www.xfront.com/owl/ontologies/camera/&quot;,
                 &quot;file:&quot; + JENA + &quot;doc/user-manual/ontology/data/camera.owl&quot;    );
 m.read( &quot;http://www.xfront.com/owl/ontologies/camera/&quot; );</pre>
+<h2 id="ontResource">The generic ontology type: OntResource</h2>
+<p>All of the classes in the ontology API that represent ontology values have 
+  <code>OntResource</code> as a common super-class. This makes <code>OntResource</code> 
+  a good place to put shared functionality for all such classes, and makes a handy 
+  common return value for general methods. The Java interface <code>OntResource</code> 
+  extends Jena's RDF <code>Resource</code> interface, so any general method that 
+  accepts a resource or an <code>RDFNode</code> will also accept an <code>OntResource</code>, 
+  and consequently, any other ontology value.</p>
+<p>Some of the common attributes of ontology resources that are expressed through 
+  methods on OntResource are shown below: </p>
+<table width="445" border="1" cellspacing="1" cellpadding="1">
+  <tr> 
+    <th width="132">Attribute</th>
+    <th width="300">Meaning</th>
+  </tr>
+  <tr> 
+    <td width="132"> 
+      <div align="left">versionInfo</div>
+    </td>
+    <td width="300"> 
+      <div align="left">A string documenting the version or history of this resource</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="132"> 
+      <div align="left">comment</div>
+    </td>
+    <td width="300"> 
+      <div align="left">A general comment associated with this value</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="132"> 
+      <div align="left">label</div>
+    </td>
+    <td width="300"> 
+      <div align="left">A human-readable label</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="132"> 
+      <div align="left">seeAlso</div>
+    </td>
+    <td width="300"> 
+      <div align="left">Another web location to consult for more information about 
+        this resource</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="132"> 
+      <div align="left">isDefinedBy</div>
+    </td>
+    <td width="300"> 
+      <div align="left"> A specialisation of seeAlso that is intended to supply 
+        a definition of this resource </div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="132"> 
+      <div align="left">sameAs</div>
+    </td>
+    <td width="300"> 
+      <div align="left">Denotes another resource that this resource is equivalent 
+        to </div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="132"> 
+      <div align="left">differentFrom</div>
+    </td>
+    <td width="300"> 
+      <div align="left">Denotes another resource that is disticnt from this resource 
+        (by definition)</div>
+    </td>
+  </tr>
+</table>
+<p>For each of these properties, there is a standard pattern of available methods:</p>
+<table width="445" border="1" cellspacing="1" cellpadding="1">
+  <tr> 
+    <th width="141">Method</th>
+    <th width="291">Effect</th>
+  </tr>
+  <tr> 
+    <td width="141"> 
+      <div align="left">add&lt;property&gt;</div>
+    </td>
+    <td width="291"> 
+      <div align="left">Add an additional value for the given property</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="141"> 
+      <div align="left">set&lt;property&gt;</div>
+    </td>
+    <td width="291"> 
+      <div align="left">Remove any existing values for the property, then add 
+        the given value</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="141"> 
+      <div align="left">list&lt;property&gt;</div>
+    </td>
+    <td width="291"> 
+      <div align="left">Return an iterator ranging over the values of the property</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="141"> 
+      <div align="left">get&lt;property&gt;</div>
+    </td>
+    <td width="291"> 
+      <div align="left">Return the value for the given property, if the resource 
+        has one. If not, return null. If it has more than one value, an arbitrary 
+        selection is made.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="141"> 
+      <div align="left">has&lt;property&gt;</div>
+    </td>
+    <td width="291"> 
+      <div align="left">Return true if there is at least one value for the given 
+        property. Depending on the name of the property, this is sometimes is&lt;property&gt;</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="141"> 
+      <div align="left">remove&lt;property&gt;</div>
+    </td>
+    <td width="291"> 
+      <div align="left">Removes a given value from the values of the property 
+        on this resource. Has no effect if the resource does not have that value.</div>
+    </td>
+  </tr>
+</table>
+<p>For example: <code>addSameAs(&nbsp;Resource&nbsp;r&nbsp;)</code>, or <code>isSameAs(&nbsp;Resource&nbsp;r&nbsp;)</code>. 
+  For full details of the individual methods, please consult the Javadoc.</p>
+<p><code>OntResource</code> defines some other general utility methods. For example, 
+  to find out how many values a resource has for a given property, we can call 
+  <code>getCardinality(&nbsp;Property&nbsp;p&nbsp;)</code>. To delete the resource 
+  from the ontology altogether, we can call <code>remove()</code>. The effect 
+  of this is to remove every statement that mentions this resource as a subject 
+  or object of a statement. To get or set the value of a given property, use <code>addPropertyValue(&nbsp;Property&nbsp;p,&nbsp;RDFNode&nbsp;value&nbsp;)</code> 
+  or <code>getPropertyValue(&nbsp;Property&nbsp;p&nbsp;)</code>. Similarly the 
+  values of a named property can be listed or removed.</p>
+<p>Finally, <code>OntResource</code> provides methods for listing, getting and 
+  setting the RDF types of a resource. The rdf:type property is one for which 
+  many entailment rules are defined in the semantic models of the various ontology 
+  languages. Therefore, the values that <code>listRDFTypes()</code> returns is 
+  more than usually dependent on the actual reasoner bound to the ontology model. 
+  For example, suppose we have class A, class B which is a sub-class of A, and 
+  resource x whose asserted <code>rdf:type</code> is B. With no reasoner, listing 
+  x's RDF types will return only B. If the reasoner is able to calculate the closure 
+  of the sub-class hierarchy (and most can), x's RDF types would also include 
+  A. Furthermore, complete reasoners might also infer that x has type <code>owl:Thing</code> 
+  and <code>rdf:Resource</code>.</p>
+<p>For some tasks, getting a complete list of the RDF types of a resource is exactly 
+  what is needed. For other tasks, this is not the case. An ontology editor, for 
+  example, might want to distinguish in its display between inferred and asserted 
+  types. In the above example, only<code> x&nbsp;rdf:type&nbsp;B</code> is asserted, 
+  everything else is inferred. One way to make this distinction is to make use 
+  of the base model (see Figure 4). Getting the x resource from the base model 
+  and listing the type properties there would return only the asserted values.</p>
+<p>For other user interface or presentation tasks, we may want something between 
+  the complete list of types and the base list of only the asserted values. Consider 
+  the following class hierarchy:</p>
+<p class="centered"><img src="../../images/Direct-hierarchy.png" width="675" height="355"></p>
+<p class="caption">Figure 5: asserted and inferred relationships</p>
+<p>5.i shows a base model, containing a class hierarchy and an instance x. 5.ii 
+  shows a full set of relationships that might be inferred from this base model. 
+  In 5.iii, we see only the <i>direct</i> or maximally specific relationships. 
+  For example, in 5.iii x does not have <code>rdf:type A</code>, since this is 
+  an relationship that is covered by the facts that x has <code>rdf:type D</code>, 
+  and D is a sub-class of A. Notice also that the <code>rdf:type B</code> link 
+  is also removed from the direct graph, for a similar reason. Thus the direct 
+  graph hides relationships from both the inferred and asserted graphs. When displaying 
+  instance x in a GUI, particularly in a tree view of some kind, the direct graph 
+  is often the most useful as it contains the useful information in the most compact 
+  form.</p>
+<p>To list the RDF types of a resource, use:</p>
+<pre>listRDFTypes()                 // assumes not-direct
+listRDFTypes( boolean direct ) // if true, show only direct relationships</pre>
+<p>Related methods allow the <code>rdf:type</code> to be tested, set and returned.</p>
 <h2>Handling ontology components: basic class expressions</h2>
-<p>&nbsp;</p>
+<p>Classes are the basic building blocks of an ontology. A simple class is represented 
+  in Jena by an OntClass object. As mentioned <a href="#rdfPolymorphism">above</a>, 
+  a ontology class is a facet of an RDF resource. One way, therefore, to get an 
+  ontology class is to convert an RDF resource (we assume that m is a suitable 
+  defined OntModel, into which the camera ontology has already been read):</p>
+<pre>String camNS = &quot;http://www.xfront.com/owl/ontologies/camera/#&quot;;
+Resource r = m.getResource( camNS + &quot;Camera&quot; );
+OntClass camera = (OntClass) r.as( OntClass.class );</pre>
+<p>This can be shortened by calling getOntClass() on the ontology model:</p>
+<pre>OntClass camera = m.getOntClass( camNS + &quot;Camera&quot; );</pre>
+<p>The <code>getOntClass</code> method will lookup the resource with the given 
+  URI, and attempt to obtain the OntClass facet. If either of these operations 
+  fail, it will return null. Alternatively, the <code>createClass</code> method 
+  will re-use an existing resource, or create a new class resource if one does 
+  not exist:</p>
+<pre>OntClass pinCamera = m.createClass( camNS + &quot;PinholeCamera&quot; );</pre>
+<p>The create class method can also be used to create an anonymous class - a class 
+  description with no associated URI. Anonymous classes are often used when building 
+  complex ontologies in OWL or DAML. They are less useful in RDFS.</p>
+<pre>OntClass anonClass = m.createClass();</pre>
+<p>Once we have the ontology class object, we can begin processing it through 
+  the methods defined on OntClass. Some of these methods are listed below</p>
 </body>
 </html>
