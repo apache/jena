@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-27 09:06:10 $
+ * Last modified on   $Date: 2004-06-22 22:48:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.32 2004-05-27 09:06:10 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.33 2004-06-22 22:48:43 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -721,9 +721,9 @@ public class schemagen {
     protected void writeModelDeclaration() {
         if (useOntology()) {
             writeln( 1, "/** <p>The ontology model that holds the vocabulary terms</p> */" );
-            writeln( 1, "private static OntModel m_model = ModelFactory.createOntologyModel( ProfileRegistry." +
+            writeln( 1, "private static OntModel m_model = ModelFactory.createOntologyModel( OntModelSpec." +
                         (isTrue( OPT_LANG_DAML ) ? "DAML" : "OWL" ) +
-                        "_LANG );"
+                        "_MEM, null );"
                    );
         }
         else {
