@@ -26,7 +26,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.3 2003-02-20 16:45:47 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.4 2003-02-21 18:20:38 andy_seaborne Exp $
  */
 
 public class Query
@@ -44,8 +44,8 @@ public class Query
     {
 		defaultPrefixMap.put("rdf",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
 		defaultPrefixMap.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#") ;
-        defaultPrefixMap.put("xsd" , "http://www.w3.org/2001-2003/XMLSchema#") ; 
-        defaultPrefixMap.put("owl" , "http://www.w3.org/2001-2003/07/owl#") ; 
+        defaultPrefixMap.put("xsd" , "http://www.w3.org/2001/XMLSchema#") ; 
+        defaultPrefixMap.put("owl" , "http://www.w3.org/2002/07/owl#") ; 
     }
 
     // Turn logging on and off.
