@@ -646,11 +646,11 @@ while (iter.hasNext()) {
 method <code>model.listStatements(Selector s)</code>.  This method returns an
 iterator over all the statements in the model 'selected' by <code>s</code>.
 The selector interface is designed to be extensible, but for now, there is
-only one implementation of it, the class <code>SelectorImpl</code> from the
-package <code>com.hp.hpl.jena.common</code>.  Using
+only one implementation of it, the class <code>SimpleSelector</code> from the
+package <code>com.hp.hpl.jena.rdf.model</code>.  Using
 <code>SimpleSelector </code>is one of the rare occasions in Jena when it is
 necessary to use a specific class rather than an interface.  The
-<code>SimpleSelector</code>l constructor takes three arguments:</p>
+<code>SimpleSelector</code> constructor takes three arguments:</p>
 
 <blockquote>
   <pre>Selector selector = new SimpleSelector(subject, predicate, object)
@@ -723,7 +723,7 @@ further filtering:</p>
 // whose value ends with "Smith"
 StmtIterator iter = model.listStatements(
   new
-      SelectorImpl(null, VCARD.FN, (RDFNode) null) {
+      SimpleSelector(null, VCARD.FN, (RDFNode) null) {
 		  public boolean isSimple()
 		  {return false;}
 		  public boolean selects(Statement s) 
@@ -756,7 +756,7 @@ applied to matching statements.</p>
   <pre>// do all filtering in the selects method
 StmtIterator iter = model.listStatements(
   new
-      SelectorImpl(null, null, (RDFNode) null) {
+      SimpleSelector(null, null, (RDFNode) null) {
           public boolean selects(Statement s) {
               return (subject == null   || s.getSubject().equals(subject))
                   &amp;&amp; (predicate == null || s.getPredicate().equals(predicate))
@@ -770,7 +770,7 @@ StmtIterator iter = model.listStatements(
 
 <blockquote>
   <pre>StmtIterator iter =
-  model.listStatements(new SelectorImpl(subject, predicate, object)</pre>
+  model.listStatements(new SimpleSelector(subject, predicate, object)</pre>
 </blockquote>
 
 <p>Whilst functionaly they may be equivalent, the first form will list all
@@ -892,7 +892,7 @@ Bag smiths = model.createBag();
 // select all the resources with a VCARD.FN property
 // whose value ends with "Smith"
 StmtIterator iter = model.listStatements(
-    new SelectorImpl(null, VCARD.FN, (RDFNode) null) {
+    new SimpleSelector(null, VCARD.FN, (RDFNode) null) {
         public boolean selects(Statement s) {
                 return s.getString().endsWith("Smith");
         }
@@ -1125,8 +1125,6 @@ expected.</p>
     language of the string.&nbsp; For example the literal "two" might have a
     language encoding of "en" for English and the literal "deux" might have a
     language encoding of "fr" for France.</li>
-  <li><a name="fn-03" id="fn-03"></a>The term "Model" is likely to change to
-    "Graph" in future versions of the toolkit.</li>
   <li><a name="fn-04" id="fn-04"></a>Jena's current iterators do not conform
     to the standard Java iterator interface in that their next() method has a
     more constrained return type.  An iterator interface which is conformant
@@ -1135,5 +1133,5 @@ expected.</p>
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
 <br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>  
-<br> $Date: 2003-06-25 13:47:40 $ $Revision: 1.6 $</small></i></body>
+<br> $Date: 2003-06-25 13:52:36 $ $Revision: 1.7 $</small></i></body>
 </html>
