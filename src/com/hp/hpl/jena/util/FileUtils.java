@@ -138,11 +138,32 @@ public class FileUtils
     public static boolean isURI(String name)
     {
         // Java 1.4+
-        if ( name.matches("[^/:]*:.*") )
-            return true ;
-        return false ;
+//        if ( name.matches("[^/:]*:.*") )
+//            return true ;
+        
+        return (getScheme(name) != null) ;
     }
 
+    public static String getScheme(String uri)
+    {
+        // Nicer in Java 1.4
+        for ( int i = 0 ; i < uri.length() ; i++ )
+        {
+            char ch = uri.charAt(i) ;
+            if ( ch == ':' )
+                return uri.substring(0,i) ;
+            if ( ! isASCIILetter(ch) )
+                // Some illegal character before the ':' 
+                break ;
+        }
+        return null ;
+    }
+    
+    private static boolean isASCIILetter(char ch)
+    {
+        return ( ch >= 'a' && ch <= 'z' ) || ( ch >= 'A' && ch <= 'Z' ) ;
+    }
+    
     /**
      * Get the directory part of a filename
      * @param filename
@@ -267,8 +288,39 @@ public class FileUtils
         { throw new WrappedIOException( e ); }
     }
 
+    /** Read a whole file as UTF-8
+     * @param filename
+     * @return String
+     * @throws IOException
+     */
+    
     public static String readWholeFileAsUTF8(String filename) throws IOException {
-        Reader r = new BufferedReader(asUTF8(new FileInputStream(filename)),1024) ;
+        InputStream in = new FileInputStream(filename) ;
+        return readWholeFileAsUTF8(in) ;
+    }
+
+    /** Read a whole stream as UTF-8
+     * 
+     * @param in    InputStream to be read
+     * @return      String
+     * @throws IOException
+     */
+    public static String readWholeFileAsUTF8(InputStream in) throws IOException
+    {
+        Reader r = new BufferedReader(asUTF8(in),1024) ;
+        return readWholeFileAsUTF8(r) ;
+    }
+    
+    /** Read a whole file as UTF-8
+     * 
+     * @param r
+     * @return
+     * @throws IOException
+     */
+    
+    // Private worker as we are trying to force UTF-8. 
+    private static String readWholeFileAsUTF8(Reader r) throws IOException
+    {
         StringWriter sw = new StringWriter(1024);
         char buff[] = new char[1024];
         while (r.ready()) {
@@ -279,9 +331,8 @@ public class FileUtils
         }
         r.close();
         sw.close();
-        return sw.toString();
+        return sw.toString();  
     }
-
 
     // Code below this point will be removed later.
     // Kept for now as a reord of the old FileUtils.
