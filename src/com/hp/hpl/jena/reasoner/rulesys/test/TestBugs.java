@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.26 2004-12-07 09:56:34 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.27 2004-12-17 11:28:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $ on $Date: 2004-12-07 09:56:34 $
+ * @version $Revision: 1.27 $ on $Date: 2004-12-17 11:28:37 $
  */
 public class TestBugs extends TestCase {
 
@@ -51,7 +51,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testTransitive" ));
+//        suite.addTest(new TestBugs( "xxtest_oh_01" ));
 //        return suite;
     }  
 
@@ -504,7 +504,108 @@ public class TestBugs extends TestCase {
         result.read(new StringReader(fullSource), "", "N3");
         return result;
     }
+    
+    /** Bug report from Ole Hjalmar - direct subClassOf not reporting correct result with rule reasoner */
+    public void xxtest_oh_01() {
+        String NS = "http://www.idi.ntnu.no/~herje/ja/";
+        Resource[] expected = new Resource[] {
+            ResourceFactory.createResource( NS+"reiseliv.owl#Reiseliv" ),
+            ResourceFactory.createResource( NS+"restaurant.owl#Restaurant" ),
+        };
         
+        test_oh_01scan( OntModelSpec.OWL_MEM, "No inf", expected );
+        test_oh_01scan( OntModelSpec.OWL_MEM_MINI_RULE_INF, "Mini rule inf", expected );
+        test_oh_01scan( OntModelSpec.OWL_MEM_MICRO_RULE_INF, "Micro rule inf", expected );
+        test_oh_01scan( OntModelSpec.OWL_MEM_RULE_INF, "Full rule inf", expected );
+    }
+    
+    private void test_oh_01scan( OntModelSpec s, String prompt, Resource[] expected ) {
+        String NS = "http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#";
+        OntModel m = ModelFactory.createOntologyModel(s, null);
+        m.read( "file:testing/ontology/bugs/test_oh_01b.owl");
+
+        System.out.println( prompt );
+        OntClass r = m.getOntClass( NS + "Reiseliv" );
+        
+        // Simple subclasses check
+        System.out.println("SubClasses are:");
+        for (Iterator i = m.listStatements(null, RDFS.subClassOf, r); i.hasNext(); ) {
+            System.out.println(" - " + i.next());
+        }
+        List q = new ArrayList();
+        Set seen = new HashSet();
+        q.add( r );
+        
+        while (!q.isEmpty()) {
+            OntClass c = (OntClass) q.remove( 0 );
+            seen.add( c );
+            
+            for (Iterator i = c.listSubClasses( true ); i.hasNext(); ) {
+                OntClass sub = (OntClass) i.next();
+                if (!seen.contains( sub )) {
+                    q.add( sub );
+                }
+            }
+            
+            System.out.println( "  Seen class " + c );
+        }
+
+        // check we got all classes
+        int mask = (1 << expected.length) - 1;
+        
+        for (int j = 0;  j < expected.length; j++) {
+            if (seen.contains( expected[j] )) {
+                mask &= ~(1 << j);
+            }
+            else {
+                System.out.println( "Expected but did not see " + expected[j] );
+            }
+        }
+        
+        for (Iterator k = seen.iterator();  k.hasNext(); ) {
+            Resource res = (Resource) k.next();
+            boolean isExpected = false;
+            for (int j = 0;  !isExpected && j < expected.length; j++) {
+                isExpected = expected[j].equals( res );
+            }
+            if (!isExpected) {
+                System.out.println( "Got unexpected result " + res );
+            }
+        }
+        
+        assertEquals( "Some expected results were not seen", 0, mask );
+    }
+    
+    /**
+     * Bug report from David A Bigwood
+     */
+    public void test_domainInf() {
+        // create an OntModel
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null );
+        // populate the model with stuff
+        String NS = "http://m3t4.com/ont/#";
+        OntClass c1 = m.createClass( NS + "c1" );
+        OntClass c2 = m.createClass( NS + "c2" );
+        OntClass c3 = m.createClass( NS + "c3" );
+        OntProperty p1 = m.createObjectProperty( NS + "p1" );
+        // create a union class to contain the union operands
+        UnionClass uc = m.createUnionClass(null, null);
+        // add an operand
+        uc.addOperand( c1 );
+        assertEquals( "Size should be 1", 1, uc.getOperands().size() );
+        assertTrue( "uc should have c1 as union member", uc.getOperands().contains( c1 ) );
+        // add another operand
+        uc.addOperand( c2 );
+        assertEquals( "Size should be 2", 2, uc.getOperands().size() );
+        TestUtil.assertIteratorValues(this, uc.listOperands(), new Object[] { c1, c2 } );
+        // add a third operand
+        uc.addOperand( c3 );
+        assertEquals( "Size should be 3", 3, uc.getOperands().size() );
+        TestUtil.assertIteratorValues(this,  uc.listOperands(), new Object[] { c1, c2, c3} );
+        // add union class as domain of a property
+        p1.addDomain(uc);
+    }    
+    
     // debug assistant
     private void tempList(Model m, Resource s, Property p, RDFNode o) {
         System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));
