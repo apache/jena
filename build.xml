@@ -4,7 +4,7 @@
     <property name="name"            value="jena"/>
     <property name="version"         value="j2p1-rc2"/>
 
-    <property name="dist.name"       value="${Name}-${version}"/>
+    <property name="dist.name"       value="${name}-${version}"/>
 
     <property name="debug"           value="false"/>
     <property name="deprecation"     value="true"/>
