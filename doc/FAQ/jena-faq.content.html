@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.25 2004-07-06 07:53:32 der Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.26 2004-07-06 08:10:11 der Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -29,7 +29,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <h3>General</h3>
 <ul>
   <li><a href="#general-0">Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</a></li>
-  <li><a href="#general-1">What does the error <code>java.lang.NoSuchFieldError: actualValueType</code> mean?</a></li>
+  <li><a href="#general-1">What does the error '<code>java.lang.NoSuchFieldError: actualValueType</code>' mean?</a></li>
 </ul>
 <h3>RDF model API</h3>
 <ul>
@@ -97,10 +97,14 @@ Jena 2 &ndash; Frequently Asked Questions
   the Java classpath. Consult Google or see 
   	<a href="http://www.dynamic-apps.com/tutorials/classpath.jsp">here</a>.</p>
 
-<p id="general-1"><strong>Q: What does the error <code>java.lang.NoSuchFieldError: actualValueType</code> mean?</strong><br>
+<p id="general-1"><strong>Q: What does the error '<code>java.lang.NoSuchFieldError: actualValueType</code>' mean?</strong><br>
   <strong>A:</strong> This is almost always due to using the wrong version of the Xerces
   library. Jena makes use of XML Schema support that changed at Xerces 2.6.0 and is not 
   compatible with earlier versions. At the time of writing Jena ships with Xerces 2.6.1.
+  <br />
+  In some situations your runtime environment may be picking up an earlier version of Xerces from
+  an "endorsed" directory and you will need to either disable use of that endorsed library or replace 
+  it by a more uptodate version of Xerces. This occurs with tomcat 5.* and certain configurations of jdk 1.4.1.
  </p>
 
 <h3>RDF model API</h3>
