@@ -34,7 +34,7 @@
 
     <path id="classpath">
       <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-      <dirset dir="${classes.dir}" includes="*"/>
+ <!--     <dirset dir="${classes.dir}" includes="*"/> -->
     </path>
 
 <!-- Main external targets -->
