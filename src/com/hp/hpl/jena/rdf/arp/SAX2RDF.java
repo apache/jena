@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.5 2004-10-20 14:11:15 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.6 2004-10-20 15:32:32 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -141,10 +141,10 @@ implements ARPConfig {
 	 * is not loading into a Jena Model, but is processing
 	 * the triples etc. in some other way.
 	
-	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlers(com.hp.hpl.jena.rdf.arp.ARPHandlers)
+	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlersWith(com.hp.hpl.jena.rdf.arp.ARPHandlers)
 	 */
-	public void setHandlers(ARPHandlers handlers) {
-		super.setHandlers(handlers);
+	public void setHandlersWith(ARPHandlers handlers) {
+		super.setHandlersWith(handlers);
 	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getOptions()
@@ -155,8 +155,8 @@ implements ARPConfig {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setOptions(com.hp.hpl.jena.rdf.arp.ARPOptions)
 	 */
-	public void setOptions(ARPOptions opts) {
-		super.setOptions(opts);
+	public void setOptionsWith(ARPOptions opts) {
+		super.setOptionsWith(opts);
 		
 	}
 	/**
@@ -166,7 +166,7 @@ implements ARPConfig {
 	 * @param rdr The XMLReader to initialize.
 	 * @param sax2rdf The SAX2RDF instance to use.
 	 */
-	static public void initialize(XMLReader rdr, XMLHandler sax2rdf) 
+	static public void installHandlers(XMLReader rdr, XMLHandler sax2rdf) 
 	throws SAXException 
 	{
 		rdr.setEntityResolver(sax2rdf);

@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.14 2004-10-11 11:54:37 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.15 2004-10-20 15:32:32 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -218,8 +218,8 @@ IOException {
      * instance's copy of the handler information.
      * @param handlers The new values to use.
      */
-    public void setHandlers(ARPHandlers handlers){
-    	arpf.setHandlers(handlers);
+    public void setHandlersWith(ARPHandlers handlers){
+    	arpf.setHandlersWith(handlers);
     }
     /**
      * The options used during parsing.
@@ -251,8 +251,8 @@ IOException {
      * instance's copy of the options.
      * @param opts The new values to use.
      */
-    public void setOptions(ARPOptions opts){
-    	arpf.setOptions(opts);
+    public void setOptionsWith(ARPOptions opts){
+    	arpf.setOptionsWith(opts);
     }
 	/**
     @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setExtendedHandler setExtendedHandler(eh)}

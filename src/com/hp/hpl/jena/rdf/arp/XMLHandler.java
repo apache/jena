@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.3 2004-10-20 10:40:35 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.4 2004-10-20 15:32:32 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -113,10 +113,10 @@ abstract class XMLHandler
 	ARPOptions getOptions() {
 		return options;
 	}
-	void setOptions(ARPOptions newOpts) {
+	void setOptionsWith(ARPOptions newOpts) {
 		options = newOpts.copy();
 	}
-	void setHandlers(ARPHandlers newHh){
+	void setHandlersWith(ARPHandlers newHh){
 		handlers = newHh.copy();
 	}	// accessed in ARPQname.
 	XMLContext documentContext;

@@ -1440,7 +1440,7 @@ public class SAX2RDFTest extends TestCase {
 		*/
 		XMLReader saxParser = new SAXParser();
 		SAX2Model handler = SAX2Model.newInstance(base,m2);
-		SAX2RDF.initialize(saxParser,handler);
+		SAX2RDF.installHandlers(saxParser,handler);
 		handler.setErrorHandler(eh2);
 		
 		InputSource ins = new InputSource(in);

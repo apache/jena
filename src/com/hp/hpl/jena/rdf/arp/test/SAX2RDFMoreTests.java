@@ -49,7 +49,7 @@ public class SAX2RDFMoreTests extends TestCase {
 		XMLReader saxParser = new SAXParser();
 		SAX2Model handler = SAX2Model.newInstance("http://example.org/", m2,
 				"fr");
-		SAX2RDF.initialize(saxParser, handler);
+		SAX2RDF.installHandlers(saxParser, handler);
 		handler.setErrorHandler(eh2);
 
 		InputSource ins = new InputSource(in);

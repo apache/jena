@@ -41,7 +41,7 @@ class SingleThreadedParser extends XMLHandler {
 		pullParser = config;
 		saxParser = rdr;
 		try {
-		SAX2RDF.initialize(rdr,this);
+		SAX2RDF.installHandlers(rdr,this);
 		}
 		catch (SAXException e){
 			throw new RuntimeException(e);
@@ -124,7 +124,7 @@ class SingleThreadedParser extends XMLHandler {
 		pipe = new PullingTokenPipe(this);
 		pullParser.setInputSource(convert(input));
 
-		SAX2RDF.initialize(saxParser,this);
+		SAX2RDF.installHandlers(saxParser,this);
 		saxParser.reset();
 
 		// initEncodingChecks();

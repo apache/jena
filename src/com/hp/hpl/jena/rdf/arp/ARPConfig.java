@@ -16,7 +16,7 @@ public interface ARPConfig {
 	 * and then using the <code>set..Handler</code> methods
 	 * in {@link ARPHandlers}.
 	 * The handlers can be copied onto another ARP instance
-	 * using the {@link #setHandlers} method.
+	 * using the {@link #setHandlersWith} method.
 	 * @see ARPHandlers#setStatementHandler(StatementHandler)
 	 * @see ARPHandlers#setErrorHandler(ErrorHandler)
 	 * @see ARPHandlers#setExtendedHandler(ExtendedHandler)
@@ -34,7 +34,7 @@ public interface ARPConfig {
 	 * instance's copy of the handler information.
 	 * @param handlers The new values to use.
 	 */
-	public void setHandlers(ARPHandlers handlers);
+	public void setHandlersWith(ARPHandlers handlers);
 
 	/**
 	 * The options used during parsing.
@@ -42,7 +42,7 @@ public interface ARPConfig {
 	 * and then using the <code>set..</code> methods
 	 * in {@link ARPOptions}.
 	 * The options can be copied onto another ARP instance
-	 * using the {@link #setOptions} method.
+	 * using the {@link #setOptionsWith} method.
 	 * @see ARPOptions#setDefaultErrorMode()
 	 * @see ARPOptions#setLaxErrorMode()
 	 * @see ARPOptions#setStrictErrorMode()
@@ -63,7 +63,7 @@ public interface ARPConfig {
 	 * instance's copy of the options.
 	 * @param opts The new values to use.
 	 */
-	public void setOptions(ARPOptions opts);
+	public void setOptionsWith(ARPOptions opts);
 }
 
 /*
