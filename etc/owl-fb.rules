@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.28 2003-09-22 08:12:41 der Exp $
+# $Id: owl-fb.rules,v 1.29 2003-09-22 12:25:53 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -415,6 +415,18 @@
 [ifp1: (?P rdf:type owl:InverseFunctionalProperty), (?A ?P ?B), (?C ?P ?B) 
 					notEqual(?A, ?C) -> (?A owl:sameAs ?C) ]
 
+[fp1: (?P rdf:type owl:FunctionalProperty), (?A ?P ?B), notLiteral(?B), (?A ?Q ?C), notLiteral(?C),
+					notEqual(?B, ?C), (?Q rdfs:subPropertyOf ?P) -> (?B owl:sameAs ?C) ]
+
+[ifp1: (?P rdf:type owl:InverseFunctionalProperty), (?A ?P ?B), (?C ?Q ?B) 
+					notEqual(?A, ?C), (?Q rdfs:subPropertyOf ?P)  -> (?A owl:sameAs ?C) ]
+
+[fpEarlyProp: (?P rdf:type owl:FunctionalProperty) (?Q rdfs:subPropertyOf ?P) -> 
+					(?Q rdf:type owl:FunctionalProperty) ]
+					
+[ifpEarlyProp: (?P rdf:type owl:InverseFunctionalProperty) (?Q rdfs:subPropertyOf ?P) -> 
+					(?Q rdf:type owl:InverseFunctionalProperty) ]
+					
 # This rule is not sufficient if the type inference is being done backwards
 [max1: (?C rdfs:subClassOf max(?P, 1)), (?X ?P ?Y1), notLiteral(?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notLiteral(?Y2),
 					notEqual(?Y1, ?Y2) -> (?Y1 owl:sameAs ?Y2) ]					
@@ -586,14 +598,14 @@
 [xsd2: (?X rdfs:subClassOf ?Y) <- 
         (?X rb:xsdRange xsd(?B, 1, ?L)) (?Y rb:xsdRange xsd(?B, 1, ?L2)) le(?L, ?L2)]
 
-[range1: (?P rdfs:range ?C) <- 
-			(?P rdfs:range ?D), (?D rb:xsdRange xsd(?B, ?S1, ?L1)), 
-			(?P rdfs:range ?E), notEqual(?D, ?E), 
-			(?E rb:xsdRange xsd(?B, ?S2, ?L2)), 
-			min(?S1, ?S2, ?S3),
-			min(?L1, ?L2, ?L3),
-			(?C rb:xsdRange xsd(?B, ?S3, ?L3)),
-			]
+#[range1: (?P rdfs:range ?C) <- 
+#			(?P rdfs:range ?D), (?D rb:xsdRange xsd(?B, ?S1, ?L1)), 
+#			(?P rdfs:range ?E), notEqual(?D, ?E), 
+#			(?E rb:xsdRange xsd(?B, ?S2, ?L2)), 
+#			min(?S1, ?S2, ?S3),
+#			min(?L1, ?L2, ?L3),
+#			(?C rb:xsdRange xsd(?B, ?S3, ?L3)),
+#			]
 
 [range2: (?P rdfs:range xsd:byte) <- (?P rdfs:range xsd:nonNegativeInteger),
 					(?P rdfs:range xsd:nonPositiveInteger)]

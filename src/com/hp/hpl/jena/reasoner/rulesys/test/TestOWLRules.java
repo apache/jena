@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.23 2003-09-17 15:49:25 der Exp $
+ * $Id: TestOWLRules.java,v 1.24 2003-09-22 12:25:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-09-17 15:49:25 $
+ * @version $Revision: 1.24 $ on $Date: 2003-09-22 12:25:09 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -103,8 +103,6 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("maxCardinality/Manifest002.rdf"));
         suite.addTest(new TestOWLRules("FunctionalProperty/Manifest005-mod.rdf"));
         suite.addTest(new TestOWLRules("I5.24/Manifest004-mod.rdf"));  // bx - long
-        suite.addTest(new TestOWLRules("localtests/Manifest001.rdf"));      // bx - long but terminates
-        suite.addTest(new TestOWLRules("localtests/Manifest002.rdf"));   // bx - long but terminates
         suite.addTest(new TestOWLRules("cardinality/Manifest001-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
@@ -122,7 +120,10 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
     
         // New local tests
+        suite.addTest(new TestOWLRules("localtests/Manifest001.rdf"));
+        suite.addTest(new TestOWLRules("localtests/Manifest002.rdf"));
         suite.addTest(new TestOWLRules("localtests/Manifest003.rdf"));
+        suite.addTest(new TestOWLRules("localtests/Manifest004.rdf"));
         
         // Duplications of tests included earlier
 //        suite.addTest(new TestOWLRules("differentFrom/Manifest002.rdf"));  // Duplication of AllDifferent#1
