@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.11 2003-12-11 12:17:20 jeremy_carroll Exp $
+ *  $Id: Abbreviated.java,v 1.12 2004-11-22 14:42:23 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -11,6 +11,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.shared.JenaException;
 
 import java.io.*;
 //Writer;
@@ -26,7 +27,7 @@ import java.io.*;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-12-11 12:17:20 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2004-11-22 14:42:23 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
@@ -108,12 +109,14 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 	}
 
 	synchronized public void write(Model baseModel, Writer out, String base)
-			 { 
-			if (baseModel.getGraph() instanceof InfGraph) {
-				logger.warn("Workaround for bugs 803804 and 858163: using RDF/XML (not RDF/XML-ABBREV) writer  for inferred graph");
-			  baseModel.write(out,"RDF/XML",base);
-			} else
-			  super.write(baseModel,out,base);
+	    { 
+		if (baseModel.getGraph().getCapabilities().findContractSafe() == false) 
+            {
+			logger.warn( "Workaround for bugs 803804 and 858163: using RDF/XML (not RDF/XML-ABBREV) writer  for unsafe graph " + baseModel.getGraph().getClass() );
+			baseModel.write( out, "RDF/XML", base );
+            } 
+        else
+            super.write( baseModel, out, base );
 		}
 		
 	void writeBody(

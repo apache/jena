@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.36 2004-11-02 14:10:09 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.37 2004-11-22 14:42:21 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.36 $ on $Date: 2004-11-02 14:10:09 $
+ * @version $Revision: 1.37 $ on $Date: 2004-11-22 14:42:21 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -85,6 +85,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         public boolean sizeAccurate() { return false; }
         public boolean deleteAllowed( boolean every ) { return !every; }    
         public boolean iteratorRemoveAllowed() { return false; }
+        public boolean findContractSafe() { return false; }
         }
     
     public BulkUpdateHandler getBulkUpdateHandler()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.55 2004-11-22 12:23:49 chris-dollin Exp $
+  $Id: Model.java,v 1.56 2004-11-22 14:42:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.55 $Date: 2004/08/07 15:45:58 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.56 $Date: 2004/11/22 12:23:49 $'
  */
 public interface Model 
     extends ModelCon, ModelGraphInterface, 
@@ -460,9 +460,10 @@ public interface Model
 	public Model read(Reader reader, String base, String lang);
 
     /**
-     * @param string
-     * @param string2
-     * @param string3
+        Read into this model the RDF at <code>url</code>, using 
+        <code>baseURI</code> as the base URI if it is non-null. The RDF is assumed
+        to be RDF/XML unless <code>lang</code> is non-null, in which case it names
+        the language to be used. Answer this model.
     */
     Model read( String url, String base, String lang );
     
@@ -974,5 +975,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.55 2004-11-22 12:23:49 chris-dollin Exp $
+ * $Id: Model.java,v 1.56 2004-11-22 14:42:20 chris-dollin Exp $
  */

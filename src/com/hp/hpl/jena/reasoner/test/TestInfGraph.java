@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestInfGraph.java,v 1.1 2004-01-29 15:40:07 chris-dollin Exp $
+  $Id: TestInfGraph.java,v 1.2 2004-11-22 14:42:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.test;
@@ -46,6 +46,14 @@ public class TestInfGraph extends AbstractTestGraph
         {
         InfGraph ig = getInfGraph();
         assertSame( ig.getReifier(), ig.getRawGraph().getReifier() );
+        }
+    
+    /**
+         Placeholder. Will need revision later.
+    */
+    public void testInfCapabilities()
+        {
+        assertFalse( getInfGraph().getCapabilities().findContractSafe() );
         }
     }
 

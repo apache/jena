@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Capabilities.java,v 1.5 2004-01-16 16:05:56 chris-dollin Exp $
+  $Id: Capabilities.java,v 1.6 2004-11-22 14:40:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -52,6 +52,12 @@ public interface Capabilities
         Answer true iff the graph can be completely empty.
      */
     boolean canBeEmpty();
+
+    /**
+         Answer true if the find() contract on the associated graph is "safe", ie,
+         can be sued safely by the pretty-printer (we'll tighten up that definition).
+     */
+    boolean findContractSafe();
     }
 
 /*
