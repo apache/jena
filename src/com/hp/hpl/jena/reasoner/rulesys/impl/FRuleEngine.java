@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.18 2003-08-08 10:10:20 der Exp $
+ * $Id: FRuleEngine.java,v 1.19 2003-08-24 21:15:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-08-08 10:10:20 $
+ * @version $Revision: 1.19 $ on $Date: 2003-08-24 21:15:48 $
  */
 public class FRuleEngine implements FRuleEngineI {
     
@@ -556,9 +556,9 @@ public class FRuleEngine implements FRuleEngineI {
             if (!patternF.getName().equals(nodeF.getName())) return false;
             Node[] patternArgs = patternF.getArgs();
             Node[] nodeArgs = nodeF.getArgs();
-            if (patternF.isGround()) {
-                return Arrays.equals(patternArgs, nodeArgs);
-            } else {
+//            if (patternF.isGround()) {
+//                return Arrays.equals(patternArgs, nodeArgs);
+//            } else {
                 if (patternArgs.length != nodeArgs.length) return false;
                 // Compatible functor shapes so bind an embedded variables in the pattern
                 env.push();
@@ -576,7 +576,7 @@ public class FRuleEngine implements FRuleEngineI {
                     env.unwind();
                     return false;
                 }
-            }
+//            }
         } else {
             return pattern.sameValueAs(node);
         }
