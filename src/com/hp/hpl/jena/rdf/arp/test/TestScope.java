@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestScope.java,v 1.3 2003-12-08 17:44:27 jeremy_carroll Exp $
+  $Id: TestScope.java,v 1.4 2003-12-08 20:26:50 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
 //import com.hp.hpl.jena.rdf.arp.*;
 import java.io.*;
+
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
@@ -24,7 +25,9 @@ public class TestScope extends TestCase {
 	}
 	
 	public void test01() throws Exception {
-		check("testing/arp/scope/test01.rdf");
+
+		check("testing/wg/rdfms-syntax-incomplete/test004.rdf");
+	//	check("testing/arp/scope/test01.rdf");
 	}
 	public void test02() throws Exception {
 		check("testing/arp/scope/test02.rdf");
@@ -37,10 +40,11 @@ public class TestScope extends TestCase {
 	public void test04() throws Exception {
 		check("testing/arp/scope/test04.rdf");
 	}
+	
 	public void test05() throws Exception {
-	//	check("testing/arp/scope/test05.rdf");
+		check("testing/arp/scope/test05.rdf");
 	}
-	RDFErrorHandler suppress = new RDFErrorHandler(){
+	static RDFErrorHandler suppress = new RDFErrorHandler(){
 
 		public void warning(Exception e) {
 		}
@@ -52,10 +56,15 @@ public class TestScope extends TestCase {
 		}
 		
 	};
-	private void check(String fn) throws IOException {
-		InputStream in = new FileInputStream(fn);
-		NTripleTestSuite.loadRDFx(in,suppress,"http://example.org/a");
-		in.close();
+	private void check(final String fn) throws IOException {
+		
+		NTripleTestSuite.loadRDFx(new InFactory(){
+
+			public InputStream open() throws IOException {
+				return new FileInputStream(fn);
+			}
+		},suppress,"http://example.org/a",false,0);
+	//	in.close();
 	}
 
 }

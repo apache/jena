@@ -3,7 +3,7 @@
  *  (c) Copyright 2002  Hewlett-Packard Development Company, LP
  * See end of file.
  */
- package com.hp.hpl.jena.rdf.arp.test;
+package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
 import java.io.*;
 import java.util.*;
@@ -25,179 +25,237 @@ import com.hp.hpl.jena.shared.wg.URI;
  * 
  */
 class NTripleTestSuite extends WGTestSuite {
-	NTripleTestSuite(TestInputStreamFactory fact, String name,boolean b) {
+	NTripleTestSuite(TestInputStreamFactory fact, String name, boolean b) {
 		super(fact, name, b);
 	}
 
-	static  TestSuite suite(URI testDir, String d, String nm) {
-	   return new NTripleTestSuite(new TestInputStreamFactory(testDir, d), nm, true);
+	static TestSuite suite(URI testDir, String d, String nm) {
+		return new NTripleTestSuite(
+			new TestInputStreamFactory(testDir, d),
+			nm,
+			true);
 	}
 
-	static  TestSuite suite(URI testDir, URI d, String nm) {
-		return new NTripleTestSuite(new TestInputStreamFactory(testDir, d), nm, true);
+	static TestSuite suite(URI testDir, URI d, String nm) {
+		return new NTripleTestSuite(
+			new TestInputStreamFactory(testDir, d),
+			nm,
+			true);
 	}
-    
-  static class TestHandler extends ARPSaxErrorHandler implements ARPHandler, org.xml.sax.ErrorHandler {
-     TestHandler(RDFErrorHandler eh){
-     	super(eh);
-     }
-	Set anon = new HashSet();
-	Set oldAnon = new HashSet();
-	int state = 1;  // 1 begin, 2 in RDF, 3 after RDF, 4 at end-of-file.
-	int countDown = 2;
-			public void statement(AResource subj, AResource pred, AResource obj) {
-		//		System.err.println(pred.getURI());
-				if ( pred.getURI().endsWith("first")) {
-		//			System.err.println(countDown);
-		//		  if ( (--countDown)==0)
-		//		    throw new NullPointerException("ff");
-				}
-				Test.assertEquals(state,2);
-				seeing(subj);
-				seeing(obj);
+
+	static class SimulatedException extends RuntimeException {
+	}
+	static class TestHandler
+		extends ARPSaxErrorHandler
+		implements ARPHandler, org.xml.sax.ErrorHandler {
+		TestHandler(RDFErrorHandler eh) {
+			this(eh, 0);
+		}
+		TestHandler(RDFErrorHandler eh, int cnt) {
+			super(eh);
+			countDown = cnt;
+			xCountDown = cnt;
+		}
+		final int xCountDown;
+		Set anon = new HashSet();
+		Set oldAnon = new HashSet();
+		int state = 1; // 1 begin, 2 in RDF, 3 after RDF, 4 at end-of-file.
+		int countDown;
+		public void statement(AResource subj, AResource pred, AResource obj) {
+			Test.assertEquals(state, 2);
+			seeing(subj);
+			seeing(obj);
+			if (--countDown == 0)
+				throw new SimulatedException();
+		}
+
+		/**
+		 * @param subj
+		 */
+		private void seeing(AResource subj) {
+			if (subj.isAnonymous())
+				anon.add(subj);
+			Test.assertFalse("bnode reuse?", oldAnon.contains(subj));
+		}
+		/**
+		* @param subj
+		*/
+		private void seen(AResource subj) {
+			if (!anon.contains(subj))
+				Test.assertTrue(
+					"end-scope for a bnode that had not been used "
+						+ subj.getAnonymousID(),
+					anon.contains(subj));
+			anon.remove(subj);
+			oldAnon.add(subj);
+		}
+
+		public void statement(AResource subj, AResource pred, ALiteral lit) {
+			Test.assertEquals("no start RDF seen", state, 2);
+			seeing(subj);
+			if (--countDown == 0)
+				throw new SimulatedException();
+		}
+
+		public void endBNodeScope(AResource bnode) {
+			Test.assertTrue(bnode.isAnonymous());
+			switch (state) {
+				case 1 :
+					Test.fail("Missing startRDF");
+				case 2 :
+					Test.assertFalse(bnode.hasNodeID());
+					seen(bnode);
+					break;
+				case 3 :
+				case 4 :
+					Test.assertTrue(bnode.hasNodeID());
+					seen(bnode);
+					state = 4;
+					break;
+				default :
+					Test.fail("impossible - test logic error");
 			}
 
-			/**
-			 * @param subj
-			 */
-			private void seeing(AResource subj) {
-				if (subj.isAnonymous())
-				   anon.add(subj);
-				Test.assertFalse("bnode reuse?",oldAnon.contains(subj));
-			}
-			/**
-	* @param subj
-	*/
-   private void seen(AResource subj) {
-   	if (!anon.contains(subj))
-	      Test.assertTrue("end-scope for a bnode that had not been used "+subj.getAnonymousID(),anon.contains(subj));
-	   anon.remove(subj);
-	   oldAnon.add(subj);
-   }
+		}
 
-			public void statement(AResource subj, AResource pred, ALiteral lit) {
-				  Test.assertEquals("no start RDF seen",state,2);
-				  seeing(subj);
+		public void startRDF() {
+			switch (state) {
+				case 2 :
+				case 4 :
+					Test.fail("Bad state for startRDF " + state);
 			}
+			state = 2;
+		}
 
-			public void endBNodeScope(AResource bnode) {
-				Test.assertTrue(bnode.isAnonymous());
-				switch (state) {
-					case 1:
-					  Test.fail("Missing startRDF");
-					case 2:
-					  Test.assertFalse(bnode.hasNodeID());
-					  seen(bnode);
-					  break;
-					case 3:   
-					case 4:
-					   Test.assertTrue(bnode.hasNodeID());
-					   seen(bnode);
-					   state = 4;
-					   break;
-					default:
-					  Test.fail("impossible - test logic error");
-				}
-					
-			}
+		public void endRDF() {
+			Test.assertEquals(state, 2);
+			state = 3;
+		}
 
-			public void startRDF() {
-				switch (state) {
-					case 2:
-					case 4:
-					  Test.fail("Bad state for startRDF "+ state);
-				}
-				state = 2;
-			}
+		public void startPrefixMapping(String prefix, String uri) {
 
-			public void endRDF() {
-				Test.assertEquals(state,2);
-				state = 3;
-			}
+		}
 
-			public void startPrefixMapping(String prefix, String uri) {
-					
-			}
+		public void endPrefixMapping(String prefix) {
 
-			public void endPrefixMapping(String prefix) {
-					
-			}
+		}
 
-			/**
-			 * 
-			 */
-			public void atEndOfFile() {
-				// Too hard when errors
-				if (!anon.isEmpty()) {
-					Iterator it = anon.iterator();
-					while (it.hasNext())
-					  System.err.print(((AResource)it.next()).getAnonymousID()+", ");
-				}
-			  Test.assertTrue("some bnode still in scope ", //hasErrors||
-			       anon.isEmpty());
-				switch (state) {
-					case 1:
-					  Test.fail("end-of-file before anything");
-					case 2:
-					  Test.fail("did not see endRDF");
-					case 3:
-					case 4:
-					  break;
-					default:
-					  Test.fail("impossible logic error in test");
-				}
+		/**
+		 * 
+		 */
+		public void atEndOfFile() {
+			// Too hard when errors
+			if (!anon.isEmpty()) {
+				Iterator it = anon.iterator();
+				while (it.hasNext())
+					System.err.print(
+						((AResource) it.next()).getAnonymousID() + ", ");
 			}
-boolean hasErrors = false;
-		
+			Test.assertTrue("("+xCountDown+") some bnode still in scope ", //hasErrors||
+			anon.isEmpty());
+			switch (state) {
+				case 1 :
+					Test.fail("end-of-file before anything");
+				case 2 :
+					Test.fail("did not see endRDF");
+				case 3 :
+				case 4 :
+					break;
+				default :
+					Test.fail("impossible logic error in test");
+			}
+		}
+		boolean hasErrors = false;
 
-			/* (non-Javadoc)
-			 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
-			 */
-			public void error(SAXParseException exception) throws SAXException {
-				hasErrors = true;
-				super.error(exception);
-				
-			}
+		/* (non-Javadoc)
+		 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
+		 */
+		public void error(SAXParseException exception) throws SAXException {
+			hasErrors = true;
+			super.error(exception);
 
-			/* (non-Javadoc)
-			 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
-			 */
-			public void fatalError(SAXParseException exception) throws SAXException {
-				hasErrors = true;
-				super.fatalError(exception);
-				
-			}
-  	
-  }
-  
-  Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
-  throws IOException {
-  	   return loadRDFx(in,eh,base);
-  }
-	static Model loadRDFx(InputStream in, RDFErrorHandler eh, String base)
+		}
+
+		/* (non-Javadoc)
+		 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+		 */
+		public void fatalError(SAXParseException exception)
+			throws SAXException {
+			hasErrors = true;
+			super.fatalError(exception);
+
+		}
+		/**
+		 * 
+		 */
+		public int getCount() {
+			return -countDown;
+		}
+
+	}
+
+	Model loadRDF(InFactory in, RDFErrorHandler eh, String base)
+		throws IOException {
+		return loadRDFx(in, eh, base, true, 0);
+	}
+	static Model loadRDFx(
+		InFactory in,
+		RDFErrorHandler eh,
+		String base,
+		boolean wantModel,
+		int cnt)
 		throws IOException {
 		InputStream oldIn = System.in;
 		InputStream ntIn = null;
-		File ntriples = File.createTempFile("arp", ".nt");
-		PrintStream out = new PrintStream(new FileOutputStream(ntriples));
+		File ntriples = null;
+
+		PrintStream out;
+		TestHandler th;
+		if (wantModel) {
+			ntriples = File.createTempFile("arp", ".nt");
+			out = new PrintStream(new FileOutputStream(ntriples));
+			th = new TestHandler(eh);
+		} else {
+			out = new PrintStream(new OutputStream() {
+
+				public void write(int b) throws IOException {
+				}
+			});
+			th = new TestHandler(eh, cnt);
+		}
 		PrintStream oldOut = System.out;
 		try {
-			System.setIn(in);
+			System.setIn(in.open());
 			System.setOut(out);
-			TestHandler th = new TestHandler(eh);
-			NTriple.mainEh(new String[] { "-b", base, "-s" }, th,th);
+			try {
+				NTriple.mainEh(new String[] { "-b", base, "-s" }, th, th);
+			} catch (SimulatedException e) {
+				if (wantModel)
+					throw e;
+			}
 			out.close();
 			th.atEndOfFile();
-			ntIn = new FileInputStream(ntriples);
-			return loadNT(ntIn,base);
-			
+
+			if (cnt == 0) {
+				// retry with sudden death
+				for (int i = th.getCount(); i >= 1; i-=3)
+					loadRDFx(in, TestScope.suppress, base, false, i);
+			}
+			if (wantModel) {
+				ntIn = new FileInputStream(ntriples);
+				return loadNT(ntIn, base);
+			} else {
+				return null;
+			}
+
 		} finally {
+			System.in.close();
 			System.setIn(oldIn);
 			System.setOut(oldOut);
-		    if (ntIn != null)
-		       ntIn.close();
-		    if ( ntriples != null )
-		       ntriples.delete();
+			if (ntIn != null)
+				ntIn.close();
+			if (ntriples != null)
+				ntriples.delete();
 		}
 	}
 

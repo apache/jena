@@ -2,7 +2,7 @@
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: RDFTailCollection.java,v 1.3 2003-12-07 10:17:48 jeremy_carroll Exp $
+  $Id: RDFTailCollection.java,v 1.4 2003-12-08 20:21:32 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -35,11 +35,15 @@ public class RDFTailCollection extends RDFCollection {
 	 */
 	CollectionAction next(AResourceInternal head) {
 		ARPResource cell = new ARPResource(X.arp);
-		last.setPredicateObject(rest, cell, null);
-		cell.setPredicateObject(first, head, null);
-		X.arp.endLocalScope(head);
-		endLastScope();
-		last = cell;
+		try {
+			last.setPredicateObject(rest, cell, null);
+			cell.setPredicateObject(first, head, null);
+		}
+		finally {
+			X.arp.endLocalScope(head);
+			endLastScope();
+			last = cell;
+		}
 		return this;
 	}
 }

@@ -43,7 +43,7 @@ class RDFParser implements ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.11 2003-12-07 10:17:48 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.12 2003-12-08 20:21:31 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -116,16 +116,16 @@ void rdfFile(XMLContext ctxt) :     {}
    white1(false)
    
 }
-void rdfFileSub(XMLContext ctxt) :     { ARPResource r; }   
+void rdfFileSub(XMLContext ctxt) :     { ARPResource r  = null; }   
 {   
    rdf(ctxt)
  | // OR    
                             try {                           
                                        { arp.startRDF(); }
-   r = obj(ctxt)                       { arp.endLocalScope(r); 
-                                       }
+   r = obj(ctxt)                       
                             }
                             finally {
+                                arp.endLocalScope(r);
                                 arp.endRDF();
                             }
    
@@ -193,20 +193,23 @@ Token pi(boolean warnOnPi) :           { Token w; }
 
 /* [6.1] RDF  ::= ['<rdf:RDF>'] obj* ['</rdf:RDF>'] */
  
-void rdf(XMLContext ctxt) :            { ARPResource r; }
-{                            try { (
+void rdf(XMLContext ctxt) :            { ARPResource r = null; }
+{                      try { (
   <E_RDF>                              { arp.startRDF(); }
    ctxt=xmlAttrs(ctxt) 
    white() 
-   ( r = obj(ctxt)                     { arp.endLocalScope(r); }
+   (                      try { (
+     r = obj(ctxt)                    
+                          ) } finally { arp.endLocalScope(r); }
+                            
      white() 
    ) *    
    <E_END>                             
-                             ) } 
-                             catch ( ParseException e ) {
+                        ) } 
+                        catch ( ParseException e ) {
                                        error_recovery(e);
                              }
-                             finally {
+                        finally {
                                arp.endRDF();
                              }
 }
@@ -409,8 +412,12 @@ void propertyEltIdAndValue( XMLContext ctxt,ARPResource r, Token p )
                                        }
 { 
    [ reify = idAttr(ctxt) ] 
-   v = propEltValue(ctxt)              { X.createTriple(r, p, v, reify );
-                                         arp.endLocalScope(v); 
+   v = propEltValue(ctxt)              { try {
+                                           X.createTriple(r, p, v, reify );
+                                         }
+                                         finally {
+                                          arp.endLocalScope(v); 
+                                         }
                                        }
 }
 
@@ -467,10 +474,20 @@ Object propEltValue(XMLContext ctxt) : { String xml;
    <A_PARSETYPE> 
    <AV_RESOURCE> 
    ( warning() ) *                      { ptr = new ARPResource(arp); }
+                         try { (
    white() 
    ( propertyElt(ctxt,ptr) 
      white() 
    ) *                                  { return ptr; }
+                        ) }
+                        catch (ParseException e) {
+                         arp.endLocalScope(ptr);
+                         throw e;
+                        }
+                        catch (RuntimeException e) {
+                         arp.endLocalScope(ptr);
+                         throw e;
+                        }
 
  | // OR 
                                         { ptr = new ARPResource(arp); } 
@@ -587,7 +604,17 @@ Object value(XMLContext ctxt)        : { Object rslt; }
 |  // OR
    xwhite() 
    rslt = xobj(ctxt) 
+                            try { (
    xwhite()                             { return rslt; }
+                            ) }
+                            catch (ParseException pe) {
+                              arp.endLocalScope(rslt);
+                              throw pe;
+                            }
+                            catch (RuntimeException e) {
+                              arp.endLocalScope(rslt);
+                              throw e;
+                            }
 }
 
 /*

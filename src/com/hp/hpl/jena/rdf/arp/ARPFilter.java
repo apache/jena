@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: ARPFilter.java,v 1.15 2003-12-06 21:46:59 jeremy_carroll Exp $
+ * $Id: ARPFilter.java,v 1.16 2003-12-08 20:21:31 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -910,7 +910,10 @@ class ARPFilter
 	 * @param v
 	 */
 	public void endLocalScope(Object v) {
-		if (scopeHandler != nullScopeHandler && v instanceof ARPResource) {
+		
+		if (scopeHandler != nullScopeHandler 
+		  && v != null
+		  && v instanceof ARPResource) {
 			ARPResource bn = (ARPResource) v;
 			if (!bn.isAnonymous())
 				return;
@@ -923,6 +926,9 @@ class ARPFilter
 					nodeIdUserData.put(bnodeID, null);
 			} else {
 				scopeHandler.endBNodeScope(bn);
+				// TODO this should not be necessary
+				bn.unsetHasBeenUsed();
+				
 			}
 		}
 	}

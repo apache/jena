@@ -7,9 +7,11 @@
        <eg:y rdf:nodeID="y"/>
        <eg:z rdf:nodeID="z">
          <eg:p>
-           <eg:a rdf:nodeID="a">
+           <rdf:Description rdf:nodeID="XX">
+           <!--
              <eg:p>foo</eg:p>
-           </eg:a>
+           -->
+           </rdf:Description>
          </eg:p>
          <eg:xxx rdf:nodeID="xxx"/>
          <!-- sudden end in next line, note that the XML element is open -->

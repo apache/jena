@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.21 2003-11-08 17:59:41 der Exp $
+    $Id: WGTestSuite.java,v 1.22 2003-12-08 20:30:43 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -79,7 +79,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     	return ARPTests.internet;
     }
     static private boolean inDevelopment = false;
-     Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
+     Model loadRDF(InFactory in, RDFErrorHandler eh, String base)
         throws IOException {
         Model model = ModelFactory.createDefaultModel();
         JenaReader jr = new JenaReader();
@@ -91,8 +91,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         if ( base.indexOf("/xmlns/") != -1 
           || base.indexOf("/comments/") != -1 )
               jr.setProperty("embedding","true");
-        jr.read(model, in, base);
-        in.close();
+        InputStream inx = in.open();
+        jr.read(model, inx, base);
+        inx.close();
         return model;
     }
     
@@ -212,7 +213,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         });
     }
 
-    private Model loadRDF(TestInputStreamFactory fact, String file) {
+    private Model loadRDF(final TestInputStreamFactory fact, 
+      final String file) {
         Model m = null;
         String base = fact.getBase().toString();
         if (!base.endsWith("/"))
@@ -222,7 +224,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             InputStream in = fact.fullyOpen(file);
             if (in == null )
                 return null;
-            m = loadRDF(in, null, base + file);
+            in.close();
+            m = loadRDF(new InFactory(){
+            	public InputStream open() throws IOException {
+            		return fact.fullyOpen(file);
+            } }, null, base + file);
         } catch (JenaException e) {
             //	System.out.println(e.getMessage());
             throw e;
@@ -407,11 +413,18 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         Model read(Property p) throws IOException {
             Resource file = testID.getRequiredProperty(p).getResource();
             Resource t = file.getRequiredProperty(RDF.type).getResource();
-            String uri = file.getURI();
+            final String uri = file.getURI();
             if (ntriple.equals(t)) {
                 return loadNT(factory.open(uri),uri);
             } else if (rdfxml.equals(t)) {
-                return loadRDF(factory.open(uri), this, uri);
+                return loadRDF(
+                new InFactory(){
+
+					public InputStream open() throws IOException {
+						return factory.open(uri);
+					}
+                }
+                , this, uri);
             } else {
                 fail("Unrecognized file type: " + t);
             }
@@ -680,8 +693,16 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             if (!type) {
                 return loadNT(factory.open(file),file);
             } else {
-                String uri = file;
-                return loadRDF(factory.open(uri), this, uri);
+                final String uri = file;
+                return loadRDF(
+                new InFactory(){
+
+					public InputStream open() throws IOException {
+						return factory.open(uri);
+					}
+                }
+                
+                , this, uri);
             }
         }
         
