@@ -1,0 +1,315 @@
+<p>
+The grammar for the abstract syntax
+is defined in terms of the non-constant
+terminals <em>uriref</em>,
+<em>lexicalForm</em>, <em>language</em>, <em>0</em>,
+<em>1</em> and <em>naturalNumber</em> (DL only).
+There are also the following constant terminal tokens:
+<em>Functional</em>, <em>InverseFunctional</em>,
+<em>Transitive</em>,<em>Symmetric</em>, <em>Partial</em>, <em>Complete</em>,
+<em>Deprecated</em>
+and <em>Declaration</em> (DL only).
+</p>
+<p>
+A <eM>uriref</em> is an <a href=
+"http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">RDF URI reference</a>
+ as defined in RDF Concepts.
+</p>
+<p>
+A <em>language</em> is a 
+<a href="http://www.w3.org/TR/rdf-concepts/#dfn-language-identifier">language identifier</a> as defined
+in RDF Concepts.
+</p>
+<p>
+A <em>lexicalForm</em> is a <a 
+href="http://www.w3.org/TR/rdf-concepts/#dfn-lexical-form">lexical form</a>
+ as defined in RDF Concepts.
+</p>
+<p>
+A <em>naturalNumber</em> is a <a 
+href="http://www.w3.org/TR/rdf-concepts/#dfn-lexical-form">lexical form</a>
+that is in the lexical space of 
+<a href="http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger">xsd:nonNegativeInteger</a>.
+</p>
+<p>
+<em>0</em> and <em>1</em> are the first two <em>naturalNumber</em>s.
+</p>
+<p>
+Each <em>uriref</em> used in the abstract syntax appears within one of the
+ following constructs.
+</p>
+<ul>
+<li>ontologyID</li>
+<li>metaPropertyID</li>
+<li>datatypeID</li>
+<li>classID</li>
+<li>individualID</li>
+<li>dataRangeID</li>
+<li>annotationPropID</li>
+<li>dataPropID</li>
+<li>complexObjectPropID</li>
+<li>transitivePropID</li>
+</ul>
+<p>
+If a specific <em>uriref</em> is used within one of these, then
+all other occurrences of that <em>uriref</em> in a specific abstract
+syntax tree must be within the same construct.
+</p>
+<p>
+Moreover, certain <em>urirefs</em> from the RDF, RDFS, XSD and OWL namespaces
+are builtin, and must only be used in the constructs permitted below:
+</p>
+<a name="builtin-urirefs" id="builtin-urirefs"> </a>
+<table border="1">
+<thead><tr><th>Uriref</th><th>Permitted Constructs</th></thead>
+<tr>
+<td>
+rdf:type
+</td>
+<td>
+None
+</td>
+</tr>
+<tr>
+<td>
+rdf:Property
+</td>
+<td>
+None
+</td>
+</tr>
+<tr>
+<td>
+rdf:first
+</td>
+<td>
+None
+</td>
+</tr>
+<tr>
+<td>
+rdf:rest
+</td>
+<td>
+None
+</td>
+</tr>
+<tr>
+<td>
+rdf:List
+</td>
+<td>
+None
+</td>
+</tr>
+<tr>
+<td>
+rdf:XMLLiteral
+</td>
+<td>
+datatypeID
+</td>
+</tr>
+<tr>
+<td>
+rdf:_<em>NNN</em>
+</td>
+<td>
+complexObjectPropID
+</td>
+</tr>
+<tr>
+<td>
+rdfs:Literal
+</td>
+<td>
+dataRangeID
+</td>
+</tr>
+
+<tr>
+<td>
+rdfs:Resource
+</td>
+<td>
+none
+</td>
+</tr>
+<tr>
+<td>
+rdfs:Datatype
+</td>
+<td>
+none
+</td>
+</tr>
+
+
+<tr>
+<td>
+rdfs:ContainerMembershipProperty
+</td>
+<td>
+none
+</td>
+</tr>
+
+
+<tr>
+<td>
+rdfs:subClassOf
+</td>
+<td>
+none
+</td>
+</tr>
+
+<tr>
+<td>
+rdfs:subPropertyOf
+</td>
+<td>
+none
+</td>
+</tr>
+
+
+<tr>
+<td>
+rdfs:domain
+</td>
+<td>
+none
+</td>
+</tr>
+
+<tr>
+<td>
+rdfs:range
+</td>
+<td>
+none
+</td>
+</tr>
+
+<tr>
+<td>
+rdfs:label
+</td>
+<td>
+annotationPropID
+</td>
+</tr>
+
+
+<tr>
+<td>
+rdfs:comment
+</td>
+<td>
+annotationPropID
+</td>
+</tr>
+
+<tr>
+<td>
+rdfs:isDefinedBy
+</td>
+<td>
+annotationPropID
+</td>
+</tr>
+
+<tr>
+<td>
+rdfs:seeAlso
+</td>
+<td>
+annotationPropID
+</td>
+</tr>
+
+<tr>
+<td>
+xsd:<em>built-in</em>
+</td>
+<td>
+datatypeID
+</td>
+</tr>
+
+<tr>
+<td>
+owl:imports
+</td>
+<td>
+metaPropertyID
+</td>
+</tr>
+<tr>
+
+<td>
+owl:backwardCompatibleWith
+</td>
+<td>
+metaPropertyID
+</td>
+</tr>
+
+<tr>
+<td>
+owl:incompatibleWith
+</td>
+<td>
+metaPropertyID
+</td>
+</tr>
+
+<tr>
+<td>
+owl:priorVersion
+</td>
+<td>
+metaPropertyID
+</td>
+</tr>
+
+<tr>
+<td>
+owl:Thing
+</td>
+<td>
+classID
+</td>
+</tr>
+
+<tr>
+<td>
+owl:Nothing
+</td>
+<td>
+classID
+</td>
+</tr>
+
+
+<tr>
+<td>
+owl:<em>anything-else-defined-in-owl.owl</em>
+</td>
+<td>
+none
+</td>
+</tr>
+
+</table>
+
+<p>
+Only the builtin <em>uriref</em>s above may
+be used as metaPropertyIDs. In OWL Lite,
+only the builtin <em>uriref</em> above may be
+used as a dataRangeID, and only the builtin
+<em>uriref</em>s above may be used as datatypeIDs.
+(No mechanism is provided for user defined datatypes,
+even in OWL DL).
+</p>

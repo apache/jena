@@ -1,0 +1,4 @@
+
+:-['program/loader'].
+
+:- load.

@@ -1,0 +1,37 @@
+<p>
+We now consider some other blank nodes.
+</p>
+%%lemma('First Structure Reduction').
+<dd>
+If <em>g</em> is an acceptable graph
+containing a blank node <em>n</em> such that:
+<em>n</em> is of category 
+allDifferent%%dl_only(Lvl,', unnamedDataRange, description or ').
+restriction; 
+there are no triples 
+with subject <em>n</em> and object being
+a blank node;
+<em>n</em> is not the object of any 
+triple%%dl_only(Lvl,'; <em>n</em> is not the subject of a triple with predicate
+<code>owl:equivalentClass</code> or <code>owl:disjointWith</code>').
+.
+Then <em>g</em> can be reduced by removing
+all the triples involving <em>n</em>.
+</dd>
+<dt>Proof:</dt>
+<dd>
+As before, <em>h</em> is acceptable.
+<br />
+The triple tables impose significant
+structural requirements on
+all nodes satisfying the premises of this lemma.
+The table below gives an exhaustive listing of
+the possibilties, along with a corresponding directive
+from the abstract syntax.
+<br />
+As before we can modify an
+abstract syntax tree corresponding to <em>h</em>
+by adding the appropriate directive, to get an
+abstract syntax tree corresponding to <em>g</em>.
+</dd>
+</dl>

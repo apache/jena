@@ -1,0 +1,31 @@
+
+These sources build a document showing how triple
+tables correspond to the OWL Abstract Syntax, and
+a file Grammar.java in the source tree, which enocdes
+those triple tables.
+
+The file precompute.c must be compile to precompute 
+(linux) or precompute.exe (windows).
+
+SWI-Prolog is used with the commands:
+  [load].
+  compMapping.
+  gogo.
+
+
+It takes a little while.
+
+Other prologs should be usability but some porting
+would be needed.
+
+The prolog sources were in the main produced by Jeremy
+as part of the W3C work see:
+
+http://www.w3.org/2001/sw/WebOnt/syntaxTF/prolog/
+
+(you may need to cheat to get the directory listings
+e.g.)
+
+http://www.w3.org/2001/sw/WebOnt/syntaxTF/prolog/*,access*
+
+

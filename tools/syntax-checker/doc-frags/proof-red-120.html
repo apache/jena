@@ -1,0 +1,51 @@
+<p>
+We finally consider the case of a restriction or
+description compared with some other node.
+</p>
+%%lemma('Description Comparison Reduction').
+<dd>
+If <em>g</em> is an acceptable graph
+containing a blank node <em>n</em> such that:
+there is a triple <em>tr</em>
+with subject <em>n</em> and with predicate <code>owl:equivalentClass</code>
+or <code>owl:disjointWith</code>;
+<em>tr</em> has object <em>b</em>.
+Then <em>g</em> can be reduced by removing
+ <em>tr</em> to form <em>h</em>.
+</dd>
+<dt>Proof:</dt>
+<dd>
+The only triples in the triple tables
+matching <em>tr</em> are ones in which <em>n</em> is of category 
+description or restriction.
+<br />
+We note that <em>n</em> meets the <a href="triples.html#structural">structural constraints</a>
+ in <em>h</em>,
+because it meets those constraints in <em>g</em> and the deleted triple
+is not relevant to those constraints.
+Thus, as before, <em>h</em> is acceptable.
+<br />
+
+Given an abstract syntax tree <em>t</em>
+corresponding to <em>h</em>, as
+in the
+ %%linkLemma('Blank Explicit Type Reduction'). 
+we can find a 
+directive <em>d<sub>1</sub></em> in <em>t</em> that corresponds to <em>n</em>.
+Note, that since <em>g</em> is appropriate, and <em>n</em> is the subject
+of an <code>owl:equivalentClass</code> or <code>owl:disjointWith</code>
+triple, then <em>n</em> is not the object of any triple in neither
+<em>g</em> nor <em>h</em>.
+If <em>b</em> is blank, then it is a restriction or description node,
+and we similarly can find a directive  
+<em>d<sub>2</sub></em> in <em>t</em> that corresponds to <em>b</em>.
+We use the table below to look up the triple <em>tr</em>,
+and find a directive, into which we substitute
+the description or restriction <em>d<sub>1</sub></em> and either the classID uriref
+<em>b</em> or the description or restriction <em>d<sub>2</sub></em> appropriately.
+We then modify <em>t</em> by adding the new modified directive 
+and by deleting <em>d<sub>1</sub></em>,
+and if applicable <em>d<sub>2</sub></em>.
+This then corresponds to <em>g</em>.
+</dd>
+</dl>

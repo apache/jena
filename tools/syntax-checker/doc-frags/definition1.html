@@ -1,0 +1,60 @@
+
+<ol>
+<li>
+<a name="explicit-type" id="explicit-type"> </a>
+For every node of the graph
+and every URI reference used as a property or datatype
+at least one of the following holds:
+<ul>
+<li>
+It is one of the 
+<a href="syntax.html#builtin-urirefs">built-in URI references
+</a>
+from RDF, RDFS, OWL or XML Schema datatypes.
+</li>
+<li>
+It is the subject of at least one triple 
+with predicate <code>rdf:type</code>,
+and with object other than
+<code>rdf:Property</code>,
+<code>rdfs:Class</code>,
+<code>owl:FunctionalProperty</code>,
+<code>owl:DeprecatedProperty</code>,
+<code>owl:DeprecatedClass</code>.
+The objects of such triples are known as the <em>explicit
+types</em> of the subject.
+</li>
+<li>It is a literal.</li>
+</ul>
+</li>
+<li>
+<a name="one-object" id="one-object"> </a>
+No blank node occurs as the object of more than one
+triple.
+</li>
+<li>
+<a name="cycle-free" id="cycle-free"> </a>
+
+No <a href="#directed-cycle">directed cycle</a> of blank nodes
+occurs.</li>
+<li>
+<a name="list-is-object" id="list-is-object"> </a>
+Every blank node with explicit type <code>rdf:List</code>
+is the object of exactly one triple.
+</li>
+<li>
+<a name="builtin-uri" id="builtin-uri"> </a>
+Every <a href="syntax.html#builtin-urirefs">builtin uriref</a> is assigned to one of
+its listed categories, or to itself.
+</li>
+<li>
+<a name="uri-category" id="uri-category"> </a>
+
+Every other uriref is assigned to one of the following
+categories:
+<ul>
+
+
+
+
+

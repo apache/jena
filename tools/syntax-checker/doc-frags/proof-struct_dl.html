@@ -1,0 +1,51 @@
+
+<p>
+In addition, we combine
+the 
+%%linkLemma('First Structure Reduction').
+and the
+%%linkLemma('Second Structure Reduction').
+:</p>
+
+%%lemma('Structured Nodes').
+<dd>
+If an acceptable graph <em>g</em>
+contains a blank node <em>b</em> such that:
+ <em>b</em> has
+category
+allDifferent,
+%%dl_only(Lvl,'unnamedDataRange, ').
+%%dl_only(Lvl,'description, ').
+or restriction;
+<em>b</em> is not the object of any triple;
+<em>b</em> is not the subject of a
+triple with predicate <code>owl:equivalentClass</code>
+or <code>owl:disjointWith</code>;
+<em>g</em> contains no nodes of type
+ <code>rdf:List</code>;
+then <em>g</em> is reducible.
+</dd>
+<dt>Proof:</dt>
+<dd>
+From the triple tables the only possible
+blank node objects of triples with subject
+from one of these categories are various
+list categories, or a description or
+restriction node for the cases:
+<br />
+<span class="todo">add list of cases</span>
+</br />
+At most one of those cases may occur 
+by the <a href="triples.html#structural">structural constraints on blank nodes</a>,
+hence either
+
+%%linkLemma('First Structure Reduction').
+or the
+%%linkLemma('Second Structure Reduction').
+is applicable.
+</dd>
+</dl>
+
+
+
+
