@@ -5,8 +5,10 @@
      xmlns:e="http://www.example.org/dt#"
      xmlns:NS205="http://www.mozilla.org/rdf/chrome#" >
 
+<!-- Chris the reified triple below should fail the writer tests. -->
+
    <NS205:className  RDF:about="#Test610"> 
-        <NS205:dtTest RDF:datatype="http://www.w3.org/2001/XMLSchema#int">4</NS205:dtTest>
+        <NS205:dtTest RDF:ID="x" RDF:datatype="http://www.w3.org/2001/XMLSchema#int">4</NS205:dtTest>
     
     <NS205:foo> 
     <RDF:Description RDF:ID="bar">
