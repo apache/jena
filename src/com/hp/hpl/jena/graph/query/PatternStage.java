@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.19 2004-06-30 12:57:58 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.20 2004-07-12 13:40:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -104,10 +104,12 @@ public class PatternStage extends Stage
         
     private static final PatternCompiler compiler = new PatternStageCompiler();
         
-    public Pipe deliver( final Pipe result )
+    private static int count = 0;
+    
+    public synchronized Pipe deliver( final Pipe result )
         {
         final Pipe stream = previous.deliver( new BufferPipe() );
-        new Thread() { public void run() { PatternStage.this.run( stream, result ); } } .start();
+        new Thread( "PatternStage-" + ++count ) { public void run() { PatternStage.this.run( stream, result ); } } .start();
         return result;
         }
         
