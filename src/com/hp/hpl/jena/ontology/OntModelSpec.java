@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:06:44 $
+ * Last modified on   $Date: 2003-06-10 14:40:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -27,6 +27,8 @@ package com.hp.hpl.jena.ontology;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 
 /**
@@ -37,7 +39,7 @@ import com.hp.hpl.jena.reasoner.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.2 2003-06-06 11:06:44 ian_dickinson Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.3 2003-06-10 14:40:16 ian_dickinson Exp $
  */
 public class OntModelSpec {
     // Constants
@@ -47,28 +49,28 @@ public class OntModelSpec {
     //////////////////////////////////
 
     /** A specification for OWL models that are stored in memory and use the Transitive reasoner for simple entailments */
-    public static final OntModelSpec OWL_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, ReasonerRegistry.TRANSITIVE, ProfileRegistry.OWL_LANG );
+    public static final OntModelSpec OWL_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, TransitiveReasonerFactory.theInstance(), ProfileRegistry.OWL_LANG );
     
     /** A specification for OWL models that are stored in memory and use the RDFS inferencer for additional entailments */
-    public static final OntModelSpec OWL_MEM_RDFSINF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, ReasonerRegistry.RDFS, ProfileRegistry.OWL_LANG );
+    public static final OntModelSpec OWL_MEM_RDFSINF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, RDFSReasonerFactory.theInstance(), ProfileRegistry.OWL_LANG );
     
     /** A specification for OWL DL models that are stored in memory and use the Transitive reasoner for simple entailments */
-    public static final OntModelSpec OWL_DL_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, ReasonerRegistry.TRANSITIVE, ProfileRegistry.OWL_DL_LANG );
+    public static final OntModelSpec OWL_DL_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, TransitiveReasonerFactory.theInstance(), ProfileRegistry.OWL_DL_LANG );
     
     /** A specification for OWL DL models that are stored in memory and use the RDFS inferencer for additional entailments */
-    public static final OntModelSpec OWL_DL_MEM_RDFSINF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, ReasonerRegistry.RDFS, ProfileRegistry.OWL_DL_LANG );
+    public static final OntModelSpec OWL_DL_MEM_RDFSINF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, RDFSReasonerFactory.theInstance(), ProfileRegistry.OWL_DL_LANG );
     
     /** A specification for OWL Lite models that are stored in memory and use the Transitive reasoner for simple entailments */
-    public static final OntModelSpec OWL_LITE_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, ReasonerRegistry.TRANSITIVE, ProfileRegistry.OWL_LITE_LANG );
+    public static final OntModelSpec OWL_LITE_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, TransitiveReasonerFactory.theInstance(), ProfileRegistry.OWL_LITE_LANG );
     
     /** A specification for OWL Lite models that are stored in memory and use the RDFS inferencer for additional entailments */
-    public static final OntModelSpec OWL_LITE_MEM_RDFSINF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, ReasonerRegistry.RDFS, ProfileRegistry.OWL_LITE_LANG );
+    public static final OntModelSpec OWL_LITE_MEM_RDFSINF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, RDFSReasonerFactory.theInstance(), ProfileRegistry.OWL_LITE_LANG );
     
     /** A specification for DAML models that are stored in memory and use the Transitive reasoner for simple entailments */
-    public static final OntModelSpec DAML_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, ReasonerRegistry.TRANSITIVE, ProfileRegistry.DAML_LANG );
+    public static final OntModelSpec DAML_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, TransitiveReasonerFactory.theInstance(), ProfileRegistry.DAML_LANG );
     
     /** A specification for DAML models that are stored in memory and use the RDFS inferencer for additional entailments */
-    public static final OntModelSpec DAML_MEM_RDFSINF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, ReasonerRegistry.RDFS, ProfileRegistry.DAML_LANG );
+    public static final OntModelSpec DAML_MEM_RDFSINF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, RDFSReasonerFactory.theInstance(), ProfileRegistry.DAML_LANG );
     
     
     // Instance variables
@@ -89,6 +91,9 @@ public class OntModelSpec {
     /** The model maker for this specification, or null to use the default from the doc manager */
     protected ModelMaker m_maker = null;
     
+    /** The reasoner factory for creating the reasoner on demand */
+    protected ReasonerFactory m_rFactory = null;
+    
     
     // Constructors
     //////////////////////////////////
@@ -98,13 +103,13 @@ public class OntModelSpec {
      * @param maker The model maker, which will be used to construct stores for statements in the 
      * imported ontologies and the base ontology. Use null to get a default (memory) model maker.
      * @param docMgr The document manager, or null for the default document manager.
-     * @param reasoner The reasoner to use to infer additional triples in the model, or null for no reasoner
+     * @param rFactory The factory for the reasoner to use to infer additional triples in the model, or null for no reasoner
      * @param languageURI The URI of the ontology language. Required.
      */
-    public OntModelSpec( ModelMaker maker, OntDocumentManager docMgr, Reasoner reasoner, String languageURI ) {
+    public OntModelSpec( ModelMaker maker, OntDocumentManager docMgr, ReasonerFactory rFactory, String languageURI ) {
         setDocumentManager( docMgr );
         setModelMaker( maker );
-        setReasoner( reasoner );
+        setReasonerFactory( rFactory );
         
         if (languageURI == null) {
             throw new IllegalArgumentException( "Cannot create OntModelSpec with a null ontology language" );
@@ -130,7 +135,7 @@ public class OntModelSpec {
     public OntModelSpec( OntModelSpec spec ) {
         setDocumentManager( spec.getDocumentManager() );
         setModelMaker( spec.getModelMaker() );
-        setReasoner( spec.getReasoner() );
+        setReasonerFactory( spec.getReasonerFactory() );
         setLanguage( spec.getLanguage() );
     }
     
@@ -220,17 +225,45 @@ public class OntModelSpec {
      * @return The reasoner for this specification
      */
     public Reasoner getReasoner() {
+        if (m_reasoner == null && m_rFactory != null) {
+            // we need to create the reasoner for the first time
+            m_reasoner = m_rFactory.create( null );
+        }
+        
         return m_reasoner;
     }
     
     
     /**
      * <p>Set the reasoner that will be used by ontology models that conform 
-     * to this specification to compute entailments.</p>
+     * to this specification to compute entailments.
+     * <strong>Note:</strong> The reasoner is generated on demand by the reasoner
+     * factory. To prevent this spec from having a reasoner, set the reasoner factory
+     * to null, see {@link #setReasonerFactory}. 
+     * </p>
      * @param reasoner The new reasoner
      */
     public void setReasoner( Reasoner reasoner ) {
         m_reasoner = reasoner;
+    }
+    
+    
+    /**
+     * <p>Set the factory object that will be used to generate the reasoner object
+     * for this model specification. <strong>Note</strong> that the reasoner itself is cached, so setting
+     * the factory after a call to {@link #getReasoner()} will have no effect.</p>
+     * @param rFactory The new reasoner factory, or null to prevent any reasoner being used
+     */
+    public void setReasonerFactory( ReasonerFactory rFactory ) {
+        m_rFactory = rFactory;
+    }
+    
+    /**
+     * <p>Answer the current reasoner factory</p>
+     * @return The reasoner factory, or null.
+     */
+    public ReasonerFactory getReasonerFactory() {
+        return m_rFactory;
     }
     
     
