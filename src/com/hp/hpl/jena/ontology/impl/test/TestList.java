@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-20 10:57:13 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-03-12 17:17:06 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -31,7 +31,6 @@ import junit.framework.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.*;
-import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 
@@ -44,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.3 2003-02-20 10:57:13 chris-dollin Exp $
+ * @version CVS $Id: TestList.java,v 1.4 2003-03-12 17:17:06 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase

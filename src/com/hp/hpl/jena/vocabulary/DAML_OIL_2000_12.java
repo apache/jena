@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            16 Jan 2001
  * Filename           $RCSfile: DAML_OIL_2000_12.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:13:20 $
+ * Last modified on   $Date: 2003-03-12 17:17:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -50,9 +50,9 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.ontology.daml.DAMLClass;
 import com.hp.hpl.jena.ontology.daml.DAMLList;
 
-import com.hp.hpl.jena.ontology.daml.common.DAMLClassImpl;
-import com.hp.hpl.jena.ontology.daml.common.DAMLListImpl;
-import com.hp.hpl.jena.ontology.daml.common.DAMLPropertyImpl;
+import com.hp.hpl.jena.ontology.daml.impl.DAMLClassImpl;
+import com.hp.hpl.jena.ontology.daml.impl.DAMLListImpl;
+import com.hp.hpl.jena.ontology.daml.impl.DAMLPropertyImpl;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -79,7 +79,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAML_OIL_2000_12.java,v 1.2 2003-01-23 15:13:20 ian_dickinson Exp $
+ * @version CVS info: $Id: DAML_OIL_2000_12.java,v 1.3 2003-03-12 17:17:18 ian_dickinson Exp $
  */
 public class DAML_OIL_2000_12
     implements DAMLVocabulary

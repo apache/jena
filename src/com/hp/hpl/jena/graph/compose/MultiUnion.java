@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-04 17:54:59 $
+ * Last modified on   $Date: 2003-03-12 17:17:03 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.1 2003-03-04 17:54:59 ian_dickinson Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.2 2003-03-12 17:17:03 ian_dickinson Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -108,7 +108,7 @@ public class MultiUnion
      */
     public void add( Triple t ) {
         try {
-            getUpdateableGraph().add( t );
+            getBaseGraph().add( t );
         }
         catch (NullPointerException e) {
             // TODO: this should be changed to JenaException when it gets done
@@ -128,7 +128,7 @@ public class MultiUnion
      */
     public void delete( Triple t ) {
         try {
-            getUpdateableGraph().delete( t );
+            getBaseGraph().delete( t );
         }
         catch (NullPointerException e) {
             // TODO: this should be changed to JenaException when it gets done
@@ -187,7 +187,6 @@ public class MultiUnion
             return i;
         }
     }
-
 
 
     // Internal implementation methods

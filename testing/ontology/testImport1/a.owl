@@ -1,0 +1,14 @@
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/2003/03/testont#"
+  xml:base  ="http://jena.hpl.hp.com/2003/03/testont"
+>
+
+<owl:Ontology rdf:about="">
+</owl:Ontology>
+
+<Marker rdf:ID="a0" />
+
+</rdf:RDF>

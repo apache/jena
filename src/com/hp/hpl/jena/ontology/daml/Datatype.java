@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            7 Sept 2001
  * Filename           $RCSfile: Datatype.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:15:01 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-03-12 17:16:31 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -46,7 +46,7 @@ package com.hp.hpl.jena.ontology.daml;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.ontology.daml.common.DatatypeTranslator;
+import com.hp.hpl.jena.ontology.daml.impl.DatatypeTranslator;
 
 
 
@@ -62,7 +62,7 @@ import com.hp.hpl.jena.ontology.daml.common.DatatypeTranslator;
  * a given application.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: Datatype.java,v 1.1.1.1 2002-12-19 19:15:01 bwm Exp $
+ * @version CVS info: $Id: Datatype.java,v 1.2 2003-03-12 17:16:31 ian_dickinson Exp $
  */
 public interface Datatype
     extends DAMLCommon

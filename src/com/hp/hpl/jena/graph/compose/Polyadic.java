@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-04 17:54:59 $
+ * Last modified on   $Date: 2003-03-12 17:17:03 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.1 2003-03-04 17:54:59 ian_dickinson Exp $
+ * @version CVS $Id: Polyadic.java,v 1.2 2003-03-12 17:17:03 ian_dickinson Exp $
  */
 public abstract class Polyadic
     extends CompositionBase
@@ -62,7 +62,7 @@ public abstract class Polyadic
     protected List m_subGraphs = new ArrayList();
     
     /** The distinguished graph for adding to. If null, use the 0'th graph in the list. */
-    protected Graph m_designatedGraph = null;
+    protected Graph m_baseGraph = null;
     
     
     // Constructors
@@ -178,8 +178,8 @@ public abstract class Polyadic
     public void removeGraph( Graph graph ) { 
         m_subGraphs.remove( graph );
         
-        if (m_designatedGraph == graph) {
-            m_designatedGraph = null;
+        if (m_baseGraph == graph) {
+            m_baseGraph = null;
         }
     }
     
@@ -193,13 +193,13 @@ public abstract class Polyadic
      * @return The distinguished updateable graph, or null if there are no graphs 
      *         in this composition
      */
-    public Graph getUpdateableGraph() {
-        if (m_designatedGraph == null) {
+    public Graph getBaseGraph() {
+        if (m_baseGraph == null) {
             // no designated graph, so default to the first graph on the list
             return (m_subGraphs.size() == 0) ? null : ((Graph) m_subGraphs.get( 0 ));
         }
         else {
-            return m_designatedGraph;
+            return m_baseGraph;
         }
     }
 
@@ -214,13 +214,31 @@ public abstract class Polyadic
      * @exception IllegalArgumentException if graph is not one of the members of
      *             the composition
      */
-    public void setUpdateableGraph( Graph graph ) {
+    public void setBaseGraph( Graph graph ) {
         if (m_subGraphs.contains( graph )) {
-            m_designatedGraph = graph;
+            m_baseGraph = graph;
         }
         else {
             throw new IllegalArgumentException( "The updateable graph must be one of the graphs from the composition" );
         }
+    }
+    
+    
+    /**
+     * <p>
+     * Answer a list of the graphs other than the updateable (base) graph
+     * </p>
+     * 
+     * @return A list of all of the sub-graphs, excluding the base graph.
+     */
+    public List getSubGraphs() {
+        List sg = new ArrayList( m_subGraphs );
+        
+        if (getBaseGraph() != null) {
+            sg.remove( getBaseGraph() );
+        }
+        
+        return sg;
     }
     
     

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstance.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:14:52 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-03-12 17:16:32 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.ontology.daml.PropertyAccessor;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.ontology.daml.common.DatatypeTranslator;
+import com.hp.hpl.jena.ontology.daml.impl.DatatypeTranslator;
 
 
 /**
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.ontology.daml.common.DatatypeTranslator;
  * of a DAML datatype.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstance.java,v 1.1.1.1 2002-12-19 19:14:52 bwm Exp $
+ * @version CVS info: $Id: DAMLDataInstance.java,v 1.2 2003-03-12 17:16:32 ian_dickinson Exp $
  */
 public interface DAMLDataInstance
     extends DAMLCommon

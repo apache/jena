@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:14:57 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-03-12 17:16:32 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -48,8 +48,8 @@ package com.hp.hpl.jena.ontology.daml;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import com.hp.hpl.jena.ontology.daml.common.DAMLLoader;
-import com.hp.hpl.jena.ontology.daml.common.XMLDatatypeRegistry;
+import com.hp.hpl.jena.ontology.daml.impl.DAMLLoader;
+import com.hp.hpl.jena.ontology.daml.impl.XMLDatatypeRegistry;
 
 import java.util.Iterator;
 
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
  * information from all loaded ontologies.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.1.1.1 2002-12-19 19:14:57 bwm Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.2 2003-03-12 17:16:32 ian_dickinson Exp $
  */
 public interface DAMLModel
     extends Model

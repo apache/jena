@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-13 22:48:46 $
+ * Last modified on   $Date: 2003-03-12 17:16:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -35,43 +35,22 @@ package com.hp.hpl.jena.ontology;
  * Instances of the all different axiom are expected to have a property
  * (e.g. <code>owl:distinctMembers</code> defining the list of distinct
  * individuals in the ontology.  For a given vocabulary, this will be defined by
- * the {@link OntVocabulary#distinctMembers distinctMembers} entry.
+ * the {@link Profile#distinctMembers distinctMembers} entry.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.1 2003-02-13 22:48:46 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.2 2003-03-12 17:16:38 ian_dickinson Exp $
  */
 public interface AllDifferent
-    extends OntResource
+    extends Axiom
 {
     // Constants
     //////////////////////////////////
 
 
-    // Static variables
-    //////////////////////////////////
-
-
-    // Instance variables
-    //////////////////////////////////
-
-
-    // Constructors
-    //////////////////////////////////
-
-
     // External signature methods
     //////////////////////////////////
-
-
-    // Internal implementation methods
-    //////////////////////////////////
-
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
 
 
 }

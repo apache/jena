@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: ListIndexException.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-01-29 22:22:12 $
+ * Last modified on   $Date: 2003-03-12 17:16:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -20,8 +20,6 @@
 // Package
 ///////////////
 package com.hp.hpl.jena.ontology;
-
-import com.hp.hpl.jena.rdf.model.RDFException;
 
 
 // Imports
@@ -36,10 +34,10 @@ import com.hp.hpl.jena.rdf.model.RDFException;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release ($Id: ListIndexException.java,v 1.1 2003-01-29 22:22:12 ian_dickinson Exp $)
+ * @version Release ($Id: ListIndexException.java,v 1.2 2003-03-12 17:16:37 ian_dickinson Exp $)
  */
 public class ListIndexException
-    extends RDFException
+    extends OntologyException
 {
     // Constants
     //////////////////////////////////

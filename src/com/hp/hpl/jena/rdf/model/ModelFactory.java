@@ -1,14 +1,19 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.2 2003-02-03 19:11:16 der Exp $
+  $Id: ModelFactory.java,v 1.3 2003-03-12 17:17:02 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphFactory;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.impl.OntModelImpl;
+
 
 /**
     Factory provides methods for creating standard kinds of Model. This
@@ -20,6 +25,20 @@ public class ModelFactory
     /** deliver a new Model (implemented as a ModelMem, but that's secret) */
     public static Model createDefaultModel()
         { return new ModelMem(); }
+        
+    /** 
+     * <p>
+     * Answer a model that encapsulates the given graph.
+     * </p>
+     * 
+     * @param g A graph structure
+     * @return A model presenting an API view of graph g
+     */
+    public static Model createModelForGraph( Graph g ) {
+        // TODO it seems unlikely that modelmem is the right name for this operation
+        // since g could be any kind of graph - but that's the way it is right now 
+        return new ModelMem( g ); 
+    }
         
     /**
      * Return a Model through which all the RDFS entailments 
@@ -62,10 +81,87 @@ public class ModelFactory
          return new ModelMem(graph);
     }
     
+    
+    /**
+     * <p>
+     * Answer a new ontology model which will process ontologies expressed in the given language.
+     * The default (global) document manager
+     * will be used to load the ontology's included documents.
+     * </p>
+     * 
+     * @param languageURI A URI denoting the ontology language that will be used in this model
+     * @return An empty ontology model
+     * @see ProfileRegistry
+     */
+    public static OntModel createOntologyModel( String languageURI ) {
+        return createOntologyModel( languageURI, null, null, null );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer a new ontology model which will process ontologies expressed in the given language,
+     * starting with the ontology data in the given model. The default (global) document manager
+     * will be used to load the ontology's included documents.
+     * </p>
+     * 
+     * @param languageURI A URI denoting the ontology language that will be used in this model
+     * @param model An existing model to treat as an ontology model
+     * @return An ontology model containing the statements in <code>model</code>
+     * @see ProfileRegistry
+     */
+    public static OntModel createOntologyModel( String languageURI, Model model ) {
+        return createOntologyModel( languageURI, model, null, null ); 
+    }
+    
+    
+    /**
+     * <p>
+     * Answer a new ontology model which will process ontologies expressed in the given language,
+     * starting with the ontology data in the given model.
+     * </p>
+     * 
+     * @param languageURI A URI denoting the ontology language that will be used in this model
+     * @param model An existing model to treat as an ontology model, or null
+     * @param docMgr A document manager to use to load the imports closure of the ontology (if desired)
+     * @return An ontology model containing the statements in <code>model</code>
+     * @see ProfileRegistry
+     */
+    public static OntModel createOntologyModel( String languageURI, Model model, OntDocumentManager docMgr ) {
+        return createOntologyModel( languageURI, model, docMgr, null );
+    }
+
+    /**
+     * <p>
+     * Answer a new ontology model which will process ontologies expressed in the given language,
+     * starting with the ontology data in the given model.
+     * </p>
+     * 
+     * @param languageURI A URI denoting the ontology language that will be used in this model.
+     * @param model An existing model to treat as an ontology model, or null.
+     * @param docMgr A document manager to use to load the imports closure of the ontology (if desired), or null.
+     * @param graphFactory A factory for accessing the graph that imported ontologies will be added to, or null.
+     * @return An ontology model containing the statements in <code>model</code>, if any.
+     * @see ProfileRegistry
+     * @exception IllegalArgumentException if languageURI is null
+     */
+    public static OntModel createOntologyModel( String languageURI, Model model, OntDocumentManager docMgr, GraphFactory graphFactory ) {
+        if (languageURI == null) {
+            throw new IllegalArgumentException( "Cannot create an ontology model with a null languageURI" );
+        }
+        
+        // ensure we have all the helpers we need, getting defaults if necessary
+        OntDocumentManager dm = (docMgr == null) ? OntDocumentManager.getInstance() : docMgr;
+        GraphFactory gf = (graphFactory == null) ? dm.getDefaultGraphFactory() : graphFactory;
+        Model m = (model == null) ? createModelForGraph( gf.getGraph() ) : model;
+         
+        return new OntModelImpl( languageURI, m, dm, gf );
+    }
 }
     
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002-2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
