@@ -1,53 +1,38 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.9 2003-07-28 13:07:47 chris-dollin Exp $
+  $Id: NullListener.java,v 1.1 2003-07-28 13:07:47 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model.test;
+package com.hp.hpl.jena.rdf.listeners;
 
-import com.hp.hpl.jena.graph.test.*;
+import java.util.*;
+
 import com.hp.hpl.jena.rdf.model.*;
 
-import junit.framework.*;
-
 /**
-    Tests the ModelFactory code. Very skeletal at the moment. It's really
-    testing that the methods actually exists, but it doesn't check much in
-    the way of behaviour.
+    A listener that ignores everything you tell it; intended as a base class
+    or an identity element.
     
-    @author kers
+ 	@author kers
 */
-
-public class TestModelFactory extends GraphTestBase
+public class NullListener implements ModelChangedListener
     {
-    public static TestSuite suite()
-        { return new TestSuite( TestModelFactory.class ); }   
-        
-    public TestModelFactory(String name)
-        { super(name); }
-
-    public void testCreateDefaultModel()
-        {
-        Model m = ModelFactory.createDefaultModel();
-        m.close();
-        }    
-        
-    public void testRDBStuff()
-        {
-//        try { Class.forName( "com.mysql.jdbc.Driver" ); }
-////        catch (Exception e) { throw new JenaException( e ); }
-//        IDBConnection c = ModelFactory.createSimpleRDBConnection();
-//        assertNotNull( c );
-//        ModelMaker mm = ModelFactory.createModelRDBMaker( c ); 
-//        Model m1 = mm.createModel( "brujo" );
-        
-        }
-        
+    public void addedStatement( Statement s ) {}
+    public void addedStatements( Statement [] statements ) {}
+    public void addedStatements( List statements ) {}
+    public void addedStatements( StmtIterator statements ) {}
+    public void addedStatements( Model m ) {}
+    public void removedStatement( Statement s ) {}   
+    public void removedStatements( Statement [] statements ) {}
+    public void removedStatements( List statements ) {}
+    public void removedStatements( StmtIterator statements ) {}
+    public void removedStatements( Model m ) {}           
     }
+        
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002, 2003
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.9 2003-07-11 14:32:51 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.10 2003-07-28 13:07:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.rdf.listeners.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 
@@ -206,6 +207,60 @@ public class TestModelEvents extends ModelTestBase
         Model m = modelWithStatements( "NT beats S; S beats H; H beats D" );
         model.remove( m );
         SL.assertHas( new Object[] {"removeModel", m} );
+        }
+        
+    /**
+        Test that the null listener doesn't appear to do anything. Or at least
+        doesn't crash ....
+    */
+    public void testNullListener()
+        {
+        ModelChangedListener NL = new NullListener();
+        model.register( NL );
+        model.add( statement( model, "S P O " ) );
+        model.remove( statement( model, "X Y Z" ) );
+        model.add( statements( model, "a B c; d E f" ) );
+        model.remove( statements( model, "g H i; j K l" ) );
+        model.add( asIterator( statements( model, "m N o; p Q r" ) ) );
+        model.remove( asIterator( statements( model, "s T u; v W x" ) ) );
+        model.add( modelWithStatements( "leaves fall softly" ) );
+        model.remove( modelWithStatements( "water drips endlessly" ) );
+        model.add( Arrays.asList( statements( model, "xx RR yy" ) ) );
+        model.remove( Arrays.asList( statements( model, "aa VV rr" ) ) );
+        }
+        
+    public void testChangeListener()
+        {
+        ModelChangedListener CL = new ChangeListener
+        }
+ 
+ public static class TripleListener implements ModelChangedListener
+    {
+    public void addedStatement( Statement s ) {}
+    public void addedStatements( Statement [] statements ) {}
+    public void addedStatements( List statements ) {}
+    public void addedStatements( StmtIterator statements ) {}
+    public void addedStatements( Model m ) {}
+    public void removedStatement( Statement s ) {}   
+    public void removedStatements( Statement [] statements ) {}
+    public void removedStatements( List statements ) {}
+    public void removedStatements( StmtIterator statements ) {}
+    public void removedStatements( Model m ) {}           
+    }
+
+public static class WatchTripleListener extends TripleListener
+    {
+    public void addedStatement( Statement s )
+        {}
+        
+    public void removedStatement( Statement s )
+        {}
+    }
+               
+    public void testTripleListener()
+        {
+        ModelChangedListener TL = new TripleListener();    
+        
         }
     }
 

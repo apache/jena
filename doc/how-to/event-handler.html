@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>TOITLE</title>
+</head>
+<body>
+<h1>event handling in Jena 2</h1>
+
+<p>
+In Jena 2 it is possible to monitor a Model for changes,
+so that code can be run after changes are applied without
+the coding for that Model having to do anything special.
+We call these changes "events". (They have nothing to do
+with GUI events.)
+
+<p>To monitor a Model, you must <i>register</i> a 
+<i>ModelChangedListener</i>with that Model:
+
+<pre>
+    Model m = ModelFactory.createDefaultModel();
+    ModelChangedListener L = new MyListener();
+    m.register( L );
+</pre>
+
+<i>MyListener</i> must be an implementation of 
+<i>ModelChangedListener</i>, for example:
+
+<pre>
+    class MyListener implements ModelChangedListener
+        {
+        public void addedStatement( Statement s ) 
+            { System.out.println( ">> added statment " + s ); }
+        public void addedStatements( Statement [] statements ) {}
+        public void addedStatements( List statements ) {}
+        public void addedStatements( StmtIterator statements ) {}
+        public void addedStatements( Model m ) {}
+        public void removedStatement( Statement s ) {}   
+        public void removedStatements( Statement [] statements ) {}
+        public void removedStatements( List statements ) {}
+        public void removedStatements( StmtIterator statements ) {}
+        public void removedStatements( Model m ) {}   
+        }
+</pre>
+
+This listener ignores everything except the addition of single
+statements to <i>m</i>; those it prints out. The listener has
+a method for each of the ways that statements can be added to a Model:
+
+<ul>
+<li>as a single statement, Model::add(Statement)</li>
+<li>as an element of an array of statements, Model::add(Statement[])</li>
+<li>as an element of a list of statements, Model::add(List)</li>
+<li>as an interator over statements, Model::add(StmtIterator)</li>
+<li>as part of another Model, Model::add(Model)</li>
+</ul>
+
+<p>(Similarly for <i>delete</i>.)
+</p>
+
+<p>
+The listener method is called when the statement(s) have been added to
+the Model, if no exceptions have been thrown. It does not matter if the
+statement was <i>already</i> in the Model or not; it is the act of
+adding it that fires the listener. 
+
+TRANSACTION ISSUES
+
+</body>
+</html>
