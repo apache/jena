@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.81 2003-11-04 09:54:40 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.82 2003-11-10 14:47:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,7 +29,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.81 $' Date='$Date: 2003-11-04 09:54:40 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.82 $' Date='$Date: 2003-11-10 14:47:32 $'
  */
 
 public class ModelCom 
@@ -1007,20 +1007,18 @@ implements Model, PrefixMapping, ModelLock
     public boolean containsResource( RDFNode r )
         { return graph.queryHandler().containsNode( r.asNode() ); }
   
-    public boolean contains(Resource s, Property p)  {
-        ClosableIterator it = graph.find( s.asNode(), p.asNode(), null );
+    public boolean contains( Resource s, Property p )  {
+        ClosableIterator it = graph.find( asNode( s ), asNode( p ), null );
         try { return it.hasNext(); } finally { it.close(); }
     }
     
     public boolean contains( Resource s, Property p, RDFNode o )
-        { return graph.contains( s.asNode(), p.asNode(), o.asNode() ); }
+        { return graph.contains( asNode( s ), asNode( p ), asNode( o ) ); }
         
     public Statement getRequiredProperty( Resource s, Property p )  
-        {
-        Statement st = getProperty( s, p );
+        { Statement st = getProperty( s, p );
         if (st == null) throw new PropertyNotFoundException( p );
-        return st;
-        }
+        return st; }
     
     public Statement getProperty( Resource s, Property p )
         {
@@ -1030,7 +1028,7 @@ implements Model, PrefixMapping, ModelLock
         }
     
     public static Node asNode( RDFNode x )
-        { return x == null ? null : x.asNode(); }
+        { return x == null ? Node.ANY : x.asNode(); }
         
     private NodeIterator listObjectsFor( RDFNode s, RDFNode p )
         {
