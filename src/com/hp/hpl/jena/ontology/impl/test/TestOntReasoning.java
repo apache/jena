@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: TestOntReasoning.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-22 16:01:05 $
+ * Last modified on   $Date: 2003-07-31 17:49:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.5 2003-07-22 16:01:05 ian_dickinson Exp $
+ * @version CVS $Id: TestOntReasoning.java,v 1.6 2003-07-31 17:49:55 ian_dickinson Exp $
  */
 public class TestOntReasoning 
     extends TestCase
@@ -74,7 +74,7 @@ public class TestOntReasoning
     }
     
     public void testSubClassDirectTransInf1a() {
-        OntModel m = (OntModel) ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
+        OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
         
         OntClass A = m.createClass( NS + "A" );
         OntClass B = m.createClass( NS + "B" );
@@ -90,7 +90,7 @@ public class TestOntReasoning
     }
     
     public void testSubClassDirectTransInf1b() {
-        OntModel m = (OntModel) ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
+        OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
         
         OntClass A = m.createClass( NS + "A" );
         OntClass B = m.createClass( NS + "B" );
@@ -146,7 +146,7 @@ public class TestOntReasoning
     }
     
     public void testSubPropertyDirectTransInf1a() {
-        OntModel m = (OntModel) ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
+        OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
         
         OntProperty p = m.createObjectProperty( NS + "p" );
         OntProperty q = m.createObjectProperty( NS + "q" );
@@ -162,7 +162,7 @@ public class TestOntReasoning
     }
     
     public void testSubPropertyDirectTransInf1b() {
-        OntModel m = (OntModel) ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
+        OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
         
         OntProperty p = m.createObjectProperty( NS + "p" );
         OntProperty q = m.createObjectProperty( NS + "q" );

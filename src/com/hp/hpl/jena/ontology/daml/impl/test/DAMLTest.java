@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 15:30:37 $
+ * Last modified on   $Date: 2003-07-31 17:49:47 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.12 2003-07-24 15:30:37 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.13 2003-07-31 17:49:47 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -165,7 +165,6 @@ public class DAMLTest
         Resource pugh = m.getResource( "http://dickinson-i-4/daml/tests/test-instance-load.daml#pugh" );
         assertNotNull( "Resource for officer Pugh should not be null", pugh );
         DAMLInstance pughInst = (DAMLInstance) pugh.as( DAMLInstance.class );
-        assertTrue( "Resource for Pugh should be recognised as a DAML instance", pughInst instanceof DAMLInstance );
 
         // test case for bug report by Michael Sintek
         // try to ascertain the most specific class we can at load time -
@@ -302,7 +301,7 @@ public class DAMLTest
         // TallMan is an intersection of Man and TallThing
         DAMLClass tallMan = m.getDAMLClass( ns + "TallMan" );
         assertNotNull( "Class TallMan should not be null", tallMan );
-        DAMLList tm = (DAMLList) tallMan.prop_intersectionOf().getList();
+        DAMLList tm = tallMan.prop_intersectionOf().getList();
         assertNotNull( "Value of intersection should not be null", tm );
         assertEquals( "Tall man should be an intersection of size 2", 2, tm.getCount() );
 
@@ -624,7 +623,7 @@ public class DAMLTest
         assertTrue( "Remainder of list should be empty", tail2.isEmpty() );
 
         // ontologically nonsensical ... just want to test list manipulations
-        DAMLClass car = (DAMLClass) m.getDAMLClass( ns + "Car" );
+        DAMLClass car = m.getDAMLClass( ns + "Car" );
         assertNotNull( "Class Car should not be null", car );
         union.add( car );
         // DEBUG dumpModel( m.getModel() );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-30 19:16:16 $
+ * Last modified on   $Date: 2003-07-31 17:49:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.3 2003-07-30 19:16:16 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.4 2003-07-31 17:49:55 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -116,7 +116,6 @@ public class TestBugReports
         // now can we see this as an OntClass?
         OntClass c = (OntClass) owlClassRes.as( OntClass.class );
         assertNotNull( "OntClass c should not be null", c );
-        assertTrue( "c should be an ont class", c instanceof OntClass );
         
         //(OntClass) (ontModel.getProfile().CLASS()).as(OntClass.class);
 

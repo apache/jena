@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-24 15:30:37 $
+ * Last modified on   $Date: 2003-07-31 17:49:47 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.6 2003-07-24 15:30:37 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.7 2003-07-31 17:49:47 ian_dickinson Exp $
  */
 public class TestDAMLClass 
     extends DAMLTestBase
@@ -93,7 +93,6 @@ public class TestDAMLClass
                     
                     iteratorTest( A.prop_subClassOf().getAll(), new Object[] {A,B} );
                     
-                    assertTrue( "getDAMLValue instanceOf DAMLCommon", A.prop_subClassOf().getDAMLValue() instanceof DAMLCommon );
                     assertTrue( "hasValue", A.prop_subClassOf().hasValue( B ) );
                     assertTrue( "hasValue", !A.prop_subClassOf().hasValue( C ) );
                 }
@@ -119,7 +118,6 @@ public class TestDAMLClass
                     
                     iteratorTest( A.prop_disjointWith().getAll(), new Object[] {B} );
                     
-                    assertTrue( "getDAMLValue instanceOf DAMLCommon", A.prop_disjointWith().getDAMLValue() instanceof DAMLCommon );
                     assertTrue( "hasValue", A.prop_disjointWith().hasValue( B ) );
                     assertTrue( "hasValue", !A.prop_disjointWith().hasValue( C ) );
                 }
@@ -145,7 +143,6 @@ public class TestDAMLClass
                     
                     iteratorTest( A.prop_sameClassAs().getAll(), new Object[] {B} );
                     
-                    assertTrue( "getDAMLValue instanceOf DAMLCommon", A.prop_sameClassAs().getDAMLValue() instanceof DAMLCommon );
                     assertTrue( "hasValue", A.prop_sameClassAs().hasValue( B ) );
                     assertTrue( "hasValue", !A.prop_sameClassAs().hasValue( C ) );
                 }
@@ -171,7 +168,6 @@ public class TestDAMLClass
                     
                     iteratorTest( A.prop_complementOf().getAll(), new Object[] {B} );
                     
-                    assertTrue( "getDAMLValue instanceOf DAMLCommon", A.prop_complementOf().getDAMLValue() instanceof DAMLCommon );
                     assertTrue( "hasValue", A.prop_complementOf().hasValue( B ) );
                     assertTrue( "hasValue", !A.prop_complementOf().hasValue( C ) );
                 }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            17-Jun-2003
  * Filename           $RCSfile: TestDAMLProperty.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 17:11:49 $
+ * Last modified on   $Date: 2003-07-31 17:49:47 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLProperty.java,v 1.3 2003-06-17 17:11:49 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLProperty.java,v 1.4 2003-07-31 17:49:47 ian_dickinson Exp $
  */
 public class TestDAMLProperty 
     extends DAMLTestBase
@@ -98,7 +98,6 @@ public class TestDAMLProperty
                     
                     iteratorTest( p.prop_domain().getAll(), new Object[] {B} );
                     
-                    assertTrue( "getDAMLValue instanceOf DAMLCommon", p.prop_domain().getDAMLValue() instanceof DAMLCommon );
                     assertTrue( "hasValue", p.prop_domain().hasValue( B ) );
                     assertTrue( "hasValue", !p.prop_domain().hasValue( C ) );
                 }
@@ -124,7 +123,6 @@ public class TestDAMLProperty
                     
                     iteratorTest( p.prop_range().getAll(), new Object[] {B} );
                     
-                    assertTrue( "getDAMLValue instanceOf DAMLCommon", p.prop_range().getDAMLValue() instanceof DAMLCommon );
                     assertTrue( "hasValue", p.prop_range().hasValue( B ) );
                     assertTrue( "hasValue", !p.prop_range().hasValue( C ) );
                 }
@@ -150,7 +148,6 @@ public class TestDAMLProperty
                     
                     iteratorTest( p.prop_subPropertyOf().getAll(), new Object[] {q} );
                     
-                    assertTrue( "getDAMLValue instanceOf DAMLCommon", p.prop_subPropertyOf().getDAMLValue() instanceof DAMLCommon );
                     assertTrue( "hasValue", p.prop_subPropertyOf().hasValue( q ) );
                     assertTrue( "hasValue", !p.prop_subPropertyOf().hasValue( r ) );
                 }
