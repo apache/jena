@@ -5,12 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ConsumerChoicePointFrame.java,v 1.3 2003-08-27 13:09:19 andy_seaborne Exp $
+ * $Id: ConsumerChoicePointFrame.java,v 1.4 2003-10-05 15:36:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
+
+import java.util.*;
 
 /**
  * Frame in the LPInterpreter's control stack used to represent matching
@@ -23,7 +25,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-27 13:09:19 $
+ * @version $Revision: 1.4 $ on $Date: 2003-10-05 15:36:47 $
  */
 public class ConsumerChoicePointFrame extends GenericTripleMatchFrame 
                 implements LPAgendaEntry, LPInterpreterState {
@@ -34,8 +36,8 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
     /** The index in the generator's result set that we have reached so far. */
     protected int resultIndex;
     
-    /** The preserved argument registers for the pickled interpreter */
-    protected Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
+    /** The preserved permanent registers for the pickled interpreter */
+    protected Node[] pVars;
 
     /** The preserved trail variables for the picked interpreter */
     protected Node_RuleVariable[] trailVars;
@@ -69,6 +71,45 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
         generator = interpreter.getEngine().generatorFor(goal);
         generator.addConsumer(this);
         resultIndex = 0;
+    }
+    
+    /**
+     * Preserve the state of an interpreter into this frame.
+     */
+    public void preserveState(List trail) {
+        // Save the trail state
+        int trailLen = trail.size();
+        if (trailLen > trailLength) {
+            trailValues = new Node[trailLen];
+            trailVars = new Node_RuleVariable[trailLen];
+        }
+        trailLength = trailLen;
+        for (int i = 0; i < trailLen; i++) {
+            Node_RuleVariable var = (Node_RuleVariable) trail.get(i);
+            trailVars[i] = var;
+            trailValues[i] = var.getRawBoundValue();
+        }
+        // Save the permanent variables
+        Node[] currentPVars = envFrame.pVars;
+        if (currentPVars != null) {
+            if (pVars == null || pVars.length < currentPVars.length) {
+                pVars = new Node[currentPVars.length];
+            }
+            System.arraycopy(currentPVars, 0, pVars, 0, currentPVars.length);
+        }
+    }
+    
+    /**
+     * Restore the state of an interpreter from this frame
+     */
+    public void restoreState(LPInterpreter interp) {
+        interp.unwindTrail(0);
+        for (int i = 0; i < trailLength; i++) {
+            interp.bind(trailVars[i], trailValues[i]);
+        }
+        if (pVars != null) {
+            System.arraycopy(pVars, 0, envFrame.pVars, 0, pVars.length);
+        }
     }
     
     /**

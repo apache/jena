@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.5 2003-09-22 14:58:09 der Exp $
+ * $Id: RuleClauseCode.java,v 1.6 2003-10-05 15:36:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-09-22 14:58:09 $
+ * @version $Revision: 1.6 $ on $Date: 2003-10-05 15:36:47 $
  */
 public class RuleClauseCode {
     
@@ -588,7 +588,10 @@ public class RuleClauseCode {
             }
             for (int i = 0; i < fargs.length; i++) {
                 Node node = fargs[i];
-                emitBodyPut(node, i, true);
+                // We optionally force an eager dereference of variables here.
+                // We used to force this but the current builtin implementations
+                // now robust against it (the do a deref themselves anyway).
+                 emitBodyPut(node, i, true);
             }
             code[p++] = CALL_BUILTIN;
             code[p++] = (byte)fargs.length;
@@ -798,7 +801,8 @@ public class RuleClauseCode {
             String testLong = "(?P p ?C) <- (?P q ?D), (?D r xsd(?B, ?S1, ?L1)),(?P p ?E), notEqual(?D, ?E) " +
                     "(?E e xsd(?B, ?S2, ?L2)),min(?S1, ?S2, ?S3),min(?L1, ?L2, ?L3), (?C r xsd(?B, ?S3, ?L3)).";
             String test21 = "(?a p ?y) <- (?x s ?y) (?a p ?x).";
-            store.addRule(Rule.parseRule(test21));
+            String test22 = "(?C p ?D) <- (?C rb:xsdBase ?BC), (?D rb:xsdBase ?BD), notEqual(?BC, ?BD).";
+            store.addRule(Rule.parseRule(test22));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);
