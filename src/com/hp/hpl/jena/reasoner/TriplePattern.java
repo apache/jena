@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TriplePattern.java,v 1.16 2003-08-12 09:33:02 der Exp $
+ * $Id: TriplePattern.java,v 1.17 2003-08-15 16:12:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-08-12 09:33:02 $
+ * @version $Revision: 1.17 $ on $Date: 2003-08-15 16:12:11 $
  */
 public class TriplePattern implements ClauseEntry {
 
@@ -217,6 +217,17 @@ public class TriplePattern implements ClauseEntry {
         return (subject.isVariable()  || subject.equals(arg.subject))
             && (predicate.isVariable() || predicate.equals(arg.predicate))
             && (object.isVariable() || object.equals(arg.object));
+    }
+    
+    /**
+     * Test if the pattern is ground, contains no variables.
+     */
+    public boolean isGround() {
+        if (subject.isVariable() || predicate.isVariable() || object.isVariable()) return false;
+        if (Functor.isFunctor(object)) {
+            return ((Functor)object.getLiteral().getValue()).isGround();
+        }
+        return true;
     }
     
     /**
