@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.63 $
+ * Revision           $Revision: 1.64 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-23 22:47:20 $
+ * Last modified on   $Date: 2004-05-06 11:05:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.63 2004-04-23 22:47:20 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.64 2004-05-06 11:05:15 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -77,7 +77,10 @@ public class OntModelImpl
     protected Set m_imported = new HashSet();
     
     /** Query that will access nodes with types whose type is Class */
-    protected BindingQueryPlan m_individualsQueryNoInf;
+    protected BindingQueryPlan m_individualsQueryNoInf0;
+    
+    /** Query that will access nodes with types whose type is Restriction */
+    protected BindingQueryPlan m_individualsQueryNoInf1;
     
     /** Query that will access nodes that are sub-classes of Thing in this profile */
     protected BindingQueryPlan m_individualsQueryInf;
@@ -134,7 +137,8 @@ public class OntModelImpl
                         (MultiUnion) ((InfGraph) getGraph()).getRawGraph();
         
         // cache the query plan for individuals
-        m_individualsQueryNoInf = queryXTypeOfType( getProfile().CLASS() );
+        m_individualsQueryNoInf0 = queryXTypeOfType( getProfile().CLASS() );
+        m_individualsQueryNoInf1 = queryXTypeOfType( getProfile().RESTRICTION() );
         
         if (getProfile().THING() != null) {
             Query q = new Query().addMatch( Query.X, RDF.type.asNode(), getProfile().THING().asNode() );
@@ -383,8 +387,13 @@ public class OntModelImpl
         // or not a powerful reasoner (i.e. owl:Thing/daml:Thing aware) is being used with this model
         if (!(getGraph() instanceof BasicForwardRuleInfGraph) || (m_individualsQueryInf == null) || getProfile().CLASS().equals( RDFS.Class )) {
             // no inference, or we are in RDFS land, so we pick things that have rdf:type whose rdf:type is Class
-            ExtendedIterator indivI = queryFor( m_individualsQueryNoInf, null, Individual.class );
+            ExtendedIterator indivI = queryFor( m_individualsQueryNoInf0, null, Individual.class );
 
+            if (m_individualsQueryNoInf1 != null) {
+                // and things whose rdf:type is Restriction
+                indivI = indivI.andThen( queryFor( m_individualsQueryNoInf1, null, Individual.class ) );
+            }
+            
             // we also must pick resources that simply have rdf:type owl:Thing, since some individuals are asserted that way
             if (m_individualsQueryInf != null) {
                 indivI = indivI.andThen( queryFor( m_individualsQueryInf, null, Individual.class ) );
@@ -2572,11 +2581,16 @@ public class OntModelImpl
      * @return BindingQueryPlan A binding query for the X resources.
      */
     protected BindingQueryPlan queryXTypeOfType( Resource type ) {
-        Query q = new Query();
-        q.addMatch( Query.X, RDF.type.asNode(), Query.Y );
-        q.addMatch( Query.Y, RDF.type.asNode(), type.asNode() );
-        
-        return queryHandler().prepareBindings( q, new Node[] {Query.X} );
+        if (type != null) {
+            Query q = new Query();
+            q.addMatch( Query.X, RDF.type.asNode(), Query.Y );
+            q.addMatch( Query.Y, RDF.type.asNode(), type.asNode() );
+            
+            return queryHandler().prepareBindings( q, new Node[] {Query.X} );
+        }
+        else {
+            return null;
+        }
     }
     
     
