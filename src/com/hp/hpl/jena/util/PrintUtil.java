@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.11 2003-11-06 17:28:56 ian_dickinson Exp $
+ * $Id: PrintUtil.java,v 1.12 2004-03-18 10:10:54 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -17,14 +17,18 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
  * A collection of small utilites for pretty printing nodes, triples
  * and associated things. The core functionality here is a static
  * prefix map which is preloaded with known prefixes.
  * 
+ * <p>updated by Chris March 2004 to use a PrefixMapping rather than the
+ * specialised tables.
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-11-06 17:28:56 $
+ * @version $Revision: 1.12 $ on $Date: 2004-03-18 10:10:54 $
  */
 public class PrintUtil {
 
@@ -33,6 +37,8 @@ public class PrintUtil {
     
     /** The inverse prefix map */
     protected static Map nsToPrefix = new HashMap();
+    
+    protected static PrefixMapping prefixMapping = PrefixMapping.Factory.create();
     
     /** Default built in eg namespace used in testing */
     public static final String egNS = "urn:x-hp:eg/";
@@ -61,6 +67,7 @@ public class PrintUtil {
      * the print strings for resources in known namespaces.
      */
     public static void registerPrefix(String prefix, String namespace) {
+        prefixMapping.setNsPrefix( prefix, namespace );
         prefixToNS.put(prefix, namespace);
         nsToPrefix.put(namespace, prefix);
     }
@@ -70,19 +77,7 @@ public class PrintUtil {
      */
     public static String print(Node node) {
         if (node instanceof Node_URI) {
-            String uri = node.getURI();
-            int split = uri.lastIndexOf('#');
-            if (split == -1) {
-                split = uri.lastIndexOf('/');
-                if (split == -1) split = -1;
-            }
-            String ns = uri.substring(0, split+1);
-            String prefix = (String)nsToPrefix.get(ns);
-            if (prefix == null) {
-                return node.toString();
-            } else {
-                return prefix + ":" + uri.substring(split+1);
-            }
+            return node.toString( prefixMapping );
         } else if (node instanceof Node_Literal) {
             LiteralLabel ll = node.getLiteral();
             String lf = ll.getLexicalForm();
@@ -158,15 +153,15 @@ public class PrintUtil {
      * expand the prefix, otherwise return the original URI
      */
     public static String expandQname(String uri) {
-        int split = uri.indexOf(':');
-        String nsPrefix = uri.substring(0, split);
-        String localname = uri.substring(split+1);
-        String ns = (String)prefixToNS.get(nsPrefix);
-        if (ns != null) {
-            return ns + localname;
-        } else {
-            return uri;
-        }
+        String s1 = prefixMapping.expandPrefix( uri );
+//        int split = uri.indexOf(':');
+//        String nsPrefix = uri.substring(0, split);
+//        String localname = uri.substring(split+1);
+//        String ns = (String)prefixToNS.get(nsPrefix);
+//        String s2 = ns != null ? ns + localname : uri;
+//        if (!s1.equals( s2 ))
+//            System.err.println( ">> s1= " + s1 + " but s2=" + s2 );
+        return s1;
     }
     
     /**
