@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SyntaxProblem.java,v 1.2 2003-04-17 13:11:59 jeremy_carroll Exp $
+  $Id: SyntaxProblem.java,v 1.3 2003-04-18 10:45:28 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -17,12 +17,15 @@ import java.io.*;
  *
 */
 public class SyntaxProblem {
-	
+	static private Model emptyModel = ModelFactory.createDefaultModel();
 	private Graph pgraph;
 	private EnhNode pnode;
-	private int level;
+	final int level;
 	private String shortDescription;
-	
+
+	static EnhNode inEmptyModel(Node n) {
+		return ((EnhGraph)emptyModel).getNodeAs(n,RDFNode.class);
+	}
 	/**
 	 * A syntax problem with only a problemNode().
 	 * @param shortD Short description
@@ -50,7 +53,16 @@ public class SyntaxProblem {
 	 */
 	SyntaxProblem(String shortD, EnhNode en, int lvl) {
 		this(shortD, en, null, lvl );
-	}
+	}	
+	/**
+	* A syntax problem with only a problemNode().
+	* @param shortD Short description
+	* @param n The problem node
+	* @param lvl The highest level at which this is illegal.
+	*/
+   SyntaxProblem(String shortD, Node n, int lvl) {
+	   this(shortD, inEmptyModel(n), null, lvl );
+   }
 	/**
 	 * A SyntaxProblem with only a problemSubGraph().
 	 * @param shortD Short description
@@ -126,8 +138,11 @@ public class SyntaxProblem {
 				     ("^^<"+dt +">")));
 				   
 			}
-			ww.write(" in:\n");
 			m = (Model)pnode.getGraph();
+			if ( m == emptyModel )
+			  ww.write("\n");
+			else
+ 			   ww.write(" in:\n");
 		} else {
 			ww.write("Concerning sub-graph:\n");
 			m = ModelFactory.createModelForGraph(pgraph);

@@ -29,7 +29,7 @@ class CLit extends CBuiltin {
             // v must be a java.Number at this point so...
         if (!(v instanceof BigInteger) && 
             !(v instanceof BigDecimal) &&
-            ((Number)v).longValue() >= 1 &&
+            ((Number)v).longValue() >= 0 &&
         ((Number)v).longValue() <= 1) {
                 return Grammar.liteInteger;
             }

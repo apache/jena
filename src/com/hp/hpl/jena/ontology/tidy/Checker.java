@@ -47,15 +47,23 @@ import com.hp.hpl.jena.vocabulary.*;
 public class Checker extends AbsChecker {
 	private GraphFactory gf;
 	private Vector monotoneProblems = new Vector();
+	private Vector warnings = new Vector();
 
 	private Vector nonMonotoneProblems = null;
 	private int nonMonotoneLevel;
 
-	public Iterator getProblems() {
+	public Iterator getErrors() {
+		nonMonotoneLevel = Levels.Lite;
+		if ( monotoneProblems.size() > 0 )
+		  return monotoneProblems.iterator();
 		snapCheck();
+		return nonMonotoneProblems.iterator();
+	}
+	public Iterator getProblems() {
 		return new AddIterator(
-			monotoneProblems.iterator(),
-			nonMonotoneProblems.iterator());
+		   getErrors(),
+		   warnings.iterator()
+		);
 	}
 
 	private void snapCheck() {
@@ -137,6 +145,10 @@ public class Checker extends AbsChecker {
 		Graph mg = m.getGraph();
 		if ( nonMonotoneLevel <= lvl )
 		   nonMonotoneLevel = lvl + 1;
+		   
+		if ( lvl == Levels.Lite && !wantLite )
+		  return;
+		  
 		EnhNode enh = ((EnhGraph)m).getNodeAs(n,RDFNode.class);
 		Iterator it = this.hasBeenChecked.find(n,null,null);
 		while ( it.hasNext() )
@@ -167,22 +179,33 @@ public class Checker extends AbsChecker {
 				it.close();
 		}
 	}
-	private boolean wantLite = true;
+	//private boolean wantLite = true;
 
 	void addProblem(int lvl, Triple t) {
+		if ( lvl == Levels.Lite && !wantLite )
+		  return;
 		Graph min =
 			new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
-		monotoneProblems.add(
+		addProblem(
 			new SyntaxProblem(
 				"Not a " + Levels.toString(lvl) + " subgraph",
 				min,
 				lvl));
 	}
 	void addProblem(SyntaxProblem sp) {
-		monotoneProblems.add(sp);
+		switch ( sp.level ) {
+			case Levels.Warning:
+			warnings.add(sp);
+			case Levels.Lite:
+			   if (!wantLite )
+			      return;
+			default:
+			monotoneProblems.add(sp);
+			  
+		}
 	}
 	public String getSubLanguage() {
-		if ( monotoneLevel < Levels.Full )
+		if ( monotoneLevel < Levels.Full && monotoneProblems.size() == 0)
    		   snapCheck();
    		int m = monotoneLevel < nonMonotoneLevel ? nonMonotoneLevel : monotoneLevel;
 		return Levels.toString(m);
@@ -206,14 +229,18 @@ public class Checker extends AbsChecker {
 	static public void main(String argv[]) {
 		OntDocumentManager dm = new OntDocumentManager();
 		dm.setProcessImports(true);
-		//OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, null, dm);
-		Model m = ModelFactory.createDefaultModel();
-		m.read(argv[0]);
-        m.write(System.out);
-		// m.getDocumentManager();
 		GraphFactory gf = dm.getDefaultGraphFactory();
+		OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, 
+		ModelFactory.createDefaultModel()
+		, dm);
+	
+		//Model m = ModelFactory.createDefaultModel();
+		m.read(argv[0]);
+        //m.write(System.out);
+		// m.getDocumentManager();
+		Graph g = ((OntModelImpl)m).getUnionGraph();
 		Checker chk = new Checker(argv.length==2 && argv[1].equalsIgnoreCase("Lite"), gf);
-		chk.add(m.getGraph());
+		chk.add(g);
       //  System.err.println("g added.");
 		String subLang = chk.getSubLanguage();
 		System.out.println(subLang);

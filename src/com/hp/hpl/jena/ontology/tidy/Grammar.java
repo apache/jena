@@ -1,10 +1,11 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.15 2003-04-17 12:22:08 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.16 2003-04-18 10:45:28 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.Arrays;
 class Grammar {
+	static final int owlNothing = -5;
     static final int orphan = 1;
     static final int notype = 2;
     static final int cyclic = 3;
@@ -174,7 +175,7 @@ static int getBuiltinID(String uri) {
        } else if ( uri.equals("Thing") ) {
           return classID;
        } else if ( uri.equals("Nothing") ) {
-          return classID;
+          return owlNothing;
        } else if ( uri.equals("versionInfo") ) {
           return annotationPropID;
        } else if ( uri.equals("imports") ) {

@@ -2,7 +2,6 @@ package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * @author jjc
@@ -17,12 +16,22 @@ abstract class CNode extends EnhNode implements CNodeI {
 			if (n.isURI()) {
 				int type = Grammar.getBuiltinID(n.getURI());
                 switch ( type ) {
+                case Grammar.owlNothing:
+                    ((AbsChecker)eg).addProblem(
+                       new SyntaxProblem(
+                          "owl:Nothing is not in OWL Lite",
+                          n,
+                          Levels.Lite
+                       )
+                    );
+					return new CURIref(n,eg,Grammar.classID);
+                	
                 case Grammar.DisallowedVocab:
                 
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Disallowed vocabulary",
-                         inEmptyModel(n),
+                         n,
                          Levels.DL
                        )
                     );
@@ -31,7 +40,7 @@ abstract class CNode extends EnhNode implements CNodeI {
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Unrecognised OWL vocabulary",
-                         inEmptyModel(n),
+                         n,
                          Levels.Warning
                        )
                     );
@@ -40,7 +49,7 @@ abstract class CNode extends EnhNode implements CNodeI {
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Unrecognised RDF vocabulary",
-                         inEmptyModel(n),
+                         n,
                          Levels.Warning
                        )
                     );
@@ -49,7 +58,7 @@ abstract class CNode extends EnhNode implements CNodeI {
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Illadvised XSD datatype",
-                         inEmptyModel(n),
+                         n,
                          Levels.Warning
                        )
                     );
@@ -70,10 +79,6 @@ abstract class CNode extends EnhNode implements CNodeI {
 	CNode(Node n, EnhGraph eg) {
 		super(n, eg);
 	}
-    static EnhNode inEmptyModel(Node n) {
-        Model m = ModelFactory.createDefaultModel();
-        return ((EnhGraph)m).getNodeAs(n,RDFNode.class);
-    }
     AbsChecker getChecker() {
     	return (AbsChecker)getGraph();
     }
