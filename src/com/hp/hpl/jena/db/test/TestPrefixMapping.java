@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.1 2003-05-01 20:21:06 csayers Exp $
+  $Id: TestPrefixMapping.java,v 1.2 2003-05-05 11:07:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -12,8 +12,6 @@ import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
-import com.hp.hpl.jena.util.*;
-
 import junit.framework.*;
 
 /**
@@ -22,7 +20,7 @@ import junit.framework.*;
  * (Tests for the persistence of prefix maps are in TestNSPrefix).
  *
  *	@author csayers based on testGraphRDB by kers
- *	@version $Revision: 1.1 $
+ *	@version $Revision: 1.2 $
  */
 public class TestPrefixMapping extends AbstractTestPrefixMapping {
 

@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMapping.java,v 1.4 2003-05-02 15:30:38 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.5 2003-05-05 11:09:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
-
-import com.hp.hpl.jena.util.*;
 
 import java.util.*;
 

@@ -5,6 +5,7 @@
  
  package com.hp.hpl.jena.shared;
  
+ import com.hp.hpl.jena.rdf.model.*;
  import java.io.*;
 
 /**
@@ -13,7 +14,7 @@
  * @author jjc
  *
  */
-public class JenaException extends RuntimeException {
+public class JenaException extends RDFException {
 
 	/**
 	 * Constructor for JenaException.

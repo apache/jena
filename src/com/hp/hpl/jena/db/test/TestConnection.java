@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.4 2003-05-05 10:29:44 chris-dollin Exp $
+  $Id: TestConnection.java,v 1.5 2003-05-05 11:07:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -25,7 +25,6 @@ import com.hp.hpl.jena.db.*;
 import junit.framework.*;
 
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.*;
 
 public class TestConnection extends TestCase {    
         
