@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.7 2003-05-09 10:22:11 chris-dollin Exp $
+  $Id: Node.java,v 1.8 2003-05-15 15:30:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.shared.*;
 
 import org.apache.log4j.*;
 
@@ -30,8 +31,53 @@ public abstract class Node {
     static final HashMap present = new HashMap( THRESHOLD * 2 );
 
     static final Logger log = Logger.getLogger( Node.class );
-       
+
+    /**
+        The canonical instance of Node_ANY; no-one else need use the
+        constructor.
+    */       
     public static final Node ANY = new Node_ANY();
+        
+    static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    
+    /**
+        Returns a Node described by the string, primarily for testing purposes.
+        The string represents a URI, a numeric literal, a string literal, a bnode label,
+        or a variable.        
+        <ul>
+        <li> "some text" :: a string literal with that text
+        <li> digits :: a literal [OF WHAT TYPE] with that [numeric] value
+        <li> _XXX :: a bnode with an AnonId built from _XXX
+        <li> ?VVV :: a variable with name VVV
+        <li> &PPP :: to be done
+        <li> name:stuff :: the URI; name may be expanded 
+        </ul>
+        @param x the string describing the node
+        @return a node of the appropriate type with the appropriate label
+    */
+    public static Node create( String x )
+        {
+        if (x.equals( "" ))
+            throw new JenaException( "GraphTestBase::node does not accept an empty string as argument" );
+        char first = x.charAt( 0 );
+        if (first == '\'')
+            return Node.createLiteral( new LiteralLabel(  x, "en-UK", false ) );
+        if (Character.isDigit( first )) 
+            return Node.createLiteral( new LiteralLabel( x, "nn-NN", false ) );
+        if (first == '_')
+            return Node.createAnon( new AnonId( x ) );
+        if (first == '?')
+            return Node.createVariable( x.substring( 1 ) );
+        if (first == '&')
+            return Node.createURI( "q:" + x.substring( 1 ) );        
+        int colon = x.indexOf( ':' );
+        if (colon < 0)
+            return Node.createURI( "eh:" + x );
+        String prefix = x.substring( 0, colon );
+        if (prefix.equals( "rdf") )
+            return Node.createURI( RDFprefix + x.substring( colon + 1 ) );
+        return Node.createURI( x );
+        }
         
     /** make a blank node with the specified label */
     public static Node createAnon( AnonId id )
@@ -192,7 +238,7 @@ public abstract class Node {
     */
     public static Node create( NodeMaker maker, Object label )
         {
-        if (label == null) throw new RuntimeException( "Node.make: null label" );
+        if (label == null) throw new JenaException( "Node.make: null label" );
         Node node = (Node) present.get( label );
         if (node == null) node = maker.construct( label ); 
         return node;
@@ -221,9 +267,12 @@ public abstract class Node {
     	return label.hashCode();
     }
     
-    /** Return the N-Triple representation of
-     *  this node. hedgehog hack: just use the label's string.
-     */   
+
+
+    /** 
+        Return the N-Triple representation of this node. hedgehog hack: just use 
+        the label's string.
+    */   
     public String toString() {
     	return label.toString();
     }

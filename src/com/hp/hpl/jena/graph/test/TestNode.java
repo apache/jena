@@ -1,20 +1,23 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.6 2003-04-02 13:26:34 jeremy_carroll Exp $
+  $Id: TestNode.java,v 1.7 2003-05-15 15:31:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
-/**
-	@author bwm out of kers
-*/
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
 
+/**
+    @author bwm out of kers
+    Exercise nodes. Make sure that the different node types do not overlap
+    and that the test predicates work properly on the different node kinds.
+*/
 
 public class TestNode extends GraphTestBase
     {    
@@ -231,6 +234,38 @@ public class TestNode extends GraphTestBase
         // assertTrue( "remembers valued", Node.createValued( voidTriple ) == Node.createValued( voidTriple ) );
     /* */
         assertFalse( "is not confused", Node.createVariable( N ) == Node.createURI( N ) );
+        }
+        
+    /** 
+        Test that the create method does sensible things on null and ""
+    */
+    public void testCreateBadString()
+        {
+        try { Node.create( null ); fail( "must catch null argument" ); }
+        catch (NullPointerException e) {}
+        catch (JenaException e) {}
+        try { Node.create( "" ); fail("must catch empty argument" ); }
+        catch (JenaException e) {}
+        }
+        
+    /**
+        Test that anonymous nodes are created with the correct labels
+    */
+    public void testCreateAnon()
+        {
+        String A = "_xxx", B = "_yyy";
+        Node a = Node.create( A ), b = Node.create( B );
+        assertTrue( "both must be bnodes", a.isBlank() && b.isBlank() );
+        assertEquals( new AnonId( A ), a.getBlankNodeId() );
+        assertEquals( new AnonId( B ), b.getBlankNodeId() );
+        }
+        
+    public void testCreateVariable()
+        {
+        String V = "wobbly";
+        Node v = Node.create( "?" + V );
+        assertTrue( "must be a variable", v.isVariable() );
+        assertEquals( "name must be correct", V, v.getName() );
         }
     }
 

@@ -35,11 +35,10 @@ import com.hp.hpl.jena.graph.Triple;
 
 /** An RDF Statement.
  *
- * <p>A statement is also itself a resource and can be both the subject and
- * object of other statements.</p>
+ * <p>A Statement is not a Resource, but can produce a ReifiedStatement
+ * that represents it and from which the Statement can be recovered.</p>
  *
- * <p>Like other resources, a statement instance tracks which model it is
- * associated with.</p>
+ * <p>A statement instance tracks which model it is associated with.</p>
  *
  * <p>This interface provides methods supporting typed literals.  This means
  *    that methods are provided which will translate a built in type, or an
@@ -48,17 +47,11 @@ import com.hp.hpl.jena.graph.Triple;
  *    The reverse translation is also supported.  This is built in for built
  *    in types.  Factory objects, provided by the application, are used
  *    for application objects.</p>
- * <p>This interface provides methods for supporting enhanced resources.  An
- *    enhanced resource is a resource to which the application has added
- *    behaviour.  RDF containers are examples of enhanced resources built in
- *    to this package.  Enhanced resources are supported by encapsulating a
- *    resource created by an implementation in another class which adds
- *    the extra behaviour.  Factory objects are used to construct such
- *    enhanced resources.</p>
- * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-04-15 12:43:41 $
+ 
+ * @author bwm; additions by kers
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-05-15 15:31:15 $
  */
-public interface Statement  //extends Resource 
+public interface Statement 
 {
     
     /** determine whether two statements are equal.
@@ -290,7 +283,7 @@ public interface Statement  //extends Resource
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
-     *  a new statement with the new value added.</p>
+     *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
      * @return the new (S, P, o) statement.
@@ -299,7 +292,7 @@ public interface Statement  //extends Resource
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
-     *  a new statement with the new value added.</p>
+     *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
      * @return the new (S, P, o) statement.
@@ -308,7 +301,7 @@ public interface Statement  //extends Resource
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
-     *  a new statement with the new value added.</p>
+     *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
      * @return the new (S, P, o) statement.
@@ -317,7 +310,7 @@ public interface Statement  //extends Resource
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
-     *  a new statement with the new value added.</p>
+     *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
      * @return the new (S, P, o) statement.
@@ -326,7 +319,7 @@ public interface Statement  //extends Resource
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
-     *  a new statement with the new value added.</p>
+     *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
      * @throws RDFException Generic RDF exception.
      * @return the new (S, P, o) statement.
@@ -335,7 +328,7 @@ public interface Statement  //extends Resource
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
-     *  a new statement with the new value added.</p>
+     *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
      * @param wellFormed true if o is well formed XML
      * @throws RDFException Generic RDF exception.
@@ -412,7 +405,7 @@ public interface Statement  //extends Resource
     
     /**
         answer a ReifiedStatement object that embodies this Statement, has
-        the same Model, and has the given _uri_.
+        the same Model, and has the given <code>uri</code>.
     */
     ReifiedStatement createReifiedStatement( String uri );
         
