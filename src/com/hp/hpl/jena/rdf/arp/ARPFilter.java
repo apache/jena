@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   *$Id: ARPFilter.java,v 1.8 2003-04-05 21:09:09 jeremy_carroll Exp $
+   *$Id: ARPFilter.java,v 1.9 2003-04-16 15:33:54 chris-dollin Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -58,7 +58,7 @@ import java.io.*;
 import org.apache.xerces.util.EncodingMap;
 
 /**
- *
+    updates by kers to handle exporting namespace prefix maps.
  * @author  jjc
  */
 class ARPFilter
@@ -82,6 +82,41 @@ class ARPFilter
 		rdr.setErrorHandler(this);
 		setErrorHandler(new DefaultErrorHandler());
 	}
+    
+    /**
+        we store all the prefix mappings that are seen during the parse.
+        Each prefix is mapped to the *set* of all its bindings. In the nice case,
+        prefixes that are present will be bound to singleton sets.
+    */
+    private Map prefixMap = new HashMap();
+    
+    /**
+        over-ridden from XMLFilterImpl: catch a namespace prefix mapping
+        as it goes past.
+        
+        @param prefix the name of the prefix (ie the X in xmlns:X=U)
+        @param uri the uri string (ie the U)
+    */
+    public void startPrefixMapping (String prefix, String uri) throws SAXException
+        {
+        super.startPrefixMapping( prefix, uri );
+        Set uris = (Set) prefixMap.get( prefix );
+        if (uris == null) { uris = new HashSet(); prefixMap.put( prefix, uris ); }
+        uris.add( uri );
+        }
+        
+    /**
+        add the prefixes we have remembered to a supplied map x.
+        This way we don't expose our internal map to updates.
+        
+        @param x the map to be updated
+        @return the updated map
+    */
+    public Map getPrefixes( Map x )
+        { 
+        x.putAll( prefixMap ); 
+        return x;
+        }
 
 	void userWarning(ParseException e) throws SAXException {
 		getErrorHandler().warning(e.rootCause());

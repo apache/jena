@@ -1,14 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.7 2003-04-08 22:11:59 ian_dickinson Exp $
+  $Id: EnhGraph.java,v 1.8 2003-04-16 15:32:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
-
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.cache.*;
+
+import java.util.*;
 
 /**
  * <p>
@@ -63,6 +64,32 @@ public class EnhGraph
         return graph;
     }
     
+    /**
+        records the namespace mappings that have been given to this graph.
+        the map is from prefix names to sets of URI strings. In a sane map, 
+        each prefix maps to a singleton set (or null, if it's absent).
+    */
+    private Map nameSpaces = new HashMap();
+    
+    /**
+        add the entries from ns to this mapping.
+        TODO this will replace existing entries, not add to them. Fix.
+    */
+    public void addNamespaces( Map ns )
+        {
+        nameSpaces.putAll( ns );
+        }
+        
+    /**
+        get the namespace mapping as a map from prefix names to sets
+        of strings.
+    */
+    public Map getNamespaces()
+        {
+        Map result = new HashMap();
+        result.putAll( nameSpaces );
+        return result;
+        }
    
     /**
      * Set the graph that this enhanced graph is wrapping. May only be performed once.

@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.3 2003-04-10 08:58:55 chris-dollin Exp $
+  $Id: Graph.java,v 1.4 2003-04-16 15:33:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
+import java.util.*;
 
 /**
  * @author Jeremy Carroll
@@ -50,7 +52,7 @@ public interface Graph  {
 	  /** Returns an iterator over Triple.
 	   */
 	ExtendedIterator find(Node s,Node p,Node o);
-	
+    
 	/**
 	 * Compare this graph with another using the method
 	 * described in 

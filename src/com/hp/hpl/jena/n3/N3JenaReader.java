@@ -8,12 +8,13 @@ package com.hp.hpl.jena.n3;
 import com.hp.hpl.jena.rdf.model.*;
 import java.net.* ;
 import java.io.* ;
+import java.util.*;
 
 // To do: buffereing version that does the whole file before adding statements (error catcher)
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReader.java,v 1.4 2003-02-20 16:48:28 andy_seaborne Exp $
+ * @version 	$Id: N3JenaReader.java,v 1.5 2003-04-16 15:33:53 chris-dollin Exp $
  */
 
 
@@ -115,6 +116,7 @@ public class N3JenaReader implements RDFReader
 	{
 		return null ;
 	}
+
 }
 
 /*

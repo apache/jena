@@ -24,18 +24,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReader.java,v 1.3 2003-04-03 12:22:34 jeremy_carroll Exp $
+ * $Id: RDFReader.java,v 1.4 2003-04-16 15:33:55 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
 
 import java.io.Reader;
 import java.io.InputStream;
+import java.util.*;
+
 /** An <code>RDFReader</code> reads a serialized represenation of RDF,
  * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
  *
  * @author bwm
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public interface RDFReader {
 
@@ -97,4 +99,5 @@ public interface RDFReader {
 	 * @return the previous error handler
 	 */
 	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler);
+    
 }

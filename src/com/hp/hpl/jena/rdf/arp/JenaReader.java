@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: JenaReader.java,v 1.3 2003-04-07 15:04:18 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.4 2003-04-16 15:33:55 chris-dollin Exp $
  
    AUTHOR:  Jeremy J. Carroll
  */
@@ -47,9 +47,13 @@ import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.LiteralImpl;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
+
 import java.io.*;
 import java.net.*;
+
+import java.util.*;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXNotSupportedException;
@@ -105,7 +109,16 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         } catch (IOException e) {
             throw new RDFException( e);
         }
+        updateModel();
     }
+    
+    /**
+        update the model by informing it of all the namespace declarations that
+        we have seen.
+    */
+    private void updateModel()
+        { ModelCom.addNamespaces( model, arpf.getPrefixes( new HashMap() ) ); }
+        
 
     /** Converts an ARP literal into a Jena Literal.
      * @param lit The ARP literal.
@@ -233,6 +246,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         } catch (SAXException e) {
             throw new RDFException(e);
         }
+        updateModel();
     }
 
     /**
