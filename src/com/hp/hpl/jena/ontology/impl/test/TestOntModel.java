@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 08:36:18 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-07-31 20:17:36 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -31,7 +31,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import junit.framework.*;
 
 
 /**
@@ -42,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.6 2003-07-31 08:36:18 chris-dollin Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.7 2003-07-31 20:17:36 ian_dickinson Exp $
  */
 public class TestOntModel 
     extends ModelTestBase
