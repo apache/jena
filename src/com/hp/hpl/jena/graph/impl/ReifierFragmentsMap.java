@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierFragmentsMap.java,v 1.3 2004-09-17 15:23:35 chris-dollin Exp $
+ $Id: ReifierFragmentsMap.java,v 1.4 2004-09-20 14:42:19 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.graph.impl.Fragments.Slot;
+import com.hp.hpl.jena.graph.impl.SimpleReifierFragmentsMap.Slot;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -24,20 +24,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 public interface ReifierFragmentsMap
     {
     /**
-         Answer the Fragments bound to the node <code>tag</code>, or null if there 
-         are none.
-     */
-    public abstract Fragments getFragments( Node tag );
-
-    /**
          Remove (all the) Fragments bound to the node <code>key</code>.
     */
     public abstract void removeFragments( Node key );
-
-    /**
-         update the map with (node -> fragment); return the fragment.
-     */
-    public abstract Fragments putFragments( Node key, Fragments value );
 
     /**
          Answer all the quadlets in this map which match <code>tm</code>.
@@ -52,7 +41,7 @@ public interface ReifierFragmentsMap
     /**
          Answer a Slot which can handle this fragment, or null if it isn't a quadlet.
     */
-    public abstract Slot getFragmentSelector( Triple fragment );
+    public abstract SimpleReifierFragmentsMap.Slot getFragmentSelector( Triple fragment );
 
     /**
      * @param s
@@ -60,7 +49,31 @@ public interface ReifierFragmentsMap
      * @param object
      * @param reified
      */
-    public abstract void putAugmentedTriple( Slot s, Node tag, Node object, Triple reified );
+    public abstract void putAugmentedTriple( SimpleReifierFragmentsMap.Slot s, Node tag, Node object, Triple reified );
+
+    /**
+     * @param s
+     * @param fragment
+     * @param tag
+     * @param object
+     * @return
+     */
+    public abstract Triple reifyCompleteQuad( SimpleReifierFragmentsMap.Slot s, Triple fragment, Node tag, Node object );
+
+    /**
+     * @param s
+     * @param tag
+     * @param already
+     * @param fragment
+     * @return
+     */
+    public abstract Triple removeFragment( SimpleReifierFragmentsMap.Slot s, Node tag, Triple already, Triple fragment );
+
+    /**
+     * @param tag
+     * @return
+     */
+    public abstract boolean hasFragments( Node tag );
     }
 
 /*

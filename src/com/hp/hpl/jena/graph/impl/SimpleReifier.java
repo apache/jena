@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.34 2004-09-20 07:10:52 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.35 2004-09-20 14:42:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -80,24 +80,33 @@ public class SimpleReifier implements Reifier
         reifiy a triple _t_ with tag _tag_. If a different triple is already
         reified under _tag_, throw an AlreadyReifiedException.
     */
-    public Node reifyAs( Node tag, Triple t )
+    public Node reifyAs( Node tag, Triple toReify )
     	{
         Triple existing = (Triple) tripleMap.getTriple( tag );
-        Fragments partial = fragmentsMap.getFragments( tag );
         if (existing != null)
-            { if (!t.equals( existing )) throw new AlreadyReifiedException( tag ); }
-        else if (partial == null)
-            tripleMap.putTriple( tag, t );
+            { if (!toReify.equals( existing )) throw new AlreadyReifiedException( tag ); }
         else
-            { // TODO
-            graphAddQuad( parent, tag, t );
-            Triple t2 = getTriple( tag );
-            if (t2 == null) throw new CannotReifyException( tag );
-            }
-        if (concealing == false) graphAddQuad( parent, tag, t );
+            reifyNewTriple( tag, toReify );
+        if (concealing == false) graphAddQuad( parent, tag, toReify );
         return tag; 
     	}
         
+    /**
+     * @param tag
+     * @param toReify
+     * @param partial
+     */
+    protected void reifyNewTriple( Node tag, Triple toReify )
+        {
+        if (fragmentsMap.hasFragments( tag ))           
+            {
+            graphAddQuad( parent, tag, toReify );
+            if (tripleMap.getTriple( tag ) == null) throw new CannotReifyException( tag );
+            }
+        else
+            tripleMap.putTriple( tag, toReify );
+        }
+
     /**
         If n is bound to the triple t, remove that triple. If we're not concealing reification 
         quadlets, we need to remove them from the parent graph too.
@@ -120,7 +129,7 @@ public class SimpleReifier implements Reifier
         {
         if (intercepting)
             {
-            Fragments.Slot s = fragmentsMap.getFragmentSelector( fragment );  
+            SimpleReifierFragmentsMap.Slot s = fragmentsMap.getFragmentSelector( fragment );  
             if (s == null)
                 return false;
             else     
@@ -139,54 +148,38 @@ public class SimpleReifier implements Reifier
      * @param s
      * @param fragment
      */
-    protected void addFragment( Fragments.Slot s, Triple fragment )
+    protected void addFragment( SimpleReifierFragmentsMap.Slot s, Triple fragment )
         {
         Node tag = fragment.getSubject(), object = fragment.getObject();
         Triple reified = tripleMap.getTriple( tag );
-        if (reified == null)
-            {
-            Fragments partial = fragmentsMap.getFragments( tag );
-            if (partial == null) fragmentsMap.putFragments( tag, partial = new Fragments( tag ) );
-            partial.add( s, object );
-            if (partial.isComplete())
-                {
-                tripleMap.putTriple( fragment.getSubject(), partial.asTriple() );
-                fragmentsMap.removeFragments( fragment.getSubject() );
-                }
-            }
-        else
-            {
-            if (s.clashedWith( fragmentsMap, object, reified )) 
-                tripleMap.removeTriple( tag, reified );
-//            if (s.clashesWith( fragmentsMap, object, reified ))
-//                {
-//                tripleMap.removeTriple( tag, reified );
-//                fragmentsMap.putAugmentedTriple( s, tag, object, reified );
-//                }
-            }
+        if (reified == null) 
+            updateFragments( s, fragment, tag, object );
+        else if (s.clashedWith( fragmentsMap, object, reified )) 
+            tripleMap.removeTriple( tag, reified );
         }
 
-    public boolean handledRemove( Triple t )
+    /**
+     * @param s
+     * @param fragment
+     * @param tag
+     * @param object
+     */
+    private void updateFragments( SimpleReifierFragmentsMap.Slot s, Triple fragment, Node tag, Node object )
+        {
+        Triple t = fragmentsMap.reifyCompleteQuad( s, fragment, tag, object );
+        if (t instanceof Triple) tripleMap.putTriple( fragment.getSubject(), t );
+        }
+
+    public boolean handledRemove( Triple fragment )
         {
         if (intercepting)
             {
-            Fragments.Slot s = fragmentsMap.getFragmentSelector( t );  
+            SimpleReifierFragmentsMap.Slot s = fragmentsMap.getFragmentSelector( fragment );  
             if (s == null)
                 return false;
             else     
                 {
-                Fragments fs = getFragment( t );
-                fs.remove( s, t.getObject() );
-                if (fs.isComplete()) 
-                    {
-                    tripleMap.putTriple( t.getSubject(), fs.asTriple() );
-                    fragmentsMap.removeFragments( t.getSubject() );
-                    }
-                else 
-                    {
-                    tripleMap.removeTriple( t.getSubject() );
-                    if (fs.isEmpty()) fragmentsMap.removeFragments( t.getSubject() );
-                    }
+                removeFragment( s, fragment );
                 return concealing;
                 }
             }
@@ -194,19 +187,20 @@ public class SimpleReifier implements Reifier
             return false;
         }
                   
-    private Fragments getFragment( Triple t )
+    /**
+     * @param s
+     * @param fragment
+     */
+    private void removeFragment( SimpleReifierFragmentsMap.Slot s, Triple fragment )
         {
-        Node s = t.getSubject();
-        Triple already = (Triple) tripleMap.getTriple( s );
-        Fragments partial = fragmentsMap.getFragments( s );
-        return
-            already != null ? explode( s, already )
-            : partial == null ? fragmentsMap.putFragments( s, new Fragments( s ) )
-            : (Fragments) partial;
-        }
-        
-    private Fragments explode( Node s, Triple t )
-        { return fragmentsMap.putFragments( s, new Fragments( s, t ) ); }
+        Node tag = fragment.getSubject();
+        Triple already = (Triple) tripleMap.getTriple( tag );
+        Triple complete = fragmentsMap.removeFragment( s, tag, already, fragment );
+        if (complete == null)
+            tripleMap.removeTriple( tag );
+        else
+            tripleMap.putTriple( tag, complete );
+        }        
 
     public Graph getHiddenTriples()
         { return style == ReificationStyle.Standard ? Graph.emptyGraph : getReificationTriples(); }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.6 2004-09-17 15:23:35 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.7 2004-09-20 14:42:19 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -9,11 +9,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.Fragments.Slot;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDF.Nodes;
 
 /**
     SimpleReifierFragmentsMap - a map from nodes to the incompleteb(or 
@@ -23,6 +21,27 @@ import com.hp.hpl.jena.vocabulary.RDF.Nodes;
 */
 public class SimpleReifierFragmentsMap implements ReifierFragmentsMap 
     {
+    
+    public static abstract class Slot 
+        { 
+        int which; 
+        Slot( int n ) 
+            { which = n; }
+        
+        public abstract boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified );
+        
+        public boolean clashedWith( ReifierFragmentsMap map, Node n, Triple reified )
+            {
+            if (clashesWith( map, n, reified ))
+                {
+                map.putAugmentedTriple( this, reified.getSubject(), n, reified );
+                return true;
+                }
+            else
+                return false;
+            }
+        }
+
     protected Map forwardMap = HashUtils.createMap();
     
     public Fragments getFragments( Node tag )
@@ -34,7 +53,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     /**
     update the map with (node -> fragment); return the fragment.
     */
-    public Fragments putFragments( Node key, Fragments value )
+    protected Fragments putFragments( Node key, Fragments value )
         {
         forwardMap.put( key, value );
         return value;
@@ -87,21 +106,60 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         given a triple t, see if it's a reification triple and if so return the internal seelctor;
         oterwise return null.
     */ 
-    public Fragments.Slot getFragmentSelector( Triple t )
+    public SimpleReifierFragmentsMap.Slot getFragmentSelector( Triple t )
         {
         Node p = t.getPredicate();
-        Fragments.Slot x = (Fragments.Slot) Fragments.selectors.get( p );
+        SimpleReifierFragmentsMap.Slot x = (SimpleReifierFragmentsMap.Slot) Fragments.selectors.get( p );
         if (x == null || (p.equals( RDF.Nodes.type ) && !t.getObject().equals( RDF.Nodes.Statement ) ) ) return null;
         return x;
         }
 
-    public void putAugmentedTriple( Slot s, Node tag, Node object, Triple reified )
+    public void putAugmentedTriple( SimpleReifierFragmentsMap.Slot s, Node tag, Node object, Triple reified )
         {
         Fragments partial = new Fragments( tag, reified );
         partial.add( s, object );
         putFragments( tag, partial );
         }
     
+    public Triple reifyCompleteQuad( SimpleReifierFragmentsMap.Slot s, Triple fragment, Node tag, Node object )
+        {       
+        Fragments partial = getFragments( tag );
+        if (partial == null) putFragments( tag, partial = new Fragments( tag ) );
+        partial.add( s, object );
+        if (partial.isComplete())
+            {
+            removeFragments( fragment.getSubject() );
+            return partial.asTriple();
+            }
+        else
+            return null;
+        }
+
+    public Triple removeFragment( SimpleReifierFragmentsMap.Slot s, Node tag, Triple already, Triple fragment )
+        {
+        Fragments partial = getFragments( tag );
+        Fragments fs = (already != null ? explode( tag, already )
+            : partial == null ? putFragments( tag, new Fragments( tag ) )
+            : (Fragments) partial);
+        fs.remove( s, fragment.getObject() );
+        if (fs.isComplete())
+            {
+            Triple result = fs.asTriple();
+            removeFragments( tag );
+            return result;
+            }
+        else
+            {
+            if (fs.isEmpty()) removeFragments( tag );
+            return null;
+            }
+        }
+    
+    private Fragments explode( Node s, Triple t )
+        { return putFragments( s, new Fragments( s, t ) ); }
+
+    public boolean hasFragments( Node tag )
+        { return getFragments( tag ) != null; }
     }
 
 /*
