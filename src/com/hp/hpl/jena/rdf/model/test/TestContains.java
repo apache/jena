@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestContains.java,v 1.1 2003-04-15 09:55:29 chris-dollin Exp $
+  $Id: TestContains.java,v 1.2 2003-04-15 11:31:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -26,7 +26,8 @@ public class TestContains extends ModelTestBase
         {
         Model m = modelWithStatements( facts );
         RDFNode r = m.createResource( resource );
-        assertTrue( "spoo", modelWithStatements( facts ).containsResource( r ) == yes );
+        if (modelWithStatements( facts ).containsResource( r ) != yes)
+            fail( "[" + facts + "] should" + (yes ? "" : " not") + " contain " + resource );
         }
         
     public void testContains()
@@ -40,11 +41,11 @@ public class TestContains extends ModelTestBase
         testContains( true, "x R y", "x" );
         testContains( true, "a P b", "P" );
         testContains( true, "i  Q  j", "j" );
-        testContains( true, "x R y; a P b, i Q j", "y" );
+        testContains( true, "x R y; a P b; i Q j", "y" );
     /* */
-        testContains( true, "x R y; a P b, i Q j", "y" );
-        testContains( true, "x R y; a P b, i Q j", "R" );
-        testContains( true, "x R y; a P b, i Q j", "a" );
+        testContains( true, "x R y; a P b; i Q j", "y" );
+        testContains( true, "x R y; a P b; i Q j", "R" );
+        testContains( true, "x R y; a P b; i Q j", "a" );
         }
     }
 

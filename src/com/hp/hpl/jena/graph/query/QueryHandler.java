@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryHandler.java,v 1.3 2003-03-05 10:12:43 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.4 2003-04-15 11:30:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -53,6 +53,11 @@ public interface QueryHandler
     	underlying graph; nulls count as wildcards.
     */
     public ExtendedIterator subjectsFor( Node p, Node o );
+    
+    /**
+        true iff the graph contains a triple in which n appears somewhere.
+    */
+    public boolean containsNode( Node n );
     }
 
 /*

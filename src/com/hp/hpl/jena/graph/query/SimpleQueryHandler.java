@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.3 2003-03-14 13:37:44 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.4 2003-04-15 11:30:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -74,10 +74,24 @@ public class SimpleQueryHandler implements QueryHandler
         while (it.hasNext()) objects.add( ((Triple) it.next()).getSubject() );
 		return WrappedIterator.create( objects.iterator() );
 		}
+        
+    /**
+        this is a simple-minded implementation of containsNode that uses find
+        up to three times to locate the node. Almost certainly particular graphs
+        will be able to offer better query-handlers ...
+    */
+    public boolean containsNode( Node n )
+        {
+        return 
+            graph.find( n, null, null ).hasNext()
+            || graph.find( null, n, null ).hasNext()
+            || graph.find( null, null, n ).hasNext()
+            ;
+        }
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
