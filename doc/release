@@ -37,25 +37,25 @@ javadoc/
 EOF
 )
 
-## STYLE=$(cat <<EOF
-## styles/site.css
-## styles/usermanual.css
-## styles/tutorial.css
-## EOF
-## )
-## 
-## #images/JenaLogo.png
-## IMAGES=$(cat <<EOF
-## images/JenaLogoSimple.png
-## images/rdf_w3c_icon.gif
-## images/sflogo-type1.png
-## EOF
-## )
+STYLE=$(cat <<EOF
+styles/site.css
+styles/usermanual.css
+styles/tutorial.css
+EOF
+)
+
+#images/JenaLogo.png
+IMAGES=$(cat <<EOF
+images/JenaLogoSimple.png
+images/rdf_w3c_icon.gif
+images/sflogo-type1.png
+EOF
+)
 
 # Copy to a release ara, them copy all to SourceForge
 
 cp $PAGES   ~/WWW/Jena/WebSite
-## cp $STYLE   ~/WWW/Jena/WebSite/styles
+cp $STYLE   ~/WWW/Jena/WebSite/styles
 ## cp $IMAGES  ~/WWW/Jena/WebSite/images
 
 # Need to skip CVS directories ...
