@@ -1,4 +1,4 @@
-// $ANTLR 2.7.2: "n3.g" -> "N3AntlrLexer.java"$
+// $ANTLR 2.7.2: "src/com/hp/hpl/jena/n3/n3.g" -> "N3AntlrLexer.java"$
 
 package com.hp.hpl.jena.n3 ;
 import antlr.TokenStreamRecognitionException ;

@@ -14,4 +14,8 @@ x:a2 :b1 "v3" , "v4" .
 
 x:a2 :b2 "a" , "b" ; :b3 "a", "b".
 
+# Null property lists
+x:a3 :p1 "z1" ; :p2 "z2" ; .
 
+# Null object list
+x:a3 :p "z1" , "z2" , .

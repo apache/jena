@@ -20,3 +20,10 @@
     
     <http://never.net/a2>     <file:///base/rdf-test-01.n3#b3> "b" .
     
+    <http://never.net/a3>     <file:///base/rdf-test-01.n3#p1>  "z1" .
+
+    <http://never.net/a3>     <file:///base/rdf-test-01.n3#p2>  "z2" .
+
+    <http://never.net/a3>     <file:///base/rdf-test-01.n3#p>   "z1" .
+
+    <http://never.net/a3>     <file:///base/rdf-test-01.n3#p>   "z2" .

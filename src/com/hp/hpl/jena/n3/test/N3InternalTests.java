@@ -11,7 +11,7 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.10 2004-07-01 10:15:44 andy_seaborne Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.11 2004-07-31 13:42:37 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
@@ -137,10 +137,15 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test("a:subj a:prop a:d, a:e.")) ;
 		addTest(new Test("a:subj a:prop a:d, '123'.")) ;
 		addTest(new Test("a:subj a:prop '123', a:e.")) ;
-
+        addTest(new Test("a:subj a:prop '123',.")) ;            // Null object list        
+        addTest(new Test("a:subj a:prop '123', '456', .")) ;    // Null object list        
+        
 		// Property lists
 		addTest(new Test("a:subj a:p1 a:v1 ;  a:p2 a:v2 .")) ;
     	addTest(new Test("a:subj a:p1 a:v1, a:v2 ;  a:p2 a:v2 ; a:p3 'v4' ,'v5' .")) ;
+        addTest(new Test("a:subj a:p1 a:v1; .")) ;              // Null property list
+        addTest(new Test("a:subj a:p1 a:v1; a:v2; .")) ;        // Null property list
+        
 		
 		// anon nodes
 		addTest(new Test("[a:prop a:val].")) ;
@@ -255,9 +260,9 @@ public class N3InternalTests extends TestSuite
         
         Test(String s, boolean leaveStoppingPoint)
         {
-            // Some ealier Eclipse versions have problems with comma in CV Stest names. 
-			super("N3 Internal test: "+(s!=null?s.replace(',','_'):"<skipped test>")) ;
-            //super("N3 Internal test: "+(s!=null?s:"<skipped test>")) ;
+            // Some earlier Eclipse versions have problems with comma in CVS test names. 
+			// super("N3 Internal test: "+(s!=null?s.replace(',','_'):"<skipped test>")) ;
+            super("N3 Internal test: "+(s!=null?s:"<skipped test>")) ;
 			testString = s ; 
 			if ( VERBOSE )
 				handler = new N3EventPrinter(pw) ;

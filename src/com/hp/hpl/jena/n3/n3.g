@@ -185,7 +185,7 @@ subject
 propertyList![AST subj]
 	: NAME_OP! anonnode[subj] propertyList[subj]
 	| propValue[subj] (SEMI propertyList[subj])?
-	| 		// void : allows for [ :a :b ].
+	| 		// void : allows for [ :a :b ] and empty list "; .".
 	;
 
 propValue [AST subj]
@@ -200,7 +200,9 @@ subjectList![AST oldSub, AST prop]
 
 objectList! [AST subj, AST prop]
 	: obj:item { emitQuad(subj,prop,#obj) ; }
-		(COMMA objectList[subj, prop])? ;
+		(COMMA objectList[subj, prop])?
+    | // Allows for empty list ", ."
+    ;
 
 
 // Node, or path which evaluates to a node.

@@ -1,4 +1,4 @@
-// $ANTLR 2.7.2: "n3.g" -> "N3AntlrParser.java"$
+// $ANTLR 2.7.2: "src/com/hp/hpl/jena/n3/n3.g" -> "N3AntlrParser.java"$
 
 package com.hp.hpl.jena.n3 ;
 import antlr.TokenStreamRecognitionException ;
@@ -732,19 +732,45 @@ public N3AntlrParser(ParserSharedInputState state) {
 		AST objectList_AST = null;
 		AST obj_AST = null;
 		
-		item();
-		obj_AST = (AST)returnAST;
-		if ( inputState.guessing==0 ) {
-			emitQuad(subj,prop,obj_AST) ;
-		}
-		{
 		switch ( LA(1)) {
-		case COMMA:
+		case QNAME:
+		case KW_THIS:
+		case STRING:
+		case LBRACK:
+		case LCURLY:
+		case LPAREN:
+		case NUMBER:
+		case URIREF:
+		case UVAR:
 		{
-			AST tmp21_AST = null;
-			tmp21_AST = astFactory.create(LT(1));
-			match(COMMA);
-			objectList(subj, prop);
+			item();
+			obj_AST = (AST)returnAST;
+			if ( inputState.guessing==0 ) {
+				emitQuad(subj,prop,obj_AST) ;
+			}
+			{
+			switch ( LA(1)) {
+			case COMMA:
+			{
+				AST tmp21_AST = null;
+				tmp21_AST = astFactory.create(LT(1));
+				match(COMMA);
+				objectList(subj, prop);
+				break;
+			}
+			case SEP:
+			case SEMI:
+			case RBRACK:
+			case RCURLY:
+			{
+				break;
+			}
+			default:
+			{
+				throw new NoViableAltException(LT(1), getFilename());
+			}
+			}
+			}
 			break;
 		}
 		case SEP:
@@ -757,7 +783,6 @@ public N3AntlrParser(ParserSharedInputState state) {
 		default:
 		{
 			throw new NoViableAltException(LT(1), getFilename());
-		}
 		}
 		}
 		returnAST = objectList_AST;
