@@ -1,0 +1,5 @@
+# Test query for transitive reasoner
+# List (C1,subClassOf,*)
+####################################
+<http://www.hpl.hp.com/semweb/2003/eg#C1> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <var:x> .
+

@@ -1,0 +1,5 @@
+# Test query for transitive reasoner
+# List (a,p,*)
+####################################
+<http://www.hpl.hp.com/semweb/2003/eg#a> <http://www.hpl.hp.com/semweb/2003/eg#p> <var:x>.
+
