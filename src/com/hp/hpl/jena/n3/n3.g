@@ -516,10 +516,11 @@ LNAME: XNAME ;
 // Use lookahead as the DOT character is also the statement separator/terminator
 // protected so parser uses THING to get these items, having checked that
 // it isn't a QNAME
+// Maybe split into INTEGER and DOUBLE using lookahead.
 protected
 NUMBER:  ('+'|'-')? ('0'..'9')+
 		 ((DOT ('0'..'9')) => DOT ('0'..'9')+)?
-         ('e' ('+'|'-')? ('0'..'9')+)? ;
+         (('e'|'E') ('+'|'-')? ('0'..'9')+)? ;
 
 STRING: ( STRING1 | STRING2 ) ;
 

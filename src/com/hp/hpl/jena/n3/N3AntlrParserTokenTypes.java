@@ -1,4 +1,4 @@
-// $ANTLR : "n3.g" -> "N3AntlrParser.java"$
+// $ANTLR 2.7.2: "n3.g" -> "N3AntlrParser.java"$
 
 package com.hp.hpl.jena.n3 ;
 

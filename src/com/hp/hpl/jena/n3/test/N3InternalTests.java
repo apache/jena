@@ -11,7 +11,7 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.9 2003-12-01 13:20:28 andy_seaborne Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.10 2004-07-01 10:15:44 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
@@ -205,6 +205,16 @@ public class N3InternalTests extends TestSuite
         addTest(new Test("a:subj a:prop '123'^^xsd:integer .")) ;
         addTest(new Test("a:subj a:prop '123'^^<uri> .")) ;
         addTest(new Test("a:subj a:prop '<tag>text</tag>'^^rdf:XMLLiteral .")) ;
+        
+        // Numbers
+        addTest(new Test("a:subj a:prop 123 .")) ;
+        // addTest(new Test("a:subj a:prop 123.")) ; Illegal N3
+        addTest(new Test("a:subj a:prop 123.1 .")) ;
+        addTest(new Test("a:subj a:prop -123.1 .")) ;
+        addTest(new Test("a:subj a:prop 123.1e3 .")) ;
+        addTest(new Test("a:subj a:prop 123.1e-3 .")) ;
+        addTest(new Test("a:subj a:prop 123.1E3 .")) ;
+        addTest(new Test("a:subj a:prop 123.1E-3 .")) ;
 
         // Language tags
         addTest(new Test("a:subj a:prop 'text'@en .")) ;

@@ -22,7 +22,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.22 2004-06-14 18:57:40 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.23 2004-07-01 10:15:43 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -478,6 +478,76 @@ public class N3JenaWriterCommon implements RDFWriter
 
         return formatURI(r.getURI()) ;
     }
+
+    protected String formatLiteral(Literal literal)
+    {
+        String datatype = literal.getDatatypeURI() ;
+        String lang = literal.getLanguage() ;
+    	String s = literal.getLexicalForm() ;
+    
+        if ( datatype != null )
+        {
+            // Special form we know how to handle?
+            // Assume valid text
+            if ( datatype.equals(XSD.integer.getURI()) )
+            {
+                try {
+                    new java.math.BigInteger(s) ;
+                    return s ;
+                } catch (NumberFormatException nfe) {}
+                // No luck.  Continue.
+                // Continuing is always safe.
+            }
+                
+            if ( datatype.equals(XSD.xdouble.getURI()) )
+            {
+                // Must have an '.' or 'e' or 'E'
+                if ( s.indexOf('.') >= 0 || 
+                     s.indexOf('e') >= 0 ||
+                     s.indexOf('E') >= 0 )
+                {
+                    try {
+                        Double.parseDouble(s) ;
+                        return s ;
+                    } catch (NumberFormatException nfe) {}
+                    // No luck.  Continue.
+                }
+            }
+        }
+        // Format the text - with escaping.
+        StringBuffer sbuff = new StringBuffer() ;
+        boolean singleQuoteLiteral = true ;
+        
+        String quoteMarks = "\"" ;
+        
+        // Things that force the use of """ strings
+        if ( s.indexOf("\n") != -1 ||
+             s.indexOf("\r") != -1 ||
+             s.indexOf("\f") != -1 )
+        {
+            quoteMarks = "\"\"\"" ;
+            singleQuoteLiteral = false ;
+        }
+        
+        sbuff.append(quoteMarks);
+        string(sbuff, s, singleQuoteLiteral) ;
+        sbuff.append(quoteMarks);
+    
+        // Format the language tag 
+        if ( lang != null && lang.length()>0)
+        {
+            sbuff.append("@") ;
+            sbuff.append(lang) ;
+        }
+        
+        // Format the datatype
+        if ( datatype != null )
+        {
+            sbuff.append("^^") ;
+            sbuff.append(formatURI(datatype)) ;
+        }
+        return sbuff.toString() ;
+    }
     
     protected String formatProperty(Property p)
     {
@@ -497,7 +567,6 @@ public class N3JenaWriterCommon implements RDFWriter
             return "<>" ;
 
 		// Try for a prefix and write as qname.  Find the longest if several.
-        // TODO
         // Possible optimization: split URI and have URI=> ns: map.
         // Ordering prefixes by length, then first hit is better.
         // 
@@ -572,74 +641,6 @@ public class N3JenaWriterCommon implements RDFWriter
     }
     
     final static String WS = "\n\r\t" ;
-
-	protected String formatLiteral(Literal literal)
-	{
-        String datatype = literal.getDatatypeURI() ;
-        String lang = literal.getLanguage() ;
-		String s = literal.getLexicalForm() ;
-
-        if ( datatype != null )
-        {
-            // Special form we know how to handle?
-            // Assume valid text
-            if ( datatype.equals(XSD.integer.getURI()) )
-            {
-                try {
-                    new java.math.BigInteger(s) ;
-                    return s ;
-                } catch (NumberFormatException nfe) {}
-                // No luck.  Continue.
-                // Continuing is always safe.
-            }
-                
-            if ( datatype.equals(XSD.xdouble.getURI()) )
-            {
-                // Must have an '.' or 'e'
-                if ( s.indexOf('.') >= 0 || s.indexOf('e') >= 0 )
-                {
-                    try {
-                        Double.parseDouble(s) ;
-                        return s ;
-                    } catch (NumberFormatException nfe) {}
-                    // No luck.  Continue.
-                }
-            }
-        }
-        // Format the text - with escaping.
-        StringBuffer sbuff = new StringBuffer() ;
-        boolean singleQuoteLiteral = true ;
-        
-        String quoteMarks = "\"" ;
-        
-        // Things that force the use of """ strings
-        if ( s.indexOf("\n") != -1 ||
-             s.indexOf("\r") != -1 ||
-             s.indexOf("\f") != -1 )
-        {
-            quoteMarks = "\"\"\"" ;
-            singleQuoteLiteral = false ;
-        }
-        
-        sbuff.append(quoteMarks);
-        string(sbuff, s, singleQuoteLiteral) ;
-        sbuff.append(quoteMarks);
-
-        // Format the language tag 
-        if ( lang != null && lang.length()>0)
-        {
-            sbuff.append("@") ;
-            sbuff.append(lang) ;
-        }
-        
-        // Format the datatype
-        if ( datatype != null )
-        {
-            sbuff.append("^^") ;
-            sbuff.append(formatURI(datatype)) ;
-        }
-        return sbuff.toString() ;
-	}
 
 	protected static void string(StringBuffer sbuff, String s, boolean singleQuoteLiteral)
     {
