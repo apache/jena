@@ -12,6 +12,7 @@ import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdql.*;
+import com.hp.hpl.jena.shared.BrokenException;
 
 import java.util.*;
 
@@ -114,12 +115,47 @@ public class Checker extends AbsChecker {
 		 
 		 /*
 		  * Getting harder ...
-		  * We first find non-cyclic orphaned unnamed individuals,
-		  * mark those as non-cyclic, then check the remaining cyclic
-		  * nodes and then unmark the non-cyclic orphaned unnamed individuals
+		  * We could optimise by first find non-cyclic orphaned unnamed 
+		  * individuals,
+		  * mark those as non-cyclic - but that's too much like hardwork.
+		  * 
+		  * We check the potentially cyclic
+		  * nodes.
 		  */
+		  Iterator it =
+		  asGraph().find(Node.ANY,Vocab.cyclicState,Node.ANY);
+		  List list = new Vector();
+		  while ( it.hasNext() )
+		    list.add(it.next());
+		  asGraph().getBulkUpdateHandler().delete(list);
+		  check(CategorySet.cyclicSets, new NodeAction() {
+			public void apply(Node n){
+			// If this is a description then it's busted.
+			  CNodeI cn = getCNode(n);
+			  if (
+			  Q.intersect(Grammar.descriptionsX,CategorySet.getSet(cn.getCategories()))
+			 || Q.intersect(Grammar.restrictionsX,CategorySet.getSet(cn.getCategories())) ) {
+
+				nonMonProblem("Cyclic blank owl:Class or owl:Restriction",n);
+			 }
+			 
+			 if (
+			 Q.intersect(Grammar.listsX,CategorySet.getSet(cn.getCategories()))
+			 ) {
+
+			   nonMonProblem("Cyclic rdf:List",n);
+			}
+			
+			// If this is an individual then we have to check it.
+			
+			if ( 
+			Q.member(Grammar.unnamedIndividual,CategorySet.getSet(cn.getCategories()))
+			) {
+              isCyclic((CBlank)cn,n);
+		   }
+			}
+		  }, m);
 		 
-			// TODO unnamed individual cycle 
 			/*
 			* Hardest (well exlcuding Hamiltonian paths)
 			* Check the disjointUnion blank nodes
@@ -131,6 +167,31 @@ public class Checker extends AbsChecker {
 		}
 	}
 	
+	private boolean isCyclic( CBlank blk, Node n ){
+		int st = blk.getCyclicState();
+		switch ( st ) {
+			case CBlank.Checking:
+			blk.setCyclicState(CBlank.IsCyclic);
+			nonMonProblem("Cyclic unnamed individual",n);
+			case CBlank.IsCyclic:
+			  return true;
+			case CBlank.Undefined:
+			  blk.setCyclicState(CBlank.Checking);
+			  Triple t = blk.get(2);
+			  boolean rslt;
+			  if ( t == null )
+			     rslt = false;
+			  else
+			    rslt = isCyclic( (CBlank)getCNode(t.getSubject()), n);
+			  blk.setCyclicState( rslt ? CBlank.IsCyclic : CBlank.NonCyclic );
+			  return rslt;
+			case CBlank.NonCyclic:
+			  return false;
+			default:
+			  throw new BrokenException("Impossible case in switch.");
+		}
+		   
+	}
 	private void check(Q q,NodeAction a, Model m){
 		Query rdql = q.asRDQL();
 		rdql.setSource(m);

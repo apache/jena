@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.9 2003-09-25 16:01:52 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.10 2003-09-29 16:14:20 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -77,6 +77,13 @@ class CategorySet implements Comparable {
 	boolean test(int all[]){
 		return all[0]==Grammar.orphan
 		  && ( intersect(Grammar.restrictionsX,all)
+		  || intersect(Grammar.descriptionsX,all) );
+	} 
+};	
+
+   static final Q descSets = new Q() {
+	boolean test(int all[]){
+		return ( intersect(Grammar.restrictionsX,all)
 		  || intersect(Grammar.descriptionsX,all) );
 	} 
 };

@@ -19,6 +19,7 @@ class Vocab {
     static final Node objectOfTriple = Node.createURI(NameSpace+"objectOfTriple");
 	static final Node firstPart = Node.createURI(NameSpace+"firstPart");
 	static final Node secondPart = Node.createURI(NameSpace+"secondPart");
+	static final Node cyclicState = Node.createURI(NameSpace+"cyclicState");
     
 }
 

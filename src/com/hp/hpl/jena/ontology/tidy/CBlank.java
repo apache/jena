@@ -35,7 +35,16 @@ class CBlank extends OneTwoImpl implements Blank {
 		      setCategories(Grammar.blank,false);
 	}
 	
-
+	int getCyclicState() {
+		return getIntAttribute(Vocab.cyclicState, Undefined);
+	}
+	static final int Checking = 1;
+	static final int Undefined = 0;
+	static final int IsCyclic = 2;
+	static final int NonCyclic = 3;
+    void setCyclicState(int st) {
+    	setIntAttribute(Vocab.cyclicState,st);
+    }
 }
 
 

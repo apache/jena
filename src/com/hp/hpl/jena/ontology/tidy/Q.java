@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Q.java,v 1.2 2003-08-27 13:04:44 andy_seaborne Exp $
+  $Id: Q.java,v 1.3 2003-09-29 16:14:20 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.rdql.*;
@@ -52,7 +52,7 @@ abstract class Q {
 	}
 	abstract boolean test(int c[]);
 
-	final boolean member(int m, int a[]) {
+	static final boolean member(int m, int a[]) {
 		return Arrays.binarySearch(a, m) >= 0;
 	}
 	final boolean subset(int a[], int b[]) {
@@ -61,7 +61,7 @@ abstract class Q {
 				return false;
 		return true;
 	}
-	final boolean intersect(int a[], int b[]) {
+	static final boolean intersect(int a[], int b[]) {
 		for (int i = 0; i < a.length; i++)
 			if (member(a[i], b))
 				return true;
