@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-02 14:50:29 $
+ * Last modified on   $Date: 2004-01-30 21:15:03 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.25 2003-09-02 14:50:29 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.26 2004-01-30 21:15:03 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -938,14 +938,18 @@ public class schemagen {
             Statement candidate = i.nextStatement();
 
             if (candidate.getObject() instanceof Resource) {
-                String uri = ((Resource) candidate.getObject()).getURI();
-
-                for (Iterator j = m_includeURI.iterator();  j.hasNext(); ) {
-                    if (uri.startsWith( (String) j.next() )) {
-                        // the subject of the sentence has a type that's on our include list
-                        writeValue( candidate.getSubject(), template, "Resource", "createResource", "_INSTANCE" );
-
-                        break;
+                Resource candObj = candidate.getResource();
+                
+                if (!candObj.isAnon()) {
+                    String uri = candObj.getURI();
+                    
+                    for (Iterator j = m_includeURI.iterator();  j.hasNext(); ) {
+                        if (uri.startsWith( (String) j.next() )) {
+                            // the subject of the sentence has a type that's on our include list
+                            writeValue( candidate.getSubject(), template, "Resource", "createResource", "_INSTANCE" );
+    
+                            break;
+                        }
                     }
                 }
             }
