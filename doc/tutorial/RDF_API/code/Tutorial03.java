@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Tutorial03.java,v 1.2 2003-06-27 08:19:15 chris-dollin Exp $
+  $Id: Tutorial03.java,v 1.3 2003-07-08 07:38:38 chris-dollin Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /** Tutorial 3 Statement attribute accessor methods
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-27 08:19:15 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-07-08 07:38:38 $'
  */
 public class Tutorial03 extends Object {
     public static void main (String args[]) {
@@ -21,45 +21,38 @@ public class Tutorial03 extends Object {
         String givenName    = "John";
         String familyName   = "Smith";
         String fullName     = givenName + " " + familyName;
-        
-        try {
-            // create an empty model
-            Model model = ModelFactory.createDefaultModel();
+        // create an empty model
+        Model model = ModelFactory.createDefaultModel();
 
-            // create the resource
-            //   and add the properties cascading style
-            Resource johnSmith 
-              = model.createResource(personURI)
-                     .addProperty(VCARD.FN, fullName)
-                     .addProperty(VCARD.N, 
-                                  model.createResource()
-                                       .addProperty(VCARD.Given, givenName)
-                                       .addProperty(VCARD.Family, familyName));
+        // create the resource
+        //   and add the properties cascading style
+        Resource johnSmith 
+          = model.createResource(personURI)
+                 .addProperty(VCARD.FN, fullName)
+                 .addProperty(VCARD.N, 
+                              model.createResource()
+                                   .addProperty(VCARD.Given, givenName)
+                                   .addProperty(VCARD.Family, familyName));
+        
+        // list the statements in the graph
+        StmtIterator iter = model.listStatements();
+        
+        // print out the predicate, subject and object of each statement
+        while (iter.hasNext()) {
+            Statement stmt      = iter.nextStatement();         // get next statement
+            Resource  subject   = stmt.getSubject();   // get the subject
+            Property  predicate = stmt.getPredicate(); // get the predicate
+            RDFNode   object    = stmt.getObject();    // get the object
             
-            // list the statements in the graph
-            StmtIterator iter = model.listStatements();
-            
-            // print out the predicate, subject and object of each statement
-            while (iter.hasNext()) {
-                Statement stmt      = iter.nextStatement();         // get next statement
-                Resource  subject   = stmt.getSubject();   // get the subject
-                Property  predicate = stmt.getPredicate(); // get the predicate
-                RDFNode   object    = stmt.getObject();    // get the object
-                
-                System.out.print(subject.toString());
-                System.out.print(" " + predicate.toString() + " ");
-                if (object instanceof Resource) {
-                    System.out.print(object.toString());
-                } else {
-                    // object is a literal
-                    System.out.print(" \"" + object.toString() + "\"");
-                }
-                
-                System.out.println(" .");
+            System.out.print(subject.toString());
+            System.out.print(" " + predicate.toString() + " ");
+            if (object instanceof Resource) {
+                System.out.print(object.toString());
+            } else {
+                // object is a literal
+                System.out.print(" \"" + object.toString() + "\"");
             }
-            
-        } catch (Exception e) {
-            System.out.println("Failed: " + e);
+            System.out.println(" .");
         }
     }
 }

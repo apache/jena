@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Tutorial01.java,v 1.2 2003-06-27 08:19:15 chris-dollin Exp $
+  $Id: Tutorial01.java,v 1.3 2003-07-08 07:38:38 chris-dollin Exp $
 */
 
 
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /** Tutorial 1 creating a simple model
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-27 08:19:15 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-07-08 07:38:38 $'
  */
 
 public class Tutorial01 extends Object {
@@ -21,19 +21,14 @@ public class Tutorial01 extends Object {
     static String fullName     = "John Smith";
     
       public static void main (String args[]) {
-        try {
-            // create an empty model
-            Model model = ModelFactory.createDefaultModel();
+        // create an empty model
+        Model model = ModelFactory.createDefaultModel();
 
-           // create the resource
-           Resource johnSmith = model.createResource(personURI);
+       // create the resource
+       Resource johnSmith = model.createResource(personURI);
 
-          // add the property
-          johnSmith.addProperty(VCARD.FN, fullName);
-
-        } catch (Exception e) {
-            System.out.println("Failed: " + e);
-        }
+      // add the property
+      johnSmith.addProperty(VCARD.FN, fullName);
       }
 }
 

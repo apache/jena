@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Tutorial11.java,v 1.2 2003-06-27 08:19:15 chris-dollin Exp $
+  $Id: Tutorial11.java,v 1.3 2003-07-08 07:38:38 chris-dollin Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -12,44 +12,39 @@ import java.io.PrintWriter;
 /** Tutorial 11 - more on literals
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-27 08:19:15 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-07-08 07:38:38 $'
  */
 public class Tutorial11 extends Object {
     
       public static void main (String args[]) {
-        try {
-            // create an empty graph
-            Model model = ModelFactory.createDefaultModel();
+        // create an empty graph
+        Model model = ModelFactory.createDefaultModel();
 
-           // create the resource
-           Resource r = model.createResource();                                     
+       // create the resource
+       Resource r = model.createResource();                                     
 
-          // add the property
-          r.addProperty(RDFS.label, model.createLiteral("chat", "en"))
-           .addProperty(RDFS.label, model.createLiteral("chat", "fr"))
-           .addProperty(RDFS.label, model.createLiteral("<em>chat</em>", "em",
-                                                                         true));
-          
-          // write out the graph
-          model.write(new PrintWriter(System.out));
-          System.out.println();
-          
-          // create an empty graph
-          model = ModelFactory.createDefaultModel();
+      // add the property
+      r.addProperty(RDFS.label, model.createLiteral("chat", "en"))
+       .addProperty(RDFS.label, model.createLiteral("chat", "fr"))
+       .addProperty(RDFS.label, model.createLiteral("<em>chat</em>", "em",
+                                                                     true));
+      
+      // write out the graph
+      model.write(new PrintWriter(System.out));
+      System.out.println();
+      
+      // create an empty graph
+      model = ModelFactory.createDefaultModel();
 
-           // create the resource
-           r = model.createResource();                                     
+       // create the resource
+       r = model.createResource();                                     
 
-          // add the property
-          r.addProperty(RDFS.label, "11")
-           .addProperty(RDFS.label, 11);
-          
-          // write out the graph
-          model.write( System.out, "N-TRIPLE");
-          
-        } catch (Exception e) {
-            System.out.println("Failed: " + e);
-        }
+      // add the property
+      r.addProperty(RDFS.label, "11")
+       .addProperty(RDFS.label, 11);
+      
+      // write out the graph
+      model.write( System.out, "N-TRIPLE");
       }
 }
 

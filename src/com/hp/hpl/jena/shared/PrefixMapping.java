@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMapping.java,v 1.11 2003-06-20 12:27:40 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.12 2003-07-08 07:38:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -65,6 +65,14 @@ public interface PrefixMapping
         @return the most recent URI bound to that prefix name, null if none
     */
     String getNsPrefixURI( String prefix );
+    
+    /**
+        Answer the prefix for the given URI, or null if there isn't one.
+        
+        @param uri the uri whose prefix is to be found
+        @return the prefix mapped to that uri, or null if there isn't one
+    */
+    String getNsURIPrefix( String uri );
     
     /**
         Return a copy of the internal mapping from names to URI strings. Updating

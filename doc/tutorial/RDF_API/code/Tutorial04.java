@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Tutorial04.java,v 1.2 2003-06-27 08:19:15 chris-dollin Exp $
+  $Id: Tutorial04.java,v 1.3 2003-07-08 07:38:38 chris-dollin Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /** Tutorial 4 - create a model and write it in XML form to standard out
  *
  * @author  bwm - updated by Kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-27 08:19:15 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-07-08 07:38:38 $'
  */
 public class Tutorial04 extends Object {
     
@@ -29,27 +29,21 @@ public class Tutorial04 extends Object {
         String givenName    = "John";
         String familyName   = "Smith";
         String fullName     = givenName + " " + familyName;
-        
-        try {
-            // create an empty model
-            Model model = ModelFactory.createDefaultModel();
+        // create an empty model
+        Model model = ModelFactory.createDefaultModel();
 
-            // create the resource
-            //   and add the properties cascading style
-            Resource johnSmith 
-              = model.createResource(personURI)
-                     .addProperty(VCARD.FN, fullName)
-                     .addProperty(VCARD.N, 
-                                  model.createResource()
-                                       .addProperty(VCARD.Given, givenName)
-                                       .addProperty(VCARD.Family, familyName));
-            
-            // now write the model in XML form to a file
-            model.write(System.out);
-          
-        } catch (Exception e) {
-            System.out.println("Failed: " + e);
-        }
+        // create the resource
+        //   and add the properties cascading style
+        Resource johnSmith 
+          = model.createResource(personURI)
+                 .addProperty(VCARD.FN, fullName)
+                 .addProperty(VCARD.N, 
+                              model.createResource()
+                                   .addProperty(VCARD.Given, givenName)
+                                   .addProperty(VCARD.Family, familyName));
+        
+        // now write the model in XML form to a file
+        model.write(System.out);
     }
 }
 

@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.53 $' Date='$Date: 2003-06-20 15:18:51 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.54 $' Date='$Date: 2003-07-08 07:38:38 $'
  */
 
 public class ModelCom 
@@ -893,7 +893,10 @@ implements Model, ModelI, PrefixMapping, ModelLock
         
     public String getNsPrefixURI( String prefix ) 
         { return getPrefixMapping().getNsPrefixURI( prefix ); }
-        
+
+    public String getNsURIPrefix( String uri )
+        { return getPrefixMapping().getNsURIPrefix( uri ); }
+                
     public Map getNsPrefixMap()
         { return getPrefixMapping().getNsPrefixMap(); }
         

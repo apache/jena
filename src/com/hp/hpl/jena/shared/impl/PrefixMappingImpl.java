@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.9 2003-06-19 15:51:01 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.10 2003-07-08 07:38:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -116,6 +116,12 @@ public class PrefixMappingImpl implements PrefixMapping
     public Map getNsPrefixMap()
         { return new HashMap( map ); }
         
+    public String getNsURIPrefix( String uri )
+        {
+        Map.Entry e = findMapping( uri, false );
+        return e == null ? null : (String) e.getKey();
+        }
+        
     /**
         Expand a prefixed URI. There's an assumption that any URI of the form
         Head:Tail is subject to mapping if Head is in the prefix mapping. So, if
@@ -140,6 +146,7 @@ public class PrefixMappingImpl implements PrefixMapping
     public String toString()
         { return "pm:" + map; }
         
+
     /**
         Compress the URI using the prefix mapping. This version of the code looks
         through all the maplets and checks each candidate prefix URI for being a
@@ -149,15 +156,30 @@ public class PrefixMappingImpl implements PrefixMapping
     */
     public String usePrefix( String uri )
         {
+        Map.Entry e = findMapping( uri, true );
+        return e == null ? uri : e.getKey() + ":" + uri.substring( ((String) e.getValue()).length() );
+        }
+        
+    /**
+        Answer a map entry in which the value is an initial substring of <code>uri</code>.
+        If <code>partial</code> is false, then the value must equal <code>uri</code>.
+        
+        Does a linear search of the entire map, so not terribly efficient for large maps.
+        
+        @param uri the value to search for
+        @param true if the match can be any leading substring, false for exact match
+        @return some entry (k, v) such that uri starts with v [equal for partial=false]
+    */
+    private Map.Entry findMapping( String uri, boolean partial )
+        {
         Iterator it = map.entrySet().iterator();
         while (it.hasNext())
             {
             Map.Entry e = (Map.Entry) it.next();
             String ss = (String) e.getValue();
-            int where = uri.indexOf( ss );
-            if (where == 0) return e.getKey() + ":" + uri.substring( ss.length() );
+            if (uri.startsWith( ss ) && (partial || ss.length() == uri.length())) return e;
             } 
-        return uri; 
+        return null;         
         }
     }
 

@@ -32,7 +32,7 @@
 			<li>Models in Jena 1 were created using new on the model class.
 			With Jena 2 there is factory for creating new models
 			com.hp.hpl.jena.rdf.model.ModelFactory. Use that instead of new.
-			If for some reason you don't want to do that, the memory model
+			If for some reason you cannot do that, the memory model
 			class has moved to com.hp.hpl.jena.mem.</li>
 		</ul>
 		
@@ -83,6 +83,7 @@
 			which arose from having mutable Statement objects.
 
 		<h2>What Should be Changed</h2>
+
 		<h3>new SimpleSelector</h3>
 		<ul>
 			<li>SelectorImpl was the only case (other than creating models - see above)
@@ -94,6 +95,7 @@
 			break with the right import, but moving to the new class is
 			encouraged.  The old one will eventually be deprecated.</li>
 		</ul>
+
 		<h3>*Impl classes</h3>
 		<ul>
 			<li>Some folks have used  some of the implementation classes directly
@@ -103,6 +105,15 @@
 			be better to switch to using the factory methods.  However, the
 			*Impl classes still exist, and if you need a quick fix, many of
 			them can be found in com.hp.hpl.jena.rdf.model.impl.</li></ul>
+
+		<h3>Exceptions</h3>
+
+		The old RDFException is still available, but only to support legacy
+		code. See the jena2-api-changes document for more details. Jena
+		now throws <i>unchecked</i> exceptions, so various uses of try-catch
+		to catch non-Runtime Jena Exceptions and convert them to runtime
+		exceptions can be removed.
+
 		
 	</body>
 </html>
