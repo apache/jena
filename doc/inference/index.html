@@ -1055,14 +1055,8 @@ class B = cardinality(P,1)</pre>
 </p>
 <h3>Prototypes</h3>
 <p>As noted above the current OWL rule set introduces prototypical instances for 
-  each defined class. These prototypical instances are visible to queries. Thus 
-  if you list all instances of a given class A then there will be one more bNode 
-  instance than you expect. You can verify that this anonymous instance is one 
-  of the introduced prototypes by checking for triples of the form:</p>
-<pre><i>class </i>rb:prototype _:anon .</pre>
-<p>where rb is the Rubrik namespace defined in <code>ReasonerVocabulary</code>.</p>
-<p>Future versions of the OWL reasoner will hopefully eliminate this contamination 
-  of the models.<br>
+  each defined class. These prototypical instances used to be visible to queries.
+  From release 2.1 they are used internally but should not longer be visible.
 </p>
 <h3>Direct/indirect</h3>
 <p>We noted <a href="#directRelations">above</a> that the Jena reasoners support 
@@ -1801,7 +1795,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.15 2004-01-30 13:10:09 der Exp $</i>
+  Last modification: $Id: index.html,v 1.16 2004-02-06 09:58:32 der Exp $</i>
 </p>
 </body>
 </html>

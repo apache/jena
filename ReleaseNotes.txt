@@ -40,7 +40,7 @@ Jena 2.1 - Main changes from Jena 2.0
       Now requires Xerces 2.6.0 or better. The included jars are Xerces 2.6.1.
 
   Ontology API
-      Big fixes and improvements based on jena-dev feedback.
+      Bug fixes and improvements based on jena-dev feedback.
 
       	 
 Jena 2.1 changes from Jena 2.1-dev-3
@@ -88,6 +88,7 @@ o Bug fixes:
 
 o ModelFactory improvements:
   - ModelSpecs can now be identified by URI as well as Model values
+  - ModelRDBMaker.createModel will now return a ModelRDB rather than plain Model
 
 Reasoner subsystem:
 
@@ -98,6 +99,7 @@ o Added a check for constructing one OWL reasoner instance layered on top
 o Added a "hide" primitive which marks nodes as hidden. When querying an
   inference model no triples containing hidden subject or object nodes will
   be included in the result iterator.
+  Used this to hide class-prototype instances
 o Extended the comparision builtins (equal, le etc) to support comparison of 
   XSDDataTime instances. Many thanks to Bradley Schatz (Bradley@greystate.com)
   for supply the patches for this.
