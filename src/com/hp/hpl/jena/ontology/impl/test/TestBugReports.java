@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.54 $
+ * Revision           $Revision: 1.55 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-21 22:02:24 $
+ * Last modified on   $Date: 2004-11-23 16:15:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,6 +41,9 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
+import com.hp.hpl.jena.reasoner.dig.*;
+import com.hp.hpl.jena.reasoner.dig.DIGReasoner;
+import com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -1310,7 +1313,7 @@ public class TestBugReports
         
         Model m = ModelFactory.createDefaultModel();
         m.read( new StringReader( SOURCE ), null );
-        m.write( System.out, "N3");
+
         Resource root = m.getResource( "http://www.nuin.org/demo/kma#ijdTest" );
         Property rms  = m.getProperty( "http://www.nuin.org/demo/kma#rdfModelSpec");
         Resource conf = root.getProperty(rms).getResource();
@@ -1324,6 +1327,39 @@ public class TestBugReports
         B.addSuperClass(A);
         assertTrue( C.hasSuperClass(A) );
     }
+    
+    /**
+     * Bug report by James Tizard - failure in listIndividuals with DIGexception causes
+     * blocked thread 
+     */
+    public void test_jt_01() {
+        // set up a configuration resource to connect to the reasoner
+        // on port 2004 on the local system
+        Model cModel = ModelFactory.createDefaultModel();
+        Resource conf = cModel.createResource();
+        conf.addProperty( ReasonerVocabulary.EXT_REASONER_URL, cModel.createResource( "http://localhost:2004" ) );
+
+        // create the reasoner factory and the reasoner
+        DIGReasonerFactory drf = (DIGReasonerFactory) ReasonerRegistry.theRegistry()
+                .getFactory( DIGReasonerFactory.URI );
+        DIGReasoner r = (DIGReasoner) drf.create( conf );
+
+        // now make a model
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+
+        boolean ex = false;
+        try {
+            Iterator i = m.listIndividuals(); // if this throws a DIG exception
+            System.out.println( i.hasNext() ); // then this doesn't return
+        }
+        catch (DIGWrappedException e) {
+            ex = true;
+        }
+        assertTrue( "Should have seen a dig wrapped exception for connection fail", ex );
+    }
+    
     
     
     // Internal implementation methods
