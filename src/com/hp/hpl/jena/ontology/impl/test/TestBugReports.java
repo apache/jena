@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.41 $
+ * Revision           $Revision: 1.42 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-22 22:50:30 $
+ * Last modified on   $Date: 2004-08-11 22:31:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -1044,6 +1044,45 @@ public class TestBugReports
         
         assertEquals( "Some expected results were not seen", 0, mask );
     }
+    
+    /** Test case for SF bug 927641 - list direct subclasses */
+    public void test_sf_927641() {
+        String NS = "http://example.org/test#";
+        OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        OntClass c0 = m0.createClass( NS + "C0" );
+        OntClass c1 = m0.createClass( NS + "C1" );
+        OntClass c2 = m0.createClass( NS + "C2" );
+        OntClass c3 = m0.createClass( NS + "C3" );
+        
+        c0.addSubClass( c1 );
+        c1.addSubClass( c2 );
+        c2.addEquivalentClass( c3 );
+        
+        // now c1 is the direct super-class of c2, even allowing for the equiv with c3
+        assertFalse( "pass 1: c0 should not be a direct super of c2", c2.hasSuperClass( c0, true ) );
+        assertFalse( "pass 1: c3 should not be a direct super of c2", c2.hasSuperClass( c3, true ) );
+        assertFalse( "pass 1: c2 should not be a direct super of c2", c2.hasSuperClass( c2, true ) );
+        assertTrue( "pass 1: c1 should be a direct super of c2", c2.hasSuperClass( c1, true ) );
+        
+        // second pass - with inference
+        m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF );
+        c0 = m0.createClass( NS + "C0" );
+        c1 = m0.createClass( NS + "C1" );
+        c2 = m0.createClass( NS + "C2" );
+        c3 = m0.createClass( NS + "C3" );
+        
+        c0.addSubClass( c1 );
+        c1.addSubClass( c2 );
+        c2.addEquivalentClass( c3 );
+        
+        // now c1 is the direct super-class of c2, even allowing for the equiv with c3
+        assertFalse( "pass 2: c0 should not be a direct super of c2", c2.hasSuperClass( c0, true ) );
+        assertFalse( "pass 2: c3 should not be a direct super of c2", c2.hasSuperClass( c3, true ) );
+        assertFalse( "pass 2: c2 should not be a direct super of c2", c2.hasSuperClass( c2, true ) );
+        assertTrue( "pass 2: c1 should be a direct super of c2", c2.hasSuperClass( c1, true ) );
+    }
+    
+    
     
     // Internal implementation methods
     //////////////////////////////////

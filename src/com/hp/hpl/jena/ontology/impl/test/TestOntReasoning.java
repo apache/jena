@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: TestOntReasoning.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 18:45:01 $
+ * Last modified on   $Date: 2004-08-11 22:31:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.9 2004-01-29 18:45:01 ian_dickinson Exp $
+ * @version CVS $Id: TestOntReasoning.java,v 1.10 2004-08-11 22:31:27 ian_dickinson Exp $
  */
 public class TestOntReasoning 
     extends TestCase
@@ -162,7 +162,7 @@ public class TestOntReasoning
         r.addSubProperty( s );
         
         iteratorTest( p.listSubProperties(), new Object[] {p,q,r,s} );
-        iteratorTest( p.listSubProperties( true ), new Object[] {p,q,r} );
+        iteratorTest( p.listSubProperties( true ), new Object[] {q,r} );
     }
     
     public void testSubPropertyDirectTransInf1b() {
@@ -179,7 +179,7 @@ public class TestOntReasoning
         p.addSubProperty( s );     // directly asserts a link that could be inferred
         
         iteratorTest( p.listSubProperties(), new Object[] {p,q,r,s} );
-        iteratorTest( p.listSubProperties( true ), new Object[] {p,q,r} );
+        iteratorTest( p.listSubProperties( true ), new Object[] {q,r} );
     }
     
     public void testSubPropertyDirectTransInf2a() {

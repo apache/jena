@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.36 $
+ * Revision           $Revision: 1.37 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-18 21:02:02 $
+ * Last modified on   $Date: 2004-08-11 22:31:26 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -31,7 +31,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.util.ResourceUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -47,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.36 2004-02-18 21:02:02 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.37 2004-08-11 22:31:26 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -795,7 +794,22 @@ public class OntClassImpl
      */
     protected boolean hasSuperClassDirect(Resource cls) {
         // we manually compute the maximal lower elements - this could be expensive in general
-        return ResourceUtils.maximalLowerElements( listSuperClasses(), getProfile().SUB_CLASS_OF(), false ).contains( cls );
+        //return ResourceUtils.maximalLowerElements( listSuperClasses(), getProfile().SUB_CLASS_OF(), false ).contains( cls );
+        
+        ExtendedIterator i = listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "subClassOf", OntClass.class, 
+                                                       getProfile().SUB_CLASS_OF(), true, false );
+        try {
+            while (i.hasNext()) {
+                if (cls.equals( i.next() )) {
+                    return true;
+                }
+            }
+        }
+        finally {
+            i.close();
+        }
+        
+        return false;
     }
 
 
