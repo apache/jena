@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.45 2004-11-04 22:05:52 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.46 2004-11-17 01:37:51 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.45 $ on $Date: 2004-11-04 22:05:52 $
+* @version $Revision: 1.46 $ on $Date: 2004-11-17 01:37:51 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -258,7 +258,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 *
 	 **/
   public void deleteTriple(Triple t, IDBID graphID) {
-  	deleteTriple(t, graphID, false, new Hashtable());
+  	deleteTriple(t, graphID, false, null);
   }
   	
   /**
@@ -377,7 +377,7 @@ public void deleteTripleAR(
 		 *
 		 **/
 	  public void storeTriple(Triple t, IDBID graphID) {
-	  	storeTriple(t,graphID,false, new Hashtable());
+	  	storeTriple(t,graphID,false, null);
 	  }
 	  
 	  /**
@@ -574,21 +574,22 @@ public void deleteTripleAR(
 		// MySQL also supports a multiple-row insert.
 		// For now, we support only jdbc 2.0 batched updates
 		/** Set of PreparedStatements that need executeBatch() * */
-		Hashtable batchedPreparedStatements = new Hashtable();
+//		Hashtable batchedPreparedStatements = new Hashtable();
 		Triple t;
 		String cmd;
 		boolean autoState = false;
 		DriverRDB drvr = (DriverRDB) m_driver;
-		try {
+//		try {
 			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
 
 			Iterator it = triples.iterator();
 
 			while (it.hasNext()) {
 				t = (Triple) it.next();
-				storeTriple(t, my_GID, true, batchedPreparedStatements);
+				// storeTriple(t, my_GID, true, batchedPreparedStatements);
+				storeTriple(t, my_GID, false, null);
 			}
-
+/*
 			Enumeration enum = batchedPreparedStatements.keys();
 			while (enum.hasMoreElements()) {
 				String op = (String) enum.nextElement();
@@ -597,16 +598,17 @@ public void deleteTripleAR(
 				p.executeBatch();
 				m_sql.returnPreparedSQLStatement(p);
 			}
-
+*/
 			if (autoState)
 				drvr.xactOp(DriverRDB.xactCommit);
 
-			batchedPreparedStatements = new Hashtable();
+//			batchedPreparedStatements = new Hashtable();
 			ArrayList c = new ArrayList(triples);
 			triples.removeAll(c);
 		
 		// WARNING: caught exceptions should drop through to return.
 		// if not, be sure to reset autocommit before exiting.
+/*
 		} catch (BatchUpdateException b) {
 			System.err.println("SQLException: " + b.getMessage());
 			System.err.println("SQLState: " + b.getSQLState());
@@ -623,6 +625,7 @@ public void deleteTripleAR(
 			System.err.println("Message: " + ex.getMessage());
 			System.err.println("Vendor: " + ex.getErrorCode());
 		}
+*/
 		if (autoState)
 			drvr.xactOp(DriverRDB.xactAutoOn);
 	}
@@ -651,20 +654,22 @@ public void deleteTripleAR(
 		// For now, we support only jdbc 2.0 batched updates
 
 		/** Set of PreparedStatements that need executeBatch() * */
-		Hashtable batchedPreparedStatements = new Hashtable();
+//		Hashtable batchedPreparedStatements = new Hashtable();
 		Triple t;
 		String cmd;
 		boolean autoState = false;
 		DriverRDB drvr = (DriverRDB) m_driver;
-		try {
+//		try {
 			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
 			Iterator it = triples.iterator();
 
 			while (it.hasNext()) {
 				t = (Triple) it.next();
-				deleteTriple(t, my_GID, true, batchedPreparedStatements);
+				// deleteTriple(t, my_GID, true, batchedPreparedStatements);
+				deleteTriple(t, my_GID, false, null);
 			}
 
+/*
 			Enumeration enum = batchedPreparedStatements.keys();
 			while (enum.hasMoreElements()) {
 				String op = (String) enum.nextElement();
@@ -673,17 +678,19 @@ public void deleteTripleAR(
 				p.executeBatch();
 				//	m_sql.returnPreparedSQLStatement(p,op);
 			}
+*/
 
 			if (autoState)
 				drvr.xactOp(DriverRDB.xactCommit);
 
-			batchedPreparedStatements = new Hashtable();
+			// batchedPreparedStatements = new Hashtable();
 			ArrayList c = new ArrayList(triples);
 			triples.removeAll(c);
 			
 		// WARNING: caught exceptions should drop through to return.
 		// if not, be sure to reset autocommit before exiting.
-		} catch (BatchUpdateException b) {
+/*
+	} catch (BatchUpdateException b) {
 			System.err.println("SQLException: " + b.getMessage());
 			System.err.println("SQLState: " + b.getSQLState());
 			System.err.println("Message: " + b.getMessage());
@@ -699,6 +706,7 @@ public void deleteTripleAR(
 			System.err.println("Message: " + ex.getMessage());
 			System.err.println("Vendor: " + ex.getErrorCode());
 		}
+*/
 		if (autoState)
 			drvr.xactOp(DriverRDB.xactAutoOn);
 	}
@@ -738,6 +746,7 @@ public void deleteTripleAR(
 		//	   String gid = graphID.getID().toString();
 		int gid = ((DBIDInt) graphID).getIntID();
 		boolean notFound = false;
+int hack = 0;
 
 		ResultSetTripleIterator result =
 			new ResultSetTripleIterator(this, graphID);
@@ -750,7 +759,9 @@ public void deleteTripleAR(
 		String op = "selectStatement";
 		String qual = "";
 		int args = 1;
-
+if ( hack != 0 ) {
+	subj_node = pred_node = obj_node = null;
+}
 		if (subj_node != null) {
 			subj = m_driver.nodeToRDBString(subj_node, false);
 			if (subj == null)
