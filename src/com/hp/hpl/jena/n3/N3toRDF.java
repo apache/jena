@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.23 2004-11-29 11:48:01 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.24 2004-11-29 14:11:20 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -47,10 +47,34 @@ public class N3toRDF implements N3ParserEventHandler
 
     static final String XMLLiteralURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral" ;
 
-	String base = null ;
+	private String base = null ;
+    private String basedir = null ;
 	final String anonPrefix = "_" ;
 	
     N3toRDF() {}
+    
+    public void setBase(String str)
+    {
+        if ( str == null )
+        {
+            base = null ;
+            basedir = null ;
+            return ;
+        }
+        base = str ;
+        
+        int i = base.lastIndexOf('/') ;
+        if ( i >= 0 )
+            // Include the /
+            basedir = base.substring(0,i+1) ;
+        else 
+            basedir = base ;
+    }
+    
+    public void setModel(Model model)
+    {
+        this.model = model ; 
+    }
     
     // Need to delay setting the model and base
 //	N3toRDF(Model m, String _base)
@@ -195,6 +219,7 @@ public class N3toRDF implements N3ParserEventHandler
                     pNode = model.createProperty(uriref) ;
                     break ;
 				case N3Parser.URIREF:
+                    propStr = expandURIRef(propStr) ;
                     break ;
                 case N3Parser.TK_LIST_FIRST:
                     pNode = RDF.first ;
@@ -319,7 +344,7 @@ public class N3toRDF implements N3ParserEventHandler
                     typeURI = typeURI2 ;
                 }
 
-                typeURI = expandHereURIRef(typeURI);
+                typeURI = expandURIRef(typeURI);
                 // 2003-08 - Ignore lang tag when there is an type. 
                 return model.createTypedLiteral(text, typeURI) ;
 
@@ -339,11 +364,11 @@ public class N3toRDF implements N3ParserEventHandler
                     error("Line "+line+": N3toRDF: Undefined qname namespace: " + text);
                     return null ;
                 }
-                return model.createResource(expandHereURIRef(uriref)) ;
+                return model.createResource(expandURIRef(uriref)) ;
 
             // Normal URIref - may be <> or <#>
             case N3Parser.URIREF :
-                return model.createResource(expandHereURIRef(text)) ;
+                return model.createResource(expandURIRef(text)) ;
 
             // Lists
             case N3Parser.TK_LIST_NIL:
@@ -368,7 +393,7 @@ public class N3toRDF implements N3ParserEventHandler
 	}
 
     // Expand shorthand forms (not QNames) for URIrefs.
-    private String expandHereURIRef(String text)
+    private String expandURIRef(String text)
     {
         // Not a "named" bNode (start with _:)
         if ( text.equals("") )
@@ -377,7 +402,40 @@ public class N3toRDF implements N3ParserEventHandler
         if ( text.equals("#") )
             // The case of <#>.
             return base+"#" ;
+        if ( base != null && ! hasURIscheme(text) )
+        {
+            // Hmm - not perfect but pragmatic
+            // Hmm - makes things that were different the same.  Bad. 
+//            if ( text.startsWith("///") )
+//                text = "file:" + text ;
+//            else
+//                if ( text.startsWith("//") )
+//                    text = "file:/" + text ;
+//            else
+//                if ( text.startsWith("/") )
+//                    text = "file://" + text ;
+          if ( text.startsWith("/") )
+                text = "file:" + text ;
+            else
+                text = basedir + text ;
+        }
+        
         return text;
+    }
+    
+    private boolean hasURIscheme(String text)
+    {
+        for ( int i = 0 ; i < text.length() ; i++ )
+        {
+            char ch = text.charAt(i) ;
+            if ( ch == ':' )
+                return true ;
+            if ( ( ch >= 'a' && ch <= 'z' ) ||
+                 ( ch >= 'A' && ch <= 'Z' ) )
+                continue ;
+            return false ;
+        }
+        return false ;
     }
     
     private void setPrefixMapping(Model m, String prefix, String uriref)

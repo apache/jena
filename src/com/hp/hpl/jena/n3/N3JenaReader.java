@@ -15,7 +15,7 @@ import com.hp.hpl.jena.shared.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReader.java,v 1.12 2004-11-04 16:59:40 andy_seaborne Exp $
+ * @version 	$Id: N3JenaReader.java,v 1.13 2004-11-29 14:11:20 andy_seaborne Exp $
  */
 
 
@@ -64,8 +64,8 @@ public class N3JenaReader implements RDFReader
 
 		try {
 		    model.notifyEvent( GraphEvents.startRead );
-            converter.base = base ;
-            converter.model = model ;
+            converter.setBase(base) ;
+            converter.setModel(model);
 			N3Parser p = new N3Parser(r, converter) ;
 			p.parse() ;
         }
@@ -97,8 +97,8 @@ public class N3JenaReader implements RDFReader
 	{
 		try {
             model.notifyEvent( GraphEvents.startRead );
-            converter.base = base ;
-            converter.model = model ;
+            converter.setBase(base) ;
+            converter.setModel(model);
 			N3Parser p = new N3Parser(in, converter) ;
 			p.parse() ;
 		}
