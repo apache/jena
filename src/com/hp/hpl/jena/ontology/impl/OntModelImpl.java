@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-07 09:34:35 $
+ * Last modified on   $Date: 2003-04-08 14:29:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.5 2003-04-07 09:34:35 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.6 2003-04-08 14:29:59 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -135,6 +135,7 @@ public class OntModelImpl
         
         // load the imports closure, according to the policies in my document manager
         m_docMgr.loadImports( this, new OntReadState( null, this ) );
+        ((OntologyGraph) graph).bind();
     }
     
     
@@ -778,6 +779,7 @@ public class OntModelImpl
         m_docMgr.addGraph( uri, getGraph() );
         
         m_docMgr.loadImports( this, new OntReadState( null, this ) );
+        ((OntologyGraph) graph).bind();
         return this;
     }
     
@@ -791,6 +793,7 @@ public class OntModelImpl
         super.read( reader, base );
         
         m_docMgr.loadImports( this, new OntReadState( null, this ) );
+        ((OntologyGraph) graph).bind();
         return this;
     }
     
@@ -803,6 +806,7 @@ public class OntModelImpl
     public Model read(InputStream reader, String base) {
         super.read( reader, base );
         m_docMgr.loadImports( this, new OntReadState( null, this ) );
+        ((OntologyGraph) graph).bind();
         return this;
     } 
     
@@ -819,6 +823,7 @@ public class OntModelImpl
         m_docMgr.addGraph( uri, getGraph() );
 
         m_docMgr.loadImports( this, new OntReadState( syntax, this ) );
+        ((OntologyGraph) graph).bind();
         return this;
     }
     
@@ -833,6 +838,7 @@ public class OntModelImpl
         super.read( reader, base, syntax );
         
         m_docMgr.loadImports( this, new OntReadState( syntax, this ) );
+        ((OntologyGraph) graph).bind();
         return this;
     }
     
@@ -847,6 +853,7 @@ public class OntModelImpl
         super.read( reader, base, syntax );
         
         m_docMgr.loadImports( this, new OntReadState( syntax, this ) );
+        ((OntologyGraph) graph).bind();
         return this;
     }
     

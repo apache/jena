@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:37:07 $
+ * Last modified on   $Date: 2003-04-08 14:28:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.ontology.impl.test;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.*;
 
@@ -40,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.2 2003-04-04 20:37:07 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.3 2003-04-08 14:28:24 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -341,6 +342,150 @@ public class TestListSyntaxCategories
             }
         },
 
+        // !!!!!!! Following tests use ontology that imports owl.owl !!!!!!!!!!!
+        
+        // ontologies
+        new DoListTest( "OWL+import list ontologies",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  2,  
+                        new String[] {"http://jena.hpl.hp.com/testing/ontology", "http://www.w3.org/2002/07/owl"} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listOntologies();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof Ontology;
+            }
+        },
+        // Properties
+        new DoListTest( "OWL+import list properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  41,  
+                        null ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listOntProperties();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof OntProperty &&
+                       r instanceof Property;
+            }
+        },
+        new DoListTest( "OWL+import list object properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  2,  
+                        new String[] {NS+"op", NS+"op1"} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listObjectProperties();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof OntProperty &&
+                       r instanceof Property;
+            }
+        },
+        new DoListTest( "OWL+import list datatype properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+                        new String[] {NS+"dp"} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listDatatypeProperties();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof OntProperty &&
+                       r instanceof Property;
+            }
+        },
+        
+        // individuals
+        new DoListTest( "OWL+import list individuals",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  8,  
+                        null ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        
+        // axioms
+        new DoListTest( "OWL+import list axioms",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+                        null ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listAxioms();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof Axiom;
+            }
+        },
+        
+        // classes
+        new DoListTest( "OWL+import list classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  14,  
+                        null ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listClasses();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof ClassDescription;
+            }
+        },
+        new DoListTest( "OWL+import list named classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  12,  
+                        new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z",
+                                      OWL.Thing.getURI(), OWL.Nothing.getURI()} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listNamedClasses();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof ClassDescription;
+            }
+        },
+        new DoListTest( "OWL+import list intersection classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+                        new String[] {NS+"A" } ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listIntersectionClasses();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof ClassDescription;
+            }
+        },
+        new DoListTest( "OWL+import list union classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  2,  
+                        new String[] {NS+"B", OWL.Thing.getURI()} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listUnionClasses();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof ClassDescription;
+            }
+        },
+        new DoListTest( "OWL+import list complement classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  3,  
+                        null ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listComplementClasses();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof ClassDescription;
+            }
+        },
+        new DoListTest( "OWL+import list enumerated classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+                        new String[] {NS+"D"} ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listEnumeratedClasses();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof ClassDescription;
+            }
+        },
+        new DoListTest( "OWL+import list restrictions",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+                        null ) 
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listRestrictions();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof Restriction;
+            }
+        },
     };
     
     
@@ -393,8 +538,14 @@ public class TestListSyntaxCategories
             m_expected = expected;
         }
         
+        public void setUp() {
+            OntDocumentManager.getInstance().clearCache();
+            OntDocumentManager.getInstance().setProcessImports( true );
+        }
+        
         public void runTest() {
             OntModel m = ModelFactory.createOntologyModel( m_lang );
+            
             m.read( m_fileName );
             
             Iterator i = doList( m );
@@ -407,7 +558,6 @@ public class TestListSyntaxCategories
                 Resource res = (Resource) i.next();
                 
                 assertTrue( "Should not fail node test on " + res, test( res ));
-                // TODO remove debug System.err.println( "Found property " + res );
                 
                 actual++;
                 if (expected != null) {
@@ -486,11 +636,4 @@ public class TestListSyntaxCategories
     THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* TODO delete me
-public class TestListSyntaxCategories{
-
-}
-
 */

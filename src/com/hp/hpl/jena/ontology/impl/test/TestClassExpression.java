@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-31 20:37:33 $
+ * Last modified on   $Date: 2003-04-08 14:28:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.4 2003-03-31 20:37:33 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.5 2003-04-08 14:28:23 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestCase 
@@ -85,9 +85,9 @@ public class TestClassExpression
                 ProfileRegistry.OWL_LANG,
                 "file:testing/ontology/owl/ClassExpression/test.rdf",
                 T,
-                new Integer( 1 ),
-                NS + "ClassB",
-                null,
+                new Integer( 2 ), // because A is a sub-class of A in the transitive reasoner
+                null, //NS + "ClassB",
+                OWL.Class,
                 null
             },
             {   
@@ -133,9 +133,9 @@ public class TestClassExpression
                 ProfileRegistry.OWL_LITE_LANG,
                 "file:testing/ontology/owl/ClassExpression/test.rdf",
                 T,
-                new Integer( 1 ),
-                NS + "ClassB",
-                null,
+                new Integer( 2 ),
+                null, //NS + "ClassB",
+                OWL.Class,
                 null
             },
             {   

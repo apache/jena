@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 10:31:04 $
+ * Last modified on   $Date: 2003-04-08 14:28:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.1 2003-04-01 10:31:04 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.2 2003-04-08 14:28:23 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestCase 
@@ -85,9 +85,9 @@ public class TestProperty
                 ProfileRegistry.OWL_LANG,
                 "file:testing/ontology/owl/Property/test.rdf",
                 T,
-                new Integer( 1 ),
-                NS + "q",
-                null,
+                new Integer( 2 ),
+                null,//NS + "q",
+                RDF.Property,
                 null
             },
             {   

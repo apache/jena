@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Apr-2003
  * Filename           $RCSfile: OntologyGraph.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:36:24 $
+ * Last modified on   $Date: 2003-04-08 14:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.reasoner.*;
-//import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyGraph.java,v 1.1 2003-04-04 20:36:24 ian_dickinson Exp $
+ * @version CVS $Id: OntologyGraph.java,v 1.2 2003-04-08 14:29:58 ian_dickinson Exp $
  */
 public class OntologyGraph
     implements Graph 
@@ -57,18 +57,15 @@ public class OntologyGraph
     protected MultiUnion m_unionGraph;
     
     protected InfGraph m_inf;
+    protected Reasoner m_reasoner;
+    
     
     // Constructors
     //////////////////////////////////
 
     public OntologyGraph() {
         m_unionGraph = new MultiUnion();
-        
-        // wrap an RDFS reasoner around the union graph
-        /* TODO talk to Dave about this - not working yet
-        Reasoner reasoner = RDFSReasonerFactory.theInstance().create( null );
-        m_inf = reasoner.bind( m_unionGraph );
-        */
+        m_reasoner = TransitiveReasonerFactory.theInstance().create( null );
     }
     
     
@@ -131,7 +128,8 @@ public class OntologyGraph
     public int size() 
         throws UnsupportedOperationException
     {
-         return (m_inf != null) ? m_inf.size() : m_unionGraph.size();
+         // TODO: should delegate to inf graph return (m_inf != null) ? m_inf.size() : m_unionGraph.size();
+         return m_unionGraph.size();
     }
      
     public int capabilities() {
@@ -144,6 +142,14 @@ public class OntologyGraph
     
     public InfGraph getInf() {
         return m_inf;
+    }
+
+    /**
+     * This must be called once the graphs have been loaded.
+     */
+    public void bind() {    
+        // wrap an transitive reasoner around the union graph
+        m_inf = m_reasoner.bind( m_unionGraph );
     }
     
     

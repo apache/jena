@@ -20,7 +20,7 @@
 	The default set of mappings for locally cached ontologies
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS:    $Id: ont-policy.rdf,v 1.1 2003-03-25 10:35:53 ian_dickinson Exp $
+	CVS:    $Id: ont-policy.rdf,v 1.2 2003-04-08 14:30:00 ian_dickinson Exp $
 -->
 
 <DocumentManagerPolicy>
@@ -33,9 +33,33 @@
 <OntologySpec>
 	<!-- local version of the OWL language ontology (in OWL) -->
 	<publicURI rdf:resource="http://www.w3.org/2002/07/owl" />
-	<altURL    rdf:resource="file:etc/schemas/owl.owl" />
+	<altURL    rdf:resource="file:vocabularies/owl.owl" />
 	<language  rdf:resource="http://www.w3.org/2002/07/owl" />
 	<prefix    rdf:datatype="&xsd;string">owl</prefix>
+</OntologySpec>
+
+<OntologySpec>
+	<!-- local version of the RDFS vocabulary -->
+	<publicURI rdf:resource="http://www.w3.org/2000/01/rdf-schema" />
+	<altURL    rdf:resource="file:vocabularies/rdf-schema.rdf" />
+	<language  rdf:resource="http://www.w3.org/2000/01/rdf-schema" />
+	<prefix    rdf:datatype="&xsd;string">rdfs</prefix>
+</OntologySpec>
+
+<OntologySpec>
+	<!-- local version of the DAML vocabulary -->
+	<publicURI rdf:resource="http://www.daml.org/2001/03/daml+oil" />
+	<altURL    rdf:resource="file:vocabularies/daml+oil.daml" />
+	<language  rdf:resource="http://www.daml.org/2001/03/daml+oil" />
+	<prefix    rdf:datatype="&xsd;string">daml</prefix>
+</OntologySpec>
+
+<OntologySpec>
+	<!-- local version of the old DAML vocabulary -->
+	<publicURI rdf:resource="http://www.daml.org/2000/12/daml+oil" />
+	<altURL    rdf:resource="file:vocabularies/daml+oil-2000-12.daml" />
+	<language  rdf:resource="http://www.daml.org/2000/12/daml+oil" />
+	<prefix    rdf:datatype="&xsd;string">daml</prefix>
 </OntologySpec>
 
 </rdf:RDF>

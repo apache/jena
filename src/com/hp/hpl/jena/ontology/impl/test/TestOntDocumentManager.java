@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 11:02:12 $
+ * Last modified on   $Date: 2003-04-08 14:28:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.2 2003-03-25 11:02:12 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.3 2003-04-08 14:28:24 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -105,7 +105,7 @@ public class TestOntDocumentManager
         
         assertTrue( "Should be at least one specification loaded", mgr.listDocuments().hasNext() );
         assertNotNull( "cache URL for owl should not be null", mgr.getCacheURL( "http://www.w3.org/2002/07/owl" ));
-        assertEquals( "cache URL for owl not correct", "file:etc/schemas/owl.owl", mgr.getCacheURL( "http://www.w3.org/2002/07/owl" ));
+        assertEquals( "cache URL for owl not correct", "file:vocabularies/owl.owl", mgr.getCacheURL( "http://www.w3.org/2002/07/owl" ));
         assertEquals( "prefix for owl not correct", "owl", mgr.getPrefixForURI( "http://www.w3.org/2002/07/owl" ));
         
         mgr = new OntDocumentManager( "" );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:37:07 $
+ * Last modified on   $Date: 2003-04-08 14:29:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -29,8 +29,6 @@ import java.util.*;
 import org.apache.log4j.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -48,7 +46,7 @@ import com.hp.hpl.jena.ontology.impl.OntologyGraph;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.5 2003-04-04 20:37:07 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.6 2003-04-08 14:29:45 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -132,8 +130,6 @@ public class OntDocumentManager
     /** The factory we're using to create graphs in the union */
     protected GraphFactory m_graphFactory = null;
     
-    /** Flag to turn on use of inferencing graph for ont document graphs */
-    protected boolean m_useInference = false;
     
     
     // Constructors
@@ -407,15 +403,7 @@ public class OntDocumentManager
             m_graphFactory = new GraphFactory() {
                                  // default is to create a new in-memory graph with rdfs reasoning turned on
                                  public Graph getGraph() {
-                                     Graph graph = new GraphMem(); 
-                                     
-                                     if (m_useInference) {
-                                         // TODO: we will want a better way of doing this in J2P3
-                                         Reasoner reasoner = RDFSReasonerFactory.theInstance().create( null );
-                                         graph = reasoner.bind( graph );
-                                     }
-                                     
-                                     return graph; 
+                                     return new GraphMem(); 
                                  }
                              };
         }
@@ -487,6 +475,16 @@ public class OntDocumentManager
      */
     public void setCacheGraphs( boolean cacheGraphs ) {
         m_cacheGraphs = cacheGraphs;
+    }
+    
+    
+    /**
+     * <p>
+     * Remove all entries from the graph cache
+     * </p>
+     */
+    public void clearCache() {
+        m_graphMap.clear();
     }
     
     
@@ -580,8 +578,6 @@ public class OntDocumentManager
             }
             catch (RDFException e) {
                 // we take this to mean that the resolution failed, so try another path element
-                System.err.println( "ex " + e );
-                e.printStackTrace();
             }
         }
         
@@ -705,17 +701,13 @@ public class OntDocumentManager
         // make a new model to contain 
         OntModel m = ModelFactory.createOntologyModel( model.getProfile().NAMESPACE(), null, this, model.getGraphFactory() );
         
-        //Model m = ModelFactory.createModelForGraph( gf.getGraph() );
-        
         // try to load the URI
         try {
             // TODO: should be able to specify uri as the base here
             m.read( resolvableURI );
             
             // success: cache the model against the uri
-            if (m_cacheGraphs) {
-                m_graphMap.put( uri, m );
-            }
+            addGraph( uri, m.getGraph() );
         }
         catch (RDFException e) {
             Logger.getLogger( OntDocumentManager.class )

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: AbstractProfile.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-02 20:33:28 $
+ * Last modified on   $Date: 2003-04-08 14:29:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AbstractProfile.java,v 1.1 2003-04-02 20:33:28 ian_dickinson Exp $
+ * @version CVS $Id: AbstractProfile.java,v 1.2 2003-04-08 14:29:59 ian_dickinson Exp $
  */
 public abstract class AbstractProfile
     implements Profile 
@@ -175,9 +175,3 @@ public abstract class AbstractProfile
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* TODO delete me
-public class AbstractProfile{
-
-}
-
-*/
