@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-08 18:36:11 $
+ * Last modified on   $Date: 2004-02-16 20:38:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -694,6 +694,56 @@ public class TestBugReports extends TestCase {
         RDFNode n = hvr.getHasValue();
         
         assertTrue( "Should be an individual", n instanceof Individual );
+    }
+    
+    /** Bug report by Zhao Jun [jeff@seu.edu.cn] - throws no such element exception */
+    public void test_zj_0() {
+        String NS = "file:/C:/orel/orel0_5.owl#";
+        String sourceT =
+            "<rdf:RDF " +
+            "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+            "    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'" +
+            "    xmlns:ex='http://example.org/foo#'" +
+            "    xmlns:owl='http://www.w3.org/2002/07/owl#'" +
+            "      xmlns:orel='file:/C:/orel/orel0_5.owl#'" +
+            "      xml:base='file:/C:/orel/orel0_5.owl#'" +
+            "      xmlns='file:/C:/orel/orel0_5.owl#'>" +
+            " <owl:ObjectProperty rdf:ID='hasAgent' />" +
+            " <owl:ObjectProperty rdf:ID='hasResource' />" +
+            " <owl:Class rdf:ID='MyPlay'>" +
+            "    <rdfs:subClassOf>" +
+            "      <owl:Restriction>" +
+            "        <owl:onProperty rdf:resource='file:/C:/orel/orel0_5.owl#hasResource'/>" +
+            "        <owl:hasValue>" +
+            "          <orel:Resource rdf:ID='myResource'>" +
+            "            <orel:resourceURI>http://mp3.com/newcd/sample.mp3</orel:resourceURI>" +
+            "          </orel:Resource>" +
+            "        </owl:hasValue>" +
+            "      </owl:Restriction>" +
+            "    </rdfs:subClassOf>" +
+            "    <rdfs:subClassOf rdf:resource='http://www.w3.org/2002/07/owl#Thing'/>" +
+            "    <rdfs:subClassOf>" +
+            "      <owl:Restriction>" +
+            "        <owl:onProperty rdf:resource='file:/C:/orel/orel0_5.owl#hasAgent'/>" +
+            "        <owl:hasValue>" +
+            "          <orel:Agent rdf:ID='myAgent'>" +
+            "            <orel:agentPK>123456789</orel:agentPK>" +
+            "          </orel:Agent>" +
+            "        </owl:hasValue>" +
+            "      </owl:Restriction>" +
+            "    </rdfs:subClassOf>" +
+            "    <rdfs:subClassOf rdf:resource='file:/C:/orel/orel0_5.owl#Play'/>" +
+            "  </owl:Class>" +
+            "</rdf:RDF>";
+
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null);
+        m.read(new ByteArrayInputStream(sourceT.getBytes()), "file:/C:/orel/orel0_5.owl");
+        
+        OntClass myPlay = m.getOntClass( NS + "MyPlay");
+        for (Iterator i = myPlay.listDeclaredProperties(); i.hasNext(); ) {
+            //System.err.println( "prop " + i.next() );
+            i.next();
+        }
     }
     
     // Internal implementation methods
