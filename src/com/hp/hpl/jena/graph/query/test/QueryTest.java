@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.7 2003-05-30 13:50:12 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.8 2003-06-11 11:23:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -406,10 +406,23 @@ public class QueryTest extends GraphTestBase
         List L = (List) q.executeBindings( g, new Node [] {X, Y} ).next();
         assertEquals( "undefined variables get null", null, L.get( 0 ) );
         }
+        
+    /**
+        More of an example than a test, for a query with "disconnected" triples.
+    */
+    public void testDisconnected()
+        {
+        Graph g = graphWith( "x pred1 foo; y pred2 bar" );
+        Query q = new Query( graphWith( "?X ?? foo; ?Y ?? bar" ) );
+        List bindings = iteratorToList( q.executeBindings( g, nodes( "?X ?Y" ) ) );
+        assertEquals( 1, bindings.size() );
+        assertEquals( node( "x" ), ((List) bindings.get(0)).get(0) );
+        assertEquals( node( "y" ), ((List) bindings.get(0)).get(1) );
+        }
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.16 2003-06-06 09:15:49 chris-dollin Exp $
+  $Id: TestNode.java,v 1.17 2003-06-11 11:23:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -412,6 +412,16 @@ public class TestNode extends GraphTestBase
         assertDiffer( "types must make a difference", A, B );
         assertTrue( "A and B must express the same value", A.sameValueAs( B ) );
         assertTrue( "matching literals must respect sameValueAs", A.matches( B ) );
+        }
+        
+    public void testConcrete()
+        {
+        assertTrue( Node.create( "S" ).isConcrete() );
+        assertTrue( Node.create( "_P" ).isConcrete() );
+        assertTrue( Node.create( "11" ).isConcrete() );
+        assertTrue( Node.create( "'hello'" ).isConcrete() );
+        assertFalse( Node.create( "??" ).isConcrete() );
+        assertFalse( Node.create( "?x" ).isConcrete() );
         }
     }
 

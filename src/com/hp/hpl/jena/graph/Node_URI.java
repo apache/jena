@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_URI.java,v 1.2 2003-05-19 19:37:35 chris-dollin Exp $
+  $Id: Node_URI.java,v 1.3 2003-06-11 11:22:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.graph;
 /**
 	@author kers
 */
-public class Node_URI extends Node
+public class Node_URI extends Node_Concrete
     {
     public Node_URI( Object uri )
         { super( uri ); }

@@ -7,13 +7,16 @@ package com.hp.hpl.jena.graph;
     for any other node in a query.
 */
 
-public class Node_ANY extends Node
+public class Node_ANY extends Node_Fluid
     {
     public Node_ANY() { super( "" ); }
     
     /** Node_ANY's are only equal to other Node_ANY's */
     public boolean equals( Object other )
         { return other instanceof Node_ANY; }
+        
+    public boolean isConcrete()
+        { return false; }
         
     public Object visitWith( NodeVisitor v )
         { return v.visitAny( this ); }

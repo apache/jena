@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Variable.java,v 1.3 2003-05-19 19:37:35 chris-dollin Exp $
+  $Id: Node_Variable.java,v 1.4 2003-06-11 11:22:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.graph;
     wrong, most specifically in Query.
 */
 
-public class Node_Variable extends Node
+public class Node_Variable extends Node_Fluid
     {
     public Node_Variable( Object name )
         { super( name ); }
@@ -27,6 +27,9 @@ public class Node_Variable extends Node
         
     public boolean isVariable()
         { return true; }
+        
+    public boolean isConcrete()
+        { return false; }
 
     public String toString()
         { return ((String) label); }

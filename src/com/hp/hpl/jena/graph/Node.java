@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.12 2003-06-06 09:14:50 chris-dollin Exp $
+  $Id: Node.java,v 1.13 2003-06-11 11:22:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -163,7 +163,12 @@ public abstract class Node {
     	@return the value returned by the applied method
      */
     public abstract Object visitWith( NodeVisitor v );
-                             
+        
+    /**
+        Answer true iff this node is concrete, ie not variable, ie URI, blank, or literal.
+    */                     
+    public abstract boolean isConcrete();
+        
     /** is this a literal node - overridden in Node_Literal */
     public boolean isLiteral() 
         { return false; }
