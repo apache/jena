@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-10-28 23:39:35 $
+ * Last modified on   $Date: 2003-12-02 21:41:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.28 2003-10-28 23:39:35 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.29 2003-12-02 21:41:34 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -913,8 +913,14 @@ public class OntDocumentManager
         }
         catch (JenaException e) {
             if (warn) {
+                String u = "<" + resolvableURI + ">";
+                if (!uri.equals( u )) {
+                    u = u + " (re-directed via the document mgr from <" + uri + ">)"; 
+                }
+                
                 Logger.getLogger( OntDocumentManager.class )
-                      .warn( "JenaException while reading model from " + resolvableURI + ", with message: " + e.getMessage(), e );
+                      .warn( "An error occurred while attempting to read from " + u + 
+                             ". Error was '" + e.getMessage() + "'.", e );
             }
             return false;
         }
