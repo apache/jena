@@ -17,7 +17,7 @@
 
 
 
-<h3>28 August, 2003</h3>
+<h3>2 November, 2004</h3>
 
 
 
@@ -73,8 +73,7 @@ query as possible within the database engine. For an overview of creating and
 accessing persistent Jena models, see the <a href="howto.html">HowTo</a>. A 
 summary of the various configuration options available is given in
 <a href="options.html">Options</a>. Known issues and open problems are 
-summarized in&nbsp;
-  <a href="issues.html">Issues</a>. Some performance notes and observations 
+summarized in&nbsp;<a href="issues.html">Issues</a>. Some performance notes and observations 
 are given in <a href="perfNotes.html">PerfNotes</a>.</p>
 
 
@@ -109,7 +108,8 @@ are given in <a href="perfNotes.html">PerfNotes</a>.</p>
 
 <p>The following table lists the platforms, database engines and JDBC drivers 
   currently supported for Jena2 persistence. Older and newer versions may work 
-  but have not been tested. See the database engine-specific howto documents for more details (<a href="mysql-howto.html">MySQL</a>,
+  but have not been tested. See the database-specific <i>how-to</i> documents for more details 
+on using these databases for Jena applications (<a href="mysql-howto.html">MySQL</a>,
   <a href="oracle-howto.html">Oracle</a>,
   <a href="postgresql-howto.html">PostgreSQL</a>).</p>
 
@@ -152,6 +152,25 @@ are given in <a href="perfNotes.html">PerfNotes</a>.</p>
     <td style="text-align: left">&nbsp;&nbsp; Oracle oci JDBC driver (thick client)&nbsp;</td>
   </tr>
 </table>
+
+
+
+  <p>Individuals in the Jena user community have developed Jena drivers for 
+  other database engines. See the <a href="../FAQ/jena-faq.content.html#db-2">Jena FAQ</a> for 
+  a list of such drivers. For details on developing your own Jena database 
+  driver, see the <a href="portNotes.html">porting notes</a>.</p>
+
+
+
+  <p>Note that the database layout used by Jena is not intended for direct 
+  access by users and applications. The database should only be accessed 
+  indirectly, through the Jena API. This is because there is not a simple 
+  mapping from Jena models and statements into database tables. For example, 
+  resource URIs and literal values are encoded such that the plain text values 
+  may not be discernable. Consequently, users should not attempt to access the 
+  Jena database tables using SQL or other relational database tools unless they 
+  really know what they are doing. For those interested, a details on the Jena 
+  database schema are provided in the <a href="layout.html">layout notes</a>.</p>
 
 
 
