@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.28 2003-06-19 10:48:40 chris-dollin Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.29 2003-06-27 20:19:17 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.28 $ on $Date: 2003-06-19 10:48:40 $
+* @version $Revision: 1.29 $ on $Date: 2003-06-27 20:19:17 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -173,12 +173,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			ResultSet alltables = dbmd.getTables(null, null, "JENA%", tableTypes);
 			List tablesPresent = new ArrayList(10);
 			while (alltables.next()) {
-				tablesPresent.add(alltables.getString("TABLE_NAME").toUpperCase());
+				tablesPresent.add(alltables.getString("TABLE_NAME"));
 			}
 			alltables.close();
 			boolean ok = true;
 			//TODO get these names from someplace
-			ok &= tablesPresent.contains(tName.toUpperCase());
+			ok &= tablesPresent.contains(tName);
 			return ok;
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver", e1);

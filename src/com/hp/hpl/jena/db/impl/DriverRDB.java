@@ -45,7 +45,7 @@ import com.hp.hpl.jena.shared.*;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.17 $ on $Date: 2003-06-27 18:07:41 $
+* @version $Revision: 1.18 $ on $Date: 2003-06-27 20:18:47 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -556,7 +556,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			ResultSet alltables = dbmd.getTables(null, null, "JENA%", tableTypes);
 			List tablesPresent = new ArrayList(10);
 			while (alltables.next()) {
-				tablesPresent.add(alltables.getString("TABLE_NAME").toUpperCase());
+				tablesPresent.add(alltables.getString("TABLE_NAME"));
 			}
 			alltables.close();
 			Iterator it = tablesPresent.iterator();
