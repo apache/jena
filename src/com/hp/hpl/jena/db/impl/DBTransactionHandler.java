@@ -1,24 +1,24 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBTransactionHandler.java,v 1.2 2003-05-02 23:13:46 csayers Exp $
+  $Id: DBTransactionHandler.java,v 1.3 2003-05-20 11:19:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.db.GraphRDB;
-import com.hp.hpl.jena.graph.TransactionHandler;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 
 /**
  * Transaction handler for graphs backed by a database.
  *
  * @author csayers based on SimpleTransactionHandler by kers 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
-public class DBTransactionHandler implements TransactionHandler {
+public class DBTransactionHandler extends TransactionHandlerBase {
 	private IRDBDriver m_driver = null;
-
-	
+    
 	/**
 	 * Construct a transaction handler for the database.
 	 * 

@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.2 2003-05-03 07:44:50 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.3 2003-05-20 11:20:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 
@@ -89,6 +90,11 @@ public abstract class AbstractTestGraph extends GraphTestBase
         try { th.begin(); } catch (UnsupportedOperationException x) {}
         try { th.abort(); } catch (UnsupportedOperationException x) {}
         try { th.commit(); } catch (UnsupportedOperationException x) {}
+    /* */
+        Command cmd = new Command() 
+            { public Object execute() { return null; } };
+        try { th.executeInTransaction( cmd ); } 
+        catch (UnsupportedOperationException x) {}
         }
 
     static final Triple [] tripleArray = tripleArray( "S P O; A R B; X Q Y" );

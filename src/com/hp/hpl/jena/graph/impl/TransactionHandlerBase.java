@@ -1,55 +1,37 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TransactionHandler.java,v 1.2 2003-05-20 11:20:45 chris-dollin Exp $
+  $Id: TransactionHandlerBase.java,v 1.1 2003-05-20 11:20:45 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
 
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 
 /**
-    Preliminary interface for graphs supporting transactions.
-    
  	@author kers
+    
+    A base for transaction handlers - all it does is provide the canonical
+    implementation of executeInTransaction.
 */
-public interface TransactionHandler
+public abstract class TransactionHandlerBase implements TransactionHandler
     {
-    /**
-        Does this handler support transactions at all?
-        
-        @return true iff begin/abort/commit are implemented and make sense.
-    */
-    boolean transactionsSupported();
-    
-    /**
-        If transactions are supported, begin a new transaction. If tranactions are
-        not supported, or they are but this tranaction is nested and nested transactions
-        are not supported, throw an UnsupportedOperationException.
-    */
-    void begin();
-    
-    /**
-        If transactions are supported and there is a tranaction in progress, abort
-        it. If transactions are not supported, or there is no transaction in progress,
-        throw an UnsupportedOperationException.
-    */
-    void abort();
-    
-    /**
-        If transactions are supported and there is a tranaction in progress, commit
-        it. If transactions are not supported, , or there is no transaction in progress,
-        throw an UnsupportedOperationException.
-   */
-    void commit();
-    
-    /**
-        If transactions are supported, execute the command c within a transaction
-        and return its result. If not, throw an UnsupportedOperationException.
-    */
-    Object executeInTransaction( Command c );
-    }
+    public TransactionHandlerBase()
+        { super(); }
 
+    /**
+        Execute the command <code>c</code> within a transaction. If it
+        completes normally, commit the transaction and return the result.
+        Otherwise abort the transaction and throw a wrapped exception.
+    */
+    public Object executeInTransaction( Command c )
+        {
+        begin();
+        try { Object result = c.execute(); commit(); return result; }
+        catch (Exception e) { abort(); throw new JenaException( e ); }
+        }
+    }
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

@@ -1,53 +1,41 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TransactionHandler.java,v 1.2 2003-05-20 11:20:45 chris-dollin Exp $
+  $Id: AbstractTestModel.java,v 1.1 2003-05-20 11:20:46 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 
 /**
-    Preliminary interface for graphs supporting transactions.
-    
  	@author kers
 */
-public interface TransactionHandler
+public abstract class AbstractTestModel extends ModelTestBase
     {
-    /**
-        Does this handler support transactions at all?
+    public AbstractTestModel( String name )
+        { super(name); }
+
+    public abstract Model getModel();
+    
+    private Model model;
+    
+    public void setUp()
+        {
+        model = getModel();
+        }
         
-        @return true iff begin/abort/commit are implemented and make sense.
-    */
-    boolean transactionsSupported();
-    
-    /**
-        If transactions are supported, begin a new transaction. If tranactions are
-        not supported, or they are but this tranaction is nested and nested transactions
-        are not supported, throw an UnsupportedOperationException.
-    */
-    void begin();
-    
-    /**
-        If transactions are supported and there is a tranaction in progress, abort
-        it. If transactions are not supported, or there is no transaction in progress,
-        throw an UnsupportedOperationException.
-    */
-    void abort();
-    
-    /**
-        If transactions are supported and there is a tranaction in progress, commit
-        it. If transactions are not supported, , or there is no transaction in progress,
-        throw an UnsupportedOperationException.
-   */
-    void commit();
-    
-    /**
-        If transactions are supported, execute the command c within a transaction
-        and return its result. If not, throw an UnsupportedOperationException.
-    */
-    Object executeInTransaction( Command c );
+    public void tearDown()
+        {
+        model.close();
+        } 
+       
+    public void testTransactions()
+        { 
+        Command cmd = null;
+        if (model.supportsTransactions()) model.executeInTransaction( cmd );
+        }
     }
 
 

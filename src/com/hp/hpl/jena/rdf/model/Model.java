@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.18 2003-04-28 14:36:52 andy_seaborne Exp $
+  $Id: Model.java,v 1.19 2003-05-20 11:20:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -52,7 +52,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.18 $Date: 2003/04/28 11:28:36 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.19 $Date: 2003/04/28 14:36:52 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -735,6 +735,14 @@ public interface Model
 	 * @throws RDFException Generic RDF Exception
 	 */
 	Model commit() throws RDFException;
+    
+    /**
+        Execute the command <code>cmd</code> inside a transaction. If it
+        completes, commit the transaction and return the result; if it fails
+        (by throwing an exception), abort the transaction and throw an
+        exception.
+    */
+    Object executeInTransaction( Command cmd );
 
 	/** Determine whether this model is independent.
 	 *
@@ -821,5 +829,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.18 2003-04-28 14:36:52 andy_seaborne Exp $
+ * $Id: Model.java,v 1.19 2003-05-20 11:20:45 chris-dollin Exp $
  */

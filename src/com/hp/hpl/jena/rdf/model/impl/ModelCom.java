@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.34 $' Date='$Date: 2003-05-06 04:46:22 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.35 $' Date='$Date: 2003-05-20 11:20:46 $'
  */
 
 public class ModelCom 
@@ -1083,14 +1083,20 @@ implements Model, ModelI, PrefixMapping, ModelLock
         { return getGraph().getTransactionHandler().transactionsSupported(); }
     	
     public Model begin() 
-        { getGraph().getTransactionHandler().begin(); return this; }
+        { getTransactionHandler().begin(); return this; }
     
     public Model abort() 
-        { getGraph().getTransactionHandler().abort(); return this; }
+        { getTransactionHandler().abort(); return this; }
     
     public Model commit() 
-        { getGraph().getTransactionHandler().commit(); return this; }
+        { getTransactionHandler().commit(); return this; }
     
+    public Object executeInTransaction( Command cmd )
+        { return getTransactionHandler().executeInTransaction( cmd ); }
+        
+    private TransactionHandler getTransactionHandler()
+        { return getGraph().getTransactionHandler(); }
+        
     public boolean independent() {
         return true;
     }

@@ -1,15 +1,18 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleTransactionHandler.java,v 1.1 2003-04-22 15:02:17 chris-dollin Exp $
+  $Id: SimpleTransactionHandler.java,v 1.2 2003-05-20 11:20:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.graph.impl.*;
+
 /**
  	@author kers
 */
-public class SimpleTransactionHandler implements TransactionHandler
+public class SimpleTransactionHandler extends TransactionHandlerBase
     {
     public SimpleTransactionHandler()
         { super(); }
