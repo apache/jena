@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.33 2003-08-22 16:04:32 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.34 2003-08-24 21:17:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,11 +19,9 @@ import java.util.*;
 
 //import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.OneToManyMap;
+import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
-//import com.hp.hpl.jena.util.PrintUtil;
-//import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.*;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +34,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.33 $ on $Date: 2003-08-22 16:04:32 $
+ * @version $Revision: 1.34 $ on $Date: 2003-08-24 21:17:53 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -491,6 +489,16 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         return result.filterDrop(Functor.acceptFilter);
     }
+    
+    /**
+     * Internal variant of find which omits the filters which block illegal RDF data.
+     * @param pattern a TriplePattern to be matched against the data
+     */
+    public ExtendedIterator findFull(TriplePattern pattern) {
+        checkOpen();
+        if (!isPrepared) prepare();
+        return new UniqueExtendedIterator(bEngine.find(pattern));
+    }
    
     /** 
      * Returns an iterator over Triples.
@@ -587,6 +595,59 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             transitiveEngine = null;
             super.close();
         }
+    }
+    
+//  =======================================================================
+//  Generalized validation machinery. Assumes rule set has special validation
+//  rules that can be turned on.
+   
+    /**
+     * Test the consistency of the bound data. This normally tests
+     * the validity of the bound instance data against the bound
+     * schema data. 
+     * @return a ValidityReport structure
+     */
+    public ValidityReport validate() {
+        checkOpen();
+        StandardValidityReport report = new StandardValidityReport();
+        // Switch on validation
+        add(new Triple(Node.createAnon(), 
+                        ReasonerVocabulary.RB_VALIDATION.asNode(),
+                        Functor.makeFunctorNode("on", new Node[] {})));
+        // Look for all reports
+        TriplePattern pattern = new TriplePattern(null, ReasonerVocabulary.RB_VALIDATION_REPORT.asNode(), null);
+        for (Iterator i = findFull(pattern); i.hasNext(); ) {
+            Triple t = (Triple)i.next();
+            Node rNode = t.getObject();
+            boolean foundReport = false;
+            if (rNode.isLiteral()) {
+                Object rVal = rNode.getLiteral().getValue();
+                if (rVal instanceof Functor) {
+                    Functor rFunc = (Functor)rVal;
+                    foundReport = true;
+                    StringBuffer description = new StringBuffer();
+                    String nature = rFunc.getName();
+                    String type = rFunc.getArgs()[0].toString();
+                    String text = rFunc.getArgs()[1].toString();
+                    description.append( text + "\n");
+                    description.append( "Culprit = " + PrintUtil.print(t.getSubject()) +"\n");
+                    for (int j = 2; j < rFunc.getArgLength(); j++) {
+                        description.append( "Implicated node: " + PrintUtil.print(rFunc.getArgs()[j]) + "\n");
+                    }
+                    report.add(nature.equalsIgnoreCase("error"), type, description.toString());
+                }
+            }
+        }
+//        // Debug
+//        Node ia = Node.createURI("http://jena.hpl.hp.com/testing/reasoners/owl#ia");
+//        System.out.println("Types of ia");
+//        PrintUtil.printOut(findFull(new TriplePattern(ia, RDF.Nodes.type, null)));
+//        System.out.println("different froms");
+//        PrintUtil.printOut(findFull(new TriplePattern(null, OWL.differentFrom.asNode(), null)));
+//        System.out.println("ia same as");
+//        PrintUtil.printOut(findFull(new TriplePattern(ia, OWL.sameIndividualAs.asNode(), null)));
+//        // end
+        return report;
     }
 
 //  =======================================================================
