@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: ModelReifier.java,v 1.3 2003-04-04 19:26:30 jeremy_carroll Exp $
+	$Id: ModelReifier.java,v 1.4 2003-04-07 15:05:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -37,8 +37,11 @@ public class ModelReifier
         return a version of the model, but with all its reifiying statements
         added.
     */
-    public Model allStatements()
-        { return new ModelCom( new Union( model.getGraph(), reifier.getHiddenTriples() ) ); }
+    public static Model withHiddenStatements( Model m )
+        { 
+        Graph hiddenTriples = m.getGraph().getReifier().getHiddenTriples();
+        return new ModelCom( new Union( m.getGraph(), hiddenTriples ) );
+        }
         
     public Model getHiddenStatements()
         { return new ModelCom( reifier.getHiddenTriples() ); }
