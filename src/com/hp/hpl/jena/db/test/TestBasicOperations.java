@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.2 2003-05-04 17:36:13 hkuno Exp $
+  $Id: TestBasicOperations.java,v 1.3 2003-05-05 21:13:00 csayers Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -22,7 +22,6 @@ package com.hp.hpl.jena.db.test;
  * @author csayers
 */
 
-import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.rdf.model.*;
@@ -47,12 +46,9 @@ public class TestBasicOperations extends TestCase
 	IDBConnection conn = null;
 	
     protected void setUp() throws java.lang.Exception {
-    	
-        Class.forName(TestPackage.M_DBDRIVER_CLASS);
-		conn = new DBConnection(TestPackage.M_DB_URL, TestPackage.M_DB_USER, TestPackage.M_DB_PASSWD, TestPackage.M_DB);
-		conn.cleanDB(); // start with a fresh slate.
-		dbProperties = conn.getDatabaseProperties();
-		model = ModelRDB.createModel(conn); 
+    	conn = TestConnection.makeAndCleanTestConnection();
+    	model = ModelRDB.createModel(conn);
+    	dbProperties = conn.getDatabaseProperties();
     }
     
     protected void tearDown() throws java.lang.Exception {

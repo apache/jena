@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleSelector.java,v 1.2 2003-05-04 17:36:56 hkuno Exp $
+  $Id: TestSimpleSelector.java,v 1.3 2003-05-05 21:13:00 csayers Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -19,7 +19,6 @@ package com.hp.hpl.jena.db.test;
  * @author csayers
 */
 
-import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.rdf.model.*;
@@ -47,9 +46,7 @@ public class TestSimpleSelector extends TestCase
 	   
     protected void setUp() throws java.lang.Exception {
     	
-        Class.forName(TestPackage.M_DBDRIVER_CLASS);
-		conn = new DBConnection(TestPackage.M_DB_URL, TestPackage.M_DB_USER, TestPackage.M_DB_PASSWD, TestPackage.M_DB);
-		conn.cleanDB();
+		conn = TestConnection.makeAndCleanTestConnection();
 		model = ModelRDB.createModel(conn, TestPackage.M_DB); 
 		
     	model.createResource()
