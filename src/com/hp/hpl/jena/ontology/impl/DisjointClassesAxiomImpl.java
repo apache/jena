@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.5 $
+ * Created            29-Apr-2003
+ * Filename           $RCSfile: DisjointClassesAxiomImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-30 09:59:25 $
+ * Last modified on   $Date: 2003-04-30 09:59:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -22,77 +22,76 @@
 package com.hp.hpl.jena.ontology.impl;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
-
 
 
 /**
  * <p>
- * Ontology language profile implementation for the Lite variant of the OWL 2002/07 language.
+ * Implementation of a disjoint classes axiom.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.5 2003-04-30 09:59:25 ian_dickinson Exp $
+ * @version CVS $Id: DisjointClassesAxiomImpl.java,v 1.1 2003-04-30 09:59:24 ian_dickinson Exp $
  */
-public class OWLLiteProfile
-    extends OWLProfile
+public class DisjointClassesAxiomImpl 
+    extends ClassAxiomImpl
+    implements DisjointClassesAxiom
 {
     // Constants
     //////////////////////////////////
 
-
     // Static variables
     //////////////////////////////////
 
-
     // Instance variables
     //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct a disjoint classes axiom.
+     * </p>
+     * 
+     * @param subjClass The subject class in the axiom
+     * @param objClass The object class in the axiom
+     */
+    public DisjointClassesAxiomImpl( Resource subjClass, Resource objClass ) {
+        super( subjClass, ((OntModel) subjClass.getModel()).getProfile().DISJOINT_WITH(), objClass  );
+    }
+
+
+    /**
+     * <p>
+     * Construct a disjoint class axiom more efficiently. Package access only.
+     * </p>
+     * 
+     * @param subjClass The subject class in the axiom
+     * @param disjClassP Assumed to be the disjointWith predicate (not tested, taken on faith).
+     * @param objClass The object class in the axiom
+     */
+    DisjointClassesAxiomImpl(  Resource subjClass, Property disjClassP, Resource objClass ) {
+        super( subjClass, disjClassP, objClass  );
+    }
 
 
     // Constructors
     //////////////////////////////////
 
-
     // External signature methods
     //////////////////////////////////
 
-    public Resource NOTHING() {                     return null; }
-    public Property COMPLEMENT_OF() {               return null; }
-    public Property DISJOINT_WITH() {               return null; }
-    public Property HAS_VALUE() {                   return null; }
-    public Property ONE_OF() {                      return null; }
-    public Property UNION_OF() {                    return null; }
-    public Property SAME_AS() {                     return null; }
-    
-
-    /**
-     * <p>
-     * Answer a descriptive string for this profile, for use in debugging and other output.
-     * </p>
-     * @return "OWL Lite"
-     */
-    public String getLabel() {
-        return "OWL Lite";
-    }
-    
-    
-    
-
     // Internal implementation methods
     //////////////////////////////////
-
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
-
 }
-
-
 
 
 /*
@@ -125,3 +124,9 @@ public class OWLLiteProfile
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/* TODO delete me
+public class DisjointClassesAxiomImpl{
+
+}
+
+*/

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-07 09:33:39 $
+ * Last modified on   $Date: 2003-04-30 09:58:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -45,7 +45,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.7 2003-04-07 09:33:39 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.8 2003-04-30 09:58:33 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -665,6 +665,15 @@ public interface Profile
      * viewed according to the facet resource <code>res</code>
      */
     public boolean isSupported( Node n, EnhGraph g, Class type );
+    
+    // Other stuff
+    
+    /**
+     * <p>
+     * Answer a descriptive string for this profile, for use in debugging and other output.
+     * </p>
+     */
+    public String getLabel();
 }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:44:12 $
+ * Last modified on   $Date: 2003-04-30 09:59:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.11 2003-04-28 15:44:12 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.12 2003-04-30 09:59:25 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -177,6 +177,7 @@ public class OntModelImpl
      * @return An iterator over ontology resources. 
      */
     public Iterator listOntologies() {
+        checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
         return findByTypeAs( getProfile().ONTOLOGY(), Ontology.class );
     }
     
@@ -227,6 +228,7 @@ public class OntModelImpl
      * @return An iterator over object property resources. 
      */
     public Iterator listObjectProperties() {
+        checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
         return findByTypeAs( getProfile().OBJECT_PROPERTY(), ObjectProperty.class );
     }
     
@@ -252,6 +254,7 @@ public class OntModelImpl
      * @return An iterator over datatype property resources. 
      */
     public Iterator listDatatypeProperties() {
+        checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
         return findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class );
     }
     
@@ -272,50 +275,6 @@ public class OntModelImpl
      */
     public Iterator listIndividuals() {
         return queryFor( m_individualsQuery, m_individualsQueryAlias, Individual.class );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an iterator that ranges over the axiom resources in this model.  Example
-     * axioms include the {@link AllDifferent} axiom in OWL, which allows an ontology
-     * conveniently to express the unique names assumption for a bounded set of class
-     * descriptions.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
-     * 
-     * @return An iterator over axiom resources. 
-     */
-    public Iterator listAxioms()  {
-        // Build a list queries for the axiom types in the language
-        // note I haven't pre-cached this query because it seems that it will not
-        // be called often! -ijd
-         
-        List queries = new ArrayList();
-        Iterator i = getProfile().getAxiomTypes();
-        
-        if (i.hasNext()) {
-            while (i.hasNext()) {
-                // create a query for each axiom type
-                Query q = new Query();
-                q.addMatch( Query.X, RDF.type.asNode(), ((Resource) i.next()).asNode() );
-                queries.add( queryHandler().prepareBindings( q, new Node[] {Query.X} ) );
-            }
-            
-            // take the first query first
-            BindingQueryPlan first = (BindingQueryPlan) queries.remove( 0 );
-            
-            // perform the query, mapping each result to an Axiom
-            return queryFor( first, queries, Axiom.class );
-        }
-        else {
-            // we can use i to indicate that there are no axioms 
-            return i;
-        }
     }
     
 
@@ -356,6 +315,7 @@ public class OntModelImpl
      * @see Profile#ONE_OF
      */
     public Iterator listEnumeratedClasses()  {
+        checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
         return findByDefiningPropertyAs( getProfile().ONE_OF(), EnumeratedClass.class );
     }
     
@@ -376,6 +336,7 @@ public class OntModelImpl
      * @see Profile#UNION_OF
      */
     public Iterator listUnionClasses() {
+        checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
         return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class );
     }
     
@@ -396,6 +357,7 @@ public class OntModelImpl
      * @see Profile#COMPLEMENT_OF
      */
     public Iterator listComplementClasses() {
+        checkProfileEntry( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
         return findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ComplementClass.class );
     }
     
@@ -416,6 +378,7 @@ public class OntModelImpl
      * @see Profile#INTERSECTION_OF
      */
     public Iterator listIntersectionClasses() {
+        checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
         return findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), IntersectionClass.class );
     }
     
@@ -461,10 +424,30 @@ public class OntModelImpl
      * @see Profile#RESTRICTION
      */
     public Iterator listRestrictions() {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         return findByTypeAs( getProfile().RESTRICTION(), Restriction.class );
     }
 
 
+    /**
+     * <p>
+     * Answer an iterator that ranges over the nodes that denote pair-wise disjointness between
+     * sets of classes.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
+     * the completeness of the deductive extension of the underlying graph.  See class
+     * overview for more details.
+     * </p>
+     * 
+     * @return An iterator over AllDifferent nodes. 
+     */
+    public Iterator listAllDifferent() {
+        checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
+        return findByTypeAs( getProfile().ALL_DIFFERENT(), AllDifferent.class );
+    }
+    
+   
     /**
      * <p>
      * Answer an iterator that ranges over the properties in this model that are declared
@@ -481,6 +464,7 @@ public class OntModelImpl
      * @see Profile#getAnnotationProperties()
      */
     public Iterator listAnnotationProperties() {
+        checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
         Resource r = (Resource) getProfile().ANNOTATION_PROPERTY();
         
         if (r == null) {
@@ -506,6 +490,7 @@ public class OntModelImpl
      * @return An Ontology resource.
      */
     public Ontology createOntology( String uri ) {
+        checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
         return (Ontology) createOntResource( Ontology.class, getProfile().ONTOLOGY(), uri );
     }
     
@@ -516,10 +501,10 @@ public class OntModelImpl
      * will be created in the updateable sub-graph of the ontology model. 
      * </p>
      * 
-     * @param cls The ontology class to which the individual belongs
+     * @param cls Resource representing the ontology class to which the individual belongs
      * @return A new anoymous Individual of the given class.
      */
-    public Individual createIndividual( OntClass cls ) {
+    public Individual createIndividual( Resource cls ) {
         return (Individual) createOntResource( Individual.class, cls, null );
     }
     
@@ -531,10 +516,11 @@ public class OntModelImpl
      * the updateable sub-graph of the ontology model. 
      * </p>
      * 
+     * @param cls Resource representing the ontology class to which the individual belongs
      * @param uri The uri for the individual, or null for an anonymous individual.
      * @return An Individual resource.
      */
-    public Individual createIndividual( OntClass cls, String uri ) {
+    public Individual createIndividual( Resource cls, String uri ) {
         return (Individual) createOntResource( Individual.class, cls, uri );
     }
     
@@ -552,6 +538,7 @@ public class OntModelImpl
      * @return An ObjectProperty resource.
      */
     public ObjectProperty createObjectProperty( String uri ) {
+        checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
         return (ObjectProperty) createOntResource( ObjectProperty.class, getProfile().OBJECT_PROPERTY(), uri );
     }
     
@@ -569,6 +556,7 @@ public class OntModelImpl
      * @return A DatatypeProperty resource.
      */
     public DatatypeProperty createDatatypeProperty( String uri ) {
+        checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
         return (DatatypeProperty) createOntResource( DatatypeProperty.class, getProfile().DATATYPE_PROPERTY(), uri );
     }
     
@@ -584,6 +572,7 @@ public class OntModelImpl
      * @return An AnnotationProperty resource.
      */
     public AnnotationProperty createAnnotationProperty( String uri ) {
+        checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
         return (AnnotationProperty) createOntResource( AnnotationProperty.class, getProfile().ANNOTATION_PROPERTY(), uri );
     }
     
@@ -614,6 +603,7 @@ public class OntModelImpl
      * @return An anonymous Class resource.
      */
     public OntClass createClass() {
+        checkProfileEntry( getProfile().CLASS(), "CLASS" );
         return (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), null );
     }
     
@@ -629,6 +619,7 @@ public class OntModelImpl
      * @return A Class resource.
      */
     public OntClass createClass( String uri ) {
+        checkProfileEntry( getProfile().CLASS(), "CLASS" );
         return (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
     }
     
@@ -643,6 +634,7 @@ public class OntModelImpl
      * @return An anonymous Restriction resource.
      */
     public Restriction createRestriction() {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         return (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), null );
     }
     
@@ -658,10 +650,27 @@ public class OntModelImpl
      * @return A Restriction resource.
      */
     public Restriction createRestriction( String uri ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         return (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
     }
     
    
+    /**
+     * <p>
+     * Answer a new, anonymous node representing the fact that a given set of classes are all
+     * pair-wise distinct.  <code>AllDifferent</code> is a feature of OWL only, and is something
+     * of an anomoly in that it exists only to give a place to anchor the <code>distinctMembers</code>
+     * property, which is the actual expression of the fact. 
+     * </p>
+     * 
+     * @return A new AllDifferent resource
+     */
+    public AllDifferent createAllDifferent() {
+        checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
+        return (AllDifferent) createOntResource( AllDifferent.class, getProfile().ALL_DIFFERENT(), null );
+    }
+    
+    
     /**
      * <p>
      * Answer a resource that represents a generic ontology node in this model. If a resource
@@ -1175,6 +1184,20 @@ public class OntModelImpl
         return getResource( uri ).addProperty( RDF.type, rdfType );
     }
     
+    
+    /**
+     * <p>Throw an OntologyException if the term is not in language profile</p>
+     * 
+     * @param profileTerm The entry from the profile
+     * @param desc A label for the profile term
+     * @exception OntologyException if profileTerm is null.
+     */
+    protected void checkProfileEntry( Object profileTerm, String desc ) {
+        if (profileTerm == null) {
+            // not in the profile
+            throw new OntologyException( "Ontology term " + desc + " is not defined in the language profile for " + getProfile().getLabel() );
+        }
+    }
     
     
     //==============================================================================

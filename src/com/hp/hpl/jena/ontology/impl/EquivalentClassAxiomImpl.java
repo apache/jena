@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.5 $
+ * Created            29-Apr-2003
+ * Filename           $RCSfile: EquivalentClassAxiomImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-04-30 09:59:25 $
@@ -22,77 +22,91 @@
 package com.hp.hpl.jena.ontology.impl;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 
 
 /**
  * <p>
- * Ontology language profile implementation for the Lite variant of the OWL 2002/07 language.
+ * Implementation of the axiom denoting equivalence between classes.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.5 2003-04-30 09:59:25 ian_dickinson Exp $
+ * @version CVS $Id: EquivalentClassAxiomImpl.java,v 1.1 2003-04-30 09:59:25 ian_dickinson Exp $
  */
-public class OWLLiteProfile
-    extends OWLProfile
+public class EquivalentClassAxiomImpl
+    extends ClassAxiomImpl
+    implements EquivalentClassAxiom 
 {
     // Constants
     //////////////////////////////////
 
-
     // Static variables
     //////////////////////////////////
-
 
     // Instance variables
     //////////////////////////////////
 
-
     // Constructors
     //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct a class equivalence axiom.
+     * </p>
+     * 
+     * @param subjClass The subject class in the axiom
+     * @param objClass The object class in the axiom
+     */
+    public EquivalentClassAxiomImpl( Resource subjClass, Resource objClass ) {
+        super( subjClass, ((OntModel) subjClass.getModel()).getProfile().EQUIVALENT_CLASS(), objClass  );
+    }
+
+
+    /**
+     * <p>
+     * Construct a class equivalence axiom more efficiently. Package access only.
+     * </p>
+     * 
+     * @param subjClass The subject class in the axiom
+     * @param equivClassP Assumed to be the equivalentClass predicate (not tested, taken on faith).
+     * @param objClass The object class in the axiom
+     */
+    EquivalentClassAxiomImpl(  Resource subjClass, Property equivClassP, Resource objClass ) {
+        super( subjClass, equivClassP, objClass  );
+    }
 
 
     // External signature methods
     //////////////////////////////////
 
-    public Resource NOTHING() {                     return null; }
-    public Property COMPLEMENT_OF() {               return null; }
-    public Property DISJOINT_WITH() {               return null; }
-    public Property HAS_VALUE() {                   return null; }
-    public Property ONE_OF() {                      return null; }
-    public Property UNION_OF() {                    return null; }
-    public Property SAME_AS() {                     return null; }
-    
-
-    /**
+    /** 
      * <p>
-     * Answer a descriptive string for this profile, for use in debugging and other output.
+     * Answer true if the axiom has modality <i>complete</i>. This is only properly
+     * defined for the distinction between <code>subClassOf</code> and <code>equivalentClass</code>,
+     * but by default is assumed true.
      * </p>
-     * @return "OWL Lite"
+     * 
+     * @return True (class equivalence is a complete, not partial, modality)
      */
-    public String getLabel() {
-        return "OWL Lite";
+    public boolean isComplete() {
+        return true;
     }
-    
-    
-    
+
 
     // Internal implementation methods
     //////////////////////////////////
-
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
-
 }
-
-
 
 
 /*
@@ -125,3 +139,9 @@ public class OWLLiteProfile
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/* TODO delete me
+public class EquivalentClassAxiomImpl{
+
+}
+
+*/

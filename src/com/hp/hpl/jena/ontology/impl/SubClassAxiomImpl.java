@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.5 $
+ * Created            29-Apr-2003
+ * Filename           $RCSfile: SubClassAxiomImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-04-30 09:59:25 $
@@ -24,75 +24,87 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
-
 
 
 /**
  * <p>
- * Ontology language profile implementation for the Lite variant of the OWL 2002/07 language.
+ * Implementation of the sub-class-of axiom 
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.5 2003-04-30 09:59:25 ian_dickinson Exp $
+ * @version CVS $Id: SubClassAxiomImpl.java,v 1.1 2003-04-30 09:59:25 ian_dickinson Exp $
  */
-public class OWLLiteProfile
-    extends OWLProfile
+public class SubClassAxiomImpl 
+    extends ClassAxiomImpl
+    implements SubClassAxiom
 {
     // Constants
     //////////////////////////////////
 
-
     // Static variables
     //////////////////////////////////
-
 
     // Instance variables
     //////////////////////////////////
 
-
     // Constructors
     //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct a subClassOf axiom.
+     * </p>
+     * 
+     * @param subClass The class resource that is the sub-class in this axiom
+     * @param superClass The class resource that is the super-class in this axiom
+     */
+    public SubClassAxiomImpl(  Resource subClass, Resource superClass ) {
+        super( subClass, ((OntModel) subClass.getModel()).getProfile().SUB_CLASS_OF(), superClass  );
+    }
+
+
+    /**
+     * <p>
+     * Construct a subClassOf axiom more efficiently. Package access only.
+     * </p>
+     * 
+     * @param subClass The class resource that is the sub-class in this axiom
+     * @param subClassP Assumed to be the subClassOf predicate (not tested, taken on faith).
+     * @param superClass The class resource that is the super-class in this axiom
+     */
+    SubClassAxiomImpl(  Resource subClass, Property subClassP, Resource superClass ) {
+        super( subClass, subClassP, superClass  );
+    }
 
 
     // External signature methods
     //////////////////////////////////
 
-    public Resource NOTHING() {                     return null; }
-    public Property COMPLEMENT_OF() {               return null; }
-    public Property DISJOINT_WITH() {               return null; }
-    public Property HAS_VALUE() {                   return null; }
-    public Property ONE_OF() {                      return null; }
-    public Property UNION_OF() {                    return null; }
-    public Property SAME_AS() {                     return null; }
-    
-
-    /**
+    /** 
      * <p>
-     * Answer a descriptive string for this profile, for use in debugging and other output.
+     * Answer true if the axiom has modality <i>complete</i>. This is only properly
+     * defined for the distinction between <code>subClassOf</code> and <code>equivalentClass</code>,
+     * but by default is assumed true.
      * </p>
-     * @return "OWL Lite"
+     * 
+     * @return False (sub-class is a partial, not complete, modality)
      */
-    public String getLabel() {
-        return "OWL Lite";
+    public boolean isComplete() {
+        return false;
     }
-    
-    
-    
+
 
     // Internal implementation methods
     //////////////////////////////////
-
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
-
 }
-
-
 
 
 /*
@@ -125,3 +137,9 @@ public class OWLLiteProfile
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/* TODO delete me
+public class SubClassAxiomImpl{
+
+}
+
+*/

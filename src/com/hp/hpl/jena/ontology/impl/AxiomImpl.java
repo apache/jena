@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: AxiomImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:56 $
+ * Last modified on   $Date: 2003-04-30 09:59:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -25,8 +25,8 @@ package com.hp.hpl.jena.ontology.impl;
 // Imports
 ///////////////
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.impl.StatementImpl;
+import com.hp.hpl.jena.rdf.model.*;
 
 
 
@@ -37,10 +37,10 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AxiomImpl.java,v 1.3 2003-04-08 22:11:56 ian_dickinson Exp $
+ * @version CVS $Id: AxiomImpl.java,v 1.4 2003-04-30 09:59:25 ian_dickinson Exp $
  */
 public class AxiomImpl 
-    extends OntResourceImpl
+    extends StatementImpl
     implements Axiom
 {
     // Constants
@@ -48,28 +48,6 @@ public class AxiomImpl
 
     // Static variables
     //////////////////////////////////
-
-    /** 
-     * A factory for generating Axiom facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
-     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
-     */
-    public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
-            if (canWrap( n, eg )) {
-                return new AxiomImpl( n, eg );
-            }
-            else {
-                throw new OntologyException( "Cannot convert node " + n + " to Axiom");
-            } 
-        }
-        
-        public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an Axiom facet if it has rdf:type owl:AllDifferent or other axiom
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, Axiom.class );
-        }
-    };
 
 
     // Instance variables
@@ -80,14 +58,15 @@ public class AxiomImpl
 
     /**
      * <p>
-     * Construct an axiom represented by the given node in the given graph.
+     * Construct an axiom of the given predicate over the given subject and object.
      * </p>
      * 
-     * @param n The node that represents the resource
-     * @param g The enh graph that contains n
+     * @param subj The subject of the axiom
+     * @param pred The axiom predicate
+     * @param obj The object of the axiom
      */
-    public AxiomImpl( Node n, EnhGraph g ) {
-        super( n, g );
+    public AxiomImpl(  Resource subj, Property pred, Resource obj ) {
+        super( subj, pred, obj  );
     }
 
 

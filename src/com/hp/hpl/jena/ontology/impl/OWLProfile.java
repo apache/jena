@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:44:10 $
+ * Last modified on   $Date: 2003-04-30 09:59:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.8 2003-04-28 15:44:10 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.9 2003-04-30 09:59:24 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -191,6 +191,16 @@ public class OWLProfile
         }
     }
 
+    /**
+     * <p>
+     * Answer a descriptive string for this profile, for use in debugging and other output.
+     * </p>
+     * @return "OWL Full"
+     */
+    public String getLabel() {
+        return "OWL Full";
+    }
+    
     // Internal implementation methods
     //////////////////////////////////
 

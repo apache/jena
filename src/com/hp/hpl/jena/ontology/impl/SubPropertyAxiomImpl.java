@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.5 $
+ * Created            29-Apr-2003
+ * Filename           $RCSfile: SubPropertyAxiomImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-04-30 09:59:25 $
@@ -22,77 +22,77 @@
 package com.hp.hpl.jena.ontology.impl;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
-
 
 
 /**
  * <p>
- * Ontology language profile implementation for the Lite variant of the OWL 2002/07 language.
+ * Implementation of the sub-property-of axiom.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.5 2003-04-30 09:59:25 ian_dickinson Exp $
+ * @version CVS $Id: SubPropertyAxiomImpl.java,v 1.1 2003-04-30 09:59:25 ian_dickinson Exp $
  */
-public class OWLLiteProfile
-    extends OWLProfile
+public class SubPropertyAxiomImpl
+    extends PropertyAxiomImpl
+    implements SubPropertyAxiom 
 {
     // Constants
     //////////////////////////////////
 
-
     // Static variables
     //////////////////////////////////
-
 
     // Instance variables
     //////////////////////////////////
 
-
     // Constructors
     //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct a subPropertyOf axiom.
+     * </p>
+     * 
+     * @param subProperty The property resource that is the sub-property in this axiom
+     * @param superProperty The property resource that is the super-property in this axiom
+     */
+    public SubPropertyAxiomImpl(  Resource subProperty, Resource superProperty ) {
+        super( subProperty, ((OntModel) subProperty.getModel()).getProfile().SUB_PROPERTY_OF(), superProperty  );
+    }
+
+
+    /**
+     * <p>
+     * Construct a subPropertyOf axiom more efficiently. Package access only.
+     * </p>
+     * 
+     * @param subProperty The property resource that is the sub-property in this axiom
+     * @param subPropertyP Assumed to be the subPropertyOf predicate (not tested, taken on faith).
+     * @param superProperty The property resource that is the super-property in this axiom
+     */
+    SubPropertyAxiomImpl(  Resource subProperty, Property subPropertyP, Resource superProperty ) {
+        super( subProperty, subPropertyP, superProperty  );
+    }
+
 
 
     // External signature methods
     //////////////////////////////////
 
-    public Resource NOTHING() {                     return null; }
-    public Property COMPLEMENT_OF() {               return null; }
-    public Property DISJOINT_WITH() {               return null; }
-    public Property HAS_VALUE() {                   return null; }
-    public Property ONE_OF() {                      return null; }
-    public Property UNION_OF() {                    return null; }
-    public Property SAME_AS() {                     return null; }
-    
-
-    /**
-     * <p>
-     * Answer a descriptive string for this profile, for use in debugging and other output.
-     * </p>
-     * @return "OWL Lite"
-     */
-    public String getLabel() {
-        return "OWL Lite";
-    }
-    
-    
-    
-
     // Internal implementation methods
     //////////////////////////////////
-
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
-
 }
-
-
 
 
 /*
@@ -124,4 +124,3 @@ public class OWLLiteProfile
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Axiom.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:34 $
+ * Last modified on   $Date: 2003-04-30 09:58:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -22,8 +22,10 @@
 package com.hp.hpl.jena.ontology;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.rdf.model.Statement;
 
 
 /**
@@ -34,10 +36,10 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Axiom.java,v 1.1 2003-03-12 17:16:34 ian_dickinson Exp $
+ * @version CVS $Id: Axiom.java,v 1.2 2003-04-30 09:58:34 ian_dickinson Exp $
  */
 public interface Axiom
-    extends OntResource
+    extends Statement
 {
     // Constants
     //////////////////////////////////

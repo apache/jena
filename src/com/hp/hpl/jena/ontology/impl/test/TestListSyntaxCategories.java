@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:45:05 $
+ * Last modified on   $Date: 2003-04-30 09:59:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.4 2003-04-28 15:45:05 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.5 2003-04-30 09:59:34 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -166,25 +166,24 @@ public class TestListSyntaxCategories
             }
         },
         
-        // axioms
-        new DoListTest( "OWL list axioms",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL list all different",  "file:testing/ontology/owl/list-syntax/test.rdf",  ProfileRegistry.OWL_LANG,  1,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
-                return m.listAxioms();
+                return m.listAllDifferent();
             }
             public boolean test( Resource r ) {
-                return r instanceof Axiom;
+                return r instanceof AllDifferent;
             }
         },
-        new DoListTest( "DAML list axioms",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  0,  
-                        null ) 
+        new DoListTest( "DAML list all different",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  0,  null,
+                        true /* exception expected */ ) 
         {
             public Iterator doList( OntModel m ) {
-                return m.listAxioms();
+                return m.listAllDifferent();
             }
             public boolean test( Resource r ) {
-                return r instanceof Axiom;
+                return r instanceof AllDifferent;
             }
         },
         
@@ -402,18 +401,17 @@ public class TestListSyntaxCategories
             }
         },
         
-        // axioms
-        new DoListTest( "OWL+import list axioms",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
+        new DoListTest( "OWL+import list all different",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  1,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
-                return m.listAxioms();
+                return m.listAllDifferent();
             }
             public boolean test( Resource r ) {
-                return r instanceof Axiom;
+                return r instanceof AllDifferent;
             }
         },
-        
+
         // classes
         new DoListTest( "OWL+import list classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  ProfileRegistry.OWL_LANG,  14,  
                         null ) 
@@ -529,13 +527,19 @@ public class TestListSyntaxCategories
         protected String m_lang;
         protected int m_count;
         protected String[] m_expected;
+        protected boolean m_exExpected;     // exception expected during list operation
         
         protected DoListTest( String name, String fileName, String lang, int count, String[] expected ) {
+            this( name, fileName, lang, count, expected, false );
+        }
+        
+        protected DoListTest( String name, String fileName, String lang, int count, String[] expected, boolean exExpected ) {
             super( name );
             m_fileName = fileName;
             m_lang = lang;
             m_count = count;
             m_expected = expected;
+            m_exExpected = exExpected;
         }
         
         public void setUp() {
@@ -548,35 +552,47 @@ public class TestListSyntaxCategories
             
             m.read( m_fileName );
             
-            Iterator i = doList( m );
-            List expected = expected( m );
-            int actual = 0;
-            int extraneous = 0;
-            
-            // now we walk the iterator
-            while (i.hasNext()) {
-                Resource res = (Resource) i.next();
-                
-                assertTrue( "Should not fail node test on " + res, test( res ));
-                
-                actual++;
-                if (expected != null) {
-                    if (expected.contains( res )) {
-                        expected.remove( res );
-                    }
-                    else {
-                        if (!res.isAnon()) {
-                            // since we can't list expected anon resources, we ignore them in this check
-                            extraneous++;
-                        } 
-                    }
-                }
+            boolean exOccurred = false;
+            Iterator i = null;
+            try {
+                i = doList( m );
+            }
+            catch (OntologyException e) {
+                exOccurred = true;
             }
             
-            assertEquals( "Wrong number of results returned", m_count, actual );
-            if (expected != null) {
-                assertTrue( "Did not find all expected resources in iterator", expected.isEmpty() );
-                assertEquals( "Found extraneous results, not in expected list", 0, extraneous );
+            assertEquals( "Ontology exception" + (m_exExpected ? " was " : " was not ") + "expected", m_exExpected, exOccurred );
+            
+            if (!exOccurred) {       
+                List expected = expected( m );
+                int actual = 0;
+                int extraneous = 0;
+                
+                // now we walk the iterator
+                while (i.hasNext()) {
+                    Resource res = (Resource) i.next();
+                    
+                    assertTrue( "Should not fail node test on " + res, test( res ));
+                    
+                    actual++;
+                    if (expected != null) {
+                        if (expected.contains( res )) {
+                            expected.remove( res );
+                        }
+                        else {
+                            if (!res.isAnon()) {
+                                // since we can't list expected anon resources, we ignore them in this check
+                                extraneous++;
+                            } 
+                        }
+                    }
+                }
+                
+                assertEquals( "Wrong number of results returned", m_count, actual );
+                if (expected != null) {
+                    assertTrue( "Did not find all expected resources in iterator", expected.isEmpty() );
+                    assertEquals( "Found extraneous results, not in expected list", 0, extraneous );
+                }
             }
         }
         

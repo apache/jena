@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.5 $
+ * Created            29-Apr-2003
+ * Filename           $RCSfile: EquivalentPropertyAxiomImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-04-30 09:59:25 $
@@ -22,77 +22,91 @@
 package com.hp.hpl.jena.ontology.impl;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 
 
 /**
  * <p>
- * Ontology language profile implementation for the Lite variant of the OWL 2002/07 language.
+ * Implementation of the axiom denoting equivalence between properties.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.5 2003-04-30 09:59:25 ian_dickinson Exp $
+ * @version CVS $Id: EquivalentPropertyAxiomImpl.java,v 1.1 2003-04-30 09:59:25 ian_dickinson Exp $
  */
-public class OWLLiteProfile
-    extends OWLProfile
+public class EquivalentPropertyAxiomImpl
+    extends PropertyAxiomImpl
+    implements EquivalentPropertyAxiom 
 {
     // Constants
     //////////////////////////////////
 
-
     // Static variables
     //////////////////////////////////
-
 
     // Instance variables
     //////////////////////////////////
 
-
     // Constructors
     //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct a property equivalence axiom.
+     * </p>
+     * 
+     * @param subjProperty The subject property in the axiom
+     * @param objProperty The object property in the axiom
+     */
+    public EquivalentPropertyAxiomImpl( Resource subjProperty, Resource objProperty ) {
+        super( subjProperty, ((OntModel) subjProperty.getModel()).getProfile().EQUIVALENT_PROPERTY(), objProperty  );
+    }
+
+
+    /**
+     * <p>
+     * Construct a property equivalence axiom more efficiently. Package access only.
+     * </p>
+     * 
+     * @param subjProperty The subject property in the axiom
+     * @param equivPropertyP Assumed to be the equivalentProperty predicate (not tested, taken on faith).
+     * @param objProperty The object property in the axiom
+     */
+    EquivalentPropertyAxiomImpl(  Resource subjProperty, Property equivPropertyP, Resource objProperty ) {
+        super( subjProperty, equivPropertyP, objProperty  );
+    }
 
 
     // External signature methods
     //////////////////////////////////
 
-    public Resource NOTHING() {                     return null; }
-    public Property COMPLEMENT_OF() {               return null; }
-    public Property DISJOINT_WITH() {               return null; }
-    public Property HAS_VALUE() {                   return null; }
-    public Property ONE_OF() {                      return null; }
-    public Property UNION_OF() {                    return null; }
-    public Property SAME_AS() {                     return null; }
-    
-
-    /**
+    /** 
      * <p>
-     * Answer a descriptive string for this profile, for use in debugging and other output.
+     * Answer true if the axiom has modality <i>complete</i>. This is only properly
+     * defined for the distinction between <code>subPropertyOf</code> and <code>equivalentProperty</code>,
+     * but by default is assumed true.
      * </p>
-     * @return "OWL Lite"
+     * 
+     * @return True (property equivalence is a complete, not partial, modality)
      */
-    public String getLabel() {
-        return "OWL Lite";
+    public boolean isComplete() {
+        return true;
     }
-    
-    
-    
+
 
     // Internal implementation methods
     //////////////////////////////////
-
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
-
 }
-
-
 
 
 /*
@@ -124,4 +138,5 @@ public class OWLLiteProfile
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 

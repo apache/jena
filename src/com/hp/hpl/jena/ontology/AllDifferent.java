@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:55 $
+ * Last modified on   $Date: 2003-04-30 09:58:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
 
 /**
  * <p>
- * Interface defining the axiom form in which all members of a collection are
+ * Interface defining an individual in which all members of a collection are
  * declared pair-wise disjoint.  This allows ontologies that wish to support the
  * unique names assumption to add this condition in languages (like OWL) that
  * do not make the same assumption, with a minimum number of statements.
@@ -42,10 +42,10 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.4 2003-04-08 22:11:55 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.5 2003-04-30 09:58:34 ian_dickinson Exp $
  */
 public interface AllDifferent
-    extends Axiom
+    extends OntResource
 {
     // Constants
     //////////////////////////////////

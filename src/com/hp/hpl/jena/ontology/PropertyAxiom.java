@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.5 $
+ * Created            28-Apr-2003
+ * Filename           $RCSfile: PropertyAxiom.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-30 09:59:25 $
+ * Last modified on   $Date: 2003-04-30 09:58:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,80 +19,32 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.impl;
+package com.hp.hpl.jena.ontology;
 
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.*;
-
-
 
 /**
  * <p>
- * Ontology language profile implementation for the Lite variant of the OWL 2002/07 language.
+ * Encapsulates axioms about properties, such as sub-property and equivalent property.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.5 2003-04-30 09:59:25 ian_dickinson Exp $
+ * @version CVS $Id: PropertyAxiom.java,v 1.1 2003-04-30 09:58:33 ian_dickinson Exp $
  */
-public class OWLLiteProfile
-    extends OWLProfile
+public interface PropertyAxiom 
+    extends Axiom
 {
     // Constants
     //////////////////////////////////
 
-
-    // Static variables
-    //////////////////////////////////
-
-
-    // Instance variables
-    //////////////////////////////////
-
-
-    // Constructors
-    //////////////////////////////////
-
-
     // External signature methods
     //////////////////////////////////
 
-    public Resource NOTHING() {                     return null; }
-    public Property COMPLEMENT_OF() {               return null; }
-    public Property DISJOINT_WITH() {               return null; }
-    public Property HAS_VALUE() {                   return null; }
-    public Property ONE_OF() {                      return null; }
-    public Property UNION_OF() {                    return null; }
-    public Property SAME_AS() {                     return null; }
-    
-
-    /**
-     * <p>
-     * Answer a descriptive string for this profile, for use in debugging and other output.
-     * </p>
-     * @return "OWL Lite"
-     */
-    public String getLabel() {
-        return "OWL Lite";
-    }
-    
-    
-    
-
-    // Internal implementation methods
-    //////////////////////////////////
-
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
 
 }
-
-
 
 
 /*
@@ -124,4 +76,5 @@ public class OWLLiteProfile
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            03-Apr-2003
  * Filename           $RCSfile: TestCreate.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-03 15:19:18 $
+ * Last modified on   $Date: 2003-04-30 09:59:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,7 +26,6 @@ package com.hp.hpl.jena.ontology.impl.test;
 ///////////////
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.*;
 
@@ -38,7 +37,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestCreate.java,v 1.1 2003-04-03 15:19:18 ian_dickinson Exp $
+ * @version CVS $Id: TestCreate.java,v 1.2 2003-04-30 09:59:34 ian_dickinson Exp $
  */
 public class TestCreate 
     extends TestCase
@@ -128,9 +127,9 @@ public class TestCreate
             public boolean test( OntResource r )        { return r instanceof DatatypeProperty;}
         },
 
-        new CreateTestCase( "OWL create axiom", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { return m.createAxiom( OWL.AllDifferent, null ); }
-            public boolean test( OntResource r )        { return r instanceof Axiom;}
+        new CreateTestCase( "OWL create allDifferent", ProfileRegistry.OWL_LANG, null ) {
+            public OntResource doCreate( OntModel m )   { return m.createAllDifferent(); }
+            public boolean test( OntResource r )        { return r instanceof AllDifferent;}
         },
         
         new CreateTestCase( "OWL create restriction", ProfileRegistry.OWL_LANG, NS + "C" ) {

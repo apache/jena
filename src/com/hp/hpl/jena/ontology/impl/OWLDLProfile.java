@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLDLProfile.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-16 07:03:19 $
- *               by   $Author: jeremy_carroll $
+ * Last modified on   $Date: 2003-04-30 09:59:25 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLDLProfile.java,v 1.4 2003-04-16 07:03:19 jeremy_carroll Exp $
+ * @version CVS $Id: OWLDLProfile.java,v 1.5 2003-04-30 09:59:25 ian_dickinson Exp $
  */
 public class OWLDLProfile
     extends OWLProfile
@@ -60,6 +60,17 @@ public class OWLDLProfile
     //////////////////////////////////
 	public Property SAME_AS() {                     return null; }
 
+
+    /**
+     * <p>
+     * Answer a descriptive string for this profile, for use in debugging and other output.
+     * </p>
+     * @return "OWL DL"
+     */
+    public String getLabel() {
+        return "OWL DL";
+    }
+    
 
     // Internal implementation methods
     //////////////////////////////////
