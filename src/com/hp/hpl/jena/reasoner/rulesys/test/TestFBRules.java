@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.15 2003-07-10 17:06:15 der Exp $
+ * $Id: TestFBRules.java,v 1.16 2003-07-13 21:15:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-07-10 17:06:15 $
+ * @version $Revision: 1.16 $ on $Date: 2003-07-13 21:15:56 $
  */
 public class TestFBRules extends TestCase {
     
@@ -518,6 +518,28 @@ public class TestFBRules extends TestCase {
         assertNotNull(valueInstance);
         Node valueInstance2 = getValue(infgraph, a, p);
         assertEquals(valueInstance, valueInstance2);
+    }
+    
+    /**
+     * Test case for makeInstance which failed during development.
+     */
+    public void testMakeInstanceBug() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, ty, r));
+        data.add(new Triple(r, sC, Functor.makeFunctorNode("some", new Node[] {p, C1})));
+        List rules = Rule.parseRules(
+        "[some1: (?C rdfs:subClassOf some(?P, ?D)) ->"
+        + "[some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ]" 
+        + "[some1b2: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ]"
+        + "]");
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        
+        Node valueInstance = getValue(infgraph, a, p);
+        assertNotNull(valueInstance);
+        Node valueType = getValue(infgraph, valueInstance, ty);
+        assertEquals(valueType, C1);
+        
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.11 2003-07-06 12:10:38 der Exp $
+ * $Id: DebugOWL.java,v 1.12 2003-07-13 21:15:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-07-06 12:10:38 $
+ * @version $Revision: 1.12 $ on $Date: 2003-07-13 21:15:56 $
  */
 public class DebugOWL {
 
@@ -74,6 +74,9 @@ public class DebugOWL {
     /** reasoner config: experimental RDFS - hybrid + TGC */
     public static final int RDFSExpt = 5;
     
+    /** reasoner config: experimental OWL */
+    public static final int OWLExpt = 6;
+    
     
     /**
      * Construct an empty test harness.
@@ -115,6 +118,11 @@ public class DebugOWL {
             
             case RDFSExpt:
                 reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
+                break;
+            
+            case OWLExpt:
+                reasoner = OWLExptRuleReasonerFactory.theInstance().create(null);
+//                ((OWLExptRuleReasoner)reasoner).setTraceOn(true);
                 break;
             
         } 
@@ -300,7 +308,7 @@ public class DebugOWL {
             String food = "file:testing/reasoners/bugs/food.owl";
 
             // Example from ontology development which takes s rather than ms            
-            new DebugOWL(OWLFB).listClassesOn(dataFile2);
+            new DebugOWL(OWLExpt).listClassesOn(dataFile2);
             
             // owl.owl goes into meltdown with even the forward rules
 //            new DebugOWL(OWLFB).run(schemaFile);

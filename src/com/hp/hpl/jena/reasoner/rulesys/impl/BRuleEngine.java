@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.20 2003-06-18 08:00:11 der Exp $
+ * $Id: BRuleEngine.java,v 1.21 2003-07-13 21:16:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -29,7 +29,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-06-18 08:00:11 $
+ * @version $Revision: 1.21 $ on $Date: 2003-07-13 21:16:15 $
  */
 public class BRuleEngine {
     
@@ -108,6 +108,7 @@ public class BRuleEngine {
      * should be reset() before future queries. 
      */
     public void addRule(Rule rule) {
+//        System.out.println("Adding rule: " + rule);
         ruleStore.addRule(rule);
     }
     

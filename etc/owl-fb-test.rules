@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.4 2003-07-11 16:37:40 der Exp $
+# $Id: owl-fb-test.rules,v 1.5 2003-07-13 21:16:47 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -173,7 +173,13 @@
 		
 [restriction6: (?C rdfs:subClassOf min(?P, ?X)), (?C rdfs:subClassOf max(?P, ?X)) 
        					-> (?C rdfs:subClassOf card(?P, ?X))]
-       					
+
+# Could limit the work done here by inserting an isFunctor guard?
+[restrictionPropagate1: (?C owl:equivalentClass ?R), (?D rdfs:subClassOf ?C) 
+                                -> (?D rdfs:subClassOf ?R) ]
+[restrictionPropagate2: (?C owl:equivalentClass ?R), (?D owl:equivalentClass ?C) 
+                                -> (?D owl:equivalentClass ?R) ]
+
 # Needed for the case where ?R is a restriction literal 
 # and so does not appear in the subject position
 [restrictionSubclass1: (?D owl:equivalentClass ?R), isFunctor(?R) ->
@@ -248,8 +254,14 @@
 					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
 					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass),
    ->
-    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), print('some1b1', ?X, ?C), makeInstance(?X, ?P, ?D, ?T) ] 
-    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), print('some1bb',?X, ?C, ?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+#    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b-temp: (?T rdf:type ?D) <- (?X rdf:type ?C), print('some1b4-temp',?X, ?C, ?T), 
+                                       bound(?T), print('some1b4-temp-2',?X, ?C, ?D, ?T), 
+                                       makeInstance(?X, ?P, ?D, ?T), print('some1b4-temp-3',?X, ?C, ?T)
+                                        ] 
     ]
     
 [someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) ->
@@ -278,10 +290,10 @@
 						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty) ]
 
 # This version looks strange but we are experimenting with droping the direct
-# subclass transitive closure and inferring from prototypes and don't what to have
-# to invoke that here    
-[restriction-inter-AT-R: (owl:Thing rdfs:subClassOf ?D) (?D owl:equivalentClass all(?P, ?C)) 
-						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty) ]
+# subclass transitive closure and inferring from prototypes, but that is being
+# done backwards for forwards subclass relationships are handled as special cases
+#[restriction-inter-AT-R: (owl:Thing rdfs:subClassOf ?D) (?D owl:equivalentClass all(?P, ?C)) 
+#						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty) ]
     
 #------------------------------------------------------------------
 # Disjointness
