@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.11 2003-08-26 18:15:21 der Exp $
+ * $Id: Util.java,v 1.12 2003-08-27 09:37:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-26 18:15:21 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-27 09:37:00 $
  */
 public class Util {
 
@@ -63,7 +63,9 @@ public class Util {
             if (v1 instanceof Number && v2 instanceof Number) {
                 if (v1 instanceof Float || v1 instanceof Double 
                         || v1 instanceof Float || v2 instanceof Double) {
-                            return Double.compare(((Number)v1).doubleValue(), ((Number)v2).doubleValue());                            
+                            double d1 = ((Number)v1).doubleValue();
+                            double d2 = ((Number)v2).doubleValue();
+                            return (d1 < d2) ? -1 : ( (d1 == d2) ? 0 : +1 );
                 } else {
                     long l1 = ((Number)v1).longValue();
                     long l2 = ((Number)v2).longValue();
