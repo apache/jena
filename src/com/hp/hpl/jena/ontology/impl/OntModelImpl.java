@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.52 $
+ * Revision           $Revision: 1.53 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-13 12:11:37 $
+ * Last modified on   $Date: 2003-11-20 17:43:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.52 2003-11-13 12:11:37 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.53 2003-11-20 17:43:16 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -257,6 +257,84 @@ public class OntModelImpl
     public ExtendedIterator listDatatypeProperties() {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
         return findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class );
+    }
+    
+
+    /**
+     * <p>
+     * Answer an iterator that ranges over the functional property resources in this model, i&#046;e&#046; 
+     * the resources with <code>rdf:type FunctionalProperty</code> or equivalent.  A functional
+     * property is a property that is defined in the ontology language semantics as having
+     * a unique domain element for each instance of the relationship.
+     * </p>
+     * <p>
+     * Specifically, the resources in this iterator will those whose type corresponds 
+     * to the value given in the ontology vocabulary associated with this model: see
+     * {@link Profile#FUNCTIONAL_PROPERTY}.
+     * </p>
+     * 
+     * @return An iterator over functional property resources. 
+     */
+    public ExtendedIterator listFunctionalProperties() {
+        checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
+        return findByTypeAs( getProfile().FUNCTIONAL_PROPERTY(), FunctionalProperty.class );
+    }
+    
+
+    /**
+     * <p>
+     * Answer an iterator that ranges over the transitive property resources in this model, i&#046;e&#046; 
+     * the resources with <code>rdf:type TransitiveProperty</code> or equivalent.
+     * </p>
+     * <p>
+     * Specifically, the resources in this iterator will those whose type corresponds 
+     * to the value given in the ontology vocabulary associated with this model: see
+     * {@link Profile#TRANSITIVE_PROPERTY}.
+     * </p>
+     * 
+     * @return An iterator over transitive property resources. 
+     */
+    public ExtendedIterator listTransitiveProperties() {
+        checkProfileEntry( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
+        return findByTypeAs( getProfile().TRANSITIVE_PROPERTY(), TransitiveProperty.class );
+    }
+    
+
+    /**
+     * <p>
+     * Answer an iterator that ranges over the symmetric property resources in this model, i&#046;e&#046; 
+     * the resources with <code>rdf:type SymmetricProperty</code> or equivalent.
+     * </p>
+     * <p>
+     * Specifically, the resources in this iterator will those whose type corresponds 
+     * to the value given in the ontology vocabulary associated with this model: see
+     * {@link Profile#SYMMETRIC_PROPERTY}.
+     * </p>
+     * 
+     * @return An iterator over symmetric property resources. 
+     */
+    public ExtendedIterator listSymmetricProperties() {
+        checkProfileEntry( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
+        return findByTypeAs( getProfile().SYMMETRIC_PROPERTY(), SymmetricProperty.class );
+    }
+    
+
+    /**
+     * <p>
+     * Answer an iterator that ranges over the inverse functional property resources in this model, i&#046;e&#046; 
+     * the resources with <code>rdf:type InverseFunctionalProperty</code> or equivalent.
+     * </p>
+     * <p>
+     * Specifically, the resources in this iterator will those whose type corresponds 
+     * to the value given in the ontology vocabulary associated with this model: see
+     * {@link Profile#INVERSE_FUNCTIONAL_PROPERTY}.
+     * </p>
+     * 
+     * @return An iterator over inverse functional property resources. 
+     */
+    public ExtendedIterator listInverseFunctionalProperties() {
+        checkProfileEntry( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
+        return findByTypeAs( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), InverseFunctionalProperty.class );
     }
     
 
