@@ -1,48 +1,34 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.8 2003-05-03 16:53:21 chris-dollin Exp $
+  $Id: TestFileGraphFactory.java,v 1.1 2003-05-03 16:53:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
+
 import junit.framework.*;
-import com.hp.hpl.jena.graph.query.test.*;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
+ 	@author hedgehog
 */
+public class TestFileGraphFactory extends AbstractTestGraphFactory
+    {
+    public TestFileGraphFactory( String name )
+        { super( name ); }
 
-public class TestPackage extends TestSuite {
+    public static TestSuite suite()
+        { return new TestSuite( TestFileGraphFactory.class ); }
 
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("graph");
-        addTest( "TestNode", TestNode.suite() );
-        addTest( "TestTriple", TestTriple.suite() );
-        addTest( "TestReifier", TestReifier.suite() );   
-        addTest( "TestTypedLiterals", TestTypedLiterals.suite() );
-        addTest( "TestGraphQuery", QueryTest.suite() );
-        // addTest( "TestFactory", TestFactory.suite() );
-        addTest( "TestFileGraph", TestFileGraph.suite() );
-        addTest( "TestFileGraphFactory", TestFileGraphFactory.suite() );
-        addTest( "TestCapabilities", TestCapabilities.suite() );
-        addTest( "TestGraphPrefixMapping", TestGraphPrefixMapping.suite() );       }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+    public GraphFactory getGraphFactory()
+        { return new FileGraphFactory( getTempDirectory(), true ); } 
     }
 
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

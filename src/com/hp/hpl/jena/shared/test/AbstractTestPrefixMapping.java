@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.3 2003-05-03 07:44:50 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.4 2003-05-03 16:53:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -80,36 +80,39 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     
     /**
        test that we can extract a proper Map from a PrefixMapping
-   */
-   public void testPrefixMappingMap()
-       {
-       PrefixMapping ns = getMapping();
-       ns.setNsPrefix( "crisp", crispURI );
-       ns.setNsPrefix( "rope", ropeURI );
-       Map map = ns.getNsPrefixMap();
-       assertEquals( "map should have two elements", 2, map.size() );
-       assertEquals( "", crispURI, map.get( "crisp" ) );
-       assertEquals( "", "scheme:rope/string#", map.get( "rope" ) );
-       }
+    */
+    public void testPrefixMappingMap()
+        {
+        PrefixMapping ns = getCrispyRope();
+        Map map = ns.getNsPrefixMap();
+        assertEquals( "map should have two elements", 2, map.size() );
+        assertEquals( crispURI, map.get( "crisp" ) );
+        assertEquals( "scheme:rope/string#", map.get( "rope" ) );
+        }
     
-     /**
+    /**
        test that the Map returned by getNsPrefixMap does not alias (parts of)
        the secret internal map of the PrefixMapping
-        TODO reduce duplication between this test and the previous one
-   */
-   public void testPrefixMappingSecret()
-       {
-       PrefixMapping ns = getMapping();
-       ns.setNsPrefix( "crisp", crispURI);
-       ns.setNsPrefix( "rope", ropeURI );
-       Map map = ns.getNsPrefixMap();
-   /* */
-       map.put( "crisp", "with/onions" );
-       map.put( "sandwich", "with/cheese" );
-       assertEquals( "", crispURI, ns.getNsPrefixURI( "crisp" ) );
-       assertEquals( "", ropeURI, ns.getNsPrefixURI( "rope" ) );
-       assertEquals( "", null, ns.getNsPrefixURI( "sandwich" ) );
-       }
+    */
+    public void testPrefixMappingSecret()
+        {
+        PrefixMapping ns = getCrispyRope();
+        Map map = ns.getNsPrefixMap();
+    /* */
+        map.put( "crisp", "with/onions" );
+        map.put( "sandwich", "with/cheese" );
+        assertEquals( crispURI, ns.getNsPrefixURI( "crisp" ) );
+        assertEquals( ropeURI, ns.getNsPrefixURI( "rope" ) );
+        assertEquals( null, ns.getNsPrefixURI( "sandwich" ) );
+        }
+        
+    private PrefixMapping getCrispyRope()
+        {
+        PrefixMapping ns = getMapping();
+        ns.setNsPrefix( "crisp", crispURI);
+        ns.setNsPrefix( "rope", ropeURI );        
+        return ns;
+        }
     
     /**
        these are strings that should not change when they are prefix-expanded

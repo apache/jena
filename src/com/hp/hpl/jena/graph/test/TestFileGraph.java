@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFileGraph.java,v 1.1 2003-05-03 14:11:12 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.2 2003-05-03 16:53:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.util.*;
 
 import java.io.*;
 
@@ -78,7 +77,7 @@ public class TestFileGraph extends GraphTestBase
      */
     public void testReadback( String content, String prefix, String suffix )
         {
-        File foo = tempFile( prefix, suffix );
+        File foo = tempFileName( prefix, suffix );
         Graph original = graphWith( content );
         Graph g = new FileGraph( foo, true );
         g.getBulkUpdateHandler().add( original );
@@ -88,28 +87,8 @@ public class TestFileGraph extends GraphTestBase
         g2.close();
         }
         
-    /**
-        create a temporary file that will be deleted on exit, and do something
-        sensible with any IO exceptions - namely, throw them up wrapped in
-        a JenaException.
-        
-        @param prefix the prefix for File.createTempFile
-        @param suffix the suffix for File.createTempFile
-    	@return the temporary File
-     */
-    private File tempFile( String prefix, String suffix )
-        {
-        try
-            {
-            File foo = File.createTempFile( prefix, suffix );
-            foo.deleteOnExit();
-            return foo;
-            }
-        catch (IOException e)
-            { throw new JenaException( e ); }
-        }       
-    }
 
+    }
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

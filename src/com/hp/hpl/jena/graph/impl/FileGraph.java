@@ -1,15 +1,17 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.1 2003-05-03 14:09:55 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.2 2003-05-03 16:53:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.util.JenaException;
+import com.hp.hpl.jena.shared.*;
 
 import java.io.*;
 
@@ -42,7 +44,23 @@ public class FileGraph extends GraphMem
         this.name = f;
         this.model = new ModelCom( this );
         this.lang = guessLang( this.name.toString() );
-        if (create == false) model.read( "file:" + name.toString(), this.lang );
+        if (create)
+            { 
+            if (f.exists()) throw new AlreadyExistsException( f.toString() );
+            }
+        else
+            readModel( this.model, name.toString(), this.lang );
+        }
+        
+    private void readModel( Model m, String name, String lang )
+        {
+        try
+            {
+            FileInputStream in = new FileInputStream( name );
+            model.read( in, "", this.lang );
+            }
+        catch (FileNotFoundException f)
+            { throw new DoesNotExistException( name ); }
         }
         
     /**
@@ -50,6 +68,10 @@ public class FileGraph extends GraphMem
      */
     public FileGraph( String s, boolean create )
         { this( new File( s ), create ); }
+        
+    public static FileGraph create()
+        { return new FileGraph( GraphTestBase.tempFileName( "xxx", ".rdf" ), true );
+        }
         
     /**
         Guess the language of the specified file by looking at the suffix.

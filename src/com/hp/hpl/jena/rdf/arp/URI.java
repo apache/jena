@@ -95,7 +95,7 @@ import java.util.StringTokenizer;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.7 2003-04-02 13:26:30 jeremy_carroll Exp $
+* @version  $Id: URI.java,v 1.8 2003-05-03 16:53:22 chris-dollin Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -388,7 +388,7 @@ public class URI implements Serializable {
 			if (p_base == null // del jjc: && fragmentIdx != 0
 			) {
 				// Nothing to be relative against.
-				throw new MalformedURIException("No scheme found in URI.");
+				throw new MalformedURIException("No scheme found in URI." + p_uriSpec );
 			} else {
 				if ((!p_base.isGenericURI()) && fragmentIdx != 0)
 					// Can't be relative against opaque URI (except using the #frag).

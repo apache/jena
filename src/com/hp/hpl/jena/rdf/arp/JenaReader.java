@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: JenaReader.java,v 1.4 2003-04-16 15:33:55 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.5 2003-05-03 16:53:22 chris-dollin Exp $
  
    AUTHOR:  Jeremy J. Carroll
  */
@@ -49,6 +49,8 @@ import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.LiteralImpl;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
+
+import com.hp.hpl.jena.util.JenaException;
 
 import java.io.*;
 import java.net.*;
@@ -242,7 +244,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             arpf.setErrorHandler(new ARPSaxErrorHandler(errorHandler));
             arpf.parse(inputS);
         } catch (IOException e) {
-            throw new RDFException(e);
+            throw new JenaException(e);
         } catch (SAXException e) {
             throw new RDFException(e);
         }
